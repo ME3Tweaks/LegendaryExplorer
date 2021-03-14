@@ -18,10 +18,8 @@ namespace ME3ExplorerCore.Unreal.ObjectInfo
                 if (infosStream != null)
                 {
                     var decompressedStream = ME3ExplorerCoreUtilities.LoadFileFromZipStream(infosStream, $"{game}ObjectInfo.json");
-                    using (StreamReader reader = new StreamReader(decompressedStream))
-                    {
-                        return reader.ReadToEnd();
-                    }
+                    using StreamReader reader = new StreamReader(decompressedStream);
+                    return reader.ReadToEnd();
                 }
 
 

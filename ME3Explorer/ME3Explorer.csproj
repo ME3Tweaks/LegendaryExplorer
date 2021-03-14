@@ -1502,10 +1502,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>IF NOT EXIST "$(ProjectDir)$(OutDir)lib" md $(ProjectDir)$(OutDir)lib"
+    <PostBuildEvent>IF NOT EXIST "$(ProjectDir)$(OutDir)lib" mkdir "$(ProjectDir)$(OutDir)lib"
 xcopy /f /y "$(SolutionDir)Libraries" "$(ProjectDir)$(OutDir)lib"
 
-mkdir "$(ProjectDir)\exec"
 xcopy /f /e /y "$(ProjectDir)Resources\exec" "$(ProjectDir)$(OutDir)\exec\"
 rmdir /s /q "$(ProjectDir)$(OutDir)x86"
 rmdir /s /q "$(ProjectDir)$(OutDir)x64"

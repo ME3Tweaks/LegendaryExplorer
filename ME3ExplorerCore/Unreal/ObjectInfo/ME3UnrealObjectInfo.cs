@@ -122,11 +122,11 @@ namespace ME3ExplorerCore.Unreal
             {
                 try
                 {
-                    PropertyCollection props = new PropertyCollection();
+                    PropertyCollection props = new();
                     while (info != null && info.ClassName != notIncludingClass)
                     {
                         Stream loadStream = null;
-                        string filepathTL = Path.Combine(GameFilesystem.MEDirectories.GetBioGamePath(game), info.pccPath);
+                        string filepathTL = Path.Combine(MEDirectories.GetBioGamePath(game), info.pccPath);
                         if (File.Exists(info.pccPath))
                         {
                             loadStream = new MemoryStream(File.ReadAllBytes(info.pccPath));
@@ -456,10 +456,10 @@ namespace ME3ExplorerCore.Unreal
 #endif
 
 
-        public static Dictionary<string, ClassInfo> Classes = new Dictionary<string, ClassInfo>();
-        public static Dictionary<string, ClassInfo> Structs = new Dictionary<string, ClassInfo>();
-        public static Dictionary<string, SequenceObjectInfo> SequenceObjects = new Dictionary<string, SequenceObjectInfo>();
-        public static Dictionary<string, List<NameReference>> Enums = new Dictionary<string, List<NameReference>>();
+        public static Dictionary<string, ClassInfo> Classes = new();
+        public static Dictionary<string, ClassInfo> Structs = new();
+        public static Dictionary<string, SequenceObjectInfo> SequenceObjects = new();
+        public static Dictionary<string, List<NameReference>> Enums = new();
 
         private static readonly string[] ImmutableStructs = { "Vector", "Color", "LinearColor", "TwoVectors", "Vector4", "Vector2D", "Rotator", "Guid", "Plane", "Box",
             "Quat", "Matrix", "IntPoint", "ActorReference", "ActorReference", "ActorReference", "PolyReference", "AimTransform", "AimTransform", "AimOffsetProfile", "FontCharacter",
@@ -485,6 +485,7 @@ namespace ME3ExplorerCore.Unreal
                         Classes = blob.Classes;
                         Structs = blob.Structs;
                         Enums = blob.Enums;
+                        AddCustomAndNativeClasses(Classes, SequenceObjects);
                         foreach ((string className, ClassInfo classInfo) in Classes)
                         {
                             classInfo.ClassName = className;
@@ -715,7 +716,7 @@ namespace ME3ExplorerCore.Unreal
             {
                 try
                 {
-                    PropertyCollection props = new PropertyCollection();
+                    PropertyCollection props = new();
                     while (info != null)
                     {
                         foreach ((string propName, PropertyInfo propInfo) in info.properties)
@@ -940,15 +941,19 @@ namespace ME3ExplorerCore.Unreal
                 // System.Diagnostics.Debug.WriteLine($"{i} of {length} processed");
             }
 
+            File.WriteAllText(outpath,
+                              JsonConvert.SerializeObject(new { SequenceObjects = newSequenceObjects, Classes = NewClasses, Structs = NewStructs, Enums = NewEnums }, Formatting.Indented));
+        }
 
-            #region CUSTOM ADDITIONS
+        private static void AddCustomAndNativeClasses(Dictionary<string, ClassInfo> classes, Dictionary<string, SequenceObjectInfo> sequenceObjects)
+        {
             //Custom additions
             //Custom additions are tweaks and additional classes either not automatically able to be determined
-            //or by new classes designed in the modding scene that must be present in order for parsing to work properly
+            //or new classes designed in the modding scene that must be present in order for parsing to work properly
 
             //Kinkojiro - New Class - BioSeqAct_ShowMedals
             //Sequence object for showing the medals UI
-            NewClasses["BioSeqAct_ShowMedals"] = new ClassInfo
+            classes["BioSeqAct_ShowMedals"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
@@ -959,10 +964,10 @@ namespace ME3ExplorerCore.Unreal
                     new KeyValuePair<string, PropertyInfo>("m_oGuiReferenced", new PropertyInfo(PropertyType.ObjectProperty, "GFxMovieInfo"))
                 }
             };
-            newSequenceObjects["BioSeqAct_ShowMedals"] = new SequenceObjectInfo();
+            sequenceObjects["BioSeqAct_ShowMedals"] = new SequenceObjectInfo();
 
             //Kinkojiro - New Class - SFXSeqAct_SetFaceFX
-            NewClasses["SFXSeqAct_SetFaceFX"] = new ClassInfo
+            classes["SFXSeqAct_SetFaceFX"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
@@ -973,19 +978,19 @@ namespace ME3ExplorerCore.Unreal
                     new KeyValuePair<string, PropertyInfo>("m_pDefaultFaceFXAsset", new PropertyInfo(PropertyType.ObjectProperty, "FaceFXAsset"))
                 }
             };
-            newSequenceObjects["SFXSeqAct_SetFaceFX"] = new SequenceObjectInfo();
+            sequenceObjects["SFXSeqAct_SetFaceFX"] = new SequenceObjectInfo();
 
             //SirCxyrtyx - New Class - SeqAct_SendMessageToME3Explorer
-            NewClasses["SeqAct_SendMessageToME3Explorer"] = new ClassInfo
+            classes["SeqAct_SendMessageToME3Explorer"] = new ClassInfo
             {
                 baseClass = "SeqAct_Log",
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 exportIndex = 40, //in ME3Resources.pcc
             };
-            newSequenceObjects["SeqAct_SendMessageToME3Explorer"] = new SequenceObjectInfo { ObjInstanceVersion = 5 };
+            sequenceObjects["SeqAct_SendMessageToME3Explorer"] = new SequenceObjectInfo {ObjInstanceVersion = 5};
 
             //SirCxyrtyx - New Class - SFXSeqAct_SetPrePivot
-            NewClasses["SFXSeqAct_SetPrePivot"] = new ClassInfo
+            classes["SFXSeqAct_SetPrePivot"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
@@ -995,10 +1000,10 @@ namespace ME3ExplorerCore.Unreal
                     new KeyValuePair<string, PropertyInfo>("PrePivot", new PropertyInfo(PropertyType.StructProperty, "Vector")),
                 }
             };
-            newSequenceObjects["SFXSeqAct_SetPrePivot"] = new SequenceObjectInfo();
+            sequenceObjects["SFXSeqAct_SetPrePivot"] = new SequenceObjectInfo();
 
             //Kinkojiro - New Class - SFXSeqAct_SetBodyMaterial
-            NewClasses["SFXSeqAct_SetBodyMaterial"] = new ClassInfo
+            classes["SFXSeqAct_SetBodyMaterial"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
@@ -1009,28 +1014,28 @@ namespace ME3ExplorerCore.Unreal
                     new KeyValuePair<string, PropertyInfo>("NewMaterial", new PropertyInfo(PropertyType.ObjectProperty, "MaterialInterface"))
                 }
             };
-            newSequenceObjects["SFXSeqAct_SetBodyMaterial"] = new SequenceObjectInfo();
+            sequenceObjects["SFXSeqAct_SetBodyMaterial"] = new SequenceObjectInfo();
 
             //SirCxyrtyx - New Class - SeqAct_ME3ExpDumpActors
-            NewClasses["SeqAct_ME3ExpDumpActors"] = new ClassInfo
+            classes["SeqAct_ME3ExpDumpActors"] = new ClassInfo
             {
                 baseClass = "SeqAct_Log",
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 exportIndex = 57, //in ME3Resources.pcc
             };
-            newSequenceObjects["SeqAct_ME3ExpDumpActors"] = new SequenceObjectInfo { ObjInstanceVersion = 5 };
+            sequenceObjects["SeqAct_ME3ExpDumpActors"] = new SequenceObjectInfo {ObjInstanceVersion = 5};
 
             //SirCxyrtyx - New Class - SeqAct_ME3ExpGetPlayerCamPOV
-            NewClasses["SeqAct_ME3ExpGetPlayerCamPOV"] = new ClassInfo
+            classes["SeqAct_ME3ExpGetPlayerCamPOV"] = new ClassInfo
             {
                 baseClass = "SeqAct_Log",
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 exportIndex = 61, //in ME3Resources.pcc
             };
-            newSequenceObjects["SeqAct_ME3ExpGetPlayerCamPOV"] = new SequenceObjectInfo { ObjInstanceVersion = 5 };
+            sequenceObjects["SeqAct_ME3ExpGetPlayerCamPOV"] = new SequenceObjectInfo {ObjInstanceVersion = 5};
 
             //Kinkojiro - New Class - SFXSeqAct_SetStuntBodyMesh
-            NewClasses["SFXSeqAct_SetStuntBodyMesh"] = new ClassInfo
+            classes["SFXSeqAct_SetStuntBodyMesh"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
@@ -1041,10 +1046,10 @@ namespace ME3ExplorerCore.Unreal
                     new KeyValuePair<string, PropertyInfo>("bPreserveAnimation", new PropertyInfo(PropertyType.BoolProperty))
                 }
             };
-            newSequenceObjects["SFXSeqAct_SetStuntBodyMesh"] = new SequenceObjectInfo { ObjInstanceVersion = 1 };
+            sequenceObjects["SFXSeqAct_SetStuntBodyMesh"] = new SequenceObjectInfo {ObjInstanceVersion = 1};
 
             //Kinkojiro - New Class - SFXSeqAct_SetStuntMeshes
-            NewClasses["SFXSeqAct_SetStuntMeshes"] = new ClassInfo
+            classes["SFXSeqAct_SetStuntMeshes"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
@@ -1060,19 +1065,19 @@ namespace ME3ExplorerCore.Unreal
                     new KeyValuePair<string, PropertyInfo>("aNewHairMaterials", new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
                 }
             };
-            newSequenceObjects["SFXSeqAct_SetStuntMeshes"] = new SequenceObjectInfo { ObjInstanceVersion = 1 };
+            sequenceObjects["SFXSeqAct_SetStuntMeshes"] = new SequenceObjectInfo {ObjInstanceVersion = 1};
 
             //SirCxyrtyx - New Class - SeqAct_ME3ExpAcessDumpedActorsList
-            NewClasses["SeqAct_ME3ExpAcessDumpedActorsList"] = new ClassInfo
+            classes["SeqAct_ME3ExpAcessDumpedActorsList"] = new ClassInfo
             {
                 baseClass = "SeqAct_Log",
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 exportIndex = 103, //in ME3Resources.pcc
             };
-            newSequenceObjects["SeqAct_ME3ExpAcessDumpedActorsList"] = new SequenceObjectInfo { ObjInstanceVersion = 5 };
+            sequenceObjects["SeqAct_ME3ExpAcessDumpedActorsList"] = new SequenceObjectInfo {ObjInstanceVersion = 5};
 
             //SirCxyrtyx - New Class - SFXSeqVar_Rotator
-            NewClasses["SFXSeqVar_Rotator"] = new ClassInfo
+            classes["SFXSeqVar_Rotator"] = new ClassInfo
             {
                 baseClass = "SeqVar_Int",
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
@@ -1084,25 +1089,25 @@ namespace ME3ExplorerCore.Unreal
             };
 
             //SirCxyrtyx - New Class - SFXSeqAct_GetRotation
-            NewClasses["SFXSeqAct_GetRotation"] = new ClassInfo
+            classes["SFXSeqAct_GetRotation"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 exportIndex = 419, //in ME3Resources.pcc
             };
-            newSequenceObjects["SFXSeqAct_GetRotation"] = new SequenceObjectInfo { ObjInstanceVersion = 1 };
+            sequenceObjects["SFXSeqAct_GetRotation"] = new SequenceObjectInfo {ObjInstanceVersion = 1};
 
             //SirCxyrtyx - New Class - SFXSeqAct_SetRotation
-            NewClasses["SFXSeqAct_SetRotation"] = new ClassInfo
+            classes["SFXSeqAct_SetRotation"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 exportIndex = 424, //in ME3Resources.pcc
             };
-            newSequenceObjects["SFXSeqAct_SetRotation"] = new SequenceObjectInfo { ObjInstanceVersion = 1 };
+            sequenceObjects["SFXSeqAct_SetRotation"] = new SequenceObjectInfo {ObjInstanceVersion = 1};
 
             //SirCxyrtyx - New Class - SFXSeqAct_SetRotatorComponents
-            NewClasses["SFXSeqAct_SetRotatorComponents"] = new ClassInfo
+            classes["SFXSeqAct_SetRotatorComponents"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
@@ -1114,10 +1119,10 @@ namespace ME3ExplorerCore.Unreal
                     new KeyValuePair<string, PropertyInfo>("Roll", new PropertyInfo(PropertyType.IntProperty)),
                 }
             };
-            newSequenceObjects["SFXSeqAct_SetRotatorComponents"] = new SequenceObjectInfo { ObjInstanceVersion = 1 };
+            sequenceObjects["SFXSeqAct_SetRotatorComponents"] = new SequenceObjectInfo {ObjInstanceVersion = 1};
 
             //SirCxyrtyx - New Class - SFXSeqAct_GetRotatorComponents
-            NewClasses["SFXSeqAct_GetRotatorComponents"] = new ClassInfo
+            classes["SFXSeqAct_GetRotatorComponents"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
@@ -1129,19 +1134,19 @@ namespace ME3ExplorerCore.Unreal
                     new KeyValuePair<string, PropertyInfo>("Roll", new PropertyInfo(PropertyType.IntProperty)),
                 }
             };
-            newSequenceObjects["SFXSeqAct_GetRotatorComponents"] = new SequenceObjectInfo { ObjInstanceVersion = 1 };
+            sequenceObjects["SFXSeqAct_GetRotatorComponents"] = new SequenceObjectInfo {ObjInstanceVersion = 1};
 
             //SirCxyrtyx - New Class - SFXSeqAct_SetRotator
-            NewClasses["SFXSeqAct_SetRotator"] = new ClassInfo
+            classes["SFXSeqAct_SetRotator"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 exportIndex = 447, //in ME3Resources.pcc
             };
-            newSequenceObjects["SFXSeqAct_SetRotator"] = new SequenceObjectInfo { ObjInstanceVersion = 1 };
+            sequenceObjects["SFXSeqAct_SetRotator"] = new SequenceObjectInfo {ObjInstanceVersion = 1};
 
             //SirCxyrtyx - New Class - SFXSeqAct_SetPawnMeshes
-            NewClasses["SFXSeqAct_SetPawnMeshes"] = new ClassInfo
+            classes["SFXSeqAct_SetPawnMeshes"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
@@ -1159,10 +1164,10 @@ namespace ME3ExplorerCore.Unreal
                     new KeyValuePair<string, PropertyInfo>("aNewGearMaterials", new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
                 }
             };
-            newSequenceObjects["SFXSeqAct_SetPawnMeshes"] = new SequenceObjectInfo { ObjInstanceVersion = 1 };
+            sequenceObjects["SFXSeqAct_SetPawnMeshes"] = new SequenceObjectInfo {ObjInstanceVersion = 1};
 
             //SirCxyrtyx - New Class - SFXSeqAct_SetStuntGearMesh
-            NewClasses["SFXSeqAct_SetStuntGearMesh"] = new ClassInfo
+            classes["SFXSeqAct_SetStuntGearMesh"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
@@ -1174,32 +1179,34 @@ namespace ME3ExplorerCore.Unreal
                     new KeyValuePair<string, PropertyInfo>("aNewGearMaterials", new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
                 }
             };
-            newSequenceObjects["SFXSeqAct_SetStuntGearMesh"] = new SequenceObjectInfo { ObjInstanceVersion = 1 };
+            sequenceObjects["SFXSeqAct_SetStuntGearMesh"] = new SequenceObjectInfo {ObjInstanceVersion = 1};
 
             //SirCxyrtyx - New Class - SFXSeqAct_SpawnHenchmenWeapons
-            NewClasses["SFXSeqAct_SpawnHenchmenWeapons"] = new ClassInfo
+            classes["SFXSeqAct_SpawnHenchmenWeapons"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 exportIndex = 503, //in ME3Resources.pcc
             };
-            newSequenceObjects["SFXSeqAct_SpawnHenchmenWeapons"] = new SequenceObjectInfo { ObjInstanceVersion = 1 };
+            sequenceObjects["SFXSeqAct_SpawnHenchmenWeapons"] = new SequenceObjectInfo {ObjInstanceVersion = 1};
 
-            NewClasses["LightMapTexture2D"] = new ClassInfo
+            //Native Classes: these classes are defined in C++ only
+
+            classes["LightMapTexture2D"] = new ClassInfo
             {
                 baseClass = "Texture2D",
                 exportIndex = 0,
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
             };
 
-            NewClasses["Package"] = new ClassInfo
+            classes["Package"] = new ClassInfo
             {
                 baseClass = "Object",
                 exportIndex = 0,
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
             };
 
-            NewClasses["StaticMesh"] = new ClassInfo
+            classes["StaticMesh"] = new ClassInfo
             {
                 baseClass = "Object",
                 exportIndex = 0,
@@ -1219,7 +1226,7 @@ namespace ME3ExplorerCore.Unreal
                 }
             };
 
-            NewClasses["FracturedStaticMesh"] = new ClassInfo
+            classes["FracturedStaticMesh"] = new ClassInfo
             {
                 baseClass = "StaticMesh",
                 exportIndex = 0,
@@ -1240,11 +1247,6 @@ namespace ME3ExplorerCore.Unreal
                     new KeyValuePair<string, PropertyInfo>("ChunkLinHorizontalScale", new PropertyInfo(PropertyType.FloatProperty)),
                 }
             };
-
-            #endregion
-
-            File.WriteAllText(outpath,
-                JsonConvert.SerializeObject(new { SequenceObjects = newSequenceObjects, Classes = NewClasses, Structs = NewStructs, Enums = NewEnums }, Formatting.Indented));
         }
 
 
@@ -1268,7 +1270,7 @@ namespace ME3ExplorerCore.Unreal
         public static ClassInfo generateClassInfo(ExportEntry export, bool isStruct = false)
         {
             IMEPackage pcc = export.FileRef;
-            ClassInfo info = new ClassInfo
+            ClassInfo info = new()
             {
                 baseClass = export.SuperClassName,
                 exportIndex = export.UIndex,
@@ -1276,7 +1278,7 @@ namespace ME3ExplorerCore.Unreal
             };
             if (export.IsClass)
             {
-                BinaryConverters.UClass classBinary = BinaryConverters.ObjectBinary.From<BinaryConverters.UClass>(export);
+                UClass classBinary = ObjectBinary.From<UClass>(export);
                 info.isAbstract = classBinary.ClassFlags.HasFlag(UnrealFlags.EClassFlags.Abstract);
             }
             if (pcc.FilePath.Contains("BIOGame"))
