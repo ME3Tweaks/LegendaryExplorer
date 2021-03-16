@@ -1,8 +1,8 @@
-﻿using ME3Script.Analysis.Visitors;
-using ME3Script.Utilities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Unrealscript.Analysis.Visitors;
+using Unrealscript.Utilities;
 
-namespace ME3Script.Language.Tree
+namespace Unrealscript.Language.Tree
 {
     public class CodeBody : Statement
     {
@@ -12,6 +12,10 @@ namespace ME3Script.Language.Tree
             : base(ASTNodeType.CodeBody, start, end) 
         {
             Statements = contents ?? new List<Statement>();
+            foreach (Statement statement in Statements)
+            {
+                statement.Outer = this;
+            }
         }
 
         public override bool AcceptVisitor(IASTVisitor visitor)

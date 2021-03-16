@@ -1,13 +1,13 @@
-﻿using ME3Script.Language.ByteCode;
-using ME3Script.Language.Tree;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using ME3Script.Analysis.Symbols;
-using ME3Script.Utilities;
+using Unrealscript.Utilities;
+using Unrealscript.Analysis.Symbols;
+using Unrealscript.Language.ByteCode;
+using Unrealscript.Language.Tree;
 
-namespace ME3Script.Decompiling
+namespace Unrealscript.Decompiling
 {
     public partial class ByteCodeDecompiler
     {
@@ -244,6 +244,7 @@ namespace ME3Script.Decompiling
 
             Scopes.Add(scopeStatements);
             CurrentScope.Push(Scopes.Count - 1);
+            IteratorNext finalIteratorNext = null;
             while (Position < Size)
             {
                 if (CurrentIs(OpCodes.IteratorNext))
@@ -251,7 +252,7 @@ namespace ME3Script.Decompiling
                     PopByte(); // IteratorNext
                     if (PeekByte == (byte)OpCodes.IteratorPop)
                     {
-                        StatementLocations[(ushort)(Position - 1)] = new IteratorNext();
+                        StatementLocations[(ushort)(Position - 1)] = finalIteratorNext = new IteratorNext();
                         StatementLocations[(ushort)Position] = new IteratorPop();
                         PopByte(); // IteratorPop
                         break;
@@ -272,6 +273,7 @@ namespace ME3Script.Decompiling
             {
                 iteratorPopPos = Position - 1
             };
+            if (finalIteratorNext is not null) finalIteratorNext.Outer = statement;
             StatementLocations.Add(StartPositions.Pop(), statement);
             return statement;
         }

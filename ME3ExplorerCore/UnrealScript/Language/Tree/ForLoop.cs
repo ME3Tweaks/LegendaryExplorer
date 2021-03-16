@@ -1,8 +1,8 @@
-﻿using ME3Script.Analysis.Visitors;
-using ME3Script.Utilities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Unrealscript.Analysis.Visitors;
+using Unrealscript.Utilities;
 
-namespace ME3Script.Language.Tree
+namespace Unrealscript.Language.Tree
 {
     public class ForLoop : Statement
     {
@@ -20,6 +20,10 @@ namespace ME3Script.Language.Tree
             Body = body;
             Init = init;
             Update = update;
+            if (init is not null) init.Outer = this;
+            if (cond is not null) cond.Outer = this;
+            if (update is not null) update.Outer = this;
+            body.Outer = this;
         }
 
         public override bool AcceptVisitor(IASTVisitor visitor)

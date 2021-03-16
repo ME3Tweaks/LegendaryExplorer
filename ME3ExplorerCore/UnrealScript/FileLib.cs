@@ -8,11 +8,11 @@ using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
-using ME3Script.Analysis.Symbols;
+using Unrealscript.Analysis.Symbols;
 
-namespace ME3Script
+namespace Unrealscript
 {
-    public class FileLib : IPackageUser, IDisposable
+    public partial class FileLib : IPackageUser, IDisposable
     {
         private SymbolTable _symbols;
         public SymbolTable GetSymbolTable() => IsInitialized ? _symbols?.Clone() : null;
@@ -25,7 +25,10 @@ namespace ME3Script
 
         public event Action<bool> InitializationStatusChange;
 
-        private readonly object initializationLock = new object();
+        private readonly object initializationLock = new();
+
+        private readonly BaseLib Base;
+
         public async Task<bool> Initialize()
         {
             if (IsInitialized)
@@ -33,7 +36,23 @@ namespace ME3Script
                 return true;
             }
 
-            return await StandardLibrary.InitializeStandardLib() && await Task.Run(() =>
+            if (!await Base.InitializeStandardLib())
+            {
+                HadInitializationError = Base.HadInitializationError;
+                InitializationStatusChange?.Invoke(true);
+                return false;
+            }
+
+            if (Base.BaseFileNames.Contains(Path.GetFileName(Pcc.FilePath)))
+            {
+                _symbols = Base.GetSymbolTable();
+                HadInitializationError = false;
+                IsInitialized = true;
+                InitializationStatusChange?.Invoke(true);
+                return true;
+            }
+
+            return await Task.Run(() =>
             {
                 if (IsInitialized)
                 {
@@ -61,21 +80,21 @@ namespace ME3Script
         {
             try
             {
-                _symbols = StandardLibrary.GetSymbolTable();
-                var files = EntryImporter.GetPossibleAssociatedFiles(Pcc);
+                _symbols = Base.GetSymbolTable();
+                var files = EntryImporter.GetPossibleAssociatedFiles(Pcc, false);
                 var gameFiles = MELoadedFiles.GetFilesLoadedInGame(Pcc.Game);
                 foreach (var fileName in Enumerable.Reverse(files))
                 {
                     if (gameFiles.TryGetValue(fileName, out string path) &&  File.Exists(path))
                     {
                         using var pcc = MEPackageHandler.OpenMEPackage(path);
-                        if (!StandardLibrary.ResolveAllClassesInPackage(pcc, ref _symbols))
+                        if (!BaseLib.ResolveAllClassesInPackage(pcc, ref _symbols))
                         {
                             return false;
                         }
                     }
                 }
-                return StandardLibrary.ResolveAllClassesInPackage(Pcc, ref _symbols);
+                return BaseLib.ResolveAllClassesInPackage(Pcc, ref _symbols);
             }
             catch (Exception e) when(!ME3ExplorerCoreLib.IsDebug)
             {
@@ -92,6 +111,13 @@ namespace ME3Script
             Pcc = pcc;
             pcc.WeakUsers.Add(this);
             ScriptUIndexes.AddRange(pcc.Exports.Where(IsScriptExport).Select(exp => exp.UIndex));
+            Base = pcc.Game switch
+            {
+                MEGame.ME3 => BaseLib.ME3BaseLib,
+                MEGame.ME2 => BaseLib.ME2BaseLib,
+                MEGame.ME1 => BaseLib.ME1BaseLib,
+                _ => throw new ArgumentOutOfRangeException(nameof(pcc), $"Cannot compile scripts for this game version: {pcc.Game}")
+            };
         }
 
         static bool IsScriptExport(ExportEntry exp)
@@ -136,7 +162,7 @@ namespace ME3Script
             foreach (PackageUpdate update in updates.Where(u => u.Change.Has(PackageChange.Export)))
             {
                 if (ScriptUIndexes.Contains(update.Index) 
-                 || update.Change.Has(PackageChange.Add) && Pcc.GetEntry(update.Index) is ExportEntry exp && (IsScriptExport(exp) || exp.ClassName == "Function"))
+                 || Pcc.GetEntry(update.Index) is ExportEntry exp && (IsScriptExport(exp) || exp.ClassName == "Function"))
                 {
                     lock (initializationLock)
                     {
