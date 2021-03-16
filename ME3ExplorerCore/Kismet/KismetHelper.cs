@@ -203,5 +203,20 @@ namespace ME3ExplorerCore.Kismet
         }
 
         #endregion
+
+        /// <summary>
+        /// Gets list of link names for the outbound links of the node
+        /// </summary>
+        /// <returns></returns>
+        public static List<string> GetOutboundLinkNames(ExportEntry export)
+        {
+            var props = export.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+            var names = new List<string>();
+            if (props != null)
+            {
+                names.AddRange(props.Select(x => x.Properties.GetProp<StrProperty>("LinkDesc").Value));
+            }
+            return names;
+        }
     }
 }

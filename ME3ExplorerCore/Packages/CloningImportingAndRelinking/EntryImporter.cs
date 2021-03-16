@@ -948,6 +948,12 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             }
         }
 
+        /// <summary>
+        /// Gets a list of things the specified export references
+        /// </summary>
+        /// <param name="export">The export to check</param>
+        /// <param name="includeLink">If the link should be included, which can sometimes pull in way more stuff than you want</param>
+        /// <returns></returns>
         public static List<IEntry> GetAllReferencesOfExport(ExportEntry export, bool includeLink = false)
         {
             List<IEntry> referencedItems = new List<IEntry>();
