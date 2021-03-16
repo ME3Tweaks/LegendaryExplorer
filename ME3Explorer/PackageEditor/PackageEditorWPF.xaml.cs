@@ -2315,7 +2315,7 @@ namespace ME3Explorer
            });
         }
 
-        private UnmoddedCandidatesLookup GetUnmoddedCandidatesForPackage()
+        internal UnmoddedCandidatesLookup GetUnmoddedCandidatesForPackage()
         {
             string lookupFilename = Path.GetFileName(Pcc.FilePath);
             string dlcPath = MEDirectories.GetDLCPath(Pcc.Game);
@@ -2414,7 +2414,7 @@ namespace ME3Explorer
             return unmoddedCandidates;
         }
 
-        private class UnmoddedCandidatesLookup
+        internal class UnmoddedCandidatesLookup
         {
             public List<string> DiskFiles = new List<string>();
             public Dictionary<string, Stream> SFARPackageStreams = new Dictionary<string, Stream>();
@@ -2780,7 +2780,7 @@ namespace ME3Explorer
             return false;
         }
 
-        private bool TryGetSelectedExport(out ExportEntry export)
+        internal bool TryGetSelectedExport(out ExportEntry export)
         {
             if (GetSelected(out int uIndex) && Pcc.IsUExport(uIndex))
             {
@@ -5031,6 +5031,11 @@ namespace ME3Explorer
         private void CompactInFile_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.CompactFileViaExternalFile(Pcc);
+        }
+
+        private void ResetPackageTextures_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.ResetTexturesInFile(Pcc, this);
         }
 
         private void ResolveAllImports_Clicked(object sender, RoutedEventArgs e)

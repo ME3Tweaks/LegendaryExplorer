@@ -32,6 +32,45 @@ namespace ME3Explorer.PackageEditor.Experiments
     /// </summary>
     class PackageEditorExperimentsM
     {
+        public static void ResetTexturesInFile(IMEPackage sourcePackage, PackageEditorWPF pewpf)
+        {
+            if (sourcePackage.Game != MEGame.ME1 && sourcePackage.Game != MEGame.ME2 && sourcePackage.Game != MEGame.ME3)
+            {
+                MessageBox.Show(pewpf, "Not a trilogy file!");
+                return;
+            }
+
+            Task.Run(() =>
+            {
+                pewpf.BusyText = "Finding unmodded candidates...";
+                pewpf.IsBusy = true;
+                return pewpf.GetUnmoddedCandidatesForPackage();
+            }).ContinueWithOnUIThread(foundCandidates =>
+            {
+                pewpf.IsBusy = false;
+                if (!foundCandidates.Result.Any()) MessageBox.Show(pewpf, "Cannot find any candidates for this file!");
+
+                var choices = foundCandidates.Result.DiskFiles.ToList(); //make new list
+                choices.AddRange(foundCandidates.Result.SFARPackageStreams.Select(x => x.Key));
+
+                var choice = InputComboBoxWPF.GetValue(pewpf, "Choose file to reset to:", "Texture reset", choices, choices.Last());
+                if (string.IsNullOrEmpty(choice))
+                {
+                    return;
+                }
+
+                var restorePackage = MEPackageHandler.OpenMEPackage(choice, forceLoadFromDisk: true);
+                foreach (var exp in sourcePackage.Exports.Where(x => x.IsTexture()))
+                {
+                    var origExp = restorePackage.FindExport(exp.InstancedFullPath);
+                    if (origExp != null)
+                    {
+                        exp.Data = origExp.Data;
+                    }
+                }
+            });
+        }
+
         public static void CompactFileViaExternalFile(IMEPackage sourcePackage)
         {
             OpenFileDialog d = new OpenFileDialog { Filter = "*.pcc|*.pcc" };
