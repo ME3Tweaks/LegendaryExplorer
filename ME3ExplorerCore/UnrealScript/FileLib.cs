@@ -81,7 +81,7 @@ namespace Unrealscript
             try
             {
                 _symbols = Base.GetSymbolTable();
-                var files = EntryImporter.GetPossibleAssociatedFiles(Pcc, false);
+                var files = EntryImporter.GetPossibleAssociatedFiles(Pcc, includeNonBioPRelated: false);
                 var gameFiles = MELoadedFiles.GetFilesLoadedInGame(Pcc.Game);
                 foreach (var fileName in Enumerable.Reverse(files))
                 {
