@@ -4,10 +4,10 @@ using System.Globalization;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
-using ME3Script.Language.ByteCode;
-using ME3Script.Utilities;
+using Unrealscript.Language.ByteCode;
+using Unrealscript.Utilities;
 
-namespace ME3Script.Compiling
+namespace Unrealscript.Compiling
 {
     public class BytecodeWriter
     {
@@ -28,8 +28,8 @@ namespace ME3Script.Compiling
         public int GetMemLength() => Position;
 
         protected ushort Position { get; private set; }
-        private readonly List<byte> bytecode = new List<byte>();
-        private readonly List<int> positions = new List<int>();
+        private readonly List<byte> bytecode = new();
+        private readonly List<int> positions = new();
 
         private void IncrementPosition(int times = 1)
         {
@@ -61,7 +61,10 @@ namespace ME3Script.Compiling
         protected void WriteObjectRef(IEntry entry)
         {
             WriteInt(entry?.UIndex ?? 0);
-            Position += 4;
+            if (Game >= MEGame.ME3)
+            {
+                Position += 4;
+            }
         }
 
         protected NameReference StringToNameRef(string s)
@@ -88,8 +91,8 @@ namespace ME3Script.Compiling
             WriteInt(number);
         }
 
-        protected SkipPlaceholder WriteSkipPlaceholder() => new SkipPlaceholder(this);
-        protected JumpPlaceholder WriteJumpPlaceholder(JumpType jumpType = JumpType.Break) => new JumpPlaceholder(this, jumpType);
+        protected SkipPlaceholder WriteSkipPlaceholder() => new(this);
+        protected JumpPlaceholder WriteJumpPlaceholder(JumpType jumpType = JumpType.Break) => new(this, jumpType);
 
         protected class SkipPlaceholder : IDisposable
         {

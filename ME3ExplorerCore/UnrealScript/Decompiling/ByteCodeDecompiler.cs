@@ -1,17 +1,18 @@
-﻿using ME3Script.Analysis.Visitors;
-using ME3Script.Language.ByteCode;
-using ME3Script.Language.Tree;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using ME3Explorer.ME3Script;
 using ME3Explorer.ME3Script.Utilities;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using ME3Script.Analysis.Symbols;
+using Unrealscript.Analysis.Symbols;
+using Unrealscript.Analysis.Visitors;
+using Unrealscript.Language.ByteCode;
+using Unrealscript.Language.Tree;
 
-namespace ME3Script.Decompiling
+namespace Unrealscript.Decompiling
 {
     public partial class ByteCodeDecompiler : ObjectReader 
     {
@@ -22,8 +23,8 @@ namespace ME3Script.Decompiling
         private readonly MEGame Game;
         private readonly byte extNativeIndex;
 
-        private bool LibInitialized => FileLib?.IsInitialized ?? StandardLibrary.IsInitialized;
-        private SymbolTable ReadOnlySymbolTable => FileLib?.ReadonlySymbolTable ?? StandardLibrary.ReadonlySymbolTable;
+        private bool LibInitialized => FileLib?.IsInitialized ?? false;
+        private SymbolTable ReadOnlySymbolTable => FileLib?.ReadonlySymbolTable;
 
         private IMEPackage PCC => DataContainer.Export.FileRef;
         private byte PopByte() { return ReadByte(); }
@@ -76,7 +77,7 @@ namespace ME3Script.Decompiling
             return new NameReference(PCC.GetNameEntry(ReadInt32()), ReadInt32());
         }
 
-        public ByteCodeDecompiler(UStruct dataContainer, UClass containingClass, List<FunctionParameter> parameters = null, VariableType returnType = null, FileLib lib = null)
+        public ByteCodeDecompiler(UStruct dataContainer, UClass containingClass, FileLib lib, List<FunctionParameter> parameters = null, VariableType returnType = null)
             :base(new byte[dataContainer.ScriptBytecodeSize])
         {
             Buffer.BlockCopy(dataContainer.ScriptBytes, 0, _data, 0, dataContainer.ScriptStorageSize);
@@ -115,6 +116,7 @@ namespace ME3Script.Decompiling
             _totalPadding = 0;
             CurrentScope = new Stack<int>();
             var statements = new List<Statement>();
+            var codeBody = new CodeBody(statements);
             StatementLocations = new Dictionary<ushort, Statement>();
             StartPositions = new Stack<ushort>();
             Scopes = new List<List<Statement>>();
@@ -139,7 +141,7 @@ namespace ME3Script.Decompiling
                     statements.Add(new ExpressionOnlyStatement(new SymbolReference(null, "*  DECOMPILATION ERROR!  *")));
                     statements.Add(new ExpressionOnlyStatement(new SymbolReference(null, "*                        *")));
                     statements.Add(new ExpressionOnlyStatement(new SymbolReference(null, "**************************")));
-                    return new CodeBody(statements);
+                    return codeBody;
                 }
 
                 statements.Add(current);
@@ -148,7 +150,71 @@ namespace ME3Script.Decompiling
             AddStateLabels();
 
             Dictionary<Statement, ushort> LocationStatements = StatementLocations.ToDictionary(kvp => kvp.Value, kvp => kvp.Key);
-            DecompileLoopsAndIfs(statements, LocationStatements);
+            DecompileLoopsAndIfs(codeBody, LocationStatements);
+
+            //insert labels for any (non-state) gotos
+            foreach ((ushort labelPos, List<Goto> gotos) in LabelLocationsToFix)
+            {
+                var label = new Label($"label_0x{labelPos:X}", labelPos);
+                bool hasValidGotos = false;
+                foreach (Goto g in gotos)
+                {
+                    //some gotos may have been converted into breaks or continues
+                    if (StatementLocations[LocationStatements[g]] == g)
+                    {
+                        hasValidGotos = true;
+                    }
+                    g.Label = label;
+                    g.LabelName = label.Name;
+                }
+                if (!hasValidGotos)
+                {
+                    continue;
+                }
+                var statementAtLabelLocation = StatementLocations[labelPos];
+                while (statementAtLabelLocation is UnconditionalJump unJump)
+                {
+                    statementAtLabelLocation = StatementLocations[unJump.JumpLoc];
+                }
+
+                switch (statementAtLabelLocation.Outer)
+                {
+                    case CodeBody cb:
+                    {
+                        int stmntIdx = cb.Statements.IndexOf(statementAtLabelLocation);
+                        label.Outer = cb;
+                        cb.Statements.Insert(stmntIdx, label);
+                        break;
+                    }
+                    case ForLoop forLoop:
+                        if (statementAtLabelLocation == forLoop.Update)
+                        {
+                            label.Outer = forLoop.Body;
+                            forLoop.Body.Statements.Add(label);
+                        }
+                        else //statementAtLabelLocation is the initializer
+                        {
+                            var cb = (CodeBody)forLoop.Outer;
+                            int stmntIdx = cb.Statements.IndexOf(forLoop);
+                            label.Outer = cb;
+                            cb.Statements.Insert(stmntIdx, label);
+                        }
+                        break;
+                    case ForEachLoop forEachLoop:
+                        if (statementAtLabelLocation is IteratorNext)
+                        {
+                            label.Outer = forEachLoop.Body;
+                            forEachLoop.Body.Statements.Add(label);
+                        }
+                        else
+                        {
+                            throw new Exception("Invalid control flow!");
+                        }
+                        break;
+                    default:
+                        throw new Exception("Invalid control flow!");
+                }
+            }
 
             //a void return at the end of a function is a bytecode implementation detail, get rid of it.
             //This will also get rid of returnnothings, so loop to make sure we get both
@@ -157,16 +223,20 @@ namespace ME3Script.Decompiling
                 statements.RemoveAt(statements.Count - 1);
             }
 
-            return new CodeBody(statements);
+            return codeBody;
         }
 
-        private void DecompileLoopsAndIfs(List<Statement> statements, Dictionary<Statement, ushort> positions, bool inLoop = false)
+        private readonly Dictionary<ushort, List<Goto>> LabelLocationsToFix = new();
+
+        private void DecompileLoopsAndIfs(CodeBody outer, Dictionary<Statement, ushort> positions, bool inLoop = false)
         {
+            List<Statement> statements = outer.Statements;
             var defaultCaseStatements = new Stack<Statement>();
             var switchEnds = new Dictionary<int, ushort>();
             for (int i = statements.Count - 1; i >= 0; i--)
             {
                 var cur = statements[i];
+                cur.Outer = outer;
                 if (!positions.TryGetValue(cur, out ushort curPos)) continue; //default param values, labels
 
                 if (cur is UnconditionalJump loopEnd && loopEnd.JumpLoc < curPos)
@@ -185,7 +255,7 @@ namespace ME3Script.Decompiling
                         //TODO: replace the unconditional jump with a goto? or perhaps this is a loop with no condition?
                         throw new Exception("Invalid Control Flow!");
                     }
-                    CodeBody loopBody = new CodeBody(statements.GetRange(conditionIdx + 1, i - conditionIdx - 1));
+                    var loopBody = new CodeBody(statements.GetRange(conditionIdx + 1, i - conditionIdx - 1));
                     if (!isForLoop && !(statementBeforeEndOfLoop is Jump))
                     {
                         //check to see if there is an unconditional jump to the statement before the end of the loop. This indicates a continue inside a for loop
@@ -225,15 +295,15 @@ namespace ME3Script.Decompiling
                     {
                         continueToPos = positions[statementBeforeEndOfLoop];
                         loopBody.Statements.RemoveAt(loopBody.Statements.Count - 1);
-                        loop = new ForLoop(forInit, condition, update, loopBody);
+                        loop = new ForLoop(forInit, condition, update, loopBody) { Outer = outer };
                     }
                     else
                     {
-                        loop = new WhileLoop(condition, loopBody);
+                        loop = new WhileLoop(condition, loopBody) { Outer = outer };
                     }
-
+                    
                     //recurse into body of loop
-                    DecompileLoopsAndIfs(loopBody.Statements, positions, true);
+                    DecompileLoopsAndIfs(loopBody, positions, true);
 
                     //convert unconditional jumps into continue and break
                     const int sizeOfUnconditionalJump = 3;
@@ -252,10 +322,10 @@ namespace ME3Script.Decompiling
                     var loopStart = StatementLocations[inj.JumpLoc];
                     var loopStartIdx = statements.IndexOf(loopStart);
                     int loopLength = i - loopStartIdx;
-                    DoUntilLoop loop = new DoUntilLoop(inj.Condition, new CodeBody(statements.GetRange(loopStartIdx, loopLength)));
+                    var loop = new DoUntilLoop(inj.Condition, new CodeBody(statements.GetRange(loopStartIdx, loopLength))) { Outer = outer };
 
                     //recurse into body of loop
-                    DecompileLoopsAndIfs(loop.Body.Statements, positions, inLoop);
+                    DecompileLoopsAndIfs(loop.Body, positions, inLoop);
 
                     //convert unconditional jumps into continue and break
                     ConvertJumps(loop.Body, curPos, inj.JumpLoc, curPos + inj.SizeOfExpression);
@@ -303,7 +373,7 @@ namespace ME3Script.Decompiling
                             totalLength += elseBody.Statements.Count;
                         }
                     }
-                    CodeBody thenBody = new CodeBody(statements.GetRange(thenBodyStartIdx, thenBodyLength));
+                    var thenBody = new CodeBody(statements.GetRange(thenBodyStartIdx, thenBodyLength));
 
                     //shouldn't be neccesary? we're working backwards, so all the statements in the bodies will have been processed already
                     //DecompileLoopsAndIfs(thenBody.Statements, positions, inLoop);
@@ -316,7 +386,8 @@ namespace ME3Script.Decompiling
 
                     Expression condition = ifJump.Condition;
                     statements.RemoveRange(i, totalLength);
-                    IfStatement ifStatement = new IfStatement(condition, thenBody, elseBody);
+                    var ifStatement = new IfStatement(condition, thenBody, elseBody) { Outer = outer };
+
                     statements.Insert(i, ifStatement);
                     StatementLocations[curPos] = ifStatement;
                     positions[ifStatement] = curPos;
@@ -324,7 +395,7 @@ namespace ME3Script.Decompiling
                 else if (cur is ForEachLoop fel && !decompiledForEachLoops.Contains(fel))
                 {
                     decompiledForEachLoops.Add(fel);
-                    DecompileLoopsAndIfs(fel.Body.Statements, positions, false);
+                    DecompileLoopsAndIfs(fel.Body, positions, false);
                     ConvertJumps(fel.Body, fel.iteratorPopPos - 1, -1, fel.iteratorPopPos);
                 }
                 else if (cur is DefaultCaseStatement)
@@ -340,7 +411,7 @@ namespace ME3Script.Decompiling
                     {
                         var switchEndJump = (UnconditionalJump)statements[breakIdx];
                         switchEnds[defaultCaseStatements.Count] = switchEndJump.JumpLoc;
-                        var brk = new BreakStatement();
+                        var brk = new BreakStatement { Outer = outer };
                         StatementLocations[positions[switchEndJump]] = statements[breakIdx] = brk;
                         positions[brk] = positions[switchEndJump];
 
@@ -352,7 +423,7 @@ namespace ME3Script.Decompiling
 
                         if (statements[defaultBreakIdx] is UnconditionalJump defaultBreak && defaultBreak.JumpLoc == switchEndJump.JumpLoc)
                         {
-                            var defBrk = new BreakStatement();
+                            var defBrk = new BreakStatement { Outer = outer };
                             StatementLocations[positions[defaultBreak]] = statements[defaultBreakIdx] = defBrk;
                             positions[defBrk] = positions[defaultBreak];
                         }
@@ -360,7 +431,7 @@ namespace ME3Script.Decompiling
                 }
                 else if (cur is UnconditionalJump possibleBreak && defaultCaseStatements.Count > 0 && switchEnds.ContainsValue(possibleBreak.JumpLoc))
                 {
-                    var brk = new BreakStatement();
+                    var brk = new BreakStatement { Outer = outer };
                     StatementLocations[positions[possibleBreak]] = statements[i] = brk;
                     positions[brk] = positions[possibleBreak];
                 }
@@ -387,11 +458,11 @@ namespace ME3Script.Decompiling
 
                     int length = lastStatementIdx - i;
 
-                    sw.Body = new CodeBody(statements.GetRange(i + 1, length));
+                    sw.Body = new CodeBody(statements.GetRange(i + 1, length)) {Outer = sw};
                     statements.RemoveRange(i + 1, length);
 
                     //if this is switching on an enum property, we should convert integer literals in case statements to enum values
-                    if (sw.Expression is SymbolReference symRef && symRef.Node is Enumeration enm)
+                    if (sw.Expression is SymbolReference {Node: Enumeration enm})
                     {
                         int valuesCount = enm.Values.Count;
                         foreach (CaseStatement caseStatement in sw.Body.Statements.OfType<CaseStatement>())
@@ -404,6 +475,9 @@ namespace ME3Script.Decompiling
                     }
                 }
             }
+
+            //convert any remaining unconditionaljumps into gotos
+            ConvertJumps(outer, -1, -1, -1);
 
             static bool IsIncrementDecrement(Statement stmnt, out Statement update)
             {
@@ -429,7 +503,7 @@ namespace ME3Script.Decompiling
                     {
                         case UnconditionalJump unJump when unJump.JumpLoc == continueToPos || unJump.JumpLoc == loopStartPos:
                         {
-                            ContinueStatement continueStatement = new ContinueStatement();
+                            var continueStatement = new ContinueStatement { Outer = codeBody };
                             ushort position = positions[bodyStatement];
                             StatementLocations[position] = codeBody.Statements[j] = continueStatement;
                             positions[continueStatement] = position;
@@ -437,15 +511,21 @@ namespace ME3Script.Decompiling
                         }
                         case UnconditionalJump unJump when unJump.JumpLoc == breakPos:
                         {
-                            BreakStatement breakStatement = new BreakStatement();
+                            var breakStatement = new BreakStatement { Outer = codeBody };
                             ushort position = positions[bodyStatement];
                             StatementLocations[position] = codeBody.Statements[j] = breakStatement;
                             positions[breakStatement] = position;
                             break;
-                            }
-                        case UnconditionalJump _:
-                            //replace with goto statement?
-                            throw new Exception("Invalid Control Flow!");
+                        }
+                        case UnconditionalJump unJump when unJump is not Goto:
+                        {
+                            var gotoStatement = new Goto($"{unJump.JumpLoc:X}", jumpLoc: unJump.JumpLoc) { Outer = codeBody };
+                            ushort position = positions[bodyStatement];
+                            StatementLocations[position] = codeBody.Statements[j] = gotoStatement;
+                            positions[gotoStatement] = position;
+                            LabelLocationsToFix.AddToListAt(unJump.JumpLoc, gotoStatement);
+                            break;
+                        }
                         case IfStatement ifStatement:
                             if (ifStatement.Then?.Statements != null) ConvertJumps(ifStatement.Then, continueToPos, loopStartPos, breakPos);
                             if (ifStatement.Else?.Statements != null) ConvertJumps(ifStatement.Else, continueToPos, loopStartPos, breakPos);

@@ -1,4 +1,4 @@
-﻿namespace ME3Script.Compiling.Errors
+﻿namespace Unrealscript.Compiling.Errors
 {
     public class Warning : LogMessage
     {

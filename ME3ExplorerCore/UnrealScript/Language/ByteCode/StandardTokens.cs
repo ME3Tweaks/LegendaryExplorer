@@ -1,4 +1,4 @@
-﻿namespace ME3Script.Language.ByteCode
+﻿namespace Unrealscript.Language.ByteCode
 {
     public enum OpCodes : byte
     {

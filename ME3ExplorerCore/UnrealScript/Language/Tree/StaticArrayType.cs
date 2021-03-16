@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using ME3Script.Analysis.Visitors;
-using ME3Script.Utilities;
+using Unrealscript.Analysis.Visitors;
+using Unrealscript.Utilities;
 
-namespace ME3Script.Language.Tree
+namespace Unrealscript.Language.Tree
 {
     public class StaticArrayType : VariableType, IEquatable<StaticArrayType>
     {
@@ -29,6 +29,8 @@ namespace ME3Script.Language.Tree
                 yield return ElementType;
             }
         }
+
+        public override int Size => (ElementType?.Size ?? 0) * Length;
 
         public bool Equals(StaticArrayType other)
         {

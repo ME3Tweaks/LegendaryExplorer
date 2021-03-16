@@ -244,6 +244,7 @@
                         <MenuItem Header="Generate ME2/ME3 object info diff" Click="GenerateObjectInfoDiff_Click"/>
                     </MenuItem>
                     <MenuItem Header="Mgamerz's Programming Circus">
+                        <MenuItem Header="Reset textures in package" Click="ResetPackageTextures_Click"/>
                         <MenuItem Header="Compact current file via external file" Click="CompactInFile_Click"/>
                         <MenuItem Header="Search ObjectInfo keys for value" Click="ObjectInfosSearch_Click"/>
                         <MenuItem Header="Create Testpatch functions delta to vanilla" Click="CreateTestPatchDelta_Click"/>

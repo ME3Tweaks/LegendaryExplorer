@@ -1,10 +1,10 @@
-﻿using ME3Script.Analysis.Visitors;
-using ME3Script.Language.Util;
-using ME3Script.Utilities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using ME3ExplorerCore.Unreal.BinaryConverters;
+using Unrealscript.Analysis.Visitors;
+using Unrealscript.Language.Util;
+using Unrealscript.Utilities;
 
-namespace ME3Script.Language.Tree
+namespace Unrealscript.Language.Tree
 {
     public class State : ASTNode, IContainsByteCode
     {

@@ -1,9 +1,9 @@
-﻿using ME3Script.Language.Tree;
-using ME3Script.Lexing.Matching.StringMatchers;
-using ME3Script.Lexing.Tokenizing;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Unrealscript.Language.Tree;
+using Unrealscript.Lexing.Matching.StringMatchers;
+using Unrealscript.Lexing.Tokenizing;
 
-namespace ME3Script.Utilities
+namespace Unrealscript.Utilities
 {
     public static class GlobalLists
     {

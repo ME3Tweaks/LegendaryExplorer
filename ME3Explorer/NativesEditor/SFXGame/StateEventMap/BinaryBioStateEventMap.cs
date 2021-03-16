@@ -233,14 +233,14 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap
 
 				ReadBioStateEventElement(element);
 
-				element.FunctionPackageNameFlags = ReadInt32();
 				element.FunctionPackageName = ReadInt32();
+				element.FunctionPackageNameFlags = ReadInt32();
 
-				element.FunctionClassNameFlags = ReadInt32();
 				element.FunctionClassName = ReadInt32();
+				element.FunctionClassNameFlags = ReadInt32();
 
-				element.FunctionNameFlags = ReadInt32();
 				element.FunctionName = ReadInt32();
+				element.FunctionNameFlags = ReadInt32();
 
 				element.Parameter = ReadInt32();
 
@@ -467,14 +467,14 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap
 			{
 				WriteEventElement(element);
 
-				Write(element.FunctionPackageNameFlags);
 				Write(element.FunctionPackageName);
+				Write(element.FunctionPackageNameFlags);
 
-				Write(element.FunctionClassNameFlags);
 				Write(element.FunctionClassName);
+				Write(element.FunctionClassNameFlags);
 
-				Write(element.FunctionNameFlags);
 				Write(element.FunctionName);
+				Write(element.FunctionNameFlags);
 
 				Write(element.Parameter);
 			}
