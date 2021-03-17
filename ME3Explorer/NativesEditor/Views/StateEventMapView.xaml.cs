@@ -428,6 +428,13 @@ namespace MassEffect.NativesEditor.Views
             }
         }
 
+        public void SelectStateEvent(KeyValuePair<int, BioStateEvent> stateEvent)
+        {
+            SelectedStateEvent = stateEvent;
+            StateEventMapListBox.ScrollIntoView(SelectedStateEvent);
+            StateEventMapListBox.Focus();
+        }
+
         protected void SetListsAsBindable()
         {
             //StateEvents = new ObservableCollection<KeyValuePair<int, BioStateEvent>>(StateEvents);

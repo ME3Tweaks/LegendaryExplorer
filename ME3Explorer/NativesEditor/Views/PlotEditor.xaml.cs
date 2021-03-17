@@ -10,6 +10,7 @@ using Gammtek.Conduit.MassEffect3.SFXGame.QuestMap;
 using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
 using ME3Explorer;
 using ME3Explorer.ME3ExpMemoryAnalyzer;
+using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.Interfaces;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
@@ -23,6 +24,8 @@ namespace MassEffect.NativesEditor.Views
     {
         public PlotEditor() : base("Plot Editor")
         {
+            GotoCommand = new GenericCommand(FocusGoto, () => Pcc != null);
+
             InitializeComponent();
             RecentsController.InitRecentControl(Toolname, Recents_MenuItem, fileName => LoadFile(fileName));
             
@@ -30,6 +33,8 @@ namespace MassEffect.NativesEditor.Views
         }
 
         public string CurrentFile => Pcc != null ? Path.GetFileName(Pcc.FilePath) : "Select a file to load";
+
+        public ICommand GotoCommand { get; set; }
 
         public void OpenFile()
         {
@@ -237,10 +242,29 @@ namespace MassEffect.NativesEditor.Views
 
         public void GoToStateEvent(int id)
         {
-            MainTabControl.SelectedValue = StateEventMapControl;
-            StateEventMapControl.SelectedStateEvent = StateEventMapControl.StateEvents.FirstOrDefault(kvp => kvp.Key == id);
-            StateEventMapControl.StateEventMapListBox.ScrollIntoView(StateEventMapControl.SelectedStateEvent);
-            StateEventMapControl.StateEventMapListBox.Focus();
+            var targetEvent = StateEventMapControl.StateEvents.FirstOrDefault(kvp => kvp.Key == id);
+
+            // If the ID is the default, try the consequence map
+            if(targetEvent.Equals(default(KeyValuePair<int, BioStateEvent>)))
+            {
+                targetEvent = ConsequenceMapControl.StateEvents.FirstOrDefault(kvp => kvp.Key == id);
+            }
+
+            GoToStateEvent(targetEvent);
+        }
+
+        public void GoToStateEvent(KeyValuePair<int, BioStateEvent> targetEvent)
+        {
+            if((bool) ConsequenceMapControl?.StateEvents.Contains(targetEvent))
+            {
+                MainTabControl.SelectedValue = ConsequenceMapControl;
+                ConsequenceMapControl.SelectStateEvent(targetEvent);
+            }
+            else
+            {
+                MainTabControl.SelectedValue = StateEventMapControl;
+                StateEventMapControl.SelectStateEvent(targetEvent);
+            }
         }
 
         public void PropogateRecentsChange(IEnumerable<string> newRecents)
@@ -248,6 +272,28 @@ namespace MassEffect.NativesEditor.Views
             RecentsController.PropogateRecentsChange(false, newRecents);
         }
 
+        private void FocusGoto()
+        {
+            Goto_TextBox.Focus();
+            Goto_TextBox.SelectAll();
+        }
+
+        private void GotoButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (int.TryParse(Goto_TextBox.Text, out int n))
+            {
+                GoToStateEvent(n);
+            }
+        }
+        private void Goto_TextBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return && !e.IsRepeat)
+            {
+                GotoButton_Click(null, null);
+            }
+        }
+
         public string Toolname => "NativesEditor";
+
     }
 }
