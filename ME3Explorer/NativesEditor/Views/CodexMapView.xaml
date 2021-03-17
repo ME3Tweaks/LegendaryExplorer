@@ -27,8 +27,8 @@
 
 	<!-- Content -->
 	<Grid>
-		<TabControl>
-			<TabItem Header="Codex Pages">
+		<TabControl x:Name="CodexTabControl">
+			<TabItem x:Name="CodexPagesTab" Header="Codex Pages">
 				<Grid>
 					<!-- Grid Definitions -->
 					<Grid.ColumnDefinitions>
@@ -144,7 +144,7 @@
 					</Grid>
 				</Grid>
 			</TabItem>
-			<TabItem Header="Codex Sections">
+            <TabItem x:Name="CodexSectionsTab" Header="Codex Sections">
 				<Grid>
 					<!-- Grid Definitions -->
 					<Grid.ColumnDefinitions>

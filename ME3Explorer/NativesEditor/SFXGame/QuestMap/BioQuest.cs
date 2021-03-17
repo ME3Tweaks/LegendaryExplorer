@@ -81,5 +81,7 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.QuestMap
 			get { return _tasks; }
 			set { SetProperty(ref _tasks, value); }
 		}
+
+		public override string ToString() { return "BioQuest"; }
 	}
 }

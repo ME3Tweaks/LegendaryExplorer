@@ -89,5 +89,7 @@
 			get { return _task; }
 			set { SetProperty(ref _task, value); }
 		}
+
+		public override string ToString() { return "BioTaskEval"; }
 	}
 }

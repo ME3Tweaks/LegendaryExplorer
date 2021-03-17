@@ -283,6 +283,22 @@ namespace MassEffect.NativesEditor.Views
             addCodexSection(dlg.ObjectId, new BioCodexSection(SelectedCodexSection.Value));
         }
 
+        public void GoToCodexPage(KeyValuePair<int, BioCodexPage> codexPage)
+        {
+            CodexTabControl.SelectedValue = CodexPagesTab;
+            SelectedCodexPage = codexPage;
+            CodexPagesListBox.ScrollIntoView(SelectedCodexPage);
+            CodexPagesListBox.Focus();
+        }
+
+        public void GoToCodexSection(KeyValuePair<int, BioCodexSection> codexSection)
+        {
+            CodexTabControl.SelectedValue = CodexSectionsTab;
+            SelectedCodexSection = codexSection;
+            CodexSectionsListBox.ScrollIntoView(SelectedCodexSection);
+            CodexSectionsListBox.Focus();
+        }
+
         public static bool TryFindCodexMap(IMEPackage pcc, out ExportEntry export, out int dataOffset)
         {
             export = null;

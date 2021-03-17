@@ -37,5 +37,10 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.QuestMap
 			get { return _taskEvals; }
 			set { SetProperty(ref _taskEvals, value); }
 		}
-	}
+
+        public override string ToString()
+        {
+			return "BioStateTaskList";
+        }
+    }
 }
