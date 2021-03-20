@@ -53,7 +53,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             List<(UIndex, string)> uIndices = base.GetUIndexes(game);
             uIndices.Add((Children, "ChildListStart"));
 
-            if (Export.ClassName == "Function")
+            if (Export.ClassName == "Function" || Export.ClassName == "State")
             {
                 if (Export.Game == MEGame.ME3)
                 {
@@ -77,7 +77,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                 {
                     try
                     {
-                        var func = UE3FunctionReader.ReadFunction(Export);
+                        var func = Export.ClassName == "State" ? UE3FunctionReader.ReadState(Export) : UE3FunctionReader.ReadFunction(Export);
                         func.Decompile(new TextBuilder(), false, false); //parse bytecode without signature (it does not contain entry refs)
                         var entryRefs = func.EntryReferences;
                         uIndices.AddRange(entryRefs.Select(x =>
@@ -91,6 +91,49 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             }
 
             return uIndices;
+        }
+
+        public override List<(NameReference, string)> GetNames(MEGame game)
+        {
+            var names = base.GetNames(game);
+
+            if (Export.ClassName == "Function" || Export.ClassName == "State")
+            {
+                if (Export.Game == MEGame.ME3)
+                {
+                    try
+                    {
+                        (List<Token> tokens, _) = Bytecode.ParseBytecode(ScriptBytes, Export);
+                        foreach (var t in tokens)
+                        {
+                            {
+                                var refs = t.inPackageReferences.Where(x => x.type == Token.INPACKAGEREFTYPE_NAME);
+                                names.AddRange(refs.Select(x => (new NameReference(Export.FileRef.GetNameEntry(x.value)), $"Name inside of function at 0x{x.position:X}")));
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine($"Error decompiling function {Export.FullPath}: {e.Message}");
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        var func = Export.ClassName == "State" ? UE3FunctionReader.ReadState(Export) : UE3FunctionReader.ReadFunction(Export);
+                        func.Decompile(new TextBuilder(), false, false); //parse bytecode without signature (it does not contain entry refs)
+                        var entryRefs = func.NameReferences;
+                        names.AddRange(entryRefs.Select(x => (x.Value, $"Name inside of function at 0x{x.Key:X}")));
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine($"Error decompiling function {Export.FullPath}: {e.Message}");
+                    }
+                }
+            }
+
+            return names;
         }
     }
 }
