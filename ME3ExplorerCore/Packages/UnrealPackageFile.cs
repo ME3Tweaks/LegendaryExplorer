@@ -285,6 +285,9 @@ namespace ME3ExplorerCore.Packages
             if (importEntry.FileRef != this)
                 throw new Exception("you cannot add a new import entry from another package file, it has invalid references!");
 
+            //if (importEntry.ObjectName == "Controller")
+            //    Debugger.Break();
+
             importEntry.Index = imports.Count;
             importEntry.PropertyChanged += importChanged;
             importEntry.HeaderOffset = 1; //This will make it so when setting idxLink it knows the import has been attached to the tree, even though this doesn't do anything. Find by offset may be confused by this. Updates on save

@@ -1108,7 +1108,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
             //Following two conditions are for relinking
             else if (idx < 0)
             {
-                EntryReferences[pos] = new ImportEntry(_package) { Index = Math.Abs(idx) + 1 }; //Force UIndex
+                EntryReferences[pos] = new ImportEntry(_package) { Index = Math.Abs(idx) - 1 }; //Force UIndex
                 return _package.Imports.First(); //this is so rest of parser won't crash. It's a real hack...
             }
             else if (idx > 0)
