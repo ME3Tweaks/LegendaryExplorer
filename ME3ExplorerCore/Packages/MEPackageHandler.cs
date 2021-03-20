@@ -314,6 +314,11 @@ namespace ME3ExplorerCore.Packages
             return pkg;
         }
 
+        /// <summary>
+        /// Creates and saves a package. A package is not returned as the saving code will add data that must be re-read for a package to be properly used.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="game"></param>
         public static void CreateAndSavePackage(string path, MEGame game)
         {
             switch (game)
