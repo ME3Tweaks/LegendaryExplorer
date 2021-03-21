@@ -445,12 +445,17 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             var sourceEntry = sourcePcc.FindEntry(importFullNameInstanced); // should this search entries instead? What if an import has an export parent?
             if (sourceEntry is ImportEntry imp) // import not found
             {
-                if (imp.ClassName == "Package")
-                {
-                    // Debug. Create package export instead.
-                    return ExportCreator.CreatePackageExport(destinationPCC, imp.ObjectName, parent, null);
-                }
-                else
+                // Code below forces Package objects to be imported as exports instead of imports. However is an object is an import (that works properly) the parent already has to exist upstream.
+                // Some BioP for some reason use exports instead of imports when referncing sfxgame content even if they have no export children
+                // not sure it has any functional difference
+                // Mgamerz 3/21/2021
+
+                //if (imp.ClassName == "Package")
+                //{
+                //    // Debug. Create package export instead.
+                //    return ExportCreator.CreatePackageExport(destinationPCC, imp.ObjectName, parent, null);
+                //}
+                //else
                 {
                     var newImport = new ImportEntry(destinationPCC)
                     {
