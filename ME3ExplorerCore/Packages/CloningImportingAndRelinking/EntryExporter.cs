@@ -122,7 +122,8 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                             };
                             target.AddImport(newImport);
                             parent = newImport;
-                        } else
+                        }
+                        else
                         {
                             EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, pEntry, target, parent, false, out parent);
                         }
@@ -209,7 +210,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     continue; // This texture for some reason is not stored in package files... not sure where, or how it is loaded into memory
                 if (import.IsAKnownNativeClass())
                     continue; // Known native items can never be imported
-                var resolved = EntryImporter.ResolveImport(import, globalCache,cache);
+                var resolved = EntryImporter.ResolveImport(import, globalCache, cache);
                 if (resolved == null)
                 {
                     unresolvableImports.Add(new EntryStringPair(import, $"Import {import.InstancedFullPath} could not be resolved - cannot be safely used"));

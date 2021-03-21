@@ -152,6 +152,11 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             {
                 uIndexes.AddRange(UniformPixelVectorExpressions.OfType<MaterialUniformExpressionFlipbookParameter>()
                     .Select((flipParam, i) => (flipParam.TextureIndex, $"UniformPixelVectorExpressions[{i}]")));
+
+                // Used in ME2 Carnage fireballPlasma Material
+                uIndexes.AddRange(UniformPixelVectorExpressions.OfType<MaterialUniformExpressionTexture>()
+                    .Select((flipParam, i) => (flipParam.TextureIndex, $"UniformPixelVectorExpressions[{i}]")));
+
                 uIndexes.AddRange(UniformPixelScalarExpressions.OfType<MaterialUniformExpressionFlipbookParameter>()
                     .Select((flipParam, i) => (flipParam.TextureIndex, $"UniformPixelScalarExpressions[{i}]")));
                 uIndexes.AddRange(Uniform2DTextureExpressions.Select((texParam, i) => (texParam.TextureIndex, $"Uniform2DTextureExpressions[{i}]")));

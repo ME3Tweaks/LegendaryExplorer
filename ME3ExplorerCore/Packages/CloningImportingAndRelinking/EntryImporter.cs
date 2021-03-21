@@ -442,30 +442,39 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             IEntry parent = GetOrAddCrossImportOrPackage(string.Join(".", importParts.Take(importParts.Length - 1)), sourcePcc, destinationPCC,
                                                          importNonPackageExportsToo, objectMapping);
 
-            var sourceImport = sourcePcc.FindImport(importFullNameInstanced);
-            if (sourceImport != null) // import not found
+            var sourceEntry = sourcePcc.FindEntry(importFullNameInstanced); // should this search entries instead? What if an import has an export parent?
+            if (sourceEntry is ImportEntry imp) // import not found
             {
-                var newImport = new ImportEntry(destinationPCC)
+                if (imp.ClassName == "Package")
                 {
-                    idxLink = parent?.UIndex ?? 0,
-                    ClassName = sourceImport.ClassName,
-                    ObjectName = sourceImport.ObjectName,
-                    PackageFile = sourceImport.PackageFile
-                };
-                destinationPCC.AddImport(newImport);
-                if (objectMapping != null)
-                {
-                    objectMapping[sourceImport] = newImport;
+                    // Debug. Create package export instead.
+                    return ExportCreator.CreatePackageExport(destinationPCC, imp.ObjectName, parent, null);
                 }
+                else
+                {
+                    var newImport = new ImportEntry(destinationPCC)
+                    {
+                        idxLink = parent?.UIndex ?? 0,
+                        ClassName = imp.ClassName,
+                        ObjectName = imp.ObjectName,
+                        PackageFile = imp.PackageFile
+                    };
+                    destinationPCC.AddImport(newImport);
+                    if (objectMapping != null)
+                    {
+                        objectMapping[sourceEntry] = newImport;
+                    }
 
-                return newImport;
+                    return newImport;
+                }
             }
 
-            foreach (ExportEntry sourceExport in sourcePcc.Exports)
+            if (sourceEntry is ExportEntry foundMatchingExport)
             {
-                if ((importNonPackageExportsToo || sourceExport.ClassName == "Package") && sourceExport.InstancedFullPath == importFullNameInstanced)
+
+                if (importNonPackageExportsToo || foundMatchingExport.ClassName == "Package")
                 {
-                    return ImportExport(destinationPCC, sourceExport, parent?.UIndex ?? 0, importNonPackageExportsToo, objectMapping);
+                    return ImportExport(destinationPCC, foundMatchingExport, parent?.UIndex ?? 0, importNonPackageExportsToo, objectMapping);
                 }
             }
 

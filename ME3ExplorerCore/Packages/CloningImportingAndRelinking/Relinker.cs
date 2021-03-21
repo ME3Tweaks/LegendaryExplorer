@@ -288,7 +288,8 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 return null; //do not relink same-pcc imports.
             }
             int sourceObjReference = uIndex;
-
+            //if (sourceObjReference == -1009)
+            //    Debugger.Break();
             //Debug.WriteLine($"{prefix} Relinking:{propertyName}");
             if (crossPCCObjectMappingList.TryGetValue(importingPCC.GetEntry(uIndex), out IEntry targetEntry))
             {
