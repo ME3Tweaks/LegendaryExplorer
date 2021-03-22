@@ -29,7 +29,7 @@ namespace ME3Explorer.AnimationExplorer
     {
         public static AnimationViewer Instance;
         
-        public Animation AnimQueuedForFocus;
+        public AnimationRecord AnimQueuedForFocus;
         private enum FloatVarIndexes
         {
             XPos = 1,
@@ -70,7 +70,7 @@ namespace ME3Explorer.AnimationExplorer
             ME3OpenTimer.Tick += CheckIfME3Open;
         }
 
-        public AnimationViewer(PropsDataBase db, Animation AnimToFocus) : this()
+        public AnimationViewer(PropsDataBase db, AnimationRecord AnimToFocus) : this()
         {
             AnimQueuedForFocus = AnimToFocus;
             foreach ((string fileName, int dirIndex) in db.FileList)
@@ -201,12 +201,12 @@ namespace ME3Explorer.AnimationExplorer
             }
         }
 
-        public List<Animation> Animations { get; } = new List<Animation>();
-        private readonly List<(string fileName, string directory)> FileListExtended = new List<(string fileName, string directory)>();
+        public List<AnimationRecord> Animations { get; } = new();
+        private readonly List<(string fileName, string directory)> FileListExtended = new();
 
-        private Animation _selectedAnimation;
+        private AnimationRecord _selectedAnimation;
 
-        public Animation SelectedAnimation
+        public AnimationRecord SelectedAnimation
         {
             get => _selectedAnimation;
             set
@@ -327,7 +327,7 @@ namespace ME3Explorer.AnimationExplorer
         {
             SetBusy("Loading Database...");
             PropsDataBase db = new PropsDataBase();
-            AssetDB.LoadDatabase(dbPath, MEGame.ME3, db, CancellationToken.None, AssetDB.dbTableType.Animations).ContinueWithOnUIThread(prevTask =>
+            AssetDB.LoadDatabase(dbPath, MEGame.ME3, db, CancellationToken.None, AssetDB.DBTableType.Animations).ContinueWithOnUIThread(prevTask =>
             {
                 if (db.DataBaseversion != AssetDB.dbCurrentBuild)
                 {
@@ -373,7 +373,7 @@ namespace ME3Explorer.AnimationExplorer
 
         #endregion
 
-        public void LoadAnimation(Animation anim)
+        public void LoadAnimation(AnimationRecord anim)
         {
             if (!LoadingAnimation && GameController.TryGetMEProcess(MEGame.ME3, out Process me3Process))
             {
@@ -381,12 +381,12 @@ namespace ME3Explorer.AnimationExplorer
                 SetBusy("Loading Animation", () => LoadingAnimation = false);
                 int animUIndex = 0;
                 string filePath = null;
-                if (anim != null && Enumerable.Any(anim.AnimUsages))
+                if (anim != null && Enumerable.Any(anim.Usages))
                 {
                     //CameraState = ECameraState.Fixed;
                     int fileListIndex;
                     bool isMod;
-                    (fileListIndex, animUIndex, isMod) = anim.AnimUsages[0];
+                    (fileListIndex, animUIndex, isMod) = anim.Usages[0];
                     (string filename, string contentdir) = FileListExtended[fileListIndex];
                     string rootPath = ME3Directory.DefaultGamePath;
 
