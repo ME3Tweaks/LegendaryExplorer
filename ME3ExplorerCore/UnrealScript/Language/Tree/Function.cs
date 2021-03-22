@@ -1,11 +1,12 @@
-﻿using ME3Script.Analysis.Visitors;
-using ME3Script.Language.Util;
-using ME3Script.Utilities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Unreal.BinaryConverters;
+using Unrealscript.Analysis.Visitors;
+using Unrealscript.Language.Util;
+using Unrealscript.Utilities;
 
-namespace ME3Script.Language.Tree
+namespace Unrealscript.Language.Tree
 {
     public class Function : ASTNode, IContainsByteCode
     {
@@ -24,6 +25,10 @@ namespace ME3Script.Language.Tree
         public bool IsNative => Flags.Has(FunctionFlags.Native);
 
         public bool IsDefined => Flags.Has(FunctionFlags.Defined);
+
+        public bool IsOperator => Flags.Has(FunctionFlags.Operator);
+
+        public bool HasOptionalParms => Flags.Has(FunctionFlags.HasOptionalParms) || Parameters.Any(parm => parm.IsOptional);
 
         public bool RetValNeedsDestruction;
 

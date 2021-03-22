@@ -1,11 +1,11 @@
 ﻿using System;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Unreal;
-using ME3Script.Analysis.Symbols;
-using ME3Script.Language.Tree;
-using static ME3Script.Utilities.Keywords;
+using Unrealscript.Analysis.Symbols;
+using Unrealscript.Language.Tree;
+using static Unrealscript.Utilities.Keywords;
 
-namespace ME3Script.Utilities
+namespace Unrealscript.Utilities
 {
     public static class CastHelper
     {

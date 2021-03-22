@@ -21,10 +21,10 @@ namespace ME3ExplorerCore.Unreal
         public static string MiniGameFilesPath { get; set; }
 #endif
 
-        public static Dictionary<string, ClassInfo> Classes = new Dictionary<string, ClassInfo>();
-        public static Dictionary<string, ClassInfo> Structs = new Dictionary<string, ClassInfo>();
-        public static Dictionary<string, List<NameReference>> Enums = new Dictionary<string, List<NameReference>>();
-        public static Dictionary<string, SequenceObjectInfo> SequenceObjects = new Dictionary<string, SequenceObjectInfo>();
+        public static Dictionary<string, ClassInfo> Classes = new();
+        public static Dictionary<string, ClassInfo> Structs = new();
+        public static Dictionary<string, List<NameReference>> Enums = new();
+        public static Dictionary<string, SequenceObjectInfo> SequenceObjects = new();
 
         public static bool IsLoaded;
         public static void loadfromJSON()
@@ -41,6 +41,8 @@ namespace ME3ExplorerCore.Unreal
                         Classes = blob.Classes;
                         Structs = blob.Structs;
                         Enums = blob.Enums;
+
+                        AddCustomAndNativeClasses();
                         foreach ((string className, ClassInfo classInfo) in Classes)
                         {
                             classInfo.ClassName = className;
@@ -285,7 +287,7 @@ namespace ME3ExplorerCore.Unreal
                 ClassInfo info = Structs[className];
                 try
                 {
-                    PropertyCollection structProps = new PropertyCollection();
+                    PropertyCollection structProps = new();
                     ClassInfo tempInfo = info;
                     while (tempInfo != null)
                     {
@@ -512,7 +514,12 @@ namespace ME3ExplorerCore.Unreal
                 }
             }
 
-            //CUSTOM ADDITIONS
+            File.WriteAllText(outpath, JsonConvert.SerializeObject(new { SequenceObjects, Classes, Structs, Enums }, Formatting.Indented));
+        }
+
+        private static void AddCustomAndNativeClasses()
+        {
+            //Native Classes
             Classes["LightMapTexture2D"] = new ClassInfo
             {
                 baseClass = "Texture2D",
@@ -538,14 +545,12 @@ namespace ME3ExplorerCore.Unreal
                     new KeyValuePair<string, PropertyInfo>("SoundCue", new PropertyInfo(PropertyType.ObjectProperty, "SoundCue")),
                 }
             };
-
-
-            File.WriteAllText(outpath, JsonConvert.SerializeObject(new { SequenceObjects, Classes, Structs, Enums }, Formatting.Indented));
         }
+
         public static ClassInfo generateClassInfo(ExportEntry export, bool isStruct = false)
         {
             IMEPackage pcc = export.FileRef;
-            ClassInfo info = new ClassInfo
+            ClassInfo info = new()
             {
                 baseClass = export.SuperClassName,
                 exportIndex = export.UIndex,

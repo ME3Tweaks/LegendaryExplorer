@@ -1,8 +1,8 @@
-﻿using ME3Script.Analysis.Visitors;
-using ME3Script.Utilities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Unrealscript.Analysis.Visitors;
+using Unrealscript.Utilities;
 
-namespace ME3Script.Language.Tree
+namespace Unrealscript.Language.Tree
 {
     public class IfStatement : Statement
     {
@@ -10,16 +10,20 @@ namespace ME3Script.Language.Tree
         public CodeBody Then;
         public CodeBody Else;
 
-        public bool IsNullCheck;
-
         public IfStatement(Expression cond, CodeBody then,
-                           CodeBody optelse,
+                           CodeBody optelse = null,
                            SourcePosition start = null, SourcePosition end = null)
             : base(ASTNodeType.IfStatement, start, end) 
         {
             Condition = cond;
             Then = then;
             Else = optelse;
+            cond.Outer = this;
+            then.Outer = this;
+            if (optelse is not null)
+            {
+                optelse.Outer = this;
+            }
         }
 
         public override bool AcceptVisitor(IASTVisitor visitor)
