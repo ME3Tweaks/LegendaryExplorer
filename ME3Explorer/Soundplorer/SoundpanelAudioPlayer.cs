@@ -73,6 +73,11 @@ namespace ME3Explorer.Soundplorer
             if (_output != null)
             {
                 _output.Stop();
+
+                if(PlaybackStopped != null)
+                {
+                    PlaybackStopped();
+                }
             }
         }
 

@@ -990,11 +990,8 @@ namespace ME3Explorer.Soundplorer
 
         private void SoundExports_ListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if ((e.OriginalSource as FrameworkElement)?.DataContext is SoundplorerExport)
-            {
-                soundPanel.StopPlaying();
-                soundPanel.StartOrPausePlaying();
-            }
+            soundPanel.StopPlaying();
+            soundPanel.StartOrPausePlaying();
         }
 
         private void DebugWriteBankToFileRebuild_Clicked(object sender, RoutedEventArgs e)
