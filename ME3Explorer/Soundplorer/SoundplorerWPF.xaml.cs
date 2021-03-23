@@ -480,8 +480,7 @@ namespace ME3Explorer.Soundplorer
 
             if(Properties.Settings.Default.SoundplorerAutoplayEntriesOnSelection)
             {
-                soundPanel.StopPlaying();
-                soundPanel.StartOrPausePlaying();
+                soundPanel.StartPlayingCurrentSelection();
             }
         }
 
@@ -1003,8 +1002,7 @@ namespace ME3Explorer.Soundplorer
 
         private void SoundExports_ListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            soundPanel.StopPlaying();
-            soundPanel.StartOrPausePlaying();
+            soundPanel.StartPlayingCurrentSelection();
         }
 
         private void DebugWriteBankToFileRebuild_Clicked(object sender, RoutedEventArgs e)
