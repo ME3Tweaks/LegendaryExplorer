@@ -477,6 +477,11 @@ namespace ME3Explorer.Soundplorer
             if (isEntry != null) soundPanel.LoadISACTEntry(isEntry.Entry);
             if (spExport != null) soundPanel.LoadExport(spExport.Export);
             if (aEntry != null) soundPanel.LoadAFCEntry(aEntry);
+
+            if(Properties.Settings.Default.SoundplorerAutoplayEntriesOnSelection)
+            {
+                soundPanel.StartPlayingCurrentSelection();
+            }
         }
 
         private void Soundplorer_Closing(object sender, CancelEventArgs e)
@@ -988,13 +993,16 @@ namespace ME3Explorer.Soundplorer
             Properties.Settings.Default.Save();
         }
 
+        private void AutoplayEntryOnSelection_MenuItem_Clicked(object sender, RoutedEventArgs e)
+        {
+            AutoplayEntryOnSelection_MenuItem.IsChecked = !AutoplayEntryOnSelection_MenuItem.IsChecked;
+            Properties.Settings.Default.SoundplorerAutoplayEntriesOnSelection = AutoplayEntryOnSelection_MenuItem.IsChecked;
+            Properties.Settings.Default.Save();
+        }
+
         private void SoundExports_ListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if ((e.OriginalSource as FrameworkElement)?.DataContext is SoundplorerExport)
-            {
-                soundPanel.StopPlaying();
-                soundPanel.StartOrPausePlaying();
-            }
+            soundPanel.StartPlayingCurrentSelection();
         }
 
         private void DebugWriteBankToFileRebuild_Clicked(object sender, RoutedEventArgs e)
