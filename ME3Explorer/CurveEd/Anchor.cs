@@ -34,7 +34,7 @@ namespace ME3Explorer.CurveEd
         {
             if (sender is Anchor a && a.graph != null)
             {
-                a.point.Value.OutVal = Convert.ToSingle(a.graph.unrealY((double)e.NewValue));
+                a.point.Value.OutVal = Convert.ToSingle(a.graph.toUnrealY((double)e.NewValue));
                 if (a.IsSelected)
                 {
                     string val = a.point.Value.OutVal.ToString("0.###");
@@ -60,7 +60,7 @@ namespace ME3Explorer.CurveEd
         {
             if (sender is Anchor a && a.graph != null)
             {
-                a.point.Value.InVal = Convert.ToSingle(a.graph.unrealX((double)e.NewValue));
+                a.point.Value.InVal = Convert.ToSingle(a.graph.toUnrealX((double)e.NewValue));
             }
         }
 
@@ -154,8 +154,8 @@ namespace ME3Explorer.CurveEd
         {
             graph = g;
             point = p;
-            X = graph.localX(point.Value.InVal);
-            Y = graph.localY(point.Value.OutVal);
+            X = graph.toLocalX(point.Value.InVal);
+            Y = graph.toLocalY(point.Value.OutVal);
             this.DragDelta += OnDragDelta;
             this.DragStarted += OnDragStarted;
             this.MouseDown += Anchor_MouseDown;
@@ -228,7 +228,7 @@ namespace ME3Explorer.CurveEd
             string res = PromptDialog.Prompt(this, $"Enter time between {prev} and {next}", "Set Time", point.Value.InVal.ToString());
             if (float.TryParse(res, out var result) && result > prev && result < next)
             {
-                X = graph.localX(result);
+                X = graph.toLocalX(result);
                 graph.Paint(true);
             }
         }
@@ -238,7 +238,7 @@ namespace ME3Explorer.CurveEd
             string res = PromptDialog.Prompt(this, "Enter new value", "Set Value", point.Value.OutVal.ToString());
             if (float.TryParse(res, out var result))
             {
-                Y = graph.localY(result);
+                Y = graph.toLocalY(result);
                 graph.Paint(true);
             }
         }

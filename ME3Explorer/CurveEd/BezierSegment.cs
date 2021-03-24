@@ -90,7 +90,7 @@ namespace ME3Explorer.CurveEd
                 {
                     if (graph != null)
                     {
-                        double handleLength = (graph.unrealX(X2) - graph.unrealX(X1)) / 3;
+                        double handleLength = (graph.toUnrealX(X2) - graph.toUnrealX(X1)) / 3;
                         double h1x = handleLength;// / Math.Sqrt(Math.Pow(Slope1, 2) + 1);
                         double h1y = Slope1 * h1x;
                         h1x = graph.HorizontalScale * h1x + X1;
