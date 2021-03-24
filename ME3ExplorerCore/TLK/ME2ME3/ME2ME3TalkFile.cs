@@ -54,7 +54,7 @@ namespace ME3ExplorerCore.TLK.ME2ME3
         /// Lookup table for strings. The result is a list - the first string is the main one, the second is the female one (if any).
         /// </summary>
         public Dictionary<int, List<TLKStringRef>> StringRefsTable;
-        public List<ME1TalkFile.TLKStringRef> StringRefs;
+        public List<TLKStringRef> StringRefs;
         public string name;
         public string path;
         List<HuffmanNode> CharacterTree;
@@ -221,10 +221,24 @@ namespace ME3ExplorerCore.TLK.ME2ME3
             /* for now, it's better not to sort, to preserve original order */
             // StringRefs.Sort(CompareTlkStringRef);
 
-            int totalCount = StringRefs.Count();
+            using XmlTextWriter xr = new XmlTextWriter(fileName, Encoding.UTF8);
+            WriteXML(xr);
+        }
+
+        public string WriteXMLString()
+        {
+            StringBuilder InputTLK = new StringBuilder();
+            using StringWriter stringWriter = new StringWriter(InputTLK);
+            using XmlTextWriter writer = new XmlTextWriter(stringWriter);
+            WriteXML(writer);
+            return InputTLK.ToString();
+        }
+
+        private void WriteXML(XmlTextWriter xr)
+        {
+            int totalCount = StringRefs.Count;
             int count = 0;
             int lastProgress = -1;
-            XmlTextWriter xr = new XmlTextWriter(fileName, Encoding.UTF8);
             xr.Formatting = Formatting.Indented;
             xr.Indentation = 4;
 
@@ -251,7 +265,7 @@ namespace ME3ExplorerCore.TLK.ME2ME3
                 if (s.BitOffset < 0)
                 {
                     xr.WriteStartAttribute("calculatedID");
-                    xr.WriteValue(-(Int32.MinValue - s.StringID));
+                    xr.WriteValue(-(int.MinValue - s.StringID));
                     xr.WriteEndAttribute();
 
                     xr.WriteString("-1");
@@ -268,10 +282,9 @@ namespace ME3ExplorerCore.TLK.ME2ME3
                     OnProgressChanged(lastProgress);
                 }
             }
+
             xr.WriteComment("Female entries section end");
             xr.WriteEndElement(); // </tlkFile>
-            xr.Flush();
-            xr.Close();
         }
 
         /// <summary>
