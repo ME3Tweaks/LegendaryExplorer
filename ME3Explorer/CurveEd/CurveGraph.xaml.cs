@@ -13,7 +13,7 @@ namespace ME3Explorer.CurveEd
     /// <summary>
     /// Interaction logic for CurveGraph.xaml
     /// </summary>
-    public partial class CurveGraph : UserControl
+    public partial class CurveGraph : NotifyPropertyChangedControlBase
     {
 
         private const int LINE_SPACING = 50;
@@ -163,22 +163,35 @@ namespace ME3Explorer.CurveEd
             LinkedList<CurvePoint> points = SelectedCurve.CurvePoints;
             if (points.Count > 0 && recomputeView)
             {
-                float timeSpan = points.Last().InVal - points.First().InVal;
-                timeSpan = timeSpan > 0 ? timeSpan : 2;
-                HorizontalOffset = points.First().InVal - (timeSpan * 0.2);
-                double hSpan = Math.Ceiling(timeSpan * 1.2);
-                if (hSpan + HorizontalOffset <= timeSpan)
+                if (UseFixedTimeSpan)
                 {
-                    hSpan += 1;
+                    HorizontalOffset = FixedStartTime;
+                    float diff = Math.Abs(FixedEndTime - FixedStartTime); //No negative values!
+                    if (diff < 0.1f)
+                    {
+                        diff = 0.1f; //No super tiny values!
+                    }
+                    HorizontalScale = graph.ActualWidth / diff;
                 }
-                HorizontalScale = graph.ActualWidth / hSpan;
-                if (HorizontalOffset >= points.First().InVal - (hSpan / 10))
+                else
                 {
-                    HorizontalOffset = points.First().InVal - (hSpan / 10);
-                }
-                else if (HorizontalOffset + hSpan <= points.Last().InVal + (hSpan / 10))
-                {
-                    HorizontalOffset += hSpan / 10;
+                    float timeSpan = points.Last().InVal - points.First().InVal;
+                    timeSpan = timeSpan > 0 ? timeSpan : 2;
+                    HorizontalOffset = points.First().InVal - (timeSpan * 0.2);
+                    double hSpan = Math.Ceiling(timeSpan * 1.2);
+                    if (hSpan + HorizontalOffset <= timeSpan)
+                    {
+                        hSpan += 1;
+                    }
+                    HorizontalScale = graph.ActualWidth / hSpan;
+                    if (HorizontalOffset >= points.First().InVal - (hSpan / 10))
+                    {
+                        HorizontalOffset = points.First().InVal - (hSpan / 10);
+                    }
+                    else if (HorizontalOffset + hSpan <= points.Last().InVal + (hSpan / 10))
+                    {
+                        HorizontalOffset += hSpan / 10;
+                    }
                 }
 
                 float max = points.Max(x => x.OutVal);
@@ -464,7 +477,7 @@ namespace ME3Explorer.CurveEd
             Anchor a = ((sender as MenuItem).Parent as ContextMenu).Tag as Anchor;
         }
 
-        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        private void FloatTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             TextBox b = sender as TextBox;
             string result;
@@ -483,7 +496,7 @@ namespace ME3Explorer.CurveEd
             }
         }
 
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void PointTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             TextBox b = (TextBox)sender;
             //SirCxyrtyx: doing a stack trace to resolve a circular calling situation is horrible, I know. I'm so sorry about this.
@@ -549,6 +562,47 @@ namespace ME3Explorer.CurveEd
             xTextBox.Clear();
             yTextBox.Clear();
         }
+
+        private bool _useFixedTimeSpan;
+        public bool UseFixedTimeSpan
+        {
+            get => _useFixedTimeSpan;
+            set
+            {
+                if (SetProperty(ref _useFixedTimeSpan, value))
+                {
+                    Paint(true);
+                }
+            }
+        }
+
+        private float _fixedStartTime = -0.5f;
+        public float FixedStartTime
+        {
+            get => _fixedStartTime;
+            set
+            {
+                if (SetProperty(ref _fixedStartTime, value))
+                {
+                    Paint(true);
+                }
+            }
+        }
+
+        private float _fixedEndTime = 10;
+        public float FixedEndTime
+        {
+            get => _fixedEndTime;
+            set
+            {
+                if (SetProperty(ref _fixedEndTime, value))
+                {
+                    Paint(true);
+                }
+            }
+        }
+
+
     }
 
     [ValueConversion(typeof(double), typeof(double))]

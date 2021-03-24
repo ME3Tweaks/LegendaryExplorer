@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using ME3Explorer.SharedUI;
+using ME3Explorer.SharedUI.Interfaces;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using Microsoft.Win32;
@@ -15,9 +16,9 @@ namespace ME3Explorer.FaceFX
     /// <summary>
     /// Interaction logic for FaceFXEditor.xaml
     /// </summary>
-    public partial class FaceFXEditor : WPFBase
+    public partial class FaceFXEditor : WPFBase, IRecents
     {
-        public ObservableCollectionExtended<ExportEntry> AnimSets { get; } = new ObservableCollectionExtended<ExportEntry>();
+        public ObservableCollectionExtended<ExportEntry> AnimSets { get; } = new();
 
         private ExportEntry _selectedExport;
 
@@ -36,6 +37,8 @@ namespace ME3Explorer.FaceFX
             InitializeComponent();
             LoadCommands();
             DataContext = this;
+
+            RecentsController.InitRecentControl(Toolname, Recents_MenuItem, LoadFile);
         }
 
         public FaceFXEditor(ExportEntry export, string lineName = null) : this()
@@ -117,6 +120,9 @@ namespace ME3Explorer.FaceFX
                 LoadMEPackage(fileName);
                 editorControl.UnloadExport();
                 RefreshComboBox();
+
+                RecentsController.AddRecent(fileName, false);
+                RecentsController.SaveRecentList(true);
             }
             catch (Exception ex)
             {
@@ -164,13 +170,9 @@ namespace ME3Explorer.FaceFX
             }
             else
             {
-                foreach (var uIdx in updatedExports)
+                if (updatedExports.Any(uIdx => Pcc.GetEntry(uIdx)?.ClassName == "FaceFXAnimSet"))
                 {
-                    if (Pcc.GetEntry(uIdx)?.ClassName == "FaceFXAnimSet")
-                    {
-                        RefreshComboBox();
-                        break;
-                    }
+                    RefreshComboBox();
                 }
             }
         }
@@ -202,5 +204,12 @@ namespace ME3Explorer.FaceFX
                 }));
             }
         }
+
+        public void PropogateRecentsChange(IEnumerable<string> newRecents)
+        {
+            RecentsController.PropogateRecentsChange(false, newRecents);
+        }
+
+        public string Toolname => "FaceFXEditor";
     }
 }
