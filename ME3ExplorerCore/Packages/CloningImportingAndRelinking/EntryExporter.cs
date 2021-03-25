@@ -184,6 +184,8 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 }
             }
 
+            sourcePackage.RebuildLookupTable();
+
 
         }
 

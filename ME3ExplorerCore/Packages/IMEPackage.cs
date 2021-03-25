@@ -276,6 +276,6 @@ namespace ME3ExplorerCore.Packages
         /// <summary>
         /// Rebuilds the entry lookup table. Is an expensive operation, use sparingly.
         /// </summary>
-        //void RebuildLookupTable();
+        void RebuildLookupTable();
     }
 }

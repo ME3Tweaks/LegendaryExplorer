@@ -302,7 +302,7 @@ namespace ME3ExplorerCore.Packages
         /// Rebuilds the lookup table for this package. Call when there are name changes or the name of an entry is changed. May
         /// need to be optimized in a way so this is not called during things like porting so the list is not constantly rebuilt.
         /// </summary>
-        internal void RebuildLookupTable()
+        public void RebuildLookupTable()
         {
             EntryLookupTable.Clear();
             foreach (var exportEntry in exports)
