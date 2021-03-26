@@ -2076,8 +2076,13 @@ namespace Unrealscript.Parsing
         private Expression ParseSuper()
         {
             Class superClass;
-            State state = null;
             Class superSpecifier = null;
+            State state = Node switch
+            {
+                State s => s,
+                Function { Outer: State s2 } => s2,
+                _ => null
+            };
             if (Matches(TokenType.LeftParenth))
             {
                 if (Consume(TokenType.Word) is {} className)
@@ -2108,15 +2113,13 @@ namespace Unrealscript.Parsing
                 {
                     throw ParseError("Expected ')' after superclass specifier!", CurrentPosition);
                 }
+                if (state?.Parent != null)
+                {
+                    state = state.Parent;
+                }
             }
             else
             {
-                state = Node switch
-                {
-                    State s => s,
-                    Function {Outer: State s2} => s2,
-                    _ => null
-                };
                 if (state?.Parent != null)
                 {
                     superClass = Self;
@@ -2141,6 +2144,12 @@ namespace Unrealscript.Parsing
             while (state != null)
             {
                 Class stateClass = (Class)state.Outer;
+                if (stateClass != superClass && stateClass.SameAsOrSubClassOf(superClass.Name))
+                {
+                    //Walk up the state inheritance chain until we get to one that is in the specified superclass (or an ancestor)
+                    state = state.Parent;
+                    continue;
+                }
                 specificScope = $"{stateClass.GetInheritanceString()}.{state.Name}";
                 if (Symbols.TryGetSymbolInScopeStack(functionName.Value, out ASTNode funcNode, specificScope) && funcNode is Function)
                 {

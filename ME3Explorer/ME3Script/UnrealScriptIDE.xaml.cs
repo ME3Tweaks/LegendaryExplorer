@@ -374,11 +374,7 @@ namespace ME3Explorer.ME3Script.IDE
                     {
                         textEditor.IsReadOnly = false;
                         int numLocals = func.Locals.Count;
-                        int numHeaderLines = numLocals > 0 ? numLocals + 4 : 3;
-                        if (func.IsNative)
-                        {
-                            numHeaderLines = 2;
-                        }
+                        int numHeaderLines = Math.Min(numLocals > 0 ? numLocals + 4 : 3, Document.LineCount);
                         var segments = new TextSegmentCollection<TextSegment>
                         {
                             new TextSegment { StartOffset = 0, EndOffset = Document.GetOffset(numHeaderLines, 0) }

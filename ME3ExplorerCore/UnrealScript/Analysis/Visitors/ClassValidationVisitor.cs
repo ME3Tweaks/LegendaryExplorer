@@ -510,7 +510,14 @@ namespace Unrealscript.Analysis.Visitors
                 bool overrides = Symbols.TryGetSymbolInScopeStack(node.Name, out ASTNode overrideState, NodeUtils.GetParentClassScope(node))
                               && overrideState.Type == ASTNodeType.State;
 
-                if (node.Parent != null)
+                if (node.Parent is null)
+                {
+                    if (overrides)
+                    {
+                        node.Parent = overrideState as State;
+                    }
+                }
+                else
                 {
                     if (overrides)
                         return Error("A state is not allowed to both override a parent class's state and extend another state at the same time!", node.StartPos, node.EndPos);
@@ -535,18 +542,17 @@ namespace Unrealscript.Analysis.Visitors
                         Function header = (Function)original;
                         Function emptyOverride = new Function(header.Name, header.Flags, header.ReturnType, new CodeBody(), header.Parameters, ignore.StartPos, ignore.EndPos);
                         node.Functions.Add(emptyOverride);
-                        Symbols.AddSymbol(emptyOverride.Name, emptyOverride);
                     }
                     else //TODO: really ought to throw error, but PlayerController.PlayerWaiting.Jump is like this. Find alternate way of handling this?
                     {
                         node.Functions.Add(ignore);
-                        Symbols.AddSymbol(ignore.Name, ignore);
                     }
                 }
 
                 foreach (Function func in node.Functions.GetRange(0, numFuncs))
                 {
                     func.Outer = node;
+                    Symbols.AddSymbol(func.Name, func);
                     Success = Success && func.AcceptVisitor(this);
                 }
                 //TODO: check functions overrides:

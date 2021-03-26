@@ -642,7 +642,7 @@ namespace Unrealscript.Analysis.Visitors
 
             if (node.Ignores.Count > 0)
             {
-                Write(IGNORES);
+                Write(IGNORES, EF.Keyword);
                 Space();
                 Join(node.Ignores.Select(x => x.Name).ToList(), ", ", EF.Function);
                 Write(";");
@@ -1186,12 +1186,12 @@ namespace Unrealscript.Analysis.Visitors
             // functionName( parameter1, parameter2.. )
             if (node.Function.IsGlobal)
             {
-                Append(GLOBAL);
+                Append(GLOBAL, EF.Keyword);
                 Append(".", EF.Operator);
             }
             else if (node.Function.IsSuper)
             {
-                Append(SUPER);
+                Append(SUPER, EF.Keyword);
                 if (node.Function.SuperSpecifier is {} superSpecifier)
                 {
                     Append("(");
