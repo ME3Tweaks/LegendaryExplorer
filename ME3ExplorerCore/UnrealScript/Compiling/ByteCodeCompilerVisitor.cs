@@ -1000,16 +1000,9 @@ namespace Unrealscript.Compiling
         {
             WriteOpCode(OpCodes.DynArrayAdd);
             Emit(node.DynArrayExpression);
-            if (Game is MEGame.ME2)
+            Emit(AddConversion(SymbolTable.IntType, node.CountArg));
+            if (Game >= MEGame.ME3)
             {
-                using (WriteSkipPlaceholder())
-                {
-                    Emit(AddConversion(SymbolTable.IntType, node.CountArg));
-                }
-            }
-            else
-            {
-                Emit(AddConversion(SymbolTable.IntType, node.CountArg));
                 WriteOpCode(OpCodes.EndFunctionParms);
             }
             return true;

@@ -44,10 +44,6 @@ namespace Unrealscript.Decompiling
             var arr = DecompileExpression();
             if (arr == null)
                 return null;
-            if (Game is MEGame.ME2)
-            {
-                ReadInt16(); // MemSize
-            }
             var countArg = DecompileExpression();
             if (countArg == null)
                 return null;
