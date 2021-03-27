@@ -967,5 +967,66 @@ namespace ME3Explorer.PackageEditor.Experiments
                 _ => throw new ArgumentOutOfRangeException(nameof(game))
             };
         }
+
+        public static void DumpSound(PackageEditorWPF packEd)
+        {
+            if (InputComboBoxWPF.GetValue(packEd, "Choose game:", "Game to dump sound for", new []{"ME3", "ME2"}, "ME3") is string gameStr && 
+                Enum.TryParse(gameStr, out MEGame game))
+            {
+                string tag = PromptDialog.Prompt(packEd, "Character tag:", defaultValue: "player_f", selectText: true);
+                if (string.IsNullOrWhiteSpace(tag))
+                {
+                    return;
+                }
+                var dlg = new CommonOpenFileDialog("Pick a folder to save WAVs to.")
+                {
+                    IsFolderPicker = true,
+                    EnsurePathExists = true
+                };
+                if (dlg.ShowDialog() != CommonFileDialogResult.Ok)
+                {
+                    return;
+                }
+
+                string outFolder = dlg.FileName;
+                var filePaths = MELoadedFiles.GetOfficialFiles(game);
+                packEd.IsBusy = true;
+                packEd.BusyText = "Scanning";
+                Task.Run(() =>
+                {
+                    //preload base files for faster scanning
+                    using var baseFiles = MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(game)
+                                                                                       .Select(f => Path.Combine(MEDirectories.GetCookedPath(game), f)));
+                    if (game is MEGame.ME3)
+                    {
+                        baseFiles.Add(MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "BIOP_MP_COMMON.pcc")));
+                    }
+
+                    foreach (string filePath in filePaths)
+                    {
+                        using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
+                        if (game is MEGame.ME3 or MEGame.ME2)
+                        {
+                            foreach (ExportEntry export in pcc.Exports.Where(exp => exp.ClassName == "WwiseStream"))
+                            {
+                                if (export.ObjectNameString.Split(',') is string[] { Length: > 1 } parts && parts[0] == "en-us" && parts[1] == tag)
+                                {
+                                    string fileName = Path.Combine(outFolder, $"{export.ObjectNameString}.wav");
+                                    using var fs = new FileStream(fileName, FileMode.Create);
+                                    Stream wavStream = export.GetBinaryData<WwiseStream>().CreateWaveStream();
+                                    wavStream.SeekBegin();
+                                    wavStream.CopyTo(fs);
+                                }
+                            }
+                        }
+                    }
+                }).ContinueWithOnUIThread(prevTask =>
+                {
+                    packEd.IsBusy = false;
+                    MessageBox.Show("Done");
+                });
+            }
+            
+        }
     }
 }

@@ -4886,5 +4886,10 @@ namespace ME3Explorer
         {
             PackageEditorExperimentsS.BuildNativeTable(this);
         }
+
+        private void DumptTaggedWwiseStreams_OnClick(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsS.DumpSound(this);
+        }
     }
 }
