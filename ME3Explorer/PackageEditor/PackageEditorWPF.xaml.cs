@@ -1691,217 +1691,14 @@ namespace ME3Explorer
                 return;
             }
 
-            var badReferences = new List<EntryStringPair>();
+            ReferenceCheckPackage rcp = new ReferenceCheckPackage();
+            EntryChecker.CheckReferences(rcp, Pcc, EntryChecker.NonLocalizedStringConveter);
 
-            void recursiveCheckProperty(IEntry entry, Property property)
+            if (rcp.GetSignificantIssues().Any())
             {
-                if (property is UnknownProperty up)
-                {
-                    badReferences.Add(new EntryStringPair(entry,
-                        $"Export {entry.UIndex} had broken property data! Detected unknown properties: {entry.InstancedFullPath}"));
-
-                }
-                else if (property is ObjectProperty op)
-                {
-                    if (op.Value > 0 && op.Value > Pcc.ExportCount)
-                    {
-                        //bad
-                        //bad
-                        if (op.Name.Name != null)
-                        {
-                            badReferences.Add(new EntryStringPair(entry,
-                                $"{op.Name.Name} Export {op.Value} is outside of export table, Export #{entry.UIndex} {entry.InstancedFullPath}"));
-                        }
-                        else
-                        {
-                            badReferences.Add(new EntryStringPair(entry,
-                                $"[Nested property] Export {op.Value} is outside of export table, Export #{entry.UIndex} {entry.InstancedFullPath}"));
-                        }
-                    }
-                    else if (op.Value < 0 && Math.Abs(op.Value) > Pcc.ImportCount)
-                    {
-                        //bad
-                        if (op.Name.Name != null)
-                        {
-                            badReferences.Add(new EntryStringPair(entry,
-                                $"{op.Name.Name} Import {op.Value} is outside of import table, Export #{entry.UIndex} {entry.InstancedFullPath}"));
-                        }
-                        else
-                        {
-                            badReferences.Add(new EntryStringPair(entry,
-                                $"[Nested property] Import {op.Value} is outside of import table, Export #{entry.UIndex} {entry.InstancedFullPath}"));
-                        }
-                    }
-                    else if (Pcc.GetEntry(op.Value)?.ObjectName.ToString() == "Trash")
-                    {
-                        badReferences.Add(new EntryStringPair(entry,
-                            $"[Nested property] Export {op.Value} is a Trashed object, Export #{entry.UIndex} {entry.InstancedFullPath}"));
-                    }
-                    else if (Pcc.GetEntry(op.Value)?.ObjectName.ToString() == "ME3ExplorerTrashPackage")
-                    {
-                        badReferences.Add(new EntryStringPair(entry,
-                            $"[Nested property] Export {op.Value} is a Trashed object, Export #{entry.UIndex} {entry.InstancedFullPath}"));
-                    }
-                }
-                else if (property is ArrayProperty<ObjectProperty> aop)
-                {
-                    foreach (var p in aop)
-                    {
-                        recursiveCheckProperty(entry, p);
-                    }
-                }
-                else if (property is StructProperty sp)
-                {
-                    foreach (var p in sp.Properties)
-                    {
-                        recursiveCheckProperty(entry, p);
-                    }
-                }
-                else if (property is ArrayProperty<StructProperty> asp)
-                {
-                    foreach (var p in asp)
-                    {
-                        recursiveCheckProperty(entry, p);
-                    }
-                }
-                else if (property is DelegateProperty dp)
-                {
-                    if (dp.Value.Object != 0 && !Pcc.IsEntry(dp.Value.Object))
-                    {
-                        badReferences.Add(new EntryStringPair(entry,
-                            $"DelegateProperty {dp.Name.Name} is outside of export table, Export #{entry.UIndex} {entry.InstancedFullPath}"));
-                    }
-                }
-            }
-
-            foreach (ExportEntry exp in Pcc.Exports)
-            {
-                if (exp.idxArchetype != 0 && !Pcc.IsEntry(exp.idxArchetype))
-                {
-                    badReferences.Add(new EntryStringPair(exp,
-                        $"Archetype {exp.idxArchetype} is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
-                }
-
-                if (exp.idxSuperClass != 0 && !Pcc.IsEntry(exp.idxSuperClass))
-                {
-                    badReferences.Add(new EntryStringPair(exp,
-                        $"Header SuperClass {exp.idxSuperClass} is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
-                }
-
-                if (exp.idxClass != 0 && !Pcc.IsEntry(exp.idxClass))
-                {
-                    badReferences.Add(new EntryStringPair(exp,
-                        $"Header Class {exp.idxClass} is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
-                }
-
-                if (exp.idxLink != 0 && !Pcc.IsEntry(exp.idxLink))
-                {
-                    badReferences.Add(new EntryStringPair(exp,
-                        $"Header Link {exp.idxLink} is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
-                }
-
-                if (exp.HasComponentMap)
-                {
-                    foreach (var c in exp.ComponentMap)
-                    {
-                        if (!Pcc.IsEntry(c.Value))
-                        {
-                            // Can components point to 0? I don't think so
-                            badReferences.Add(new EntryStringPair(exp,
-                                $"Header Component Map item ({c.Value}) is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
-                        }
-                    }
-                }
-
-                //find stack references
-                if (exp.HasStack && exp.Data is byte[] data)
-                {
-                    var stack1 = EndianReader.ToInt32(data, 0, exp.FileRef.Endian);
-                    var stack2 = EndianReader.ToInt32(data, 4, exp.FileRef.Endian);
-                    if (stack1 != 0 && !Pcc.IsEntry(stack1))
-                    {
-                        badReferences.Add(new EntryStringPair(exp,
-                            $"Export Stack[0] ({stack1}) is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
-                    }
-
-                    if (stack2 != 0 && !Pcc.IsEntry(stack2))
-                    {
-                        badReferences.Add(new EntryStringPair(exp,
-                            $"Export Stack[1] ({stack2}) is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
-                    }
-                }
-                else if (exp.TemplateOwnerClassIdx is var toci && toci >= 0)
-                {
-                    var TemplateOwnerClassIdx = EndianReader.ToInt32(exp.Data, toci, exp.FileRef.Endian);
-                    if (TemplateOwnerClassIdx != 0 && !Pcc.IsEntry(TemplateOwnerClassIdx))
-                    {
-                        badReferences.Add(new EntryStringPair(exp,
-                            $"TemplateOwnerClass (Data offset 0x{toci:X}) ({TemplateOwnerClassIdx}) is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
-                    }
-                }
-
-                var props = exp.GetProperties();
-                foreach (var p in props)
-                {
-                    recursiveCheckProperty(exp, p);
-                }
-
-                //find binary references
-                try
-                {
-                    if (!exp.IsDefaultObject && ObjectBinary.From(exp) is ObjectBinary objBin)
-                    {
-                        List<(UIndex, string)> indices = objBin.GetUIndexes(exp.FileRef.Game);
-                        foreach ((UIndex uIndex, string propName) in indices)
-                        {
-                            if (uIndex.value != 0 && !exp.FileRef.IsEntry(uIndex.value))
-                            {
-                                badReferences.Add(new EntryStringPair(exp,
-                                    $"Binary reference ({uIndex.value}) is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
-                            }
-                            else if (exp.FileRef.GetEntry(uIndex.value)?.ObjectName.ToString() == "Trash" || exp.FileRef.GetEntry(uIndex.value)?.ObjectName.ToString() == "ME3ExplorerTrashPackage")
-                            {
-                                badReferences.Add(new EntryStringPair(exp,
-                                    $"Binary reference ({uIndex.value}) is a Trashed object, Export #{exp.UIndex} {exp.InstancedFullPath}"));
-                            }
-                        }
-
-                        var nameIndicies = objBin.GetNames(exp.FileRef.Game);
-                        foreach (var ni in nameIndicies)
-                        {
-                            if (ni.Item1 == "")
-                            {
-                                badReferences.Add(new EntryStringPair(exp,
-                                    $"Binary name reference is invalid in Export #{exp.UIndex} {exp.InstancedFullPath}"));
-                            }
-                        }
-                    }
-                }
-                catch (Exception e) when (!App.IsDebug)
-                {
-                    badReferences.Add(new EntryStringPair(exp,
-                        $"Unable to parse binary for export #{exp.UIndex} {exp.InstancedFullPath}"));
-                }
-            }
-
-            foreach (ImportEntry imp in Pcc.Imports)
-            {
-                if (imp.idxLink != 0 && !Pcc.TryGetEntry(imp.idxLink, out _))
-                {
-                    badReferences.Add(new EntryStringPair(imp, $"Import #{imp.UIndex} has an invalid link value that is outside of the import/export table {imp.idxLink}"));
-                }
-                else if (imp.idxLink == imp.UIndex)
-                {
-                    badReferences.Add(new EntryStringPair(imp, $"Import #{imp.UIndex} has a circular self reference for it's link. The game and the toolset may be unable to handle this condition"));
-                }
-            }
-
-            if (badReferences.Any())
-            {
-                MessageBox.Show(badReferences.Count + " invalid object references were found in export properties.",
-                    "Bad ObjectProperty references found");
-                ListDialog lw = new ListDialog(badReferences, "Bad object references",
-                        "The following items have values outside of the range of the import and export tables. Note that this is a best-effort check and may not be 100% accurate.",
+                MessageBox.Show($"{rcp.GetSignificantIssues().Count} object reference issues were found.", "Reference issues found");
+                var lw = new ListDialog(rcp.GetSignificantIssues().ToList(), $"Reference issues in {Pcc.FilePath}",
+                        "The following items have referencing issues. Note that this is a best-effort check and may not be 100% accurate.",
                         this)
                 { DoubleClickEntryHandler = entryDoubleClick };
                 lw.Show();
@@ -1909,7 +1706,7 @@ namespace ME3Explorer
             else
             {
                 MessageBox.Show(
-                    "No bad object references were found. Note that this is a best-effort check and may not be 100% accurate.",
+                    "No referencing issues were found. Note that this is a best-effort check and may not be 100% accurate and does not account for imports being preloaded in memory before package load.",
                     "Check complete");
             }
         }
@@ -5037,6 +4834,11 @@ namespace ME3Explorer
         private void ResetPackageTextures_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ResetTexturesInFile(Pcc, this);
+        }
+
+        private void ResetVanillaPackagePart_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.ResetPackageVanillaPart(Pcc, this);
         }
 
         private void ResolveAllImports_Clicked(object sender, RoutedEventArgs e)
