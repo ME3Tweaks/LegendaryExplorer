@@ -675,7 +675,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="lookupCache">Package cache if you wish to keep packages held open, for example if you're resolving many imports</param>
         /// <param name="localization">Three letter localization code, all upper case. Defaults to INT.</param>
         /// <returns></returns>
-        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache globalCache, PackageCache lookupCache, string localization = "INT")
+        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache globalCache, PackageCache lookupCache, string localization = "INT", bool clipRootLevelPackage = true)
         {
             var entryFullPath = entry.InstancedFullPath;
 
@@ -766,7 +766,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 var localPath = Path.Combine(containingDirectory, fileName);
                 if (!localPath.Equals(fullgamepath, StringComparison.InvariantCultureIgnoreCase) && File.Exists(localPath))
                 {
-                    var export = containsImportedExport(localPath);
+                    var export = containsImportedExport(localPath, !clipRootLevelPackage);
                     if (export != null)
                     {
                         return export;
@@ -776,7 +776,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             return null;
 
             //Perform check and lookup
-            ExportEntry containsImportedExport(string packagePath)
+            ExportEntry containsImportedExport(string packagePath, bool tryWithoutClipping = false)
             {
                 //Debug.WriteLine($"Checking file {packagePath} for {entryFullPath}");
                 IMEPackage package = null;
@@ -789,10 +789,13 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
 
                 var packName = Path.GetFileNameWithoutExtension(packagePath);
                 var packageParts = entryFullPath.Split('.').ToList();
+
+                // Coded a bit weird for optimization on allocations
+                string entryClippedPath = null;
                 if (packageParts.Count > 1 && packName == packageParts[0])
                 {
                     packageParts.RemoveAt(0);
-                    entryFullPath = string.Join(".", packageParts);
+                    entryClippedPath = string.Join(".", packageParts);
                 }
                 else if (packName == packageParts[0])
                 {
@@ -800,7 +803,11 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     return package.Exports.FirstOrDefault(x => x.idxLink == 0); //this will be at top of the tree
                 }
 
-                return package.FindExport(entryFullPath);
+                if (tryWithoutClipping)
+                {
+                    return package.FindExport(entryClippedPath) ?? package.FindExport(entryFullPath);
+                }
+                return package.FindExport(entryClippedPath ?? entryFullPath);
             }
         }
         public static List<string> GetPossibleAssociatedFiles(IMEPackage package, string localization = "INT", bool includeNonBioPRelated = true)
