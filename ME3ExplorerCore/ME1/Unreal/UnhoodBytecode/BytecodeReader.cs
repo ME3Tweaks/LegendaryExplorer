@@ -1090,8 +1090,9 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
             var nref = _reader.ReadInt32();
             var nrefinstance = _reader.ReadInt32();
             var name = _package.GetNameEntry(nref);
-            NameReferences[pos] = name;
-            return new NameReference(name, nrefinstance).Instanced;
+            var nameref = new NameReference(name, nrefinstance);
+            NameReferences[pos] = nameref;
+            return nameref.Instanced;
         }
 
         internal IEntry ReadEntryRef(out int idx)
