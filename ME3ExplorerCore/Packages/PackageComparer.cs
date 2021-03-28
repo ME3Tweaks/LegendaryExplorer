@@ -4,8 +4,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 
 namespace ME3ExplorerCore.Packages
 {
@@ -185,8 +188,486 @@ namespace ME3ExplorerCore.Packages
                 fullList.AddRange(changedNames);
                 return fullList;
             }
-         
+
             throw new Exception("Source object must implement IMEPackage to support package comparisons");
         }
+
+        #region DETAILED COMPARISON
+        // Ported from Mass Effect 2 Randomizer
+
+        /// <summary>
+        /// Compares this package to another package by doing a detailed property comparison as well as a binary data scrub comparison. Only exports that exist in both packages will be compared,
+        /// so you can compare a porting source to a porting target.
+        /// </summary>
+        /// <param name="otherPackage"></param>
+        public void CompareToPackageDetailed(IMEPackage otherPackage, bool considerIdentical = false)
+        {
+            // Imports - TEST
+            foreach (var imp in Imports)
+            {
+                var otherImp = otherPackage.FindImport(imp.InstancedFullPath);
+                if (otherImp != null)
+                {
+                    if (otherImp.ClassName != imp.ClassName)
+                        Debugger.Break();
+                    if (otherImp.PackageFile != imp.PackageFile)
+                        Debugger.Break();
+                    // Obj name and number are already identical if we found it via FindImport()
+                }
+                else if (considerIdentical)
+                {
+                    Debug.WriteLine("Could not find import in otherPackage!");
+                }
+            }
+
+            // Exports - TEST
+            if (considerIdentical && Exports.Count != otherPackage.Exports.Count)
+                Debug.WriteLine("Mismatched export count!");
+            foreach (var exp1 in Exports)
+            {
+                var exp2 = otherPackage.FindExport(exp1.InstancedFullPath);
+                if (exp2 != null)
+                {
+                    if (exp2.DataSize != exp1.DataSize)
+                    {
+                        Debug.WriteLine(@"EXPORT SIZE DIFFERENCE");
+                    }
+
+                    if (exp2.Header.Length != exp1.Header.Length)
+                    {
+                        Debug.WriteLine("HEADER SIZE DIFF");
+                    }
+
+                    #region PREPROP
+
+                    var pp1 = exp1.GetPrePropBinary();
+                    var pp2 = exp2.GetPrePropBinary();
+                    if (!pp1.SequenceEqual(pp2))
+                    {
+                        Debug.WriteLine($"Preprop diff on {exp1.InstancedFullPath}!");
+                    }
+
+                    #endregion
+
+                    #region BINARY REFS AND SCRUB
+
+                    ObjectBinary objBin1 = ObjectBinary.From(exp1);
+                    ObjectBinary objBin2 = ObjectBinary.From(exp2);
+
+                    if (objBin1 != null && objBin2 != null)
+                    {
+                        var ui1 = objBin1.GetUIndexes(otherPackage.Game); // Compare with same-game
+                        var ui2 = objBin2.GetUIndexes(otherPackage.Game);
+                        if (ui1.Count != ui2.Count)
+                        {
+                            Debug.WriteLine("Different number of UIndexes!!!");
+                        }
+
+                        for (int i = 0; i < ui1.Count; i++)
+                        {
+                            var u1 = ui1[i];
+                            var u2 = ui2[i];
+
+                            // Convert UIndex to variable
+                            IEntry i1 = null;
+                            IEntry i2 = null;
+                            if (u1.Item1 != 0 && u2.Item1 != 0)
+                            {
+                                i1 = exp1.FileRef.GetEntry(u1.Item1);
+                                i2 = exp2.FileRef.GetEntry(u2.Item1);
+
+                                if (i1.InstancedFullPath != i2.InstancedFullPath)
+                                {
+                                    Debugger.Break();
+                                }
+                            }
+                            else if (u1.Item1 != u2.Item1)
+                            {
+                                Debug.WriteLine(@"SET TO NULL DIFF!");
+                            }
+                        }
+
+                        var ni1 = objBin1.GetNames(otherPackage.Game);
+                        var ni2 = objBin2.GetNames(otherPackage.Game);
+
+                        if (ni1.Count != ni2.Count)
+                            Debug.WriteLine("Wrong number of names in binary!!");
+
+                        for (int i = 0; i < ni1.Count; i++)
+                        {
+                            if (ni1[i].Item1 != ni2[i].Item1)
+                            {
+                                Debug.WriteLine("NAME DIFFERENCES IN BINARY");
+                            }
+                        }
+
+                        // SCRUB TO FIND OTHER CHANGES
+                        BinScrubCheck(objBin1, objBin2, exp1, exp2);
+                    }
+
+                    #endregion
+
+                    #region PROPERTIES
+
+                    var dProps = exp1.GetProperties();
+                    var pProps = exp2.GetProperties();
+
+                    MatchPropertyCollections(dProps, pProps, exp1, exp2);
+
+                    #endregion
+                }
+                else if (considerIdentical)
+                {
+                    Debug.WriteLine($"Export {exp1.InstancedFullPath} not found in other package!");
+                }
+            }
+        }
+
+        private void MatchPropertyCollections(PropertyCollection props1, PropertyCollection props2, ExportEntry exp1, ExportEntry exp2)
+        {
+            for (int i = 0; i < props1.Count; i++)
+            {
+                var dProp = props1[i];
+                var pProp = props2[i];
+                MatchProperty(dProp, pProp, exp1, exp2);
+            }
+        }
+
+
+        /// <summary>
+        /// Scrubs object and name references from the binary data array, then compares if the data is identical. Use on exports that have been ported across files to identify possible relink misses
+        /// If the data is not identical, then not all data has been parsed or relinked
+        /// </summary>
+        /// <param name="objBin1"></param>
+        /// <param name="objBin2"></param>
+        /// <param name="exp1"></param>
+        /// <param name="exp2"></param>
+        private void BinScrubCheck2(ObjectBinary objBin1, ObjectBinary objBin2, ExportEntry exp1, ExportEntry exp2)
+        {
+            bool isDebug = exp1.UIndex == 237;
+            //if (!isDebug) return;
+
+            // Get package-references
+            var names1 = objBin1.GetNames(exp1.FileRef.Game);
+            var names2 = objBin2.GetNames(exp2.FileRef.Game);
+            var uindices1 = objBin1.GetUIndexes(exp1.FileRef.Game);
+            var uindices2 = objBin2.GetUIndexes(exp2.FileRef.Game);
+
+            // Scrub the references
+
+            // Name scrubbing doesn't work as we don't have proper position data and it's written from vars in the
+            // objbin class that are not passed by reference
+            //for (int i = 0; i < names1.Count; i++)
+            //{
+            //    names1[i] = (exp1.FileRef.GetNameEntry(0), names1[i].Item2);
+            //    names2[i] = (exp2.FileRef.GetNameEntry(0), names2[i].Item2);
+            //}
+
+            for (int i = 0; i < uindices1.Count; i++)
+            {
+                uindices1[i] = (0, uindices1[i].Item2);
+                uindices2[i] = (0, uindices2[i].Item2);
+            }
+
+            // Write new binary with scrubbed entry refs
+            EndianReader er1 = new EndianReader(new MemoryStream());
+            objBin1.WriteTo(er1.Writer, exp1.FileRef);
+            var originalWrittenBin1 = er1.ToArray();
+
+            EndianReader er2 = new EndianReader(new MemoryStream());
+            objBin2.WriteTo(er2.Writer, exp2.FileRef);
+            var originalWrittenBin2 = er2.ToArray();
+
+
+            // Find differences
+            int binStart = exp1.propsEnd();
+            for (int i = 0; i < originalWrittenBin1.Length; i++)
+            {
+                if (originalWrittenBin1[i] != originalWrittenBin2[i])
+                {
+                    if (isDebug)
+                    {
+                        Debug.WriteLine($"BINARY DIFF ON {exp1.InstancedFullPath} at 0x{(binStart + i):X5}: Left: {originalWrittenBin1[i]:X2} Right {originalWrittenBin2[i]:X2}");
+
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"BINARY DIFF ON {exp1.UIndex} {exp1.InstancedFullPath}! Starting at 0x{(binStart + i):X5}");
+                        break;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Scrubs object and name references from the binary data array, then compares if the data is identical. Use on exports that have been ported across files to identify possible relink misses
+        /// If the data is not identical, then not all data has been parsed or relinked
+        /// </summary>
+        /// <param name="objBin1"></param>
+        /// <param name="objBin2"></param>
+        /// <param name="exp1"></param>
+        /// <param name="exp2"></param>
+        private void BinScrubCheck(ObjectBinary objBin1, ObjectBinary objBin2, ExportEntry exp1, ExportEntry exp2)
+        {
+            //bool isDebug = false;
+            bool isDebug = exp1.UIndex == 1682;
+            //if (!isDebug) return;
+            EndianReader er1 = new EndianReader(new MemoryStream());
+            objBin1.WriteTo(er1.Writer, exp1.FileRef);
+            var originalWrittenBin1 = er1.ToArray();
+
+            EndianReader er2 = new EndianReader(new MemoryStream());
+            objBin2.WriteTo(er2.Writer, exp2.FileRef);
+            var originalWrittenBin2 = er2.ToArray();
+
+            // Package-Specific Variables
+            var names1 = objBin1.GetNames(exp1.FileRef.Game);
+            var names2 = objBin2.GetNames(exp2.FileRef.Game);
+            var uindices1 = objBin1.GetUIndexes(exp1.FileRef.Game);
+            var uindices2 = objBin2.GetUIndexes(exp2.FileRef.Game);
+
+            // Now we iterate through written binary looking for values
+            int misMatchStart = -1;
+            for (int pos = 0; pos < originalWrittenBin1.Length; pos++)
+            {
+                if (isDebug && pos == 0x171)
+                    Debug.Write("");
+
+                if (pos <= originalWrittenBin1.Length - 8)
+                {
+                    // Check name
+                    var nameIdx = BitConverter.ToInt32(originalWrittenBin1, pos);
+                    if (nameIdx != 0 && exp1.FileRef.IsName(nameIdx))
+                    {
+
+                        var name1 = exp1.FileRef.GetNameEntry(nameIdx);
+                        //if (isDebug)
+                        //    Debugger.Break();
+                        //var name2 = exp2.FileRef.GetNameEntry(BitConverter.ToInt32(originalWrittenBin2, pos));
+
+                        var index1 = BitConverter.ToInt32(originalWrittenBin1, pos + 4);
+                        //var index2 = BitConverter.ToInt32(originalWrittenBin1, pos + 4);
+
+                        var generatedName = new NameReference(name1, index1); 
+                        if (isDebug)
+                            Debug.Write("");
+                        if (names1.Any(x => x.Item1 == generatedName))
+                        {
+                            // SCRUB
+                            if (isDebug)
+                                Debug.WriteLine($"Scrubbing N {generatedName.Instanced} at 0x{pos:X4}");
+                            originalWrittenBin1.OverwriteRange(pos, new byte[8]);
+                            originalWrittenBin2.OverwriteRange(pos, new byte[8]);
+                            pos += 7; // will +1 on loop
+                            continue;
+                        }
+                    }
+                }
+
+                if (pos <= originalWrittenBin1.Length - 4)
+                {
+                    // Check UIndex
+                    var uindex1 = BitConverter.ToInt32(originalWrittenBin1, pos);
+                    //var name2 = exp2.FileRef.GetNameEntry(BitConverter.ToInt32(originalWrittenBin2, pos));
+
+                    if (uindex1 != 0 && uindices1.Any(x => x.Item1.value == uindex1))
+                    {
+                        // SCRUB
+                        //if (isDebug)
+                        //    Debug.WriteLine($"Scrubbing U {uindex1} at 0x{pos:X4}");
+                        originalWrittenBin1.OverwriteRange(pos, new byte[4]);
+                        originalWrittenBin2.OverwriteRange(pos, new byte[4]);
+                        pos += 3; // will +1 on loop
+                    }
+                }
+            }
+
+            long binStopPosition = -1;
+            if (objBin1 is UScriptStruct uss1 && objBin2 is UScriptStruct uss2)
+            {
+                MatchPropertyCollections(uss1.Defaults, uss2.Defaults, exp1, exp2);
+                binStopPosition = uss1.DefaultsStartPosition;
+            }
+
+            // Find difference
+            int binStart = exp1.propsEnd();
+            for (int i = 0; i < originalWrittenBin1.Length; i++)
+            {
+                if (binStopPosition != -1 && i >= binStopPosition)
+                    return;
+                if (originalWrittenBin1[i] != originalWrittenBin2[i])
+                {
+                    Debug.WriteLine($"BINARY DIFF ON {exp1.UIndex} {exp1.InstancedFullPath} at 0x{(binStart + i):X5} ({i:X5}): Left: {originalWrittenBin1[i]:X2} Right {originalWrittenBin2[i]:X2}");
+                    if (!isDebug)
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Compares properties recursively to see if they resolve to identical values (name and object refs, property names and primitive values)
+        /// </summary>
+        /// <param name="dProp"></param>
+        /// <param name="pProp"></param>
+        /// <param name="exp"></param>
+        /// <param name="bioPExp"></param>
+        private void MatchProperty(Property dProp, Property pProp, ExportEntry exp, ExportEntry bioPExp)
+        {
+            if (dProp.GetType() != pProp.GetType())
+            {
+                Debug.WriteLine("NON-MATCHING PROPERTY TYPES");
+            }
+
+            if (dProp.Name != pProp.Name)
+            {
+                Debug.WriteLine(@"NON-MATCHING PROPERTY NAMES!");
+            }
+
+            if (dProp is ObjectProperty dOp && pProp is ObjectProperty pOp)
+            {
+                if (dOp.Value == 0 && pOp.Value == dOp.Value)
+                {
+                    // Zero, same
+                }
+                else
+                {
+                    // Ensure they resolve to same variable
+                    var d = dOp.ResolveToEntry(exp.FileRef);
+                    var p = pOp.ResolveToEntry(bioPExp.FileRef);
+
+                    if (d.GetType() != p.GetType())
+                    {
+                        Debug.WriteLine(@"ObjectProp types differ!");
+                    }
+
+                    if (d.InstancedFullPath != p.InstancedFullPath)
+                    {
+                        Debug.WriteLine(@"Referenced ObjectProperty value differs!");
+                    }
+                }
+            }
+            else if (dProp is ArrayPropertyBase dArrayP && pProp is ArrayPropertyBase pArrayP)
+            {
+                if (dArrayP.Count != pArrayP.Count)
+                {
+                    Debug.WriteLine("Different sized arrays!");
+                }
+
+                for (int i = 0; i < dArrayP.Properties.Count; i++)
+                {
+                    MatchProperty(dArrayP.Properties[i], pArrayP.Properties[i], exp, bioPExp);
+                }
+            }
+            else if (dProp is StructProperty dStructP && pProp is StructProperty pStructP)
+            {
+                if (dStructP.Properties.Count != pStructP.Properties.Count)
+                {
+                    Debug.WriteLine("Different sized Structs!");
+                }
+
+                for (int i = 0; i < dStructP.Properties.Count; i++)
+                {
+                    MatchProperty(dStructP.Properties[i], pStructP.Properties[i], exp, bioPExp);
+                }
+            }
+            else if (dProp is DelegateProperty dDelP && pProp is DelegateProperty pDelP)
+            {
+                // Ensure they resolve to same variable
+                var d = exp.FileRef.GetEntry(dDelP.Value.Object);
+                var p = bioPExp.FileRef.GetEntry(pDelP.Value.Object);
+
+                if (d != null && p != null)
+                {
+                    if (d.GetType() != p.GetType())
+                    {
+                        Debug.WriteLine(@"ObjectProp types differ!");
+                    }
+
+                    if (d.InstancedFullPath != p.InstancedFullPath)
+                    {
+                        Debug.WriteLine(@"Referenced ObjectProperty value differs!");
+                    }
+                }
+                else if (d != p)
+                {
+                    Debug.WriteLine("XOR'd script delegates!");
+                }
+            }
+            else if (dProp is BoolProperty dBool && pProp is BoolProperty pBool)
+            {
+                if (dBool.Value != pBool.Value)
+                {
+                    Debug.WriteLine("Bool difference!");
+                }
+            }
+            else if (dProp is StrProperty dStr && pProp is StrProperty pStr)
+            {
+                if (dStr.Value != pStr.Value)
+                {
+                    Debug.WriteLine("Str difference!");
+                }
+            }
+            else if (dProp is FloatProperty dFloat && pProp is FloatProperty pFloat)
+            {
+                if (dFloat.Value != pFloat.Value)
+                {
+                    Debug.WriteLine("Float difference!");
+                }
+            }
+            else if (dProp is IntProperty dInt && pProp is IntProperty pInt)
+            {
+                // DEBUG: Ignore GUIDs as they seem to differ across files
+                if (dProp.Name == "A" || dProp.Name == "B" || dProp.Name == "C" || dProp.Name == "D")
+                    return;
+                if (dInt.Value != pInt.Value)
+                {
+                    Debug.WriteLine($"Int difference in {exp.InstancedFullPath}!");
+                }
+            }
+            else if (dProp is NameProperty dName && pProp is NameProperty pName)
+            {
+                if (dName.Value.Name != pName.Value.Name || dName.Value.Number != pName.Value.Number)
+                {
+                    Debug.WriteLine("Name difference!");
+                }
+            }
+            else if (dProp is EnumProperty dEnum && pProp is EnumProperty pEnum)
+            {
+                if (dEnum.EnumType != pEnum.EnumType)
+                {
+                    Debug.WriteLine("Enum type difference!");
+                }
+                if (dEnum.Value != pEnum.Value)
+                {
+                    Debug.WriteLine("Enum value difference!");
+                }
+            }
+            else if (dProp is StringRefProperty dStringRef && pProp is StringRefProperty pStringRef)
+            {
+                if (dStringRef.Value != pStringRef.Value)
+                {
+                    Debug.WriteLine("StringRef value difference!");
+                }
+            }
+            else if (dProp is ByteProperty dByte && pProp is ByteProperty pByte)
+            {
+                if (dByte.Value != pByte.Value)
+                {
+                    Debug.WriteLine("Byte value difference!");
+                }
+            }
+            else if (dProp is NoneProperty && pProp is NoneProperty)
+            {
+                // Do nothing. It's handled
+            }
+            else
+            {
+                Debug.WriteLine($"Property type not checked: {dProp.GetType()}");
+                Debugger.Break();
+            }
+        }
+
+        #endregion
+
     }
 }
