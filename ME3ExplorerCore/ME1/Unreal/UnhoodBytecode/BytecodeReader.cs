@@ -508,16 +508,16 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
                 case ME1OpCodes.EX_LabelTable:
                     {
                         var token = new LabelTableToken(readerpos);
-                        while (true)
+
+                        var labelName = ReadName();
+                        var offset = _reader.ReadInt32();
+                        while (offset != 0xFFFF)
                         {
-                            string labelName = ReadName();
-                            if (labelName == "None") break;
-                            int offset = _reader.ReadInt32();
                             token.AddLabel(labelName, offset);
+                            labelName = ReadName();
+                            offset = _reader.ReadInt32();
                         }
 
-                        var labelTableOFfset = _reader.ReadInt16();
-                        var unknown = _reader.ReadInt16();
                         token.updateUIText();
                         return token;
                     }

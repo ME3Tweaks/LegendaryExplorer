@@ -41,7 +41,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
             if (dataOverride == null) dataOverride = export.Data;
             using (BinaryReader reader = new BinaryReader(new MemoryStream(dataOverride)))
             {
-                reader.ReadBytes(12); //netindex?, none
+                reader.ReadBytes(12); //netindex?, none - ASSUMES INCOMING DATA IS FROM .DATA
                 int super = reader.ReadInt32();
                 int nextCompilingChainItem = reader.ReadInt32();
                 reader.ReadBytes(12);
@@ -61,9 +61,12 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
         /// <returns></returns>
         public static UnFunction ReadFunction(ExportEntry export, byte[] dataOverride = null)
         {
+            // Should dataOverride be GetBinaryData()? Since reader shouldn't care at all about data offset, only binary?
+
             if (dataOverride == null) dataOverride = export.Data; // Is there a way we could improve the performance of this?
             using var reader = new EndianReader(dataOverride) { Endian = export.FileRef.Endian };
-            reader.ReadBytes(12); //netindex?, none
+            reader.ReadBytes(12); //netindex?, none - ASSUMES INCOMING DATA IS FROM .DATA
+
             int super = reader.ReadInt32();
             int nextCompilingChainItem = reader.ReadInt32();
             reader.ReadBytes(12);
