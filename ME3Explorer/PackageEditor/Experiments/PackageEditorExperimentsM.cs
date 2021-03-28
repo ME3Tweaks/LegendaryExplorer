@@ -48,7 +48,11 @@ namespace ME3Explorer.PackageEditor.Experiments
             }).ContinueWithOnUIThread(foundCandidates =>
             {
                 pewpf.IsBusy = false;
-                if (!foundCandidates.Result.Any()) MessageBox.Show(pewpf, "Cannot find any candidates for this file!");
+                if (!foundCandidates.Result.Any())
+                {
+                    MessageBox.Show(pewpf, "Cannot find any candidates for this file!");
+                    return;
+                }
 
                 var choices = foundCandidates.Result.DiskFiles.ToList(); //make new list
                 choices.AddRange(foundCandidates.Result.SFARPackageStreams.Select(x => x.Key));
@@ -60,12 +64,27 @@ namespace ME3Explorer.PackageEditor.Experiments
                 }
 
                 var restorePackage = MEPackageHandler.OpenMEPackage(choice, forceLoadFromDisk: true);
-                foreach (var exp in sourcePackage.Exports.Where(x => x.IsTexture()))
+
+                // Get classes
+                var differences = restorePackage.CompareToPackage(sourcePackage);
+
+                // Classes
+                var classNames = differences.Where(x => x.Entry != null).Select(x => x.Entry.ClassName).Distinct().OrderBy(x => x).ToList();
+                if (classNames.Any())
                 {
-                    var origExp = restorePackage.FindExport(exp.InstancedFullPath);
-                    if (origExp != null)
+                    var allDiffs = "[ALL DIFFERENCES]";
+                    classNames.Insert(0, allDiffs);
+                    var restoreClass = InputComboBoxWPF.GetValue(pewpf, "Select class type to restore instances of:", "Data reset", classNames, classNames.FirstOrDefault());
+                    if (string.IsNullOrEmpty(restoreClass))
                     {
-                        exp.Data = origExp.Data;
+                        return;
+                    }
+
+                    foreach (var exp in restorePackage.Exports.Where(x => x.ClassName != "BioMaterialInstanceConstant" || restoreClass == allDiffs ||  x.ClassName == restoreClass))
+                    {
+                        var origExp = restorePackage.GetUExport(exp.UIndex);
+                        sourcePackage.GetUExport(exp.UIndex).Data = origExp.Data;
+                        sourcePackage.GetUExport(exp.UIndex).Header = origExp.Header;
                     }
                 }
             });
@@ -1453,6 +1472,60 @@ namespace ME3Explorer.PackageEditor.Experiments
 
                 terrain.WriteBinary(terrainBin);
             }
+        }
+
+        public static void ResetPackageVanillaPart(IMEPackage sourcePackage, PackageEditorWPF pewpf)
+        {
+            if (sourcePackage.Game != MEGame.ME1 && sourcePackage.Game != MEGame.ME2 && sourcePackage.Game != MEGame.ME3)
+            {
+                MessageBox.Show(pewpf, "Not a trilogy file!");
+                return;
+            }
+
+            Task.Run(() =>
+            {
+                pewpf.BusyText = "Finding unmodded candidates...";
+                pewpf.IsBusy = true;
+                return pewpf.GetUnmoddedCandidatesForPackage();
+            }).ContinueWithOnUIThread(foundCandidates =>
+            {
+                pewpf.IsBusy = false;
+                if (!foundCandidates.Result.Any()) MessageBox.Show(pewpf, "Cannot find any candidates for this file!");
+
+                var choices = foundCandidates.Result.DiskFiles.ToList(); //make new list
+                choices.AddRange(foundCandidates.Result.SFARPackageStreams.Select(x => x.Key));
+
+                var choice = InputComboBoxWPF.GetValue(pewpf, "Choose file to reset to:", "Package reset", choices, choices.Last());
+                if (string.IsNullOrEmpty(choice))
+                {
+                    return;
+                }
+
+                var restorePackage = MEPackageHandler.OpenMEPackage(choice, forceLoadFromDisk: true);
+                for (int i = 0; i < restorePackage.NameCount; i++)
+                {
+                    sourcePackage.replaceName(i, restorePackage.GetNameEntry(i));
+                }
+
+                foreach (var imp in sourcePackage.Imports)
+                {
+                    var origImp = restorePackage.FindImport(imp.InstancedFullPath);
+                    if (origImp != null)
+                    {
+                        imp.Header = origImp.Header;
+                    }
+                }
+
+                foreach (var exp in sourcePackage.Exports)
+                {
+                    var origExp = restorePackage.FindExport(exp.InstancedFullPath);
+                    if (origExp != null)
+                    {
+                        exp.Data = origExp.Data;
+                        exp.Header = origExp.GetHeader();
+                    }
+                }
+            });
         }
     }
 }
