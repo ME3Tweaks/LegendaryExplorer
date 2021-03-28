@@ -3566,6 +3566,107 @@ namespace ME3Explorer
             StatusBar_LeftMostText.Text = "Done";
         }
 
+        private void BuildME1SuperTLK_Clicked(object sender, RoutedEventArgs e) 
+        {
+            string myBasePath = ME1Directory.DefaultGamePath;
+            string searchDir = ME1Directory.CookedPCPath;
+
+            CommonOpenFileDialog d = new CommonOpenFileDialog { Title = "Select folder to search", IsFolderPicker = true, InitialDirectory = myBasePath };
+            if(d.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                searchDir = d.FileName;
+            }
+
+            OpenFileDialog outputFileDialog = new OpenFileDialog { Title = "Select GlobalTlk file to output to (GlobalTlk exports will be completely overwritten)", Filter = "*.upk|*.upk" };
+            bool? result = outputFileDialog.ShowDialog();
+            if(!result.HasValue || !result.Value)
+            {
+                Debug.WriteLine("No output file specified");
+                return;
+            }
+            string outputFilePath = outputFileDialog.FileName;
+
+            string[] extensions = { ".u", ".upk" };
+
+            var tlkLines = new SortedDictionary<int, string>();
+            var tlkLines_m = new SortedDictionary<int, string>();
+
+
+            FileInfo[] files = new DirectoryInfo(searchDir)
+                .EnumerateFiles("*", SearchOption.AllDirectories)
+                .Where(f => extensions.Contains(f.Extension.ToLower()))
+                .ToArray();
+            int i = 1;
+            foreach (FileInfo f in files)
+            {
+                StatusBar_LeftMostText.Text = $"[{i}/{files.Length}] Scanning {f.FullName}";
+                Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
+                int basePathLen = myBasePath.Length;
+                using (IMEPackage pack = MEPackageHandler.OpenMEPackage(f.FullName))
+                {
+                    List<ExportEntry> tlkExports = pack.Exports.Where(x =>
+                        (x.ObjectName == "tlk" || x.ObjectName == "tlk_M" || x.ObjectName == "GlobalTlk_tlk" || x.ObjectName == "GlobalTlk_tlk_M") && x.ClassName == "BioTlkFile").ToList();
+                    if (tlkExports.Count > 0)
+                    {
+                        string subPath = f.FullName.Substring(basePathLen);
+                        Debug.WriteLine("Found exports in " + f.FullName.Substring(basePathLen));
+                        foreach (ExportEntry exp in tlkExports)
+                        {
+                            var stringMapping = ((exp.ObjectName == "tlk" || exp.ObjectName == "GlobalTlk_tlk") ? tlkLines : tlkLines_m);
+                            var talkFile = new ME1TalkFile(exp);
+                            foreach (var sref in talkFile.StringRefs)
+                            {
+                                if (sref.StringID == 0) continue; //skip blank
+                                if (sref.Data == null || sref.Data == "-1" || sref.Data == "") continue; //skip blank
+
+                                if (!stringMapping.TryGetValue(sref.StringID, out var dictEntry))
+                                {
+                                    stringMapping[sref.StringID] = sref.Data;
+                                }
+
+                                if (sref.StringID == 158104)
+                                {
+                                    Debugger.Break();
+                                }
+
+                            }
+                        }
+                    }
+
+                    i++;
+                }
+            }
+
+            int total = tlkLines.Count;
+
+            using (IMEPackage o = MEPackageHandler.OpenMEPackage(outputFilePath))
+            {
+                List<ExportEntry> tlkExports = o.Exports.Where(x =>
+                        (x.ObjectName == "GlobalTlk_tlk" || x.ObjectName == "GlobalTlk_tlk_M") && x.ClassName == "BioTlkFile").ToList();
+                if(tlkExports.Count > 0)
+                {
+                    foreach(ExportEntry exp in tlkExports)
+                    {
+                        var stringMapping = (exp.ObjectName == "GlobalTlk_tlk" ? tlkLines : tlkLines_m);
+                        var talkFile = new ME1TalkFile(exp);
+                        var LoadedStrings = new List<ME1TalkFile.TLKStringRef>();
+                        foreach (var tlkString in stringMapping)
+                        {
+                            // Do the important part
+                            LoadedStrings.Add(new ME1TalkFile.TLKStringRef(tlkString.Key, 1, tlkString.Value));
+                        }
+
+                        HuffmanCompression huff = new HuffmanCompression();
+                        huff.LoadInputData(LoadedStrings);
+                        huff.serializeTLKStrListToExport(exp);
+                    }
+                }
+                o.Save();
+
+            }
+            StatusBar_LeftMostText.Text = $"Wrote {total} lines to {outputFilePath}";
+        }
+
         private void Window_Drop(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
