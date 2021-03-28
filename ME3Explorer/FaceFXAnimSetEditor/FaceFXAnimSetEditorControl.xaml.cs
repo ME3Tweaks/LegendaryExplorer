@@ -66,27 +66,27 @@ namespace ME3Explorer.FaceFX
 
         public FaceFXAnimSet FaceFX;
 
-        FaceFXLine _selectedLine;
+        public List<FaceFXLineEntry> Lines;
 
-        public FaceFXLine SelectedLine
+        FaceFXLineEntry _selectedLineEntry;
+
+        public FaceFXLineEntry SelectedLineEntry
         {
-            get => _selectedLine;
+            get => _selectedLineEntry;
             set
             {
-                if (SetProperty(ref _selectedLine, value) && _selectedLine != null)
+                if (SetProperty(ref _selectedLineEntry, value) && _selectedLineEntry != null)
                 {
                     animationListBox.ItemsSource = null;
-                    lineText.Text = null;
+                    SelectedLineEntry.UpdateLength();
                     updateAnimListBox();
-                    if (int.TryParse(SelectedLine.ID, out int tlkID))
-                    {
-                        lineText.Text = TLKManagerWPF.GlobalFindStrRefbyID(tlkID, Pcc);
-                    }
                     treeView.Nodes.Clear();
-                    treeView.Nodes.AddRange(DataToTree2(FaceFX, SelectedLine));
+                    treeView.Nodes.AddRange(DataToTree2(FaceFX, SelectedLineEntry.Line));
                 }
             }
         }
+
+        public FaceFXLine SelectedLine => SelectedLineEntry?.Line;
 
         #region ExportLoaderControl
 
@@ -107,7 +107,6 @@ namespace ME3Explorer.FaceFX
             CurrentLoadedExport = null;
             FaceFX = null;
             animationListBox.ItemsSource = null;
-            lineText.Text = null;
             treeView.Nodes.Clear();
             graph.Clear();
         }
@@ -146,8 +145,19 @@ namespace ME3Explorer.FaceFX
         private void loadFaceFXAnimset()
         {
             FaceFX = CurrentLoadedExport.GetBinaryData<FaceFXAnimSet>();
+            Lines = new List<FaceFXLineEntry>();
+            
+            foreach (var faceFXLine in FaceFX.Lines)
+            {
+                FaceFXLineEntry LineEntry = new FaceFXLineEntry(faceFXLine);
+                if (int.TryParse(LineEntry.Line.ID, out int tlkID))
+                {
+                     LineEntry.TLKString = TLKManagerWPF.GlobalFindStrRefbyID(tlkID, Pcc);
+                }
+                Lines.Add(LineEntry);
+            }
             linesListBox.ItemsSource = null;
-            linesListBox.ItemsSource = FaceFX.Lines;
+            linesListBox.ItemsSource = Lines;
             treeView.Nodes.Clear();
             graph.Clear();
         }
@@ -165,6 +175,7 @@ namespace ME3Explorer.FaceFX
                 SaveChanges = SaveChanges
             };
             graph.SelectedCurve = curve;
+            SelectedLineEntry.UpdateLength();
             graph.Paint(true);
         }
 
@@ -218,11 +229,11 @@ namespace ME3Explorer.FaceFX
         {
             if (FaceFX != null)
             {
-                foreach (var line in FaceFX.Lines)
+                foreach (var line in Lines)
                 {
-                    if (line.NameAsString == name)
+                    if (line.Line.NameAsString == name)
                     {
-                        SelectedLine = line;
+                        SelectedLineEntry = line;
                         break;
                     }
                 }
@@ -282,13 +293,14 @@ namespace ME3Explorer.FaceFX
             if (e.Data.GetDataPresent("FaceFXLine") && e.Data.GetData("FaceFXLine") is FaceFXLineDragDropObject d)
             {
                 string[] sourceNames = d.sourceNames;
-                FaceFXLine line = d.line;
-                line.NameIndex = FaceFX.Names.FindOrAdd(sourceNames[line.NameIndex]);
+                FaceFXLineEntry lineEntry = new FaceFXLineEntry(d.line);
+                lineEntry.Line.NameIndex = FaceFX.Names.FindOrAdd(sourceNames[lineEntry.Line.NameIndex]);
                 FaceFX.FixNodeTable();
-                line.AnimationNames = line.AnimationNames.Select(idx => FaceFX.Names.FindOrAdd(sourceNames[idx])).ToList();
-                FaceFX.Lines.Add(line);
+                lineEntry.Line.AnimationNames = lineEntry.Line.AnimationNames.Select(idx => FaceFX.Names.FindOrAdd(sourceNames[idx])).ToList();
+                FaceFX.Lines.Add(lineEntry.Line);
+                Lines.Add(lineEntry);
                 linesListBox.ItemsSource = null;
-                linesListBox.ItemsSource = FaceFX.Lines;
+                linesListBox.ItemsSource = Lines;
                 SaveChanges();
             }
         }
@@ -374,8 +386,9 @@ namespace ME3Explorer.FaceFX
         private void DeleteLine_Click(object sender, RoutedEventArgs e)
         {
             FaceFX.Lines.Remove(SelectedLine);
+            Lines.Remove(SelectedLineEntry);
             linesListBox.ItemsSource = null;
-            linesListBox.ItemsSource = FaceFX.Lines;
+            linesListBox.ItemsSource = Lines;
             SaveChanges();
         }
 
@@ -437,6 +450,10 @@ namespace ME3Explorer.FaceFX
                     if (PromptDialog.Prompt(this, "Please enter new value", "ME3Explorer", SelectedLine.ID, true) is string id)
                     {
                         SelectedLine.ID = id;
+                        if (int.TryParse(id, out int tlkID))
+                        {
+                            SelectedLineEntry.TLKString = TLKManagerWPF.GlobalFindStrRefbyID(tlkID, Pcc);
+                        }
                         break;
                     }
                     return;
@@ -523,7 +540,7 @@ namespace ME3Explorer.FaceFX
                 j += SelectedLine.NumKeys[i];
                 SelectedLine.NumKeys[i] = keptPoints;
             }
-            SelectedLine.Points = newPoints;
+            SelectedLineEntry.Points = newPoints;
             CurrentLoadedExport?.WriteBinary(FaceFX);
             updateAnimListBox();
         }
@@ -593,7 +610,7 @@ namespace ME3Explorer.FaceFX
                         newPoints.AddRange(points.Select(p => { p.time += start; return p; }));
                     }
                 }
-                SelectedLine.Points = newPoints;
+                SelectedLineEntry.Points = newPoints;
                 CurrentLoadedExport?.WriteBinary(FaceFX);
                 updateAnimListBox();
             }
@@ -710,6 +727,63 @@ namespace ME3Explorer.FaceFX
                     MessageBox.Show($"Save to {System.IO.Path.GetFileName(m.FileName)} failed.\nCheck the excel file is not open.");
                 }
             }
+        }
+    }
+
+    public class FaceFXLineEntry : NotifyPropertyChangedBase
+    {
+        private FaceFXLine _line;
+        public FaceFXLine Line 
+        { 
+            get => _line;
+            set => SetProperty(ref _line, value);
+        }
+
+        private string _tlkString;
+        public string TLKString
+        {
+            get => _tlkString;
+            set => SetProperty(ref _tlkString, value);
+        }
+
+        private float _length;
+        public float Length
+        {
+            get => _length;
+            set => SetProperty(ref _length, value);
+        }
+
+        private string _lengthAsString;
+        public string LengthAsString
+        {
+            get => _lengthAsString;
+            set => SetProperty(ref _lengthAsString, value);
+        }
+
+        public List<FaceFXControlPoint> Points
+        {
+            get => Line?.Points;
+            set
+            {
+                if(Line != null)
+                {
+                    Line.Points = value;
+                    OnPropertyChanged(nameof(Line));
+                    UpdateLength();
+                }
+            }
+        }
+
+        public FaceFXLineEntry(FaceFXLine faceFX)
+        {
+            Line = faceFX;
+            UpdateLength();
+        }
+
+        public void UpdateLength()
+        {
+            Length = Line.Points.Max((l) => l.time);
+            LengthAsString = TimeSpan.FromSeconds(Length).ToString(@"mm\:ss\:fff");
         }
     }
 }

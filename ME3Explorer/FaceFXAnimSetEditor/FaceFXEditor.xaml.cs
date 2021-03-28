@@ -20,6 +20,8 @@ namespace ME3Explorer.FaceFX
     {
         public ObservableCollectionExtended<ExportEntry> AnimSets { get; } = new();
 
+        public string CurrentFile => Pcc != null ? Path.GetFileName(Pcc.FilePath) : "Select a file to load";
+
         private ExportEntry _selectedExport;
 
         public ExportEntry SelectedExport
@@ -123,6 +125,7 @@ namespace ME3Explorer.FaceFX
 
                 RecentsController.AddRecent(fileName, false);
                 RecentsController.SaveRecentList(true);
+                OnPropertyChanged(nameof(CurrentFile));
             }
             catch (Exception ex)
             {
