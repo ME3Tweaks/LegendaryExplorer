@@ -189,7 +189,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         /// Checks object and name references for invalid values and if values are of the incorrect typing. Returns localized messages, if you do not want localized messages, pass it the NonLocalizedStringConverter delegate from this class.
         /// </summary>
         /// <param name="item"></param>
-        public static void CheckReferences(ReferenceCheckPackage item, string basePath, ref bool CheckCancelled, GetLocalizedStringDelegate localizationDelegate, Action<string> statusUpdateDelegate, Action<string> logMessageDelegate = null, List<string> referencedFiles = null)
+        public static void CheckReferences(ReferenceCheckPackage item, string basePath, GetLocalizedStringDelegate localizationDelegate, Action<string> statusUpdateDelegate, Action<string> logMessageDelegate = null, List<string> referencedFiles = null, CancellationTokenSource cts = null)
         {
             referencedFiles ??= Directory.GetFiles(basePath, "*.*", SearchOption.AllDirectories).Where(x => x.RepresentsPackageFilePath()).ToList();
             int numChecked = 0;
@@ -199,9 +199,9 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     MaxDegreeOfParallelism = Math.Min(3, Environment.ProcessorCount)
                 },
                 f =>
-                //foreach (var f in referencedFiles)
                 {
-                    //if (CheckCancelled) return; //how to handle this? CancellationTokenSource?
+                    if (cts != null && cts.IsCancellationRequested)
+                        return;
                     //if (!f.Contains("BioA_Nor")) return;
                     var lnumChecked = Interlocked.Increment(ref numChecked);
                     statusUpdateDelegate?.Invoke(localizationDelegate(ME3XL.string_checkingNameAndObjectReferences) + $@" [{lnumChecked - 1}/{referencedFiles.Count}]");
@@ -209,137 +209,146 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     var relativePath = f.Substring(basePath.Length + 1);
                     logMessageDelegate?.Invoke($@"Checking package and name references in {relativePath}");
                     var package = MEPackageHandler.OpenMEPackage(f, forceLoadFromDisk: true);
-                    foreach (ExportEntry exp in package.Exports)
-                    {
-                        // Has to be done before accessing the name because it will cause infinite crash loop
-                        //Debug.WriteLine($"Checking {exp.UIndex} {exp.InstancedFullPath} in {exp.FileRef.FilePath}");
-                        if (exp.idxLink == exp.UIndex)
-                        {
-                            item.AddBlockingError(ME3XL.GetString(ME3XL.string_interp_fatalExportCircularReference, f.Substring(basePath.Length + 1), exp.UIndex));
-                            continue;
-                        }
-
-                        var prefix = ME3XL.GetString(ME3XL.string_interp_warningGenericExportPrefix, f.Substring(basePath.Length + 1), exp.UIndex, exp.ObjectName.Name, exp.ClassName);
-                        try
-                        {
-                            if (exp.idxArchetype != 0 && !package.IsEntry(exp.idxArchetype))
-                            {
-                                item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningArchetypeOutsideTables, prefix, exp.idxArchetype), exp);
-                            }
-
-                            if (exp.idxSuperClass != 0 && !package.IsEntry(exp.idxSuperClass))
-                            {
-                                item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningSuperclassOutsideTables, prefix, exp.idxSuperClass), exp);
-                            }
-
-                            if (exp.idxClass != 0 && !package.IsEntry(exp.idxClass))
-                            {
-                                item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningClassOutsideTables, prefix, exp.idxClass), exp);
-                            }
-
-                            if (exp.idxLink != 0 && !package.IsEntry(exp.idxLink))
-                            {
-                                item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningLinkOutsideTables, prefix, exp.idxLink), exp);
-                            }
-
-                            if (exp.HasComponentMap)
-                            {
-                                foreach (var c in exp.ComponentMap)
-                                {
-                                    if (c.Value != 0 && !package.IsEntry(c.Value))
-                                    {
-                                        // Can components point to 0? I don't think so
-                                        item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningComponentMapItemOutsideTables, prefix, c.Value), exp);
-                                    }
-                                }
-                            }
-
-                            //find stack references
-                            if (exp.HasStack && exp.Data is byte[] data)
-                            {
-                                var stack1 = EndianReader.ToInt32(data, 0, exp.FileRef.Endian);
-                                var stack2 = EndianReader.ToInt32(data, 4, exp.FileRef.Endian);
-                                if (stack1 != 0 && !package.IsEntry(stack1))
-                                {
-                                    item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningExportStackElementOutsideTables, prefix, 0, stack1), exp);
-                                }
-
-                                if (stack2 != 0 && !package.IsEntry(stack2))
-                                {
-                                    item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningExportStackElementOutsideTables, prefix, 1, stack2), exp);
-                                }
-                            }
-                            else if (exp.TemplateOwnerClassIdx is var toci && toci >= 0)
-                            {
-                                var TemplateOwnerClassIdx = EndianReader.ToInt32(exp.Data, toci, exp.FileRef.Endian);
-                                if (TemplateOwnerClassIdx != 0 && !package.IsEntry(TemplateOwnerClassIdx))
-                                {
-                                    item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningTemplateOwnerClassOutsideTables, prefix, toci.ToString(@"X6"), TemplateOwnerClassIdx), exp);
-                                }
-                            }
-
-                            var props = exp.GetProperties();
-                            foreach (var p in props)
-                            {
-                                recursiveCheckProperty(item, relativePath, exp.ClassName, exp, p);
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningExceptionParsingProperties, prefix, e.Message), exp);
-                            continue;
-                        }
-
-                        //find binary references
-                        try
-                        {
-                            if (!exp.IsDefaultObject && ObjectBinary.From(exp) is ObjectBinary objBin)
-                            {
-                                List<(UIndex, string)> indices = objBin.GetUIndexes(exp.FileRef.Game);
-                                foreach ((UIndex uIndex, string propName) in indices)
-                                {
-                                    if (uIndex.value != 0 && !exp.FileRef.IsEntry(uIndex.value))
-                                    {
-                                        item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningBinaryReferenceOutsideTables, prefix, uIndex.value), exp);
-                                    }
-                                    else if (exp.FileRef.GetEntry(uIndex.value)?.ObjectName.ToString() == @"Trash")
-                                    {
-                                        item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningBinaryReferenceTrashed, prefix, uIndex.value), exp);
-                                    }
-                                    else if (exp.FileRef.GetEntry(uIndex.value)?.ObjectName.ToString() == @"ME3ExplorerTrashPackage")
-                                    {
-                                        item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningBinaryReferenceTrashed, prefix, uIndex.value), exp);
-                                    }
-                                }
-
-                                var nameIndicies = objBin.GetNames(exp.FileRef.Game);
-                                foreach (var ni in nameIndicies)
-                                {
-                                    if (ni.Item1 == "")
-                                    {
-                                        item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningBinaryNameReferenceOutsideNameTable, prefix), exp);
-                                    }
-                                }
-                            }
-                        }
-                        catch (Exception e) /* when (!App.IsDebug)*/
-                        {
-                            item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningUnableToParseBinary, prefix, e.Message), exp);
-                        }
-                    }
-
-                    foreach (ImportEntry imp in package.Imports)
-                    {
-                        if (imp.idxLink != 0 && !package.TryGetEntry(imp.idxLink, out _))
-                        {
-                            item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningImportLinkOutideOfTables, f, imp.UIndex, imp.idxLink), imp);
-                        }
-                        else if (imp.idxLink == imp.UIndex)
-                        {
-                            item.AddBlockingError(ME3XL.GetString(ME3XL.string_interp_fatalImportCircularReference, f, imp.UIndex), imp);
-                        }
-                    }
+                    CheckReferences(item, package, localizationDelegate, relativePath, cts);
                 });
+        }
+
+        public static void CheckReferences(ReferenceCheckPackage item, IMEPackage package, GetLocalizedStringDelegate localizationDelegate, string relativePath = null, CancellationTokenSource cts = null)
+        {
+            string fName = Path.GetFileName(package.FilePath);
+            foreach (ExportEntry exp in package.Exports)
+            {
+                if (cts != null && cts.IsCancellationRequested)
+                    return;
+
+                // Has to be done before accessing the name because it will cause infinite crash loop
+                //Debug.WriteLine($"Checking {exp.UIndex} {exp.InstancedFullPath} in {exp.FileRef.FilePath}");
+                if (exp.idxLink == exp.UIndex)
+                {
+                    item.AddBlockingError(ME3XL.GetString(ME3XL.string_interp_fatalExportCircularReference, relativePath ?? fName, exp.UIndex));
+                    continue;
+                }
+
+                var prefix = ME3XL.GetString(ME3XL.string_interp_warningGenericExportPrefix, relativePath ?? fName, exp.UIndex, exp.ObjectName.Name, exp.ClassName);
+                try
+                {
+                    if (exp.idxArchetype != 0 && !package.IsEntry(exp.idxArchetype))
+                    {
+                        item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningArchetypeOutsideTables, prefix, exp.idxArchetype), exp);
+                    }
+
+                    if (exp.idxSuperClass != 0 && !package.IsEntry(exp.idxSuperClass))
+                    {
+                        item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningSuperclassOutsideTables, prefix, exp.idxSuperClass), exp);
+                    }
+
+                    if (exp.idxClass != 0 && !package.IsEntry(exp.idxClass))
+                    {
+                        item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningClassOutsideTables, prefix, exp.idxClass), exp);
+                    }
+
+                    if (exp.idxLink != 0 && !package.IsEntry(exp.idxLink))
+                    {
+                        item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningLinkOutsideTables, prefix, exp.idxLink), exp);
+                    }
+
+                    if (exp.HasComponentMap)
+                    {
+                        foreach (var c in exp.ComponentMap)
+                        {
+                            if (c.Value != 0 && !package.IsEntry(c.Value))
+                            {
+                                // Can components point to 0? I don't think so
+                                item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningComponentMapItemOutsideTables, prefix, c.Value), exp);
+                            }
+                        }
+                    }
+
+                    //find stack references
+                    if (exp.HasStack && exp.Data is byte[] data)
+                    {
+                        var stack1 = EndianReader.ToInt32(data, 0, exp.FileRef.Endian);
+                        var stack2 = EndianReader.ToInt32(data, 4, exp.FileRef.Endian);
+                        if (stack1 != 0 && !package.IsEntry(stack1))
+                        {
+                            item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningExportStackElementOutsideTables, prefix, 0, stack1), exp);
+                        }
+
+                        if (stack2 != 0 && !package.IsEntry(stack2))
+                        {
+                            item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningExportStackElementOutsideTables, prefix, 1, stack2), exp);
+                        }
+                    }
+                    else if (exp.TemplateOwnerClassIdx is var toci && toci >= 0)
+                    {
+                        var TemplateOwnerClassIdx = EndianReader.ToInt32(exp.Data, toci, exp.FileRef.Endian);
+                        if (TemplateOwnerClassIdx != 0 && !package.IsEntry(TemplateOwnerClassIdx))
+                        {
+                            item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningTemplateOwnerClassOutsideTables, prefix, toci.ToString(@"X6"), TemplateOwnerClassIdx), exp);
+                        }
+                    }
+
+                    var props = exp.GetProperties();
+                    foreach (var p in props)
+                    {
+                        recursiveCheckProperty(item, relativePath, exp.ClassName, exp, p);
+                    }
+                }
+                catch (Exception e)
+                {
+                    item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningExceptionParsingProperties, prefix, e.Message), exp);
+                    continue;
+                }
+
+                //find binary references
+                try
+                {
+                    if (!exp.IsDefaultObject && ObjectBinary.From(exp) is ObjectBinary objBin)
+                    {
+                        List<(UIndex, string)> indices = objBin.GetUIndexes(exp.FileRef.Game);
+                        foreach ((UIndex uIndex, string propName) in indices)
+                        {
+                            if (uIndex.value != 0 && !exp.FileRef.IsEntry(uIndex.value))
+                            {
+                                item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningBinaryReferenceOutsideTables, prefix, uIndex.value), exp);
+                            }
+                            else if (exp.FileRef.GetEntry(uIndex.value)?.ObjectName.ToString() == @"Trash")
+                            {
+                                item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningBinaryReferenceTrashed, prefix, uIndex.value), exp);
+                            }
+                            else if (exp.FileRef.GetEntry(uIndex.value)?.ObjectName.ToString() == @"ME3ExplorerTrashPackage")
+                            {
+                                item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningBinaryReferenceTrashed, prefix, uIndex.value), exp);
+                            }
+                        }
+
+                        var nameIndicies = objBin.GetNames(exp.FileRef.Game);
+                        foreach (var ni in nameIndicies)
+                        {
+                            if (ni.Item1 == "")
+                            {
+                                item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningBinaryNameReferenceOutsideNameTable, prefix), exp);
+                            }
+                        }
+                    }
+                }
+                catch (Exception e) /* when (!App.IsDebug)*/
+                {
+                    item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningUnableToParseBinary, prefix, e.Message), exp);
+                }
+            }
+
+            foreach (ImportEntry imp in package.Imports)
+            {
+                if (imp.idxLink != 0 && !package.TryGetEntry(imp.idxLink, out _))
+                {
+                    item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningImportLinkOutideOfTables, relativePath ?? fName, imp.UIndex, imp.idxLink), imp);
+                }
+                else if (imp.idxLink == imp.UIndex)
+                {
+                    item.AddBlockingError(ME3XL.GetString(ME3XL.string_interp_fatalImportCircularReference, relativePath ?? fName, imp.UIndex), imp);
+                }
+            }
         }
 
         private static void recursiveCheckProperty(ReferenceCheckPackage item, string relativePath, string containingClassOrStructName, IEntry entry, Property property)
