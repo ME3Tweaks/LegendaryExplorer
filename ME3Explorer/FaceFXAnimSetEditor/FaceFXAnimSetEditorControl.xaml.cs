@@ -221,6 +221,7 @@ namespace ME3Explorer.FaceFX
                     leaveTangent = x.LeaveTangent
                 }).ToList();
                 SelectedLine.NumKeys = numKeys;
+                SelectedLineEntry.UpdateLength();
             }
             CurrentLoadedExport?.WriteBinary(FaceFX);
         }
@@ -234,6 +235,7 @@ namespace ME3Explorer.FaceFX
                     if (line.Line.NameAsString == name)
                     {
                         SelectedLineEntry = line;
+                        linesListBox.ScrollIntoView(line);
                         break;
                     }
                 }
@@ -379,6 +381,33 @@ namespace ME3Explorer.FaceFX
             Animation a = (Animation)animationListBox.SelectedItem;
             List<Animation> anims = animationListBox.ItemsSource.Cast<Animation>().ToList();
             anims.Remove(a);
+            animationListBox.ItemsSource = anims;
+            SaveChanges();
+        }
+
+        private void DeleteAnimKeys_Click(object sender, RoutedEventArgs e)
+        {
+            Animation a = (Animation)animationListBox.SelectedItem;
+            List<Animation> anims = animationListBox.ItemsSource.Cast<Animation>().ToList();
+
+            a.points = new LinkedList<CurvePoint>();
+            anims[animationListBox.SelectedIndex] = a;
+            animationListBox.ItemsSource = anims;
+            animationListBox.SelectedItem = a;
+            SaveChanges();
+        }
+
+        private void ClearLipSyncKeys_Click(object sender, RoutedEventArgs e)
+        {
+            List<Animation> anims = animationListBox.ItemsSource.Cast<Animation>().ToList();
+            for(int i = 0; i < anims.Count; i++)
+            {
+                if(anims[i].Name.StartsWith("m_"))
+                {
+                    Animation newAnim = new Animation { Name = anims[i].Name, points = new LinkedList<CurvePoint>() };
+                    anims[i] = newAnim;
+                }
+            }
             animationListBox.ItemsSource = anims;
             SaveChanges();
         }
