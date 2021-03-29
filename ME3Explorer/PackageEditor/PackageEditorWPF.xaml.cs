@@ -4853,5 +4853,31 @@ namespace ME3Explorer
         {
             PackageEditorExperimentsS.BuildNativeTable(this);
         }
+
+        private void TriggerObjBinGetNames_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (TryGetSelectedExport(out var exp))
+            {
+                ObjectBinary bin = ObjectBinary.From(exp);
+                var names = bin.GetNames(exp.FileRef.Game);
+                foreach(var n in names)
+                {
+                    Debug.WriteLine($"{n.Item1.Instanced} {n.Item2}");
+                }
+            }
+        }
+
+        private void TriggerObjBinGetUIndexes_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (TryGetSelectedExport(out var exp))
+            {
+                ObjectBinary bin = ObjectBinary.From(exp);
+                var indices = bin.GetUIndexes(exp.FileRef.Game);
+                foreach (var n in indices)
+                {
+                    Debug.WriteLine($"{n.Item1} {n.Item2}");
+                }
+            }
+        }
     }
 }

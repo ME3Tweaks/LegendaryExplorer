@@ -233,6 +233,8 @@
                     <MenuItem Header=" &gt;&gt; DO NOT USE IF YOU DON'T KNOW WHAT YOU'RE DOING &gt;&lt;" IsEnabled="False"/>
                     <MenuItem Header=" &gt;&gt; Text may not reflect actual functionality &lt;&lt;" IsEnabled="False"/>
                     <MenuItem Header="Trigger GetProperties() on current export" Click="RefreshProperties_Clicked"/>
+                    <MenuItem Header="Trigger ObjectBinary GetNames() on current export" Click="TriggerObjBinGetNames_Clicked"/>
+                    <MenuItem Header="Trigger ObjectBinary GetUIndexes() on current export" Click="TriggerObjBinGetUIndexes_Clicked"/>
                     <MenuItem Header="Print loaded packages to debug console" Click="PrintLoadedPackages_Clicked"/>
                     <MenuItem Header="Rebuild Object Infos">
                         <MenuItem Header="Build ME1 Object Info" Click="BuildME1ObjectInfo_Clicked"/>
