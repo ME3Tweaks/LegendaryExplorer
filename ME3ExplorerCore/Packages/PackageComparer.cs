@@ -230,23 +230,16 @@ namespace ME3ExplorerCore.Packages
                 {
                     if (exp2.DataSize != exp1.DataSize)
                     {
-                        Debug.WriteLine(@"EXPORT SIZE DIFFERENCE");
+                        Debug.WriteLine($@"EXPORT DATA SIZE DIFFERENCE: {exp1.UIndex} {exp1.InstancedFullPath} Left: {exp1.DataSize} Right {exp2.DataSize}");
                     }
 
                     if (exp2.Header.Length != exp1.Header.Length)
                     {
-                        Debug.WriteLine("HEADER SIZE DIFF");
+                        Debug.WriteLine($@"EXPORT HEADER SIZE DIFFERENCE: {exp1.UIndex} {exp1.InstancedFullPath} Left: {exp1.DataSize} Right {exp2.DataSize}");
                     }
 
                     #region PREPROP
-
-                    var pp1 = exp1.GetPrePropBinary();
-                    var pp2 = exp2.GetPrePropBinary();
-                    if (!pp1.SequenceEqual(pp2))
-                    {
-                        Debug.WriteLine($"Preprop diff on {exp1.InstancedFullPath}!");
-                    }
-
+                    PrePropCheck(exp1, exp2);
                     #endregion
 
                     #region BINARY REFS AND SCRUB
@@ -260,11 +253,13 @@ namespace ME3ExplorerCore.Packages
                         var ui2 = objBin2.GetUIndexes(otherPackage.Game);
                         if (ui1.Count != ui2.Count)
                         {
-                            Debug.WriteLine("Different number of UIndexes!!!");
+                            Debug.WriteLine($"Different number of UIndexes on {exp1.UIndex} {exp1.InstancedFullPath}! Left: {ui1.Count} Right: {ui2.Count}");
                         }
 
                         for (int i = 0; i < ui1.Count; i++)
                         {
+                            if (i >= ui2.Count)
+                                break; // Prevent exception
                             var u1 = ui1[i];
                             var u2 = ui2[i];
 
@@ -278,7 +273,8 @@ namespace ME3ExplorerCore.Packages
 
                                 if (i1.InstancedFullPath != i2.InstancedFullPath)
                                 {
-                                    Debugger.Break();
+                                    Debug.WriteLine($@"Binary entry reference differs on {exp1.UIndex} {exp1.InstancedFullPath} ({u1.Item2})! Left: {i1.InstancedFullPath} Right: {i2.InstancedFullPath}");
+                                    //Debugger.Break();
                                 }
                             }
                             else if (u1.Item1 != u2.Item1)
@@ -293,7 +289,7 @@ namespace ME3ExplorerCore.Packages
                         if (ni1.Count != ni2.Count)
                             Debug.WriteLine("Wrong number of names in binary!!");
 
-                        for (int i = 0; i < ni1.Count; i++)
+                        for (int i = 0; i < ni1.Count && i < ni2.Count; i++)
                         {
                             if (ni1[i].Item1 != ni2[i].Item1)
                             {
@@ -323,9 +319,83 @@ namespace ME3ExplorerCore.Packages
             }
         }
 
+        private void PrePropCheck(ExportEntry exp1, ExportEntry exp2)
+        {
+            var pp1 = exp1.GetPrePropBinary();
+            var pp2 = exp2.GetPrePropBinary();
+
+            // test and scrub pre-prop
+            if (exp1.HasStack)
+            {
+                // TODO: CHECK THIS? OH BOY
+                /*
+                 *Game switch
+            {
+                MEGame.UDK => 26,
+                MEGame.ME3 => 30,
+                MEGame.ME1 when FileRef.Platform == MEPackage.GamePlatform.PS3 => 30,
+                MEGame.ME2 when FileRef.Platform == MEPackage.GamePlatform.PS3 => 30,
+                _ => 32
+            };
+                 *
+                 */
+                return; // ???
+            }
+
+            int start = 0;
+
+            if (exp1.Game >= MEGame.ME3 && exp1.ClassName == "DominantDirectionalLightComponent" || exp1.ClassName == "DominantSpotLightComponent")
+            {
+                //DominantLightShadowMap, which goes before everything for some reason
+
+                // TODO: IMPLEMENT THIS CHECK
+                // looks like name list?
+                int count1 = EndianReader.ToInt32(pp1, 0, exp1.FileRef.Endian);
+                start += count1 * 2 + 4;
+            }
+
+
+            if (!exp1.IsDefaultObject && exp1.IsA("Component") || (exp1.Game == MEGame.UDK && exp1.ClassName.EndsWith("Component")))
+            {
+                int toc1 = EndianReader.ToInt32(pp1, start, exp1.FileRef.Endian);
+                int toc2 = EndianReader.ToInt32(pp2, start, exp2.FileRef.Endian);
+                if (toc1 == 0 && toc2 == 0)
+                {
+                    // nothing to compare
+                }
+                else
+                {
+                    if (exp1.FileRef.GetEntry(toc1).InstancedFullPath != exp2.FileRef.GetEntry(toc2).InstancedFullPath)
+                    {
+                        Debug.WriteLine($"PREPROP DIFFERENCE ON {exp1.UIndex} {exp1.InstancedFullPath}: TEMPLATE OWNER DIFFERENCE!");
+                    }
+                }
+                start += 4; //TemplateOwnerClass
+                if (exp1.ParentFullPath.Contains("Default__"))
+                {
+                    int nameIdx1 = EndianReader.ToInt32(pp1, start, exp1.FileRef.Endian);
+                    int nameInst1 = EndianReader.ToInt32(pp1, start + 4, exp1.FileRef.Endian);
+                    int nameIdx2 = EndianReader.ToInt32(pp2, start, exp2.FileRef.Endian);
+                    int nameInst2 = EndianReader.ToInt32(pp2, start + 4, exp2.FileRef.Endian);
+
+                    if (exp1.FileRef.GetNameEntry(nameIdx1) != exp2.FileRef.GetNameEntry(nameIdx2))
+                    {
+                        Debug.WriteLine($"PREPROP DIFFERENCE ON {exp1.UIndex} {exp1.InstancedFullPath}: TEMPLATE NAME DIFFERENCE!");
+                    }
+                    if (nameInst1 != nameInst2)
+                    {
+                        Debug.WriteLine($"PREPROP DIFFERENCE ON {exp1.UIndex} {exp1.InstancedFullPath}: TEMPLATE NAME INSTANCE DIFFERENCE!");
+                    }
+                    start += 8; //TemplateName
+                }
+            }
+
+            start += 4; //NetIndex, don't care if these match
+        }
+
         private void MatchPropertyCollections(PropertyCollection props1, PropertyCollection props2, ExportEntry exp1, ExportEntry exp2)
         {
-            for (int i = 0; i < props1.Count; i++)
+            for (int i = 0; i < props1.Count && i < props2.Count; i++)
             {
                 var dProp = props1[i];
                 var pProp = props2[i];
@@ -344,7 +414,7 @@ namespace ME3ExplorerCore.Packages
         /// <param name="exp2"></param>
         private void BinScrubCheck2(ObjectBinary objBin1, ObjectBinary objBin2, ExportEntry exp1, ExportEntry exp2)
         {
-            bool isDebug = exp1.UIndex == 237;
+            bool isDebug = false; //exp1.UIndex == 237;
             //if (!isDebug) return;
 
             // Get package-references
@@ -399,6 +469,8 @@ namespace ME3ExplorerCore.Packages
             }
         }
 
+
+
         /// <summary>
         /// Scrubs object and name references from the binary data array, then compares if the data is identical. Use on exports that have been ported across files to identify possible relink misses
         /// If the data is not identical, then not all data has been parsed or relinked
@@ -409,8 +481,8 @@ namespace ME3ExplorerCore.Packages
         /// <param name="exp2"></param>
         private void BinScrubCheck(ObjectBinary objBin1, ObjectBinary objBin2, ExportEntry exp1, ExportEntry exp2)
         {
-            //bool isDebug = false;
-            bool isDebug = exp1.UIndex == 1682;
+            bool isDebug = false;
+            //bool isDebug = exp1.UIndex == 1682;
             //if (!isDebug) return;
             EndianReader er1 = new EndianReader(new MemoryStream());
             objBin1.WriteTo(er1.Writer, exp1.FileRef);
@@ -433,7 +505,7 @@ namespace ME3ExplorerCore.Packages
                 if (isDebug && pos == 0x171)
                     Debug.Write("");
 
-                if (pos <= originalWrittenBin1.Length - 8)
+                if (pos <= originalWrittenBin1.Length - 8 && pos <= originalWrittenBin2.Length - 8)
                 {
                     // Check name
                     var nameIdx = BitConverter.ToInt32(originalWrittenBin1, pos);
@@ -448,7 +520,7 @@ namespace ME3ExplorerCore.Packages
                         var index1 = BitConverter.ToInt32(originalWrittenBin1, pos + 4);
                         //var index2 = BitConverter.ToInt32(originalWrittenBin1, pos + 4);
 
-                        var generatedName = new NameReference(name1, index1); 
+                        var generatedName = new NameReference(name1, index1);
                         if (isDebug)
                             Debug.Write("");
                         if (names1.Any(x => x.Item1 == generatedName))
@@ -464,7 +536,7 @@ namespace ME3ExplorerCore.Packages
                     }
                 }
 
-                if (pos <= originalWrittenBin1.Length - 4)
+                if (pos <= originalWrittenBin1.Length - 4 && pos <= originalWrittenBin2.Length - 4)
                 {
                     // Check UIndex
                     var uindex1 = BitConverter.ToInt32(originalWrittenBin1, pos);
@@ -509,13 +581,14 @@ namespace ME3ExplorerCore.Packages
         /// </summary>
         /// <param name="dProp"></param>
         /// <param name="pProp"></param>
-        /// <param name="exp"></param>
-        /// <param name="bioPExp"></param>
-        private void MatchProperty(Property dProp, Property pProp, ExportEntry exp, ExportEntry bioPExp)
+        /// <param name="exp1"></param>
+        /// <param name="exp2"></param>
+        private void MatchProperty(Property dProp, Property pProp, ExportEntry exp1, ExportEntry exp2)
         {
             if (dProp.GetType() != pProp.GetType())
             {
                 Debug.WriteLine("NON-MATCHING PROPERTY TYPES");
+                return;
             }
 
             if (dProp.Name != pProp.Name)
@@ -532,17 +605,17 @@ namespace ME3ExplorerCore.Packages
                 else
                 {
                     // Ensure they resolve to same variable
-                    var d = dOp.ResolveToEntry(exp.FileRef);
-                    var p = pOp.ResolveToEntry(bioPExp.FileRef);
+                    var d = dOp.ResolveToEntry(exp1.FileRef);
+                    var p = pOp.ResolveToEntry(exp2.FileRef);
 
                     if (d.GetType() != p.GetType())
                     {
-                        Debug.WriteLine(@"ObjectProp types differ!");
+                        Debug.WriteLine($@"ObjectProp referenced object types differ on {exp1.UIndex} {exp1.InstancedFullPath}! Left: {d.GetType()} Right: {p.GetType()}");
                     }
 
                     if (d.InstancedFullPath != p.InstancedFullPath)
                     {
-                        Debug.WriteLine(@"Referenced ObjectProperty value differs!");
+                        Debug.WriteLine($@"Referenced ObjectProperty value differs on {exp1.UIndex} {exp1.InstancedFullPath}! Left: {d.InstancedFullPath} Right: {p.InstancedFullPath}");
                     }
                 }
             }
@@ -550,42 +623,42 @@ namespace ME3ExplorerCore.Packages
             {
                 if (dArrayP.Count != pArrayP.Count)
                 {
-                    Debug.WriteLine("Different sized arrays!");
+                    Debug.WriteLine($"Different sized arrays on {exp1.UIndex} {exp1.InstancedFullPath}!");
                 }
 
-                for (int i = 0; i < dArrayP.Properties.Count; i++)
+                for (int i = 0; i < dArrayP.Properties.Count && i < pArrayP.Properties.Count; i++)
                 {
-                    MatchProperty(dArrayP.Properties[i], pArrayP.Properties[i], exp, bioPExp);
+                    MatchProperty(dArrayP.Properties[i], pArrayP.Properties[i], exp1, exp2);
                 }
             }
             else if (dProp is StructProperty dStructP && pProp is StructProperty pStructP)
             {
                 if (dStructP.Properties.Count != pStructP.Properties.Count)
                 {
-                    Debug.WriteLine("Different sized Structs!");
+                    Debug.WriteLine($"Different sized Structs on {exp1.UIndex} {exp1.InstancedFullPath}!");
                 }
 
-                for (int i = 0; i < dStructP.Properties.Count; i++)
+                for (int i = 0; i < dStructP.Properties.Count && i < pStructP.Properties.Count; i++)
                 {
-                    MatchProperty(dStructP.Properties[i], pStructP.Properties[i], exp, bioPExp);
+                    MatchProperty(dStructP.Properties[i], pStructP.Properties[i], exp1, exp2);
                 }
             }
             else if (dProp is DelegateProperty dDelP && pProp is DelegateProperty pDelP)
             {
                 // Ensure they resolve to same variable
-                var d = exp.FileRef.GetEntry(dDelP.Value.Object);
-                var p = bioPExp.FileRef.GetEntry(pDelP.Value.Object);
+                var d = exp1.FileRef.GetEntry(dDelP.Value.Object);
+                var p = exp2.FileRef.GetEntry(pDelP.Value.Object);
 
                 if (d != null && p != null)
                 {
                     if (d.GetType() != p.GetType())
                     {
-                        Debug.WriteLine(@"ObjectProp types differ!");
+                        Debug.WriteLine(@"DelegateProperty ObjectProp types differ!");
                     }
 
                     if (d.InstancedFullPath != p.InstancedFullPath)
                     {
-                        Debug.WriteLine(@"Referenced ObjectProperty value differs!");
+                        Debug.WriteLine(@"Referenced DelegateProperty value differs!");
                     }
                 }
                 else if (d != p)
@@ -597,21 +670,21 @@ namespace ME3ExplorerCore.Packages
             {
                 if (dBool.Value != pBool.Value)
                 {
-                    Debug.WriteLine("Bool difference!");
+                    Debug.WriteLine($"Bool difference on {exp1.UIndex} {exp1.InstancedFullPath}: Left: {dBool.Value} Right {pBool.Value}");
                 }
             }
             else if (dProp is StrProperty dStr && pProp is StrProperty pStr)
             {
                 if (dStr.Value != pStr.Value)
                 {
-                    Debug.WriteLine("Str difference!");
+                    Debug.WriteLine($"Str difference on {exp1.UIndex} {exp1.InstancedFullPath}: Left: {dStr.Value} Right {pStr.Value}");
                 }
             }
             else if (dProp is FloatProperty dFloat && pProp is FloatProperty pFloat)
             {
                 if (dFloat.Value != pFloat.Value)
                 {
-                    Debug.WriteLine("Float difference!");
+                    Debug.WriteLine($"Float difference on {exp1.UIndex} {exp1.InstancedFullPath}: Left: {dFloat.Value} Right {pFloat.Value}");
                 }
             }
             else if (dProp is IntProperty dInt && pProp is IntProperty pInt)
@@ -621,39 +694,39 @@ namespace ME3ExplorerCore.Packages
                     return;
                 if (dInt.Value != pInt.Value)
                 {
-                    Debug.WriteLine($"Int difference in {exp.InstancedFullPath}!");
+                    Debug.WriteLine($"Int difference in {exp1.UIndex} {exp1.InstancedFullPath}: Left: {dInt.Value} Right {pInt.Value}");
                 }
             }
             else if (dProp is NameProperty dName && pProp is NameProperty pName)
             {
                 if (dName.Value.Name != pName.Value.Name || dName.Value.Number != pName.Value.Number)
                 {
-                    Debug.WriteLine("Name difference!");
+                    Debug.WriteLine($"Name difference on {exp1.UIndex} {exp1.InstancedFullPath}: Left: {dName.Value.Instanced} Right {pName.Value.Instanced}");
                 }
             }
             else if (dProp is EnumProperty dEnum && pProp is EnumProperty pEnum)
             {
                 if (dEnum.EnumType != pEnum.EnumType)
                 {
-                    Debug.WriteLine("Enum type difference!");
+                    Debug.WriteLine($"Enum type difference on {exp1.UIndex} {exp1.InstancedFullPath}: Left: {dEnum.EnumType.Instanced} Right {pEnum.EnumType.Instanced}");
                 }
                 if (dEnum.Value != pEnum.Value)
                 {
-                    Debug.WriteLine("Enum value difference!");
+                    Debug.WriteLine($"Enum value difference on {exp1.UIndex} {exp1.InstancedFullPath}: Left: {dEnum.Value.Instanced} Right {pEnum.Value.Instanced}");
                 }
             }
             else if (dProp is StringRefProperty dStringRef && pProp is StringRefProperty pStringRef)
             {
                 if (dStringRef.Value != pStringRef.Value)
                 {
-                    Debug.WriteLine("StringRef value difference!");
+                    Debug.WriteLine($"StringRef value difference on {exp1.UIndex} {exp1.InstancedFullPath}: Left: {dStringRef.Value} Right: {pStringRef.Value}");
                 }
             }
             else if (dProp is ByteProperty dByte && pProp is ByteProperty pByte)
             {
                 if (dByte.Value != pByte.Value)
                 {
-                    Debug.WriteLine("Byte value difference!");
+                    Debug.WriteLine($"Byte value difference on {exp1.UIndex} {exp1.InstancedFullPath}: Left: {dByte.Value} Right {pByte.Value}");
                 }
             }
             else if (dProp is NoneProperty && pProp is NoneProperty)
