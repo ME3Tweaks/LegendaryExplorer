@@ -48,6 +48,7 @@
                                     <MenuItem Header="Import Section of line" Click="ImpLineSec_Click"/>
                                     <MenuItem Header="Export Section of line" Click="ExpLineSec_Click"/>
                                     <MenuItem Header="Offset keys after time" Click="OffsetKeysAfterTime_Click" />
+                                    <MenuItem Header="Clear all 'm__' lip sync keys" Click="ClearLipSyncKeys_Click"/>
                                     <MenuItem Header="Delete Line" Click="DeleteLine_Click"/>
                                 </ContextMenu>
                             </StackPanel.ContextMenu>
@@ -87,6 +88,7 @@
                         <TextBlock.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Delete" Click="DeleteAnim_Click"/>
+                                <MenuItem Header="Delete All Keys" Click="DeleteAnimKeys_Click"/>
                                 <MenuItem Header="Export Curve to Excel" Click="ExportToExcel_Click">
                                     <MenuItem.Icon>
                                         <Image Source="/ME3Explorer;component/Resources/excel.png" Width="16" Height="16" Margin="0,0,2,0"/>
