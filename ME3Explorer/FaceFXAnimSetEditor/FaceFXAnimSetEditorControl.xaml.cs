@@ -811,7 +811,7 @@ namespace ME3Explorer.FaceFX
 
         public void UpdateLength()
         {
-            if(Line.Points.Count == 0 || Line == null)
+            if(Line == null || Line.Points.Count == 0)
             {
                 Length = 0f;
             }
