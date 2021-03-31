@@ -811,7 +811,14 @@ namespace ME3Explorer.FaceFX
 
         public void UpdateLength()
         {
-            Length = Line.Points.Max((l) => l.time);
+            if(Line == null || Line.Points.Count == 0)
+            {
+                Length = 0f;
+            }
+            else
+            {
+                Length = Line.Points.Max((l) => l.time);
+            }
             LengthAsString = TimeSpan.FromSeconds(Length).ToString(@"mm\:ss\:fff");
         }
     }
