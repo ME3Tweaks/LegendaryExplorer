@@ -471,6 +471,10 @@ namespace Unrealscript.Parsing
             if (type == null) throw ParseError($"Expected variable type after '{LOCAL}'!", CurrentPosition);
             type.Outer = Body;
             if (!Symbols.TryResolveType(ref type)) TypeError($"The type '{type.Name}' does not exist in the current scope!", type);
+            if (type is Enumeration)
+            {
+                PrevToken.SyntaxType = EF.Enum;
+            }
 
             var var = ParseVariableName();
             if (var == null) throw ParseError("Malformed or missing variable name!", CurrentPosition);

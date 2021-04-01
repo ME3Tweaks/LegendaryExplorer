@@ -1190,6 +1190,23 @@ namespace ME3ExplorerCore.Unreal
             };
             sequenceObjects["SFXSeqAct_SpawnHenchmenWeapons"] = new SequenceObjectInfo {ObjInstanceVersion = 1};
 
+            //SirCxyrtyx - New Class - SFXSeqAct_OverrideCasualAppearance
+            classes["SFXSeqAct_OverrideCasualAppearance"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 510, //in ME3Resources.pcc
+                properties =
+                {
+                    new KeyValuePair<string, PropertyInfo>("CasualAppearanceID", new PropertyInfo(PropertyType.IntProperty)),
+                }
+            };
+            sequenceObjects["SFXSeqAct_OverrideCasualAppearance"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1,
+                inputLinks = new List<string> { "Override", "Remove Override" }
+            };
+
             //Native Classes: these classes are defined in C++ only
 
             classes["LightMapTexture2D"] = new ClassInfo

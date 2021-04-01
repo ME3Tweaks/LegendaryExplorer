@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -796,7 +797,7 @@ namespace Unrealscript.Decompiling
             return new NewOperator(parms[0], parms[1], parms[2], parms[3], parms.Count > 4 ? parms[4] : null);
         }
 
-        public Expression DecompileDelegateFunction() // TODO: is this proper? Is it even used in ME3?
+        public Expression DecompileDelegateFunction()
         {
             PopByte();
             var delegateProp = DecompileExpression();
@@ -811,7 +812,7 @@ namespace Unrealscript.Decompiling
             return new DelegateCall(symRef, args);
         }
 
-        public Expression DecompileDelegateProperty() // TODO: is this proper? Is it even used in ME3?
+        public Expression DecompileDelegateProperty()
         {
             PopByte();
             var name = ReadNameReference();
@@ -821,7 +822,11 @@ namespace Unrealscript.Decompiling
             } 
 
             StartPositions.Pop();
-            return new SymbolReference(null, name, null, null);
+            if (string.Equals(name.Name, "None", StringComparison.OrdinalIgnoreCase))
+            {
+                return new NoneLiteral();
+            }
+            return new SymbolReference(null, name);
         }
 
 #endregion
