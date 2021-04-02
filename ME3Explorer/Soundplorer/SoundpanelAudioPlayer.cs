@@ -8,7 +8,7 @@ namespace ME3Explorer.Soundplorer
     {
         public enum PlaybackStopTypes
         {
-            PlaybackStoppedByUser, PlaybackStoppedReachingEndOfFile
+            PlaybackStoppedByUser, PlaybackStoppedReachingEndOfFile, PlaybackSwitchedToNewFile
         }
 
         public PlaybackStopTypes PlaybackStopType { get; set; }

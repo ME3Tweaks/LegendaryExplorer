@@ -7,9 +7,14 @@
              xmlns:facefx="clr-namespace:ME3Explorer.FaceFX"
              xmlns:curveEd="clr-namespace:ME3Explorer.CurveEd"
              xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+             xmlns:binaryConverters="clr-namespace:ME3ExplorerCore.Unreal.BinaryConverters;assembly=ME3ExplorerCore"
+             xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
              mc:Ignorable="d" 
              d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
              d:DesignHeight="450" d:DesignWidth="800">
+    <me3explorer:ExportLoaderControl.Resources>
+        <Converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
+    </me3explorer:ExportLoaderControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Name="linesColumnDef" Width="310"/>
@@ -28,23 +33,26 @@
                 <RowDefinition/>
                 <RowDefinition Height="155"/>
             </Grid.RowDefinitions>
-            <ListBox x:Name="linesListBox" SelectedItem="{Binding SelectedLine}"
+            <ListBox x:Name="linesListBox" SelectedItem="{Binding SelectedLineEntry}"
                  AllowDrop="True" PreviewMouseLeftButtonDown="linesListBox_PreviewMouseLeftButtonDown" MouseMove="linesListBox_MouseMove"
                  DragEnter="linesListBox_DragEnter" Drop="linesListBox_Drop" HorizontalContentAlignment="Stretch" PreviewMouseRightButtonDown="linesListBox_PreviewMouseRightButtonDown">
                 <ListBox.ItemTemplate>
-                    <DataTemplate DataType="binaryConverters:FaceFXLine">
-                        <TextBlock>
-                                <Run Text="{Binding NameAsString}"/>
-                            <TextBlock.ContextMenu>
+                    <DataTemplate DataType="SelectedLineEntry">
+                        <StackPanel>
+                            <TextBlock Text="{Binding Line.NameAsString}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding TLKString}" TextWrapping="Wrap" FontSize="10" FontStyle="Italic"  Visibility="{Binding TLKString, Converter={StaticResource NullVisibilityConverter}}"/>
+                            <TextBlock Text="{Binding LengthAsString}" VerticalAlignment="Center" Foreground="Gray"/>
+                            <StackPanel.ContextMenu>
                                 <ContextMenu x:Name="lineContextMenu">
                                     <MenuItem Header="Delete Section of line" Click="DelLineSec_Click"/>
                                     <MenuItem Header="Import Section of line" Click="ImpLineSec_Click"/>
                                     <MenuItem Header="Export Section of line" Click="ExpLineSec_Click"/>
                                     <MenuItem Header="Offset keys after time" Click="OffsetKeysAfterTime_Click" />
+                                    <MenuItem Header="Clear all 'm__' lip sync keys" Click="ClearLipSyncKeys_Click"/>
                                     <MenuItem Header="Delete Line" Click="DeleteLine_Click"/>
                                 </ContextMenu>
-                            </TextBlock.ContextMenu>
-                        </TextBlock>
+                            </StackPanel.ContextMenu>
+                        </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
                 <ListBox.Style>
@@ -64,11 +72,11 @@
                     </Style>
                 </ListBox.Style>
             </ListBox>
-            <WindowsFormsHost Grid.Row="1" Name="treeView_WinFormsHost">
+            <WindowsFormsHost Grid.Row="1" Margin="0,5,0,0"  Name="treeView_WinFormsHost">
                 <forms:TreeView x:Name="treeView" MouseDoubleClick="treeView_MouseDoubleClick"/>
             </WindowsFormsHost>
         </Grid>
-        <GridSplitter Grid.Row="0" Grid.RowSpan="2" Width="5" HorizontalAlignment="Stretch" Grid.Column="1"/>
+        <GridSplitter Grid.Row="1" Grid.RowSpan="2" Width="5" HorizontalAlignment="Stretch" Grid.Column="1"/>
         <Label Content="Animations" Grid.Row="0" Grid.Column="2"/>
         <ListBox x:Name="animationListBox" Grid.Column="2" Grid.Row="1" SelectionChanged="animationListBox_SelectionChanged" 
                      AllowDrop="True" PreviewMouseLeftButtonDown="animationListBox_PreviewMouseLeftButtonDown" MouseMove="animationListBox_MouseMove"
@@ -80,6 +88,7 @@
                         <TextBlock.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Delete" Click="DeleteAnim_Click"/>
+                                <MenuItem Header="Delete All Keys" Click="DeleteAnimKeys_Click"/>
                                 <MenuItem Header="Export Curve to Excel" Click="ExportToExcel_Click">
                                     <MenuItem.Icon>
                                         <Image Source="/ME3Explorer;component/Resources/excel.png" Width="16" Height="16" Margin="0,0,2,0"/>
@@ -99,7 +108,7 @@
                 <RowDefinition Name="lineTextRowDef" Height="40"/>
             </Grid.RowDefinitions>
             <curveEd:CurveGraph x:Name="graph" DockPanel.Dock="Right" KeyDown="Graph_KeyDown"/>
-            <TextBlock Name="lineText" Grid.Row="1" TextWrapping="Wrap"/>
+            <TextBlock Text="{Binding SelectedLineEntry.TLKString}" Grid.Row="1" TextWrapping="Wrap"/>
         </Grid>
     </Grid>
 </me3explorer:ExportLoaderControl>

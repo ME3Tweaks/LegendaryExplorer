@@ -35,13 +35,13 @@ namespace ME3ExplorerCore.TLK.ME1
 
         private class HuffmanNode
         {
-            public char Data;
+            public readonly char Data;
             public readonly int FrequencyCount;
-            public HuffmanNode Left;
-            public HuffmanNode Right;
+            public readonly HuffmanNode Left;
+            public readonly HuffmanNode Right;
 
             public ushort ID;
-            public bool leaf;
+            public readonly bool leaf;
 
             public HuffmanNode(char d, int freq)
             {
@@ -59,11 +59,11 @@ namespace ME3ExplorerCore.TLK.ME1
             }
         }
 
-        private struct EncodedString
+        private readonly struct EncodedString
         {
-            public int stringLength;
-            public int encodedLength;
-            public byte[] binaryData;
+            public readonly int stringLength;
+            public readonly int encodedLength;
+            public readonly byte[] binaryData;
 
             public EncodedString(int _stringLength, int _encodedLength, byte[] _data)
             {
@@ -291,8 +291,8 @@ namespace ME3ExplorerCore.TLK.ME1
         /// <returns></returns>
         private byte[] ConvertHuffmanTreeToBuffer()
         {
-            List<HuffmanNode> nodes = new List<HuffmanNode>();
-            Queue<HuffmanNode> q = new Queue<HuffmanNode>();
+            var nodes = new List<HuffmanNode>();
+            var q = new Queue<HuffmanNode>();
 
             ushort index = 0;
             q.Enqueue(_huffmanTree[0]);
@@ -313,7 +313,7 @@ namespace ME3ExplorerCore.TLK.ME1
                 }
             }
 
-            List<byte> output = new List<byte>();
+            var output = new List<byte>();
             output.AddRange(BitConverter.GetBytes((int)index));
             foreach (HuffmanNode node in nodes)
             {

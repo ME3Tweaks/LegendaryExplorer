@@ -155,7 +155,7 @@ namespace ME3Explorer.TlkManagerNS
                         replacingWork.DoWork += delegate
                         {
                             HuffmanCompression hc = new HuffmanCompression();
-                            hc.LoadInputData(openFileDialog.FileName, false);
+                            hc.LoadInputData(openFileDialog.FileName);
                             hc.SaveToFile(tlk.tlkPath);
                         };
                     }

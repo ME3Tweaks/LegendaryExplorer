@@ -1,10 +1,10 @@
-﻿using ME3Script.Analysis.Visitors;
-using ME3Script.Utilities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Helpers;
+using Unrealscript.Analysis.Visitors;
+using Unrealscript.Utilities;
 
-namespace ME3Script.Language.Tree
+namespace Unrealscript.Language.Tree
 {
     public sealed class Class : VariableType, IObjectType
     {
@@ -88,10 +88,10 @@ namespace ME3Script.Language.Tree
         {
             string str = this.Name;
             Class current = this;
-            while (current.Parent != null)
+            while (current?.Parent != null)
             {
                 current = current.Parent as Class;
-                str = current.Name + "." + str; 
+                str = (current?.Name ?? "Object") + "." + str; 
             }
             return str;
         }

@@ -16,12 +16,12 @@ using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using ME3Explorer.SharedUI;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
-using ME3Script;
-using ME3Script.Analysis.Visitors;
-using ME3Script.Compiling.Errors;
-using ME3Script.Language.Tree;
-using ME3Script.Lexing.Tokenizing;
-using ME3Script.Parsing;
+using Unrealscript;
+using Unrealscript.Analysis.Visitors;
+using Unrealscript.Compiling.Errors;
+using Unrealscript.Language.Tree;
+using Unrealscript.Lexing.Tokenizing;
+using Unrealscript.Parsing;
 
 namespace ME3Explorer.ME3Script.IDE
 {
@@ -63,20 +63,8 @@ namespace ME3Explorer.ME3Script.IDE
             DataContext = this;
             progressBarTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
             progressBarTimer.Tick += ProgressBarTimer_Tick;
-            if (StandardLibrary.IsInitialized)
-            {
-                FullyInitialized = !StandardLibrary.HadInitializationError;
-            }
-            else
-            {
-                IsBusy = true;
-                BusyText = "Initializing Script Compiler";
-                StandardLibrary.Initialized += StandardLibrary_Initialized;
-                if (StandardLibrary.IsInitialized)
-                {
-                    StandardLibrary_Initialized(null, EventArgs.Empty);
-                }
-            }
+            IsBusy = true;
+            BusyText = "Initializing Script Compiler";
 
             textEditor.TextArea.TextEntered += TextAreaOnTextEntered;
         }
@@ -99,25 +87,31 @@ namespace ME3Explorer.ME3Script.IDE
                 UnloadExport();
             }
             CurrentLoadedExport = export;
-            if (Pcc.Game is MEGame.ME3)
+            if (Pcc != CurrentFileLib?.Pcc)
             {
-                if (IsStandardLibFile())
+                FullyInitialized = false;
+                IsBusy = true;
+                BusyText = "Compiling local classes";
+                UnloadFileLib();
+                CurrentFileLib = new FileLib(Pcc);
+                CurrentFileLib.InitializationStatusChange += CurrentFileLibOnInitialized;
+                if (IsVisible)
                 {
-                    UnloadFileLib();
-                    FullyInitialized = StandardLibrary.IsInitialized;
+                    CurrentFileLib?.Initialize();
                 }
-                else if (Pcc != CurrentFileLib?.Pcc)
+            }
+            else if (CurrentFileLib?.IsInitialized == true)
+            {
+                FullyInitialized = true;
+            }
+            else
+            {
+                FullyInitialized = false;
+                IsBusy = true;
+                BusyText = "Recompiling local classes";
+                if (IsVisible)
                 {
-                    FullyInitialized = false;
-                    IsBusy = true;
-                    BusyText = "Compiling local classes";
-                    UnloadFileLib();
-                    CurrentFileLib = new FileLib(Pcc);
-                    CurrentFileLib.InitializationStatusChange += CurrentFileLibOnInitialized;
-                    if (IsVisible)
-                    {
-                        CurrentFileLib?.Initialize();
-                    }
+                    CurrentFileLib?.Initialize();
                 }
             }
             if (!IsBusy)
@@ -138,7 +132,7 @@ namespace ME3Explorer.ME3Script.IDE
         {
             if (CurrentLoadedExport != null)
             {
-                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new BytecodeEditor(), CurrentLoadedExport)
+                var elhw = new ExportLoaderHostedWindow(new BytecodeEditor(), CurrentLoadedExport)
                 {
                     Title = $"Script Viewer - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}"
                 };
@@ -148,12 +142,16 @@ namespace ME3Explorer.ME3Script.IDE
 
         public override void Dispose()
         {
-            if (progressBarTimer != null)
+            if (progressBarTimer is not null)
             {
                 progressBarTimer.IsEnabled = false; //Stop timer
                 progressBarTimer.Tick -= ProgressBarTimer_Tick;
             }
-            StandardLibrary.Initialized -= StandardLibrary_Initialized;
+
+            if (CurrentFileLib is not null)
+            {
+                CurrentFileLib.InitializationStatusChange -= CurrentFileLibOnInitialized;
+            }
 
             if (Document is not null)
             {
@@ -255,52 +253,6 @@ namespace ME3Explorer.ME3Script.IDE
             }
         }
 
-        private void StandardLibrary_Initialized(object sender, EventArgs e)
-        {
-            if (IsBusy)
-            {
-                if (StandardLibrary.HadInitializationError)
-                {
-                    FullyInitialized = false;
-                    MessageBox.Show("Could not build standard lib! One or more of these files in your ME3 installation is missing or corrupted!\n" +
-                                    "Core.pcc, Engine.pcc, GameFramework.pcc, GFxUI.pcc, WwiseAudio.pcc, SFXOnlineFoundation.pcc, SFXGame.pcc\n\n" +
-                                    "Functionality will be limited to script decompilation.");
-
-                }
-                else
-                {
-                    FullyInitialized |= IsStandardLibFile();
-                }
-                if (CurrentLoadedExport != null)
-                {
-                    if (IsStandardLibFile())
-                    {
-                        CurrentFileLib = null;
-                        Decompile();
-                    }
-                    else
-                    {
-                        CurrentFileLib?.Initialize();
-                        return;
-                    }
-                }
-                IsBusy = false;
-            }
-        }
-
-        public bool IsStandardLibFile() => Pcc != null &&
-                                           Path.GetFileName(Pcc.FilePath) switch
-                                           {
-                                               "Core.pcc" => true,
-                                               "Engine.pcc" => true,
-                                               "GameFramework.pcc" => true,
-                                               "GFxUI.pcc" => true,
-                                               "WwiseAudio.pcc" => true,
-                                               "SFXOnlineFoundation.pcc" => true,
-                                               "SFXGame.pcc" => true,
-                                               _ => false
-                                           };
-
         private void UnloadFileLib()
         {
             if (CurrentFileLib is { })
@@ -348,19 +300,11 @@ namespace ME3Explorer.ME3Script.IDE
 
         private void ExportLoaderControl_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if (e.NewValue is true && Pcc.Game is MEGame.ME3)
+            if (e.NewValue is true && !FullyInitialized)
             {
-                if (!StandardLibrary.IsInitialized && !StandardLibrary.HadInitializationError)
+                if (!progressBarTimer.IsEnabled)
                 {
-                    //returning without waiting for async method to complete is intended behavior here.
-#pragma warning disable CS4014
-                    StandardLibrary.InitializeStandardLib();
-#pragma warning restore CS4014
-
-                    if (!progressBarTimer.IsEnabled)
-                    {
-                        progressBarTimer.Start();
-                    }
+                    progressBarTimer.Start();
                 }
 
                 CurrentFileLib?.Initialize();
@@ -368,7 +312,6 @@ namespace ME3Explorer.ME3Script.IDE
             else
             {
                 IsBusy = false;
-                FullyInitialized = false;
             }
         }
 
@@ -380,6 +323,7 @@ namespace ME3Explorer.ME3Script.IDE
             {
                 textEditor.Focus();
                 textEditor.Select(msg.Start.CharIndex, msg.End.CharIndex - msg.Start.CharIndex);
+                textEditor.ScrollToLine(msg.Line);
             }
         }
 
@@ -389,10 +333,10 @@ namespace ME3Explorer.ME3Script.IDE
             {
                 if (CurrentLoadedExport.ClassName != "Function")
                 {
-                    outputListBox.ItemsSource = new[] { $"Can only compile ME3 functions right now. {(CurrentLoadedExport.IsDefaultObject ? "Defaults" : CurrentLoadedExport.ClassName)} compilation will be added in a future update." };
+                    outputListBox.ItemsSource = new[] { $"Can only compile functions right now. {(CurrentLoadedExport.IsDefaultObject ? "Defaults" : CurrentLoadedExport.ClassName)} compilation will be added in a future update." };
                     return;
                 }
-                (_, MessageLog log) = ME3ScriptCompiler.CompileFunction(CurrentLoadedExport, ScriptText, CurrentFileLib);
+                (_, MessageLog log) = UnrealScriptCompiler.CompileFunction(CurrentLoadedExport, ScriptText, CurrentFileLib);
                 outputListBox.ItemsSource = log?.Content;
             }
         }
@@ -409,7 +353,7 @@ namespace ME3Explorer.ME3Script.IDE
         {
             try
             {
-                ASTNode ast = ME3ScriptCompiler.ExportToAstNode(CurrentLoadedExport, CurrentFileLib);
+                ASTNode ast = UnrealScriptCompiler.ExportToAstNode(CurrentLoadedExport, CurrentFileLib);
                 if (ast is null)
                 {
                     (RootNode, ScriptText) = (null, "Could not decompile!");
@@ -430,11 +374,7 @@ namespace ME3Explorer.ME3Script.IDE
                     {
                         textEditor.IsReadOnly = false;
                         int numLocals = func.Locals.Count;
-                        int numHeaderLines = numLocals > 0 ? numLocals + 4 : 3;
-                        if (func.IsNative)
-                        {
-                            numHeaderLines = 2;
-                        }
+                        int numHeaderLines = Math.Min(numLocals > 0 ? numLocals + 4 : 3, Document.LineCount);
                         var segments = new TextSegmentCollection<TextSegment>
                         {
                             new TextSegment { StartOffset = 0, EndOffset = Document.GetOffset(numHeaderLines, 0) }
@@ -457,7 +397,7 @@ namespace ME3Explorer.ME3Script.IDE
 
         private void TextChanged(object sender, EventArgs e)
         {
-            (ASTNode ast, MessageLog log) = ME3ScriptCompiler.CompileAST(ScriptText, CurrentLoadedExport.ClassName);
+            (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileAST(ScriptText, CurrentLoadedExport.ClassName);
             try
             {
 
@@ -466,7 +406,7 @@ namespace ME3Explorer.ME3Script.IDE
                     if (ast is Function func && FullyInitialized && CurrentLoadedExport.Parent is ExportEntry parentExport)
                     {
                         TokenStream<string> tokens;
-                        (ast, tokens) = ME3ScriptCompiler.CompileFunctionBodyAST(parentExport, ScriptText, func, log, CurrentFileLib);
+                        (ast, tokens) = UnrealScriptCompiler.CompileFunctionBodyAST(parentExport, ScriptText, func, log, CurrentFileLib);
 
                         var codeBuilder = new CodeBuilderVisitor<SyntaxInfoCodeFormatter, (string, SyntaxInfo)>();
                         ast.AcceptVisitor(codeBuilder);
@@ -544,13 +484,13 @@ namespace ME3Explorer.ME3Script.IDE
             if (ScriptText != null)
             {
                 MessageLog log;
-                (RootNode, log) = ME3ScriptCompiler.CompileAST(ScriptText, CurrentLoadedExport.ClassName);
+                (RootNode, log) = UnrealScriptCompiler.CompileAST(ScriptText, CurrentLoadedExport.ClassName);
 
                 if (RootNode != null && log.AllErrors.IsEmpty())
                 {
                     if (RootNode is Function func && FullyInitialized && CurrentLoadedExport.Parent is ExportEntry parentExport)
                     {
-                        (RootNode, _) = ME3ScriptCompiler.CompileFunctionBodyAST(parentExport, ScriptText, func, log, CurrentFileLib);
+                        (RootNode, _) = UnrealScriptCompiler.CompileFunctionBodyAST(parentExport, ScriptText, func, log, CurrentFileLib);
                     }
                     var codeBuilder = new CodeBuilderVisitor<SyntaxInfoCodeFormatter, (string, SyntaxInfo)>();
                     RootNode.AcceptVisitor(codeBuilder);

@@ -1,4 +1,4 @@
-﻿namespace ME3Script.Utilities
+﻿namespace Unrealscript.Utilities
 {
 	public static class Keywords
 	{

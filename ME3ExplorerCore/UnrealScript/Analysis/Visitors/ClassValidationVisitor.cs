@@ -1,15 +1,15 @@
-﻿using ME3Script.Analysis.Symbols;
-using ME3Script.Compiling.Errors;
-using ME3Script.Language.Tree;
-using ME3Script.Language.Util;
-using ME3Script.Utilities;
-using System;
+﻿using System;
 using System.Linq;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Unreal.BinaryConverters;
+using Unrealscript.Analysis.Symbols;
+using Unrealscript.Compiling.Errors;
+using Unrealscript.Language.Tree;
+using Unrealscript.Language.Util;
+using Unrealscript.Utilities;
 using static ME3ExplorerCore.Unreal.UnrealFlags;
 
-namespace ME3Script.Analysis.Visitors
+namespace Unrealscript.Analysis.Visitors
 {
     public enum ValidationPass
     {
@@ -430,7 +430,7 @@ namespace ME3Script.Analysis.Visitors
                     Function original = (Function)func;
                     if (original.Flags.Has(FunctionFlags.Final))
                         return Error($"{node.Name} overrides a function in a parent class, but the parent function is marked as final!", node.StartPos, node.EndPos);
-                    if (!Equals(node.ReturnType, original.ReturnType))
+                    if (!NodeUtils.TypeEqual(node.ReturnType, original.ReturnType))
                         return Error($"{node.Name} overrides a function in a parent class, but the functions do not have the same return types!", node.StartPos, node.EndPos);
                     if (node.Parameters.Count != original.Parameters.Count)
                         return Error($"{node.Name} overrides a function in a parent class, but the functions do not have the same number of parameters!", node.StartPos, node.EndPos);
@@ -438,6 +438,37 @@ namespace ME3Script.Analysis.Visitors
                     {
                         if (node.Parameters[n].Type != original.Parameters[n].Type)
                             return Error($"{node.Name} overrides a function in a parent class, but the functions do not have the same parameter types!", node.StartPos, node.EndPos);
+                    }
+                }
+
+                if (node.FriendlyName is not null //true in ME2 and ME1
+                 && node.IsOperator)
+                {
+                    if (node.Flags.Has(FunctionFlags.PreOperator))
+                    {
+                        if (node.Parameters.Count != 1)
+                        {
+                            return Error($"{node.Name} is declared as a prefix operator, so it must have exactly one parameter!", node.StartPos, node.EndPos);
+                        }
+                        Symbols.AddOperator(new PreOpDeclaration(node.FriendlyName, node.ReturnType, node.NativeIndex, node.Parameters[0]) { Implementer = node });
+                    }
+                    else
+                    {
+                        switch (node.Parameters.Count)
+                        {
+                            case 1:
+                                Symbols.AddOperator(new PostOpDeclaration(node.FriendlyName, node.ReturnType, node.NativeIndex, node.Parameters[0]) { Implementer = node });
+                                break;
+                            case 2:
+                                Symbols.AddOperator(new InOpDeclaration(node.FriendlyName, node.OperatorPrecedence, node.NativeIndex, node.ReturnType, node.Parameters[0], node.Parameters[1])
+                                {
+                                    Implementer = node
+                                });
+                                Symbols.InFixOperatorSymbols.Add(node.FriendlyName);
+                                break;
+                            default:
+                                return Error($"{node.Name} is declared as an operator, so it must have either 1 or 2 parameters!", node.StartPos, node.EndPos);
+                        }
                     }
                 }
 
@@ -479,7 +510,14 @@ namespace ME3Script.Analysis.Visitors
                 bool overrides = Symbols.TryGetSymbolInScopeStack(node.Name, out ASTNode overrideState, NodeUtils.GetParentClassScope(node))
                               && overrideState.Type == ASTNodeType.State;
 
-                if (node.Parent != null)
+                if (node.Parent is null)
+                {
+                    if (overrides)
+                    {
+                        node.Parent = overrideState as State;
+                    }
+                }
+                else
                 {
                     if (overrides)
                         return Error("A state is not allowed to both override a parent class's state and extend another state at the same time!", node.StartPos, node.EndPos);
@@ -504,18 +542,17 @@ namespace ME3Script.Analysis.Visitors
                         Function header = (Function)original;
                         Function emptyOverride = new Function(header.Name, header.Flags, header.ReturnType, new CodeBody(), header.Parameters, ignore.StartPos, ignore.EndPos);
                         node.Functions.Add(emptyOverride);
-                        Symbols.AddSymbol(emptyOverride.Name, emptyOverride);
                     }
                     else //TODO: really ought to throw error, but PlayerController.PlayerWaiting.Jump is like this. Find alternate way of handling this?
                     {
                         node.Functions.Add(ignore);
-                        Symbols.AddSymbol(ignore.Name, ignore);
                     }
                 }
 
                 foreach (Function func in node.Functions.GetRange(0, numFuncs))
                 {
                     func.Outer = node;
+                    Symbols.AddSymbol(func.Name, func);
                     Success = Success && func.AcceptVisitor(this);
                 }
                 //TODO: check functions overrides:

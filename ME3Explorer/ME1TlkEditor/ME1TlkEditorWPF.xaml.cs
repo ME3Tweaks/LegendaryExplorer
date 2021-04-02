@@ -10,10 +10,12 @@ using System.Xml;
 using ME3Explorer.SharedUI;
 using Microsoft.Win32;
 using System.Media;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.TLK.ME1;
 using TalkFile = ME3ExplorerCore.TLK.ME2ME3.TalkFile;
+using ME2ME3HuffmanCompression = ME3ExplorerCore.TLK.ME2ME3.HuffmanCompression;
 
 namespace ME3Explorer.ME1TlkEditor
 {
@@ -23,12 +25,11 @@ namespace ME3Explorer.ME1TlkEditor
     public partial class ME1TlkEditorWPF : FileExportLoaderControl
     {
         private TalkFile CurrentME2ME3TalkFile;
-        public ME1TalkFile.TLKStringRef[] StringRefs;
         public List<ME1TalkFile.TLKStringRef> LoadedStrings; //Loaded TLK
-        public ObservableCollectionExtended<ME1TalkFile.TLKStringRef> CleanedStrings { get; } = new ObservableCollectionExtended<ME1TalkFile.TLKStringRef>(); // Displayed
+        public ObservableCollectionExtended<ME1TalkFile.TLKStringRef> CleanedStrings { get; } = new(); // Displayed
         private bool xmlUp;
 
-        private static string NO_STRING_SELECTED = "No string selected";
+        private const string NO_STRING_SELECTED = "No string selected";
 
         public bool StringSelected
         {
@@ -104,8 +105,7 @@ namespace ME3Explorer.ME1TlkEditor
 
         private void SaveString(object obj)
         {
-            var selectedItem = DisplayedString_ListBox.SelectedItem as ME1TalkFile.TLKStringRef;
-            if (selectedItem != null)
+            if (DisplayedString_ListBox.SelectedItem is ME1TalkFile.TLKStringRef selectedItem)
             {
                 selectedItem.Data = editBox.Text.Trim();
                 FileModified = true;
@@ -160,9 +160,7 @@ namespace ME3Explorer.ME1TlkEditor
 
         private void DisplayedString_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var selectedItem = DisplayedString_ListBox.SelectedItem as ME1TalkFile.TLKStringRef;
-
-            if (selectedItem != null)
+            if (DisplayedString_ListBox.SelectedItem is ME1TalkFile.TLKStringRef selectedItem)
             {
                 editBox.Text = selectedItem.Data;
             }
@@ -172,30 +170,26 @@ namespace ME3Explorer.ME1TlkEditor
         public int DlgStringID(int curID) //Dialog tlkstring id
         {
             var newID = 0;
-            bool isValid = false;
-            while (!isValid)
+            while (true)
             {
-                PromptDialog inst = new PromptDialog("Set new string ID", "TLK Editor", curID.ToString(), true);
-                inst.Owner = Window.GetWindow(this); //center to parent
-                if (inst.ShowDialog().Value)
+                PromptDialog inst = new PromptDialog("Set new string ID", "TLK Editor", curID.ToString(), true)
                 {
-                    if (int.TryParse(inst.ResponseText, out int newIDInt))
-                    {
-                        //test result is an acceptable input
-                        if (newIDInt > 0)
+                    Owner = Window.GetWindow(this)
+                };
+                //center to parent
+                if (inst.ShowDialog() == true)
+                {
+                    if (int.TryParse(inst.ResponseText, out int newIDInt) &&
+                        newIDInt > 0) //test result is an acceptable input
+                    { 
+                        if (LoadedStrings.Any(x => x.StringID == newIDInt))
                         {
-                            if (!LoadedStrings.Any(x => x.StringID == newIDInt))
-                            {
-                                isValid = true;
-                                newID = newIDInt;
-                                break;
-                            }
-                            else
-                            {
-                                MessageBox.Show($"String ID must be unique.\n{newIDInt} is currently in use in this TLK.");
-                                continue;
-                            }
+                            MessageBox.Show($"String ID must be unique.\n{newIDInt} is currently in use in this TLK.");
+                            continue;
                         }
+
+                        newID = newIDInt;
+                        break;
                     }
 
                     MessageBox.Show("String ID must be a positive integer");
@@ -205,12 +199,7 @@ namespace ME3Explorer.ME1TlkEditor
                     return curID; //cancel
                 }
             }
-
-            if (isValid)
-            {
-                return newID;
-            }
-            return curID;
+            return newID;
         }
 
         private void Evt_AddString(object sender, RoutedEventArgs e)
@@ -240,9 +229,14 @@ namespace ME3Explorer.ME1TlkEditor
                 {
                     ME1TalkFile talkfile = new ME1TalkFile(CurrentLoadedExport);
                     talkfile.saveToFile(saveFileDialog.FileName);
-                } else if (CurrentME2ME3TalkFile != null)
+                } 
+                else if (CurrentME2ME3TalkFile is not null)
                 {
-                    CurrentME2ME3TalkFile.DumpToFile(saveFileDialog.FileName);
+                    if (FileModified)
+                    {
+                        CurrentME2ME3TalkFile.LoadTlkDataFromStream(ME2ME3HuffmanCompression.SaveToTlkStream(LoadedStrings).SeekBegin());
+                    }
+                    CurrentME2ME3TalkFile?.DumpToFile(saveFileDialog.FileName);
                 }
             }
 
@@ -257,9 +251,19 @@ namespace ME3Explorer.ME1TlkEditor
             };
             if (openFileDialog.ShowDialog() == true)
             {
-                HuffmanCompression compressor = new HuffmanCompression();
-                compressor.LoadInputData(openFileDialog.FileName);
-                compressor.serializeTLKStrListToExport(CurrentLoadedExport);
+                if (CurrentLoadedExport is not null)
+                {
+                    HuffmanCompression compressor = new HuffmanCompression();
+                    compressor.LoadInputData(openFileDialog.FileName);
+                    compressor.serializeTLKStrListToExport(CurrentLoadedExport);
+                }
+                else if (CurrentME2ME3TalkFile is not null)
+                {
+                    ME2ME3HuffmanCompression compressor = new ();
+                    compressor.LoadInputData(openFileDialog.FileName);
+                    CurrentME2ME3TalkFile.LoadTlkDataFromStream(compressor.SaveToStream().SeekBegin());
+                    RefreshME2ME3TLK();
+                }
                 FileModified = true; //this is not always technically true, but we'll assume it is
             }
         }
@@ -268,37 +272,20 @@ namespace ME3Explorer.ME1TlkEditor
         {
             if (!xmlUp)
             {
-                StringBuilder xmlTLK = new StringBuilder();
-                using (StringWriter stringWriter = new StringWriter(xmlTLK))
+                string xmlString = "";
+                if (CurrentLoadedExport is not null)
                 {
-                    using (XmlTextWriter writer = new XmlTextWriter(stringWriter))
-                    {
-                        writer.Formatting = Formatting.Indented;
-                        writer.Indentation = 4;
-
-                        writer.WriteStartDocument();
-                        writer.WriteStartElement("tlkFile");
-                        writer.WriteAttributeString("Name", CurrentLoadedExport.InstancedFullPath);
-
-                        for (int i = 0; i < LoadedStrings.Count; i++)
-                        {
-                            writer.WriteStartElement("string");
-                            writer.WriteStartElement("id");
-                            writer.WriteValue(LoadedStrings[i].StringID);
-                            writer.WriteEndElement(); // </id>
-                            writer.WriteStartElement("flags");
-                            writer.WriteValue(LoadedStrings[i].Flags);
-                            writer.WriteEndElement(); // </flags>
-                            if (LoadedStrings[i].Flags != 1)
-                                writer.WriteElementString("data", "-1");
-                            else
-                                writer.WriteElementString("data", LoadedStrings[i].Data);
-                            writer.WriteEndElement(); // </string>
-                        }
-                        writer.WriteEndElement(); // </tlkFile>
-                    }
+                    xmlString = ME1TalkFile.TLKtoXmlstring(CurrentLoadedExport.InstancedFullPath, LoadedStrings);
                 }
-                popoutXmlBox.Text = xmlTLK.ToString();
+                else if (CurrentME2ME3TalkFile is not null)
+                {
+                    if (FileModified)
+                    {
+                        CurrentME2ME3TalkFile.LoadTlkDataFromStream(ME2ME3HuffmanCompression.SaveToTlkStream(LoadedStrings).SeekBegin());
+                    }
+                    xmlString = CurrentME2ME3TalkFile.WriteXMLString();
+                }
+                popoutXmlBox.Text = xmlString;
 
                 popupDlg.Height = LowerDock.ActualHeight + DisplayedString_ListBox.ActualHeight;
                 popupDlg.Width = DisplayedString_ListBox.ActualWidth;
@@ -318,8 +305,7 @@ namespace ME3Explorer.ME1TlkEditor
 
         private void SetNewID()
         {
-            var selectedItem = DisplayedString_ListBox.SelectedItem as ME1TalkFile.TLKStringRef;
-            if (selectedItem != null)
+            if (DisplayedString_ListBox.SelectedItem is ME1TalkFile.TLKStringRef selectedItem)
             {
 
                 var stringRefNewID = DlgStringID(selectedItem.StringID); //Run popout box to set tlkstring id
@@ -380,15 +366,20 @@ namespace ME3Explorer.ME1TlkEditor
             CurrentME2ME3TalkFile = new TalkFile();
             CurrentME2ME3TalkFile.LoadTlkData(filepath);
 
-            LoadedStrings = CurrentME2ME3TalkFile.StringRefs.ToList(); //This is not binded to so reassigning is fine
-            CleanedStrings.ReplaceAll(LoadedStrings.Where(x => x.StringID > 0).ToList()); //remove 0 or null strings.
-            editBox.Text = NO_STRING_SELECTED; //Reset ability to save, reset edit box if export changed.
+            RefreshME2ME3TLK();
             FileModified = false;
 
             AddRecent(filepath, false);
             SaveRecentList();
             RefreshRecent(true, RFiles);
             Window.GetWindow(this).Title = "TLK Editor - " + filepath;
+        }
+
+        private void RefreshME2ME3TLK()
+        {
+            LoadedStrings = CurrentME2ME3TalkFile.StringRefs.ToList(); //This is not bound to so reassigning is fine
+            CleanedStrings.ReplaceAll(LoadedStrings.Where(x => x.StringID > 0).ToList()); //remove 0 or null strings.
+            editBox.Text = NO_STRING_SELECTED; //Reset ability to save, reset edit box if export changed.
         }
 
         public void LoadFileFromStream(Stream stream)
@@ -398,9 +389,7 @@ namespace ME3Explorer.ME1TlkEditor
             CurrentME2ME3TalkFile = new TalkFile();
             CurrentME2ME3TalkFile.LoadTlkDataFromStream(stream);
 
-            LoadedStrings = CurrentME2ME3TalkFile.StringRefs.ToList(); //This is not binded to so reassigning is fine
-            CleanedStrings.ReplaceAll(LoadedStrings.Where(x => x.StringID > 0).ToList()); //remove 0 or null strings.
-            editBox.Text = NO_STRING_SELECTED; //Reset ability to save, reset edit box if export changed.
+            RefreshME2ME3TLK();
             FileModified = false;
         }
 
@@ -439,7 +428,7 @@ namespace ME3Explorer.ME1TlkEditor
             else if (CurrentME2ME3TalkFile != null)
             {
                 // CurrentME2ME3TalkFile.
-                ME3ExplorerCore.TLK.ME2ME3.HuffmanCompression.SaveToTlkFile(CurrentME2ME3TalkFile.path, LoadedStrings);
+                ME2ME3HuffmanCompression.SaveToTlkFile(CurrentME2ME3TalkFile.path, LoadedStrings);
 
                 FileModified = false; //you can only commit to file, not to export and then file in file mode.
             }
@@ -451,7 +440,7 @@ namespace ME3Explorer.ME1TlkEditor
         {
             if (CurrentLoadedExport != null)
             {
-                SaveFileDialog d = new SaveFileDialog { Filter = $"*{Path.GetExtension(CurrentLoadedExport.FileRef.FilePath)}|*{Path.GetExtension(CurrentLoadedExport.FileRef.FilePath)}" };
+                SaveFileDialog d = new() { Filter = $"*{Path.GetExtension(CurrentLoadedExport.FileRef.FilePath)}|*{Path.GetExtension(CurrentLoadedExport.FileRef.FilePath)}" };
                 if (d.ShowDialog() == true)
                 {
                     CurrentLoadedExport.FileRef.Save(d.FileName);
@@ -459,11 +448,11 @@ namespace ME3Explorer.ME1TlkEditor
             }
             else if (CurrentME2ME3TalkFile != null)
             {
-                SaveFileDialog d = new SaveFileDialog { Filter = $"ME2/ME3 talk files|*.tlk" };
+                SaveFileDialog d = new() { Filter = $"ME2/ME3 talk files|*.tlk" };
                 if (d.ShowDialog() == true)
                 {
                     // CurrentME2ME3TalkFile.
-                    ME3ExplorerCore.TLK.ME2ME3.HuffmanCompression.SaveToTlkFile(d.FileName, LoadedStrings);
+                    ME2ME3HuffmanCompression.SaveToTlkFile(d.FileName, LoadedStrings);
                 }
 
             }

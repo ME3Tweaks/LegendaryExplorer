@@ -1,22 +1,32 @@
-﻿using ME3Script.Language.Tree;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ME3Explorer;
-using ME3Script.Analysis.Visitors;
-using ME3Script.Language.Util;
-using ME3Script.Utilities;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
+using Unrealscript.Analysis.Visitors;
+using Unrealscript.Language.Tree;
+using Unrealscript.Language.Util;
+using Unrealscript.Utilities;
 using static ME3ExplorerCore.Unreal.UnrealFlags;
-using static ME3Script.Utilities.Keywords;
+using static Unrealscript.Utilities.Keywords;
 
-namespace ME3Script.Analysis.Symbols
+namespace Unrealscript.Analysis.Symbols
 {
+
     public class SymbolTable
     {
+        public class OperatorDefinitions
+        {
+            public readonly CaseInsensitiveDictionary<List<PreOpDeclaration>> PrefixOperators = new();
+            public readonly CaseInsensitiveDictionary<List<InOpDeclaration>> InfixOperators = new();
+            public readonly CaseInsensitiveDictionary<List<PostOpDeclaration>> PostfixOperators = new();
+            public readonly List<string> InFixOperatorSymbols = new();
+        }
+
         #region Primitives
 
         public static readonly VariableType IntType = new(INT) { PropertyType = EPropertyType.Int};
@@ -37,30 +47,30 @@ namespace ME3Script.Analysis.Symbols
         private readonly LinkedList<string> ScopeNames;
         private readonly CaseInsensitiveDictionary<VariableType> Types;
 
-        private static readonly CaseInsensitiveDictionary<List<PreOpDeclaration>> PrefixOperators = new();
-        private static readonly CaseInsensitiveDictionary<List<InOpDeclaration>> InfixOperators = new();
-        private static readonly CaseInsensitiveDictionary<List<PostOpDeclaration>> PostfixOperators = new();
-        public static readonly List<string> InFixOperatorSymbols = new();
-
         public string CurrentScopeName => ScopeNames.Count == 0 ? "" : ScopeNames.Last();
+
+        private readonly OperatorDefinitions Operators;
+        public List<string> InFixOperatorSymbols => Operators.InFixOperatorSymbols;
 
         private SymbolTable()
         {
+            Operators = new OperatorDefinitions();
             ScopeNames = new LinkedList<string>();
             Scopes = new LinkedList<ASTNodeDict>();
             Cache = new CaseInsensitiveDictionary<ASTNodeDict>();
             Types = new CaseInsensitiveDictionary<VariableType>();
         }
 
-        private SymbolTable(LinkedList<string> scopeNames, LinkedList<ASTNodeDict> scopes, CaseInsensitiveDictionary<ASTNodeDict> cache, CaseInsensitiveDictionary<VariableType> types)
+        private SymbolTable(LinkedList<string> scopeNames, LinkedList<ASTNodeDict> scopes, CaseInsensitiveDictionary<ASTNodeDict> cache, CaseInsensitiveDictionary<VariableType> types, OperatorDefinitions ops)
         {
+            Operators = ops;
             ScopeNames = scopeNames;
             Scopes = scopes;
             Cache = cache;
             Types = types;
         }
 
-        public static SymbolTable CreateIntrinsicTable(Class objectClass)
+        public static SymbolTable CreateIntrinsicTable(Class objectClass, MEGame game)
         {
             const EClassFlags intrinsicClassFlags = EClassFlags.Intrinsic;
             var table = new SymbolTable();
@@ -80,12 +90,19 @@ namespace ME3Script.Analysis.Symbols
             table.AddType(ByteType);
             table.AddType(StringType);
             table.AddType(StringRefType);
-            table.AddType(BioMask4Type);
+            if (game is MEGame.ME3)
+            {
+                table.AddType(BioMask4Type);
+            }
             table.AddType(NameType);
 
             
-            var packageType = new Class("Package", objectClass, objectClass, intrinsicClassFlags);
-            table.AddType(packageType);
+            Class packageType = null;
+            if (game is MEGame.ME3)
+            {
+                packageType = new Class("Package", objectClass, objectClass, intrinsicClassFlags);
+                table.AddType(packageType);
+            }
 
             //script type intrinsics
             var fieldType = new Class("Field", objectClass, objectClass, intrinsicClassFlags | EClassFlags.Abstract);
@@ -106,7 +123,7 @@ namespace ME3Script.Analysis.Symbols
             table.AddType(classType);
 
             //property intrinsics
-            var propertyType = new Class("Property", fieldType, fieldType, intrinsicClassFlags);
+            var propertyType = new Class("Property", fieldType, objectClass, intrinsicClassFlags);
             table.AddType(propertyType);
             var bytePropertyType = new Class("ByteProperty", propertyType, objectClass, intrinsicClassFlags);
             table.AddType(bytePropertyType);
@@ -210,11 +227,11 @@ namespace ME3Script.Analysis.Symbols
 
         }
 
-        private static bool operatorsInitialized;
+        private bool me3operatorsInitialized;
         //must be called AFTER Core.pcc has been parsed and validated, and BEFORE parsing any CodeBody!
-        public void InitializeOperators()
+        public void InitializeME3Operators()
         {
-            if (operatorsInitialized)
+            if (me3operatorsInitialized)
             {
                 return;
             }
@@ -444,11 +461,12 @@ namespace ME3Script.Analysis.Symbols
             });
 
 
-            InFixOperatorSymbols.AddRange(InfixOperators.Keys);
-            operatorsInitialized = true;
+            Operators.InFixOperatorSymbols.AddRange(Operators.InfixOperators.Keys);
+            me3operatorsInitialized = true;
         }
 
         private readonly List<Class> intrinsicClasses = new();
+
         public void ValidateIntrinsics()
         {
             foreach (var validationPass in Enums.GetValues<ValidationPass>())
@@ -652,9 +670,28 @@ namespace ME3Script.Analysis.Symbols
             Scopes.Last().Add(symbol, node);
         }
 
-        public void AddType(VariableType node)
+        public bool AddType(VariableType node)
         {
-            Types.Add(node.Name, node);
+            //awful hack for dealing with the fact that ME2 has 2 different classes with the same name
+            //Hopefully the one defined later is the one that actually gets used...
+            if (node.Name == "SFXGameEffect_DamageBonus")
+            {
+                Types[node.Name] = node;
+            }
+            else if (Types.ContainsKey(node.Name))
+            {
+                if (node is Class)
+                {
+                    //encountering multiple definitions of the same class is a somewhat unavoidable consequence of how ME games are compiled, so a more graceful handling than an exception is warranted.
+                    return false;
+                }
+
+                throw new Exception($"Type '{node.Name}' has already been defined!");
+            }
+            else
+            {
+                Types.Add(node.Name, node);
+            }
 
             //hack for registering intrinsic classes that inherit from non-intrinsics
             switch (node.Name)
@@ -678,6 +715,8 @@ namespace ME3Script.Analysis.Symbols
             {
                 intrinsicClasses.Add(c);
             }
+
+            return true;
         }
 
         public bool TryAddSymbol(string symbol, ASTNode node)
@@ -731,20 +770,20 @@ namespace ME3Script.Analysis.Symbols
             switch (op)
             {
                 case PreOpDeclaration preOpDeclaration:
-                    PrefixOperators.AddToListAt(preOpDeclaration.OperatorKeyword, preOpDeclaration);
+                    Operators.PrefixOperators.AddToListAt(preOpDeclaration.OperatorKeyword, preOpDeclaration);
                     break;
                 case InOpDeclaration inOpDeclaration:
-                    InfixOperators.AddToListAt(inOpDeclaration.OperatorKeyword, inOpDeclaration);
+                    Operators.InfixOperators.AddToListAt(inOpDeclaration.OperatorKeyword, inOpDeclaration);
                     break;
                 case PostOpDeclaration postOpDeclaration:
-                    PostfixOperators.AddToListAt(postOpDeclaration.OperatorKeyword, postOpDeclaration);
+                    Operators.PostfixOperators.AddToListAt(postOpDeclaration.OperatorKeyword, postOpDeclaration);
                     break;
             }
         }
 
         public PreOpDeclaration GetPreOp(string name, VariableType type)
         {
-            if (PrefixOperators.TryGetValue(name, out List<PreOpDeclaration> operators))
+            if (Operators.PrefixOperators.TryGetValue(name, out List<PreOpDeclaration> operators))
             {
                 foreach (var preOpDeclaration in operators)
                 {
@@ -760,7 +799,7 @@ namespace ME3Script.Analysis.Symbols
 
         public IEnumerable<InOpDeclaration> GetInfixOperators(string name)
         {
-            if (InfixOperators.TryGetValue(name, out List<InOpDeclaration> operators))
+            if (Operators.InfixOperators.TryGetValue(name, out List<InOpDeclaration> operators))
             {
                 foreach (InOpDeclaration inOpDeclaration in operators)
                 {
@@ -784,7 +823,7 @@ namespace ME3Script.Analysis.Symbols
 
         public PostOpDeclaration GetPostOp(string name, VariableType type)
         {
-            if (PostfixOperators.TryGetValue(name, out List<PostOpDeclaration> operators))
+            if (Operators.PostfixOperators.TryGetValue(name, out List<PostOpDeclaration> operators))
             {
                 foreach (var postOpDeclaration in operators)
                 {
@@ -812,9 +851,12 @@ namespace ME3Script.Analysis.Symbols
 
         public SymbolTable Clone()
         {
-            return new(new LinkedList<string>(ScopeNames), new LinkedList<ASTNodeDict>(Scopes.Select(dict => new ASTNodeDict(dict))), 
+            return new(
+               new LinkedList<string>(ScopeNames), 
+                       new LinkedList<ASTNodeDict>(Scopes.Select(dict => new ASTNodeDict(dict))), 
                        new CaseInsensitiveDictionary<ASTNodeDict>(Cache.ToDictionary(kvp => kvp.Key, kvp => new ASTNodeDict(kvp.Value))),
-                       new CaseInsensitiveDictionary<VariableType>(Types));
+                       new CaseInsensitiveDictionary<VariableType>(Types),
+                       Operators);
         }
     }
 

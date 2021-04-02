@@ -118,6 +118,12 @@
     <Reference Include="JetBrains.Profiler.SelfApi, Version=2.0.2.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrains.Profiler.SelfApi.2.0.2\lib\net46\JetBrains.Profiler.SelfApi.dll</HintPath>
     </Reference>
+    <Reference Include="MessagePack, Version=2.2.0.0, Culture=neutral, PublicKeyToken=b4a0369545f0a1be, processorArchitecture=MSIL">
+      <HintPath>..\packages\MessagePack.2.2.85\lib\netstandard2.0\MessagePack.dll</HintPath>
+    </Reference>
+    <Reference Include="MessagePack.Annotations, Version=2.2.0.0, Culture=neutral, PublicKeyToken=b4a0369545f0a1be, processorArchitecture=MSIL">
+      <HintPath>..\packages\MessagePack.Annotations.2.2.85\lib\netstandard2.0\MessagePack.Annotations.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AppCenter, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AppCenter.3.4.3\lib\net461\Microsoft.AppCenter.dll</HintPath>
     </Reference>
@@ -184,6 +190,9 @@
     </Reference>
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -325,6 +334,7 @@
     <Compile Include="ME3Script\UnrealScriptIDE.xaml.cs">
       <DependentUpon>UnrealScriptIDE.xaml</DependentUpon>
     </Compile>
+    <Compile Include="NetFrameworkPolyfills.cs" />
     <Compile Include="PackageEditor\Experiments\PackageEditorExperimentsK.cs" />
     <Compile Include="PackageEditor\Experiments\PackageEditorExperimentsM.cs" />
     <Compile Include="PackageEditor\Experiments\PackageEditorExperimentsO.cs" />
@@ -1502,10 +1512,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>IF NOT EXIST "$(ProjectDir)$(OutDir)lib" md $(ProjectDir)$(OutDir)lib"
+    <PostBuildEvent>IF NOT EXIST "$(ProjectDir)$(OutDir)lib" mkdir "$(ProjectDir)$(OutDir)lib"
 xcopy /f /y "$(SolutionDir)Libraries" "$(ProjectDir)$(OutDir)lib"
 
-mkdir "$(ProjectDir)\exec"
 xcopy /f /e /y "$(ProjectDir)Resources\exec" "$(ProjectDir)$(OutDir)\exec\"
 rmdir /s /q "$(ProjectDir)$(OutDir)x86"
 rmdir /s /q "$(ProjectDir)$(OutDir)x64"

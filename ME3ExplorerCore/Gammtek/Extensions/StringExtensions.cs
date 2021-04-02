@@ -1,119 +1,136 @@
 ﻿using System;
 using System.Collections.Generic;
+using ME3ExplorerCore.Packages;
 
 namespace ME3ExplorerCore.Gammtek.Extensions
 {
-    public static class StringExtensions
-    {
-        public static string Left(this string value, int count)
+	public static class StringExtensions
+	{
+        public static int ToGameNum(this MEGame game)
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
-
-            return value.Substring(0, count.Clamp(0, value.Length));
+            if (game == MEGame.ME1) return 1;
+            if (game == MEGame.ME2) return 2;
+            if (game == MEGame.ME3) return 3;
+            return 0;
         }
 
-        public static string RemoveLeft(this string value, int count)
+        public static string ToGameName(this MEGame game)
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
-
-            return value.Substring((value.Length - count).Clamp(0, value.Length));
+            if (game == MEGame.ME1) return "Mass Effect";
+            if (game == MEGame.ME2) return "Mass Effect 2";
+            if (game == MEGame.ME3) return "Mass Effect 3";
+            return "UNKNOWN GAME";
         }
 
-        public static string RemoveRight(this string value, int count)
-        {
-            if (value == null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
+		public static string Left(this string value, int count)
+		{
+			if (value == null)
+			{
+				throw new ArgumentNullException(nameof(value));
+			}
 
-            return value.Substring(0, value.Length - count.Clamp(0, value.Length));
-        }
+			return value.Substring(0, count.Clamp(0, value.Length));
+		}
 
-        public static string Right(this string value, int count)
-        {
-            if (value == null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
+		public static string RemoveLeft(this string value, int count)
+		{
+			if (value == null)
+			{
+				throw new ArgumentNullException(nameof(value));
+			}
 
-            return value.Substring(value.Length - count.Clamp(0, value.Length));
-        }
+			return value.Substring((value.Length - count).Clamp(0, value.Length));
+		}
 
-        public static bool ToBoolean(this string value)
-        {
-            return Convert.ToBoolean(value);
-        }
+		public static string RemoveRight(this string value, int count)
+		{
+			if (value == null)
+			{
+				throw new ArgumentNullException(nameof(value));
+			}
 
-        public static byte ToByte(this string value)
-        {
-            return Convert.ToByte(value);
-        }
+			return value.Substring(0, value.Length - count.Clamp(0, value.Length));
+		}
 
-        public static char ToChar(this string value)
-        {
-            return Convert.ToChar(value);
-        }
+		public static string Right(this string value, int count)
+		{
+			if (value == null)
+			{
+				throw new ArgumentNullException(nameof(value));
+			}
+			
+			return value.Substring(value.Length - count.Clamp(0, value.Length));
+		}
 
-        public static DateTime ToDateTime(this string value)
-        {
-            return Convert.ToDateTime(value);
-        }
+		public static bool ToBoolean(this string value)
+		{
+			return Convert.ToBoolean(value);
+		}
 
-        public static decimal ToDecimal(this string value)
-        {
-            return Convert.ToDecimal(value);
-        }
+		public static byte ToByte(this string value)
+		{
+			return Convert.ToByte(value);
+		}
 
-        public static double ToDouble(this string value)
-        {
-            return Convert.ToDouble(value);
-        }
+		public static char ToChar(this string value)
+		{
+			return Convert.ToChar(value);
+		}
 
-        public static short ToInt16(this string value)
-        {
-            return Convert.ToInt16(value);
-        }
+		public static DateTime ToDateTime(this string value)
+		{
+			return Convert.ToDateTime(value);
+		}
 
-        public static int ToInt32(this string value)
-        {
-            return Convert.ToInt32(value);
-        }
+		public static decimal ToDecimal(this string value)
+		{
+			return Convert.ToDecimal(value);
+		}
 
-        public static long ToInt64(this string value)
-        {
-            return Convert.ToInt64(value);
-        }
+		public static double ToDouble(this string value)
+		{
+			return Convert.ToDouble(value);
+		}
 
-        public static sbyte ToSByte(this string value)
-        {
-            return Convert.ToSByte(value);
-        }
+		public static short ToInt16(this string value)
+		{
+			return Convert.ToInt16(value);
+		}
 
-        public static float ToSingle(this string value)
-        {
-            return Convert.ToSingle(value);
-        }
+		public static int ToInt32(this string value)
+		{
+			return Convert.ToInt32(value);
+		}
 
-        public static ushort ToUInt16(this string value)
-        {
-            return Convert.ToUInt16(value);
-        }
+		public static long ToInt64(this string value)
+		{
+			return Convert.ToInt64(value);
+		}
 
-        public static uint ToUInt32(this string value)
-        {
-            return Convert.ToUInt32(value);
-        }
+		public static sbyte ToSByte(this string value)
+		{
+			return Convert.ToSByte(value);
+		}
 
-        public static ulong ToUInt64(this string value)
-        {
-            return Convert.ToUInt64(value);
-        }
+		public static float ToSingle(this string value)
+		{
+			return Convert.ToSingle(value);
+		}
+
+		public static ushort ToUInt16(this string value)
+		{
+			return Convert.ToUInt16(value);
+		}
+
+		public static uint ToUInt32(this string value)
+		{
+			return Convert.ToUInt32(value);
+		}
+
+		public static ulong ToUInt64(this string value)
+		{
+			return Convert.ToUInt64(value);
+		}
 
         /// <summary>
         /// Truncates string so that it is no longer than the specified number of characters.
@@ -176,6 +193,7 @@ namespace ME3ExplorerCore.Gammtek.Extensions
                 return $"{str.Substring(0, sideLen)}...{str.Substring(str.Length - sideLen)}";
             }
         }
+
 
         /// <summary>
         /// Wraps a sting to a max length

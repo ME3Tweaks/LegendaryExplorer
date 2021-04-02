@@ -1,7 +1,7 @@
 ﻿using ME3ExplorerCore.Packages;
-using ME3Script.Language.Tree;
+using Unrealscript.Language.Tree;
 
-namespace ME3Script.Decompiling
+namespace Unrealscript.Decompiling
 {
     public partial class ByteCodeDecompiler
     {
@@ -44,10 +44,6 @@ namespace ME3Script.Decompiling
             var arr = DecompileExpression();
             if (arr == null)
                 return null;
-            if (Game is MEGame.ME2)
-            {
-                ReadInt16(); // MemSize
-            }
             var countArg = DecompileExpression();
             if (countArg == null)
                 return null;
@@ -150,7 +146,10 @@ namespace ME3Script.Decompiling
             var arr = DecompileExpression();
             if (arr == null)
                 return null;
-            ReadInt16(); // MemSize
+            if (Game >= MEGame.ME2)
+            {
+                ReadInt16(); // MemSize
+            }
             var valueArg = DecompileExpression();
             if (valueArg == null)
                 return null;
@@ -169,7 +168,10 @@ namespace ME3Script.Decompiling
             var arr = DecompileExpression();
             if (arr == null)
                 return null;
-            ReadInt16(); // MemSize
+            if (Game >= MEGame.ME2)
+            {
+                ReadInt16(); // MemSize
+            }
             var valueArg = DecompileExpression();
             if (valueArg == null)
                 return null;

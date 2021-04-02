@@ -81,6 +81,7 @@
                 </MenuItem>
                 <MenuItem Header="_Options" Padding="4">
                     <MenuItem Name="ReverseEndianDisplayOfIDs_MenuItem" Header="Reverse endianness of displayed ID's" Click="ReverseEndiannessOfIDs_Clicked" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=SoundplorerReverseIDDisplayEndianness, Mode=TwoWay}"/>
+                    <MenuItem Name="AutoplayEntryOnSelection_MenuItem" Header="Auto-play audio entries on selection" Click="AutoplayEntryOnSelection_MenuItem_Clicked" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=SoundplorerAutoplayEntriesOnSelection, Mode=TwoWay}" />
                     <MenuItem Name="RebuildWwiseBankToFile_MenuItem" Header="Debugging: Rebuild wwisebank to file" Click="DebugWriteBankToFileRebuild_Clicked" />
                     <MenuItem Header="Pop out current view into new window" ToolTip="Opens the panel on the right side in a new window" Command="{Binding PopoutCurrentViewCommand}" InputGestureText="CTRL + P"/>
                 </MenuItem>
@@ -115,7 +116,7 @@
                             ME2: The correct version of Wwise is not available (ME2 predates public Wwise)
                             <LineBreak/>
                             ME3: Requires 
-                            <Hyperlink NavigateUri="" Foreground="#FF182574" global:HyperlinkExtensions.IsExternal="True">
+                            <Hyperlink NavigateUri="https://1drv.ms/u/s!AorirBfl09VNrC9eh-_sOj_eqLIa?e=8lzC4j" Foreground="#FF182574" global:HyperlinkExtensions.IsExternal="True">
                                 <Run Text="the 64 bit version of Wwise 2010.3.3 (Build 3773)"/>
                             </Hyperlink>
                             </Italic>
@@ -176,6 +177,7 @@
                                 <fa:ImageAwesome  Grid.Column="7" Icon="{Binding Icon}" Spin="{Binding NeedsLoading}" SpinDuration="1.2" Width="18" Height="18" Margin="2,0,4,0"/>
                                 <StackPanel>
                                     <TextBlock Text="{Binding DisplayString}" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding Entry.TLKString}" TextWrapping="Wrap" FontSize="10" FontStyle="Italic"  Visibility="{Binding Entry.TLKString, Converter={StaticResource NullVisibilityConverter}}"/>
                                     <TextBlock Text="{Binding SubText}" VerticalAlignment="Center" Foreground="Gray"/>
                                 </StackPanel>
                             </StackPanel>

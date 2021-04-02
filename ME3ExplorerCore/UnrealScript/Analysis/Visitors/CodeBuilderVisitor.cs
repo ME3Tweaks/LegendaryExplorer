@@ -4,15 +4,15 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using ME3Script.Language.Tree;
-using ME3Script.Parsing;
-using static ME3Script.Utilities.Keywords;
+using static Unrealscript.Utilities.Keywords;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Unreal;
-using ME3Script.Analysis.Symbols;
-using ME3Script.Lexing.Tokenizing;
+using Unrealscript.Analysis.Symbols;
+using Unrealscript.Language.Tree;
+using Unrealscript.Lexing.Tokenizing;
+using Unrealscript.Parsing;
 
-namespace ME3Script.Analysis.Visitors
+namespace Unrealscript.Analysis.Visitors
 {
     public enum EF
     {
@@ -642,7 +642,7 @@ namespace ME3Script.Analysis.Visitors
 
             if (node.Ignores.Count > 0)
             {
-                Write(IGNORES);
+                Write(IGNORES, EF.Keyword);
                 Space();
                 Join(node.Ignores.Select(x => x.Name).ToList(), ", ", EF.Function);
                 Write(";");
@@ -1186,12 +1186,12 @@ namespace ME3Script.Analysis.Visitors
             // functionName( parameter1, parameter2.. )
             if (node.Function.IsGlobal)
             {
-                Append(GLOBAL);
+                Append(GLOBAL, EF.Keyword);
                 Append(".", EF.Operator);
             }
             else if (node.Function.IsSuper)
             {
-                Append(SUPER);
+                Append(SUPER, EF.Keyword);
                 if (node.Function.SuperSpecifier is {} superSpecifier)
                 {
                     Append("(");
@@ -1524,7 +1524,7 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(RotatorLiteral node)
         {
-            Append(VECT, EF.Keyword);
+            Append(ROT, EF.Keyword);
             Append("(");
             Append(FormatRotator(node.Pitch), EF.Number);
             Append(",");
@@ -1648,11 +1648,10 @@ namespace ME3Script.Analysis.Visitors
         {
             // Label
             var temp = NestingLevel;
-            NestingLevel = 0;
+            NestingLevel = NestingLevel > 0 ? NestingLevel - 1 : 0;
             Write(node.Name, EF.Label);
             Append(":");
             NestingLevel = temp;
-
             return true;
         }
 

@@ -1,22 +1,23 @@
-﻿using ME3Script.Analysis.Symbols;
-using ME3Script.Compiling.Errors;
-using ME3Script.Language.Tree;
-using ME3Script.Language.Util;
-using ME3Script.Lexing.Tokenizing;
-using ME3Script.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using ME3Script.Analysis.Visitors;
-using ME3Script.Lexing;
-using static ME3Script.Utilities.Keywords;
+using Unrealscript.Analysis.Symbols;
+using Unrealscript.Analysis.Visitors;
+using Unrealscript.Compiling.Errors;
+using Unrealscript.Language.Tree;
+using Unrealscript.Language.Util;
+using Unrealscript.Lexing;
+using Unrealscript.Lexing.Tokenizing;
+using Unrealscript.Utilities;
+using static Unrealscript.Utilities.Keywords;
 
-namespace ME3Script.Parsing
+namespace Unrealscript.Parsing
 {
     public class CodeBodyParser : StringParserBase
     {
@@ -63,7 +64,7 @@ namespace ME3Script.Parsing
             }
 
             //parse default parameter values
-            if (func.Flags.Has(FunctionFlags.HasOptionalParms))
+            if (func.HasOptionalParms)
             {
                 foreach (FunctionParameter param in func.Parameters.Where(p => p.IsOptional))
                 {
@@ -178,7 +179,7 @@ namespace ME3Script.Parsing
                         }
                         else
                         {
-                            ParseError($"Could not find label '{g.LabelName}'! (gotos cannot jump out of or into a foreach)", g.Label);
+                            ParseError($"Could not find label '{g.LabelName}'! (gotos cannot jump out of or into a foreach)", g);
                         }
 
                         break;
@@ -549,7 +550,7 @@ namespace ME3Script.Parsing
                 }
                 else if (!NodeUtils.TypeCompatible(func.ReturnType, type))
                 {
-                    TypeError($"Cannot return a value of type '{type.Name}', function should return '{func.ReturnType.Name}'.", token);
+                    TypeError($"Cannot return a value of type '{type?.Name ?? "None"}', function should return '{func.ReturnType.Name}'.", token);
                 }
 
                 AddConversion(func.ReturnType, ref value);
@@ -1096,7 +1097,7 @@ namespace ME3Script.Parsing
                     //check to see if there is any whitespace between them. Otherwise > > would be recognized as the right shift operator! 
                     isRightShift = Tokens.LookAhead(1).StartPos.Equals(CurrentToken.EndPos);
                 }
-                return SymbolTable.InFixOperatorSymbols.Contains(CurrentToken.Value, StringComparer.OrdinalIgnoreCase);
+                return Symbols.InFixOperatorSymbols.Contains(CurrentToken.Value, StringComparer.OrdinalIgnoreCase);
             }
         }
 
@@ -1765,7 +1766,7 @@ namespace ME3Script.Parsing
                     ExpressionScopes.Pop();
                     if (arguments.Count != func.Parameters.Count)
                     {
-                        if (func.Flags.Has(FunctionFlags.HasOptionalParms))
+                        if (func.HasOptionalParms)
                         {
                             int numRequiredParams = func.Parameters.Count(param => !param.IsOptional);
                             if (arguments.Count > func.Parameters.Count || arguments.Count < numRequiredParams)
@@ -1804,13 +1805,15 @@ namespace ME3Script.Parsing
                     ExpressionScopes.Push(ExpressionScopes.Last());
 
                     Expression valueArg = CompositeRef() ?? throw ParseError("Expected argument to dynamic array iterator!", CurrentPosition);
-                    if (!NodeUtils.TypeEqual(valueArg.ResolveType(), dynArrType.ElementType))
+                    if (!NodeUtils.TypeEqual(valueArg.ResolveType(), dynArrType.ElementType) && (Game is MEGame.ME3 || 
+                        //documentation says this shouldn't be allowed, but bioware code does this in ME2
+                        valueArg.ResolveType() is Class argClass && dynArrType.ElementType is Class dynArrClass && !dynArrClass.SameAsOrSubClassOf(argClass.Name)))
                     {
                         //ugly hack
                         var builder = new CodeBuilderVisitor();
                         builder.AppendTypeName(dynArrType.ElementType);
                         string elementType = builder.GetOutput();
-                        TypeError($"Iterator variable for an '{ARRAY}<{elementType}>' must be of type '{elementType}'", dynArrType);
+                        TypeError($"Iterator variable for an '{ARRAY}<{elementType}>' must be of type '{elementType}'", expr);
                     }
                     if (!(valueArg is SymbolReference))
                     {
@@ -2073,8 +2076,13 @@ namespace ME3Script.Parsing
         private Expression ParseSuper()
         {
             Class superClass;
-            State state = null;
             Class superSpecifier = null;
+            State state = Node switch
+            {
+                State s => s,
+                Function { Outer: State s2 } => s2,
+                _ => null
+            };
             if (Matches(TokenType.LeftParenth))
             {
                 if (Consume(TokenType.Word) is {} className)
@@ -2105,15 +2113,13 @@ namespace ME3Script.Parsing
                 {
                     throw ParseError("Expected ')' after superclass specifier!", CurrentPosition);
                 }
+                if (state?.Parent != null)
+                {
+                    state = state.Parent;
+                }
             }
             else
             {
-                state = Node switch
-                {
-                    State s => s,
-                    Function {Outer: State s2} => s2,
-                    _ => null
-                };
                 if (state?.Parent != null)
                 {
                     superClass = Self;
@@ -2138,6 +2144,12 @@ namespace ME3Script.Parsing
             while (state != null)
             {
                 Class stateClass = (Class)state.Outer;
+                if (stateClass != superClass && stateClass.SameAsOrSubClassOf(superClass.Name))
+                {
+                    //Walk up the state inheritance chain until we get to one that is in the specified superclass (or an ancestor)
+                    state = state.Parent;
+                    continue;
+                }
                 specificScope = $"{stateClass.GetInheritanceString()}.{state.Name}";
                 if (Symbols.TryGetSymbolInScopeStack(functionName.Value, out ASTNode funcNode, specificScope) && funcNode is Function)
                 {
@@ -2248,10 +2260,6 @@ namespace ME3Script.Parsing
             Expression template = null;
             if (Matches(TokenType.LeftParenth))
             {
-                if (Game <= MEGame.ME2)
-                {
-                    throw ParseError($"Template argument for a '{NEW}' expression is not valid in {Game}!", CurrentPosition);
-                }
                 template = ParseExpression();
                 if (template == null)
                 {
