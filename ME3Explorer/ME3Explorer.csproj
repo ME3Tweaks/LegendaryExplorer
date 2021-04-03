@@ -324,6 +324,7 @@
       <DependentUpon>AFCCompactorUI.xaml</DependentUpon>
     </Compile>
     <Compile Include="CoreLibSettingsBridge.cs" />
+    <Compile Include="FaceFXAnimSetEditor\LiveFaceFxEditor.cs" />
     <Compile Include="ME3ExpMemoryAnalyzer\MemoryAnalyzerObjectExtended.cs" />
     <Compile Include="ME3Script\IDE\ASTColorizer.cs" />
     <Compile Include="ME3Script\IDE\ASTHighlighter.cs" />
@@ -556,7 +557,6 @@
     </Compile>
     <Compile Include="Scene3D\SceneRenderContext.cs" />
     <Compile Include="Scene3D\SceneRenderControlWPF.cs" />
-    <Compile Include="Sequence Editor\KismetHelper.cs" />
     <Compile Include="Sequence Editor\SequenceObjectCreator.cs" />
     <Compile Include="SharedUI\BindingProxy.cs" />
     <Compile Include="SharedUI\Converters\BoolEnabledConverter.cs" />

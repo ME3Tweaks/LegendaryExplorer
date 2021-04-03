@@ -36,6 +36,7 @@ using ME3ExplorerCore.Unreal.BinaryConverters;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Image = System.Drawing.Image;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Kismet;
 using ME3ExplorerCore.Misc;
 
 namespace ME3Explorer.Sequence_Editor

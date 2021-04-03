@@ -6,6 +6,7 @@ using ME3Explorer.AutoTOC;
 using ME3Explorer.Sequence_Editor;
 using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Kismet;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.SharpDX;

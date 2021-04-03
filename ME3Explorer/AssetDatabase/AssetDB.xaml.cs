@@ -2551,11 +2551,11 @@ namespace ME3Explorer.AssetDatabase
         {
             if (ShowAllClassUsages)
             {
-                SelectedClassUsages = SelectedClass.Usages.OrderBy(u => u.FileKey).ToList();
+                SelectedClassUsages = SelectedClass?.Usages.OrderBy(u => u.FileKey).ToList();
             }
             else
             {
-                SelectedClassUsages = SelectedClass.Usages.OrderBy(u => u.FileKey).Aggregate(new List<ClassUsage>(), (list, usage) =>
+                SelectedClassUsages = SelectedClass?.Usages.OrderBy(u => u.FileKey).Aggregate(new List<ClassUsage>(), (list, usage) =>
                 {
                     if (list.Count == 0 || usage.IsDefault || list[list.Count - 1].FileKey != usage.FileKey)
                     {

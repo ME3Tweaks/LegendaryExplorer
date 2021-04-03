@@ -1207,6 +1207,19 @@ namespace ME3ExplorerCore.Unreal
                 inputLinks = new List<string> { "Override", "Remove Override" }
             };
 
+            //SirCxyrtyx - New Class - SFXSeqAct_SetEquippedWeaponVisibility
+            classes["SFXSeqAct_SetEquippedWeaponVisibility"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 515, //in ME3Resources.pcc
+            };
+            sequenceObjects["SFXSeqAct_SetEquippedWeaponVisibility"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1,
+                inputLinks = new List<string> { "Show", "Hide", "Toggle" }
+            };
+
             //Native Classes: these classes are defined in C++ only
 
             classes["LightMapTexture2D"] = new ClassInfo
