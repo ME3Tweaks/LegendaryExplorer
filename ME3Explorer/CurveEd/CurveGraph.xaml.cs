@@ -178,13 +178,7 @@ namespace ME3Explorer.CurveEd
             {
                 if (UseFixedTimeSpan)
                 {
-                    HorizontalOffset = FixedStartTime;
-                    float diff = Math.Abs(FixedEndTime - FixedStartTime); //No negative values!
-                    if (diff < 0.1f)
-                    {
-                        diff = 0.1f; //No super tiny values!
-                    }
-                    HorizontalScale = graph.ActualWidth / diff;
+                    UpdateScalingFromFixedTimeSpan();
                 }
                 else
                 {
@@ -640,6 +634,20 @@ namespace ME3Explorer.CurveEd
             yTextBox.Clear();
         }
 
+        private void UpdateScalingFromFixedTimeSpan()
+        {
+            if(UseFixedTimeSpan)
+            {
+                HorizontalOffset = FixedStartTime;
+                float diff = Math.Abs(FixedEndTime - FixedStartTime); //No negative values!
+                if (diff < 0.1f)
+                {
+                    diff = 0.1f; //No super tiny values!
+                }
+                HorizontalScale = graph.ActualWidth / diff;
+            }
+        }
+
         private bool _useFixedTimeSpan;
         public bool UseFixedTimeSpan
         {
@@ -661,7 +669,8 @@ namespace ME3Explorer.CurveEd
             {
                 if (SetProperty(ref _fixedStartTime, value))
                 {
-                    Paint(true);
+                    UpdateScalingFromFixedTimeSpan();
+                    Paint();
                 }
             }
         }
@@ -674,7 +683,8 @@ namespace ME3Explorer.CurveEd
             {
                 if (SetProperty(ref _fixedEndTime, value))
                 {
-                    Paint(true);
+                    UpdateScalingFromFixedTimeSpan();
+                    Paint();
                 }
             }
         }
