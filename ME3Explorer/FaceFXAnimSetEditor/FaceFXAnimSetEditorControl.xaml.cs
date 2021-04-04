@@ -62,7 +62,7 @@ namespace ME3Explorer.FaceFX
 
         public FaceFXAnimSet FaceFX;
 
-        public ObservableCollectionExtended<FaceFXLineEntry> Lines { get; set; } = new ObservableCollectionExtended<FaceFXLineEntry>();
+        public ObservableCollectionExtended<FaceFXLineEntry> Lines { get; } = new ObservableCollectionExtended<FaceFXLineEntry>();
 
         FaceFXLineEntry _selectedLineEntry;
 
@@ -83,7 +83,7 @@ namespace ME3Explorer.FaceFX
 
         public FaceFXLine SelectedLine => SelectedLineEntry?.Line;
 
-        public ObservableCollectionExtended<Animation> Animations { get; set; } = new ObservableCollectionExtended<Animation>();
+        public ObservableCollectionExtended<Animation> Animations { get; } = new ObservableCollectionExtended<Animation>();
 
         Animation _selectedAnimation;
         public Animation SelectedAnimation
@@ -99,8 +99,8 @@ namespace ME3Explorer.FaceFX
             set {
                 if(_referenceAnimation != null) _referenceAnimation.IsReferenceAnim = false;
                 SetProperty(ref _referenceAnimation, value);
-                _referenceAnimation.IsReferenceAnim = true;
-                graph.ComparisonCurve = _selectedAnimation.ToCurve(SaveChanges);
+                if(_referenceAnimation != null) _referenceAnimation.IsReferenceAnim = true;
+                graph.ComparisonCurve = _referenceAnimation?.ToCurve(SaveChanges);
                 graph.Paint();
             }
         }
@@ -380,7 +380,7 @@ namespace ME3Explorer.FaceFX
                 if (CurrentLoadedExport == null || d.fromFile == CurrentLoadedExport.FileRef.FilePath) return;
 
                 Animations.Add(d.anim);
-                SelectedLine.AnimationNames.Add(FaceFX.Names.FindOrAdd(d.anim.Name));
+                FaceFX.Names.FindOrAdd(d.anim.Name);
                 SaveChanges();
                 UpdateAnimListBox();
             }
