@@ -6,11 +6,14 @@
                                   xmlns:local="clr-namespace:ME3Explorer.CurveEd"
                                   xmlns:generic="clr-namespace:System.Collections.Generic;assembly=mscorlib"
                                   xmlns:me3Explorer="clr-namespace:ME3Explorer"
+                                  xmlns:converters="clr-namespace:ME3Explorer.SharedUI.Converters"
                                   mc:Ignorable="d" 
                                   DataContext="{Binding RelativeSource={RelativeSource Self}}"
                                   d:DesignHeight="300" d:DesignWidth="444.472" SizeChanged="UserControl_SizeChanged" ClipToBounds="True" MouseWheel="UserControl_MouseWheel">
     <UserControl.Resources>
-        <SolidColorBrush x:Key="CurveStrokeBrush" Color="#FFC6037D"/>
+        <converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
+        <SolidColorBrush x:Key="CurveStrokeBrush" Color="#FFFFC603"/>
+        <SolidColorBrush x:Key="CompareCurveStrokeBrush" Color="SlateGray"/>
         <Style TargetType="{x:Type local:BezierSegment}">
             <Setter Property="StrokeThickness" Value="1"/>
             <Setter Property="Stroke" Value="{DynamicResource CurveStrokeBrush}"/>
@@ -18,6 +21,10 @@
         <Style TargetType="{x:Type Line}">
             <Setter Property="StrokeThickness" Value="1"/>
             <Setter Property="Stroke" Value="{DynamicResource CurveStrokeBrush}"/>
+        </Style>
+        <Style x:Key="CompareCurve">
+            <Setter Property="Line.Stroke" Value="{DynamicResource CompareCurveStrokeBrush}"/>
+            <Setter Property="local:BezierSegment.Stroke" Value="{DynamicResource CompareCurveStrokeBrush}"/>
         </Style>
         <Style x:Key="HandleLine" TargetType="{x:Type Line}">
             <Setter Property="StrokeThickness" Value="1"/>
@@ -45,7 +52,7 @@
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Panel.ZIndex" Value="2"/>
             <Setter Property="Background" Value="{DynamicResource CurveStrokeBrush}"/>
-            <Setter Property="BorderBrush" Value="#FFB00000"/>
+            <Setter Property="BorderBrush" Value="#FFCC9800"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate>
@@ -63,8 +70,8 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="#FFF9FF06"/>
-                    <Setter Property="BorderBrush" Value="#FFEF070A"/>
+                    <Setter Property="Background" Value="White"/>
+                    <Setter Property="BorderBrush" Value="LightGray"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -72,14 +79,14 @@
             <Setter Property="Canvas.Bottom" Value="{Binding Path=Y, RelativeSource={RelativeSource Self}}"/>
             <Setter Property="Canvas.Left" Value="{Binding Path=X, RelativeSource={RelativeSource Self}}"/>
             <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Panel.ZIndex" Value="2"/>
+            <Setter Property="Panel.ZIndex" Value="3"/>
             <Setter Property="Background" Value="White"/>
             <Setter Property="Visibility" Value="Hidden"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate>
                         <Rectangle Fill="{TemplateBinding Background}" 
-                                 Width="7" Height="7"/>
+                                 Width="6" Height="6"/>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -98,8 +105,13 @@
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition/>
+                <RowDefinition/>
             </Grid.RowDefinitions>
-            <Border Grid.Row="0" Background="#80000000" Padding="5" CornerRadius="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Background="#80000000" Padding="5" CornerRadius="10">
                 <StackPanel Orientation="Horizontal">
                     <CheckBox x:Name="fixedTimeSpanCheckBox" VerticalAlignment="Center" IsChecked="{Binding UseFixedTimeSpan}"/>
                     <Label Content="Fixed Time Span" />
@@ -109,7 +121,14 @@
                     <TextBox x:Name="endTextBox" Width="40" Text="{Binding FixedEndTime}"/>
                 </StackPanel>
             </Border>
-            <Border Grid.Row="1" HorizontalAlignment="Right" Margin="0, 5"  Background="#80000000" Padding="5" CornerRadius="10">
+            <Border Grid.Row="1" Grid.Column="0" Height="31" VerticalAlignment="Top" Background="#80000000" Margin="0,5" Padding="5" CornerRadius="10"
+                    Visibility="{Binding ComparisonCurve, Converter={StaticResource NullVisibilityConverter}}">
+                <StackPanel Orientation="Horizontal">
+                    <CheckBox x:Name="showReferenceCurveCheckBox" VerticalAlignment="Center" IsChecked="{Binding ShowReferenceCurve}"/>
+                    <Label Content="Reference Curve" />
+                </StackPanel>
+            </Border>
+            <Border Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right" Margin="0, 5"  Background="#80000000" Padding="5" CornerRadius="10">
                 <Grid >
                     <Grid.RowDefinitions>
                         <RowDefinition />

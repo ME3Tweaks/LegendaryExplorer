@@ -11,6 +11,7 @@ using ME3Explorer.SharedUI;
 using ME3Explorer.TlkManagerNS;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
@@ -18,18 +19,13 @@ using Newtonsoft.Json;
 
 namespace ME3Explorer.FaceFX
 {
-    struct Animation
-    {
-        public string Name { get; set; }
-        public LinkedList<CurvePoint> points;
-    }
-
     /// <summary>
     /// Interaction logic for FaceFXAnimSetEditorControl.xaml
     /// </summary>
     public partial class FaceFXAnimSetEditorControl : ExportLoaderControl
     {
 
+        #region Single Line Mode
         public bool SingleLineMode
         {
             get => (bool)GetValue(SingleLineModeProperty);
@@ -56,7 +52,7 @@ namespace ME3Explorer.FaceFX
                 }
             }
         }
-
+        #endregion
 
         public FaceFXAnimSetEditorControl() : base("FaceFXAnimSetEditor")
         {
@@ -66,7 +62,7 @@ namespace ME3Explorer.FaceFX
 
         public FaceFXAnimSet FaceFX;
 
-        public List<FaceFXLineEntry> Lines;
+        public ObservableCollectionExtended<FaceFXLineEntry> Lines { get; set; } = new ObservableCollectionExtended<FaceFXLineEntry>();
 
         FaceFXLineEntry _selectedLineEntry;
 
@@ -77,16 +73,37 @@ namespace ME3Explorer.FaceFX
             {
                 if (SetProperty(ref _selectedLineEntry, value) && _selectedLineEntry != null)
                 {
-                    animationListBox.ItemsSource = null;
                     SelectedLineEntry.UpdateLength();
-                    updateAnimListBox();
+                    UpdateAnimListBox();
                     treeView.Nodes.Clear();
-                    treeView.Nodes.AddRange(DataToTree2(FaceFX, SelectedLineEntry.Line));
+                    treeView.Nodes.AddRange(DataToTree(FaceFX, SelectedLineEntry.Line));
                 }
             }
         }
 
         public FaceFXLine SelectedLine => SelectedLineEntry?.Line;
+
+        public ObservableCollectionExtended<Animation> Animations { get; set; } = new ObservableCollectionExtended<Animation>();
+
+        Animation _selectedAnimation;
+        public Animation SelectedAnimation
+        {
+            get => _selectedAnimation;
+            set => SetProperty(ref _selectedAnimation, value);
+        }
+
+        Animation _referenceAnimation;
+        public Animation ReferenceAnimation
+        {
+            get => _referenceAnimation;
+            set {
+                if(_referenceAnimation != null) _referenceAnimation.IsReferenceAnim = false;
+                SetProperty(ref _referenceAnimation, value);
+                _referenceAnimation.IsReferenceAnim = true;
+                graph.ComparisonCurve = _selectedAnimation.ToCurve(SaveChanges);
+                graph.Paint();
+            }
+        }
 
         #region ExportLoaderControl
 
@@ -98,7 +115,7 @@ namespace ME3Explorer.FaceFX
             {
                 UnloadExport();
                 CurrentLoadedExport = exportEntry;
-                loadFaceFXAnimset();
+                LoadFaceFXAnimset();
             }
         }
 
@@ -106,7 +123,8 @@ namespace ME3Explorer.FaceFX
         {
             CurrentLoadedExport = null;
             FaceFX = null;
-            animationListBox.ItemsSource = null;
+            Lines.Clear();
+            Animations.Clear();
             treeView.Nodes.Clear();
             graph.Clear();
         }
@@ -117,7 +135,7 @@ namespace ME3Explorer.FaceFX
             {
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new FaceFXAnimSetEditorControl(), CurrentLoadedExport)
                 {
-                    Title = $"FaceFX - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {Pcc.FilePath}"
+                    Title = $"FaceFX Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {Pcc.FilePath}"
                 };
                 elhw.Show();
             }
@@ -142,11 +160,11 @@ namespace ME3Explorer.FaceFX
         #endregion
 
 
-        private void loadFaceFXAnimset()
+        private void LoadFaceFXAnimset()
         {
             FaceFX = CurrentLoadedExport.GetBinaryData<FaceFXAnimSet>();
-            Lines = new List<FaceFXLineEntry>();
-            
+            Lines.Clear();
+
             foreach (var faceFXLine in FaceFX.Lines)
             {
                 FaceFXLineEntry LineEntry = new FaceFXLineEntry(faceFXLine);
@@ -156,46 +174,36 @@ namespace ME3Explorer.FaceFX
                 }
                 Lines.Add(LineEntry);
             }
-            linesListBox.ItemsSource = null;
-            linesListBox.ItemsSource = Lines;
             treeView.Nodes.Clear();
             graph.Clear();
         }
 
         private void animationListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (e.AddedItems.Count != 1)
+            if(SelectedAnimation != null)
             {
-                return;
+                graph.SelectedCurve = SelectedAnimation.ToCurve(SaveChanges);
+                graph.Paint(true);
             }
-            Animation a = (Animation)e.AddedItems[0];
-
-            Curve curve = new Curve(a.Name, a.points)
-            {
-                SaveChanges = SaveChanges
-            };
-            graph.SelectedCurve = curve;
-            SelectedLineEntry.UpdateLength();
-            graph.Paint(true);
         }
 
-        private void updateAnimListBox()
+        private void UpdateAnimListBox()
         {
             List<CurvePoint> points = SelectedLine.Points.Select(p => new CurvePoint(p.time, p.weight, p.inTangent, p.leaveTangent)).ToList();
 
-            var anims = new List<Animation>();
+            Animations.Clear();
+            SelectedAnimation = null;
             int pos = 0;
             for (int i = 0; i < SelectedLine.AnimationNames.Count; i++)
             {
                 int animLength = SelectedLine.NumKeys[i];
-                anims.Add(new Animation
+                Animations.Add(new Animation
                 {
                     Name = FaceFX.Names[SelectedLine.AnimationNames[i]],
-                    points = new LinkedList<CurvePoint>(points.Skip(pos).Take(animLength))
+                    Points = new LinkedList<CurvePoint>(points.Skip(pos).Take(animLength))
                 });
                 pos += animLength;
             }
-            animationListBox.ItemsSource = anims;
             graph.Clear();
         }
 
@@ -205,14 +213,14 @@ namespace ME3Explorer.FaceFX
             {
                 var curvePoints = new List<CurvePoint>();
                 var numKeys = new List<int>();
-                var animations = new List<int>();
-                foreach (Animation anim in animationListBox.ItemsSource)
+                var animationNames = new List<int>();
+                foreach (Animation anim in Animations)
                 {
-                    animations.Add(FaceFX.Names.IndexOf(anim.Name));
-                    curvePoints.AddRange(anim.points);
-                    numKeys.Add(anim.points.Count);
+                    animationNames.Add(FaceFX.Names.IndexOf(anim.Name));
+                    curvePoints.AddRange(anim.Points);
+                    numKeys.Add(anim.Points.Count);
                 }
-                SelectedLine.AnimationNames = animations;
+                SelectedLine.AnimationNames = animationNames;
                 SelectedLine.Points = curvePoints.Select(x => new FaceFXControlPoint
                 {
                     time = x.InVal,
@@ -250,6 +258,7 @@ namespace ME3Explorer.FaceFX
         {
             public FaceFXLine line;
             public string[] sourceNames;
+            public string fromFile;
         }
 
         private void linesListBox_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -274,7 +283,8 @@ namespace ME3Explorer.FaceFX
                     if (!(e.OriginalSource is ScrollViewer) && SelectedLine != null)
                     {
                         FaceFXLine d = SelectedLine.Clone();
-                        DragDrop.DoDragDrop(linesListBox, new DataObject("FaceFXLine", new FaceFXLineDragDropObject{ line = d, sourceNames = FaceFX.Names.ToArray() }), DragDropEffects.Copy);
+                        var dragDropObject = new FaceFXLineDragDropObject { line = d, sourceNames = FaceFX.Names.ToArray(), fromFile = CurrentLoadedExport.FileRef.FilePath };
+                        DragDrop.DoDragDrop(linesListBox, new DataObject("FaceFXLine", dragDropObject), DragDropEffects.Copy);
                     }
                 }
             }
@@ -294,27 +304,34 @@ namespace ME3Explorer.FaceFX
             Window.GetWindow(this).RestoreAndBringToFront();
             if (e.Data.GetDataPresent("FaceFXLine") && e.Data.GetData("FaceFXLine") is FaceFXLineDragDropObject d)
             {
+                if (CurrentLoadedExport == null || d.fromFile == CurrentLoadedExport.FileRef.FilePath) return;
+
                 string[] sourceNames = d.sourceNames;
                 FaceFXLineEntry lineEntry = new FaceFXLineEntry(d.line);
                 lineEntry.Line.NameIndex = FaceFX.Names.FindOrAdd(sourceNames[lineEntry.Line.NameIndex]);
                 FaceFX.FixNodeTable();
                 lineEntry.Line.AnimationNames = lineEntry.Line.AnimationNames.Select(idx => FaceFX.Names.FindOrAdd(sourceNames[idx])).ToList();
                 FaceFX.Lines.Add(lineEntry.Line);
+
+                if (int.TryParse(lineEntry.Line.ID, out int tlkID))
+                {
+                    lineEntry.TLKString = TLKManagerWPF.GlobalFindStrRefbyID(tlkID, Pcc);
+                }
+
                 Lines.Add(lineEntry);
-                linesListBox.ItemsSource = null;
-                linesListBox.ItemsSource = Lines;
                 SaveChanges();
             }
         }
 
         #endregion
 
-        #region anim dragging
+        #region Anim dragging
 
         private struct FaceFXAnimDragDropObject
         {
             public Animation anim;
             public int group;
+            public string fromFile;
         }
 
         private void animationListBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -332,10 +349,11 @@ namespace ME3Explorer.FaceFX
                     try
                     {
                         dragStart = new Point(0, 0);
-                        if (!(e.OriginalSource is ScrollViewer) && animationListBox.SelectedItem != null)
+                        if (!(e.OriginalSource is ScrollViewer) && SelectedAnimation != null)
                         {
-                            Animation a = (Animation)animationListBox.SelectedItem;
-                            DragDrop.DoDragDrop(linesListBox, new DataObject("FaceFXAnim", new FaceFXAnimDragDropObject {anim = a, group = SelectedLine.NumKeys[animationListBox.SelectedIndex]}), DragDropEffects.Copy);
+                            Animation a = SelectedAnimation;
+                            var dragDropObject = new FaceFXAnimDragDropObject { anim = a, group = SelectedLine.NumKeys[animationListBox.SelectedIndex], fromFile = CurrentLoadedExport.FileRef.FilePath };
+                            DragDrop.DoDragDrop(linesListBox, new DataObject("FaceFXAnim", dragDropObject), DragDropEffects.Copy);
                         }
                     }
                     catch
@@ -359,56 +377,52 @@ namespace ME3Explorer.FaceFX
             Window.GetWindow(this).RestoreAndBringToFront();
             if (e.Data.GetDataPresent("FaceFXAnim") && e.Data.GetData("FaceFXAnim") is FaceFXAnimDragDropObject d)
             {
-                int group = d.group;
-                Animation a = d.anim;
-                SelectedLine.AnimationNames.Add(FaceFX.Names.FindOrAdd(a.Name));
-                SelectedLine.Points.AddRange(a.points.Select(x => new FaceFXControlPoint
-                {
-                    time = x.InVal,
-                    weight = x.OutVal,
-                    inTangent = x.ArriveTangent,
-                    leaveTangent = x.LeaveTangent
-                }));
-                SelectedLine.NumKeys.Add(group);
-                updateAnimListBox();
+                if (CurrentLoadedExport == null || d.fromFile == CurrentLoadedExport.FileRef.FilePath) return;
+
+                Animations.Add(d.anim);
+                SelectedLine.AnimationNames.Add(FaceFX.Names.FindOrAdd(d.anim.Name));
+                SaveChanges();
+                UpdateAnimListBox();
             }
-            SaveChanges();
         }
         #endregion
 
         private void DeleteAnim_Click(object sender, RoutedEventArgs e)
         {
-            Animation a = (Animation)animationListBox.SelectedItem;
-            List<Animation> anims = animationListBox.ItemsSource.Cast<Animation>().ToList();
-            anims.Remove(a);
-            animationListBox.ItemsSource = anims;
+            Animations.RemoveAt(animationListBox.SelectedIndex);
             SaveChanges();
         }
 
         private void DeleteAnimKeys_Click(object sender, RoutedEventArgs e)
         {
-            Animation a = (Animation)animationListBox.SelectedItem;
-            List<Animation> anims = animationListBox.ItemsSource.Cast<Animation>().ToList();
-
-            a.points = new LinkedList<CurvePoint>();
-            anims[animationListBox.SelectedIndex] = a;
-            animationListBox.ItemsSource = anims;
-            animationListBox.SelectedItem = a;
+            SelectedAnimation.Points = new LinkedList<CurvePoint>();
             SaveChanges();
+        }
+
+        private void SelectForCompare_Click(object sender, RoutedEventArgs e)
+        {
+            ReferenceAnimation = SelectedAnimation;
+        }
+
+        private void CloneAnimation_Click(object sender, RoutedEventArgs e)
+        {
+            Animations.Add(SelectedAnimation);
+            SelectedLine.AnimationNames.Add(FaceFX.Names.FindOrAdd(SelectedAnimation.Name));
+
+            // This writes the animations back to the export, which basically clones the data properly
+            SaveChanges();
+            UpdateAnimListBox();
         }
 
         private void ClearLipSyncKeys_Click(object sender, RoutedEventArgs e)
         {
-            List<Animation> anims = animationListBox.ItemsSource.Cast<Animation>().ToList();
-            for(int i = 0; i < anims.Count; i++)
+            foreach(var anim in Animations)
             {
-                if(anims[i].Name.StartsWith("m_"))
+                if(anim.Name.StartsWith("m_"))
                 {
-                    Animation newAnim = new Animation { Name = anims[i].Name, points = new LinkedList<CurvePoint>() };
-                    anims[i] = newAnim;
+                    anim.Points = new LinkedList<CurvePoint>();
                 }
             }
-            animationListBox.ItemsSource = anims;
             SaveChanges();
         }
 
@@ -416,9 +430,21 @@ namespace ME3Explorer.FaceFX
         {
             FaceFX.Lines.Remove(SelectedLine);
             Lines.Remove(SelectedLineEntry);
-            linesListBox.ItemsSource = null;
-            linesListBox.ItemsSource = Lines;
             SaveChanges();
+        }
+
+        private void CloneLine_Click(object sender, RoutedEventArgs e)
+        {
+            // HenBagle: We need to do anything with names here because we're cloning within the same file
+            FaceFXLineEntry newEntry = new FaceFXLineEntry(SelectedLine.Clone());
+            FaceFX.Lines.Add(newEntry.Line);
+
+            if (int.TryParse(newEntry.Line.ID, out int tlkID))
+            {
+                newEntry.TLKString = TLKManagerWPF.GlobalFindStrRefbyID(tlkID, Pcc);
+            }
+
+            Lines.Add(newEntry);
         }
 
         private void treeView_MouseDoubleClick(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -498,12 +524,12 @@ namespace ME3Explorer.FaceFX
                     return;
             }
             treeView.Nodes.Clear();
-            treeView.Nodes.AddRange(DataToTree2(FaceFX, SelectedLine));
+            treeView.Nodes.AddRange(DataToTree(FaceFX, SelectedLine));
             linesListBox.Focus();
             SaveChanges();
         }
 
-        static System.Windows.Forms.TreeNode[] DataToTree2(FaceFXAnimSet animSet, FaceFXLine d) =>
+        static System.Windows.Forms.TreeNode[] DataToTree(FaceFXAnimSet animSet, FaceFXLine d) =>
             new[]
             {
                 new System.Windows.Forms.TreeNode($"Name : 0x{d.NameIndex:X8} \"{animSet.Names[d.NameIndex].Trim()}\""),
@@ -571,7 +597,7 @@ namespace ME3Explorer.FaceFX
             }
             SelectedLineEntry.Points = newPoints;
             CurrentLoadedExport?.WriteBinary(FaceFX);
-            updateAnimListBox();
+            UpdateAnimListBox();
         }
 
         private struct LineSection
@@ -641,7 +667,7 @@ namespace ME3Explorer.FaceFX
                 }
                 SelectedLineEntry.Points = newPoints;
                 CurrentLoadedExport?.WriteBinary(FaceFX);
-                updateAnimListBox();
+                UpdateAnimListBox();
             }
         }
 
@@ -713,7 +739,7 @@ namespace ME3Explorer.FaceFX
                 }
             }
             CurrentLoadedExport?.WriteBinary(FaceFX);
-            updateAnimListBox();
+            UpdateAnimListBox();
         }
 
         private void ExportToExcel_Click(object sender, RoutedEventArgs e)
@@ -756,6 +782,35 @@ namespace ME3Explorer.FaceFX
                     MessageBox.Show($"Save to {System.IO.Path.GetFileName(m.FileName)} failed.\nCheck the excel file is not open.");
                 }
             }
+        }
+    }
+
+    public class Animation: NotifyPropertyChangedBase
+    {
+        private string _name;
+        public string Name
+        {
+            get => _name;
+            set => SetProperty(ref _name, value);
+        }
+
+        private LinkedList<CurvePoint> _points;
+        public LinkedList<CurvePoint> Points
+        {
+            get => _points;
+            set => SetProperty(ref _points, value);
+        }
+
+        private bool _isReferenceAnim = false;
+        public bool IsReferenceAnim
+        {
+            get => _isReferenceAnim;
+            set => SetProperty(ref _isReferenceAnim, value);
+        }
+
+        public Curve ToCurve(Action SaveChanges)
+        {
+            return new Curve(Name, Points) { SaveChanges = SaveChanges };
         }
     }
 

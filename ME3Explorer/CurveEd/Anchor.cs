@@ -61,6 +61,14 @@ namespace ME3Explorer.CurveEd
             if (sender is Anchor a && a.graph != null)
             {
                 a.point.Value.InVal = Convert.ToSingle(a.graph.toUnrealX((double)e.NewValue));
+                if (a.IsSelected)
+                {
+                    string val = a.point.Value.InVal.ToString("0.###");
+                    if (!a.graph.xTextBox.Text.isNumericallyEqual(val))
+                    {
+                        a.graph.xTextBox.Text = val;
+                    }
+                }
             }
         }
 
@@ -265,9 +273,24 @@ namespace ME3Explorer.CurveEd
 
         private void OnDragDelta(object sender, DragDeltaEventArgs e)
         {
-            Y -= e.VerticalChange;
-            leftHandle.Y -= e.VerticalChange;
-            rightHandle.Y -= e.VerticalChange;
+            if(Keyboard.Modifiers == ModifierKeys.Shift || Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                double prev = graph.toLocalX(point.Previous?.Value.InVal ?? float.MinValue);
+                double next = graph.toLocalX(point.Next?.Value.InVal ?? float.MaxValue);
+                double change = e.HorizontalChange;
+                if ((X + change) <= prev || (X + change) >= next) change = 0f;
+
+                X += change;
+                leftHandle.X += change;
+                rightHandle.X += change;
+            }
+
+            if (Keyboard.Modifiers != ModifierKeys.Shift)
+            {
+                Y -= e.VerticalChange;
+                leftHandle.Y -= e.VerticalChange;
+                rightHandle.Y -= e.VerticalChange;
+            }
         }
     }
 }

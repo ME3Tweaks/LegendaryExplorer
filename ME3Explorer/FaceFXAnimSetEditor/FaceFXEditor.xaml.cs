@@ -100,7 +100,6 @@ namespace ME3Explorer.FaceFX
                 try
                 {
                     LoadFile(d.FileName);
-                    Title = $"FaceFXEditor - {Pcc.FilePath}";
                 }
                 catch (Exception ex)
                 {
@@ -123,6 +122,7 @@ namespace ME3Explorer.FaceFX
                 editorControl.UnloadExport();
                 RefreshComboBox();
 
+                Title = $"FaceFX Editor - {Pcc.FilePath}";
                 RecentsController.AddRecent(fileName, false);
                 RecentsController.SaveRecentList(true);
                 OnPropertyChanged(nameof(CurrentFile));
