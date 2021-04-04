@@ -48,11 +48,19 @@ namespace ME3Explorer.Matinee
                 var trackExports = tracksProp.Where(prop => Export.FileRef.IsUExport(prop.Value)).Select(prop => Export.FileRef.GetUExport(prop.Value));
                 foreach (ExportEntry trackExport in trackExports)
                 {
-                    if (trackExport.IsA("BioInterpTrack"))
+                    if (trackExport.IsA("BioEvtSysTrackDOF"))
+                    {
+                        //Depth of Field
+                        Tracks.Add(new BioEvtSysTrackDOF(trackExport));
+                    }
+                    else if (trackExport.IsA("BioEvtSysTrackSubtitles"))
+                    {
+                        Tracks.Add(new BioEvtSysTrackSubtitles(trackExport));
+                    }
+                    else if(trackExport.IsA("BioInterpTrack"))
                     {
                         Tracks.Add(new BioInterpTrack(trackExport));
                     }
-
                     else if (trackExport.ClassName == "InterpTrackSound")
                     {
                         Tracks.Add(new InterpTrackSound(trackExport));
@@ -89,16 +97,7 @@ namespace ME3Explorer.Matinee
                     {
                         Tracks.Add(new InterpTrackDirector(trackExport));
                     }
-                    else if (trackExport.IsA("BioEvtSysTrackDOF"))
-                    {
-                        //Depth of Field
-                        Tracks.Add(new BioEvtSysTrackDOF(trackExport));
-                    }
-                    else if (trackExport.IsA("BioEvtSysTrackSubtitles"))
-                    {
-                        Tracks.Add(new BioEvtSysTrackSubtitles(trackExport));
-                    }
-                    else if (trackExport.IsA("InterpTrackFloatBase"))
+                    else  if (trackExport.IsA("InterpTrackFloatBase"))
                     {
                         Tracks.Add(new InterpTrackFloatBase(trackExport));
                     }

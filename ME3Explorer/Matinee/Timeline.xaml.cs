@@ -12,8 +12,6 @@ using ME3ExplorerCore.SharpDX;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using Point = System.Windows.Point;
-using InterpCurveVector = ME3ExplorerCore.Unreal.BinaryConverters.InterpCurve<ME3ExplorerCore.SharpDX.Vector3>;
-using InterpCurveFloat = ME3ExplorerCore.Unreal.BinaryConverters.InterpCurve<float>;
 
 namespace ME3Explorer.Matinee
 {
@@ -85,76 +83,7 @@ namespace ME3Explorer.Matinee
                 if (ClassPickerDlg.GetClass(this, MatineeHelper.GetInterpTracks(Pcc.Game), "Choose Track to Add", "Add") is ClassInfo info)
                 {
                     ExportEntry trackExport = MatineeHelper.AddNewTrackToGroup(group.Export, info.ClassName);
-                    if (trackExport.IsA("BioInterpTrack"))
-                    {
-                        switch (trackExport.ClassName)
-                        {
-                            case "SFXInterpTrackPlayFaceOnlyVO":
-                                trackExport.WriteProperty(new ArrayProperty<StructProperty>("m_aFOVOKeys"));
-                                break;
-                            //todo: add the rest
-                        }
-                        trackExport.WriteProperty(new ArrayProperty<StructProperty>("m_aTrackKeys"));
-                    }
-                    else if (trackExport.ClassName == "InterpTrackSound")
-                    {
-                        trackExport.WriteProperty(new ArrayProperty<StructProperty>("Sounds"));
-                        trackExport.WriteProperty(new InterpCurveVector().ToStructProperty(Pcc.Game, "VectorTrack"));
-                    }
-                    else if (trackExport.IsA("InterpTrackEvent"))
-                    {
-                        trackExport.WriteProperty(new ArrayProperty<StructProperty>("EventTrack"));
-                    }
-                    else if (trackExport.IsA("InterpTrackFaceFX"))
-                    {
-                        trackExport.WriteProperty(new ArrayProperty<StructProperty>("FaceFXSeqs"));
-                    }
-                    else if (trackExport.IsA("InterpTrackAnimControl"))
-                    {
-                        trackExport.WriteProperty(new ArrayProperty<StructProperty>("AnimSeqs"));
-                    }
-                    else if (trackExport.IsA("InterpTrackMove"))
-                    {
-                        trackExport.WriteProperty(new InterpCurveVector().ToStructProperty(Pcc.Game, "PosTrack"));
-                        trackExport.WriteProperty(new InterpCurveVector().ToStructProperty(Pcc.Game, "EulerTrack"));
-                        trackExport.WriteProperty(new StructProperty("InterpLookupTrack", new PropertyCollection
-                        {
-                            new ArrayProperty<StructProperty>("Points")
-                        }, "LookupTrack"));
-                    }
-                    else if (trackExport.IsA("InterpTrackVisibility"))
-                    {
-                        trackExport.WriteProperty(new ArrayProperty<StructProperty>("VisibilityTrack"));
-                    }
-                    else if (trackExport.IsA("InterpTrackToggle"))
-                    {
-                        trackExport.WriteProperty(new ArrayProperty<StructProperty>("ToggleTrack"));
-                    }
-                    else if (trackExport.IsA("InterpTrackWwiseEvent"))
-                    {
-                        trackExport.WriteProperty(new ArrayProperty<StructProperty>("WwiseEvents"));
-                    }
-                    else if (trackExport.IsA("InterpTrackDirector"))
-                    {
-                        trackExport.WriteProperty(new ArrayProperty<StructProperty>("CutTrack"));
-                    }
-                    else if (trackExport.IsA("BioEvtSysTrackDOF"))
-                    {
-                        trackExport.WriteProperty(new ArrayProperty<StructProperty>("m_aTrackKeys"));
-                    }
-                    else if (trackExport.IsA("BioEvtSysTrackSubtitles"))
-                    {
-                        trackExport.WriteProperty(new ArrayProperty<StructProperty>("m_aSubtitleData"));
-                        trackExport.WriteProperty(new ArrayProperty<StructProperty>("m_aTrackKeys"));
-                    }
-                    else if (trackExport.IsA("InterpTrackFloatBase"))
-                    {
-                        trackExport.WriteProperty(new InterpCurveFloat().ToStructProperty(Pcc.Game, "FloatTrack"));
-                    }
-                    else if (trackExport.IsA("InterpTrackVectorBase"))
-                    {
-                        trackExport.WriteProperty(new InterpCurveVector().ToStructProperty(Pcc.Game, "VectorTrack"));
-                    }
+                    MatineeHelper.AddDefaultPropertiesToTrack(trackExport);
                 }
             }
         }

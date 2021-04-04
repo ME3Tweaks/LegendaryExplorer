@@ -267,7 +267,7 @@
         </StackPanel>
         <Grid Background="#FF5C5C5C">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition MinWidth="200" />
+                <ColumnDefinition Width="200" />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
