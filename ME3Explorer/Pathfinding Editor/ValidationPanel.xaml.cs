@@ -14,6 +14,8 @@ using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.SharpDX;
 using ME3ExplorerCore.Unreal.BinaryConverters;
+using InterpCurveVector = ME3ExplorerCore.Unreal.BinaryConverters.InterpCurve<ME3ExplorerCore.SharpDX.Vector3>;
+using InterpCurveFloat = ME3ExplorerCore.Unreal.BinaryConverters.InterpCurve<float>;
 
 namespace ME3Explorer.Pathfinding_Editor
 {
@@ -135,7 +137,7 @@ namespace ME3Explorer.Pathfinding_Editor
                                 task.Header = $"Recalculating SplineComponents {((double)splineComponent.UIndex / mePackage.ExportCount):P}";
                             }
 
-                            var splineInfo = new InterpCurve<Vector3>();
+                            var splineInfo = new InterpCurveVector();
                             Vector3 tangent = ActorUtils.GetLocalToWorld(splineActor).TransformNormal(splineActorTangent);
 
                             splineInfo.AddPoint(0f, location, tangent, tangent, EInterpCurveMode.CIM_CurveUser);
@@ -149,7 +151,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
                             splineComponent.WriteProperty(splineInfo.ToStructProperty(mePackage.Game, "SplineInfo"));
 
-                            var splineReparamTable = new InterpCurve<float>();
+                            var splineReparamTable = new InterpCurveFloat();
                             if (splineInfo.Points.Count > 1)
                             {
                                 const int steps = 10;

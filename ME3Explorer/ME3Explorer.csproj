@@ -325,6 +325,9 @@
     </Compile>
     <Compile Include="CoreLibSettingsBridge.cs" />
     <Compile Include="FaceFXAnimSetEditor\LiveFaceFxEditor.cs" />
+    <Compile Include="SharedUI\ClassPickerDlg.xaml.cs">
+      <DependentUpon>ClassPickerDlg.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ME3ExpMemoryAnalyzer\MemoryAnalyzerObjectExtended.cs" />
     <Compile Include="ME3Script\IDE\ASTColorizer.cs" />
     <Compile Include="ME3Script\IDE\ASTHighlighter.cs" />
@@ -385,6 +388,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AnimationExplorer\AnimationViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SharedUI\ClassPickerDlg.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

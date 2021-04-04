@@ -113,6 +113,20 @@ namespace ME3Explorer.Matinee
                 }
             }
         }
+
+        private bool isSelected;
+        public bool IsSelected
+        {
+            get => isSelected;
+            set => SetProperty(ref isSelected, value);
+        }
+
+        private bool isExpanded;
+        public bool IsExpanded
+        {
+            get => isExpanded;
+            set => SetProperty(ref isExpanded, value);
+        }
     }
 
     public abstract class InterpTrack : NotifyPropertyChangedBase
@@ -131,6 +145,21 @@ namespace ME3Explorer.Matinee
         }
 
         public abstract void LoadTrack();
+
+
+        private bool isSelected;
+        public bool IsSelected
+        {
+            get => isSelected;
+            set => SetProperty(ref isSelected, value);
+        }
+
+        private bool isExpanded;
+        public bool IsExpanded
+        {
+            get => isExpanded;
+            set => SetProperty(ref isExpanded, value);
+        }
     }
 
     public class BioInterpTrack : InterpTrack

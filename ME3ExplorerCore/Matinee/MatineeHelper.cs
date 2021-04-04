@@ -17,12 +17,25 @@ namespace ME3ExplorerCore.Matinee
         private static ExportEntry InternalAddGroup(string className, ExportEntry interpData, string groupName)
         {
             var properties = new PropertyCollection{new ArrayProperty<ObjectProperty>("InterpTracks")};
-            if (groupName is not null)
+            if (!string.IsNullOrEmpty(groupName))
             {
                 properties.Add(new NameProperty(groupName, "GroupName"));
             }
             properties.Add(CommonStructs.ColorProp(className == "InterpGroup" ? Color.Green : Color.Purple, "GroupColor"));
-            IMEPackage pcc = interpData.FileRef;
+            ExportEntry group = CreateNewExport(className, interpData, properties);
+
+            var props = interpData.GetProperties();
+            var groupsProp = props.GetProp<ArrayProperty<ObjectProperty>>("InterpGroups") ?? new ArrayProperty<ObjectProperty>("InterpGroups");
+            groupsProp.Add(new ObjectProperty(group));
+            props.AddOrReplaceProp(groupsProp);
+            interpData.WriteProperties(props);
+
+            return group;
+        }
+
+        private static ExportEntry CreateNewExport(string className, ExportEntry parent, PropertyCollection properties)
+        {
+            IMEPackage pcc = parent.FileRef;
             var group = new ExportEntry(pcc, properties: properties)
             {
                 ObjectName = pcc.GetNextIndexedName(className),
@@ -30,15 +43,24 @@ namespace ME3ExplorerCore.Matinee
             };
             group.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
             pcc.AddExport(group);
-
-            var props = interpData.GetProperties();
-            var groupsProp = props.GetProp<ArrayProperty<ObjectProperty>>("InterpGroups") ?? new ArrayProperty<ObjectProperty>("InterpGroups");
-            groupsProp.Add(new ObjectProperty(group));
-            props.AddOrReplaceProp(groupsProp);
-
+            group.Parent = parent;
             return group;
         }
 
+        public static List<ClassInfo> GetInterpTracks(MEGame game) => UnrealObjectInfo.GetNonAbstractDerivedClassesOf("InterpTrack", game);
 
+        public static ExportEntry AddNewTrackToGroup(ExportEntry interpGroup, string trackClass)
+        {
+            //should add the property that contains track keys at least
+            ExportEntry track = CreateNewExport(trackClass, interpGroup, null);
+
+            var props = interpGroup.GetProperties();
+            var tracksProp = props.GetProp<ArrayProperty<ObjectProperty>>("InterpTracks") ?? new ArrayProperty<ObjectProperty>("InterpTracks");
+            tracksProp.Add(new ObjectProperty(track));
+            props.AddOrReplaceProp(tracksProp);
+            interpGroup.WriteProperties(props);
+
+            return track;
+        }
     }
 }

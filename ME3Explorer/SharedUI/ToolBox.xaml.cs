@@ -11,7 +11,7 @@ namespace ME3Explorer.SharedUI
     /// <summary>
     /// Interaction logic for ToolBox.xaml
     /// </summary>
-    public partial class ToolBox : UserControl
+    public partial class ToolBox : NotifyPropertyChangedControlBase
     {
         private List<ClassInfo> _classes;
         public List<ClassInfo> Classes
@@ -25,6 +25,14 @@ namespace ME3Explorer.SharedUI
             }
         }
 
+        private ClassInfo _selectedItem;
+
+        public ClassInfo SelectedItem
+        {
+            get => _selectedItem;
+            set => SetProperty(ref _selectedItem, value);
+        }
+
         public Action<ClassInfo> DoubleClickCallback;
 
         public ToolBox()
@@ -35,7 +43,7 @@ namespace ME3Explorer.SharedUI
 
         private void classInfo_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.ButtonState == MouseButtonState.Pressed && e.ClickCount == 2 && sender is TextBlock tb && tb.DataContext is ClassInfo info)
+            if (e.ButtonState == MouseButtonState.Pressed && e.ClickCount == 2 && sender is TextBlock {DataContext: ClassInfo info})
             {
                 DoubleClickCallback?.Invoke(info);
             }
