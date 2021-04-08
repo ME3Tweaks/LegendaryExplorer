@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using ME3ExplorerCore.Helpers;
@@ -15,6 +16,7 @@ namespace Unrealscript.Lexing.Matching.StringMatchers
         private readonly List<KeywordMatcher> Delimiters;
         private readonly Regex digits = new Regex("[0-9]", RegexOptions.Compiled);
         private readonly Regex hexDigits = new Regex("[0-9a-fA-F]", RegexOptions.Compiled);
+        private readonly string _decSep = NumberFormatInfo.CurrentInfo.NumberDecimalSeparator;
 
         public NumberMatcher(List<KeywordMatcher> delimiters)
         {
@@ -38,18 +40,18 @@ namespace Unrealscript.Lexing.Matching.StringMatchers
 
                 data.Advance();
                 string hex = SubNumber(data, hexDigits);
-                if (hex == null || data.CurrentItem == "." || data.CurrentItem == "x")
+                if (hex == null || data.CurrentItem == _decSep || data.CurrentItem == "x")
                     return null;
 
                 hex = Convert.ToInt32(hex, 16).ToString("D");
                 type = TokenType.IntegerNumber;
                 value = hex;
             } 
-            else if (data.CurrentItem == "." || data.CurrentItem.CaseInsensitiveEquals("e") || data.CurrentItem.CaseInsensitiveEquals("d"))
+            else if (data.CurrentItem == _decSep || data.CurrentItem.CaseInsensitiveEquals("e") || data.CurrentItem.CaseInsensitiveEquals("d"))
             {
                 type = TokenType.FloatingNumber;
                 string second = null;
-                if (data.CurrentItem == ".")
+                if (data.CurrentItem == _decSep)
                 {
                     data.Advance();
                     second = SubNumber(data, digits);
@@ -58,14 +60,14 @@ namespace Unrealscript.Lexing.Matching.StringMatchers
                 {
                     data.Advance();
                     string exponent = SubNumber(data, digits);
-                    if (exponent == null || data.CurrentItem == "." || data.CurrentItem == "x")
+                    if (exponent == null || data.CurrentItem == _decSep || data.CurrentItem == "x")
                         return null;
-                    value = $"{first}.{second ?? "0"}e{exponent}";
+                    value = $"{first}{_decSep}{second ?? "0"}e{exponent}";
                 }
                 else if (second == null && data.CurrentItem == "f")
                 {
                     data.Advance();
-                    value = $"{first}.0";
+                    value = $"{first}{_decSep}0";
                 }
                 else
                 {
@@ -73,10 +75,10 @@ namespace Unrealscript.Lexing.Matching.StringMatchers
                     {
                         data.Advance();
                     }
-                    if (second == null || data.CurrentItem == "." || data.CurrentItem == "x")
+                    if (second == null || data.CurrentItem == _decSep || data.CurrentItem == "x")
                         return null;
 
-                    value = $"{first}.{second}";
+                    value = $"{first}{_decSep}{second}";
                 }
 
                 if (data.CurrentItem == "f")

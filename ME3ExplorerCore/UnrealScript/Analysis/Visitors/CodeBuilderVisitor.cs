@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -1450,6 +1451,8 @@ namespace Unrealscript.Analysis.Visitors
 
         private static string FormatFloat(float single)
         {
+            string decSep = NumberFormatInfo.CurrentInfo.NumberDecimalSeparator;
+
             //G9 ensures a fully accurate version of the float (no rounding) is written.
             //more details here: https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings#the-round-trip-r-format-specifier 
             string floatString = $"{single:G9}".Replace("E+", "e");
@@ -1467,13 +1470,13 @@ namespace Unrealscript.Analysis.Visitors
                 }
                 int ePos = floatString.IndexOf("E-");
                 int exponent = int.Parse(floatString.Substring(ePos + 2));
-                string digits = floatString.Substring(0, ePos).Replace(".", "");
-                floatString = $"{minus}0.{new string('0', exponent - 1)}{digits}";
+                string digits = floatString.Substring(0, ePos).Replace(decSep, "");
+                floatString = $"{minus}0{decSep}{new string('0', exponent - 1)}{digits}";
             }
-            else if (!floatString.Contains(".") && !floatString.Contains("e"))
+            else if (!floatString.Contains(decSep) && !floatString.Contains("e"))
             {
                 //need a decimal place in the float so that it does not get parsed as an int
-                floatString += ".0";
+                floatString += $"{decSep}0";
             }
 
             return floatString;
