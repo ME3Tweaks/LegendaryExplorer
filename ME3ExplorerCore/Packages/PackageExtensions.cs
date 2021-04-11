@@ -871,19 +871,21 @@ namespace ME3ExplorerCore.Packages
         public static void CondenseArchetypes(this ExportEntry export, bool removeArchetypeLink = true)
         {
             IEntry archetypeEntry = export.Archetype;
+            var properties = export.GetProperties();
             while (archetypeEntry is ExportEntry archetype)
             {
                 var archProps = archetype.GetProperties();
                 foreach (Property prop in archProps)
                 {
-                    if (!export.GetProperties().ContainsNamedProp(prop.Name))
+                    if (!properties.ContainsNamedProp(prop.Name))
                     {
-                        export.WriteProperty(prop);
+                        properties.AddOrReplaceProp(prop);
                     }
                 }
 
                 archetypeEntry = archetype.Archetype;
             }
+            export.WriteProperties(properties);
 
             export.Archetype = removeArchetypeLink ? null : archetypeEntry;
         }
