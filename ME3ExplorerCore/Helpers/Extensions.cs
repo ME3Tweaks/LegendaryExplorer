@@ -175,7 +175,7 @@ namespace ME3ExplorerCore.Helpers
             Buffer.BlockCopy(src, start, slice, 0, length);
             return slice;
         }
-        
+
         public static T[] Slice<T>(this ReadOnlyCollection<T> src, int start, int length)
         {
             var slice = new T[length];
@@ -382,6 +382,17 @@ namespace ME3ExplorerCore.Helpers
             return s.Split(new[] { Environment.NewLine }, options);
         }
 
+        /// <summary>
+        /// Capitalizes the first letter in the string.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static string UpperFirst(this string str)
+        {
+            if (string.IsNullOrEmpty(str))
+                return string.Empty;
+            return char.ToUpper(str[0]) + str.Substring(1);
+        }
         public static bool RepresentsPackageFilePath(this string path)
         {
             string extension = Path.GetExtension(path);
