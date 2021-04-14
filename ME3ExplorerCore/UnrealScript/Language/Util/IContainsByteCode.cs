@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Unrealscript.Language.Tree;
+using ME3ExplorerCore.UnrealScript.Language.Tree;
 
 namespace Unrealscript.Language.Util
 {

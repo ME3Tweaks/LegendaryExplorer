@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using ME3ExplorerCore.UnrealScript.Lexing.Tokenizing;
+using ME3ExplorerCore.UnrealScript.Utilities;
 using Unrealscript.Lexing.Matching;
-using Unrealscript.Lexing.Tokenizing;
-using Unrealscript.Utilities;
 
 namespace Unrealscript.Lexing
 {

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using ME3ExplorerCore.Packages;
-using Unrealscript.Language.Tree;
-using static Unrealscript.Utilities.Keywords;
+using ME3ExplorerCore.UnrealScript.Language.Tree;
+using static ME3ExplorerCore.UnrealScript.Utilities.Keywords;
 
-namespace Unrealscript.Decompiling
+namespace ME3ExplorerCore.UnrealScript.Decompiling
 {
     public enum NativeType
     {

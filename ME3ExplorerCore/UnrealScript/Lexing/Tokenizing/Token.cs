@@ -1,7 +1,7 @@
-﻿using Unrealscript.Analysis.Visitors;
-using Unrealscript.Utilities;
+﻿using ME3ExplorerCore.UnrealScript.Analysis.Visitors;
+using ME3ExplorerCore.UnrealScript.Utilities;
 
-namespace Unrealscript.Lexing.Tokenizing
+namespace ME3ExplorerCore.UnrealScript.Lexing.Tokenizing
 {
     public class Token<T> where T : class
     {

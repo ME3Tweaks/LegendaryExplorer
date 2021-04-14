@@ -1,7 +1,7 @@
-﻿using Unrealscript.Analysis.Visitors;
+﻿using ME3ExplorerCore.UnrealScript.Analysis.Visitors;
+using ME3ExplorerCore.UnrealScript.Lexing.Tokenizing;
+using ME3ExplorerCore.UnrealScript.Utilities;
 using Unrealscript.Compiling.Errors;
-using Unrealscript.Lexing.Tokenizing;
-using Unrealscript.Utilities;
 
 namespace Unrealscript.Lexing.Matching.StringMatchers
 {

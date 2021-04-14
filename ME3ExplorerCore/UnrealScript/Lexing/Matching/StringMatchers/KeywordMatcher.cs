@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using ME3ExplorerCore.UnrealScript.Lexing.Tokenizing;
+using ME3ExplorerCore.UnrealScript.Utilities;
 using Unrealscript.Compiling.Errors;
-using Unrealscript.Lexing.Tokenizing;
-using Unrealscript.Utilities;
 
 namespace Unrealscript.Lexing.Matching.StringMatchers
 {

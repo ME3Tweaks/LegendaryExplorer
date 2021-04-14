@@ -1,23 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using Unrealscript.Analysis.Symbols;
-using Unrealscript.Analysis.Visitors;
+using ME3ExplorerCore.UnrealScript.Analysis.Symbols;
+using ME3ExplorerCore.UnrealScript.Analysis.Visitors;
+using ME3ExplorerCore.UnrealScript.Language.Tree;
+using ME3ExplorerCore.UnrealScript.Lexing.Tokenizing;
+using ME3ExplorerCore.UnrealScript.Utilities;
 using Unrealscript.Compiling.Errors;
-using Unrealscript.Language.Tree;
 using Unrealscript.Language.Util;
 using Unrealscript.Lexing;
-using Unrealscript.Lexing.Tokenizing;
-using Unrealscript.Utilities;
-using static Unrealscript.Utilities.Keywords;
+using static ME3ExplorerCore.UnrealScript.Utilities.Keywords;
 
-namespace Unrealscript.Parsing
+namespace ME3ExplorerCore.UnrealScript.Parsing
 {
     public class CodeBodyParser : StringParserBase
     {

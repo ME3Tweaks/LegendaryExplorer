@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Unrealscript.Language.Tree
+namespace ME3ExplorerCore.UnrealScript.Language.Tree
 {
     public interface IObjectType
     {

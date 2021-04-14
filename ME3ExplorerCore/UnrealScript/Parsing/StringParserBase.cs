@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using ME3ExplorerCore.Helpers;
-using Unrealscript.Analysis.Visitors;
+using ME3ExplorerCore.UnrealScript.Analysis.Visitors;
+using ME3ExplorerCore.UnrealScript.Language.Tree;
+using ME3ExplorerCore.UnrealScript.Lexing.Tokenizing;
+using ME3ExplorerCore.UnrealScript.Utilities;
 using Unrealscript.Compiling.Errors;
-using Unrealscript.Language.Tree;
-using Unrealscript.Lexing.Tokenizing;
-using Unrealscript.Utilities;
-using static Unrealscript.Utilities.Keywords;
+using static ME3ExplorerCore.UnrealScript.Utilities.Keywords;
 
-namespace Unrealscript.Parsing
+namespace ME3ExplorerCore.UnrealScript.Parsing
 {
     public abstract class StringParserBase
     {

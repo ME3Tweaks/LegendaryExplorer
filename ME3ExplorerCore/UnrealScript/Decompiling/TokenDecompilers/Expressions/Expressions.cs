@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using ME3Explorer.ME3Script;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
+using ME3ExplorerCore.UnrealScript.Language.Tree;
+using ME3ExplorerCore.UnrealScript.Utilities;
 using Unrealscript.Language.ByteCode;
-using Unrealscript.Language.Tree;
-using Unrealscript.Utilities;
-using static Unrealscript.Utilities.Keywords;
+using static ME3ExplorerCore.UnrealScript.Utilities.Keywords;
 
-namespace Unrealscript.Decompiling
+namespace ME3ExplorerCore.UnrealScript.Decompiling
 {
     public partial class ByteCodeDecompiler
     {
@@ -639,7 +637,7 @@ namespace Unrealscript.Decompiling
             if (expr == null)
                 return null; // ERROR
             
-            string type = PrimitiveCastTable[typeToken];
+            string type = Decompiling.ByteCodeDecompiler.PrimitiveCastTable[typeToken];
 
             StartPositions.Pop();
             if (typeToken == (byte)ECast.ByteToInt && expr is IntegerLiteral || typeToken == (byte)ECast.InterfaceToObject)
@@ -670,7 +668,7 @@ namespace Unrealscript.Decompiling
                 var funcObj = ReadObject();
                 funcName = funcObj.ObjectName.Instanced;
 
-                if (NonNativeOperators.TryGetValue(funcName, out InOpDeclaration opDecl))
+                if (Decompiling.ByteCodeDecompiler.NonNativeOperators.TryGetValue(funcName, out InOpDeclaration opDecl))
                 {
                     Expression parm1 = DecompileExpression();
                     if (parm1 is null)
@@ -770,7 +768,7 @@ namespace Unrealscript.Decompiling
             }
 
             //if it's in a parent context, it's a super call if there is a function with the same name in the current context
-            return DataContainer.Export.Parent.GetChildren().Any(child => child.ObjectName.Instanced.CaseInsensitiveEquals(funcName));
+            return IEntryExtensions.GetChildren(DataContainer.Export.Parent).Any(child => child.ObjectName.Instanced.CaseInsensitiveEquals(funcName));
         }
 
         public Expression DecompileNew()

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unrealscript.Language.Tree;
+using ME3ExplorerCore.UnrealScript.Language.Tree;
+using ME3ExplorerCore.UnrealScript.Lexing.Tokenizing;
+using ME3ExplorerCore.UnrealScript.Utilities;
 using Unrealscript.Lexing;
-using Unrealscript.Lexing.Tokenizing;
-using Unrealscript.Utilities;
 
-namespace Unrealscript.Parsing
+namespace ME3ExplorerCore.UnrealScript.Parsing
 {
     internal struct ASTCacheEntry
     {

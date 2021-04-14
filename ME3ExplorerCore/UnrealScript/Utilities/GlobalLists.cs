@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using Unrealscript.Language.Tree;
+using ME3ExplorerCore.UnrealScript.Language.Tree;
+using ME3ExplorerCore.UnrealScript.Lexing.Tokenizing;
 using Unrealscript.Lexing.Matching.StringMatchers;
-using Unrealscript.Lexing.Tokenizing;
 
-namespace Unrealscript.Utilities
+namespace ME3ExplorerCore.UnrealScript.Utilities
 {
     public static class GlobalLists
     {

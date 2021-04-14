@@ -1,20 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ME3Explorer;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
-using Unrealscript.Analysis.Visitors;
-using Unrealscript.Language.Tree;
+using ME3ExplorerCore.UnrealScript.Analysis.Visitors;
+using ME3ExplorerCore.UnrealScript.Language.Tree;
+using ME3ExplorerCore.UnrealScript.Utilities;
 using Unrealscript.Language.Util;
-using Unrealscript.Utilities;
 using static ME3ExplorerCore.Unreal.UnrealFlags;
-using static Unrealscript.Utilities.Keywords;
+using static ME3ExplorerCore.UnrealScript.Utilities.Keywords;
 
-namespace Unrealscript.Analysis.Symbols
+namespace ME3ExplorerCore.UnrealScript.Analysis.Symbols
 {
 
     public class SymbolTable

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Unrealscript.Utilities;
+using ME3ExplorerCore.UnrealScript.Utilities;
 
 namespace Unrealscript.Compiling.Errors
 {

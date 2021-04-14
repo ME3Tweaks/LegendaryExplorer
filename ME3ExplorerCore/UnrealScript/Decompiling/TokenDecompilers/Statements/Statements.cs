@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using Unrealscript.Utilities;
-using Unrealscript.Analysis.Symbols;
+using ME3ExplorerCore.UnrealScript.Analysis.Symbols;
+using ME3ExplorerCore.UnrealScript.Language.Tree;
 using Unrealscript.Language.ByteCode;
-using Unrealscript.Language.Tree;
 
-namespace Unrealscript.Decompiling
+namespace ME3ExplorerCore.UnrealScript.Decompiling
 {
     public partial class ByteCodeDecompiler
     {
@@ -125,7 +125,7 @@ namespace Unrealscript.Decompiling
                     PopByte();
                     IEntry obj = ReadObject();
                     var condition = new SymbolReference(null, obj.ObjectName.Instanced);
-                    bool not = Convert.ToBoolean(ReadByte());
+                    bool not = Convert.ToBoolean((byte) ReadByte());
                     if (obj.ClassName == "BoolProperty")
                     {
                         var ifJump = new IfNotJump(
@@ -234,7 +234,7 @@ namespace Unrealscript.Decompiling
             if (isDynArray)
             {
                 Expression dynArrVar = DecompileExpression();
-                bool hasIndex = Convert.ToBoolean(ReadByte());
+                bool hasIndex = Convert.ToBoolean((byte) ReadByte());
                 Expression dynArrIndex = DecompileExpression();
                 iteratorFunc = new DynArrayIterator(iteratorFunc, dynArrVar, dynArrIndex);
             }
@@ -358,7 +358,7 @@ namespace Unrealscript.Decompiling
             var right = DecompileExpression();
             if (right == null)
                 return null; //ERROR ?
-            ResolveEnumValues(ref left, ref right);
+            ByteCodeDecompiler.ResolveEnumValues(ref left, ref right);
             var statement = new AssignStatement(left, right);
             StatementLocations.Add(StartPositions.Pop(), statement);
             return statement;

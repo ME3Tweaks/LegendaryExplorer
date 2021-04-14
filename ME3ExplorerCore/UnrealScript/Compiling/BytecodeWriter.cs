@@ -4,8 +4,8 @@ using System.Globalization;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.UnrealScript.Utilities;
 using Unrealscript.Language.ByteCode;
-using Unrealscript.Utilities;
 
 namespace Unrealscript.Compiling
 {

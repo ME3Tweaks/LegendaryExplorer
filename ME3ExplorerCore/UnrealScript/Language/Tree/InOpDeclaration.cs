@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Unrealscript.Language.Tree
+namespace ME3ExplorerCore.UnrealScript.Language.Tree
 {
     public class InOpDeclaration : OperatorDeclaration
     {

@@ -1,6 +1,6 @@
-﻿using Unrealscript.Compiling.Errors;
-using Unrealscript.Lexing.Tokenizing;
-using Unrealscript.Utilities;
+﻿using ME3ExplorerCore.UnrealScript.Lexing.Tokenizing;
+using ME3ExplorerCore.UnrealScript.Utilities;
+using Unrealscript.Compiling.Errors;
 
 namespace Unrealscript.Lexing.Matching.StringMatchers
 {

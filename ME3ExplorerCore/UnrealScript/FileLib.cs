@@ -8,7 +8,7 @@ using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
-using Unrealscript.Analysis.Symbols;
+using ME3ExplorerCore.UnrealScript.Analysis.Symbols;
 
 namespace Unrealscript
 {
