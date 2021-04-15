@@ -64,10 +64,10 @@ namespace ME3ExplorerCore.Dialogue
         public int CameraIntimacy { get; set; }
         public bool HideSubtitle { get; set; }
         public NameReference Script { get; set; }
-        public EBCConvGUIStyles GUIStyle { get; set; }
-        public EBCReplyTypes ReplyType { get; set; }
+        public EConvGUIStyles GUIStyle { get; set; }
+        public EReplyTypes ReplyType { get; set; }
 
-        public DialogueNodeExtended(StructProperty NodeProp, bool IsReply, int NodeCount, int SpeakerIndex, int LineStrRef, string Line, bool FiresConditional, int ConditionalOrBool, int Transition, EBCReplyTypes ReplyType)
+        public DialogueNodeExtended(StructProperty NodeProp, bool IsReply, int NodeCount, int SpeakerIndex, int LineStrRef, string Line, bool FiresConditional, int ConditionalOrBool, int Transition, EReplyTypes ReplyType)
         {
             this.NodeProp = NodeProp;
             this.IsReply = IsReply;
