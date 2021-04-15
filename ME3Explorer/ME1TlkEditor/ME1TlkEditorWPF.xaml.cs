@@ -107,16 +107,18 @@ namespace ME3Explorer.ME1TlkEditor
         {
             if (DisplayedString_ListBox.SelectedItem is ME1TalkFile.TLKStringRef selectedItem)
             {
-                selectedItem.Data = editBox.Text.Trim();
+                selectedItem.Data = EditorString;
                 FileModified = true;
             }
         }
+
+        private string EditorString => editBox.Text.Trim().Replace("\r\n", "\n");
 
         private bool CanSaveString(object obj)
         {
             if (DisplayedString_ListBox == null) return false;
             var selectedItem = DisplayedString_ListBox.SelectedItem as ME1TalkFile.TLKStringRef;
-            return selectedItem?.Data != null && editBox.Text.Trim() != selectedItem.Data;
+            return selectedItem?.Data != null && EditorString != selectedItem.Data;
         }
 
         //SirC "efficiency is next to godliness" way of Checking export is ME1/TLK
