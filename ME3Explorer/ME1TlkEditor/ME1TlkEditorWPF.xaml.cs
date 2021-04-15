@@ -387,7 +387,7 @@ namespace ME3Explorer.ME1TlkEditor
         public void LoadFileFromStream(Stream stream)
         {
             UnloadExport();
-            //CurrentLoadedFile = filepath;
+            CurrentLoadedFile = null;
             CurrentME2ME3TalkFile = new TalkFile();
             CurrentME2ME3TalkFile.LoadTlkDataFromStream(stream);
 
@@ -427,11 +427,17 @@ namespace ME3Explorer.ME1TlkEditor
             {
                 CurrentLoadedExport.FileRef.Save();
             }
-            else if (CurrentME2ME3TalkFile != null)
+            else if (CurrentME2ME3TalkFile is not null)
             {
+                if (CurrentLoadedFile is null)
+                {
+                    MessageBox.Show("Cannot save TLK File loaded from an SFAR. Use the Save As option to save your changes to a new file.");
+                    return;
+                }
                 // CurrentME2ME3TalkFile.
                 ME2ME3HuffmanCompression.SaveToTlkFile(CurrentME2ME3TalkFile.path, LoadedStrings);
-
+                CurrentME2ME3TalkFile = new TalkFile();
+                CurrentME2ME3TalkFile.LoadTlkData(CurrentLoadedFile);
                 FileModified = false; //you can only commit to file, not to export and then file in file mode.
             }
             //throw new NotImplementedException();
@@ -448,7 +454,7 @@ namespace ME3Explorer.ME1TlkEditor
                     CurrentLoadedExport.FileRef.Save(d.FileName);
                 }
             }
-            else if (CurrentME2ME3TalkFile != null)
+            else if (CurrentME2ME3TalkFile is not null)
             {
                 SaveFileDialog d = new() { Filter = $"ME2/ME3 talk files|*.tlk" };
                 if (d.ShowDialog() == true)
@@ -460,10 +466,7 @@ namespace ME3Explorer.ME1TlkEditor
             }
         }
 
-        public override bool CanSave()
-        {
-            return true;
-        }
+        public override bool CanSave() => CurrentLoadedExport is not null || CurrentME2ME3TalkFile is not null;
 
         internal override void RecentFile_click(object sender, RoutedEventArgs e)
         {
