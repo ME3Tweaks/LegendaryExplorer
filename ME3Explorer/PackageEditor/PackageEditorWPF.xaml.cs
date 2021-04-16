@@ -30,8 +30,6 @@ using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using Unrealscript.Compiling.Errors;
-using Unrealscript.Language.Tree;
 using static ME3ExplorerCore.Unreal.UnrealFlags;
 using Guid = System.Guid;
 using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
@@ -39,8 +37,10 @@ using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.TLK.ME1;
-using Unrealscript;
 using ME3ExplorerCore.GameFilesystem;
+using ME3ExplorerCore.UnrealScript;
+using ME3ExplorerCore.UnrealScript.Compiling.Errors;
+using ME3ExplorerCore.UnrealScript.Language.Tree;
 
 namespace ME3Explorer
 {
@@ -4991,6 +4991,11 @@ namespace ME3Explorer
         private void DumptTaggedWwiseStreams_OnClick(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsS.DumpSound(this);
+        }
+
+        private void ExtractPackageTextures_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.DumpPackageTextures(Pcc, this);
         }
     }
 }

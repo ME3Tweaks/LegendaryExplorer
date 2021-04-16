@@ -7,10 +7,9 @@ using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.UnrealScript.Analysis.Symbols;
 using ME3ExplorerCore.UnrealScript.Analysis.Visitors;
+using ME3ExplorerCore.UnrealScript.Language.ByteCode;
 using ME3ExplorerCore.UnrealScript.Language.Tree;
 using ME3ExplorerCore.UnrealScript.Utilities;
-using Unrealscript;
-using Unrealscript.Language.ByteCode;
 
 namespace ME3ExplorerCore.UnrealScript.Decompiling
 {

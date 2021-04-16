@@ -2,20 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using ME3ExplorerCore.Gammtek.Extensions;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.UnrealScript.Analysis.Symbols;
 using ME3ExplorerCore.UnrealScript.Analysis.Visitors;
+using ME3ExplorerCore.UnrealScript.Language.ByteCode;
 using ME3ExplorerCore.UnrealScript.Language.Tree;
+using ME3ExplorerCore.UnrealScript.Language.Util;
 using ME3ExplorerCore.UnrealScript.Utilities;
-using Unrealscript.Language.ByteCode;
-using Unrealscript.Language.Util;
 
-namespace Unrealscript.Compiling
+namespace ME3ExplorerCore.UnrealScript.Compiling
 {
     public class ByteCodeCompilerVisitor : BytecodeWriter, IASTVisitor
     {

@@ -1,4 +1,4 @@
-﻿namespace Unrealscript.Compiling.Errors
+﻿namespace ME3ExplorerCore.UnrealScript.Compiling.Errors
 {
     public class LogMessage
     {

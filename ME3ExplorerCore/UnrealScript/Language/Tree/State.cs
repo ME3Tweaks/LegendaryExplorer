@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.UnrealScript.Analysis.Visitors;
+using ME3ExplorerCore.UnrealScript.Language.Util;
 using ME3ExplorerCore.UnrealScript.Utilities;
-using Unrealscript.Language.Util;
 
 namespace ME3ExplorerCore.UnrealScript.Language.Tree
 {

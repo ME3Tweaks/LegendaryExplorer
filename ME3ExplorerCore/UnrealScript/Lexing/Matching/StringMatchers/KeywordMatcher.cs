@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using ME3ExplorerCore.UnrealScript.Compiling.Errors;
 using ME3ExplorerCore.UnrealScript.Lexing.Tokenizing;
 using ME3ExplorerCore.UnrealScript.Utilities;
-using Unrealscript.Compiling.Errors;
 
-namespace Unrealscript.Lexing.Matching.StringMatchers
+namespace ME3ExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
 {
     public class KeywordMatcher : TokenMatcherBase<string>
     {

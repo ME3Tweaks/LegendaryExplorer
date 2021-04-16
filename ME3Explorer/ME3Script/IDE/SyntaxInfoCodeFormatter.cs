@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Highlighting;
-using Unrealscript.Analysis.Visitors;
+using ME3ExplorerCore.UnrealScript.Analysis.Visitors;
 
 namespace ME3Explorer.ME3Script.IDE
 {

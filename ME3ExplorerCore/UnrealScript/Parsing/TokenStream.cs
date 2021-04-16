@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using ME3ExplorerCore.UnrealScript.Language.Tree;
+using ME3ExplorerCore.UnrealScript.Lexing;
 using ME3ExplorerCore.UnrealScript.Lexing.Tokenizing;
 using ME3ExplorerCore.UnrealScript.Utilities;
-using Unrealscript.Lexing;
 
 namespace ME3ExplorerCore.UnrealScript.Parsing
 {

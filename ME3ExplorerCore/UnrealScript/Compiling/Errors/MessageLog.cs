@@ -2,7 +2,7 @@
 using System.Linq;
 using ME3ExplorerCore.UnrealScript.Utilities;
 
-namespace Unrealscript.Compiling.Errors
+namespace ME3ExplorerCore.UnrealScript.Compiling.Errors
 {
     public class MessageLog
     {

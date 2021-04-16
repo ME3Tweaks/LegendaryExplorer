@@ -3,10 +3,10 @@ using System.Linq;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.UnrealScript.Analysis.Symbols;
+using ME3ExplorerCore.UnrealScript.Compiling.Errors;
 using ME3ExplorerCore.UnrealScript.Language.Tree;
+using ME3ExplorerCore.UnrealScript.Language.Util;
 using ME3ExplorerCore.UnrealScript.Utilities;
-using Unrealscript.Compiling.Errors;
-using Unrealscript.Language.Util;
 using static ME3ExplorerCore.Unreal.UnrealFlags;
 
 namespace ME3ExplorerCore.UnrealScript.Analysis.Visitors

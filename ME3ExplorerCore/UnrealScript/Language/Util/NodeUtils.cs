@@ -4,7 +4,7 @@ using ME3ExplorerCore.UnrealScript.Analysis.Symbols;
 using ME3ExplorerCore.UnrealScript.Language.Tree;
 using ME3ExplorerCore.UnrealScript.Utilities;
 
-namespace Unrealscript.Language.Util
+namespace ME3ExplorerCore.UnrealScript.Language.Util
 {
     public static class NodeUtils
     {

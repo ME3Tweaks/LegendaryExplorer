@@ -6,8 +6,8 @@ using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.UnrealScript.Analysis.Visitors;
 using ME3ExplorerCore.UnrealScript.Language.Tree;
+using ME3ExplorerCore.UnrealScript.Language.Util;
 using ME3ExplorerCore.UnrealScript.Utilities;
-using Unrealscript.Language.Util;
 using static ME3ExplorerCore.Unreal.UnrealFlags;
 using static ME3ExplorerCore.UnrealScript.Utilities.Keywords;
 

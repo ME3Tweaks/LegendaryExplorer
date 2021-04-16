@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using ME3ExplorerCore.UnrealScript.Language.Tree;
+using ME3ExplorerCore.UnrealScript.Lexing.Matching.StringMatchers;
 using ME3ExplorerCore.UnrealScript.Lexing.Tokenizing;
-using Unrealscript.Lexing.Matching.StringMatchers;
 
 namespace ME3ExplorerCore.UnrealScript.Utilities
 {

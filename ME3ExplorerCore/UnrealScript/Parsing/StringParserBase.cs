@@ -4,10 +4,10 @@ using System.Globalization;
 using System.Linq;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.UnrealScript.Analysis.Visitors;
+using ME3ExplorerCore.UnrealScript.Compiling.Errors;
 using ME3ExplorerCore.UnrealScript.Language.Tree;
 using ME3ExplorerCore.UnrealScript.Lexing.Tokenizing;
 using ME3ExplorerCore.UnrealScript.Utilities;
-using Unrealscript.Compiling.Errors;
 using static ME3ExplorerCore.UnrealScript.Utilities.Keywords;
 
 namespace ME3ExplorerCore.UnrealScript.Parsing

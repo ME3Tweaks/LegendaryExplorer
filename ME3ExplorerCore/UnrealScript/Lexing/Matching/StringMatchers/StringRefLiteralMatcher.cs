@@ -1,10 +1,10 @@
 ﻿using System.Text.RegularExpressions;
 using ME3ExplorerCore.UnrealScript.Analysis.Visitors;
+using ME3ExplorerCore.UnrealScript.Compiling.Errors;
 using ME3ExplorerCore.UnrealScript.Lexing.Tokenizing;
 using ME3ExplorerCore.UnrealScript.Utilities;
-using Unrealscript.Compiling.Errors;
 
-namespace Unrealscript.Lexing.Matching.StringMatchers
+namespace ME3ExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
 {
     public class StringRefLiteralMatcher : TokenMatcherBase<string>
     {

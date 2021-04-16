@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using ME3ExplorerCore.UnrealScript.Analysis.Visitors;
+using ME3ExplorerCore.UnrealScript.Compiling.Errors;
+using ME3ExplorerCore.UnrealScript.Lexing.Matching;
+using ME3ExplorerCore.UnrealScript.Lexing.Matching.StringMatchers;
 using ME3ExplorerCore.UnrealScript.Lexing.Tokenizing;
 using ME3ExplorerCore.UnrealScript.Utilities;
-using Unrealscript.Compiling.Errors;
-using Unrealscript.Lexing.Matching;
-using Unrealscript.Lexing.Matching.StringMatchers;
 
-namespace Unrealscript.Lexing
+namespace ME3ExplorerCore.UnrealScript.Lexing
 {
     public class StringLexer : LexerBase<string>
     {

@@ -4,8 +4,8 @@ using System.Drawing;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.UnrealScript.Analysis.Symbols;
+using ME3ExplorerCore.UnrealScript.Language.ByteCode;
 using ME3ExplorerCore.UnrealScript.Language.Tree;
-using Unrealscript.Language.ByteCode;
 
 namespace ME3ExplorerCore.UnrealScript.Decompiling
 {
@@ -358,7 +358,7 @@ namespace ME3ExplorerCore.UnrealScript.Decompiling
             var right = DecompileExpression();
             if (right == null)
                 return null; //ERROR ?
-            ByteCodeDecompiler.ResolveEnumValues(ref left, ref right);
+            ResolveEnumValues(ref left, ref right);
             var statement = new AssignStatement(left, right);
             StatementLocations.Add(StartPositions.Pop(), statement);
             return statement;

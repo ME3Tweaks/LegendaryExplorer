@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using ME3ExplorerCore;
 using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.UnrealScript.Analysis.Symbols;
 
-namespace Unrealscript
+namespace ME3ExplorerCore.UnrealScript
 {
     public partial class FileLib : IPackageUser, IDisposable
     {
