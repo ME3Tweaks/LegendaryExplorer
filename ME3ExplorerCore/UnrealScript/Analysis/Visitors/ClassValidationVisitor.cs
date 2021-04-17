@@ -2,14 +2,14 @@
 using System.Linq;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using Unrealscript.Analysis.Symbols;
-using Unrealscript.Compiling.Errors;
-using Unrealscript.Language.Tree;
-using Unrealscript.Language.Util;
-using Unrealscript.Utilities;
+using ME3ExplorerCore.UnrealScript.Analysis.Symbols;
+using ME3ExplorerCore.UnrealScript.Compiling.Errors;
+using ME3ExplorerCore.UnrealScript.Language.Tree;
+using ME3ExplorerCore.UnrealScript.Language.Util;
+using ME3ExplorerCore.UnrealScript.Utilities;
 using static ME3ExplorerCore.Unreal.UnrealFlags;
 
-namespace Unrealscript.Analysis.Visitors
+namespace ME3ExplorerCore.UnrealScript.Analysis.Visitors
 {
     public enum ValidationPass
     {

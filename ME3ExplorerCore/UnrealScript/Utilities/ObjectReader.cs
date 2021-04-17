@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace ME3Explorer.ME3Script.Utilities
+namespace ME3ExplorerCore.UnrealScript.Utilities
 {
     public class ObjectReader
     {

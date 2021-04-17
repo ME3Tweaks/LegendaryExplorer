@@ -4,16 +4,16 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text;
-using ME3ExplorerCore.Unreal.BinaryConverters;
-using static Unrealscript.Utilities.Keywords;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Unreal;
-using Unrealscript.Analysis.Symbols;
-using Unrealscript.Language.Tree;
-using Unrealscript.Lexing.Tokenizing;
-using Unrealscript.Parsing;
+using ME3ExplorerCore.Unreal.BinaryConverters;
+using ME3ExplorerCore.UnrealScript.Analysis.Symbols;
+using ME3ExplorerCore.UnrealScript.Language.Tree;
+using ME3ExplorerCore.UnrealScript.Lexing.Tokenizing;
+using ME3ExplorerCore.UnrealScript.Parsing;
+using static ME3ExplorerCore.UnrealScript.Utilities.Keywords;
 
-namespace Unrealscript.Analysis.Visitors
+namespace ME3ExplorerCore.UnrealScript.Analysis.Visitors
 {
     public enum EF
     {

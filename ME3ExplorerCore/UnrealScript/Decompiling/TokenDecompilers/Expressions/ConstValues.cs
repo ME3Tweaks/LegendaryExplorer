@@ -1,7 +1,6 @@
-﻿using Unrealscript.Utilities;
-using Unrealscript.Language.Tree;
+﻿using ME3ExplorerCore.UnrealScript.Language.Tree;
 
-namespace Unrealscript.Decompiling
+namespace ME3ExplorerCore.UnrealScript.Decompiling
 {
     public partial class ByteCodeDecompiler
     {

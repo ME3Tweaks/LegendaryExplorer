@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Linq;
-using ME3ExplorerCore;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using Unrealscript.Analysis.Visitors;
-using Unrealscript.Compiling;
-using Unrealscript.Compiling.Errors;
-using Unrealscript.Decompiling;
-using Unrealscript.Language.Tree;
-using Unrealscript.Lexing;
-using Unrealscript.Parsing;
+using ME3ExplorerCore.UnrealScript.Analysis.Visitors;
+using ME3ExplorerCore.UnrealScript.Compiling;
+using ME3ExplorerCore.UnrealScript.Compiling.Errors;
+using ME3ExplorerCore.UnrealScript.Decompiling;
+using ME3ExplorerCore.UnrealScript.Language.Tree;
+using ME3ExplorerCore.UnrealScript.Lexing;
+using ME3ExplorerCore.UnrealScript.Parsing;
 
-namespace Unrealscript
+namespace ME3ExplorerCore.UnrealScript
 {
     public static class UnrealScriptCompiler
     {

@@ -7,7 +7,6 @@ using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Indentation.CSharp;
 using ICSharpCode.AvalonEdit.Rendering;
-using Unrealscript.Analysis.Visitors;
 
 namespace ME3Explorer.ME3Script.IDE
 {

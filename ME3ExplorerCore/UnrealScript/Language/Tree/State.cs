@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using Unrealscript.Analysis.Visitors;
-using Unrealscript.Language.Util;
-using Unrealscript.Utilities;
+using ME3ExplorerCore.UnrealScript.Analysis.Visitors;
+using ME3ExplorerCore.UnrealScript.Language.Util;
+using ME3ExplorerCore.UnrealScript.Utilities;
 
-namespace Unrealscript.Language.Tree
+namespace ME3ExplorerCore.UnrealScript.Language.Tree
 {
     public class State : ASTNode, IContainsByteCode
     {

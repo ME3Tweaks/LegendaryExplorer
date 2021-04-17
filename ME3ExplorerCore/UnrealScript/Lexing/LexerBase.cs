@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using Unrealscript.Lexing.Matching;
-using Unrealscript.Lexing.Tokenizing;
-using Unrealscript.Utilities;
+using ME3ExplorerCore.UnrealScript.Lexing.Matching;
+using ME3ExplorerCore.UnrealScript.Lexing.Tokenizing;
+using ME3ExplorerCore.UnrealScript.Utilities;
 
-namespace Unrealscript.Lexing
+namespace ME3ExplorerCore.UnrealScript.Lexing
 {
     public abstract class LexerBase<T> where T : class
     {
