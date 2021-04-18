@@ -32,8 +32,7 @@ namespace ME3Explorer.ME3Script.IDE
 
         public void SetTokens(TokenStream<string> tokens)
         {
-            Spans.Clear();
-            Offsets.Clear();
+            Reset();
             foreach (Token<string> token in tokens)
             {
                 if (token.AssociatedNode is not null)
@@ -43,6 +42,12 @@ namespace ME3Explorer.ME3Script.IDE
                     Offsets.Add(startPosCharIndex);
                 }
             }
+        }
+
+        public void Reset()
+        {
+            Spans.Clear();
+            Offsets.Clear();
         }
 
         public override int GetFirstInterestedOffset(int startOffset)

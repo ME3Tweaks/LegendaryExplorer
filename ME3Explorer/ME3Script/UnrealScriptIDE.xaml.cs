@@ -370,6 +370,18 @@ namespace ME3Explorer.ME3Script.IDE
                 {
                     textEditor.SyntaxHighlighting = syntaxInfo;
                 });
+                _definitionLinkGenerator.Reset();
+                if (ast is Function && FullyInitialized && CurrentLoadedExport.Parent is ExportEntry parentExport)
+                {
+                    (ASTNode func, MessageLog log) = UnrealScriptCompiler.CompileAST(text, CurrentLoadedExport.ClassName);
+
+                    if (func is Function function && log.AllErrors.IsEmpty())
+                    {
+                        (_, TokenStream<string> tokens) = UnrealScriptCompiler.CompileFunctionBodyAST(parentExport, text, function, log, CurrentFileLib);
+                        _definitionLinkGenerator.SetTokens(tokens);
+                    }
+                }
+
                 RootNode = ast;
                 ScriptText = text;
                 Dispatcher.Invoke(() =>
@@ -409,15 +421,6 @@ namespace ME3Explorer.ME3Script.IDE
                 {
                     if (ast is Function func && FullyInitialized && CurrentLoadedExport.Parent is ExportEntry parentExport)
                     {
-                        foreach (FunctionParameter parameter in func.Parameters)
-                        {
-                            parameter.UIndex = parameter.StartPos.CharIndex;
-                        }
-
-                        foreach (VariableDeclaration variableDeclaration in func.Locals)
-                        {
-                            variableDeclaration.UIndex = variableDeclaration.StartPos.CharIndex;
-                        }
                         TokenStream<string> tokens;
                         (ast, tokens) = UnrealScriptCompiler.CompileFunctionBodyAST(parentExport, ScriptText, func, log, CurrentFileLib);
 
