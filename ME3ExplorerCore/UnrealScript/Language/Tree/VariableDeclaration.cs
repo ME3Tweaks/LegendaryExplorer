@@ -5,14 +5,14 @@ using ME3ExplorerCore.UnrealScript.Utilities;
 
 namespace ME3ExplorerCore.UnrealScript.Language.Tree
 {
-    public class VariableDeclaration : Statement
+    public class VariableDeclaration : Statement, IHasFileReference
     {
         public UnrealFlags.EPropertyFlags Flags;
 
         public VariableType VarType;
 
         public string Category;
-        public string Name;
+        public string Name { get; }
 
         public int ArrayLength;
 
@@ -42,5 +42,8 @@ namespace ME3ExplorerCore.UnrealScript.Language.Tree
         }
 
         public int GetSize() => VarType?.Size ?? 0;
+
+        public string FilePath { get; init; }
+        public int UIndex { get; set; }
     }
 }

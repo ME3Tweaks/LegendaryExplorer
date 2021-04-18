@@ -20,7 +20,8 @@ namespace ME3ExplorerCore.UnrealScript.Decompiling
 
         public static Class ConvertClass(UClass uClass, bool decompileBytecode, FileLib lib = null)
         {
-            IMEPackage pcc = uClass.Export.FileRef;
+            ExportEntry uClassExport = uClass.Export;
+            IMEPackage pcc = uClassExport.FileRef;
 
             VariableType parent = new VariableType(pcc.GetEntry(uClass.SuperClass)?.ObjectName.Instanced ?? "object");
 
@@ -49,6 +50,8 @@ namespace ME3ExplorerCore.UnrealScript.Decompiling
                     case UConst uConst:
                         Types.Add(new Const(uConst.Export.ObjectName.Instanced, uConst.Value)
                         {
+                            FilePath = pcc.FilePath,
+                            UIndex = nextChild.UIndex,
                             Literal = new ClassOutlineParser(new TokenStream<string>(new StringLexer(uConst.Value))).ParseConstValue()
                         });
                         nextItem = uConst.Next;
@@ -85,11 +88,13 @@ namespace ME3ExplorerCore.UnrealScript.Decompiling
                 defaultProperties = ConvertDefaultProperties(propExport);
             }
 
-            Class AST = new Class(uClass.Export.ObjectName.Instanced, parent, outer, uClass.ClassFlags, interfaces, Types, Vars, Funcs, States, defaultProperties)
+            var AST = new Class(uClassExport.ObjectName.Instanced, parent, outer, uClass.ClassFlags, interfaces, Types, Vars, Funcs, States, defaultProperties)
             {
                 ConfigName = uClass.ClassConfigName,
-                Package = uClass.Export.Parent is null ? Path.GetFileNameWithoutExtension(pcc.FilePath) : uClass.Export.ParentInstancedFullPath,
-                IsFullyDefined = nextItem.value == 0 && defaultProperties != null
+                Package = uClassExport.Parent is null ? Path.GetFileNameWithoutExtension(pcc.FilePath) : uClassExport.ParentInstancedFullPath,
+                IsFullyDefined = nextItem.value == 0 && defaultProperties != null,
+                FilePath = pcc.FilePath,
+                UIndex = uClassExport.UIndex
             };
             // Ugly quick fix:
             foreach (var member in Types)
@@ -166,7 +171,11 @@ namespace ME3ExplorerCore.UnrealScript.Decompiling
 
             var body = decompileBytecode ? new ByteCodeDecompiler(obj, containingClass, lib).Decompile() : null;
 
-            return new State(obj.Export.ObjectName.Instanced, body, obj.StateFlags, parent, Funcs, Ignores, new List<Label>(), null, null);
+            return new State(obj.Export.ObjectName.Instanced, body, obj.StateFlags, parent, Funcs, Ignores, new List<Label>(), null, null)
+            {
+                FilePath = obj.Export.FileRef.FilePath,
+                UIndex = obj.Export.UIndex
+            };
         }
 
         public static Struct ConvertStruct(UScriptStruct obj)
@@ -199,7 +208,11 @@ namespace ME3ExplorerCore.UnrealScript.Decompiling
 
             var defaults = new DefaultPropertiesBlock(ConvertProperties(RemoveDefaultValues(obj.Defaults), obj.Export));
 
-            var node = new Struct(obj.Export.ObjectName.Instanced, parent, obj.StructFlags, Vars, Types, defaults);
+            var node = new Struct(obj.Export.ObjectName.Instanced, parent, obj.StructFlags, Vars, Types, defaults)
+            {
+                FilePath = obj.Export.FileRef.FilePath,
+                UIndex = obj.Export.UIndex
+            };
 
             foreach (var member in Vars)
                 member.Outer = node;
@@ -318,7 +331,11 @@ namespace ME3ExplorerCore.UnrealScript.Decompiling
                 vals.Add(new EnumValue(val.Instanced, i));
             }
 
-            var node = new Enumeration(obj.Export.ObjectName.Instanced, vals, null, null);
+            var node = new Enumeration(obj.Export.ObjectName.Instanced, vals, null, null)
+            {
+                FilePath = obj.Export.FileRef.FilePath,
+                UIndex = obj.Export.UIndex
+            };
 
             foreach (var member in vals)
                 member.Outer = node;
@@ -330,7 +347,11 @@ namespace ME3ExplorerCore.UnrealScript.Decompiling
         {
             int size = obj.ArraySize;
 
-            return new VariableDeclaration(GetPropertyType(obj), obj.PropertyFlags, obj.Export.ObjectName.Instanced, size, obj.Category != "None" ? obj.Category : null);
+            return new VariableDeclaration(GetPropertyType(obj), obj.PropertyFlags, obj.Export.ObjectName.Instanced, size, obj.Category != "None" ? obj.Category : null)
+            {
+                FilePath = obj.Export.FileRef.FilePath,
+                UIndex = obj.Export.UIndex
+            };
         }
 
         private static VariableType GetPropertyType(UProperty obj)
@@ -373,7 +394,7 @@ namespace ME3ExplorerCore.UnrealScript.Decompiling
                             {
                                 if (delPropClass == functionClass)
                                 {
-                                    return new DelegateType(new Function(entry?.ObjectName.Instanced, default, null, null, null));
+                                    return new DelegateType(new Function(entry.ObjectName.Instanced, default, null, null, null));
                                 }
 
                                 delPropClass = (delPropClass as ExportEntry)?.SuperClass;
@@ -495,7 +516,9 @@ namespace ME3ExplorerCore.UnrealScript.Decompiling
             {
                 NativeIndex = obj.NativeIndex,
                 CoerceReturn = coerceReturn,
-                RetValNeedsDestruction = retValNeedsDestruction
+                RetValNeedsDestruction = retValNeedsDestruction,
+                FilePath = obj.Export.FileRef.FilePath,
+                UIndex = obj.Export.UIndex
             };
             if (obj.Export.Game <= MEGame.ME2)
             {

@@ -1,4 +1,5 @@
 ﻿using ME3ExplorerCore.UnrealScript.Analysis.Visitors;
+using ME3ExplorerCore.UnrealScript.Language.Tree;
 using ME3ExplorerCore.UnrealScript.Utilities;
 
 namespace ME3ExplorerCore.UnrealScript.Lexing.Tokenizing
@@ -11,6 +12,8 @@ namespace ME3ExplorerCore.UnrealScript.Lexing.Tokenizing
         public TokenType Type { get; private set; }
 
         public EF SyntaxType { get; set; } 
+
+        public ASTNode AssociatedNode { get; set; }
 
         public SourcePosition StartPos { get; private set; }
         public SourcePosition EndPos { get; private set; }

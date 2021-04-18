@@ -8,7 +8,7 @@ using ME3ExplorerCore.UnrealScript.Utilities;
 
 namespace ME3ExplorerCore.UnrealScript.Language.Tree
 {
-    public class Function : ASTNode, IContainsByteCode
+    public class Function : ASTNode, IContainsByteCode, IHasFileReference
     {
         public string Name { get; }
         public CodeBody Body { get; set; }
@@ -89,5 +89,9 @@ namespace ME3ExplorerCore.UnrealScript.Language.Tree
                 if (Body != null) yield return Body;
             }
         }
+
+
+        public string FilePath { get; init; }
+        public int UIndex { get; init; }
     }
 }

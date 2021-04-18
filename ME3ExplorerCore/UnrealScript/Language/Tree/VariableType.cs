@@ -5,9 +5,9 @@ using ME3ExplorerCore.UnrealScript.Utilities;
 
 namespace ME3ExplorerCore.UnrealScript.Language.Tree
 {
-    public class VariableType : ASTNode
+    public class VariableType : ASTNode, IHasFileReference
     {
-        public string Name;
+        public string Name { get; }
         public ASTNode Declaration;
         public virtual ASTNodeType NodeType => Declaration?.Type ?? ASTNodeType.INVALID;
 
@@ -61,5 +61,15 @@ namespace ME3ExplorerCore.UnrealScript.Language.Tree
 
             return Name;
         }
+
+        public string FilePath { get; init; }
+        public int UIndex { get; init; }
+    }
+
+    public interface IHasFileReference
+    {
+        public string Name { get; }
+        public string FilePath { get; }
+        public int UIndex { get; }
     }
 }

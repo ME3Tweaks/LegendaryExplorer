@@ -43,9 +43,9 @@ namespace ME3ExplorerCore.UnrealScript.Lexing.Tokenizing
             return EndOfStream(reach) ? null : Data[CurrentIndex + reach];
         }
 
-        public virtual D Prev()
+        public virtual D Prev(int lookBack = 1)
         {
-            return CurrentIndex <= 0 ? null : Data[CurrentIndex - 1];
+            return CurrentIndex - lookBack < 0 ? null : Data[CurrentIndex - lookBack];
         }
 
         public void Advance(int num = 1)

@@ -67,6 +67,9 @@ namespace ME3Explorer.ME3Script.IDE
             BusyText = "Initializing Script Compiler";
 
             textEditor.TextArea.TextEntered += TextAreaOnTextEntered;
+            textEditor.TextArea.MouseDown += TextArea_MouseDown;
+            _definitionLinkGenerator = new DefinitionLinkGenerator();
+            textEditor.TextArea.TextView.ElementGenerators.Add(_definitionLinkGenerator);
         }
 
         public override bool CanParse(ExportEntry exportEntry) =>
@@ -158,6 +161,7 @@ namespace ME3Explorer.ME3Script.IDE
                 Document.TextChanged -= TextChanged;
             }
             textEditor.TextArea.TextEntered -= TextAreaOnTextEntered;
+            textEditor.TextArea.MouseDown -= TextArea_MouseDown;
         }
 
 
@@ -405,6 +409,15 @@ namespace ME3Explorer.ME3Script.IDE
                 {
                     if (ast is Function func && FullyInitialized && CurrentLoadedExport.Parent is ExportEntry parentExport)
                     {
+                        foreach (FunctionParameter parameter in func.Parameters)
+                        {
+                            parameter.UIndex = parameter.StartPos.CharIndex;
+                        }
+
+                        foreach (VariableDeclaration variableDeclaration in func.Locals)
+                        {
+                            variableDeclaration.UIndex = variableDeclaration.StartPos.CharIndex;
+                        }
                         TokenStream<string> tokens;
                         (ast, tokens) = UnrealScriptCompiler.CompileFunctionBodyAST(parentExport, ScriptText, func, log, CurrentFileLib);
 
@@ -412,6 +425,7 @@ namespace ME3Explorer.ME3Script.IDE
                         ast.AcceptVisitor(codeBuilder);
                         (_, SyntaxInfo syntaxInfo) = codeBuilder.GetOutput();
 
+                        _definitionLinkGenerator.SetTokens(tokens);
                         if (tokens.Any())
                         {
                             int firstLine = tokens.First().StartPos.Line - 1;
@@ -479,6 +493,18 @@ namespace ME3Explorer.ME3Script.IDE
             // }
         }
 
+        private void TextArea_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (Keyboard.Modifiers.Has(ModifierKeys.Control))
+            {
+                var selection = textEditor.TextArea.Selection;
+                if (selection.Length == 0)
+                {
+                    
+                }
+            }
+        }
+
         private void CompileAST_OnClick(object sender, RoutedEventArgs e)
         {
             if (ScriptText != null)
@@ -515,6 +541,7 @@ namespace ME3Explorer.ME3Script.IDE
 
         private FoldingManager foldingManager;
         private readonly BraceFoldingStrategy foldingStrategy = new();
+        private readonly DefinitionLinkGenerator _definitionLinkGenerator;
 
         #endregion
     }

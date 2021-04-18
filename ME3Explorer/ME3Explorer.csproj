@@ -325,6 +325,8 @@
     </Compile>
     <Compile Include="CoreLibSettingsBridge.cs" />
     <Compile Include="FaceFXAnimSetEditor\LiveFaceFxEditor.cs" />
+    <Compile Include="ME3Script\IDE\DefinitionLinkGenerator.cs" />
+    <Compile Include="ME3Script\IDE\VisualLineDefinitionLinkText.cs" />
     <Compile Include="SharedUI\ClassPickerDlg.xaml.cs">
       <DependentUpon>ClassPickerDlg.xaml</DependentUpon>
     </Compile>

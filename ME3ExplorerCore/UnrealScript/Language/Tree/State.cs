@@ -6,10 +6,10 @@ using ME3ExplorerCore.UnrealScript.Utilities;
 
 namespace ME3ExplorerCore.UnrealScript.Language.Tree
 {
-    public class State : ASTNode, IContainsByteCode
+    public class State : ASTNode, IContainsByteCode, IHasFileReference
     {
         public StateFlags Flags;
-        public string Name;
+        public string Name { get; }
         public CodeBody Body { get; set; }
         public State Parent;
         public List<Function> Functions;
@@ -45,5 +45,8 @@ namespace ME3ExplorerCore.UnrealScript.Language.Tree
                 if (Ignores != null) foreach (Function function in Ignores) yield return function;
             }
         }
+
+        public string FilePath { get; init; }
+        public int UIndex { get; init; }
     }
 }

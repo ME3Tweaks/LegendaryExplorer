@@ -473,6 +473,15 @@ namespace ME3ExplorerCore.UnrealScript.Parsing
             if (type is Enumeration)
             {
                 PrevToken.SyntaxType = EF.Enum;
+                PrevToken.AssociatedNode = type;
+            }
+            else if (PrevToken.Type == TokenType.RightArrow)
+            {
+                Tokens.Prev(2).AssociatedNode = type;
+            }
+            else
+            {
+                PrevToken.AssociatedNode = type;
             }
 
             var var = ParseVariableName();
@@ -1896,6 +1905,7 @@ namespace ME3ExplorerCore.UnrealScript.Parsing
                     if (Symbols.TryGetType(limiter.Value, out VariableType destType) && destType is Class limiterType)
                     {
                         limiter.SyntaxType = EF.TypeName;
+                        limiter.AssociatedNode = limiterType;
                         if (!Matches(TokenType.LeftParenth))
                         {
                             throw ParseError("Expected '(' at start of cast!", CurrentPosition);
@@ -2100,6 +2110,8 @@ namespace ME3ExplorerCore.UnrealScript.Parsing
                     {
                         throw ParseError($"'{vartype.Name}' is not a class!", className);
                     }
+
+                    className.AssociatedNode = super;
                     superSpecifier = super;
                     superClass = super;
                     if (!Self.SameAsOrSubClassOf(superClass.Name))
@@ -2156,6 +2168,7 @@ namespace ME3ExplorerCore.UnrealScript.Parsing
                 specificScope = $"{stateClass.GetInheritanceString()}.{state.Name}";
                 if (Symbols.TryGetSymbolInScopeStack(functionName.Value, out ASTNode funcNode, specificScope) && funcNode is Function)
                 {
+                    functionName.AssociatedNode = funcNode;
                     return new SymbolReference(funcNode, functionName.Value, functionName.StartPos, functionName.EndPos)
                     {
                         IsSuper = true
@@ -2176,6 +2189,7 @@ namespace ME3ExplorerCore.UnrealScript.Parsing
                 TypeError($"Expected function name after '{SUPER}'!", functionName);
             }
 
+            functionName.AssociatedNode = symbol;
             return new SymbolReference(symbol, functionName.Value, functionName.StartPos, functionName.EndPos)
             {
                 IsSuper = true,
@@ -2292,12 +2306,14 @@ namespace ME3ExplorerCore.UnrealScript.Parsing
                 //primitive or dynamic cast, or enum
                 if (!isDefaultRef && Symbols.TryGetType(token.Value, out VariableType destType))
                 {
+                    token.AssociatedNode = destType;
                     if (destType is Enumeration enm && Matches(TokenType.Dot))
                     {
                         token.SyntaxType = EF.Enum;
                         if (Consume(TokenType.Word) is {} enumValName 
                          && enm.Values.FirstOrDefault(val => val.Name.CaseInsensitiveEquals(enumValName.Value)) is EnumValue enumValue)
                         {
+                            enumValName.AssociatedNode = enm;
                             return NewSymbolReference(enumValue, enumValName, false);
                         }
                         throw ParseError("Expected valid enum value!", CurrentPosition);
@@ -2334,6 +2350,7 @@ namespace ME3ExplorerCore.UnrealScript.Parsing
                 symRef = new SymbolReference(symbol, token.Value, token.StartPos, token.EndPos);
             }
 
+            token.AssociatedNode = symbol;
             if (symRef.Node is Function)
             {
                 token.SyntaxType = EF.Function;
@@ -2409,11 +2426,17 @@ namespace ME3ExplorerCore.UnrealScript.Parsing
             {
                 if (isClassLiteral)
                 {
+                    objName.AssociatedNode = classType;
                     classType = new ClassType(classType);
                 }
-                else if (cls.SameAsOrSubClassOf("Actor"))
+                else
                 {
-                    TypeError("Object constants must not be Actors!", className);
+                    if (cls.SameAsOrSubClassOf("Actor"))
+                    {
+                        TypeError("Object constants must not be Actors!", className);
+                    }
+
+                    className.AssociatedNode = classType;
                 }
                 
 
