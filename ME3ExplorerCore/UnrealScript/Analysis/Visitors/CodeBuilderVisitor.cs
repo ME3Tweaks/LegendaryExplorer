@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text;
-using ME3ExplorerCore.Unreal.BinaryConverters;
-using static Unrealscript.Utilities.Keywords;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Unreal;
-using Unrealscript.Analysis.Symbols;
-using Unrealscript.Language.Tree;
-using Unrealscript.Lexing.Tokenizing;
-using Unrealscript.Parsing;
+using ME3ExplorerCore.Unreal.BinaryConverters;
+using ME3ExplorerCore.UnrealScript.Analysis.Symbols;
+using ME3ExplorerCore.UnrealScript.Language.Tree;
+using ME3ExplorerCore.UnrealScript.Lexing.Tokenizing;
+using ME3ExplorerCore.UnrealScript.Parsing;
+using static ME3ExplorerCore.UnrealScript.Utilities.Keywords;
 
-namespace Unrealscript.Analysis.Visitors
+namespace ME3ExplorerCore.UnrealScript.Analysis.Visitors
 {
     public enum EF
     {
@@ -642,7 +643,7 @@ namespace Unrealscript.Analysis.Visitors
 
             if (node.Ignores.Count > 0)
             {
-                Write(IGNORES);
+                Write(IGNORES, EF.Keyword);
                 Space();
                 Join(node.Ignores.Select(x => x.Name).ToList(), ", ", EF.Function);
                 Write(";");
@@ -1186,12 +1187,12 @@ namespace Unrealscript.Analysis.Visitors
             // functionName( parameter1, parameter2.. )
             if (node.Function.IsGlobal)
             {
-                Append(GLOBAL);
+                Append(GLOBAL, EF.Keyword);
                 Append(".", EF.Operator);
             }
             else if (node.Function.IsSuper)
             {
-                Append(SUPER);
+                Append(SUPER, EF.Keyword);
                 if (node.Function.SuperSpecifier is {} superSpecifier)
                 {
                     Append("(");
@@ -1452,7 +1453,7 @@ namespace Unrealscript.Analysis.Visitors
         {
             //G9 ensures a fully accurate version of the float (no rounding) is written.
             //more details here: https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings#the-round-trip-r-format-specifier 
-            string floatString = $"{single:G9}".Replace("E+", "e");
+            string floatString = single.ToString("G9", NumberFormatInfo.InvariantInfo).Replace("E+", "e");
 
             if (floatString.Contains("E-"))
             {
@@ -1473,7 +1474,7 @@ namespace Unrealscript.Analysis.Visitors
             else if (!floatString.Contains(".") && !floatString.Contains("e"))
             {
                 //need a decimal place in the float so that it does not get parsed as an int
-                floatString += ".0";
+                floatString += $".0";
             }
 
             return floatString;

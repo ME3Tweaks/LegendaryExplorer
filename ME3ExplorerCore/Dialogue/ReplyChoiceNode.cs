@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using ME3ExplorerCore.Unreal;
 
 namespace ME3ExplorerCore.Dialogue
 {
@@ -18,7 +19,7 @@ namespace ME3ExplorerCore.Dialogue
         /// <summary>
         /// reply choice category
         /// </summary>
-        public EBCReplyCategory RCategory { get; set; }
+        public EReplyCategory RCategory { get; set; }
         public string ReplyLine { get; set; }
         public string NodeIDLink { get; set; }
         public string Ordinal { get; set; }
@@ -27,7 +28,7 @@ namespace ME3ExplorerCore.Dialogue
         public string TgtLine { get; set; }
         public string TgtSpeaker { get; set; }
 
-        public ReplyChoiceNode(int Index, string Paraphrase, int ReplyStrRef, EBCReplyCategory RCategory, string ReplyLine)
+        public ReplyChoiceNode(int Index, string Paraphrase, int ReplyStrRef, EReplyCategory RCategory, string ReplyLine)
         {
             this.Index = Index;
             this.Paraphrase = Paraphrase;

@@ -29,7 +29,7 @@ namespace ME3Explorer.Matinee
             DataContext = this;
             StatusText = "Select package file to load";
             InitializeComponent();
-            RecentsController.InitRecentControl(Toolname, Recents_MenuItem, fileName => LoadFile(fileName));
+            RecentsController.InitRecentControl(Toolname, Recents_MenuItem, LoadFile);
 
             timelineControl.SelectionChanged += TimelineControlOnSelectionChanged;
         }
@@ -54,8 +54,8 @@ namespace ME3Explorer.Matinee
             }
         }
         public bool LoadedExportIsCurve => Properties_InterpreterWPF != null && CurveTab_CurveEditor != null && CurveTab_CurveEditor.CanParse(Properties_InterpreterWPF.CurrentLoadedExport);
-        public ObservableCollectionExtended<ExportEntry> InterpDataExports { get; } = new ObservableCollectionExtended<ExportEntry>();
-        public ObservableCollectionExtended<string> Animations { get; } = new ObservableCollectionExtended<string>();
+        public ObservableCollectionExtended<ExportEntry> InterpDataExports { get; } = new();
+        public ObservableCollectionExtended<string> Animations { get; } = new();
 
         #region Properties and Bindings
         public ICommand OpenCommand { get; set; }
@@ -148,6 +148,7 @@ namespace ME3Explorer.Matinee
             Animations.AddRange(Pcc.Exports.Where(exp => exp.ClassName == "AnimSequence").Select(a => a.ObjectNameString));
             Title = $"Interp Viewer - {Pcc.FilePath}";
             StatusText = Path.GetFileName(Pcc.FilePath);
+            timelineControl.InterpDataExport = null;
         }
 
         private void LoadInterpData(ExportEntry value)
@@ -182,7 +183,7 @@ namespace ME3Explorer.Matinee
                 else if (changedExport.IsDescendantOf(SelectedInterpData)) //track was changed or at least a descendant
                 {
                     // subcontrol, 
-                    timelineControl.RefreshInterpData(changedExport);
+                    timelineControl.RefreshInterpData(changedExport, update.Change);
                 }
 
                 if (Properties_InterpreterWPF.CurrentLoadedExport == changedExport)

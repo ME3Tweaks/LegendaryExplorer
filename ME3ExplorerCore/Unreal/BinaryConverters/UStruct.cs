@@ -77,8 +77,6 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                 {
                     try
                     {
-                        //if (Export.ClassName == "State")
-                        //    Debugger.Break();
                         var func = Export.ClassName == "State" ? UE3FunctionReader.ReadState(Export) : UE3FunctionReader.ReadFunction(Export);
                         func.Decompile(new TextBuilder(), false, false); //parse bytecode without signature (it does not contain entry refs)
                         var entryRefs = func.EntryReferences;

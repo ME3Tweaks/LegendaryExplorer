@@ -1,7 +1,7 @@
-﻿using System.Linq;
-using System.Globalization;
+﻿using System.Globalization;
+using System.Linq;
 
-namespace Unrealscript.Lexing.Tokenizing
+namespace ME3ExplorerCore.UnrealScript.Lexing.Tokenizing
 {
     public class StringTokenizer : TokenizableDataStream<string>
     {

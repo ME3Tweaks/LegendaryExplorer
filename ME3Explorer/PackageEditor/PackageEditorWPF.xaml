@@ -227,6 +227,7 @@
                     <MenuItem Header="Resolve imports*" ToolTip="Attempts to resolve the imports and show the source of them in the treeview" Command="{Binding ResolveImportsTreeViewCommand}"/>
                     <MenuItem Header="Enable experiments (Warning: dangerous)" ToolTip="Enables experiments used by toolset developers. These features are not tested, not supported, and can easily break the toolset and/or games without warning" IsChecked="{Binding ShowExperiments}" IsCheckable="True" StaysOpenOnClick="True"/>
                 </MenuItem>
+                <!-- We should move this into it's own menu control. This way we can split the code off from PEWPF -->
                 <MenuItem Header="Experiments" Padding="4" Visibility="{Binding ShowExperiments, Converter={StaticResource BoolToVisibilityConverter}}">
                     <MenuItem Header=" &gt;&gt; FOR TOOLSET DEVELOPERS ONLY &lt;&lt;" IsEnabled="False"/>
                     <MenuItem Header=" &gt;&gt; THIS STUFF CAN BREAK GAMES/TOOLSET FUNCTIONALITY &lt;&lt;" IsEnabled="False"/>
@@ -248,6 +249,7 @@
                     <MenuItem Header="Mgamerz's Programming Circus">
                         <MenuItem Header="Reset textures in package" Click="ResetPackageTextures_Click"/>
                         <MenuItem Header="Reset vanilla parts of package" Click="ResetVanillaPackagePart_Click"/>
+                        <MenuItem Header="Extract package textures to PNG" Click="ExtractPackageTextures_Click"/>
                         <MenuItem Header="Compact current file via external file" Click="CompactInFile_Click"/>
                         <MenuItem Header="Search ObjectInfo keys for value" Click="ObjectInfosSearch_Click"/>
                         <MenuItem Header="Create Testpatch functions delta to vanilla" Click="CreateTestPatchDelta_Click"/>
@@ -293,6 +295,7 @@
                         <MenuItem Header="Recompile All classes (ME3 Only!)" Click="RecompileAll_OnClick" />
                         <MenuItem Header="Find OpCode" Click="FindOpCode_OnClick" />
                         <MenuItem Header="Build Native Table" Click="BuildNativeTable_OnClick" />
+                        <MenuItem Header="DumpTaggedWwiseStreams" Click="DumptTaggedWwiseStreams_OnClick" />
                     </MenuItem>
                     <MenuItem Header="Kinkojiro's 101 ways to cause an aneurysm">
                         <MenuItem Header="Transfer game level's art to a different game (ME2 -> ME3 Only)" Click="TransferLevelBetweenGames"/>
@@ -304,6 +307,7 @@
                     </MenuItem>
                     <MenuItem Header="Other people's box of Legos">
                         <MenuItem Header="Export level to T3D" Click="ExportLevelToT3D_Click"/>
+                        <MenuItem Header="Build ME1 SuperTlk File" Click="BuildME1SuperTLK_Clicked"/>
                     </MenuItem>
                 </MenuItem>
             </Menu>

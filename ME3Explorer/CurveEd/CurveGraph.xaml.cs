@@ -13,7 +13,7 @@ namespace ME3Explorer.CurveEd
     /// <summary>
     /// Interaction logic for CurveGraph.xaml
     /// </summary>
-    public partial class CurveGraph : UserControl
+    public partial class CurveGraph : NotifyPropertyChangedControlBase
     {
 
         private const int LINE_SPACING = 50;
@@ -42,6 +42,17 @@ namespace ME3Explorer.CurveEd
                 TrackLoading = false;
             }
         }
+
+        public Curve ComparisonCurve
+        {
+            get => (Curve)GetValue(ComparisonCurveProperty);
+            set => SetValue(ComparisonCurveProperty, value);
+        }
+
+        // Using a DependencyProperty as the backing store for ComparisonCurve.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ComparisonCurveProperty =
+            DependencyProperty.Register(nameof(ComparisonCurve), typeof(Curve), typeof(CurveGraph), new PropertyMetadata());
+
 
         public CurvePoint SelectedPoint
         {
@@ -135,22 +146,22 @@ namespace ME3Explorer.CurveEd
             //throw new NotImplementedException();
         }
 
-        public double localX(double x)
+        public double toLocalX(double x)
         {
             return HorizontalScale * (x - HorizontalOffset);
         }
 
-        public double localY(double y)
+        public double toLocalY(double y)
         {
             return VerticalScale * (y - VerticalOffset);
         }
 
-        public double unrealX(double x)
+        public double toUnrealX(double x)
         {
             return x / HorizontalScale + HorizontalOffset;
         }
 
-        public double unrealY(double y)
+        public double toUnrealY(double y)
         {
             return y / VerticalScale + VerticalOffset;
         }
@@ -161,31 +172,40 @@ namespace ME3Explorer.CurveEd
             graph.Children.Clear();
 
             LinkedList<CurvePoint> points = SelectedCurve.CurvePoints;
+
+            // Set size and scale of graph
             if (points.Count > 0 && recomputeView)
             {
-                float timeSpan = points.Last().InVal - points.First().InVal;
-                timeSpan = timeSpan > 0 ? timeSpan : 2;
-                HorizontalOffset = Math.Round(points.First().InVal - (timeSpan * 0.2));
-                double hSpan = Math.Ceiling(timeSpan * 1.2);
-                if (hSpan + HorizontalOffset <= timeSpan)
+                if (UseFixedTimeSpan)
                 {
-                    hSpan += 1;
+                    UpdateScalingFromFixedTimeSpan();
                 }
-                HorizontalScale = graph.ActualWidth / hSpan;
-                if (HorizontalOffset >= points.First().InVal - (hSpan / 10))
+                else
                 {
-                    HorizontalOffset = points.First().InVal - (hSpan / 10);
-                }
-                else if (HorizontalOffset + hSpan <= points.Last().InVal + (hSpan / 10))
-                {
-                    HorizontalOffset += hSpan / 10;
+                    float timeSpan = points.Last().InVal - points.First().InVal;
+                    timeSpan = timeSpan > 0 ? timeSpan : 2;
+                    HorizontalOffset = points.First().InVal - (timeSpan * 0.2);
+                    double hSpan = Math.Ceiling(timeSpan * 1.2);
+                    if (hSpan + HorizontalOffset <= timeSpan)
+                    {
+                        hSpan += 1;
+                    }
+                    HorizontalScale = graph.ActualWidth / hSpan;
+                    if (HorizontalOffset >= points.First().InVal - (hSpan / 10))
+                    {
+                        HorizontalOffset = points.First().InVal - (hSpan / 10);
+                    }
+                    else if (HorizontalOffset + hSpan <= points.Last().InVal + (hSpan / 10))
+                    {
+                        HorizontalOffset += hSpan / 10;
+                    }
                 }
 
                 float max = points.Max(x => x.OutVal);
                 float min = points.Min(x => x.OutVal);
                 float valSpan = max - min;
                 valSpan = valSpan > 0 ? valSpan : 2;
-                VerticalOffset = Math.Round(min - Math.Ceiling(valSpan * 0.1));
+                VerticalOffset = Math.Round((min - Math.Ceiling(valSpan * 0.1)) * 10) / 10;
                 double vSpan = Math.Ceiling(valSpan * 1.2);
                 if (vSpan + VerticalOffset <= max)
                 {
@@ -194,10 +214,11 @@ namespace ME3Explorer.CurveEd
                 VerticalScale = graph.ActualHeight / vSpan;
             }
 
+            // Render grid
             int numXLines = Convert.ToInt32(Math.Ceiling(ActualWidth / LINE_SPACING));
             int numYLines = Convert.ToInt32(Math.Ceiling(ActualHeight / LINE_SPACING));
-            double upperXBound = unrealX(ActualWidth);
-            double upperYBound = unrealY(ActualHeight);
+            double upperXBound = toUnrealX(ActualWidth);
+            double upperYBound = toUnrealY(ActualHeight);
             double lineXSpacing = (upperXBound - HorizontalOffset) / numXLines;
             int xGranularity = lineXSpacing > 0.75 ? 1 : (lineXSpacing > 0.25 ? 2 : 10);
             lineXSpacing = Math.Ceiling(lineXSpacing * xGranularity) / xGranularity;
@@ -212,12 +233,12 @@ namespace ME3Explorer.CurveEd
             {
                 linepos = HorizontalOffset + (lineXSpacing * (i + 1));
                 line = new Line();
-                Canvas.SetLeft(line, localX(linepos));
+                Canvas.SetLeft(line, toLocalX(linepos));
                 line.Style = FindResource("VerticalLine") as Style;
                 graph.Children.Add(line);
 
                 label = new Label();
-                Canvas.SetLeft(label, localX(linepos));
+                Canvas.SetLeft(label, toLocalX(linepos));
                 Canvas.SetBottom(label, 0);
                 label.Content = linepos.ToString("0.00");
                 graph.Children.Add(label);
@@ -227,17 +248,34 @@ namespace ME3Explorer.CurveEd
             {
                 linepos = VerticalOffset + (lineYSpacing * (i + 1));
                 line = new Line();
-                Canvas.SetBottom(line, localY(linepos));
+                Canvas.SetBottom(line, toLocalY(linepos));
                 line.Style = FindResource("HorizontalLine") as Style;
                 graph.Children.Add(line);
 
                 label = new Label();
-                Canvas.SetBottom(label, localY(linepos));
+                Canvas.SetBottom(label, toLocalY(linepos));
                 label.Content = linepos.ToString("0.00");
                 graph.Children.Add(label);
             }
 
+            // Render line
+            if(ShowReferenceCurve && ComparisonCurve != null && ComparisonCurve.CurvePoints.Count > 0)
+            {
+                LinkedList<CurvePoint> comparePoints = ComparisonCurve.CurvePoints;
+                RenderLine(comparePoints, interactable: false);
+            }
+
+            RenderLine(points);
+
+            TrackLoading = false;
+        }
+
+        private void RenderLine(LinkedList<CurvePoint> points, bool interactable = true)
+        {
+            Line line;
             Anchor lastAnchor = null;
+            Style comparisonCurveStyle = FindResource("CompareCurve") as Style; // Applied to line when not interactable
+
             for (LinkedListNode<CurvePoint> node = points.First; node != null; node = node.Next)
             {
                 switch (node.Value.InterpMode)
@@ -261,19 +299,27 @@ namespace ME3Explorer.CurveEd
                 {
                     a.IsSelected = true;
                 }
+
+                if(!interactable)
+                {
+                    // Hide anchors
+                    a.Visibility = Visibility.Hidden;
+                }
+
                 graph.Children.Add(a);
 
                 if (node.Previous == null)
                 {
-                    line = new Line {X1 = -10};
+                    line = new Line { X1 = -10 };
                     line.bind(Line.Y1Property, a, nameof(Anchor.Y), new YConverter(), ActualHeight);
                     line.bind(Line.X2Property, a, nameof(Anchor.X));
                     line.bind(Line.Y2Property, a, nameof(Anchor.Y), new YConverter(), ActualHeight);
+                    if (!interactable) line.Style = comparisonCurveStyle;
                     graph.Children.Add(line);
                 }
                 else
                 {
-                    PathBetween(lastAnchor, a, node.Previous.Value.InterpMode);
+                    PathBetween(lastAnchor, a, node.Previous.Value.InterpMode, (interactable ? null : comparisonCurveStyle));
                 }
 
                 if (node.Next == null)
@@ -283,14 +329,14 @@ namespace ME3Explorer.CurveEd
                     line.bind(Line.Y1Property, a, nameof(Anchor.Y), new YConverter(), ActualHeight);
                     line.X2 = ActualWidth + 10;
                     line.bind(Line.Y2Property, a, nameof(Anchor.Y), new YConverter(), ActualHeight);
+                    if (!interactable) line.Style = comparisonCurveStyle;
                     graph.Children.Add(line);
                 }
                 lastAnchor = a;
             }
-            TrackLoading = false;
         }
 
-        private void PathBetween(Anchor a1, Anchor a2, CurveMode interpMode = CurveMode.CIM_Linear)
+        private void PathBetween(Anchor a1, Anchor a2, CurveMode interpMode = CurveMode.CIM_Linear, Style styleOverride = null)
         {
             Line line;
             switch (interpMode)
@@ -301,6 +347,7 @@ namespace ME3Explorer.CurveEd
                     line.bind(Line.Y1Property, a1, nameof(Anchor.Y), new YConverter(), ActualHeight);
                     line.bind(Line.X2Property, a2, nameof(Anchor.X));
                     line.bind(Line.Y2Property, a2, nameof(Anchor.Y), new YConverter(), ActualHeight);
+                    if (styleOverride != null) line.Style = styleOverride;
                     graph.Children.Add(line);
                     break;
                 case CurveMode.CIM_Constant:
@@ -309,12 +356,14 @@ namespace ME3Explorer.CurveEd
                     line.bind(Line.Y1Property, a1, nameof(Anchor.Y), new YConverter(), ActualHeight);
                     line.bind(Line.X2Property, a2, nameof(Anchor.X));
                     line.bind(Line.Y2Property, a1, nameof(Anchor.Y), new YConverter(), ActualHeight);
+                    if (styleOverride != null) line.Style = styleOverride;
                     graph.Children.Add(line);
                     line = new Line();
                     line.bind(Line.X1Property, a2, nameof(Anchor.X));
                     line.bind(Line.Y1Property, a1, nameof(Anchor.Y), new YConverter(), ActualHeight);
                     line.bind(Line.X2Property, a2, nameof(Anchor.X));
                     line.bind(Line.Y2Property, a2, nameof(Anchor.Y), new YConverter(), ActualHeight);
+                    if (styleOverride != null) line.Style = styleOverride;
                     graph.Children.Add(line);
                     break;
                 case CurveMode.CIM_CurveAuto:
@@ -330,6 +379,7 @@ namespace ME3Explorer.CurveEd
                     bez.bind(BezierSegment.Y1Property, a1, nameof(Anchor.Y));
                     bez.bind(BezierSegment.X2Property, a2, nameof(Anchor.X));
                     bez.bind(BezierSegment.Y2Property, a2, nameof(Anchor.Y));
+                    if(styleOverride != null) bez.Style = styleOverride;
                     graph.Children.Add(bez);
                     a1.rightBez = bez;
                     a2.leftBez = bez;
@@ -351,7 +401,23 @@ namespace ME3Explorer.CurveEd
 
         private void UserControl_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            VerticalScale *= 1 + ((double)e.Delta / 4000);
+            if(Keyboard.Modifiers == ModifierKeys.Shift)
+            {
+                if (UseFixedTimeSpan)
+                {
+                    FixedStartTime *= 1 + ((float)e.Delta / 8000);
+                    FixedEndTime *= (1 + ((float)e.Delta / 8000));
+                    return;
+                }
+                else
+                {
+                    HorizontalScale *= 1 + ((double)e.Delta / 4000);
+                }
+            }
+            else
+            {
+                VerticalScale *= 1 + ((double)e.Delta / 4000);
+            }
             //VerticalOffset += (graph.ActualHeight / VerticalScale) * 0.1 * Math.Sign(e.Delta);
             Paint();
         }
@@ -362,7 +428,8 @@ namespace ME3Explorer.CurveEd
             {
                 dragging = true;
                 dragPos = e.GetPosition(graph);
-                Cursor = Cursors.ScrollNS;
+                if (Keyboard.Modifiers == ModifierKeys.Shift) Cursor = Cursors.ScrollWE;
+                else Cursor = Cursors.ScrollNS;
             }
             else if (ReferenceEquals(e.OriginalSource, graph) && e.ChangedButton == MouseButton.Right)
             {
@@ -392,7 +459,7 @@ namespace ME3Explorer.CurveEd
         private void OffsetKeys_Click(object sender, RoutedEventArgs e)
         {
             Point pos = (Point)((MenuItem)sender).Tag;
-            double inVal = unrealX(pos.X);
+            double inVal = toUnrealX(pos.X);
             string res = SharedUI.PromptDialog.Prompt(this, "Seconds to offset keys by", "Curve Editor", "0.0", true);
             if (float.TryParse(res, out var delta))
             {
@@ -420,8 +487,8 @@ namespace ME3Explorer.CurveEd
         private void AddKey_Click(object sender, RoutedEventArgs e)
         {
             Point pos = (Point)(sender as MenuItem).Tag;
-            double inVal = unrealX(pos.X);
-            AddKey((float)inVal, (float)unrealY(ActualHeight - pos.Y));
+            double inVal = toUnrealX(pos.X);
+            AddKey((float)inVal, (float)toUnrealY(ActualHeight - pos.Y));
         }
 
         private void AddKey(float time, float y)
@@ -452,8 +519,23 @@ namespace ME3Explorer.CurveEd
             if (dragging)
             {
                 Point newPos = e.GetPosition(graph);
-                double yDiff = newPos.Y - dragPos.Y;
-                VerticalOffset += yDiff / VerticalScale;
+                if(Keyboard.Modifiers == ModifierKeys.Shift)
+                {
+                    double xDiff = newPos.X - dragPos.X;
+                    if (UseFixedTimeSpan)
+                    {
+                        FixedStartTime -= (float)(xDiff / HorizontalScale);
+                        FixedEndTime -= (float)(xDiff / HorizontalScale);
+                        dragPos = newPos;
+                        return;
+                    }
+                    HorizontalOffset -= xDiff / HorizontalScale;
+                }
+                else
+                {
+                    double yDiff = newPos.Y - dragPos.Y;
+                    VerticalOffset += yDiff / VerticalScale;
+                }
                 Paint();
                 dragPos = newPos;
             }
@@ -464,7 +546,7 @@ namespace ME3Explorer.CurveEd
             Anchor a = ((sender as MenuItem).Parent as ContextMenu).Tag as Anchor;
         }
 
-        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        private void FloatTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             TextBox b = sender as TextBox;
             string result;
@@ -483,7 +565,7 @@ namespace ME3Explorer.CurveEd
             }
         }
 
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void PointTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             TextBox b = (TextBox)sender;
             //SirCxyrtyx: doing a stack trace to resolve a circular calling situation is horrible, I know. I'm so sorry about this.
@@ -496,17 +578,18 @@ namespace ME3Explorer.CurveEd
                     float prev = a.point.Previous?.Value.InVal ?? float.MinValue;
                     if (d > prev && d < next)
                     {
-                        a.X = localX(d);
+                        a.X = toLocalX(d);
                         Paint(true);
                     }
                 }
                 else if (a != null && b.Name == nameof(yTextBox))
                 {
-                    a.Y = localY(d);
+                    a.Y = toLocalY(d);
                     Paint(true);
                 }
             }
         }
+
         /// <summary>
         /// Find a string in the stackframes.
         /// </summary>
@@ -545,10 +628,81 @@ namespace ME3Explorer.CurveEd
         public void Clear()
         {
             SelectedCurve = new Curve();
+            ComparisonCurve = null;
             Paint(true);
             xTextBox.Clear();
             yTextBox.Clear();
         }
+
+        private void UpdateScalingFromFixedTimeSpan()
+        {
+            if(UseFixedTimeSpan)
+            {
+                HorizontalOffset = FixedStartTime;
+                float diff = Math.Abs(FixedEndTime - FixedStartTime); //No negative values!
+                if (diff < 0.1f)
+                {
+                    diff = 0.1f; //No super tiny values!
+                }
+                HorizontalScale = graph.ActualWidth / diff;
+            }
+        }
+
+        private bool _useFixedTimeSpan;
+        public bool UseFixedTimeSpan
+        {
+            get => _useFixedTimeSpan;
+            set
+            {
+                if (SetProperty(ref _useFixedTimeSpan, value))
+                {
+                    Paint(true);
+                }
+            }
+        }
+
+        private float _fixedStartTime = -0.5f;
+        public float FixedStartTime
+        {
+            get => _fixedStartTime;
+            set
+            {
+                if (SetProperty(ref _fixedStartTime, value))
+                {
+                    UpdateScalingFromFixedTimeSpan();
+                    Paint();
+                }
+            }
+        }
+
+        private float _fixedEndTime = 10;
+        public float FixedEndTime
+        {
+            get => _fixedEndTime;
+            set
+            {
+                if (SetProperty(ref _fixedEndTime, value))
+                {
+                    UpdateScalingFromFixedTimeSpan();
+                    Paint();
+                }
+            }
+        }
+
+        private bool _showReferenceCurve = true;
+        public bool ShowReferenceCurve
+        {
+            get => _showReferenceCurve;
+            set
+            {
+                if (SetProperty(ref _showReferenceCurve, value))
+                {
+                    Paint();
+                }
+            }
+        }
+
+
     }
 
     [ValueConversion(typeof(double), typeof(double))]

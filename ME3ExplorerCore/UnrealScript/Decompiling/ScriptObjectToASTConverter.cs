@@ -7,13 +7,13 @@ using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using Unrealscript.Analysis.Symbols;
-using Unrealscript.Language.Tree;
-using Unrealscript.Lexing;
-using Unrealscript.Parsing;
-using Unrealscript.Utilities;
+using ME3ExplorerCore.UnrealScript.Analysis.Symbols;
+using ME3ExplorerCore.UnrealScript.Language.Tree;
+using ME3ExplorerCore.UnrealScript.Lexing;
+using ME3ExplorerCore.UnrealScript.Parsing;
+using ME3ExplorerCore.UnrealScript.Utilities;
 
-namespace Unrealscript.Decompiling
+namespace ME3ExplorerCore.UnrealScript.Decompiling
 {
     public static class ScriptObjectToASTConverter
     {

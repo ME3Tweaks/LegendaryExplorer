@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using ME3ExplorerCore.Helpers;
-using Unrealscript.Analysis.Visitors;
-using Unrealscript.Compiling.Errors;
-using Unrealscript.Lexing.Tokenizing;
-using Unrealscript.Utilities;
+using ME3ExplorerCore.UnrealScript.Analysis.Visitors;
+using ME3ExplorerCore.UnrealScript.Compiling.Errors;
+using ME3ExplorerCore.UnrealScript.Lexing.Tokenizing;
+using ME3ExplorerCore.UnrealScript.Utilities;
 
-namespace Unrealscript.Lexing.Matching.StringMatchers
+namespace ME3ExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
 {
     public class NumberMatcher : TokenMatcherBase<string>
     {
@@ -41,7 +42,7 @@ namespace Unrealscript.Lexing.Matching.StringMatchers
                 if (hex == null || data.CurrentItem == "." || data.CurrentItem == "x")
                     return null;
 
-                hex = Convert.ToInt32(hex, 16).ToString("D");
+                hex = Convert.ToInt32(hex, 16).ToString("D", CultureInfo.InvariantCulture);
                 type = TokenType.IntegerNumber;
                 value = hex;
             } 

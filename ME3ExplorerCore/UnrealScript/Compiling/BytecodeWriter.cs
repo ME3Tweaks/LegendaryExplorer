@@ -4,10 +4,10 @@ using System.Globalization;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
-using Unrealscript.Language.ByteCode;
-using Unrealscript.Utilities;
+using ME3ExplorerCore.UnrealScript.Language.ByteCode;
+using ME3ExplorerCore.UnrealScript.Utilities;
 
-namespace Unrealscript.Compiling
+namespace ME3ExplorerCore.UnrealScript.Compiling
 {
     public class BytecodeWriter
     {

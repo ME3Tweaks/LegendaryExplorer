@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using ME3ExplorerCore.Gammtek.Extensions;
-using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using Unrealscript.Analysis.Visitors;
-using Unrealscript.Utilities;
+using ME3ExplorerCore.UnrealScript.Analysis.Visitors;
+using ME3ExplorerCore.UnrealScript.Utilities;
 
-namespace Unrealscript.Language.Tree
+namespace ME3ExplorerCore.UnrealScript.Language.Tree
 {
     public sealed class Struct : VariableType, IObjectType
     {

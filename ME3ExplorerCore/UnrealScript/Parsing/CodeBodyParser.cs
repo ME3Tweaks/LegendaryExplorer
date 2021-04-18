@@ -1,23 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using Unrealscript.Analysis.Symbols;
-using Unrealscript.Analysis.Visitors;
-using Unrealscript.Compiling.Errors;
-using Unrealscript.Language.Tree;
-using Unrealscript.Language.Util;
-using Unrealscript.Lexing;
-using Unrealscript.Lexing.Tokenizing;
-using Unrealscript.Utilities;
-using static Unrealscript.Utilities.Keywords;
+using ME3ExplorerCore.UnrealScript.Analysis.Symbols;
+using ME3ExplorerCore.UnrealScript.Analysis.Visitors;
+using ME3ExplorerCore.UnrealScript.Compiling.Errors;
+using ME3ExplorerCore.UnrealScript.Language.Tree;
+using ME3ExplorerCore.UnrealScript.Language.Util;
+using ME3ExplorerCore.UnrealScript.Lexing;
+using ME3ExplorerCore.UnrealScript.Lexing.Tokenizing;
+using ME3ExplorerCore.UnrealScript.Utilities;
+using static ME3ExplorerCore.UnrealScript.Utilities.Keywords;
 
-namespace Unrealscript.Parsing
+namespace ME3ExplorerCore.UnrealScript.Parsing
 {
     public class CodeBodyParser : StringParserBase
     {
@@ -471,6 +470,10 @@ namespace Unrealscript.Parsing
             if (type == null) throw ParseError($"Expected variable type after '{LOCAL}'!", CurrentPosition);
             type.Outer = Body;
             if (!Symbols.TryResolveType(ref type)) TypeError($"The type '{type.Name}' does not exist in the current scope!", type);
+            if (type is Enumeration)
+            {
+                PrevToken.SyntaxType = EF.Enum;
+            }
 
             var var = ParseVariableName();
             if (var == null) throw ParseError("Malformed or missing variable name!", CurrentPosition);
@@ -2076,8 +2079,13 @@ namespace Unrealscript.Parsing
         private Expression ParseSuper()
         {
             Class superClass;
-            State state = null;
             Class superSpecifier = null;
+            State state = Node switch
+            {
+                State s => s,
+                Function { Outer: State s2 } => s2,
+                _ => null
+            };
             if (Matches(TokenType.LeftParenth))
             {
                 if (Consume(TokenType.Word) is {} className)
@@ -2108,15 +2116,13 @@ namespace Unrealscript.Parsing
                 {
                     throw ParseError("Expected ')' after superclass specifier!", CurrentPosition);
                 }
+                if (state?.Parent != null)
+                {
+                    state = state.Parent;
+                }
             }
             else
             {
-                state = Node switch
-                {
-                    State s => s,
-                    Function {Outer: State s2} => s2,
-                    _ => null
-                };
                 if (state?.Parent != null)
                 {
                     superClass = Self;
@@ -2141,6 +2147,12 @@ namespace Unrealscript.Parsing
             while (state != null)
             {
                 Class stateClass = (Class)state.Outer;
+                if (stateClass != superClass && stateClass.SameAsOrSubClassOf(superClass.Name))
+                {
+                    //Walk up the state inheritance chain until we get to one that is in the specified superclass (or an ancestor)
+                    state = state.Parent;
+                    continue;
+                }
                 specificScope = $"{stateClass.GetInheritanceString()}.{state.Name}";
                 if (Symbols.TryGetSymbolInScopeStack(functionName.Value, out ASTNode funcNode, specificScope) && funcNode is Function)
                 {

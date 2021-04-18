@@ -16,12 +16,12 @@ using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using ME3Explorer.SharedUI;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
-using Unrealscript;
-using Unrealscript.Analysis.Visitors;
-using Unrealscript.Compiling.Errors;
-using Unrealscript.Language.Tree;
-using Unrealscript.Lexing.Tokenizing;
-using Unrealscript.Parsing;
+using ME3ExplorerCore.UnrealScript;
+using ME3ExplorerCore.UnrealScript.Analysis.Visitors;
+using ME3ExplorerCore.UnrealScript.Compiling.Errors;
+using ME3ExplorerCore.UnrealScript.Language.Tree;
+using ME3ExplorerCore.UnrealScript.Lexing.Tokenizing;
+using ME3ExplorerCore.UnrealScript.Parsing;
 
 namespace ME3Explorer.ME3Script.IDE
 {
@@ -374,11 +374,7 @@ namespace ME3Explorer.ME3Script.IDE
                     {
                         textEditor.IsReadOnly = false;
                         int numLocals = func.Locals.Count;
-                        int numHeaderLines = numLocals > 0 ? numLocals + 4 : 3;
-                        if (func.IsNative)
-                        {
-                            numHeaderLines = 2;
-                        }
+                        int numHeaderLines = Math.Min(numLocals > 0 ? numLocals + 4 : 3, Document.LineCount);
                         var segments = new TextSegmentCollection<TextSegment>
                         {
                             new TextSegment { StartOffset = 0, EndOffset = Document.GetOffset(numHeaderLines, 0) }

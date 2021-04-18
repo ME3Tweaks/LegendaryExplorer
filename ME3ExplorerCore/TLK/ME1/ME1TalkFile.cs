@@ -355,75 +355,44 @@ namespace ME3ExplorerCore.TLK.ME1
 
         public void saveToFile(string fileName)
         {
-            XmlTextWriter xr = new XmlTextWriter(fileName, Encoding.UTF8)
-            {
-                Formatting = Formatting.Indented,
-                Indentation = 4
-            };
+            using XmlTextWriter xr = new XmlTextWriter(fileName, Encoding.UTF8);
 
-            xr.WriteStartDocument();
-            xr.WriteStartElement("tlkFile");
-            xr.WriteAttributeString("Name", Name);
-
-            foreach (TLKStringRef tlkStringRef in StringRefs)
-            {
-                xr.WriteStartElement("string");
-
-                xr.WriteStartElement("id");
-                xr.WriteValue(tlkStringRef.StringID);
-                xr.WriteEndElement(); // </id>
-                xr.WriteStartElement("flags");
-                xr.WriteValue(tlkStringRef.Flags);
-                xr.WriteEndElement(); // </flags>
-
-                //if (i == StringRefs.Length - 1)
-                //{
-                //    Debugger.Break();
-                //}
-                if (tlkStringRef.Flags != 1)
-                    xr.WriteElementString("data", "-1");
-                else
-                    xr.WriteElementString("data", tlkStringRef.Data);
-
-                xr.WriteEndElement(); // </string>
-            }
-
-            xr.WriteEndElement(); // </tlkFile>
-            xr.Flush();
-            xr.Close();
+            WriteXML(StringRefs, Name, xr);
         }
-        public string TLKtoXmlstring()
+
+        private static void WriteXML(IEnumerable<TLKStringRef> tlkStringRefs, string name, XmlTextWriter writer)
+        {
+            writer.Formatting = Formatting.Indented;
+            writer.Indentation = 4;
+
+            writer.WriteStartDocument();
+            writer.WriteStartElement("tlkFile");
+            writer.WriteAttributeString("Name", name);
+
+            foreach (TLKStringRef tlkStringRef in tlkStringRefs)
+            {
+                writer.WriteStartElement("string");
+                writer.WriteStartElement("id");
+                writer.WriteValue(tlkStringRef.StringID);
+                writer.WriteEndElement(); // </id>
+                writer.WriteStartElement("flags");
+                writer.WriteValue(tlkStringRef.Flags);
+                writer.WriteEndElement(); // </flags>
+                if (tlkStringRef.Flags != 1)
+                    writer.WriteElementString("data", "-1");
+                else
+                    writer.WriteElementString("data", tlkStringRef.Data);
+                writer.WriteEndElement(); // </string>
+            }
+            writer.WriteEndElement(); // </tlkFile>
+        }
+
+        public static string TLKtoXmlstring(string name, IEnumerable<TLKStringRef> tlkStringRefs)
         {
             StringBuilder InputTLK = new StringBuilder();
-            using (StringWriter stringWriter = new StringWriter(InputTLK))
-            {
-                using (XmlTextWriter writer = new XmlTextWriter(stringWriter))
-                {
-                    writer.Formatting = Formatting.Indented;
-                    writer.Indentation = 4;
-
-                    writer.WriteStartDocument();
-                    writer.WriteStartElement("tlkFile");
-                    writer.WriteAttributeString("Name", Name);
-
-                    foreach (TLKStringRef tlkStringRef in StringRefs)
-                    {
-                        writer.WriteStartElement("string");
-                        writer.WriteStartElement("id");
-                        writer.WriteValue(tlkStringRef.StringID);
-                        writer.WriteEndElement(); // </id>
-                        writer.WriteStartElement("flags");
-                        writer.WriteValue(tlkStringRef.Flags);
-                        writer.WriteEndElement(); // </flags>
-                        if (tlkStringRef.Flags != 1)
-                            writer.WriteElementString("data", "-1");
-                        else
-                            writer.WriteElementString("data", tlkStringRef.Data);
-                        writer.WriteEndElement(); // </string>
-                    }
-                    writer.WriteEndElement(); // </tlkFile>
-                }
-            }
+            using StringWriter stringWriter = new StringWriter(InputTLK);
+            using XmlTextWriter writer = new XmlTextWriter(stringWriter);
+            WriteXML(tlkStringRefs, name, writer);
             return InputTLK.ToString();
         }
 

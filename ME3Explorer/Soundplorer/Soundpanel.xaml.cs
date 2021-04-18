@@ -1487,6 +1487,30 @@ namespace ME3Explorer
             audioStream = null;
         }
 
+        /// <summary>
+        /// Stops any playing audio and starts playing the currently selected entry
+        /// </summary>
+        public void StartPlayingCurrentSelection()
+        {
+            if(_playbackState == PlaybackState.Stopped)
+            {
+                StartOrPausePlaying();
+            }
+            else
+            {
+                // If there is audio playing, stop it. The new audio entry will start once the PlaybackStopped event triggers.
+                seekbarUpdateTimer.Stop();
+                if (_audioPlayer != null)
+                {
+
+                    _audioPlayer.PlaybackStopType = SoundpanelAudioPlayer.PlaybackStopTypes.PlaybackSwitchedToNewFile;
+                    _audioPlayer.Stop();
+                }
+
+                audioStream = null;
+            }
+        }
+
         private bool CanStopPlayback(object p) => _playbackState == PlaybackState.Playing || _playbackState == PlaybackState.Paused || audioStream != null;
 
         // Events
@@ -1520,6 +1544,10 @@ namespace ME3Explorer
                 RestartingDueToLoop = true;
                 StartPlayback();
                 RestartingDueToLoop = false;
+            }
+            else if (_audioPlayer.PlaybackStopType == SoundpanelAudioPlayer.PlaybackStopTypes.PlaybackSwitchedToNewFile)
+            {
+                StartPlayback();
             }
         }
 
@@ -1667,14 +1695,29 @@ namespace ME3Explorer
             object currentSelectedItem = ExportInfoListBox.SelectedItem;
             if (currentSelectedItem is EmbeddedWEMFile)
             {
-                StopPlaying();
-                StartOrPausePlaying();
+                StartPlayingCurrentSelection();
             }
 
             if (currentSelectedItem is ISBankEntry bankEntry && bankEntry.DataAsStored != null)
             {
-                StopPlaying();
-                StartOrPausePlaying();
+                StartPlayingCurrentSelection();
+            }
+        }
+
+        private void ExportInfoListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            object currentSelectedItem = ExportInfoListBox.SelectedItem;
+            if (Properties.Settings.Default.SoundplorerAutoplayEntriesOnSelection)
+            {
+                if (currentSelectedItem is EmbeddedWEMFile)
+                {
+                    StartPlayingCurrentSelection();
+                }
+
+                if (currentSelectedItem is ISBankEntry bankEntry && bankEntry.DataAsStored != null)
+                {
+                    StartPlayingCurrentSelection();
+                }
             }
         }
 

@@ -1,8 +1,8 @@
-﻿using Unrealscript.Compiling.Errors;
-using Unrealscript.Lexing.Tokenizing;
-using Unrealscript.Utilities;
+﻿using ME3ExplorerCore.UnrealScript.Compiling.Errors;
+using ME3ExplorerCore.UnrealScript.Lexing.Tokenizing;
+using ME3ExplorerCore.UnrealScript.Utilities;
 
-namespace Unrealscript.Lexing.Matching
+namespace ME3ExplorerCore.UnrealScript.Lexing.Matching
 {
     public interface ITokenMatcher<T> where T : class
     {

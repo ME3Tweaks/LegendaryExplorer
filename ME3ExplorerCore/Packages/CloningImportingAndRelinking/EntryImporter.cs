@@ -899,44 +899,78 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             List<string> nameListBackup = pcc.Names.ToList();
             try
             {
-                if (EntryImporter.IsSafeToImportFrom(info.pccPath, pcc.Game))
-                {
-                    string package = Path.GetFileNameWithoutExtension(info.pccPath);
-                    return pcc.getEntryOrAddImport($"{package}.{className}");
-                }
-
-                //It's a class that's defined locally in every file that uses it.
                 Stream loadStream = null;
-                if (info.pccPath == UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
+                if (pcc.Game is MEGame.ME3 && info.pccPath.StartsWith("DLC_TestPatch"))
                 {
-                    loadStream = ME3ExplorerCoreUtilities.GetCustomAppResourceStream(pcc.Game);
-                    //string resourceFilePath = App.CustomResourceFilePath(pcc.Game);
-                    //if (File.Exists(resourceFilePath))
-                    //{
-                    //    sourceFilePath = resourceFilePath;
-                    //}
-                }
-                else
-                {
-                    string testPath = Path.Combine(MEDirectories.GetBioGamePath(pcc.Game, gamePathOverride), info.pccPath);
-                    if (File.Exists(testPath))
+                    string fileName = Path.GetFileName(info.pccPath);
+                    string testPatchSfarPath = ME3Directory.TestPatchSFARPath;
+                    if (testPatchSfarPath is null)
                     {
-                        loadStream = new MemoryStream(File.ReadAllBytes(testPath));
+                        return null;
                     }
-                    else if (pcc.Game == MEGame.ME1)
+                    var patchSFAR = new DLCPackage(testPatchSfarPath);
+                    int fileIdx = patchSFAR.FindFileEntry(fileName);
+                    if (fileIdx == -1)
                     {
-                        testPath = Path.Combine(gamePathOverride ?? ME1Directory.DefaultGamePath, info.pccPath);
-                        if (File.Exists(testPath))
+                        return null;
+                    }
+
+                    MemoryStream sfarEntry = patchSFAR.DecompressEntry(fileIdx);
+                    using IMEPackage patchPcc = MEPackageHandler.OpenMEPackageFromStream(sfarEntry.SeekBegin());
+                    if (patchPcc.TryGetUExport(info.exportIndex, out ExportEntry export) && export.IsClass && export.ObjectName == className)
+                    {
+                        string packageName = export.ParentName;
+                        if (IsSafeToImportFrom($"{packageName}.pcc", MEGame.ME3))
                         {
-                            loadStream = new MemoryStream(File.ReadAllBytes(testPath));
+                            return pcc.getEntryOrAddImport($"{packageName}.{className}");
+                        }
+                        else
+                        {
+                            loadStream = sfarEntry.SeekBegin();
                         }
                     }
                 }
 
-                if (loadStream == null)
+                if (loadStream is null)
                 {
-                    //can't find file to import from. This may occur if user does not have game or neccesary dlc installed 
-                    return null;
+                    if (IsSafeToImportFrom(info.pccPath, pcc.Game))
+                    {
+                        string package = Path.GetFileNameWithoutExtension(info.pccPath);
+                        return pcc.getEntryOrAddImport($"{package}.{className}");
+                    }
+
+                    //It's a class that's defined locally in every file that uses it.
+                    if (info.pccPath == UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
+                    {
+                        loadStream = ME3ExplorerCoreUtilities.GetCustomAppResourceStream(pcc.Game);
+                        //string resourceFilePath = App.CustomResourceFilePath(pcc.Game);
+                        //if (File.Exists(resourceFilePath))
+                        //{
+                        //    sourceFilePath = resourceFilePath;
+                        //}
+                    }
+                    else
+                    {
+                        string testPath = Path.Combine(MEDirectories.GetBioGamePath(pcc.Game, gamePathOverride), info.pccPath);
+                        if (File.Exists(testPath))
+                        {
+                            loadStream = new MemoryStream(File.ReadAllBytes(testPath));
+                        }
+                        else if (pcc.Game == MEGame.ME1)
+                        {
+                            testPath = Path.Combine(gamePathOverride ?? ME1Directory.DefaultGamePath, info.pccPath);
+                            if (File.Exists(testPath))
+                            {
+                                loadStream = new MemoryStream(File.ReadAllBytes(testPath));
+                            }
+                        }
+                    }
+
+                    if (loadStream is null)
+                    {
+                        //can't find file to import from. This may occur if user does not have game or neccesary dlc installed 
+                        return null;
+                    }
                 }
 
                 using IMEPackage sourcePackage = MEPackageHandler.OpenMEPackageFromStream(loadStream);

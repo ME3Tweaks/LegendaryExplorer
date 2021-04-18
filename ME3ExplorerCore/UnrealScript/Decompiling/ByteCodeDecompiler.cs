@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ME3Explorer.ME3Script;
-using ME3Explorer.ME3Script.Utilities;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using Unrealscript.Analysis.Symbols;
-using Unrealscript.Analysis.Visitors;
-using Unrealscript.Language.ByteCode;
-using Unrealscript.Language.Tree;
+using ME3ExplorerCore.UnrealScript.Analysis.Symbols;
+using ME3ExplorerCore.UnrealScript.Analysis.Visitors;
+using ME3ExplorerCore.UnrealScript.Language.ByteCode;
+using ME3ExplorerCore.UnrealScript.Language.Tree;
+using ME3ExplorerCore.UnrealScript.Utilities;
 
-namespace Unrealscript.Decompiling
+namespace ME3ExplorerCore.UnrealScript.Decompiling
 {
     public partial class ByteCodeDecompiler : ObjectReader 
     {
@@ -129,9 +128,18 @@ namespace Unrealscript.Decompiling
             CurrentScope.Push(Scopes.Count - 1);
             while (Position < Size && !CurrentIs(OpCodes.EndOfScript))
             {
-                var current = DecompileStatement();
-                if (current == null && PeekByte == (byte)OpCodes.EndOfScript)
-                    break; // Natural end after label table, no error
+                Statement current;
+                try
+                {
+                    current = DecompileStatement();
+                    if (current == null && PeekByte == (byte)OpCodes.EndOfScript)
+                        break; // Natural end after label table, no error
+                }
+                catch when(!ME3ExplorerCoreLib.IsDebug)
+                {
+                    current = null;
+                }
+
                 if (current == null)
                 {
                     //as well as being eye-catching in generated code, this is totally invalid unrealscript and will cause compilation errors!
@@ -467,9 +475,10 @@ namespace Unrealscript.Decompiling
                         int valuesCount = enm.Values.Count;
                         foreach (CaseStatement caseStatement in sw.Body.Statements.OfType<CaseStatement>())
                         {
-                            if (caseStatement.Value is IntegerLiteral intLit && intLit.Value >= 0 && intLit.Value < valuesCount)
+                            if (caseStatement.Value is IntegerLiteral {Value: >= 0} intLit && intLit.Value < valuesCount)
                             {
-                                caseStatement.Value = new CompositeSymbolRef(new SymbolReference(enm, enm.Name), new SymbolReference(null, enm.Values[intLit.Value].Name));
+                                EnumValue enumValue = enm.Values[intLit.Value];
+                                caseStatement.Value = new SymbolReference(enumValue, enumValue.Name);
                             }
                         }
                     }

@@ -28,12 +28,12 @@ namespace ME3ExplorerCore.Dialogue
         public string ConvName { get; set; }
         public bool IsParsed { get; set; }
         public bool IsFirstParsed { get; set; }
-        public SortedDictionary<int, int> StartingList { get; set; } = new SortedDictionary<int, int>();
+        public SortedDictionary<int, int> StartingList { get; set; } = new();
         public ObservableCollectionExtended<SpeakerExtended> Speakers { get; set; }
         public ObservableCollectionExtended<DialogueNodeExtended> EntryList { get; set; }
         public ObservableCollectionExtended<DialogueNodeExtended> ReplyList { get; set; }
 
-        public ObservableCollectionExtended<StageDirection> StageDirections { get; } = new ObservableCollectionExtended<StageDirection>();
+        public ObservableCollectionExtended<StageDirection> StageDirections { get; } = new();
         /// <summary>
         /// WwiseBank Reference Export
         /// </summary>
@@ -47,7 +47,7 @@ namespace ME3ExplorerCore.Dialogue
         /// </summary>
         public IEntry NonSpkrFFX { get; set; }
 
-        public ObservableCollectionExtended<NameReference> ScriptList { get; } = new ObservableCollectionExtended<NameReference>();
+        public ObservableCollectionExtended<NameReference> ScriptList { get; } = new();
         public ConversationExtended(ExportEntry export)
         {
             Export = export;
@@ -410,7 +410,7 @@ namespace ME3ExplorerCore.Dialogue
             string line = "Unknown Reference";
             int stevent = -1;
             bool bcond = false;
-            EBCReplyTypes eReply = EBCReplyTypes.REPLY_STANDARD;
+            EReplyTypes eReply = EReplyTypes.REPLY_STANDARD;
             try
             {
                 linestrref = Node.GetProp<StringRefProperty>("srText")?.Value ?? 0;
@@ -831,48 +831,5 @@ namespace ME3ExplorerCore.Dialogue
 #pragma warning disable
         public event PropertyChangedEventHandler PropertyChanged;
 #pragma warning restore
-    }
-
-
-
-
-
-
-    /// <summary>
-    /// EGUIStyles enum with the MAX item removed
-    /// </summary>
-    public enum EBCConvGUIStyles
-    {
-        GUI_STYLE_NONE = 0,
-        GUI_STYLE_CHARM,
-        GUI_STYLE_INTIMIDATE,
-        GUI_STYLE_PLAYER_ALERT,
-        GUI_STYLE_ILLEGAL,
-        //GUI_STYLE_MAX,
-    }
-    /// <summary>
-    /// EReplyTypes enum with the MAX item removed
-    /// </summary>
-    public enum EBCReplyTypes
-    {
-        REPLY_STANDARD = 0,
-        REPLY_AUTOCONTINUE,
-        REPLY_DIALOGEND,
-        //REPLY_MAX
-    }
-    /// <summary>
-    /// EReplyCategory enum with the MAX item removed
-    /// </summary>
-    public enum EBCReplyCategory
-    {
-        REPLY_CATEGORY_DEFAULT = 0,
-        REPLY_CATEGORY_AGREE,
-        REPLY_CATEGORY_DISAGREE,
-        REPLY_CATEGORY_FRIENDLY,
-        REPLY_CATEGORY_HOSTILE,
-        REPLY_CATEGORY_INVESTIGATE,
-        REPLY_CATEGORY_RENEGADE_INTERRUPT,
-        REPLY_CATEGORY_PARAGON_INTERRUPT,
-        //REPLY_CATEGORY_MAX,
     }
 }

@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Helpers;
-using Unrealscript.Analysis.Visitors;
-using Unrealscript.Utilities;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.UnrealScript.Analysis.Visitors;
+using ME3ExplorerCore.UnrealScript.Utilities;
 
-namespace Unrealscript.Language.Tree
+namespace ME3ExplorerCore.UnrealScript.Language.Tree
 {
     public sealed class Class : VariableType, IObjectType
     {

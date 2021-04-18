@@ -32,6 +32,7 @@ using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.Unreal.Classes;
 using SkeletalMesh = ME3ExplorerCore.Unreal.BinaryConverters.SkeletalMesh;
 using ME3ExplorerCore.TLK;
+using MessagePack;
 using Microsoft.WindowsAPICodePack.Taskbar;
 
 namespace ME3Explorer.AssetDatabase
@@ -44,12 +45,11 @@ namespace ME3Explorer.AssetDatabase
     public partial class AssetDB : TrackingNotifyPropertyChangedWindowBase
     {
         #region Declarations
-        public const string dbCurrentBuild = "4.0"; //If changes are made that invalidate old databases edit this.
+        public const string dbCurrentBuild = "5.0"; //If changes are made that invalidate old databases edit this.
         private int previousView { get; set; }
         private int _currentView;
-        private bool hadException;
         public int currentView { get => _currentView; set { previousView = _currentView; SetProperty(ref _currentView, value); } }
-        public enum dbTableType
+        public enum DBTableType
         {
             Master = 0,
             Class,
@@ -78,63 +78,96 @@ namespace ME3Explorer.AssetDatabase
         }
 
         private string CurrentDBPath { get; set; }
-        public PropsDataBase CurrentDataBase { get; } = new PropsDataBase(MEGame.Unknown, null, null, new ObservableCollectionExtended<Tuple<string, int>>(), new List<string>(), new ObservableCollectionExtended<ClassRecord>(), new ObservableCollectionExtended<Material>(),
-            new ObservableCollectionExtended<Animation>(), new ObservableCollectionExtended<MeshRecord>(), new ObservableCollectionExtended<ParticleSys>(), new ObservableCollectionExtended<TextureRecord>(), new ObservableCollectionExtended<GUIElement>(),
-            new ObservableCollectionExtended<Conversation>(), new ObservableCollectionExtended<ConvoLine>());
-        public ObservableCollectionExtended<Tuple<string, string>> FileListExtended { get; } = new ObservableCollectionExtended<Tuple<string, string>>();
+        public PropsDataBase CurrentDataBase { get; } = new();
+        public ObservableCollectionExtended<FileDirPair> FileListExtended { get; } = new();
+
+        private ClassRecord _selectedClass;
+        public ClassRecord SelectedClass
+        {
+            get => _selectedClass;
+            set
+            {
+                if (SetProperty(ref _selectedClass, value))
+                {
+                    UpdateSelectedClassUsages();
+                }
+            }
+        }
+
+        private ICollection<ClassUsage> _selectedClassUsages;
+        public ICollection<ClassUsage> SelectedClassUsages
+        {
+            get => _selectedClassUsages;
+            set => SetProperty(ref _selectedClassUsages, value);
+        }
+
+        private bool _showAllClassUsages;
+        public bool ShowAllClassUsages
+        {
+            get => _showAllClassUsages;
+            set
+            {
+                if (SetProperty(ref _showAllClassUsages, value))
+                {
+                    UpdateSelectedClassUsages();
+                }
+            }
+        }
+
+        public record FileDirPair(string FileName, string Directory);
         /// <summary>
         /// Dictionary that stores generated classes
         /// </summary>
-        public ConcurrentDictionary<string, ClassRecord> GeneratedClasses = new ConcurrentDictionary<string, ClassRecord>();
+        public ConcurrentDictionary<string, ClassRecord> GeneratedClasses = new();
         /// <summary>
         /// Dictionary that stores generated Animations
         /// </summary>
-        public ConcurrentDictionary<string, Animation> GeneratedAnims = new ConcurrentDictionary<string, Animation>();
+        public ConcurrentDictionary<string, AnimationRecord> GeneratedAnims = new();
         /// <summary>
         /// Dictionary that stores generated Materials
         /// </summary>
-        public ConcurrentDictionary<string, Material> GeneratedMats = new ConcurrentDictionary<string, Material>();
+        public ConcurrentDictionary<string, MaterialRecord> GeneratedMats = new();
         /// <summary>
         /// Dictionary that stores generated Meshes
         /// </summary>
-        public ConcurrentDictionary<string, MeshRecord> GeneratedMeshes = new ConcurrentDictionary<string, MeshRecord>();
+        public ConcurrentDictionary<string, MeshRecord> GeneratedMeshes = new();
         /// <summary>
         /// Dictionary that stores generated Particle Systems
         /// </summary>
-        public ConcurrentDictionary<string, ParticleSys> GeneratedPS = new ConcurrentDictionary<string, ParticleSys>();
+        public ConcurrentDictionary<string, ParticleSysRecord> GeneratedPS = new();
         /// <summary>
         /// Dictionary that stores generated Textures
         /// </summary>
-        public ConcurrentDictionary<string, TextureRecord> GeneratedText = new ConcurrentDictionary<string, TextureRecord>();
+        public ConcurrentDictionary<string, TextureRecord> GeneratedText = new();
         /// <summary>
         /// Dictionary that stores generated GFXMovies
         /// </summary>
-        public ConcurrentDictionary<string, GUIElement> GeneratedGUI = new ConcurrentDictionary<string, GUIElement>();
+        public ConcurrentDictionary<string, GUIElement> GeneratedGUI = new();
         /// <summary>
         /// Dictionary that stores generated convos
         /// </summary>
-        public ConcurrentDictionary<string, Conversation> GeneratedConvo = new ConcurrentDictionary<string, Conversation>();
+        public ConcurrentDictionary<string, Conversation> GeneratedConvo = new();
         /// <summary>
         /// Dictionary that stores generated lines
         /// </summary>
-        public ConcurrentDictionary<string, ConvoLine> GeneratedLines = new ConcurrentDictionary<string, ConvoLine>();
+        public ConcurrentDictionary<string, ConvoLine> GeneratedLines = new();
         /// <summary>
-        /// Used to check if values generated are unique.
+        /// Used to do per-class locking during generation
         /// </summary>
-        public ConcurrentDictionary<string, bool> GeneratedValueChecker = new ConcurrentDictionary<string, bool>();
+        public ConcurrentDictionary<string, object> ClassLocks = new();
 
         /// <summary>
         /// Items show in the list that are currently being processed
         /// </summary>
-        public ObservableCollectionExtended<ClassScanSingleFileTask> CurrentDumpingItems { get; set; } = new ObservableCollectionExtended<ClassScanSingleFileTask>();
+        public ObservableCollectionExtended<ClassScanSingleFileTask> CurrentDumpingItems { get; set; } = new();
 
         /// <summary>
         /// All items in the queue
         /// </summary>
         private List<ClassScanSingleFileTask> AllDumpingItems;
 
-        private static BackgroundWorker dbworker = new BackgroundWorker();
-        public BlockingCollection<ClassRecord> _dbqueue = new BlockingCollection<ClassRecord>();
+        private static BackgroundWorker dbworker = new();
+
         private ActionBlock<ClassScanSingleFileTask> ProcessingQueue;
         /// <summary>
         /// Cancelation of dumping
@@ -179,13 +212,13 @@ namespace ME3Explorer.AssetDatabase
         private ListSortDirection _lastDirection = ListSortDirection.Ascending;
         private bool _parseConvos;
         public bool ParseConvos { get => _parseConvos; set => SetProperty(ref _parseConvos, value); }
-        private BlockingCollection<ConvoLine> _linequeue = new BlockingCollection<ConvoLine>();
-        private Tuple<string, string, int, string, bool> _currentConvo = new Tuple<string, string, int, string, bool>(null, null, -1, null, false); //ConvoName, FileName, export, contentdir, isAmbient
+        private BlockingCollection<ConvoLine> _linequeue = new();
+        private Tuple<string, string, int, string, bool> _currentConvo = new(null, null, -1, null, false); //ConvoName, FileName, export, contentdir, isAmbient
         public Tuple<string, string, int, string, bool> CurrentConvo { get => _currentConvo; set => SetProperty(ref _currentConvo, value); }
-        public ObservableCollectionExtended<string> SpeakerList { get; } = new ObservableCollectionExtended<string>();
+        public ObservableCollectionExtended<string> SpeakerList { get; } = new();
         private bool _isGettingTLKs;
         public bool IsGettingTLKs { get => _isGettingTLKs; set => SetProperty(ref _isGettingTLKs, value); }
-        public ObservableDictionary<int, string> CustomFileList { get; } = new ObservableDictionary<int, string>(); //FileKey, filename<space>Dir
+        public ObservableDictionary<int, string> CustomFileList { get; } = new(); //FileKey, filename<space>Dir
         public const string CustomListDesc = "Custom File Lists allow the database to be filtered so only assets that are in certain files or groups of files are shown. Lists can be saved/reloaded.";
         private bool _isFilteredByFiles;
         public bool IsFilteredByFiles { get => _isFilteredByFiles; set => SetProperty(ref _isFilteredByFiles, value); }
@@ -251,9 +284,9 @@ namespace ME3Explorer.AssetDatabase
         }
         private bool CanUseAnimViewer(object obj)
         {
-            return currentView == 5 && CurrentGame == MEGame.ME3 && lstbx_Anims.SelectedIndex >= 0 && !((lstbx_Anims.SelectedItem as Animation)?.IsAmbPerf ?? true);
+            return currentView == 5 && CurrentGame == MEGame.ME3 && lstbx_Anims.SelectedIndex >= 0 && !((lstbx_Anims.SelectedItem as AnimationRecord)?.IsAmbPerf ?? true);
         }
-        private bool IsAnimSequenceSelected() => currentView == 5 && lstbx_Anims.SelectedIndex >= 0 && !((lstbx_Anims.SelectedItem as Animation)?.IsAmbPerf ?? true);
+        private bool IsAnimSequenceSelected() => currentView == 5 && lstbx_Anims.SelectedIndex >= 0 && !((lstbx_Anims.SelectedItem as AnimationRecord)?.IsAmbPerf ?? true);
 
         #endregion
 
@@ -265,7 +298,7 @@ namespace ME3Explorer.AssetDatabase
 
             //Get default db / gane
             CurrentDBPath = Properties.Settings.Default.AssetDBPath;
-            Enum.TryParse<MEGame>(Properties.Settings.Default.AssetDBGame, out MEGame game);
+            Enum.TryParse(Properties.Settings.Default.AssetDBGame, out MEGame game);
             CurrentGame = game;
 
             InitializeComponent();
@@ -355,7 +388,7 @@ namespace ME3Explorer.AssetDatabase
         /// <param name="cancelloadingToken"></param>
         /// <param name="dbTable">Table parameter returns a database with only that table in it. Master = all.</param>
         /// <returns></returns>
-        public static async Task LoadDatabase(string currentDbPath, MEGame game, PropsDataBase database, CancellationToken cancelloadingToken, dbTableType dbTable = dbTableType.Master)
+        public static async Task LoadDatabase(string currentDbPath, MEGame game, PropsDataBase database, CancellationToken cancelloadingToken, DBTableType dbTable = DBTableType.Master)
         {
             var build = dbCurrentBuild.Trim(' ', '*', '.');
             ////Async load
@@ -379,16 +412,14 @@ namespace ME3Explorer.AssetDatabase
                 database.dbTable[table.Key] = table.Value;
             }
         }
-        public static async Task<PropsDataBase> ParseDBAsync(MEGame dbgame, string dbpath, string build, CancellationToken cancel, dbTableType dbTable)
+        public static async Task<PropsDataBase> ParseDBAsync(MEGame dbgame, string dbpath, string build, CancellationToken cancel, DBTableType dbTable)
         {
             var deserializingQueue = new BlockingCollection<PropsDataBase>();
-            var expectedtables = new ConcurrentDictionary<dbTableType, bool>();  //Stores which tables are expected to load
-            var typology = Enum.GetValues(typeof(dbTableType)).Cast<dbTableType>().ToList();
-            foreach (dbTableType type in typology)
+            var expectedtables = new ConcurrentDictionary<DBTableType, bool>();  //Stores which tables are expected to load
+            var typology = Enum.GetValues(typeof(DBTableType)).Cast<DBTableType>().ToList();
+            foreach (DBTableType type in typology)
             {
-                bool expectedToLoad = true;
-                if (type != dbTableType.Master && dbTable != dbTableType.Master && dbTable != type)
-                    expectedToLoad = false;
+                bool expectedToLoad = !(type != DBTableType.Master && dbTable != DBTableType.Master && dbTable != type);
                 expectedtables.TryAdd(type, expectedToLoad);
             }
 
@@ -397,16 +428,16 @@ namespace ME3Explorer.AssetDatabase
                 await Task.Run(() =>
                 {
                     var archiveEntries = new Dictionary<string, ZipArchiveEntry>();
-                    using ZipArchive archive = new ZipArchive(new FileStream(dbpath, FileMode.Open));
-                    if (archive.Entries.Any(e => e.Name == $"MasterDB{dbgame}_{build}.json"))
+                    using ZipArchive archive = new(new FileStream(dbpath, FileMode.Open));
+                    if (archive.Entries.Any(e => e.Name == $"MasterDB.{dbgame}_{build}.bin"))
                     {
                         foreach (ZipArchiveEntry entry in archive.Entries)
                         {
-                            dbTableType entryType = dbTableType.Master;
+                            DBTableType entryType = DBTableType.Master;
                             if (!entry.Name.StartsWith("Master"))
                             {
-                                bool typecast = Enum.TryParse(entry.Name.Substring(0, entry.Name.Length - 10), out entryType);
-                                if (!typecast || (dbTable != dbTableType.Master && dbTable != entryType))
+                                bool typecast = Enum.TryParse(entry.Name.Split('.')[0], out entryType);
+                                if (!typecast || (dbTable != DBTableType.Master && dbTable != entryType))
                                     continue;
                             }
 
@@ -416,32 +447,21 @@ namespace ME3Explorer.AssetDatabase
                                 estream.CopyTo(ms);
                             }
                             ms.Position = 0;
-                            var unitTask = Task.Run(() => JsonFileParse(ms, entryType, deserializingQueue, cancel));
+                            Task.Run(() => JsonFileParse(ms, entryType, deserializingQueue, cancel));
                         }
 
                     }
                     else //Wrong build - send dummy pdb back and ask user to refresh
                     {
-                        PropsDataBase pdb = new PropsDataBase();
+                        PropsDataBase pdb = new();
                         var entry = archive.Entries.FirstOrDefault(z => z.Name.StartsWith("Master"));
                         pdb.DataBaseversion = "pre 2.0";
                         if (entry != null)
                         {
-                            using Stream estream = entry.Open();
-                            using StreamReader sr = new StreamReader(estream);
-                            using JsonTextReader reader = new JsonTextReader(sr);
-                            var Serializer = new JsonSerializer();
-                            while (reader.Read())
+                            var split = Path.GetFileNameWithoutExtension(entry.Name).Split('_');
+                            if (split.Length == 2)
                             {
-                                if (reader.TokenType == JsonToken.PropertyName
-                                 && (string)reader.Value == "DataBaseversion")
-                                {
-                                    reader.Read();
-
-                                    string oldDbver = Serializer.Deserialize<string>(reader);
-                                    pdb.DataBaseversion = oldDbver;
-                                    break;
-                                }
+                                pdb.DataBaseversion = split[1];
                             }
                         }
 
@@ -462,31 +482,31 @@ namespace ME3Explorer.AssetDatabase
                         readData.dbTable[readtable.Key] = true;
                         switch (readtable.Key)
                         {
-                            case dbTableType.Class:
+                            case DBTableType.Class:
                                 readData.ClassRecords.AddRange(pdb.ClassRecords);
                                 break;
-                            case dbTableType.Materials:
+                            case DBTableType.Materials:
                                 readData.Materials.AddRange(pdb.Materials);
                                 break;
-                            case dbTableType.Animations:
+                            case DBTableType.Animations:
                                 readData.Animations.AddRange(pdb.Animations);
                                 break;
-                            case dbTableType.Meshes:
+                            case DBTableType.Meshes:
                                 readData.Meshes.AddRange(pdb.Meshes);
                                 break;
-                            case dbTableType.Particles:
+                            case DBTableType.Particles:
                                 readData.Particles.AddRange(pdb.Particles);
                                 break;
-                            case dbTableType.Textures:
+                            case DBTableType.Textures:
                                 readData.Textures.AddRange(pdb.Textures);
                                 break;
-                            case dbTableType.GUIElements:
+                            case DBTableType.GUIElements:
                                 readData.GUIElements.AddRange(pdb.GUIElements);
                                 break;
-                            case dbTableType.Convos:
+                            case DBTableType.Convos:
                                 readData.Conversations.AddRange(pdb.Conversations);
                                 break;
-                            case dbTableType.Lines:
+                            case DBTableType.Lines:
                                 readData.Lines.AddRange(pdb.Lines);
                                 break;
                             default:
@@ -515,66 +535,63 @@ namespace ME3Explorer.AssetDatabase
             }
             return null;
         }
-        private static void JsonFileParse(MemoryStream ms, dbTableType dbType, BlockingCollection<PropsDataBase> propsDataBases, CancellationToken ct)
+        private static void JsonFileParse(MemoryStream ms, DBTableType dbType, BlockingCollection<PropsDataBase> propsDataBases, CancellationToken ct)
         {
 
-            PropsDataBase readData = new PropsDataBase { DataBaseversion = dbType.ToString() };
+            PropsDataBase readData = new() { DataBaseversion = dbType.ToString() };
             readData.dbTable[dbType] = true;
             try
             {
-                using StreamReader sr = new StreamReader(ms);
-                using JsonTextReader reader = new JsonTextReader(sr);
-                var Serializer = new JsonSerializer();
                 switch (dbType)
                 {
-                    case dbTableType.Master:
-                        var mst = Serializer.Deserialize<PropsDataBase>(reader);
+                    case DBTableType.Master:
+                        var mst = MessagePackSerializer.Deserialize<PropsDataBase>(ms);
                         readData.meGame = mst.meGame;
                         readData.GenerationDate = mst.GenerationDate;
                         readData.DataBaseversion = mst.DataBaseversion;
                         readData.FileList.AddRange(mst.FileList);
                         readData.ContentDir.AddRange(mst.ContentDir);
                         break;
-                    case dbTableType.Class:
-                        var cls = Serializer.Deserialize<ObservableCollectionExtended<ClassRecord>>(reader);
+                    case DBTableType.Class:
+                        var cls = MessagePackSerializer.Deserialize<List<ClassRecord>>(ms);
                         readData.ClassRecords.AddRange(cls);
                         break;
-                    case dbTableType.Materials:
-                        var mats = Serializer.Deserialize<ObservableCollectionExtended<Material>>(reader);
+                    case DBTableType.Materials:
+                        var mats = MessagePackSerializer.Deserialize<List<MaterialRecord>>(ms);
                         readData.Materials.AddRange(mats);
                         break;
-                    case dbTableType.Animations:
-                        var an = Serializer.Deserialize<ObservableCollectionExtended<Animation>>(reader);
+                    case DBTableType.Animations:
+                        var an = MessagePackSerializer.Deserialize<List<AnimationRecord>>(ms);
                         readData.Animations.AddRange(an);
                         break;
-                    case dbTableType.Meshes:
-                        var msh = Serializer.Deserialize<ObservableCollectionExtended<MeshRecord>>(reader);
+                    case DBTableType.Meshes:
+                        var msh = MessagePackSerializer.Deserialize<List<MeshRecord>>(ms);
                         readData.Meshes.AddRange(msh);
                         break;
-                    case dbTableType.Particles:
-                        var ps = Serializer.Deserialize<ObservableCollectionExtended<ParticleSys>>(reader);
+                    case DBTableType.Particles:
+                        var ps = MessagePackSerializer.Deserialize<List<ParticleSysRecord>>(ms);
                         readData.Particles.AddRange(ps);
                         break;
-                    case dbTableType.Textures:
-                        var txt = Serializer.Deserialize<ObservableCollectionExtended<TextureRecord>>(reader);
+                    case DBTableType.Textures:
+                        var txt = MessagePackSerializer.Deserialize<List<TextureRecord>>(ms);
                         readData.Textures.AddRange(txt);
                         break;
-                    case dbTableType.GUIElements:
-                        var gui = Serializer.Deserialize<ObservableCollectionExtended<GUIElement>>(reader);
+                    case DBTableType.GUIElements:
+                        var gui = MessagePackSerializer.Deserialize<List<GUIElement>>(ms);
                         readData.GUIElements.AddRange(gui);
                         break;
-                    case dbTableType.Convos:
-                        var cnv = Serializer.Deserialize<ObservableCollectionExtended<Conversation>>(reader);
+                    case DBTableType.Convos:
+                        var cnv = MessagePackSerializer.Deserialize<List<Conversation>>(ms);
                         readData.Conversations.AddRange(cnv);
                         break;
-                    case dbTableType.Lines:
-                        var line = Serializer.Deserialize<ObservableCollectionExtended<ConvoLine>>(reader);
+                    case DBTableType.Lines:
+                        var line = MessagePackSerializer.Deserialize<List<ConvoLine>>(ms);
                         readData.Lines.AddRange(line);
                         break;
                 }
                 if (ct.IsCancellationRequested)
                 {
-                    Console.WriteLine("Cancelled JsonParseDB");
+                    Console.WriteLine("Cancelled ParseDB");
                     return;
                 }
                 propsDataBases.Add(readData);
@@ -583,7 +600,6 @@ namespace ME3Explorer.AssetDatabase
             {
                 MessageBox.Show($"Failure deserializing type: {dbType}");
             }
-
         }
         public async void SaveDatabase()
         {
@@ -593,17 +609,7 @@ namespace ME3Explorer.AssetDatabase
             IsBusy = true;
             CurrentOverallOperationText = $"Database saving...";
 
-            var masterDB = new PropsDataBase(CurrentDataBase.meGame, CurrentDataBase.GenerationDate, CurrentDataBase.DataBaseversion, CurrentDataBase.FileList, CurrentDataBase.ContentDir, new ObservableCollectionExtended<ClassRecord>(), new ObservableCollectionExtended<Material>(),
-            new ObservableCollectionExtended<Animation>(), new ObservableCollectionExtended<MeshRecord>(), new ObservableCollectionExtended<ParticleSys>(), new ObservableCollectionExtended<TextureRecord>(), new ObservableCollectionExtended<GUIElement>(), new ObservableCollectionExtended<Conversation>(), new ObservableCollectionExtended<ConvoLine>());
-            var masterSrl = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(masterDB));
-            var clsSrl = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(CurrentDataBase.ClassRecords));
-            var mtlSrl = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(CurrentDataBase.Materials));
-            var animSrl = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(CurrentDataBase.Animations));
-            var mshSrl = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(CurrentDataBase.Meshes));
-            var psSrl = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(CurrentDataBase.Particles));
-            var txtSrl = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(CurrentDataBase.Textures));
-            var guiSrl = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(CurrentDataBase.GUIElements));
-            var convSrl = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(CurrentDataBase.Conversations));
+            var masterDB = new PropsDataBase(CurrentDataBase.meGame, CurrentDataBase.GenerationDate, CurrentDataBase.DataBaseversion, CurrentDataBase.FileList, CurrentDataBase.ContentDir);
             var linesExLine = new ObservableCollectionExtended<ConvoLine>();
             if (ParseConvos && CurrentGame != MEGame.ME1)
             {
@@ -616,80 +622,68 @@ namespace ME3Explorer.AssetDatabase
             {
                 linesExLine.AddRange(CurrentDataBase.Lines);
             }
-            var lineSrl = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(linesExLine));
 
             using (var fileStream = new FileStream(CurrentDBPath, FileMode.Create))
             {
                 using (var archive = new ZipArchive(fileStream, ZipArchiveMode.Create, true))
                 {
-                    await Task.WhenAll(masterSrl, clsSrl, mtlSrl, animSrl, mshSrl, psSrl, txtSrl, guiSrl, convSrl, lineSrl);
                     var build = dbCurrentBuild.Trim(' ', '*', '.');
-                    var masterjson = archive.CreateEntry($"MasterDB{CurrentGame}_{build}.json");
+                    var masterjson = archive.CreateEntry($"MasterDB.{CurrentGame}_{build}.bin");
                     using (var entryStream = masterjson.Open())
-                    using (var streamWriter = new StreamWriter(entryStream))
                     {
-                        await Task.Run(() => streamWriter.Write(masterSrl.Result));
+                        await MessagePackSerializer.SerializeAsync(entryStream, masterDB);
                     }
-                    var classjson = archive.CreateEntry($"{dbTableType.Class.ToString()}DB{CurrentGame}.json");
+                    var classjson = archive.CreateEntry($"{DBTableType.Class}.DB{CurrentGame}.bin");
                     using (var entryStream = classjson.Open())
-                    using (var streamWriter = new StreamWriter(entryStream))
                     {
-                        await Task.Run(() => streamWriter.Write(clsSrl.Result));
+                        await MessagePackSerializer.SerializeAsync(entryStream, CurrentDataBase.ClassRecords);
                     }
-                    var matjson = archive.CreateEntry($"{dbTableType.Materials.ToString()}DB{CurrentGame}.json");
+                    var matjson = archive.CreateEntry($"{DBTableType.Materials}.DB{CurrentGame}.bin");
                     using (var entryStream = matjson.Open())
-                    using (var streamWriter = new StreamWriter(entryStream))
                     {
-                        await Task.Run(() => streamWriter.Write(mtlSrl.Result));
+                        await MessagePackSerializer.SerializeAsync(entryStream, CurrentDataBase.Materials);
                     }
-                    var animJson = archive.CreateEntry($"{dbTableType.Animations.ToString()}DB{CurrentGame}.json");
+                    var animJson = archive.CreateEntry($"{DBTableType.Animations}.DB{CurrentGame}.bin");
                     using (var entryStream = animJson.Open())
-                    using (var streamWriter = new StreamWriter(entryStream))
                     {
-                        await Task.Run(() => streamWriter.Write(animSrl.Result));
+                        await MessagePackSerializer.SerializeAsync(entryStream, CurrentDataBase.Animations);
                     }
-                    var mshJson = archive.CreateEntry($"{dbTableType.Meshes.ToString()}DB{CurrentGame}.json");
+                    var mshJson = archive.CreateEntry($"{DBTableType.Meshes}.DB{CurrentGame}.bin");
                     using (var entryStream = mshJson.Open())
-                    using (var streamWriter = new StreamWriter(entryStream))
                     {
-                        await Task.Run(() => streamWriter.Write(mshSrl.Result));
+                        await MessagePackSerializer.SerializeAsync(entryStream, CurrentDataBase.Meshes);
                     }
-                    var psJson = archive.CreateEntry($"{dbTableType.Particles.ToString()}DB{CurrentGame}.json");
+                    var psJson = archive.CreateEntry($"{DBTableType.Particles}.DB{CurrentGame}.bin");
                     using (var entryStream = psJson.Open())
-                    using (var streamWriter = new StreamWriter(entryStream))
                     {
-                        await Task.Run(() => streamWriter.Write(psSrl.Result));
+                        await MessagePackSerializer.SerializeAsync(entryStream, CurrentDataBase.Particles);
                     }
-                    var txtJson = archive.CreateEntry($"{dbTableType.Textures.ToString()}DB{CurrentGame}.json");
+                    var txtJson = archive.CreateEntry($"{DBTableType.Textures}.DB{CurrentGame}.bin");
                     using (var entryStream = txtJson.Open())
-                    using (var streamWriter = new StreamWriter(entryStream))
                     {
-                        await Task.Run(() => streamWriter.Write(txtSrl.Result));
+                        await MessagePackSerializer.SerializeAsync(entryStream, CurrentDataBase.Textures);
                     }
-                    var guiJson = archive.CreateEntry($"{dbTableType.GUIElements.ToString()}DB{CurrentGame}.json");
+                    var guiJson = archive.CreateEntry($"{DBTableType.GUIElements}.DB{CurrentGame}.bin");
                     using (var entryStream = guiJson.Open())
-                    using (var streamWriter = new StreamWriter(entryStream))
                     {
-                        await Task.Run(() => streamWriter.Write(guiSrl.Result));
+                        await MessagePackSerializer.SerializeAsync(entryStream, CurrentDataBase.GUIElements);
                     }
-                    var convJson = archive.CreateEntry($"{dbTableType.Convos.ToString()}DB{CurrentGame}.json");
+                    var convJson = archive.CreateEntry($"{DBTableType.Convos}.DB{CurrentGame}.bin");
                     using (var entryStream = convJson.Open())
-                    using (var streamWriter = new StreamWriter(entryStream))
                     {
-                        await Task.Run(() => streamWriter.Write(convSrl.Result));
+                        await MessagePackSerializer.SerializeAsync(entryStream, CurrentDataBase.Conversations);
                     }
-                    var lineJson = archive.CreateEntry($"{dbTableType.Lines.ToString()}DB{CurrentGame}.json");
+                    var lineJson = archive.CreateEntry($"{DBTableType.Lines}.DB{CurrentGame}.bin");
                     using (var entryStream = lineJson.Open())
-                    using (var streamWriter = new StreamWriter(entryStream))
                     {
-                        await Task.Run(() => streamWriter.Write(lineSrl.Result));
+                        await MessagePackSerializer.SerializeAsync(entryStream, linesExLine);
                     }
                 }
             }
             menu_SaveXEmptyLines.IsEnabled = false;
             CurrentOverallOperationText = $"Database saved.";
             IsBusy = false;
-            await Task.Delay(5000);
+            await Task.Delay(3000);
             CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count} Particles: { CurrentDataBase.Particles.Count} Textures: { CurrentDataBase.Textures.Count} Elements: { CurrentDataBase.GUIElements.Count}";
         }
         public void ClearDataBase()
@@ -698,15 +692,15 @@ namespace ME3Explorer.AssetDatabase
             CurrentDataBase.GenerationDate = null;
             CurrentDataBase.FileList.Clear();
             CurrentDataBase.ContentDir.Clear();
-            CurrentDataBase.ClassRecords.ClearEx();
-            CurrentDataBase.Animations.ClearEx();
-            CurrentDataBase.Materials.ClearEx();
-            CurrentDataBase.Meshes.ClearEx();
-            CurrentDataBase.Particles.ClearEx();
-            CurrentDataBase.Textures.ClearEx();
-            CurrentDataBase.GUIElements.ClearEx();
-            CurrentDataBase.Conversations.ClearEx();
-            CurrentDataBase.Lines.ClearEx();
+            CurrentDataBase.ClassRecords.Clear();
+            CurrentDataBase.Animations.Clear();
+            CurrentDataBase.Materials.Clear();
+            CurrentDataBase.Meshes.Clear();
+            CurrentDataBase.Particles.Clear();
+            CurrentDataBase.Textures.Clear();
+            CurrentDataBase.GUIElements.Clear();
+            CurrentDataBase.Conversations.Clear();
+            CurrentDataBase.Lines.Clear();
             FileListExtended.ClearEx();
             CustomFileList.Clear();
             IsFilteredByFiles = false;
@@ -722,7 +716,7 @@ namespace ME3Explorer.AssetDatabase
                 var spkrs = new List<string>();
                 foreach (var line in CurrentDataBase.Lines)
                 {
-                    if (!spkrs.Any(s => s == line.Speaker))
+                    if (spkrs.All(s => s != line.Speaker))
                         spkrs.Add(line.Speaker);
                 }
                 spkrs.Sort();
@@ -758,11 +752,14 @@ namespace ME3Explorer.AssetDatabase
                 {
                     line.Line = GeneratedLines[line.StrRef.ToString()].Line;
                 }
-                if (!spkrs.Any(s => s == line.Speaker))
+                if (spkrs.All(s => s != line.Speaker))
                     spkrs.Add(line.Speaker);
             }
             var emptylines = CurrentDataBase.Lines.Where(l => l.Line == "No Data").ToList();
-            CurrentDataBase.Lines.RemoveRange(emptylines);
+            foreach (var line in emptylines)
+            {
+                CurrentDataBase.Lines.Remove(line);
+            }
             GeneratedLines.Clear();
             spkrs.Sort();
             SpeakerList.AddRange(spkrs);
@@ -874,24 +871,22 @@ namespace ME3Explorer.AssetDatabase
                     {
 
                         var warn = MessageBox.Show($"This database is out of date (v {CurrentDataBase.DataBaseversion} versus v {dbCurrentBuild})\nA new version is required. Do you wish to rebuild?", "Warning", MessageBoxButton.OKCancel);
-                        if (warn != MessageBoxResult.Cancel)
+                        if (warn == MessageBoxResult.Cancel)
+                        {
+                            ClearDataBase();
+                            IsBusy = false;
+                        }
+                        else
                         {
                             ScanGame();
-                            return false;
                         }
-                        ClearDataBase();
-                        IsBusy = false;
-                        return false;
                     }
-                    return true;
-                }).ContinueWithOnUIThread(prevTask =>
-                {
-                    if (prevTask.Result)
+                    else
                     {
-                        foreach (var f in CurrentDataBase.FileList)
+                        foreach ((string fileName, int directoryKey) in CurrentDataBase.FileList)
                         {
-                            var cd = CurrentDataBase.ContentDir[f.Item2];
-                            FileListExtended.Add(new Tuple<string, string>(f.Item1, cd));
+                            var cd = CurrentDataBase.ContentDir[directoryKey];
+                            FileListExtended.Add(new(fileName, cd));
                         }
 
                         ParseConvos = !CurrentDataBase.Lines.IsEmpty();
@@ -929,7 +924,7 @@ namespace ME3Explorer.AssetDatabase
         }
         private void GoToSuperClass(object obj)
         {
-            var cr = lstbx_Classes.SelectedItem as ClassRecord;
+            var cr = (ClassRecord)lstbx_Classes.SelectedItem;
             var sClass = cr.SuperClass;
             if (sClass == null)
             {
@@ -941,7 +936,7 @@ namespace ME3Explorer.AssetDatabase
                 FilterBox.Clear();
                 Filter();
             }
-            var scidx = CurrentDataBase.ClassRecords.IndexOf(CurrentDataBase.ClassRecords.Where(r => r.Class == sClass).FirstOrDefault());
+            var scidx = CurrentDataBase.ClassRecords.IndexOf(CurrentDataBase.ClassRecords.FirstOrDefault(r => r.Class == sClass));
             if (scidx >= 0)
             {
                 lstbx_Classes.SelectedIndex = scidx;
@@ -956,69 +951,60 @@ namespace ME3Explorer.AssetDatabase
         {
             var tool = obj as string;
             string usagepkg = null;
-            int usageexp = 0;
+            int usageUID = 0;
             string contentdir = null;
 
             if (lstbx_Usages.SelectedIndex >= 0 && currentView == 1)
             {
-                var c = lstbx_Usages.SelectedItem as ClassUsage;
-                usagepkg = FileListExtended[c.FileKey].Item1;
-                contentdir = FileListExtended[c.FileKey].Item2;
-                usageexp = c.ExportUID;
+                var c = (ClassUsage)lstbx_Usages.SelectedItem;
+                (usagepkg, contentdir) = FileListExtended[c.FileKey];
+                usageUID = c.UIndex;
             }
             else if (lstbx_MatUsages.SelectedIndex >= 0 && currentView == 2)
             {
-                var m = lstbx_MatUsages.SelectedItem as Tuple<int, int, bool>;
-                usagepkg = FileListExtended[m.Item1].Item1;
-                contentdir = FileListExtended[m.Item1].Item2;
-                usageexp = m.Item2;
+                var m = (MatUsage)lstbx_MatUsages.SelectedItem;
+                (usagepkg, contentdir)= FileListExtended[m.FileKey];
+                usageUID = m.UIndex;
             }
             else if (lstbx_MeshUsages.SelectedIndex >= 0 && currentView == 3)
             {
-                var s = lstbx_MeshUsages.SelectedItem as Tuple<int, int, bool>;
-                usagepkg = FileListExtended[s.Item1].Item1;
-                contentdir = FileListExtended[s.Item1].Item2;
-                usageexp = s.Item2;
+                var s = (MeshUsage)lstbx_MeshUsages.SelectedItem;
+                (usagepkg, contentdir) = FileListExtended[s.FileKey];
+                usageUID = s.UIndex;
             }
             else if (lstbx_TextureUsages.SelectedIndex >= 0 && currentView == 4)
             {
-                var t = lstbx_TextureUsages.SelectedItem as Tuple<int, int, bool, bool>;
-                usagepkg = FileListExtended[t.Item1].Item1;
-                contentdir = FileListExtended[t.Item1].Item2;
-                usageexp = t.Item2;
+                var t = (TextureUsage)lstbx_TextureUsages.SelectedItem;
+                (usagepkg, contentdir) = FileListExtended[t.FileKey];
+                usageUID = t.UIndex;
             }
             else if (lstbx_AnimUsages.SelectedIndex >= 0 && currentView == 5)
             {
-                var a = lstbx_AnimUsages.SelectedItem as Tuple<int, int, bool>;
-                usagepkg = FileListExtended[a.Item1].Item1;
-                contentdir = FileListExtended[a.Item1].Item2;
-                usageexp = a.Item2;
+                var a = (AnimUsage)lstbx_AnimUsages.SelectedItem;
+                (usagepkg, contentdir) = FileListExtended[a.FileKey];
+                usageUID = a.UIndex;
             }
             else if (lstbx_PSUsages.SelectedIndex >= 0 && currentView == 6)
             {
-                var ps = lstbx_PSUsages.SelectedItem as Tuple<int, int, bool, bool>;
-                usagepkg = FileListExtended[ps.Item1].Item1;
-                contentdir = FileListExtended[ps.Item1].Item2;
-                usageexp = ps.Item2;
+                var ps = (ParticleSysUsage)lstbx_PSUsages.SelectedItem;
+                (usagepkg, contentdir) = FileListExtended[ps.FileKey];
+                usageUID = ps.UIndex;
             }
             else if (lstbx_GUIUsages.SelectedIndex >= 0 && currentView == 7)
             {
-                var sf = (Tuple<int, int, bool>)lstbx_GUIUsages.SelectedItem;
-                usagepkg = FileListExtended[sf.Item1].Item1;
-                contentdir = FileListExtended[sf.Item1].Item2;
-                usageexp = sf.Item2;
+                var sf = (GUIUsage)lstbx_GUIUsages.SelectedItem;
+                (usagepkg, contentdir) = FileListExtended[sf.FileKey];
+                usageUID = sf.UIndex;
             }
             else if (lstbx_Lines.SelectedIndex >= 0 && currentView == 8)
             {
                 usagepkg = CurrentConvo.Item2;
                 contentdir = CurrentConvo.Item4;
-                usageexp = CurrentConvo.Item3;
+                usageUID = CurrentConvo.Item3;
             }
             else if (lstbx_Files.SelectedIndex >= 0 && currentView == 0)
             {
-                var fileref = (Tuple<string, string>)lstbx_Files.SelectedItem;
-                usagepkg = fileref.Item1;
-                contentdir = fileref.Item2;
+                (usagepkg, contentdir) = (FileDirPair)lstbx_Files.SelectedItem;
             }
 
             if (usagepkg == null)
@@ -1027,26 +1013,26 @@ namespace ME3Explorer.AssetDatabase
                 return;
             }
 
-            OpenInToolkit(tool, usagepkg, contentdir, usageexp);
+            OpenInToolkit(tool, usagepkg, contentdir, usageUID);
         }
         private void OpenSourcePkg(object obj)
         {
-            var cr = lstbx_Classes.SelectedItem as ClassRecord;
+            var cr = (ClassRecord)lstbx_Classes.SelectedItem;
             var sourcepkg = cr.Definition_package;
             var sourceexp = cr.Definition_UID;
 
-            int sourcedefaultUsage = cr.ClassUsages.FirstOrDefault(u => u.IsDefault == true).FileKey;
+            int sourcedefaultUsage = cr.Usages.FirstOrDefault(u => u.IsDefault)?.FileKey ?? 0;
 
             if (sourcepkg == null || sourcedefaultUsage == 0)
             {
                 MessageBox.Show("Definition file unknown.");
                 return;
             }
-            var contentdir = FileListExtended[sourcedefaultUsage].Item2;
+            var contentdir = FileListExtended[sourcedefaultUsage].Directory;
 
             OpenInToolkit("PackageEditor", sourcepkg, contentdir, sourceexp);
         }
-        private void OpenInToolkit(string tool, string filename, string contentdir, int export = 0)
+        private void OpenInToolkit(string tool, string filename, string contentdir, int uindex = 0)
         {
             string filePath = null;
             string rootPath = MEDirectories.GetDefaultGamePath(CurrentGame);
@@ -1072,9 +1058,9 @@ namespace ME3Explorer.AssetDatabase
                 case "Meshplorer":
                     var meshPlorer = new MeshplorerWPF();
                     meshPlorer.Show();
-                    if (export != 0)
+                    if (uindex != 0)
                     {
-                        meshPlorer.LoadFile(filePath, export);
+                        meshPlorer.LoadFile(filePath, uindex);
                     }
                     else
                     {
@@ -1098,9 +1084,9 @@ namespace ME3Explorer.AssetDatabase
                 default:
                     var packEditor = new PackageEditorWPF();
                     packEditor.Show();
-                    if (export != 0)
+                    if (uindex != 0)
                     {
-                        packEditor.LoadFile(filePath, export);
+                        packEditor.LoadFile(filePath, uindex);
                     }
                     else
                     {
@@ -1184,8 +1170,8 @@ namespace ME3Explorer.AssetDatabase
                 var convo = CurrentDataBase.Conversations.FirstOrDefault(x => x.ConvName == newline.Convo);
                 if (convo != null)
                 {
-                    var file = CurrentDataBase.FileList[convo.ConvFile.Item1];
-                    CurrentConvo = new Tuple<string, string, int, string, bool>(convo.ConvName, file.Item1, convo.ConvFile.Item2, CurrentDataBase.ContentDir[file.Item2], convo.IsAmbient);
+                    (string fileName, int directoryKey) = CurrentDataBase.FileList[convo.ConvFile.Item1];
+                    CurrentConvo = new Tuple<string, string, int, string, bool>(convo.ConvName, fileName, convo.ConvFile.Item2, CurrentDataBase.ContentDir[directoryKey], convo.IsAmbient);
                     ToggleLinePlayback();
                     return;
                 }
@@ -1231,11 +1217,7 @@ namespace ME3Explorer.AssetDatabase
         }
         private void ToggleRenderMesh()
         {
-            bool showmesh = false;
-            if (btn_MeshRenderToggle.IsChecked == true && (lstbx_Meshes.SelectedIndex >= 0) && CurrentDataBase.Meshes[lstbx_Meshes.SelectedIndex].MeshUsages.Count > 0 && currentView == 3)
-            {
-                showmesh = true;
-            }
+            bool showmesh = btn_MeshRenderToggle.IsChecked == true && lstbx_Meshes.SelectedIndex >= 0 && CurrentDataBase.Meshes[lstbx_Meshes.SelectedIndex].Usages.Count > 0 && currentView == 3;
 
             if (!showmesh)
             {
@@ -1244,10 +1226,10 @@ namespace ME3Explorer.AssetDatabase
                 return;
             }
             string rootPath = MEDirectories.GetDefaultGamePath(CurrentGame);
-            var selecteditem = lstbx_Meshes.SelectedItem as MeshRecord;
-            var filekey = selecteditem.MeshUsages[0].Item1;
-            var filename = CurrentDataBase.FileList[filekey].Item1;
-            var cdir = CurrentDataBase.ContentDir[CurrentDataBase.FileList[filekey].Item2];
+            var selecteditem = (MeshRecord)lstbx_Meshes.SelectedItem;
+            var filekey = selecteditem.Usages[0].FileKey;
+            var (filename, dirKey) = CurrentDataBase.FileList[filekey];
+            var cdir = CurrentDataBase.ContentDir[dirKey];
 
             if (rootPath == null)
             {
@@ -1281,7 +1263,7 @@ namespace ME3Explorer.AssetDatabase
                     continue;
                 }
                 meshPcc = MEPackageHandler.OpenMEPackage(filePath);
-                var uexpIdx = selecteditem.MeshUsages[0].Item2;
+                var uexpIdx = selecteditem.Usages[0].UIndex;
                 if (uexpIdx <= meshPcc.ExportCount)
                 {
                     var meshExp = meshPcc.GetUExport(uexpIdx);
@@ -1296,13 +1278,9 @@ namespace ME3Explorer.AssetDatabase
         }
         private void ToggleRenderTexture()
         {
-            bool showText = false;
-            if (btn_TextRenderToggle.IsChecked == true && (lstbx_Textures.SelectedIndex >= 0) && CurrentDataBase.Textures[lstbx_Textures.SelectedIndex].TextureUsages.Count > 0 && currentView == 4)
-            {
-                showText = true;
-            }
+            bool showText = btn_TextRenderToggle.IsChecked == true && lstbx_Textures.SelectedIndex >= 0 && CurrentDataBase.Textures[lstbx_Textures.SelectedIndex].Usages.Count > 0 && currentView == 4;
 
-            var selecteditem = lstbx_Textures.SelectedItem as TextureRecord;
+            var selecteditem = (TextureRecord)lstbx_Textures.SelectedItem;
             if (!showText || selecteditem.CFormat == "TextureCube")
             {
                 EmbeddedTextureViewerTab_EmbeddedTextureViewer.UnloadExport();
@@ -1313,10 +1291,10 @@ namespace ME3Explorer.AssetDatabase
                 return;
             }
 
-            var filekey = selecteditem.TextureUsages[0].Item1;
-            var filename = CurrentDataBase.FileList[filekey].Item1;
+            var filekey = selecteditem.Usages[0].FileKey;
+            var (filename, dirKey) = CurrentDataBase.FileList[filekey];
             string rootPath = MEDirectories.GetDefaultGamePath(CurrentGame);
-            var cdir = CurrentDataBase.ContentDir[CurrentDataBase.FileList[filekey].Item2];
+            var cdir = CurrentDataBase.ContentDir[dirKey];
             if (rootPath == null)
             {
                 MessageBox.Show($"{CurrentGame} has not been found. Please check your ME3Explorer settings");
@@ -1347,7 +1325,7 @@ namespace ME3Explorer.AssetDatabase
                     continue;
                 }
                 textPcc = MEPackageHandler.OpenMEPackage(filePath);
-                var uexpIdx = selecteditem.TextureUsages[0].Item2;
+                var uexpIdx = selecteditem.Usages[0].UIndex;
                 if (uexpIdx <= textPcc.ExportCount)
                 {
                     var textExp = textPcc.GetUExport(uexpIdx);
@@ -1379,11 +1357,7 @@ namespace ME3Explorer.AssetDatabase
         }
         private void ToggleLinePlayback()
         {
-            bool showAudio = false;
-            if (btn_LinePlaybackToggle.IsChecked == true && (lstbx_Lines.SelectedIndex >= 0) && CurrentConvo.Item1 != null && CurrentGame != MEGame.ME1 && currentView == 8)
-            {
-                showAudio = true;
-            }
+            bool showAudio = btn_LinePlaybackToggle.IsChecked == true && lstbx_Lines.SelectedIndex >= 0 && CurrentConvo.Item1 != null && CurrentGame != MEGame.ME1 && currentView == 8;
 
             if (!showAudio)
             {
@@ -1392,7 +1366,7 @@ namespace ME3Explorer.AssetDatabase
                 return;
             }
 
-            var selecteditem = lstbx_Lines.SelectedItem as ConvoLine;
+            var selecteditem = (ConvoLine)lstbx_Lines.SelectedItem;
             var filename = CurrentConvo.Item2;
             var cdir = CurrentConvo.Item4;
             string rootPath = MEDirectories.GetDefaultGamePath(CurrentGame);
@@ -1410,9 +1384,9 @@ namespace ME3Explorer.AssetDatabase
                 return;
             }
 
-            string searchWav = $"{selecteditem.StrRef.ToString()}_m";
+            string searchWav = $"{selecteditem.StrRef}_m";
             if (genderTabs.SelectedIndex == 1)
-                searchWav = $"{selecteditem.StrRef.ToString()}_f";
+                searchWav = $"{selecteditem.StrRef}_f";
 
             if (audioPcc != null)
             {
@@ -1465,12 +1439,11 @@ namespace ME3Explorer.AssetDatabase
         }
         private void OpenInAnimViewer(object obj)
         {
-            var anim = lstbx_Anims.SelectedItem as Animation;
-            if (anim != null)
+            if (lstbx_Anims.SelectedItem is AnimationRecord anim)
             {
                 if (!Application.Current.Windows.OfType<AnimationExplorer.AnimationViewer>().Any())
                 {
-                    AnimationExplorer.AnimationViewer av = new AnimationExplorer.AnimationViewer(CurrentDataBase, anim);
+                    AnimationExplorer.AnimationViewer av = new(CurrentDataBase, anim);
                     av.Show();
                 }
                 else
@@ -1490,9 +1463,9 @@ namespace ME3Explorer.AssetDatabase
         }
         private void ExportToPSA()
         {
-            if (lstbx_Anims.SelectedItem is Animation anim && anim.AnimUsages.Any())
+            if (lstbx_Anims.SelectedItem is AnimationRecord anim && anim.Usages.Any())
             {
-                var (fileListIndex, animUIndex, isMod) = anim.AnimUsages[0];
+                var (fileListIndex, animUIndex, _) = anim.Usages[0];
                 string filePath = GetFilePath(fileListIndex);
                 using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
                 if (pcc.IsUExport(animUIndex) &&
@@ -1515,9 +1488,9 @@ namespace ME3Explorer.AssetDatabase
         }
         private void OpenInAnimationImporter()
         {
-            if (lstbx_Anims.SelectedItem is Animation anim && anim.AnimUsages.Any())
+            if (lstbx_Anims.SelectedItem is AnimationRecord anim && anim.Usages.Any())
             {
-                (int fileListIndex, int animUIndex, bool isMod) = anim.AnimUsages[0];
+                (int fileListIndex, int animUIndex, bool _) = anim.Usages[0];
                 string filePath = GetFilePath(fileListIndex);
                 var animImporter = new AnimationImporter(filePath, animUIndex);
                 animImporter.Show();
@@ -1568,352 +1541,442 @@ namespace ME3Explorer.AssetDatabase
         #region Filters
         bool ClassFilter(object d)
         {
-            var cr = d as ClassRecord;
-            bool showthis = true;
-            if (!string.IsNullOrEmpty(FilterBox.Text) && cr != null)
+            if (d is ClassRecord cr)
             {
-                showthis = cr.Class.ToLower().Contains(FilterBox.Text.ToLower());
+                bool showthis = true;
+                if (!string.IsNullOrEmpty(FilterBox.Text))
+                {
+                    showthis = cr.Class.ToLower().Contains(FilterBox.Text.ToLower());
+                }
+
+                if (showthis && menu_fltrSeq.IsChecked && (!cr.Class.ToLower().StartsWith("seq") && !cr.Class.ToLower().StartsWith("bioseq") && !cr.Class.ToLower().StartsWith("sfxseq") && !cr.Class.ToLower().StartsWith("rvrseq")))
+                {
+                    showthis = false;
+                }
+
+                if (showthis && menu_fltrInterp.IsChecked && (!cr.Class.ToLower().StartsWith("interp") && !cr.Class.ToLower().StartsWith("bioevtsys") && !cr.Class.ToLower().Contains("interptrack") && !cr.Class.ToLower().Contains("sfxscene")))
+                {
+                    showthis = false;
+                }
+
+                if (showthis && IsFilteredByFiles && !CustomFileList.IsEmpty() && !cr.Usages.Select(c => c.FileKey).Intersect(CustomFileList.Keys).Any())
+                {
+                    showthis = false;
+                }
+
+                return showthis;
             }
-            if (showthis && menu_fltrSeq.IsChecked && (!cr.Class.ToLower().StartsWith("seq") && !cr.Class.ToLower().StartsWith("bioseq") && !cr.Class.ToLower().StartsWith("sfxseq") && !cr.Class.ToLower().StartsWith("rvrseq")))
-            {
-                showthis = false;
-            }
-            if (showthis && menu_fltrInterp.IsChecked && (!cr.Class.ToLower().StartsWith("interp") && !cr.Class.ToLower().StartsWith("bioevtsys") && !cr.Class.ToLower().Contains("interptrack") && !cr.Class.ToLower().Contains("sfxscene")))
-            {
-                showthis = false;
-            }
-            if (showthis && IsFilteredByFiles && !CustomFileList.IsEmpty() && !cr.ClassUsages.Select(c => c.FileKey).Intersect(CustomFileList.Keys).Any())
-            {
-                showthis = false;
-            }
-            return showthis;
+            return false;
         }
         bool MaterialFilter(object d)
         {
-            var mr = d as Material;
-            bool showthis = true;
-            if (!string.IsNullOrEmpty(FilterBox.Text) && mr != null)
+            if (d is MaterialRecord mr)
             {
-                showthis = mr.MaterialName.ToLower().Contains(FilterBox.Text.ToLower());
-                if (!showthis)
+                bool showthis = true;
+                if (!string.IsNullOrEmpty(FilterBox.Text))
                 {
-                    showthis = mr.ParentPackage.ToLower().Contains(FilterBox.Text.ToLower());
+                    showthis = mr.MaterialName.ToLower().Contains(FilterBox.Text.ToLower());
+                    if (!showthis)
+                    {
+                        showthis = mr.ParentPackage.ToLower().Contains(FilterBox.Text.ToLower());
+                    }
                 }
+
+                if (showthis && menu_fltrMatDecal.IsChecked && !mr.MaterialName.Contains("Decal"))
+                {
+                    showthis = false;
+                }
+
+                if (showthis && menu_fltrMatUnlit.IsChecked && !mr.MatSettings.Any(x => x.Name == "LightingModel" && x.Parm2 == "MLM_Unlit"))
+                {
+                    showthis = false;
+                }
+
+                if (showthis && menu_fltrMatSkM.IsChecked && mr.MatSettings.Any(x => x.Name == "bUsedWithSkeletalMesh" && x.Parm2 == "True"))
+                {
+                    showthis = false;
+                }
+
+                if (showthis && menu_fltrMat2side.IsChecked && !mr.MatSettings.Any(x => x.Name == "TwoSided" && x.Parm2 == "True"))
+                {
+                    showthis = false;
+                }
+
+                if (showthis && menu_fltrMat1side.IsChecked && mr.MatSettings.Any(x => x.Name == "TwoSided" && x.Parm2 == "True"))
+                {
+                    showthis = false;
+                }
+
+                if (showthis && menu_fltrMatNoDLC.IsChecked && mr.IsDLCOnly)
+                {
+                    showthis = false;
+                }
+
+                if (showthis && menu_fltrMatTrans.IsChecked && !mr.MatSettings.Any(x => x.Name == "BlendMode" && x.Parm2 == "BLEND_Translucent"))
+                {
+                    showthis = false;
+                }
+
+                if (showthis && menu_fltrMatAdd.IsChecked && !mr.MatSettings.Any(x => x.Name == "BlendMode" && x.Parm2 == "BLEND_Additive"))
+                {
+                    showthis = false;
+                }
+
+                if (showthis && menu_fltrMatOpq.IsChecked && mr.MatSettings.Any(x => x.Name == "BlendMode" && (x.Parm2 == "BLEND_Additive" || x.Parm2 == "BLEND_Translucent")))
+                {
+                    showthis = false;
+                }
+
+                if (showthis && menu_fltrMatColor.IsChecked && !mr.MatSettings.Any(x => x.Name == "VectorParameter" && x.Parm1.ToLower().Contains("color")))
+                {
+                    showthis = false;
+                }
+
+                if (showthis && menu_fltrMatText.IsChecked && mr.MatSettings.All(x => x.Name != "TextureSampleParameter2D"))
+                {
+                    showthis = false;
+                }
+
+                if (showthis && menu_fltrMatTalk.IsChecked && !mr.MatSettings.Any(x => x.Name == "ScalarParameter" && x.Parm1.ToLower().Contains("talk")))
+                {
+                    showthis = false;
+                }
+
+                if (showthis && IsFilteredByFiles && !CustomFileList.IsEmpty() && !mr.Usages.Select(tuple => tuple.FileKey).Intersect(CustomFileList.Keys).Any())
+                {
+                    showthis = false;
+                }
+
+                return showthis;
             }
-            if (showthis && menu_fltrMatDecal.IsChecked && !mr.MaterialName.Contains("Decal"))
-            {
-                showthis = false;
-            }
-            if (showthis && menu_fltrMatUnlit.IsChecked && !mr.MatSettings.Any(x => x.Item1 == "LightingModel" && x.Item3 == "MLM_Unlit"))
-            {
-                showthis = false;
-            }
-            if (showthis && menu_fltrMatSkM.IsChecked && mr.MatSettings.Any(x => x.Item1 == "bUsedWithSkeletalMesh" && x.Item3 == "True"))
-            {
-                showthis = false;
-            }
-            if (showthis && menu_fltrMat2side.IsChecked && !mr.MatSettings.Any(x => x.Item1 == "TwoSided" && x.Item3 == "True"))
-            {
-                showthis = false;
-            }
-            if (showthis && menu_fltrMat1side.IsChecked && mr.MatSettings.Any(x => x.Item1 == "TwoSided" && x.Item3 == "True"))
-            {
-                showthis = false;
-            }
-            if (showthis && menu_fltrMatNoDLC.IsChecked && mr.IsDLCOnly)
-            {
-                showthis = false;
-            }
-            if (showthis && menu_fltrMatTrans.IsChecked && !mr.MatSettings.Any(x => x.Item1 == "BlendMode" && x.Item3 == "BLEND_Translucent"))
-            {
-                showthis = false;
-            }
-            if (showthis && menu_fltrMatAdd.IsChecked && !mr.MatSettings.Any(x => x.Item1 == "BlendMode" && x.Item3 == "BLEND_Additive"))
-            {
-                showthis = false;
-            }
-            if (showthis && menu_fltrMatOpq.IsChecked && mr.MatSettings.Any(x => x.Item1 == "BlendMode" && (x.Item3 == "BLEND_Additive" || x.Item3 == "BLEND_Translucent")))
-            {
-                showthis = false;
-            }
-            if (showthis && menu_fltrMatColor.IsChecked && !mr.MatSettings.Any(x => x.Item1 == "VectorParameter" && x.Item2.ToLower().Contains("color")))
-            {
-                showthis = false;
-            }
-            if (showthis && menu_fltrMatText.IsChecked && !mr.MatSettings.Any(x => x.Item1 == "TextureSampleParameter2D"))
-            {
-                showthis = false;
-            }
-            if (showthis && menu_fltrMatTalk.IsChecked && !mr.MatSettings.Any(x => x.Item1 == "ScalarParameter" && x.Item2.ToLower().Contains("talk")))
-            {
-                showthis = false;
-            }
-            if (showthis && IsFilteredByFiles && !CustomFileList.IsEmpty() && !mr.MaterialUsages.Select(tuple => tuple.Item1).Intersect(CustomFileList.Keys).Any())
-            {
-                showthis = false;
-            }
-            return showthis;
+
+            return false;
         }
         bool MeshFilter(object d)
         {
-            var mr = d as MeshRecord;
-            bool showthis = true;
-            if (!string.IsNullOrEmpty(FilterBox.Text) && mr != null)
+            if (d is MeshRecord mr)
             {
-                showthis = mr.MeshName.ToLower().Contains(FilterBox.Text.ToLower());
+                bool showthis = true;
+                if (!string.IsNullOrEmpty(FilterBox.Text))
+                {
+                    showthis = mr.MeshName.ToLower().Contains(FilterBox.Text.ToLower());
+                }
+
+                if (showthis && menu_fltrSkM.IsChecked && !mr.IsSkeleton)
+                {
+                    showthis = false;
+                }
+
+                if (showthis && menu_fltrStM.IsChecked && mr.IsSkeleton)
+                {
+                    showthis = false;
+                }
+
+                if (showthis && IsFilteredByFiles && !CustomFileList.IsEmpty() && !mr.Usages.Select(usage => usage.FileKey).Intersect(CustomFileList.Keys).Any())
+                {
+                    showthis = false;
+                }
+
+                return showthis;
             }
-            if (showthis && menu_fltrSkM.IsChecked && !mr.IsSkeleton)
-            {
-                showthis = false;
-            }
-            if (showthis && menu_fltrStM.IsChecked && mr.IsSkeleton)
-            {
-                showthis = false;
-            }
-            if (showthis && IsFilteredByFiles && !CustomFileList.IsEmpty() && !mr.MeshUsages.Select(tuple => tuple.Item1).Intersect(CustomFileList.Keys).Any())
-            {
-                showthis = false;
-            }
-            return showthis;
+
+            return false;
         }
         bool AnimFilter(object d)
         {
-            var ar = d as Animation;
-            bool showthis = true;
-            if (!string.IsNullOrEmpty(FilterBox.Text) && ar != null)
+            if (d is AnimationRecord ar)
             {
-                showthis = ar.AnimSequence.ToLower().Contains(FilterBox.Text.ToLower());
+                bool showthis = true;
+                if (!string.IsNullOrEmpty(FilterBox.Text) && ar != null)
+                {
+                    showthis = ar.AnimSequence.ToLower().Contains(FilterBox.Text.ToLower());
+                }
+
+                if (showthis && menu_fltrAnim.IsChecked && ar.IsAmbPerf)
+                {
+                    showthis = false;
+                }
+
+                if (showthis && menu_fltrPerf.IsChecked && !ar.IsAmbPerf)
+                {
+                    showthis = false;
+                }
+
+                if (showthis && IsFilteredByFiles && !CustomFileList.IsEmpty() && !ar.Usages.Select(usage => usage.FileKey).Intersect(CustomFileList.Keys).Any())
+                {
+                    showthis = false;
+                }
+
+                return showthis;
             }
-            if (showthis && menu_fltrAnim.IsChecked && ar.IsAmbPerf)
-            {
-                showthis = false;
-            }
-            if (showthis && menu_fltrPerf.IsChecked && !ar.IsAmbPerf)
-            {
-                showthis = false;
-            }
-            if (showthis && IsFilteredByFiles && !CustomFileList.IsEmpty() && !ar.AnimUsages.Select(tuple => tuple.Item1).Intersect(CustomFileList.Keys).Any())
-            {
-                showthis = false;
-            }
-            return showthis;
+
+            return false;
         }
         bool PSFilter(object d)
         {
-            var ps = d as ParticleSys;
-            bool showthis = true;
-            if (!string.IsNullOrEmpty(FilterBox.Text) && ps != null)
+            if (d is ParticleSysRecord ps)
             {
-                showthis = ps.PSName.ToLower().Contains(FilterBox.Text.ToLower());
+                bool showthis = true;
+                if (!string.IsNullOrEmpty(FilterBox.Text))
+                {
+                    showthis = ps.PSName.ToLower().Contains(FilterBox.Text.ToLower());
+                }
+                if (showthis && menu_VFXPartSys.IsChecked && ps.VFXType != ParticleSysRecord.VFXClass.ParticleSystem)
+                {
+                    showthis = false;
+                }
+                if (showthis && menu_VFXRvrEff.IsChecked && ps.VFXType == ParticleSysRecord.VFXClass.ParticleSystem)
+                {
+                    showthis = false;
+                }
+                if (showthis && IsFilteredByFiles && !CustomFileList.IsEmpty() && !ps.Usages.Select(usage => usage.FileKey).Intersect(CustomFileList.Keys).Any())
+                {
+                    showthis = false;
+                }
+                return showthis;
             }
-            if (showthis && menu_VFXPartSys.IsChecked && ps.VFXType != ParticleSys.VFXClass.ParticleSystem)
-            {
-                showthis = false;
-            }
-            if (showthis && menu_VFXRvrEff.IsChecked && ps.VFXType == ParticleSys.VFXClass.ParticleSystem)
-            {
-                showthis = false;
-            }
-            if (showthis && IsFilteredByFiles && !CustomFileList.IsEmpty() && !ps.PSUsages.Select(tuple => tuple.Item1).Intersect(CustomFileList.Keys).Any())
-            {
-                showthis = false;
-            }
-            return showthis;
+
+            return false;
         }
         bool TexFilter(object d)
         {
-            var tr = d as TextureRecord;
-            bool showthis = true;
-            if (!string.IsNullOrEmpty(FilterBox.Text) && tr != null)
+            if (d is TextureRecord tr)
             {
-                showthis = tr.TextureName.ToLower().Contains(FilterBox.Text.ToLower());
-                if (!showthis)
+                bool showthis = true;
+                if (!string.IsNullOrEmpty(FilterBox.Text))
                 {
-                    showthis = tr.CRC.ToLower().Contains(FilterBox.Text.ToLower());
+                    showthis = tr.TextureName.ToLower().Contains(FilterBox.Text.ToLower());
+                    if (!showthis)
+                    {
+                        showthis = tr.CRC.ToLower().Contains(FilterBox.Text.ToLower());
+                    }
+
+                    if (!showthis)
+                    {
+                        showthis = tr.ParentPackage.ToLower().Contains(FilterBox.Text.ToLower());
+                    }
                 }
-                if (!showthis)
+
+                if (showthis && menu_TCube.IsChecked && tr.CFormat != "TextureCube")
                 {
-                    showthis = tr.ParentPackage.ToLower().Contains(FilterBox.Text.ToLower());
+                    showthis = false;
                 }
+
+                if (showthis && menu_TMovie.IsChecked && tr.CFormat != "TextureMovie")
+                {
+                    showthis = false;
+                }
+
+                if (showthis && menu_T1024.IsChecked && tr.SizeX < 1024 && tr.SizeY < 1024)
+                {
+                    showthis = false;
+                }
+
+                if (showthis && menu_T4096.IsChecked && tr.SizeX < 4096 && tr.SizeY < 4096)
+                {
+                    showthis = false;
+                }
+
+                if (showthis && !menu_TGPromo.IsChecked && tr.TexGrp == "Promotional")
+                {
+                    showthis = false;
+                }
+
+                if (showthis && !menu_TGChar1024.IsChecked && tr.TexGrp == "Character1024")
+                {
+                    showthis = false;
+                }
+
+                if (showthis && !menu_TGCharDiff.IsChecked && tr.TexGrp == "CharacterDiff")
+                {
+                    showthis = false;
+                }
+
+                if (showthis && !menu_TGCharNorm.IsChecked && tr.TexGrp == "CharacterNorm")
+                {
+                    showthis = false;
+                }
+
+                if (showthis && !menu_TGCharSpec.IsChecked && tr.TexGrp == "CharacterSpec")
+                {
+                    showthis = false;
+                }
+
+                if (showthis && !menu_TGWorld.IsChecked && tr.TexGrp == "World")
+                {
+                    showthis = false;
+                }
+
+                if (showthis && !menu_TGWorldSpec.IsChecked && tr.TexGrp == "WorldSpecular")
+                {
+                    showthis = false;
+                }
+
+                if (showthis && !menu_TGWorldNorm.IsChecked && tr.TexGrp == "WorldNormalMap")
+                {
+                    showthis = false;
+                }
+
+                if (showthis && !menu_TGAmblgtMap.IsChecked && tr.TexGrp == "AmbientLightMap")
+                {
+                    showthis = false;
+                }
+
+                if (showthis && !menu_TGShadowMap.IsChecked && tr.TexGrp == "Shadowmap")
+                {
+                    showthis = false;
+                }
+
+                if (showthis && !menu_TGEnviro64.IsChecked && tr.TexGrp == "Environment64")
+                {
+                    showthis = false;
+                }
+
+                if (showthis && !menu_TGEnviro128.IsChecked && tr.TexGrp == "Environment128")
+                {
+                    showthis = false;
+                }
+
+                if (showthis && !menu_TGEnviro256.IsChecked && tr.TexGrp == "Environment256")
+                {
+                    showthis = false;
+                }
+
+                if (showthis && !menu_TGEnviro512.IsChecked && tr.TexGrp == "Environment512")
+                {
+                    showthis = false;
+                }
+
+                if (showthis && !menu_TGEnviro1024.IsChecked && tr.TexGrp == "Environment1024")
+                {
+                    showthis = false;
+                }
+
+                if (showthis && !menu_TGVFX64.IsChecked && tr.TexGrp == "VFX64")
+                {
+                    showthis = false;
+                }
+
+                if (showthis && !menu_TGVFX128.IsChecked && tr.TexGrp == "VFX128")
+                {
+                    showthis = false;
+                }
+
+                if (showthis && !menu_TGVFX256.IsChecked && tr.TexGrp == "VFX256")
+                {
+                    showthis = false;
+                }
+
+                if (showthis && !menu_TGVFX512.IsChecked && tr.TexGrp == "VFX512")
+                {
+                    showthis = false;
+                }
+
+                if (showthis && !menu_TGVFX1024.IsChecked && tr.TexGrp == "VFX1024")
+                {
+                    showthis = false;
+                }
+
+                if (showthis && !menu_TGAPL64.IsChecked && tr.TexGrp == "APL64")
+                {
+                    showthis = false;
+                }
+
+                if (showthis && !menu_TGAPL128.IsChecked && tr.TexGrp == "APL128")
+                {
+                    showthis = false;
+                }
+
+                if (showthis && !menu_TGAPL256.IsChecked && tr.TexGrp == "APL256")
+                {
+                    showthis = false;
+                }
+
+                if (showthis && !menu_TGAPL512.IsChecked && tr.TexGrp == "APL512")
+                {
+                    showthis = false;
+                }
+
+                if (showthis && !menu_TGAPL1024.IsChecked && tr.TexGrp == "APL1024")
+                {
+                    showthis = false;
+                }
+
+                if (showthis && !menu_TGUI.IsChecked && tr.TexGrp == "UI")
+                {
+                    showthis = false;
+                }
+
+                if (showthis && !menu_TGNone.IsChecked && tr.TexGrp == "n/a")
+                {
+                    showthis = false;
+                }
+
+                if (showthis && IsFilteredByFiles && !CustomFileList.IsEmpty() && !tr.Usages.Select(usage => usage.FileKey).Intersect(CustomFileList.Keys).Any())
+                {
+                    showthis = false;
+                }
+
+                return showthis;
             }
-            if (showthis && menu_TCube.IsChecked && tr.CFormat != "TextureCube")
-            {
-                showthis = false;
-            }
-            if (showthis && menu_TMovie.IsChecked && tr.CFormat != "TextureMovie")
-            {
-                showthis = false;
-            }
-            if (showthis && menu_T1024.IsChecked && tr.SizeX < 1024 && tr.SizeY < 1024)
-            {
-                showthis = false;
-            }
-            if (showthis && menu_T4096.IsChecked && tr.SizeX < 4096 && tr.SizeY < 4096)
-            {
-                showthis = false;
-            }
-            if (showthis && !menu_TGPromo.IsChecked && tr.TexGrp == "Promotional")
-            {
-                showthis = false;
-            }
-            if (showthis && !menu_TGChar1024.IsChecked && tr.TexGrp == "Character1024")
-            {
-                showthis = false;
-            }
-            if (showthis && !menu_TGCharDiff.IsChecked && tr.TexGrp == "CharacterDiff")
-            {
-                showthis = false;
-            }
-            if (showthis && !menu_TGCharNorm.IsChecked && tr.TexGrp == "CharacterNorm")
-            {
-                showthis = false;
-            }
-            if (showthis && !menu_TGCharSpec.IsChecked && tr.TexGrp == "CharacterSpec")
-            {
-                showthis = false;
-            }
-            if (showthis && !menu_TGWorld.IsChecked && tr.TexGrp == "World")
-            {
-                showthis = false;
-            }
-            if (showthis && !menu_TGWorldSpec.IsChecked && tr.TexGrp == "WorldSpecular")
-            {
-                showthis = false;
-            }
-            if (showthis && !menu_TGWorldNorm.IsChecked && tr.TexGrp == "WorldNormalMap")
-            {
-                showthis = false;
-            }
-            if (showthis && !menu_TGAmblgtMap.IsChecked && tr.TexGrp == "AmbientLightMap")
-            {
-                showthis = false;
-            }
-            if (showthis && !menu_TGShadowMap.IsChecked && tr.TexGrp == "Shadowmap")
-            {
-                showthis = false;
-            }
-            if (showthis && !menu_TGEnviro64.IsChecked && tr.TexGrp == "Environment64")
-            {
-                showthis = false;
-            }
-            if (showthis && !menu_TGEnviro128.IsChecked && tr.TexGrp == "Environment128")
-            {
-                showthis = false;
-            }
-            if (showthis && !menu_TGEnviro256.IsChecked && tr.TexGrp == "Environment256")
-            {
-                showthis = false;
-            }
-            if (showthis && !menu_TGEnviro512.IsChecked && tr.TexGrp == "Environment512")
-            {
-                showthis = false;
-            }
-            if (showthis && !menu_TGEnviro1024.IsChecked && tr.TexGrp == "Environment1024")
-            {
-                showthis = false;
-            }
-            if (showthis && !menu_TGVFX64.IsChecked && tr.TexGrp == "VFX64")
-            {
-                showthis = false;
-            }
-            if (showthis && !menu_TGVFX128.IsChecked && tr.TexGrp == "VFX128")
-            {
-                showthis = false;
-            }
-            if (showthis && !menu_TGVFX256.IsChecked && tr.TexGrp == "VFX256")
-            {
-                showthis = false;
-            }
-            if (showthis && !menu_TGVFX512.IsChecked && tr.TexGrp == "VFX512")
-            {
-                showthis = false;
-            }
-            if (showthis && !menu_TGVFX1024.IsChecked && tr.TexGrp == "VFX1024")
-            {
-                showthis = false;
-            }
-            if (showthis && !menu_TGAPL64.IsChecked && tr.TexGrp == "APL64")
-            {
-                showthis = false;
-            }
-            if (showthis && !menu_TGAPL128.IsChecked && tr.TexGrp == "APL128")
-            {
-                showthis = false;
-            }
-            if (showthis && !menu_TGAPL256.IsChecked && tr.TexGrp == "APL256")
-            {
-                showthis = false;
-            }
-            if (showthis && !menu_TGAPL512.IsChecked && tr.TexGrp == "APL512")
-            {
-                showthis = false;
-            }
-            if (showthis && !menu_TGAPL1024.IsChecked && tr.TexGrp == "APL1024")
-            {
-                showthis = false;
-            }
-            if (showthis && !menu_TGUI.IsChecked && tr.TexGrp == "UI")
-            {
-                showthis = false;
-            }
-            if (showthis && !menu_TGNone.IsChecked && tr.TexGrp == "n/a")
-            {
-                showthis = false;
-            }
-            if (showthis && IsFilteredByFiles && !CustomFileList.IsEmpty() && !tr.TextureUsages.Select(tuple => tuple.Item1).Intersect(CustomFileList.Keys).Any())
-            {
-                showthis = false;
-            }
-            return showthis;
+
+            return false;
         }
         bool SFFilter(object d)
         {
-            var sf = d as GUIElement;
-            bool showthis = true;
-            if (!string.IsNullOrEmpty(FilterBox.Text) && sf != null)
+            if (d is GUIElement sf)
             {
-                showthis = sf.GUIName.ToLower().Contains(FilterBox.Text.ToLower());
+                bool showthis = true;
+                if (!string.IsNullOrEmpty(FilterBox.Text))
+                {
+                    showthis = sf.GUIName.ToLower().Contains(FilterBox.Text.ToLower());
+                }
+                if (showthis && IsFilteredByFiles && !CustomFileList.IsEmpty() && !sf.Usages.Select(usage => usage.FileKey).Intersect(CustomFileList.Keys).Any())
+                {
+                    showthis = false;
+                }
+                return showthis;
             }
-            if (showthis && IsFilteredByFiles && !CustomFileList.IsEmpty() && !sf.GUIUsages.Select(tuple => tuple.Item1).Intersect(CustomFileList.Keys).Any())
-            {
-                showthis = false;
-            }
-            return showthis;
+            return false;
         }
         bool LineFilter(object d)
         {
-            var line = d as ConvoLine;
-            bool showthis = true;
-            if (showthis && cmbbx_filterSpkrs.SelectedIndex >= 0)
+            if (d is ConvoLine line)
             {
-                showthis = line.Speaker.ToLower() == cmbbx_filterSpkrs.SelectedItem.ToString().ToLower();
-            }
-            if (showthis && !string.IsNullOrEmpty(FilterBox.Text) && line != null)
-            {
-                showthis = line.StrRef.ToString().Contains(FilterBox.Text.ToLower());
-                if (!showthis)
+                bool showthis = true;
+                if (cmbbx_filterSpkrs.SelectedIndex >= 0)
                 {
-                    showthis = line.Convo.ToLower().Contains(FilterBox.Text.ToLower());
+                    showthis = string.Equals(line.Speaker, cmbbx_filterSpkrs.SelectedItem.ToString(), StringComparison.CurrentCultureIgnoreCase);
                 }
-                if (!showthis)
+                if (showthis && !string.IsNullOrEmpty(FilterBox.Text))
                 {
-                    showthis = line.Line.ToLower().Contains(FilterBox.Text.ToLower());
+                    showthis = line.StrRef.ToString().Contains(FilterBox.Text.ToLower());
+                    if (!showthis)
+                    {
+                        showthis = line.Convo.ToLower().Contains(FilterBox.Text.ToLower());
+                    }
+                    if (!showthis)
+                    {
+                        showthis = line.Line.ToLower().Contains(FilterBox.Text.ToLower());
+                    }
                 }
+
+                return showthis;
             }
 
-            return showthis;
+            return false;
         }
         private bool FileFilter(object d)
         {
             bool showthis = true;
-            var f = (Tuple<string, string>)d;
+            var f = (FileDirPair)d;
             var t = FilterBox.Text;
             if (!string.IsNullOrEmpty(t))
             {
-                showthis = f.Item1.ToLower().Contains(t.ToLower());
+                showthis = f.FileName.ToLower().Contains(t.ToLower());
                 if (!showthis)
                 {
-                    showthis = f.Item2.ToLower().Contains(t.ToLower());
+                    showthis = f.Directory.ToLower().Contains(t.ToLower());
                 }
             }
             return showthis;
@@ -2238,13 +2301,11 @@ namespace ME3Explorer.AssetDatabase
         }
         private void views_ColumnHeader_Click(object sender, RoutedEventArgs e)
         {
-            var headerClicked = e.OriginalSource as GridViewColumnHeader;
-            ListSortDirection direction;
-
-            if (headerClicked != null)
+            if (e.OriginalSource is GridViewColumnHeader headerClicked)
             {
                 if (headerClicked.Role != GridViewColumnHeaderRole.Padding)
                 {
+                    ListSortDirection direction;
                     if (headerClicked != _lastHeaderClicked)
                     {
                         direction = ListSortDirection.Ascending;
@@ -2326,7 +2387,7 @@ namespace ME3Explorer.AssetDatabase
 
             string directory = Path.GetDirectoryName(CurrentDBPath);
 
-            SaveFileDialog d = new SaveFileDialog
+            SaveFileDialog d = new()
             {
                 Filter = $"*.txt|*.txt",
                 InitialDirectory = directory,
@@ -2347,7 +2408,7 @@ namespace ME3Explorer.AssetDatabase
         private void LoadCustomFileList()
         {
             string directory = Path.GetDirectoryName(CurrentDBPath);
-            OpenFileDialog d = new OpenFileDialog
+            OpenFileDialog d = new()
             {
                 Filter = $"*.txt|*.txt",
                 InitialDirectory = directory,
@@ -2373,9 +2434,9 @@ namespace ME3Explorer.AssetDatabase
                 foreach (var n in nameslist)
                 {
                     string[] parts = n.Split(' ');
-                    if (parts[0] != null && parts[1] != null)
+                    if (parts.Length >= 2)
                     {
-                        var key = FileListExtended.IndexOf(new Tuple<string, string>(parts[0], parts[1]));
+                        var key = FileListExtended.IndexOf(new(parts[0], parts[1]));
                         if (key >= 0)
                         {
                             CustomFileList.Add(key, n);
@@ -2400,55 +2461,55 @@ namespace ME3Explorer.AssetDatabase
                 case "Add":
                     if (lstbx_Usages.SelectedIndex >= 0 && currentView == 1)
                     {
-                        var c = lstbx_Usages.SelectedItem as ClassUsage;
+                        var c = (ClassUsage)lstbx_Usages.SelectedItem;
                         FileKey = c.FileKey;
                     }
                     else if (lstbx_MatUsages.SelectedIndex >= 0 && currentView == 2)
                     {
-                        var m = lstbx_MatUsages.SelectedItem as Tuple<int, int, bool>;
-                        FileKey = m.Item1;
+                        var m = (MatUsage)lstbx_MatUsages.SelectedItem;
+                        FileKey = m.FileKey;
                     }
                     else if (lstbx_MeshUsages.SelectedIndex >= 0 && currentView == 3)
                     {
-                        var s = lstbx_MeshUsages.SelectedItem as Tuple<int, int, bool>;
-                        FileKey = s.Item1;
+                        var s = (MeshUsage)lstbx_MeshUsages.SelectedItem;
+                        FileKey = s.FileKey;
 
                     }
                     else if (lstbx_TextureUsages.SelectedIndex >= 0 && currentView == 4)
                     {
-                        var t = lstbx_TextureUsages.SelectedItem as Tuple<int, int, bool, bool>;
-                        FileKey = t.Item1;
+                        var t = (TextureUsage)lstbx_TextureUsages.SelectedItem;
+                        FileKey = t.FileKey;
                     }
                     else if (lstbx_AnimUsages.SelectedIndex >= 0 && currentView == 5)
                     {
-                        var a = lstbx_AnimUsages.SelectedItem as Tuple<int, int, bool>;
-                        FileKey = a.Item1;
+                        var a = (AnimUsage)lstbx_AnimUsages.SelectedItem;
+                        FileKey = a.FileKey;
 
                     }
                     else if (lstbx_PSUsages.SelectedIndex >= 0 && currentView == 6)
                     {
-                        var ps = lstbx_PSUsages.SelectedItem as Tuple<int, int, bool, bool>;
-                        FileKey = ps.Item1;
+                        var ps = (ParticleSysUsage)lstbx_PSUsages.SelectedItem;
+                        FileKey = ps.FileKey;
                     }
                     else if (lstbx_GUIUsages.SelectedIndex >= 0 && currentView == 7)
                     {
-                        var sf = (Tuple<int, int, bool>)lstbx_GUIUsages.SelectedItem;
-                        FileKey = sf.Item1;
+                        var sf = (GUIUsage)lstbx_GUIUsages.SelectedItem;
+                        FileKey = sf.FileKey;
                     }
                     else if (lstbx_Lines.SelectedIndex >= 0 && currentView == 8)
                     {
-                        FileKey = FileListExtended.FindIndex(f => f.Item1 == CurrentConvo.Item2);
+                        FileKey = FileListExtended.FindIndex(f => f.FileName == CurrentConvo.Item2);
                     }
                     else if (lstbx_Files.SelectedIndex >= 0 && currentView == 0)
                     {
                         foreach (var fr in lstbx_Files.SelectedItems)
                         {
-                            var fileref = (Tuple<string, string>)fr;
+                            var fileref = (FileDirPair)fr;
                             FileKey = FileListExtended.IndexOf(fileref);
                             if (!CustomFileList.ContainsKey(FileKey))
                             {
                                 var file = FileListExtended[FileKey];
-                                CustomFileList.Add(FileKey, $"{file.Item1} {file.Item2}");
+                                CustomFileList.Add(FileKey, $"{file.FileName} {file.Directory}");
                             }
                         }
                         FileKey = -1;
@@ -2458,7 +2519,7 @@ namespace ME3Explorer.AssetDatabase
                     if (FileKey >= 0 && !CustomFileList.ContainsKey(FileKey))
                     {
                         var file = FileListExtended[FileKey];
-                        CustomFileList.Add(FileKey, $"{file.Item1} {file.Item2}");
+                        CustomFileList.Add(FileKey, $"{file.FileName} {file.Directory}");
                     }
                     SortedDictionary<int, string> orderlist = new SortedDictionary<int, string>();
                     foreach (KeyValuePair<int, string> file in CustomFileList)
@@ -2485,17 +2546,31 @@ namespace ME3Explorer.AssetDatabase
             }
 
         }
+
+        public void UpdateSelectedClassUsages()
+        {
+            if (ShowAllClassUsages)
+            {
+                SelectedClassUsages = SelectedClass?.Usages.OrderBy(u => u.FileKey).ToList();
+            }
+            else
+            {
+                SelectedClassUsages = SelectedClass?.Usages.OrderBy(u => u.FileKey).Aggregate(new List<ClassUsage>(), (list, usage) =>
+                {
+                    if (list.Count == 0 || usage.IsDefault || list[list.Count - 1].FileKey != usage.FileKey)
+                    {
+                        list.Add(usage);
+                    }
+
+                    return list;
+                });
+            }
+        }
         #endregion
 
         #region Scan
         private async void ScanGame()
         {
-            hadException = false;
-            string outputDir = CurrentDBPath;
-            if (CurrentDBPath == null)
-            {
-                outputDir = App.AppDataFolder;
-            }
             string rootPath = MEDirectories.GetDefaultGamePath(CurrentGame);
 
             if (rootPath == null || !Directory.Exists(rootPath))
@@ -2512,6 +2587,7 @@ namespace ME3Explorer.AssetDatabase
         }
         private async Task dumpPackages(List<string> files, MEGame game)
         {
+            var beginTime = DateTime.Now;
             TopDock.IsEnabled = false;
             MidDock.IsEnabled = false;
             OverallProgressMaximum = files.Count;
@@ -2522,18 +2598,10 @@ namespace ME3Explorer.AssetDatabase
 
             //Clear database
             ClearDataBase();
-            CurrentDataBase.GenerationDate = DateTime.Now.ToString();
+            CurrentDataBase.GenerationDate = beginTime.ToString();
             CurrentDataBase.DataBaseversion = dbCurrentBuild;
             ClearGenerationDictionaries();
 
-            _dbqueue = new BlockingCollection<ClassRecord>();
-
-            //Background Consumer to compile Class records for subsequent class readings
-            dbworker = new BackgroundWorker();
-            dbworker.DoWork += DBProcessor;
-            dbworker.RunWorkerCompleted += dbworker_RunWorkerCompleted;
-            dbworker.WorkerSupportsCancellation = true;
-            dbworker.RunWorkerAsync();
 
             //Build filelists
             CurrentDataBase.ContentDir.Add("Unknown");
@@ -2553,7 +2621,7 @@ namespace ME3Explorer.AssetDatabase
                     CurrentDataBase.ContentDir.Add(contdir.Name);
                 }
                 var filekey = CurrentDataBase.FileList.Count;
-                CurrentDataBase.FileList.Add(new Tuple<string, int>(Path.GetFileNameWithoutExtension(f), dirkey));
+                CurrentDataBase.FileList.Add((Path.GetFileNameWithoutExtension(f), dirkey));
                 fileKeys.Add((filekey, f));
             }
 
@@ -2618,67 +2686,19 @@ namespace ME3Explorer.AssetDatabase
                 if (DumpCanceled)
                 {
                     DumpCanceled = false;
-                    BusyHeader = $"Dump canceled. Processing Queue.";
+                    BusyHeader = "Dump canceled. ";
                 }
                 else
                 {
                     OverallProgressValue = 100;
                     OverallProgressMaximum = 100;
-                    BusyHeader = "Dump completed. Processing Queue.";
+                    BusyHeader = "Dump completed. ";
                 }
-
-                _dbqueue.CompleteAdding();
+                
                 TaskbarHelper.SetProgressState(TaskbarProgressBarState.NoProgress);
             }
 
             if (caughtException != null)
-            {
-                hadException = true;
-                throw caughtException;
-            }
-        }
-        private async void dbworker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if (e.Error == null && !hadException)
-            {
-                BusyHeader = "Collating and sorting the database";
-                BusyText = "Please wait...";
-                BusyBarInd = true;
-                dbworker.CancelAsync();
-                CommandManager.InvalidateRequerySuggested();
-
-                PropsDataBase pdb = await CollateDataBase();
-                //Add and sort Classes
-                CurrentDataBase.ClassRecords.AddRange(pdb.ClassRecords);
-                CurrentDataBase.Animations.AddRange(pdb.Animations);
-                CurrentDataBase.Materials.AddRange(pdb.Materials);
-                CurrentDataBase.Meshes.AddRange(pdb.Meshes);
-                CurrentDataBase.Particles.AddRange(pdb.Particles);
-                CurrentDataBase.Textures.AddRange(pdb.Textures);
-                CurrentDataBase.GUIElements.AddRange(pdb.GUIElements);
-                CurrentDataBase.Conversations.AddRange(pdb.Conversations);
-                CurrentDataBase.Lines.AddRange(pdb.Lines);
-
-                foreach (var f in CurrentDataBase.FileList)
-                {
-                    var cd = CurrentDataBase.ContentDir[f.Item2];
-                    FileListExtended.Add(new Tuple<string, string>(f.Item1, cd));
-                }
-
-                ClearGenerationDictionaries();
-                isProcessing = false;
-                SaveDatabase();
-                TopDock.IsEnabled = true;
-                MidDock.IsEnabled = true;
-                IsBusy = false;
-                MessageBox.Show("Done");
-
-                if (CurrentGame != MEGame.ME1 && ParseConvos)
-                {
-                    GetConvoLinesBackground();
-                }
-            }
-            else
             {
                 ClearGenerationDictionaries();
                 CurrentOverallOperationText = "Database generation failed";
@@ -2686,49 +2706,47 @@ namespace ME3Explorer.AssetDatabase
                 isProcessing = false;
                 TopDock.IsEnabled = true;
                 MidDock.IsEnabled = true;
+                throw caughtException;
             }
-        }
-        private void DBProcessor(object sender, DoWorkEventArgs e) //Background worker to clean up class data.
-        {
-            foreach (ClassRecord record in _dbqueue.GetConsumingEnumerable(CancellationToken.None))
+
+            BusyHeader += "Collating and sorting the database";
+            BusyText = "Please wait...";
+            BusyBarInd = true;
+            CommandManager.InvalidateRequerySuggested();
+
+            PropsDataBase pdb = await Task.Run(CollateDataBase);
+            //Add and sort Classes
+            CurrentDataBase.ClassRecords.AddRange(pdb.ClassRecords);
+            CurrentDataBase.Animations.AddRange(pdb.Animations);
+            CurrentDataBase.Materials.AddRange(pdb.Materials);
+            CurrentDataBase.Meshes.AddRange(pdb.Meshes);
+            CurrentDataBase.Particles.AddRange(pdb.Particles);
+            CurrentDataBase.Textures.AddRange(pdb.Textures);
+            CurrentDataBase.GUIElements.AddRange(pdb.GUIElements);
+            CurrentDataBase.Conversations.AddRange(pdb.Conversations);
+            CurrentDataBase.Lines.AddRange(pdb.Lines);
+
+            foreach ((string fileName, int directoryKey) in CurrentDataBase.FileList)
             {
-                try
-                {
-                    var oldClassRecord = GeneratedClasses.FirstOrDefault(r => r.Key == record.Class).Value;
+                var cd = CurrentDataBase.ContentDir[directoryKey];
+                FileListExtended.Add(new(fileName, cd));
+            }
 
-                    if (record.SuperClass != null && oldClassRecord.SuperClass == null)
-                    {
-                        oldClassRecord.SuperClass = record.SuperClass;
-                    }
-                    if (record.Definition_package != null && oldClassRecord.Definition_package == null)
-                    {
-                        oldClassRecord.Definition_package = record.Definition_package;
-                        oldClassRecord.Definition_UID = record.Definition_UID;
-                    }
-
-                    foreach (var r in record.PropertyRecords)
-                    {
-                        var proprecord = oldClassRecord.PropertyRecords.FirstOrDefault(p => p.Property == r.Property);
-                        if (proprecord == null)
-                        {
-                            oldClassRecord.PropertyRecords.Add(r);
-                        }
-                    }
-
-                    oldClassRecord.ClassUsages.AddRange(record.ClassUsages);
-
-                    if (isProcessing)
-                    {
-                        BusyHeader = $"Processing Queue. {_dbqueue.Count}";
-                    }
-
-                }
-                catch (Exception err)
-                {
-                    MessageBox.Show($"Error writing. {record.Class} {record.PropertyRecords[0].Property} {record.ClassUsages[0].FileKey} {err}");
-                }
+            ClearGenerationDictionaries();
+            isProcessing = false;
+            SaveDatabase();
+            TopDock.IsEnabled = true;
+            MidDock.IsEnabled = true;
+            IsBusy = false;
+            var elapsed = DateTime.Now - beginTime;
+            MessageBox.Show(this, $"{CurrentGame} Database generated in {elapsed:mm\\:ss}");
+            MemoryAnalyzer.ForceFullGC();
+            if (CurrentGame != MEGame.ME1 && ParseConvos)
+            {
+                GetConvoLinesBackground();
             }
         }
+
         private void CancelDump(object obj)
         {
             DumpCanceled = true;
@@ -2763,271 +2781,235 @@ namespace ME3Explorer.AssetDatabase
             GeneratedGUI.Clear();
             GeneratedConvo.Clear();
             GeneratedLines.Clear();
-            GeneratedValueChecker.Clear();
         }
-        private async Task<PropsDataBase> CollateDataBase()
+        private PropsDataBase CollateDataBase()
         {
-
-
-            //Add Lines / Convos don't need sorting
-            var linessorted = Task<ObservableCollectionExtended<ConvoLine>>.Factory.StartNew(() =>
-            {
-                var l = new ObservableCollectionExtended<ConvoLine>();
-                l.AddRange(GeneratedLines.Values);
-                l.Sort(x => x.StrRef);
-                return l;
-            });
-
-            //Add and sort Classes
-            var classSorted = Task<ObservableCollectionExtended<ClassRecord>>.Factory
-                .StartNew(() =>
-                {
-                    var classes = new ObservableCollectionExtended<ClassRecord>();
-                    classes.AddRange(GeneratedClasses.Values);
-                    classes.Sort(x => x.Class);
-                    foreach (var c in classes)
-                    {
-                        c.PropertyRecords.Sort(x => x.Property);
-                    }
-                    return classes;
-                });
-
-            //Add animations
-            var animsorted = Task<ObservableCollectionExtended<Animation>>.Factory
-                .StartNew(() =>
-                {
-                    var anims = new ObservableCollectionExtended<Animation>();
-                    anims.AddRange(GeneratedAnims.Values);
-                    anims.Sort(x => x.AnimSequence);
-                    return anims;
-                });
-
-            //Add Materials
-            var matsorted = Task<ObservableCollectionExtended<Material>>.Factory.StartNew(() =>
-            {
-                var mats = new ObservableCollectionExtended<Material>();
-                mats.AddRange(GeneratedMats.Values);
-                mats.Sort(x => x.MaterialName);
-                return mats;
-            });
-
-            //Add Meshes
-            var mshsorted = Task<ObservableCollectionExtended<MeshRecord>>.Factory.StartNew(() =>
-            {
-                var m = new ObservableCollectionExtended<MeshRecord>();
-                m.AddRange(GeneratedMeshes.Values);
-                m.Sort(x => x.MeshName);
-                return m;
-            });
-
-            //Add Particles
-            var pssorted = Task<ObservableCollectionExtended<ParticleSys>>.Factory.StartNew(() =>
-            {
-                var p = new ObservableCollectionExtended<ParticleSys>();
-                p.AddRange(GeneratedPS.Values);
-                p.Sort(x => x.PSName);
-                return p;
-            });
-
-            //Add Textures
-            var txtsorted = Task<ObservableCollectionExtended<TextureRecord>>.Factory.StartNew(() =>
-            {
-                var t = new ObservableCollectionExtended<TextureRecord>();
-                t.AddRange(GeneratedText.Values);
-                t.Sort(x => x.TextureName);
-                return t;
-            });
-
-
-            //Add GUI
-            var guisorted = Task<ObservableCollectionExtended<GUIElement>>.Factory.StartNew(() =>
-            {
-                var g = new ObservableCollectionExtended<GUIElement>();
-                g.AddRange(GeneratedGUI.Values);
-                g.Sort(x => x.GUIName);
-                return g;
-            });
-
             var pdb = new PropsDataBase();
+            pdb.ClassRecords.AddRange(GeneratedClasses.Values.OrderBy(x => x.Class));
             pdb.Conversations.AddRange(GeneratedConvo.Values);
-            await Task.WhenAll(classSorted, animsorted, matsorted, mshsorted, pssorted, txtsorted, guisorted, linessorted);
 
-            pdb.ClassRecords.AddRange(classSorted.Result);
-            pdb.Animations.AddRange(animsorted.Result);
-            pdb.Materials.AddRange(matsorted.Result);
-            pdb.Meshes.AddRange(mshsorted.Result);
-            pdb.Particles.AddRange(pssorted.Result);
-            pdb.Textures.AddRange(txtsorted.Result);
-            pdb.GUIElements.AddRange(guisorted.Result);
-            pdb.Lines.AddRange(linessorted.Result);
+            var animsSorted = GeneratedAnims.Values.OrderBy(x => x.AnimSequence).ToList();
+            foreach (AnimationRecord anim in animsSorted)
+            {
+                anim.IsModOnly = anim.Usages.All(u => u.IsInMod);
+            }
+            pdb.Animations.AddRange(animsSorted);
+
+            var matsSorted = GeneratedMats.Values.OrderBy(x => x.MaterialName).ToList();
+            foreach (MaterialRecord mat in matsSorted)
+            {
+                mat.IsDLCOnly = mat.Usages.All(m => m.IsInDLC);
+            }
+            pdb.Materials.AddRange(matsSorted);
+
+            var meshesSorted = GeneratedMeshes.Values.OrderBy(x => x.MeshName).ToList();
+            foreach (MeshRecord meshRecord in meshesSorted)
+            {
+                meshRecord.IsModOnly = meshRecord.Usages.All(m => m.IsInMod);
+            }
+            pdb.Meshes.AddRange(meshesSorted);
+
+            var particleSysSorted = GeneratedPS.Values.OrderBy(x => x.PSName).ToList();
+            foreach (ParticleSysRecord particleSysRecord in particleSysSorted)
+            {
+                particleSysRecord.IsModOnly = particleSysRecord.Usages.All(p => p.IsInMod);
+                particleSysRecord.IsDLCOnly = particleSysRecord.Usages.All(p => p.IsInDLC);
+            }
+            pdb.Particles.AddRange(particleSysSorted);
+
+            var texSorted = GeneratedText.Values.OrderBy(x => x.TextureName).ToList();
+            foreach (TextureRecord tex in texSorted)
+            {
+                tex.IsModOnly = tex.Usages.All(t => t.IsInMod);
+                tex.IsDLCOnly = tex.Usages.All(t => t.IsInDLC);
+            }
+            pdb.Textures.AddRange(texSorted);
+
+            var guisSorted = GeneratedGUI.Values.OrderBy(x => x.GUIName).ToList();
+            foreach (GUIElement gui in guisSorted)
+            {
+                gui.IsModOnly = gui.Usages.All(g => g.IsInMod);
+            }
+            pdb.GUIElements.AddRange(guisSorted);
+
+            pdb.Lines.AddRange(GeneratedLines.Values.OrderBy(x => x.StrRef).ToList());
             return pdb;
         }
 
         #endregion
-
     }
+
     #region Database
     /// <summary>
     /// Database Classes
     /// </summary>
     /// 
-    public class PropsDataBase : NotifyPropertyChangedBase
+    [MessagePackObject]
+    public class PropsDataBase
     {
+        [Key(0)]
         public MEGame meGame { get; set; }
+        [Key(1)]
         public string GenerationDate { get; set; }
+        [Key(2)]
         public string DataBaseversion { get; set; }
-        public Dictionary<AssetDB.dbTableType, bool> dbTable { get; } = new Dictionary<AssetDB.dbTableType, bool>()
+        [Key(3)]
+        public Dictionary<AssetDB.DBTableType, bool> dbTable { get; set; } = new()
         {
-            { AssetDB.dbTableType.Master, false },
-            { AssetDB.dbTableType.Class, false },
-            { AssetDB.dbTableType.Materials, false },
-            { AssetDB.dbTableType.Meshes, false },
-            { AssetDB.dbTableType.Textures, false },
-            { AssetDB.dbTableType.Animations, false },
-            { AssetDB.dbTableType.Particles, false },
-            { AssetDB.dbTableType.GUIElements, false },
-            { AssetDB.dbTableType.Convos, false },
-            { AssetDB.dbTableType.Lines, false }
+            { AssetDB.DBTableType.Master, false },
+            { AssetDB.DBTableType.Class, false },
+            { AssetDB.DBTableType.Materials, false },
+            { AssetDB.DBTableType.Meshes, false },
+            { AssetDB.DBTableType.Textures, false },
+            { AssetDB.DBTableType.Animations, false },
+            { AssetDB.DBTableType.Particles, false },
+            { AssetDB.DBTableType.GUIElements, false },
+            { AssetDB.DBTableType.Convos, false },
+            { AssetDB.DBTableType.Lines, false }
         };
-        public ObservableCollectionExtended<Tuple<string, int>> FileList { get; } = new ObservableCollectionExtended<Tuple<string, int>>(); //filename and key to contentdir
-        public List<string> ContentDir { get; } = new List<string>();
-        public ObservableCollectionExtended<ClassRecord> ClassRecords { get; } = new ObservableCollectionExtended<ClassRecord>();
-        public ObservableCollectionExtended<Material> Materials { get; } = new ObservableCollectionExtended<Material>();
-        public ObservableCollectionExtended<Animation> Animations { get; } = new ObservableCollectionExtended<Animation>();
-        public ObservableCollectionExtended<MeshRecord> Meshes { get; } = new ObservableCollectionExtended<MeshRecord>();
-        public ObservableCollectionExtended<ParticleSys> Particles { get; } = new ObservableCollectionExtended<ParticleSys>();
-        public ObservableCollectionExtended<TextureRecord> Textures { get; } = new ObservableCollectionExtended<TextureRecord>();
-        public ObservableCollectionExtended<GUIElement> GUIElements { get; } = new ObservableCollectionExtended<GUIElement>();
-        public ObservableCollectionExtended<Conversation> Conversations { get; } = new ObservableCollectionExtended<Conversation>();
-        public ObservableCollectionExtended<ConvoLine> Lines { get; } = new ObservableCollectionExtended<ConvoLine>();
-        public PropsDataBase(MEGame meGame, string GenerationDate, string DataBaseversion, ObservableCollectionExtended<Tuple<string, int>> FileList, List<string> ContentDir, ObservableCollectionExtended<ClassRecord> ClassRecords, ObservableCollectionExtended<Material> Materials,
-            ObservableCollectionExtended<Animation> Animations, ObservableCollectionExtended<MeshRecord> Meshes, ObservableCollectionExtended<ParticleSys> Particles, ObservableCollectionExtended<TextureRecord> Textures, ObservableCollectionExtended<GUIElement> GUIElements,
-            ObservableCollectionExtended<Conversation> Conversations, ObservableCollectionExtended<ConvoLine> Lines)
+        [Key(4)]
+        public List<(string FileName, int DirectoryKey)> FileList { get; set; } = new(); //filename and key to contentdir
+        [Key(5)]
+        public List<string> ContentDir { get; set; } = new();
+        [IgnoreMember]
+        public List<ClassRecord> ClassRecords { get; } = new();
+        [IgnoreMember]
+        public List<MaterialRecord> Materials { get; } = new();
+        [IgnoreMember]
+        public List<AnimationRecord> Animations { get; } = new();
+        [IgnoreMember]
+        public List<MeshRecord> Meshes { get; } = new();
+        [IgnoreMember]
+        public List<ParticleSysRecord> Particles { get; } = new();
+        [IgnoreMember]
+        public List<TextureRecord> Textures { get; } = new();
+        [IgnoreMember]
+        public List<GUIElement> GUIElements { get; } = new();
+        [IgnoreMember]
+        public List<Conversation> Conversations { get; } = new();
+        [IgnoreMember]
+        public List<ConvoLine> Lines { get; } = new();
+        public PropsDataBase(MEGame meGame, string GenerationDate, string DataBaseversion, IEnumerable<(string, int)> FileList, IEnumerable<string> ContentDir)
         {
             this.meGame = meGame;
             this.GenerationDate = GenerationDate;
             this.DataBaseversion = DataBaseversion;
             this.FileList.AddRange(FileList);
             this.ContentDir.AddRange(ContentDir);
-            this.ClassRecords.AddRange(ClassRecords);
-            this.Materials.AddRange(Materials);
-            this.Animations.AddRange(Animations);
-            this.Meshes.AddRange(Meshes);
-            this.Particles.AddRange(Particles);
-            this.Textures.AddRange(Textures);
-            this.GUIElements.AddRange(GUIElements);
-            this.Conversations.AddRange(Conversations);
-            this.Lines.AddRange(Lines);
         }
 
         public PropsDataBase()
         { }
 
     }
-    public class ClassRecord : NotifyPropertyChangedBase
-    {
-        private string _Class;
-        public string Class { get => _Class; set => SetProperty(ref _Class, value); }
-        public string Definition_package { get; set; }
-        public int Definition_UID { get; set; }
-        public string SuperClass { get; set; }
-        private bool _IsModOnly;
-        public bool IsModOnly { get => _IsModOnly; set => SetProperty(ref _IsModOnly, value); }
-        public ObservableCollectionExtended<PropertyRecord> PropertyRecords { get; } = new ObservableCollectionExtended<PropertyRecord>();
-        public ObservableCollectionExtended<ClassUsage> ClassUsages { get; } = new ObservableCollectionExtended<ClassUsage>();
 
-        public ClassRecord(string Class, string Definition_package, int Definition_UID, string SuperClass, ObservableCollectionExtended<PropertyRecord> PropertyRecords, ObservableCollectionExtended<ClassUsage> ClassUsages)
+    [MessagePackObject]
+    public class ClassRecord
+    {
+        [Key(0)]
+        public string Class { get; set; }
+        [Key(1)]
+        public string Definition_package { get; set; }
+        [Key(2)]
+        public int Definition_UID { get; set; }
+        [Key(3)]
+        public string SuperClass { get; set; }
+        [Key(4)]
+        public bool IsModOnly { get; set; }
+        [Key(5)]
+        public HashSet<PropertyRecord> PropertyRecords { get; set; } = new();
+        [Key(6)]
+        public List<ClassUsage> Usages { get; set; } = new();
+
+        public ClassRecord(string Class, string Definition_package, int Definition_UID, string SuperClass)
         {
             this.Class = Class;
             this.Definition_package = Definition_package;
             this.Definition_UID = Definition_UID;
             this.SuperClass = SuperClass;
-            this.PropertyRecords.AddRange(PropertyRecords);
-            this.ClassUsages.AddRange(ClassUsages);
         }
 
         public ClassRecord()
         { }
     }
-    public class PropertyRecord : NotifyPropertyChangedBase
-    {
-        private string _Property;
-        public string Property { get => _Property; set => SetProperty(ref _Property, value); }
-        private string _Type;
-        public string Type { get => _Type; set => SetProperty(ref _Type, value); }
+    [MessagePackObject] public sealed record PropertyRecord([property: Key(0)] string Property, [property: Key(1)] string Type);
 
-        public PropertyRecord(string Property, string Type)
-        {
-            this.Property = Property;
-            this.Type = Type;
-        }
-        public PropertyRecord()
-        { }
-    }
-    public class ClassUsage : NotifyPropertyChangedBase
+    [MessagePackObject]
+    public class ClassUsage
     {
+        [Key(0)]
         public int FileKey { get; set; }
-        public int ExportUID { get; set; }
+        [Key(1)]
+        public int UIndex { get; set; }
+        [Key(2)]
         public bool IsDefault { get; set; }
-        private bool _IsMod;
-        public bool IsMod { get => _IsMod; set => SetProperty(ref _IsMod, value); }
-        public ClassUsage(int FileKey, int ExportUID, bool IsDefault, bool IsMod)
+        [Key(3)]
+        public bool IsMod { get; set; }
+
+        public ClassUsage(int FileKey, int uIndex, bool IsDefault, bool IsMod)
         {
             this.FileKey = FileKey;
-            this.ExportUID = ExportUID;
+            this.UIndex = uIndex;
             this.IsDefault = IsDefault;
             this.IsMod = IsMod;
         }
         public ClassUsage()
         { }
     }
-    public class Material : NotifyPropertyChangedBase
+    [MessagePackObject]
+    public class MaterialRecord
     {
-        private string _MaterialName;
-        public string MaterialName { get => _MaterialName; set => SetProperty(ref _MaterialName, value); }
-        private string _ParentPackagee;
-        public string ParentPackage { get => _ParentPackagee; set => SetProperty(ref _ParentPackagee, value); }
-        private bool _IsDLCOnly;
-        public bool IsDLCOnly { get => _IsDLCOnly; set => SetProperty(ref _IsDLCOnly, value); }
-        public ObservableCollectionExtended<Tuple<int, int, bool>> MaterialUsages { get; } = new ObservableCollectionExtended<Tuple<int, int, bool>>(); //File reference, export, isDLC file
+        [Key(0)]
+        public string MaterialName { get; set; }
+        [Key(1)]
+        public string ParentPackage { get; set; }
+        [Key(2)]
+        public bool IsDLCOnly { get; set; }
+        [Key(3)]
+        public List<MatUsage> Usages { get; set; } = new();
+        [Key(4)]
+        public List<MatSetting> MatSettings { get; set; } = new();
 
-        public ObservableCollectionExtended<Tuple<string, string, string>> MatSettings { get; } = new ObservableCollectionExtended<Tuple<string, string, string>>();
-
-        public Material(string MaterialName, string ParentPackage, bool IsDLCOnly, ObservableCollectionExtended<Tuple<int, int, bool>> MaterialUsages, ObservableCollectionExtended<Tuple<string, string, string>> MatSettings)
+        public MaterialRecord(string MaterialName, string ParentPackage, bool IsDLCOnly, IEnumerable<MatSetting> MatSettings)
         {
             this.MaterialName = MaterialName;
             this.ParentPackage = ParentPackage;
             this.IsDLCOnly = IsDLCOnly;
-            this.MaterialUsages.AddRange(MaterialUsages);
             this.MatSettings.AddRange(MatSettings);
         }
 
-        public Material()
+        public MaterialRecord()
         { }
     }
-    public class Animation : NotifyPropertyChangedBase
-    {
-        private string _AnimSequence;
-        public string AnimSequence { get => _AnimSequence; set => SetProperty(ref _AnimSequence, value); }
-        private string _SeqName;
-        public string SeqName { get => _SeqName; set => SetProperty(ref _SeqName, value); }
-        private string _AnimData;
-        public string AnimData { get => _AnimData; set => SetProperty(ref _AnimData, value); }
-        private float _Length;
-        public float Length { get => _Length; set => SetProperty(ref _Length, value); }
-        private int _Frames;
-        public int Frames { get => _Frames; set => SetProperty(ref _Frames, value); }
-        private string _Compression;
-        public string Compression { get => _Compression; set => SetProperty(ref _Compression, value); }
-        private string _KeyFormat;
-        public string KeyFormat { get => _KeyFormat; set => SetProperty(ref _KeyFormat, value); }
-        private bool _IsAmbPerf;
-        public bool IsAmbPerf { get => _IsAmbPerf; set => SetProperty(ref _IsAmbPerf, value); }
-        private bool _IsModOnly;
-        public bool IsModOnly { get => _IsModOnly; set => SetProperty(ref _IsModOnly, value); }
-        public ObservableCollectionExtended<Tuple<int, int, bool>> AnimUsages { get; } = new ObservableCollectionExtended<Tuple<int, int, bool>>(); //File reference then export
 
-        public Animation(string AnimSequence, string SeqName, string AnimData, float Length, int Frames, string Compression, string KeyFormat, bool IsAmbPerf, bool IsModOnly, ObservableCollectionExtended<Tuple<int, int, bool>> AnimUsages)
+    [MessagePackObject] public sealed record MatUsage([property: Key(0)] int FileKey, [property: Key(1)] int UIndex, [property: Key(2)] bool IsInDLC);
+    [MessagePackObject] public sealed record MatSetting([property: Key(0)] string Name, [property: Key(1)] string Parm1, [property: Key(2)] string Parm2);
+
+    [MessagePackObject]
+    public class AnimationRecord
+    {
+        [Key(0)]
+        public string AnimSequence { get; set; }
+        [Key(1)]
+        public string SeqName { get; set; }
+        [Key(2)]
+        public string AnimData { get; set; }
+        [Key(3)]
+        public float Length { get; set; }
+        [Key(4)]
+        public int Frames { get; set; }
+        [Key(5)]
+        public string Compression { get; set; }
+        [Key(6)]
+        public string KeyFormat { get; set; }
+        [Key(7)]
+        public bool IsAmbPerf { get; set; }
+        [Key(8)]
+        public bool IsModOnly { get; set; }
+        [Key(9)]
+        public List<AnimUsage> Usages { get; set; } = new();
+
+        public AnimationRecord(string AnimSequence, string SeqName, string AnimData, float Length, int Frames, string Compression, string KeyFormat, bool IsAmbPerf, bool IsModOnly)
         {
             this.AnimSequence = AnimSequence;
             this.SeqName = SeqName;
@@ -3038,37 +3020,43 @@ namespace ME3Explorer.AssetDatabase
             this.KeyFormat = KeyFormat;
             this.IsAmbPerf = IsAmbPerf;
             this.IsModOnly = IsModOnly;
-            this.AnimUsages.AddRange(AnimUsages);
         }
 
-        public Animation()
+        public AnimationRecord()
         { }
     }
-    public class MeshRecord : NotifyPropertyChangedBase
-    {
-        private string _MeshName;
-        public string MeshName { get => _MeshName; set => SetProperty(ref _MeshName, value); }
-        private bool _IsSkeleton;
-        public bool IsSkeleton { get => _IsSkeleton; set => SetProperty(ref _IsSkeleton, value); }
-        private int _BoneCount;
-        public int BoneCount { get => _BoneCount; set => SetProperty(ref _BoneCount, value); }
-        private bool _IsModOnly;
-        public bool IsModOnly { get => _IsModOnly; set => SetProperty(ref _IsModOnly, value); }
-        public ObservableCollectionExtended<Tuple<int, int, bool>> MeshUsages { get; } = new ObservableCollectionExtended<Tuple<int, int, bool>>(); //File reference then export
 
-        public MeshRecord(string MeshName, bool IsSkeleton, bool IsModOnly, int BoneCount, ObservableCollectionExtended<Tuple<int, int, bool>> MeshUsages)
+    [MessagePackObject] public sealed record AnimUsage([property: Key(0)] int FileKey, [property: Key(1)] int UIndex, [property: Key(2)] bool IsInMod);
+
+    [MessagePackObject]
+    public class MeshRecord
+    {
+        [Key(0)]
+        public string MeshName { get; set; }
+        [Key(1)]
+        public bool IsSkeleton { get; set; }
+        [Key(2)] 
+        public int BoneCount { get; set; }
+        [Key(3)]
+        public bool IsModOnly { get; set; }
+        [Key(4)]
+        public List<MeshUsage> Usages { get; set; } = new();
+
+        public MeshRecord(string MeshName, bool IsSkeleton, bool IsModOnly, int BoneCount)
         {
             this.MeshName = MeshName;
             this.IsSkeleton = IsSkeleton;
             this.BoneCount = BoneCount;
             this.IsModOnly = IsModOnly;
-            this.MeshUsages.AddRange(MeshUsages);
         }
 
         public MeshRecord()
         { }
     }
-    public class ParticleSys : NotifyPropertyChangedBase
+    [MessagePackObject] public sealed record MeshUsage([property: Key(0)] int FileKey, [property: Key(1)] int UIndex, [property: Key(2)] bool IsInMod);
+
+    [MessagePackObject]
+    public class ParticleSysRecord
     {
         public enum VFXClass
         {
@@ -3077,21 +3065,22 @@ namespace ME3Explorer.AssetDatabase
             BioVFXTemplate
         }
 
-        private string _PSName;
-        public string PSName { get => _PSName; set => SetProperty(ref _PSName, value); }
-        private string _ParentPackagee;
-        public string ParentPackage { get => _ParentPackagee; set => SetProperty(ref _ParentPackagee, value); }
-        private bool _IsDLCOnly;
-        public bool IsDLCOnly { get => _IsDLCOnly; set => SetProperty(ref _IsDLCOnly, value); }
-        private bool _IsModOnly;
-        public bool IsModOnly { get => _IsModOnly; set => SetProperty(ref _IsModOnly, value); }
-        private int _EffectCount;
-        public int EffectCount { get => _EffectCount; set => SetProperty(ref _EffectCount, value); }
-        private VFXClass _vfxType;
-        public VFXClass VFXType { get => _vfxType; set => SetProperty(ref _vfxType, value); }
-        public ObservableCollectionExtended<Tuple<int, int, bool, bool>> PSUsages { get; } = new ObservableCollectionExtended<Tuple<int, int, bool, bool>>(); //File reference, export, isDLC file
+        [Key(0)]
+        public string PSName { get; set; }
+        [Key(1)]
+        public string ParentPackage { get; set; }
+        [Key(2)]
+        public bool IsDLCOnly { get; set; }
+        [Key(3)]
+        public bool IsModOnly { get; set; }
+        [Key(4)]
+        public int EffectCount { get; set; }
+        [Key(5)]
+        public VFXClass VFXType { get; set; }
+        [Key(6)]
+        public List<ParticleSysUsage> Usages { get; set; } = new();
 
-        public ParticleSys(string PSName, string ParentPackage, bool IsDLCOnly, bool IsModOnly, int EffectCount, VFXClass VFXType, ObservableCollectionExtended<Tuple<int, int, bool, bool>> PSUsages)
+        public ParticleSysRecord(string PSName, string ParentPackage, bool IsDLCOnly, bool IsModOnly, int EffectCount, VFXClass VFXType)
         {
             this.PSName = PSName;
             this.ParentPackage = ParentPackage;
@@ -3099,35 +3088,38 @@ namespace ME3Explorer.AssetDatabase
             this.IsModOnly = IsModOnly;
             this.EffectCount = EffectCount;
             this.VFXType = VFXType;
-            this.PSUsages.AddRange(PSUsages);
         }
 
-        public ParticleSys()
+        public ParticleSysRecord()
         { }
     }
-    public class TextureRecord : NotifyPropertyChangedBase
-    {
-        private string _TextureName;
-        public string TextureName { get => _TextureName; set => SetProperty(ref _TextureName, value); }
-        private string _ParentPackage;
-        public string ParentPackage { get => _ParentPackage; set => SetProperty(ref _ParentPackage, value); }
-        private bool _IsDLCOnly;
-        public bool IsDLCOnly { get => _IsDLCOnly; set => SetProperty(ref _IsDLCOnly, value); }
-        private bool _IsModOnly;
-        public bool IsModOnly { get => _IsModOnly; set => SetProperty(ref _IsModOnly, value); }
-        private string _CFormat;
-        public string CFormat { get => _CFormat; set => SetProperty(ref _CFormat, value); }
-        private string _TexGrp;
-        public string TexGrp { get => _TexGrp; set => SetProperty(ref _TexGrp, value); }
-        private int _SizeX;
-        public int SizeX { get => _SizeX; set => SetProperty(ref _SizeX, value); }
-        private int _SizeY;
-        public int SizeY { get => _SizeY; set => SetProperty(ref _SizeY, value); }
-        private string _CRC;
-        public string CRC { get => _CRC; set => SetProperty(ref _CRC, value); }
-        public ObservableCollectionExtended<Tuple<int, int, bool, bool>> TextureUsages { get; } = new ObservableCollectionExtended<Tuple<int, int, bool, bool>>(); //File reference, then export, isDLC file, isMod file
+    [MessagePackObject] public sealed record ParticleSysUsage([property: Key(0)] int FileKey, [property: Key(1)] int UIndex, [property: Key(2)] bool IsInDLC, [property: Key(3)] bool IsInMod);
 
-        public TextureRecord(string TextureName, string ParentPackage, bool IsDLCOnly, bool IsModOnly, string CFormat, string TexGrp, int SizeX, int SizeY, string CRC, ObservableCollectionExtended<Tuple<int, int, bool, bool>> TextureUsages)
+    [MessagePackObject]
+    public class TextureRecord
+    {
+        [Key(0)]
+        public string TextureName { get; set; }
+        [Key(1)]
+        public string ParentPackage { get; set; }
+        [Key(2)]
+        public bool IsDLCOnly { get; set; }
+        [Key(3)]
+        public bool IsModOnly { get; set; }
+        [Key(4)]
+        public string CFormat { get; set; }
+        [Key(5)]
+        public string TexGrp { get; set; }
+        [Key(6)]
+        public int SizeX { get; set; }
+        [Key(7)]
+        public int SizeY { get; set; }
+        [Key(8)]
+        public string CRC { get; set; }
+        [Key(9)]
+        public List<TextureUsage> Usages { get; set; } = new();
+
+        public TextureRecord(string TextureName, string ParentPackage, bool IsDLCOnly, bool IsModOnly, string CFormat, string TexGrp, int SizeX, int SizeY, string CRC)
         {
             this.TextureName = TextureName;
             this.ParentPackage = ParentPackage;
@@ -3138,41 +3130,46 @@ namespace ME3Explorer.AssetDatabase
             this.SizeX = SizeX;
             this.SizeY = SizeY;
             this.CRC = CRC;
-            this.TextureUsages.AddRange(TextureUsages);
         }
 
         public TextureRecord()
         { }
     }
-    public class GUIElement : NotifyPropertyChangedBase
-    {
-        private string _GUIName;
-        public string GUIName { get => _GUIName; set => SetProperty(ref _GUIName, value); }
-        private int _DataSize;
-        public int DataSize { get => _DataSize; set => SetProperty(ref _DataSize, value); }
-        private bool _IsModOnly;
-        public bool IsModOnly { get => _IsModOnly; set => SetProperty(ref _IsModOnly, value); }
-        public ObservableCollectionExtended<Tuple<int, int, bool>> GUIUsages { get; } = new ObservableCollectionExtended<Tuple<int, int, bool>>(); //File reference then export
+    [MessagePackObject] public sealed record TextureUsage([property: Key(0)] int FileKey, [property: Key(1)] int UIndex, [property: Key(2)] bool IsInDLC, [property: Key(3)] bool IsInMod);
 
-        public GUIElement(string GUIName, int DataSize, bool IsModOnly, ObservableCollectionExtended<Tuple<int, int, bool>> GUIUsages)
+    [MessagePackObject]
+    public class GUIElement
+    {
+        [Key(0)]
+        public string GUIName { get; set; }
+        [Key(1)]
+        public int DataSize { get; set; }
+        [Key(2)]
+        public bool IsModOnly { get; set; }
+        [Key(3)]
+        public List<GUIUsage> Usages { get; set; } = new(); //File reference then export
+
+        public GUIElement(string GUIName, int DataSize, bool IsModOnly)
         {
             this.GUIName = GUIName;
             this.DataSize = DataSize;
             this.IsModOnly = IsModOnly;
-            this.GUIUsages.AddRange(GUIUsages);
         }
 
         public GUIElement()
         { }
     }
-    public class Conversation : NotifyPropertyChangedBase
+    [MessagePackObject] public sealed record GUIUsage([property: Key(0)] int FileKey, [property: Key(1)] int UIndex, [property: Key(2)] bool IsInMod);
+
+    [MessagePackObject]
+    public class Conversation
     {
-        private string _ConvName;
-        public string ConvName { get => _ConvName; set => SetProperty(ref _ConvName, value); }
-        private bool _IsAmbient;
-        public bool IsAmbient { get => _IsAmbient; set => SetProperty(ref _IsAmbient, value); }
-        private Tuple<int, int> _convFile; //file, export
-        public Tuple<int, int> ConvFile { get => _convFile; set => SetProperty(ref _convFile, value); }
+        [Key(0)]
+        public string ConvName { get; set; }
+        [Key(1)]
+        public bool IsAmbient { get; set; }
+        [Key(2)]
+        public Tuple<int, int> ConvFile { get; set; } //file, export
         public Conversation(string ConvName, bool IsAmbient, Tuple<int, int> ConvFile)
         {
             this.ConvName = ConvName;
@@ -3183,16 +3180,17 @@ namespace ME3Explorer.AssetDatabase
         public Conversation()
         { }
     }
-    public class ConvoLine : NotifyPropertyChangedBase
+    [MessagePackObject]
+    public class ConvoLine
     {
-        private int _strRef;
-        public int StrRef { get => _strRef; set => SetProperty(ref _strRef, value); }
-        private string _speaker;
-        public string Speaker { get => _speaker; set => SetProperty(ref _speaker, value); }
-        private string _line;
-        public string Line { get => _line; set => SetProperty(ref _line, value); }
-        private string _convo;
-        public string Convo { get => _convo; set => SetProperty(ref _convo, value); }
+        [Key(0)]
+        public int StrRef { get; set; }
+        [Key(1)]
+        public string Speaker { get; set; }
+        [Key(2)]
+        public string Line { get; set; }
+        [Key(3)]
+        public string Convo { get; set; }
 
         public ConvoLine(int StrRef, string Speaker, string Convo)
         {
@@ -3210,14 +3208,14 @@ namespace ME3Explorer.AssetDatabase
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             int fileindex = (int)values[0];
-            var listofFiles = values[1] as ObservableCollectionExtended<Tuple<string, string>>;
-            if (listofFiles == null || fileindex == 0 || listofFiles.Count == 0)
+            var listofFiles = values[1] as ObservableCollectionExtended<AssetDB.FileDirPair>;
+            if (listofFiles == null || fileindex < 0 || fileindex >= listofFiles.Count || listofFiles.Count == 0)
             {
                 return $"Error file name not found";
             }
             var export = (int)values[2];
-            var file = listofFiles[fileindex];
-            return $"{file.Item1}  # {export}   {file.Item2} ";
+            (string fileName, string directory) = listofFiles[fileindex];
+            return $"{fileName}  # {export}   {directory} ";
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
@@ -3229,15 +3227,10 @@ namespace ME3Explorer.AssetDatabase
     #endregion
 
     #region SingleFileScan
-    public class ClassScanSingleFileTask : NotifyPropertyChangedBase
+    
+    public class ClassScanSingleFileTask
     {
-
-        private string _shortFileName;
-        public string ShortFileName
-        {
-            get => _shortFileName;
-            set => SetProperty(ref _shortFileName, value);
-        }
+        public string ShortFileName { get; }
 
         public ClassScanSingleFileTask(string file, int filekey, bool scanCRC, bool scanLines)
         {
@@ -3269,9 +3262,10 @@ namespace ME3Explorer.AssetDatabase
 
                 bool IsDLC = pcc.IsInOfficialDLC();
                 bool IsMod = !pcc.IsInBasegame() && !IsDLC;
-                foreach (ExportEntry exp in pcc.Exports)
+                //foreach (IEntry entry in pcc.Exports.Concat<IEntry>(pcc.Imports))
+                foreach (ExportEntry entry in pcc.Exports)
                 {
-                    if (DumpCanceled || (pcc.FilePath.Contains("_LOC_") && !pcc.FilePath.Contains("INT"))
+                    if (DumpCanceled || pcc.FilePath.Contains("_LOC_") && !pcc.FilePath.Contains("INT")
                     ) //TEMP NEED BETTER WAY TO HANDLE LANGUAGES
                     {
                         return;
@@ -3279,258 +3273,266 @@ namespace ME3Explorer.AssetDatabase
 
                     try
                     {
-                        string pClass = exp.ClassName; //Handle basic class record
-                        string pExp = exp.ObjectName.Instanced;
-                        string pKey = exp.InstancedFullPath.ToLower();
-                        string pSuperClass = null;
-                        string pDefinitionPackage = null;
-                        int pDefUID = 0;
-                        int pExportUID = exp.UIndex;
-                        bool pIsdefault = false; //Setup default cases
-
-                        if (exp.ClassName != "Class")
+                        string className = entry.ClassName; //Handle basic class record
+                        string objectNameInstanced = entry.ObjectName.Instanced;
+                        int uindex = entry.UIndex;
+                        var export = entry as ExportEntry;
+                        if (className != "Class")
                         {
-                            if (exp.IsDefaultObject)
+                            bool isDefault = export?.IsDefaultObject == true;
+
+                            var pList = new List<PropertyRecord>();
+                            var mSets = new List<MatSetting>();
+                            PropertyCollection props = null;
+                            if (export is not null)
                             {
-                                pIsdefault = true;
+                                props = export.GetProperties(false, false);
+                                foreach (var p in props)
+                                {
+                                    string pName = p.Name;
+                                    string pType = p.PropType.ToString();
+                                    string pValue = "null";
+                                    switch (p)
+                                    {
+                                        case ArrayPropertyBase parray:
+                                            pValue = "Array";
+                                            break;
+                                        case StructProperty pstruct:
+                                            pValue = "Struct";
+                                            break;
+                                        case NoneProperty pnone:
+                                            pValue = "None";
+                                            break;
+                                        case ObjectProperty pobj:
+                                            if (pcc.IsEntry(pobj.Value))
+                                            {
+                                                pValue = pcc.GetEntry(pobj.Value).ClassName;
+                                            }
+
+                                            break;
+                                        case BoolProperty pbool:
+                                            pValue = pbool.Value.ToString();
+                                            break;
+                                        case IntProperty pint:
+                                            if (isDefault)
+                                            {
+                                                pValue = pint.Value.ToString();
+                                            }
+                                            else
+                                            {
+                                                pValue = "int"; //Keep DB size down
+                                            }
+
+                                            break;
+                                        case FloatProperty pflt:
+                                            if (isDefault)
+                                            {
+                                                pValue = pflt.Value.ToString();
+                                            }
+                                            else
+                                            {
+                                                pValue = "float"; //Keep DB size down
+                                            }
+
+                                            break;
+                                        case NameProperty pnme:
+                                            pValue = pnme.Value.ToString();
+                                            break;
+                                        case ByteProperty pbte:
+                                            pValue = pbte.Value.ToString();
+                                            break;
+                                        case EnumProperty penum:
+                                            pValue = penum.Value.ToString();
+                                            break;
+                                        case StrProperty pstr:
+                                            if (isDefault)
+                                            {
+                                                pValue = pstr;
+                                            }
+                                            else
+                                            {
+                                                pValue = "string";
+                                            }
+
+                                            break;
+                                        case StringRefProperty pstrref:
+                                            if (isDefault)
+                                            {
+                                                pValue = pstrref.Value.ToString();
+                                            }
+                                            else
+                                            {
+                                                pValue = "TLK StringRef";
+                                            }
+
+                                            break;
+                                        case DelegateProperty pdelg:
+                                            if (pdelg.Value != null)
+                                            {
+                                                var pscrdel = pdelg.Value.Object;
+                                                if (pscrdel != 0)
+                                                {
+                                                    pValue = pcc.GetEntry(pscrdel).ClassName;
+                                                }
+                                            }
+
+                                            break;
+                                        default:
+                                            pValue = p.ToString();
+                                            break;
+                                    }
+
+                                    var NewPropertyRecord = new PropertyRecord(pName, pType);
+                                    pList.Add(NewPropertyRecord);
+
+                                    if (entry.ClassName == "Material" && !dbScanner.GeneratedMats.ContainsKey(objectNameInstanced) &&
+                                        !isDefault) //Run material settings
+                                    {
+                                        MatSetting pSet;
+                                        var matSet_name = p.Name;
+                                        if (matSet_name == "Expressions")
+                                        {
+                                            foreach (var param in p as ArrayProperty<ObjectProperty>)
+                                            {
+                                                if (param.Value > 0)
+                                                {
+                                                    var exprsn = pcc.GetUExport(param.Value);
+                                                    var paramName = "n/a";
+                                                    var paramNameProp = exprsn.GetProperty<NameProperty>("ParameterName");
+                                                    if (paramNameProp != null)
+                                                    {
+                                                        paramName = paramNameProp.Value;
+                                                    }
+
+                                                    string exprsnName =
+                                                        exprsn.ClassName.Replace("MaterialExpression", string.Empty);
+                                                    switch (exprsn.ClassName)
+                                                    {
+                                                        case "MaterialExpressionScalarParameter":
+                                                            var sValue = exprsn.GetProperty<FloatProperty>("DefaultValue");
+                                                            string defscalar = "n/a";
+                                                            if (sValue != null)
+                                                            {
+                                                                defscalar = sValue.Value.ToString();
+                                                            }
+
+                                                            pSet = new MatSetting(exprsnName, paramName, defscalar);
+                                                            break;
+                                                        case "MaterialExpressionVectorParameter":
+                                                            string linearColor = "n/a";
+                                                            var vValue = exprsn.GetProperty<StructProperty>("DefaultValue");
+                                                            if (vValue != null)
+                                                            {
+                                                                var r = vValue.GetProp<FloatProperty>("R");
+                                                                var g = vValue.GetProp<FloatProperty>("G");
+                                                                var b = vValue.GetProp<FloatProperty>("B");
+                                                                var a = vValue.GetProp<FloatProperty>("A");
+                                                                if (r != null && g != null && b != null && a != null)
+                                                                {
+                                                                    linearColor =
+                                                                        $"R:{r.Value} G:{g.Value} B:{b.Value} A:{a.Value}";
+                                                                }
+                                                            }
+
+                                                            pSet = new MatSetting(exprsnName, paramName, linearColor);
+                                                            break;
+                                                        default:
+                                                            pSet = new MatSetting(exprsnName, paramName, null);
+                                                            break;
+                                                    }
+
+                                                    mSets.Add(pSet);
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            pSet = new MatSetting(matSet_name, pType, pValue);
+                                            mSets.Add(pSet);
+                                        }
+                                    }
+                                }
+                                
                             }
 
-                            var pList = new ObservableCollectionExtended<PropertyRecord>();
-                            var mSets = new ObservableCollectionExtended<Tuple<string, string, string>>();
-                            var props = exp.GetProperties(false, false);
-                            foreach (var p in props)
+                            var classUsage = new ClassUsage(FileKey, uindex, isDefault, IsMod);
+                            lock (dbScanner.ClassLocks.GetOrAdd(className, new object()))
                             {
-                                string pName = p.Name;
-                                string pType = p.PropType.ToString();
-                                string pValue = "null";
-                                switch (p)
+                                if (dbScanner.GeneratedClasses.TryGetValue(className, out var oldVal))
                                 {
-                                    case ArrayPropertyBase parray:
-                                        pValue = "Array";
-                                        break;
-                                    case StructProperty pstruct:
-                                        pValue = "Struct";
-                                        break;
-                                    case NoneProperty pnone:
-                                        pValue = "None";
-                                        break;
-                                    case ObjectProperty pobj:
-                                        if (pcc.IsEntry(pobj.Value))
-                                        {
-                                            pValue = pcc.GetEntry(pobj.Value).ClassName;
-                                        }
-
-                                        break;
-                                    case BoolProperty pbool:
-                                        pValue = pbool.Value.ToString();
-                                        break;
-                                    case IntProperty pint:
-                                        if (pIsdefault)
-                                        {
-                                            pValue = pint.Value.ToString();
-                                        }
-                                        else
-                                        {
-                                            pValue = "int"; //Keep DB size down
-                                        }
-
-                                        break;
-                                    case FloatProperty pflt:
-                                        if (pIsdefault)
-                                        {
-                                            pValue = pflt.Value.ToString();
-                                        }
-                                        else
-                                        {
-                                            pValue = "float"; //Keep DB size down
-                                        }
-
-                                        break;
-                                    case NameProperty pnme:
-                                        pValue = pnme.Value.ToString();
-                                        break;
-                                    case ByteProperty pbte:
-                                        pValue = pbte.Value.ToString();
-                                        break;
-                                    case EnumProperty penum:
-                                        pValue = penum.Value.ToString();
-                                        break;
-                                    case StrProperty pstr:
-                                        if (pIsdefault)
-                                        {
-                                            pValue = pstr;
-                                        }
-                                        else
-                                        {
-                                            pValue = "string";
-                                        }
-
-                                        break;
-                                    case StringRefProperty pstrref:
-                                        if (pIsdefault)
-                                        {
-                                            pValue = pstrref.Value.ToString();
-                                        }
-                                        else
-                                        {
-                                            pValue = "TLK StringRef";
-                                        }
-
-                                        break;
-                                    case DelegateProperty pdelg:
-                                        if (pdelg.Value != null)
-                                        {
-                                            var pscrdel = pdelg.Value.Object;
-                                            if (pscrdel != 0)
-                                            {
-                                                pValue = pcc.GetEntry(pscrdel).ClassName;
-                                            }
-                                        }
-
-                                        break;
-                                    default:
-                                        pValue = p.ToString();
-                                        break;
-                                }
-
-                                var NewPropertyRecord = new PropertyRecord(pName, pType);
-                                pList.Add(NewPropertyRecord);
-
-                                if (exp.ClassName == "Material" && !dbScanner.GeneratedMats.ContainsKey(pExp) &&
-                                    !pIsdefault) //Run material settings
-                                {
-                                    var pSet = new Tuple<string, string, string>(null, null, null);
-                                    var matSet_name = p.Name;
-                                    if (matSet_name == "Expressions")
+                                    oldVal.Usages.Add(classUsage);
+                                    foreach (PropertyRecord propRecord in pList)
                                     {
-                                        foreach (var param in p as ArrayProperty<ObjectProperty>)
+                                        if (!oldVal.PropertyRecords.Contains(propRecord))
                                         {
-                                            if (param.Value > 0)
-                                            {
-                                                var exprsn = pcc.GetUExport(param.Value);
-                                                var paramName = "n/a";
-                                                var paramNameProp = exprsn.GetProperty<NameProperty>("ParameterName");
-                                                if (paramNameProp != null)
-                                                {
-                                                    paramName = paramNameProp.Value;
-                                                }
-
-                                                string exprsnName =
-                                                    exprsn.ClassName.Replace("MaterialExpression", string.Empty);
-                                                switch (exprsn.ClassName)
-                                                {
-                                                    case "MaterialExpressionScalarParameter":
-                                                        var sValue = exprsn.GetProperty<FloatProperty>("DefaultValue");
-                                                        string defscalar = "n/a";
-                                                        if (sValue != null)
-                                                        {
-                                                            defscalar = sValue.Value.ToString();
-                                                        }
-
-                                                        pSet = new Tuple<string, string, string>(exprsnName, paramName,
-                                                            defscalar);
-                                                        break;
-                                                    case "MaterialExpressionVectorParameter":
-                                                        string linearColor = "n/a";
-                                                        var vValue = exprsn.GetProperty<StructProperty>("DefaultValue");
-                                                        if (vValue != null)
-                                                        {
-                                                            var r = vValue.GetProp<FloatProperty>("R");
-                                                            var g = vValue.GetProp<FloatProperty>("G");
-                                                            var b = vValue.GetProp<FloatProperty>("B");
-                                                            var a = vValue.GetProp<FloatProperty>("A");
-                                                            if (r != null && g != null && b != null && a != null)
-                                                            {
-                                                                linearColor =
-                                                                    $"R:{r.Value} G:{g.Value} B:{b.Value} A:{a.Value}";
-                                                            }
-                                                        }
-
-                                                        pSet = new Tuple<string, string, string>(exprsnName, paramName,
-                                                            linearColor);
-                                                        break;
-                                                    default:
-                                                        pSet = new Tuple<string, string, string>(exprsnName, paramName,
-                                                            null);
-                                                        break;
-                                                }
-
-                                                mSets.Add(pSet);
-                                            }
+                                            oldVal.PropertyRecords.Add(propRecord);
                                         }
+                                    }
+                                }
+                                else
+                                {
+                                    var newVal = new ClassRecord { Class = className, IsModOnly = IsMod };
+                                    newVal.Usages.Add(classUsage);
+                                    newVal.PropertyRecords.AddRange(pList);
+                                    dbScanner.GeneratedClasses[className] = newVal;
+                                }
+                            }
+
+                            if (isDefault)
+                            {
+                                continue;
+                            }
+
+                            string assetKey = entry.InstancedFullPath.ToLower();
+
+                            if (className == "Material" || className == "DecalMaterial")
+                            {
+                                var matUsage = new MatUsage(FileKey, uindex, IsDLC);
+                                if (dbScanner.GeneratedMats.TryGetValue(assetKey, out var eMat))
+                                {
+                                    lock (eMat)
+                                    {
+                                        eMat.Usages.Add(matUsage);
+                                    }
+                                }
+                                else
+                                {
+
+                                    string parent;
+                                    if (GameBeingDumped == MEGame.ME1 && File.EndsWith(".upk"))
+                                    {
+                                        parent = ShortFileName;
                                     }
                                     else
                                     {
-                                        pSet = new Tuple<string, string, string>(matSet_name, pType, pValue);
-                                        mSets.Add(pSet);
+                                        parent = GetTopParentPackage(entry);
                                     }
-                                }
-                            }
-
-                            var NewUsageRecord = new ClassUsage(FileKey, pExportUID, pIsdefault, IsMod);
-                            var NewClassRecord = new ClassRecord(pClass, pDefinitionPackage, pDefUID, pSuperClass,
-                                pList, new ObservableCollectionExtended<ClassUsage>() { NewUsageRecord });
-                            string valueKey = string.Concat(pClass, ShortFileName, pIsdefault.ToString());
-                            if (!dbScanner.GeneratedClasses.TryAdd(pClass, NewClassRecord) &&
-                                dbScanner.GeneratedValueChecker.TryAdd(valueKey, true))
-                            {
-                                dbScanner._dbqueue.Add(NewClassRecord);
-
-                            }
-
-                            if ((exp.ClassName == "Material" || exp.ClassName == "DecalMaterial") && !pIsdefault)
-                            {
-                                if (dbScanner.GeneratedMats.ContainsKey(pKey))
-                                {
-                                    var eMat = dbScanner.GeneratedMats[pKey];
-                                    lock (eMat)
+                                    
+                                    if (className == "DecalMaterial" && !objectNameInstanced.Contains("Decal"))
                                     {
-                                        eMat.MaterialUsages.Add(new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC));
-                                        if (eMat.IsDLCOnly)
+                                        objectNameInstanced += "_Decal";
+                                    }
+
+                                    var NewMat = new MaterialRecord(objectNameInstanced, parent, IsDLC, mSets);
+                                    NewMat.Usages.Add(matUsage);
+                                    if (!dbScanner.GeneratedMats.TryAdd(assetKey, NewMat))
+                                    {
+                                        var mat = dbScanner.GeneratedMats[assetKey];
+                                        lock (mat)
                                         {
-                                            eMat.IsDLCOnly = IsDLC;
+                                            mat.Usages.Add(matUsage);
                                         }
                                     }
                                 }
-                                else
-                                {
-
-                                }
-
-                                string parent = null;
-                                if (GameBeingDumped == MEGame.ME1 && File.EndsWith(".upk"))
-                                {
-                                    parent = ShortFileName;
-                                }
-                                else
-                                {
-                                    parent = GetTopParentPackage(exp);
-                                }
-
-                                string matname = pExp;
-                                if (exp.ClassName == "DecalMaterial" && !matname.Contains("Decal"))
-                                {
-                                    matname = $"{pExp}_Decal";
-                                }
-
-                                var NewMat = new Material(matname, parent, IsDLC,
-                                    new ObservableCollectionExtended<Tuple<int, int, bool>>()
-                                        {new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC)}, mSets);
-                                dbScanner.GeneratedMats.TryAdd(pKey, NewMat);
                             }
-                            else if ((exp.ClassName == "AnimSequence" || exp.ClassName == "SFXAmbPerfGameData") &&
-                                     !pIsdefault)
+                            else if (className == "AnimSequence" || className == "SFXAmbPerfGameData")
                             {
-                                if (dbScanner.GeneratedAnims.ContainsKey(pKey))
+                                var animUsage = new AnimUsage(FileKey, uindex, IsMod);
+                                if (dbScanner.GeneratedAnims.TryGetValue(assetKey, out var anim))
                                 {
-                                    var anim = dbScanner.GeneratedAnims[pKey];
                                     lock (anim)
                                     {
-                                        anim.AnimUsages.Add(new Tuple<int, int, bool>(FileKey, pExportUID, IsMod));
-                                        if (anim.IsModOnly)
-                                        {
-                                            anim.IsModOnly = IsMod;
-                                        }
+                                        anim.Usages.Add(animUsage);
                                     }
                                 }
                                 else
@@ -3542,91 +3544,89 @@ namespace ME3Explorer.AssetDatabase
                                     string aComp = "None";
                                     string aKeyF = "None";
                                     bool IsAmbPerf = false;
-                                    if (exp.ClassName == "AnimSequence")
+                                    if (className == "AnimSequence")
                                     {
-                                        var pSeq = exp.GetProperty<NameProperty>("SequenceName");
+                                        var pSeq = props.GetProp<NameProperty>("SequenceName");
                                         if (pSeq != null)
                                         {
                                             aSeq = pSeq.Value.Instanced;
-                                            aGrp = pExp.Replace($"{aSeq}_", null);
+                                            aGrp = objectNameInstanced.Replace($"{aSeq}_", null);
                                         }
 
-                                        var pLength = exp.GetProperty<FloatProperty>("SequenceLength");
+                                        var pLength = props.GetProp<FloatProperty>("SequenceLength");
                                         aLength = pLength?.Value ?? 0;
 
-                                        var pFrames = exp.GetProperty<IntProperty>("NumFrames");
+                                        var pFrames = props.GetProp<IntProperty>("NumFrames");
                                         aFrames = pFrames?.Value ?? 0;
 
-                                        var pComp = exp.GetProperty<EnumProperty>("RotationCompressionFormat");
+                                        var pComp = props.GetProp<EnumProperty>("RotationCompressionFormat");
                                         aComp = pComp?.Value.ToString() ?? "None";
 
-                                        var pKeyF = exp.GetProperty<EnumProperty>("KeyEncodingFormat");
+                                        var pKeyF = props.GetProp<EnumProperty>("KeyEncodingFormat");
                                         aKeyF = pKeyF?.Value.ToString() ?? "None";
                                     }
                                     else //is ambient performance
                                     {
                                         IsAmbPerf = true;
                                         aSeq = "Multiple";
-                                        var pAnimsets = exp.GetProperty<ArrayProperty<StructProperty>>("m_aAnimsets");
+                                        var pAnimsets = props.GetProp<ArrayProperty<StructProperty>>("m_aAnimsets");
                                         aFrames = pAnimsets?.Count ?? 0;
                                     }
 
-                                    var NewAnim = new Animation(pExp, aSeq, aGrp, aLength, aFrames, aComp, aKeyF,
-                                        IsAmbPerf, IsMod,
-                                        new ObservableCollectionExtended<Tuple<int, int, bool>>()
-                                            {new Tuple<int, int, bool>(FileKey, pExportUID, IsMod)});
-                                    dbScanner.GeneratedAnims.TryAdd(pKey, NewAnim);
+                                    var NewAnim = new AnimationRecord(objectNameInstanced, aSeq, aGrp, aLength, aFrames, aComp, aKeyF, IsAmbPerf, IsMod);
+                                    NewAnim.Usages.Add(animUsage);
+                                    if (!dbScanner.GeneratedAnims.TryAdd(assetKey, NewAnim))
+                                    {
+                                        var a = dbScanner.GeneratedAnims[assetKey];
+                                        lock (a)
+                                        {
+                                            a.Usages.Add(animUsage);
+                                        }
+                                    }
                                 }
                             }
-                            else if ((exp.ClassName == "SkeletalMesh" || exp.ClassName == "StaticMesh") && !pIsdefault)
+                            else if (className == "SkeletalMesh" || className == "StaticMesh")
                             {
-                                if (dbScanner.GeneratedMeshes.ContainsKey(pKey))
+                                var meshUsage = new MeshUsage(FileKey, uindex, IsMod);
+                                if (dbScanner.GeneratedMeshes.ContainsKey(assetKey))
                                 {
-                                    var mr = dbScanner.GeneratedMeshes[pKey];
+                                    var mr = dbScanner.GeneratedMeshes[assetKey];
                                     lock (mr)
                                     {
-                                        mr.MeshUsages.Add(new Tuple<int, int, bool>(FileKey, pExportUID, IsMod));
-                                        if (mr.IsModOnly)
-                                        {
-                                            mr.IsModOnly = IsMod;
-                                        }
+                                        mr.Usages.Add(meshUsage);
                                     }
                                 }
                                 else
                                 {
-                                    bool IsSkel = exp.ClassName == "SkeletalMesh";
+                                    bool IsSkel = className == "SkeletalMesh";
                                     int bones = 0;
                                     if (IsSkel)
                                     {
-                                        var bin = ObjectBinary.From<SkeletalMesh>(exp);
+                                        var bin = ObjectBinary.From<SkeletalMesh>(entry);
                                         bones = bin?.RefSkeleton.Length ?? 0;
                                     }
 
-                                    var NewMeshRec = new MeshRecord(pExp, IsSkel, IsMod, bones,
-                                        new ObservableCollectionExtended<Tuple<int, int, bool>>
-                                            {new Tuple<int, int, bool>(FileKey, pExportUID, IsMod)});
-                                    dbScanner.GeneratedMeshes.TryAdd(pKey, NewMeshRec);
+                                    var NewMeshRec = new MeshRecord(objectNameInstanced, IsSkel, IsMod, bones);
+                                    NewMeshRec.Usages.Add(meshUsage);
+                                    if (!dbScanner.GeneratedMeshes.TryAdd(assetKey, NewMeshRec))
+                                    {
+                                        var mr = dbScanner.GeneratedMeshes[assetKey];
+                                        lock (mr)
+                                        {
+                                            mr.Usages.Add(meshUsage);
+                                        }
+                                    }
                                 }
                             }
-                            else if ((exp.ClassName == "ParticleSystem" || exp.ClassName == "RvrClientEffect" ||
-                                      exp.ClassName == "BioVFXTemplate") && !pIsdefault)
+                            else if (className == "ParticleSystem" || className == "RvrClientEffect" || className == "BioVFXTemplate")
                             {
-                                if (dbScanner.GeneratedPS.ContainsKey(pKey))
+                                var particleSysUsage = new ParticleSysUsage(FileKey, uindex, IsDLC, IsMod);
+                                if (dbScanner.GeneratedPS.ContainsKey(assetKey))
                                 {
-                                    var ePS = dbScanner.GeneratedPS[pKey];
+                                    var ePS = dbScanner.GeneratedPS[assetKey];
                                     lock (ePS)
                                     {
-                                        ePS.PSUsages.Add(
-                                            new Tuple<int, int, bool, bool>(FileKey, pExportUID, IsDLC, IsMod));
-                                        if (ePS.IsDLCOnly)
-                                        {
-                                            ePS.IsDLCOnly = IsDLC;
-                                        }
-
-                                        if (ePS.IsModOnly)
-                                        {
-                                            ePS.IsModOnly = IsMod;
-                                        }
+                                        ePS.Usages.Add(particleSysUsage);
                                     }
                                 }
                                 else
@@ -3638,66 +3638,57 @@ namespace ME3Explorer.AssetDatabase
                                     }
                                     else
                                     {
-                                        parent = GetTopParentPackage(exp);
+                                        parent = GetTopParentPackage(entry);
                                     }
 
-                                    var vfxtype = ParticleSys.VFXClass.BioVFXTemplate;
+                                    var vfxtype = ParticleSysRecord.VFXClass.BioVFXTemplate;
                                     int EmCnt = 0;
-                                    if (exp.ClassName == "ParticleSystem")
+                                    if (className == "ParticleSystem")
                                     {
-                                        var EmtProp = exp.GetProperty<ArrayProperty<ObjectProperty>>("Emitters");
+                                        var EmtProp = props.GetProp<ArrayProperty<ObjectProperty>>("Emitters");
                                         EmCnt = EmtProp?.Count ?? 0;
-                                        vfxtype = ParticleSys.VFXClass.ParticleSystem;
+                                        vfxtype = ParticleSysRecord.VFXClass.ParticleSystem;
                                     }
-                                    else if (exp.ClassName == "RvrClientEffect")
+                                    else if (className == "RvrClientEffect")
                                     {
-                                        var RvrProp = exp.GetProperty<ArrayProperty<ObjectProperty>>("m_lstModules");
+                                        var RvrProp = props.GetProp<ArrayProperty<ObjectProperty>>("m_lstModules");
                                         EmCnt = RvrProp?.Count ?? 0;
-                                        vfxtype = ParticleSys.VFXClass.RvrClientEffect;
+                                        vfxtype = ParticleSysRecord.VFXClass.RvrClientEffect;
                                     }
 
-                                    var NewPS = new ParticleSys(pExp, parent, IsDLC, IsMod, EmCnt, vfxtype,
-                                        new ObservableCollectionExtended<Tuple<int, int, bool, bool>>
-                                            {new Tuple<int, int, bool, bool>(FileKey, pExportUID, IsDLC, IsMod)});
-                                    dbScanner.GeneratedPS.TryAdd(pKey, NewPS);
+                                    var NewPS = new ParticleSysRecord(objectNameInstanced, parent, IsDLC, IsMod, EmCnt, vfxtype);
+                                    NewPS.Usages.Add(particleSysUsage);
+                                    if (!dbScanner.GeneratedPS.TryAdd(assetKey, NewPS))
+                                    {
+                                        var ePS = dbScanner.GeneratedPS[assetKey];
+                                        lock (ePS)
+                                        {
+                                            ePS.Usages.Add(particleSysUsage);
+                                        }
+                                    }
                                 }
                             }
-                            else if ((exp.ClassName == "Texture2D" || exp.ClassName == "TextureCube" ||
-                                      exp.ClassName == "TextureMovie") && !pIsdefault)
+                            else if (className == "Texture2D" || className == "TextureCube" || className == "TextureMovie")
                             {
-                                if (exp.Parent?.ClassName == "TextureCube")
+                                var textureUsage = new TextureUsage(FileKey, uindex, IsDLC, IsMod);
+                                if (dbScanner.GeneratedText.ContainsKey(assetKey))
                                 {
-                                    pExp = $"{exp.Parent.ObjectName}_{pExp}";
-                                }
-
-                                if (dbScanner.GeneratedText.ContainsKey(pKey))
-                                {
-                                    var t = dbScanner.GeneratedText[pKey];
+                                    var t = dbScanner.GeneratedText[assetKey];
                                     lock (t)
                                     {
-                                        t.TextureUsages.Add(
-                                            new Tuple<int, int, bool, bool>(FileKey, pExportUID, IsDLC, IsMod));
-                                        if (t.IsDLCOnly)
-                                        {
-                                            t.IsDLCOnly = IsDLC;
-                                        }
-
-                                        if (t.IsModOnly)
-                                        {
-                                            t.IsModOnly = IsMod;
-                                        }
+                                        t.Usages.Add(textureUsage);
                                     }
                                 }
                                 else
                                 {
-                                    string parent = null;
+                                    string parent;
                                     if (GameBeingDumped == MEGame.ME1 && File.EndsWith(".upk"))
                                     {
                                         parent = ShortFileName;
                                     }
                                     else
                                     {
-                                        parent = GetTopParentPackage(exp);
+                                        parent = GetTopParentPackage(entry);
                                     }
 
                                     string pformat = "TextureCube";
@@ -3705,79 +3696,86 @@ namespace ME3Explorer.AssetDatabase
                                     int psizeY = 0;
                                     string cRC = "n/a";
                                     string texgrp = "n/a";
-                                    if (exp.ClassName != "TextureCube")
+                                    if (className != "TextureCube")
                                     {
                                         pformat = "TextureMovie";
-                                        if (exp.ClassName != "TextureMovie")
+                                        if (className != "TextureMovie")
                                         {
-                                            var formp = exp.GetProperty<EnumProperty>("Format");
+                                            var formp = props.GetProp<EnumProperty>("Format");
                                             pformat = formp?.Value.Name ?? "n/a";
                                             pformat = pformat.Replace("PF_", string.Empty);
-                                            var tgrp = exp.GetProperty<EnumProperty>("LODGroup");
+                                            var tgrp = props.GetProp<EnumProperty>("LODGroup");
                                             texgrp = tgrp?.Value.Instanced ?? "n/a";
                                             texgrp = texgrp.Replace("TEXTUREGROUP_", string.Empty);
                                             texgrp = texgrp.Replace("_", string.Empty);
                                             if (ScanCRC)
                                             {
-                                                cRC = Texture2D.GetTextureCRC(exp).ToString("X8");
+                                                cRC = Texture2D.GetTextureCRC(entry).ToString("X8");
                                             }
                                         }
 
-                                        var propX = exp.GetProperty<IntProperty>("SizeX");
+                                        var propX = props.GetProp<IntProperty>("SizeX");
                                         psizeX = propX?.Value ?? 0;
-                                        var propY = exp.GetProperty<IntProperty>("SizeY");
+                                        var propY = props.GetProp<IntProperty>("SizeY");
                                         psizeY = propY?.Value ?? 0;
                                     }
 
-                                    var NewTex = new TextureRecord(pExp, parent, IsDLC, IsMod, pformat, texgrp, psizeX,
-                                        psizeY, cRC,
-                                        new ObservableCollectionExtended<Tuple<int, int, bool, bool>>()
-                                            {new Tuple<int, int, bool, bool>(FileKey, pExportUID, IsDLC, IsMod)});
-                                    dbScanner.GeneratedText.TryAdd(pKey, NewTex);
+                                    if (entry.Parent?.ClassName == "TextureCube")
+                                    {
+                                        objectNameInstanced = $"{entry.Parent.ObjectName}_{objectNameInstanced}";
+                                    }
+
+                                    var NewTex = new TextureRecord(objectNameInstanced, parent, IsDLC, IsMod, pformat, texgrp, psizeX, psizeY, cRC);
+                                    NewTex.Usages.Add(textureUsage);
+                                    if (dbScanner.GeneratedText.TryAdd(assetKey, NewTex))
+                                    {
+                                        var t = dbScanner.GeneratedText[assetKey];
+                                        lock (t)
+                                        {
+                                            t.Usages.Add(textureUsage);
+                                        }
+                                    }
                                 }
                             }
-                            else if ((exp.ClassName == "GFxMovieInfo" || exp.ClassName == "BioSWF") && !pIsdefault)
+                            else if (className == "GFxMovieInfo" || className == "BioSWF")
                             {
-                                if (dbScanner.GeneratedGUI.ContainsKey(pKey))
+                                if (dbScanner.GeneratedGUI.ContainsKey(assetKey))
                                 {
-                                    var eGUI = dbScanner.GeneratedGUI[pKey];
+                                    var eGUI = dbScanner.GeneratedGUI[assetKey];
                                     lock (eGUI)
                                     {
-                                        eGUI.GUIUsages.Add(new Tuple<int, int, bool>(FileKey, pExportUID, IsMod));
-                                        if (eGUI.IsModOnly)
-                                        {
-                                            eGUI.IsModOnly = IsMod;
-                                        }
+                                        eGUI.Usages.Add(new GUIUsage(FileKey, uindex, IsMod));
                                     }
                                 }
                                 else
                                 {
-                                    string dataPropName = exp.ClassName == "GFxMovieInfo" ? "RawData" : "Data";
+                                    string dataPropName = className == "GFxMovieInfo" ? "RawData" : "Data";
                                     var rawData = props.GetProp<ImmutableByteArrayProperty>(dataPropName);
                                     int datasize = rawData?.Count ?? 0;
-                                    var NewGUI = new GUIElement(pExp, datasize, IsMod,
-                                        new ObservableCollectionExtended<Tuple<int, int, bool>>
-                                            {new Tuple<int, int, bool>(FileKey, pExportUID, IsMod)});
-                                    dbScanner.GeneratedGUI.TryAdd(pKey, NewGUI);
+                                    var NewGUI = new GUIElement(objectNameInstanced, datasize, IsMod);
+                                    NewGUI.Usages.Add(new GUIUsage(FileKey, uindex, IsMod));
+                                    if (dbScanner.GeneratedGUI.TryAdd(assetKey, NewGUI))
+                                    {
+                                        var eGUI = dbScanner.GeneratedGUI[assetKey];
+                                        lock (eGUI)
+                                        {
+                                            eGUI.Usages.Add(new GUIUsage(FileKey, uindex, IsMod));
+                                        }
+                                    }
                                 }
                             }
-                            else if (ScanLines && exp.ClassName == "BioConversation" && !pIsdefault)
+                            else if (ScanLines && className == "BioConversation")
                             {
-                                if (!dbScanner.GeneratedConvo.ContainsKey(pExp))
+                                if (!dbScanner.GeneratedConvo.ContainsKey(objectNameInstanced))
                                 {
                                     bool IsAmbient = true;
-                                    var speakers = new List<string>() { "Shepard", "Owner" };
-                                    if (exp.Game != MEGame.ME3)
+                                    var speakers = new List<string> { "Shepard", "Owner" };
+                                    if (entry.Game != MEGame.ME3)
                                     {
                                         var s_speakers = props.GetProp<ArrayProperty<StructProperty>>("m_SpeakerList");
                                         if (s_speakers != null)
                                         {
-                                            for (int id = 0; id < s_speakers.Count; id++)
-                                            {
-                                                var sspkr = s_speakers[id].GetProp<NameProperty>("sSpeakerTag")
-                                                    .ToString();
-                                                speakers.Add(sspkr);
-                                            }
+                                            speakers.AddRange(s_speakers.Select(t => t.GetProp<NameProperty>("sSpeakerTag").ToString()));
                                         }
                                     }
                                     else
@@ -3810,7 +3808,7 @@ namespace ME3Explorer.AssetDatabase
                                         if (IsAmbient)
                                             IsAmbient = ambientLine;
 
-                                        ConvoLine newLine = new ConvoLine(linestrref, speakers[speakerindex], pExp);
+                                        ConvoLine newLine = new(linestrref, speakers[speakerindex], objectNameInstanced);
                                         if (GameBeingDumped == MEGame.ME1)
                                         {
                                             newLine.Line = ME1TalkFiles.findDataById(linestrref, pcc);
@@ -3838,7 +3836,7 @@ namespace ME3Explorer.AssetDatabase
                                             if (IsAmbient)
                                                 IsAmbient = ambientLine;
 
-                                            ConvoLine newLine = new ConvoLine(linestrref, "Shepard", pExp);
+                                            ConvoLine newLine = new(linestrref, "Shepard", objectNameInstanced);
                                             if (GameBeingDumped == MEGame.ME1)
                                             {
                                                 newLine.Line = ME1TalkFiles.findDataById(linestrref, pcc);
@@ -3851,54 +3849,70 @@ namespace ME3Explorer.AssetDatabase
                                         }
                                     }
 
-                                    var NewConv = new Conversation(pExp, IsAmbient,
-                                        new Tuple<int, int>(FileKey, pExportUID));
-                                    dbScanner.GeneratedConvo.TryAdd(pKey, NewConv);
+                                    var NewConv = new Conversation(objectNameInstanced, IsAmbient,
+                                                                   new Tuple<int, int>(FileKey, uindex));
+                                    dbScanner.GeneratedConvo.TryAdd(assetKey, NewConv);
                                 }
                             }
                         }
-                        else
+                        else if (export is not null)
                         {
-                            pClass = exp.ObjectName;
-                            pSuperClass = exp.SuperClassName;
-                            pDefUID = exp.UIndex;
-                            var NewUsageRecord = new ClassUsage(FileKey, pExportUID, pIsdefault, IsMod);
-                            var NewPropertyRecord = new PropertyRecord("None", "NoneProperty");
-                            var NewClassRecord = new ClassRecord(pClass, ShortFileName, pDefUID, pSuperClass,
-                                new ObservableCollectionExtended<PropertyRecord> { NewPropertyRecord },
-                                new ObservableCollectionExtended<ClassUsage> { NewUsageRecord });
-                            if (!dbScanner.GeneratedClasses.TryAdd(pExp, NewClassRecord))
+                            var newClassRecord = new ClassRecord(export.ObjectName, ShortFileName, uindex, export.SuperClassName) {IsModOnly = IsMod};
+                            var classUsage = new ClassUsage(FileKey, uindex, false, IsMod);
+
+                            lock (dbScanner.ClassLocks.GetOrAdd(objectNameInstanced, new object()))
                             {
-                                dbScanner._dbqueue.Add(NewClassRecord);
+                                if (dbScanner.GeneratedClasses.TryGetValue(objectNameInstanced, out ClassRecord oldVal))
+                                {
+                                    if (oldVal.Definition_package is null) //fake classrecord, created when a usage was found
+                                    {
+                                        newClassRecord.Usages.AddRange(oldVal.Usages);
+                                        newClassRecord.Usages.Add(classUsage);
+                                        newClassRecord.PropertyRecords.AddRange(oldVal.PropertyRecords);
+                                        newClassRecord.IsModOnly = IsMod & oldVal.IsModOnly;
+                                        dbScanner.GeneratedClasses[objectNameInstanced] = newClassRecord;
+                                    }
+                                    else
+                                    {
+                                        oldVal.Usages.Add(classUsage);
+                                        oldVal.IsModOnly &= IsMod;
+                                    }
+                                }
+                                else
+                                {
+                                    newClassRecord.Usages.Add(classUsage);
+                                    dbScanner.GeneratedClasses[objectNameInstanced] = newClassRecord;
+                                }
                             }
                         }
                     }
                     catch (Exception e) when (!App.IsDebug)
                     {
                         MessageBox.Show(
-                            $"Exception Bug detected in single file: {exp.FileRef.FilePath} Export:{exp.UIndex}");
+                            $"Exception Bug detected in single file: {entry.FileRef.FilePath} Export:{entry.UIndex}");
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception e) when (!App.IsDebug)
             {
                 throw new Exception($"Error dumping package file {File}. See the inner exception for details.", e);
             }
         }
 
 
-        private string GetTopParentPackage(IEntry export)
+        private static string GetTopParentPackage(IEntry entry)
         {
-            string toppackage = null;
-            if (export.HasParent)
+            while (true)
             {
-                toppackage = GetTopParentPackage(export.Parent);
+                if (entry.HasParent)
+                {
+                    entry = entry.Parent;
+                }
+                else
+                {
+                    return entry.ObjectName;
+                }
             }
-            else
-            {
-                toppackage = export.ObjectName;
-            }
-            return toppackage;
         }
     }
 

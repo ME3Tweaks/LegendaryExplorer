@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Unrealscript.Utilities;
+﻿using ME3ExplorerCore.UnrealScript.Utilities;
 
-namespace Unrealscript.Language.Tree
+namespace ME3ExplorerCore.UnrealScript.Language.Tree
 {
     public class PrimitiveCast : CastExpression
     {

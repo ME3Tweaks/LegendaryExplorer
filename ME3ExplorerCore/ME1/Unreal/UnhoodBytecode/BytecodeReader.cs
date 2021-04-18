@@ -964,7 +964,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
             //    _reader.ReadByte(); //This is a workaround for EX_Switch, maybe?
             //}
 
-            if (_package.Game == MEGame.ME2 && _package.Platform != MEPackage.GamePlatform.PS3)
+            if (methodName != "Add" && _package.Game == MEGame.ME2 && _package.Platform != MEPackage.GamePlatform.PS3)
             {
                 var numBytesToSkipIfExpressionNull = _reader.ReadUInt16();
             }

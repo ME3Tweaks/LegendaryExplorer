@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace ME3Explorer.SharedUI
@@ -9,16 +10,20 @@ namespace ME3Explorer.SharedUI
     /// </summary>
     public partial class InputComboBoxWPF : NotifyPropertyChangedWindowBase
     {
-        private InputComboBoxWPF(Window owner, string promptText, string titleText, IEnumerable<object> items, string defaultValue = "", bool topMost = false)
+        private InputComboBoxWPF(Control owner, string promptText, string titleText, IEnumerable<object> items, string defaultValue = "", bool topMost = false)
         {
             DirectionsText = promptText;
             Topmost = topMost;
-            Owner = owner;
             Title = titleText;
             DataContext = this;
             LoadCommands();
             InitializeComponent();
-            if (owner == null)
+            if (owner != null)
+            {
+                Owner = owner as Window ?? GetWindow(owner);
+                WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            }
+            else
             {
                 WindowStartupLocation = WindowStartupLocation.CenterScreen;
             }
@@ -45,7 +50,7 @@ namespace ME3Explorer.SharedUI
         //    EntrySelector_ComboBox.Focus();
         //}
 
-        public static string GetValue(Window owner, string promptText, string titleText, IEnumerable<object> items, string defaultValue = "", bool topMost = false)
+        public static string GetValue(Control owner, string promptText, string titleText, IEnumerable<object> items, string defaultValue = "", bool topMost = false)
         {
             var dlg = new InputComboBoxWPF(owner, promptText, titleText, items, defaultValue, topMost);
             return dlg.ShowDialog() == true ? dlg.ChosenItem.ToString() : "";
