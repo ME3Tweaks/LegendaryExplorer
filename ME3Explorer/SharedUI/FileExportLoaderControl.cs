@@ -117,10 +117,9 @@ namespace ME3Explorer.SharedUI
         {
             Recents_MenuItem.IsEnabled = false;
             RFiles = new List<string>();
-            string path = DataFolder + RECENTFILES_FILE;
-            if (File.Exists(path))
+            if (File.Exists(RecentsAppDataFile))
             {
-                string[] recents = File.ReadAllLines(path);
+                string[] recents = File.ReadAllLines(RecentsAppDataFile);
                 foreach (string recent in recents)
                 {
                     if (File.Exists(recent))

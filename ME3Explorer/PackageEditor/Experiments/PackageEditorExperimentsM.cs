@@ -33,6 +33,64 @@ namespace ME3Explorer.PackageEditor.Experiments
     /// </summary>
     class PackageEditorExperimentsM
     {
+        public static void ResetTexturesInFile(IMEPackage sourcePackage, PackageEditorWPF pewpf)
+        {
+            if (sourcePackage.Game != MEGame.ME1 && sourcePackage.Game != MEGame.ME2 && sourcePackage.Game != MEGame.ME3)
+            {
+                MessageBox.Show(pewpf, "Not a trilogy file!");
+                return;
+            }
+
+            Task.Run(() =>
+            {
+                pewpf.BusyText = "Finding unmodded candidates...";
+                pewpf.IsBusy = true;
+                return pewpf.GetUnmoddedCandidatesForPackage();
+            }).ContinueWithOnUIThread(foundCandidates =>
+            {
+                pewpf.IsBusy = false;
+                if (!foundCandidates.Result.Any())
+                {
+                    MessageBox.Show(pewpf, "Cannot find any candidates for this file!");
+                    return;
+                }
+
+                var choices = foundCandidates.Result.DiskFiles.ToList(); //make new list
+                choices.AddRange(foundCandidates.Result.SFARPackageStreams.Select(x => x.Key));
+
+                var choice = InputComboBoxWPF.GetValue(pewpf, "Choose file to reset to:", "Texture reset", choices, choices.Last());
+                if (string.IsNullOrEmpty(choice))
+                {
+                    return;
+                }
+
+                var restorePackage = MEPackageHandler.OpenMEPackage(choice, forceLoadFromDisk: true);
+
+                // Get classes
+                var differences = restorePackage.CompareToPackage(sourcePackage);
+
+                // Classes
+                var classNames = differences.Where(x => x.Entry != null).Select(x => x.Entry.ClassName).Distinct().OrderBy(x => x).ToList();
+                if (classNames.Any())
+                {
+                    var allDiffs = "[ALL DIFFERENCES]";
+                    classNames.Insert(0, allDiffs);
+                    var restoreClass = InputComboBoxWPF.GetValue(pewpf, "Select class type to restore instances of:", "Data reset", classNames, classNames.FirstOrDefault());
+                    if (string.IsNullOrEmpty(restoreClass))
+                    {
+                        return;
+                    }
+
+                    foreach (var exp in restorePackage.Exports.Where(x => x.ClassName != "BioMaterialInstanceConstant" || restoreClass == allDiffs ||  x.ClassName == restoreClass))
+                    {
+                        var origExp = restorePackage.GetUExport(exp.UIndex);
+                        sourcePackage.GetUExport(exp.UIndex).Data = origExp.Data;
+                        sourcePackage.GetUExport(exp.UIndex).Header = origExp.Header;
+                    }
+                }
+            });
+        }
+
         public static void DumpPackageTextures(IMEPackage sourcePackage, PackageEditorWPF pewpf)
         {
             var dlg = new CommonOpenFileDialog
@@ -1397,34 +1455,29 @@ namespace ME3Explorer.PackageEditor.Experiments
                 }
             }
 
-            public static void CheckImports(IMEPackage Pcc)
+        public static void CheckImports(IMEPackage Pcc)
+        {
+            PackageCache pc = new PackageCache();
+            // Enumerate and resolve all imports.
+            foreach (var import in Pcc.Imports)
             {
-                List<IMEPackage> packages = new List<IMEPackage>();
-                // Enumerate and resolve all imports.
-                foreach (var import in Pcc.Imports)
+                if (import.InstancedFullPath.StartsWith("Core."))
+                    continue; // Most of these are native-native
+                if (UnrealObjectInfo.IsAKnownNativeClass(import))
+                    continue; // Native is always loaded iirc
+                Debug.WriteLine($@"Resolving {import.FullPath}");
+                var export = EntryImporter.ResolveImport(import, pc);
+                if (export != null)
                 {
-                    Debug.WriteLine($@"Resolving {import.FullPath}");
-                    var export = EntryImporter.ResolveImport(import);
-                    if (export != null)
-                    {
-                        if (!packages.Any(x => export.FileRef.FilePath == x.FilePath))
-                        {
-                            packages.Add(MEPackageHandler.OpenMEPackage(export.FileRef)); // Hold in memory
-                            MEPackageHandler.ForcePackageIntoCache(export.FileRef);
-                        }
-                    }
-                    else
-                    {
-                        Debug.WriteLine($@"UNRESOLVABLE IMPORT: {import.FullPath}!");
-                    }
-                }
 
-                foreach (var v in packages)
+                }
+                else
                 {
-                    // Do not hold open longer
-                    v.Dispose();
+                    Debug.WriteLine($@"UNRESOLVABLE IMPORT: {import.FullPath}!");
                 }
             }
+            pc.ReleasePackages();
+        }
 
             public static void RandomizeTerrain(IMEPackage Pcc)
             {
@@ -1439,8 +1492,62 @@ namespace ME3Explorer.PackageEditor.Experiments
                         terrainBin.Heights[i] = (ushort)(r.Next(2000) + 13000);
                     }
 
-                    terrain.WriteBinary(terrainBin);
-                }
+                terrain.WriteBinary(terrainBin);
             }
         }
+
+        public static void ResetPackageVanillaPart(IMEPackage sourcePackage, PackageEditorWPF pewpf)
+        {
+            if (sourcePackage.Game != MEGame.ME1 && sourcePackage.Game != MEGame.ME2 && sourcePackage.Game != MEGame.ME3)
+            {
+                MessageBox.Show(pewpf, "Not a trilogy file!");
+                return;
+            }
+
+            Task.Run(() =>
+            {
+                pewpf.BusyText = "Finding unmodded candidates...";
+                pewpf.IsBusy = true;
+                return pewpf.GetUnmoddedCandidatesForPackage();
+            }).ContinueWithOnUIThread(foundCandidates =>
+            {
+                pewpf.IsBusy = false;
+                if (!foundCandidates.Result.Any()) MessageBox.Show(pewpf, "Cannot find any candidates for this file!");
+
+                var choices = foundCandidates.Result.DiskFiles.ToList(); //make new list
+                choices.AddRange(foundCandidates.Result.SFARPackageStreams.Select(x => x.Key));
+
+                var choice = InputComboBoxWPF.GetValue(pewpf, "Choose file to reset to:", "Package reset", choices, choices.Last());
+                if (string.IsNullOrEmpty(choice))
+                {
+                    return;
+                }
+
+                var restorePackage = MEPackageHandler.OpenMEPackage(choice, forceLoadFromDisk: true);
+                for (int i = 0; i < restorePackage.NameCount; i++)
+                {
+                    sourcePackage.replaceName(i, restorePackage.GetNameEntry(i));
+                }
+
+                foreach (var imp in sourcePackage.Imports)
+                {
+                    var origImp = restorePackage.FindImport(imp.InstancedFullPath);
+                    if (origImp != null)
+                    {
+                        imp.Header = origImp.Header;
+                    }
+                }
+
+                foreach (var exp in sourcePackage.Exports)
+                {
+                    var origExp = restorePackage.FindExport(exp.InstancedFullPath);
+                    if (origExp != null)
+                    {
+                        exp.Data = origExp.Data;
+                        exp.Header = origExp.GetHeader();
+                    }
+                }
+            });
+        }
     }
+}

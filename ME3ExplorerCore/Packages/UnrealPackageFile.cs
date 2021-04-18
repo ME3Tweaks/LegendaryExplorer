@@ -59,7 +59,7 @@ namespace ME3ExplorerCore.Packages
         // quite often
         protected CaseInsensitiveDictionary<int> nameLookupTable = new CaseInsensitiveDictionary<int>();
 
-        protected List<string> names = new List<string>();
+        protected List<string> names;
         public IReadOnlyList<string> Names => names;
 
         public bool IsName(int index) => index >= 0 && index < names.Count;
@@ -107,7 +107,7 @@ namespace ME3ExplorerCore.Packages
                 // Cannot add a null name!
                 throw new ArgumentException(nameof(newName), new Exception("Cannot replace a name with a null value!"));
             }
-            if (IsName(idx) && names[idx] != newName) //should we also have a case sensitive check/make sure there are not duplicates?
+            if (IsName(idx) && !names[idx].Equals(newName, StringComparison.InvariantCultureIgnoreCase))
             {
                 nameLookupTable.Remove(names[idx]);
                 names[idx] = newName;
@@ -172,7 +172,7 @@ namespace ME3ExplorerCore.Packages
         #endregion
 
         #region Exports
-        protected List<ExportEntry> exports = new List<ExportEntry>();
+        protected List<ExportEntry> exports;
         public IReadOnlyList<ExportEntry> Exports => exports;
 
         public bool IsUExport(int uindex) => uindex > 0 && uindex <= exports.Count;
@@ -187,9 +187,19 @@ namespace ME3ExplorerCore.Packages
             exportEntry.Index = exports.Count;
             exportEntry.PropertyChanged += exportChanged;
             exports.Add(exportEntry);
+            // For debugging
+            //if (EntryLookupTable.ContainsKey(exportEntry.InstancedFullPath))
+            //{
+            //    Debugger.Break();
+            //}
+
+            // We need a way to handle a clone that doesn't have a unique name! Or this system will not work
             EntryLookupTable[exportEntry.InstancedFullPath] = exportEntry; // ADD TO LOOKUP CACHE
 
             ExportCount = exports.Count;
+
+            //Debug.WriteLine($@" >> Added export {exportEntry.InstancedFullPath}");
+
 
             updateTools(PackageChange.ExportAdd, exportEntry.UIndex);
             //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs((nameof(ExportCount));
@@ -200,7 +210,7 @@ namespace ME3ExplorerCore.Packages
             if (EntryLookupTable != null && EntryLookupTable.Any())
             {
                 EntryLookupTable.TryGetValue(instancedname, out var matchingEntry);
-                return matchingEntry as ExportEntry;
+                return matchingEntry;
             }
             else
             {
@@ -256,7 +266,7 @@ namespace ME3ExplorerCore.Packages
         #endregion
 
         #region Imports
-        protected List<ImportEntry> imports = new List<ImportEntry>();
+        protected List<ImportEntry> imports;
         public IReadOnlyList<ImportEntry> Imports => imports;
 
         /// <summary>
@@ -292,7 +302,7 @@ namespace ME3ExplorerCore.Packages
         /// Rebuilds the lookup table for this package. Call when there are name changes or the name of an entry is changed. May
         /// need to be optimized in a way so this is not called during things like porting so the list is not constantly rebuilt.
         /// </summary>
-        internal void RebuildLookupTable()
+        public void RebuildLookupTable()
         {
             EntryLookupTable.Clear();
             foreach (var exportEntry in exports)
@@ -361,7 +371,7 @@ namespace ME3ExplorerCore.Packages
 
         public void RemoveTrailingTrash()
         {
-            ExportEntry trashPackage = exports.FirstOrDefault(exp => exp.ObjectName == TrashPackageName);
+            ExportEntry trashPackage = FindExport(TrashPackageName);
             if (trashPackage == null)
             {
                 return;
@@ -440,15 +450,32 @@ namespace ME3ExplorerCore.Packages
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ExportCount)));
             }
             //if there are no more trashed imports or exports, and if the TrashPackage is the last export, remove it
-            if (exports.LastOrDefault() is ExportEntry finalExport && finalExport == trashPackage && trashPackage.GetChildren().IsEmpty())
+            List<IEntry> trashChildren = null;
+            if (exports.LastOrDefault() is ExportEntry finalExport && finalExport == trashPackage)
             {
-                trashPackage.PropertyChanged -= importChanged;
-                exports.Remove(trashPackage);
-                updateTools(PackageChange.ExportRemove, trashPackage.UIndex);
-                IsModified = true;
+                trashChildren = trashPackage.GetChildren();
+                if (trashChildren.IsEmpty())
+                {
+                    trashPackage.PropertyChanged -= importChanged;
+                    exports.Remove(trashPackage);
+                    updateTools(PackageChange.ExportRemove, trashPackage.UIndex);
+                    IsModified = true;
+                    EntryLookupTable.Remove(TrashPackageName); // Remove the lookup for the trash package
+                }
             }
+
             if (ExportCount != exports.Count)
             {
+                // Remove subtrash object if none in lookup table. Otherwise update the pointer.
+                if (trashChildren != null)
+                {
+                    EntryLookupTable[$"{TrashPackageName}.Trash"] = trashChildren[0];
+                }
+                else
+                {
+                    EntryLookupTable.Remove($"{TrashPackageName}.Trash");
+                }
+
                 ExportCount = exports.Count;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ExportCount)));
             }
@@ -564,6 +591,9 @@ namespace ME3ExplorerCore.Packages
 
         protected void exportChanged(object sender, PropertyChangedEventArgs e)
         {
+            // If we are never using the global cache there is no point
+            // to notifying other things because nothing will share the 
+            // package file
             if (sender is ExportEntry exp)
             {
                 switch (e.PropertyName)
@@ -580,8 +610,7 @@ namespace ME3ExplorerCore.Packages
 
         protected void importChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (sender is ImportEntry imp
-             && e.PropertyName == nameof(ImportEntry.HeaderChanged))
+            if (MEPackageHandler.GlobalSharedCacheEnabled && sender is ImportEntry imp && e.PropertyName == nameof(ImportEntry.HeaderChanged))
             {
                 updateTools(PackageChange.ImportHeader, imp.UIndex);
             }

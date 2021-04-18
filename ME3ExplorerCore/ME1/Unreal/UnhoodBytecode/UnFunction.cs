@@ -120,7 +120,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
                     int spos = (int)s.BaseStream.Position;
                     var name = bytecodeReader.ReadName();
                     var entry = bytecodeReader.ReadEntryRef(out var _);
-                    Statements.statements.Add(new Statement(spos, (int)s.BaseStream.Position, new NothingToken(spos, $"  {name} => {entry.FullPath}()"), bytecodeReader));
+                    Statements.statements.Add(new Statement(spos, (int)s.BaseStream.Position, new NothingToken(spos, $"  {name} => {entry.InstancedFullPath}()"), bytecodeReader));
                 }
             }
 #if !DEBUG && !AZURE
@@ -171,7 +171,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
                                 if (export.ClassName == "ObjectProperty" || export.ClassName == "StructProperty")
                                 {
                                     //var uindexOfOuter = EndianReader.ToInt32(export.DataReadOnly, export.DataSize - 4, export.FileRef.Endian);
-                                    var uindexOfOuter = EndianReader.ToInt32(export.Data, export.Data.Length - 4, export.FileRef.Endian);
+                                    var uindexOfOuter = EndianReader.ToInt32(export.DataReadOnly, export.DataSize - 4, export.FileRef.Endian);
                                     IEntry entry = export.FileRef.GetEntry(uindexOfOuter);
                                     if (entry != null)
                                     {
@@ -310,8 +310,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
                 var childIdx = EndianReader.ToInt32(Export.Data, 0x18, Export.FileRef.Endian);
                 while (Export.FileRef.TryGetUExport(childIdx, out var parsingExp))
                 {
-                    //var data = parsingExp.DataReadOnly;
-                    var data = parsingExp.Data;
+                    var data = parsingExp.DataReadOnly;
                     if (parsingExp.ObjectName == "ReturnValue")
                     {
                         if (parsingExp.ClassName == "ObjectProperty" || parsingExp.ClassName == "StructProperty")
@@ -328,7 +327,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
                         return parsingExp.ClassName;
                     }
                     var nCdx = EndianReader.ToInt32(data, 0x10, Export.FileRef.Endian);
-                    if (nCdx == childIdx || parsingExp.UIndex == Export.UIndex)
+                    if (nCdx == childIdx || (parsingExp.Parent.UIndex != Export.UIndex)) // not sure what second half of this if statement is for, but i'm not going not modify it
                     {
                         throw new Exception("Infinite loop detected while parsing function!");
                     }

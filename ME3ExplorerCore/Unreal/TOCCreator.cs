@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Memory;
 
 namespace ME3ExplorerCore.Unreal
 {
@@ -100,7 +101,7 @@ namespace ME3ExplorerCore.Unreal
             {
                 long selfSizePosition = -1;
                 byte[] SHA1 = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-                MemoryStream fs = new MemoryStream();
+                MemoryStream fs = MemoryManager.GetMemoryStream();
 
                 fs.WriteInt32(0x3AB70C13);
                 fs.WriteInt32(0x0);

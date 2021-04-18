@@ -1,5 +1,8 @@
 ﻿using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ME3ExplorerCore.Kismet
 {
@@ -39,6 +42,20 @@ namespace ME3ExplorerCore.Kismet
             }
         }
 
+        /// <summary>
+        /// Gets a list of non-null objects in the sequence. Returns IEntry, as some sequences are referenced as imports.
+        /// </summary>
+        /// <param name="sequence"></param>
+        /// <returns></returns>
+        public static List<IEntry> GetSequenceObjects(ExportEntry sequence)
+        {
+            var objects = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+            if (objects == null)
+                return new List<IEntry>();
+
+            return objects.Where(x => x.Value != 0).Select(x => x.ResolveToEntry(sequence.FileRef)).ToList();
+        }
+
         public static void CreateEventLink(ExportEntry src, string linkDescription, ExportEntry dest)
         {
             if (src.GetProperty<ArrayProperty<StructProperty>>("EventLinks") is { } eventLinksProp)
@@ -54,33 +71,57 @@ namespace ME3ExplorerCore.Kismet
             }
         }
 
-        public static void RemoveAllLinks(ExportEntry export)
+        public static void RemoveOutputLinks(ExportEntry export)
+        {
+            RemoveAllLinks(export, true, false, false);
+        }
+
+        public static void RemoveVariableLinks(ExportEntry export)
+        {
+            RemoveAllLinks(export, false, true, false);
+        }
+
+        public static void RemoveEventLinks(ExportEntry export)
+        {
+            RemoveAllLinks(export, false, false, true);
+        }
+
+        public static void RemoveAllLinks(ExportEntry export, bool outlinks = true, bool variablelinks = true, bool eventlinks = true)
         {
             var props = export.GetProperties();
-            var outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
-            if (outLinksProp != null)
+            if (outlinks)
             {
-                foreach (var prop in outLinksProp)
+                var outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
+                if (outLinksProp != null)
                 {
-                    prop.GetProp<ArrayProperty<StructProperty>>("Links").Clear();
+                    foreach (var prop in outLinksProp)
+                    {
+                        prop.GetProp<ArrayProperty<StructProperty>>("Links").Clear();
+                    }
                 }
             }
 
-            var varLinksProp = props.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
-            if (varLinksProp != null)
+            if (variablelinks)
             {
-                foreach (var prop in varLinksProp)
+                var varLinksProp = props.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
+                if (varLinksProp != null)
                 {
-                    prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").Clear();
+                    foreach (var prop in varLinksProp)
+                    {
+                        prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").Clear();
+                    }
                 }
             }
 
-            var eventLinksProp = props.GetProp<ArrayProperty<StructProperty>>("EventLinks");
-            if (eventLinksProp != null)
+            if (eventlinks)
             {
-                foreach (var prop in eventLinksProp)
+                var eventLinksProp = props.GetProp<ArrayProperty<StructProperty>>("EventLinks");
+                if (eventLinksProp != null)
                 {
-                    prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedEvents").Clear();
+                    foreach (var prop in eventLinksProp)
+                    {
+                        prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedEvents").Clear();
+                    }
                 }
             }
 
@@ -101,6 +142,81 @@ namespace ME3ExplorerCore.Kismet
                 RemoveAllLinks(newObject);
             }
             newObject.Parent = sequenceExport;
+        }
+
+        #region Links
+
+        /// <summary>
+        /// Builds a list of OutputLinkIdx => [List of nodes pointed to]
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        public static List<List<OutboundLink>> GetOutboundLinksOfNode(ExportEntry node)
+        {
+            var outputLinksMapping = new List<List<OutboundLink>>();
+            var outlinksProp = node.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+            if (outlinksProp != null)
+            {
+                int i = 0;
+                foreach (var ol in outlinksProp)
+                {
+                    List<OutboundLink> oLinks = new List<OutboundLink>();
+                    outputLinksMapping.Add(oLinks);
+
+                    var links = ol.GetProp<ArrayProperty<StructProperty>>("Links");
+                    if (links != null)
+                    {
+                        foreach (var l in links)
+                        {
+                            oLinks.Add(OutboundLink.FromStruct(l, node.FileRef));
+                        }
+                    }
+
+                    i++;
+                }
+            }
+
+            return outputLinksMapping;
+        }
+
+        public class OutboundLink
+        {
+            public IEntry? LinkedOp { get; set; }
+            public int InputLinkIdx { get; set; }
+
+            public static OutboundLink FromStruct(StructProperty sp, IMEPackage package)
+            {
+                return new OutboundLink()
+                {
+                    LinkedOp = sp.GetProp<ObjectProperty>("LinkedOp")?.ResolveToEntry(package),
+                    InputLinkIdx = sp.GetProp<IntProperty>("InputLinkIdx")
+                };
+            }
+
+            public StructProperty GenerateStruct()
+            {
+                return new StructProperty("SeqOpOutputInputLink", false,
+                    new ObjectProperty(LinkedOp.UIndex, "LinkedOp"),
+                    new IntProperty(InputLinkIdx, "InputLInkIdx"),
+                    new NoneProperty());
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Gets list of link names for the outbound links of the node
+        /// </summary>
+        /// <returns></returns>
+        public static List<string> GetOutboundLinkNames(ExportEntry export)
+        {
+            var props = export.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+            var names = new List<string>();
+            if (props != null)
+            {
+                names.AddRange(props.Select(x => x.Properties.GetProp<StrProperty>("LinkDesc").Value));
+            }
+            return names;
         }
     }
 }

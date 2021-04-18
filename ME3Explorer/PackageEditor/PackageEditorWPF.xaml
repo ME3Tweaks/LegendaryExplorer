@@ -62,6 +62,7 @@
 
             <MenuItem Header="Find references" ToolTip="Finds objects that reference this one" Command="{Binding FindReferencesCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Reindex objects with this name" ToolTip="Reindexes all objects with this name, ensuring there are no duplicate indexes" Command="{Binding ReindexCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+            <MenuItem Header="Extract to file (EXPERIMENTAL)" ToolTip="Extracts this export and all references to a new package file. Attempts to convert imports into exports that are located in the level-specific files" Command="{Binding ExtractToPackageCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Clone" ToolTip="Clone only this entry"  Command="{Binding CloneCommand}"/>
             <MenuItem Header="Clone Tree" ToolTip="Clone this entry and all children" Command="{Binding CloneTreeCommand}"/>
             <MenuItem Header="Multi-cloning">
@@ -73,6 +74,7 @@
                 <MenuItem Header="Generate new GUID for package" ToolTip="Generates a new GUID for this package. Only use this if you really know what you're doing." Command="{Binding CreateNewPackageGUIDCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                 <MenuItem Header="Set as filename package" ToolTip="Sets the name of this export to the same as the file." Command="{Binding SetPackageAsFilenamePackageCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             </MenuItem>
+            <MenuItem Header="Restore export data" ToolTip="Restores this exports' data from the vanilla version. Ensure you have a backup from an ME3Tweaks Tool to ensure vanilla." Command="{Binding RestoreExportCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Trash entry and children" ToolTip="Converts this entry and its children into empty data" Command="{Binding TrashCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Set all object indexes in this tree to 0 " Command="{Binding SetIndicesInTreeToZeroCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Export..." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
@@ -88,6 +90,7 @@
         </ContextMenu>
     </Window.Resources>
     <Window.InputBindings>
+        <KeyBinding Key="R" Modifiers="Control+Shift" Command="{Binding ForceReloadPackageCommand}"/>
         <KeyBinding Key="O" Modifiers="Control" Command="{Binding OpenFileCommand}"/>
         <KeyBinding Key="N" Modifiers="Control" Command="{Binding NewFileCommand}"/>
         <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveFileCommand}"/>
@@ -105,6 +108,7 @@
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="File" Padding="4" >
                     <MenuItem Header="Open" Command="{Binding OpenFileCommand}" InputGestureText="Ctrl+O" ToolTip="Open a package file"/>
+                    <MenuItem Header="Force reload package*" Command="{Binding ForceReloadPackageCommand}" InputGestureText="Ctrl+Shift+R" ToolTip="Forcibly reloads this package file, if it was loaded from disk.&#10;This operation will drop this package out of the package sharing system across tools, be careful as edits will not sync across tools!"/>
                     <MenuItem Header="Create new empty package" Command="{Binding NewFileCommand}" InputGestureText="Ctrl+N" ToolTip="Create a new package file"/>
                     <MenuItem Header="Create new ME3 or ME2 level file" Command="{Binding NewLevelFileCommand}" ToolTip="Create a new ME3 or ME2 package with the minimum setup to load as a level"/>
                     <MenuItem Header="Save"  Command="{Binding SaveFileCommand}" InputGestureText="Ctrl+S" ToolTip="Save package file in-place" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
@@ -219,8 +223,9 @@
                     <MenuItem Header="Find entry via File Offset" ToolTip="Find which entry contains the offset you put in.&#x0a;This is typically useful when trying to locate a bad index. You can do this by:&#x0a;Looking at ME3Logger output, searching for the value in the file's binary via a hex editor like HxD, and then looking up that offset with this tool." Command="{Binding FindEntryViaOffsetCommand}"/>
                     <MenuItem Header="Find entry via Tag" ToolTip="Find entry with Tag NameProperty that matches the specified value." Command="{Binding FindEntryViaTagCommand}"/>
                     <MenuItem Header="Check for duplicate indexes" ToolTip="Tries to find duplicate indexes in this file" Command="{Binding CheckForDuplicateIndexesCommand}"/>
-                    <MenuItem Header="Check exports for invalid object references in properties" ToolTip="Enumerates all exports, reads their properties, and checks if any ObjectProperty items have invalid values" Command="{Binding CheckForInvalidObjectPropertiesCommand}"/>
-                    <MenuItem Header="Enable experiments (Warning: dangerous)" ToolTip="Enables experiments used by toolset developers. These featuers are not tested, not supported, and can easily break the toolset and/or games without warning" IsChecked="{Binding ShowExperiments}" IsCheckable="True" StaysOpenOnClick="True"/>
+                    <MenuItem Header="Check for bad references" ToolTip="Checks imports and exports for references out of bounds of tables" Command="{Binding CheckForInvalidObjectPropertiesCommand}"/>
+                    <MenuItem Header="Resolve imports*" ToolTip="Attempts to resolve the imports and show the source of them in the treeview" Command="{Binding ResolveImportsTreeViewCommand}"/>
+                    <MenuItem Header="Enable experiments (Warning: dangerous)" ToolTip="Enables experiments used by toolset developers. These features are not tested, not supported, and can easily break the toolset and/or games without warning" IsChecked="{Binding ShowExperiments}" IsCheckable="True" StaysOpenOnClick="True"/>
                 </MenuItem>
                 <!-- We should move this into it's own menu control. This way we can split the code off from PEWPF -->
                 <MenuItem Header="Experiments" Padding="4" Visibility="{Binding ShowExperiments, Converter={StaticResource BoolToVisibilityConverter}}">
@@ -229,6 +234,8 @@
                     <MenuItem Header=" &gt;&gt; DO NOT USE IF YOU DON'T KNOW WHAT YOU'RE DOING &gt;&lt;" IsEnabled="False"/>
                     <MenuItem Header=" &gt;&gt; Text may not reflect actual functionality &lt;&lt;" IsEnabled="False"/>
                     <MenuItem Header="Trigger GetProperties() on current export" Click="RefreshProperties_Clicked"/>
+                    <MenuItem Header="Trigger ObjectBinary GetNames() on current export" Click="TriggerObjBinGetNames_Clicked"/>
+                    <MenuItem Header="Trigger ObjectBinary GetUIndexes() on current export" Click="TriggerObjBinGetUIndexes_Clicked"/>
                     <MenuItem Header="Print loaded packages to debug console" Click="PrintLoadedPackages_Clicked"/>
                     <MenuItem Header="Rebuild Object Infos">
                         <MenuItem Header="Build ME1 Object Info" Click="BuildME1ObjectInfo_Clicked"/>
@@ -240,6 +247,8 @@
                         <MenuItem Header="Generate ME2/ME3 object info diff" Click="GenerateObjectInfoDiff_Click"/>
                     </MenuItem>
                     <MenuItem Header="Mgamerz's Programming Circus">
+                        <MenuItem Header="Reset textures in package" Click="ResetPackageTextures_Click"/>
+                        <MenuItem Header="Reset vanilla parts of package" Click="ResetVanillaPackagePart_Click"/>
                         <MenuItem Header="Extract package textures to PNG" Click="ExtractPackageTextures_Click"/>
                         <MenuItem Header="Compact current file via external file" Click="CompactInFile_Click"/>
                         <MenuItem Header="Search ObjectInfo keys for value" Click="ObjectInfosSearch_Click"/>

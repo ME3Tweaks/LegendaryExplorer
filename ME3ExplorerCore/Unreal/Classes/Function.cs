@@ -120,7 +120,7 @@ namespace ME3ExplorerCore.Unreal.Classes
 
                         if (export.ClassName == "ObjectProperty" || export.ClassName == "StructProperty")
                         {
-                            var uindexOfOuter = EndianReader.ToInt32(export.Data, export.Data.Length - 4, export.FileRef.Endian);
+                            var uindexOfOuter = EndianReader.ToInt32(export.DataReadOnly, export.DataSize - 4, export.FileRef.Endian);
                             IEntry entry = export.FileRef.GetEntry(uindexOfOuter);
                             if (entry != null)
                             {

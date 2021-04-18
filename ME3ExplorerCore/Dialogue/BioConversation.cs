@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Kismet;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
@@ -251,62 +252,30 @@ namespace ME3ExplorerCore.Dialogue
             node.ExportID = node.NodeProp.GetProp<IntProperty>("nExportID");
             if (node.ExportID != 0)
             {
-                var convstart = convStarts.Where(s => s.Key == node.ExportID).FirstOrDefault().Value;
+                var convstart = convStarts.FirstOrDefault(s => s.Key == node.ExportID).Value;
                 if (convstart != null)
                 {
-                    var outLinksProp = convstart.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
-                    if (outLinksProp != null && outLinksProp.Count > 0)
+                    // Find the interp data
+                    List<ExportEntry> searchingExports = new List<ExportEntry>();
+                    searchingExports.Add(convstart);
+                    var seqActInterp = RecursiveFindSeqActInterp(searchingExports, new List<ExportEntry>(), 10);
+
+                    var varLinksProp = seqActInterp.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
+                    if (varLinksProp != null)
                     {
-                        var linksProp = outLinksProp[0].GetProp<ArrayProperty<StructProperty>>("Links");
-                        if (linksProp != null)
+                        foreach (var prop in varLinksProp)
                         {
-                            var link = linksProp[0].GetProp<ObjectProperty>("LinkedOp").Value;
-                            var interpseqact = Export.FileRef.GetUExport(link);
-                            if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. Go two nodes deeper. "past conditional / BioSeqAct_SetFaceFX"
+                            var desc = prop.GetProp<StrProperty>("LinkDesc").Value; //ME3/ME2/ME1
+                            if (desc == "Data") //ME3/ME1
                             {
-                                var outLinksProp2 = interpseqact.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
-                                if (outLinksProp2 != null && outLinksProp2.Count > 0)
+                                var linkedVars = prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
+                                if (linkedVars != null && linkedVars.Count > 0)
                                 {
-                                    var linksProp2 = outLinksProp2[0].GetProp<ArrayProperty<StructProperty>>("Links");
-                                    if (linksProp2 != null && linksProp2.Count > 0)
-                                    {
-                                        var link2 = linksProp2[0].GetProp<ObjectProperty>("LinkedOp").Value;
-                                        interpseqact = Export.FileRef.GetUExport(link2);
-                                        if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. Go two nodes deeper. "past conditional / BioSeqAct_SetFaceFX"
-                                        {
-                                            var outLinksProp3 = interpseqact.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
-                                            if (outLinksProp3 != null && outLinksProp3.Count > 0)
-                                            {
-                                                var linksProp3 = outLinksProp3[0].GetProp<ArrayProperty<StructProperty>>("Links");
-                                                if (linksProp3 != null)
-                                                {
-                                                    var link3 = linksProp3[0].GetProp<ObjectProperty>("LinkedOp").Value;
-                                                    interpseqact = Export.FileRef.GetUExport(link3);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                                    var datalink = linkedVars[0].Value;
+                                    return Export.FileRef.GetUExport(datalink);
 
-                            var varLinksProp = interpseqact.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
-                            if (varLinksProp != null)
-                            {
-                                foreach (var prop in varLinksProp)
-                                {
-                                    var desc = prop.GetProp<StrProperty>("LinkDesc").Value; //ME3/ME2/ME1
-                                    if (desc == "Data") //ME3/ME1
-                                    {
-                                        var linkedVars = prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
-                                        if (linkedVars != null && linkedVars.Count > 0)
-                                        {
-                                            var datalink = linkedVars[0].Value;
-                                            return Export.FileRef.GetUExport(datalink);
-
-                                        }
-                                        break;
-                                    }
                                 }
+                                break;
                             }
                         }
                     }
@@ -314,6 +283,36 @@ namespace ME3ExplorerCore.Dialogue
             }
             return null;
         }
+
+        private ExportEntry RecursiveFindSeqActInterp(List<ExportEntry> nodesToSearch, List<ExportEntry> nodesSearched, int searchDepthRemaining)
+        {
+            if (searchDepthRemaining <= 0)
+                return null; // NOT FOUND, NO FURTHER SEARCH
+
+            List<ExportEntry> nextNodesToSearch = new();
+            foreach (var searchingExport in nodesToSearch)
+            {
+                if (nodesSearched.Contains(searchingExport))
+                    continue; // Do not enumerate existing items we've found, if there's some sort of loop
+                if (searchingExport.ClassName == "SeqAct_Interp")
+                {
+                    return searchingExport;
+                }
+                else
+                {
+                    nodesSearched.Add(searchingExport);
+                }
+
+                var outLinks = KismetHelper.GetOutboundLinksOfNode(searchingExport);
+                foreach(var outbound in outLinks)
+                {
+                    nextNodesToSearch.AddRange(outbound.Where(x => x.LinkedOp is ExportEntry).Select(x=>x.LinkedOp as ExportEntry));
+                }
+            }
+
+            return RecursiveFindSeqActInterp(nextNodesToSearch, nodesSearched, --searchDepthRemaining);
+        }
+
         /// <summary>
         /// Parses for male and female wwisestream IEntry for every line in the conversation.
         /// </summary>
@@ -730,6 +729,18 @@ namespace ME3ExplorerCore.Dialogue
                 newreplyList.Add(reply.NodeProp);
             }
 
+            var newSpeakerList = new ArrayProperty<StructProperty>("m_SpeakerList");
+            foreach(var speaker in Speakers.OrderBy(x => x.SpeakerID))
+            {
+                if (speaker.SpeakerID < 0)
+                    continue; // They don't belong here
+                PropertyCollection ssProps = new PropertyCollection();
+                ssProps.Add(new NameProperty(speaker.SpeakerNameRef, "sSpeakerTag"));
+                var speakerStruct = new StructProperty("BioDialogSpeaker", ssProps);
+                newSpeakerList.Add(speakerStruct);
+            }
+            BioConvo.AddOrReplaceProp(newSpeakerList);
+
             if (newstartlist.Count > 0)
             {
                 BioConvo.AddOrReplaceProp(newstartlist);
@@ -753,13 +764,15 @@ namespace ME3ExplorerCore.Dialogue
         {
             bool hasLoopingPaths = false;
 
+            // Set blank speakers/listeners
             var blankaSpkr = new ArrayProperty<IntProperty>("aSpeakerList");
             foreach (var dnode in EntryList)
             {
                 dnode.NodeProp.Properties.AddOrReplaceProp(blankaSpkr);
             }
 
-            foreach ((var _, int entryIndex) in StartingList)
+            // Traverse conversation graph
+            foreach (int entryIndex in StartingList.Values)
             {
                 var aSpkrs = new SortedSet<int>();
                 var startNode = EntryList[entryIndex];

@@ -185,7 +185,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
             }
             if (_interfaces.Count > 0)
             {
-                var intfNames = _interfaces.ConvertAll(e => e.ObjectName.Instanced).ToArray();
+                var intfNames = _interfaces.ConvertAll(e => e.ObjectName.Instanced);
                 result.NewLine().Append("    implements(").Append(string.Join(",", intfNames)).Append(")");
             }
             if (_config != "None")

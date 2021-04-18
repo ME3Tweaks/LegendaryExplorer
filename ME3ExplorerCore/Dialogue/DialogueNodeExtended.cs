@@ -13,6 +13,9 @@ namespace ME3ExplorerCore.Dialogue
 
     public class DialogueNodeExtended : INotifyPropertyChanged
     {
+        /// <summary>
+        /// If this is a node representing a player node (true) or a non-player node (false)
+        /// </summary>
         public bool IsReply { get; set; }
         public int NodeCount { get; set; } //This is the count for reply and node.
         public StructProperty NodeProp { get; set; }

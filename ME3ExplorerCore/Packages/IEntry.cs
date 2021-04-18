@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Text;
 using ME3ExplorerCore.Unreal;
 
 namespace ME3ExplorerCore.Packages

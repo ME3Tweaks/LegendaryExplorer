@@ -115,8 +115,8 @@
     <Reference Include="JetBrains.Profiler.Api, Version=1.1.7.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrains.Profiler.Api.1.1.7\lib\net471\JetBrains.Profiler.Api.dll</HintPath>
     </Reference>
-    <Reference Include="JetBrains.Profiler.SelfApi, Version=2.0.2.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\packages\JetBrains.Profiler.SelfApi.2.0.2\lib\net46\JetBrains.Profiler.SelfApi.dll</HintPath>
+    <Reference Include="JetBrains.Profiler.SelfApi, Version=2.1.1.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Profiler.SelfApi.2.1.1\lib\net46\JetBrains.Profiler.SelfApi.dll</HintPath>
     </Reference>
     <Reference Include="MessagePack, Version=2.2.0.0, Culture=neutral, PublicKeyToken=b4a0369545f0a1be, processorArchitecture=MSIL">
       <HintPath>..\packages\MessagePack.2.2.85\lib\netstandard2.0\MessagePack.dll</HintPath>
@@ -124,14 +124,14 @@
     <Reference Include="MessagePack.Annotations, Version=2.2.0.0, Culture=neutral, PublicKeyToken=b4a0369545f0a1be, processorArchitecture=MSIL">
       <HintPath>..\packages\MessagePack.Annotations.2.2.85\lib\netstandard2.0\MessagePack.Annotations.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AppCenter, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AppCenter.3.4.3\lib\net461\Microsoft.AppCenter.dll</HintPath>
+    <Reference Include="Microsoft.AppCenter, Version=0.0.0.0, Culture=neutral, PublicKeyToken=8a600e2fee7ba272, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AppCenter.4.2.0\lib\net461\Microsoft.AppCenter.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AppCenter.Analytics, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AppCenter.Analytics.3.4.3\lib\net461\Microsoft.AppCenter.Analytics.dll</HintPath>
+    <Reference Include="Microsoft.AppCenter.Analytics, Version=0.0.0.0, Culture=neutral, PublicKeyToken=8a600e2fee7ba272, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AppCenter.Analytics.4.2.0\lib\net461\Microsoft.AppCenter.Analytics.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AppCenter.Crashes, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AppCenter.Crashes.3.4.3\lib\net461\Microsoft.AppCenter.Crashes.dll</HintPath>
+    <Reference Include="Microsoft.AppCenter.Crashes, Version=0.0.0.0, Culture=neutral, PublicKeyToken=8a600e2fee7ba272, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AppCenter.Crashes.4.2.0\lib\net461\Microsoft.AppCenter.Crashes.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.1\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>

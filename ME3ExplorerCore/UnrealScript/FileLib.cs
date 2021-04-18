@@ -80,11 +80,11 @@ namespace ME3ExplorerCore.UnrealScript
             try
             {
                 _symbols = Base.GetSymbolTable();
-                var files = EntryImporter.GetPossibleAssociatedFiles(Pcc, false);
+                var files = EntryImporter.GetPossibleAssociatedFiles(Pcc, includeNonBioPRelated: false);
                 var gameFiles = MELoadedFiles.GetFilesLoadedInGame(Pcc.Game);
                 foreach (var fileName in Enumerable.Reverse(files))
                 {
-                    if (gameFiles.TryGetValue(fileName, out string path) &&  File.Exists(path))
+                    if (gameFiles.TryGetValue(fileName, out string path) && File.Exists(path))
                     {
                         using var pcc = MEPackageHandler.OpenMEPackage(path);
                         if (!BaseLib.ResolveAllClassesInPackage(pcc, ref _symbols))
@@ -95,7 +95,7 @@ namespace ME3ExplorerCore.UnrealScript
                 }
                 return BaseLib.ResolveAllClassesInPackage(Pcc, ref _symbols);
             }
-            catch (Exception e) when(!ME3ExplorerCoreLib.IsDebug)
+            catch (Exception e) when (!ME3ExplorerCoreLib.IsDebug)
             {
                 return false;
             }
@@ -160,7 +160,7 @@ namespace ME3ExplorerCore.UnrealScript
             //TODO: invalidate this when changes are made to script objects in this file
             foreach (PackageUpdate update in updates.Where(u => u.Change.Has(PackageChange.Export)))
             {
-                if (ScriptUIndexes.Contains(update.Index) 
+                if (ScriptUIndexes.Contains(update.Index)
                  || Pcc.GetEntry(update.Index) is ExportEntry exp && (IsScriptExport(exp) || exp.ClassName == "Function"))
                 {
                     lock (initializationLock)

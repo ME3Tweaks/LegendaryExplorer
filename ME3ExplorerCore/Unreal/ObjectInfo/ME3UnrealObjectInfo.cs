@@ -43,12 +43,13 @@ namespace ME3ExplorerCore.Unreal
                 _ => false
             };
 
-        public static bool InheritsFrom(this IEntry entry, string baseClass, Dictionary<string, ClassInfo> customClassInfos = null) => InheritsFrom(entry.ObjectName.Name, baseClass, entry.FileRef.Game, customClassInfos);
-        public static bool InheritsFrom(string className, string baseClass, MEGame game, Dictionary<string, ClassInfo> customClassInfos = null) =>
+        public static bool InheritsFrom(this IEntry entry, string baseClass, Dictionary<string, ClassInfo> customClassInfos = null) => InheritsFrom(entry.ObjectName.Name, baseClass, entry.FileRef.Game, customClassInfos, (entry as ExportEntry)?.SuperClassName);
+        public static bool InheritsFrom(string className, string baseClass, MEGame game, Dictionary<string, ClassInfo> customClassInfos = null, string knownSuperClass = null) =>
             className == baseClass || game switch
             {
+                // todo: others
                 MEGame.ME1 => ME1UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
-                MEGame.ME2 => ME2UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
+                MEGame.ME2 => ME2UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos, knownSuperClass),
                 MEGame.ME3 => ME3UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
                 MEGame.UDK => ME3UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
                 _ => false
@@ -324,6 +325,7 @@ namespace ME3ExplorerCore.Unreal
             {
                 KeyComparer = StringComparer.OrdinalIgnoreCase
             };
+
             ClassInfo info = GetClassOrStructInfo(game, typeName);
             while (info != null)
             {
