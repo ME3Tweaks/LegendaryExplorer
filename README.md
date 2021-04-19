@@ -23,7 +23,7 @@ Some highlights of features that were developed on this fork:
  - WPF rewrites of multiple tools to use a more modern design language - better DPI scaling, more features. These include PackageEditorWPF (and its contents), and SoundplorerWPF, with more on the way. All of these tools are being completely rewritten.
  - Many more not listed here
   
-You can get these releases in Mass Effect 3 Mod Manager from the tools menu, or you can download from the releases tab above. Come to the ME3Tweaks Discord to talk with the developers.
+You can get these releases in ME3Tweaks Mod Manager's Tools menu, or you can download from the releases tab above. Come to the ME3Tweaks Discord to talk with the developers. You can download nightlies from within Mod Manager as well.
 
 ## Enhanced by JetBrains
 JetBrains has kindly given us several open source licenses for their tools that allow us to create better modding tools for you. Thanks, JetBrains!
