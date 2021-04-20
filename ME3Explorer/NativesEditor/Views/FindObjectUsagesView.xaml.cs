@@ -63,7 +63,15 @@ namespace MassEffect.NativesEditor.Views
                     break;
 
                 case "Quest":
-                    Sections = new string[] { "Task Evals", "Quests" };
+                    Sections = new string[] { "Task Evals" };
+                    break;
+
+                case "Plot Bool":
+                    Sections = new string[] { "State Events", "Quest Goals", "Plot Items", "Task Evals" };
+                    break;
+
+                case "Conditional":
+                    Sections = new string[] { "Quest Goals", "Plot Items", "Task Evals" };
                     break;
 
                 default:
@@ -81,15 +89,38 @@ namespace MassEffect.NativesEditor.Views
             {
                 case "Plot Bool":
                     int boolId = SearchTerm;
-                    SearchResults.ItemsSource = parentRef.StateEventMapControl.StateEvents.Where(x => 
-                        x.Value.HasElements && x.Value.Elements.Any(y =>
-                           (y.ElementType == BioStateEventElementType.Bool && (y as BioStateEventElementBool)?.GlobalBool == boolId)
-                        || (y.ElementType == BioStateEventElementType.Substate && 
-                                (((y as BioStateEventElementSubstate)?.GlobalBool == boolId) 
-                                || (y as BioStateEventElementSubstate)?.ParentIndex == boolId)
-                                /*|| (y as BioStateEventElementSubstate).SiblingIndices.Contains(boolId)*/)
-                           )
-                    );
+                    switch (ObjectSectionCombo.SelectedItem)
+                    {
+                        case "State Events":
+                            SearchResults.ItemsSource = parentRef.StateEventMapControl.StateEvents.Where(x =>
+                                x.Value.HasElements && x.Value.Elements.Any(y =>
+                                   (y.ElementType == BioStateEventElementType.Bool && (y as BioStateEventElementBool)?.GlobalBool == boolId)
+                                || (y.ElementType == BioStateEventElementType.Substate &&
+                                        (((y as BioStateEventElementSubstate)?.GlobalBool == boolId)
+                                        || (y as BioStateEventElementSubstate)?.ParentIndex == boolId)
+                                        /*|| (y as BioStateEventElementSubstate).SiblingIndices.Contains(boolId)*/)
+                                   )
+                            );
+                            break;
+                        case "Quest Goals":
+                            SearchResults.ItemsSource = parentRef.QuestMapControl.Quests.Where(x =>
+                                x.Value.Goals.Any(y => y.State == boolId));
+                            break;
+
+                        case "Plot Item":
+                            SearchResults.ItemsSource = parentRef.QuestMapControl.Quests.Where(x =>
+                                x.Value.PlotItems.Any(y => y.State == boolId));
+                            break;
+                        case "Task Evals":
+                            var taskEvals = parentRef.QuestMapControl.BoolStateTaskListsControl.StateTaskLists.Concat(
+                                            parentRef.QuestMapControl.FloatStateTaskListsControl.StateTaskLists).Concat(
+                                            parentRef.QuestMapControl.IntStateTaskListsControl.StateTaskLists);
+                            SearchResults.ItemsSource = taskEvals.Where(x =>
+                                x.Value.TaskEvals.Any(y => y.State == boolId));
+                            break;
+                        default: break;
+
+                    }
                     break;
                 case "Plot Float":
                     int floatId = SearchTerm;
@@ -139,24 +170,37 @@ namespace MassEffect.NativesEditor.Views
 
                     break;
 
-                case "Quest":
-                    int questId = SearchTerm;
+                case "Conditional":
+                    int conditionalId = SearchTerm;
                     switch (ObjectSectionCombo.SelectedItem)
                     {
+                        case "Quest Goals":
+                            SearchResults.ItemsSource = parentRef.QuestMapControl.Quests.Where(x =>
+                                x.Value.Goals.Any(y => y.Conditional == conditionalId));
+                            break;
+
+                        case "Plot Item":
+                            SearchResults.ItemsSource = parentRef.QuestMapControl.Quests.Where(x =>
+                                x.Value.PlotItems.Any(y => y.Conditional == conditionalId));
+                            break;
                         case "Task Evals":
                             var taskEvals = parentRef.QuestMapControl.BoolStateTaskListsControl.StateTaskLists.Concat(
                                             parentRef.QuestMapControl.FloatStateTaskListsControl.StateTaskLists).Concat(
                                             parentRef.QuestMapControl.IntStateTaskListsControl.StateTaskLists);
                             SearchResults.ItemsSource = taskEvals.Where(x =>
-                                x.Value.TaskEvals.Any(y => y.Quest == questId));
-                            break;
-                        case "Quests":
-                            // This is pretty useless but I thought it was dumb not to include
-                            SearchResults.ItemsSource = parentRef.QuestMapControl.Quests.Where(x =>
-                                x.Key == questId);
+                                x.Value.TaskEvals.Any(y => y.Conditional == conditionalId));
                             break;
                         default: break;
                     }
+                    break;
+
+                case "Quest":
+                    int questId = SearchTerm;
+                    var taskEvals2 = parentRef.QuestMapControl.BoolStateTaskListsControl.StateTaskLists.Concat(
+                                    parentRef.QuestMapControl.FloatStateTaskListsControl.StateTaskLists).Concat(
+                                    parentRef.QuestMapControl.IntStateTaskListsControl.StateTaskLists);
+                    SearchResults.ItemsSource = taskEvals2.Where(x =>
+                        x.Value.TaskEvals.Any(y => y.Quest == questId));
                     break;
 
                 default:
@@ -185,6 +229,11 @@ namespace MassEffect.NativesEditor.Views
                     parentRef.MainTabControl.SelectedValue = parentRef.CodexMapControl;
                     parentRef.CodexMapControl.GoToCodexSection(codexSection);
                     break;
+                case KeyValuePair<int, BioQuest> quest:
+                    parentRef.MainTabControl.SelectedValue = parentRef.QuestMapControl;
+                    parentRef.QuestMapControl.GoToQuest(quest);
+                    break;
+                default: break;
             }
 
         }

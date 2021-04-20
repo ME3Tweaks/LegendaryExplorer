@@ -117,6 +117,13 @@
 		    set => SetProperty(ref _title, value);
 		}
 
+		private string _titleAsString;
+		public string TitleAsString
+		{
+			get => _titleAsString;
+			set => SetProperty(ref _titleAsString, value);
+		}
+
 		public override string ToString() { return "BioCodexEntry"; }
 	}
 }

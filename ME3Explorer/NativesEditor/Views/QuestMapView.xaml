@@ -22,7 +22,15 @@
 				</Trigger>
 			</Style.Triggers>
 		</Style>
-	</UserControl.Resources>
+
+        <Style x:Name="StringTextboxStyle" TargetType="{x:Type TextBox}">
+            <Style.Triggers>
+                <Trigger Property="IsReadOnly" Value="True">
+                    <Setter Property="Background" Value="LightGray" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
 
 	<!-- Content -->
 	<Grid>
@@ -152,7 +160,7 @@
 										<Grid.ColumnDefinitions>
 											<ColumnDefinition Width="Auto" />
 											<ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition MaxWidth="350" Width="*" />
 										</Grid.ColumnDefinitions>
 										<Grid.RowDefinitions>
 											<RowDefinition Height="Auto" />
@@ -170,24 +178,26 @@
 											Text="{Binding Path=SelectedQuestGoal.Conditional, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 											Width="100" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-										<!-- Quest Goal Description -->
-										<Label Grid.Column="0" Grid.Row="2" Content="Description"
+                                        <!-- Quest Goal Name -->
+                                        <Label Grid.Column="0" Grid.Row="1" Content="Name"
 											Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-										<xctk:IntegerUpDown Grid.Column="1" Grid.Row="2"
-											Text="{Binding Path=SelectedQuestGoal.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-											Width="100" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" ValueChanged="txt_ValueChanged"/>
-                                        <TextBlock Name="txt_goalDesc" Grid.Column="2" Grid.Row="2" Text="Description String"  Grid.RowSpan="5" TextAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top"/>
-
-										<!-- Quest Goal Name -->
-										<Label Grid.Column="0" Grid.Row="1" Content="Name"
-											Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
-
-										<xctk:IntegerUpDown Grid.Column="1" Grid.Row="1"
+                                        <xctk:IntegerUpDown Grid.Column="1" Grid.Row="1"
 											Text="{Binding Path=SelectedQuestGoal.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 											Width="100" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" ValueChanged="txt_ValueChanged"/>
-                                        <TextBlock Name="txt_goalName" Grid.Column="2" Grid.Row="1" Text="Name String" TextAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                                        <TextBox Name="txt_goalName" Grid.Column="2" Grid.Row="1" Text="Name String" IsReadOnly="True"
+                                                 TextAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Padding="3,3" Margin="10,5"/>
 
+                                        <!-- Quest Goal Description -->
+                                        <Label Grid.Column="0" Grid.Row="2" Content="Description"
+											Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
+
+                                        <xctk:IntegerUpDown Grid.Column="1" Grid.Row="2"
+											Text="{Binding Path=SelectedQuestGoal.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+											Width="100" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" ValueChanged="txt_ValueChanged"/>
+                                        <TextBox Name="txt_goalDesc" Grid.Column="2" Grid.Row="2" Text="Description String" IsReadOnly="True" MaxLines="5"
+                                                 VerticalScrollBarVisibility="Auto"
+                                                 Grid.RowSpan="5" TextAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Padding="3,3" Margin="10,5"/>
 
 
                                         <!-- Quest Goal State -->
@@ -262,7 +272,7 @@
 										<Grid.ColumnDefinitions>
 											<ColumnDefinition Width="Auto" />
 											<ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition MaxWidth="200" Width="*" />
 										</Grid.ColumnDefinitions>
 										<Grid.RowDefinitions>
 											<RowDefinition Height="Auto" />
@@ -297,7 +307,8 @@
 											Text="{Binding Path=SelectedQuestPlotItem.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 											Width="100" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" ValueChanged="txt_ValueChanged" />
 
-                                        <TextBlock Name="txt_PlotitmDesc" Margin="0,5" Grid.Column="2" Grid.Row="2" Text="Description String" TextAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                                        <TextBox Name="txt_PlotitmDesc" Grid.Column="2" Grid.Row="2" Text="Description String" IsReadOnly="True"
+                                                 TextAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Padding="3,3" Margin="10,5"/>
 
                                         <!-- Quest Plot Items State -->
 										<Label Grid.Column="0" Grid.Row="3" Content="State"
@@ -375,7 +386,7 @@
 										<Grid.ColumnDefinitions>
 											<ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition MaxWidth="350" Width="*" />
 										</Grid.ColumnDefinitions>
 										<Grid.RowDefinitions>
 											<RowDefinition Height="Auto" />
@@ -387,25 +398,28 @@
 											<RowDefinition Height="Auto" />
 										</Grid.RowDefinitions>
 
-										<!-- Task Description -->
-										<Label Grid.Column="0" Grid.Row="0" Content="Description"
-											Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
-
-										<xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
-											Text="{Binding Path=SelectedQuestTask.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-											Width="150" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                                        <TextBlock Name="txt_taskDesc" Grid.Column="2" Grid.Row="0" Text="Description String" TextAlignment="Left" VerticalAlignment="Center"/>
-
                                         <!-- Task Name -->
-										<Label Grid.Column="0" Grid.Row="1" Content="Name"
+                                        <Label Grid.Column="0" Grid.Row="0" Content="Name"
 											Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-										<xctk:IntegerUpDown Grid.Column="1" Grid.Row="1"
+                                        <xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
 											Text="{Binding Path=SelectedQuestTask.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 											Width="150" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" ValueChanged="txt_ValueChanged"/>
-                                        <TextBlock Name="txt_taskName" Grid.Column="2" Grid.Row="1" Text="Name String" TextAlignment="Left" VerticalAlignment="Center"/>
+                                        <TextBox Name="txt_taskName" Grid.Column="2" Grid.Row="0" Text="Name String" IsReadOnly="True"
+                                                 TextAlignment="Left" VerticalAlignment="Center" Padding="3,3" Margin="10,5"/>
 
-										<!-- Task Planet Name -->
+                                        <!-- Task Description -->
+                                        <Label Grid.Column="0" Grid.Row="1" Content="Description"
+											Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
+
+                                        <xctk:IntegerUpDown Grid.Column="1" Grid.Row="1"
+											Text="{Binding Path=SelectedQuestTask.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+											Width="150" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
+
+                                        <TextBox Name="txt_taskDesc" Grid.Column="2" Grid.Row="1" Grid.RowSpan="3" Text="Description String" IsReadOnly="True"
+                                                 TextAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Padding="3,3" Margin="10,5"/>
+
+                                        <!-- Task Planet Name -->
 										<Label Grid.Column="0" Grid.Row="2" Content="Planet Name"
 											Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 

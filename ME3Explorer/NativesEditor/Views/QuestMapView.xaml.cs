@@ -390,6 +390,13 @@ namespace MassEffect.NativesEditor.Views
             AddQuestTask(new BioQuestTask(SelectedQuestTask));
         }
 
+        public void GoToQuest(KeyValuePair<int, BioQuest> quest)
+        {
+            SelectedQuest = quest;
+            QuestsListBox.ScrollIntoView(SelectedQuest);
+            QuestsListBox.Focus();
+        }
+
         public bool TryFindQuestMap(IMEPackage pcc, out ExportEntry export, out int dataOffset)
         {
             export = null;
@@ -704,18 +711,21 @@ namespace MassEffect.NativesEditor.Views
                     txt_goalName.Text = GlobalFindStrRefbyID(SelectedQuestGoal.Name, CodexMapView.package);
                     txt_goalDesc.Text = GlobalFindStrRefbyID(SelectedQuestGoal.Description, CodexMapView.package);
                 }
+                else txt_goalName.Text = txt_goalDesc.Text = "";
 
-                if(SelectedQuestTask != null)
+                if (SelectedQuestTask != null)
                 {
                     txt_taskName.Text = GlobalFindStrRefbyID(SelectedQuestTask.Name, CodexMapView.package);
                     txt_taskDesc.Text = GlobalFindStrRefbyID(SelectedQuestTask.Description, CodexMapView.package);
                 }
+                else txt_taskName.Text = txt_taskDesc.Text = "";
 
-                if(SelectedQuestPlotItem != null)
+                if (SelectedQuestPlotItem != null)
                 {
                     txt_PlotitmDesc.Text = GlobalFindStrRefbyID(SelectedQuestPlotItem.Name, CodexMapView.package);
                 }
-                
+                else txt_PlotitmDesc.Text = "";
+
             }
         }
     }

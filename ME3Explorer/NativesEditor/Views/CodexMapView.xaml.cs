@@ -334,6 +334,16 @@ namespace MassEffect.NativesEditor.Views
                 CodexSections = InitCollection(codexMap.Sections.OrderBy(pair => pair.Key));
             }
 
+            foreach (var page in CodexPages)
+            {
+                page.Value.TitleAsString = GlobalFindStrRefbyID(page.Value.Title, pcc.Game, null);
+            }
+
+            foreach (var section in CodexSections)
+            {
+                section.Value.TitleAsString = GlobalFindStrRefbyID(section.Value.Title, pcc.Game, null);
+            }
+
             package = pcc;
 
         }
@@ -517,6 +527,9 @@ namespace MassEffect.NativesEditor.Views
                 txt_cdxPgeTitle.Text = GlobalFindStrRefbyID(SelectedCodexPage.Value?.Title ?? 0, package);
                 txt_cdxSecDesc.Text = GlobalFindStrRefbyID(SelectedCodexSection.Value?.Description ?? 0, package);
                 txt_cdxSecTitle.Text = GlobalFindStrRefbyID(SelectedCodexSection.Value?.Title ?? 0, package);
+
+                if (SelectedCodexPage.Value != null) SelectedCodexPage.Value.TitleAsString = txt_cdxPgeTitle.Text;
+                if (SelectedCodexSection.Value != null) SelectedCodexSection.Value.TitleAsString = txt_cdxSecTitle.Text;
             }
         }
     }
