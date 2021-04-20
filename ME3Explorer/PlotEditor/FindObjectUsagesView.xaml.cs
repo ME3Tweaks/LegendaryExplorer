@@ -44,7 +44,8 @@ namespace ME3Explorer.PlotEditor
             }
         }
 
-        private string[] _sections = new string[] { "State Events" };
+
+        private string[] _sections = new string[] { "State Events", "Quest Goals", "Plot Items", "Task Evals" };
         public string[] Sections
         {
             get => _sections;
@@ -53,6 +54,9 @@ namespace ME3Explorer.PlotEditor
 
         public PlotEditor parentRef;
 
+        /// <summary>
+		///   Updates the available sections to search in based on <see cref="TypeToFind"/>.
+		/// </summary>
         private void UpdateSections()
         {
             if (parentRef == null) return;
@@ -82,6 +86,9 @@ namespace ME3Explorer.PlotEditor
             ObjectSectionCombo.SelectedIndex = 0;
         }
 
+        /// <summary>
+		///   Searches the plot file based on the selected object/section and updates the output ListBox.
+		/// </summary>
         private void UpdateSearch()
         {
             if (parentRef == null) return;
