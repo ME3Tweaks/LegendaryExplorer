@@ -8,7 +8,7 @@ using System.Windows.Data;
 using System.Globalization;
 using System;
 
-namespace MassEffect.NativesEditor.Views
+namespace ME3Explorer.PlotEditor
 {
 	/// <summary>
 	///     Interaction logic for FindObjectUsagesDialog.xaml

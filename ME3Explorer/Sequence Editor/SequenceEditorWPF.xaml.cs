@@ -23,7 +23,7 @@ using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 using System.Windows.Threading;
 using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
-using MassEffect.NativesEditor.Views;
+using ME3Explorer.PlotEditor;
 using ME3Explorer.Matinee;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI.Interfaces;
@@ -2110,7 +2110,7 @@ namespace ME3Explorer.Sequence_Editor
                 if (filePath != null)
                 {
 
-                    var plotEd = new PlotEditor();
+                    var plotEd = new PlotEditor.PlotEditor();
                     plotEd.Show();
                     plotEd.LoadFile(filePath);
                     plotEd.GoToStateEvent(m_nIndex);

@@ -18,7 +18,7 @@ using ME3ExplorerCore.Packages;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.Win32;
 
-namespace MassEffect.NativesEditor.Views
+namespace ME3Explorer.PlotEditor
 {
     public partial class PlotEditor : WPFBase, IRecents
     {

@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
 
-namespace MassEffect.Windows.Markup
+namespace ME3Explorer.PlotEditor.Converters
 {
     /// <summary>
     ///     An implementation of <see cref="IValueConverter" /> that attempts to convert values between specified <see cref="Type" />s.

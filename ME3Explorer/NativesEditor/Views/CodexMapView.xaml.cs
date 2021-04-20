@@ -5,13 +5,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Gammtek.Conduit.MassEffect3.SFXGame.CodexMap;
-using MassEffect.NativesEditor.Dialogs;
+using ME3Explorer.PlotEditor.Dialogs;
 using ME3Explorer;
 using ME3ExplorerCore.Gammtek;
 using ME3ExplorerCore.Packages;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
 
-namespace MassEffect.NativesEditor.Views
+namespace ME3Explorer.PlotEditor
 {
 	/// <summary>
 	///   Interaction logic for CodexMapView.xaml.

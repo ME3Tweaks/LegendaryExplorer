@@ -6,12 +6,12 @@ using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
-using MassEffect.NativesEditor.Dialogs;
+using ME3Explorer.PlotEditor.Dialogs;
 using ME3Explorer;
 using ME3ExplorerCore.Gammtek;
 using ME3ExplorerCore.Packages;
 
-namespace MassEffect.NativesEditor.Views
+namespace ME3Explorer.PlotEditor
 {
 	/// <summary>
 	///   Interaction logic for StateEventMapView.xaml

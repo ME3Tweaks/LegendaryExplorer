@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 
-namespace MassEffect.NativesEditor.Dialogs
+namespace ME3Explorer.PlotEditor.Dialogs
 {
 	/// <summary>
 	///     Interaction logic for CopyObjectDialog.xaml

@@ -667,8 +667,6 @@
     <Compile Include="MountEditor\MountEditorWPF.xaml.cs">
       <DependentUpon>MountEditorWPF.xaml</DependentUpon>
     </Compile>
-    <Compile Include="NativesEditor\CodexMapCommands.cs" />
-    <Compile Include="NativesEditor\Commands.cs" />
     <Compile Include="NativesEditor\Dialogs\ChangeObjectIdDialog.xaml.cs">
       <DependentUpon>ChangeObjectIdDialog.xaml</DependentUpon>
     </Compile>
@@ -678,7 +676,6 @@
     <Compile Include="NativesEditor\Dialogs\NewObjectDialog.xaml.cs">
       <DependentUpon>NewObjectDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="NativesEditor\QuestMapCommands.cs" />
     <Compile Include="NativesEditor\SFXGame\BioVersionedNativeObject.cs" />
     <Compile Include="NativesEditor\SFXGame\CodexMap\BinaryBioCodexMap.cs" />
     <Compile Include="NativesEditor\SFXGame\CodexMap\BioCodexEntry.cs" />
@@ -720,8 +717,6 @@
     <Compile Include="NativesEditor\SFXGame\StateEventMap\BioStateEventMap.cs" />
     <Compile Include="NativesEditor\TypeConverter.cs" />
     <Compile Include="NativesEditor\TypeConverterExtension.cs" />
-    <Compile Include="NativesEditor\TypeOfConverter.cs" />
-    <Compile Include="NativesEditor\TypeOfConverterExtension.cs" />
     <Compile Include="NativesEditor\Views\CodexMapView.xaml.cs">
       <DependentUpon>CodexMapView.xaml</DependentUpon>
     </Compile>

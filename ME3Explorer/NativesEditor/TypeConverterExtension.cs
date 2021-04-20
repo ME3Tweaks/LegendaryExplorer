@@ -3,7 +3,7 @@ using System.Windows.Markup;
 
 #if !SILVERLIGHT
 
-namespace MassEffect.Windows.Markup
+namespace ME3Explorer.PlotEditor.Converters
 {
 	/// <summary>
 	///     Implements a markup extension that allows instances of <see cref="TypeConverter" /> to be easily created.
