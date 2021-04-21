@@ -35,37 +35,80 @@ namespace ME3Explorer.PackageEditor.Experiments
     {
         public static void ShaderCacheResearch(PackageEditorWPF pewpf)
         {
-            void ScanForNames(byte[] bytes, IMEPackage package)
+            Dictionary<string, int> mapCount = new Dictionary<string, int>();
+            bool ScanForNames(byte[] bytes, IMEPackage package)
             {
+                bool result = false;
                 int pos = 0;
-                while (pos < bytes.Length - 8)
-                {
-                    var nameP1 = BitConverter.ToInt32(bytes, pos);
-                    var nameP2 = BitConverter.ToInt32(bytes, pos + 4);
+                //while (pos < bytes.Length - 8)
+                //{
+                var nameP1 = BitConverter.ToInt32(bytes, pos);
+                var nameP2 = BitConverter.ToInt32(bytes, pos + 4);
 
-                    if (nameP2 == 0 && package.IsName(nameP1))
+                if (nameP1 != 0 && nameP2 == 0 && package.IsName(nameP1))
+                {
+                    var name = package.GetNameEntry(nameP1);
+                    if (!mapCount.TryGetValue(name, out var count))
                     {
-                        Debug.WriteLine($"Potential name {package.GetNameEntry(nameP1)}");
+                        count = 1;
                     }
-                    pos++;
+                    else
+                    {
+                        count++;
+                    }
+                    mapCount[name] = count;
+                    result = name.StartsWith("F");
                 }
+                pos++;
+                //}
+
+                return result;
             }
 
             Task.Run(() =>
             {
                 pewpf.BusyText = "Scanning ShaderCache files...";
                 pewpf.IsBusy = true;
+                Dictionary<string, int> typeCount = new Dictionary<string, int>();
 
-                var files = Directory.GetFiles(@"Z:\Mass Effect 3 Builds\PC\Retail\BIOGame\DLC\DLC_CON_APP01\CookedPCConsole", "*.pcc");
+                var files = Directory.GetFiles(@"X:\Downloads\f", "*.pcc");
                 foreach (var f in files)
                 {
                     var package = MEPackageHandler.OpenMEPackage(f, forceLoadFromDisk: true);
                     var sfsce = package.FindExport("SeekFreeShaderCache");
-                    var sfsc = ObjectBinary.From<ShaderCache>(sfsce);
-                    foreach (var shaderPair in sfsc.Shaders)
+                    if (sfsce != null)
                     {
-                        ScanForNames(shaderPair.Value.unkBytes, package);
+                        var sfsc = ObjectBinary.From<ShaderCache>(sfsce);
+                        foreach (var shaderPair in sfsc.Shaders)
+                        {
+                            var isF = ScanForNames(shaderPair.Value.unkBytes, package);
+                            if (isF)
+                            {
+                                if (!typeCount.TryGetValue(shaderPair.Value.ShaderType, out var count))
+                                {
+                                    count = 1;
+                                }
+                                else
+                                {
+                                    count++;
+                                }
+                                typeCount[shaderPair.Value.ShaderType] = count;
+                            }
+                        }
                     }
+                }
+
+                Debug.WriteLine("");
+                foreach (var kp in mapCount.OrderByDescending(x => x.Value))
+                {
+                    Debug.WriteLine($"{kp.Key}: {kp.Value}");
+                }
+
+                Debug.WriteLine("");
+                Debug.WriteLine("Type counts:");
+                foreach (var kp in typeCount.OrderByDescending(x => x.Value))
+                {
+                    Debug.WriteLine($"{kp.Key}: {kp.Value}");
                 }
                 return true;
             }).ContinueWithOnUIThread(foundCandidates =>
