@@ -30,6 +30,17 @@ namespace ME3ExplorerCore.Packages
             Header = new byte[headerSize];
         }
 
+        /// <summary>
+        /// Copy constructor. You should only use this if you know what you're doing. This is only used for duplicating objects in memory - do not attach to a package!
+        /// </summary>
+        /// <param name="imp"></param>
+        public ImportEntry(ImportEntry imp)
+        {
+            FileRef = imp.FileRef;
+            Index = imp.Index;
+            _header = imp.Header;
+        }
+
         public long HeaderOffset { get; set; }
 
         public int Index { private get; set; }

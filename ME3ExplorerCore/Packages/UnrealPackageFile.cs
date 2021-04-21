@@ -150,6 +150,11 @@ namespace ME3ExplorerCore.Packages
             }
         }
 
+        /// <summary>
+        /// Gets the next available index for a given name - this counts all names, not just the instanced full name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public int GetNextIndexForName(string name)
         {
             int index = 0;
