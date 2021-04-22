@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFrameworks>net5.0-windows</TargetFrameworks>
+    <UseWPF>true</UseWPF>
+    <Authors>DotNetProjects</Authors>
+    <PackageId>DotNetProjects.Extended.Wpf.Toolkit</PackageId>
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <RootNamespace>Xceed.Wpf.Toolkit</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="**\*.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Zoombox\Resources\Zoom.cur" />
+    <None Remove="Zoombox\Resources\ZoomRelative.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Zoombox\Resources\Zoom.cur" />
+    <Resource Include="Zoombox\Resources\ZoomRelative.cur" />
+  </ItemGroup>
+</Project>
