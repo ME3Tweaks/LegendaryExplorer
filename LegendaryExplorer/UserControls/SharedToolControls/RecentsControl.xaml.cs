@@ -44,7 +44,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
             RecentFileOpenCommand = new RelayCommand(filePath => RecentItemClicked((string)filePath));
         }
 
-        private string RecentsAppDataFile => Path.Combine(Directory.CreateDirectory(Path.Combine(App.AppDataFolder, RecentsFoldername)).FullName, "RECENTFILES");
+        private string RecentsAppDataFile => Path.Combine(Directory.CreateDirectory(Path.Combine(AppDirectories.AppDataFolder, RecentsFoldername)).FullName, "RECENTFILES");
 
         /// <summary>
         /// Must be called before the control will properly work

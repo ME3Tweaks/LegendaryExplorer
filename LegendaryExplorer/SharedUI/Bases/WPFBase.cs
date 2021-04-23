@@ -8,6 +8,7 @@ using LegendaryExplorer.Misc;
 using LegendaryExplorer.ToolsetDev.MemoryAnalyzer;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
+using Microsoft.AppCenter.Analytics;
 
 namespace LegendaryExplorer.SharedUI.Bases
 {

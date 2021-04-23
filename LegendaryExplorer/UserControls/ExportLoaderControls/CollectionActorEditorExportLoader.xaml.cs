@@ -11,7 +11,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
     /// <summary>
     /// Interaction logic for CollectionActorEditor.xaml
     /// </summary>
-    public partial class CollectionActorEditor : ExportLoaderControl
+    public partial class CollectionActorEditorExportLoader : ExportLoaderControl
     {
         private ExportEntry StaticCollectionActorExport;
 
@@ -82,7 +82,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         #endregion
 
-        public CollectionActorEditor() : base("CollectionActorEditor")
+        public CollectionActorEditorExportLoader() : base("CollectionActorEditor")
         {
             DataContext = this;
             InitializeComponent();

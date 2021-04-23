@@ -10,9 +10,9 @@ namespace LegendaryExplorer.Dialogs
     /// <summary>
     /// Interaction logic for InputComboBoxWPF.xaml
     /// </summary>
-    public partial class InputComboBoxWPF : NotifyPropertyChangedWindowBase
+    public partial class InputComboBoxDialog : NotifyPropertyChangedWindowBase
     {
-        private InputComboBoxWPF(Control owner, string promptText, string titleText, IEnumerable<object> items, string defaultValue = "", bool topMost = false)
+        private InputComboBoxDialog(Control owner, string promptText, string titleText, IEnumerable<object> items, string defaultValue = "", bool topMost = false)
         {
             DirectionsText = promptText;
             Topmost = topMost;
@@ -54,7 +54,7 @@ namespace LegendaryExplorer.Dialogs
 
         public static string GetValue(Control owner, string promptText, string titleText, IEnumerable<object> items, string defaultValue = "", bool topMost = false)
         {
-            var dlg = new InputComboBoxWPF(owner, promptText, titleText, items, defaultValue, topMost);
+            var dlg = new InputComboBoxDialog(owner, promptText, titleText, items, defaultValue, topMost);
             return dlg.ShowDialog() == true ? dlg.ChosenItem.ToString() : "";
         }
 

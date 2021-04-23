@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 
 namespace LegendaryExplorer.SharedUI.Converters
@@ -90,7 +91,10 @@ namespace LegendaryExplorer.SharedUI.Converters
         {
             if (value is long l)
             {
-                return UsefulThings.General.GetFileSizeAsString(l);
+                // TODO: IMPLEMENT IN LEX
+                // This used to be 'usefulthings' implementation, no idea where it is in the toolset, but we already have FileSize() class in ME3ExplorerCore
+                // so it can be removed
+                return FileSize.FormatSize(l);
             }
             return "";
         }

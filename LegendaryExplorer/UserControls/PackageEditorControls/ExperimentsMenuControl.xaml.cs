@@ -8,7 +8,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.Misc;
 using LegendaryExplorer.Tools.PackageEditor;
+using LegendaryExplorer.Tools.PackageEditor.Experiments;
 using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
@@ -19,13 +21,14 @@ using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.UnrealScript;
 using ME3ExplorerCore.UnrealScript.Compiling.Errors;
 using ME3ExplorerCore.UnrealScript.Language.Tree;
+using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 
 namespace LegendaryExplorer.UserControls.PackageEditorControls
 {
     /// <summary>
-    /// Class that holds toolset development experiments
+    /// Class that holds toolset development experiments. Actual experiment code should be in the Experiments classes
     /// </summary>
     public partial class ExperimentsMenuControl : MenuItem
     {
@@ -36,7 +39,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
         public PackageEditorWindow GetPEWindow()
         {
-            if (Window.GetWindow(this) is PackageEditorWindow pew)
+            if (Window.GetWindow(GetPEWindow()) is PackageEditorWindow pew)
             {
                 return pew;
             }
@@ -48,42 +51,42 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         #region General Toolset experiments/debug stuff
         private void RefreshProperties_Clicked(object sender, RoutedEventArgs e)
         {
-            var properties = InterpreterTab_Interpreter.CurrentLoadedExport?.GetProperties();
+            var properties = GetPEWindow().InterpreterTab_Interpreter.CurrentLoadedExport?.GetProperties();
         }
 
 
         private void BuildME1ObjectInfo_Clicked(object sender, RoutedEventArgs e)
         {
-            ME1UnrealObjectInfo.generateInfo(Path.Combine(App.ExecFolder, "ME1ObjectInfo.json"));
-            this.RestoreAndBringToFront();
-            MessageBox.Show(this, "Done");
+            ME1UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "ME1ObjectInfo.json"));
+            GetPEWindow().RestoreAndBringToFront();
+            MessageBox.Show(GetPEWindow(), "Done");
         }
 
         private void BuildME2ObjectInfo_Clicked(object sender, RoutedEventArgs e)
         {
-            ME2UnrealObjectInfo.generateInfo(Path.Combine(App.ExecFolder, "ME2ObjectInfo.json"));
-            this.RestoreAndBringToFront();
-            MessageBox.Show(this, "Done");
+            ME2UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "ME2ObjectInfo.json"));
+            GetPEWindow().RestoreAndBringToFront();
+            MessageBox.Show(GetPEWindow(), "Done");
         }
 
         private void BuildME3ObjectInfo_Clicked(object sender, RoutedEventArgs e)
         {
-            ME3UnrealObjectInfo.generateInfo(Path.Combine(App.ExecFolder, "ME3ObjectInfo.json"));
-            this.RestoreAndBringToFront();
-            MessageBox.Show(this, "Done");
+            ME3UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "ME3ObjectInfo.json"));
+            GetPEWindow().RestoreAndBringToFront();
+            MessageBox.Show(GetPEWindow(), "Done");
         }
 
         private void BuildAllObjectInfo_Clicked(object sender, RoutedEventArgs e)
         {
-            ME1UnrealObjectInfo.generateInfo(Path.Combine(App.ExecFolder, "ME1ObjectInfo.json"));
-            ME2UnrealObjectInfo.generateInfo(Path.Combine(App.ExecFolder, "ME2ObjectInfo.json"));
-            ME3UnrealObjectInfo.generateInfo(Path.Combine(App.ExecFolder, "ME3ObjectInfo.json"));
-            this.RestoreAndBringToFront();
-            MessageBox.Show(this, "Done");
+            ME1UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "ME1ObjectInfo.json"));
+            ME2UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "ME2ObjectInfo.json"));
+            ME3UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "ME3ObjectInfo.json"));
+            GetPEWindow().RestoreAndBringToFront();
+            MessageBox.Show(GetPEWindow(), "Done");
         }
         private void ObjectInfosSearch_Click(object sender, RoutedEventArgs e)
         {
-            var searchTerm = PromptDialog.Prompt(this, "Enter key value to search", "ObjectInfos Search");
+            var searchTerm = PromptDialog.Prompt(GetPEWindow(), "Enter key value to search", "ObjectInfos Search");
             if (searchTerm != null)
             {
                 string searchResult = "";
@@ -194,7 +197,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                 }
             }
 
-            File.WriteAllText(System.IO.Path.Combine(App.ExecFolder, "Diff.json"),
+            File.WriteAllText(System.IO.Path.Combine(AppDirectories.ExecFolder, "Diff.json"),
                 JsonConvert.SerializeObject((immutableME1Structs, immutableME2Structs, immutableME3Structs),
                     Formatting.Indented));
             return;
@@ -234,7 +237,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                 }
             }
 
-            File.WriteAllText(System.IO.Path.Combine(App.ExecFolder, "Diff.json"),
+            File.WriteAllText(System.IO.Path.Combine(AppDirectories.ExecFolder, "Diff.json"),
                 JsonConvert.SerializeObject(new { enumsDiff, structsDiff, classesDiff }, Formatting.Indented));
         }
         #endregion
@@ -245,6 +248,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
         private void BuildME1TLKDB_Clicked(object sender, RoutedEventArgs e)
         {
+            var pew = GetPEWindow();
             string myBasePath = ME1Directory.DefaultGamePath;
             string[] extensions = { ".u", ".upk" };
             FileInfo[] files = new DirectoryInfo(ME1Directory.CookedPCPath)
@@ -255,7 +259,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             var stringMapping = new SortedDictionary<int, KeyValuePair<string, List<string>>>();
             foreach (FileInfo f in files)
             {
-                StatusBar_LeftMostText.Text = $"[{i}/{files.Length}] Scanning {f.FullName}";
+                pew.StatusBar_LeftMostText.Text = $"[{i}/{files.Length}] Scanning {f.FullName}";
                 Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
                 int basePathLen = myBasePath.Length;
                 using (IMEPackage pack = MEPackageHandler.OpenMEPackage(f.FullName))
@@ -298,7 +302,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             int total = stringMapping.Count;
             using (StreamWriter file = new StreamWriter(@"C:\Users\Public\SuperTLK.txt"))
             {
-                StatusBar_LeftMostText.Text = "Writing... ";
+                pew.StatusBar_LeftMostText.Text = "Writing... ";
                 Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
                 foreach (KeyValuePair<int, KeyValuePair<string, List<string>>> entry in stringMapping)
                 {
@@ -314,7 +318,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                 }
             }
 
-            StatusBar_LeftMostText.Text = "Done";
+            pew.StatusBar_LeftMostText.Text = "Done";
         }
 
         private void BuildME1NativeFunctionsInfo_Click(object sender, RoutedEventArgs e)
@@ -325,6 +329,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         private void ListNetIndexes_Click(object sender, RoutedEventArgs e)
         {
             var strs = new List<string>();
+            var Pcc = GetPEWindow().Pcc;
             foreach (ExportEntry exp in Pcc.Exports)
             {
                 if (exp.ParentName == "PersistentLevel")
@@ -333,19 +338,19 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                 }
             }
 
-            var d = new ListDialog(strs, "NetIndexes", "Here are the netindexes in this file", this);
+            var d = new ListDialog(strs, "NetIndexes", "Here are the netindexes in Package Editor's loaded file", GetPEWindow());
             d.Show();
         }
 
 
         private void PrintNatives(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsM.PrintAllNativeFuncsToDebug(Pcc);
+            PackageEditorExperimentsM.PrintAllNativeFuncsToDebug(GetPEWindow().Pcc);
         }
 
         private void FindAllFilesWithSpecificName(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsM.FindNamedObject(this);
+            PackageEditorExperimentsM.FindNamedObject(GetPEWindow());
         }
 
         private void FindME12DATables_Click(object sender, RoutedEventArgs e)
@@ -366,7 +371,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         private void GenerateNewGUIDForPackageFile_Clicked(object sender, RoutedEventArgs e)
         {
             MessageBox.Show(
-                "This process applies immediately and cannot be undone.\nEnsure the file you are going to regenerate is not open in ME3Explorer in any tools.\nBe absolutely sure you know what you're doing before you use this!");
+                "GetPEWindow() process applies immediately and cannot be undone.\nEnsure the file you are going to regenerate is not open in ME3Explorer in any tools.\nBe absolutely sure you know what you're doing before you use GetPEWindow()!");
             OpenFileDialog d = new OpenFileDialog
             {
                 Title = "Select file to regen guid for",
@@ -406,7 +411,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             }
         }
 
-        // Probably not useful in legendary since this only did stuff for MP
+        // Probably not useful in legendary since GetPEWindow() only did stuff for MP
         private void GenerateGUIDCacheForFolder_Clicked(object sender, RoutedEventArgs e)
         {
             CommonOpenFileDialog m = new CommonOpenFileDialog
@@ -415,7 +420,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                 EnsurePathExists = true,
                 Title = "Select folder to generate GUID cache on"
             };
-            if (m.ShowDialog(this) == CommonFileDialogResult.Ok)
+            if (m.ShowDialog(GetPEWindow()) == CommonFileDialogResult.Ok)
             {
                 string dir = m.FileName;
                 string[] files = Directory.GetFiles(dir, "*.pcc");
@@ -424,7 +429,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                     var packageGuidMap = new Dictionary<string, Guid>();
                     var GuidPackageMap = new Dictionary<Guid, string>();
 
-                    IsBusy = true;
+                    GetPEWindow().IsBusy = true;
                     string guidcachefile = null;
                     foreach (string file in files)
                     {
@@ -521,8 +526,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                     }
 
                     Debug.WriteLine("Done. Cache size: " + GuidPackageMap.Count);
-
-                    IsBusy = false;
+                    GetPEWindow().IsBusy = false;
                 }
             }
         }
@@ -530,7 +534,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
         private void MakeAllGrenadesAmmoRespawn_Click(object sender, RoutedEventArgs e)
         {
-            var ammoGrenades = Pcc.Exports.Where(x =>
+            var ammoGrenades = GetPEWindow().Pcc.Exports.Where(x =>
                 x.ClassName != "Class" && !x.IsDefaultObject && (x.ObjectName == "SFXAmmoContainer" ||
                                                                  x.ObjectName == "SFXGrenadeContainer" ||
                                                                  x.ObjectName == "SFXAmmoContainer_Simulator"));
@@ -564,38 +568,37 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
         private void SetAllWwiseEventDurations_Click(object sender, RoutedEventArgs e)
         {
-            BusyText = "Scanning audio and updating events";
-            IsBusy = true;
-            Task.Run(() => PackageEditorExperimentsM.SetAllWwiseEventDurations(Pcc)).ContinueWithOnUIThread(prevTask =>
+            var pew = GetPEWindow();
+            pew.BusyText = "Scanning audio and updating events";
+            pew.IsBusy = true;
+            Task.Run(() => PackageEditorExperimentsM.SetAllWwiseEventDurations(pew.Pcc)).ContinueWithOnUIThread(prevTask =>
             {
-                IsBusy = false;
+                pew.IsBusy = false;
                 MessageBox.Show("Wwiseevents updated.");
             });
         }
-        private void PortME1EntryMenu_Clicked(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsM.PortME1EntryMenuToME3ViaBioPChar(Pcc);
-        }
+
         private void CompactInFile_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsM.CompactFileViaExternalFile(Pcc);
+            PackageEditorExperimentsM.CompactFileViaExternalFile(GetPEWindow().Pcc);
         }
 
         private void ResetPackageTextures_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsM.ResetTexturesInFile(Pcc, this);
+            PackageEditorExperimentsM.ResetTexturesInFile(GetPEWindow().Pcc, GetPEWindow());
         }
 
         private void ResetVanillaPackagePart_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsM.ResetPackageVanillaPart(Pcc, this);
+            PackageEditorExperimentsM.ResetPackageVanillaPart(GetPEWindow().Pcc, GetPEWindow());
         }
 
         private void ResolveAllImports_Clicked(object sender, RoutedEventArgs e)
         {
-            Task.Run(() => PackageEditorExperimentsM.CheckImports(Pcc)).ContinueWithOnUIThread(prevTask =>
+            var pew = GetPEWindow();
+            Task.Run(() => PackageEditorExperimentsM.CheckImports(pew.Pcc)).ContinueWithOnUIThread(prevTask =>
             {
-                IsBusy = false;
+                pew.IsBusy = false;
             });
         }
 
@@ -606,7 +609,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
         private void TintAllNormalizedAverageColor_Clicked(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsM.TintAllNormalizedAverageColors(Pcc);
+            PackageEditorExperimentsM.TintAllNormalizedAverageColors(GetPEWindow().Pcc);
         }
 
         private void DumpAllExecFunctionSignatures_Clicked(object sender, RoutedEventArgs e)
@@ -621,21 +624,21 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
         private void BuildNativeTable_OnClick(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsS.BuildNativeTable(this);
+            PackageEditorExperimentsS.BuildNativeTable(GetPEWindow());
         }
         private void ExtractPackageTextures_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsM.DumpPackageTextures(Pcc, this);
+            PackageEditorExperimentsM.DumpPackageTextures(GetPEWindow().Pcc, GetPEWindow());
         }
 
         private void ValidateNavpointChain_Clicked(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsM.ValidateNavpointChain(Pcc);
+            PackageEditorExperimentsM.ValidateNavpointChain(GetPEWindow().Pcc);
         }
 
         private void TriggerObjBinGetNames_Clicked(object sender, RoutedEventArgs e)
         {
-            if (TryGetSelectedExport(out var exp))
+            if (GetPEWindow().TryGetSelectedExport(out var exp))
             {
                 ObjectBinary bin = ObjectBinary.From(exp);
                 var names = bin.GetNames(exp.FileRef.Game);
@@ -648,7 +651,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
         private void TriggerObjBinGetUIndexes_Clicked(object sender, RoutedEventArgs e)
         {
-            if (TryGetSelectedExport(out var exp))
+            if (GetPEWindow().TryGetSelectedExport(out var exp))
             {
                 ObjectBinary bin = ObjectBinary.From(exp);
                 var indices = bin.GetUIndexes(exp.FileRef.Game);
@@ -661,7 +664,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
         private void ShaderCacheResearch_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsM.ShaderCacheResearch(this);
+            PackageEditorExperimentsM.ShaderCacheResearch(GetPEWindow());
         }
 
         private void PrintLoadedPackages_Clicked(object sender, RoutedEventArgs e)
@@ -671,31 +674,26 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
         private void ShiftME1AnimCutScene(object sender, RoutedEventArgs e)
         {
-            var selected = GetSelected(out var uindex);
-            if (selected && uindex > 0)
+            var selected = GetPEWindow().TryGetSelectedExport(out var export);
+            if (selected)
             {
-                PackageEditorExperimentsM.ShiftME1AnimCutscene(Pcc.GetUExport(uindex));
+                PackageEditorExperimentsM.ShiftME1AnimCutscene(export);
             }
         }
 
         private void ShiftInterpTrackMove(object sender, RoutedEventArgs e)
         {
-            var selected = GetSelected(out var uindex);
-            if (selected && uindex > 0)
+            var selected = GetPEWindow().TryGetSelectedExport(out var export);
+            if (selected)
             {
-                PackageEditorExperimentsM.ShiftInterpTrackMove(Pcc.GetUExport(uindex));
+                PackageEditorExperimentsM.ShiftInterpTrackMove(export);
             }
-        }
-
-        private void PortWiiUBSP(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsM.PortWiiUBSP();
         }
 
         private void RandomizeTerrain_Click(object sender, RoutedEventArgs e)
         {
-            if (Pcc == null) return;
-            PackageEditorExperimentsM.RandomizeTerrain(Pcc);
+            if (GetPEWindow().Pcc == null) return;
+            PackageEditorExperimentsM.RandomizeTerrain(GetPEWindow().Pcc);
         }
 
         #endregion
@@ -704,22 +702,23 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         #region SirCxyrtyx's Experiments
         private void MakeME1TextureFileList(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsS.MakeME1TextureFileList(this);
+            PackageEditorExperimentsS.MakeME1TextureFileList(GetPEWindow());
         }
 
 
         private void DumpAllShaders()
         {
-            if (Pcc == null) return;
-            PackageEditorExperimentsS.DumpAllShaders(Pcc);
+            var pew = GetPEWindow();
+            if (pew.Pcc == null) return;
+            PackageEditorExperimentsS.DumpAllShaders(pew.Pcc);
         }
 
         private void DumpMaterialShaders()
         {
-            if (TryGetSelectedExport(out ExportEntry matExport) && matExport.IsA("MaterialInterface"))
+            var pew = GetPEWindow();
+            if (pew.TryGetSelectedExport(out ExportEntry matExport) && matExport.IsA("MaterialInterface"))
             {
                 PackageEditorExperimentsS.DumpMaterialShaders(matExport);
-
             }
         }
 
@@ -728,10 +727,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         void OpenMapInGame()
         {
             const string tempMapName = "__ME3EXPDEBUGLOAD";
+            var Pcc = GetPEWindow().Pcc;
 
             if (Pcc.Exports.All(exp => exp.ClassName != "Level"))
             {
-                MessageBox.Show(this, "This file is not a map file!");
+                MessageBox.Show(GetPEWindow(), "GetPEWindow() file is not a map file!");
             }
 
             //only works for ME3?
@@ -786,43 +786,45 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
         private void ConvertAllDialogueToSkippable_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsS.ConvertAllDialogueToSkippable(this);
+            PackageEditorExperimentsS.ConvertAllDialogueToSkippable(GetPEWindow());
         }
 
         private void CreateDynamicLighting(object sender, RoutedEventArgs e)
         {
-            if (Pcc == null) return;
-            PackageEditorExperimentsS.CreateDynamicLighting(Pcc);
+            if (GetPEWindow().Pcc == null) return;
+            PackageEditorExperimentsS.CreateDynamicLighting(GetPEWindow().Pcc);
         }
 
         private void ConvertToDifferentGameFormat_Click(object sender, RoutedEventArgs e)
         {
-            if (Pcc is MEPackage pcc)
-            {
-                var gameString = InputComboBoxWPF.GetValue(this, "Which game's format do you want to convert to?",
-                    "Game file converter",
-                    new[] { "ME1", "ME2", "ME3" }, "ME2");
-                if (Enum.TryParse(gameString, out MEGame game))
-                {
-                    IsBusy = true;
-                    BusyText = "Converting...";
-                    Task.Run(() => { pcc.ConvertTo(game); }).ContinueWithOnUIThread(prevTask =>
-                    {
-                        IsBusy = false;
-                        SaveFileAs();
-                        Close();
-                    });
-                }
-            }
-            else
-            {
-                MessageBox.Show(this, "Can only convert Mass Effect files!");
-            }
+            // TODO: IMPLEMENT IN LEX
+            //var pew = GetPEWindow();
+            //if (pew.Pcc is MEPackage pcc)
+            //{
+            //    var gameString = InputComboBoxDialog.GetValue(GetPEWindow(), "Which game's format do you want to convert to?",
+            //        "Game file converter",
+            //        new[] { "ME1", "ME2", "ME3" }, "ME2");
+            //    if (Enum.TryParse(gameString, out MEGame game))
+            //    {
+            //        pew.IsBusy = true;
+            //        pew.BusyText = "Converting...";
+            //        Task.Run(() => { pcc.ConvertTo(game); }).ContinueWithOnUIThread(prevTask =>
+            //        {
+            //            pew.IsBusy = false;
+            //            pew.SaveFileAs();
+            //            pew.Close();
+            //        });
+            //    }
+            //}
+            //else
+            //{
+            //    MessageBox.Show(GetPEWindow(), "Can only convert Mass Effect files!");
+            //}
         }
 
         private void ReSerializeExport_Click(object sender, RoutedEventArgs e)
         {
-            if (TryGetSelectedExport(out ExportEntry export))
+            if (GetPEWindow().TryGetSelectedExport(out ExportEntry export))
             {
                 PackageEditorExperimentsS.ReserializeExport(export);
             }
@@ -830,23 +832,24 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
         private void RunPropertyCollectionTest(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsS.RunPropertyCollectionTest(this);
+            PackageEditorExperimentsS.RunPropertyCollectionTest(GetPEWindow());
         }
 
         private void UDKifyTest(object sender, RoutedEventArgs e)
         {
-            if (Pcc != null)
+            if (GetPEWindow().Pcc != null)
             {
-                PackageEditorExperimentsS.UDKifyTest(this);
+                PackageEditorExperimentsS.UDKifyTest(GetPEWindow());
             }
         }
 
         private void CondenseAllArchetypes(object sender, RoutedEventArgs e)
         {
-            if (PackageIsLoaded() && Pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry level)
+            var pew = GetPEWindow();
+            if (pew.Pcc != null && pew.Pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry level)
             {
-                IsBusy = true;
-                BusyText = "Condensing Archetypes";
+                pew.IsBusy = true;
+                pew.BusyText = "Condensing Archetypes";
                 Task.Run(() =>
                 {
                     foreach (ExportEntry export in level.GetAllDescendants().OfType<ExportEntry>())
@@ -854,46 +857,52 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                         export.CondenseArchetypes(false);
                     }
 
-                    IsBusy = false;
+                    pew.IsBusy = false;
                 });
             }
         }
 
         private void DumptTaggedWwiseStreams_OnClick(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsS.DumpSound(this);
+            PackageEditorExperimentsS.DumpSound(GetPEWindow());
         }
         private void ScanStuff_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsS.ScanStuff(this);
+            PackageEditorExperimentsS.ScanStuff(GetPEWindow());
         }
         private void ConvertFileToME3(object sender, RoutedEventArgs e)
         {
-            BusyText = "Converting files";
-            IsBusy = true;
-            string tfc = PromptDialog.Prompt(this, "Enter Name of Target Textures File Cache (tfc) without extension",
+            // TODO: IMPLEMENT IN LEX
+            
+            // This should be moved into a specific experiments class
+            /*
+            var pew = GetPEWindow();
+            pew.BusyText = "Converting files";
+            pew.IsBusy = true;
+            string tfc = PromptDialog.Prompt(GetPEWindow(), "Enter Name of Target Textures File Cache (tfc) without extension",
                 "Level Conversion Tool", "Textures_DLC_MOD_", false, PromptDialog.InputType.Text);
 
-            if (Pcc == null || tfc == null || tfc == "Textures_DLC_MOD_")
+            if (pew.Pcc == null || tfc == null || tfc == "Textures_DLC_MOD_")
                 return;
-            tfc = Path.Combine(Path.GetDirectoryName(Pcc.FilePath), $"{tfc}.tfc");
+            tfc = Path.Combine(Path.GetDirectoryName(pew.Pcc.FilePath), $"{tfc}.tfc");
 
-            if (Pcc is MEPackage tgt && Pcc.Game != MEGame.ME3)
+            if (pew.Pcc is MEPackage tgt && pew.Pcc.Game != MEGame.ME3)
             {
                 Task.Run(() => tgt.ConvertTo(MEGame.ME3, tfc, true)).ContinueWithOnUIThread(prevTask =>
                 {
-                    IsBusy = false;
+                    pew.IsBusy = false;
                 });
-            }
+            }*/
         }
 
         private void RecompileAll_OnClick(object sender, RoutedEventArgs e)
         {
-            if (PackageIsLoaded() && Pcc.Platform == MEPackage.GamePlatform.PC && Pcc.Game != MEGame.UDK)
+            var pew = GetPEWindow();
+            if (pew.Pcc != null && pew.Pcc.Platform == MEPackage.GamePlatform.PC && pew.Pcc.Game != MEGame.UDK)
             {
                 var exportsWithDecompilationErrors = new List<EntryStringPair>();
-                var fileLib = new FileLib(Pcc);
-                foreach (ExportEntry export in Pcc.Exports.Where(exp => exp.IsClass))
+                var fileLib = new FileLib(GetPEWindow().Pcc);
+                foreach (ExportEntry export in pew.Pcc.Exports.Where(exp => exp.IsClass))
                 {
                     (_, string script) = UnrealScriptCompiler.DecompileExport(export, fileLib);
                     (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileAST(script, export.ClassName);
@@ -904,9 +913,9 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                     }
                 }
 
-                var dlg = new ListDialog(exportsWithDecompilationErrors, $"Compilation errors", "", this)
+                var dlg = new ListDialog(exportsWithDecompilationErrors, $"Compilation errors", "", GetPEWindow())
                 {
-                    DoubleClickEntryHandler = entryDoubleClick
+                    DoubleClickEntryHandler = pew.GetEntryDoubleClickAction()
                 };
                 dlg.Show();
             }
@@ -914,16 +923,17 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
         private void FindOpCode_OnClick(object sender, RoutedEventArgs e)
         {
-            if (PackageIsLoaded())
+            var pew = GetPEWindow();
+            if (pew.Pcc != null)
             {
-                if (!short.TryParse(PromptDialog.Prompt(this, "enter opcode"), out short opCode))
+                if (!short.TryParse(PromptDialog.Prompt(GetPEWindow(), "enter opcode"), out short opCode))
                 {
                     return;
                 }
                 var exportsWithOpcode = new List<EntryStringPair>();
-                foreach (ExportEntry export in Pcc.Exports.Where(exp => exp.ClassName == "Function"))
+                foreach (ExportEntry export in pew.Pcc.Exports.Where(exp => exp.ClassName == "Function"))
                 {
-                    if (Pcc.Game is MEGame.ME3)
+                    if (pew.Pcc.Game is MEGame.ME3)
                     {
                         (List<Token> tokens, _) = Bytecode.ParseBytecode(export.GetBinaryData<UFunction>().ScriptBytes, export);
                         if (tokens.FirstOrDefault(tok => tok.op == opCode) is Token token)
@@ -943,9 +953,9 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                     }
                 }
 
-                var dlg = new ListDialog(exportsWithOpcode, $"functions with opcode 0x{opCode:X}", "", this)
+                var dlg = new ListDialog(exportsWithOpcode, $"functions with opcode 0x{opCode:X}", "", GetPEWindow())
                 {
-                    DoubleClickEntryHandler = entryDoubleClick
+                    DoubleClickEntryHandler = pew.GetEntryDoubleClickAction()
                 };
                 dlg.Show();
             }
@@ -957,11 +967,12 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         public void AutoEnumerateClassNetIndex(object sender, RoutedEventArgs e)
         {
             int baseindex = 0;
-            if (SelectedItem.Entry is ExportEntry classexp && classexp.IsClass)
+            var Pcc = GetPEWindow().Pcc;
+            if (GetPEWindow().TryGetSelectedExport(out var classexp) && classexp.IsClass)
             {
                 baseindex = classexp.NetIndex;
                 var classbin = classexp.GetBinaryData<UClass>();
-                ExportEntry defaultxp = Pcc.GetUExport(classbin.Defaults);
+                ExportEntry defaultxp = classexp.FileRef.GetUExport(classbin.Defaults);
                 defaultxp.NetIndex = baseindex + 1;
                 EnumerateChildNetIndexes(classbin.Children);
             }
@@ -991,11 +1002,13 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         }
         private void TransferLevelBetweenGames(object sender, RoutedEventArgs e)
         {
+            var pew = GetPEWindow();
+            var Pcc = pew.Pcc;
             if (Pcc is MEPackage pcc && Path.GetFileNameWithoutExtension(pcc.FilePath).StartsWith("BioP") &&
                 pcc.Game == MEGame.ME2)
             {
                 var cdlg = MessageBox.Show(
-                    "This is a highly experimental method to copy the static art and collision from an ME2 level to an ME3 one.  It will not copy materials or design elements.",
+                    "GetPEWindow() is a highly experimental method to copy the static art and collision from an ME2 level to an ME3 one.  It will not copy materials or design elements.",
                     "Warning", MessageBoxButton.OKCancel);
                 if (cdlg == MessageBoxResult.Cancel)
                     return;
@@ -1006,28 +1019,28 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                     EnsurePathExists = true,
                     Title = "Select output folder"
                 };
-                if (o.ShowDialog(this) == CommonFileDialogResult.Ok)
+                if (o.ShowDialog(GetPEWindow()) == CommonFileDialogResult.Ok)
                 {
-                    string tfc = PromptDialog.Prompt(this,
+                    string tfc = PromptDialog.Prompt(GetPEWindow(),
                         "Enter Name of Target Textures File Cache (tfc) without extension", "Level Conversion Tool",
                         "Textures_DLC_MOD_", false, PromptDialog.InputType.Text);
 
                     if (tfc == null || tfc == "Textures_DLC_MOD_")
                         return;
 
-                    BusyText = "Parsing level files";
-                    IsBusy = true;
+                    pew.BusyText = "Parsing level files";
+                    pew.IsBusy = true;
                     Task.Run(() =>
                         PackageEditorExperimentsK.ConvertLevelToGame(MEGame.ME3, pcc, o.FileName, tfc,
-                            newText => BusyText = newText)).ContinueWithOnUIThread(prevTask =>
+                            newText => pew.BusyText = newText)).ContinueWithOnUIThread(prevTask =>
                             {
                                 if (Pcc != null)
-                                    LoadFile(Pcc.FilePath);
-                                IsBusy = false;
+                                    pew.LoadFile(Pcc.FilePath);
+                                pew.IsBusy = false;
                                 var dlg = new ListDialog(prevTask.Result, $"Conversion errors: ({prevTask?.Result.Count})", "",
-                                    this)
+                                    GetPEWindow())
                                 {
-                                    DoubleClickEntryHandler = entryDoubleClick
+                                    DoubleClickEntryHandler = pew.GetEntryDoubleClickAction()
                                 };
                                 dlg.Show();
                             });
@@ -1037,19 +1050,19 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             }
             else
             {
-                MessageBox.Show(this,
+                MessageBox.Show(GetPEWindow(),
                     "Load a level's BioP file to start the transfer.\nCurrently can only convert from ME2 to ME3.");
             }
         }
 
         private void RestartTransferFromJSON(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsK.RestartTransferFromJSON(this, entryDoubleClick);
+            PackageEditorExperimentsK.RestartTransferFromJSON(GetPEWindow(), GetPEWindow().GetEntryDoubleClickAction());
         }
 
         private void RecookLevelToTestFromJSON(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsK.RecookLevelToTestFromJSON(this, entryDoubleClick);
+            PackageEditorExperimentsK.RecookLevelToTestFromJSON(GetPEWindow(), GetPEWindow().GetEntryDoubleClickAction());
         }
 
         #endregion
@@ -1057,12 +1070,13 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         #region Other people's experiments
         private void ExportLevelToT3D_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsO.DumpPackageToT3D(Pcc);
+            PackageEditorExperimentsO.DumpPackageToT3D(GetPEWindow().Pcc);
         }
 
 
         private void BuildME1SuperTLK_Clicked(object sender, RoutedEventArgs e)
         {
+            var pew = GetPEWindow();
             string myBasePath = ME1Directory.DefaultGamePath;
             string searchDir = ME1Directory.CookedPCPath;
 
@@ -1094,7 +1108,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             int i = 1;
             foreach (FileInfo f in files)
             {
-                StatusBar_LeftMostText.Text = $"[{i}/{files.Length}] Scanning {f.FullName}";
+                pew.StatusBar_LeftMostText.Text = $"[{i}/{files.Length}] Scanning {f.FullName}";
                 Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
                 int basePathLen = myBasePath.Length;
                 using (IMEPackage pack = MEPackageHandler.OpenMEPackage(f.FullName))
@@ -1159,7 +1173,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                 o.Save();
 
             }
-            StatusBar_LeftMostText.Text = $"Wrote {total} lines to {outputFilePath}";
+            pew.StatusBar_LeftMostText.Text = $"Wrote {total} lines to {outputFilePath}";
         }
 
         #endregion

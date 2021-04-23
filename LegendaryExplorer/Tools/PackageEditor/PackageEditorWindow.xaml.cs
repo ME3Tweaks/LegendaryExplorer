@@ -376,7 +376,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 var choices = foundCandidates.Result.DiskFiles.ToList(); //make new list
                 choices.AddRange(foundCandidates.Result.SFARPackageStreams.Select(x => x.Key));
 
-                var choice = InputComboBoxWPF.GetValue(this, "Choose file to compare to:", "Unmodified file comparison", choices, choices.Last());
+                var choice = InputComboBoxDialog.GetValue(this, "Choose file to compare to:", "Unmodified file comparison", choices, choices.Last());
                 if (string.IsNullOrEmpty(choice))
                 {
                     return;
@@ -445,7 +445,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         private void FindAllInstancesofClass()
         {
             var classes = Pcc.Exports.Select(x => x.ClassName).NonNull().Distinct().ToList().OrderBy(p => p).ToList();
-            var chosenClass = InputComboBoxWPF.GetValue(this, "Select a class to list all instances of.", "Class selector", classes, classes.FirstOrDefault());
+            var chosenClass = InputComboBoxDialog.GetValue(this, "Select a class to list all instances of.", "Class selector", classes, classes.FirstOrDefault());
             if (chosenClass != null)
             {
                 var foundExports = Pcc.Exports.Where(x => x.ClassName == chosenClass).ToList();
@@ -613,7 +613,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         return exp.ClassName == "BioConversation";
                     case "FaceFXEditor":
                         return exp.ClassName == "FaceFXAnimSet";
-                        //TODO: IMPLEMENT IN LEX
+                    //TODO: IMPLEMENT IN LEX
                     /*
                     case "Meshplorer":
                         return MeshRendererWPF.CanParseStatic(exp);
@@ -622,7 +622,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     case "Soundplorer":
                         return Soundpanel.CanParseStatic(exp);
                     */
-                        case "SequenceEditor":
+                    case "SequenceEditor":
                         return exp.IsA("SequenceObject");
                     case "InterpViewer":
                         return exp.ClassName == "InterpData";
@@ -872,7 +872,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private void NewFile()
         {
-            string gameString = InputComboBoxWPF.GetValue(this, "Choose a game to create a file for:",
+            string gameString = InputComboBoxDialog.GetValue(this, "Choose a game to create a file for:",
                 "Create new package file", new[] { "ME3", "ME2", "ME1", "UDK" }, "ME3");
             if (Enum.TryParse(gameString, out MEGame game))
             {
@@ -897,7 +897,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private void NewLevelFile()
         {
-            string gameString = InputComboBoxWPF.GetValue(this, "Choose game to create a level file for:",
+            string gameString = InputComboBoxDialog.GetValue(this, "Choose game to create a level file for:",
                                                           "Create new level file", new[] { "ME3", "ME2" }, "ME3");
             if (Enum.TryParse(gameString, out MEGame game) && game is MEGame.ME3 or MEGame.ME2)
             {
@@ -917,7 +917,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         MEGame.ME2 => "ME2EmptyLevel",
                         _ => "ME3EmptyLevel"
                     };
-                    File.Copy(Path.Combine(App.ExecFolder, $"{emptyLevelName}.pcc"), dlg.FileName);
+                    File.Copy(Path.Combine(AppDirectories.ExecFolder, $"{emptyLevelName}.pcc"), dlg.FileName);
                     LoadFile(dlg.FileName);
                     for (int i = 0; i < Pcc.Names.Count; i++)
                     {
@@ -943,6 +943,13 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 }
             }
         }
+
+        // This is a coupling hack for splitting the experiments class out. Probably can make this an interface though for more wide-usability
+        /// <summary>
+        /// Returns a method that can be used in other windows to navigate this instance of Package Editor to a specify entry
+        /// </summary>
+        /// <returns></returns>
+        public Action<EntryStringPair> GetEntryDoubleClickAction() => entryDoubleClick;
 
         private void entryDoubleClick(EntryStringPair clickedItem)
         {
@@ -2099,7 +2106,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                var choices = foundCandidates.Result.DiskFiles.ToList(); //make new list
                choices.AddRange(foundCandidates.Result.SFARPackageStreams.Select(x => x.Key));
 
-               var choice = InputComboBoxWPF.GetValue(this, "Choose file to compare to:", "Unmodified file comparison", choices, choices.Last());
+               var choice = InputComboBoxDialog.GetValue(this, "Choose file to compare to:", "Unmodified file comparison", choices, choices.Last());
                if (string.IsNullOrEmpty(choice))
                {
                    return;
@@ -2124,7 +2131,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
         {
             string lookupFilename = Path.GetFileName(Pcc.FilePath);
             string dlcPath = MEDirectories.GetDLCPath(Pcc.Game);
-            var backupPath = ME3TweaksBackups.GetGameBackupPath(Pcc.Game);
+            string backupPath = null; //TODO: IMPLEMENT INTO LEX
+                                      //ME3TweaksBackups.GetGameBackupPath(Pcc.Game);
             var unmoddedCandidates = new UnmoddedCandidatesLookup();
 
             // Lookup unmodded ON DISK files
@@ -3544,7 +3552,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
         {
             if (!e.Cancel)
             {
-                SoundTab_Soundpanel.FreeAudioResources();
+                // TODO: IMPLEMENT INTO LEX
+                //SoundTab_Soundpanel.FreeAudioResources();
                 foreach (var el in ExportLoaders.Keys)
                 {
                     el.Dispose(); //Remove hosted winforms references
@@ -3597,10 +3606,11 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private void HexConverterMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if (File.Exists(App.HexConverterPath))
-            {
-                Process.Start(App.HexConverterPath);
-            }
+            // TODO: IMPLEMENT INTO LEX
+            //if (File.Exists(App.HexConverterPath))
+            //{
+            //    Process.Start(App.HexConverterPath);
+            //}
         }
 
         private void BinaryInterpreterWPF_AlwaysAutoParse_Click(object sender, RoutedEventArgs e)
@@ -3692,10 +3702,11 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private void CompactShaderCache()
         {
-            IsBusy = true;
-            BusyText = "Compacting local ShaderCaches";
-            Task.Run(() => ShaderCacheManipulator.CompactShaderCaches(Pcc))
-                .ContinueWithOnUIThread(_ => IsBusy = false);
+            // TODO: IMPLEMENT INTO LEX?
+            //IsBusy = true;
+            //BusyText = "Compacting local ShaderCaches";
+            //Task.Run(() => ShaderCacheManipulator.CompactShaderCaches(Pcc))
+            //    .ContinueWithOnUIThread(_ => IsBusy = false);
         }
 
 

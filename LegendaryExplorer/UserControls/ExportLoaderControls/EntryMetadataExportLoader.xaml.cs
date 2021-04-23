@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Be.Windows.Forms;
 using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;

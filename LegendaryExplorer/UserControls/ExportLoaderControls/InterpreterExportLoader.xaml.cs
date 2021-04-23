@@ -14,6 +14,7 @@ using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.SharedUI;
+using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.Tools.PackageEditor;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
@@ -151,7 +152,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             LoadCommands();
             InitializeComponent();
-            Settings.PropertyChanged += SettingChanged;
+            Settings.StaticPropertyChanged += SettingChanged;
             EditorSetElements.Add(Value_TextBox); //str, strref, int, float, obj
             EditorSetElements.Add(Value_ComboBox); //bool, name
             EditorSetElements.Add(NameIndexPrefix_TextBlock); //nameindex
@@ -165,7 +166,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         void SettingChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Settings.InterpreterExportLoader_AdvancedDisplay))
+            if (e.PropertyName == nameof(Settings.Interpreter_AdvancedDisplay))
             {
                 OnPropertyChanged(nameof(AdvancedView));
                 OnPropertyChanged(nameof(ShowPropOffsets));
@@ -1013,8 +1014,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     editableValue = ep.Value.Instanced;
                     break;
                 case StringRefProperty strrefp:
-                    editableValue = strrefp.Value.ToString();
-                    parsedValue = TLKManagerWPF.GlobalFindStrRefbyID(strrefp.Value, parsingExport.FileRef.Game, parsingExport.FileRef);
+                    // TODO: IMPLEMENT IN LEX
+                    parsedValue = "NOT IMPLEMENTED IN LEX";
+                    //editableValue = strrefp.Value.ToString();
+                    //parsedValue = TLKManagerWPF.GlobalFindStrRefbyID(strrefp.Value, parsingExport.FileRef.Game, parsingExport.FileRef);
                     break;
                 case StrProperty strp:
                     editableValue = strp.Value;
@@ -1252,7 +1255,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             if (name == "m_nStrRefID" || name == "nLineStrRef" || name == "nStrRefID" || name == "m_iStringRef" || name == "m_iDescriptionStringRef")
             {
-                return TLKManagerWPF.GlobalFindStrRefbyID(value, export.FileRef.Game, export.FileRef);
+                // TODO: IMPLEMENT IN LEX
+                return "NOT IMPLEMENTED IN LEX";
+                //return TLKManagerWPF.GlobalFindStrRefbyID(value, export.FileRef.Game, export.FileRef);
             }
             return "";
         }
@@ -2185,7 +2190,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public override void Dispose()
         {
-            Settings.PropertyChanged -= SettingChanged;
+            Settings.StaticPropertyChanged -= SettingChanged;
 
 
             if (Interpreter_Hexbox != null)

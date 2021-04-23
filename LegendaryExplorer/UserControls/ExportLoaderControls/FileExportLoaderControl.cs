@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using LegendaryExplorer.Misc;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -26,7 +27,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public abstract bool CanSave();
         public List<string> RFiles;
         private const string RECENTFILES_FILE = "RECENTFILES";
-        private string RecentsAppDataFile => Path.Combine(Directory.CreateDirectory(Path.Combine(App.AppDataFolder, DataFolder)).FullName, "RECENTFILES");
+        private string RecentsAppDataFile => Path.Combine(Directory.CreateDirectory(Path.Combine(AppDirectories.AppDataFolder, DataFolder)).FullName, "RECENTFILES");
 
         internal abstract string DataFolder { get; }
         internal MenuItem Recents_MenuItem;

@@ -1,19 +1,22 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
+using LegendaryExplorer.Misc.AppSettings;
+using LegendaryExplorer.Tools.PackageEditor;
 using ME3ExplorerCore.Packages;
 
 namespace LegendaryExplorer.SharedUI.Converters
 {
-    [ValueConversion(typeof(PackageEditorWPF.CurrentViewMode), typeof(SolidColorBrush))]
+    [ValueConversion(typeof(PackageEditorWindow.CurrentViewMode), typeof(SolidColorBrush))]
     public class PackageEditorWPFActiveViewHighlightConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(value is PackageEditorWPF.CurrentViewMode))
+            if (!(value is PackageEditorWindow.CurrentViewMode))
             {
                 return Brushes.Transparent;
             }
@@ -74,7 +77,7 @@ namespace LegendaryExplorer.SharedUI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (Properties.Settings.Default.PackageEditorWPF_ShowExportIcons && value is ExportEntry exp && !exp.IsDefaultObject && PackageEditorWPF.ExportIconTypes.Contains(exp.ClassName))
+            if (Settings.PackageEditor_ShowExportTypeIcons && value is ExportEntry exp && !exp.IsDefaultObject && PackageEditorWindow.ExportIconTypes.Contains(exp.ClassName))
             {
                 switch (exp.ClassName)
                 {
@@ -110,7 +113,7 @@ namespace LegendaryExplorer.SharedUI.Converters
                         return "/PackageEditor/EntryIcons/icon_state.png";
                 }
             }
-            else if (Properties.Settings.Default.PackageEditorWPF_ShowExportIcons && value is ExportEntry exp2 && exp2.IsDefaultObject)
+            else if (Settings.PackageEditor_ShowExportTypeIcons && value is ExportEntry exp2 && exp2.IsDefaultObject)
             {
                 return "/PackageEditor/EntryIcons/icon_default.png";
             }
@@ -129,7 +132,7 @@ namespace LegendaryExplorer.SharedUI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (Properties.Settings.Default.PackageEditorWPF_ShowExportIcons && value is ExportEntry exp && (exp.IsDefaultObject || PackageEditorWPF.ExportIconTypes.Contains(exp.ClassName)))
+            if (Settings.PackageEditor_ShowExportTypeIcons  && value is ExportEntry exp && (exp.IsDefaultObject || PackageEditorWindow.ExportIconTypes.Contains(exp.ClassName)))
             {
                 return Visibility.Visible;
             }
@@ -148,7 +151,7 @@ namespace LegendaryExplorer.SharedUI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (Properties.Settings.Default.PackageEditorWPF_ShowExportIcons && value is ExportEntry exp && parameter is string type)
+            if (Settings.PackageEditor_ShowExportTypeIcons  && value is ExportEntry exp && parameter is string type)
             {
                 return exp.ClassName == type ? Visibility.Visible : Visibility.Collapsed;
             }

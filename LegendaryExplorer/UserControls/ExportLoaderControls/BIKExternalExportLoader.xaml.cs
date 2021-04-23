@@ -24,6 +24,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
     /// </summary>
     public partial class BIKExternalExportLoader : ExportLoaderControl
     {
+        // TODO: IMPLEMENT IN LEX WITH NEW VLC LIB
+        /*
         #region Declarations
         private static readonly string[] parsableClasses = { "TextureMovie", "BioLoadingMovie", "BioSeqAct_MovieBink", "SFXInterpTrackMovieBink", "SFXSeqAct_PlatformMovieBink" };
         private bool _radIsInstalled;
@@ -1061,6 +1063,32 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 Clipboard.SetText(MovieCRC.ToString("X8"));
             }
+        }*/
+
+        // TODO: DELETE THESE AFTER CODE IS SETUP
+        public BIKExternalExportLoader(string memoryTrackerName) : base(memoryTrackerName)
+        {
+        }
+
+        public override bool CanParse(ExportEntry exportEntry)
+        {
+            return false;
+        }
+
+        public override void LoadExport(ExportEntry exportEntry)
+        {
+        }
+
+        public override void UnloadExport()
+        {
+        }
+
+        public override void PopOut()
+        {
+        }
+
+        public override void Dispose()
+        {
         }
     }
 }

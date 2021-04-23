@@ -46,8 +46,6 @@
         <MenuItem Header="Find ME2 Powers" Click="FindAllME2PowerCustomAction_Click"/>
         <MenuItem Header="List NetIndexes" Click="ListNetIndexes_Click"/>
 
-        <MenuItem Header="Port WiiU BSPs to Entry" Click="PortWiiUBSP"/>
-        <MenuItem Header="Port ME1 EntryMenu into ME3 via BioP_Char" Click="PortME1EntryMenu_Clicked"/>
         <MenuItem Header="Shift selected ME1 animcutscene position" Click="ShiftME1AnimCutScene"/>
         <MenuItem Header="Validate navpoint chain" Click="ValidateNavpointChain_Clicked"/>
         <MenuItem Header="Tint all normalized average colors in file" Click="TintAllNormalizedAverageColor_Clicked"/>

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using JetBrains.Profiler.SelfApi;
+using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.SharedUI.Bases;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;

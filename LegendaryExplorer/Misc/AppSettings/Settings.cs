@@ -15,7 +15,7 @@ namespace LegendaryExplorer.Misc.AppSettings
     public static partial class Settings
     {
         // This file contains the main interaction code and is NOT pregenerated
-        
+
         #region Static Property Changed
 
         private static bool Loaded = false;

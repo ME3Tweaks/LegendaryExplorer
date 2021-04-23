@@ -10,7 +10,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.SharedUI;
+using LegendaryExplorer.UnrealExtensions.Classes;
+using MassEffectModder.Images;
 using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
@@ -134,11 +137,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private void ReplaceFromFile()
         {
             var selectedTFCName = (string)TextureCacheComboBox.SelectedItem;
+            // TODO: MOVE OUT OF TFC COMPACTOR
+            // TODO: IMPLEMENT IN LEX
+            /*
             if (TFCCompactor.TFCCompactor.BasegameTFCs.Contains(selectedTFCName) || MEDirectories.OfficialDLC(CurrentLoadedExport.Game).Any(x => $"Textures_{x}" == selectedTFCName))
             {
                 MessageBox.Show("Cannot replace textures into a TFC provided by BioWare. Choose a different target TFC from the list.");
                 return;
-            }
+            }*/
+
             OpenFileDialog selectDDS = new OpenFileDialog
             {
                 Title = "Select texture file",
@@ -339,7 +346,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     CurrentLoadedFormat = format.Value.Name;
                     MipList.ReplaceAll(mips);
                     TextureCRC = Texture2D.GetTextureCRC(exportEntry);
-                    if (Settings.Default.EmbeddedTextureViewer_AutoLoad || ViewerModeOnly)
+                    if (Settings.TextureViewer_AutoLoadMip || ViewerModeOnly)
                     {
                         Mips_ListBox.SelectedIndex = MipList.IndexOf(topmip);
                     }

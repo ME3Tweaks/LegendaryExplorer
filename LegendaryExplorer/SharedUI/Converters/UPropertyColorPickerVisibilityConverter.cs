@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
+using LegendaryExplorer.Misc.AppSettings;
 using ME3ExplorerCore.Unreal;
 
 namespace LegendaryExplorer.SharedUI.Converters
@@ -14,7 +15,7 @@ namespace LegendaryExplorer.SharedUI.Converters
             //Debug.WriteLine("booltocollapsed: " + ((bool)value == true).ToString());
             if (value is StructProperty sp)
             {
-                return (sp.StructType == "Color" || sp.StructType == "LinearColor" && Settings.Default.InterpreterWPF_ShowLinearColorWheel) ? Visibility.Visible : Visibility.Collapsed;
+                return (sp.StructType == "Color" || sp.StructType == "LinearColor" && Settings.Interpreter_ShowLinearColorWheel) ? Visibility.Visible : Visibility.Collapsed;
             }
             return Visibility.Collapsed;
         }

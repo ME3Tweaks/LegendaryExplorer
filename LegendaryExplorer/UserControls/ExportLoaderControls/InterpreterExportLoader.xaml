@@ -16,6 +16,8 @@
              xmlns:SharedUI="clr-namespace:LegendaryExplorer.SharedUI"
              xmlns:appsettings="clr-namespace:LegendaryExplorer.Misc.AppSettings"
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:controls="clr-namespace:LegendaryExplorer.SharedUI.Controls"
+             xmlns:peregrineTreeView="clr-namespace:LegendaryExplorer.SharedUI.PeregrineTreeView"
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
              d:DesignWidth="800"
              d:DesignHeight="500">
@@ -106,11 +108,11 @@
                       BorderThickness="5,0"
                       BorderBrush="Transparent"
                       Panel.ZIndex="60"/>
-            <SharedUI:StretchingTreeView x:Name="Interpreter_TreeView" Grid.Row="0" Grid.Column="2" Width="Auto" 
+            <controls:StretchingTreeView x:Name="Interpreter_TreeView" Grid.Row="0" Grid.Column="2" Width="Auto" 
                                          FontFamily="Consolas" SelectedItemChanged="Interpreter_TreeViewSelectedItemChanged" 
                                          ItemsSource="{Binding PropertyNodes}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" 
                                          VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
-                <SharedUI:StretchingTreeView.Resources>
+                <controls:StretchingTreeView.Resources>
                     <HierarchicalDataTemplate DataType="{x:Type global:UPropertyTreeViewEntry}" ItemsSource="{Binding ChildrenProperties}">
                         <Border x:Name="PropertyItem_Container" Margin="1" Padding="{Binding Path=(SharedUI:TouchComfySettings.InterpreterWPFNodeMargin)}">
                             <Grid HorizontalAlignment="Stretch">
@@ -120,7 +122,7 @@
                                 </Grid.RowDefinitions>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock x:Name="PropertyItem_Offset" Text="{Binding Property.StartOffset, StringFormat='{}{0:X5}:'}" VerticalAlignment="Top" Padding="0,0,4,0"
-                                               Visibility="{Binding ShowPropOffsets, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=global:InterpreterWPF}, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                               Visibility="{Binding ShowPropOffsets, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=global:InterpreterExportLoader}, Converter={StaticResource BoolToVisibilityConverter}}" />
                                     <TextBlock x:Name="PropertyItem_DisplayName" Text="{Binding DisplayName}" VerticalAlignment="Top" Padding="2,0,0,0"/>
                                     <TextBlock x:Name="PropertyItem_EditableValue" Margin="5,0,0,0" Text="{Binding EditableValue}" VerticalAlignment="Top" FontWeight="Bold" 
                                                Visibility="{Binding EditableValue, Converter={StaticResource NullOrEmptyStringVisibilityConverter}}"/>
@@ -129,7 +131,7 @@
                                                       SelectedColor="{Binding ColorStructCode,Converter={StaticResource ColorCodeConverter}}" Width="60" Closed="ColorPicker_Closed"/>
                                 </StackPanel>
                                 <TextBlock Grid.Row="1" x:Name="PropertyItem_DisplayType" FontSize="10" Text="{Binding PropertyType}" VerticalAlignment="Center" Margin="5,0,0,0"
-                                           Visibility="{Binding AdvancedView, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=global:InterpreterWPF}, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                           Visibility="{Binding AdvancedView, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=global:InterpreterExportLoader}, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                 <b:Interaction.Triggers>
                                     <b:EventTrigger EventName="PreviewMouseRightButtonDown">
                                         <b:ChangePropertyAction PropertyName="IsSelected" Value="true" TargetObject="{Binding}"/>
@@ -141,7 +143,7 @@
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding RawPropertyType}" Value="ObjectProperty" />
-                                    <Condition Binding="{Binding Source={x:Static appsettings:Settings.Interpreter_Colorize}" Value="True" />
+                                    <Condition Binding="{Binding Source={x:Static appsettings:Settings.Interpreter_Colorize}}" Value="True" />
                                 </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#6d6c3f"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88fffec4"/>
@@ -173,7 +175,7 @@
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding RawPropertyType}" Value="ArrayProperty" />
-                                    <Condition Binding="{Binding Source={x:Static appsettings:Settings.Interpreter_Colorize}" Value="True" />
+                                    <Condition Binding="{Binding Source={x:Static appsettings:Settings.Interpreter_Colorize}}" Value="True" />
                                 </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#382c4c"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#99ffe2ba"/>
@@ -181,7 +183,7 @@
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding RawPropertyType}" Value="BoolProperty" />
-                                    <Condition Binding="{Binding Source={x:Static appsettings:Settings.Interpreter_Colorize}" Value="True" />
+                                    <Condition Binding="{Binding Source={x:Static appsettings:Settings.Interpreter_Colorize}}" Value="True" />
                                 </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#43563a"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88ecffe2"/>
@@ -246,14 +248,14 @@
                       Color="LightBlue" />
                     <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
                       Color="Black" />
-                </SharedUI:StretchingTreeView.Resources>
-                <SharedUI:StretchingTreeView.ItemContainerStyle>
+                </controls:StretchingTreeView.Resources>
+                <controls:StretchingTreeView.ItemContainerStyle>
                     <Style TargetType="{x:Type TreeViewItem}">
                         <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}" />
                         <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
                     </Style>
-                </SharedUI:StretchingTreeView.ItemContainerStyle>
-                <SharedUI:StretchingTreeView.ContextMenu>
+                </controls:StretchingTreeView.ItemContainerStyle>
+                <controls:StretchingTreeView.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Copy parsed value" ToolTip="Copies the parsed value to the clipboard" Command="{Binding CopyValueCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
 
@@ -268,18 +270,18 @@
                         <MenuItem Header="Open in Package Editor (this instance)" ToolTip="Navigates this package editor to this object" Command="{Binding NavigateToEntryCommandInternal}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                         <MenuItem Header="Open in new Package Editor" ToolTip="Opens a new Package Editor to this object" Command="{Binding OpenInPackageEditorCommand}" SharedUI:Bindings.VisibilityToEnabled="True">
                             <MenuItem.Icon>
-                                <Image Source="/Resources/packageeditorwpf_256x256.ico" Width="64"/>
+                                <Image Source="/Tools/Icons/packageeditorwpf_256x256.ico" Width="64"/>
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Header="Attempt to find source of this import" ToolTip="Attempts to find the likely source of this import. Note that due to how unreal engine handles memory this may not be the one used." Command="{Binding AttemptOpenImportDefinitionCommand}" SharedUI:Bindings.VisibilityToEnabled="True">
                             <MenuItem.Icon>
-                                <Image Source="/Resources/packageeditorwpf_256x256.ico" Width="64"/>
+                                <Image Source="/Tools/Icons/packageeditorwpf_256x256.ico" Width="64"/>
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Header="Open in Meshplorer" ToolTip="Opens the referenced export in Meshplorer" Command="{Binding OpenInMeshplorerCommand}" SharedUI:Bindings.VisibilityToEnabled="True">
 
                             <MenuItem.Icon>
-                                <Image Source="/Resources/meshplorer_256x256.ico" Width="64"/>
+                                <Image Source="/Tools/Icons/meshplorer_256x256.ico" Width="64"/>
                             </MenuItem.Icon>
                         </MenuItem>
 
@@ -295,11 +297,11 @@
 
                         </MenuItem>-->
                     </ContextMenu>
-                </SharedUI:StretchingTreeView.ContextMenu>
+                </controls:StretchingTreeView.ContextMenu>
                 <b:Interaction.Behaviors>
-                    <vhelp:TreeViewHelper BoundSelectedItem="{Binding SelectedItem}" />
+                    <peregrineTreeView:TreeViewHelper BoundSelectedItem="{Binding SelectedItem}" />
                 </b:Interaction.Behaviors>
-            </SharedUI:StretchingTreeView>
+            </controls:StretchingTreeView>
         </Grid>
     </DockPanel>
 </global:ExportLoaderControl>
