@@ -1,11 +1,16 @@
 ﻿using System.ComponentModel;
+using LegendaryExplorer.Misc.AppSettings;
+using SharpDX.Direct2D1;
 
-namespace ME3Explorer.SharedUI
+namespace LegendaryExplorer.SharedUI
 {
     public class TouchComfySettings
     {
-        public static int TreeViewMargin => Properties.Settings.Default.TouchComfyMode ? 5 : 2;
-        public static int InterpreterWPFNodeMargin => Properties.Settings.Default.TouchComfyMode ? 3 : 1;
+        /// <summary>
+        /// A static property which you'd like to bind to
+        /// </summary>
+        public static int TreeViewMargin => Settings.PackageEditor_TouchComfyMode ? 5 : 2;
+        public static int InterpreterWPFNodeMargin => Settings.PackageEditor_TouchComfyMode ? 3 : 1;
 
         private static readonly PropertyChangedEventArgs TreeViewMarginEventArgs = new PropertyChangedEventArgs(nameof(TreeViewMargin));
         private static readonly PropertyChangedEventArgs InterpreterWPFNodeMarginEventArgs = new PropertyChangedEventArgs(nameof(InterpreterWPFNodeMargin));

@@ -1,0 +1,30 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Xml" #>
+<#@ assembly name="System.Xml.Linq" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Xml.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+namespace LegendaryExplorer.Misc.AppSettings
+{
+    /// <summary>
+    /// Auto-generated settings: DO NOT MANUALLY EDIT THIS .CS FILE, RUN SETTINGSBUILDER.TT, DEFINE IN SETTINGSDEFINTIIONS.XML!
+    /// </summary>
+    public static partial class Settings
+    {
+<# // This code runs in the text template:
+    // Can't use named tuples it seems
+    var settings = XDocument.Load(@"F:\ME3Explorer\LegendaryExplorer\Misc\AppSettings\SettingsDefinitions.xml").Root.Descendants("setting").Select(x => Tuple.Create(x.Attribute("name").Value, x.Attribute("type").Value, x.Attribute("defaultvalue").Value)).ToList();
+
+    foreach (var setting in settings){ 
+#>        private static <#= setting.Item2 #> _<#= setting.Item1.ToLower() #> = <#= setting.Item3 #>; 
+        public static <#= setting.Item2 #> <#= setting.Item1 #> {
+            get => _<#= setting.Item1.ToLower() #>; 
+            set => SetProperty(ref _<#= setting.Item1.ToLower() #>, value);
+        }
+<# } #>
+    }
+}

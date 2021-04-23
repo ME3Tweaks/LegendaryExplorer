@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!-- Define application settings here. Run the T4 template afterwards to generate the binding code -->
+<appsettings>
+  <!-- All settings should have a prefix of where they primarily apply! -->
+
+  <!-- Package Editor Specific settings -->
+  <setting name="PackageEditor_HideInterpreterHexBox" type="bool" defaultvalue="true"/>
+  <setting name="PackageEditor_TouchComfyMode" type="bool" defaultvalue="false"/>
+  <setting name="PackageEditor_ShowImpExpPrefix" type="bool" defaultvalue="true"/>
+  <setting name="PackageEditor_ShowExportTypeIcons" type="bool" defaultvalue="true"/>
+  <setting name="PackageEditor_ShowTreeEntrySubText" type="bool" defaultvalue="true"/>
+
+  <!-- Export Loader Settings -->
+  <setting name="BinaryInterpreter_SkipAutoParseSizeCheck" type="bool" defaultvalue="false"/>
+  <setting name="TextureViewer_AutoLoadMip" type="bool" defaultvalue="true"/>
+
+
+  <setting name="Interpreter_LimitArrayPropertySize" type="bool" defaultvalue="true"/>
+  <setting name="Interpreter_AdvancedDisplay" type="bool" defaultvalue="true"/>
+  <setting name="Interpreter_Colorize" type="bool" defaultvalue="true"/>
+  <setting name="Interpreter_ShowLinearColorWheel" type="bool" defaultvalue="false"/>
+
+
+  <!-- Global settings-->
+  <setting name="PropertyParsing_ParseUnknownArrayTypeAsObject" type="bool" defaultvalue="false"/>
+
+</appsettings>

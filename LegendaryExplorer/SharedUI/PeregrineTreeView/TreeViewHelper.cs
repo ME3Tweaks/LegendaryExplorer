@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using Microsoft.Xaml.Behaviors;
 
 namespace LegendaryExplorer.SharedUI.PeregrineTreeView
 {

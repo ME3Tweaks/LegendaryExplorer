@@ -11,13 +11,18 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
+using System.Xml.Linq;
+using System.Xml.XPath;
 using GongSolutions.Wpf.DragDrop;
 using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.Misc;
+using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.UserControls.ExportLoaderControls;
 using ME3ExplorerCore.GameFilesystem;
+using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
@@ -394,11 +399,11 @@ namespace LegendaryExplorer.Tools.PackageEditor
             switch (Pcc.Game)
             {
                 case MEGame.ME1:
-                    fileFilter = App.ME1SaveFileFilter;
+                    fileFilter = GameFileFilters.ME1SaveFileFilter;
                     break;
                 case MEGame.ME2:
                 case MEGame.ME3:
-                    fileFilter = App.ME3ME2SaveFileFilter;
+                    fileFilter = GameFileFilters.ME3ME2SaveFileFilter;
                     break;
                 default:
                     string extension = Path.GetExtension(Pcc.FilePath);
@@ -530,6 +535,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
             {
                 switch (toolName)
                 {
+                    // TODO: IMPLEMENT FOR LEX
+                    /*
                     case "DialogueEditor":
                         if (exp.ClassName == "BioConversation")
                         {
@@ -591,6 +598,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             w.Show();
                         }
                         break;
+                    */
                 }
             }
         }
@@ -605,13 +613,16 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         return exp.ClassName == "BioConversation";
                     case "FaceFXEditor":
                         return exp.ClassName == "FaceFXAnimSet";
+                        //TODO: IMPLEMENT IN LEX
+                    /*
                     case "Meshplorer":
                         return MeshRendererWPF.CanParseStatic(exp);
                     case "PathfindingEditor":
                         return PathfindingEditorWPF.CanParseStatic(exp);
                     case "Soundplorer":
                         return Soundpanel.CanParseStatic(exp);
-                    case "SequenceEditor":
+                    */
+                        case "SequenceEditor":
                         return exp.IsA("SequenceObject");
                     case "InterpViewer":
                         return exp.ClassName == "InterpData";
@@ -811,11 +822,11 @@ namespace LegendaryExplorer.Tools.PackageEditor
             switch (Pcc.Game)
             {
                 case MEGame.ME1:
-                    fileFilter = App.ME1SaveFileFilter;
+                    fileFilter = GameFileFilters.ME1SaveFileFilter;
                     break;
                 case MEGame.ME2:
                 case MEGame.ME3:
-                    fileFilter = App.ME3ME2SaveFileFilter;
+                    fileFilter = GameFileFilters.ME3ME2SaveFileFilter;
                     break;
                 default:
                     string extension = Path.GetExtension(Pcc.FilePath);
@@ -838,7 +849,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private void OpenFile()
         {
-            OpenFileDialog d = new OpenFileDialog { Filter = App.OpenFileFilter };
+            OpenFileDialog d = new OpenFileDialog { Filter = GameFileFilters.OpenFileFilter };
             if (d.ShowDialog() == true)
             {
 #if !DEBUG
@@ -869,9 +880,9 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 {
                     Filter = game switch
                     {
-                        MEGame.UDK => App.UDKFileFilter,
-                        MEGame.ME1 => App.ME1SaveFileFilter,
-                        _ => App.ME3ME2SaveFileFilter
+                        MEGame.UDK => GameFileFilters.UDKFileFilter,
+                        MEGame.ME1 => GameFileFilters.ME1SaveFileFilter,
+                        _ => GameFileFilters.ME3ME2SaveFileFilter
                     }
                 };
                 if (dlg.ShowDialog() == true)
@@ -892,7 +903,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             {
                 var dlg = new SaveFileDialog
                 {
-                    Filter = App.ME3ME2SaveFileFilter,
+                    Filter = GameFileFilters.ME3ME2SaveFileFilter,
                     OverwritePrompt = true
                 };
                 if (dlg.ShowDialog() == true)
@@ -1836,26 +1847,28 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         }
 
                         //data
-                        if (offsetDec >= exp.DataOffset && offsetDec < exp.DataOffset + exp.DataSize)
-                        {
-                            GoToNumber(exp.UIndex);
-                            int inExportDataOffset = exp.DataOffset + exp.DataSize - offsetDec;
-                            int propsEnd = exp.propsEnd();
 
-                            if (inExportDataOffset > propsEnd && exp.DataSize > propsEnd &&
-                                BinaryInterpreterTab_BinaryInterpreter.CanParse(exp))
-                            {
-                                BinaryInterpreterTab_BinaryInterpreter.SetHexboxSelectedOffset(inExportDataOffset);
-                                BinaryInterpreter_Tab.IsSelected = true;
-                            }
-                            else
-                            {
-                                InterpreterTab_Interpreter.SetHexboxSelectedOffset(inExportDataOffset);
-                                Interpreter_Tab.IsSelected = true;
-                            }
+                        // TODO: IMPLEMENT IN LEX
+                        //if (offsetDec >= exp.DataOffset && offsetDec < exp.DataOffset + exp.DataSize)
+                        //{
+                        //    GoToNumber(exp.UIndex);
+                        //    int inExportDataOffset = exp.DataOffset + exp.DataSize - offsetDec;
+                        //    int propsEnd = exp.propsEnd();
 
-                            return;
-                        }
+                        //    if (inExportDataOffset > propsEnd && exp.DataSize > propsEnd &&
+                        //        BinaryInterpreterTab_BinaryInterpreter.CanParse(exp))
+                        //    {
+                        //        BinaryInterpreterTab_BinaryInterpreter.SetHexboxSelectedOffset(inExportDataOffset);
+                        //        BinaryInterpreter_Tab.IsSelected = true;
+                        //    }
+                        //    else
+                        //    {
+                        //        InterpreterTab_Interpreter.SetHexboxSelectedOffset(inExportDataOffset);
+                        //        Interpreter_Tab.IsSelected = true;
+                        //    }
+
+                        //    return;
+                        //}
                     }
 
                     MessageBox.Show($"No entry or header containing offset 0x{result} was found.");
@@ -2229,30 +2242,33 @@ namespace LegendaryExplorer.Tools.PackageEditor
             //map export loaders to their tabs
             ExportLoaders[InterpreterTab_Interpreter] = Interpreter_Tab;
             ExportLoaders[MetadataTab_MetadataEditor] = Metadata_Tab;
-            ExportLoaders[SoundTab_Soundpanel] = Sound_Tab;
-            ExportLoaders[CurveTab_CurveEditor] = CurveEditor_Tab;
-            ExportLoaders[FaceFXTab_Editor] = FaceFXAnimSet_Tab;
-            ExportLoaders[Bio2DATab_Bio2DAEditor] = Bio2DAViewer_Tab;
-            ExportLoaders[BytecodeTab_BytecodeEditor] = Bytecode_Tab;
-            ExportLoaders[ScriptTab_UnrealScriptIDE] = Script_Tab;
-            ExportLoaders[BinaryInterpreterTab_BinaryInterpreter] = BinaryInterpreter_Tab;
-            ExportLoaders[EmbeddedTextureViewerTab_EmbededTextureViewer] = EmbeddedTextureViewer_Tab;
-            ExportLoaders[ME1TlkEditorWPFTab_ME1TlkEditor] = ME1TlkEditorWPF_Tab;
-            ExportLoaders[JPEXLauncherTab_JPEXLauncher] = JPEXLauncher_Tab;
-            ExportLoaders[MeshRendererTab_MeshRenderer] = MeshRenderer_Tab;
-            ExportLoaders[MaterialViewerTab_MaterialExportLoader] = MaterialViewer_Tab;
-            ExportLoaders[RADLauncherTab_BIKLauncher] = RADLaunch_Tab;
-            ExportLoaders[CollectionActorEditorTab_CollectionActorEditor] = CollectionActorEditor_Tab;
-            ExportLoaders[ParticleSystemTab_ParticleSystemLoader] = ParticleSystem_Tab;
-            ExportLoaders[ParticleModuleTab_ParticleModuleLoader] = ParticleModule_Tab;
+
+            // TODO: IMPLEMENT IN LEX
+            //ExportLoaders[SoundTab_Soundpanel] = Sound_Tab;
+            //ExportLoaders[CurveTab_CurveEditor] = CurveEditor_Tab;
+            //ExportLoaders[FaceFXTab_Editor] = FaceFXAnimSet_Tab;
+            //ExportLoaders[Bio2DATab_Bio2DAEditor] = Bio2DAViewer_Tab;
+            //ExportLoaders[BytecodeTab_BytecodeEditor] = Bytecode_Tab;
+            //ExportLoaders[ScriptTab_UnrealScriptIDE] = Script_Tab;
+            //ExportLoaders[BinaryInterpreterTab_BinaryInterpreter] = BinaryInterpreter_Tab;
+            //ExportLoaders[EmbeddedTextureViewerTab_EmbededTextureViewer] = EmbeddedTextureViewer_Tab;
+            //ExportLoaders[ME1TlkEditorWPFTab_ME1TlkEditor] = ME1TlkEditorWPF_Tab;
+            //ExportLoaders[JPEXLauncherTab_JPEXLauncher] = JPEXLauncher_Tab;
+            //ExportLoaders[MeshRendererTab_MeshRenderer] = MeshRenderer_Tab;
+            //ExportLoaders[MaterialViewerTab_MaterialExportLoader] = MaterialViewer_Tab;
+            //ExportLoaders[RADLauncherTab_BIKLauncher] = RADLaunch_Tab;
+            //ExportLoaders[CollectionActorEditorTab_CollectionActorEditor] = CollectionActorEditor_Tab;
+            //ExportLoaders[ParticleSystemTab_ParticleSystemLoader] = ParticleSystem_Tab;
+            //ExportLoaders[ParticleModuleTab_ParticleModuleLoader] = ParticleModule_Tab;
 
 
             InterpreterTab_Interpreter.SetParentNameList(NamesList); //reference to this control for name editor set
-            BinaryInterpreterTab_BinaryInterpreter
-                .SetParentNameList(NamesList); //reference to this control for name editor set
-            Bio2DATab_Bio2DAEditor.SetParentNameList(NamesList); //reference to this control for name editor set
 
-            InterpreterTab_Interpreter.HideHexBox = Properties.Settings.Default.PackageEditor_HideInterpreterHexBox;
+            //TODO: IMPLEMENT IN LEX
+            //BinaryInterpreterTab_BinaryInterpreter.SetParentNameList(NamesList); //reference to this control for name editor set
+            //Bio2DATab_Bio2DAEditor.SetParentNameList(NamesList); //reference to this control for name editor set
+
+            InterpreterTab_Interpreter.HideHexBox = Settings.PackageEditor_HideInterpreterHexBox;
             InterpreterTab_Interpreter.ToggleHexbox_Button.Visibility = Visibility.Visible;
 
             RecentsController.InitRecentControl(Toolname, Recents_MenuItem, fileName => LoadFile(fileName));
@@ -2260,6 +2276,11 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         public void LoadFile(string s, int goToIndex = 0)
         {
+
+            Debug.WriteLine(Directory.GetCurrentDirectory());
+
+
+
             try
             {
                 preloadPackage(Path.GetFileName(s), new FileInfo(s).Length);
@@ -2869,16 +2890,17 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         }
                     }
 
-                    if (Interpreter_Tab.IsSelected && exportEntry.ClassName == "Class")
-                    {
-                        //We are on interpreter tab, selecting class. Switch to binary interpreter as interpreter will never be useful
-                        BinaryInterpreter_Tab.IsSelected = true;
-                    }
+                    // TODO: IMPLEMENT IN LEX
+                    //if (Interpreter_Tab.IsSelected && exportEntry.ClassName == "Class")
+                    //{
+                    //    //We are on interpreter tab, selecting class. Switch to binary interpreter as interpreter will never be useful
+                    //    BinaryInterpreter_Tab.IsSelected = true;
+                    //}
 
-                    if (Interpreter_Tab.IsSelected && exportEntry.ClassName == "Function" && Bytecode_Tab.IsVisible)
-                    {
-                        Bytecode_Tab.IsSelected = true;
-                    }
+                    //if (Interpreter_Tab.IsSelected && exportEntry.ClassName == "Function" && Bytecode_Tab.IsVisible)
+                    //{
+                    //    Bytecode_Tab.IsSelected = true;
+                    //}
                 }
                 else if (selectedEntry is ImportEntry importEntry)
                 {
@@ -3501,16 +3523,16 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private void TouchComfyMode_Clicked(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.TouchComfyMode = !Properties.Settings.Default.TouchComfyMode;
-            Properties.Settings.Default.Save();
+            Settings.PackageEditor_TouchComfyMode = !Settings.PackageEditor_TouchComfyMode;
+            Settings.Save();
             TouchComfySettings.ModeSwitched();
         }
 
         private void ShowImpExpPrefix_Clicked(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.PackageEditorWPF_ShowImpExpPrefix =
-                !Properties.Settings.Default.PackageEditorWPF_ShowImpExpPrefix;
-            Properties.Settings.Default.Save();
+            Settings.PackageEditor_ShowImpExpPrefix =
+                !Settings.PackageEditor_ShowImpExpPrefix;
+            Settings.Save();
             if (Enumerable.Any(AllTreeViewNodesX))
             {
                 AllTreeViewNodesX[0].FlattenTree().ForEach(x => x.RefreshDisplayName());
@@ -3538,6 +3560,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
             var myValue = (string)((MenuItem)sender).Tag;
             switch (myValue)
             {
+                // TODO: IMPLEMENT IN LEX
+                /*
                 case "DialogueEditor":
                     var dialogueEditorWPF = new Dialogue_Editor.DialogueEditorWPF();
                     dialogueEditorWPF.LoadFile(Pcc.FilePath);
@@ -3567,6 +3591,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     meshplorer.LoadFile(Pcc.FilePath);
                     meshplorer.Show();
                     break;
+                */
             }
         }
 
@@ -3581,75 +3606,79 @@ namespace LegendaryExplorer.Tools.PackageEditor
         private void BinaryInterpreterWPF_AlwaysAutoParse_Click(object sender, RoutedEventArgs e)
         {
             //BinaryInterpreterWPF_AlwaysAutoParse_MenuItem.IsChecked = !BinaryInterpreterWPF_AlwaysAutoParse_MenuItem.IsChecked;
-            Properties.Settings.Default.BinaryInterpreterWPFAutoScanAlways =
-                !Properties.Settings.Default.BinaryInterpreterWPFAutoScanAlways;
-            Properties.Settings.Default.Save();
+            Settings.BinaryInterpreter_SkipAutoParseSizeCheck =
+                !Settings.BinaryInterpreter_SkipAutoParseSizeCheck;
+            Settings.Save();
         }
 
+        // TODO: Move this to a utilities class instead of attaching to a window
         private void AssociatePCCSFM_Clicked(object sender, RoutedEventArgs e)
         {
-            Main_Window.Utilities.FileAssociations.EnsureAssociationsSet("pcc", "Mass Effect 2/3 Package File");
-            Main_Window.Utilities.FileAssociations.EnsureAssociationsSet("sfm", "Mass Effect 1 Package File");
+            // TODO: IMPLEMENT IN LEX
+            //Main_Window.Utilities.FileAssociations.EnsureAssociationsSet("pcc", "Mass Effect 2/3 Package File");
+            //Main_Window.Utilities.FileAssociations.EnsureAssociationsSet("sfm", "Mass Effect 1 Package File");
         }
 
         private void AssociateUPKUDK_Clicked(object sender, RoutedEventArgs e)
         {
-            Main_Window.Utilities.FileAssociations.EnsureAssociationsSet("upk", "Unreal Package File");
-            Main_Window.Utilities.FileAssociations.EnsureAssociationsSet("udk", "UDK Package File");
+            //Main_Window.Utilities.FileAssociations.EnsureAssociationsSet("upk", "Unreal Package File");
+            //Main_Window.Utilities.FileAssociations.EnsureAssociationsSet("udk", "UDK Package File");
         }
 
 
         private void TLKManagerWPF_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            new TlkManagerNS.TLKManagerWPF().Show();
+            // TODO: IMPLEMENT IN LEX
+            //new TlkManagerNS.TLKManagerWPF().Show();
         }
 
         private void PropertyParsing_UnknownArrayAsObj_Click(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.PropertyParsingUnknownArrayAsObject =
-                !Properties.Settings.Default.PropertyParsingUnknownArrayAsObject;
-            Properties.Settings.Default.Save();
+            Settings.PropertyParsing_ParseUnknownArrayTypeAsObject =
+                !Settings.PropertyParsing_ParseUnknownArrayTypeAsObject;
+            Settings.Save();
         }
 
         private void MountEditor_Click(object sender, RoutedEventArgs e)
         {
-            new MountEditor.MountEditorWPF().Show();
+            // TODO: IMPLEMENT IN LEX
+            //new MountEditor.MountEditorWPF().Show();
         }
 
         private void EmbeddedTextureViewer_AutoLoad_Click(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.EmbeddedTextureViewer_AutoLoad =
-                !Properties.Settings.Default.EmbeddedTextureViewer_AutoLoad;
-            Properties.Settings.Default.Save();
+            Settings.TextureViewer_AutoLoadMip =
+                !Settings.TextureViewer_AutoLoadMip;
+            Settings.Save();
         }
 
         private void InterpreterWPF_AdvancedMode_Click(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.InterpreterWPF_AdvancedDisplay =
-                !Properties.Settings.Default.InterpreterWPF_AdvancedDisplay;
-            Properties.Settings.Default.Save();
+            Settings.Interpreter_AdvancedDisplay =
+                !Settings.Interpreter_AdvancedDisplay;
+            Settings.Save();
         }
 
 
 
         private void InterpreterWPF_Colorize_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.InterpreterWPF_Colorize = !Properties.Settings.Default.InterpreterWPF_Colorize;
-            Properties.Settings.Default.Save();
+            Settings.Interpreter_Colorize = !Settings.Interpreter_Colorize;
+            Settings.Save();
         }
 
         private void InterpreterWPF_ArrayPropertySizeLimit_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.InterpreterWPF_LimitArrayPropertySize =
-                !Properties.Settings.Default.InterpreterWPF_LimitArrayPropertySize;
-            Properties.Settings.Default.Save();
+            Settings.Interpreter_LimitArrayPropertySize =
+                !Settings.Interpreter_LimitArrayPropertySize;
+            Settings.Save();
         }
 
         private void ShowExportIcons_Click(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.PackageEditorWPF_ShowExportIcons =
-                !Properties.Settings.Default.PackageEditorWPF_ShowExportIcons;
-            Properties.Settings.Default.Save();
+            Settings.PackageEditor_ShowExportTypeIcons =
+                !Settings.PackageEditor_ShowExportTypeIcons;
+            Settings.Save();
 
             // this triggers binding updates
             LeftSide_TreeView.DataContext = null;
@@ -3658,7 +3687,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
 
 
-
+        // Is this experiment code?
         private bool HasShaderCache() => PackageIsLoaded() && Pcc.Exports.Any(exp => exp.ClassName == "ShaderCache");
 
         private void CompactShaderCache()
@@ -3672,16 +3701,16 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private void InterpreterWPF_LinearColorWheel_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.InterpreterWPF_ShowLinearColorWheel =
-                !Properties.Settings.Default.InterpreterWPF_ShowLinearColorWheel;
-            Properties.Settings.Default.Save();
+            Settings.Interpreter_ShowLinearColorWheel =
+                !Settings.Interpreter_ShowLinearColorWheel;
+            Settings.Save();
         }
 
         private void ShowExportMetadataInTree_Clicked(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.PackageEditorWPF_ShowSubText =
-                !Properties.Settings.Default.PackageEditorWPF_ShowSubText;
-            Properties.Settings.Default.Save();
+            Settings.PackageEditor_ShowTreeEntrySubText =
+                !Settings.PackageEditor_ShowTreeEntrySubText;
+            Settings.Save();
             foreach (TreeViewEntry tv in AllTreeViewNodesX[0].FlattenTree())
             {
                 tv.RefreshSubText();

@@ -21,6 +21,8 @@
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:controls="clr-namespace:LegendaryExplorer.SharedUI.Controls"
         xmlns:peregrineTreeView="clr-namespace:LegendaryExplorer.SharedUI.PeregrineTreeView"
+        xmlns:appsettings="clr-namespace:LegendaryExplorer.Misc.AppSettings"
+        xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
         Title="Package Editor" Height="720" Width="1100"
         DragOver="Window_DragOver"
         Drop="Window_Drop"
@@ -42,7 +44,7 @@
         <converters:GameTypeConverter x:Key="GameTypeConverter"/>
         <ContextMenu x:Key="EntryContextMenu">
             <MenuItem Header="Find usages" ToolTip="Finds places where this name is used" Command="{Binding FindNameUsagesCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
-            <MenuItem Header="Attempt to find definition of import" ToolTip="Attempts to find the likely source of this import. Note that due to how unreal engine handles memory this may not be the one used." Command="{Binding ResolveImportCommand}" sharedUi:Bindings.VisibilityToEnabled="True"/>
+            <MenuItem Header="Attempt to find definition of import" ToolTip="Attempts to find the likely source of this import. Note that due to how unreal engine handles memory this may not be the one used." Command="{Binding ResolveImportCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Copy name text" ToolTip="Copies the name text to the clipboard" Command="{Binding CopyNameCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Add name" ToolTip="Add a name to this package" Command="{Binding AddNameCommand}" CommandParameter="FromContextMenu" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Edit name" ToolTip="Edits the string this name represents" Command="{Binding EditNameCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
@@ -190,7 +192,7 @@
                 <MenuItem Header="Options" Padding="4">
                     <MenuItem Name="TLKManagerWPF_MenuItem" Header="TLK Manager" Click="TLKManagerWPF_MenuItem_Click" ToolTip="Open TLK Manager"/>
                     <MenuItem Name="TouchComfyMode_MenuItem" Header="Touch Comfy Mode" Click="TouchComfyMode_Clicked" 
-                              IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=TouchComfyMode, Mode=TwoWay}" 
+                              IsChecked="{Binding Source={x:Static appsettings:Settings.PackageEditor_TouchComfyMode}, Mode=TwoWay}" 
                               ToolTip="Makes Package Editor a bit easier to use on touch devices" StaysOpenOnClick="True"/>
                     <MenuItem Name="AssociatePccSfm_MenuItem" Header="Associate PCC/SFM files" Click="AssociatePCCSFM_Clicked" 
                               ToolTip="Makes Package Editor open when you double click PCC/SFM files in Windows Explorer"/>
@@ -198,21 +200,21 @@
                               ToolTip="Makes Package Editor open when you double click UPK/UDK files in Windows Explorer"/>
                     <Separator/>
 
-                    <MenuItem Name="ShowImpExpPrefixes_MenuItem" Header="Show Imp/Exp entry prefixes" Click="ShowImpExpPrefix_Clicked" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=PackageEditorWPF_ShowImpExpPrefix, Mode=TwoWay}" ToolTip="Changes the treeview of Package Editor to display/hide the (Imp)/(Exp) text"/>
-                    <MenuItem Name="ShowMetadata_MenuItem" Header="Show metadata in tree (if available)" Click="ShowExportMetadataInTree_Clicked" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=PackageEditorWPF_ShowSubText, Mode=TwoWay}" ToolTip="Adds a second line to items in the tree if the export has additional information, such as Tag property or WwiseStream TLK reference"/>
-                    <MenuItem Name="ShowExportIcons_MenuItem" Header="Show Export Icons" Click="ShowExportIcons_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=PackageEditorWPF_ShowExportIcons, Mode=TwoWay}" ToolTip="Toggles display of icons that visually distinguish class types in the tree view"/>
-                    <MenuItem Name="PropertyParsing_UnknownArrayAsObj_MenuItem" Header="Parse Unknown array types as objects instead of int" Click="PropertyParsing_UnknownArrayAsObj_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=PropertyParsingUnknownArrayAsObject, Mode=TwoWay}" ToolTip="Return unknown array types as object arrays instead of integer. This only affects parsing and resolving of values."/>
+                    <MenuItem Name="ShowImpExpPrefixes_MenuItem" Header="Show Imp/Exp entry prefixes" Click="ShowImpExpPrefix_Clicked" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static appsettings:Settings.PackageEditor_ShowImpExpPrefix}, Mode=TwoWay}" ToolTip="Changes the treeview of Package Editor to display/hide the (Imp)/(Exp) text"/>
+                    <MenuItem Name="ShowMetadata_MenuItem" Header="Show metadata in tree (if available)" Click="ShowExportMetadataInTree_Clicked" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static appsettings:Settings.PackageEditor_ShowTreeEntrySubText}, Mode=TwoWay}" ToolTip="Adds a second line to items in the tree if the export has additional information, such as Tag property or WwiseStream TLK reference"/>
+                    <MenuItem Name="ShowExportIcons_MenuItem" Header="Show Export Icons" Click="ShowExportIcons_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static appsettings:Settings.PackageEditor_ShowExportTypeIcons}, Mode=TwoWay}" ToolTip="Toggles display of icons that visually distinguish class types in the tree view"/>
+                    <MenuItem Name="PropertyParsing_UnknownArrayAsObj_MenuItem" Header="Parse Unknown array types as objects instead of int" Click="PropertyParsing_UnknownArrayAsObj_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static appsettings:Settings.PropertyParsing_ParseUnknownArrayTypeAsObject}, Mode=TwoWay}" ToolTip="Return unknown array types as object arrays instead of integer. This only affects parsing and resolving of values."/>
                     <MenuItem Header="Binary Interpreter">
-                        <MenuItem Name="BinaryInterpreterWPF_AlwaysAutoParse_MenuItem" Header="Auto-parse generic scans > 20KB" Click="BinaryInterpreterWPF_AlwaysAutoParse_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=BinaryInterpreterWPFAutoScanAlways, Mode=TwoWay}" ToolTip="Automatically parse exports that use Generic Scan that are larger than 20KB.&#10;By default, this is disabled to improve performance"/>
+                        <MenuItem Name="BinaryInterpreterWPF_AlwaysAutoParse_MenuItem" Header="Auto-parse generic scans > 20KB" Click="BinaryInterpreterWPF_AlwaysAutoParse_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static appsettings:Settings.BinaryInterpreter_SkipAutoParseSizeCheck}, Mode=TwoWay}" ToolTip="Automatically parse exports that use Generic Scan that are larger than 20KB.&#10;By default, this is disabled to improve performance"/>
                     </MenuItem>
                     <MenuItem Header="Interpreter">
-                        <MenuItem Name="InterpreterWPF_AdvancedMode_MenuItem" Header="Advanced Mode" Click="InterpreterWPF_AdvancedMode_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_AdvancedDisplay, Mode=TwoWay}" ToolTip="Displays data types, array sizes for each property in InterpreterWPF. Turning this off will condense the interface"/>
-                        <MenuItem Name="InterpreterWPF_Colorize_MenuItem" Header="Colorize property types" Click="InterpreterWPF_Colorize_MenuItem_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_Colorize, Mode=TwoWay}" ToolTip="Changes the background color for different property types. Makes it easier to quickly identify different types of data."/>
-                        <MenuItem Name="InterpreterWPF_LinearColorWheel_MenuItem" Header="Show color wheel for LinearColor structs" Click="InterpreterWPF_LinearColorWheel_MenuItem_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_ShowLinearColorWheel, Mode=TwoWay}" ToolTip="Shos the color wheel picker for LinearColor structs. Linear color structs do not represent R G B values, so this option is off by default."/>
-                        <MenuItem Name="InterpreterWPF_ArrayPropertyLimit_MenuItem" Header="Limit ArrayProperties to 1000 items for performance" Click="InterpreterWPF_ArrayPropertySizeLimit_MenuItem_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_LimitArrayPropertySize, Mode=TwoWay}" ToolTip="Enables or disables the 1000 item limit of ArrayProperty when displaying properties.&#10;Some arrayproperties are huge and will stall the program while it generates thousands of UI nodes."/>
+                        <MenuItem Name="InterpreterWPF_AdvancedMode_MenuItem" Header="Advanced Mode" Click="InterpreterWPF_AdvancedMode_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static appsettings:Settings.Interpreter_AdvancedDisplay}, Mode=TwoWay}" ToolTip="Displays data types, array sizes for each property in InterpreterWPF. Turning this off will condense the interface"/>
+                        <MenuItem Name="InterpreterWPF_Colorize_MenuItem" Header="Colorize property types" Click="InterpreterWPF_Colorize_MenuItem_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static appsettings:Settings.Interpreter_Colorize}, Mode=TwoWay}" ToolTip="Changes the background color for different property types. Makes it easier to quickly identify different types of data."/>
+                        <MenuItem Name="InterpreterWPF_LinearColorWheel_MenuItem" Header="Show color wheel for LinearColor structs" Click="InterpreterWPF_LinearColorWheel_MenuItem_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static appsettings:Settings.Interpreter_ShowLinearColorWheel}, Mode=TwoWay}" ToolTip="Shos the color wheel picker for LinearColor structs. Linear color structs do not represent R G B values, so this option is off by default."/>
+                        <MenuItem Name="InterpreterWPF_ArrayPropertyLimit_MenuItem" Header="Limit ArrayProperties to 1000 items for performance" Click="InterpreterWPF_ArrayPropertySizeLimit_MenuItem_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static appsettings:Settings.Interpreter_LimitArrayPropertySize}, Mode=TwoWay}" ToolTip="Enables or disables the 1000 item limit of ArrayProperty when displaying properties.&#10;Some arrayproperties are huge and will stall the program while it generates thousands of UI nodes."/>
                     </MenuItem>
                     <MenuItem Header="Texture Viewer">
-                        <MenuItem Name="EmbeddedTextureViewerWPF_AutoPreviewTextures" Header="Automatically preview textures on export selection" Click="EmbeddedTextureViewer_AutoLoad_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=EmbeddedTextureViewer_AutoLoad, Mode=TwoWay}" ToolTip="Automatically load texture exports for viewing. Turn this feature off to improve performance and increase application stability"/>
+                        <MenuItem Name="EmbeddedTextureViewerWPF_AutoPreviewTextures" Header="Automatically preview textures on export selection" Click="EmbeddedTextureViewer_AutoLoad_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static appsettings:Settings.TextureViewer_AutoLoadMip}, Mode=TwoWay}" ToolTip="Automatically load texture exports for viewing. Turn this feature off to improve performance and increase application stability"/>
                     </MenuItem>
                 </MenuItem>
                 <MenuItem Header="Debugging" Padding="4">
@@ -403,20 +405,20 @@
                             Check the menus for keyboard shortcuts. Check out CTRL+P: It pops out the currently viewed tab!
                             <LineBreak/>
                             <LineBreak/>
-                            <Hyperlink NavigateUri="https://github.com/ME3Tweaks/ME3Explorer/wiki/Package-Editor-Basics" Foreground="#FF182574" global:HyperlinkExtensions.IsExternal="True">
+                            <Hyperlink NavigateUri="https://github.com/ME3Tweaks/ME3Explorer/wiki/Package-Editor-Basics" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
                                 <Run Text="View the Package Editor basics wiki article"/>
                             </Hyperlink>
                             <LineBreak/>
                             <LineBreak/>
                             If you have issues, please report them to one of the following places:
                             <LineBreak/>
-                            - <Hyperlink NavigateUri="{Binding Source={x:Static legendaryExplorer:App.DiscordInviteURL}, Mode=OneTime}" Foreground="#FF182574" global:HyperlinkExtensions.IsExternal="True">
+                            - <Hyperlink NavigateUri="{Binding Source={x:Static misc:AppLinks.DiscordInviteURL}, Mode=OneTime}" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
                                 <Run Text="The ME3Tweaks Discord (ME3Explorer channel)"/>
                             </Hyperlink>
                             <LineBreak/>
                             - The issues list on GitHub at 
-                            <Hyperlink NavigateUri="{Binding Source={x:Static legendaryExplorer:App.BugReportURL}}" Foreground="#FF182574" global:HyperlinkExtensions.IsExternal="True">
-                                <Run Text="{Binding Source={x:Static legendaryExplorer:App.BugReportURL}, Mode=OneTime}"/>
+                            <Hyperlink NavigateUri="{Binding Source={x:Static misc:AppLinks.BugReportURL}}" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
+                                <Run Text="{Binding Source={x:Static misc:AppLinks.BugReportURL}, Mode=OneTime}"/>
                             </Hyperlink>
                             </TextBlock>
 
@@ -429,14 +431,15 @@
                         <TabItem.Header>
                             <TextBlock Text="Interpreter" ToolTip="Edit UnrealScript properties on exports"/>
                         </TabItem.Header>
-                        <global:InterpreterWPF x:Name="InterpreterTab_Interpreter" SubstituteImageForHexBox="{Binding IsBusy, RelativeSource={RelativeSource AncestorType=Window}}" NavigateToEntryCommand="{Binding NavigateToEntryCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                        <exportLoaderControls:InterpreterExportLoader x:Name="InterpreterTab_Interpreter" SubstituteImageForHexBox="{Binding IsBusy, RelativeSource={RelativeSource AncestorType=Window}}" NavigateToEntryCommand="{Binding NavigateToEntryCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
                     </TabItem>
                     <TabItem Name="Metadata_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
                             <TextBlock Text="Metadata" ToolTip="Edit entry metadata such as class, object name, etc"/>
                         </TabItem.Header>
-                        <metadataeditor:MetadataEditorWPF x:Name="MetadataTab_MetadataEditor" SubstituteImageForHexBox="{Binding IsBusy, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                        <exportLoaderControls:EntryMetadataExportLoader x:Name="MetadataTab_MetadataEditor" SubstituteImageForHexBox="{Binding IsBusy, RelativeSource={RelativeSource AncestorType=Window}}"/>
                     </TabItem>
+                    <!--
                     <TabItem Name="Bio2DAViewer_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
                             <TextBlock Text="Bio2DA" ToolTip="View and Edit Bio2DA tables"/>
@@ -532,7 +535,7 @@
                             <TextBlock Text="Particle Module" ToolTip="Particle Module editor"/>
                         </TabItem.Header>
                         <particleSystems:ParticleModuleExportLoader x:Name="ParticleModuleTab_ParticleModuleLoader"/>
-                    </TabItem>
+                    </TabItem>-->
                 </TabControl>
             </Grid>
         </DockPanel>

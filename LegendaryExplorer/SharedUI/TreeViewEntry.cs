@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using LegendaryExplorer.Misc;
+using LegendaryExplorer.Misc.AppSettings;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.ME1.Unreal.UnhoodBytecode;
 using ME3ExplorerCore.Misc;
@@ -154,7 +155,7 @@ namespace LegendaryExplorer.SharedUI
                     if (_displayName != null) return _displayName;
                     string type = UIndex < 0 ? "(Imp) " : "(Exp) ";
                     string returnvalue = $"{UIndex} {Entry.ObjectName.Instanced}";
-                    if (Properties.Settings.Default.PackageEditorWPF_ShowImpExpPrefix)
+                    if (Settings.PackageEditor_ShowImpExpPrefix)
                     {
                         returnvalue = type + returnvalue;
                     }
@@ -175,7 +176,7 @@ namespace LegendaryExplorer.SharedUI
         {
             get
             {
-                if (!Properties.Settings.Default.PackageEditorWPF_ShowSubText) return null;
+                if (!Settings.PackageEditor_ShowTreeEntrySubText) return null;
                 try
                 {
                     if (loadedSubtext) return _subtext;
@@ -294,47 +295,48 @@ namespace LegendaryExplorer.SharedUI
                                 }
                         }
 
-                        if (BinaryInterpreterWPF.IsNativePropertyType(Entry.ClassName))
-                        {
-                            var objectFlags = ee.GetPropertyFlags();
-                            if (objectFlags != null)
-                            {
-                                if (objectFlags.Value.HasFlag(UnrealFlags.EPropertyFlags.Config))
-                                {
-                                    if (_subtext != null)
-                                    {
-                                        _subtext = "Config, " + _subtext;
-                                    }
-                                    else
-                                    {
-                                        _subtext = "Config";
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                var bin = ObjectBinary.From<UBoolProperty>(Entry as ExportEntry);
-                                if (bin.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.Config))
-                                {
-                                    if (_subtext != null)
-                                    {
-                                        _subtext = "Config, " + _subtext;
-                                    }
-                                    else
-                                    {
-                                        _subtext = "Config";
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            var tag = ee.GetProperty<NameProperty>("Tag");
-                            if (tag != null && tag.Value.Name != Entry.ObjectName)
-                            {
-                                _subtext = tag.Value.Name;
-                            }
-                        }
+                        // TODO: IMPLEMENT FOR LEX
+                        //    if (BinaryInterpreterWPF.IsNativePropertyType(Entry.ClassName))
+                        //    {
+                        //        var objectFlags = ee.GetPropertyFlags();
+                        //        if (objectFlags != null)
+                        //        {
+                        //            if (objectFlags.Value.HasFlag(UnrealFlags.EPropertyFlags.Config))
+                        //            {
+                        //                if (_subtext != null)
+                        //                {
+                        //                    _subtext = "Config, " + _subtext;
+                        //                }
+                        //                else
+                        //                {
+                        //                    _subtext = "Config";
+                        //                }
+                        //            }
+                        //        }
+                        //        else
+                        //        {
+                        //            var bin = ObjectBinary.From<UBoolProperty>(Entry as ExportEntry);
+                        //            if (bin.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.Config))
+                        //            {
+                        //                if (_subtext != null)
+                        //                {
+                        //                    _subtext = "Config, " + _subtext;
+                        //                }
+                        //                else
+                        //                {
+                        //                    _subtext = "Config";
+                        //                }
+                        //            }
+                        //        }
+                        //    }
+                        //    else
+                        //    {
+                        //        var tag = ee.GetProperty<NameProperty>("Tag");
+                        //        if (tag != null && tag.Value.Name != Entry.ObjectName)
+                        //        {
+                        //            _subtext = tag.Value.Name;
+                        //        }
+                        //    }
                     }
 
                     if (_subtext == null)
@@ -356,11 +358,12 @@ namespace LegendaryExplorer.SharedUI
                                             if (int.TryParse(parsing, out var parsedInt))
                                             {
                                                 //Lookup TLK
-                                                var data = TLKManagerWPF.GlobalFindStrRefbyID(parsedInt, Entry.FileRef);
-                                                if (data != "No Data")
-                                                {
-                                                    _subtext = data;
-                                                }
+                                                // TODO: IMPLEMENT FOR LEX
+                                                //var data = TLKManagerWPF.GlobalFindStrRefbyID(parsedInt, Entry.FileRef);
+                                                //if (data != "No Data")
+                                                //{
+                                                //    _subtext = data;
+                                                //}
                                             }
                                         }
                                     }
@@ -377,11 +380,13 @@ namespace LegendaryExplorer.SharedUI
                                         if (int.TryParse(splits[i], out var parsed))
                                         {
                                             //Lookup TLK
-                                            var data = TLKManagerWPF.GlobalFindStrRefbyID(parsed, Entry.FileRef);
-                                            if (data != "No Data")
-                                            {
-                                                _subtext = data;
-                                            }
+                                            // TODO: IMPLEMENT FOR LEX
+
+                                            //var data = TLKManagerWPF.GlobalFindStrRefbyID(parsed, Entry.FileRef);
+                                            //if (data != "No Data")
+                                            //{
+                                            //    _subtext = data;
+                                            //}
                                         }
                                     }
 
