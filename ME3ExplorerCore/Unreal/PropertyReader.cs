@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
+using System.Text;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
@@ -7,6 +9,7 @@ using Newtonsoft.Json;
 
 namespace ME3ExplorerCore.Unreal
 {
+    [DebuggerDisplay("NameReference - Name: {Name} Number: {Number} Instanced: {Instanced}")]
     public readonly struct NameReference : IEquatable<NameReference>
     {
         public string Name { get; }

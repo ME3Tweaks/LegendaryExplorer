@@ -212,8 +212,7 @@ namespace ME3Explorer.MetadataEditor
                     int pairOffset = 44;
                     foreach ((NameReference name, int uIndex) in componentMap)
                     {
-                        components +=
-                            $"0x{pairOffset:X2} {name.Instanced} {exportEntry.FileRef.GetEntryString(uIndex)}\n";
+                        components += $"0x{pairOffset:X2} {name.Instanced} => {uIndex} {exportEntry.FileRef.GetEntryString(uIndex + 1)}\n"; // +1 because it appears to be 0 based?
                         pairOffset += 12;
                     }
 

@@ -43,12 +43,13 @@ namespace ME3ExplorerCore.Unreal
                 _ => false
             };
 
-        public static bool InheritsFrom(this IEntry entry, string baseClass, Dictionary<string, ClassInfo> customClassInfos = null) => InheritsFrom(entry.ObjectName.Name, baseClass, entry.FileRef.Game, customClassInfos);
-        public static bool InheritsFrom(string className, string baseClass, MEGame game, Dictionary<string, ClassInfo> customClassInfos = null) =>
+        public static bool InheritsFrom(this IEntry entry, string baseClass, Dictionary<string, ClassInfo> customClassInfos = null) => InheritsFrom(entry.ObjectName.Name, baseClass, entry.FileRef.Game, customClassInfos, (entry as ExportEntry)?.SuperClassName);
+        public static bool InheritsFrom(string className, string baseClass, MEGame game, Dictionary<string, ClassInfo> customClassInfos = null, string knownSuperClass = null) =>
             className == baseClass || game switch
             {
+                // todo: others
                 MEGame.ME1 => ME1UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
-                MEGame.ME2 => ME2UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
+                MEGame.ME2 => ME2UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos, knownSuperClass),
                 MEGame.ME3 => ME3UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
                 MEGame.UDK => ME3UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
                 _ => false
@@ -324,6 +325,7 @@ namespace ME3ExplorerCore.Unreal
             {
                 KeyComparer = StringComparer.OrdinalIgnoreCase
             };
+
             ClassInfo info = GetClassOrStructInfo(game, typeName);
             while (info != null)
             {
@@ -1189,6 +1191,36 @@ namespace ME3ExplorerCore.Unreal
                 exportIndex = 503, //in ME3Resources.pcc
             };
             sequenceObjects["SFXSeqAct_SpawnHenchmenWeapons"] = new SequenceObjectInfo {ObjInstanceVersion = 1};
+
+            //SirCxyrtyx - New Class - SFXSeqAct_OverrideCasualAppearance
+            classes["SFXSeqAct_OverrideCasualAppearance"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 510, //in ME3Resources.pcc
+                properties =
+                {
+                    new KeyValuePair<string, PropertyInfo>("CasualAppearanceID", new PropertyInfo(PropertyType.IntProperty)),
+                }
+            };
+            sequenceObjects["SFXSeqAct_OverrideCasualAppearance"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1,
+                inputLinks = new List<string> { "Override", "Remove Override" }
+            };
+
+            //SirCxyrtyx - New Class - SFXSeqAct_SetEquippedWeaponVisibility
+            classes["SFXSeqAct_SetEquippedWeaponVisibility"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 515, //in ME3Resources.pcc
+            };
+            sequenceObjects["SFXSeqAct_SetEquippedWeaponVisibility"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1,
+                inputLinks = new List<string> { "Show", "Hide", "Toggle" }
+            };
 
             //Native Classes: these classes are defined in C++ only
 

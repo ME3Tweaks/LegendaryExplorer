@@ -1,6 +1,6 @@
-﻿using Unrealscript.Language.Tree;
+﻿using ME3ExplorerCore.UnrealScript.Language.Tree;
 
-namespace Unrealscript.Analysis.Visitors
+namespace ME3ExplorerCore.UnrealScript.Analysis.Visitors
 {
     public interface IASTVisitor
     {

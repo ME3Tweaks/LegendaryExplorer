@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Memory;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.SharpDX;
 using ME3ExplorerCore.Unreal.BinaryConverters;
@@ -108,7 +109,7 @@ namespace ME3ExplorerCore.Unreal
             int b = guidProp.GetProp<IntProperty>("B");
             int c = guidProp.GetProp<IntProperty>("C");
             int d = guidProp.GetProp<IntProperty>("D");
-            var ms = new MemoryStream(16);
+            var ms = MemoryManager.GetMemoryStream(16);
             ms.WriteInt32(a);
             ms.WriteInt32(b);
             ms.WriteInt32(c);

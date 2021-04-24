@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
 using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
 
 namespace ME3ExplorerCore.Dialogue
 {
@@ -23,17 +24,30 @@ namespace ME3ExplorerCore.Dialogue
         public IEntry FaceFX_Female { get; set; }
         public int StrRefID { get; set; }
         public string FriendlyName { get; set; }
+        /// <summary>
+        /// The name reference for this speaker. It is used to keep the index/name split
+        /// </summary>
+        public NameReference SpeakerNameRef { get; set; }
 
         public SpeakerExtended(int SpeakerID, string SpeakerName)
         {
             this.SpeakerID = SpeakerID;
             this.SpeakerName = SpeakerName;
+            this.SpeakerNameRef = SpeakerName;
+        }
+
+        public SpeakerExtended(int SpeakerID, NameReference SpeakerName)
+        {
+            this.SpeakerID = SpeakerID;
+            this.SpeakerName = SpeakerName;
+            this.SpeakerNameRef = SpeakerName;
         }
 
         public SpeakerExtended(int SpeakerID, string SpeakerName, IEntry FaceFX_Male, IEntry FaceFX_Female, int StrRefID, string FriendlyName)
         {
             this.SpeakerID = SpeakerID;
             this.SpeakerName = SpeakerName;
+            this.SpeakerNameRef = SpeakerName;
             this.FaceFX_Male = FaceFX_Male;
             this.FaceFX_Female = FaceFX_Female;
             this.StrRefID = StrRefID;

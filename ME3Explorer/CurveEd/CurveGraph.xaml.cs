@@ -43,6 +43,17 @@ namespace ME3Explorer.CurveEd
             }
         }
 
+        public Curve ComparisonCurve
+        {
+            get => (Curve)GetValue(ComparisonCurveProperty);
+            set => SetValue(ComparisonCurveProperty, value);
+        }
+
+        // Using a DependencyProperty as the backing store for ComparisonCurve.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ComparisonCurveProperty =
+            DependencyProperty.Register(nameof(ComparisonCurve), typeof(Curve), typeof(CurveGraph), new PropertyMetadata());
+
+
         public CurvePoint SelectedPoint
         {
             get => (CurvePoint)GetValue(SelectedPointProperty);
@@ -161,17 +172,13 @@ namespace ME3Explorer.CurveEd
             graph.Children.Clear();
 
             LinkedList<CurvePoint> points = SelectedCurve.CurvePoints;
+
+            // Set size and scale of graph
             if (points.Count > 0 && recomputeView)
             {
                 if (UseFixedTimeSpan)
                 {
-                    HorizontalOffset = FixedStartTime;
-                    float diff = Math.Abs(FixedEndTime - FixedStartTime); //No negative values!
-                    if (diff < 0.1f)
-                    {
-                        diff = 0.1f; //No super tiny values!
-                    }
-                    HorizontalScale = graph.ActualWidth / diff;
+                    UpdateScalingFromFixedTimeSpan();
                 }
                 else
                 {
@@ -207,6 +214,7 @@ namespace ME3Explorer.CurveEd
                 VerticalScale = graph.ActualHeight / vSpan;
             }
 
+            // Render grid
             int numXLines = Convert.ToInt32(Math.Ceiling(ActualWidth / LINE_SPACING));
             int numYLines = Convert.ToInt32(Math.Ceiling(ActualHeight / LINE_SPACING));
             double upperXBound = toUnrealX(ActualWidth);
@@ -250,7 +258,24 @@ namespace ME3Explorer.CurveEd
                 graph.Children.Add(label);
             }
 
+            // Render line
+            if(ShowReferenceCurve && ComparisonCurve != null && ComparisonCurve.CurvePoints.Count > 0)
+            {
+                LinkedList<CurvePoint> comparePoints = ComparisonCurve.CurvePoints;
+                RenderLine(comparePoints, interactable: false);
+            }
+
+            RenderLine(points);
+
+            TrackLoading = false;
+        }
+
+        private void RenderLine(LinkedList<CurvePoint> points, bool interactable = true)
+        {
+            Line line;
             Anchor lastAnchor = null;
+            Style comparisonCurveStyle = FindResource("CompareCurve") as Style; // Applied to line when not interactable
+
             for (LinkedListNode<CurvePoint> node = points.First; node != null; node = node.Next)
             {
                 switch (node.Value.InterpMode)
@@ -274,19 +299,27 @@ namespace ME3Explorer.CurveEd
                 {
                     a.IsSelected = true;
                 }
+
+                if(!interactable)
+                {
+                    // Hide anchors
+                    a.Visibility = Visibility.Hidden;
+                }
+
                 graph.Children.Add(a);
 
                 if (node.Previous == null)
                 {
-                    line = new Line {X1 = -10};
+                    line = new Line { X1 = -10 };
                     line.bind(Line.Y1Property, a, nameof(Anchor.Y), new YConverter(), ActualHeight);
                     line.bind(Line.X2Property, a, nameof(Anchor.X));
                     line.bind(Line.Y2Property, a, nameof(Anchor.Y), new YConverter(), ActualHeight);
+                    if (!interactable) line.Style = comparisonCurveStyle;
                     graph.Children.Add(line);
                 }
                 else
                 {
-                    PathBetween(lastAnchor, a, node.Previous.Value.InterpMode);
+                    PathBetween(lastAnchor, a, node.Previous.Value.InterpMode, (interactable ? null : comparisonCurveStyle));
                 }
 
                 if (node.Next == null)
@@ -296,14 +329,14 @@ namespace ME3Explorer.CurveEd
                     line.bind(Line.Y1Property, a, nameof(Anchor.Y), new YConverter(), ActualHeight);
                     line.X2 = ActualWidth + 10;
                     line.bind(Line.Y2Property, a, nameof(Anchor.Y), new YConverter(), ActualHeight);
+                    if (!interactable) line.Style = comparisonCurveStyle;
                     graph.Children.Add(line);
                 }
                 lastAnchor = a;
             }
-            TrackLoading = false;
         }
 
-        private void PathBetween(Anchor a1, Anchor a2, CurveMode interpMode = CurveMode.CIM_Linear)
+        private void PathBetween(Anchor a1, Anchor a2, CurveMode interpMode = CurveMode.CIM_Linear, Style styleOverride = null)
         {
             Line line;
             switch (interpMode)
@@ -314,6 +347,7 @@ namespace ME3Explorer.CurveEd
                     line.bind(Line.Y1Property, a1, nameof(Anchor.Y), new YConverter(), ActualHeight);
                     line.bind(Line.X2Property, a2, nameof(Anchor.X));
                     line.bind(Line.Y2Property, a2, nameof(Anchor.Y), new YConverter(), ActualHeight);
+                    if (styleOverride != null) line.Style = styleOverride;
                     graph.Children.Add(line);
                     break;
                 case CurveMode.CIM_Constant:
@@ -322,12 +356,14 @@ namespace ME3Explorer.CurveEd
                     line.bind(Line.Y1Property, a1, nameof(Anchor.Y), new YConverter(), ActualHeight);
                     line.bind(Line.X2Property, a2, nameof(Anchor.X));
                     line.bind(Line.Y2Property, a1, nameof(Anchor.Y), new YConverter(), ActualHeight);
+                    if (styleOverride != null) line.Style = styleOverride;
                     graph.Children.Add(line);
                     line = new Line();
                     line.bind(Line.X1Property, a2, nameof(Anchor.X));
                     line.bind(Line.Y1Property, a1, nameof(Anchor.Y), new YConverter(), ActualHeight);
                     line.bind(Line.X2Property, a2, nameof(Anchor.X));
                     line.bind(Line.Y2Property, a2, nameof(Anchor.Y), new YConverter(), ActualHeight);
+                    if (styleOverride != null) line.Style = styleOverride;
                     graph.Children.Add(line);
                     break;
                 case CurveMode.CIM_CurveAuto:
@@ -343,6 +379,7 @@ namespace ME3Explorer.CurveEd
                     bez.bind(BezierSegment.Y1Property, a1, nameof(Anchor.Y));
                     bez.bind(BezierSegment.X2Property, a2, nameof(Anchor.X));
                     bez.bind(BezierSegment.Y2Property, a2, nameof(Anchor.Y));
+                    if(styleOverride != null) bez.Style = styleOverride;
                     graph.Children.Add(bez);
                     a1.rightBez = bez;
                     a2.leftBez = bez;
@@ -364,7 +401,23 @@ namespace ME3Explorer.CurveEd
 
         private void UserControl_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            VerticalScale *= 1 + ((double)e.Delta / 4000);
+            if(Keyboard.Modifiers == ModifierKeys.Shift)
+            {
+                if (UseFixedTimeSpan)
+                {
+                    FixedStartTime *= 1 + ((float)e.Delta / 8000);
+                    FixedEndTime *= (1 + ((float)e.Delta / 8000));
+                    return;
+                }
+                else
+                {
+                    HorizontalScale *= 1 + ((double)e.Delta / 4000);
+                }
+            }
+            else
+            {
+                VerticalScale *= 1 + ((double)e.Delta / 4000);
+            }
             //VerticalOffset += (graph.ActualHeight / VerticalScale) * 0.1 * Math.Sign(e.Delta);
             Paint();
         }
@@ -375,7 +428,8 @@ namespace ME3Explorer.CurveEd
             {
                 dragging = true;
                 dragPos = e.GetPosition(graph);
-                Cursor = Cursors.ScrollNS;
+                if (Keyboard.Modifiers == ModifierKeys.Shift) Cursor = Cursors.ScrollWE;
+                else Cursor = Cursors.ScrollNS;
             }
             else if (ReferenceEquals(e.OriginalSource, graph) && e.ChangedButton == MouseButton.Right)
             {
@@ -465,8 +519,23 @@ namespace ME3Explorer.CurveEd
             if (dragging)
             {
                 Point newPos = e.GetPosition(graph);
-                double yDiff = newPos.Y - dragPos.Y;
-                VerticalOffset += yDiff / VerticalScale;
+                if(Keyboard.Modifiers == ModifierKeys.Shift)
+                {
+                    double xDiff = newPos.X - dragPos.X;
+                    if (UseFixedTimeSpan)
+                    {
+                        FixedStartTime -= (float)(xDiff / HorizontalScale);
+                        FixedEndTime -= (float)(xDiff / HorizontalScale);
+                        dragPos = newPos;
+                        return;
+                    }
+                    HorizontalOffset -= xDiff / HorizontalScale;
+                }
+                else
+                {
+                    double yDiff = newPos.Y - dragPos.Y;
+                    VerticalOffset += yDiff / VerticalScale;
+                }
                 Paint();
                 dragPos = newPos;
             }
@@ -520,6 +589,7 @@ namespace ME3Explorer.CurveEd
                 }
             }
         }
+
         /// <summary>
         /// Find a string in the stackframes.
         /// </summary>
@@ -558,9 +628,24 @@ namespace ME3Explorer.CurveEd
         public void Clear()
         {
             SelectedCurve = new Curve();
+            ComparisonCurve = null;
             Paint(true);
             xTextBox.Clear();
             yTextBox.Clear();
+        }
+
+        private void UpdateScalingFromFixedTimeSpan()
+        {
+            if(UseFixedTimeSpan)
+            {
+                HorizontalOffset = FixedStartTime;
+                float diff = Math.Abs(FixedEndTime - FixedStartTime); //No negative values!
+                if (diff < 0.1f)
+                {
+                    diff = 0.1f; //No super tiny values!
+                }
+                HorizontalScale = graph.ActualWidth / diff;
+            }
         }
 
         private bool _useFixedTimeSpan;
@@ -584,7 +669,8 @@ namespace ME3Explorer.CurveEd
             {
                 if (SetProperty(ref _fixedStartTime, value))
                 {
-                    Paint(true);
+                    UpdateScalingFromFixedTimeSpan();
+                    Paint();
                 }
             }
         }
@@ -597,7 +683,21 @@ namespace ME3Explorer.CurveEd
             {
                 if (SetProperty(ref _fixedEndTime, value))
                 {
-                    Paint(true);
+                    UpdateScalingFromFixedTimeSpan();
+                    Paint();
+                }
+            }
+        }
+
+        private bool _showReferenceCurve = true;
+        public bool ShowReferenceCurve
+        {
+            get => _showReferenceCurve;
+            set
+            {
+                if (SetProperty(ref _showReferenceCurve, value))
+                {
+                    Paint();
                 }
             }
         }

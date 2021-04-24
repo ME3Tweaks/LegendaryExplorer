@@ -36,6 +36,7 @@ using ME3ExplorerCore.Unreal.BinaryConverters;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Image = System.Drawing.Image;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Kismet;
 using ME3ExplorerCore.Misc;
 
 namespace ME3Explorer.Sequence_Editor
@@ -137,9 +138,11 @@ namespace ME3Explorer.Sequence_Editor
         public ICommand KismetLogCommand { get; set; }
         public ICommand KismetLogCurrentSequenceCommand { get; set; }
         public ICommand SearchCommand { get; set; }
+        public ICommand ForceReloadPackageCommand { get; set; }
 
         private void LoadCommands()
         {
+            ForceReloadPackageCommand = new GenericCommand(ForceReloadPackageWithoutSharing, PackageIsLoaded);
             OpenCommand = new GenericCommand(OpenPackage);
             SaveCommand = new GenericCommand(SavePackage, PackageIsLoaded);
             SaveAsCommand = new GenericCommand(SavePackageAs, PackageIsLoaded);
@@ -450,7 +453,7 @@ namespace ME3Explorer.Sequence_Editor
             return Pcc != null;
         }
 
-        public void LoadFile(string fileName)
+        private void preloadPackage(string filePath, long packageSize)
         {
             try
             {
@@ -458,8 +461,20 @@ namespace ME3Explorer.Sequence_Editor
                 CurrentObjects.ClearEx();
                 SequenceExports.ClearEx();
                 SelectedObjects.ClearEx();
-                LoadMEPackage(fileName);
-                CurrentFile = Path.GetFileName(fileName);
+            }
+            catch (Exception ex) when (!App.IsDebug)
+            {
+                MessageBox.Show(this, "Package Pre-Load Error:\n" + ex.Message);
+                Title = "Sequence Editor";
+                CurrentFile = null;
+                UnLoadMEPackage();
+            }
+        }
+
+        public void postloadPackage(string filePath)
+        {
+            try
+            {
                 LoadSequences();
                 if (TreeViewRootNodes.IsEmpty())
                 {
@@ -472,10 +487,7 @@ namespace ME3Explorer.Sequence_Editor
                 graphEditor.nodeLayer.RemoveAllChildren();
                 graphEditor.edgeLayer.RemoveAllChildren();
 
-                RecentsController.AddRecent(fileName, false);
-                RecentsController.SaveRecentList(true);
-
-                Title = $"Sequence Editor - {fileName}";
+                Title = $"Sequence Editor - {filePath}";
                 StatusText = null; //no status
 
                 commonToolBox.Classes = SequenceObjectCreator.GetCommonObjects(Pcc.Game).OrderBy(info => info.ClassName).ToList();
@@ -483,6 +495,53 @@ namespace ME3Explorer.Sequence_Editor
                 actionsToolBox.Classes = SequenceObjectCreator.GetSequenceActions(Pcc.Game).OrderBy(info => info.ClassName).ToList();
                 conditionsToolBox.Classes = SequenceObjectCreator.GetSequenceConditions(Pcc.Game).OrderBy(info => info.ClassName).ToList();
                 variablesToolBox.Classes = SequenceObjectCreator.GetSequenceVariables(Pcc.Game).OrderBy(info => info.ClassName).ToList();
+            }
+            catch (Exception ex) when (!App.IsDebug)
+            {
+                MessageBox.Show(this, "Package Post-Load Error:\n" + ex.Message);
+                Title = "Sequence Editor";
+                CurrentFile = null;
+                UnLoadMEPackage();
+            }
+        }
+
+        public void LoadFileFromStream(Stream stream, string associatedFilePath, int goToIndex = 0)
+        {
+            try
+            {
+                var currentFile = Path.GetFileName(associatedFilePath);
+                preloadPackage(currentFile, stream.Length);
+                LoadMEPackage(stream, associatedFilePath);
+                CurrentFile = currentFile;
+                postloadPackage(associatedFilePath);
+                if (goToIndex != 0 && Pcc.TryGetUExport(goToIndex, out var exp))
+                {
+                    GoToExport(exp);
+                }
+
+            }
+            catch (Exception ex) when (!App.IsDebug)
+            {
+                MessageBox.Show(this, "Package Stream-Load Error:\n" + ex.Message);
+                Title = "Sequence Editor";
+                CurrentFile = null;
+                UnLoadMEPackage();
+            }
+        }
+
+        public void LoadFile(string fileName)
+        {
+            try
+            {
+                preloadPackage(fileName, 0); // We don't show the size so don't bother
+                LoadMEPackage(fileName);
+                CurrentFile = Path.GetFileName(fileName);
+
+                // Streams don't work for recents
+                RecentsController.AddRecent(fileName, false);
+                RecentsController.SaveRecentList(true);
+
+                postloadPackage(fileName);
 
             }
             catch (Exception ex) when (!App.IsDebug)
@@ -728,12 +787,30 @@ namespace ME3Explorer.Sequence_Editor
             var seqObjs = export.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
             if (seqObjs != null)
             {
+                // Resolve imports
+                //var convertedImports = new List<ExportEntry>();
+                //var imports = seqObjs.Where(x => x.Value < 0).Select(x => x.ResolveToEntry(export.FileRef) as ImportEntry);
+
+                //foreach (var import in imports)
+                //{
+                //    var resolved = EntryImporter.ResolveImport(import);
+                //    if (resolved != null)
+                //    {
+                //        convertedImports.Add(resolved);
+                //    }
+                //}
+
+                var nullCount = seqObjs.Count(x => x.Value == 0);
+
                 CurrentObjects.AddRange(seqObjs.OrderBy(prop => prop.Value)
                                                .Where(prop => Pcc.IsUExport(prop.Value))
                                                .Select(prop => Pcc.GetUExport(prop.Value))
                                                .ToHashSet() //remove duplicate exports
                                                .Select(LoadObject));
-                if (CurrentObjects.Count != seqObjs.Count)
+                //CurrentObjects.AddRange(convertedImports.Select(LoadObject));
+
+                // Subtrack imports. But they should be shown still
+                if (CurrentObjects.Count != (seqObjs.Count - nullCount))
                 {
                     MessageBox.Show(this, "Sequence contains invalid or duplicate exports! Correct this by editing the SequenceObject array in the Interpreter");
                 }
@@ -796,6 +873,26 @@ namespace ME3Explorer.Sequence_Editor
             else //if (s.StartsWith("BioSeqAct_") || s.StartsWith("SeqAct_") || s.StartsWith("SFXSeqAct_") || s.StartsWith("SeqCond_") || pcc.getExport(index).ClassName == "Sequence" || pcc.getExport(index).ClassName == "SequenceReference")
             {
                 return new SAction(export, x, y, graphEditor);
+            }
+        }
+
+        /// <summary>
+        /// Forcibly reloads the package from disk. The package loaded in this instance will no longer be shared.
+        /// </summary>
+        private void ForceReloadPackageWithoutSharing()
+        {
+            var fileOnDisk = Pcc.FilePath;
+            if (fileOnDisk != null && File.Exists(fileOnDisk))
+            {
+                if (Pcc.IsModified)
+                {
+                    var warningResult = MessageBox.Show(this, "The current package is modified. Reloading the package will cause you to lose all changes to this package.\n\nReload anyways?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                    if (warningResult != MessageBoxResult.Yes)
+                        return; // Do not continue!
+                }
+                var selectedIndex = (CurrentObjects_ListBox.SelectedItem as SObj)?.Export.UIndex ?? 0;
+                using var fStream = File.OpenRead(fileOnDisk);
+                LoadFileFromStream(fStream, fileOnDisk, selectedIndex);
             }
         }
 

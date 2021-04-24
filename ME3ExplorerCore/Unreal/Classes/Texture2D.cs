@@ -7,6 +7,7 @@ using System.Linq;
 using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Memory;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 
@@ -50,7 +51,7 @@ namespace ME3ExplorerCore.Unreal.Classes
                 {
                     guidOffsetFromEnd += 4;
                 }
-                TextureGuid = new Guid(Export.Data.Skip(Export.Data.Length - guidOffsetFromEnd).Take(16).ToArray());
+                TextureGuid = new Guid(Export.DataReadOnly.Skip(Export.DataSize - guidOffsetFromEnd).Take(16).ToArray());
             }
         }
 
@@ -142,7 +143,7 @@ namespace ME3ExplorerCore.Unreal.Classes
 
         public byte[] SerializeNewData()
         {
-            MemoryStream ms = new MemoryStream();
+            using MemoryStream ms = MemoryManager.GetMemoryStream();
             if (Export.FileRef.Game != MEGame.ME3)
             {
                 for (int i = 0; i < 12; i++)

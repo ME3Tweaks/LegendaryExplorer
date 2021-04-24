@@ -1,23 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using Unrealscript.Analysis.Symbols;
-using Unrealscript.Analysis.Visitors;
-using Unrealscript.Compiling.Errors;
-using Unrealscript.Language.Tree;
-using Unrealscript.Language.Util;
-using Unrealscript.Lexing;
-using Unrealscript.Lexing.Tokenizing;
-using Unrealscript.Utilities;
-using static Unrealscript.Utilities.Keywords;
+using ME3ExplorerCore.UnrealScript.Analysis.Symbols;
+using ME3ExplorerCore.UnrealScript.Analysis.Visitors;
+using ME3ExplorerCore.UnrealScript.Compiling.Errors;
+using ME3ExplorerCore.UnrealScript.Language.Tree;
+using ME3ExplorerCore.UnrealScript.Language.Util;
+using ME3ExplorerCore.UnrealScript.Lexing;
+using ME3ExplorerCore.UnrealScript.Lexing.Tokenizing;
+using ME3ExplorerCore.UnrealScript.Utilities;
+using static ME3ExplorerCore.UnrealScript.Utilities.Keywords;
 
-namespace Unrealscript.Parsing
+namespace ME3ExplorerCore.UnrealScript.Parsing
 {
     public class CodeBodyParser : StringParserBase
     {
@@ -471,6 +470,19 @@ namespace Unrealscript.Parsing
             if (type == null) throw ParseError($"Expected variable type after '{LOCAL}'!", CurrentPosition);
             type.Outer = Body;
             if (!Symbols.TryResolveType(ref type)) TypeError($"The type '{type.Name}' does not exist in the current scope!", type);
+            if (type is Enumeration)
+            {
+                PrevToken.SyntaxType = EF.Enum;
+                PrevToken.AssociatedNode = type;
+            }
+            else if (PrevToken.Type == TokenType.RightArrow)
+            {
+                Tokens.Prev(2).AssociatedNode = type;
+            }
+            else
+            {
+                PrevToken.AssociatedNode = type;
+            }
 
             var var = ParseVariableName();
             if (var == null) throw ParseError("Malformed or missing variable name!", CurrentPosition);
@@ -1893,6 +1905,7 @@ namespace Unrealscript.Parsing
                     if (Symbols.TryGetType(limiter.Value, out VariableType destType) && destType is Class limiterType)
                     {
                         limiter.SyntaxType = EF.TypeName;
+                        limiter.AssociatedNode = limiterType;
                         if (!Matches(TokenType.LeftParenth))
                         {
                             throw ParseError("Expected '(' at start of cast!", CurrentPosition);
@@ -2097,6 +2110,8 @@ namespace Unrealscript.Parsing
                     {
                         throw ParseError($"'{vartype.Name}' is not a class!", className);
                     }
+
+                    className.AssociatedNode = super;
                     superSpecifier = super;
                     superClass = super;
                     if (!Self.SameAsOrSubClassOf(superClass.Name))
@@ -2153,6 +2168,7 @@ namespace Unrealscript.Parsing
                 specificScope = $"{stateClass.GetInheritanceString()}.{state.Name}";
                 if (Symbols.TryGetSymbolInScopeStack(functionName.Value, out ASTNode funcNode, specificScope) && funcNode is Function)
                 {
+                    functionName.AssociatedNode = funcNode;
                     return new SymbolReference(funcNode, functionName.Value, functionName.StartPos, functionName.EndPos)
                     {
                         IsSuper = true
@@ -2173,6 +2189,7 @@ namespace Unrealscript.Parsing
                 TypeError($"Expected function name after '{SUPER}'!", functionName);
             }
 
+            functionName.AssociatedNode = symbol;
             return new SymbolReference(symbol, functionName.Value, functionName.StartPos, functionName.EndPos)
             {
                 IsSuper = true,
@@ -2289,12 +2306,14 @@ namespace Unrealscript.Parsing
                 //primitive or dynamic cast, or enum
                 if (!isDefaultRef && Symbols.TryGetType(token.Value, out VariableType destType))
                 {
+                    token.AssociatedNode = destType;
                     if (destType is Enumeration enm && Matches(TokenType.Dot))
                     {
                         token.SyntaxType = EF.Enum;
                         if (Consume(TokenType.Word) is {} enumValName 
                          && enm.Values.FirstOrDefault(val => val.Name.CaseInsensitiveEquals(enumValName.Value)) is EnumValue enumValue)
                         {
+                            enumValName.AssociatedNode = enm;
                             return NewSymbolReference(enumValue, enumValName, false);
                         }
                         throw ParseError("Expected valid enum value!", CurrentPosition);
@@ -2331,6 +2350,7 @@ namespace Unrealscript.Parsing
                 symRef = new SymbolReference(symbol, token.Value, token.StartPos, token.EndPos);
             }
 
+            token.AssociatedNode = symbol;
             if (symRef.Node is Function)
             {
                 token.SyntaxType = EF.Function;
@@ -2406,11 +2426,17 @@ namespace Unrealscript.Parsing
             {
                 if (isClassLiteral)
                 {
+                    objName.AssociatedNode = classType;
                     classType = new ClassType(classType);
                 }
-                else if (cls.SameAsOrSubClassOf("Actor"))
+                else
                 {
-                    TypeError("Object constants must not be Actors!", className);
+                    if (cls.SameAsOrSubClassOf("Actor"))
+                    {
+                        TypeError("Object constants must not be Actors!", className);
+                    }
+
+                    className.AssociatedNode = classType;
                 }
                 
 

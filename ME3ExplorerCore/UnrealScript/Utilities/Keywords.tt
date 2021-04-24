@@ -73,7 +73,7 @@
         "goto"
     };
 #>
-namespace ME3Script.Utilities
+namespace ME3ExplorerCore.UnrealScript.Utilities
 {
 	public static class Keywords
 	{

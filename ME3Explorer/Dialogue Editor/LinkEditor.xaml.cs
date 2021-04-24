@@ -281,7 +281,7 @@ namespace ME3Explorer.Dialogue_Editor
 
                 if (string.IsNullOrEmpty(rdlg))
                     return;
-                rc = Enums.Parse<EBCReplyCategory>(rdlg);
+                rc = Enums.Parse<EReplyCategory>(rdlg);
                 editLink.RCategory = rc;
             }
             ParseLink(editLink);

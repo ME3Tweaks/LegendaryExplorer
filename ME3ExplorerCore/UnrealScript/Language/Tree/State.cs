@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using Unrealscript.Analysis.Visitors;
-using Unrealscript.Language.Util;
-using Unrealscript.Utilities;
+using ME3ExplorerCore.UnrealScript.Analysis.Visitors;
+using ME3ExplorerCore.UnrealScript.Language.Util;
+using ME3ExplorerCore.UnrealScript.Utilities;
 
-namespace Unrealscript.Language.Tree
+namespace ME3ExplorerCore.UnrealScript.Language.Tree
 {
-    public class State : ASTNode, IContainsByteCode
+    public class State : ASTNode, IContainsByteCode, IHasFileReference
     {
         public StateFlags Flags;
-        public string Name;
+        public string Name { get; }
         public CodeBody Body { get; set; }
         public State Parent;
         public List<Function> Functions;
@@ -45,5 +45,8 @@ namespace Unrealscript.Language.Tree
                 if (Ignores != null) foreach (Function function in Ignores) yield return function;
             }
         }
+
+        public string FilePath { get; init; }
+        public int UIndex { get; init; }
     }
 }

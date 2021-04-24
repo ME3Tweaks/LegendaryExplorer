@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Memory;
 using ME3ExplorerCore.TLK.ME1;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.Classes;
@@ -20,7 +21,7 @@ namespace ME3ExplorerCore.Packages
         public MELocalization Localization => MELocalization.None;
         public byte[] getHeader()
         {
-            var ms = new MemoryStream();
+            using var ms = MemoryManager.GetMemoryStream();
             WriteHeader(ms);
             return ms.ToArray();
         }
@@ -97,7 +98,7 @@ namespace ME3ExplorerCore.Packages
         }
 
 
-        public static Action<UDKPackage, string, bool> RegisterSaver() => saveByReconstructing;
+        public static Action<UDKPackage, string, bool, object> RegisterSaver() => saveByReconstructing;
 
 
         /// <summary>
@@ -106,6 +107,9 @@ namespace ME3ExplorerCore.Packages
         /// <param name="filePath">full path + file name of desired udk file.</param>
         private UDKPackage(string filePath) : base(filePath != null ? Path.GetFullPath(filePath) : null)
         {
+            names = new List<string>();
+            imports = new List<ImportEntry>();
+            exports = new List<ExportEntry>();
             folderName = "None";
             engineVersion = 12791;
             //reasonable defaults?
@@ -189,6 +193,7 @@ namespace ME3ExplorerCore.Packages
                                                      //through to methods that can use endianness
 
             inStream.JumpTo(NameOffset);
+            names = new List<string>(NameCount);
             for (int i = 0; i < NameCount; i++)
             {
                 var name = inStream.ReadUnrealString();
@@ -198,6 +203,7 @@ namespace ME3ExplorerCore.Packages
             }
 
             inStream.JumpTo(ImportOffset);
+            imports = new List<ImportEntry>(ImportCount);
             for (int i = 0; i < ImportCount; i++)
             {
                 ImportEntry imp = new ImportEntry(this, reader) { Index = i };
@@ -207,6 +213,7 @@ namespace ME3ExplorerCore.Packages
 
             //read exportTable (ExportEntry constructor reads export data)
             inStream.JumpTo(ExportOffset);
+            exports = new List<ExportEntry>(ExportCount);
             for (int i = 0; i < ExportCount; i++)
             {
                 ExportEntry e = new ExportEntry(this, reader) { Index = i };
@@ -215,10 +222,23 @@ namespace ME3ExplorerCore.Packages
             }
         }
 
-        private static void saveByReconstructing(UDKPackage udkPackage, string path, bool isSaveAs)
+        private static void saveByReconstructing(UDKPackage udkPackage, string path, bool isSaveAs, object diskIOSyncLock = null)
         {
             var datastream = udkPackage.SaveToStream(false);
-            datastream.WriteToFile(path ?? udkPackage.FilePath);
+            // Lock writing with the sync object (if not null) to prevent disk concurrency issues
+            // (the good old 'This file is in use by another process' message)
+            if (diskIOSyncLock == null)
+            {
+                datastream.WriteToFile(path ?? udkPackage.FilePath);
+            }
+            else
+            {
+                lock (diskIOSyncLock)
+                {
+                    datastream.WriteToFile(path ?? udkPackage.FilePath);
+                }
+            }
+
 
             if (!isSaveAs)
             {
@@ -249,7 +269,7 @@ namespace ME3ExplorerCore.Packages
                 }
             }
 
-            var ms = new MemoryStream();
+            var ms = MemoryManager.GetMemoryStream();
 
             //just for positioning. We write over this later when the header values have been updated
             WriteHeader(ms);

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using Unrealscript.Analysis.Visitors;
-using Unrealscript.Utilities;
+using ME3ExplorerCore.UnrealScript.Analysis.Visitors;
+using ME3ExplorerCore.UnrealScript.Utilities;
 
-namespace Unrealscript.Language.Tree
+namespace ME3ExplorerCore.UnrealScript.Language.Tree
 {
-    public class VariableType : ASTNode
+    public class VariableType : ASTNode, IHasFileReference
     {
-        public string Name;
+        public string Name { get; }
         public ASTNode Declaration;
         public virtual ASTNodeType NodeType => Declaration?.Type ?? ASTNodeType.INVALID;
 
@@ -61,5 +61,15 @@ namespace Unrealscript.Language.Tree
 
             return Name;
         }
+
+        public string FilePath { get; init; }
+        public int UIndex { get; init; }
+    }
+
+    public interface IHasFileReference
+    {
+        public string Name { get; }
+        public string FilePath { get; }
+        public int UIndex { get; }
     }
 }

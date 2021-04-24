@@ -1,4 +1,4 @@
-﻿namespace Unrealscript.Utilities
+﻿namespace ME3ExplorerCore.UnrealScript.Utilities
 {
     public class SourcePosition
     {

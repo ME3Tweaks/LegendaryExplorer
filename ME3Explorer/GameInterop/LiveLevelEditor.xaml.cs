@@ -18,6 +18,8 @@ using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.SharpDX;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
+using InterpCurveVector = ME3ExplorerCore.Unreal.BinaryConverters.InterpCurve<ME3ExplorerCore.SharpDX.Vector3>;
+using InterpCurveFloat = ME3ExplorerCore.Unreal.BinaryConverters.InterpCurve<float>;
 
 namespace ME3Explorer.GameInterop
 {
@@ -783,8 +785,8 @@ namespace ME3Explorer.GameInterop
                 var pov = (POV)((System.Windows.Controls.Button)sender).DataContext;
 
                 var props = interpTrackMove.GetProperties();
-                var interpCurvePos = InterpCurve<Vector3>.FromStructProperty(props.GetProp<StructProperty>("PosTrack"));
-                var interpCurveRot = InterpCurve<Vector3>.FromStructProperty(props.GetProp<StructProperty>("EulerTrack"));
+                var interpCurvePos = InterpCurveVector.FromStructProperty(props.GetProp<StructProperty>("PosTrack"));
+                var interpCurveRot = InterpCurveVector.FromStructProperty(props.GetProp<StructProperty>("EulerTrack"));
 
                 interpCurvePos.AddPoint(time, pov.Position, Vector3.Zero, Vector3.Zero, EInterpCurveMode.CIM_CurveUser);
                 interpCurveRot.AddPoint(time, pov.Rotation, Vector3.Zero, Vector3.Zero, EInterpCurveMode.CIM_CurveUser);
@@ -793,7 +795,7 @@ namespace ME3Explorer.GameInterop
                 props.AddOrReplaceProp(interpCurveRot.ToStructProperty(Game, "EulerTrack"));
                 interpTrackMove.WriteProperties(props);
 
-                var floatTrack = InterpCurve<float>.FromStructProperty(fovTrackExport.GetProperty<StructProperty>("FloatTrack"));
+                var floatTrack = InterpCurveFloat.FromStructProperty(fovTrackExport.GetProperty<StructProperty>("FloatTrack"));
                 floatTrack.AddPoint(time, pov.FOV, 0, 0, EInterpCurveMode.CIM_CurveUser);
                 fovTrackExport.WriteProperty(floatTrack.ToStructProperty(Game, "FloatTrack"));
 

@@ -10,11 +10,13 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
     {
         public ScriptStructFlags StructFlags;
         public PropertyCollection Defaults; //I'm assuming any ObjectProperties in here are set to 0, so relinking will be unnecesary
+        public long DefaultsStartPosition = -1;
 
         protected override void Serialize(SerializingContainer2 sc)
         {
             base.Serialize(sc);
             sc.Serialize(ref StructFlags);
+            DefaultsStartPosition = sc.ms.Position;
             if (sc.IsLoading)
             {
                 Defaults = PropertyCollection.ReadProps(Export, sc.ms.BaseStream, Export.ObjectName, includeNoneProperty: true, entry: Export);

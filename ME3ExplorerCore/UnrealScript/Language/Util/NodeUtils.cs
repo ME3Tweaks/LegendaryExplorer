@@ -1,10 +1,10 @@
 ﻿using System;
 using ME3ExplorerCore.Helpers;
-using Unrealscript.Analysis.Symbols;
-using Unrealscript.Language.Tree;
-using Unrealscript.Utilities;
+using ME3ExplorerCore.UnrealScript.Analysis.Symbols;
+using ME3ExplorerCore.UnrealScript.Language.Tree;
+using ME3ExplorerCore.UnrealScript.Utilities;
 
-namespace Unrealscript.Language.Util
+namespace ME3ExplorerCore.UnrealScript.Language.Util
 {
     public static class NodeUtils
     {

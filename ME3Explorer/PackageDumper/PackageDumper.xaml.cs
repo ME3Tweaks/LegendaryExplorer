@@ -22,6 +22,7 @@ using ME3ExplorerCore.ME1.Unreal.UnhoodBytecode;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.Unreal.Classes;
 using Microsoft.WindowsAPICodePack.Taskbar;
 
@@ -607,7 +608,12 @@ namespace ME3Explorer.PackageDumper
                             CurrentFileProgressValue = exp.UIndex;
                             //bool isCoalesced = coalesced && exp.likelyCoalescedVal;
                             string className = exp.ClassName;
-                            bool isCoalesced = exp.ReadsFromConfig;
+                            bool isCoalesced = false;
+                            if (exp.HasStack)
+                            {
+                                var objectFlags = exp.GetPropertyFlags();
+                                isCoalesced = objectFlags != null && objectFlags.Value.HasFlag(UnrealFlags.EPropertyFlags.Config);
+                            }
                             bool isScript = (className == "Function");
                             //int progress = ((int)(((double)numDone / numTotal) * 100));
                             //while (progress >= (lastProgress + 10))

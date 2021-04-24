@@ -2,9 +2,9 @@
 [![Build Status](https://dev.azure.com/ME3Tweaks/ME3Explorer/_apis/build/status/ME3Tweaks.ME3Explorer?branchName=Beta)](https://dev.azure.com/ME3Tweaks/ME3Explorer/_build/latest?definitionId=2&branchName=Beta)
 [![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/ME3Tweaks/ME3Explorer/2)](https://dev.azure.com/ME3Tweaks/ME3Explorer/_build?definitionId=2)
 
-ME3Explorer is a fan-made modding toolkit for _Mass Effect 3_ on the PC. It has limited support for both _Mass Effect_ and _Mass Effect 2_. ME3Explorer does not support Mass Effect games on any other platforms.
+ME3Explorer is a fan-made modding toolkit for the original _Mass Effect Trilogy_ on PC. ME3Explorer does not support modding Mass Effect games designed for other platforms.
 
-This fork is updated by ME3Tweaks and contains bleeding edge features for developers. Development is done on the [beta branch](https://github.com/Mgamerz/ME3Explorer/tree/Beta), and releases are merged into the [master](https://github.com/Mgamerz/ME3Explorer/tree/master) branch. This fork is not affiliated with the upstream version of ME3Explorer and is the only actively maintained version of the toolset.
+This fork is updated by ME3Tweaks and contains bleeding edge features for developers. Development is done on the [beta branch](https://github.com/Mgamerz/ME3Explorer/tree/Beta), and releases are merged into the [master](https://github.com/Mgamerz/ME3Explorer/tree/master) branch.
 
 ## New to modding?
 [Check out our github wiki](https://github.com/ME3Tweaks/ME3Explorer/wiki) which has tutorials on various modding subjects. Want to contribute? Sign up for github and start writing tutorials today for other users.
@@ -23,7 +23,7 @@ Some highlights of features that were developed on this fork:
  - WPF rewrites of multiple tools to use a more modern design language - better DPI scaling, more features. These include PackageEditorWPF (and its contents), and SoundplorerWPF, with more on the way. All of these tools are being completely rewritten.
  - Many more not listed here
   
-You can get these releases in Mass Effect 3 Mod Manager from the tools menu, or you can download from the releases tab above. Come to the ME3Tweaks Discord to talk with the developers.
+You can get these releases in ME3Tweaks Mod Manager's Tools menu, or you can download from the releases tab above. Come to the ME3Tweaks Discord to talk with the developers. You can download nightlies from within Mod Manager as well.
 
 ## Enhanced by JetBrains
 JetBrains has kindly given us several open source licenses for their tools that allow us to create better modding tools for you. Thanks, JetBrains!
@@ -36,4 +36,4 @@ JetBrains has kindly given us several open source licenses for their tools that 
 Want to build the toolset yourself? [Read the guide on how to do so, it's very easy to do](https://github.com/ME3Tweaks/ME3Explorer/wiki/How-to-build-the-toolset-from-source).
 
 ## License
-The ME3Tweaks fork of ME3Explorer is licensed under GPLv3.
+ME3Explorer - ME3Tweaks Fork is licensed under GPLv3.

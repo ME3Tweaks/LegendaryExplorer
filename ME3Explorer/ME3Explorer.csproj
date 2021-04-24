@@ -115,8 +115,8 @@
     <Reference Include="JetBrains.Profiler.Api, Version=1.1.7.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrains.Profiler.Api.1.1.7\lib\net471\JetBrains.Profiler.Api.dll</HintPath>
     </Reference>
-    <Reference Include="JetBrains.Profiler.SelfApi, Version=2.0.2.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\packages\JetBrains.Profiler.SelfApi.2.0.2\lib\net46\JetBrains.Profiler.SelfApi.dll</HintPath>
+    <Reference Include="JetBrains.Profiler.SelfApi, Version=2.1.1.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Profiler.SelfApi.2.1.1\lib\net46\JetBrains.Profiler.SelfApi.dll</HintPath>
     </Reference>
     <Reference Include="MessagePack, Version=2.2.0.0, Culture=neutral, PublicKeyToken=b4a0369545f0a1be, processorArchitecture=MSIL">
       <HintPath>..\packages\MessagePack.2.2.85\lib\netstandard2.0\MessagePack.dll</HintPath>
@@ -124,14 +124,14 @@
     <Reference Include="MessagePack.Annotations, Version=2.2.0.0, Culture=neutral, PublicKeyToken=b4a0369545f0a1be, processorArchitecture=MSIL">
       <HintPath>..\packages\MessagePack.Annotations.2.2.85\lib\netstandard2.0\MessagePack.Annotations.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AppCenter, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AppCenter.3.4.3\lib\net461\Microsoft.AppCenter.dll</HintPath>
+    <Reference Include="Microsoft.AppCenter, Version=0.0.0.0, Culture=neutral, PublicKeyToken=8a600e2fee7ba272, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AppCenter.4.2.0\lib\net461\Microsoft.AppCenter.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AppCenter.Analytics, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AppCenter.Analytics.3.4.3\lib\net461\Microsoft.AppCenter.Analytics.dll</HintPath>
+    <Reference Include="Microsoft.AppCenter.Analytics, Version=0.0.0.0, Culture=neutral, PublicKeyToken=8a600e2fee7ba272, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AppCenter.Analytics.4.2.0\lib\net461\Microsoft.AppCenter.Analytics.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AppCenter.Crashes, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AppCenter.Crashes.3.4.3\lib\net461\Microsoft.AppCenter.Crashes.dll</HintPath>
+    <Reference Include="Microsoft.AppCenter.Crashes, Version=0.0.0.0, Culture=neutral, PublicKeyToken=8a600e2fee7ba272, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AppCenter.Crashes.4.2.0\lib\net461\Microsoft.AppCenter.Crashes.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.1\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
@@ -145,8 +145,8 @@
     <Reference Include="NAudio, Version=1.9.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NAudio.1.9.0\lib\net35\NAudio.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="SharpDX, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
@@ -324,6 +324,12 @@
       <DependentUpon>AFCCompactorUI.xaml</DependentUpon>
     </Compile>
     <Compile Include="CoreLibSettingsBridge.cs" />
+    <Compile Include="FaceFXAnimSetEditor\LiveFaceFxEditor.cs" />
+    <Compile Include="ME3Script\IDE\DefinitionLinkGenerator.cs" />
+    <Compile Include="ME3Script\IDE\VisualLineDefinitionLinkText.cs" />
+    <Compile Include="SharedUI\ClassPickerDlg.xaml.cs">
+      <DependentUpon>ClassPickerDlg.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ME3ExpMemoryAnalyzer\MemoryAnalyzerObjectExtended.cs" />
     <Compile Include="ME3Script\IDE\ASTColorizer.cs" />
     <Compile Include="ME3Script\IDE\ASTHighlighter.cs" />
@@ -384,6 +390,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AnimationExplorer\AnimationViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SharedUI\ClassPickerDlg.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -556,7 +566,6 @@
     </Compile>
     <Compile Include="Scene3D\SceneRenderContext.cs" />
     <Compile Include="Scene3D\SceneRenderControlWPF.cs" />
-    <Compile Include="Sequence Editor\KismetHelper.cs" />
     <Compile Include="Sequence Editor\SequenceObjectCreator.cs" />
     <Compile Include="SharedUI\BindingProxy.cs" />
     <Compile Include="SharedUI\Converters\BoolEnabledConverter.cs" />

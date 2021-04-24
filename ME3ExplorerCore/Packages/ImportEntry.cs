@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Unreal;
@@ -27,6 +28,17 @@ namespace ME3ExplorerCore.Packages
         {
             FileRef = pccFile;
             Header = new byte[headerSize];
+        }
+
+        /// <summary>
+        /// Copy constructor. You should only use this if you know what you're doing. This is only used for duplicating objects in memory - do not attach to a package!
+        /// </summary>
+        /// <param name="imp"></param>
+        public ImportEntry(ImportEntry imp)
+        {
+            FileRef = imp.FileRef;
+            Index = imp.Index;
+            _header = imp.Header;
         }
 
         public long HeaderOffset { get; set; }
@@ -145,7 +157,6 @@ namespace ME3ExplorerCore.Packages
         public string FullPath => FileRef.IsEntry(idxLink) ? $"{ParentFullPath}.{ObjectName.Name}" : ObjectName.Name;
 
         public string ParentInstancedFullPath => FileRef.GetEntry(idxLink)?.InstancedFullPath ?? "";
-
         public string InstancedFullPath => FileRef.IsEntry(idxLink) ? $"{ParentInstancedFullPath}.{ObjectName.Instanced}" : ObjectName.Instanced;
 
         public bool HeaderChanged { get; set; }

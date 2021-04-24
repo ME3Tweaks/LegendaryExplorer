@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using Unrealscript.Analysis.Symbols;
-using Unrealscript.Analysis.Visitors;
-using Unrealscript.Utilities;
+using ME3ExplorerCore.UnrealScript.Analysis.Symbols;
+using ME3ExplorerCore.UnrealScript.Analysis.Visitors;
+using ME3ExplorerCore.UnrealScript.Utilities;
 
-namespace Unrealscript.Language.Tree
+namespace ME3ExplorerCore.UnrealScript.Language.Tree
 {
     public class DelegateComparison : Expression
     {

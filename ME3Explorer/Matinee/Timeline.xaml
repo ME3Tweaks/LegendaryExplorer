@@ -90,8 +90,9 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style x:Key="{x:Type TreeViewItem}"
-            TargetType="{x:Type TreeViewItem}">
+        <Style TargetType="{x:Type TreeViewItem}">
+            <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}" />
+            <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
             <Setter Property="Background"
                 Value="Transparent" />
             <Setter Property="HorizontalContentAlignment"
@@ -211,106 +212,175 @@
         </Style>
 
     </UserControl.Resources>
-    <Grid Background="#FF5C5C5C">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition Height="50"/>
-        </Grid.RowDefinitions>
-        <Canvas Grid.Column="0" Grid.Row="0" Background="#FF3C3C3C"/>
-        <Canvas Grid.Column="1" Grid.Row="1" Background="#FF505050" Name="Guide" Cursor="ScrollWE" ForceCursor="True"
-                PreviewMouseDown="Guide_OnPreviewMouseDown" PreviewMouseUp="Guide_OnPreviewMouseUp" PreviewMouseMove="Guide_OnPreviewMouseMove" MouseLeave="Guide_OnMouseLeave">
-            <Canvas.Resources>
-                <Style TargetType="{x:Type Line}">
-                    <Setter Property="StrokeThickness" Value="1"/>
-                    <Setter Property="Stroke" Value="#FF9C9C9C"/>
-                    <Setter Property="Y2" Value="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType=Canvas}}"/>
-                </Style>
-                <Style TargetType="Label">
-                    <Setter Property="Foreground" Value="#FFE0E0E0"/>
-                    <Setter Property="FontFamily" Value="/ME3Explorer;component/Resources/#FFF Hero"/>
-                    <Setter Property="FontSize" Value="10"/>
-                </Style>
-            </Canvas.Resources>
-        </Canvas>
-        <Canvas Grid.Column="0" Grid.Row="1" Background="Black"/>
-        <TreeView Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" ItemsSource="{Binding InterpGroups}" Background="{x:Null}" SelectedItemChanged="TreeView_SelectedItemChanged" Name="MatineeTree">
-            <TreeView.Resources>
-                <HierarchicalDataTemplate DataType="{x:Type local:InterpGroup}" ItemsSource="{Binding Tracks}">
-                    <Border BorderBrush="Black" BorderThickness="0 1 0 0" HorizontalAlignment="Stretch">
-                        <Grid HorizontalAlignment="Stretch" Height="24" Background="#FF818181">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="196"/>
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <Canvas Grid.Column="0">
-                                <TextBlock Text="{Binding GroupName}" Canvas.Left="25" Canvas.Top="3"/>
-                                <Rectangle Width="10" Height="24" Canvas.Right="0">
-                                    <Rectangle.Fill>
-                                        <SolidColorBrush Color="{Binding GroupColor}" />
-                                    </Rectangle.Fill>
-                                </Rectangle>
-                            </Canvas>
-                        </Grid>
-                    </Border>
-                </HierarchicalDataTemplate>
-                <DataTemplate DataType="{x:Type local:InterpTrack}">
-                    <Border BorderBrush="Black" BorderThickness="0 1" HorizontalAlignment="Stretch">
-                        <Grid HorizontalAlignment="Stretch" Height="24">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="196"/>
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <ItemsControl Grid.Column="1" ItemsSource="{Binding Keys}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <Canvas/>
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemContainerStyle>
-                                    <Style TargetType="local:Key">
-                                        <Setter Property="Canvas.Left">
+    <DockPanel>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Background="Black">
+            <StackPanel.Resources>
+                <SolidColorBrush x:Key="ToolBarButtonMouseOverColor" Color="#FFDC9700"/>
+                <SolidColorBrush x:Key="ToolBarButtonPressedColor" Color="#FFD67703"/>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Background" Value="#FF323232"/>
+                    <Setter Property="BorderBrush" Value="Transparent"/>
+                    <Setter Property="Foreground" Value="#FFC9C9C9"/>
+                    <Setter Property="FontSize" Value="14"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type Button}">
+                                <Grid Margin="1,1,1,1">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition Height="3"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="3"/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="3"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border x:Name="Bd" Grid.RowSpan="2"  Grid.ColumnSpan="3" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True" CornerRadius="5">
+                                    </Border>
+                                    <ContentPresenter x:Name="cPresenter" Grid.Column="1" Margin="{TemplateBinding BorderThickness}" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" RenderTransformOrigin="0.5,0.5">
+                                    </ContentPresenter>
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource ToolBarButtonMouseOverColor}"/>
+                                        <Setter Property="Background" TargetName="Bd" Value="{StaticResource ToolBarButtonMouseOverColor}"/>
+                                    </Trigger>
+                                    <Trigger Property="IsPressed" Value="True">
+                                        <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource ToolBarButtonPressedColor}"/>
+                                        <Setter Property="Background" TargetName="Bd" Value="{StaticResource ToolBarButtonPressedColor}"/>
+                                        <Setter Property="RenderTransform" TargetName="cPresenter">
                                             <Setter.Value>
-                                                <MultiBinding Converter="{StaticResource TimeToPositionConverter}">
-                                                    <Binding Path="Time" RelativeSource="{RelativeSource Self}"/>
-                                                    <Binding Path="Scale" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=UserControl}"/>
-                                                    <Binding Path="Offset" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=UserControl}"/>
-                                                </MultiBinding>
+                                                <TranslateTransform Y="1"/>
                                             </Setter.Value>
                                         </Setter>
-                                        <Setter Property="Canvas.ToolTip">
-                                            <Setter.Value>
-                                                <Binding Path="ToolTip" RelativeSource="{RelativeSource Self}"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </StackPanel.Resources>
+            <Button x:Name="btnConstant" Content="Add InterpGroup" Command="{Binding AddInterpGroupCmd}"
+                    sharedui:Bindings.VisibilityToEnabled="True"/>
+            <Button x:Name="btnLinear" Content="Add InterpGroupDirector" Command="{Binding AddInterpGroupCmd}" 
+                    CommandParameter="Director" sharedui:Bindings.VisibilityToEnabled="True"/>
+        </StackPanel>
+        <Grid Background="#FF5C5C5C">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="50" />
+            </Grid.RowDefinitions>
+            <Canvas Grid.Column="0" Grid.Row="0" Background="#FF3C3C3C" />
+            <Canvas Grid.Column="1" Grid.Row="1" Background="#FF505050" Name="Guide" Cursor="ScrollWE"
+                    ForceCursor="True"
+                    PreviewMouseDown="Guide_OnPreviewMouseDown" PreviewMouseUp="Guide_OnPreviewMouseUp"
+                    PreviewMouseMove="Guide_OnPreviewMouseMove" MouseLeave="Guide_OnMouseLeave">
+                <Canvas.Resources>
+                    <Style TargetType="{x:Type Line}">
+                        <Setter Property="StrokeThickness" Value="1" />
+                        <Setter Property="Stroke" Value="#FF9C9C9C" />
+                        <Setter Property="Y2"
+                                Value="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                    </Style>
+                    <Style TargetType="Label">
+                        <Setter Property="Foreground" Value="#FFE0E0E0" />
+                        <Setter Property="FontFamily" Value="/ME3Explorer;component/Resources/#FFF Hero" />
+                        <Setter Property="FontSize" Value="10" />
+                    </Style>
+                </Canvas.Resources>
+            </Canvas>
+            <Canvas Grid.Column="0" Grid.Row="1" Background="Black" />
+            <TreeView Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" ItemsSource="{Binding InterpGroups}"
+                      Background="{x:Null}" SelectedItemChanged="TreeView_SelectedItemChanged" Name="MatineeTree">
+                <TreeView.Resources>
+                    <HierarchicalDataTemplate DataType="{x:Type local:InterpGroup}" ItemsSource="{Binding Tracks}">
+                        <Border BorderBrush="Black" BorderThickness="0 1 0 0" HorizontalAlignment="Stretch">
+                            <Grid HorizontalAlignment="Stretch" Height="24" Background="#FF818181">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="196" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Canvas Grid.Column="0">
+                                    <TextBlock Text="{Binding GroupName}" Canvas.Left="25" Canvas.Top="3" />
+                                    <Rectangle Width="10" Height="24" Canvas.Right="0">
+                                        <Rectangle.Fill>
+                                            <SolidColorBrush Color="{Binding GroupColor}" />
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                </Canvas>
+                            </Grid>
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="PreviewMouseRightButtonDown">
+                                    <ei:ChangePropertyAction PropertyName="IsSelected" Value="true" TargetObject="{Binding}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Border>
+                    </HierarchicalDataTemplate>
+                    <DataTemplate DataType="{x:Type local:InterpTrack}">
+                        <Border BorderBrush="Black" BorderThickness="0 1" HorizontalAlignment="Stretch">
+                            <Grid HorizontalAlignment="Stretch" Height="24">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="196" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <ItemsControl Grid.Column="1" ItemsSource="{Binding Keys}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <Canvas />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemContainerStyle>
+                                        <Style TargetType="local:Key">
+                                            <Setter Property="Canvas.Left">
+                                                <Setter.Value>
+                                                    <MultiBinding Converter="{StaticResource TimeToPositionConverter}">
+                                                        <Binding Path="Time" RelativeSource="{RelativeSource Self}" />
+                                                        <Binding Path="Scale"
+                                                                 RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=UserControl}" />
+                                                        <Binding Path="Offset"
+                                                                 RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=UserControl}" />
+                                                    </MultiBinding>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Setter Property="Canvas.ToolTip">
+                                                <Setter.Value>
+                                                    <Binding Path="ToolTip" RelativeSource="{RelativeSource Self}" />
 
-                                            </Setter.Value>
-                                        </Setter>
-                                        <Setter Property="ToolTipService.InitialShowDelay" Value="0"/>
-                                        <Setter Property="Canvas.Bottom" Value="0" />
-                                        <!--<Setter Property="Cursor" Value="Hand"/>-->
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate>
-                                                    <Path Data="M -8 8 L 0 0 L 8 8 Z">
-                                                        <Path.Fill>
-                                                            <SolidColorBrush Color="#FF640000"/>
-                                                        </Path.Fill>
-                                                    </Path>
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
-                                </ItemsControl.ItemContainerStyle>
-                            </ItemsControl>
-                            <Canvas Grid.Column="0" Background="DarkGray">
-                                <TextBlock Text="{Binding TrackTitle}" Canvas.Left="30" Canvas.Top="3"/>
-                            </Canvas>
-                        </Grid>
-                    </Border>
-                </DataTemplate>
-                <!--<Style TargetType="{x:Type TreeViewItem}">
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Setter Property="ToolTipService.InitialShowDelay" Value="0" />
+                                            <Setter Property="Canvas.Bottom" Value="0" />
+                                            <!--<Setter Property="Cursor" Value="Hand"/>-->
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate>
+                                                        <Path Data="M -8 8 L 0 0 L 8 8 Z">
+                                                            <Path.Fill>
+                                                                <SolidColorBrush Color="#FF640000" />
+                                                            </Path.Fill>
+                                                        </Path>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </ItemsControl.ItemContainerStyle>
+                                </ItemsControl>
+                                <Canvas Grid.Column="0" Background="DarkGray">
+                                    <TextBlock Text="{Binding TrackTitle}" Canvas.Left="30" Canvas.Top="3" />
+                                </Canvas>
+                            </Grid>
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="PreviewMouseRightButtonDown">
+                                    <ei:ChangePropertyAction PropertyName="IsSelected" Value="true" TargetObject="{Binding}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Border>
+                    </DataTemplate>
+                    <!--<Style TargetType="{x:Type TreeViewItem}">
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type TreeViewItem}">
@@ -368,13 +438,17 @@
                     </Style.Triggers>
                 </Style>-->
 
-            </TreeView.Resources>
-            <TreeView.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Open Selection in Package Editor" Command="{Binding OpenSelection}" CommandParameter="Track"/>
-                    <MenuItem Header="Open InterpData in Package Editor" Command="{Binding OpenInterpData}" CommandParameter="Data"/>
-                </ContextMenu>
-            </TreeView.ContextMenu>
-        </TreeView>
-    </Grid>
+                </TreeView.Resources>
+                <TreeView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Add New InterpTrack" Command="{Binding AddTrackCmd}" sharedui:Bindings.VisibilityToEnabled="True"/>
+                        <MenuItem Header="Open Selection in Package Editor" Command="{Binding OpenSelection}"
+                                  CommandParameter="Track" />
+                        <MenuItem Header="Open InterpData in Package Editor" Command="{Binding OpenInterpData}"
+                                  CommandParameter="Data" />
+                    </ContextMenu>
+                </TreeView.ContextMenu>
+            </TreeView>
+        </Grid>
+    </DockPanel>
 </me3explorer:NotifyPropertyChangedControlBase>

@@ -2,13 +2,13 @@
 using System.Linq;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using Unrealscript.Analysis.Visitors;
-using Unrealscript.Language.Util;
-using Unrealscript.Utilities;
+using ME3ExplorerCore.UnrealScript.Analysis.Visitors;
+using ME3ExplorerCore.UnrealScript.Language.Util;
+using ME3ExplorerCore.UnrealScript.Utilities;
 
-namespace Unrealscript.Language.Tree
+namespace ME3ExplorerCore.UnrealScript.Language.Tree
 {
-    public class Function : ASTNode, IContainsByteCode
+    public class Function : ASTNode, IContainsByteCode, IHasFileReference
     {
         public string Name { get; }
         public CodeBody Body { get; set; }
@@ -89,5 +89,9 @@ namespace Unrealscript.Language.Tree
                 if (Body != null) yield return Body;
             }
         }
+
+
+        public string FilePath { get; init; }
+        public int UIndex { get; init; }
     }
 }

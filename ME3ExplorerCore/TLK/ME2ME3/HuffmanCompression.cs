@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Memory;
 using static ME3ExplorerCore.TLK.ME1.ME1TalkFile;
 
 namespace ME3ExplorerCore.TLK.ME2ME3
@@ -405,7 +406,7 @@ namespace ME3ExplorerCore.TLK.ME2ME3
 
         public static MemoryStream SaveToTlkStream(List<TLKStringRef> stringRefs)
         {
-            var memStream = new MemoryStream();
+            MemoryStream memStream = MemoryManager.GetMemoryStream();
             HuffmanCompression hc = new HuffmanCompression();
             if (stringRefs != null)
             {

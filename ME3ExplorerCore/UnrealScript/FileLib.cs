@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using ME3ExplorerCore;
 using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
-using Unrealscript.Analysis.Symbols;
+using ME3ExplorerCore.UnrealScript.Analysis.Symbols;
 
-namespace Unrealscript
+namespace ME3ExplorerCore.UnrealScript
 {
     public partial class FileLib : IPackageUser, IDisposable
     {
@@ -81,11 +80,11 @@ namespace Unrealscript
             try
             {
                 _symbols = Base.GetSymbolTable();
-                var files = EntryImporter.GetPossibleAssociatedFiles(Pcc, false);
+                var files = EntryImporter.GetPossibleAssociatedFiles(Pcc, includeNonBioPRelated: false);
                 var gameFiles = MELoadedFiles.GetFilesLoadedInGame(Pcc.Game);
                 foreach (var fileName in Enumerable.Reverse(files))
                 {
-                    if (gameFiles.TryGetValue(fileName, out string path) &&  File.Exists(path))
+                    if (gameFiles.TryGetValue(fileName, out string path) && File.Exists(path))
                     {
                         using var pcc = MEPackageHandler.OpenMEPackage(path);
                         if (!BaseLib.ResolveAllClassesInPackage(pcc, ref _symbols))
@@ -96,7 +95,7 @@ namespace Unrealscript
                 }
                 return BaseLib.ResolveAllClassesInPackage(Pcc, ref _symbols);
             }
-            catch (Exception e) when(!ME3ExplorerCoreLib.IsDebug)
+            catch (Exception e) when (!ME3ExplorerCoreLib.IsDebug)
             {
                 return false;
             }
@@ -161,7 +160,7 @@ namespace Unrealscript
             //TODO: invalidate this when changes are made to script objects in this file
             foreach (PackageUpdate update in updates.Where(u => u.Change.Has(PackageChange.Export)))
             {
-                if (ScriptUIndexes.Contains(update.Index) 
+                if (ScriptUIndexes.Contains(update.Index)
                  || Pcc.GetEntry(update.Index) is ExportEntry exp && (IsScriptExport(exp) || exp.ClassName == "Function"))
                 {
                     lock (initializationLock)

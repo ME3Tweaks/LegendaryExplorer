@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using Unrealscript.Analysis.Visitors;
-using Unrealscript.Parsing;
-using Unrealscript.Utilities;
+using ME3ExplorerCore.UnrealScript.Analysis.Visitors;
+using ME3ExplorerCore.UnrealScript.Parsing;
+using ME3ExplorerCore.UnrealScript.Utilities;
 
-namespace Unrealscript.Language.Tree
+namespace ME3ExplorerCore.UnrealScript.Language.Tree
 {
     public class ArraySymbolRef : SymbolReference
     {

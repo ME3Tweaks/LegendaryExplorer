@@ -15,6 +15,9 @@ using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
 using Color = System.Drawing.Color;
 using RectangleF = System.Drawing.RectangleF;
+using InterpCurveVector = ME3ExplorerCore.Unreal.BinaryConverters.InterpCurve<ME3ExplorerCore.SharpDX.Vector3>;
+using InterpCurveFloat = ME3ExplorerCore.Unreal.BinaryConverters.InterpCurve<float>;
+using InterpCurvePointFloat = ME3ExplorerCore.Unreal.BinaryConverters.InterpCurvePoint<float>;
 
 namespace ME3Explorer.SplineNodes
 {
@@ -277,8 +280,8 @@ namespace ME3Explorer.SplineNodes
     {
         public List<SplineParambleNode> nodes = new List<SplineParambleNode>();
         public List<PathfindingEditorEdge> edges = new List<PathfindingEditorEdge>();
-        public InterpCurve<Vector3> SplineInfo;
-        public InterpCurve<float> ReparamTable;
+        public InterpCurveVector SplineInfo;
+        public InterpCurveFloat ReparamTable;
         public ExportEntry NextActor;
 
         public Spline(ExportEntry component, PathingGraphEditor g, ExportEntry nextActor)
@@ -288,15 +291,15 @@ namespace ME3Explorer.SplineNodes
             StructProperty splineInfoProp = component.GetProperty<StructProperty>("SplineInfo");
             if (splineInfoProp != null)
             {
-                SplineInfo = InterpCurve<Vector3>.FromStructProperty(splineInfoProp);
+                SplineInfo = InterpCurveVector.FromStructProperty(splineInfoProp);
                 var reparamProp = component.GetProperty<StructProperty>("SplineReparamTable");
                 if (reparamProp != null)
                 {
-                    ReparamTable = InterpCurve<float>.FromStructProperty(reparamProp);
+                    ReparamTable = InterpCurveFloat.FromStructProperty(reparamProp);
                 }
                 else
                 {
-                    ReparamTable = new InterpCurve<float>();
+                    ReparamTable = new InterpCurveFloat();
                     RegenerateReparamTable();
                 }
 
@@ -308,7 +311,7 @@ namespace ME3Explorer.SplineNodes
         {
             for (int i = 0; i < ReparamTable.Points.Count; i++)
             {
-                InterpCurvePoint<float> reparamTablePoint = ReparamTable.Points[i];
+                InterpCurvePointFloat reparamTablePoint = ReparamTable.Points[i];
                 (float x, float y, _) = SplineInfo.Eval(reparamTablePoint.OutVal, Vector3.Zero);
                 var node = new SplineParambleNode(x, y, i == 6);
                 nodes.Add(node);

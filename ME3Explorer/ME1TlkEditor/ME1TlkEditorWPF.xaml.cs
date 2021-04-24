@@ -107,16 +107,18 @@ namespace ME3Explorer.ME1TlkEditor
         {
             if (DisplayedString_ListBox.SelectedItem is ME1TalkFile.TLKStringRef selectedItem)
             {
-                selectedItem.Data = editBox.Text.Trim();
+                selectedItem.Data = EditorString;
                 FileModified = true;
             }
         }
+
+        private string EditorString => editBox.Text.Trim().Replace("\r\n", "\n");
 
         private bool CanSaveString(object obj)
         {
             if (DisplayedString_ListBox == null) return false;
             var selectedItem = DisplayedString_ListBox.SelectedItem as ME1TalkFile.TLKStringRef;
-            return selectedItem?.Data != null && editBox.Text.Trim() != selectedItem.Data;
+            return selectedItem?.Data != null && EditorString != selectedItem.Data;
         }
 
         //SirC "efficiency is next to godliness" way of Checking export is ME1/TLK
@@ -385,7 +387,7 @@ namespace ME3Explorer.ME1TlkEditor
         public void LoadFileFromStream(Stream stream)
         {
             UnloadExport();
-            //CurrentLoadedFile = filepath;
+            CurrentLoadedFile = null;
             CurrentME2ME3TalkFile = new TalkFile();
             CurrentME2ME3TalkFile.LoadTlkDataFromStream(stream);
 
@@ -425,11 +427,17 @@ namespace ME3Explorer.ME1TlkEditor
             {
                 CurrentLoadedExport.FileRef.Save();
             }
-            else if (CurrentME2ME3TalkFile != null)
+            else if (CurrentME2ME3TalkFile is not null)
             {
+                if (CurrentLoadedFile is null)
+                {
+                    MessageBox.Show("Cannot save TLK File loaded from an SFAR. Use the Save As option to save your changes to a new file.");
+                    return;
+                }
                 // CurrentME2ME3TalkFile.
                 ME2ME3HuffmanCompression.SaveToTlkFile(CurrentME2ME3TalkFile.path, LoadedStrings);
-
+                CurrentME2ME3TalkFile = new TalkFile();
+                CurrentME2ME3TalkFile.LoadTlkData(CurrentLoadedFile);
                 FileModified = false; //you can only commit to file, not to export and then file in file mode.
             }
             //throw new NotImplementedException();
@@ -446,7 +454,7 @@ namespace ME3Explorer.ME1TlkEditor
                     CurrentLoadedExport.FileRef.Save(d.FileName);
                 }
             }
-            else if (CurrentME2ME3TalkFile != null)
+            else if (CurrentME2ME3TalkFile is not null)
             {
                 SaveFileDialog d = new() { Filter = $"ME2/ME3 talk files|*.tlk" };
                 if (d.ShowDialog() == true)
@@ -458,10 +466,7 @@ namespace ME3Explorer.ME1TlkEditor
             }
         }
 
-        public override bool CanSave()
-        {
-            return true;
-        }
+        public override bool CanSave() => CurrentLoadedExport is not null || CurrentME2ME3TalkFile is not null;
 
         internal override void RecentFile_click(object sender, RoutedEventArgs e)
         {

@@ -19,17 +19,18 @@
  *
  */
 
- /*
-  * This code use lzo2wrapper.dll copied from MassEffectModder:
-  * https://github.com/MassEffectModder/MassEffectModderLegacy/tree/master/MassEffectModder/Dlls
-  *
-  * The dll is created using LZO2 library and MassEffectModder wrapper code:
-  * https://github.com/MassEffectModder/MassEffectModderLegacy/tree/master/MassEffectModder/Helpers/LZO2
-  *
-  */
+/*
+ * This code use lzo2wrapper.dll copied from MassEffectModder:
+ * https://github.com/MassEffectModder/MassEffectModderLegacy/tree/master/MassEffectModder/Dlls
+ *
+ * The dll is created using LZO2 library and MassEffectModder wrapper code:
+ * https://github.com/MassEffectModder/MassEffectModderLegacy/tree/master/MassEffectModder/Helpers/LZO2
+ *
+ */
 
 using System;
 using System.Runtime.InteropServices;
+using ME3ExplorerCore.Memory;
 using ME3ExplorerCore.Packages;
 
 namespace ME3ExplorerCore.Compression
@@ -42,9 +43,10 @@ namespace ME3ExplorerCore.Compression
         [DllImport(CompressionHelper.COMPRESSION_WRAPPER_NAME, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern int LZOCompress([In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
 
-        public static uint Decompress(byte[] src, uint srcLen, byte[] dst)
+        public static uint Decompress(byte[] src, uint srcLen, byte[] dst, uint dstLen = 0)
         {
-            uint dstLen = (uint)dst.Length;
+            if (dstLen == 0)
+                dstLen = (uint)dst.Length;
 
             int status = LZODecompress(src, srcLen, dst, ref dstLen);
             if (status != 0)
@@ -55,16 +57,18 @@ namespace ME3ExplorerCore.Compression
 
         public static byte[] Compress(byte[] src)
         {
-            byte[] tmpbuf = new byte[src.Length + src.Length / 16 + 64 + 3];
+            var bufLen = src.Length + src.Length / 16 + 64 + 3;
+            byte[] tmpBuf = MemoryManager.GetByteArray(bufLen);
             uint dstLen = 0;
 
-            int status = LZOCompress(src, (uint)src.Length, tmpbuf, ref dstLen);
+            int status = LZOCompress(src, (uint)src.Length, tmpBuf, ref dstLen);
             if (status != 0)
                 return new byte[0];
 
             byte[] dst = new byte[dstLen];
-            Array.Copy(tmpbuf, dst, dstLen);
+            Array.Copy(tmpBuf, dst, dstLen);
 
+            MemoryManager.ReturnByteArray(tmpBuf);
             return dst;
         }
     }

@@ -16,12 +16,12 @@ using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using ME3Explorer.SharedUI;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
-using Unrealscript;
-using Unrealscript.Analysis.Visitors;
-using Unrealscript.Compiling.Errors;
-using Unrealscript.Language.Tree;
-using Unrealscript.Lexing.Tokenizing;
-using Unrealscript.Parsing;
+using ME3ExplorerCore.UnrealScript;
+using ME3ExplorerCore.UnrealScript.Analysis.Visitors;
+using ME3ExplorerCore.UnrealScript.Compiling.Errors;
+using ME3ExplorerCore.UnrealScript.Language.Tree;
+using ME3ExplorerCore.UnrealScript.Lexing.Tokenizing;
+using ME3ExplorerCore.UnrealScript.Parsing;
 
 namespace ME3Explorer.ME3Script.IDE
 {
@@ -67,6 +67,9 @@ namespace ME3Explorer.ME3Script.IDE
             BusyText = "Initializing Script Compiler";
 
             textEditor.TextArea.TextEntered += TextAreaOnTextEntered;
+            textEditor.TextArea.MouseDown += TextArea_MouseDown;
+            _definitionLinkGenerator = new DefinitionLinkGenerator();
+            textEditor.TextArea.TextView.ElementGenerators.Add(_definitionLinkGenerator);
         }
 
         public override bool CanParse(ExportEntry exportEntry) =>
@@ -158,6 +161,7 @@ namespace ME3Explorer.ME3Script.IDE
                 Document.TextChanged -= TextChanged;
             }
             textEditor.TextArea.TextEntered -= TextAreaOnTextEntered;
+            textEditor.TextArea.MouseDown -= TextArea_MouseDown;
         }
 
 
@@ -366,6 +370,18 @@ namespace ME3Explorer.ME3Script.IDE
                 {
                     textEditor.SyntaxHighlighting = syntaxInfo;
                 });
+                _definitionLinkGenerator.Reset();
+                if (ast is Function && FullyInitialized && CurrentLoadedExport.Parent is ExportEntry parentExport)
+                {
+                    (ASTNode func, MessageLog log) = UnrealScriptCompiler.CompileAST(text, CurrentLoadedExport.ClassName);
+
+                    if (func is Function function && log.AllErrors.IsEmpty())
+                    {
+                        (_, TokenStream<string> tokens) = UnrealScriptCompiler.CompileFunctionBodyAST(parentExport, text, function, log, CurrentFileLib);
+                        _definitionLinkGenerator.SetTokens(tokens);
+                    }
+                }
+
                 RootNode = ast;
                 ScriptText = text;
                 Dispatcher.Invoke(() =>
@@ -412,6 +428,7 @@ namespace ME3Explorer.ME3Script.IDE
                         ast.AcceptVisitor(codeBuilder);
                         (_, SyntaxInfo syntaxInfo) = codeBuilder.GetOutput();
 
+                        _definitionLinkGenerator.SetTokens(tokens);
                         if (tokens.Any())
                         {
                             int firstLine = tokens.First().StartPos.Line - 1;
@@ -479,6 +496,18 @@ namespace ME3Explorer.ME3Script.IDE
             // }
         }
 
+        private void TextArea_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (Keyboard.Modifiers.Has(ModifierKeys.Control))
+            {
+                var selection = textEditor.TextArea.Selection;
+                if (selection.Length == 0)
+                {
+                    
+                }
+            }
+        }
+
         private void CompileAST_OnClick(object sender, RoutedEventArgs e)
         {
             if (ScriptText != null)
@@ -515,6 +544,7 @@ namespace ME3Explorer.ME3Script.IDE
 
         private FoldingManager foldingManager;
         private readonly BraceFoldingStrategy foldingStrategy = new();
+        private readonly DefinitionLinkGenerator _definitionLinkGenerator;
 
         #endregion
     }
