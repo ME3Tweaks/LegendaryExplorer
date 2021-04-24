@@ -443,6 +443,14 @@ namespace ME3Explorer.CurveEd
                 addKey.Click += AddKey_Click;
                 cm.Items.Add(addKey);
 
+                MenuItem addKeyZero = new MenuItem
+                {
+                    Header = "Add Key with 0 Weight",
+                    Tag = e.GetPosition(graph)
+                };
+                addKeyZero.Click += AddKeyAtZero_Click;
+                cm.Items.Add(addKeyZero);
+
                 MenuItem offsetKeys = new MenuItem
                 {
                     Header = "Offset All Keys After This Point",
@@ -489,6 +497,13 @@ namespace ME3Explorer.CurveEd
             Point pos = (Point)(sender as MenuItem).Tag;
             double inVal = toUnrealX(pos.X);
             AddKey((float)inVal, (float)toUnrealY(ActualHeight - pos.Y));
+        }
+
+        private void AddKeyAtZero_Click(object sender, RoutedEventArgs e)
+        {
+            Point pos = (Point)(sender as MenuItem).Tag;
+            double inVal = toUnrealX(pos.X);
+            AddKey((float)inVal, 0);
         }
 
         private void AddKey(float time, float y)
