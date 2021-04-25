@@ -541,11 +541,11 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Plot Editor",
-                type = typeof(MassEffect.NativesEditor.Views.PlotEditor),
+                type = typeof(PlotEditor.PlotEditor),
                 icon = Application.Current.FindResource("iconPlotEditor") as ImageSource,
                 open = () =>
                 {
-                    var plotEd = new MassEffect.NativesEditor.Views.PlotEditor();
+                    var plotEd = new PlotEditor.PlotEditor();
                     plotEd.Show();
                 },
                 tags = new List<string> { "developer", "codex", "state transition", "quest", "natives" },
