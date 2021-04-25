@@ -12,7 +12,7 @@ using ME3ExplorerCore.Packages;
 namespace LegendaryExplorer.SharedUI.Converters
 {
     [ValueConversion(typeof(PackageEditorWindow.CurrentViewMode), typeof(SolidColorBrush))]
-    public class PackageEditorWPFActiveViewHighlightConverter : IValueConverter
+    public class PackageEditorWindowActiveViewHigherlighterConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -83,39 +83,39 @@ namespace LegendaryExplorer.SharedUI.Converters
                 {
                     case "BioSWF":
                     case "GFxMovieInfo":
-                        return "/PackageEditor/EntryIcons/icon_swf.png";
+                        return "/Tools/PackageEditor/ExportIcons/icon_swf.png";
                     case "Texture2D":
-                        return "/PackageEditor/EntryIcons/icon_texture2d.png";
+                        return "/Tools/PackageEditor/ExportIcons/icon_texture2d.png";
                     case "WwiseStream":
-                        return "/PackageEditor/EntryIcons/icon_sound.png";
+                        return "/Tools/PackageEditor/ExportIcons/icon_sound.png";
                     case "BioTlkFile":
-                        return "/PackageEditor/EntryIcons/icon_tlkfile.png";
+                        return "/Tools/PackageEditor/ExportIcons/icon_tlkfile.png";
                     case "World":
-                        return "/PackageEditor/EntryIcons/icon_world.png";
+                        return "/Tools/PackageEditor/ExportIcons/icon_world.png";
                     case "Function":
-                        return "/PackageEditor/EntryIcons/icon_function.png";
+                        return "/Tools/PackageEditor/ExportIcons/icon_function.png";
                     case "Class":
-                        return "/PackageEditor/EntryIcons/icon_class.png";
+                        return "/Tools/PackageEditor/ExportIcons/icon_class.png";
                     case "Package":
                         string fname = Path.GetFileNameWithoutExtension(exp.FileRef.FilePath);
                         return fname != null && fname.Equals(exp.ObjectName.Name, StringComparison.InvariantCultureIgnoreCase)
-                            ? "/PackageEditor/EntryIcons/icon_package_fileroot.png"
-                            : "/PackageEditor/EntryIcons/icon_package.png";
+                            ? "/Tools/PackageEditor/ExportIcons/icon_package_fileroot.png"
+                            : "/Tools/PackageEditor/ExportIcons/icon_package.png";
                     case "SkeletalMesh":
                     case "StaticMesh":
                     case "FracturedStaticMesh":
-                        return "/PackageEditor/EntryIcons/icon_mesh.png";
+                        return "/Tools/PackageEditor/ExportIcons/icon_mesh.png";
                     case "Sequence":
-                        return "/PackageEditor/EntryIcons/icon_sequence.png";
+                        return "/Tools/PackageEditor/ExportIcons/icon_sequence.png";
                     case "Material":
-                        return "/PackageEditor/EntryIcons/icon_material.png";
+                        return "/Tools/PackageEditor/ExportIcons/icon_material.png";
                     case "State":
-                        return "/PackageEditor/EntryIcons/icon_state.png";
+                        return "/Tools/PackageEditor/ExportIcons/icon_state.png";
                 }
             }
             else if (Settings.PackageEditor_ShowExportTypeIcons && value is ExportEntry exp2 && exp2.IsDefaultObject)
             {
-                return "/PackageEditor/EntryIcons/icon_default.png";
+                return "/Tools/PackageEditor/ExportIcons/icon_default.png";
             }
 
             return null;

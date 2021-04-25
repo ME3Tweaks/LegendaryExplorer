@@ -9,13 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="Misc\AppSettings\SettingsBuilder.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>SettingsBuilder.tt</DependentUpon>
-    </None>
+    <None Remove="Dialogs\Splash\splash.png" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Be.Windows.Forms.HexBox\Be.Windows.Forms.HexBox.csproj" />
     <ProjectReference Include="..\Helpers\Helpers.csproj" />
@@ -40,6 +35,7 @@
     <PackageReference Include="SharpDX.Direct2D1" Version="4.2.0" />
     <PackageReference Include="SharpDX.Direct3D11" Version="4.2.0" />
     <PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
+    <PackageReference Include="SingleInstanceCore" Version="1.0.0" />
     <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
     <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.12" />
     <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
@@ -57,17 +53,19 @@
       <LastGenOutput>SettingsBuilder.cs</LastGenOutput>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Misc\AppSettings\SettingsBuilder.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingsBuilder.tt</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Dialogs\Splash\splash.png" />
+    <Resource Include="Tools\PackageEditor\ExportIcons\*" />
+  </ItemGroup>
 
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Misc\AppSettings\SettingsBuilder.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>SettingsBuilder.tt</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
 </Project>

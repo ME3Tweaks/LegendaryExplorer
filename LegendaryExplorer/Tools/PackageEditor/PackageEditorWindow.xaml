@@ -36,7 +36,7 @@
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
         <converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
-        <converters:PackageEditorWPFActiveViewHighlightConverter x:Key="PackageEditorWPFActiveViewHighlightConverter"/>
+        <converters:PackageEditorWindowActiveViewHigherlighterConverter x:Key="PackageEditorWPFActiveViewHighlightConverter"/>
         <converters:ObjectStructPropertyTypeConverter x:Key="ObjectStructPropertyTypeConverter"/>
         <converters:EntryFileTypeConverter x:Key="EntryFileTypeConverter"/>
         <converters:EntryFileTypeIconPathConverter x:Key="EntryFileTypeIconPathConverter"/>
