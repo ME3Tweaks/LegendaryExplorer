@@ -6,6 +6,7 @@
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
     <Platforms>x64</Platforms>
+    <ApplicationIcon>LEX_ico_test.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
