@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using MassEffect3.Coalesce;
 using ME3Explorer;
+using ME3Explorer.Properties;
 using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3ExplorerCore.Misc;
 using Microsoft.AppCenter.Analytics;
@@ -17,9 +19,9 @@ namespace MassEffect3.CoalesceTool
     /// </summary>
     public partial class CoalescedEditor : TrackingNotifyPropertyChangedWindowBase
 	{
-		private string _destinationPath;
+		private string _destinationPath = Settings.Default.CoalescedEditorDestinationPath;
 		private CoalescedType _destinationType;
-		private string _sourcePath;
+		private string _sourcePath = Settings.Default.CoalescedEditorSourcePath;
 		private CoalescedType _sourceType;
 
 		public CoalescedEditor() : base("Coalesced Editor", true)
@@ -248,6 +250,13 @@ namespace MassEffect3.CoalesceTool
             MessageBox.Show("Done");
 		}
 
+		private void Root_Closed(object sender, EventArgs e)
+		{
+			Settings.Default.CoalescedEditorDestinationPath = DestinationPath;
+			Settings.Default.CoalescedEditorSourcePath = SourcePath;
+			Settings.Default.Save();
+		}
+
 		private void Exit_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
 		{
 			e.CanExecute = true;
@@ -257,5 +266,5 @@ namespace MassEffect3.CoalesceTool
 		{
 			Application.Current.Shutdown();
 		}
-	}
+    }
 }
