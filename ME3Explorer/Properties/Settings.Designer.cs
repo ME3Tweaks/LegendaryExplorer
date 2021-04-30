@@ -478,5 +478,29 @@ namespace ME3Explorer.Properties {
                 this["SoundplorerAutoplayEntriesOnSelection"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string CoalescedEditorDestinationPath {
+            get {
+                return ((string)(this["CoalescedEditorDestinationPath"]));
+            }
+            set {
+                this["CoalescedEditorDestinationPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string CoalescedEditorSourcePath {
+            get {
+                return ((string)(this["CoalescedEditorSourcePath"]));
+            }
+            set {
+                this["CoalescedEditorSourcePath"] = value;
+            }
+        }
     }
 }

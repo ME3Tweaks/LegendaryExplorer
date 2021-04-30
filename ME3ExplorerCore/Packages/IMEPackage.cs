@@ -205,6 +205,11 @@ namespace ME3ExplorerCore.Packages
         /// <param name="index">unreal index</param>
         string getObjectName(int index);
         string GetNameEntry(int index);
+        /// <summary>
+        /// Gets the next available index for a given name - this counts all names, not just the instanced full name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         int GetNextIndexForName(string name);
 
         NameReference GetNextIndexedName(string name);

@@ -3126,12 +3126,37 @@ namespace ME3Explorer
                     return;
                 }
 
+                IEntry sourceEntry = sourceItem.Entry;
+                IEntry targetLinkEntry = targetItem.Entry;
+
+
+                if (portingOption != EntryImporter.PortingOption.ReplaceSingular && targetItem.Entry != null && targetItem.Entry.FileRef.FindEntry(sourceItem.Entry.InstancedFullPath) != null)
+                {
+                    // It's a duplicate. Offer to index it, as this will break the lookup if it's identical on inbound
+                    // (it will just install into an existing entry)
+                    var result = MessageBox.Show("The item being ported in has the same full path as an object in the target package. This will cause issues in the game as well as with the toolset if the imported object is not renamed beforehand or has its index changed.\n\nME3Explorer will automatically adjust the index for you. You may need to adjust it back after changing the name.", "Indexing issues", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
+                    if (result == MessageBoxResult.No)
+                    {
+                        return; // User canceled
+                    }
+
+                    // Adjust numeral on inbound export so it doesn't port into existing item
+                    if (sourceEntry is ExportEntry sexp)
+                    {
+                        sourceEntry = new ExportEntry(sexp);
+                    }
+                    else if (sourceEntry is ImportEntry simp)
+                    {
+                        // Good variable names
+                        sourceEntry = new ImportEntry(simp);
+                    }
+                    sourceEntry.ObjectName = targetItem.Entry.FileRef.GetNextIndexedName(sourceEntry.ObjectName);
+                }
+
                 // To profile this, run dotTrace and attach to the process, make sure to choose option to profile via API
                 //MeasureProfiler.StartCollectingData(); // Start profiling
                 //var sw = new Stopwatch();
                 //sw.Start();
-                IEntry sourceEntry = sourceItem.Entry;
-                IEntry targetLinkEntry = targetItem.Entry;
 
                 int numExports = Pcc.ExportCount;
                 //Import!
@@ -3527,20 +3552,20 @@ namespace ME3Explorer
             StatusBar_LeftMostText.Text = "Done";
         }
 
-        private void BuildME1SuperTLK_Clicked(object sender, RoutedEventArgs e) 
+        private void BuildME1SuperTLK_Clicked(object sender, RoutedEventArgs e)
         {
             string myBasePath = ME1Directory.DefaultGamePath;
             string searchDir = ME1Directory.CookedPCPath;
 
             CommonOpenFileDialog d = new CommonOpenFileDialog { Title = "Select folder to search", IsFolderPicker = true, InitialDirectory = myBasePath };
-            if(d.ShowDialog() == CommonFileDialogResult.Ok)
+            if (d.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 searchDir = d.FileName;
             }
 
             OpenFileDialog outputFileDialog = new OpenFileDialog { Title = "Select GlobalTlk file to output to (GlobalTlk exports will be completely overwritten)", Filter = "*.upk|*.upk" };
             bool? result = outputFileDialog.ShowDialog();
-            if(!result.HasValue || !result.Value)
+            if (!result.HasValue || !result.Value)
             {
                 Debug.WriteLine("No output file specified");
                 return;
@@ -3604,9 +3629,9 @@ namespace ME3Explorer
             {
                 List<ExportEntry> tlkExports = o.Exports.Where(x =>
                         (x.ObjectName == "GlobalTlk_tlk" || x.ObjectName == "GlobalTlk_tlk_M") && x.ClassName == "BioTlkFile").ToList();
-                if(tlkExports.Count > 0)
+                if (tlkExports.Count > 0)
                 {
-                    foreach(ExportEntry exp in tlkExports)
+                    foreach (ExportEntry exp in tlkExports)
                     {
                         var stringMapping = (exp.ObjectName == "GlobalTlk_tlk" ? tlkLines : tlkLines_m);
                         var talkFile = new ME1TalkFile(exp);
@@ -4721,10 +4746,10 @@ namespace ME3Explorer
                     }
                     else
                     {
-                        var func = ME3ExplorerCore.ME1.Unreal.UnhoodBytecode.UE3FunctionReader.ReadFunction(export); 
+                        var func = ME3ExplorerCore.ME1.Unreal.UnhoodBytecode.UE3FunctionReader.ReadFunction(export);
                         func.Decompile(new ME3ExplorerCore.ME1.Unreal.UnhoodBytecode.TextBuilder(), false, true);
-                        if (func.Statements.statements.Count > 0 
-                         && func.Statements.statements[0].Reader.ReadTokens.FirstOrDefault(tok => (short)tok.OpCode == opCode) is {})
+                        if (func.Statements.statements.Count > 0
+                         && func.Statements.statements[0].Reader.ReadTokens.FirstOrDefault(tok => (short)tok.OpCode == opCode) is { })
                         {
                             exportsWithOpcode.Add(new EntryStringPair(export, ""));
                         }
@@ -4975,7 +5000,7 @@ namespace ME3Explorer
             {
                 ObjectBinary bin = ObjectBinary.From(exp);
                 var names = bin.GetNames(exp.FileRef.Game);
-                foreach(var n in names)
+                foreach (var n in names)
                 {
                     Debug.WriteLine($"{n.Item1.Instanced} {n.Item2}");
                 }
@@ -4993,6 +5018,11 @@ namespace ME3Explorer
                     Debug.WriteLine($"{n.Item1} {n.Item2}");
                 }
             }
+        }
+
+        private void ShaderCacheResearch_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.ShaderCacheResearch(this);
         }
     }
 }

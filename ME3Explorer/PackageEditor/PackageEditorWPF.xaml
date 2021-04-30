@@ -247,6 +247,7 @@
                         <MenuItem Header="Generate ME2/ME3 object info diff" Click="GenerateObjectInfoDiff_Click"/>
                     </MenuItem>
                     <MenuItem Header="Mgamerz's Programming Circus">
+                        <MenuItem Header="Shader Cache Research" Click="ShaderCacheResearch_Click"/>
                         <MenuItem Header="Reset textures in package" Click="ResetPackageTextures_Click"/>
                         <MenuItem Header="Reset vanilla parts of package" Click="ResetVanillaPackagePart_Click"/>
                         <MenuItem Header="Extract package textures to PNG" Click="ExtractPackageTextures_Click"/>

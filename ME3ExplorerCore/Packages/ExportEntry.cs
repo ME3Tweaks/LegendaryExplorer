@@ -28,6 +28,18 @@ namespace ME3ExplorerCore.Packages
         public int UIndex => Index + 1;
 
         /// <summary>
+        /// Copy constructor. You should only use this if you know what you're doing. This is only used for duplicating objects in memory - do not attach to a package!
+        /// </summary>
+        /// <param name="exp"></param>
+        public ExportEntry(ExportEntry exp)
+        {
+            FileRef = exp.FileRef;
+            _header = exp.Header;
+            _data = exp.Data;
+            Index = exp.Index; // :S
+        }
+
+        /// <summary>
         /// Constructor for generating a new export entry
         /// </summary>
         /// <param name="file"></param>

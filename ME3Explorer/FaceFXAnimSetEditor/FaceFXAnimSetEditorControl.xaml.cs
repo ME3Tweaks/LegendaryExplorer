@@ -258,7 +258,7 @@ namespace ME3Explorer.FaceFX
         {
             public FaceFXLine line;
             public string[] sourceNames;
-            public string fromFile;
+            public string fromExport;
         }
 
         private void linesListBox_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -283,7 +283,7 @@ namespace ME3Explorer.FaceFX
                     if (!(e.OriginalSource is ScrollViewer) && SelectedLine != null)
                     {
                         FaceFXLine d = SelectedLine.Clone();
-                        var dragDropObject = new FaceFXLineDragDropObject { line = d, sourceNames = FaceFX.Names.ToArray(), fromFile = CurrentLoadedExport.FileRef.FilePath };
+                        var dragDropObject = new FaceFXLineDragDropObject { line = d, sourceNames = FaceFX.Names.ToArray(), fromExport = CurrentLoadedExport.InstancedFullPath };
                         DragDrop.DoDragDrop(linesListBox, new DataObject("FaceFXLine", dragDropObject), DragDropEffects.Copy);
                     }
                 }
@@ -304,7 +304,7 @@ namespace ME3Explorer.FaceFX
             Window.GetWindow(this).RestoreAndBringToFront();
             if (e.Data.GetDataPresent("FaceFXLine") && e.Data.GetData("FaceFXLine") is FaceFXLineDragDropObject d)
             {
-                if (CurrentLoadedExport == null || d.fromFile == CurrentLoadedExport.FileRef.FilePath) return;
+                if (CurrentLoadedExport == null || d.fromExport == CurrentLoadedExport.InstancedFullPath) return;
 
                 string[] sourceNames = d.sourceNames;
                 FaceFXLineEntry lineEntry = new FaceFXLineEntry(d.line);
@@ -331,7 +331,7 @@ namespace ME3Explorer.FaceFX
         {
             public Animation anim;
             public int group;
-            public string fromFile;
+            public string fromDlg;
         }
 
         private void animationListBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -352,7 +352,10 @@ namespace ME3Explorer.FaceFX
                         if (!(e.OriginalSource is ScrollViewer) && SelectedAnimation != null)
                         {
                             Animation a = SelectedAnimation;
-                            var dragDropObject = new FaceFXAnimDragDropObject { anim = a, group = SelectedLine.NumKeys[animationListBox.SelectedIndex], fromFile = CurrentLoadedExport.FileRef.FilePath };
+                            var dragDropObject = new FaceFXAnimDragDropObject {
+                                anim = a,
+                                group = SelectedLine.NumKeys[animationListBox.SelectedIndex],
+                                fromDlg = SelectedLine.ID };
                             DragDrop.DoDragDrop(linesListBox, new DataObject("FaceFXAnim", dragDropObject), DragDropEffects.Copy);
                         }
                     }
@@ -377,7 +380,7 @@ namespace ME3Explorer.FaceFX
             Window.GetWindow(this).RestoreAndBringToFront();
             if (e.Data.GetDataPresent("FaceFXAnim") && e.Data.GetData("FaceFXAnim") is FaceFXAnimDragDropObject d)
             {
-                if (CurrentLoadedExport == null || d.fromFile == CurrentLoadedExport.FileRef.FilePath) return;
+                if (CurrentLoadedExport == null || SelectedLine == null || d.fromDlg == SelectedLine.ID) return;
 
                 Animations.Add(d.anim);
                 FaceFX.Names.FindOrAdd(d.anim.Name);
@@ -435,7 +438,7 @@ namespace ME3Explorer.FaceFX
 
         private void CloneLine_Click(object sender, RoutedEventArgs e)
         {
-            // HenBagle: We need to do anything with names here because we're cloning within the same file
+            // HenBagle: We don't need to do anything with names here because we're cloning within the same file
             FaceFXLineEntry newEntry = new FaceFXLineEntry(SelectedLine.Clone());
             FaceFX.Lines.Add(newEntry.Line);
 

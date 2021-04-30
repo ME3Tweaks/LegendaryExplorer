@@ -998,7 +998,7 @@ namespace ME3Explorer
 
             var conversion = await Task.Run(async () => await RunWwiseConversion(wwisePath, sourceFile, conversionSettings));
 
-            ReplaceAudioFromWwiseOgg(conversion, forcedExport);
+            ReplaceAudioFromWwiseOgg(conversion, forcedExport, conversionSettings?.UpdateReferencedEvents ?? false); ;
         }
 
         /// <summary>
@@ -1609,8 +1609,9 @@ namespace ME3Explorer
         /// <summary>
         /// Replaces the audio in the current loaded export, or the forced export. Will prompt user for a Wwise Encoded Ogg file.
         /// </summary>
-        /// <param name="forcedExport">Export to update. If null, the currently loadedo ne is used instead.</param>
-        public void ReplaceAudioFromWwiseOgg(string oggPath = null, ExportEntry forcedExport = null)
+        /// <param name="forcedExport">Export to update. If null, the currently loaded one is used instead.</param>
+        /// <param name="updateReferencedEvents">If true will find all WwiseEvents referencing this export and update their Duration property</param>
+        public void ReplaceAudioFromWwiseOgg(string oggPath = null, ExportEntry forcedExport = null, bool updateReferencedEvents = false)
         {
             ExportEntry exportToWorkOn = forcedExport ?? CurrentLoadedExport;
             if (exportToWorkOn != null && exportToWorkOn.ClassName == "WwiseStream")
@@ -1632,6 +1633,20 @@ namespace ME3Explorer
 
                 w.ImportFromFile(oggPath, w.GetPathToAFC());
                 exportToWorkOn.WriteBinary(w);
+
+                if(updateReferencedEvents)
+                {
+                    var ms = (float)w.GetAudioInfo().GetLength().TotalMilliseconds;
+                    var durationProperty = new ME3ExplorerCore.Unreal.FloatProperty(ms, "DurationMilliseconds");
+
+                    // Update all WwiseStream exports that reference this stream
+                    var referencedExports = exportToWorkOn.GetEntriesThatReferenceThisOne();
+                    foreach (ExportEntry re in referencedExports.Select(e => e.Key).Where(e => e.ClassName == "WwiseEvent"))
+                    {
+                        re.WriteProperty(durationProperty);
+                    }
+                }
+
                 if (HostingControl != null)
                 {
                     HostingControl.IsBusy = false;
