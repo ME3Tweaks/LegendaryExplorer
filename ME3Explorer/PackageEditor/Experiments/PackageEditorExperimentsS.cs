@@ -18,6 +18,7 @@ using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.Unreal.Classes;
 using ME3ExplorerCore.UnrealScript;
+using ME3ExplorerCore.UnrealScript.Compiling;
 using ME3ExplorerCore.UnrealScript.Compiling.Errors;
 using ME3ExplorerCore.UnrealScript.Decompiling;
 using ME3ExplorerCore.UnrealScript.Language.Tree;
@@ -43,15 +44,15 @@ namespace ME3Explorer.PackageEditor.Experiments
         }
         public static void ScanStuff(PackageEditorWPF pewpf)
         {
-            var game = MEGame.ME2;
-            var filePaths = MELoadedFiles.GetOfficialFiles(game);//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME2));//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME1));
+            //var game = MEGame.ME3;
+            //var filePaths = MELoadedFiles.GetOfficialFiles(game).Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME2)).Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME1));
             //var filePaths = MELoadedFiles.GetAllFiles(game);
             /*"Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc" */
             //var filePaths = new[] { "Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc" }.Select(f => Path.Combine(ME3Directory.CookedPCPath, f));
-            var interestingExports = new List<EntryStringPair>();
+            var interestingExports = new List<EntryRefAndMessage>();
             var foundClasses = new HashSet<string>(); //new HashSet<string>(BinaryInterpreterWPF.ParsableBinaryClasses);
             var foundProps = new Dictionary<string, string>();
-
+            var problematicPaths = new HashSet<string>();
 
             var unkOpcodes = new List<int>();//Enumerable.Range(0x5B, 8).ToList();
             unkOpcodes.Add(0);
@@ -65,49 +66,67 @@ namespace ME3Explorer.PackageEditor.Experiments
             pewpf.BusyText = "Scanning";
             Task.Run(async () =>
             {
-                //preload base files for faster scanning
-                using var baseFiles = MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(game)
-                    .Select(f => Path.Combine(MEDirectories.GetCookedPath(game), f)));
-                //baseFiles.Add(MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "BIOP_MP_COMMON.pcc")));
-
-                foreach (string filePath in filePaths)
+                MEGame[] games =
                 {
-                    //ScanShaderCache(filePath);
-                    //ScanMaterials(filePath);
-                    //ScanStaticMeshComponents(filePath);
-                    //ScanLightComponents(filePath);
-                    //ScanLevel(filePath);
-                    //if (findClass(filePath, "ShaderCache", true)) break;
-                    //findClassesWithBinary(filePath);
-                    await ScanScripts2(filePath);
-                    //RecompileAllFunctions(filePath);
-                    //if (interestingExports.Count > 0)
-                    //{
-                    //    break;
-                    //}
-                    //if (resolveImports(filePath)) break;
-                    if (interestingExports.Count > 50)
+                    //MEGame.ME3, 
+                    //MEGame.ME2, 
+                    MEGame.ME1
+                };
+                foreach (MEGame meGame in games)
+                {
+                    var filePaths = MELoadedFiles.GetOfficialFiles(meGame);
+                    //preload base files for faster scanning
+                    using var baseFiles = MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(meGame)
+                                                                                       .Select(f => Path.Combine(MEDirectories.GetCookedPath(meGame), f)));
+                    if (meGame is MEGame.ME3)
                     {
-                        break;
+                        baseFiles.Add(MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "BIOP_MP_COMMON.pcc")));
+                    }
+
+                    foreach (string filePath in filePaths)
+                    {
+                        if (filePath.EndsWith("SFXOnlineFoundation.pcc") || filePath.EndsWith("SFXTest.pcc") || filePath.Contains("UnrealScriptTest."))
+                        {
+                            continue;
+                        }
+                        //ScanShaderCache(filePath);
+                        //ScanMaterials(filePath);
+                        //ScanStaticMeshComponents(filePath);
+                        //ScanLightComponents(filePath);
+                        //ScanLevel(filePath);
+                        //if (findClass(filePath, "ShaderCache", true)) break;
+                        //findClassesWithBinary(filePath);
+                        //await ScanScripts2(filePath);
+                        await RecompileAllFunctions(filePath);
+                        //if (interestingExports.Count > 0)
+                        //{
+                        //    break;
+                        //}
+                        //if (resolveImports(filePath)) break;
+                        if (interestingExports.Count > 25)
+                        {
+                            goto end;
+                        }
                     }
                 }
+                end: ;
             }).ContinueWithOnUIThread(prevTask =>
             {
                 //the base files will have been in memory for so long at this point that they take a looong time to clear out automatically, so force it.
                 MemoryAnalyzer.ForceFullGC();
                 pewpf.IsBusy = false;
-                interestingExports.Add(new EntryStringPair(null, string.Join("\n", extraInfo)));
+                interestingExports.Add(new EntryRefAndMessage(0, null, string.Join("\n", extraInfo)));
                 var listDlg = new ListDialog(interestingExports, "Interesting Exports", "", pewpf)
                 {
-                    DoubleClickEntryHandler = entryItem =>
+                    DoubleClickEntryHandler2 = entryItem =>
                     {
-                        if (entryItem?.Entry is IEntry entryToSelect)
+                        if (entryItem?.FilePath is not null)
                         {
                             var p = new PackageEditorWPF();
                             p.Show();
-                            p.LoadFile(entryToSelect.FileRef.FilePath, entryToSelect.UIndex);
+                            p.LoadFile(entryItem.FilePath, entryItem.UIndex);
                             p.Activate();
-                            if (comparisonDict.TryGetValue($"{entryToSelect.UIndex} {entryToSelect.FileRef.FilePath}", out (byte[] original, byte[] newData) val))
+                            if (comparisonDict.TryGetValue($"{entryItem.UIndex} {entryItem.FilePath}", out (byte[] original, byte[] newData) val))
                             {
                                 File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "original.bin"), val.original);
                                 File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "new.bin"), val.newData);
@@ -138,7 +157,7 @@ namespace ME3Explorer.PackageEditor.Experiments
                             var newData = exp.Data;
                             if (!originalData.SequenceEqual(newData))
                             {
-                                interestingExports.Add(exp);
+                                interestingExports.Add(new EntryRefAndMessage(exp));
                                 File.WriteAllBytes(
                                     Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                                         "original.bin"), originalData);
@@ -151,7 +170,7 @@ namespace ME3Explorer.PackageEditor.Experiments
                         catch (Exception exception)
                         {
                             Console.WriteLine(exception);
-                            interestingExports.Add(new EntryStringPair(exp, $"{exception}"));
+                            interestingExports.Add(new EntryRefAndMessage(exp, $"{exception}"));
                             return true;
                         }
                     }
@@ -177,14 +196,14 @@ namespace ME3Explorer.PackageEditor.Experiments
                                 else if (exp.GetBinaryData().Any(b => b != 0))
                                 {
                                     foundClasses.Add(exp.ClassName);
-                                    interestingExports.Add(exp);
+                                    interestingExports.Add(new EntryRefAndMessage(exp));
                                 }
                             }
                         }
                         catch (Exception exception)
                         {
                             Console.WriteLine(exception);
-                            interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\n{exception}"));
+                            interestingExports.Add(new EntryRefAndMessage(exp, $"{exp.UIndex}: {filePath}\n{exception}"));
                         }
                     }
                 }
@@ -217,8 +236,7 @@ namespace ME3Explorer.PackageEditor.Experiments
                             binData.Skip(14);
                             if (binData.ReadInt32() != 1111577667) //CTAB
                             {
-                                interestingExports.Add(new EntryStringPair(null,
-                                    $"{binData.Position - 4}: {filePath}"));
+                                interestingExports.Add(new EntryRefAndMessage(null, $"{binData.Position - 4}: {filePath}"));
                                 return;
                             }
 
@@ -248,7 +266,7 @@ namespace ME3Explorer.PackageEditor.Experiments
                             int normalParams = binData.ReadInt32();
                             if (normalParams != 0)
                             {
-                                interestingExports.Add(new EntryStringPair(null, $"{i}: {filePath}"));
+                                interestingExports.Add(new EntryRefAndMessage(null, $"{i}: {filePath}"));
                                 return;
                             }
 
@@ -258,8 +276,7 @@ namespace ME3Explorer.PackageEditor.Experiments
                             int licenseeVersion = binData.ReadInt32();
                             if (unrealVersion != 684 || licenseeVersion != 194)
                             {
-                                interestingExports.Add(new EntryStringPair(null,
-                                    $"{binData.Position - 8}: {filePath}"));
+                                interestingExports.Add(new EntryRefAndMessage(null, $"{binData.Position - 8}: {filePath}"));
                                 return;
                             }
 
@@ -270,7 +287,7 @@ namespace ME3Explorer.PackageEditor.Experiments
                     catch (Exception exception)
                     {
                         Console.WriteLine(exception);
-                        interestingExports.Add(new EntryStringPair(null, $"{filePath}\n{exception}"));
+                        interestingExports.Add(new EntryRefAndMessage(null, $"{filePath}\n{exception}"));
                     }
                 }
             }
@@ -291,7 +308,7 @@ namespace ME3Explorer.PackageEditor.Experiments
                             {
                                 if (token.CurrentStack.Contains("UNKNOWN") || token.OpCodeString.Contains("UNKNOWN"))
                                 {
-                                    interestingExports.Add(exp);
+                                    interestingExports.Add(new EntryRefAndMessage(exp));
                                 }
 
                                 if (unkOpcodes.Contains(token.OpCode))
@@ -341,7 +358,7 @@ namespace ME3Explorer.PackageEditor.Experiments
                     catch (Exception exception)
                     {
                         Console.WriteLine(exception);
-                        interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\n{exception}"));
+                        interestingExports.Add(new EntryRefAndMessage(exp, $"{exp.UIndex}: {filePath}\n{exception}"));
                     }
                 }
             }
@@ -365,13 +382,13 @@ namespace ME3Explorer.PackageEditor.Experiments
                             (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileFunction(exp, originalScript, fileLib);
                             if (log.AllErrors.Count > 0)
                             {
-                                interestingExports.Add(exp);
+                                interestingExports.Add(new EntryRefAndMessage(exp));
                                 continue;
                             }
 
                             if (!originalData.SequenceEqual(exp.Data))
                             {
-                                interestingExports.Add(exp);
+                                interestingExports.Add(new EntryRefAndMessage(exp));
                                 comparisonDict.Add($"{exp.UIndex} {exp.FileRef.FilePath}", (originalData, exp.Data));
                                 File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "original.bin"), originalData);
                                 File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "new.bin"), exp.Data);
@@ -381,46 +398,86 @@ namespace ME3Explorer.PackageEditor.Experiments
                         catch (Exception exception)
                         {
                             Console.WriteLine(exception);
-                            interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\n{exception}"));
+                            interestingExports.Add(new EntryRefAndMessage(exp, $"{exp.UIndex}: {filePath}\n{exception}"));
                             return;
                         }
                     }
                 }
                 else
                 {
-                    interestingExports.Add(new EntryStringPair($"{pcc.FilePath} failed to compile!"));
+                    interestingExports.Add(new EntryRefAndMessage(null, $"{pcc.FilePath} failed to compile!"));
                 }
             }
 
             async Task RecompileAllFunctions(string filePath)
             {
-                using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
-                var fileLib = new FileLib(pcc);
-                if (await fileLib.Initialize())
+                try
                 {
-                    foreach (ExportEntry exp in pcc.Exports.Where(exp => exp.ClassName == "Function"))
+                    using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
+                    var fileLib = new FileLib(pcc);
+                    if (await fileLib.Initialize())
                     {
-                        try
+                        foreach (ExportEntry exp in pcc.Exports.Where(exp => exp.ClassName == "Function"))
                         {
-                            var originalData = exp.Data;
-                            (_, string originalScript) = UnrealScriptCompiler.DecompileExport(exp, fileLib);
-                            (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileFunction(exp, originalScript, fileLib);
-                            if (ast == null || log.AllErrors.Count > 0)
+                            if (problematicPaths.Contains(exp.InstancedFullPath))
                             {
-                                interestingExports.Add(exp);
+                                continue;
+                            }
+                            try
+                            {
+                                //var originalData = exp.Data;
+                                int exportCount = pcc.ExportCount;
+                                UFunction originalFunction = exp.GetBinaryData<UFunction>();
+                                var originalFlags = originalFunction.FunctionFlags;
+                                var children = ScriptObjectCompiler.GetMembers(originalFunction).ToList();
+                                (_, string originalScript) = UnrealScriptCompiler.DecompileExport(exp, fileLib);
+                                (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileFunction(exp, originalScript, fileLib);
+                                if (ast == null || log.AllErrors.Count > 0)
+                                {
+                                    interestingExports.Add(new EntryRefAndMessage(exp));
+                                    problematicPaths.Add(exp.InstancedFullPath);
+                                }
+
+                                if (exportCount != pcc.ExportCount)
+                                {
+                                    interestingExports.Add(new EntryRefAndMessage(exp, $"{$"#{exp.UIndex}",-9}: {filePath}\nAdded Exports!"));
+                                    problematicPaths.Add(exp.InstancedFullPath);
+                                }
+
+                                if (exp.GetBinaryData<UFunction>().FunctionFlags != originalFlags)
+                                {
+                                    interestingExports.Add(new EntryRefAndMessage(exp, $"{$"#{exp.UIndex}",-9}: {filePath}\nChanged Flags!"));
+                                    problematicPaths.Add(exp.InstancedFullPath);
+                                }
+
+                                foreach (UField field in children)
+                                {
+                                    if (field.Export.EntryHasPendingChanges ||
+                                        field is UArrayProperty arrProp && pcc.GetEntry(arrProp.ElementType) is ExportEntry {EntryHasPendingChanges: true})
+                                    {
+                                        interestingExports.Add(new EntryRefAndMessage(exp, $"{$"#{exp.UIndex}",-9}: {filePath}\nChanged Variable(s)!"));
+                                        problematicPaths.Add(exp.InstancedFullPath);
+                                        break;
+                                    }
+                                }
+                            }
+                            catch (Exception exception)
+                            {
+                                Console.WriteLine(exception);
+                                interestingExports.Add(new EntryRefAndMessage(exp, $"{$"#{exp.UIndex}",-9}: {filePath}\n{exception}"));
+                                problematicPaths.Add(exp.InstancedFullPath);
+                                return;
                             }
                         }
-                        catch (Exception exception)
-                        {
-                            Console.WriteLine(exception);
-                            interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\n{exception}"));
-                            return;
-                        }
+                    }
+                    else
+                    {
+                        interestingExports.Add(new EntryRefAndMessage(0, filePath, $"{filePath} failed to compile!"));
                     }
                 }
-                else
+                catch (Exception e)
                 {
-                    interestingExports.Add(new EntryStringPair($"{pcc.FilePath} failed to compile!"));
+                    interestingExports.Add(new EntryRefAndMessage(0, filePath, $"{filePath} failed to compile!\n{e}"));
                 }
             }
 
@@ -449,19 +506,29 @@ namespace ME3Explorer.PackageEditor.Experiments
                         }
                         else
                         {
-                            interestingExports.Add(import);
+                            interestingExports.Add(new EntryRefAndMessage(import));
                             return true;
                         }
 
                     }
                     catch (Exception exception)
                     {
-                        interestingExports.Add(new EntryStringPair(import,
-                            $"{$"#{import.UIndex}",-9} {import.FileRef.FilePath}\n{exception}"));
+                        interestingExports.Add(new EntryRefAndMessage(import, $"{$"#{import.UIndex}",-9} {filePath}\n{exception}"));
                         return true;
                     }
                 }
 
+                return false;
+            }
+
+            bool CheckIfFound(IEntry entry)
+            {
+                string fullPath = entry.InstancedFullPath;
+                if (problematicPaths.Contains(fullPath))
+                {
+                    return true;
+                }
+                problematicPaths.Add(fullPath);
                 return false;
             }
 

@@ -48,7 +48,7 @@ namespace ME3ExplorerCore.UnrealScript
                 Game = game;
             }
 
-            public async Task<bool> InitializeStandardLib(params string[] additionalFiles)
+            public async Task<bool> InitializeStandardLib(MessageLog log, params string[] additionalFiles)
             {
                 if (IsInitialized)
                 {
@@ -68,7 +68,7 @@ namespace ME3ExplorerCore.UnrealScript
                         {
                             return true;
                         }
-                        success = InternalInitialize(additionalFiles);
+                        success = InternalInitialize(additionalFiles, log);
                         IsInitialized = success;
                         HadInitializationError = !success;
                     }
@@ -84,7 +84,7 @@ namespace ME3ExplorerCore.UnrealScript
                 _ => throw new ArgumentOutOfRangeException(nameof(Game))
             };
 
-            private bool InternalInitialize(params string[] additionalFiles)
+            private bool InternalInitialize(string[] additionalFiles, MessageLog log)
             {
                 try
                 {
@@ -96,7 +96,7 @@ namespace ME3ExplorerCore.UnrealScript
                     }
                     using var files = MEPackageHandler.OpenMEPackages(filePaths);
 
-                    return files.All(pcc => ResolveAllClassesInPackage(pcc, ref _symbols));
+                    return files.All(pcc => ResolveAllClassesInPackage(pcc, ref _symbols, log));
                 }
                 catch (Exception e) when(!ME3ExplorerCoreLib.IsDebug)
                 {
@@ -104,14 +104,13 @@ namespace ME3ExplorerCore.UnrealScript
                 }
             }
 
-            public static bool ResolveAllClassesInPackage(IMEPackage pcc, ref SymbolTable symbols)
+            public static bool ResolveAllClassesInPackage(IMEPackage pcc, ref SymbolTable symbols, MessageLog log)
             {
                 string fileName = Path.GetFileNameWithoutExtension(pcc.FilePath);
 #if DEBUGSCRIPT
                 string dumpFolderPath = Path.Combine(MEDirectories.GetDefaultGamePath(pcc.Game), "ScriptDump", fileName);
                 Directory.CreateDirectory(dumpFolderPath);
 #endif
-                var log = new MessageLog();
                 Debug.WriteLine($"{fileName}: Beginning Parse.");
                 var classes = new List<(Class ast, string scriptText)>();
                 foreach (ExportEntry export in pcc.Exports.Where(exp => exp.IsClass))

@@ -52,7 +52,7 @@ namespace ME3ExplorerCore.UnrealScript.Decompiling
                         {
                             FilePath = pcc.FilePath,
                             UIndex = nextChild.UIndex,
-                            Literal = new ClassOutlineParser(new TokenStream<string>(new StringLexer(uConst.Value))).ParseConstValue()
+                            Literal = new ClassOutlineParser(new TokenStream<string>(new StringLexer(uConst.Value)), pcc.Game).ParseConstValue()
                         });
                         nextItem = uConst.Next;
                         break;
@@ -184,7 +184,8 @@ namespace ME3ExplorerCore.UnrealScript.Decompiling
             var Types = new List<VariableType>();
             var nextItem = obj.Children;
 
-            while (obj.Export.FileRef.TryGetUExport(nextItem, out ExportEntry nextChild))
+            IMEPackage pcc = obj.Export.FileRef;
+            while (pcc.TryGetUExport(nextItem, out ExportEntry nextChild))
             {
                 var objBin = ObjectBinary.From(nextChild);
                 switch (objBin)
@@ -204,13 +205,13 @@ namespace ME3ExplorerCore.UnrealScript.Decompiling
             }
 
             VariableType parent = obj.SuperClass != 0 
-                ? new VariableType(obj.SuperClass.GetEntry(obj.Export.FileRef).ObjectName.Instanced) : null;
+                ? new VariableType(obj.SuperClass.GetEntry(pcc).ObjectName.Instanced) : null;
 
-            var defaults = new DefaultPropertiesBlock(ConvertProperties(RemoveDefaultValues(obj.Defaults), obj.Export));
+            var defaults = new DefaultPropertiesBlock(ConvertProperties(RemoveDefaultValues(obj.Defaults, pcc.Game), obj.Export));
 
             var node = new Struct(obj.Export.ObjectName.Instanced, parent, obj.StructFlags, Vars, Types, defaults)
             {
-                FilePath = obj.Export.FileRef.FilePath,
+                FilePath = pcc.FilePath,
                 UIndex = obj.Export.UIndex
             };
 
@@ -220,7 +221,7 @@ namespace ME3ExplorerCore.UnrealScript.Decompiling
             return node;
         }
 
-        private static PropertyCollection RemoveDefaultValues(PropertyCollection props)
+        private static PropertyCollection RemoveDefaultValues(PropertyCollection props, MEGame game)
         {
             var result = new PropertyCollection();
 
@@ -259,7 +260,7 @@ namespace ME3ExplorerCore.UnrealScript.Decompiling
                         }
                         break;
                     case EnumProperty enumProperty:
-                        if (enumProperty.Value != enumProperty.EnumValues.FirstOrDefault())
+                        if (enumProperty.Value != UnrealObjectInfo.GetEnumValues(game, enumProperty.EnumType).FirstOrDefault())
                         {
                             result.Add(prop);
                         }
@@ -301,7 +302,7 @@ namespace ME3ExplorerCore.UnrealScript.Decompiling
                         }
                         break;
                     case StructProperty structProperty:
-                        structProperty.Properties = RemoveDefaultValues(structProperty.Properties);
+                        structProperty.Properties = RemoveDefaultValues(structProperty.Properties, game);
                         if (structProperty.Properties.Count > 0)
                         {
                             result.Add(structProperty);
@@ -463,14 +464,14 @@ namespace ME3ExplorerCore.UnrealScript.Decompiling
 
                 containingClass = classExport.GetBinaryData<UClass>();
             }
-            VariableType returnType = null;
+            VariableDeclaration returnVal = null;
             bool retValNeedsDestruction = false;
             var nextItem = obj.Children;
 
             var parameters = new List<FunctionParameter>();
             var locals = new List<VariableDeclaration>();
-            var coerceReturn = false;
-            while (obj.Export.FileRef.TryGetUExport(nextItem, out ExportEntry nextChild))
+            IMEPackage pcc = obj.Export.FileRef;
+            while (pcc.TryGetUExport(nextItem, out ExportEntry nextChild))
             {
                 var objBin = ObjectBinary.From(nextChild);
                 switch (objBin)
@@ -478,14 +479,7 @@ namespace ME3ExplorerCore.UnrealScript.Decompiling
                     case UProperty uProperty:
                         if (uProperty.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.ReturnParm))
                         {
-                            var returnVal = ConvertVariable(uProperty);
-                            returnType = returnVal.VarType;
-                            if (uProperty.PropertyFlags.Has(UnrealFlags.EPropertyFlags.CoerceParm))
-                            {
-                                coerceReturn = true;
-                            }
-
-                            retValNeedsDestruction = returnVal.Flags.Has(UnrealFlags.EPropertyFlags.NeedCtorLink);
+                            returnVal = ConvertVariable(uProperty);
                         }
                         else if (uProperty.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.Parm))
                         {
@@ -507,18 +501,15 @@ namespace ME3ExplorerCore.UnrealScript.Decompiling
             CodeBody body = null;
             if (decompileBytecode)
             {
-                body = new ByteCodeDecompiler(obj, containingClass, lib, parameters, returnType).Decompile();
+                body = new ByteCodeDecompiler(obj, containingClass, lib, parameters, returnVal?.VarType).Decompile();
             }
 
-
-            var func = new Function(obj.Export.ObjectName.Instanced,
-                                    obj.FunctionFlags, returnType, body, parameters)
+            
+            var func = new Function(obj.Export.ObjectName.Instanced, obj.FunctionFlags, returnVal, body, parameters)
             {
                 NativeIndex = obj.NativeIndex,
-                CoerceReturn = coerceReturn,
-                RetValNeedsDestruction = retValNeedsDestruction,
-                FilePath = obj.Export.FileRef.FilePath,
-                UIndex = obj.Export.UIndex
+                FilePath = pcc.FilePath,
+                UIndex = obj.Export.UIndex,
             };
             if (obj.Export.Game <= MEGame.ME2)
             {

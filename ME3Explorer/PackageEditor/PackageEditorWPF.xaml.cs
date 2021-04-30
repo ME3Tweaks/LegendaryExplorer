@@ -2086,7 +2086,11 @@ namespace ME3Explorer
             }).ContinueWithOnUIThread(foundCandidates =>
            {
                IsBusy = false;
-               if (!foundCandidates.Result.Any()) MessageBox.Show(this, "Cannot find any candidates for this file!");
+               if (!foundCandidates.Result.Any())
+               {
+                   MessageBox.Show(this, "Cannot find any candidates for this file!");
+                   return;
+               }
 
                var choices = foundCandidates.Result.DiskFiles.ToList(); //make new list
                choices.AddRange(foundCandidates.Result.SFARPackageStreams.Select(x => x.Key));
@@ -4680,7 +4684,7 @@ namespace ME3Explorer
                 foreach (ExportEntry export in Pcc.Exports.Where(exp => exp.IsClass))
                 {
                     (_, string script) = UnrealScriptCompiler.DecompileExport(export, fileLib);
-                    (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileAST(script, export.ClassName);
+                    (ASTNode ast, MessageLog log, _) = UnrealScriptCompiler.CompileAST(script, export.ClassName, export.Game);
                     if (ast == null)
                     {
                         exportsWithDecompilationErrors.Add(new EntryStringPair(export, "Compilation Error!"));

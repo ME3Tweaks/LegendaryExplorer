@@ -216,7 +216,7 @@ namespace ME3ExplorerCore.UnrealScript.Analysis.Visitors
             if (node.Outer.Type == ASTNodeType.Class || node.Outer.Type == ASTNodeType.Struct)
             {
                 Write(VAR, EF.Keyword);
-                if (!string.IsNullOrEmpty(node.Category))
+                if (!string.IsNullOrEmpty(node.Category) && !node.Category.CaseInsensitiveEquals("None"))
                 {
                     Append($"({node.Category})");
                 }
@@ -1269,7 +1269,16 @@ namespace ME3ExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(CompositeSymbolRef node)
         {
             // outersymbol.innersymbol
+            bool needsParentheses = node.OuterSymbol is InOpReference or PreOpReference or PostOpReference or NewOperator;
+            if (needsParentheses)
+            {
+                Append("(");
+            }
             node.OuterSymbol.AcceptVisitor(this);
+            if (needsParentheses)
+            {
+                Append(")");
+            }
             if (node.IsClassContext && !(node.InnerSymbol is DefaultReference))
             {
                 Append(".", EF.Operator);

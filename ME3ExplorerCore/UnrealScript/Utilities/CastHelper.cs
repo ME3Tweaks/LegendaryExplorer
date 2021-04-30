@@ -52,6 +52,11 @@ namespace ME3ExplorerCore.UnrealScript.Utilities
                 return ECast.AutoConvert;
             }
 
+            if (src is null && destType is EPropertyType.String)
+            {
+                return ECast.ObjectToString;
+            }
+
             return Conversions[(int)destType][(int)srcType];
         }
 

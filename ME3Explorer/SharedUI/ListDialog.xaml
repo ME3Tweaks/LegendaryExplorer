@@ -47,6 +47,13 @@
                         <TextBlock Text="{Binding Message}" TextWrapping="Wrap"/>
                     </StackPanel>
                 </DataTemplate>
+                <DataTemplate DataType="{x:Type local:EntryRefAndMessage}">
+                    <StackPanel Orientation="Horizontal">
+                        <fa5:ImageAwesome Icon="Solid_MousePointer" Height="16" Margin="0,0,5,0" ToolTip="Double click to goto this export" Cursor="Hand"
+                                          Visibility="{Binding UIndex, Converter={StaticResource IntMatchesToVisibilityConverter}, ConverterParameter='0;not', FallbackValue=Collapsed}"/>
+                        <TextBlock Text="{Binding Message}" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </DataTemplate>
             </ListView.Resources>
         </ListView>
 

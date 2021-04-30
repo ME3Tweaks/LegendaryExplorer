@@ -36,7 +36,7 @@ namespace ME3ExplorerCore.UnrealScript.Analysis.Symbols
         public static readonly VariableType NameType = new(NAME) { PropertyType = EPropertyType.Name };
 
         public static bool IsPrimitive(VariableType vt) =>
-            vt == IntType || vt == FloatType || vt == BoolType || vt == ByteType || vt == BioMask4Type || vt == StringType || vt == StringRefType || vt == NameType;
+            vt.PropertyType is EPropertyType.Int or EPropertyType.Float or EPropertyType.Bool or EPropertyType.Byte or EPropertyType.String or EPropertyType.StringRef or EPropertyType.Name;
         #endregion
 
         private readonly CaseInsensitiveDictionary<ASTNodeDict> Cache;
@@ -158,7 +158,17 @@ namespace ME3ExplorerCore.UnrealScript.Analysis.Symbols
             #region ENGINE 
             //TODO: these classes have members accessed from script that need to be added here
 
-            var clientType = new Class("Client", objectClass, objectClass, intrinsicClassFlags | EClassFlags.Abstract | EClassFlags.Config) { ConfigName = "Engine" };
+            var clientType = new Class("Client", objectClass, objectClass, intrinsicClassFlags | EClassFlags.Abstract | EClassFlags.Config)
+            {
+                ConfigName = "Engine",
+                VariableDeclarations =
+                {
+                    new VariableDeclaration(IntType, default, "StartupResolutionX"),
+                    new VariableDeclaration(IntType, default, "StartupResolutionY"),
+                    new VariableDeclaration(BoolType, default, "StartupFullscreen"),
+                    new VariableDeclaration(BoolType, default, "UseHardwareCursor"),
+                }
+            };
             table.AddType(clientType);
             var staticMeshType = new Class("StaticMesh", objectClass, objectClass, intrinsicClassFlags | EClassFlags.SafeReplace | EClassFlags.CollapseCategories);
             table.AddType(staticMeshType);
@@ -630,12 +640,12 @@ namespace ME3ExplorerCore.UnrealScript.Analysis.Symbols
             LinkedListNode<ASTNodeDict> it;
             for (it = stack.Last; it != null; it = it.Previous)
             {
-                if (it.Value.TryGetValue(symbol, out ASTNode tempNode) && tempNode is T)
+                if (it.Value.SecondaryScope != null && Cache.TryGetValue(it.Value.SecondaryScope, out ASTNodeDict parentScope) && parentScope.TryGetValue(symbol, out ASTNode tempNode) && tempNode is T)
                 {
                     outNode = (T)tempNode;
                     return true;
                 }
-                if (it.Value.SecondaryScope != null && Cache.TryGetValue(it.Value.SecondaryScope, out ASTNodeDict parentScope) && parentScope.TryGetValue(symbol, out tempNode) && tempNode is T)
+                if (it.Value.TryGetValue(symbol, out tempNode) && tempNode is T)
                 {
                     outNode = (T)tempNode;
                     return true;
@@ -665,6 +675,25 @@ namespace ME3ExplorerCore.UnrealScript.Analysis.Symbols
         public void AddSymbol(string symbol, ASTNode node)
         {
             Scopes.Last().Add(symbol, node);
+        }
+
+        public void ReplaceSymbol(string symbol, ASTNode node, bool clearAssociatedScope)
+        {
+            Scopes.Last()[symbol] = node;
+            if (clearAssociatedScope)
+            {
+                PushScope(symbol);
+
+                string scopeName = CurrentScopeName;
+                Cache.Remove(scopeName);
+                scopeName += '.';
+                foreach (string s in Cache.Keys.Where(k => k.StartsWith(scopeName, StringComparison.OrdinalIgnoreCase)).ToList())
+                {
+                    Cache.Remove(s);
+                }
+
+                PopScope();
+            }
         }
 
         public bool AddType(VariableType node)

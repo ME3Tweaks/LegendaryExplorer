@@ -637,7 +637,7 @@ namespace ME3ExplorerCore.UnrealScript.Decompiling
             if (expr == null)
                 return null; // ERROR
             
-            string type = Decompiling.ByteCodeDecompiler.PrimitiveCastTable[typeToken];
+            string type = PrimitiveCastTable[typeToken];
 
             StartPositions.Pop();
             if (typeToken == (byte)ECast.ByteToInt && expr is IntegerLiteral || typeToken == (byte)ECast.InterfaceToObject)

@@ -6,6 +6,7 @@ using System.Linq;
 using ME3ExplorerCore.Gammtek.Paths;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Memory;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 
 namespace ME3ExplorerCore.Unreal.BinaryConverters
@@ -58,12 +59,13 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
         private static ExportEntry TrashEntry(IEntry entry, ExportEntry trashContainer, IEntry packageClass)
         {
             IMEPackage pcc = entry.FileRef;
+            var entryLookupTable = ((UnrealPackageFile)pcc).EntryLookupTable;
             if (entry is ImportEntry imp)
             {
-                if (!(pcc as UnrealPackageFile).EntryLookupTable.Remove(imp.InstancedFullPath))
+                if (!entryLookupTable.Remove(imp.InstancedFullPath))
                 {
-                    // Trashing an entry should always remove it from the lookup
-                    Debugger.Break();
+                    //// Trashing an entry should always remove it from the lookup
+                    //Debugger.Break();
                 }
                 if (trashContainer == null)
                 {
@@ -77,15 +79,15 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                 imp.idxLink = trashContainer.UIndex;
                 imp.ObjectName = "Trash";
                 imp.indexValue = 0;
-                (pcc as UnrealPackageFile).EntryLookupTable[imp.InstancedFullPath] = imp;
+                entryLookupTable[imp.InstancedFullPath] = imp;
             }
             else if (entry is ExportEntry exp)
             {
 
-                if (!(pcc as UnrealPackageFile).EntryLookupTable.Remove(exp.InstancedFullPath))
+                if (!entryLookupTable.Remove(exp.InstancedFullPath))
                 {
-                    // Trashing an entry should always remove it from the lookup
-                    Debugger.Break();
+                    //// Trashing an entry should always remove it from the lookup
+                    //Debugger.Break();
                 }
                 using MemoryStream trashData = MemoryManager.GetMemoryStream();
                 trashData.WriteInt32(-1);
@@ -109,6 +111,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                     }
                     exp.PackageGUID = UnrealPackageFile.TrashPackageGuid;
                     trashContainer = exp;
+                    entryLookupTable[UnrealPackageFile.TrashPackageName] = trashContainer;
                 }
                 else
                 {
