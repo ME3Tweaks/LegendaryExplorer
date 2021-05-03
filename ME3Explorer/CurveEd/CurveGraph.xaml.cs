@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Shapes;
 
 namespace ME3Explorer.CurveEd
@@ -19,6 +20,7 @@ namespace ME3Explorer.CurveEd
         private const int LINE_SPACING = 50;
 
         private bool dragging;
+        private bool scrolling;
         private Point dragPos;
 
         public event RoutedPropertyChangedEventHandler<CurvePoint> SelectedPointChanged;
@@ -215,6 +217,9 @@ namespace ME3Explorer.CurveEd
             }
 
             // Render grid
+
+            GeometryGroup grid = new GeometryGroup();
+
             int numXLines = Convert.ToInt32(Math.Ceiling(ActualWidth / LINE_SPACING));
             int numYLines = Convert.ToInt32(Math.Ceiling(ActualHeight / LINE_SPACING));
             double upperXBound = toUnrealX(ActualWidth);
@@ -226,51 +231,60 @@ namespace ME3Explorer.CurveEd
             int yGranularity = lineYSpacing > 0.75 ? 1 : (lineYSpacing > 0.25 ? 2 : 10);
             lineYSpacing = Math.Ceiling(lineYSpacing * yGranularity) / yGranularity;
 
-            Line line;
-            Label label;
-            double linepos;
+            double FirstHorizontalLine = HorizontalOffset - (HorizontalOffset % lineXSpacing);
             for (int i = 0; i < numXLines; i++)
             {
-                linepos = HorizontalOffset + (lineXSpacing * (i + 1));
-                line = new Line();
-                Canvas.SetLeft(line, toLocalX(linepos));
-                line.Style = FindResource("VerticalLine") as Style;
-                graph.Children.Add(line);
-
-                label = new Label();
-                Canvas.SetLeft(label, toLocalX(linepos));
-                Canvas.SetBottom(label, 0);
-                label.Content = linepos.ToString("0.00");
-                graph.Children.Add(label);
+                RenderXGridLine(FirstHorizontalLine + (lineXSpacing * i));
             }
 
+            double FirstVerticalLine = VerticalOffset - (VerticalOffset % lineYSpacing);
             for (int i = 0; i < numYLines; i++)
             {
-                linepos = VerticalOffset + (lineYSpacing * (i + 1));
-                line = new Line();
-                Canvas.SetBottom(line, toLocalY(linepos));
-                line.Style = FindResource("HorizontalLine") as Style;
-                graph.Children.Add(line);
-
-                label = new Label();
-                Canvas.SetBottom(label, toLocalY(linepos));
-                label.Content = linepos.ToString("0.00");
-                graph.Children.Add(label);
+                RenderYGridLine(FirstVerticalLine + (lineYSpacing * i));
             }
 
-            // Render line
-            if(ShowReferenceCurve && ComparisonCurve != null && ComparisonCurve.CurvePoints.Count > 0)
+            // Render curve
+            if (ShowReferenceCurve && ComparisonCurve != null && ComparisonCurve.CurvePoints.Count > 0)
             {
                 LinkedList<CurvePoint> comparePoints = ComparisonCurve.CurvePoints;
-                RenderLine(comparePoints, interactable: false);
+                RenderCurve(comparePoints, interactable: false);
             }
 
-            RenderLine(points);
+            RenderCurve(points);
 
             TrackLoading = false;
         }
 
-        private void RenderLine(LinkedList<CurvePoint> points, bool interactable = true)
+        private void RenderXGridLine(double position)
+        {
+            var line = new Line();
+            Canvas.SetLeft(line, toLocalX(position));
+            line.Style = FindResource("VerticalLine") as Style;
+            if (position == 0.0) line.Stroke = FindResource("ZeroGridLineStroke") as SolidColorBrush;
+            graph.Children.Add(line);
+
+            var label = new Label();
+            Canvas.SetLeft(label, toLocalX(position));
+            Canvas.SetBottom(label, 0);
+            label.Content = position.ToString("0.00");
+            graph.Children.Add(label);
+        }
+
+        private void RenderYGridLine(double position)
+        {
+            var line = new Line();
+            Canvas.SetBottom(line, toLocalY(position));
+            line.Style = FindResource("HorizontalLine") as Style;
+            if (position == 0.0) line.Stroke = FindResource("ZeroGridLineStroke") as SolidColorBrush;
+            graph.Children.Add(line);
+
+            var label = new Label();
+            Canvas.SetBottom(label, toLocalY(position));
+            label.Content = position.ToString("0.00");
+            graph.Children.Add(label);
+        }
+
+        private void RenderCurve(LinkedList<CurvePoint> points, bool interactable = true)
         {
             Line line;
             Anchor lastAnchor = null;
@@ -401,13 +415,14 @@ namespace ME3Explorer.CurveEd
 
         private void UserControl_MouseWheel(object sender, MouseWheelEventArgs e)
         {
+            scrolling = true;
             if(Keyboard.Modifiers == ModifierKeys.Shift)
             {
                 if (UseFixedTimeSpan)
                 {
                     FixedStartTime *= 1 + ((float)e.Delta / 8000);
                     FixedEndTime *= (1 + ((float)e.Delta / 8000));
-                    return;
+                    UpdateScalingFromFixedTimeSpan();
                 }
                 else
                 {
@@ -420,6 +435,7 @@ namespace ME3Explorer.CurveEd
             }
             //VerticalOffset += (graph.ActualHeight / VerticalScale) * 0.1 * Math.Sign(e.Delta);
             Paint();
+            scrolling = false;
         }
 
         private void graph_MouseDown(object sender, MouseButtonEventArgs e)
@@ -541,10 +557,12 @@ namespace ME3Explorer.CurveEd
                     {
                         FixedStartTime -= (float)(xDiff / HorizontalScale);
                         FixedEndTime -= (float)(xDiff / HorizontalScale);
-                        dragPos = newPos;
-                        return;
+                        UpdateScalingFromFixedTimeSpan();
                     }
-                    HorizontalOffset -= xDiff / HorizontalScale;
+                    else
+                    {
+                        HorizontalOffset -= xDiff / HorizontalScale;
+                    }
                 }
                 else
                 {
@@ -682,7 +700,7 @@ namespace ME3Explorer.CurveEd
             get => _fixedStartTime;
             set
             {
-                if (SetProperty(ref _fixedStartTime, value))
+                if (SetProperty(ref _fixedStartTime, value) && !dragging && !scrolling)
                 {
                     UpdateScalingFromFixedTimeSpan();
                     Paint();
@@ -696,7 +714,7 @@ namespace ME3Explorer.CurveEd
             get => _fixedEndTime;
             set
             {
-                if (SetProperty(ref _fixedEndTime, value))
+                if (SetProperty(ref _fixedEndTime, value) && !dragging && !scrolling)
                 {
                     UpdateScalingFromFixedTimeSpan();
                     Paint();
