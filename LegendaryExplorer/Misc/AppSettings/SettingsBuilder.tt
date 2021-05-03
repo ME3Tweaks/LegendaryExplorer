@@ -1,4 +1,4 @@
-﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+﻿<#@ template debug="false" hostspecific="true" language="C#" #>
 <#@ assembly name="System.Core" #>
 <#@ assembly name="System.Xml" #>
 <#@ assembly name="System.Xml.Linq" #>
@@ -17,7 +17,7 @@ namespace LegendaryExplorer.Misc.AppSettings
     {
 <# // This code runs in the text template:
     // Can't use named tuples it seems
-    var settings = XDocument.Load(@"F:\ME3Explorer\LegendaryExplorer\Misc\AppSettings\SettingsDefinitions.xml").Root.Descendants("setting").Select(x => Tuple.Create(x.Attribute("name").Value, x.Attribute("type").Value, x.Attribute("defaultvalue").Value)).ToList();
+    var settings = XDocument.Load(this.Host.ResolvePath("SettingsDefinitions.xml")).Root.Descendants("setting").Select(x => Tuple.Create(x.Attribute("name").Value, x.Attribute("type").Value, x.Attribute("defaultvalue").Value)).ToList();
 
     foreach (var setting in settings){ 
 #>        private static <#= setting.Item2 #> _<#= setting.Item1.ToLower() #> = <#= setting.Item3 #>; 

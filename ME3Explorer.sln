@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ME3Explorer", "ME3Explorer\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Be.Windows.Forms.HexBox", "Be.Windows.Forms.HexBox\Be.Windows.Forms.HexBox.csproj", "{26C5F25F-B450-4CAF-AD8B-B8D11AE73457}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Piccolo", "Piccolo\Piccolo.csproj", "{DAF03684-BB0B-4528-BFEE-8A3FBFC9FC4A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Piccolo", "Piccolo\Piccolo.csproj", "{DAF03684-BB0B-4528-BFEE-8A3FBFC9FC4A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HexConverterWPF", "HexConverterWPF\HexConverterWPF.csproj", "{947A6918-AD71-4F61-BC63-8DA7997E10E6}"
 EndProject
@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpDX.Mathematics", "Shar
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ME3ExplorerCore.Tests", "ME3ExplorerCore.Tests\ME3ExplorerCore.Tests.csproj", "{4F89E27F-AEE8-40C9-935C-DB33FF5100FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LegendaryExplorer", "LegendaryExplorer\LegendaryExplorer.csproj", "{B69FD8F4-EEA1-45B2-812C-5EC4F9A04A99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LegendaryExplorer", "LegendaryExplorer\LegendaryExplorer.csproj", "{B69FD8F4-EEA1-45B2-812C-5EC4F9A04A99}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetProjects.Wpf.Extended.Toolkit", "Xceed.Wpf.Toolkit\DotNetProjects.Wpf.Extended.Toolkit.csproj", "{2636C1F9-4BDD-4DEA-AA46-6B856B49D052}"
 EndProject
@@ -223,8 +223,8 @@ Global
 		{B69FD8F4-EEA1-45B2-812C-5EC4F9A04A99}.WinAzureTest|Any CPU.ActiveCfg = Debug|x64
 		{B69FD8F4-EEA1-45B2-812C-5EC4F9A04A99}.WinAzureTest|x64.ActiveCfg = Debug|x64
 		{B69FD8F4-EEA1-45B2-812C-5EC4F9A04A99}.WinDebug|Any CPU.ActiveCfg = Debug|x64
-		{B69FD8F4-EEA1-45B2-812C-5EC4F9A04A99}.WinDebug|x64.ActiveCfg = Debug|x64
-		{B69FD8F4-EEA1-45B2-812C-5EC4F9A04A99}.WinDebug|x64.Build.0 = Debug|x64
+		{B69FD8F4-EEA1-45B2-812C-5EC4F9A04A99}.WinDebug|x64.ActiveCfg = WinDebug|x64
+		{B69FD8F4-EEA1-45B2-812C-5EC4F9A04A99}.WinDebug|x64.Build.0 = WinDebug|x64
 		{B69FD8F4-EEA1-45B2-812C-5EC4F9A04A99}.WinRelease|Any CPU.ActiveCfg = Debug|x64
 		{B69FD8F4-EEA1-45B2-812C-5EC4F9A04A99}.WinRelease|x64.ActiveCfg = Release|x64
 		{2636C1F9-4BDD-4DEA-AA46-6B856B49D052}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -245,8 +245,8 @@ Global
 		{2636C1F9-4BDD-4DEA-AA46-6B856B49D052}.WinAzureTest|x64.Build.0 = Debug|Any CPU
 		{2636C1F9-4BDD-4DEA-AA46-6B856B49D052}.WinDebug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2636C1F9-4BDD-4DEA-AA46-6B856B49D052}.WinDebug|Any CPU.Build.0 = Debug|Any CPU
-		{2636C1F9-4BDD-4DEA-AA46-6B856B49D052}.WinDebug|x64.ActiveCfg = Debug|Any CPU
-		{2636C1F9-4BDD-4DEA-AA46-6B856B49D052}.WinDebug|x64.Build.0 = Debug|Any CPU
+		{2636C1F9-4BDD-4DEA-AA46-6B856B49D052}.WinDebug|x64.ActiveCfg = WinDebug|x64
+		{2636C1F9-4BDD-4DEA-AA46-6B856B49D052}.WinDebug|x64.Build.0 = WinDebug|x64
 		{2636C1F9-4BDD-4DEA-AA46-6B856B49D052}.WinRelease|Any CPU.ActiveCfg = Release|Any CPU
 		{2636C1F9-4BDD-4DEA-AA46-6B856B49D052}.WinRelease|Any CPU.Build.0 = Release|Any CPU
 		{2636C1F9-4BDD-4DEA-AA46-6B856B49D052}.WinRelease|x64.ActiveCfg = Release|Any CPU

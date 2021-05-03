@@ -7,10 +7,112 @@
     <UseWindowsForms>true</UseWindowsForms>
     <Platforms>x64</Platforms>
     <ApplicationIcon>LEX_ico_test.ico</ApplicationIcon>
+    <Configurations>WinDebug;WinRelease;WinAzureRelease;WinAzureTest</Configurations>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='WinDebug'">
+    <DebugType>pdbonly</DebugType>
+    <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='WinRelease'">
+    <DebugType>embedded</DebugType>
+    <DefineConstants>WINDOWS</DefineConstants>
+  </PropertyGroup>
+
+  <!-- Nightly release from Azure-->
+  <PropertyGroup Condition="'$(Configuration)'=='WinAzureRelease'">
+    <DebugType>embedded</DebugType>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>WINDOWS;NIGHTLY</DefineConstants>
+  </PropertyGroup>
+
+  <!-- Azure flags allow special code to make tests work on azure since game won't exist there. It should never be used locally -->
+  <PropertyGroup Condition="'$(Configuration)'=='WinAzureTest'">
+    <DebugType>embedded</DebugType>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>WINDOWS;AZURE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Dialogs\Splash\splash.png" />
+    <None Remove="Tools\Icons\afccompactor_256x256.ico" />
+    <None Remove="Tools\Icons\animationexplorer_256x256.ico" />
+    <None Remove="Tools\Icons\animationimporter_256x256.ico" />
+    <None Remove="Tools\Icons\animviewer_256x256.ico" />
+    <None Remove="Tools\Icons\asimanager_256x256.ico" />
+    <None Remove="Tools\Icons\AssetDatabase_256x256.ico" />
+    <None Remove="Tools\Icons\audiolocalizer_256x256.ico" />
+    <None Remove="Tools\Icons\autotoc_256x256.ico" />
+    <None Remove="Tools\Icons\bikextractor_256x256.ico" />
+    <None Remove="Tools\Icons\bug_icon.ico" />
+    <None Remove="Tools\Icons\close.ico" />
+    <None Remove="Tools\Icons\close_icon.ico" />
+    <None Remove="Tools\Icons\coalescededitor_256x256.ico" />
+    <None Remove="Tools\Icons\conditionalseditor_256x256.ico" />
+    <None Remove="Tools\Icons\create_mods_icon.ico" />
+    <None Remove="Tools\Icons\dialoguedumper_256x256.ico" />
+    <None Remove="Tools\Icons\dialogueeditor_256x256.ico" />
+    <None Remove="Tools\Icons\diskette_white.ico" />
+    <None Remove="Tools\Icons\dlc_unpacker_256x256.ico" />
+    <None Remove="Tools\Icons\elipsis_icon.ico" />
+    <None Remove="Tools\Icons\error_x.png" />
+    <None Remove="Tools\Icons\excel.gif" />
+    <None Remove="Tools\Icons\excel.png" />
+    <None Remove="Tools\Icons\Exo-Regular.ttf" />
+    <None Remove="Tools\Icons\Exo-SemiBold.ttf" />
+    <None Remove="Tools\Icons\eye_white.ico" />
+    <None Remove="Tools\Icons\facefxeditor_256x256.ico" />
+    <None Remove="Tools\Icons\filehexanalyzer_256x256.ico" />
+    <None Remove="Tools\Icons\folder.ico" />
+    <None Remove="Tools\Icons\Hack-Bold.ttf" />
+    <None Remove="Tools\Icons\hexconverter_256x256.ico" />
+    <None Remove="Tools\Icons\install_mods_icon.ico" />
+    <None Remove="Tools\Icons\InterpViewer_256x256.ico" />
+    <None Remove="Tools\Icons\KismetFont.ttf" />
+    <None Remove="Tools\Icons\left_arrow.ico" />
+    <None Remove="Tools\Icons\liveleveleditor_256x256.ico" />
+    <None Remove="Tools\Icons\loadingspinner.png" />
+    <None Remove="Tools\Icons\ME1Game.ico" />
+    <None Remove="Tools\Icons\ME2Game.ico" />
+    <None Remove="Tools\Icons\me2me3tlkeditor_256x256.ico" />
+    <None Remove="Tools\Icons\me3exp_smallbanner_v1.png" />
+    <None Remove="Tools\Icons\ME3Game.ico" />
+    <None Remove="Tools\Icons\me3tweaks_fork.png" />
+    <None Remove="Tools\Icons\meexp_favicon.ico" />
+    <None Remove="Tools\Icons\memoryanalyzer_256x256.ico" />
+    <None Remove="Tools\Icons\meshplorer_256x256.ico" />
+    <None Remove="Tools\Icons\minilogo.png" />
+    <None Remove="Tools\Icons\minimize_icon.ico" />
+    <None Remove="Tools\Icons\mounteditor_256x256.ico" />
+    <None Remove="Tools\Icons\packagedumper_256x256.ico" />
+    <None Remove="Tools\Icons\packageeditorwpf_256x256.ico" />
+    <None Remove="Tools\Icons\pathfindingeditor_256x256.ico" />
+    <None Remove="Tools\Icons\placeholder_256x256.ico" />
+    <None Remove="Tools\Icons\plotdatabase_256x256.ico" />
+    <None Remove="Tools\Icons\ploteditor_256x256.ico" />
+    <None Remove="Tools\Icons\psaviewer_256x256.ico" />
+    <None Remove="Tools\Icons\resize_icon.ico" />
+    <None Remove="Tools\Icons\right_arrow.ico" />
+    <None Remove="Tools\Icons\scriptdatabase_256x256.ico" />
+    <None Remove="Tools\Icons\search.ico" />
+    <None Remove="Tools\Icons\sequenceeditor_256x256.ico" />
+    <None Remove="Tools\Icons\settings.ico" />
+    <None Remove="Tools\Icons\sfarexplorer_256x256.ico" />
+    <None Remove="Tools\Icons\soundplorerwpf_256x256.ico" />
+    <None Remove="Tools\Icons\taskbar.ico" />
+    <None Remove="Tools\Icons\texturestudio_256x256.ico" />
+    <None Remove="Tools\Icons\tfccompactor_256x256.ico" />
+    <None Remove="Tools\Icons\TitilliumWeb-Italic.ttf" />
+    <None Remove="Tools\Icons\TitilliumWeb-Light.ttf" />
+    <None Remove="Tools\Icons\TitilliumWeb-Regular.ttf" />
+    <None Remove="Tools\Icons\TitilliumWeb-SemiBold.ttf" />
+    <None Remove="Tools\Icons\tlkeditor_256x256.ico" />
+    <None Remove="Tools\Icons\tlkmanager_256x256.ico" />
+    <None Remove="Tools\Icons\toolset_splash.png" />
+    <None Remove="Tools\Icons\wwisebankeditor_256x256.ico" />
+    <None Remove="Tools\Icons\WwiseEditor_256x256.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Be.Windows.Forms.HexBox\Be.Windows.Forms.HexBox.csproj" />
@@ -63,10 +165,288 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Dialogs\Splash\splash.png" />
+    <Resource Include="Tools\Icons\afccompactor_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\animationexplorer_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\animationimporter_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\animviewer_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\asimanager_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\AssetDatabase_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\audiolocalizer_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\autotoc_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\bikextractor_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\bug_icon.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\close.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\close_icon.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\coalescededitor_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\conditionalseditor_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\create_mods_icon.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\dialoguedumper_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\dialogueeditor_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\diskette_white.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\dlc_unpacker_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\elipsis_icon.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\error_x.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\excel.gif">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\excel.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Exo-Regular.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Exo-SemiBold.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\eye_white.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\facefxeditor_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\filehexanalyzer_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\folder.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Hack-Bold.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\hexconverter_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\install_mods_icon.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\InterpViewer_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <EmbeddedResource Include="Resources\Fonts\KismetFont.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <Resource Include="Resources\Images\left_arrow.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\liveleveleditor_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\loadingspinner.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\ME1Game.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\ME2Game.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\me2me3tlkeditor_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\me3exp_smallbanner_v1.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\ME3Game.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\me3tweaks_fork.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\meexp_favicon.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\memoryanalyzer_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\meshplorer_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\minilogo.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\minimize_icon.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\mounteditor_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\packagedumper_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\packageeditorwpf_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\pathfindingeditor_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\placeholder_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\plotdatabase_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\ploteditor_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\psaviewer_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\resize_icon.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\right_arrow.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\scriptdatabase_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\search.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\sequenceeditor_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\settings.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\sfarexplorer_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\soundplorerwpf_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\taskbar.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\texturestudio_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\tfccompactor_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\TitilliumWeb-Italic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\TitilliumWeb-Light.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\TitilliumWeb-Regular.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\TitilliumWeb-SemiBold.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\tlkeditor_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\tlkmanager_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\toolset_splash.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\wwisebankeditor_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Tools\Icons\WwiseEditor_256x256.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Tools\PackageEditor\ExportIcons\*" />
   </ItemGroup>
 
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Misc\AppSettings\SettingsBuilder.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingsBuilder.tt</DependentUpon>
+    </Compile>
+    <Compile Update="SharedUI\Controls\SearchBox.xaml.cs">
+      <DependentUpon>SearchBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="SharedUI\Controls\ToolBox.xaml.cs">
+      <DependentUpon>ToolBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Tools\Sequence Editor\GraphEditor.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Tools\Sequence Editor\KismetLogParser.xaml.cs">
+      <DependentUpon>KismetLogParser.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Tools\Sequence Editor\SequenceEditorWPF.xaml.cs">
+      <DependentUpon>SequenceEditorWPF.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Tools\TlkManager\TLKManagerWPF.xaml.cs">
+      <DependentUpon>TLKManagerWPF.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Tools\TlkManager\TLKManagerWPF_ExportReplaceDialog.xaml.cs">
+      <DependentUpon>TLKManagerWPF_ExportReplaceDialog.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="SharedUI\Controls\SearchBox.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="SharedUI\Controls\ToolBox.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Tools\Sequence Editor\KismetLogParser.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Tools\Sequence Editor\SequenceEditorWPF.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Tools\TlkManager\TLKManagerWPF.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Tools\TlkManager\TLKManagerWPF_ExportReplaceDialog.xaml">
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
 </Project>

@@ -30,6 +30,16 @@
             get => _packageeditor_showtreeentrysubtext; 
             set => SetProperty(ref _packageeditor_showtreeentrysubtext, value);
         }
+        private static int _sequenceeditor_maxvarstringlength = 40; 
+        public static int SequenceEditor_MaxVarStringLength {
+            get => _sequenceeditor_maxvarstringlength; 
+            set => SetProperty(ref _sequenceeditor_maxvarstringlength, value);
+        }
+        private static bool _sequenceeditor_showparsedinfo = true; 
+        public static bool SequenceEditor_ShowParsedInfo {
+            get => _sequenceeditor_showparsedinfo; 
+            set => SetProperty(ref _sequenceeditor_showparsedinfo, value);
+        }
         private static bool _binaryinterpreter_skipautoparsesizecheck = false; 
         public static bool BinaryInterpreter_SkipAutoParseSizeCheck {
             get => _binaryinterpreter_skipautoparsesizecheck; 

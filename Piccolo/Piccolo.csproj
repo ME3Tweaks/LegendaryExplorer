@@ -1,128 +1,57 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
-    <ProjectGuid>{DAF03684-BB0B-4528-BFEE-8A3FBFC9FC4A}</ProjectGuid>
+    <!-- Since this project uses winforms, it cannot target .net standard-->
+    <TargetFrameworks>net48;net5.0-windows</TargetFrameworks>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Piccolo</RootNamespace>
-    <AssemblyName>Piccolo</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <LangVersion>9.0</LangVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <Platforms>x64</Platforms>
+    <Configurations>WinDebug;WinRelease;WinAzureRelease;WinAzureTest</Configurations>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+
+  <PropertyGroup Condition="'$(Configuration)'=='WinDebug'">
+    <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'WinDebug|x64'">
+
+  <PropertyGroup Condition="'$(Configuration)'=='WinRelease'">
+    <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\WinDebug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>9.0</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <DefineConstants>WINDOWS</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'WinRelease|x64'">
-    <OutputPath>bin\x64\WinRelease\</OutputPath>
+
+  <!-- Nightly release from Azure-->
+  <PropertyGroup Condition="'$(Configuration)'=='WinAzureRelease'">
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <PlatformTarget>x64</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>WINDOWS;NIGHTLY</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'WinAzureRelease|x64'">
-    <OutputPath>bin\x64\WinAzureRelease\</OutputPath>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <LangVersion>9.0</LangVersion>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'WinAzureTest|x64'">
-    <OutputPath>bin\x64\WinAzureTest\</OutputPath>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <LangVersion>9.0</LangVersion>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+
+  <!-- Azure flags allow special code to make tests work on azure since game won't exist there. It should never be used locally -->
+  <PropertyGroup Condition="'$(Configuration)'=='WinAzureTest'">
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <PlatformTarget>x64</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>WINDOWS;AZURE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Piccolo\Extensions.cs" />
-    <Compile Include="Piccolo\Activities\NamespaceDoc.cs" />
-    <Compile Include="Piccolo\Activities\PActivity.cs" />
-    <Compile Include="Piccolo\Activities\PActivityScheduler.cs" />
-    <Compile Include="Piccolo\Activities\PColorActivity.cs" />
-    <Compile Include="Piccolo\Activities\PInterpolatingActivity.cs" />
-    <Compile Include="Piccolo\Activities\PTransformActivity.cs" />
-    <Compile Include="Piccolo\Event\NamespaceDoc.cs" />
-    <Compile Include="Piccolo\Event\PBasicInputEventHandler.cs" />
-    <Compile Include="Piccolo\Event\PDragEventHandler.cs" />
-    <Compile Include="Piccolo\Event\PDragSequenceEventHandler.cs" />
-    <Compile Include="Piccolo\Event\PInputEventArgs.cs" />
-    <Compile Include="Piccolo\Event\PInputEventListener.cs" />
-    <Compile Include="Piccolo\Event\PPanEventHandler.cs" />
-    <Compile Include="Piccolo\Event\PPropertyEventArgs.cs" />
-    <Compile Include="Piccolo\Event\PZoomEventHandler.cs" />
-    <Compile Include="Piccolo\NamespaceDoc.cs" />
-    <Compile Include="Piccolo\Nodes\NamespaceDoc.cs" />
-    <Compile Include="Piccolo\Nodes\PImage.cs" />
-    <Compile Include="Piccolo\Nodes\PPath.cs" />
-    <Compile Include="Piccolo\Nodes\PText.cs" />
-    <Compile Include="Piccolo\PCamera.cs" />
-    <Compile Include="Piccolo\PCanvas.cs">
+    <Compile Update="Piccolo\PCanvas.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Piccolo\PInputManager.cs" />
-    <Compile Include="Piccolo\PLayer.cs" />
-    <Compile Include="Piccolo\PNode.cs" />
-    <Compile Include="Piccolo\PRoot.cs" />
-    <Compile Include="Piccolo\Util\GraphicsPathSurrogate.cs" />
-    <Compile Include="Piccolo\Util\MatrixSurrogate.cs" />
-    <Compile Include="Piccolo\Util\NamespaceDoc.cs" />
-    <Compile Include="Piccolo\Util\PActivityList.cs" />
-    <Compile Include="Piccolo\Util\PCameraList.cs" />
-    <Compile Include="Piccolo\Util\PDebug.cs" />
-    <Compile Include="Piccolo\Util\PLayerList.cs" />
-    <Compile Include="Piccolo\Util\PMatrix.cs" />
-    <Compile Include="Piccolo\Util\PNodeFilter.cs" />
-    <Compile Include="Piccolo\Util\PPaintContext.cs" />
-    <Compile Include="Piccolo\Util\PPickPath.cs" />
-    <Compile Include="Piccolo\Util\PStream.cs" />
-    <Compile Include="Piccolo\Util\PUtil.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Piccolo\PCanvas.resx">
-      <DependentUpon>PCanvas.cs</DependentUpon>
-    </EmbeddedResource>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.2.222702">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="5.0.2" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

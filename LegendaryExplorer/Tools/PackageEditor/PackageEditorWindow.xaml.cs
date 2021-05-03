@@ -20,6 +20,7 @@ using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Interfaces;
+using LegendaryExplorer.Tools;
 using LegendaryExplorer.UserControls.ExportLoaderControls;
 using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
@@ -535,6 +536,16 @@ namespace LegendaryExplorer.Tools.PackageEditor
             {
                 switch (toolName)
                 {
+                    case "SequenceEditor":
+                        if (exp.IsA("SequenceObject"))
+                        {
+                            if (exp.IsA("Sequence") && exp.Parent is ExportEntry parent && parent.IsA("SequenceReference"))
+                            {
+                                exp = parent;
+                            }
+                            new Sequence_Editor.SequenceEditorWPF(exp).Show();
+                        }
+                        break;
                     // TODO: IMPLEMENT FOR LEX
                     /*
                     case "DialogueEditor":
@@ -559,16 +570,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         if (Soundpanel.CanParseStatic(exp))
                         {
                             new Soundplorer.SoundplorerWPF(exp).Show();
-                        }
-                        break;
-                    case "SequenceEditor":
-                        if (exp.IsA("SequenceObject"))
-                        {
-                            if (exp.IsA("Sequence") && exp.Parent is ExportEntry parent && parent.IsA("SequenceReference"))
-                            {
-                                exp = parent;
-                            }
-                            new Sequence_Editor.SequenceEditorWPF(exp).Show();
                         }
                         break;
                     case "InterpViewer":
@@ -3569,6 +3570,11 @@ namespace LegendaryExplorer.Tools.PackageEditor
             var myValue = (string)((MenuItem)sender).Tag;
             switch (myValue)
             {
+                case "SequenceEditor":
+                    var seqEditor = new Sequence_Editor.SequenceEditorWPF();
+                    seqEditor.LoadFile(Pcc.FilePath);
+                    seqEditor.Show();
+                    break;
                 // TODO: IMPLEMENT IN LEX
                 /*
                 case "DialogueEditor":
@@ -3589,11 +3595,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     var soundplorerWPF = new Soundplorer.SoundplorerWPF();
                     soundplorerWPF.LoadFile(Pcc.FilePath);
                     soundplorerWPF.Show();
-                    break;
-                case "SequenceEditor":
-                    var seqEditor = new Sequence_Editor.SequenceEditorWPF();
-                    seqEditor.LoadFile(Pcc.FilePath);
-                    seqEditor.Show();
                     break;
                 case "Meshplorer":
                     var meshplorer = new MeshplorerWPF();
@@ -3638,8 +3639,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private void TLKManagerWPF_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: IMPLEMENT IN LEX
-            //new TlkManagerNS.TLKManagerWPF().Show();
+            new TlkManagerNS.TLKManagerWPF().Show();
         }
 
         private void PropertyParsing_UnknownArrayAsObj_Click(object sender, RoutedEventArgs e)

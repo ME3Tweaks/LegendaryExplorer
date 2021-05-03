@@ -9,7 +9,39 @@
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
     <RootNamespace>Xceed.Wpf.Toolkit</RootNamespace>
+    <Platforms>x64</Platforms>
+    <Configurations>WinDebug;WinRelease;WinAzureRelease;WinAzureTest</Configurations>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='WinDebug'">
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='WinRelease'">
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <DefineConstants>WINDOWS</DefineConstants>
+  </PropertyGroup>
+
+  <!-- Nightly release from Azure-->
+  <PropertyGroup Condition="'$(Configuration)'=='WinAzureRelease'">
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>WINDOWS;NIGHTLY</DefineConstants>
+  </PropertyGroup>
+
+  <!-- Azure flags allow special code to make tests work on azure since game won't exist there. It should never be used locally -->
+  <PropertyGroup Condition="'$(Configuration)'=='WinAzureTest'">
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>WINDOWS;AZURE</DefineConstants>
+  </PropertyGroup>
+
+
   <ItemGroup>
     <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
