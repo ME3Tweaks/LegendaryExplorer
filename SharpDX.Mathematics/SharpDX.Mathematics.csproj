@@ -9,19 +9,8 @@
 		<PackageTags>$(PackageTags) Mathematics HLSL fx Shaders</PackageTags>
 		<Platforms>x64</Platforms>
 		<Configurations>WinDebug;WinRelease;WinAzureRelease;WinAzureTest</Configurations>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='WinDebug|netstandard2.0|x64'">
-	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	</PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='WinRelease|netstandard2.0|x64'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='WinAzureRelease|netstandard2.0|x64'">
-      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='WinAzureTest|netstandard2.0|x64'">
-      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    </PropertyGroup>
+	</PropertyGroup>
   
   <ItemGroup>
     <PackageReference Include="SharpDX" Version="4.2.0" />

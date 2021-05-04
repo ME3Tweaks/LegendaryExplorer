@@ -136,7 +136,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /f /y "$(ProjectDir)$(OutDir)$(TargetFileName)" "$(SolutionDir)ME3Explorer\$(OutDir)"  
-xcopy /f /y "$(ProjectDir)$(OutDir)$(TargetFileName)" "$(SolutionDir)UDKExplorer\$(OutDir)"</PostBuildEvent>
+    <PostBuildEvent>xcopy /f /y "$(ProjectDir)$(OutDir)$(TargetFileName)" "$(SolutionDir)ME3Explorer\$(OutDir)"</PostBuildEvent>
   </PropertyGroup>
 </Project>

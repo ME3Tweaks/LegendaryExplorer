@@ -12,6 +12,7 @@ using System.Windows.Forms.Integration;
 using System.Windows.Threading;
 using LegendaryExplorer.Dialogs.Splash;
 using LegendaryExplorer.Misc;
+using LegendaryExplorer.Misc.Telemetry;
 using LegendaryExplorer.SharedUI.PeregrineTreeView;
 using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorer.UnrealExtensions.Classes;
