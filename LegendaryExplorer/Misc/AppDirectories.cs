@@ -17,5 +17,6 @@ namespace LegendaryExplorer.Misc
 
         // TODO: Should this be merged into the executable? Does this work in .NET Single File?
         public static string ExecFolder => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "exec");
+        public static string HexConverterPath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "HexConverter.exe");
     }
 }

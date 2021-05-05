@@ -251,7 +251,6 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Hex Converter",
-                type = typeof(HexConverter.MainWindow),
                 icon = Application.Current.FindResource("iconHexConverter") as ImageSource,
                 open = () =>
                 {

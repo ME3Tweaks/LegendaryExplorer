@@ -3607,18 +3607,16 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private void HexConverterMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: IMPLEMENT INTO LEX
-            //if (File.Exists(App.HexConverterPath))
-            //{
-            //    Process.Start(App.HexConverterPath);
-            //}
+            if (File.Exists(AppDirectories.HexConverterPath))
+            {
+                Process.Start(AppDirectories.HexConverterPath);
+            }
         }
 
         private void BinaryInterpreterWPF_AlwaysAutoParse_Click(object sender, RoutedEventArgs e)
         {
             //BinaryInterpreterWPF_AlwaysAutoParse_MenuItem.IsChecked = !BinaryInterpreterWPF_AlwaysAutoParse_MenuItem.IsChecked;
-            Settings.BinaryInterpreter_SkipAutoParseSizeCheck =
-                !Settings.BinaryInterpreter_SkipAutoParseSizeCheck;
+            Settings.BinaryInterpreter_SkipAutoParseSizeCheck = !Settings.BinaryInterpreter_SkipAutoParseSizeCheck;
             Settings.Save();
         }
 
