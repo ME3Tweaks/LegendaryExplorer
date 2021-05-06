@@ -1855,28 +1855,26 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         }
 
                         //data
+                        if (offsetDec >= exp.DataOffset && offsetDec < exp.DataOffset + exp.DataSize)
+                        {
+                            GoToNumber(exp.UIndex);
+                            int inExportDataOffset = exp.DataOffset + exp.DataSize - offsetDec;
+                            int propsEnd = exp.propsEnd();
 
-                        // TODO: IMPLEMENT IN LEX
-                        //if (offsetDec >= exp.DataOffset && offsetDec < exp.DataOffset + exp.DataSize)
-                        //{
-                        //    GoToNumber(exp.UIndex);
-                        //    int inExportDataOffset = exp.DataOffset + exp.DataSize - offsetDec;
-                        //    int propsEnd = exp.propsEnd();
+                            if (inExportDataOffset > propsEnd && exp.DataSize > propsEnd &&
+                                BinaryInterpreterTab_BinaryInterpreter.CanParse(exp))
+                            {
+                                BinaryInterpreterTab_BinaryInterpreter.SetHexboxSelectedOffset(inExportDataOffset);
+                                BinaryInterpreter_Tab.IsSelected = true;
+                            }
+                            else
+                            {
+                                InterpreterTab_Interpreter.SetHexboxSelectedOffset(inExportDataOffset);
+                                Interpreter_Tab.IsSelected = true;
+                            }
 
-                        //    if (inExportDataOffset > propsEnd && exp.DataSize > propsEnd &&
-                        //        BinaryInterpreterTab_BinaryInterpreter.CanParse(exp))
-                        //    {
-                        //        BinaryInterpreterTab_BinaryInterpreter.SetHexboxSelectedOffset(inExportDataOffset);
-                        //        BinaryInterpreter_Tab.IsSelected = true;
-                        //    }
-                        //    else
-                        //    {
-                        //        InterpreterTab_Interpreter.SetHexboxSelectedOffset(inExportDataOffset);
-                        //        Interpreter_Tab.IsSelected = true;
-                        //    }
-
-                        //    return;
-                        //}
+                            return;
+                        }
                     }
 
                     MessageBox.Show($"No entry or header containing offset 0x{result} was found.");
@@ -2256,11 +2254,11 @@ namespace LegendaryExplorer.Tools.PackageEditor
             //ExportLoaders[SoundTab_Soundpanel] = Sound_Tab;
             //ExportLoaders[CurveTab_CurveEditor] = CurveEditor_Tab;
             //ExportLoaders[FaceFXTab_Editor] = FaceFXAnimSet_Tab;
-            //ExportLoaders[Bio2DATab_Bio2DAEditor] = Bio2DAViewer_Tab;
+            ExportLoaders[Bio2DATab_Bio2DAEditor] = Bio2DAViewer_Tab;
             //ExportLoaders[BytecodeTab_BytecodeEditor] = Bytecode_Tab;
             //ExportLoaders[ScriptTab_UnrealScriptIDE] = Script_Tab;
-            //ExportLoaders[BinaryInterpreterTab_BinaryInterpreter] = BinaryInterpreter_Tab;
-            //ExportLoaders[EmbeddedTextureViewerTab_EmbededTextureViewer] = EmbeddedTextureViewer_Tab;
+            ExportLoaders[BinaryInterpreterTab_BinaryInterpreter] = BinaryInterpreter_Tab;
+            ExportLoaders[EmbeddedTextureViewerTab_EmbededTextureViewer] = EmbeddedTextureViewer_Tab;
             //ExportLoaders[ME1TlkEditorWPFTab_ME1TlkEditor] = ME1TlkEditorWPF_Tab;
             //ExportLoaders[JPEXLauncherTab_JPEXLauncher] = JPEXLauncher_Tab;
             //ExportLoaders[MeshRendererTab_MeshRenderer] = MeshRenderer_Tab;
@@ -2272,10 +2270,9 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
 
             InterpreterTab_Interpreter.SetParentNameList(NamesList); //reference to this control for name editor set
-
-            //TODO: IMPLEMENT IN LEX
-            //BinaryInterpreterTab_BinaryInterpreter.SetParentNameList(NamesList); //reference to this control for name editor set
-            //Bio2DATab_Bio2DAEditor.SetParentNameList(NamesList); //reference to this control for name editor set
+            
+            BinaryInterpreterTab_BinaryInterpreter.SetParentNameList(NamesList); //reference to this control for name editor set
+            Bio2DATab_Bio2DAEditor.SetParentNameList(NamesList); //reference to this control for name editor set
 
             InterpreterTab_Interpreter.HideHexBox = Settings.PackageEditor_HideInterpreterHexBox;
             InterpreterTab_Interpreter.ToggleHexbox_Button.Visibility = Visibility.Visible;
@@ -2899,13 +2896,13 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         }
                     }
 
-                    // TODO: IMPLEMENT IN LEX
-                    //if (Interpreter_Tab.IsSelected && exportEntry.ClassName == "Class")
-                    //{
-                    //    //We are on interpreter tab, selecting class. Switch to binary interpreter as interpreter will never be useful
-                    //    BinaryInterpreter_Tab.IsSelected = true;
-                    //}
+                    if (Interpreter_Tab.IsSelected && exportEntry.ClassName == "Class")
+                    {
+                        //We are on interpreter tab, selecting class. Switch to binary interpreter as interpreter will never be useful
+                        BinaryInterpreter_Tab.IsSelected = true;
+                    }
 
+                    // TODO: IMPLEMENT IN LEX
                     //if (Interpreter_Tab.IsSelected && exportEntry.ClassName == "Function" && Bytecode_Tab.IsVisible)
                     //{
                     //    Bytecode_Tab.IsSelected = true;
@@ -3610,6 +3607,10 @@ namespace LegendaryExplorer.Tools.PackageEditor
             if (File.Exists(AppDirectories.HexConverterPath))
             {
                 Process.Start(AppDirectories.HexConverterPath);
+            }
+            else
+            {
+                new HexConverter.MainWindow().Show();
             }
         }
 

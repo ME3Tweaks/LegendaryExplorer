@@ -16,6 +16,7 @@
 
   <!-- Export Loader Settings -->
   <setting name="BinaryInterpreter_SkipAutoParseSizeCheck" type="bool" defaultvalue="false"/>
+  <setting name="BinaryInterpreterWPFAutoScanAlways" type="bool" defaultvalue="false"/>
   <setting name="TextureViewer_AutoLoadMip" type="bool" defaultvalue="true"/>
 
 

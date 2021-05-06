@@ -43,7 +43,9 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="5.0.2" />
   </ItemGroup>
+  <!--
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy /f /y &quot;$(ProjectDir)bin\$(PlatformName)\$(ConfigurationName)\net48\$(TargetFileName)&quot; &quot;$(SolutionDir)ME3Explorer\bin\$(PlatformName)\$(ConfigurationName)\&quot;&#xD;&#xA;xcopy /f /y &quot;$(ProjectDir)bin\$(PlatformName)\$(ConfigurationName)\net5.0-windows\$(TargetName).exe&quot; &quot;$(SolutionDir)LegendaryExplorer\bin\$(PlatformName)\$(ConfigurationName)\net5.0-windows\&quot;" />
   </Target>
+  -->
 </Project>

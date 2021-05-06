@@ -67,8 +67,7 @@ namespace LegendaryExplorer.Startup
 
             // Todo: Dark mode settings
 
-            // TODO: IMPLEMENT IN LEX - load tools
-            //Tools.Initialize();
+            ToolSet.Initialize();
             app.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             app.Dispatcher.UnhandledException += app.OnDispatcherUnhandledException; //only start handling them after bootup
             

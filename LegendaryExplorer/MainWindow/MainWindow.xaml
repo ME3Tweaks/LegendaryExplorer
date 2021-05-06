@@ -7,6 +7,6 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Button Content="Launch Package Editor" Click="LPE"/>
+        <local:ToolPanel x:Name="mainToolPanel" Rows="5" Columns="9" Category="Tools"/>
     </Grid>
 </Window>

@@ -24,11 +24,7 @@ namespace LegendaryExplorer
         public MainWindow()
         {
             InitializeComponent();
-        }
-
-        private void LPE(object sender, RoutedEventArgs e)
-        {
-            new PackageEditorWindow().Show();
+            mainToolPanel.setToolList(ToolSet.Items);
         }
     }
 }

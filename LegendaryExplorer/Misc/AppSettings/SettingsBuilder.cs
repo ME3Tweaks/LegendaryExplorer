@@ -45,6 +45,11 @@
             get => _binaryinterpreter_skipautoparsesizecheck; 
             set => SetProperty(ref _binaryinterpreter_skipautoparsesizecheck, value);
         }
+        private static bool _binaryinterpreterwpfautoscanalways = false; 
+        public static bool BinaryInterpreterWPFAutoScanAlways {
+            get => _binaryinterpreterwpfautoscanalways; 
+            set => SetProperty(ref _binaryinterpreterwpfautoscanalways, value);
+        }
         private static bool _textureviewer_autoloadmip = true; 
         public static bool TextureViewer_AutoLoadMip {
             get => _textureviewer_autoloadmip; 

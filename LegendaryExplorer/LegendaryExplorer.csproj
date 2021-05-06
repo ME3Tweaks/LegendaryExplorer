@@ -125,8 +125,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.95.3" />
     <PackageReference Include="FontAwesome5" Version="2.1.0" />
     <PackageReference Include="gong-wpf-dragdrop" Version="2.3.2" />
+    <PackageReference Include="Gu.Wpf.DataGrid2D" Version="0.2.4" />
     <PackageReference Include="JetBrains.Profiler.SelfApi" Version="2.1.1" />
     <PackageReference Include="LibVLCSharp.WPF" Version="3.5.0" />
     <PackageReference Include="Microsoft.AppCenter" Version="4.2.0" />
@@ -396,6 +398,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="MainWindow\ToolPanel.xaml.cs">
+      <DependentUpon>ToolPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Misc\AppSettings\SettingsBuilder.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -422,9 +427,18 @@
     <Compile Update="Tools\TlkManager\TLKManagerWPF_ExportReplaceDialog.xaml.cs">
       <DependentUpon>TLKManagerWPF_ExportReplaceDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Update="UserControls\ExportLoaderControls\BinaryInterpreter\BinaryInterpreterWPF.xaml.cs">
+      <DependentUpon>BinaryInterpreterWPF.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\ExportLoaderControls\Bio2DAEditor\Bio2DAEditorWPF.xaml.cs">
+      <DependentUpon>Bio2DAEditorWPF.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="MainWindow\ToolPanel.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="SharedUI\Controls\SearchBox.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -441,6 +455,12 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Tools\TlkManager\TLKManagerWPF_ExportReplaceDialog.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UserControls\ExportLoaderControls\BinaryInterpreter\BinaryInterpreterWPF.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UserControls\ExportLoaderControls\Bio2DAEditor\Bio2DAEditorWPF.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
