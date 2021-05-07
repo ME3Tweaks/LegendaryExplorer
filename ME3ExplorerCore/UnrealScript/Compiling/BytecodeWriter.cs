@@ -67,26 +67,9 @@ namespace ME3ExplorerCore.UnrealScript.Compiling
             }
         }
 
-        protected NameReference StringToNameRef(string s)
-        {
-            int num = 0;
-            int _Idx = s.LastIndexOf('_');
-            if (_Idx > 0)
-            {
-                string numComponent = s.Substring(_Idx + 1);
-                //if there's a leading zero, it's just part of the string
-                if (numComponent.Length > 0 && numComponent[0] != '0' && int.TryParse(numComponent, NumberStyles.None, null, out num))
-                {
-                    s = s.Substring(0, _Idx);
-                    num += 1;
-                }
-            }
-            return new NameReference(s, num);
-        }
-
         protected void WriteName(string fullName)
         {
-            (string name, int number) = StringToNameRef(fullName);
+            (string name, int number) = NameReference.FromInstancedString(fullName);
             WriteInt(Pcc.FindNameOrAdd(name));
             WriteInt(number);
         }

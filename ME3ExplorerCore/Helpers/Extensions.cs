@@ -332,6 +332,8 @@ namespace ME3ExplorerCore.Helpers
         public static void Add<T, U, V>(this IList<(T, U, V)> list, T item1, U item2, V item3) => list.Add((item1, item2, item3));
 
         public static void Add<T, U, V, W>(this IList<(T, U, V, W)> list, T item1, U item2, V item3, W item4) => list.Add((item1, item2, item3, item4));
+
+        public static void Add<T>(this Stack<T> stack, T item) => stack.Push(item);
     }
 
     public static class DictionaryExtensions

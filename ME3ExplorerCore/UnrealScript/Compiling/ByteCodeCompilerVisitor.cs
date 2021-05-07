@@ -610,7 +610,7 @@ namespace ME3ExplorerCore.UnrealScript.Compiling
         public bool VisitNode(DelegateComparison node)
         {
             useInstanceDelegate = true;
-            WriteOpCode(node.RightOperand.ResolveType() is DelegateType delegateType && delegateType.IsFunction
+            WriteOpCode(node.RightOperand.ResolveType() is DelegateType {IsFunction: true}
                             ? node.IsEqual
                                 ? OpCodes.EqualEqual_DelFunc
                                 : OpCodes.NotEqual_DelFunc
@@ -688,7 +688,7 @@ namespace ME3ExplorerCore.UnrealScript.Compiling
                 WriteOpCode(OpCodes.FinalFunction);
                 WriteObjectRef(ResolveFunction(func));
             }
-            else if (Game <= MEGame.ME2 || node.IsCalledOnInterface)
+            else if (Game <= MEGame.ME2 || node.IsCalledOnInterface || func.Outer is State)
             {
                 WriteOpCode(OpCodes.VirtualFunction);
                 WriteName(func.Name);
@@ -775,6 +775,9 @@ namespace ME3ExplorerCore.UnrealScript.Compiling
                     case CompositeSymbolRef csr when ContainsFunctionCall(csr):
                     case VectorLiteral _:
                     case RotatorLiteral _:
+                    case InOpReference _:
+                    case PreOpReference _:
+                    case PostOpReference _:
                         WriteByte(1);
                         break;
                     default:
@@ -783,7 +786,7 @@ namespace ME3ExplorerCore.UnrealScript.Compiling
                 }
 
                 //this is being modified, and this is the base struct.
-                if (inAssignTarget && !(node.OuterSymbol is CompositeSymbolRef csf && csf.IsStructMemberExpression))
+                if (inAssignTarget && !(node.OuterSymbol is CompositeSymbolRef {IsStructMemberExpression: true}))
                 {
                     WriteByte(1);
                 }
@@ -1330,7 +1333,7 @@ namespace ME3ExplorerCore.UnrealScript.Compiling
 
         private IEntry ResolveProperty(VariableDeclaration decl)
         {
-            (string name, int number) = StringToNameRef(decl.Name);
+            (string name, int number) = NameReference.FromInstancedString(decl.Name);
             return Pcc.getEntryOrAddImport($"{ResolveSymbol(decl.Outer).FullPath}.{name}", PropertyTypeName(decl.VarType), objIdx: number);
         }
 
@@ -1349,10 +1352,11 @@ namespace ME3ExplorerCore.UnrealScript.Compiling
         private IEntry ResolveObject(string instancedFullPath) => Pcc.Exports.FirstOrDefault(exp => exp.InstancedFullPath == instancedFullPath) ??
                                                                   (IEntry)Pcc.Imports.FirstOrDefault(imp => imp.InstancedFullPath == instancedFullPath);
 
-        private static string PropertyTypeName(VariableType type) =>
+        public static string PropertyTypeName(VariableType type) =>
             type switch
             {
                 Class component when component.SameAsOrSubClassOf("Component") => "ComponentProperty",
+                Class {IsInterface: true} => "InterfaceProperty",
                 Class _ => "ObjectProperty",
                 Struct _ => "StructProperty",
                 ClassType _ => "ClassProperty",

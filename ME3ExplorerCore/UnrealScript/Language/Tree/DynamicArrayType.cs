@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.UnrealScript.Analysis.Visitors;
 using ME3ExplorerCore.UnrealScript.Utilities;
 
@@ -8,6 +9,7 @@ namespace ME3ExplorerCore.UnrealScript.Language.Tree
     public class DynamicArrayType : VariableType, IEquatable<DynamicArrayType>
     {
         public VariableType ElementType;
+        public UnrealFlags.EPropertyFlags ElementPropertyFlags;
 
         public DynamicArrayType(VariableType elementType, SourcePosition start = null, SourcePosition end = null) : base(elementType.Name, start, end)
         {

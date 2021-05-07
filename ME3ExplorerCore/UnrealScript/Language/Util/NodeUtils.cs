@@ -98,6 +98,11 @@ namespace ME3ExplorerCore.UnrealScript.Language.Util
                     {
                         return sameAsOrSubClassOf || destClass.Implements(srcClass);
                     }
+
+                    if (destClass.IsInterface)
+                    {
+                        return sameAsOrSubClassOf || srcClass.Implements(destClass);
+                    }
                     return sameAsOrSubClassOf 
                         //this seems super wrong obviously. A sane type system would require an explicit downcast.
                         //But to make this work with existing bioware code, it's this, or write a control-flow analyzer that implicitly downcasts based on typecheck conditional gates
@@ -106,6 +111,11 @@ namespace ME3ExplorerCore.UnrealScript.Language.Util
                 }
 
                 if (destClass.Name.CaseInsensitiveEquals("Object") && src is ClassType)
+                {
+                    return true;
+                }
+
+                if (src is null)
                 {
                     return true;
                 }
@@ -133,6 +143,11 @@ namespace ME3ExplorerCore.UnrealScript.Language.Util
             if (a is ClassType aClsType && b is ClassType bClsType)
             {
                 return aClsType.ClassLimiter == bClsType.ClassLimiter;
+            }
+
+            if (a is StaticArrayType destStaticArr && b is StaticArrayType srcStaticArr)
+            {
+                return TypeEqual(destStaticArr.ElementType, srcStaticArr.ElementType) && destStaticArr.Length == srcStaticArr.Length;
             }
             return a == b //No type conversion, types must be an exact match
                 || a is null && b is Class || a is Class && b is null

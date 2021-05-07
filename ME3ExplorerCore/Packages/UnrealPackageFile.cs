@@ -408,6 +408,7 @@ namespace ME3ExplorerCore.Packages
 
                     trashPackage = exp;
                     trashPackageUIndex = trashPackage.UIndex;
+                    EntryLookupTable[TrashPackageName] = trashPackage;
                     break;
                 }
             }
@@ -472,7 +473,7 @@ namespace ME3ExplorerCore.Packages
             if (ExportCount != exports.Count)
             {
                 // Remove subtrash object if none in lookup table. Otherwise update the pointer.
-                if (trashChildren != null)
+                if (trashChildren != null && trashChildren.Any())
                 {
                     EntryLookupTable[$"{TrashPackageName}.Trash"] = trashChildren[0];
                 }

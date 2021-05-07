@@ -7,6 +7,7 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:ide="clr-namespace:ME3Explorer.ME3Script.IDE"
              xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
+             xmlns:errors="clr-namespace:ME3ExplorerCore.UnrealScript.Compiling.Errors;assembly=ME3ExplorerCore"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{Binding RelativeSource={RelativeSource Self}}" 
@@ -37,8 +38,7 @@
                         </ListBox.Resources>
                     </ListBox>
                 </StackPanel>
-                <TextBlock TextWrapping="Wrap"
-                    Text="Compilation is currently only supported for Functions. When editing a Function, DO NOT edit the signature or the local variable declarations, as compiling those is not yet supported."/>
+                <TextBlock TextWrapping="Wrap" Text="Compilation is currently only supported for Functions."/>
             </StackPanel>
             <!--Background="#1E1E1E" Foreground="#DBDBDB" LineNumbersForeground ="#2B90AE"-->
             <ide:UnrealScriptTextEditor x:Name="textEditor" Document="{Binding Document}" SyntaxHighlighting="Unrealscript"

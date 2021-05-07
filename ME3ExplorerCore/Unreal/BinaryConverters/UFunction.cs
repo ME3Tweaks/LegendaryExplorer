@@ -61,8 +61,8 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
         Event = 0x00000800,
         Operator = 0x00001000,
         Static = 0x00002000,
-        HasOptionalParms = 0x00004000,
-        Const = 0x00008000,
+        HasOptionalParms = 0x00004000, //unused in ME2/1
+        Const = 0x00008000, //Const is 0x00004000 in ME2/1
 
         Public = 0x00020000,
         Private = 0x00040000,

@@ -8,6 +8,7 @@ using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.UnrealScript.Analysis.Symbols;
+using ME3ExplorerCore.UnrealScript.Compiling.Errors;
 
 namespace ME3ExplorerCore.UnrealScript
 {
@@ -22,6 +23,8 @@ namespace ME3ExplorerCore.UnrealScript
 
         public bool HadInitializationError { get; private set; }
 
+        public MessageLog InitializationLog;
+
         public event Action<bool> InitializationStatusChange;
 
         private readonly object initializationLock = new();
@@ -35,29 +38,9 @@ namespace ME3ExplorerCore.UnrealScript
                 return true;
             }
 
-            if (!await Base.InitializeStandardLib())
-            {
-                HadInitializationError = Base.HadInitializationError;
-                InitializationStatusChange?.Invoke(true);
-                return false;
-            }
-
-            if (Base.BaseFileNames.Contains(Path.GetFileName(Pcc.FilePath)))
-            {
-                _symbols = Base.GetSymbolTable();
-                HadInitializationError = false;
-                IsInitialized = true;
-                InitializationStatusChange?.Invoke(true);
-                return true;
-            }
-
             return await Task.Run(() =>
             {
-                if (IsInitialized)
-                {
-                    return true;
-                }
-                bool success;
+                bool success = false;
                 lock (initializationLock)
                 {
                     if (IsInitialized)
@@ -65,9 +48,26 @@ namespace ME3ExplorerCore.UnrealScript
                         return true;
                     }
 
-                    success = InternalInitialize();
-                    IsInitialized = success;
-                    HadInitializationError = !success;
+                    InitializationLog = new MessageLog();
+                    if (!Base.InitializeStandardLib(InitializationLog).Result)
+                    {
+                        HadInitializationError = true;
+                    }
+                    else if (Base.BaseFileNames.Contains(Path.GetFileName(Pcc.FilePath)))
+                    {
+                        _symbols = Base.GetSymbolTable();
+                        HadInitializationError = false;
+                        IsInitialized = true;
+
+                        success = true;
+                    }
+
+                    if (!IsInitialized && !HadInitializationError)
+                    {
+                        success = InternalInitialize();
+                        IsInitialized = success;
+                        HadInitializationError = !success;
+                    }
                 }
 
                 InitializationStatusChange?.Invoke(true);
@@ -81,19 +81,42 @@ namespace ME3ExplorerCore.UnrealScript
             {
                 _symbols = Base.GetSymbolTable();
                 var files = EntryImporter.GetPossibleAssociatedFiles(Pcc, includeNonBioPRelated: false);
+                if (Pcc.Game is MEGame.ME3)
+                {
+                    if (Pcc.FindEntry("SFXGameMPContent") is IEntry {ClassName: "Package"} && !files.Contains("BIOP_MP_COMMON.pcc"))
+                    {
+                        files.Add("BIOP_MP_COMMON.pcc");
+                    }
+                    if (Pcc.FindEntry("SFXGameContentDLC_CON_MP2") is IEntry {ClassName: "Package"})
+                    {
+                        files.Add("Startup_DLC_CON_MP2_INT.pcc");
+                    }
+                    if (Pcc.FindEntry("SFXGameContentDLC_CON_MP3") is IEntry { ClassName: "Package" })
+                    {
+                        files.Add("Startup_DLC_CON_MP3_INT.pcc");
+                    }
+                    if (Pcc.FindEntry("SFXGameContentDLC_CON_MP4") is IEntry { ClassName: "Package" })
+                    {
+                        files.Add("Startup_DLC_CON_MP4_INT.pcc");
+                    }
+                    if (Pcc.FindEntry("SFXGameContentDLC_CON_MP5") is IEntry { ClassName: "Package" })
+                    {
+                        files.Add("Startup_DLC_CON_MP5_INT.pcc");
+                    }
+                }
                 var gameFiles = MELoadedFiles.GetFilesLoadedInGame(Pcc.Game);
                 foreach (var fileName in Enumerable.Reverse(files))
                 {
                     if (gameFiles.TryGetValue(fileName, out string path) && File.Exists(path))
                     {
                         using var pcc = MEPackageHandler.OpenMEPackage(path);
-                        if (!BaseLib.ResolveAllClassesInPackage(pcc, ref _symbols))
+                        if (!BaseLib.ResolveAllClassesInPackage(pcc, ref _symbols, InitializationLog))
                         {
                             return false;
                         }
                     }
                 }
-                return BaseLib.ResolveAllClassesInPackage(Pcc, ref _symbols);
+                return BaseLib.ResolveAllClassesInPackage(Pcc, ref _symbols, InitializationLog);
             }
             catch (Exception e) when (!ME3ExplorerCoreLib.IsDebug)
             {
@@ -157,22 +180,21 @@ namespace ME3ExplorerCore.UnrealScript
             {
                 return;
             }
-            //TODO: invalidate this when changes are made to script objects in this file
-            foreach (PackageUpdate update in updates.Where(u => u.Change.Has(PackageChange.Export)))
-            {
-                if (ScriptUIndexes.Contains(update.Index)
-                 || Pcc.GetEntry(update.Index) is ExportEntry exp && (IsScriptExport(exp) || exp.ClassName == "Function"))
-                {
-                    lock (initializationLock)
-                    {
-                        IsInitialized = false;
-                        HadInitializationError = false;
-                        _symbols = null;
-                    }
-                    InitializationStatusChange?.Invoke(false);
-                    return;
-                }
-            }
+            //foreach (PackageUpdate update in updates.Where(u => u.Change.Has(PackageChange.Export)))
+            //{
+            //    if (ScriptUIndexes.Contains(update.Index)
+            //     || Pcc.GetEntry(update.Index) is ExportEntry exp && (IsScriptExport(exp) || exp.ClassName == "Function"))
+            //    {
+            //        lock (initializationLock)
+            //        {
+            //            IsInitialized = false;
+            //            HadInitializationError = false;
+            //            _symbols = null;
+            //        }
+            //        InitializationStatusChange?.Invoke(false);
+            //        return;
+            //    }
+            //}
         }
 
         void IPackageUser.RegisterClosed(Action handler)

@@ -35,6 +35,9 @@
             <Setter Property="StrokeThickness" Value="1"/>
             <Setter Property="Stroke" Value="#FF9C9C9C"/>
         </Style>
+        <SolidColorBrush x:Key="ZeroGridLineStroke">
+            White
+        </SolidColorBrush>
         <Style x:Key="HorizontalLine" TargetType="{x:Type Line}" BasedOn="{StaticResource BaseLine}">
             <Setter Property="X2" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType=Canvas}}"/>
         </Style>
@@ -100,7 +103,8 @@
     <Canvas>
         <Canvas x:Name="graph" Background="#FF3B3B3B" PreviewMouseDown="graph_MouseDown" PreviewMouseUp="graph_MouseUp" PreviewMouseMove="graph_MouseMove"
                 Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType=Canvas}}"
-                Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType=Canvas}}"/>
+                Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType=Canvas}}">
+        </Canvas>
         <Grid Canvas.Right="0">
             <Grid.RowDefinitions>
                 <RowDefinition/>

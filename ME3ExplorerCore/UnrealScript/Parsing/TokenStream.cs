@@ -21,7 +21,7 @@ namespace ME3ExplorerCore.UnrealScript.Parsing
 
         private readonly Token<T> EndToken;
 
-        private TokenStream(Func<List<Token<T>>> provider) : base(provider)
+        public TokenStream(Func<List<Token<T>>> provider) : base(provider)
         {
             Cache = new Dictionary<int, ASTCacheEntry>();
             var endPos = Data.Count > 0 ? Data[Data.Count - 1].EndPos : new SourcePosition(0, 0, 0);

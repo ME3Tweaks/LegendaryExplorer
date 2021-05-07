@@ -386,6 +386,12 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                     return From<ObjectRedirector>(export);
                 case "TextureMovie":
                     return From<TextureMovie>(export);
+                case "BioCodexMap":
+                    return From<BioCodexMap>(export);
+                case "BioQuestMap":
+                    return From<BioQuestMap>(export);
+                case "BioStateEventMap":
+                    return From<BioStateEventMap>(export);
                 default:
                     return null;
             }

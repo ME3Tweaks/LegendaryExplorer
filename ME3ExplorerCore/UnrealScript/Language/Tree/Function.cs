@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.UnrealScript.Analysis.Visitors;
 using ME3ExplorerCore.UnrealScript.Language.Util;
@@ -13,8 +14,9 @@ namespace ME3ExplorerCore.UnrealScript.Language.Tree
         public string Name { get; }
         public CodeBody Body { get; set; }
         public List<VariableDeclaration> Locals { get; set; }
-        public VariableType ReturnType;
-        public bool CoerceReturn;
+        public VariableDeclaration ReturnValueDeclaration;
+        public VariableType ReturnType => ReturnValueDeclaration?.VarType;
+        public bool CoerceReturn => ReturnValueDeclaration?.Flags.Has(UnrealFlags.EPropertyFlags.CoerceParm) ?? false;
         public FunctionFlags Flags;
         public List<FunctionParameter> Parameters;
 
@@ -35,15 +37,17 @@ namespace ME3ExplorerCore.UnrealScript.Language.Tree
         public byte OperatorPrecedence; //ME1/2
         public string FriendlyName; //ME1/2
 
-        public Function(string name, FunctionFlags flags, 
-                        VariableType returntype, CodeBody body,
+        public Function SuperFunction;
+
+        public Function(string name, FunctionFlags flags,
+                        VariableDeclaration returnValueDeclaration, CodeBody body,
                         List<FunctionParameter> parameters = null,
                         SourcePosition start = null, SourcePosition end = null)
             : base(ASTNodeType.Function, start, end)
         {
             Name = name;
             Body = body;
-            ReturnType = returntype;
+            ReturnValueDeclaration = returnValueDeclaration;
             Flags = flags;
             Parameters = parameters ?? new List<FunctionParameter>();
             Locals = new List<VariableDeclaration>();

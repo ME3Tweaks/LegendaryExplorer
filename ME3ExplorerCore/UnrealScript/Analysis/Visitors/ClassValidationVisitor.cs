@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Unreal.BinaryConverters;
@@ -172,7 +173,7 @@ namespace ME3ExplorerCore.UnrealScript.Analysis.Visitors
                         });
                     }
 
-                    //second pass over functions to resolve parameters (TODO: and body)
+                    //second pass over functions to resolve parameters 
                     foreach (Function func in node.Functions)
                     {
                         Success &= func.AcceptVisitor(this);
@@ -203,12 +204,31 @@ namespace ME3ExplorerCore.UnrealScript.Analysis.Visitors
                         Success &= type.AcceptVisitor(this);
                     }
 
-
+                    //third pass over functions to check overriding rules
                     foreach (Function func in node.Functions)
                     {
-                        //if the return type is > 64 bytes, it can't be allocated on the stack.
-                        func.RetValNeedsDestruction |= (func.ReturnType?.Size ?? 0) > 64;
+                        Success &= func.AcceptVisitor(this);
                     }
+                    
+                    //second pass to resolve EPropertyFlags.NeedCtorLink for Struct Properties
+                    foreach (VariableDeclaration decl in node.VariableDeclarations)
+                    {
+                        Success &= decl.AcceptVisitor(this);
+                        if (decl.Flags.Has(EPropertyFlags.Component))
+                        {
+                            node.Flags |= EClassFlags.HasComponents;
+                        }
+                        if (decl.Flags.Has(EPropertyFlags.CrossLevel))
+                        {
+                            node.Flags |= EClassFlags.HasCrossLevelRefs;
+                        }
+                        if (decl.Flags.Has(EPropertyFlags.Config))
+                        {
+                            node.Flags |= EClassFlags.Config;
+                        }
+                        //TODO: instanced object properties?
+                    }
+
                     return Success;
                 }
                 default:
@@ -217,20 +237,99 @@ namespace ME3ExplorerCore.UnrealScript.Analysis.Visitors
         }
 
 
-        public bool VisitNode(VariableDeclaration node)
+        public bool VisitNode(VariableDeclaration node) => VisitVarDecl(node);
+
+        public bool VisitNode(FunctionParameter node) => VisitVarDecl(node);
+
+        public bool VisitVarDecl(VariableDeclaration node, bool needsAdd = true)
         {
-            node.VarType.Outer = node;
-            if (!Symbols.TryResolveType(ref node.VarType))
+            if (Pass is ValidationPass.ClassAndStructMembersAndFunctionParams)
             {
-                return Error($"No type named '{node.VarType.Name}' exists!", node.VarType.StartPos, node.VarType.EndPos);
-            }
+                if (needsAdd)
+                {
+                    node.VarType.Outer = node;
+                    if (!Symbols.TryResolveType(ref node.VarType))
+                    {
+                        return Error($"No type named '{node.VarType.Name}' exists!", node.VarType.StartPos, node.VarType.EndPos);
+                    }
 
-            if (Symbols.SymbolExistsInCurrentScope(node.Name))
+                    if (Symbols.SymbolExistsInCurrentScope(node.Name))
+                    {
+                        return Error($"A {(node is FunctionParameter ? "parameter" : "member")} named '{node.Name}' already exists in this {node.Outer.Type}!", node.StartPos, node.EndPos);
+                    }
+                    Symbols.AddSymbol(node.Name, node);
+                }
+
+                VariableType nodeVarType = (node.VarType as StaticArrayType)?.ElementType ?? node.VarType;
+                if (nodeVarType is DelegateType ||
+                    !node.Flags.Has(EPropertyFlags.Native) && nodeVarType is DynamicArrayType or { PropertyType: EPropertyType.String })
+                {
+                    node.Flags |= EPropertyFlags.NeedCtorLink;
+                }
+            }
+            else if (Pass is ValidationPass.BodyPass)
             {
-                return Error($"A member named '{node.Name}' already exists in this {node.Outer.Type}!", node.StartPos, node.EndPos);
-            }
-            Symbols.AddSymbol(node.Name, node);
+                //should component flag be set when this is a function parameter?
+                switch ((node.VarType as StaticArrayType)?.ElementType ?? node.VarType)
+                {
+                    case DynamicArrayType {ElementType: VariableType elType} dynArrType:
+                        if (elType is Class elClass && elClass.SameAsOrSubClassOf("Component"))
+                        {
+                            dynArrType.ElementPropertyFlags |= EPropertyFlags.Component;
+                            node.Flags |= EPropertyFlags.Component;
+                        }
+                        else if (elType is DelegateType ||
+                                 !node.Flags.Has(EPropertyFlags.Native) && (elType.PropertyType is EPropertyType.String ||
+                                                                                elType is Struct elStruct && StructNeedsCtorLink(elStruct, new Stack<Struct> { elStruct })))
+                        {
+                            dynArrType.ElementPropertyFlags |= EPropertyFlags.NeedCtorLink;
+                        }
+                        break;
+                    case Class c when c.SameAsOrSubClassOf("Component"):
+                        node.Flags |= EPropertyFlags.Component;
+                        break;
+                    case Struct strct when !node.Flags.Has(EPropertyFlags.Native) && StructNeedsCtorLink(strct, new Stack<Struct> { strct }):
+                        node.Flags |= EPropertyFlags.NeedCtorLink;
+                        break;
+                }
 
+                bool StructNeedsCtorLink(Struct s1, Stack<Struct> stack)
+                {
+                    foreach (VariableDeclaration strctVariableDeclaration in s1.VariableDeclarations)
+                    {
+                        if (strctVariableDeclaration.Flags.Has(EPropertyFlags.NeedCtorLink))
+                        {
+                            return true;
+                        }
+                        else if (strctVariableDeclaration.VarType is Struct s2)
+                        {
+                            if (stack.Contains(s2))
+                            {
+                                stack.Push(s2);
+                                Error($"Detected circular reference in these structs: {string.Join(" -> ", stack.Reverse().Select(s3 => s3.Name))}");
+                                stack.Pop();
+                                return true;
+                            }
+                            stack.Push(s2);
+                            if (StructNeedsCtorLink(s2, stack))
+                            {
+                                return true;
+                            }
+                            stack.Pop();
+                        }
+                    }
+                    if (s1.Parent is Struct parentStruct)
+                    {
+                        stack.Push(parentStruct);
+                        if (StructNeedsCtorLink(parentStruct, stack))
+                        {
+                            return true;
+                        }
+                        stack.Pop();
+                    }
+                    return false;
+                }
+            }
 
             return Success;
         }
@@ -331,7 +430,17 @@ namespace ME3ExplorerCore.UnrealScript.Analysis.Visitors
             {
                 if (node.Parent != null && ((Struct)node.Parent).SameOrSubStruct(node.Name))
                     return Error($"Extending from '{node.Parent.Name}' causes circular extension!", node.Parent.StartPos, node.Parent.EndPos);
-                //TODO
+
+                //second pass to resolve EPropertyFlags.NeedCtorLink for Struct Properties
+                foreach (VariableDeclaration decl in node.VariableDeclarations)
+                {
+                    Success &= decl.AcceptVisitor(this);
+                    if (decl.Flags.Has(EPropertyFlags.Component))
+                    {
+                        node.Flags |= ScriptStructFlags.HasComponents;
+                    }
+                }
+
                 return Success;
             }
             return Success;
@@ -397,49 +506,30 @@ namespace ME3ExplorerCore.UnrealScript.Analysis.Visitors
 
             if (Pass == ValidationPass.ClassAndStructMembersAndFunctionParams)
             {
-                if (node.ReturnType != null && !Symbols.TryResolveType(ref node.ReturnType))
+                Symbols.PushScope(node.Name);
+
+                if (node.ReturnValueDeclaration != null)
                 {
-                    return Error($"No type named '{node.ReturnType.Name}' exists!", node.ReturnType.StartPos, node.ReturnType.EndPos);
+                    node.ReturnValueDeclaration.Outer = node;
+                    Success &= node.ReturnValueDeclaration.AcceptVisitor(this);
                 }
 
-                Symbols.PushScope(node.Name);
                 foreach (FunctionParameter param in node.Parameters)
                 {
                     param.Outer = node;
-                    Success = Success && param.AcceptVisitor(this);
+                    Success &= param.AcceptVisitor(this);
                 }
+
+                //foreach (VariableDeclaration local in node.Locals)
+                //{
+                //    local.Outer = node;
+                //    Success &= local.AcceptVisitor(this);
+                //}
                 Symbols.PopScope();
 
                 if (Success == false)
                     return Error("Error in function parameters.", node.StartPos, node.EndPos);
 
-                string parentScope = null;
-                Class containingClass = NodeUtils.GetContainingClass(node);
-                if (node.Outer.Type == ASTNodeType.State)
-                {
-                    parentScope = containingClass.Name;
-                }
-                else if (containingClass.Parent != null)
-                {
-                    parentScope = containingClass.Parent.Name;
-                }
-
-                if (parentScope != null && Symbols.TryGetSymbolInScopeStack(node.Name, out ASTNode func, parentScope) // override functions in parent classes only (or current class if its a state)
-                                        && func.Type == ASTNodeType.Function)
-                {   // If there is a function with this name that we should override, validate the new functions declaration
-                    Function original = (Function)func;
-                    if (original.Flags.Has(FunctionFlags.Final))
-                        return Error($"{node.Name} overrides a function in a parent class, but the parent function is marked as final!", node.StartPos, node.EndPos);
-                    if (!NodeUtils.TypeEqual(node.ReturnType, original.ReturnType))
-                        return Error($"{node.Name} overrides a function in a parent class, but the functions do not have the same return types!", node.StartPos, node.EndPos);
-                    if (node.Parameters.Count != original.Parameters.Count)
-                        return Error($"{node.Name} overrides a function in a parent class, but the functions do not have the same number of parameters!", node.StartPos, node.EndPos);
-                    for (int n = 0; n < node.Parameters.Count; n++)
-                    {
-                        if (node.Parameters[n].Type != original.Parameters[n].Type)
-                            return Error($"{node.Name} overrides a function in a parent class, but the functions do not have the same parameter types!", node.StartPos, node.EndPos);
-                    }
-                }
 
                 if (node.FriendlyName is not null //true in ME2 and ME1
                  && node.IsOperator)
@@ -474,24 +564,88 @@ namespace ME3ExplorerCore.UnrealScript.Analysis.Visitors
 
                 return Success;
             }
-            return Success;
-        }
 
-        public bool VisitNode(FunctionParameter node)
-        {
-            node.VarType.Outer = node;
-            if (!Symbols.TryResolveType(ref node.VarType))
+            //for validating proper override behavior
+            if (Pass == ValidationPass.BodyPass)
             {
-                return Error($"No type named '{node.VarType.Name}' exists in this scope!", node.VarType.StartPos, node.VarType.EndPos);
-            }
+                Class containingClass = NodeUtils.GetContainingClass(node);
+                Function superFunc = null;
+                if (node.Outer is State state)
+                {
+                    state = state.Parent;
+                    while (state is not null)
+                    {
+                        string stateScope = $"{((Class)state.Outer).GetInheritanceString()}.{state.Name}";
+                        if (Symbols.TryGetSymbolInScopeStack(node.Name, out superFunc, stateScope))
+                        {
+                            break;
+                        }
 
-            if (Symbols.SymbolExistsInCurrentScope(node.Name))
-            {
-                return Error($"A parameter named '{node.Name}' already exists in this function!", 
-                             node.StartPos, node.EndPos);
-            }
+                        state = state.Parent;
+                    }
+                }
+                if (superFunc is null)
+                {
+                    Class parentScopeClass = node.Outer is State ? containingClass : containingClass.Parent as Class;
+                    if (parentScopeClass is not null)
+                    {
+                        Symbols.TryGetSymbolInScopeStack(node.Name, out superFunc, parentScopeClass.GetInheritanceString());
+                    }
+                }
 
-            Symbols.AddSymbol(node.Name, node);
+                if (superFunc is not null)
+                {
+                    if (superFunc.Flags.Has(FunctionFlags.Private))
+                    {
+                        superFunc = null;
+                    }
+                    else
+                    {
+                        // If there is a function with this name that we should override, validate the new functions declaration
+                        if (superFunc.Flags.Has(FunctionFlags.Final))
+                            return Error($"{node.Name} overrides a function in a parent class, but the parent function is marked as final!", node.StartPos, node.EndPos);
+                        if (!NodeUtils.TypeEqual(node.ReturnType, superFunc.ReturnType))
+                            return Error($"{node.Name} overrides a function in a parent class, but the functions do not have the same return types!", node.StartPos, node.EndPos);
+                        if (node.Parameters.Count != superFunc.Parameters.Count)
+                            return Error($"{node.Name} overrides a function in a parent class, but the functions do not have the same number of parameters!", node.StartPos, node.EndPos);
+                        for (int n = 0; n < node.Parameters.Count; n++)
+                        {
+                            if (node.Parameters[n].Type != superFunc.Parameters[n].Type)
+                                return Error($"{node.Name} overrides a function in a parent class, but the functions do not have the same parameter types!", node.StartPos, node.EndPos);
+                        }
+
+                        node.SuperFunction = superFunc;
+                    }
+                }
+                else if (node.Outer is State && node.Flags.Has(FunctionFlags.Net))
+                {
+                    return Error("If a state function has the Net flag, it must override a class function", node.StartPos, node.EndPos);
+                }
+
+
+                if (node.ReturnValueDeclaration != null)
+                {
+                    Success &= node.ReturnValueDeclaration.AcceptVisitor(this);
+                }
+
+                foreach (FunctionParameter param in node.Parameters)
+                {
+                    param.Outer = node;
+                    Success &= param.AcceptVisitor(this);
+                }
+
+                //foreach (VariableDeclaration local in node.Locals)
+                //{
+                //    local.Outer = node;
+                //    Success &= local.AcceptVisitor(this);
+                //}
+
+                if (node.ReturnValueDeclaration is not null)
+                {
+                    //if the return type is > 64 bytes, it can't be allocated on the stack.
+                    node.RetValNeedsDestruction = node.ReturnValueDeclaration.Flags.Has(EPropertyFlags.NeedCtorLink) || node.ReturnType.Size > 64;
+                }
+            }
             return Success;
         }
 
@@ -534,13 +688,14 @@ namespace ME3ExplorerCore.UnrealScript.Analysis.Visitors
                 }
 
                 int numFuncs = node.Functions.Count;
-                Symbols.PushScope(node.Name);
+                string parentScope = node.Parent is not null ? $"{NodeUtils.GetContainingClass(node.Parent).GetInheritanceString()}.{node.Parent.Name}" : null;
+                Symbols.PushScope(node.Name, parentScope);
                 foreach (Function ignore in node.Ignores)
                 {
                     if (Symbols.TryGetSymbol(ignore.Name, out ASTNode original, "") && original.Type == ASTNodeType.Function)
                     {
                         Function header = (Function)original;
-                        Function emptyOverride = new Function(header.Name, header.Flags, header.ReturnType, new CodeBody(), header.Parameters, ignore.StartPos, ignore.EndPos);
+                        Function emptyOverride = new Function(header.Name, header.Flags, header.ReturnValueDeclaration?.Clone(), new CodeBody(), header.Parameters, ignore.StartPos, ignore.EndPos);
                         node.Functions.Add(emptyOverride);
                     }
                     else //TODO: really ought to throw error, but PlayerController.PlayerWaiting.Jump is like this. Find alternate way of handling this?

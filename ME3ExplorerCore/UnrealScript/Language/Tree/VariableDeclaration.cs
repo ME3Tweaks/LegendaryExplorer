@@ -19,13 +19,13 @@ namespace ME3ExplorerCore.UnrealScript.Language.Tree
         public bool IsStaticArray => ArrayLength > 1;
 
         public VariableDeclaration(VariableType type, UnrealFlags.EPropertyFlags flags,
-                                   string name, int arrayLength = 0, string category = null, SourcePosition start = null, SourcePosition end = null)
+                                   string name, int arrayLength = 1, string category = "None", SourcePosition start = null, SourcePosition end = null)
             : base(ASTNodeType.VariableDeclaration, start, end)
         {
             Flags = flags;
             Name = name;
             ArrayLength = arrayLength;
-            Category = category;
+            Category = category ?? "None";
             VarType = IsStaticArray  && !(type is StaticArrayType) ? new StaticArrayType(type, ArrayLength) : type;
         }
 
@@ -45,5 +45,10 @@ namespace ME3ExplorerCore.UnrealScript.Language.Tree
 
         public string FilePath { get; init; }
         public int UIndex { get; set; }
+
+        public VariableDeclaration Clone()
+        {
+            return new VariableDeclaration(VarType, Flags, Name, ArrayLength, Category);
+        }
     }
 }

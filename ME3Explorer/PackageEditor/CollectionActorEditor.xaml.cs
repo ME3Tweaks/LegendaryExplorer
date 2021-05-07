@@ -129,7 +129,7 @@ namespace ME3Explorer.PackageEditor
         {
             if (CurrentLoadedExport != null)
             {
-                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new TextureViewerExportLoader(), CurrentLoadedExport)
+                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new CollectionActorEditor(), CurrentLoadedExport)
                 {
                     Title = $"Collection Actor Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {Pcc.FilePath}"
                 };

@@ -14,10 +14,13 @@ using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.UnrealScript;
 using ME3ExplorerCore.UnrealScript.Analysis.Visitors;
+using ME3ExplorerCore.UnrealScript.Compiling;
 using ME3ExplorerCore.UnrealScript.Compiling.Errors;
 using ME3ExplorerCore.UnrealScript.Language.Tree;
 using ME3ExplorerCore.UnrealScript.Lexing.Tokenizing;
@@ -67,7 +70,6 @@ namespace ME3Explorer.ME3Script.IDE
             BusyText = "Initializing Script Compiler";
 
             textEditor.TextArea.TextEntered += TextAreaOnTextEntered;
-            textEditor.TextArea.MouseDown += TextArea_MouseDown;
             _definitionLinkGenerator = new DefinitionLinkGenerator();
             textEditor.TextArea.TextView.ElementGenerators.Add(_definitionLinkGenerator);
         }
@@ -161,7 +163,6 @@ namespace ME3Explorer.ME3Script.IDE
                 Document.TextChanged -= TextChanged;
             }
             textEditor.TextArea.TextEntered -= TextAreaOnTextEntered;
-            textEditor.TextArea.MouseDown -= TextArea_MouseDown;
         }
 
 
@@ -277,8 +278,13 @@ namespace ME3Explorer.ME3Script.IDE
                     if (CurrentFileLib?.HadInitializationError == true)
                     {
                         FullyInitialized = false;
-                        MessageBox.Show("Could not build script database for this file!\n\n" +
-                                        "Functionality will be limited to script decompilation.");
+                        if (MessageBoxResult.Yes == MessageBox.Show("Could not build script database for this file!\n\n" +
+                                            "Functionality will be limited to script decompilation.\n\n\n" +
+                                            "Do you want to see the compilation error log?", "Script Error", MessageBoxButton.YesNo))
+                        {
+                            Dispatcher.Invoke(() => new ListDialog(CurrentFileLib.InitializationLog.Content.Select(msg => msg.ToString()), 
+                                                                   "Initialization Log", "", Window.GetWindow(this)).Show());
+                        }
                     }
                     else
                     {
@@ -340,6 +346,7 @@ namespace ME3Explorer.ME3Script.IDE
                     outputListBox.ItemsSource = new[] { $"Can only compile functions right now. {(CurrentLoadedExport.IsDefaultObject ? "Defaults" : CurrentLoadedExport.ClassName)} compilation will be added in a future update." };
                     return;
                 }
+
                 (_, MessageLog log) = UnrealScriptCompiler.CompileFunction(CurrentLoadedExport, ScriptText, CurrentFileLib);
                 outputListBox.ItemsSource = log?.Content;
             }
@@ -371,31 +378,33 @@ namespace ME3Explorer.ME3Script.IDE
                     textEditor.SyntaxHighlighting = syntaxInfo;
                 });
                 _definitionLinkGenerator.Reset();
-                if (ast is Function && FullyInitialized && CurrentLoadedExport.Parent is ExportEntry parentExport)
-                {
-                    (ASTNode func, MessageLog log) = UnrealScriptCompiler.CompileAST(text, CurrentLoadedExport.ClassName);
-
-                    if (func is Function function && log.AllErrors.IsEmpty())
-                    {
-                        (_, TokenStream<string> tokens) = UnrealScriptCompiler.CompileFunctionBodyAST(parentExport, text, function, log, CurrentFileLib);
-                        _definitionLinkGenerator.SetTokens(tokens);
-                    }
-                }
-
-                RootNode = ast;
-                ScriptText = text;
                 Dispatcher.Invoke(() =>
                 {
-                    if (RootNode is Function func)
+                    if (ast is Function && FullyInitialized && CurrentLoadedExport.Parent is ExportEntry parentExport)
+                    {
+                        try
+                        {
+                            (ASTNode func, MessageLog log, TokenStream<string> tokens) = UnrealScriptCompiler.CompileAST(text, CurrentLoadedExport.ClassName, Pcc.Game);
+
+                            if (func is Function function && log.AllErrors.IsEmpty())
+                            {
+                                //compile body to ast so that symbol tokens will be associated with their definitions
+                                UnrealScriptCompiler.CompileNewFunctionBodyAST(parentExport, text, function, log, CurrentFileLib);
+                                _definitionLinkGenerator.SetTokens(tokens);
+                                outputListBox.ItemsSource = log.Content;
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            //
+                        }
+                    }
+
+                    RootNode = ast;
+                    ScriptText = text;
+                    if (RootNode is Function {IsNative: false})
                     {
                         textEditor.IsReadOnly = false;
-                        int numLocals = func.Locals.Count;
-                        int numHeaderLines = Math.Min(numLocals > 0 ? numLocals + 4 : 3, Document.LineCount);
-                        var segments = new TextSegmentCollection<TextSegment>
-                        {
-                            new TextSegment { StartOffset = 0, EndOffset = Document.GetOffset(numHeaderLines, 0) }
-                        };
-                        textEditor.TextArea.ReadOnlySectionProvider = new TextSegmentReadOnlySectionProvider<TextSegment>(segments);
                         Document.TextChanged += TextChanged;
                     }
                     else
@@ -413,7 +422,7 @@ namespace ME3Explorer.ME3Script.IDE
 
         private void TextChanged(object sender, EventArgs e)
         {
-            (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileAST(ScriptText, CurrentLoadedExport.ClassName);
+            (ASTNode ast, MessageLog log, TokenStream<string> tokens) = UnrealScriptCompiler.CompileAST(ScriptText, CurrentLoadedExport.ClassName, Pcc.Game);
             try
             {
 
@@ -421,23 +430,23 @@ namespace ME3Explorer.ME3Script.IDE
                 {
                     if (ast is Function func && FullyInitialized && CurrentLoadedExport.Parent is ExportEntry parentExport)
                     {
-                        TokenStream<string> tokens;
-                        (ast, tokens) = UnrealScriptCompiler.CompileFunctionBodyAST(parentExport, ScriptText, func, log, CurrentFileLib);
+                        (ast, _) = UnrealScriptCompiler.CompileNewFunctionBodyAST(parentExport, ScriptText, func, log, CurrentFileLib);
 
-                        var codeBuilder = new CodeBuilderVisitor<SyntaxInfoCodeFormatter, (string, SyntaxInfo)>();
-                        ast.AcceptVisitor(codeBuilder);
-                        (_, SyntaxInfo syntaxInfo) = codeBuilder.GetOutput();
+                        //var codeBuilder = new CodeBuilderVisitor<SyntaxInfoCodeFormatter, (string, SyntaxInfo)>();
+                        //ast.AcceptVisitor(codeBuilder);
+                        //(_, SyntaxInfo syntaxInfo) = codeBuilder.GetOutput();
 
                         _definitionLinkGenerator.SetTokens(tokens);
+                        var syntaxInfo = new SyntaxInfo();
                         if (tokens.Any())
                         {
                             int firstLine = tokens.First().StartPos.Line - 1;
                             int lastLine = tokens.Last().EndPos.Line - 1;
-                            while (lastLine >= firstLine)
-                            {
-                                syntaxInfo[lastLine].Clear();
-                                lastLine--;
-                            }
+                            //while (lastLine >= firstLine)
+                            //{
+                            //    syntaxInfo[lastLine].Clear();
+                            //    lastLine--;
+                            //}
 
                             int currentLine = firstLine;
                             int currentPos = 0;
@@ -449,7 +458,10 @@ namespace ME3Explorer.ME3Script.IDE
                                     currentLine = tokLine;
                                     currentPos = 0;
                                 }
-
+                                while (syntaxInfo.Count <= currentLine + 1)
+                                {
+                                    syntaxInfo.Add(new List<SyntaxSpan>());
+                                }
                                 int tokStart = token.StartPos.Column;
                                 int tokEnd = token.EndPos.Column;
                                 if (tokStart > currentPos)
@@ -470,7 +482,7 @@ namespace ME3Explorer.ME3Script.IDE
             {
                 log.LogError("Parse Failed!");
             }
-            catch (Exception exception)
+            catch (Exception exception) when(!ME3ExplorerCoreLib.IsDebug)
             {
                 log.LogError($"Exception: {exception.Message}");
             }
@@ -496,24 +508,12 @@ namespace ME3Explorer.ME3Script.IDE
             // }
         }
 
-        private void TextArea_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (Keyboard.Modifiers.Has(ModifierKeys.Control))
-            {
-                var selection = textEditor.TextArea.Selection;
-                if (selection.Length == 0)
-                {
-                    
-                }
-            }
-        }
-
         private void CompileAST_OnClick(object sender, RoutedEventArgs e)
         {
             if (ScriptText != null)
             {
                 MessageLog log;
-                (RootNode, log) = UnrealScriptCompiler.CompileAST(ScriptText, CurrentLoadedExport.ClassName);
+                (RootNode, log, _) = UnrealScriptCompiler.CompileAST(ScriptText, CurrentLoadedExport.ClassName, Pcc.Game);
 
                 if (RootNode != null && log.AllErrors.IsEmpty())
                 {

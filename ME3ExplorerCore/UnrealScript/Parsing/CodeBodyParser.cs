@@ -51,10 +51,32 @@ namespace ME3ExplorerCore.UnrealScript.Parsing
         {
             symbols.PushScope(func.Name);
 
-            var tokenStream = new TokenStream<string>(new StringLexer(source, log), func.Body.StartPos, func.Body.EndPos);
+            var tokenStream = func.Body.Tokens ?? new TokenStream<string>(new StringLexer(source, log), func.Body.StartPos, func.Body.EndPos);
             var bodyParser = new CodeBodyParser(tokenStream, game, func.Body, symbols, func, log);
 
             var body = bodyParser.ParseBody();
+
+            bool hasStructDefaults = false;
+            if (func.Locals.Any())
+            {
+                bool isNotInState = func.Outer is not State;
+                var validator = new ClassValidationVisitor(log, symbols, ValidationPass.ClassAndStructMembersAndFunctionParams);
+                var validator2 = new ClassValidationVisitor(log, symbols, ValidationPass.BodyPass);
+                foreach (VariableDeclaration local in func.Locals)
+                {
+                    validator.VisitVarDecl(local, false);
+                    validator2.VisitVarDecl(local, false);
+                    hasStructDefaults |= ((local.VarType as StaticArrayType)?.ElementType ?? local.VarType) is Struct s && (game is MEGame.ME3 ? s.DefaultProperties.Statements.Any() : isNotInState);
+                }
+            }
+            if (hasStructDefaults)
+            {
+                func.Flags |= FunctionFlags.HasDefaults;
+            }
+            else
+            {
+                func.Flags &= ~FunctionFlags.HasDefaults;
+            }
 
             //remove redundant return;
             if (body.Statements.Count > 0 && body.Statements.Last() is ReturnStatement {Value: null})
@@ -73,7 +95,7 @@ namespace ME3ExplorerCore.UnrealScript.Parsing
                         continue;
                     }
 
-                    var paramTokenStream = new TokenStream<string>(new StringLexer(source, log), unparsedBody.StartPos, unparsedBody.EndPos);
+                    var paramTokenStream = unparsedBody.Tokens ?? new TokenStream<string>(new StringLexer(source, log), unparsedBody.StartPos, unparsedBody.EndPos);
                     var paramParser = new CodeBodyParser(paramTokenStream, game, unparsedBody, symbols, func, log);
                     var parsed = paramParser.ParseExpression();
                     if (parsed is null)
@@ -102,7 +124,7 @@ namespace ME3ExplorerCore.UnrealScript.Parsing
         {
             symbols.PushScope(state.Name);
 
-            var tokenStream = new TokenStream<string>(new StringLexer(source, log), state.Body.StartPos, state.Body.EndPos);
+            var tokenStream = state.Body.Tokens ?? new TokenStream<string>(new StringLexer(source, log), state.Body.StartPos, state.Body.EndPos);
             var bodyParser = new CodeBodyParser(tokenStream, game, state.Body, symbols, state, log);
 
             var body = bodyParser.ParseBody();
@@ -164,7 +186,9 @@ namespace ME3ExplorerCore.UnrealScript.Parsing
             Body.Statements = body.Statements;
 
             if (Tokens.CurrentItem.Type != TokenType.EOF && !Tokens.CurrentItem.StartPos.Equals(Body.EndPos))
-                throw ParseError("Could not parse a valid statement, even though the current code body has supposedly not ended yet.", CurrentPosition);
+            {
+                ParseError("Could not parse a valid statement, even though the current code body has supposedly not ended yet.", CurrentPosition);
+            }
             var labels = LabelNests.Peek();
             foreach (Statement stmnt in gotoStatements)
             {
@@ -487,6 +511,10 @@ namespace ME3ExplorerCore.UnrealScript.Parsing
             var var = ParseVariableName();
             if (var == null) throw ParseError("Malformed or missing variable name!", CurrentPosition);
 
+            if (var.Name.CaseInsensitiveEquals("ReturnValue"))
+            {
+                throw ParseError("Cannot name a parameter 'ReturnValue'! It is a reserved word!", var.StartPos, var.EndPos);
+            }
 
             if (Symbols.SymbolExistsInCurrentScope(var.Name)) TypeError($"A variable named '{var.Name}' already exists in this scope!", var);
 
@@ -545,28 +573,32 @@ namespace ME3ExplorerCore.UnrealScript.Parsing
             if (token == null) return null;
             token.SyntaxType = EF.Keyword;
 
-            if (!IsFunction) ParseError("Return statements can only exist in functions!", CurrentPosition);
+            if (!IsFunction) throw ParseError("Return statements can only exist in functions!", CurrentPosition);
 
-            if (CurrentTokenType == TokenType.SemiColon) return new ReturnStatement(null, token.StartPos, token.EndPos);
+            var func = (Function)Node;
+            if (CurrentTokenType == TokenType.SemiColon)
+            {
+                if (func.ReturnType is not null)
+                {
+                    TypeError("Missing return value!", token);
+                }
+                return new ReturnStatement(null, token.StartPos, token.EndPos);
+            }
 
             var value = ParseExpression();
             if (value == null) throw ParseError("Expected a return value or a semi-colon!", CurrentPosition);
 
             var type = value.ResolveType();
-            if (IsFunction)
+            if (func.ReturnType == null)
             {
-                var func = (Function)Node;
-                if (func.ReturnType == null)
-                {
-                    ParseError("Function should not return a value!", token);
-                }
-                else if (!NodeUtils.TypeCompatible(func.ReturnType, type))
-                {
-                    TypeError($"Cannot return a value of type '{type?.Name ?? "None"}', function should return '{func.ReturnType.Name}'.", token);
-                }
-
-                AddConversion(func.ReturnType, ref value);
+                ParseError("Function should not return a value!", token);
             }
+            else if (!NodeUtils.TypeCompatible(func.ReturnType, type))
+            {
+                TypeError($"Cannot return a value of type '{type?.Name ?? "None"}', function should return '{func.ReturnType.Name}'.", token);
+            }
+
+            AddConversion(func.ReturnType, ref value);
 
             return new ReturnStatement(value, token.StartPos, token.EndPos);
         }
@@ -693,11 +725,9 @@ namespace ME3ExplorerCore.UnrealScript.Parsing
                 {
                     TypeError($"Expected an iterator function call or dynamic array iterator after '{FOREACH}'!", iterator);
                 }
-                else if (func.Parameters.Count >= 2)
+                else if (func.Parameters.Count >= 2 && fc.Arguments[0].ResolveType() is ClassType iteratorValueType && fc.Arguments[1].ResolveType() is Class objClass)
                 {
-                    var limiter = ((ClassType)fc.Arguments[0].ResolveType()).ClassLimiter;
-                    Class objClass = (Class)fc.Arguments[1].ResolveType();
-                    if (!objClass.SameAsOrSubClassOf(limiter.Name))
+                    if (!objClass.SameAsOrSubClassOf(iteratorValueType.ClassLimiter.Name))
                     {
                         TypeError("Second argument to iterator function must be the same class or a subclass of the class passed as the first argument!", fc.Arguments[1]);
                     }
@@ -959,6 +989,13 @@ namespace ME3ExplorerCore.UnrealScript.Parsing
                         ExpressionType = NodeUtils.GetCommonBaseClass(trueClass, falseClass)
                     };
                 }
+                else if (trueType is ClassType trueClassType && falseType is ClassType falseClassType)
+                {
+                    expr = new ConditionalExpression(expr, trueExpr, falseExpr, expr.StartPos, falseExpr.EndPos)
+                    {
+                        ExpressionType = new ClassType(NodeUtils.GetCommonBaseClass((Class)trueClassType.ClassLimiter, (Class)falseClassType.ClassLimiter))
+                    };
+                }
                 else
                 {
                     TypeError("True and false results in conditional expression must match types!", trueExpr.StartPos, falseExpr.EndPos);
@@ -1131,7 +1168,7 @@ namespace ME3ExplorerCore.UnrealScript.Parsing
                 VariableType exprType = expr.ResolveType();
                 if (exprType != SymbolTable.IntType && exprType != SymbolTable.ByteType)
                 {
-                    TypeError($"Only ints and bytes can be {(preFixToken.Type == TokenType.Increment ? "in" : "de")}cremented!", expr);
+                    throw ParseError($"Only ints and bytes can be {(preFixToken.Type == TokenType.Increment ? "in" : "de")}cremented!", expr);
                 }
                 PreOpDeclaration opDeclaration = Symbols.GetPreOp(preFixToken.Value, exprType);
                 return new PreOpReference(opDeclaration, expr, preFixToken.StartPos, expr.EndPos);
@@ -1142,7 +1179,7 @@ namespace ME3ExplorerCore.UnrealScript.Parsing
                 VariableType exprType = expr.ResolveType();
                 if (exprType != SymbolTable.BoolType)
                 {
-                    TypeError("'!' can only be used with expressions that evaluate to a boolean!", expr);
+                    throw ParseError("'!' can only be used with expressions that evaluate to a boolean!", expr);
                 }
 
                 PreOpDeclaration opDeclaration = Symbols.GetPreOp("!", exprType);
@@ -1170,7 +1207,7 @@ namespace ME3ExplorerCore.UnrealScript.Parsing
 
                 if (exprType != SymbolTable.FloatType && exprType != SymbolTable.IntType && !exprType.Name.CaseInsensitiveEquals("Vector"))
                 {
-                    TypeError("Unary '-' can only be used with expressions that evaluate to float, int, or Vector!", expr);
+                    throw ParseError("Unary '-' can only be used with expressions that evaluate to float, int, or Vector!", expr);
                 }
 
                 return new PreOpReference(Symbols.GetPreOp("-", exprType), expr, start, expr.EndPos);
@@ -1185,7 +1222,7 @@ namespace ME3ExplorerCore.UnrealScript.Parsing
                 VariableType exprType = expr.ResolveType();
                 if (exprType != SymbolTable.IntType)
                 {
-                    TypeError("'~' can only be used with expressions that evaluate to int!", expr);
+                    throw ParseError("'~' can only be used with expressions that evaluate to int!", expr);
                 }
 
                 PreOpDeclaration opDeclaration = Symbols.GetPreOp("~", exprType);
@@ -1743,6 +1780,16 @@ namespace ME3ExplorerCore.UnrealScript.Parsing
 
                         if (currentArg == null)
                         {
+                            bool remainingArgsAreOptional = true;
+                            for (int j = i; j < func.Parameters.Count; j++)
+                            {
+                                remainingArgsAreOptional &= func.Parameters[j].IsOptional;
+                                arguments.Add(null);
+                            }
+                            if (remainingArgsAreOptional)
+                            {
+                                break;
+                            }
                             throw ParseError($"Expected an argument of type '{p.VarType.Name}'!", paramStartPos);
                         }
                         if (!NodeUtils.TypeCompatible(p.VarType, currentArg.ResolveType(), p.Flags.Has(UnrealFlags.EPropertyFlags.CoerceParm)))
@@ -1761,7 +1808,8 @@ namespace ME3ExplorerCore.UnrealScript.Parsing
                             }
 
                             VariableType parmType = p.VarType;
-                            if (func.Flags.Has(FunctionFlags.Iterator) && arguments.Count > 0 && arguments[0]?.ResolveType() is ClassType cType)
+                            if (func.Flags.Has(FunctionFlags.Iterator) && arguments.Count > 0 && arguments[0]?.ResolveType() is ClassType cType &&
+                                parmType is Class baseClass && func.Parameters[0].VarType is ClassType originalClassType && baseClass.SameAsOrSubClassOf(originalClassType.ClassLimiter.Name))
                             {
                                 parmType = cType.ClassLimiter;
                             }
@@ -1960,54 +2008,65 @@ namespace ME3ExplorerCore.UnrealScript.Parsing
             }
 
             Token<string> token = CurrentToken;
-            if (Matches(SELF, EF.Keyword))
+            if (NotInContext)
             {
-                return new SymbolReference(new VariableDeclaration(Self, default, "Self"), SELF, token.StartPos, token.EndPos);
-            }
-
-            if (Matches(NEW, EF.Keyword))
-            {
-                return ParseNew();
-            }
-
-            if (Matches(SUPER, EF.Keyword))
-            {
-                return ParseSuper();
-            }
-
-            if (Matches(GLOBAL, EF.Keyword))
-            {
-                if (!Matches(TokenType.Dot))
+                if (Matches(SELF, EF.Keyword))
                 {
-                    throw ParseError($"Expected '.' after '{GLOBAL}'!", CurrentPosition);
+                    if (Node is Function func && func.Flags.Has(FunctionFlags.Static))
+                    {
+                        TypeError($"'{SELF}' cannot be used in a static function!");
+                    }
+                    return new SymbolReference(new VariableDeclaration(Self, default, "Self"), SELF, token.StartPos, token.EndPos);
                 }
 
-                bool isState = false;
-                if (Node.Outer is State)
+                if (Matches(NEW, EF.Keyword))
                 {
-                    isState = true;
-                    ExpressionScopes.Push(Self.GetInheritanceString());
+                    return ParseNew();
                 }
+
+                if (Matches(SUPER, EF.Keyword))
+                {
+                    return ParseSuper();
+                }
+
+                if (Matches(GLOBAL, EF.Keyword))
+                {
+                    if (!Matches(TokenType.Dot))
+                    {
+                        throw ParseError($"Expected '.' after '{GLOBAL}'!", CurrentPosition);
+                    }
+
+                    bool isState = false;
+                    if (Node.Outer is State)
+                    {
+                        isState = true;
+                        ExpressionScopes.Push(Self.GetInheritanceString());
+                    }
                 
-                if (!Matches(TokenType.Dot) || !Matches(TokenType.Word))
-                {
-                    throw ParseError($"Expected function name after '{GLOBAL}'!", CurrentPosition);
-                }
+                    if (!Matches(TokenType.Word))
+                    {
+                        throw ParseError($"Expected function name after '{GLOBAL}'!", CurrentPosition);
+                    }
 
-                PrevToken.SyntaxType = EF.Function;
-                var basicRef = ParseBasicRefOrCast(PrevToken) as SymbolReference;
-                if (!(basicRef?.Node is Function))
-                {
-                    throw ParseError($"Expected function name after '{GLOBAL}'!", basicRef?.StartPos ?? CurrentPosition, basicRef?.EndPos);
-                }
+                    PrevToken.SyntaxType = EF.Function;
+                    var basicRef = ParseBasicRefOrCast(PrevToken) as SymbolReference;
+                    if (basicRef?.Node is Function func)
+                    {
+                        CheckAccesibility(func);
+                    }
+                    else
+                    {
+                        throw ParseError($"Expected function name after '{GLOBAL}'!", basicRef?.StartPos ?? CurrentPosition, basicRef?.EndPos);
+                    }
 
-                basicRef.IsGlobal = true;
+                    basicRef.IsGlobal = true;
 
-                if (isState)
-                {
-                    ExpressionScopes.Pop();
+                    if (isState)
+                    {
+                        ExpressionScopes.Pop();
+                    }
+                    return basicRef;
                 }
-                return basicRef;
             }
 
             bool isDefaultRef = false;
@@ -2184,7 +2243,11 @@ namespace ME3ExplorerCore.UnrealScript.Parsing
                 throw ParseError($"No function named '{functionName.Value}' found in a superclass!", functionName);
             }
 
-            if (!(symbol is Function))
+            if (symbol is Function func)
+            {
+                CheckAccesibility(func);
+            }
+            else
             {
                 TypeError($"Expected function name after '{SUPER}'!", functionName);
             }
@@ -2334,8 +2397,31 @@ namespace ME3ExplorerCore.UnrealScript.Parsing
                 TypeError($"{specificScope} has no member named '{token.Value}'!", token);
                 symbol = new VariableType("ERROR");
             }
-
+            
+            if (symbol is Function func)
+            {
+                CheckAccesibility(func);
+            }
             return NewSymbolReference(symbol, token, isDefaultRef);
+        }
+
+        private void CheckAccesibility(Function func)
+        {
+            if (func.Flags.Has(FunctionFlags.Private) || func.Flags.Has(FunctionFlags.Protected))
+            {
+                Class symbolClass = NodeUtils.GetContainingClass(func);
+                if (symbolClass != Self)
+                {
+                    if (func.Flags.Has(FunctionFlags.Private))
+                    {
+                        TypeError($"'{func.Name}' is a private function in '{symbolClass.Name}'! You cannot call it from another class.");
+                    }
+                    else if (!Self.SameAsOrSubClassOf(symbolClass.Name))
+                    {
+                        TypeError($"'{func.Name}' is a protected function in '{symbolClass.Name}'! You can only call it from a subclass.");
+                    }
+                }
+            }
         }
 
         private Expression NewSymbolReference(ASTNode symbol, Token<string> token, bool isDefaultRef)
@@ -2369,6 +2455,10 @@ namespace ME3ExplorerCore.UnrealScript.Parsing
             Token<string> castToken = token;
 
             Expression expr = ParseExpression();
+            if (expr is null)
+            {
+                throw ParseError("Expected expression!", CurrentToken);
+            }
             if (!Matches(TokenType.RightParenth))
             {
                 throw ParseError("Expected ')' at end of cast expression!", CurrentPosition);
