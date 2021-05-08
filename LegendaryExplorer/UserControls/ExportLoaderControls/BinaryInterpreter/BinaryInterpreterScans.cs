@@ -5010,7 +5010,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 HIRCType hircType = (HIRCType)(Pcc.Game == MEGame.ME3 ? bin.ReadByte() : bin.ReadUInt32());
                 int len = bin.ReadInt32();
                 uint id = bin.ReadUInt32();
-                var node = new BinInterpNode(startPos, $"{idx}: Type: {WwiseStreamHelper.GetHircObjTypeString(hircType)} | Length:{len} | ID:{id:X8}")
+                var node = new BinInterpNode(startPos, $"{idx}: Type: {AudioStreamHelper.GetHircObjTypeString(hircType)} | Length:{len} | ID:{id:X8}")
                 {
                     Length = len + 4 + (Pcc.Game == MEGame.ME3 ? 1 : 4)
                 };

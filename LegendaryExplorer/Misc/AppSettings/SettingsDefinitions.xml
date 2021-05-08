@@ -13,8 +13,12 @@
   <!-- Sequence Editor Specific settings -->
   <setting name="SequenceEditor_MaxVarStringLength" type="int" defaultvalue="40"/>
   <setting name="SequenceEditor_ShowParsedInfo" type="bool" defaultvalue="true"/>
+	
+  <!-- Soundplorer Specific settings-->
+  <setting name="Soundplorer_ReverseIDDisplayEndianness" type="bool" defaultvalue="false"/>
+  <setting name="Soundplorer_AutoplayEntriesOnSelection" type="bool" defaultvalue="false"/>
 
-  <!-- Export Loader Settings -->
+  <!-- Export Loader Control settings -->
   <setting name="BinaryInterpreter_SkipAutoParseSizeCheck" type="bool" defaultvalue="false"/>
   <setting name="BinaryInterpreterWPFAutoScanAlways" type="bool" defaultvalue="false"/>
   <setting name="TextureViewer_AutoLoadMip" type="bool" defaultvalue="true"/>
@@ -24,6 +28,8 @@
   <setting name="Interpreter_AdvancedDisplay" type="bool" defaultvalue="true"/>
   <setting name="Interpreter_Colorize" type="bool" defaultvalue="true"/>
   <setting name="Interpreter_ShowLinearColorWheel" type="bool" defaultvalue="false"/>
+	
+  <setting name="Soundpanel_LoopAudio" type="bool" defaultvalue="false"/>
 
 
   <!-- Global settings-->

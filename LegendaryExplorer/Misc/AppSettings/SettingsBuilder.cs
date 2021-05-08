@@ -40,6 +40,16 @@
             get => _sequenceeditor_showparsedinfo; 
             set => SetProperty(ref _sequenceeditor_showparsedinfo, value);
         }
+        private static bool _soundplorer_reverseiddisplayendianness = false; 
+        public static bool Soundplorer_ReverseIDDisplayEndianness {
+            get => _soundplorer_reverseiddisplayendianness; 
+            set => SetProperty(ref _soundplorer_reverseiddisplayendianness, value);
+        }
+        private static bool _soundplorer_autoplayentriesonselection = false; 
+        public static bool Soundplorer_AutoplayEntriesOnSelection {
+            get => _soundplorer_autoplayentriesonselection; 
+            set => SetProperty(ref _soundplorer_autoplayentriesonselection, value);
+        }
         private static bool _binaryinterpreter_skipautoparsesizecheck = false; 
         public static bool BinaryInterpreter_SkipAutoParseSizeCheck {
             get => _binaryinterpreter_skipautoparsesizecheck; 
@@ -74,6 +84,11 @@
         public static bool Interpreter_ShowLinearColorWheel {
             get => _interpreter_showlinearcolorwheel; 
             set => SetProperty(ref _interpreter_showlinearcolorwheel, value);
+        }
+        private static bool _soundpanel_loopaudio = false; 
+        public static bool Soundpanel_LoopAudio {
+            get => _soundpanel_loopaudio; 
+            set => SetProperty(ref _soundpanel_loopaudio, value);
         }
         private static bool _propertyparsing_parseunknownarraytypeasobject = false; 
         public static bool PropertyParsing_ParseUnknownArrayTypeAsObject {

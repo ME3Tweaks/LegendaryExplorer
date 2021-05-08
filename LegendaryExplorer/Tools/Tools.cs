@@ -8,6 +8,7 @@ using LegendaryExplorer.Misc;
 using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorer.Tools.Sequence_Editor;
 using LegendaryExplorer.Tools.TlkManagerNS;
+using LegendaryExplorer.Tools.Soundplorer;
 using Newtonsoft.Json;
 using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Packages;
@@ -566,60 +567,60 @@ namespace LegendaryExplorer
                 subCategory = "Core",
                 description = "Sequence Editor is the toolset’s version of UDK’s UnrealKismet. With this cross-game tool, users can edit and create new sequences that control gameflow within and across levels.",
             });
-//            set.Add(new Tool
-//            {
-//                name = "Texture Studio",
-//                type = typeof(TextureStudioUI),
-//                icon = Application.Current.FindResource("iconTextureStudio") as ImageSource,
-//                open = () =>
-//                {
-//                    (new TextureStudioUI()).Show();
-//                },
-//                tags = new List<string> { "texture", "developer", "studio", "graphics" },
-//                subCategory = "Meshes + Textures",
-//                description = "Texture Studio is a tool designed for texture editing files in a directory of files, such as a DLC mod. It is not the same as other tools such as Mass Effect Modder, which is a game wide replacement tool.",
-//            });
-//            set.Add(new Tool
-//            {
-//                name = "SFAR Explorer",
-//                type = typeof(SFARExplorer),
-//                icon = Application.Current.FindResource("iconSFARExplorer") as ImageSource,
-//                open = () =>
-//                {
-//                    (new SFARExplorer()).Show();
-//                },
-//                tags = new List<string> { "developer", "dlc" },
-//                subCategory = other,
-//                description = "SFAR Explorer allows you to explore and extract ME3 DLC archive files (SFAR).",
-//            });
-//            set.Add(new Tool
-//            {
-//                name = "Soundplorer",
-//                type = typeof(Soundplorer.SoundplorerWPF),
-//                icon = Application.Current.FindResource("iconSoundplorer") as ImageSource,
-//                open = () =>
-//                {
-//                    (new Soundplorer.SoundplorerWPF()).Show();
-//                },
-//                tags = new List<string> { "user", "developer", "audio", "dialogue", "music", "wav", "ogg", "sound", "afc", "wwise", "bank" },
-//                subCategory = "Scene Shop",
-//                description = "Extract and play audio from all 3 games, and replace audio directly in Mass Effect 3.",
-//            });
-//            set.Add(new Tool
-//            {
-//                name = "Wwise Graph Editor",
-//                type = typeof(WwiseEditor.WwiseEditorWPF),
-//                icon = Application.Current.FindResource("iconWwiseEditor") as ImageSource,
-//                open = () =>
-//                {
-//                    (new WwiseEditor.WwiseEditorWPF()).Show();
-//                },
-//                tags = new List<string> { "developer", "audio", "music", "sound", "wwise", "bank" },
-//                subCategory = "Scene Shop",
-//                description = "Wwise Editor currently has no editing functionality. " +
-//                "It can be used to help visualize the relationships between HIRC objects as well as their connection to WwiseEvent and WwiseStream Exports. " +
-//                "There are many relationships not shown, due to most HIRC objects not being parsed yet.",
-//            });
+            //            set.Add(new Tool
+            //            {
+            //                name = "Texture Studio",
+            //                type = typeof(TextureStudioUI),
+            //                icon = Application.Current.FindResource("iconTextureStudio") as ImageSource,
+            //                open = () =>
+            //                {
+            //                    (new TextureStudioUI()).Show();
+            //                },
+            //                tags = new List<string> { "texture", "developer", "studio", "graphics" },
+            //                subCategory = "Meshes + Textures",
+            //                description = "Texture Studio is a tool designed for texture editing files in a directory of files, such as a DLC mod. It is not the same as other tools such as Mass Effect Modder, which is a game wide replacement tool.",
+            //            });
+            //            set.Add(new Tool
+            //            {
+            //                name = "SFAR Explorer",
+            //                type = typeof(SFARExplorer),
+            //                icon = Application.Current.FindResource("iconSFARExplorer") as ImageSource,
+            //                open = () =>
+            //                {
+            //                    (new SFARExplorer()).Show();
+            //                },
+            //                tags = new List<string> { "developer", "dlc" },
+            //                subCategory = other,
+            //                description = "SFAR Explorer allows you to explore and extract ME3 DLC archive files (SFAR).",
+            //            });
+            set.Add(new Tool
+            {
+                name = "Soundplorer",
+                type = typeof(SoundplorerWPF),
+                icon = Application.Current.FindResource("iconSoundplorer") as ImageSource,
+                open = () =>
+                {
+                    (new SoundplorerWPF()).Show();
+                },
+                tags = new List<string> { "user", "developer", "audio", "dialogue", "music", "wav", "ogg", "sound", "afc", "wwise", "bank" },
+                subCategory = "Scene Shop",
+                description = "Extract and play audio from all 3 games, and replace audio directly in Mass Effect 3.",
+            });
+            //            set.Add(new Tool
+            //            {
+            //                name = "Wwise Graph Editor",
+            //                type = typeof(WwiseEditor.WwiseEditorWPF),
+            //                icon = Application.Current.FindResource("iconWwiseEditor") as ImageSource,
+            //                open = () =>
+            //                {
+            //                    (new WwiseEditor.WwiseEditorWPF()).Show();
+            //                },
+            //                tags = new List<string> { "developer", "audio", "music", "sound", "wwise", "bank" },
+            //                subCategory = "Scene Shop",
+            //                description = "Wwise Editor currently has no editing functionality. " +
+            //                "It can be used to help visualize the relationships between HIRC objects as well as their connection to WwiseEvent and WwiseStream Exports. " +
+            //                "There are many relationships not shown, due to most HIRC objects not being parsed yet.",
+            //            });
             #endregion
 
             items = set;

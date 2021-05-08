@@ -52,7 +52,7 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
         /// <returns></returns>
         public static string CreateWave(this WwiseStream ws)
         {
-            string basePath = WwiseStreamHelper.GetATempSoundPath();
+            string basePath = AudioStreamHelper.GetATempSoundPath();
             string wavPath = basePath + ".wav";
             if (ws.CreateWaveStream() is MemoryStream dataStream)
             {
@@ -68,13 +68,11 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
         /// <returns></returns>
         public static MemoryStream CreateWaveStream(this WwiseStream ws)
         {
-            string basePath = WwiseStreamHelper.GetATempSoundPath();
+            string basePath = AudioStreamHelper.GetATempSoundPath();
             string wemPath = basePath + ".wem";
             if (ws.ExtractRawFromSourceToFile(wemPath))
             {
-                // TODO: IMPLEMENT IN LEX
-                //return ISBankEntry.ConvertAudioToWave(wemPath);
-                return null;
+                return AudioStreamHelper.ConvertRIFFToWaveVGMStream(wemPath);
             }
 
             return null;
@@ -92,7 +90,7 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
                 File.WriteAllBytes(outputFile, ws.EmbeddedData);
                 return true;
             }
-            return WwiseStreamHelper.ExtractRawFromSourceToFile(outputFile, ws.GetPathToAFC(), ws.DataSize, ws.DataOffset);
+            return AudioStreamHelper.ExtractRawFromSourceToFile(outputFile, ws.GetPathToAFC(), ws.DataSize, ws.DataOffset);
         }
 
         private static void ImportWwiseOgg(this WwiseStream ws, string pathafc, Stream wwiseOggStream)
@@ -100,7 +98,7 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
             if ((!ws.IsPCCStored && !File.Exists(pathafc)) || wwiseOggStream == null)
                 return;
             //Convert wwiseoggstream
-            MemoryStream convertedStream = WwiseStreamHelper.ConvertWwiseOggToME3Ogg(wwiseOggStream);
+            MemoryStream convertedStream = AudioStreamHelper.ConvertWwiseOggToME3Ogg(wwiseOggStream);
             byte[] newWavfile = convertedStream.ToArray();
 
             if (ws.IsPCCStored)

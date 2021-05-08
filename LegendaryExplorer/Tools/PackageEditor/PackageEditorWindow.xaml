@@ -488,12 +488,14 @@
                         </TabItem.Header>
                         <facefx:FaceFXAnimSetEditorControl x:Name="FaceFXTab_Editor"/>
                     </TabItem>
+                    -->
                     <TabItem Name="Sound_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
                             <TextBlock Text="Sound" ToolTip="Edit and play audio"/>
                         </TabItem.Header>
-                        <global:Soundpanel x:Name="SoundTab_Soundpanel" HostingControl="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
+                        <exportLoaderControls:Soundpanel x:Name="SoundTab_Soundpanel" HostingControl="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
                     </TabItem>
+                    <!--
                     <TabItem Name="ME1TlkEditorWPF_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
                             <TextBlock Text="Talktable" ToolTip="Edit entries in this BioTLKFile"/>

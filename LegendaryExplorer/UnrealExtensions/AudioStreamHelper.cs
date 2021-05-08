@@ -1,9 +1,11 @@
-﻿using System;
+﻿using NAudio.Wave;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using LegendaryExplorer.Misc;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Audio;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 
 namespace LegendaryExplorer.UnrealExtensions
@@ -11,7 +13,7 @@ namespace LegendaryExplorer.UnrealExtensions
     /// <summary>
     /// Helper class for audio stuff
     /// </summary>
-    public class WwiseStreamHelper
+    public class AudioStreamHelper
     {
         public static bool ExtractRawFromSourceToFile(string outfile, string afcPath, int dataSize, int dataOffset)
         {
@@ -35,8 +37,7 @@ namespace LegendaryExplorer.UnrealExtensions
             string basePath = GetATempSoundPath();
             if (ExtractRawFromSourceToFile(basePath + ".wem", afcPath, datasize, offset))
             {
-                // TODO: IMPLEMENT IN LEX
-                //return ISBankEntry.ConvertAudioToWave(basePath + ".wem");
+                return ConvertRIFFToWaveVGMStream(basePath + ".wem");
             }
             return null;
         }
@@ -201,6 +202,89 @@ namespace LegendaryExplorer.UnrealExtensions
 
             convertedStream.Position = 0;
             return convertedStream;
+        }
+
+        /// <summary>
+        /// Converts a RAW RIFF/RIFX to WAVE using VGMStream and returns the data
+        /// </summary>
+        /// <param name="inputfilepath">Path to RIFF file</param>
+        /// <returns></returns>
+        public static MemoryStream ConvertRIFFToWaveVGMStream(string inputfile)
+        {
+            //convert ISB Codec 1/4 to WAV
+            MemoryStream outputData = new MemoryStream();
+
+            // Todo: Link against VGMStream with a wrapper so we don't have to perform disk writes
+            ProcessStartInfo procStartInfo = new ProcessStartInfo(Path.Combine(AppDirectories.ExecFolder, "vgmstream", "vgmstream.exe"), $"-P \"{inputfile}\"")
+            {
+                WorkingDirectory = Path.Combine(AppDirectories.ExecFolder, "vgmstream"),
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+            //procStartInfo.StandardOutputEncoding = Encoding.GetEncoding(850); //standard cmd-page
+            Process proc = new Process
+            {
+                StartInfo = procStartInfo
+            };
+
+            // Set our event handler to asynchronously read the sort output.
+            proc.Start();
+            //proc.BeginOutputReadLine();
+            var outputTask = Task.Run(() =>
+            {
+                proc.StandardOutput.BaseStream.CopyTo(outputData);
+            });
+            Task.WaitAll(outputTask);
+
+            proc.WaitForExit();
+            File.Delete(inputfile); //intermediate
+            return outputData;
+        }
+
+        /// <summary>
+        /// Creates a MemoryStream with a WAVE for a given ISBEntry if codec is supported
+        /// </summary>
+        /// <param name="bankEntry">ISBankEntry to get stream from</param>
+        /// <returns></returns>
+        public static MemoryStream GetWaveStreamFromISBEntry(ISBankEntry bankEntry)
+        {
+            //string outPath = Path.Combine(path, currentFileName);
+            MemoryStream waveStream;
+            switch(bankEntry.CodecID)
+            {
+                case 0x0:
+                    //PCM
+                    var ms = new MemoryStream(bankEntry.DataAsStored);
+                    var raw = new RawSourceWaveStream(ms, new WaveFormat((int)bankEntry.sampleRate, bankEntry.bps, (int)bankEntry.numberOfChannels));
+                    waveStream = new MemoryStream();
+                    WaveFileWriter.WriteWavFileToStream(waveStream, raw);
+                    return waveStream;
+
+                case 0x1:
+                case 0x4:
+                case 0x5:
+                    //Xbox IMA, XMA, Sony MSF (PS3)
+                    //Use VGM Stream
+                    if (bankEntry.FullData == null)
+                    {
+                        bankEntry.PopulateFakeFullData();
+                    }
+                    var tempPath = GetATempSoundPath() + ".isb";
+                    File.WriteAllBytes(tempPath, bankEntry.FullData);
+                    return ConvertRIFFToWaveVGMStream(tempPath);
+
+                case 0x2:
+                    // Ogg Vorbis
+                    string basePath = System.IO.Path.GetTempPath() + "ME3EXP_SOUND_" + Guid.NewGuid().ToString() + ".ogg";
+                    File.WriteAllBytes(basePath, bankEntry.DataAsStored);
+                    waveStream = ConvertOggToWave(basePath);
+                    return waveStream;
+
+                default:
+                    Debug.WriteLine("Unsupported codec for getting wave: " + bankEntry.CodecID);
+                    return null; //other codecs currently unsupported
+            }
         }
 
         public static string GetHircObjTypeString(byte b) => GetHircObjTypeString((HIRCType)b);

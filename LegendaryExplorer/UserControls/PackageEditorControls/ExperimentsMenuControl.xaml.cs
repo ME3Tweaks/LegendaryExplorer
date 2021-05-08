@@ -905,7 +905,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                 foreach (ExportEntry export in pew.Pcc.Exports.Where(exp => exp.IsClass))
                 {
                     (_, string script) = UnrealScriptCompiler.DecompileExport(export, fileLib);
-                    (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileAST(script, export.ClassName);
+                    (ASTNode ast, MessageLog log, _) = UnrealScriptCompiler.CompileAST(script, export.ClassName, export.Game);
                     if (ast == null)
                     {
                         exportsWithDecompilationErrors.Add(new EntryStringPair(export, "Compilation Error!"));

@@ -113,6 +113,7 @@
     <None Remove="Tools\Icons\toolset_splash.png" />
     <None Remove="Tools\Icons\wwisebankeditor_256x256.ico" />
     <None Remove="Tools\Icons\WwiseEditor_256x256.ico" />
+    <None Remove="UserControls\ExportLoaderControls\Soundpanel\WwiseTemplateProject.zip" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Be.Windows.Forms.HexBox\Be.Windows.Forms.HexBox.csproj" />
@@ -135,6 +136,7 @@
     <PackageReference Include="Microsoft.AppCenter.Analytics" Version="4.2.0" />
     <PackageReference Include="Microsoft.AppCenter.Crashes" Version="4.2.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
+    <PackageReference Include="NAudio" Version="2.0.0" />
     <PackageReference Include="SharpDX" Version="4.2.0" />
     <PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0" />
     <PackageReference Include="SharpDX.Desktop" Version="4.2.0" />
@@ -264,6 +266,7 @@
     <EmbeddedResource Include="Resources\Fonts\KismetFont.ttf">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\ExportLoaderControls\Soundpanel\WwiseTemplateProject.zip" />
     <Resource Include="Resources\Images\left_arrow.ico">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
@@ -421,6 +424,9 @@
     <Compile Update="Tools\Sequence Editor\SequenceEditorWPF.xaml.cs">
       <DependentUpon>SequenceEditorWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Tools\Soundplorer\SoundplorerWPF.xaml.cs">
+      <DependentUpon>SoundplorerWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Tools\TlkManager\TLKManagerWPF.xaml.cs">
       <DependentUpon>TLKManagerWPF.xaml</DependentUpon>
     </Compile>
@@ -432,6 +438,12 @@
     </Compile>
     <Compile Update="UserControls\ExportLoaderControls\Bio2DAEditor\Bio2DAEditorWPF.xaml.cs">
       <DependentUpon>Bio2DAEditorWPF.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\ExportLoaderControls\Soundpanel\Soundpanel.xaml.cs">
+      <DependentUpon>Soundpanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Dialogs\SoundReplaceOptionsDialog.xaml.cs">
+      <DependentUpon>SoundReplaceOptionsDialog.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
 
@@ -451,6 +463,9 @@
     <Page Update="Tools\Sequence Editor\SequenceEditorWPF.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Tools\Soundplorer\SoundplorerWPF.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Tools\TlkManager\TLKManagerWPF.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -461,6 +476,12 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="UserControls\ExportLoaderControls\Bio2DAEditor\Bio2DAEditorWPF.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UserControls\ExportLoaderControls\Soundpanel\Soundpanel.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Dialogs\SoundReplaceOptionsDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
