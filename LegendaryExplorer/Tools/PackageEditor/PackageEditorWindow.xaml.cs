@@ -2252,8 +2252,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
             // TODO: IMPLEMENT IN LEX
             ExportLoaders[SoundTab_Soundpanel] = Sound_Tab;
-            //ExportLoaders[CurveTab_CurveEditor] = CurveEditor_Tab;
-            //ExportLoaders[FaceFXTab_Editor] = FaceFXAnimSet_Tab;
+            ExportLoaders[CurveTab_CurveEditor] = CurveEditor_Tab;
+            ExportLoaders[FaceFXTab_Editor] = FaceFXAnimSet_Tab;
             ExportLoaders[Bio2DATab_Bio2DAEditor] = Bio2DAViewer_Tab;
             //ExportLoaders[BytecodeTab_BytecodeEditor] = Bytecode_Tab;
             //ExportLoaders[ScriptTab_UnrealScriptIDE] = Script_Tab;
@@ -2264,9 +2264,9 @@ namespace LegendaryExplorer.Tools.PackageEditor
             //ExportLoaders[MeshRendererTab_MeshRenderer] = MeshRenderer_Tab;
             //ExportLoaders[MaterialViewerTab_MaterialExportLoader] = MaterialViewer_Tab;
             //ExportLoaders[RADLauncherTab_BIKLauncher] = RADLaunch_Tab;
-            //ExportLoaders[CollectionActorEditorTab_CollectionActorEditor] = CollectionActorEditor_Tab;
-            //ExportLoaders[ParticleSystemTab_ParticleSystemLoader] = ParticleSystem_Tab;
-            //ExportLoaders[ParticleModuleTab_ParticleModuleLoader] = ParticleModule_Tab;
+            ExportLoaders[CollectionActorEditorTab_CollectionActorEditor] = CollectionActorEditor_Tab;
+            ExportLoaders[ParticleSystemTab_ParticleSystemLoader] = ParticleSystem_Tab;
+            ExportLoaders[ParticleModuleTab_ParticleModuleLoader] = ParticleModule_Tab;
 
 
             InterpreterTab_Interpreter.SetParentNameList(NamesList); //reference to this control for name editor set

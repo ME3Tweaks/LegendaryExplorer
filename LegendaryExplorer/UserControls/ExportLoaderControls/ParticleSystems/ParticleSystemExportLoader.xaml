@@ -1,0 +1,21 @@
+﻿<exportLoaderControls:ExportLoaderControl x:Class="LegendaryExplorer.UserControls.ExportLoaderControls.ParticleSystemExportLoader"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
+             xmlns:Converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
+        <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </UserControl.Resources>
+    <TreeView ItemsSource="{Binding ParticleNodes}">
+        <TreeView.Resources>
+            <HierarchicalDataTemplate DataType="{x:Type exportLoaderControls:ParticleSystemExportLoader+ParticleSystemNode}" ItemsSource="{Binding Children}">
+                <TextBlock Text="{Binding Header}"/>
+            </HierarchicalDataTemplate>
+        </TreeView.Resources>
+    </TreeView>
+</exportLoaderControls:ExportLoaderControl>

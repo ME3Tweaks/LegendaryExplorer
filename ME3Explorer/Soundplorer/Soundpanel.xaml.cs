@@ -30,6 +30,8 @@ using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using Microsoft.Win32;
+using ISBank = ME3Explorer.Soundplorer.ISBank;
+using ISBankEntry = ME3Explorer.Soundplorer.ISBankEntry;
 using WwiseStreamHelper = ME3Explorer.Unreal.WwiseStreamHelper;
 using WwiseStream = ME3ExplorerCore.Unreal.BinaryConverters.WwiseStream;
 

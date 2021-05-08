@@ -476,19 +476,19 @@
                         </TabItem.Header>
                         <ide:UnrealScriptIDE x:Name="ScriptTab_UnrealScriptIDE"/>
                     </TabItem>
+                    -->
                     <TabItem Name="CurveEditor_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
                             <TextBlock Text="Curve Editor" ToolTip="Edit curves"/>
                         </TabItem.Header>
-                        <CurveEd:CurveEditor x:Name="CurveTab_CurveEditor"/>
+                        <exportLoaderControls:CurveEditor x:Name="CurveTab_CurveEditor"/>
                     </TabItem>
                     <TabItem Name="FaceFXAnimSet_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
                             <TextBlock Text="FaceFX" ToolTip="Edit FaceFXAnimSets"/>
                         </TabItem.Header>
-                        <facefx:FaceFXAnimSetEditorControl x:Name="FaceFXTab_Editor"/>
+                        <exportLoaderControls:FaceFXAnimSetEditorControl x:Name="FaceFXTab_Editor"/>
                     </TabItem>
-                    -->
                     <TabItem Name="Sound_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
                             <TextBlock Text="Sound" ToolTip="Edit and play audio"/>
@@ -519,25 +519,25 @@
                             <TextBlock Text="Movie" ToolTip="Launch Movie in external tools"/>
                         </TabItem.Header>
                         <packageEditor:BIKExternalExportLoader x:Name="RADLauncherTab_BIKLauncher"/>
-                    </TabItem>
+                    </TabItem> -->
                     <TabItem Name="CollectionActorEditor_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
                             <TextBlock Text="Location/Rotation/Scale" ToolTip="Edit the transformation matrix for this component"/>
                         </TabItem.Header>
-                        <packageEditor:CollectionActorEditor x:Name="CollectionActorEditorTab_CollectionActorEditor"/>
+                        <exportLoaderControls:CollectionActorEditorExportLoader x:Name="CollectionActorEditorTab_CollectionActorEditor"/>
                     </TabItem>
                     <TabItem Name="ParticleSystem_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
                             <TextBlock Text="Particle System" ToolTip="View information about this particle system"/>
                         </TabItem.Header>
-                        <particleSystems:ParticleSystemExportLoader x:Name="ParticleSystemTab_ParticleSystemLoader"/>
+                        <exportLoaderControls:ParticleSystemExportLoader x:Name="ParticleSystemTab_ParticleSystemLoader"/>
                     </TabItem>
                     <TabItem Name="ParticleModule_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
                             <TextBlock Text="Particle Module" ToolTip="Particle Module editor"/>
                         </TabItem.Header>
-                        <particleSystems:ParticleModuleExportLoader x:Name="ParticleModuleTab_ParticleModuleLoader"/>
-                    </TabItem>-->
+                        <exportLoaderControls:ParticleModuleExportLoader x:Name="ParticleModuleTab_ParticleModuleLoader"/>
+                    </TabItem>
                 </TabControl>
             </Grid>
         </DockPanel>

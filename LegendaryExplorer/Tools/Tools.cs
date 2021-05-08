@@ -9,6 +9,7 @@ using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorer.Tools.Sequence_Editor;
 using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorer.Tools.Soundplorer;
+using LegendaryExplorer.Tools.FaceFXEditor;
 using Newtonsoft.Json;
 using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Packages;
@@ -264,242 +265,242 @@ namespace LegendaryExplorer
                 subCategory = "Converters",
                 description = "Hex Converter is a utility that converts among floats, signed/unsigned integers, and hex code in big/little endian.",
             });
-//            set.Add(new Tool
-//            {
-//                name = "Interp Viewer",
-//                type = typeof(InterpEditor),
-//                icon = Application.Current.FindResource("iconInterpViewer") as ImageSource,
-//                open = () =>
-//                {
-//                    (new InterpEditor()).Show();
-//                },
-//                tags = new List<string> { "utility", "dialogue", "matinee", "cutscene", "animcutscene", "interpdata" },
-//                subCategory = "Explorers",
-//                description = "Interp Viewer is a simplified version of UDK’s Matinee Editor. It loads interpdata objects and displays their children as tracks on a timeline, allowing the user to visualize the game content associated with a specific scene.\n\nAttention: This tool is a utility; editing is not yet supported."
-//            });
-//            set.Add(new Tool
-//            {
-//                name = "Meshplorer",
-//                type = typeof(MeshplorerWPF),
-//                icon = Application.Current.FindResource("iconMeshplorer") as ImageSource,
-//                open = () =>
-//                {
-//                    (new MeshplorerWPF()).Show();
-//                },
-//                tags = new List<string> { "developer", "mesh" },
-//                subCategory = "Meshes + Textures",
-//                description = "Meshplorer loads and displays all meshes within a file. The tool skins most meshes with its associated texture.\n\nThis tool works with all three games."
-//            });
-//            set.Add(new Tool
-//            {
-//                name = "Animation Importer/Exporter",
-//                type = typeof(AnimationImporter),
-//                icon = Application.Current.FindResource("iconAnimationImporter") as ImageSource,
-//                open = () =>
-//                {
-//                    (new AnimationImporter()).Show();
-//                },
-//                tags = new List<string> { "developer", "animation", "psa", "animset", "animsequence" },
-//                subCategory = "Scene Shop",
-//                description = "Import and Export AnimSequences from/to PSA and UDK"
-//            });
-//            set.Add(new Tool
-//            {
-//                name = "TLK Editor",
-//                type = typeof(ExportLoaderHostedWindow),
-//                icon = Application.Current.FindResource("iconTLKEditor") as ImageSource,
-//                open = () =>
-//                {
-//                    ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new ME1TlkEditor.ME1TlkEditorWPF());
-//                    elhw.Title = $"TLK Editor";
-//                    elhw.Show();
-//                },
-//                tags = new List<string> { "utility", "dialogue", "subtitle", "text", "strin'" },
-//                subCategory = "Extractors + Repackers",
-//                description = "TLK Editor is an editor for localized text, located in TLK files. These files are embedded in package files in Mass Effect 1 and stored externally in Mass Effect 2 and 3.",
-//            });
-//            set.Add(new Tool
-//            {
-//                name = "ME3 + ME2 TLK Editor",
-//                type = typeof(TLKEditor),
-//                icon = Application.Current.FindResource("iconTLKEditorME23") as ImageSource,
-//                open = () =>
-//                {
-//                    (new TLKEditor()).Show();
-//                },
-//                tags = new List<string> { "utility", "dialogue", "subtitle", "text" },
-//                subCategory = "Extractors + Repackers",
-//                description = "TLK Editor converts between XML and TLK formats, allowing users to edit the display of all game text in ME2 and ME3. Edits to XML files must be done in an external editor, like Notepad++.",
-//            });
-//            set.Add(new Tool
-//            {
-//                name = "Package Dumper",
-//                type = typeof(PackageDumper.PackageDumper),
-//                icon = Application.Current.FindResource("iconPackageDumper") as ImageSource,
-//                open = () =>
-//                {
-//                    (new PackageDumper.PackageDumper()).Show();
-//                },
-//                tags = new List<string> { "utility", "package", "pcc", "text", "dump" },
-//                subCategory = "Utilities",
-//                description = "Package Dumper is a utility for dumping package information to files that can be searched with tools like GrepWin. Names, Imports, Exports, Properties and more are dumped."
-//            });
-//            set.Add(new Tool
-//            {
-//                name = "Dialogue Dumper",
-//                type = typeof(DialogueDumper.DialogueDumper),
-//                icon = Application.Current.FindResource("iconDialogueDumper") as ImageSource,
-//                open = () =>
-//                {
-//                    (new DialogueDumper.DialogueDumper()).Show();
-//                },
-//                tags = new List<string> { "utility", "convo", "dialogue", "text", "dump" },
-//                subCategory = "Utilities",
-//                description = "Dialogue Dumper is a utility for dumping conversation strings from games into an excel file. It shows the actor that spoke the line and which file the line is taken from. It also produces a table of who owns which conversation, for those that the owner is anonymous."
-//            });
-//            set.Add(new Tool
-//            {
-//                name = "Plot Database",
-//                type = typeof(PlotVarDB.PlotVarDB),
-//                icon = Application.Current.FindResource("iconPlotDatabase") as ImageSource,
-//                open = () =>
-//                {
-//                    (new PlotVarDB.PlotVarDB()).Show();
-//                },
-//                tags = new List<string> { "utility", "bool", "boolean", "flag", "int", "integer", "id" },
-//                subCategory = "Databases",
-//                description = "Plot Database is a cross-game utility used to store plot IDs for reference. The tool comes pre-loaded with a default .db file that can be customized by the user. Never look up a plot bool or integer again!",
-//            });
-//            set.Add(new Tool
-//            {
-//                name = "Asset Database",
-//                type = typeof(AssetDatabase.AssetDB),
-//                icon = Application.Current.FindResource("iconAssetDatabase") as ImageSource,
-//                open = () =>
-//                {
-//                    (new AssetDatabase.AssetDB()).Show();
-//                },
-//                tags = new List<string> { "utility", "mesh", "material", "class", "animation" },
-//                subCategory = "Databases",
-//                description = "Scans games and creates a database of classes, animations, materials, textures, particles and meshes.\n\nIndividual assets can be opened directly from the interface with tools for editing."
-//            });
-//            set.Add(new Tool
-//            {
-//                name = "PSA Viewer",
-//                type = typeof(PSAViewer),
-//                icon = Application.Current.FindResource("iconPSAViewer") as ImageSource,
-//                open = () =>
-//                {
-//                    (new PSAViewer()).Show();
-//                },
-//                tags = new List<string> { "utility", "mesh", "animation" },
-//                subCategory = "Explorers",
-//                description = "View the data contained in a PSA animation file extracted using Gildor's umodel toolkit."
-//            });
-//            set.Add(new Tool
-//            {
-//                name = "Script Database",
-//                type = typeof(ScriptDB.ScriptDB),
-//                icon = Application.Current.FindResource("iconScriptDatabase") as ImageSource,
-//                open = () =>
-//                {
-//                    (new ScriptDB.ScriptDB()).Show();
-//                },
-//                tags = new List<string> { "utility", "unreal" },
-//                subCategory = "Databases",
-//                description = "Script Database is used to locate UnrealScript exports across multiple files for ME3. This tool is deprecated and is no longer supported.",
-//            });
-//            set.Add(new Tool
-//            {
-//                name = "TFC Compactor",
-//                type = typeof(TFCCompactor.TFCCompactor),
-//                icon = Application.Current.FindResource("iconTFCCompactor") as ImageSource,
-//                open = () =>
-//                {
-//                    (new TFCCompactor.TFCCompactor()).Show();
-//                },
-//                tags = new List<string> { "utility", "deployment", "textures", "compression" },
-//                subCategory = "Deployment",
-//                description = "TFC Compactor can compact your ME2 or ME3 DLC mod TFC file by effectively removing unreferenced chunks in it and compressing the referenced textures. It also can be used to reduce or remove TFC dependencies so users do not have to have DLC installed for certain textures to work.",
-//            });
+            //            set.Add(new Tool
+            //            {
+            //                name = "Interp Viewer",
+            //                type = typeof(InterpEditor),
+            //                icon = Application.Current.FindResource("iconInterpViewer") as ImageSource,
+            //                open = () =>
+            //                {
+            //                    (new InterpEditor()).Show();
+            //                },
+            //                tags = new List<string> { "utility", "dialogue", "matinee", "cutscene", "animcutscene", "interpdata" },
+            //                subCategory = "Explorers",
+            //                description = "Interp Viewer is a simplified version of UDK’s Matinee Editor. It loads interpdata objects and displays their children as tracks on a timeline, allowing the user to visualize the game content associated with a specific scene.\n\nAttention: This tool is a utility; editing is not yet supported."
+            //            });
+            //            set.Add(new Tool
+            //            {
+            //                name = "Meshplorer",
+            //                type = typeof(MeshplorerWPF),
+            //                icon = Application.Current.FindResource("iconMeshplorer") as ImageSource,
+            //                open = () =>
+            //                {
+            //                    (new MeshplorerWPF()).Show();
+            //                },
+            //                tags = new List<string> { "developer", "mesh" },
+            //                subCategory = "Meshes + Textures",
+            //                description = "Meshplorer loads and displays all meshes within a file. The tool skins most meshes with its associated texture.\n\nThis tool works with all three games."
+            //            });
+            //            set.Add(new Tool
+            //            {
+            //                name = "Animation Importer/Exporter",
+            //                type = typeof(AnimationImporter),
+            //                icon = Application.Current.FindResource("iconAnimationImporter") as ImageSource,
+            //                open = () =>
+            //                {
+            //                    (new AnimationImporter()).Show();
+            //                },
+            //                tags = new List<string> { "developer", "animation", "psa", "animset", "animsequence" },
+            //                subCategory = "Scene Shop",
+            //                description = "Import and Export AnimSequences from/to PSA and UDK"
+            //            });
+            //            set.Add(new Tool
+            //            {
+            //                name = "TLK Editor",
+            //                type = typeof(ExportLoaderHostedWindow),
+            //                icon = Application.Current.FindResource("iconTLKEditor") as ImageSource,
+            //                open = () =>
+            //                {
+            //                    ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new ME1TlkEditor.ME1TlkEditorWPF());
+            //                    elhw.Title = $"TLK Editor";
+            //                    elhw.Show();
+            //                },
+            //                tags = new List<string> { "utility", "dialogue", "subtitle", "text", "strin'" },
+            //                subCategory = "Extractors + Repackers",
+            //                description = "TLK Editor is an editor for localized text, located in TLK files. These files are embedded in package files in Mass Effect 1 and stored externally in Mass Effect 2 and 3.",
+            //            });
+            //            set.Add(new Tool
+            //            {
+            //                name = "ME3 + ME2 TLK Editor",
+            //                type = typeof(TLKEditor),
+            //                icon = Application.Current.FindResource("iconTLKEditorME23") as ImageSource,
+            //                open = () =>
+            //                {
+            //                    (new TLKEditor()).Show();
+            //                },
+            //                tags = new List<string> { "utility", "dialogue", "subtitle", "text" },
+            //                subCategory = "Extractors + Repackers",
+            //                description = "TLK Editor converts between XML and TLK formats, allowing users to edit the display of all game text in ME2 and ME3. Edits to XML files must be done in an external editor, like Notepad++.",
+            //            });
+            //            set.Add(new Tool
+            //            {
+            //                name = "Package Dumper",
+            //                type = typeof(PackageDumper.PackageDumper),
+            //                icon = Application.Current.FindResource("iconPackageDumper") as ImageSource,
+            //                open = () =>
+            //                {
+            //                    (new PackageDumper.PackageDumper()).Show();
+            //                },
+            //                tags = new List<string> { "utility", "package", "pcc", "text", "dump" },
+            //                subCategory = "Utilities",
+            //                description = "Package Dumper is a utility for dumping package information to files that can be searched with tools like GrepWin. Names, Imports, Exports, Properties and more are dumped."
+            //            });
+            //            set.Add(new Tool
+            //            {
+            //                name = "Dialogue Dumper",
+            //                type = typeof(DialogueDumper.DialogueDumper),
+            //                icon = Application.Current.FindResource("iconDialogueDumper") as ImageSource,
+            //                open = () =>
+            //                {
+            //                    (new DialogueDumper.DialogueDumper()).Show();
+            //                },
+            //                tags = new List<string> { "utility", "convo", "dialogue", "text", "dump" },
+            //                subCategory = "Utilities",
+            //                description = "Dialogue Dumper is a utility for dumping conversation strings from games into an excel file. It shows the actor that spoke the line and which file the line is taken from. It also produces a table of who owns which conversation, for those that the owner is anonymous."
+            //            });
+            //            set.Add(new Tool
+            //            {
+            //                name = "Plot Database",
+            //                type = typeof(PlotVarDB.PlotVarDB),
+            //                icon = Application.Current.FindResource("iconPlotDatabase") as ImageSource,
+            //                open = () =>
+            //                {
+            //                    (new PlotVarDB.PlotVarDB()).Show();
+            //                },
+            //                tags = new List<string> { "utility", "bool", "boolean", "flag", "int", "integer", "id" },
+            //                subCategory = "Databases",
+            //                description = "Plot Database is a cross-game utility used to store plot IDs for reference. The tool comes pre-loaded with a default .db file that can be customized by the user. Never look up a plot bool or integer again!",
+            //            });
+            //            set.Add(new Tool
+            //            {
+            //                name = "Asset Database",
+            //                type = typeof(AssetDatabase.AssetDB),
+            //                icon = Application.Current.FindResource("iconAssetDatabase") as ImageSource,
+            //                open = () =>
+            //                {
+            //                    (new AssetDatabase.AssetDB()).Show();
+            //                },
+            //                tags = new List<string> { "utility", "mesh", "material", "class", "animation" },
+            //                subCategory = "Databases",
+            //                description = "Scans games and creates a database of classes, animations, materials, textures, particles and meshes.\n\nIndividual assets can be opened directly from the interface with tools for editing."
+            //            });
+            //            set.Add(new Tool
+            //            {
+            //                name = "PSA Viewer",
+            //                type = typeof(PSAViewer),
+            //                icon = Application.Current.FindResource("iconPSAViewer") as ImageSource,
+            //                open = () =>
+            //                {
+            //                    (new PSAViewer()).Show();
+            //                },
+            //                tags = new List<string> { "utility", "mesh", "animation" },
+            //                subCategory = "Explorers",
+            //                description = "View the data contained in a PSA animation file extracted using Gildor's umodel toolkit."
+            //            });
+            //            set.Add(new Tool
+            //            {
+            //                name = "Script Database",
+            //                type = typeof(ScriptDB.ScriptDB),
+            //                icon = Application.Current.FindResource("iconScriptDatabase") as ImageSource,
+            //                open = () =>
+            //                {
+            //                    (new ScriptDB.ScriptDB()).Show();
+            //                },
+            //                tags = new List<string> { "utility", "unreal" },
+            //                subCategory = "Databases",
+            //                description = "Script Database is used to locate UnrealScript exports across multiple files for ME3. This tool is deprecated and is no longer supported.",
+            //            });
+            //            set.Add(new Tool
+            //            {
+            //                name = "TFC Compactor",
+            //                type = typeof(TFCCompactor.TFCCompactor),
+            //                icon = Application.Current.FindResource("iconTFCCompactor") as ImageSource,
+            //                open = () =>
+            //                {
+            //                    (new TFCCompactor.TFCCompactor()).Show();
+            //                },
+            //                tags = new List<string> { "utility", "deployment", "textures", "compression" },
+            //                subCategory = "Deployment",
+            //                description = "TFC Compactor can compact your ME2 or ME3 DLC mod TFC file by effectively removing unreferenced chunks in it and compressing the referenced textures. It also can be used to reduce or remove TFC dependencies so users do not have to have DLC installed for certain textures to work.",
+            //            });
             #endregion
 
             #region Create Mods
-//            set.Add(new Tool
-//            {
-//                name = "Conditionals Editor",
-//                type = typeof(Conditionals),
-//                icon = Application.Current.FindResource("iconConditionalsEditor") as ImageSource,
-//                open = () =>
-//                {
-//                    (new Conditionals()).Show();
-//                },
-//                tags = new List<string> { "developer", "conditional", "plot", "boolean", "flag", "int", "integer", "cnd" },
-//                subCategory = "Core",
-//                description = "Conditionals Editor is used to create and edit ME3 files with the .cnd extension. CND files control game story by checking for specific combinations of plot events.",
-//            });
-//            set.Add(new Tool
-//            {
-//                name = "Curve Editor",
-//                type = typeof(CurveEd.CurveEditor),
-//                icon = Application.Current.FindResource("iconPlaceholder") as ImageSource,
-//                tags = new List<string>(),
-//                subCategory = other,
-//            });
-//            set.Add(new Tool
-//            {
-//                name = "Dialogue Editor",
-//                type = typeof(Dialogue_Editor.DialogueEditorWPF),
-//                icon = Application.Current.FindResource("iconDialogueEditor") as ImageSource,
-//                open = () =>
-//                {
-//                    (new Dialogue_Editor.DialogueEditorWPF()).Show();
-//                },
-//                tags = new List<string> { "developer", "me1", "me2", "me3", "cutscene" },
-//                subCategory = "Scene Shop",
-//                description = "Dialogue Editor is a visual tool used to edit in-game conversations. It works with all the games.",
-//            });
-//            set.Add(new Tool
-//            {
-//                name = "FaceFX Editor",
-//                type = typeof(FaceFX.FaceFXEditor),
-//                icon = Application.Current.FindResource("iconFaceFXEditor") as ImageSource,
-//                open = () =>
-//                {
-//                    (new FaceFX.FaceFXEditor()).Show();
-//                },
-//                tags = new List<string> { "developer", "fxa", "facefx", "lipsync", "fxe", "bones", "animation", "me3", "me3" },
-//                subCategory = "Scene Shop",
-//                description = "FaceFX Editor is the toolset’s highly-simplified version of FaceFX Studio. With this tool modders can edit FaceFX AnimSets (FXEs) for all three games.",
-//            });
-//            //Benji's tool. Uncomment when we have more progress.
-//            /*set.Add(new Tool
-//            {
-//                name = "Level Explorer",
-//                type = typeof(LevelExplorer.LevelExplorer),
-//                icon = Application.Current.FindResource("iconLevelEditor") as ImageSource,
-//                open = () =>
-//                {
-//                    (new LevelExplorer.LevelExplorer()).Show();
-//                },
-//                tags = new List<string> { "developer" },
-//                subCategory = other,
-//                description = "Level Explorer allows you to view the meshes of a level.",
+            //            set.Add(new Tool
+            //            {
+            //                name = "Conditionals Editor",
+            //                type = typeof(Conditionals),
+            //                icon = Application.Current.FindResource("iconConditionalsEditor") as ImageSource,
+            //                open = () =>
+            //                {
+            //                    (new Conditionals()).Show();
+            //                },
+            //                tags = new List<string> { "developer", "conditional", "plot", "boolean", "flag", "int", "integer", "cnd" },
+            //                subCategory = "Core",
+            //                description = "Conditionals Editor is used to create and edit ME3 files with the .cnd extension. CND files control game story by checking for specific combinations of plot events.",
+            //            });
+            //            set.Add(new Tool
+            //            {
+            //                name = "Curve Editor",
+            //                type = typeof(CurveEd.CurveEditor),
+            //                icon = Application.Current.FindResource("iconPlaceholder") as ImageSource,
+            //                tags = new List<string>(),
+            //                subCategory = other,
+            //            });
+            //            set.Add(new Tool
+            //            {
+            //                name = "Dialogue Editor",
+            //                type = typeof(Dialogue_Editor.DialogueEditorWPF),
+            //                icon = Application.Current.FindResource("iconDialogueEditor") as ImageSource,
+            //                open = () =>
+            //                {
+            //                    (new Dialogue_Editor.DialogueEditorWPF()).Show();
+            //                },
+            //                tags = new List<string> { "developer", "me1", "me2", "me3", "cutscene" },
+            //                subCategory = "Scene Shop",
+            //                description = "Dialogue Editor is a visual tool used to edit in-game conversations. It works with all the games.",
+            //            });
+            set.Add(new Tool
+            {
+                name = "FaceFX Editor",
+                type = typeof(FaceFXEditorWindow),
+                icon = Application.Current.FindResource("iconFaceFXEditor") as ImageSource,
+                open = () =>
+                {
+                    (new FaceFXEditorWindow()).Show();
+                },
+                tags = new List<string> { "developer", "fxa", "facefx", "lipsync", "fxe", "bones", "animation", "me3", "me3" },
+                subCategory = "Scene Shop",
+                description = "FaceFX Editor is the toolset’s highly-simplified version of FaceFX Studio. With this tool modders can edit FaceFX AnimSets (FXEs) for all three games.",
+            });
+            //            //Benji's tool. Uncomment when we have more progress.
+            //            /*set.Add(new Tool
+            //            {
+            //                name = "Level Explorer",
+            //                type = typeof(LevelExplorer.LevelExplorer),
+            //                icon = Application.Current.FindResource("iconLevelEditor") as ImageSource,
+            //                open = () =>
+            //                {
+            //                    (new LevelExplorer.LevelExplorer()).Show();
+            //                },
+            //                tags = new List<string> { "developer" },
+            //                subCategory = other,
+            //                description = "Level Explorer allows you to view the meshes of a level.",
 
-//            });*/
-//            set.Add(new Tool
-//            {
-//                name = "Mount Editor",
-//                type = typeof(MountEditor.MountEditorWPF),
-//                icon = Application.Current.FindResource("iconMountEditor") as ImageSource,
-//                open = () =>
-//                {
-//                    new MountEditor.MountEditorWPF().Show();
-//                },
-//                tags = new List<string> { "developer", "mount", "dlc", "me2", "me3" },
-//                subCategory = "Core",
-//                description = "Mount Editor allows you to create or modify mount.dlc files, which are used in DLC for Mass Effect 2 and Mass Effect 3."
-//            });
+            //            });*/
+            //            set.Add(new Tool
+            //            {
+            //                name = "Mount Editor",
+            //                type = typeof(MountEditor.MountEditorWPF),
+            //                icon = Application.Current.FindResource("iconMountEditor") as ImageSource,
+            //                open = () =>
+            //                {
+            //                    new MountEditor.MountEditorWPF().Show();
+            //                },
+            //                tags = new List<string> { "developer", "mount", "dlc", "me2", "me3" },
+            //                subCategory = "Core",
+            //                description = "Mount Editor allows you to create or modify mount.dlc files, which are used in DLC for Mass Effect 2 and Mass Effect 3."
+            //            });
             set.Add(new Tool
             {
                 name = "TLK Manager",

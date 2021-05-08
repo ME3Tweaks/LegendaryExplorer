@@ -17,6 +17,7 @@
         AllowDrop="True"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Icon="/LegendaryExplorer;component/Tools/icons/soundplorerwpf_256x256.ico"
         Title="Soundplorer" Height="583" Width="900" Loaded="SoundplorerWPF_OnLoaded">
     <Window.Resources>
         <converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
