@@ -21,7 +21,7 @@ using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using Microsoft.Win32;
 
-namespace ME3Explorer.FaceFXAnimSetEditor
+namespace LegendaryExplorer.Tools.FaceFXEditor
 {
     public class LiveFaceFxEditor : NotifyPropertyChangedBase, IDisposable
     {

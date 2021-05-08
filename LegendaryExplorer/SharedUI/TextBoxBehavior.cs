@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace ME3Explorer.SharedUI
+namespace LegendaryExplorer.SharedUI
 {
     /// <summary>
     /// From https://stackoverflow.com/questions/42297032/why-does-wpf-textbox-not-support-triple-click-to-select-all-text
@@ -14,8 +14,7 @@ namespace ME3Explorer.SharedUI
 
         private static void OnPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var tb = d as TextBox;
-            if (tb != null)
+            if (d is TextBox tb)
             {
                 var enable = (bool)e.NewValue;
                 if (enable)

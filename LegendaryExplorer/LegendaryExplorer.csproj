@@ -401,6 +401,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Dialogs\ClassPickerDlg.xaml.cs">
+      <DependentUpon>ClassPickerDlg.xaml</DependentUpon>
+    </Compile>
     <Compile Update="MainWindow\ToolPanel.xaml.cs">
       <DependentUpon>ToolPanel.xaml</DependentUpon>
     </Compile>
@@ -414,6 +417,9 @@
     </Compile>
     <Compile Update="SharedUI\Controls\ToolBox.xaml.cs">
       <DependentUpon>ToolBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\ExportLoaderControls\InterpDataTimeline\Timeline.xaml.cs">
+      <DependentUpon>Timeline.xaml</DependentUpon>
     </Compile>
     <Compile Update="UserControls\ExportLoaderControls\FaceFXAnimSetEditorControl.xaml.cs">
       <DependentUpon>FaceFXAnimSetEditorControl.xaml</DependentUpon>
@@ -460,6 +466,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Dialogs\ClassPickerDlg.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="MainWindow\ToolPanel.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -467,6 +476,12 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="SharedUI\Controls\ToolBox.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Tools\InterpEditor\InterpEditorWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UserControls\ExportLoaderControls\InterpDataTimeline\Timeline.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="UserControls\ExportLoaderControls\FaceFXAnimSetEditorControl.xaml">

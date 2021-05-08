@@ -546,36 +546,10 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             new Sequence_Editor.SequenceEditorWPF(exp).Show();
                         }
                         break;
-                    // TODO: IMPLEMENT FOR LEX
-                    /*
-                    case "DialogueEditor":
-                        if (exp.ClassName == "BioConversation")
-                        {
-                            new DialogueEditorWPF(exp).Show();
-                        }
-                        break;
-                    case "FaceFXEditor":
-                        if (exp.ClassName == "FaceFXAnimSet")
-                        {
-                            new FaceFX.FaceFXEditor(exp).Show();
-                        }
-                        break;
-                    case "Meshplorer":
-                        if (MeshRendererWPF.CanParseStatic(exp))
-                        {
-                            new MeshplorerWPF(exp).Show();
-                        }
-                        break;
-                    case "Soundplorer":
-                        if (Soundpanel.CanParseStatic(exp))
-                        {
-                            new Soundplorer.SoundplorerWPF(exp).Show();
-                        }
-                        break;
                     case "InterpViewer":
-                        if (exp.ClassName == "InterpData")
+                        if (Timeline.CanParseStatic(exp))
                         {
-                            var p = new Matinee.InterpEditor();
+                            var p = new InterpEditor.InterpEditorWindow();
                             p.Show();
                             p.LoadFile(Pcc.FilePath);
                             if (exp.ObjectName == "InterpData")
@@ -584,22 +558,48 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             }
                         }
                         break;
-                    case "PathfindingEditor":
-                        if (PathfindingEditorWPF.CanParseStatic(exp))
+                    case "Soundplorer":
+                        if (Soundpanel.CanParseStatic(exp))
                         {
-                            var pf = new PathfindingEditorWPF(exp);
-                            pf.Show();
+                            new Soundplorer.SoundplorerWPF(exp).Show();
+                        }
+                        break;
+                    case "FaceFXEditor":
+                        if (exp.ClassName == "FaceFXAnimSet")
+                        {
+                            new FaceFXEditor.FaceFXEditorWindow(exp).Show();
+                        }
+                        break;
+                        // TODO: IMPLEMENT FOR LEX
+                        /*
+                        case "DialogueEditor":
+                            if (exp.ClassName == "BioConversation")
+                            {
+                                new DialogueEditorWPF(exp).Show();
+                            }
+                            break;
+                        case "Meshplorer":
+                            if (MeshRendererWPF.CanParseStatic(exp))
+                            {
+                                new MeshplorerWPF(exp).Show();
+                            }
+                            break;
+                        case "PathfindingEditor":
+                            if (PathfindingEditorWPF.CanParseStatic(exp))
+                            {
+                                var pf = new PathfindingEditorWPF(exp);
+                                pf.Show();
 
-                        }
-                        break;
-                    case "WwiseEditor":
-                        if (exp.ClassName == "WwiseBank")
-                        {
-                            var w = new WwiseEditor.WwiseEditorWPF(exp);
-                            w.Show();
-                        }
-                        break;
-                    */
+                            }
+                            break;
+                        case "WwiseEditor":
+                            if (exp.ClassName == "WwiseBank")
+                            {
+                                var w = new WwiseEditor.WwiseEditorWPF(exp);
+                                w.Show();
+                            }
+                            break;
+                        */
                 }
             }
         }
@@ -620,9 +620,9 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         return MeshRendererWPF.CanParseStatic(exp);
                     case "PathfindingEditor":
                         return PathfindingEditorWPF.CanParseStatic(exp);
+                    */
                     case "Soundplorer":
                         return Soundpanel.CanParseStatic(exp);
-                    */
                     case "SequenceEditor":
                         return exp.IsA("SequenceObject");
                     case "InterpViewer":

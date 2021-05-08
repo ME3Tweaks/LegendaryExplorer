@@ -10,6 +10,7 @@ using LegendaryExplorer.Tools.Sequence_Editor;
 using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorer.Tools.Soundplorer;
 using LegendaryExplorer.Tools.FaceFXEditor;
+using LegendaryExplorer.Tools.InterpEditor;
 using Newtonsoft.Json;
 using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Packages;
@@ -265,19 +266,19 @@ namespace LegendaryExplorer
                 subCategory = "Converters",
                 description = "Hex Converter is a utility that converts among floats, signed/unsigned integers, and hex code in big/little endian.",
             });
-            //            set.Add(new Tool
-            //            {
-            //                name = "Interp Viewer",
-            //                type = typeof(InterpEditor),
-            //                icon = Application.Current.FindResource("iconInterpViewer") as ImageSource,
-            //                open = () =>
-            //                {
-            //                    (new InterpEditor()).Show();
-            //                },
-            //                tags = new List<string> { "utility", "dialogue", "matinee", "cutscene", "animcutscene", "interpdata" },
-            //                subCategory = "Explorers",
-            //                description = "Interp Viewer is a simplified version of UDK’s Matinee Editor. It loads interpdata objects and displays their children as tracks on a timeline, allowing the user to visualize the game content associated with a specific scene.\n\nAttention: This tool is a utility; editing is not yet supported."
-            //            });
+            set.Add(new Tool
+            {
+                name = "Interp Editor",
+                type = typeof(InterpEditorWindow),
+                icon = Application.Current.FindResource("iconInterpViewer") as ImageSource,
+                open = () =>
+                {
+                    (new InterpEditorWindow()).Show();
+                },
+                tags = new List<string> { "utility", "dialogue", "matinee", "cutscene", "animcutscene", "interpdata" },
+                subCategory = "Explorers",
+                description = "Interp Editor is a simplified version of UDK’s Matinee Editor. It loads interpdata objects and displays their children as tracks on a timeline, allowing the user to visualize the game content associated with a specific scene."
+            });
             //            set.Add(new Tool
             //            {
             //                name = "Meshplorer",

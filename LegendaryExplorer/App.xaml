@@ -4,7 +4,7 @@
              xmlns:local="clr-namespace:LegendaryExplorer"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-             xmlns:sharedUi="clr-namespace:ME3Explorer.SharedUI"
+             xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
              Startup="Application_Startup">
     <Application.Resources>
         <FontFamily x:Key="TitilliumWeb-Italic">/LegendaryExplorer;component/Resources/Fonts/TitilliumWeb-Italic.ttf#Titillium Web</FontFamily>

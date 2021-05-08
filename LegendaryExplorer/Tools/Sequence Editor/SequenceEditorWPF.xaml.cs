@@ -2047,11 +2047,11 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     return;
                 }
                 AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
-                //TODO: Implement in LEX
-                //var p = new InterpEditor();
-                //p.Show();
-                //p.LoadFile(Pcc.FilePath);
-                //p.SelectedInterpData = Pcc.GetUExport(uIndex);
+
+                var p = new InterpEditor.InterpEditorWindow();
+                p.Show();
+                p.LoadFile(Pcc.FilePath);
+                p.SelectedInterpData = Pcc.GetUExport(uIndex);
             }
         }
 

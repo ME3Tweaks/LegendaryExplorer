@@ -35,7 +35,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// <summary>
         /// The currently loaded export, or null if none is currently loaded
         /// </summary>
-        public ExportEntry CurrentLoadedExport
+        public virtual ExportEntry CurrentLoadedExport
         {
             get => _currentLoadedExport;
             protected set => SetProperty(ref _currentLoadedExport, value);
