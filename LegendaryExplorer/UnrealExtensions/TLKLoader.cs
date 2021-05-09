@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using LegendaryExplorer.Misc;
+using LegendaryExplorer.Tools.TlkManagerNS;
 using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.ME1;
 using ME3ExplorerCore.Packages;
@@ -19,6 +20,7 @@ namespace LegendaryExplorer.UnrealExtensions
         public static readonly string LoadedTLKsPathME2 = AppDirectories.AppDataFolder + "ME2LoadedTLKs.JSON";
         public static readonly string LoadedTLKsPathME3 = AppDirectories.AppDataFolder + "ME3LoadedTLKs.JSON";
 
+        public static bool TlkFirstLoadDone { get; private set; } //Set when the TLK loading at startup is finished.
 
         private static void loadME1Tlk()
         {
@@ -96,6 +98,7 @@ namespace LegendaryExplorer.UnrealExtensions
             }
         }
 
+        //TODO: Call this from somewhere in LEX
         public static void LoadSavedTlkList()
         {
             Action[] loaders =
@@ -105,6 +108,10 @@ namespace LegendaryExplorer.UnrealExtensions
                 loadME3Tlk
             };
             Parallel.ForEach(loaders, action => action());
+            TLKManagerWPF.ME1LastReloaded = $"{DateTime.Now:HH:mm:ss tt}";
+            TLKManagerWPF.ME2LastReloaded = $"{DateTime.Now:HH:mm:ss tt}";
+            TLKManagerWPF.ME3LastReloaded = $"{DateTime.Now:HH:mm:ss tt}";
+            TlkFirstLoadDone = true;
         }
 
         public static void SaveTLKList(MEGame game = MEGame.Unknown)

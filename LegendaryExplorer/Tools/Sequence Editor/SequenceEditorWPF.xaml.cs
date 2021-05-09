@@ -28,7 +28,6 @@ using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.SharedUI.PeregrineTreeView;
 using LegendaryExplorer.Tools.SequenceObjects;
-using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
@@ -92,7 +91,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             StatusText = "Select package file to load";
             InitializeComponent();
 
-            RecentsController.InitRecentControl(Toolname, Recents_MenuItem, fileName => LoadFile(fileName));
+            RecentsController.InitRecentControl(Toolname, Recents_MenuItem, LoadFile);
 
             graphEditor = (GraphEditor)GraphHost.Child;
             graphEditor.BackColor = GraphEditorBackColor;
@@ -210,7 +209,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                             foreach (var seqObjectRef in seqObjectsList)
                             {
                                 var seqObj = p.GetUExport(seqObjectRef.Value);
-                                if (seqObj.ClassName == "SeqAct_Gate") continue; ; //skip gates
+                                if (seqObj.ClassName is "SeqAct_Gate") continue; ; //skip gates
                                 var outputLinks = seqObj.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
                                 if (outputLinks != null)
                                 {
@@ -243,7 +242,8 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
                 if (tightLoops.Any())
                 {
-                    ListDialog ld = new ListDialog(tightLoops, "Tight sequence loops found", "The following sequence objects link to themselves on an output and may cause significant harm to game performance.", this);
+                    var ld = new ListDialog(tightLoops, "Tight sequence loops found",
+                                            "The following sequence objects link to themselves on an output and may cause significant harm to game performance.", this);
                     ld.Show();
                 }
                 else
@@ -278,7 +278,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 return;
             }
 
-            ExportEntry newSeqObj = new ExportEntry(Pcc, properties: SequenceObjectCreator.GetSequenceObjectDefaults(Pcc, info))
+            var newSeqObj = new ExportEntry(Pcc, properties: SequenceObjectCreator.GetSequenceObjectDefaults(Pcc, info))
             {
                 Class = classEntry,
                 ObjectName = Pcc.GetNextIndexedName(info.ClassName)
@@ -420,7 +420,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         private void SavePackageAs()
         {
             string extension = Path.GetExtension(Pcc.FilePath);
-            SaveFileDialog d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
+            var d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
             if (d.ShowDialog() == true)
             {
                 Pcc.Save(d.FileName);
@@ -914,7 +914,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 for (int i = 0; i < CurrentObjects.Count; i++)
                 {
                     SObj obj = CurrentObjects[i];
-                    SaveData savedInfo = new SaveData(-1);
+                    var savedInfo = new SaveData(-1);
                     if (SavedPositions.Any())
                     {
                         if (RefOrRefChild)
@@ -937,15 +937,15 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     {
                         switch (obj)
                         {
-                            case SEvent _:
+                            case SEvent:
                                 obj.Layout(StartPosEvents, 0);
                                 StartPosEvents += obj.Width + 20;
                                 break;
-                            case SAction _:
+                            case SAction:
                                 obj.Layout(StartPosActions, 250);
                                 StartPosActions += obj.Width + 20;
                                 break;
-                            case SVar _:
+                            case SVar:
                                 obj.Layout(StartPosVars, 500);
                                 StartPosVars += obj.Width + 20;
                                 break;
@@ -1015,7 +1015,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
             void LayoutTree(SBox sAction, float verticalSpacing)
             {
-                if (firstNode == null) firstNode = sAction;
+                firstNode ??= sAction;
                 visitedNodes.Add(sAction.UIndex);
                 var subTree = LayoutSubTree(sAction);
                 float width = subTree.BoundingRect().Width + HORIZONTAL_SPACING;
@@ -1196,7 +1196,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             }
         }
 
-        private readonly List<SaveData> customSaveData = new List<SaveData>();
+        private readonly List<SaveData> customSaveData = new();
         private bool panToSelection = true;
         private string FileQueuedForLoad;
         private ExportEntry ExportQueuedForFocusing;
@@ -1959,7 +1959,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             if (CurrentObjects.Count == 0)
                 return;
             string objectName = System.Text.RegularExpressions.Regex.Replace(SelectedSequence.ObjectName.Name, @"[<>:""/\\|?*]", "");
-            SaveFileDialog d = new SaveFileDialog
+            var d = new SaveFileDialog
             {
                 Filter = "PNG Files (*.png)|*.png",
                 FileName = $"{CurrentFile}.{objectName}"
@@ -1972,7 +1972,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 p.Brush = Brushes.White;
                 graphEditor.addBack(p);
                 graphEditor.Camera.Visible = false;
-                System.Drawing.Image image = graphEditor.Root.ToImage();
+                Image image = graphEditor.Root.ToImage();
                 graphEditor.Camera.Visible = true;
                 image.Save(d.FileName, ImageFormat.Png);
                 graphEditor.backLayer.RemoveAllChildren();
@@ -2057,50 +2057,49 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
         private void OpenInDialogueEditor_Clicked(object sender, RoutedEventArgs e)
         {
+            
+            if (CurrentObjects_ListBox.SelectedItem is SObj obj &&
+                (obj.Export.ClassName.EndsWith("SeqAct_StartConversation") || obj.Export.ClassName.EndsWith("StartAmbientConv")) &&
+                obj.Export.GetProperty<ObjectProperty>("Conv") is ObjectProperty conv)
+            {
+                if (Pcc.IsUExport(conv.Value))
+                {
+                    AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
+                    new DialogueEditor.DialogueEditorWindow(Pcc.GetUExport(conv.Value)).Show();
+                    return;
+                }
 
-            //TODO: Implement in LEX
-            //if (CurrentObjects_ListBox.SelectedItem is SObj obj &&
-            //    (obj.Export.ClassName.EndsWith("SeqAct_StartConversation") || obj.Export.ClassName.EndsWith("StartAmbientConv")) &&
-            //    obj.Export.GetProperty<ObjectProperty>("Conv") is ObjectProperty conv)
-            //{
-            //    if (Pcc.IsUExport(conv.Value))
-            //    {
-            //        AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
-            //        new Dialogue_Editor.DialogueEditorWPF(Pcc.GetUExport(conv.Value)).Show();
-            //        return;
-            //    }
-
-            //    if (Pcc.IsImport(conv.Value))
-            //    {
-            //        ImportEntry convImport = Pcc.GetImport(conv.Value);
-            //        string extension = Path.GetExtension(Pcc.FilePath);
-            //        string noExtensionPath = Path.ChangeExtension(Pcc.FilePath, null);
-            //        string loc_int = Pcc.Game == MEGame.ME1 ? "_LOC_int" : "_LOC_INT";
-            //        string convFilePath = noExtensionPath + loc_int + extension;
-            //        if (File.Exists(convFilePath))
-            //        {
-            //            using var convFile = MEPackageHandler.OpenMEPackage(convFilePath);
-            //            var convExport = convFile.Exports.FirstOrDefault(x => x.ObjectName == convImport.ObjectName);
-            //            if (convExport != null)
-            //            {
-            //                AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
-            //                new Dialogue_Editor.DialogueEditorWPF(convExport).Show();
-            //                return;
-            //            }
-            //        }
-            //        else if (EntryImporter.ResolveImport(convImport) is ExportEntry fauxExport)
-            //        {
-            //            using var convFile = MEPackageHandler.OpenMEPackage(fauxExport.FileRef.FilePath);
-            //            var convExport = convFile.GetUExport(fauxExport.UIndex);
-            //            if (convExport != null)
-            //            {
-            //                AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
-            //                new Dialogue_Editor.DialogueEditorWPF(convExport).Show();
-            //                return;
-            //            }
-            //        }
-            //    }
-            //}
+                if (Pcc.IsImport(conv.Value))
+                {
+                    ImportEntry convImport = Pcc.GetImport(conv.Value);
+                    string extension = Path.GetExtension(Pcc.FilePath);
+                    string noExtensionPath = Path.ChangeExtension(Pcc.FilePath, null);
+                    string loc_int = Pcc.Game == MEGame.ME1 ? "_LOC_int" : "_LOC_INT";
+                    string convFilePath = noExtensionPath + loc_int + extension;
+                    if (File.Exists(convFilePath))
+                    {
+                        using var convFile = MEPackageHandler.OpenMEPackage(convFilePath);
+                        var convExport = convFile.Exports.FirstOrDefault(x => x.ObjectName == convImport.ObjectName);
+                        if (convExport != null)
+                        {
+                            AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
+                            new DialogueEditor.DialogueEditorWindow(convExport).Show();
+                            return;
+                        }
+                    }
+                    else if (EntryImporter.ResolveImport(convImport) is ExportEntry fauxExport)
+                    {
+                        using var convFile = MEPackageHandler.OpenMEPackage(fauxExport.FileRef.FilePath);
+                        var convExport = convFile.GetUExport(fauxExport.UIndex);
+                        if (convExport != null)
+                        {
+                            AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
+                            new DialogueEditor.DialogueEditorWindow(convExport).Show();
+                            return;
+                        }
+                    }
+                }
+            }
             MessageBox.Show(this, "Cannot find Conversation!", "Sorry!", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 

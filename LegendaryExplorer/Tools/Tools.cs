@@ -450,19 +450,19 @@ namespace LegendaryExplorer
             //                tags = new List<string>(),
             //                subCategory = other,
             //            });
-            //            set.Add(new Tool
-            //            {
-            //                name = "Dialogue Editor",
-            //                type = typeof(Dialogue_Editor.DialogueEditorWPF),
-            //                icon = Application.Current.FindResource("iconDialogueEditor") as ImageSource,
-            //                open = () =>
-            //                {
-            //                    (new Dialogue_Editor.DialogueEditorWPF()).Show();
-            //                },
-            //                tags = new List<string> { "developer", "me1", "me2", "me3", "cutscene" },
-            //                subCategory = "Scene Shop",
-            //                description = "Dialogue Editor is a visual tool used to edit in-game conversations. It works with all the games.",
-            //            });
+            set.Add(new Tool
+            {
+                name = "Dialogue Editor",
+                type = typeof(DialogueEditor.DialogueEditorWindow),
+                icon = Application.Current.FindResource("iconDialogueEditor") as ImageSource,
+                open = () =>
+                {
+                    (new DialogueEditor.DialogueEditorWindow()).Show();
+                },
+                tags = new List<string> { "developer", "me1", "me2", "me3", "cutscene" },
+                subCategory = "Scene Shop",
+                description = "Dialogue Editor is a visual tool used to edit in-game conversations. It works with all the games.",
+            });
             set.Add(new Tool
             {
                 name = "FaceFX Editor",
@@ -476,21 +476,6 @@ namespace LegendaryExplorer
                 subCategory = "Scene Shop",
                 description = "FaceFX Editor is the toolset’s highly-simplified version of FaceFX Studio. With this tool modders can edit FaceFX AnimSets (FXEs) for all three games.",
             });
-            //            //Benji's tool. Uncomment when we have more progress.
-            //            /*set.Add(new Tool
-            //            {
-            //                name = "Level Explorer",
-            //                type = typeof(LevelExplorer.LevelExplorer),
-            //                icon = Application.Current.FindResource("iconLevelEditor") as ImageSource,
-            //                open = () =>
-            //                {
-            //                    (new LevelExplorer.LevelExplorer()).Show();
-            //                },
-            //                tags = new List<string> { "developer" },
-            //                subCategory = other,
-            //                description = "Level Explorer allows you to view the meshes of a level.",
-
-            //            });*/
             //            set.Add(new Tool
             //            {
             //                name = "Mount Editor",

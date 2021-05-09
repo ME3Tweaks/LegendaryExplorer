@@ -14,6 +14,7 @@
   <PropertyGroup Condition="'$(Configuration)'=='WinDebug'">
     <DebugType>pdbonly</DebugType>
     <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
+    <XamlDebuggingInformation>True</XamlDebuggingInformation>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='WinRelease'">
@@ -419,6 +420,15 @@
     <Compile Update="SharedUI\Controls\ToolBox.xaml.cs">
       <DependentUpon>ToolBox.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Tools\Dialogue Editor\ConvGraphEditor.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Tools\Dialogue Editor\DialogueEditorWPF.xaml.cs">
+      <DependentUpon>DialogueEditorWPF.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Tools\Dialogue Editor\LinkEditor.xaml.cs">
+      <DependentUpon>LinkEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Update="UserControls\ExportLoaderControls\InterpDataTimeline\Timeline.xaml.cs">
       <DependentUpon>Timeline.xaml</DependentUpon>
     </Compile>
@@ -483,6 +493,12 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Tools\AFCCompactor\AFCCompactorWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Tools\Dialogue Editor\DialogueEditorWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Tools\Dialogue Editor\LinkEditor.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Tools\InterpEditor\InterpEditorWindow.xaml">

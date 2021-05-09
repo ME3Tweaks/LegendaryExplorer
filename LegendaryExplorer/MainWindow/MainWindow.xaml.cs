@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using LegendaryExplorer.Tools.PackageEditor;
+using LegendaryExplorer.UnrealExtensions;
 
 namespace LegendaryExplorer
 {
@@ -25,6 +26,8 @@ namespace LegendaryExplorer
         {
             InitializeComponent();
             mainToolPanel.setToolList(ToolSet.Items);
+
+            Task.Run(TLKLoader.LoadSavedTlkList);
         }
     }
 }

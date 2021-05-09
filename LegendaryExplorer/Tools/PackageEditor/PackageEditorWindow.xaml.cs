@@ -15,6 +15,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using GongSolutions.Wpf.DragDrop;
 using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.DialogueEditor;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.SharedUI;
@@ -570,14 +571,14 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             new FaceFXEditor.FaceFXEditorWindow(exp).Show();
                         }
                         break;
+                    case "DialogueEditor":
+                        if (exp.ClassName == "BioConversation")
+                        {
+                            new DialogueEditorWindow(exp).Show();
+                        }
+                        break;
                         // TODO: IMPLEMENT FOR LEX
                         /*
-                        case "DialogueEditor":
-                            if (exp.ClassName == "BioConversation")
-                            {
-                                new DialogueEditorWPF(exp).Show();
-                            }
-                            break;
                         case "Meshplorer":
                             if (MeshRendererWPF.CanParseStatic(exp))
                             {
@@ -3582,23 +3583,23 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     soundplorerWPF.LoadFile(Pcc.FilePath);
                     soundplorerWPF.Show();
                     break;
-                // TODO: IMPLEMENT IN LEX
-                /*
                 case "DialogueEditor":
-                    var dialogueEditorWPF = new Dialogue_Editor.DialogueEditorWPF();
+                    var dialogueEditorWPF = new DialogueEditorWindow();
                     dialogueEditorWPF.LoadFile(Pcc.FilePath);
                     dialogueEditorWPF.Show();
                     break;
-                case "PathfindingEditor":
-                    var pathEditor = new PathfindingEditorWPF(Pcc.FilePath);
-                    pathEditor.Show();
-                    break;
-                case "Meshplorer":
-                    var meshplorer = new MeshplorerWPF();
-                    meshplorer.LoadFile(Pcc.FilePath);
-                    meshplorer.Show();
-                    break;
-                */
+                    // TODO: IMPLEMENT IN LEX
+                    /*
+                    case "PathfindingEditor":
+                        var pathEditor = new PathfindingEditorWPF(Pcc.FilePath);
+                        pathEditor.Show();
+                        break;
+                    case "Meshplorer":
+                        var meshplorer = new MeshplorerWPF();
+                        meshplorer.LoadFile(Pcc.FilePath);
+                        meshplorer.Show();
+                        break;
+                    */
             }
         }
 

@@ -11,10 +11,13 @@ using System.Windows.Controls;
 using System.Windows.Forms.Integration;
 using System.Windows.Threading;
 using LegendaryExplorer.Dialogs.Splash;
+using LegendaryExplorer.DialogueEditor;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.Telemetry;
 using LegendaryExplorer.SharedUI.PeregrineTreeView;
 using LegendaryExplorer.Tools.PackageEditor;
+using LegendaryExplorer.Tools.Sequence_Editor;
+using LegendaryExplorer.Tools.Soundplorer;
 using LegendaryExplorer.UnrealExtensions.Classes;
 using ME3ExplorerCore;
 using ME3ExplorerCore.Helpers;
@@ -122,13 +125,12 @@ namespace LegendaryExplorer.Startup
             {
                 return () =>
                 {
-                    PackageEditorWindow editor = new PackageEditorWindow();
+                    var editor = new PackageEditorWindow();
                     editor.Show();
                     editor.Activate();
                 };
             }
 
-            /*
             if (arg == "JUMPLIST_SEQUENCE_EDITOR")
             {
                 return () =>
@@ -139,6 +141,28 @@ namespace LegendaryExplorer.Startup
                 };
             }
 
+            if (arg == "JUMPLIST_SOUNDPLORER")
+            {
+                return () =>
+                {
+                    var soundplorerWpf = new SoundplorerWPF();
+                    soundplorerWpf.Show();
+                    soundplorerWpf.Activate();
+
+                };
+            }
+
+            if (arg == "JUMPLIST_DIALOGUEEDITOR")
+            {
+                return () =>
+                {
+                    var editor = new DialogueEditorWindow();
+                    editor.Show();
+                    editor.Activate();
+                };
+            }
+            /*
+
             if (arg == "JUMPLIST_PATHFINDING_EDITOR")
             {
                 return () =>
@@ -146,17 +170,6 @@ namespace LegendaryExplorer.Startup
                     PathfindingEditorWPF editor = new PathfindingEditorWPF();
                     editor.Show();
                     editor.Activate();
-                };
-            }
-
-            if (arg == "JUMPLIST_SOUNDPLORER")
-            {
-                return () =>
-                {
-                    SoundplorerWPF soundplorerWpf = new SoundplorerWPF();
-                    soundplorerWpf.Show();
-                    soundplorerWpf.Activate();
-
                 };
             }
 
@@ -204,16 +217,6 @@ namespace LegendaryExplorer.Startup
                 };
             }
 
-            if (arg == "JUMPLIST_DIALOGUEEDITOR")
-            {
-                return () =>
-                {
-                    DialogueEditorWPF editor = new DialogueEditorWPF();
-                    editor.Show();
-                    editor.Activate();
-                };
-            }
-
             if (arg == "JUMPLIST_MESHPLORER")
             {
                 return () =>
@@ -235,7 +238,7 @@ namespace LegendaryExplorer.Startup
                 case ".udk":
                     return () =>
                     {
-                        PackageEditorWindow editor = new PackageEditorWindow();
+                        var editor = new PackageEditorWindow();
                         editor.Show();
                         editor.LoadFile(args[1]);
                         editor.RestoreAndBringToFront();
