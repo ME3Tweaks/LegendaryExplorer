@@ -262,7 +262,8 @@ namespace LegendaryExplorer.Tools.TFCCompactor
             }
         }
 
-        private static readonly string[] basegameTFCs = { "CharTextures", "Movies", "Textures", "Lighting", "Movies" };
+        // TODO: Put this static array in LEC somewhere instead. I looked for a place and gave up :(
+        public static readonly string[] BasegameTFCs = { "CharTextures", "Movies", "Textures", "Lighting", "Movies" };
         private void BeginReferencedTFCScan()
         {
             backgroundWorker = new BackgroundWorker { WorkerReportsProgress = true };
@@ -336,7 +337,7 @@ namespace LegendaryExplorer.Tools.TFCCompactor
                                     //{
                                     //    Debug.WriteLine($"CustTextures0 TFC Reference: {texture.FullPath} {texture.UIndex} in {texture.FileRef.FilePath}");
                                     //}
-                                    if (!basegameTFCs.Contains(tfcname))
+                                    if (!BasegameTFCs.Contains(tfcname))
                                     {
                                         //Check that external mips are referenced.
                                         //some texture2d have a tfc but don't have any external mips for some reason

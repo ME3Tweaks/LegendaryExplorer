@@ -2902,12 +2902,10 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         //We are on interpreter tab, selecting class. Switch to binary interpreter as interpreter will never be useful
                         BinaryInterpreter_Tab.IsSelected = true;
                     }
-
-                    // TODO: IMPLEMENT IN LEX
-                    //if (Interpreter_Tab.IsSelected && exportEntry.ClassName == "Function" && Bytecode_Tab.IsVisible)
-                    //{
-                    //    Bytecode_Tab.IsSelected = true;
-                    //}
+                    if (Interpreter_Tab.IsSelected && exportEntry.ClassName == "Function" && Bytecode_Tab.IsVisible)
+                    {
+                        Bytecode_Tab.IsSelected = true;
+                    }
                 }
                 else if (selectedEntry is ImportEntry importEntry)
                 {
@@ -3551,8 +3549,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         {
             if (!e.Cancel)
             {
-                // TODO: IMPLEMENT INTO LEX
-                //SoundTab_Soundpanel.FreeAudioResources();
+                SoundTab_Soundpanel.FreeAudioResources();
                 foreach (var el in ExportLoaders.Keys)
                 {
                     el.Dispose(); //Remove hosted winforms references

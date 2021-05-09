@@ -13,6 +13,7 @@ using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.UnrealExtensions.Classes;
+using LegendaryExplorer.Tools.TFCCompactor;
 using MassEffectModder.Images;
 using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Misc;
@@ -138,13 +139,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             var selectedTFCName = (string)TextureCacheComboBox.SelectedItem;
             // TODO: MOVE OUT OF TFC COMPACTOR
-            // TODO: IMPLEMENT IN LEX
-            /*
-            if (TFCCompactor.TFCCompactor.BasegameTFCs.Contains(selectedTFCName) || MEDirectories.OfficialDLC(CurrentLoadedExport.Game).Any(x => $"Textures_{x}" == selectedTFCName))
+            if (TFCCompactorWindow.BasegameTFCs.Contains(selectedTFCName) || MEDirectories.OfficialDLC(CurrentLoadedExport.Game).Any(x => $"Textures_{x}" == selectedTFCName))
             {
                 MessageBox.Show("Cannot replace textures into a TFC provided by BioWare. Choose a different target TFC from the list.");
                 return;
-            }*/
+            }
 
             OpenFileDialog selectDDS = new OpenFileDialog
             {

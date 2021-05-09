@@ -135,8 +135,6 @@ namespace LegendaryExplorer.Tools.AFCCompactorWindow
                 statusUpdate => StatusText = statusUpdate,
                 fafcpath => finalAfcPath = fafcpath,
                     (msg) => { });
-                    // TODO: Implement in LEX
-                    //msg => DebugOutput.PrintLn(msg));
                 if (!compactionResult) return (compactionResult, null);
 
                 // Check references
@@ -322,8 +320,6 @@ namespace LegendaryExplorer.Tools.AFCCompactorWindow
                 if (pccFiles.Any())
                 {
                     var allMessages = new List<string>();
-                    //TODO: implement in LEX
-                    //DebugOutput.StartDebugger("AFC Compactor");
                     Task.Run(() =>
                     {
                         IsBusy = true;
@@ -336,7 +332,6 @@ namespace LegendaryExplorer.Tools.AFCCompactorWindow
                             scanningPcc => StatusText = $"Scanning {Path.GetFileName(scanningPcc)}",
                             debugMsg =>
                             {
-                                //DebugOutput.PrintLn(debugMsg, false);
                                 allMessages.Add(debugMsg);
                             });
                     }).ContinueWithOnUIThread(prevTask =>
