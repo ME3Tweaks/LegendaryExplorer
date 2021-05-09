@@ -98,7 +98,7 @@ namespace ME3Explorer.GameInterop
             {
                 OpenFileDialog ofd = new()
                 {
-                    Title = "Select Mass Effect 3 executable.",
+                    Title = "Select Mass Effect 3 executable",
                     Filter = "MassEffect3.exe|MassEffect3.exe"
                 };
                 if (ofd.ShowDialog() == true)
@@ -114,7 +114,7 @@ namespace ME3Explorer.GameInterop
             {
                 OpenFileDialog ofd = new()
                 {
-                    Title = "Select Mass Effect 2 executable.",
+                    Title = "Select Mass Effect 2 executable",
                     Filter = "MassEffect2.exe|MassEffect2.exe"
                 };
                 if (ofd.ShowDialog() == true)
