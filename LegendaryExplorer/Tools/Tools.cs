@@ -11,6 +11,8 @@ using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorer.Tools.Soundplorer;
 using LegendaryExplorer.Tools.FaceFXEditor;
 using LegendaryExplorer.Tools.InterpEditor;
+using LegendaryExplorer.Tools.AFCCompactorWindow;
+using LegendaryExplorer.Tools.TFCCompactor;
 using Newtonsoft.Json;
 using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Packages;
@@ -162,19 +164,19 @@ namespace LegendaryExplorer
 //                subCategory = "Utilities",
 //                description = "Live Level Editor allows you to preview the effect of property changes to Actors in game, to reduce iteration times. It also has a Camera Path Editor, which lets you make camera pans quickly."
 //            });
-//            set.Add(new Tool
-//            {
-//                name = "AFC Compactor",
-//                type = typeof(TFCCompactor.TFCCompactor),
-//                icon = Application.Current.FindResource("iconAFCCompactor") as ImageSource,
-//                open = () =>
-//                {
-//                    (new AFCCompactorUI.AFCCompactorUI()).Show();
-//                },
-//                tags = new List<string> { "utility", "deployment", "audio", },
-//                subCategory = "Deployment",
-//                description = "AFC Compactor can compact your ME2 or ME3 Audio File Cache (AFC) files by effectively removing unreferenced chunks in it. It also can be used to reduce or remove AFC dependencies so users do not have to have DLC installed for certain audio to work.",
-//            });
+            set.Add(new Tool
+            {
+                name = "AFC Compactor",
+                type = typeof(AFCCompactorWindow),
+                icon = Application.Current.FindResource("iconAFCCompactor") as ImageSource,
+                open = () =>
+                {
+                    (new AFCCompactorWindow()).Show();
+                },
+                tags = new List<string> { "utility", "deployment", "audio", },
+                subCategory = "Deployment",
+                description = "AFC Compactor can compact your ME2 or ME3 Audio File Cache (AFC) files by effectively removing unreferenced chunks in it. It also can be used to reduce or remove AFC dependencies so users do not have to have DLC installed for certain audio to work.",
+            });
 //            set.Add(new Tool
 //            {
 //                name = "ASI Manager",
@@ -411,19 +413,19 @@ namespace LegendaryExplorer
             //                subCategory = "Databases",
             //                description = "Script Database is used to locate UnrealScript exports across multiple files for ME3. This tool is deprecated and is no longer supported.",
             //            });
-            //            set.Add(new Tool
-            //            {
-            //                name = "TFC Compactor",
-            //                type = typeof(TFCCompactor.TFCCompactor),
-            //                icon = Application.Current.FindResource("iconTFCCompactor") as ImageSource,
-            //                open = () =>
-            //                {
-            //                    (new TFCCompactor.TFCCompactor()).Show();
-            //                },
-            //                tags = new List<string> { "utility", "deployment", "textures", "compression" },
-            //                subCategory = "Deployment",
-            //                description = "TFC Compactor can compact your ME2 or ME3 DLC mod TFC file by effectively removing unreferenced chunks in it and compressing the referenced textures. It also can be used to reduce or remove TFC dependencies so users do not have to have DLC installed for certain textures to work.",
-            //            });
+            set.Add(new Tool
+            {
+                name = "TFC Compactor",
+                type = typeof(TFCCompactorWindow),
+                icon = Application.Current.FindResource("iconTFCCompactor") as ImageSource,
+                open = () =>
+                {
+                    (new TFCCompactorWindow()).Show();
+                },
+                tags = new List<string> { "utility", "deployment", "textures", "compression" },
+                subCategory = "Deployment",
+                description = "TFC Compactor can compact your ME2 or ME3 DLC mod TFC file by effectively removing unreferenced chunks in it and compressing the referenced textures. It also can be used to reduce or remove TFC dependencies so users do not have to have DLC installed for certain textures to work.",
+            });
             #endregion
 
             #region Create Mods

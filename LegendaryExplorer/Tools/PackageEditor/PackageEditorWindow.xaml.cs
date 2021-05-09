@@ -2249,24 +2249,24 @@ namespace LegendaryExplorer.Tools.PackageEditor
             //map export loaders to their tabs
             ExportLoaders[InterpreterTab_Interpreter] = Interpreter_Tab;
             ExportLoaders[MetadataTab_MetadataEditor] = Metadata_Tab;
-
-            // TODO: IMPLEMENT IN LEX
             ExportLoaders[SoundTab_Soundpanel] = Sound_Tab;
             ExportLoaders[CurveTab_CurveEditor] = CurveEditor_Tab;
             ExportLoaders[FaceFXTab_Editor] = FaceFXAnimSet_Tab;
             ExportLoaders[Bio2DATab_Bio2DAEditor] = Bio2DAViewer_Tab;
-            //ExportLoaders[BytecodeTab_BytecodeEditor] = Bytecode_Tab;
-            //ExportLoaders[ScriptTab_UnrealScriptIDE] = Script_Tab;
+            ExportLoaders[BytecodeTab_BytecodeEditor] = Bytecode_Tab;
             ExportLoaders[BinaryInterpreterTab_BinaryInterpreter] = BinaryInterpreter_Tab;
             ExportLoaders[EmbeddedTextureViewerTab_EmbededTextureViewer] = EmbeddedTextureViewer_Tab;
+            ExportLoaders[CollectionActorEditorTab_CollectionActorEditor] = CollectionActorEditor_Tab;
+            ExportLoaders[ParticleSystemTab_ParticleSystemLoader] = ParticleSystem_Tab;
+            ExportLoaders[ParticleModuleTab_ParticleModuleLoader] = ParticleModule_Tab;
+
+            // TODO: IMPLEMENT IN LEX
+            //ExportLoaders[ScriptTab_UnrealScriptIDE] = Script_Tab;
             //ExportLoaders[ME1TlkEditorWPFTab_ME1TlkEditor] = ME1TlkEditorWPF_Tab;
             //ExportLoaders[JPEXLauncherTab_JPEXLauncher] = JPEXLauncher_Tab;
             //ExportLoaders[MeshRendererTab_MeshRenderer] = MeshRenderer_Tab;
             //ExportLoaders[MaterialViewerTab_MaterialExportLoader] = MaterialViewer_Tab;
             //ExportLoaders[RADLauncherTab_BIKLauncher] = RADLaunch_Tab;
-            ExportLoaders[CollectionActorEditorTab_CollectionActorEditor] = CollectionActorEditor_Tab;
-            ExportLoaders[ParticleSystemTab_ParticleSystemLoader] = ParticleSystem_Tab;
-            ExportLoaders[ParticleModuleTab_ParticleModuleLoader] = ParticleModule_Tab;
 
 
             InterpreterTab_Interpreter.SetParentNameList(NamesList); //reference to this control for name editor set
@@ -3572,6 +3572,16 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     seqEditor.LoadFile(Pcc.FilePath);
                     seqEditor.Show();
                     break;
+                case "FaceFXEditor":
+                    var facefxEditor = new FaceFXEditor.FaceFXEditorWindow();
+                    facefxEditor.LoadFile(Pcc.FilePath);
+                    facefxEditor.Show();
+                    break;
+                case "SoundplorerWPF":
+                    var soundplorerWPF = new Soundplorer.SoundplorerWPF();
+                    soundplorerWPF.LoadFile(Pcc.FilePath);
+                    soundplorerWPF.Show();
+                    break;
                 // TODO: IMPLEMENT IN LEX
                 /*
                 case "DialogueEditor":
@@ -3579,19 +3589,9 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     dialogueEditorWPF.LoadFile(Pcc.FilePath);
                     dialogueEditorWPF.Show();
                     break;
-                case "FaceFXEditor":
-                    var facefxEditor = new FaceFX.FaceFXEditor();
-                    facefxEditor.LoadFile(Pcc.FilePath);
-                    facefxEditor.Show();
-                    break;
                 case "PathfindingEditor":
                     var pathEditor = new PathfindingEditorWPF(Pcc.FilePath);
                     pathEditor.Show();
-                    break;
-                case "SoundplorerWPF":
-                    var soundplorerWPF = new Soundplorer.SoundplorerWPF();
-                    soundplorerWPF.LoadFile(Pcc.FilePath);
-                    soundplorerWPF.Show();
                     break;
                 case "Meshplorer":
                     var meshplorer = new MeshplorerWPF();

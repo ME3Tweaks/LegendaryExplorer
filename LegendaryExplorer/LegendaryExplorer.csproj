@@ -127,6 +127,7 @@
 
   <ItemGroup>
     <PackageReference Include="ClosedXML" Version="0.95.3" />
+    <PackageReference Include="ConsoleAppLauncher" Version="2.0.0" />
     <PackageReference Include="FontAwesome5" Version="2.1.0" />
     <PackageReference Include="gong-wpf-dragdrop" Version="2.3.2" />
     <PackageReference Include="Gu.Wpf.DataGrid2D" Version="0.2.4" />
@@ -421,6 +422,9 @@
     <Compile Update="UserControls\ExportLoaderControls\InterpDataTimeline\Timeline.xaml.cs">
       <DependentUpon>Timeline.xaml</DependentUpon>
     </Compile>
+    <Compile Update="UserControls\ExportLoaderControls\BytecodeEditor.xaml.cs">
+      <DependentUpon>BytecodeEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Update="UserControls\ExportLoaderControls\FaceFXAnimSetEditorControl.xaml.cs">
       <DependentUpon>FaceFXAnimSetEditorControl.xaml</DependentUpon>
     </Compile>
@@ -478,10 +482,19 @@
     <Page Update="SharedUI\Controls\ToolBox.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Tools\AFCCompactor\AFCCompactorWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Tools\InterpEditor\InterpEditorWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Tools\TFCCompactor\TFCCompactorWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="UserControls\ExportLoaderControls\InterpDataTimeline\Timeline.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UserControls\ExportLoaderControls\BytecodeEditor.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="UserControls\ExportLoaderControls\FaceFXAnimSetEditorControl.xaml">

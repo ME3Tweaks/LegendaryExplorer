@@ -577,8 +577,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
 
         private void CompactAFC_Clicked(object sender, RoutedEventArgs e)
         {
-            //TODO: implement in LEX
-            //new AFCCompactorUI.AFCCompactorUI().Show();
+            new AFCCompactorWindow.AFCCompactorWindow().Show();
         }
 
         private void ExportWav_Clicked(object sender, RoutedEventArgs e)

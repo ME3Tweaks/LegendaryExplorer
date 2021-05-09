@@ -463,13 +463,14 @@
                             <TextBlock Text="Mesh" ToolTip="View 3D mesh"/>
                         </TabItem.Header>
                         <meshplorer:MeshRendererWPF x:Name="MeshRendererTab_MeshRenderer"/>
-                    </TabItem>
+                    </TabItem> -->
                     <TabItem Name="Bytecode_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
                             <TextBlock Text="Bytecode" ToolTip="View and edit UnrealScript bytecode"/>
                         </TabItem.Header>
-                        <global:BytecodeEditor x:Name="BytecodeTab_BytecodeEditor"/>
+                        <exportLoaderControls:BytecodeEditor x:Name="BytecodeTab_BytecodeEditor"/>
                     </TabItem>
+                    <!--
                     <TabItem Name="Script_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
                             <TextBlock Text="Script Viewer" ToolTip="View decompiled UnrealScript"/>
