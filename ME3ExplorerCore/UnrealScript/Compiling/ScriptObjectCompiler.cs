@@ -189,7 +189,12 @@ namespace ME3ExplorerCore.UnrealScript.Compiling
                     EntryPruner.TrashEntryAndDescendants(existingEnumerator.Current.Export);
                 }
             }
-            prevProp?.Export.WriteBinary(prevProp);
+
+            if (prevProp is not null)
+            {
+                prevProp.Next = 0;
+                prevProp.Export.WriteBinary(prevProp);
+            }
 
             var bytecodeCompiler = new ByteCodeCompilerVisitor(funcObj);
             bytecodeCompiler.Compile(funcAST);

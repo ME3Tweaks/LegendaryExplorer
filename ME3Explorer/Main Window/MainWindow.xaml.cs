@@ -17,6 +17,7 @@ using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 using Microsoft.AppCenter.Analytics;
+using System.Diagnostics;
 
 namespace ME3Explorer
 {
@@ -591,34 +592,47 @@ namespace ME3Explorer
         private void pathBrowseButton_Click(object sender, RoutedEventArgs e)
         {
             Button b = sender as Button;
+            List<string> allowedVersions = new List<string>();
             string game;
             if (b == me1PathBrowseButton)
             {
                 game = "Mass Effect";
+                allowedVersions.Add("1.2.20608.0");
             }
             else if (b == me2PathBrowseButton)
             {
                 game = "Mass Effect 2";
+                allowedVersions.Add("1.2.1604.0"); // Steam
+                allowedVersions.Add("01604.00"); // Origin
             }
             else if (b == me3PathBrowseButton)
             {
                 game = "Mass Effect 3";
+                allowedVersions.Add("05427.124");
             }
             else
             {
                 return;
             }
+
             if (game != "")
             {
                 OpenFileDialog ofd = new OpenFileDialog
                 {
-                    Title = $"Select {game} executable."
+                    Title = $"Select {game} executable"
                 };
                 game = game.Replace(" ", "");
                 ofd.Filter = $"{game}.exe|{game}.exe";
 
                 if (ofd.ShowDialog() == true)
                 {
+                    var fvi = FileVersionInfo.GetVersionInfo(ofd.FileName);
+                    if (!allowedVersions.Contains(fvi.FileVersion))
+                    {
+                        MessageBox.Show($"Cannot use this executable: The only supported file versions are:\n{string.Join("\n", allowedVersions)}\n\nThe selected one has version: {fvi.FileVersion}\n\nNote: ME3Explorer does not support Mass Effect Legendary Edition games.",
+                            "Invalid game", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
                     string result = Path.GetDirectoryName(Path.GetDirectoryName(ofd.FileName));
 
                     switch (game)
