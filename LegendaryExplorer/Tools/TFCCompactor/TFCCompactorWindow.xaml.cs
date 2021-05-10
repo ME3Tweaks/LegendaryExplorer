@@ -668,16 +668,10 @@ namespace LegendaryExplorer.Tools.TFCCompactor
                         Directory.CreateDirectory(path);
                     }
 
-                    if (!File.Exists(_iniPath))
-                    {
-                        File.Create(_iniPath).Close();
-                    }
-
-                    // TODO: Implement in LEX - would be good to unify INI file handling across toolset/core
-                    // this might also not work 
-                    //Ini.IniFile ini = new Ini.IniFile(_iniPath);
-                    //var oldValue = ini.ReadValue("ME" + game, "GameDataPath");
-                    //ini.WriteValue("GameDataPath", "ME" + game, workingGamePath);
+                    DuplicatingIni ini = DuplicatingIni.LoadIni(_iniPath);
+                    var oldValue = ini["GameDataPath"]["ME" + game].Value;
+                    ini["GameDataPath"].SetSingleEntry("ME" + game, workingGamePath);
+                    ini.WriteToFile(_iniPath);
 
                     //Scan game
                     ProgressBarMax = 100;
@@ -760,10 +754,11 @@ namespace LegendaryExplorer.Tools.TFCCompactor
 
 
                     //Restore old path in MEM ini
-                    //if (!string.IsNullOrEmpty(oldValue))
-                    //{
-                    //    ini.WriteValue("GameDataPath", "ME" + game, oldValue);
-                    //}
+                    if (!string.IsNullOrEmpty(oldValue))
+                    {
+                        ini["GameDataPath"].SetSingleEntry("ME" + game, oldValue);
+                        ini.WriteToFile(_iniPath);
+                    }
 
                     //cleanup
                     DirectoryInfo di = new DirectoryInfo(basegameCookedDir);

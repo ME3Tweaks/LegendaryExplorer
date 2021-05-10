@@ -147,6 +147,31 @@ namespace ME3ExplorerCore.Misc
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Writes this ini file out to a file using the ToString() method
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="encoding"></param>
+        public void WriteToFile(string filePath, Encoding encoding = null)
+        {
+            WriteToFile(filePath, ToString(), encoding);
+        }
+
+        /// <summary>
+        /// Writes a specified ini string out to a file
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="iniString"></param>
+        /// <param name="encoding"></param>
+        public void WriteToFile(string filePath, string iniString, Encoding encoding = null)
+        {
+            encoding ??= Encoding.UTF8;
+
+            using FileStream fs = File.Open(filePath, FileMode.Create, FileAccess.Write);
+            using StreamWriter sr = new(fs, encoding);
+            sr.Write(iniString);
+        }
+
         [DebuggerDisplay("Ini Section [{Header}] with {Entries.Count} entries")]
         public class Section
         {

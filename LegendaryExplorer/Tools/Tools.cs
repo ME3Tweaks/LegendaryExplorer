@@ -61,18 +61,18 @@ namespace LegendaryExplorer
             HashSet<Tool> set = new();
 
             #region Install Mods
-//            set.Add(new Tool
-//            {
-//                name = "AutoTOC",
-//                type = typeof(AutoTOCWPF),
-//                icon = Application.Current.FindResource("iconAutoTOC") as ImageSource,
-//                open = () =>
-//                {
-//                    (new AutoTOCWPF()).Show();
-//                },
-//                tags = new List<string> { "user", "toc", "tocing", "crash", "infinite", "loop", "loading" },
-//                description = "AutoTOC is a tool for ME3 that updates and/or creates the PCConsoleTOC.bin files associated with the base game and each DLC.\n\nRunning this tool upon mod installation is imperative to ensuring proper functionality of the game."
-//            });
+            set.Add(new Tool
+            {
+                name = "AutoTOC",
+                type = typeof(Tools.AutoTOC.AutoTOCWindow),
+                icon = Application.Current.FindResource("iconAutoTOC") as ImageSource,
+                open = () =>
+                {
+                    (new Tools.AutoTOC.AutoTOCWindow()).Show();
+                },
+                tags = new List<string> { "user", "toc", "tocing", "crash", "infinite", "loop", "loading" },
+                description = "AutoTOC is a tool for ME3 that updates and/or creates the PCConsoleTOC.bin files associated with the base game and each DLC.\n\nRunning this tool upon mod installation is imperative to ensuring proper functionality of the game."
+            });
 #if DEBUG
 //            set.Add(new Tool
 //            {
