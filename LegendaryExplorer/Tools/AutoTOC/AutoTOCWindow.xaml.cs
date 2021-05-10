@@ -83,7 +83,6 @@ namespace LegendaryExplorer.Tools.AutoTOC
                         string name = Path.GetFileName(dlcDir);
                         int mount = Convert.ToInt32(dlcAutoload["ME1DLCMOUNT"]["ModMount"].Value);
                         dlcTable.Add(mount, name);
-                        dlcAutoload.WriteToFile(Path.Combine(dlcDir, "autoload2.ini"));
                     }
                 }
             }
