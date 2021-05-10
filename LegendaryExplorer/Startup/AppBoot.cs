@@ -161,17 +161,17 @@ namespace LegendaryExplorer.Startup
                     editor.Activate();
                 };
             }
-            /*
 
             if (arg == "JUMPLIST_PATHFINDING_EDITOR")
             {
                 return () =>
                 {
-                    PathfindingEditorWPF editor = new PathfindingEditorWPF();
+                    var editor = new Tools.PathfindingEditor.PathfindingEditorWindow();
                     editor.Show();
                     editor.Activate();
                 };
             }
+            /*
 
             //Do not remove - used by Mass Effect Mod Manager to boot the tool
             if (arg == "JUMPLIST_ASIMANAGER")

@@ -17,6 +17,9 @@
   <!-- Soundplorer Specific settings-->
   <setting name="Soundplorer_ReverseIDDisplayEndianness" type="bool" defaultvalue="false"/>
   <setting name="Soundplorer_AutoplayEntriesOnSelection" type="bool" defaultvalue="false"/>
+	
+  <!-- Pathfinding Editor Specific settings-->
+  <setting name="PathfindingEditorShowNodeSizes" type="bool" defaultvalue="false"/>
 
   <!-- Export Loader Control settings -->
   <setting name="BinaryInterpreter_SkipAutoParseSizeCheck" type="bool" defaultvalue="false"/>

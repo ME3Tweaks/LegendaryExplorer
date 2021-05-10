@@ -12,6 +12,7 @@ using LegendaryExplorer.Tools.Soundplorer;
 using LegendaryExplorer.Tools.FaceFXEditor;
 using LegendaryExplorer.Tools.InterpEditor;
 using LegendaryExplorer.Tools.AFCCompactorWindow;
+using LegendaryExplorer.Tools.PathfindingEditor;
 using LegendaryExplorer.Tools.TFCCompactor;
 using Newtonsoft.Json;
 using ME3ExplorerCore.GameFilesystem;
@@ -516,19 +517,19 @@ namespace LegendaryExplorer
                 description = "Package Editor is ME3Explorer's general purpose editing tool for unreal package files. It can edit ME3 and ME2 .pcc files, as well as ME1 .sfm, .upk, and .u files." +
                               "\n\nEdit trilogy game files in a single window with access to external tools such as Curve Editor and Soundplorer, right in the same window."
             });
-//            set.Add(new Tool
-//            {
-//                name = "Pathfinding Editor",
-//                type = typeof(PathfindingEditorWPF),
-//                icon = Application.Current.FindResource("iconPathfindingEditor") as ImageSource,
-//                open = () =>
-//                {
-//                    (new PathfindingEditorWPF()).Show();
-//                },
-//                tags = new List<string> { "user", "developer", "path", "ai", "combat", "spline", "spawn", "map", "path", "node", "cover", "level" },
-//                subCategory = "Core",
-//                description = "Pathfinding Editor allows you to modify pathing nodes so squadmates and enemies can move around a map. You can also edit placement of several different types of level objects such as StaticMeshes, Splines, CoverSlots, and more.",
-//            });
+            set.Add(new Tool
+            {
+                name = "Pathfinding Editor",
+                type = typeof(PathfindingEditorWindow),
+                icon = Application.Current.FindResource("iconPathfindingEditor") as ImageSource,
+                open = () =>
+                {
+                    (new PathfindingEditorWindow()).Show();
+                },
+                tags = new List<string> { "user", "developer", "path", "ai", "combat", "spline", "spawn", "map", "path", "node", "cover", "level" },
+                subCategory = "Core",
+                description = "Pathfinding Editor allows you to modify pathing nodes so squadmates and enemies can move around a map. You can also edit placement of several different types of level objects such as StaticMeshes, Splines, CoverSlots, and more.",
+            });
 //            set.Add(new Tool
 //            {
 //                name = "Plot Editor",

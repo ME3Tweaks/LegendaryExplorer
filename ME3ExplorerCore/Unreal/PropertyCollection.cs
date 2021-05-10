@@ -901,7 +901,7 @@ namespace ME3ExplorerCore.Unreal
     public class FloatProperty : Property, IComparable, INotifyPropertyChanged
     {
         public override PropertyType PropType => PropertyType.FloatProperty;
-        private byte[] _originalData; //This is used because -0 and 0 have different byte patterns, and to reserialize the same, we must write back the correct one.
+        private readonly byte[] _originalData; //This is used because -0 and 0 have different byte patterns, and to reserialize the same, we must write back the correct one.
 
         float _value;
         public float Value

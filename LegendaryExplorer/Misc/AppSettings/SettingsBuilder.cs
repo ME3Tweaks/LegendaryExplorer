@@ -50,6 +50,11 @@
             get => _soundplorer_autoplayentriesonselection; 
             set => SetProperty(ref _soundplorer_autoplayentriesonselection, value);
         }
+        private static bool _pathfindingeditorshownodesizes = false; 
+        public static bool PathfindingEditorShowNodeSizes {
+            get => _pathfindingeditorshownodesizes; 
+            set => SetProperty(ref _pathfindingeditorshownodesizes, value);
+        }
         private static bool _binaryinterpreter_skipautoparsesizecheck = false; 
         public static bool BinaryInterpreter_SkipAutoParseSizeCheck {
             get => _binaryinterpreter_skipautoparsesizecheck; 

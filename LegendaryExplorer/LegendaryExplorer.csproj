@@ -429,6 +429,18 @@
     <Compile Update="Tools\Dialogue Editor\LinkEditor.xaml.cs">
       <DependentUpon>LinkEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Tools\PathfindingEditor\PathfindingEditorWPF.xaml.cs">
+      <DependentUpon>PathfindingEditorWPF.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Tools\PathfindingEditor\PathingGraphEditor.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Tools\PathfindingEditor\ReachSpecsPanel.xaml.cs">
+      <DependentUpon>ReachSpecsPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Tools\PathfindingEditor\ValidationPanel.xaml.cs">
+      <DependentUpon>ValidationPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Update="UserControls\ExportLoaderControls\InterpDataTimeline\Timeline.xaml.cs">
       <DependentUpon>Timeline.xaml</DependentUpon>
     </Compile>
@@ -507,7 +519,19 @@
     <Page Update="Tools\InterpEditor\InterpEditorWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Tools\PathfindingEditor\PathfindingEditorWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Tools\PathfindingEditor\ReachSpecsPanel.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Tools\PathfindingEditor\ValidationPanel.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Tools\TFCCompactor\TFCCompactorWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UserControls\ExportLoaderControls\CollectionActorEditorExportLoader.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="UserControls\ExportLoaderControls\InterpDataTimeline\Timeline.xaml">
