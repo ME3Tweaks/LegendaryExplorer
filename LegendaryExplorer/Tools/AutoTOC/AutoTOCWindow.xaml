@@ -7,7 +7,6 @@
     xmlns:bases="clr-namespace:LegendaryExplorer.SharedUI.Bases"
     xmlns:global="clr-namespace:LegendaryExplorer"
     mc:Ignorable="d"
-    Loaded="AutoTOCWPF_Loaded"
     Icon="/Tools/Icons/autotoc_256x256.ico"
     Title="AutoTOC" MinHeight="400" Height="400" Width="700">
     <DockPanel >

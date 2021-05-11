@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using ME3ExplorerCore.Gammtek.IO;
 
 namespace ME3ExplorerCore.Unreal
 {
     // Todo: Convert to EndianReader
     public class TOCBinFile
     {
+        public static int TOCMagicNumber = 0x3AB70C13;
+
         MemoryStream Memory;
         
         [DebuggerDisplay("TOCEntry 0x{offset.ToString(\"8\")}, {name}, file size {size}")]
@@ -35,56 +38,33 @@ namespace ME3ExplorerCore.Unreal
 
         public void ReadFile()
         {
-            Memory.Seek(0, 0);
-            uint magic = (uint)ReadInt(Memory);
-            if (magic != 0x3AB70C13)
+            EndianReader reader = new EndianReader(Memory);
+            uint magic = (uint)reader.ReadInt32();
+            if (magic != TOCMagicNumber)
             {
                 throw new Exception("Not a TOC file, bad magic header");
             }
-            Memory.Seek(8, 0);
-            int count = ReadInt(Memory);
-            Memory.Seek(0xC + 8 * count, 0);
-            Entries = new List<Entry>();
-            int blocksize = 0;
-            int pos = (int)Memory.Position;
-            do
+
+            reader.Skip(12);
+            int count = reader.ReadInt32();
+            Entries = new List<Entry>(count);
+
+            for(int i = 0; i < count; i++)
             {
-                Entry e = new Entry();
-                e.offset = pos;
-                Memory.Seek(pos, 0);
-                blocksize = ReadInt16(Memory);
-                Memory.Seek(pos + 0x4, 0);
-                e.size = ReadInt(Memory);
-                Memory.Seek(pos + 0x1C, 0);
-                e.name = ReadString(Memory);
-                pos += blocksize;
+                Entry e = new() {
+                    offset = (int)reader.Position
+                };
+
+                var entrySize = reader.ReadUInt16();    //Size of entry - last entry is size 0
+                reader.ReadUInt16();                    //Flag
+                e.size = reader.ReadInt32();
+                reader.Skip(20);
+                e.name = reader.ReadStringASCIINull();
+
                 Entries.Add(e);
             }
-            while (blocksize != 0);
         }
 
-        private int ReadInt(MemoryStream m)
-        {
-            byte[] buff = new byte[4];
-            m.Read(buff, 0, 4);
-            return BitConverter.ToInt32(buff, 0);
-        }
-
-        private ushort ReadInt16(MemoryStream m)
-        {
-            byte[] buff = new byte[2];
-            m.Read(buff, 0, 2);
-            return BitConverter.ToUInt16(buff, 0);
-        }
-
-        public string ReadString(MemoryStream m)
-        {
-            string s = "";
-            byte b;
-            while ((b = (byte)m.ReadByte()) != 0)
-                s += (char)b;
-            return s;
-        }
 
         public void UpdateEntry(int Index, int size)
         {

@@ -12,7 +12,7 @@ namespace ME3ExplorerCore.Unreal
     /// </summary>
     public class TOCCreator
     {
-        private static IEnumerable<string> GetTocableFiles(string path)
+        public static IEnumerable<string> GetTocableFiles(string path)
         {
             string[] Pattern = { "*.pcc", "*.afc", "*.bik", "*.bin", "*.tlk", "*.txt", "*.cnd", "*.upk", "*.tfc" };
             var res = new List<string>();
@@ -49,6 +49,8 @@ namespace ME3ExplorerCore.Unreal
 
             return res;
         }
+
+        public static bool IsTOCableFolder(string directory) => GetFiles(directory).Count > 0;
 
         /// <summary>
         /// Creates the binary for a TOC file for a specified DLC directory root
@@ -87,7 +89,6 @@ namespace ME3ExplorerCore.Unreal
                 return CreateTOCForEntries(entries);
             }
             throw new Exception("There are no TOCable files in the specified directory.");
-            return null;
         }
 
         /// <summary>
@@ -103,7 +104,7 @@ namespace ME3ExplorerCore.Unreal
                 byte[] SHA1 = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
                 MemoryStream fs = MemoryManager.GetMemoryStream();
 
-                fs.WriteInt32(0x3AB70C13);
+                fs.WriteInt32(TOCBinFile.TOCMagicNumber);
                 fs.WriteInt32(0x0);
                 fs.WriteInt32(0x1);
                 fs.WriteInt32(0x8);

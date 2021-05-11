@@ -16,6 +16,7 @@ using LegendaryExplorer.SharedUI.Controls;
 using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Unreal;
 using Microsoft.Win32;
 
 namespace LegendaryExplorer.Tools.AutoTOC
@@ -251,7 +252,7 @@ namespace LegendaryExplorer.Tools.AutoTOC
         private void GenerateSingleTOC_BackgroundThread(object sender, DoWorkEventArgs e)
         {
             TOCTasks.ClearEx();
-            prepareToCreateTOC(e.Argument as string, TOCTasks);
+            CreateTOC(e.Argument as string, TOCTasks);
             TOCTasks.Add(new ListBoxTask
             {
                 Header = "TOC created",
@@ -259,11 +260,6 @@ namespace LegendaryExplorer.Tools.AutoTOC
                 Foreground = Brushes.Green,
                 Spinning = false
             });
-        }
-
-        private bool BackgroundThreadNotRunning()
-        {
-            return TOCWorker == null;
         }
 
         private void RunAutoTOC()
@@ -278,6 +274,11 @@ namespace LegendaryExplorer.Tools.AutoTOC
         {
             CommandManager.InvalidateRequerySuggested(); //Refresh commands
             TOCWorker = null;
+        }
+
+        private bool BackgroundThreadNotRunning()
+        {
+            return TOCWorker == null;
         }
 
         private void GenerateAllTOCs_BackgroundThread(object sender, DoWorkEventArgs e)
@@ -302,144 +303,41 @@ namespace LegendaryExplorer.Tools.AutoTOC
             return TOCWorker == null;
         }
 
-        /// <summary>
-        /// Prepares to create the indexed TOC file by gathering data and then passing it to the TOC creation function
-        /// </summary>
-        /// <param name="consoletocFile"></param>
-        /// <param name="tocTasks"></param>
-        public static void prepareToCreateTOC(string consoletocFile, IList<ListBoxTask> tocTasks = null)
-        {
-            if (!consoletocFile.EndsWith("\\"))
-            {
-                consoletocFile += "\\";
-            }
-            List<string> files = GetFiles(consoletocFile);
-            if (files.Count != 0)
-            {
-                //These variable names.......
-                ListBoxTask task = null;
-                if (tocTasks != null)
-                {
-                    task = new ListBoxTask($"Creating TOC in {consoletocFile}");
-                    tocTasks.Add(task);
-                }
-                string t = files[0];
-                int n = t.IndexOf("DLC_");
-                if (n > 0)
-                {
-                    for (int i = 0; i < files.Count; i++)
-                        files[i] = files[i].Substring(n);
-                    string t2 = files[0];
-                    n = t2.IndexOf("\\");
-                    for (int i = 0; i < files.Count; i++)
-                        files[i] = files[i].Substring(n + 1);
-                }
-                else
-                {
-                    n = t.IndexOf("BIOGame");
-                    if (n > 0)
-                    {
-                        for (int i = 0; i < files.Count; i++)
-                            files[i] = files[i].Substring(n);
-                    }
-                }
-                string pathbase;
-                string t3 = files[0];
-                int n2 = t3.IndexOf("BIOGame");
-                if (n2 >= 0)
-                {
-                    pathbase = Path.GetDirectoryName(Path.GetDirectoryName(consoletocFile)) + "\\";
-                }
-                else
-                {
-                    pathbase = consoletocFile;
-                }
-                CreateTOC(pathbase, consoletocFile + "PCConsoleTOC.bin", files.ToArray());
-                task?.Complete($"Created TOC for {consoletocFile}");
-            }
-        }
-
-        // TODO: Make this use LEX AutoTOC implementation to reduce code duplication
-        private static void CreateTOC(string basepath, string tocFile, string[] files)
-        {
-
-            byte[] SHA1 = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-            using (FileStream fs = new FileStream(tocFile, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true))
-            {
-                fs.WriteInt32(0x3AB70C13);
-                fs.WriteInt32(0x0);
-                fs.WriteInt32(0x1);
-                fs.WriteInt32(0x8);
-                fs.WriteInt32(files.Length);
-                for (int i = 0; i < files.Length; i++)
-                {
-                    string file = files[i];
-                    if (i == files.Length - 1)//Entry Size
-                        fs.WriteUInt16(0);
-                    else
-                        fs.WriteUInt16((ushort)(0x1D + file.Length));
-                    fs.WriteUInt16(0);//Flags
-                    if (Path.GetFileName(file).ToLower() != "pcconsoletoc.bin")
-                    {
-                        fs.WriteInt32((int)(new FileInfo(basepath + file)).Length);//Filesize
-                    }
-                    else
-                    {
-                        fs.WriteInt32(0);//Filesize
-                    }
-                    fs.Write(SHA1, 0, 20);
-                    foreach (char c in file)
-                        fs.WriteByte((byte)c);
-                    fs.WriteByte(0);
-                }
-            }
-        }
-
-        private static List<string> GetFiles(string basefolder)
-        {
-            var res = new List<string>();
-            string test = Path.GetFileName(Path.GetDirectoryName(basefolder));
-            res.AddRange(GetTocableFiles(basefolder));
-            DirectoryInfo folder = new DirectoryInfo(basefolder);
-            DirectoryInfo[] folders = folder.GetDirectories();
-            if (folders.Length != 0)
-            {
-                if (test != "BIOGame")
-                {
-                    foreach (DirectoryInfo f in folders)
-                        res.AddRange(GetFiles(basefolder + f.Name + "\\"));
-                }
-                else
-                {
-                    foreach (DirectoryInfo f in folders)
-                    {
-                        if (f.Name == "CookedPCConsole" || /*f.Name == "DLC" ||*/ f.Name == "Movies" || f.Name == "Splash")
-                            res.AddRange(GetFiles(basefolder + f.Name + "\\"));
-                    }
-                }
-            }
-
-            return res;
-        }
-
-        private static IEnumerable<string> GetTocableFiles(string path)
-        {
-            string[] Pattern = { "*.pcc", "*.afc", "*.bik", "*.bin", "*.tlk", "*.txt", "*.cnd", "*.upk", "*.tfc" };
-            var res = new List<string>();
-            foreach (string s in Pattern)
-                res.AddRange(Directory.GetFiles(path, s));
-            return res.ToArray();
-        }
-
         public static void GenerateAllTOCs(IList<ListBoxTask> tocTasks = null)
         {
             List<string> folders = (new DirectoryInfo(ME3Directory.DLCPath)).GetDirectories().Select(d => d.FullName).ToList();
             folders.Add(Path.Combine(ME3Directory.DefaultGamePath, "BIOGame"));
-            folders.ForEach(consoletocFile => prepareToCreateTOC(consoletocFile, tocTasks));
+            folders.ForEach(consoletocFile => CreateTOC(consoletocFile, tocTasks));
         }
 
-        private void AutoTOCWPF_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        /// <summary>
+        /// Passes the input folder to the TOC creation function and writes the output to a file
+        /// </summary>
+        /// <param name="folderToToc">BIOGame/DLC Folder to generate TOC file in</param>
+        /// <param name="tocTasks">List of UI Task objects to display in UI</param>
+        public static void CreateTOC(string folderToToc, IList<ListBoxTask> tocTasks = null)
         {
+            if(TOCCreator.IsTOCableFolder(folderToToc))
+            {
+                ListBoxTask task = null;
+                if (tocTasks != null)
+                {
+                    task = new ListBoxTask($"Creating TOC in {folderToToc}");
+                    tocTasks.Add(task);
+                }
+
+                try
+                {
+                    var tocOutFile = Path.Combine(folderToToc, "PCConsoleTOC.bin");
+                    var toc = TOCCreator.CreateTOCForDirectory(folderToToc);
+                    File.WriteAllBytes(tocOutFile, toc.ToArray());
+                    task?.Complete($"Created TOC for {folderToToc}");
+                }
+                catch
+                {
+                    task?.Failed($"Failed to create TOC for {folderToToc}");
+                }
+            }
         }
 
         private void ListBox_OnLoaded(object sender, RoutedEventArgs e)

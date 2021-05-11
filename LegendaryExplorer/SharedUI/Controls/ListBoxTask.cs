@@ -43,5 +43,13 @@ namespace LegendaryExplorer.SharedUI.Controls
             Spinning = false;
             Foreground = Brushes.Green;
         }
+
+        internal void Failed(string newHeader)
+        {
+            Header = newHeader;
+            Icon = EFontAwesomeIcon.Solid_TimesCircle;
+            Spinning = false;
+            Foreground = Brushes.Red;
+        }
     }
 }
