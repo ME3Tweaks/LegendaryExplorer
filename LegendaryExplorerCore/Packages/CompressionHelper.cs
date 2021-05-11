@@ -14,6 +14,7 @@ namespace LegendaryExplorerCore.Packages
 {
     public static class CompressionHelper
     {
+        public const string OODLE_DLL_NAME = "oodle_lev_idk.dll";
 #if WINDOWS
         public const string COMPRESSION_WRAPPER_NAME = "CompressionWrappers.dll";
 #elif MACOS
