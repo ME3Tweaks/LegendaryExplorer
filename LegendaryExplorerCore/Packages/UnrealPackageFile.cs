@@ -46,7 +46,8 @@ namespace LegendaryExplorerCore.Packages
             Zlib = 0x1, // PC ME3
             LZO = 0x2, //ME1 and ME2 PC
             LZX = 0x4, //Xbox
-            LZMA = 0x8 //WiiU, PS3 
+            LZMA = 0x8, //WiiU, PS3 
+            OodleLeviathan = 0x10 // TODO: UPDATE THIS AFTER INSPECTING PACKAGE HEADER
         }
 
         public List<ME1TalkFile> LocalTalkFiles { get; } = new List<ME1TalkFile>();

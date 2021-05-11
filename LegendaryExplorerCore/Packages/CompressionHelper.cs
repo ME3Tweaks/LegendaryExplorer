@@ -548,6 +548,10 @@ namespace LegendaryExplorerCore.Packages
                             if (LZX.Decompress(datain, (uint)datain.Length, dataout, (uint)btInfo.blockDecompressedSize) != 0)
                                 throw new Exception("LZX decompression failed!");
                             break;
+                        case UnrealPackageFile.CompressionType.OodleLeviathan:
+                            if (OodleHelper.Decompress(datain, (uint)datain.Length, dataout, (uint)btInfo.blockDecompressedSize) != 0)
+                                throw new Exception("Oodle-Leviathan decompression failed!");
+                            break;
                         default:
                             throw new Exception("Unknown compression type for this package.");
                     }
