@@ -10,7 +10,7 @@
         xmlns:dd="urn:gong-wpf-dragdrop"
         Closing="PackageEditorWPF_Closing"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        xmlns:Packages="clr-namespace:ME3ExplorerCore.Packages;assembly=ME3ExplorerCore"
+        xmlns:Packages="clr-namespace:LegendaryExplorerCore.Packages;assembly=LegendaryExplorerCore"
         xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
         xmlns:global="clr-namespace:LegendaryExplorer.Tools.PackageEditor"
         xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"

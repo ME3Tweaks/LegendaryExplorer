@@ -2,8 +2,8 @@
 using System.Windows.Controls;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.ToolsetDev.MemoryAnalyzer;
-using ME3ExplorerCore.Misc;
-using ME3ExplorerCore.Packages;
+using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {

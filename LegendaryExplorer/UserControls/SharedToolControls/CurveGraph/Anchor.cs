@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using LegendaryExplorer.Dialogs;
-using ME3ExplorerCore.Helpers;
+using LegendaryExplorerCore.Helpers;
 
 namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
 {

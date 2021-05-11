@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:fa5="http://schemas.fontawesome.com/icons/"
-        xmlns:misc="clr-namespace:ME3ExplorerCore.Misc;assembly=ME3ExplorerCore"
+        xmlns:misc="clr-namespace:LegendaryExplorerCore.Misc;assembly=LegendaryExplorerCore"
         xmlns:bases="clr-namespace:LegendaryExplorer.SharedUI.Bases"
         xmlns:converters1="clr-namespace:LegendaryExplorer.SharedUI.Converters"
         mc:Ignorable="d"

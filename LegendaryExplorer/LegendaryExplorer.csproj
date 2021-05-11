@@ -118,11 +118,10 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Be.Windows.Forms.HexBox\Be.Windows.Forms.HexBox.csproj" />
-    <ProjectReference Include="..\Helpers\Helpers.csproj" />
     <ProjectReference Include="..\HexConverterWPF\HexConverterWPF.csproj" />
-    <ProjectReference Include="..\ME3ExplorerCore\ME3ExplorerCore.csproj" />
+    <ProjectReference Include="..\LegendaryExplorerCore\LegendaryExplorerCore.csproj" />
     <ProjectReference Include="..\Piccolo\Piccolo.csproj" />
-    <ProjectReference Include="..\SharpDX.Mathematics\SharpDX.Mathematics.csproj" />
+    <ProjectReference Include="..\SharpDX.Mathematics.LEX\SharpDX.Mathematics.LEX.csproj" />
     <ProjectReference Include="..\Xceed.Wpf.Toolkit\DotNetProjects.Wpf.Extended.Toolkit.csproj" />
   </ItemGroup>
 

@@ -7,8 +7,8 @@ using System.Diagnostics;
 using System.Drawing.Drawing2D;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.Tools.SequenceObjects;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Unreal;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
 
 namespace LegendaryExplorer.Tools.PathfindingEditor
 {

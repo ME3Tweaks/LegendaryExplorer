@@ -1,7 +1,7 @@
 ﻿using System;
 using LegendaryExplorer.Misc;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Unreal;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {

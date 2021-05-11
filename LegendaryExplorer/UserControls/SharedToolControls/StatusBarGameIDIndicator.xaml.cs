@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using LegendaryExplorer.Misc;
-using ME3ExplorerCore.Packages;
+using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorer.UserControls.SharedToolControls
 {

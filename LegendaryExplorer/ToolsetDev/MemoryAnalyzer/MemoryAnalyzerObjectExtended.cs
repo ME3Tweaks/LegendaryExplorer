@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows;
-using ME3ExplorerCore.Misc;
+using LegendaryExplorerCore.Misc;
 
 namespace LegendaryExplorer.ToolsetDev.MemoryAnalyzer
 {

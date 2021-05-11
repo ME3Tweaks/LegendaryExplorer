@@ -5,12 +5,12 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Threading;
-using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.GameFilesystem;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.SharpDX;
-using ME3ExplorerCore.TLK.ME1;
-using ME3ExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.SharpDX;
+using LegendaryExplorerCore.TLK.ME1;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace LegendaryExplorer.Tools.PackageEditor.Experiments

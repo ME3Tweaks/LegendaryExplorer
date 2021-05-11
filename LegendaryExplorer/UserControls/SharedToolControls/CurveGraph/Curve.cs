@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using LegendaryExplorer.Misc; 
-using ME3ExplorerCore.Helpers;
+using LegendaryExplorerCore.Helpers;
 
 namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
 {

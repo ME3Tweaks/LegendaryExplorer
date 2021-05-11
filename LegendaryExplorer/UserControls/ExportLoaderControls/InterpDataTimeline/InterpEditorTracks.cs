@@ -2,11 +2,11 @@
 using System.Diagnostics;
 using System.Linq;
 using LegendaryExplorer.Misc;
-using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.ME1;
-using ME3ExplorerCore.Misc;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Unreal;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.ME1;
+using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
 using Color = System.Windows.Media.Color;
 
 namespace LegendaryExplorer.Tools.InterpEditor

@@ -3,11 +3,12 @@ using System.IO;
 using FontAwesome5;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Tools.TlkManagerNS;
-using ME3ExplorerCore.Gammtek.IO;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Unreal.BinaryConverters;
-using ME3ExplorerCore.Audio;
-using WwiseStream = ME3ExplorerCore.Unreal.BinaryConverters.WwiseStream;
+using LegendaryExplorerCore.Gammtek.IO;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Audio;
+using WwiseStream = LegendaryExplorerCore.Unreal.BinaryConverters.WwiseStream;
+using LegendaryExplorerCore.Audio;
 
 namespace LegendaryExplorer.Tools.Soundplorer
 {

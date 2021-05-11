@@ -10,15 +10,15 @@ using LegendaryExplorer;
 using LegendaryExplorer.Tools.Sequence_Editor;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
-using ME3ExplorerCore.GameFilesystem;
-using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
-using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.Kismet;
-using ME3ExplorerCore.Matinee;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
-using ME3ExplorerCore.Unreal;
-using ME3ExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Kismet;
+using LegendaryExplorerCore.Matinee;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
+using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Microsoft.Win32;
 
 namespace LegendaryExplorer.Tools.FaceFXEditor

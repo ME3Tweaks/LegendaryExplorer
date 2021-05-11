@@ -10,7 +10,7 @@
              Loaded="Interpreter_Loaded"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:fa="http://schemas.fontawesome.com/icons/"
-             xmlns:unreal="clr-namespace:ME3ExplorerCore.Unreal;assembly=ME3ExplorerCore"
+             xmlns:unreal="clr-namespace:LegendaryExplorerCore.Unreal;assembly=LegendaryExplorerCore"
              xmlns:global="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
              xmlns:Converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
              xmlns:SharedUI="clr-namespace:LegendaryExplorer.SharedUI"

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 using LegendaryExplorer.SharedUI.Bases;
-using ME3ExplorerCore.Misc;
+using LegendaryExplorerCore.Misc;
 
 namespace LegendaryExplorer.Dialogs
 {

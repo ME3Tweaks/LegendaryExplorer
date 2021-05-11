@@ -15,10 +15,10 @@ using UMD.HCIL.GraphEditor;
 using System.Runtime.InteropServices;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.Tools.TlkManagerNS;
-using ME3ExplorerCore.Gammtek.Extensions;
-using ME3ExplorerCore.Kismet;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Unreal;
+using LegendaryExplorerCore.Gammtek.Extensions;
+using LegendaryExplorerCore.Kismet;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
 
 namespace LegendaryExplorer.Tools.SequenceObjects
 {

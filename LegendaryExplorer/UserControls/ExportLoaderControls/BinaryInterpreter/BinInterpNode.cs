@@ -4,8 +4,8 @@ using System.Linq;
 using System.Windows.Threading;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI.PeregrineTreeView;
-using ME3ExplorerCore.Gammtek.IO;
-using ME3ExplorerCore.Packages;
+using LegendaryExplorerCore.Gammtek.IO;
+using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {

@@ -8,7 +8,7 @@
         xmlns:grapheditor="clr-namespace:UMD.HCIL.GraphEditor"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:dd="urn:gong-wpf-dragdrop"
-        xmlns:packages="clr-namespace:ME3ExplorerCore.Packages;assembly=ME3ExplorerCore"
+        xmlns:packages="clr-namespace:LegendaryExplorerCore.Packages;assembly=LegendaryExplorerCore"
         xmlns:bases="clr-namespace:LegendaryExplorer.SharedUI.Bases"
         xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
         xmlns:appsettings="clr-namespace:LegendaryExplorer.Misc.AppSettings"

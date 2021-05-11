@@ -7,9 +7,9 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
-using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.Misc;
-using ME3ExplorerCore.Packages;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
 using Microsoft.Win32;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls

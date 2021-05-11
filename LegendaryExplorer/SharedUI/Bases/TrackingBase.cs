@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.ToolsetDev.MemoryAnalyzer;
-using ME3ExplorerCore.Misc;
+using LegendaryExplorerCore.Misc;
 using Microsoft.AppCenter.Analytics;
 
 namespace LegendaryExplorer.SharedUI.Bases

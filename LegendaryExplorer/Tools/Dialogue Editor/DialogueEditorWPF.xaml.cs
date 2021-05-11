@@ -31,17 +31,17 @@ using LegendaryExplorer.UnrealExtensions;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Nodes;
-using ME3ExplorerCore.Dialogue;
-using ME3ExplorerCore.GameFilesystem;
-using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Unreal;
-using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.Misc;
 using static LegendaryExplorer.Tools.TlkManagerNS.TLKManagerWPF;
 using Key = System.Windows.Input.Key;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Dialogue;
+using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
+using LegendaryExplorerCore.GameFilesystem;
 
 namespace LegendaryExplorer.DialogueEditor
 {

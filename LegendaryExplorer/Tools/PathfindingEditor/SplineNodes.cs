@@ -5,17 +5,17 @@ using UMD.HCIL.Piccolo.Nodes;
 using System;
 using System.Linq;
 using LegendaryExplorer.Tools.SequenceObjects;
-using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.SharpDX;
-using ME3ExplorerCore.Unreal;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.SharpDX;
+using LegendaryExplorerCore.Unreal;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
 using Color = System.Drawing.Color;
 using RectangleF = System.Drawing.RectangleF;
-using InterpCurveVector = ME3ExplorerCore.Unreal.BinaryConverters.InterpCurve<ME3ExplorerCore.SharpDX.Vector3>;
-using InterpCurveFloat = ME3ExplorerCore.Unreal.BinaryConverters.InterpCurve<float>;
-using InterpCurvePointFloat = ME3ExplorerCore.Unreal.BinaryConverters.InterpCurvePoint<float>;
+using InterpCurveVector = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve<LegendaryExplorerCore.SharpDX.Vector3>;
+using InterpCurveFloat = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve<float>;
+using InterpCurvePointFloat = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurvePoint<float>;
 
 namespace LegendaryExplorer.Tools.PathfindingEditor
 {

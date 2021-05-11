@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using LegendaryExplorer.Misc;
-using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.Misc;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Unreal;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
 using SharpDX;
 
 namespace LegendaryExplorer.UserControls.SharedToolControls.Curves

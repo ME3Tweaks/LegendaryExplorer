@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using System.Windows.Forms;
-using ME3ExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
 
 namespace LegendaryExplorer.UnrealExtensions.Classes
 {

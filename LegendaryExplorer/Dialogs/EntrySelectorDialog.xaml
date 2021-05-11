@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     xmlns:System="clr-namespace:System;assembly=mscorlib"
-    xmlns:Packages="clr-namespace:ME3ExplorerCore.Packages;assembly=ME3ExplorerCore"
+    xmlns:Packages="clr-namespace:LegendaryExplorerCore.Packages;assembly=LegendaryExplorerCore"
     xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
     WindowStartupLocation="CenterOwner"
     mc:Ignorable="d"

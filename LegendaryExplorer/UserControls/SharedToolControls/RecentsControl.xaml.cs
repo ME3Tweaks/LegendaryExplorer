@@ -7,7 +7,7 @@ using System.Windows.Controls;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Interfaces;
-using ME3ExplorerCore.Misc;
+using LegendaryExplorerCore.Misc;
 
 namespace LegendaryExplorer.UserControls.SharedToolControls
 {

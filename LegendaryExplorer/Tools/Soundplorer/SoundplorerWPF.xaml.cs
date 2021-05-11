@@ -20,14 +20,14 @@ using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.UnrealExtensions;
 using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorer.UserControls.ExportLoaderControls;
-using ME3ExplorerCore.Gammtek.IO;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Unreal.BinaryConverters;
-using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.Misc;
-using ME3ExplorerCore.Audio;
+using LegendaryExplorerCore.Gammtek.IO;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Audio;
 using AudioStreamHelper = LegendaryExplorer.UnrealExtensions.AudioStreamHelper;
-using WwiseStream = ME3ExplorerCore.Unreal.BinaryConverters.WwiseStream;
+using WwiseStream = LegendaryExplorerCore.Unreal.BinaryConverters.WwiseStream;
 
 namespace LegendaryExplorer.Tools.Soundplorer
 {
