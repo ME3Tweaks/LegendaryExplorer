@@ -441,6 +441,9 @@
     <Compile Update="Tools\PathfindingEditor\ValidationPanel.xaml.cs">
       <DependentUpon>ValidationPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Tools\WwiseEditor\WwiseGraphEditor.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Update="UserControls\ExportLoaderControls\InterpDataTimeline\Timeline.xaml.cs">
       <DependentUpon>Timeline.xaml</DependentUpon>
     </Compile>
@@ -529,6 +532,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Tools\TFCCompactor\TFCCompactorWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Tools\WwiseEditor\WwiseEditorWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="UserControls\ExportLoaderControls\CollectionActorEditorExportLoader.xaml">
