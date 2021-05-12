@@ -125,8 +125,10 @@ namespace LegendaryExplorerCore.Packages
                 case MEGame.ME2 when file.Platform == MEPackage.GamePlatform.PS3:
                 case MEGame.ME3:
                 case MEGame.LE1:
+                case MEGame.LE2:
+                case MEGame.LE3:
                 case MEGame.UDK:
-                    {
+                {
                         stream.Seek(44, SeekOrigin.Current);
                         int count = stream.ReadInt32();
                         stream.Seek(-48, SeekOrigin.Current);

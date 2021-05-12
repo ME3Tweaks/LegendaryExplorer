@@ -3116,7 +3116,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     targetItem.Entry.Game.IsLEGame() != sourceItem.Entry.Game.IsLEGame())
                 {
                     MessageBox.Show(
-                        "Cannot port assets between Original Rrilogy (OT) games ans Legendary Edition (LE) games.", "Cannot port asset", MessageBoxButton.OK, MessageBoxImage.Error);
+                        "Cannot port assets between Original Trilogy (OT) games ans Legendary Edition (LE) games.", "Cannot port asset", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 

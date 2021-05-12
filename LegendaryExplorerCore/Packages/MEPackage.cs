@@ -87,11 +87,11 @@ namespace LegendaryExplorerCore.Packages
         public const ushort LE1UnrealVersion = 684;
         public const ushort LE1LicenseeVersion = 171;
 
-        public const ushort LE2UnrealVersion = 0;
-        public const ushort LE2LicenseeVersion = 0;
+        public const ushort LE2UnrealVersion = 684;
+        public const ushort LE2LicenseeVersion = 168;
 
-        public const ushort LE3UnrealVersion = 1;
-        public const ushort LE3LicenseeVersion = 1;
+        public const ushort LE3UnrealVersion =685;
+        public const ushort LE3LicenseeVersion = 205;
 
         /// <summary>
         /// Indicates what type of package file this is. 0 is normal, 1 is TESTPATCH patch package.
@@ -386,7 +386,7 @@ namespace LegendaryExplorerCore.Packages
             Flags = (EPackageFlags)packageReader.ReadUInt32();
 
             //Xenon Demo ME3 doesn't read this. Xenon ME3 Retail does
-            if (Game == MEGame.ME3
+            if ((Game == MEGame.ME3 || Game == MEGame.LE3)
                 && (Flags.HasFlag(EPackageFlags.Cooked) || Platform != GamePlatform.PC) && licenseeVersion != ME3Xenon2011DemoLicenseeVersion)
             {
                 //Consoles are always cooked.
@@ -400,13 +400,13 @@ namespace LegendaryExplorerCore.Packages
             ImportCount = packageReader.ReadInt32();
             ImportOffset = packageReader.ReadInt32();
 
-            if (Game == MEGame.LE1 || (Game != MEGame.ME1 || Platform != GamePlatform.Xenon))
+            if (Game.IsLEGame() || (Game != MEGame.ME1 || Platform != GamePlatform.Xenon))
             {
                 // Seems this doesn't exist on ME1 Xbox
                 DependencyTableOffset = packageReader.ReadInt32();
             }
 
-            if (Game == MEGame.LE1 || Game == MEGame.ME3 || Platform == GamePlatform.PS3)
+            if (Game.IsLEGame() || Game == MEGame.ME3 || Platform == GamePlatform.PS3)
             {
                 ImportExportGuidsOffset = packageReader.ReadInt32();
                 packageReader.ReadInt32(); //ImportGuidsCount always 0
@@ -484,7 +484,7 @@ namespace LegendaryExplorerCore.Packages
             //with ME3Tweaks Mixins as old code did not remove this section
             //Also we should strive to ensure closeness to the original source files as possible
             //because debugging things is a huge PITA if you start to remove stuff
-            if (Game == MEGame.ME2 || Game == MEGame.ME3 || Platform == GamePlatform.PS3)
+            if (Game == MEGame.ME2 || Game == MEGame.ME3 || Game == MEGame.LE3 || Platform == GamePlatform.PS3)
             {
                 int additionalPackagesToCookCount = packageReader.ReadInt32();
                 for (int i = 0; i < additionalPackagesToCookCount; i++)
@@ -538,7 +538,7 @@ namespace LegendaryExplorerCore.Packages
             exports = new List<ExportEntry>(ExportCount);
             for (int i = 0; i < ExportCount; i++)
             {
-                Debug.WriteLine($"ExportEntry {i + 1} at 0x{inStream.Position:X8}");
+                //Debug.WriteLine($"ExportEntry {i + 1} at 0x{inStream.Position:X8}");
                 ExportEntry e = new ExportEntry(this, packageReader) { Index = i };
                 if (MEPackageHandler.GlobalSharedCacheEnabled)
                     e.PropertyChanged += exportChanged; // If packages are not shared there is no point to attaching this

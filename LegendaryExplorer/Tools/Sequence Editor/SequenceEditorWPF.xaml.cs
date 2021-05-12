@@ -833,7 +833,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 o.Click += node_Click;
             }
 
-            if (SavedPositions.IsEmpty() && (Pcc.Game != MEGame.ME1 && Pcc.Game != MEGame.UDK))
+            if (SavedPositions.IsEmpty() && (Pcc.Game is MEGame.ME2 or MEGame.ME3))
             {
                 AutoLayout();
             }
@@ -867,7 +867,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             {
                 return new SVar(export, x, y, graphEditor);
             }
-            else if (export.ClassName == "SequenceFrame" && (Pcc.Game == MEGame.ME1 || Pcc.Game == MEGame.UDK))
+            else if (export.ClassName == "SequenceFrame" && (Pcc.Game == MEGame.ME1 || Pcc.Game == MEGame.UDK || Pcc.Game.IsLEGame()))
             {
                 return new SFrame(export, x, y, graphEditor);
             }
@@ -929,7 +929,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     {
                         obj.Layout(savedInfo.X, savedInfo.Y);
                     }
-                    else if (Pcc.Game == MEGame.ME1 || Pcc.Game == MEGame.UDK)
+                    else if (Pcc.Game == MEGame.ME1 || Pcc.Game == MEGame.UDK || Pcc.Game.IsLEGame())
                     {
                         obj.Layout();
                     }

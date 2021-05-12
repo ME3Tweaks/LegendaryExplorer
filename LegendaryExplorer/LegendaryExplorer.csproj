@@ -176,7 +176,7 @@
     <Resource Include="Resources\Images\*.gif" />
     <!-- Is there a fontawesome excel icon?-->
     <Resource Include="Resources\Images\*.png" />
-    <Resource Include="Resources\Fonts\*.ttf" />
+    <EmbeddedResource Include="Resources\Fonts\*.ttf" />
     <Resource Include="Tools\PackageEditor\ExportIcons\*" />
   </ItemGroup>
   <ItemGroup>
