@@ -10,20 +10,23 @@ namespace LegendaryExplorerCore.GameFilesystem
     public static class MELoadedFiles
     {
         private static readonly string[] ME1FilePatterns = { "*.u", "*.upk", "*.sfm" };
-        private const string ME2and3FilePattern = "*.pcc";
+        private const string ME23LEXFilePattern = "*.pcc";
 
-        private static readonly string[] ME2and3FilePatternIncludeTFC = { "*.pcc", "*.tfc" };
+        private static readonly string[] ME23LEXFilePatternIncludeTFC = { "*.pcc", "*.tfc" };
 
         public static void InvalidateCaches()
         {
-            cachedME1LoadedFiles = cachedME2LoadedFiles = cachedME3LoadedFiles = null;
-            cachedME1TargetFiles = cachedME2TargetFiles = cachedME3TargetFiles = null;
+            cachedME1LoadedFiles = cachedME2LoadedFiles = cachedME3LoadedFiles = cachedLE1LoadedFiles = cachedLE2LoadedFiles = cachedLE3LoadedFiles = null;
+            cachedME1TargetFiles = cachedME2TargetFiles = cachedME3TargetFiles = cachedLE1TargetFiles = cachedLE2TargetFiles = cachedLE3TargetFiles = null;
         }
 
         #region LoadedFiles
         private static CaseInsensitiveDictionary<string> cachedME1LoadedFiles;
         private static CaseInsensitiveDictionary<string> cachedME2LoadedFiles;
         private static CaseInsensitiveDictionary<string> cachedME3LoadedFiles;
+        private static CaseInsensitiveDictionary<string> cachedLE1LoadedFiles;
+        private static CaseInsensitiveDictionary<string> cachedLE2LoadedFiles;
+        private static CaseInsensitiveDictionary<string> cachedLE3LoadedFiles;
         /// <summary>
         /// Gets a Dictionary of all loaded files in the given game. Key is the filename, value is file path
         /// </summary>
@@ -47,6 +50,26 @@ namespace LegendaryExplorerCore.GameFilesystem
                     useCached &= !includeTFCs || !cachedME3LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
                     useCached &= !includeAFCs || !cachedME3LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
                     if (useCached) return cachedME3LoadedFiles;
+                }
+                if (game == MEGame.LE1 && cachedLE1LoadedFiles != null)
+                {
+                    bool useCached = true;
+                    useCached &= !includeTFCs || !cachedLE1LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                    if (useCached) return cachedLE1LoadedFiles;
+                }
+                if (game == MEGame.LE2 && cachedLE2LoadedFiles != null)
+                {
+                    bool useCached = true;
+                    useCached &= !includeTFCs || !cachedLE2LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                    useCached &= !includeAFCs || !cachedLE2LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                    if (useCached) return cachedLE2LoadedFiles;
+                }
+                if (game == MEGame.LE3 && cachedLE3LoadedFiles != null)
+                {
+                    bool useCached = true;
+                    useCached &= !includeTFCs || !cachedLE3LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                    useCached &= !includeAFCs || !cachedLE3LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                    if (useCached) return cachedLE3LoadedFiles;
                 }
             }
 
@@ -73,6 +96,9 @@ namespace LegendaryExplorerCore.GameFilesystem
             if (game == MEGame.ME1) cachedME1LoadedFiles = loadedFiles;
             else if (game == MEGame.ME2) cachedME2LoadedFiles = loadedFiles;
             else if (game == MEGame.ME3) cachedME3LoadedFiles = loadedFiles;
+            else if (game == MEGame.LE1) cachedLE1LoadedFiles = loadedFiles;
+            else if (game == MEGame.LE2) cachedLE2LoadedFiles = loadedFiles;
+            else if (game == MEGame.LE3) cachedLE3LoadedFiles = loadedFiles;
 
             return loadedFiles;
         }
@@ -82,6 +108,9 @@ namespace LegendaryExplorerCore.GameFilesystem
         private static List<string> cachedME1TargetFiles;
         private static List<string> cachedME2TargetFiles;
         private static List<string> cachedME3TargetFiles;
+        private static List<string> cachedLE1TargetFiles;
+        private static List<string> cachedLE2TargetFiles;
+        private static List<string> cachedLE3TargetFiles;
 
         /// <summary>
         /// Gets a Dictionary of all loaded files in the given game. Key is the filename, value is file path
@@ -95,6 +124,9 @@ namespace LegendaryExplorerCore.GameFilesystem
                 if (game == MEGame.ME1 && cachedME1TargetFiles != null) return cachedME1TargetFiles;
                 if (game == MEGame.ME2 && cachedME2TargetFiles != null) return cachedME2TargetFiles;
                 if (game == MEGame.ME3 && cachedME3TargetFiles != null) return cachedME3TargetFiles;
+                if (game == MEGame.LE1 && cachedLE1TargetFiles != null) return cachedLE1TargetFiles;
+                if (game == MEGame.LE2 && cachedLE2TargetFiles != null) return cachedLE2TargetFiles;
+                if (game == MEGame.LE3 && cachedLE3TargetFiles != null) return cachedLE3TargetFiles;
             }
 
             //make dictionary from basegame files
@@ -112,6 +144,9 @@ namespace LegendaryExplorerCore.GameFilesystem
             if (game == MEGame.ME1) cachedME1TargetFiles = loadedFiles;
             if (game == MEGame.ME2) cachedME2TargetFiles = loadedFiles;
             if (game == MEGame.ME3) cachedME3TargetFiles = loadedFiles;
+            if (game == MEGame.LE1) cachedLE1TargetFiles = loadedFiles;
+            if (game == MEGame.LE2) cachedLE2TargetFiles = loadedFiles;
+            if (game == MEGame.LE3) cachedLE3TargetFiles = loadedFiles;
 
             return loadedFiles;
         }
@@ -147,7 +182,7 @@ namespace LegendaryExplorerCore.GameFilesystem
             if (includeAFCs) extensions.Add("*.afc");
             extensions.Add("*.pcc"); //This is last, as any of the lookup methods will see if any of these files types exist in-order. By putting pcc's last, the lookups will be searched first when using
             //includeTFC or includeAFC.
-            return extensions.SelectMany(pattern => Directory.EnumerateFiles(Path.Combine(directory, game == MEGame.ME3 ? "CookedPCConsole" : "CookedPC"), pattern, SearchOption.AllDirectories));
+            return extensions.SelectMany(pattern => Directory.EnumerateFiles(Path.Combine(directory, game == MEGame.ME2 ? "CookedPC" : "CookedPCConsole" ), pattern, SearchOption.AllDirectories));
         }
 
 
@@ -167,7 +202,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 ? Directory.EnumerateDirectories(MEDirectories.GetDLCPath(game)).Where(dir => IsOfficialDLC(dir, game))
                 : Enumerable.Empty<string>();
 
-        public static string GetMountDLCFromDLCDir(string dlcDirectory, MEGame game) => Path.Combine(dlcDirectory, game == MEGame.ME3 ? "CookedPCConsole" : "CookedPC", "Mount.dlc");
+        public static string GetMountDLCFromDLCDir(string dlcDirectory, MEGame game) => Path.Combine(dlcDirectory, game == MEGame.ME2 ? "CookedPC" : "CookedPCConsole", "Mount.dlc");
 
         public static bool IsEnabledDLC(string dir, MEGame game)
         {

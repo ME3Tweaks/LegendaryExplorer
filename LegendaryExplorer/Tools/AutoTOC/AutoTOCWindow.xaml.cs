@@ -16,6 +16,7 @@ using LegendaryExplorer.SharedUI.Controls;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using Microsoft.Win32;
 
@@ -46,10 +47,15 @@ namespace LegendaryExplorer.Tools.AutoTOC
 
         private void LoadCommands()
         {
-            RunAutoTOCCommand = new GenericCommand(RunAutoTOC, CanRunAutoTOC);
+            RunAutoTOCCommand = new GenericCommand(RunAutoTOC, () => CanRunAutoTOC(SelectedGame));
             GenerateDLCTOCCommand = new GenericCommand(GenerateSingleDLCTOC, BackgroundThreadNotRunning);
             BuildME1FileListCommand = new GenericCommand(GenerateME1FileList, BackgroundThreadNotRunning);
         }
+
+        private MEGame _selectedGame = MEGame.ME3;
+        public MEGame SelectedGame { get => _selectedGame; set => SetProperty(ref _selectedGame, value); }
+
+        public ObservableCollectionExtended<MEGame> GameOptions { get; } = new ObservableCollectionExtended<MEGame>(new[] { MEGame.ME3, MEGame.LE1, MEGame.LE2, MEGame.LE3 });
 
         private void GenerateME1FileList()
         {
@@ -284,29 +290,29 @@ namespace LegendaryExplorer.Tools.AutoTOC
         private void GenerateAllTOCs_BackgroundThread(object sender, DoWorkEventArgs e)
         {
             TOCTasks.ClearEx();
-            GenerateAllTOCs(TOCTasks);
+            GenerateAllTOCs(TOCTasks, SelectedGame);
             TOCTasks.Add(new ListBoxTask
             {
-                Header = "AutoTOC complete",
+                Header = $"{SelectedGame} AutoTOC complete",
                 Icon = EFontAwesomeIcon.Solid_Check,
                 Foreground = Brushes.Green,
                 Spinning = false
             });
         }
 
-        private bool CanRunAutoTOC()
+        private bool CanRunAutoTOC(MEGame game)
         {
-            if (string.IsNullOrEmpty(ME3Directory.BioGamePath) || !Directory.Exists(ME3Directory.BioGamePath))
+            if (string.IsNullOrEmpty(MEDirectories.GetBioGamePath(game)) || !Directory.Exists(MEDirectories.GetBioGamePath(game)))
             {
                 return false;
             }
             return TOCWorker == null;
         }
 
-        public static void GenerateAllTOCs(IList<ListBoxTask> tocTasks = null)
+        public static void GenerateAllTOCs(IList<ListBoxTask> tocTasks = null, MEGame game = MEGame.LE3)
         {
-            List<string> folders = (new DirectoryInfo(ME3Directory.DLCPath)).GetDirectories().Select(d => d.FullName).ToList();
-            folders.Add(Path.Combine(ME3Directory.DefaultGamePath, "BIOGame"));
+            List<string> folders = (new DirectoryInfo(MEDirectories.GetDLCPath(game))).GetDirectories().Select(d => d.FullName).ToList();
+            folders.Add(Path.Combine(MEDirectories.GetDefaultGamePath(game), "BIOGame"));
             folders.ForEach(consoletocFile => CreateTOC(consoletocFile, tocTasks));
         }
 

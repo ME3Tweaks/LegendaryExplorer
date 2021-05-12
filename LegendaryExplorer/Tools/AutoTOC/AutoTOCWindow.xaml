@@ -10,15 +10,21 @@
     Icon="/Tools/Icons/autotoc_256x256.ico"
     Title="AutoTOC" MinHeight="400" Height="400" Width="700">
     <DockPanel >
-        <TextBlock DockPanel.Dock="Top"  Padding="5" Background="LightGray" TextWrapping="Wrap" Text="AutoTOC generates table of content (TOC) files for Mass Effect 3. These files list the filesize of all files that can be loaded and are used so the engine can allocate the correct amount of memory when loading the file.&#10;AutoTOC can be safely run at any time. AutoTOC must only be run before game launch as only at run time do TOC files matter."/>
+        <TextBlock DockPanel.Dock="Top"  Padding="5" Background="LightGray" TextWrapping="Wrap" Text="AutoTOC generates table of content (TOC) files for Mass Effect 3 and the Legendary Edition. These files list the filesize of all files that can be loaded and are used so the engine can allocate the correct amount of memory when loading the file.&#10;AutoTOC can be safely run at any time. AutoTOC must only be run before game launch as only at run time do TOC files matter."/>
         
-        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5,5,0,5">
-            <Button Content="Mount ME1 DLCs" Command="{Binding BuildME1FileListCommand}"  Padding="4" Margin="2" ToolTip="Experimental: Generate a file list of Mass Effect 1" Visibility="{x:Static global:App.IsDebugVisibility}"/>
-            <Button Content="Generate/Update TOC file for DLC" Command="{Binding GenerateDLCTOCCommand}"  Padding="4" Margin="2" ToolTip="Calculate and generate a PCConsoleTOC for a DLC folder (inside or outside of the game)"/>
-            <Button Content="Run AutoTOC" Command="{Binding RunAutoTOCCommand}" Padding="4" Margin="2" ToolTip="Calculate and generate/update all PCConsoleTOC toc files in the current game installation"/>
-        </StackPanel>
+        <DockPanel DockPanel.Dock="Bottom" Margin="0,5,0,5">
+            <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" HorizontalAlignment="Left">
+                <ComboBox SelectedItem="{Binding SelectedGame}" ItemsSource="{Binding GameOptions}" Padding="6,4" Margin="2" Width="55"/>
+                <Button Content="Run AutoTOC" Command="{Binding RunAutoTOCCommand}" Padding="4" Margin="2" ToolTip="Calculate and generate/update all PCConsoleTOC toc files in the current game installation"/>
+            </StackPanel>
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Mount ME1 DLCs" Command="{Binding BuildME1FileListCommand}"  Padding="4" Margin="2" ToolTip="Experimental: Generate a file list of Mass Effect 1" Visibility="{x:Static global:App.IsDebugVisibility}"/>
+                <Button Content="Generate/Update TOC file for DLC" Command="{Binding GenerateDLCTOCCommand}"  Padding="4" Margin="2" ToolTip="Calculate and generate a PCConsoleTOC for a DLC folder (inside or outside of the game)"/>
+            </StackPanel>
+        </DockPanel>
+        <!--
         <TextBlock DockPanel.Dock="Bottom"  Padding="5" Background="LightGray" TextWrapping="Wrap" Text="TOC files can be automatically generated with the use of the AutoTOC asi, which is automatically installed by ALOT Installer, ME3Tweaks Mod Manager on mod install, or through the ASI Manager in ME3Explorer/ASI Mod Manager in ME3Tweaks Mod Manager."/>
-
+        -->
         <ListBox Name="TOCTasks_ListBox" ItemsSource="{Binding TOCTasks}"  Margin="3" Loaded="ListBox_OnLoaded">
             <ListBox.ItemTemplate>
                 <DataTemplate>
