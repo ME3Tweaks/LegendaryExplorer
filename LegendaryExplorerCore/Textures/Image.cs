@@ -32,6 +32,7 @@ using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Bmp;
 using SixLabors.ImageSharp.PixelFormats;
 
 namespace MassEffectModder.Images
@@ -478,8 +479,8 @@ namespace MassEffectModder.Images
         public static MemoryStream convertToPng(byte[] src, int w, int h, PixelFormat format)
         {
             byte[] tmpData = convertRawToARGB(src, w, h, format);
-            var im = SixLabors.ImageSharp.Image.Load<Argb32>(src);
             var ms = new MemoryStream();
+                .civar im = SixLabors.ImageSharp.Image.LoadPixelData<Bgra32>(tmpData, w,h);
             im.SaveAsPng(ms);
             ms.Position = 0;
             return ms;
