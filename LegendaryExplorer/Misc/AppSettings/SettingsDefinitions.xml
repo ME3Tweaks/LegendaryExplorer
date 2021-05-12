@@ -3,18 +3,18 @@
 <appsettings>
   <!-- All settings should have a prefix of where they primarily apply! -->
 
-  <!-- Package Editor Specific settings -->
+  <!-- Package Editor specific settings -->
   <setting name="PackageEditor_HideInterpreterHexBox" type="bool" defaultvalue="true"/>
   <setting name="PackageEditor_TouchComfyMode" type="bool" defaultvalue="false"/>
   <setting name="PackageEditor_ShowImpExpPrefix" type="bool" defaultvalue="true"/>
   <setting name="PackageEditor_ShowExportTypeIcons" type="bool" defaultvalue="true"/>
   <setting name="PackageEditor_ShowTreeEntrySubText" type="bool" defaultvalue="true"/>
 
-  <!-- Sequence Editor Specific settings -->
+  <!-- Sequence Editor specific settings -->
   <setting name="SequenceEditor_MaxVarStringLength" type="int" defaultvalue="40"/>
   <setting name="SequenceEditor_ShowParsedInfo" type="bool" defaultvalue="true"/>
     
-  <!-- Soundplorer Specific settings-->
+  <!-- Soundplorer specific settings-->
   <setting name="Soundplorer_ReverseIDDisplayEndianness" type="bool" defaultvalue="false"/>
   <setting name="Soundplorer_AutoplayEntriesOnSelection" type="bool" defaultvalue="false"/>
 
@@ -25,7 +25,7 @@
   <setting name="Meshplorer_View_SolidEnabled" type="bool" defaultvalue="true"/>
   <setting name="Meshplorer_ViewWireframeEnabled" type="bool" defaultvalue="false"/>
     
-  <!-- Pathfinding Editor Specific settings-->
+  <!-- Pathfinding Editor specific settings-->
   <setting name="PathfindingEditor_ShowNodeSizes" type="bool" defaultvalue="false"/>
   <setting name="PathfindingEditor_ShowPathfindingNodesLayer" type="bool" defaultvalue="true"/>
   <setting name="PathfindingEditor_ShowActorsLayer" type="bool" defaultvalue="false"/>
@@ -34,10 +34,14 @@
   <setting name="PathfindingEditor_ShowEverythingElseLayer" type="bool" defaultvalue="false"/>
     
 
-  <!-- AssetDB Specific settings-->
+  <!-- AssetDB specific settings-->
   <setting name="AssetDB_DefaultGame" type="string" defaultvalue=""/>
   <setting name="AssetDBGame" type="string" defaultvalue="ME3"/>
   <setting name="AssetDBPath" type="string" defaultvalue=""/>
+
+  <!-- Coalesced Editor specific settings -->
+  <setting name="CoalescedEditor_SourcePath" type="string" defaultvalue=""/>
+  <setting name="CoalescedEditor_DestinationPath" type="string" defaultvalue=""/>
 
   <!-- Export Loader Control settings -->
   <setting name="BinaryInterpreter_SkipAutoParseSizeCheck" type="bool" defaultvalue="false"/>

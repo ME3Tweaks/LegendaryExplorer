@@ -120,6 +120,16 @@
             get => _assetdbpath; 
             set => SetProperty(ref _assetdbpath, value);
         }
+        private static string _coalescededitor_sourcepath = ""; 
+        public static string CoalescedEditor_SourcePath {
+            get => _coalescededitor_sourcepath; 
+            set => SetProperty(ref _coalescededitor_sourcepath, value);
+        }
+        private static string _coalescededitor_destinationpath = ""; 
+        public static string CoalescedEditor_DestinationPath {
+            get => _coalescededitor_destinationpath; 
+            set => SetProperty(ref _coalescededitor_destinationpath, value);
+        }
         private static bool _binaryinterpreter_skipautoparsesizecheck = false; 
         public static bool BinaryInterpreter_SkipAutoParseSizeCheck {
             get => _binaryinterpreter_skipautoparsesizecheck; 
