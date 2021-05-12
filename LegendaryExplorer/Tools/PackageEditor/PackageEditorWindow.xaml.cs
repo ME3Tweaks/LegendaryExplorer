@@ -2874,7 +2874,13 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 {
                     foreach ((ExportLoaderControl exportLoader, TabItem tab) in ExportLoaders)
                     {
-                        if (exportLoader.CanParse(exportEntry))
+                        //TODO: re-enable Mesh rendering for LEX once we have the format parsed
+                        if (Pcc.Game.IsLEGame() && exportLoader is MeshRenderer or FaceFXAnimSetEditorControl)
+                        {
+                            tab.Visibility = Visibility.Collapsed;
+                            exportLoader.UnloadExport();
+                        }
+                        else if (exportLoader.CanParse(exportEntry))
                         {
                             exportLoader.LoadExport(exportEntry);
                             tab.Visibility = Visibility.Visible;

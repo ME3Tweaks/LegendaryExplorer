@@ -538,7 +538,6 @@ namespace LegendaryExplorerCore.Packages
             exports = new List<ExportEntry>(ExportCount);
             for (int i = 0; i < ExportCount; i++)
             {
-                //Debug.WriteLine($"ExportEntry {i + 1} at 0x{inStream.Position:X8}");
                 ExportEntry e = new ExportEntry(this, packageReader) { Index = i };
                 if (MEPackageHandler.GlobalSharedCacheEnabled)
                     e.PropertyChanged += exportChanged; // If packages are not shared there is no point to attaching this
