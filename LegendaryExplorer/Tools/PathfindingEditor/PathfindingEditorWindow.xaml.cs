@@ -103,7 +103,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         #region Properties and Bindings
         public static readonly string PathfindingEditorDataFolder = Path.Combine(AppDirectories.AppDataFolder, @"PathfindingEditor\");
         //TODO Before LEX release: convert options to use Settings class 
-        public static readonly string OptionsPath = Path.Combine(PathfindingEditorDataFolder, "PathEditorOptions.JSON");
         private bool IsCombatZonesSingleSelecting;
         private bool IsReadingLevel;
 
@@ -213,11 +212,11 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             set => SetProperty(ref _showCylinders_Triggers, value);
         }
 
-        private bool _showActorsLayer;
-        private bool _showSplinesLayer;
-        private bool _showPathfindingNodesLayer = true;
-        private bool _showArtLayer;
-        private bool _showEverythingElseLayer;
+        private bool _showActorsLayer = Settings.PathfindingEditor_ShowActorsLayer;
+        private bool _showSplinesLayer = Settings.PathfindingEditor_ShowSplinesLayer;
+        private bool _showPathfindingNodesLayer = Settings.PathfindingEditor_ShowPathfindingNodesLayer;
+        private bool _showArtLayer = Settings.PathfindingEditor_ShowArtLayer;
+        private bool _showEverythingElseLayer = Settings.PathfindingEditor_ShowEverythingElseLayer;
 
         public bool ShowActorsLayer
         {
@@ -367,8 +366,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         private void ToggleNodeSizesDisplay()
         {
             ShowNodeSizes_MenuItem.IsChecked = !ShowNodeSizes_MenuItem.IsChecked;
-            Settings.PathfindingEditorShowNodeSizes = ShowNodeSizes_MenuItem.IsChecked;
-            Settings.Save();
+            Settings.PathfindingEditor_ShowNodeSizes = ShowNodeSizes_MenuItem.IsChecked;
             RefreshGraph();
         }
         private void ShowTriggerCylinders()
@@ -457,26 +455,31 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         private void ToggleActors()
         {
             ShowActorsLayer = !ShowActorsLayer;
+            Settings.PathfindingEditor_ShowActorsLayer = ShowActorsLayer;
             RefreshGraph();
         }
         private void ToggleArt()
         {
             ShowArtLayer = !ShowArtLayer;
+            Settings.PathfindingEditor_ShowArtLayer = ShowArtLayer;
             RefreshGraph();
         }
         private void ToggleSplines()
         {
             ShowSplinesLayer = !ShowSplinesLayer;
+            Settings.PathfindingEditor_ShowSplinesLayer = ShowSplinesLayer;
             RefreshGraph();
         }
         private void ToggleEverythingElse()
         {
             ShowEverythingElseLayer = !ShowEverythingElseLayer;
+            Settings.PathfindingEditor_ShowEverythingElseLayer = ShowEverythingElseLayer;
             RefreshGraph();
         }
         private void TogglePathfindingNodes()
         {
             ShowPathfindingNodesLayer = !ShowPathfindingNodesLayer;
+            Settings.PathfindingEditor_ShowPathfindingNodesLayer = ShowPathfindingNodesLayer;
             RefreshGraph();
         }
 
@@ -602,21 +605,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             InitializeComponent();
             pathfindingMouseListener = new PathfindingMouseListener(this); //Must be member so we can release reference
             graphEditor.AddInputEventListener(pathfindingMouseListener);
-
-            if (File.Exists(OptionsPath)) //Handle options
-            {
-                var options = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(OptionsPath));
-                if (options.ContainsKey("PathingLayer"))
-                    ShowPathfindingNodesLayer = (bool)options["PathingLayer"];
-                if (options.ContainsKey("SplinesLayer"))
-                    ShowSplinesLayer = (bool)options["SplinesLayer"];
-                if (options.ContainsKey("DesignLayer"))
-                    ShowActorsLayer = (bool)options["DesignLayer"];
-                if (options.ContainsKey("ArtLayer"))
-                    ShowArtLayer = (bool)options["ArtLayer"];
-                if (options.ContainsKey("EverythingElse"))
-                    ShowEverythingElseLayer = (bool)options["EverythingElse"];
-            }
         }
         public PathfindingEditorWindow(string fileName) : this()
         {
@@ -655,19 +643,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         {
             if (!e.Cancel)
             {
-                var options = new Dictionary<string, object>
-            {
-                {"PathingLayer", ShowPathfindingNodesLayer},
-                {"SplinesLayer", ShowSplinesLayer},
-                {"DesignLayer", ShowActorsLayer},
-                {"ArtLayer", ShowArtLayer},
-                {"EverythingElse", ShowEverythingElseLayer},
-            };
-
-                string outputFile = Newtonsoft.Json.JsonConvert.SerializeObject(options);
-                if (!Directory.Exists(PathfindingEditorDataFolder))
-                    Directory.CreateDirectory(PathfindingEditorDataFolder);
-                File.WriteAllText(OptionsPath, outputFile);
+                Settings.Save();
 
                 graphEditor.RemoveInputEventListener(pathfindingMouseListener);
                 graphEditor.DragDrop -= GraphEditor_DragDrop;

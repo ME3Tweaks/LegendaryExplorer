@@ -246,7 +246,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             {
                 val = new SText(index.ToString());
 
-                if (Settings.PathfindingEditorShowNodeSizes)
+                if (Settings.PathfindingEditor_ShowNodeSizes)
                 {
                     StructProperty maxPathSize = export.GetProperty<StructProperty>("MaxPathSize");
                     if (maxPathSize != null)

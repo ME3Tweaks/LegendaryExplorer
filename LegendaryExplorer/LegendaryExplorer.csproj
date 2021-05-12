@@ -432,9 +432,6 @@
     <Compile Update="Tools\Dialogue Editor\LinkEditor.xaml.cs">
       <DependentUpon>LinkEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Tools\PathfindingEditor\PathfindingEditorWPF.xaml.cs">
-      <DependentUpon>PathfindingEditorWPF.xaml</DependentUpon>
-    </Compile>
     <Compile Update="Tools\PathfindingEditor\PathingGraphEditor.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -50,10 +50,35 @@
             get => _soundplorer_autoplayentriesonselection; 
             set => SetProperty(ref _soundplorer_autoplayentriesonselection, value);
         }
-        private static bool _pathfindingeditorshownodesizes = false; 
-        public static bool PathfindingEditorShowNodeSizes {
-            get => _pathfindingeditorshownodesizes; 
-            set => SetProperty(ref _pathfindingeditorshownodesizes, value);
+        private static bool _pathfindingeditor_shownodesizes = false; 
+        public static bool PathfindingEditor_ShowNodeSizes {
+            get => _pathfindingeditor_shownodesizes; 
+            set => SetProperty(ref _pathfindingeditor_shownodesizes, value);
+        }
+        private static bool _pathfindingeditor_showpathfindingnodeslayer = true; 
+        public static bool PathfindingEditor_ShowPathfindingNodesLayer {
+            get => _pathfindingeditor_showpathfindingnodeslayer; 
+            set => SetProperty(ref _pathfindingeditor_showpathfindingnodeslayer, value);
+        }
+        private static bool _pathfindingeditor_showactorslayer = false; 
+        public static bool PathfindingEditor_ShowActorsLayer {
+            get => _pathfindingeditor_showactorslayer; 
+            set => SetProperty(ref _pathfindingeditor_showactorslayer, value);
+        }
+        private static bool _pathfindingeditor_showartlayer = false; 
+        public static bool PathfindingEditor_ShowArtLayer {
+            get => _pathfindingeditor_showartlayer; 
+            set => SetProperty(ref _pathfindingeditor_showartlayer, value);
+        }
+        private static bool _pathfindingeditor_showsplineslayer = false; 
+        public static bool PathfindingEditor_ShowSplinesLayer {
+            get => _pathfindingeditor_showsplineslayer; 
+            set => SetProperty(ref _pathfindingeditor_showsplineslayer, value);
+        }
+        private static bool _pathfindingeditor_showeverythingelselayer = false; 
+        public static bool PathfindingEditor_ShowEverythingElseLayer {
+            get => _pathfindingeditor_showeverythingelselayer; 
+            set => SetProperty(ref _pathfindingeditor_showeverythingelselayer, value);
         }
         private static string _assetdb_defaultgame = ""; 
         public static string AssetDB_DefaultGame {

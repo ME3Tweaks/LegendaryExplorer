@@ -13,13 +13,19 @@
   <!-- Sequence Editor Specific settings -->
   <setting name="SequenceEditor_MaxVarStringLength" type="int" defaultvalue="40"/>
   <setting name="SequenceEditor_ShowParsedInfo" type="bool" defaultvalue="true"/>
-	
+    
   <!-- Soundplorer Specific settings-->
   <setting name="Soundplorer_ReverseIDDisplayEndianness" type="bool" defaultvalue="false"/>
   <setting name="Soundplorer_AutoplayEntriesOnSelection" type="bool" defaultvalue="false"/>
-	
+    
   <!-- Pathfinding Editor Specific settings-->
-  <setting name="PathfindingEditorShowNodeSizes" type="bool" defaultvalue="false"/>
+  <setting name="PathfindingEditor_ShowNodeSizes" type="bool" defaultvalue="false"/>
+  <setting name="PathfindingEditor_ShowPathfindingNodesLayer" type="bool" defaultvalue="true"/>
+  <setting name="PathfindingEditor_ShowActorsLayer" type="bool" defaultvalue="false"/>
+  <setting name="PathfindingEditor_ShowArtLayer" type="bool" defaultvalue="false"/>
+  <setting name="PathfindingEditor_ShowSplinesLayer" type="bool" defaultvalue="false"/>
+  <setting name="PathfindingEditor_ShowEverythingElseLayer" type="bool" defaultvalue="false"/>
+    
 
   <!-- AssetDB Specific settings-->
   <setting name="AssetDB_DefaultGame" type="string" defaultvalue=""/>
@@ -36,7 +42,7 @@
   <setting name="Interpreter_AdvancedDisplay" type="bool" defaultvalue="true"/>
   <setting name="Interpreter_Colorize" type="bool" defaultvalue="true"/>
   <setting name="Interpreter_ShowLinearColorWheel" type="bool" defaultvalue="false"/>
-	
+    
   <setting name="Soundpanel_LoopAudio" type="bool" defaultvalue="false"/>
 
 
