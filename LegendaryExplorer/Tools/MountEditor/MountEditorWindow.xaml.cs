@@ -1,4 +1,5 @@
-﻿using Microsoft.WindowsAPICodePack.Dialogs;
+﻿using System;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Windows.Input;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.TLK;
 
 namespace LegendaryExplorer.Tools.MountEditor
@@ -20,6 +22,28 @@ namespace LegendaryExplorer.Tools.MountEditor
         public ObservableCollectionExtended<UIMountFlag> MountIDValues { get; } = new();
         private readonly List<UIMountFlag> ME2MountFlags = new();
         private readonly List<UIMountFlag> ME3MountFlags = new();
+
+        public ObservableCollectionExtended<UIGameID> Games { get; } = new()
+        {
+            new UIGameID(MEGame.ME2, "Mass Effect 2"),
+            new UIGameID(MEGame.ME3, "Mass Effect 3"),
+            new UIGameID(MEGame.LE2, "Mass Effect 2 LE"),
+            new UIGameID(MEGame.LE3, "Mass Effect 3 LE")
+        };
+
+        private UIGameID _selectedGame;
+        public UIGameID SelectedGame
+        {
+            get => _selectedGame;
+            set
+            {
+                if (SetProperty(ref _selectedGame, value))
+                {
+                    SelectedGameChanged();
+                }
+            }
+        }
+
         private bool _isME2;
         public bool IsME2
         {
@@ -51,14 +75,14 @@ namespace LegendaryExplorer.Tools.MountEditor
             ME3MountFlags.Add(new UIMountFlag(EMountFileFlag.ME3_SPOnly_NoSaveFileDependency, "0x08 - SP only | No file dependency on DLC"));
             ME3MountFlags.Add(new UIMountFlag(EMountFileFlag.ME3_SPOnly_SaveFileDependency, "0x09 - SP only | Save file dependency on DLC"));
             ME3MountFlags.Add(new UIMountFlag(EMountFileFlag.ME3_SPMP_SaveFileDependency, "0x1C - SP & MP | No save file dependency on DLC"));
-            ME3MountFlags.Add(new UIMountFlag(EMountFileFlag.ME3_MPOnly_Patch, "0x0C - MP only | Loads in MP (PATCH)"));
+            ME3MountFlags.Add(new UIMountFlag(EMountFileFlag.ME3_Patch, "0x0C - PATCH"));
             ME3MountFlags.Add(new UIMountFlag(EMountFileFlag.ME3_MPOnly_1, "0x14 - MP only | Loads in MP"));
             ME3MountFlags.Add(new UIMountFlag(EMountFileFlag.ME3_MPOnly_2, "0x34 - MP only | Loads in MP"));
             CurrentMountFileText = "No mount file loaded. Mouse over fields for descriptions of their values.";
             MountIDValues.AddRange(ME3MountFlags);
             DataContext = this;
             InitializeComponent();
-            IsME2Checkbox_Click(null, null);
+            SelectedGame = Games[0];
             MountComboBox.SelectedIndex = 0;
         }
 
@@ -85,6 +109,8 @@ namespace LegendaryExplorer.Tools.MountEditor
             public string DisplayString { get; }
         }
 
+        public sealed record UIGameID(MEGame Game, string DisplayString);
+
         private void LoadMountFile_Click(object sender, RoutedEventArgs e)
         {
             CommonOpenFileDialog m = new()
@@ -104,8 +130,7 @@ namespace LegendaryExplorer.Tools.MountEditor
         private void LoadFile(string fileName)
         {
             var mf = new MountFile(fileName);
-            IsME2 = mf.IsME2;
-            ME2CheckBox.IsChecked = IsME2;
+            SelectedGame = Games.First(uig => uig.Game == mf.Game);
             DLCFolder_TextBox.Text = IsME2 ? mf.ME2Only_DLCFolderName : "Not used in ME3";
             HumanReadable_TextBox.Text = IsME2 ? mf.ME2Only_DLCHumanName : "Not used in ME3";
             MountIDValues.ClearEx();
@@ -136,13 +161,13 @@ namespace LegendaryExplorer.Tools.MountEditor
                 {
                     var mf = new MountFile() //We will write this to disk
                     {
-                        IsME2 = IsME2,
+                        Game = SelectedGame.Game,
                         MountPriority = ushort.Parse(MountPriority_TextBox.Text.Trim()),
                         TLKID = int.Parse(TLKID_TextBox.Text.Trim()),
                         MountFlag = ((UIMountFlag)MountComboBox.SelectedItem).Flag
                     };
 
-                    if (mf.IsME2)
+                    if (mf.Game is MEGame.ME2 or MEGame.LE2)
                     {
                         mf.ME2Only_DLCFolderName = DLCFolder_TextBox.Text;
                         mf.ME2Only_DLCHumanName = HumanReadable_TextBox.Text;
@@ -169,7 +194,7 @@ namespace LegendaryExplorer.Tools.MountEditor
 
             if (IsME2)
             {
-                if (HumanReadable_TextBox.Text.Length < 5)
+                if (SelectedGame.Game is MEGame.ME2 && HumanReadable_TextBox.Text.Length < 5)
                 {
                     Xceed.Wpf.Toolkit.MessageBox.Show("Human readable name must be at least 5 characters.\nUse the full name of your mod to prevent end-user confusion.", "Validation error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return false;
@@ -215,9 +240,9 @@ namespace LegendaryExplorer.Tools.MountEditor
             }
         }
 
-        private void IsME2Checkbox_Click(object sender, RoutedEventArgs e)
+        private void SelectedGameChanged()
         {
-            IsME2 = ME2CheckBox.IsChecked.Value;
+            IsME2 = SelectedGame.Game is MEGame.ME2 or MEGame.LE2;
             DLCFolder_TextBox.Watermark = IsME2 ? "DLC Folder Name (e.g. DLC_MOD_MYMOD)" : "Not used in ME3";
             HumanReadable_TextBox.Watermark = IsME2 ? "DLC Human Readable Name (e.g. Superpowers Pack)" : "Not used in ME3";
             MountIDValues.ClearEx();

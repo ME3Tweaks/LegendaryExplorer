@@ -6,6 +6,7 @@
         xmlns:bases="clr-namespace:LegendaryExplorer.SharedUI.Bases"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
+        d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
         DragOver="Window_DragOver"
         Drop="Window_Drop"
         AllowDrop="True"
@@ -59,7 +60,9 @@
             <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
                 <Button Content="Load mount file" Padding="4" Click="LoadMountFile_Click"/>
                 <Button Content="Save mount file" Padding="4" Margin="10,0,0,0" Click="SaveMountFile_Click"/>
-                <CheckBox Name="ME2CheckBox" Content="ME2 Mount file" VerticalAlignment="Center" Margin="10,0,0,0" IsChecked="{Binding IsME2}" Click="IsME2Checkbox_Click"/>
+                <ComboBox Name="GameComboBox" Padding="6" Margin="10,0,0,0" DisplayMemberPath="DisplayString" 
+                          ItemsSource="{Binding Games}" 
+                          SelectedItem="{Binding SelectedGame}"/>
             </StackPanel>
         </StackPanel>
     </StackPanel>
