@@ -47,7 +47,7 @@ namespace LegendaryExplorerCore.Packages
             LZO = 0x2, //ME1 and ME2 PC
             LZX = 0x4, //Xbox
             LZMA = 0x8, //WiiU, PS3 
-            OodleLeviathan = 0x10 // TODO: UPDATE THIS AFTER INSPECTING PACKAGE HEADER
+            OodleLeviathan = 0x400 // LE1?
         }
 
         public List<ME1TalkFile> LocalTalkFiles { get; } = new List<ME1TalkFile>();

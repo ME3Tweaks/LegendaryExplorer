@@ -124,6 +124,7 @@ namespace LegendaryExplorerCore.Packages
                 case MEGame.ME1 when file.Platform == MEPackage.GamePlatform.PS3:
                 case MEGame.ME2 when file.Platform == MEPackage.GamePlatform.PS3:
                 case MEGame.ME3:
+                case MEGame.LE1:
                 case MEGame.UDK:
                     {
                         stream.Seek(44, SeekOrigin.Current);

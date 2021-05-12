@@ -400,13 +400,13 @@ namespace LegendaryExplorerCore.Packages
             ImportCount = packageReader.ReadInt32();
             ImportOffset = packageReader.ReadInt32();
 
-            if (Game != MEGame.ME1 || Platform != GamePlatform.Xenon)
+            if (Game == MEGame.LE1 || (Game != MEGame.ME1 || Platform != GamePlatform.Xenon))
             {
                 // Seems this doesn't exist on ME1 Xbox
                 DependencyTableOffset = packageReader.ReadInt32();
             }
 
-            if (Game == MEGame.ME3 || Platform == GamePlatform.PS3)
+            if (Game == MEGame.LE1 || Game == MEGame.ME3 || Platform == GamePlatform.PS3)
             {
                 ImportExportGuidsOffset = packageReader.ReadInt32();
                 packageReader.ReadInt32(); //ImportGuidsCount always 0
@@ -415,6 +415,12 @@ namespace LegendaryExplorerCore.Packages
             }
 
             PackageGuid = packageReader.ReadGuid();
+
+            //if (Game == MEGame.LE1)
+            //{
+            //    var le1unk1 = packageReader.ReadInt32();
+            //    var le1unk2 = packageReader.ReadInt16();
+            //}
             uint generationsTableCount = packageReader.ReadUInt32();
             if (generationsTableCount > 0)
             {
@@ -426,8 +432,10 @@ namespace LegendaryExplorerCore.Packages
             //should never be more than 1 generation, but just in case
             packageReader.Skip(generationsTableCount * 12);
 
-            packageReader.SkipInt32();//engineVersion          Like unrealVersion and licenseeVersion, these 2 are determined by what game this is,
-            packageReader.SkipInt32();//cookedContentVersion   so we don't have to read them in
+            //if (Game != MEGame.LE1)
+            //{
+            packageReader.SkipInt32(); //engineVersion          Like unrealVersion and licenseeVersion, these 2 are determined by what game this is,
+            packageReader.SkipInt32(); //cookedContentVersion   so we don't have to read them in
 
             if ((Game == MEGame.ME2 || Game == MEGame.ME1) && Platform != GamePlatform.PS3) //PS3 on ME3 engine
             {
@@ -438,12 +446,17 @@ namespace LegendaryExplorerCore.Packages
             }
 
             unknown6 = packageReader.ReadInt32();
-            var constantVal = packageReader.ReadInt32();//always -1 in ME1 and ME2, always 145358848 in ME3
+            var constantVal = packageReader.ReadInt32(); //always -1 in ME1 and ME2, always 145358848 in ME3
 
             if (Game == MEGame.ME1 && Platform != GamePlatform.PS3)
             {
                 packageReader.SkipInt32(); //always -1
             }
+            //}
+            //else
+            //{
+            //    packageReader.Position += 0x14; // Skip an unkonwn 14 bytes we will figure out later
+            //}
 
             //COMPRESSION AND COMPRESSION CHUNKS
             var compressionFlagPosition = packageReader.Position;
@@ -461,6 +474,11 @@ namespace LegendaryExplorerCore.Packages
             var savedPos = packageReader.Position;
             packageReader.Skip(NumCompressedChunksAtLoad * 16); //skip chunk table so we can find package tag
 
+            // What's this?
+            if (Game == MEGame.LE1)
+            {
+                packageReader.Skip(8); // There is 8 bytes before package tag. So not sure what this is
+            }
 
             packageSource = packageReader.ReadUInt32(); //this needs to be read in so it can be properly written back out.
 
@@ -529,6 +547,7 @@ namespace LegendaryExplorerCore.Packages
             exports = new List<ExportEntry>(ExportCount);
             for (int i = 0; i < ExportCount; i++)
             {
+                Debug.WriteLine($"ExportEntry {i + 1} at 0x{inStream.Position:X8}");
                 ExportEntry e = new ExportEntry(this, packageReader) { Index = i };
                 if (MEPackageHandler.GlobalSharedCacheEnabled)
                     e.PropertyChanged += exportChanged; // If packages are not shared there is no point to attaching this

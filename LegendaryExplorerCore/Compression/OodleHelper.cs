@@ -13,37 +13,51 @@ namespace LegendaryExplorerCore.Compression
     /// </summary>
     class OodleHelper
     {
-        [DllImport(CompressionHelper.OODLE_DLL_NAME, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
-        private static extern int OodleLeviathanDecompress([In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
 
-        //[DllImport(CompressionHelper.OODLE_DLL_NAME, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
-        //private static extern int OodleLeviathanCompress(int compressionLevel, [In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
 
-        public static uint Decompress(byte[] src, uint srcLen, byte[] dst, uint dstLen = 0)
+        //[DllImport(CompressionHelper.OODLE_DLL_NAME)]
+        //private static extern int OodleLZ_Compress(OodleFormat format, byte[] buffer, long bufferSize, byte[] outputBuffer, OodleCompressionLevel level, uint unused1, uint unused2, uint unused3);
+
+        [DllImport(CompressionHelper.OODLE_DLL_NAME)]
+        private static extern int OodleLZ_Decompress(byte[] buffer, long bufferSize, byte[] outputBuffer, long outputBufferSize,
+            uint a, uint b, ulong c, uint d, uint e, uint f, uint g, uint h, uint i, uint threadModule);
+
+        //public static byte[] Compress(byte[] buffer, int size, OodleFormat format, OodleCompressionLevel level)
+        //{
+        //    uint compressedBufferSize = GetCompressionBound((uint)size);
+        //    byte[] compressedBuffer = new byte[compressedBufferSize];
+
+        //    int compressedCount = OodleLZ_Compress(format, buffer, size, compressedBuffer, level, 0, 0, 0);
+
+        //    byte[] outputBuffer = new byte[compressedCount];
+        //    Buffer.BlockCopy(compressedBuffer, 0, outputBuffer, 0, compressedCount);
+
+        //    return outputBuffer;
+        //}
+
+        public static byte[] Decompress(byte[] buffer, int size, int uncompressedSize)
         {
-            if (dstLen == 0)
-                dstLen = (uint)dst.Length;
+            byte[] decompressedBuffer = new byte[uncompressedSize];
+            int decompressedCount = OodleLZ_Decompress(buffer, size, decompressedBuffer, uncompressedSize, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3);
 
-            int status = OodleLeviathanDecompress(src, srcLen, dst, ref dstLen);
-            if (status != 0)
-                return 0;
-
-            return dstLen;
+            if (decompressedCount == uncompressedSize)
+            {
+                return decompressedBuffer;
+            }
+            else if (decompressedCount < uncompressedSize)
+            {
+                return decompressedBuffer.Take(decompressedCount).ToArray();
+            }
+            else
+            {
+                throw new Exception("There was an error while decompressing");
+            }
         }
 
-        //public static byte[] Compress(byte[] src, int compressionLevel = -1)
-        //{
-        //    byte[] tmpbuf = new byte[(src.Length * 2) + 128];
-        //    uint dstLen = (uint)tmpbuf.Length;
+        private static uint GetCompressionBound(uint bufferSize)
+        {
+            return bufferSize + 274 * ((bufferSize + 0x3FFFF) / 0x40000);
+        }
 
-        //    int status = ZlibCompress(compressionLevel, src, (uint)src.Length, tmpbuf, ref dstLen);
-        //    if (status != 0)
-        //        return new byte[0];
-
-        //    byte[] dst = new byte[dstLen];
-        //    Array.Copy(tmpbuf, dst, (int)dstLen);
-
-        //    return dst;
-        //}
     }
 }
