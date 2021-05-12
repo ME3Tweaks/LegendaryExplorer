@@ -525,6 +525,9 @@
     <Page Update="Tools\InterpEditor\InterpEditorWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Tools\MountEditor\MountEditorWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Tools\PathfindingEditor\PathfindingEditorWindow.xaml">
       <SubType>Designer</SubType>
     </Page>

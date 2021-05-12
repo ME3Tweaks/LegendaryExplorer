@@ -16,6 +16,7 @@ using LegendaryExplorer.Tools.AssetDatabase;
 using LegendaryExplorer.Tools.PathfindingEditor;
 using LegendaryExplorer.Tools.WwiseEditor;
 using LegendaryExplorer.Tools.TFCCompactor;
+using LegendaryExplorer.Tools.MountEditor;
 using Newtonsoft.Json;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Packages;
@@ -222,11 +223,11 @@ namespace LegendaryExplorer
 //            set.Add(new Tool
 //            {
 //                name = "Coalesced Editor",
-//                type = typeof(MassEffect3.CoalesceTool.CoalescedEditor),
+//                type = typeof(Tools.CoalescedEditor.CoalescedEditorWindow),
 //                icon = Application.Current.FindResource("iconCoalescedEditor") as ImageSource,
 //                open = () =>
 //                {
-//                    (new MassEffect3.CoalesceTool.CoalescedEditor()).Show();
+//                    (new Tools.CoalescedEditor.CoalescedEditorWindow()).Show();
 //                },
 //                tags = new List<string> { "utility", "coal", "ini", "bin" },
 //                subCategory = "Extractors + Repackers",
@@ -479,19 +480,19 @@ namespace LegendaryExplorer
                 subCategory = "Scene Shop",
                 description = "FaceFX Editor is the toolset’s highly-simplified version of FaceFX Studio. With this tool modders can edit FaceFX AnimSets (FXEs) for all three games.",
             });
-            //            set.Add(new Tool
-            //            {
-            //                name = "Mount Editor",
-            //                type = typeof(MountEditor.MountEditorWPF),
-            //                icon = Application.Current.FindResource("iconMountEditor") as ImageSource,
-            //                open = () =>
-            //                {
-            //                    new MountEditor.MountEditorWPF().Show();
-            //                },
-            //                tags = new List<string> { "developer", "mount", "dlc", "me2", "me3" },
-            //                subCategory = "Core",
-            //                description = "Mount Editor allows you to create or modify mount.dlc files, which are used in DLC for Mass Effect 2 and Mass Effect 3."
-            //            });
+            set.Add(new Tool
+            {
+                name = "Mount Editor",
+                type = typeof(MountEditorWindow),
+                icon = Application.Current.FindResource("iconMountEditor") as ImageSource,
+                open = () =>
+                {
+                    new MountEditorWindow().Show();
+                },
+                tags = new List<string> { "developer", "mount", "dlc", "me2", "me3" },
+                subCategory = "Core",
+                description = "Mount Editor allows you to create or modify mount.dlc files, which are used in DLC for Mass Effect 2 and Mass Effect 3."
+            });
             set.Add(new Tool
             {
                 name = "TLK Manager",
