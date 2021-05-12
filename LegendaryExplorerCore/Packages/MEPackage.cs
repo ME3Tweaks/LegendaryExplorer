@@ -474,6 +474,7 @@ namespace LegendaryExplorerCore.Packages
             var savedPos = packageReader.Position;
             packageReader.Skip(NumCompressedChunksAtLoad * 16); //skip chunk table so we can find package tag
 
+            // What's this?
             if (Game == MEGame.LE1)
             {
                 packageReader.Skip(8); // There is 8 bytes before package tag. So not sure what this is
