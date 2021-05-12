@@ -17,6 +17,7 @@ namespace LegendaryExplorerCore
         public string ME1Directory { get; set; }
         public string ME2Directory { get; set; }
         public string ME3Directory { get; set; }
+        public string LEDirectory { get; set; }
 
 #pragma warning disable
         public event PropertyChangedEventHandler PropertyChanged;

@@ -10,7 +10,7 @@ using Microsoft.Win32;
 
 namespace LegendaryExplorerCore.GameFilesystem
 {
-    public static class ME3Directory
+    public static class LE3Directory
     {
         public static string BioGamePath => GetBioGamePath();
         public static string GetBioGamePath(string rootPathOverride = null)
@@ -41,7 +41,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         {
             if (rootPathOverride == null) rootPathOverride = DefaultGamePath;
             if (rootPathOverride == null) return null; // There is no usable root path
-            return Path.Combine(rootPathOverride, "Binaries", "Win32");
+            return Path.Combine(rootPathOverride, "Binaries", "Win64");
         }
 
         public static string ExecutablePath => GetExecutablePath();
@@ -57,7 +57,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         {
             if (rootPathOverride == null) rootPathOverride = DefaultGamePath;
             if (rootPathOverride == null) return null; // There is no usable root path
-            return Path.Combine(GetExecutableDirectory(rootPathOverride), "asi");
+            return null; //Path.Combine(GetExecutableDirectory(rootPathOverride), "asi"); //TODO: Implement in LEX once asis work
         }
 
         public static string TextureModMarkerPath => GetTextureModMarkerPath();
@@ -65,25 +65,19 @@ namespace LegendaryExplorerCore.GameFilesystem
         {
             if (rootPathOverride == null) rootPathOverride = DefaultGamePath;
             if (rootPathOverride == null) return null; // There is no usable root path
-            return Path.Combine(GetCookedPCPath(rootPathOverride), "adv_combat_tutorial_xbox_D_Int.afc");
-        }
-
-        public static string TestPatchSFARPath => GetTestPatchSFARPath();
-        public static string GetTestPatchSFARPath(string rootPathOverride = null)
-        {
-            if (rootPathOverride == null) rootPathOverride = DefaultGamePath;
-            if (rootPathOverride == null) return null; // There is no usable root path
-            return Path.Combine(GetBioGamePath(rootPathOverride), "Patches", "PCConsole", "Patch_001.sfar");
+            return null; //Path.Combine(GetCookedPCPath(rootPathOverride), "adv_combat_tutorial_xbox_D_Int.afc");
         }
 
         public static readonly ReadOnlyCollection<string> ExecutableNames = Array.AsReadOnly(new [] { "MassEffect3.exe" });
 
         public static ReadOnlyCollection<string> VanillaDlls = Array.AsReadOnly(new []
         {
-            "atiags.dll",
-            "binkw32.dll",
-            "binkw23.dll", //We put this here so this is not detected as non-vanilla since almost all modded games will have this
-            "PhysXExtensions.dll"
+            "amd_ags_x64.dll",
+            "bink2w64.dll",
+            "dbdata.dll",
+            "oo2core_8_win64.dll",
+            "PhysXCooking64.dll",
+            "PhysXCore64.dll"
         });
 
         public static string BioWareDocumentsPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), @"BioWare", @"Mass Effect 3");
@@ -116,40 +110,41 @@ namespace LegendaryExplorerCore.GameFilesystem
 
 
 
-        static ME3Directory()
+        static LE3Directory()
         {
             ReloadDefaultGamePath(false);
         }
 
         public static void ReloadDefaultGamePath(bool forceUseRegistry = false)
         {
-            if (!forceUseRegistry && !string.IsNullOrEmpty(LegendaryExplorerCorLibSettings.Instance?.ME3Directory))
+            if (!forceUseRegistry && !string.IsNullOrEmpty(LegendaryExplorerCorLibSettings.Instance?.LEDirectory))
             {
-                DefaultGamePath = LegendaryExplorerCorLibSettings.Instance.ME3Directory;
+                DefaultGamePath = Path.Join(LegendaryExplorerCorLibSettings.Instance.LEDirectory, "ME3");
             }
             else
             {
 #if WINDOWS
-                string hkey32 = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\";
-                string hkey64 = @"HKEY_LOCAL_MACHINE\SOFTWARE\";
-                string subkey = @"BioWare\Mass Effect 3";
+                // TODO: Implement in LEX. Could extract a method as this will be the exact same as LE1 & LE2
+                //string hkey32 = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\";
+                //string hkey64 = @"HKEY_LOCAL_MACHINE\SOFTWARE\";
+                //string subkey = @"BioWare\Mass Effect 3";
 
-                string keyName = hkey32 + subkey;
-                string test = (string)Registry.GetValue(keyName, "Install Dir", null);
-                if (test != null)
-                {
-                    DefaultGamePath = test;
-                    LegendaryExplorerCorLibSettings.Instance.ME3Directory = DefaultGamePath;
-                    return;
-                }
+                //string keyName = hkey32 + subkey;
+                //string test = (string)Registry.GetValue(keyName, "Install Dir", null);
+                //if (test != null)
+                //{
+                //    DefaultGamePath = test;
+                //    LegendaryExplorerCorLibSettings.Instance.ME3Directory = DefaultGamePath;
+                //    return;
+                //}
 
-                keyName = hkey64 + subkey;
-                DefaultGamePath = (string)Registry.GetValue(keyName, "Install Dir", null);
-                if (DefaultGamePath != null)
-                {
-                    DefaultGamePath += Path.DirectorySeparatorChar;
-                    LegendaryExplorerCorLibSettings.Instance.ME3Directory = DefaultGamePath;
-                }
+                //keyName = hkey64 + subkey;
+                //DefaultGamePath = (string)Registry.GetValue(keyName, "Install Dir", null);
+                //if (DefaultGamePath != null)
+                //{
+                //    DefaultGamePath += Path.DirectorySeparatorChar;
+                //    LegendaryExplorerCorLibSettings.Instance.ME3Directory = DefaultGamePath;
+                //}
 #endif
             }
         }
@@ -158,44 +153,48 @@ namespace LegendaryExplorerCore.GameFilesystem
         {
             ["DLC_HEN_PR"] = "From Ashes",
             ["DLC_OnlinePassHidCE"] = "Collectors Edition Content",
-            ["DLC_CON_MP1"] = "Resurgence",
-            ["DLC_CON_MP2"] = "Rebellion",
-            ["DLC_CON_MP3"] = "Earth",
             ["DLC_CON_END"] = "Extended Cut",
             ["DLC_CON_GUN01"] = "Firefight Pack",
             ["DLC_EXP_Pack001"] = "Leviathan",
             ["DLC_UPD_Patch01"] = "Multiplayer Balance Changes Cache 1",
-            ["DLC_CON_MP4"] = "Retaliation",
             ["DLC_CON_GUN02"] = "Groundside Resistance Pack",
             ["DLC_EXP_Pack002"] = "Omega",
             ["DLC_CON_APP01"] = "Alternate Appearance Pack 1",
             ["DLC_UPD_Patch02"] = "Multiplayer Balance Changes Cache 2",
-            ["DLC_CON_MP5"] = "Reckoning",
             ["DLC_EXP_Pack003_Base"] = "Citadel - Part I",
             ["DLC_EXP_Pack003"] = "Citadel - Part II",
-            ["DLC_CON_DH1"] = "Genesis 2"
+            ["DLC_CON_DH1"] = "Genesis 2",
+            ["DLC_CON_PRO1"] = "Unknown",
+            ["DLC_CON_PRO2"] = "Unknown",
+            ["DLC_CON_PRO3"] = "Unknown",
+            ["DLC_CON_PRO4"] = "Unknown",
+            ["DLC_CON_PRO5"] = "Unknown",
+            ["DLC_CON_PRO6"] = "Unknown",
+            ["DLC_METR_Patch01"] = "Day 1 Patch?"
         };
 
         public static readonly ReadOnlyCollection<string> OfficialDLC = Array.AsReadOnly(new[]
         {
             "DLC_HEN_PR",
             "DLC_OnlinePassHidCE",
-            "DLC_CON_MP1",
-            "DLC_CON_MP2",
-            "DLC_CON_MP3",
             "DLC_CON_END",
             "DLC_CON_GUN01",
             "DLC_EXP_Pack001",
             "DLC_UPD_Patch01",
-            "DLC_CON_MP4",
             "DLC_CON_GUN02",
             "DLC_EXP_Pack002",
             "DLC_CON_APP01",
             "DLC_UPD_Patch02",
-            "DLC_CON_MP5",
             "DLC_EXP_Pack003_Base",
             "DLC_EXP_Pack003",
-            "DLC_CON_DH1"
+            "DLC_CON_DH1",
+            "DLC_CON_PRO1",
+            "DLC_CON_PRO2",
+            "DLC_CON_PRO3",
+            "DLC_CON_PRO4",
+            "DLC_CON_PRO5",
+            "DLC_CON_PRO6",
+            "DLC_METR_Patch01"
         });
     }
 }

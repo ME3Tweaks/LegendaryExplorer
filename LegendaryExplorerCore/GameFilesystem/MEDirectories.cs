@@ -13,19 +13,18 @@ namespace LegendaryExplorerCore.GameFilesystem
     {
         public static string GetCookedPath(MEGame game, string gamePathRoot = null)
         {
-            switch (game)
+            return game switch
             {
-                case MEGame.ME1:
-                    return ME1Directory.GetCookedPCPath(gamePathRoot);
-                case MEGame.ME2:
-                    return ME2Directory.GetCookedPCPath(gamePathRoot);
-                case MEGame.ME3:
-                    return ME3Directory.GetCookedPCPath(gamePathRoot);
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(game), game, null);
-            }
+                MEGame.ME1 => ME1Directory.GetCookedPCPath(gamePathRoot),
+                MEGame.ME2 => ME2Directory.GetCookedPCPath(gamePathRoot),
+                MEGame.ME3 => ME3Directory.GetCookedPCPath(gamePathRoot),
+                MEGame.LE1 => LE1Directory.GetCookedPCPath(gamePathRoot),
+                MEGame.LE2 => LE3Directory.GetCookedPCPath(gamePathRoot),
+                MEGame.LE3 => LE3Directory.GetCookedPCPath(gamePathRoot),
+                _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
+            };
         }
-        
+
         /// <summary>
         /// Gets the default game path for the listed game.
         /// </summary>
@@ -33,195 +32,200 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// <returns></returns>
         public static string GetDefaultGamePath(MEGame game)
         {
-            switch (game)
+            return game switch
             {
-                case MEGame.ME1:
-                    return ME1Directory.DefaultGamePath;
-                case MEGame.ME2:
-                    return ME2Directory.DefaultGamePath;
-                case MEGame.ME3:
-                    return ME3Directory.DefaultGamePath;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(game), game, null);
-            }
+                MEGame.ME1 => ME1Directory.DefaultGamePath,
+                MEGame.ME2 => ME2Directory.DefaultGamePath,
+                MEGame.ME3 => ME3Directory.DefaultGamePath,
+                MEGame.LE1 => LE1Directory.DefaultGamePath,
+                MEGame.LE2 => LE2Directory.DefaultGamePath,
+                MEGame.LE3 => LE3Directory.DefaultGamePath,
+                _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
+            };
         }
 
         public static string GetBioGamePath(MEGame game, string gamePathRoot = null)
         {
-            switch (game)
+            return game switch
             {
-                case MEGame.ME1:
-                    return ME1Directory.GetBioGamePath(gamePathRoot);
-                case MEGame.ME2:
-                    return ME2Directory.GetBioGamePath(gamePathRoot);
-                case MEGame.ME3:
-                    return ME3Directory.GetBioGamePath(gamePathRoot);
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(game), game, null);
-            }
+                MEGame.ME1 => ME1Directory.GetBioGamePath(gamePathRoot),
+                MEGame.ME2 => ME2Directory.GetBioGamePath(gamePathRoot),
+                MEGame.ME3 => ME3Directory.GetBioGamePath(gamePathRoot),
+                MEGame.LE1 => LE1Directory.GetBioGamePath(gamePathRoot),
+                MEGame.LE2 => LE2Directory.GetBioGamePath(gamePathRoot),
+                MEGame.LE3 => LE3Directory.GetBioGamePath(gamePathRoot),
+                _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
+            };
         }
 
         public static string GetDLCPath(MEGame game, string gamePathRoot = null)
         {
-            switch (game)
+            return game switch
             {
-                case MEGame.ME1:
-                    return ME1Directory.GetDLCPath(gamePathRoot);
-                case MEGame.ME2:
-                    return ME2Directory.GetDLCPath(gamePathRoot);
-                case MEGame.ME3:
-                    return ME3Directory.GetDLCPath(gamePathRoot);
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(game), game, null);
-            }
+                MEGame.ME1 => ME1Directory.GetDLCPath(gamePathRoot),
+                MEGame.ME2 => ME2Directory.GetDLCPath(gamePathRoot),
+                MEGame.ME3 => ME3Directory.GetDLCPath(gamePathRoot),
+                MEGame.LE1 => LE1Directory.GetDLCPath(gamePathRoot),
+                MEGame.LE2 => LE2Directory.GetDLCPath(gamePathRoot),
+                MEGame.LE3 => LE3Directory.GetDLCPath(gamePathRoot),
+                _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
+            };
         }
 
 
         public static string GetExecutablePath(MEGame game, string gamePathRoot = null)
         {
-            switch (game)
+            return game switch
             {
-                case MEGame.ME1:
-                    return ME1Directory.GetExecutablePath(gamePathRoot);
-                case MEGame.ME2:
-                    return ME2Directory.GetExecutablePath(gamePathRoot);
-                case MEGame.ME3:
-                    return ME3Directory.GetExecutablePath(gamePathRoot);
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(game), game, null);
-            }
+                MEGame.ME1 => ME1Directory.GetExecutablePath(gamePathRoot),
+                MEGame.ME2 => ME2Directory.GetExecutablePath(gamePathRoot),
+                MEGame.ME3 => ME3Directory.GetExecutablePath(gamePathRoot),
+                MEGame.LE1 => LE1Directory.GetExecutablePath(gamePathRoot),
+                MEGame.LE2 => LE2Directory.GetExecutablePath(gamePathRoot),
+                MEGame.LE3 => LE3Directory.GetExecutablePath(gamePathRoot),
+                _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
+            };
         }
 
         public static string GetExecutableFolderPath(MEGame game, string gamePathRoot = null)
         {
-            switch (game)
+            return game switch
             {
-                case MEGame.ME1:
-                    return ME1Directory.GetExecutableDirectory(gamePathRoot);
-                case MEGame.ME2:
-                    return ME2Directory.GetExecutableDirectory(gamePathRoot);
-                case MEGame.ME3:
-                    return ME3Directory.GetExecutableDirectory(gamePathRoot);
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(game), game, null);
-            }
+                MEGame.ME1 => ME1Directory.GetExecutableDirectory(gamePathRoot),
+                MEGame.ME2 => ME2Directory.GetExecutableDirectory(gamePathRoot),
+                MEGame.ME3 => ME3Directory.GetExecutableDirectory(gamePathRoot),
+                MEGame.LE1 => LE1Directory.GetExecutableDirectory(gamePathRoot),
+                MEGame.LE2 => LE2Directory.GetExecutableDirectory(gamePathRoot),
+                MEGame.LE3 => LE3Directory.GetExecutableDirectory(gamePathRoot),
+                _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
+            };
         }
 
         public static string GetASIPath(MEGame game, string gamePathRoot = null)
         {
-            switch (game)
+            return game switch
             {
-                case MEGame.ME1:
-                    return ME1Directory.GetASIPath(gamePathRoot);
-                case MEGame.ME2:
-                    return ME2Directory.GetASIPath(gamePathRoot);
-                case MEGame.ME3:
-                    return ME3Directory.GetASIPath(gamePathRoot);
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(game), game, null);
-            }
+                MEGame.ME1 => ME1Directory.GetASIPath(gamePathRoot),
+                MEGame.ME2 => ME2Directory.GetASIPath(gamePathRoot),
+                MEGame.ME3 => ME3Directory.GetASIPath(gamePathRoot),
+                MEGame.LE1 => LE1Directory.GetASIPath(gamePathRoot),
+                MEGame.LE2 => LE2Directory.GetASIPath(gamePathRoot),
+                MEGame.LE3 => LE3Directory.GetASIPath(gamePathRoot),
+                _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
+            };
         }
 
         public static string GetTextureModMarkerPath(MEGame game, string gamePathRoot)
         {
-            switch (game)
+            return game switch
             {
-                case MEGame.ME1:
-                    return ME1Directory.GetTextureModMarkerPath(gamePathRoot);
-                case MEGame.ME2:
-                    return ME2Directory.GetTextureModMarkerPath(gamePathRoot);
-                case MEGame.ME3:
-                    return ME3Directory.GetTextureModMarkerPath(gamePathRoot); 
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(game), game, null);
-            }
+                MEGame.ME1 => ME1Directory.GetTextureModMarkerPath(gamePathRoot),
+                MEGame.ME2 => ME2Directory.GetTextureModMarkerPath(gamePathRoot),
+                MEGame.ME3 => ME3Directory.GetTextureModMarkerPath(gamePathRoot),
+                MEGame.LE1 => LE1Directory.GetTextureModMarkerPath(gamePathRoot),
+                MEGame.LE2 => LE2Directory.GetTextureModMarkerPath(gamePathRoot),
+                MEGame.LE3 => LE3Directory.GetTextureModMarkerPath(gamePathRoot),
+                _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
+            };
         }
 
         public static ReadOnlyCollection<string> ExecutableNames(MEGame game)
         {
-            switch (game)
+            return game switch
             {
-                case MEGame.ME1:
-                    return ME1Directory.ExecutableNames; 
-                case MEGame.ME2:
-                    return ME2Directory.ExecutableNames;
-                case MEGame.ME3:
-                    return ME3Directory.ExecutableNames;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(game), game, null);
-            }
+                MEGame.ME1 => ME1Directory.ExecutableNames,
+                MEGame.ME2 => ME2Directory.ExecutableNames,
+                MEGame.ME3 => ME3Directory.ExecutableNames,
+                MEGame.LE1 => LE1Directory.ExecutableNames,
+                MEGame.LE2 => LE2Directory.ExecutableNames,
+                MEGame.LE3 => LE3Directory.ExecutableNames,
+                _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
+            };
         }
 
         public static string GetLODConfigFile(MEGame game)
         {
-            switch (game)
+            return game switch
             {
-                case MEGame.ME1:
-                    return ME1Directory.LODConfigFile;
-                case MEGame.ME2:
-                    return ME2Directory.LODConfigFile;
-                case MEGame.ME3:
-                    return ME3Directory.LODConfigFile;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(game), game, null);
-            }
+                MEGame.ME1 => ME1Directory.LODConfigFile,
+                MEGame.ME2 => ME2Directory.LODConfigFile,
+                MEGame.ME3 => ME3Directory.LODConfigFile,
+                MEGame.LE1 => LE1Directory.LODConfigFile,
+                MEGame.LE2 => LE2Directory.LODConfigFile,
+                MEGame.LE3 => LE3Directory.LODConfigFile,
+                _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
+            };
         }
 
         public static ReadOnlyCollection<string> VanillaDlls(MEGame game)
         {
-            switch (game)
+            return game switch
             {
-                case MEGame.ME1:
-                    return ME1Directory.VanillaDlls;
-                case MEGame.ME2:
-                    return ME2Directory.VanillaDlls;
-                case MEGame.ME3:
-                    return ME3Directory.VanillaDlls;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(game), game, null);
-            }
+                MEGame.ME1 => ME1Directory.VanillaDlls,
+                MEGame.ME2 => ME2Directory.VanillaDlls,
+                MEGame.ME3 => ME3Directory.VanillaDlls,
+                MEGame.LE1 => LE1Directory.VanillaDlls,
+                MEGame.LE2 => LE2Directory.VanillaDlls,
+                MEGame.LE3 => LE3Directory.VanillaDlls,
+                _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
+            };
             throw new NotImplementedException();
         }
 
         public static string CookedName(MEGame game)
         {
-            switch (game)
+            return game switch
             {
-                case MEGame.ME1:
-                    return ME1Directory.CookedName;
-                case MEGame.ME2:
-                    return ME2Directory.CookedName;
-                case MEGame.ME3:
-                    return ME3Directory.CookedName;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(game), game, null);
-            }
+                MEGame.ME1 => ME1Directory.CookedName,
+                MEGame.ME2 => ME2Directory.CookedName,
+                MEGame.ME3 => ME3Directory.CookedName,
+                MEGame.LE1 => LE1Directory.CookedName,
+                MEGame.LE2 => LE2Directory.CookedName,
+                MEGame.LE3 => LE3Directory.CookedName,
+                _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
+            };
+        }
+
+        public static string GetTOCFile(MEGame game)
+        {
+            return game switch
+            {
+                MEGame.ME3 => ME3Directory.TocFile,
+                MEGame.LE1 => LE1Directory.TocFile,
+                MEGame.LE2 => LE2Directory.TocFile,
+                MEGame.LE3 => LE3Directory.TocFile,
+                _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
+            };
         }
 
         public static ReadOnlyCollection<string> OfficialDLC(MEGame game)
         {
-            switch (game)
+            return game switch
             {
-                case MEGame.ME1:
-                    return ME1Directory.OfficialDLC;
-                case MEGame.ME2:
-                    return ME2Directory.OfficialDLC;
-                case MEGame.ME3:
-                    return ME3Directory.OfficialDLC;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(game), game, null);
-            }
+                MEGame.ME1 => ME1Directory.OfficialDLC,
+                MEGame.ME2 => ME2Directory.OfficialDLC,
+                MEGame.ME3 => ME3Directory.OfficialDLC,
+                MEGame.LE1 => LE1Directory.OfficialDLC,
+                MEGame.LE2 => LE2Directory.OfficialDLC,
+                MEGame.LE3 => LE3Directory.OfficialDLC,
+                _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
+            };
         }
 
         public static bool IsInBasegame(this IMEPackage pcc, string gameRootOverride = null) => IsInBasegame(pcc.FilePath, pcc.Game, gameRootOverride);
 
-        public static bool IsInBasegame(string path, MEGame game, string gameRootOverride = null) => game != MEGame.UDK && game != MEGame.Unknown && path.StartsWith(GetCookedPath(game, gameRootOverride));
+        public static bool IsInBasegame(string path, MEGame game, string gameRootOverride = null)
+        {
+            if (game == MEGame.UDK || game == MEGame.Unknown) return false;
+            else if (game == MEGame.LE1 && path.StartsWith(LE1Directory.GetISACTPath(gameRootOverride))) return true;
+            return path.StartsWith(GetCookedPath(game, gameRootOverride));
+        }
 
         public static bool IsInOfficialDLC(this IMEPackage pcc, string gameRootOverride = null) => IsInOfficialDLC(pcc.FilePath, pcc.Game, gameRootOverride);
 
         public static bool IsInOfficialDLC(string path, MEGame game, string gameRootOverride = null)
         {
-            if (game == MEGame.UDK || game == MEGame.Unknown)
+            if (game == MEGame.UDK || game == MEGame.Unknown || game == MEGame.LE1)
             {
                 return false;
             }
@@ -237,7 +241,10 @@ namespace LegendaryExplorerCore.GameFilesystem
         {
             ME1Directory.ReloadDefaultGamePath(forceUseRegistry);
             ME2Directory.ReloadDefaultGamePath(forceUseRegistry); 
-            ME3Directory.ReloadDefaultGamePath(forceUseRegistry); 
+            ME3Directory.ReloadDefaultGamePath(forceUseRegistry);
+            LE1Directory.ReloadDefaultGamePath(forceUseRegistry);
+            LE2Directory.ReloadDefaultGamePath(forceUseRegistry);
+            LE3Directory.ReloadDefaultGamePath(forceUseRegistry);
         }
 
         public static void SaveSettings(List<string> BIOGames)
@@ -260,6 +267,14 @@ namespace LegendaryExplorerCore.GameFilesystem
                 {
                     LegendaryExplorerCorLibSettings.Instance.ME3Directory = BIOGames[2];
                     ME3Directory.DefaultGamePath = BIOGames[2];
+                }
+
+                if (!string.IsNullOrEmpty(BIOGames[3]))
+                {
+                    LegendaryExplorerCorLibSettings.Instance.LEDirectory = BIOGames[3];
+                    LE1Directory.ReloadDefaultGamePath();
+                    LE2Directory.ReloadDefaultGamePath();
+                    LE3Directory.ReloadDefaultGamePath();
                 }
             }
             catch (Exception e)
@@ -289,6 +304,9 @@ namespace LegendaryExplorerCore.GameFilesystem
                         break;
                     case MEGame.ME2:
                     case MEGame.ME3:
+                    case MEGame.LE1:
+                    case MEGame.LE2:
+                    case MEGame.LE3:
                         predicate = s => s.ToLowerInvariant().EndsWith(".pcc", true, null) || s.ToLowerInvariant().EndsWith(".tfc", true, null);
                         break;
                 }
@@ -299,17 +317,16 @@ namespace LegendaryExplorerCore.GameFilesystem
 
         public static CaseInsensitiveDictionary<string> OfficialDLCNames(MEGame game)
         {
-            switch (game)
+            return game switch
             {
-                case MEGame.ME1:
-                    return ME1Directory.OfficialDLCNames;
-                case MEGame.ME2:
-                    return ME2Directory.OfficialDLCNames;
-                case MEGame.ME3:
-                    return ME3Directory.OfficialDLCNames;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(game), game, null);
-            }
+                MEGame.ME1 => ME1Directory.OfficialDLCNames,
+                MEGame.ME2 => ME2Directory.OfficialDLCNames,
+                MEGame.ME3 => ME3Directory.OfficialDLCNames,
+                MEGame.LE1 => LE1Directory.OfficialDLCNames,
+                MEGame.LE2 => LE2Directory.OfficialDLCNames,
+                MEGame.LE3 => LE3Directory.OfficialDLCNames,
+                _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
+            };
         }
     }
 }
