@@ -288,7 +288,16 @@ namespace LegendaryExplorerCore.Packages
                 version == MEPackage.ME2DemoUnrealVersion && licenseVersion == MEPackage.ME2LicenseeVersion ||
                 version == MEPackage.ME1UnrealVersion && licenseVersion == MEPackage.ME1LicenseeVersion ||
                 version == MEPackage.ME1PS3UnrealVersion && licenseVersion == MEPackage.ME1PS3LicenseeVersion ||
-                version == MEPackage.ME1XboxUnrealVersion && licenseVersion == MEPackage.ME1XboxLicenseeVersion)
+                version == MEPackage.ME1XboxUnrealVersion && licenseVersion == MEPackage.ME1XboxLicenseeVersion ||
+
+                // LEGENDARY
+                version == MEPackage.LE1UnrealVersion && licenseVersion == MEPackage.LE1LicenseeVersion ||
+            version == MEPackage.LE2UnrealVersion && licenseVersion == MEPackage.LE2LicenseeVersion ||
+            version == MEPackage.LE3UnrealVersion && licenseVersion == MEPackage.LE3LicenseeVersion
+
+
+
+                )
             {
                 stream.Position -= 8; //reset to start
                 pkg = quickLoad ? MEConstructorQuickStreamDelegate(stream, filePath) : MEStreamConstructorDelegate(stream, filePath);
@@ -303,7 +312,7 @@ namespace LegendaryExplorerCore.Packages
             }
             else
             {
-                throw new FormatException("Not an ME1, ME2, ME3, or UDK (2015) package file.");
+                throw new FormatException("Not an ME1, ME2, ME3, LE1, LE2, LE3, or UDK (2015) package file.");
             }
 
             if (useSharedCache)

@@ -83,6 +83,16 @@ namespace LegendaryExplorerCore.Packages
         public const ushort ME3Xenon2011DemoLicenseeVersion = 185;
         public const ushort ME3LicenseeVersion = 194;
 
+        // LEGENDARY EDITION
+        public const ushort LE1UnrealVersion = 684;
+        public const ushort LE1LicenseeVersion = 171;
+
+        public const ushort LE2UnrealVersion = 0;
+        public const ushort LE2LicenseeVersion = 0;
+
+        public const ushort LE3UnrealVersion = 1;
+        public const ushort LE3LicenseeVersion = 1;
+
         /// <summary>
         /// Indicates what type of package file this is. 0 is normal, 1 is TESTPATCH patch package.
         /// </summary>
@@ -349,6 +359,18 @@ namespace LegendaryExplorerCore.Packages
                 case ME3UnrealVersion when licenseeVersion == ME3Xenon2011DemoLicenseeVersion:
                     Game = MEGame.ME3;
                     Platform = GamePlatform.Xenon;
+                    break;
+                case LE1UnrealVersion when licenseeVersion == LE1LicenseeVersion:
+                    Game = MEGame.LE1;
+                    Platform = GamePlatform.PC;
+                    break;
+                case LE2UnrealVersion when licenseeVersion == LE2LicenseeVersion:
+                    Game = MEGame.LE2;
+                    Platform = GamePlatform.PC;
+                    break;
+                case LE3UnrealVersion when licenseeVersion == LE3LicenseeVersion:
+                    Game = MEGame.LE3;
+                    Platform = GamePlatform.PC;
                     break;
                 default:
                     throw new FormatException("Not a Mass Effect Package!");

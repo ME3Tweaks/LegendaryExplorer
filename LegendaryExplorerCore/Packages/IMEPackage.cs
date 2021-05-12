@@ -18,7 +18,11 @@ namespace LegendaryExplorerCore.Packages
         ME1,
         ME2,
         ME3,
-        UDK
+        // Going to need to add a bunch of checks for >= and <= game versions for UDK
+        LE1,
+        LE2,
+        LE3,
+        UDK,
     }
 
     public enum MELocalization
