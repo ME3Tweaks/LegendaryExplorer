@@ -241,7 +241,7 @@ namespace LegendaryExplorerCore.Unreal
                                 if (size != 1)
                                 {
                                     NameReference enumType;
-                                    if (pcc.Game == MEGame.ME3 || pcc.Game == MEGame.UDK || pcc.Platform == MEPackage.GamePlatform.PS3)
+                                    if (pcc.Game is MEGame.ME3 or MEGame.LE1 or MEGame.LE2 or MEGame.LE3 or MEGame.UDK || pcc.Platform == MEPackage.GamePlatform.PS3)
                                     {
                                         enumType = new NameReference(pcc.GetNameEntry(stream.ReadInt32()), stream.ReadInt32());
                                     }
@@ -332,7 +332,7 @@ namespace LegendaryExplorerCore.Unreal
             if (props.Count > 0)
             {
                 //error reading props.
-                if (props[props.Count - 1].PropType != PropertyType.None && requireNoneAtEnd)
+                if (props[^1].PropType != PropertyType.None && requireNoneAtEnd)
                 {
                     if (entry != null)
                     {
@@ -348,7 +348,7 @@ namespace LegendaryExplorerCore.Unreal
 #endif
                 }
                 //remove None Property
-                if (props[props.Count - 1].PropType == PropertyType.None && !includeNoneProperty)
+                if (props[^1].PropType == PropertyType.None && !includeNoneProperty)
                 {
                     props.RemoveAt(props.Count - 1);
                 }
@@ -373,6 +373,10 @@ namespace LegendaryExplorerCore.Unreal
                 case MEGame.ME2 when parsingEntry != null && parsingEntry.FileRef.Platform == MEPackage.GamePlatform.PS3 && ME3UnrealObjectInfo.Structs.ContainsKey(structType):
                 case MEGame.ME3 when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
                 case MEGame.UDK when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
+                    //HACK: TODO: generate actual info for LE
+                case MEGame.LE1 when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
+                case MEGame.LE2 when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
+                case MEGame.LE3 when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
                     defaultStructDict = defaultStructValuesME3;
                     getDefaultStructValueFunc = ME3UnrealObjectInfo.getDefaultStructValue;
                     break;

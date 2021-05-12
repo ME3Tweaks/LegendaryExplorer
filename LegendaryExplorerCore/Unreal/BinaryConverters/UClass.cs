@@ -55,7 +55,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref me2ps3Unknown);
             }
             sc.Serialize(ref Defaults);
-            if (sc.Game >= MEGame.ME3) //PS3 doesn't seem to use this
+            if (sc.Game is MEGame.ME3 or MEGame.UDK or MEGame.LE3) 
             {
                 sc.Serialize(ref FullFunctionsList, SCExt.Serialize);
             }

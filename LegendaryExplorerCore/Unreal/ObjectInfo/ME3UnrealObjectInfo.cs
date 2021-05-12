@@ -28,6 +28,10 @@ namespace LegendaryExplorerCore.Unreal
                 MEGame.ME2 => ME2UnrealObjectInfo.IsImmutableStruct(structType),
                 MEGame.ME3 => ME3UnrealObjectInfo.IsImmutableStruct(structType),
                 MEGame.UDK => ME3UnrealObjectInfo.IsImmutableStruct(structType),
+                //HACK. TODO: generate actual information for LE games
+                MEGame.LE1 => ME1UnrealObjectInfo.IsImmutableStruct(structType),
+                MEGame.LE2 => ME2UnrealObjectInfo.IsImmutableStruct(structType),
+                MEGame.LE3 => ME3UnrealObjectInfo.IsImmutableStruct(structType),
                 _ => false,
             };
 
@@ -40,6 +44,10 @@ namespace LegendaryExplorerCore.Unreal
                 MEGame.ME2 => ME2UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
                 MEGame.ME3 => ME3UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
                 MEGame.UDK => ME3UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
+                //HACK. TODO: generate actual information for LE games
+                MEGame.LE1 => ME1UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
+                MEGame.LE2 => ME2UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
+                MEGame.LE3 => ME3UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
                 _ => false
             };
 
@@ -75,6 +83,10 @@ namespace LegendaryExplorerCore.Unreal
                 case MEGame.ME2: return ME2UnrealObjectInfo.IsAKnownNativeClass(fullPathName);
                 case MEGame.ME3: return ME3UnrealObjectInfo.IsAKnownNativeClass(fullPathName);
                 case MEGame.UDK: return ME3UnrealObjectInfo.IsAKnownNativeClass(fullPathName);
+                //HACK: TODO: generate actual object info for LE
+                case MEGame.LE1: return ME1UnrealObjectInfo.IsAKnownNativeClass(fullPathName);
+                case MEGame.LE2: return ME2UnrealObjectInfo.IsAKnownNativeClass(fullPathName);
+                case MEGame.LE3: return ME3UnrealObjectInfo.IsAKnownNativeClass(fullPathName);
                 default: return false;
             };
         }
@@ -86,6 +98,10 @@ namespace LegendaryExplorerCore.Unreal
                 MEGame.ME2 => ME2UnrealObjectInfo.getSequenceObjectInfo(className),
                 MEGame.ME3 => ME3UnrealObjectInfo.getSequenceObjectInfo(className),
                 MEGame.UDK => ME3UnrealObjectInfo.getSequenceObjectInfo(className),
+                //HACK: TODO: generate actual object info for LE
+                MEGame.LE1 => ME1UnrealObjectInfo.getSequenceObjectInfo(className),
+                MEGame.LE2 => ME2UnrealObjectInfo.getSequenceObjectInfo(className),
+                MEGame.LE3 => ME3UnrealObjectInfo.getSequenceObjectInfo(className),
                 _ => null
             };
 
@@ -96,6 +112,10 @@ namespace LegendaryExplorerCore.Unreal
                 MEGame.ME2 => ME2UnrealObjectInfo.getEnumTypefromProp(typeName, propName, nonVanillaClassInfo: nonVanillaClassInfo),
                 MEGame.ME3 => ME3UnrealObjectInfo.getEnumTypefromProp(typeName, propName, nonVanillaClassInfo),
                 MEGame.UDK => ME3UnrealObjectInfo.getEnumTypefromProp(typeName, propName, nonVanillaClassInfo) ?? UDKUnrealObjectInfo.getEnumTypefromProp(typeName, propName),
+                //HACK: TODO: generate actual object info for LE
+                MEGame.LE1 => ME1UnrealObjectInfo.getEnumTypefromProp(typeName, propName, nonVanillaClassInfo: nonVanillaClassInfo),
+                MEGame.LE2 => ME2UnrealObjectInfo.getEnumTypefromProp(typeName, propName, nonVanillaClassInfo: nonVanillaClassInfo),
+                MEGame.LE3 => ME3UnrealObjectInfo.getEnumTypefromProp(typeName, propName, nonVanillaClassInfo),
                 _ => null
             };
 
@@ -106,6 +126,10 @@ namespace LegendaryExplorerCore.Unreal
                 MEGame.ME2 => ME2UnrealObjectInfo.getEnumValues(enumName, includeNone),
                 MEGame.ME3 => ME3UnrealObjectInfo.getEnumValues(enumName, includeNone),
                 MEGame.UDK => ME3UnrealObjectInfo.getEnumValues(enumName, includeNone),
+                //HACK: TODO: generate actual object info for LE
+                MEGame.LE1 => ME1UnrealObjectInfo.getEnumValues(enumName, includeNone),
+                MEGame.LE2 => ME2UnrealObjectInfo.getEnumValues(enumName, includeNone),
+                MEGame.LE3 => ME3UnrealObjectInfo.getEnumValues(enumName, includeNone),
                 _ => null
             };
 
@@ -211,6 +235,11 @@ namespace LegendaryExplorerCore.Unreal
                 case MEGame.ME2 when parsingEntry.FileRef.Platform == MEPackage.GamePlatform.PS3:
                 case MEGame.ME3:
                 case MEGame.UDK:
+                //HACK: TODO: generate actual object info for LE
+                case MEGame.LE1:
+                case MEGame.LE2:
+                case MEGame.LE3:
+
                     var res = ME3UnrealObjectInfo.getArrayType(className, propName, export: parsingEntry as ExportEntry);
 #if DEBUG
                     //For debugging only!
@@ -262,6 +291,10 @@ namespace LegendaryExplorerCore.Unreal
                 case MEGame.ME2 when containingExport.FileRef.Platform == MEPackage.GamePlatform.PS3:
                 case MEGame.ME3:
                 case MEGame.UDK:
+                //HACK: TODO: generate actual object info for LE
+                case MEGame.LE1:
+                case MEGame.LE2:
+                case MEGame.LE3:
                     p = ME3UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct, nonVanillaClassInfo, containingExport: containingExport);
                     if (p == null && game == MEGame.UDK)
                     {
@@ -283,6 +316,10 @@ namespace LegendaryExplorerCore.Unreal
                     case MEGame.ME1 when containingExport.FileRef.Platform == MEPackage.GamePlatform.PS3:
                     case MEGame.ME2 when containingExport.FileRef.Platform == MEPackage.GamePlatform.PS3:
                     case MEGame.ME3:
+                    //HACK: TODO: generate actual object info for LE
+                    case MEGame.LE1:
+                    case MEGame.LE2:
+                    case MEGame.LE3:
                         p = ME3UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct);
                         break;
                     case MEGame.UDK:
@@ -308,10 +345,14 @@ namespace LegendaryExplorerCore.Unreal
         {
             switch (game)
             {
+                //HACK: TODO: generate actual object info for LE
+                case MEGame.LE1:
                 case MEGame.ME1:
                     return ME1UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients);
+                case MEGame.LE2:
                 case MEGame.ME2:
                     return ME2UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients);
+                case MEGame.LE3:
                 case MEGame.ME3:
                 case MEGame.UDK:
                     return ME3UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients);
@@ -341,12 +382,16 @@ namespace LegendaryExplorerCore.Unreal
             ClassInfo result = null;
             switch (game)
             {
+                //HACK: TODO: generate actual object info for LE
+                case MEGame.LE1:
                 case MEGame.ME1:
                     _ = ME1UnrealObjectInfo.Classes.TryGetValue(typeName, out result) || ME1UnrealObjectInfo.Structs.TryGetValue(typeName, out result);
                     break;
+                case MEGame.LE2:
                 case MEGame.ME2:
                     _ = ME2UnrealObjectInfo.Classes.TryGetValue(typeName, out result) || ME2UnrealObjectInfo.Structs.TryGetValue(typeName, out result);
                     break;
+                case MEGame.LE3:
                 case MEGame.ME3:
                     _ = ME3UnrealObjectInfo.Classes.TryGetValue(typeName, out result) || ME3UnrealObjectInfo.Structs.TryGetValue(typeName, out result);
                     break;
@@ -363,10 +408,14 @@ namespace LegendaryExplorerCore.Unreal
         {
             switch (game)
             {
+                //HACK: TODO: generate actual object info for LE
+                case MEGame.LE1:
                 case MEGame.ME1:
                     return ME1UnrealObjectInfo.Classes;
+                case MEGame.LE2:
                 case MEGame.ME2:
                     return ME2UnrealObjectInfo.Classes;
+                case MEGame.LE3:
                 case MEGame.UDK:
                 case MEGame.ME3:
                     return ME3UnrealObjectInfo.Classes;
@@ -379,10 +428,14 @@ namespace LegendaryExplorerCore.Unreal
         {
             switch (game)
             {
+                //HACK: TODO: generate actual object info for LE
+                case MEGame.LE1:
                 case MEGame.ME1:
                     return ME1UnrealObjectInfo.Structs;
+                case MEGame.LE2:
                 case MEGame.ME2:
                     return ME2UnrealObjectInfo.Structs;
+                case MEGame.LE3:
                 case MEGame.UDK:
                 case MEGame.ME3:
                     return ME3UnrealObjectInfo.Structs;
@@ -395,10 +448,14 @@ namespace LegendaryExplorerCore.Unreal
         {
             switch (game)
             {
+                //HACK: TODO: generate actual object info for LE
+                case MEGame.LE1:
                 case MEGame.ME1:
                     return ME1UnrealObjectInfo.Enums;
+                case MEGame.LE2:
                 case MEGame.ME2:
                     return ME2UnrealObjectInfo.Enums;
+                case MEGame.LE3:
                 case MEGame.UDK:
                 case MEGame.ME3:
                     return ME3UnrealObjectInfo.Enums;
@@ -422,6 +479,10 @@ namespace LegendaryExplorerCore.Unreal
                 MEGame.ME2 when export.FileRef.Platform == MEPackage.GamePlatform.PS3 => ME3UnrealObjectInfo.generateClassInfo(export, isStruct),
                 MEGame.ME3 => ME3UnrealObjectInfo.generateClassInfo(export, isStruct),
                 MEGame.UDK => ME3UnrealObjectInfo.generateClassInfo(export, isStruct),
+                //HACK: TODO: generate actual object info for LE
+                MEGame.LE1 => ME3UnrealObjectInfo.generateClassInfo(export, isStruct),
+                MEGame.LE2 => ME3UnrealObjectInfo.generateClassInfo(export, isStruct),
+                MEGame.LE3 => ME3UnrealObjectInfo.generateClassInfo(export, isStruct),
                 _ => null
             };
         }
@@ -430,10 +491,14 @@ namespace LegendaryExplorerCore.Unreal
         {
             switch (game)
             {
+                //HACK: TODO: generate actual object info for LE
+                case MEGame.LE1:
                 case MEGame.ME1:
                     return ME1UnrealObjectInfo.getDefaultProperty(propName, propInfo, stripTransients, isImmutable);
+                case MEGame.LE2:
                 case MEGame.ME2:
                     return ME2UnrealObjectInfo.getDefaultProperty(propName, propInfo, stripTransients, isImmutable);
+                case MEGame.LE3:
                 case MEGame.ME3:
                 case MEGame.UDK:
                     return ME3UnrealObjectInfo.getDefaultProperty(propName, propInfo, stripTransients, isImmutable);

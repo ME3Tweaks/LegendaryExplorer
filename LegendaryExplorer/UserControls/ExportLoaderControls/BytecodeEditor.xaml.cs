@@ -188,7 +188,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 if (CurrentLoadedExport.ClassName == "Function")
                 {
-                    var nativeBackOffset = CurrentLoadedExport.FileRef.Game < MEGame.ME3 ? 7 : 6;
+                    var nativeBackOffset = (CurrentLoadedExport.FileRef.Game == MEGame.ME1 ||
+                                            CurrentLoadedExport.FileRef.Game == MEGame.ME2 ||
+                                            CurrentLoadedExport.FileRef.Game == MEGame.LE1) ? 7 : 6;
                     pos = data.Length - nativeBackOffset;
                     string flagStr = func.GetFlags();
                     ScriptFooterBlocks.Add(new ScriptHeaderItem("Native Index", EndianReader.ToInt16(data, pos, CurrentLoadedExport.FileRef.Endian), pos) { length = 2 });
@@ -240,25 +242,29 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                 }
             }
-            else if (Pcc.Game == MEGame.ME1 || Pcc.Game == MEGame.ME2)
+            else if (Pcc.Game == MEGame.ME1 || Pcc.Game == MEGame.ME2 || Pcc.Game == MEGame.LE1)
             {
                 //Header
                 int pos = 16;
-
                 var nextItemCompilingChain = EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian);
                 ScriptHeaderBlocks.Add(new ScriptHeaderItem("Next item in loading chain", nextItemCompilingChain, pos, nextItemCompilingChain > 0 ? CurrentLoadedExport : null));
 
-                pos += 8;
+                pos += Pcc.Game.IsLEGame() ? 4 : 8;
                 nextItemCompilingChain = EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian);
                 ScriptHeaderBlocks.Add(new ScriptHeaderItem("Children Probe Start", nextItemCompilingChain, pos, nextItemCompilingChain > 0 ? CurrentLoadedExport : null));
 
-                pos += 8;
+                pos += Pcc.Game.IsLEGame() ? 4 : 8;
                 ScriptHeaderBlocks.Add(new ScriptHeaderItem("Line", EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
 
                 pos += 4;
-                ScriptHeaderBlocks.Add(new ScriptHeaderItem("TextPos", EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
 
-                pos += 4;
+                if (!Pcc.Game.IsLEGame())
+                {
+                    ScriptHeaderBlocks.Add(new ScriptHeaderItem("TextPos", EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
+                    pos += 4;
+                }
+
+
                 int scriptSize = EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian);
                 ScriptHeaderBlocks.Add(new ScriptHeaderItem("Script Size", scriptSize, pos));
                 pos += 4;

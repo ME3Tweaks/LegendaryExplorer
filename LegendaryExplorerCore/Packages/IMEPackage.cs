@@ -12,6 +12,13 @@ using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.Packages
 {
+    public static class MEGameExtensions
+    {
+        public static bool IsLEGame(this MEGame game)
+        {
+            return game == MEGame.LE1 || game == MEGame.LE2 || game == MEGame.LE3;
+        }
+    }
     public enum MEGame
     {
         Unknown = 0,
