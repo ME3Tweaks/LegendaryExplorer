@@ -14,9 +14,9 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using ME3ExplorerCore.Helpers;
+using LegendaryExplorerCore.Helpers;
 using SharpDX;
-using ME3ExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Point = System.Windows.Point;
 
 namespace LegendaryExplorer.Misc

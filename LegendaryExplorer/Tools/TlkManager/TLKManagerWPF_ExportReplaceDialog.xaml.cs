@@ -6,12 +6,12 @@ using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.UserControls.ExportLoaderControls;
-using ME3ExplorerCore.Misc;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.TLK.ME1;
-using ME3ExplorerCore.TLK.ME2ME3;
+using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.TLK.ME1;
+using LegendaryExplorerCore.TLK.ME2ME3;
 using static LegendaryExplorer.Tools.TlkManagerNS.TLKManagerWPF;
-using HuffmanCompression = ME3ExplorerCore.TLK.ME2ME3.HuffmanCompression;
+using HuffmanCompression = LegendaryExplorerCore.TLK.ME2ME3.HuffmanCompression;
 
 namespace LegendaryExplorer.Tools.TlkManagerNS
 {
@@ -141,7 +141,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
                         //ME1
                         replacingWork.DoWork += delegate
                         {
-                            ME3ExplorerCore.TLK.ME1.HuffmanCompression compressor = new();
+                            LegendaryExplorerCore.TLK.ME1.HuffmanCompression compressor = new();
                             compressor.LoadInputData(openFileDialog.FileName);
                             using IMEPackage pcc = MEPackageHandler.OpenME1Package(tlk.tlkPath);
                             compressor.serializeTalkfileToExport(pcc.GetUExport(tlk.exportNumber), true);

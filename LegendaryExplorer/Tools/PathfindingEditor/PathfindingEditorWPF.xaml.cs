@@ -24,14 +24,14 @@ using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.Tools.Sequence_Editor;
 using LegendaryExplorer.UserControls.ExportLoaderControls;
-using ME3ExplorerCore.GameFilesystem;
-using ME3ExplorerCore.Misc;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
-using ME3ExplorerCore.Unreal;
-using ME3ExplorerCore.Unreal.BinaryConverters;
-using ME3ExplorerCore.SharpDX;
-using ME3ExplorerCore.Helpers;
+using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
+using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.SharpDX;
+using LegendaryExplorerCore.Helpers;
 using RectangleF = System.Drawing.RectangleF;
 
 namespace LegendaryExplorer.Tools.PathfindingEditor

@@ -9,10 +9,10 @@ using ClosedXML.Excel;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorer.UserControls.SharedToolControls.Curves;
-using ME3ExplorerCore.Gammtek.Extensions;
-using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Unreal;
+using LegendaryExplorerCore.Gammtek.Extensions;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls

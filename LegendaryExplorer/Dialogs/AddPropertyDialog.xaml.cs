@@ -7,9 +7,9 @@ using System.Windows.Data;
 using System.Windows.Input;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
-using ME3ExplorerCore.Misc;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Unreal;
+using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
 
 namespace LegendaryExplorer.Dialogs
 {

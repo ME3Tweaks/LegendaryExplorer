@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using System.Windows.Forms;
-using ME3ExplorerCore.Packages;
+using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorer.SharedUI.Bases
 {

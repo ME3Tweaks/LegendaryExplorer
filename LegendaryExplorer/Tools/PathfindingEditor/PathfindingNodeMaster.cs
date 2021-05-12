@@ -7,8 +7,8 @@ using UMD.HCIL.Piccolo.Nodes;
 using System.Numerics;
 using System.Diagnostics;
 using LegendaryExplorer.Tools.SequenceObjects;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Unreal;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
 
 namespace LegendaryExplorer.Tools.PathfindingEditor
 {

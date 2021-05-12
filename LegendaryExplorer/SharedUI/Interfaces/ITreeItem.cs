@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using ME3ExplorerCore.Packages;
+using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorer.SharedUI.Interfaces
 {

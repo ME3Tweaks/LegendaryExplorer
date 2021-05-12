@@ -14,12 +14,12 @@ using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.UnrealExtensions;
-using ME3ExplorerCore.GameFilesystem;
-using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.ME1;
-using ME3ExplorerCore.Misc;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.TLK;
+using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.ME1;
+using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.TLK;
 
 namespace LegendaryExplorer.Tools.TlkManagerNS
 {

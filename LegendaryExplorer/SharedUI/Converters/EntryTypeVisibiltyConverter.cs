@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
-using ME3ExplorerCore.Packages;
+using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorer.SharedUI.Converters
 {

@@ -7,8 +7,8 @@ using System.Windows.Threading;
 using JetBrains.Profiler.SelfApi;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.SharedUI.Bases;
-using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.Packages;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Packages;
 #if DEBUG
 #endif
 
@@ -60,12 +60,12 @@ namespace LegendaryExplorer.ToolsetDev.MemoryAnalyzer
 
         private void ForceGC_Click(object sender, RoutedEventArgs e)
         {
-            ME3ExplorerCore.Misc.MemoryAnalyzer.ForceFullGC();
+            LegendaryExplorerCore.Misc.MemoryAnalyzer.ForceFullGC();
         }
 
         private void Refresh()
         {
-            ME3ExplorerCore.Misc.MemoryAnalyzer.Refresh();
+            LegendaryExplorerCore.Misc.MemoryAnalyzer.Refresh();
 
             LastRefreshText = "Last refreshed: " + DateTime.Now;
             CurrentMemoryUsageText = "Current process allocation: " + FileSize.FormatSize(System.Diagnostics.Process.GetCurrentProcess().PrivateMemorySize64);
@@ -73,7 +73,7 @@ namespace LegendaryExplorer.ToolsetDev.MemoryAnalyzer
 
         private void CleanUpOldRefs_Click(object sender, RoutedEventArgs e)
         {
-            ME3ExplorerCore.Misc.MemoryAnalyzer.CleanupOldRefs();
+            LegendaryExplorerCore.Misc.MemoryAnalyzer.CleanupOldRefs();
         }
 
 

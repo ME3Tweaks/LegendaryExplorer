@@ -9,7 +9,7 @@
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     mc:Ignorable="d" 
     Loaded="MetadataEditor_Loaded"
-    xmlns:Packages="clr-namespace:ME3ExplorerCore.Packages;assembly=ME3ExplorerCore"
+    xmlns:Packages="clr-namespace:LegendaryExplorerCore.Packages;assembly=LegendaryExplorerCore"
     xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
     xmlns:SharedUI="clr-namespace:LegendaryExplorer.SharedUI"
     xmlns:Converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"

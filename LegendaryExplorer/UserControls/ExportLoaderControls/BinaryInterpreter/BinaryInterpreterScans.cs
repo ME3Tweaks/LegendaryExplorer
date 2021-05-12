@@ -6,13 +6,13 @@ using System.Linq;
 using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorer.UnrealExtensions;
 using LegendaryExplorer.UnrealExtensions.Classes;
-using ME3ExplorerCore.Gammtek.IO;
-using ME3ExplorerCore.Gammtek.Extensions;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Unreal;
-using ME3ExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Gammtek.IO;
+using LegendaryExplorerCore.Gammtek.Extensions;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
 using SharpDX;
-using ME3ExplorerCore.Helpers;
+using LegendaryExplorerCore.Helpers;
 using static LegendaryExplorer.Tools.TlkManagerNS.TLKManagerWPF;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls

@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
-using ME3ExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal;
 
 namespace LegendaryExplorer.SharedUI.Converters
 {

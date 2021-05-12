@@ -7,10 +7,10 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using LegendaryExplorer.SharedUI;
-using ME3ExplorerCore.GameFilesystem;
-using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Unreal;
+using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
 using Microsoft.Win32;
 using Path = System.IO.Path;
 

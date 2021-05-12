@@ -4,9 +4,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using LegendaryExplorer.Misc;
-using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.Audio;
-using ME3ExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Audio;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Audio;
 
 namespace LegendaryExplorer.UnrealExtensions
 {

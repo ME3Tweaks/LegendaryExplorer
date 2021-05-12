@@ -8,10 +8,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.SharedUI;
-using ME3ExplorerCore.Dialogue;
-using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.Misc;
-using ME3ExplorerCore.Unreal;
+using LegendaryExplorerCore.Dialogue;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Unreal;
 using static LegendaryExplorer.Tools.TlkManagerNS.TLKManagerWPF;
 
 namespace LegendaryExplorer.DialogueEditor

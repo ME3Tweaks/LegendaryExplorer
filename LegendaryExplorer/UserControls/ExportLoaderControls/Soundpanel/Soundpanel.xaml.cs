@@ -26,16 +26,18 @@ using LegendaryExplorer.Tools.Soundplorer;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.UnrealExtensions;
 using LegendaryExplorer.UnrealExtensions.Classes;
-using ME3ExplorerCore.Audio;
-using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
-using ME3ExplorerCore.Gammtek.IO;
-using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.Misc;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Audio;
+using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
+using LegendaryExplorerCore.Gammtek.IO;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Microsoft.Win32;
 using AudioStreamHelper = LegendaryExplorer.UnrealExtensions.AudioStreamHelper;
-using WwiseStream = ME3ExplorerCore.Unreal.BinaryConverters.WwiseStream;
+using WwiseStream = LegendaryExplorerCore.Unreal.BinaryConverters.WwiseStream;
+using LegendaryExplorerCore.Audio;
+using AudioInfo = LegendaryExplorerCore.Audio.AudioInfo;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -1643,7 +1645,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 if(updateReferencedEvents)
                 {
                     var ms = (float)w.GetAudioInfo().GetLength().TotalMilliseconds;
-                    var durationProperty = new ME3ExplorerCore.Unreal.FloatProperty(ms, "DurationMilliseconds");
+                    var durationProperty = new LegendaryExplorerCore.Unreal.FloatProperty(ms, "DurationMilliseconds");
 
                     // Update all WwiseStream exports that reference this stream
                     var referencedExports = exportToWorkOn.GetEntriesThatReferenceThisOne();

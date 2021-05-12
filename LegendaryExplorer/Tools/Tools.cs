@@ -17,8 +17,8 @@ using LegendaryExplorer.Tools.PathfindingEditor;
 using LegendaryExplorer.Tools.WwiseEditor;
 using LegendaryExplorer.Tools.TFCCompactor;
 using Newtonsoft.Json;
-using ME3ExplorerCore.GameFilesystem;
-using ME3ExplorerCore.Packages;
+using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorer
 {

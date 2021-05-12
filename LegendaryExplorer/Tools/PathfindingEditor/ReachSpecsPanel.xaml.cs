@@ -7,10 +7,10 @@ using System.Windows.Input;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.UserControls.ExportLoaderControls;
-using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.Misc;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Unreal;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
 using Microsoft.Win32;
 
 namespace LegendaryExplorer.Tools.PathfindingEditor

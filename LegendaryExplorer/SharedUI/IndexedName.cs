@@ -1,4 +1,4 @@
-﻿using ME3ExplorerCore.Unreal;
+﻿using LegendaryExplorerCore.Unreal;
 
 namespace LegendaryExplorer.SharedUI
 {

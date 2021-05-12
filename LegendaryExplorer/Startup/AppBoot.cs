@@ -19,10 +19,10 @@ using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorer.Tools.Sequence_Editor;
 using LegendaryExplorer.Tools.Soundplorer;
 using LegendaryExplorer.UnrealExtensions.Classes;
-using ME3ExplorerCore;
-using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.Misc;
-using ME3ExplorerCore.Packages;
+using LegendaryExplorerCore;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorer.Startup
 {
@@ -263,7 +263,7 @@ namespace LegendaryExplorer.Startup
                 });
             }
 
-            ME3ExplorerCoreLib.InitLib(TaskScheduler.FromCurrentSynchronizationContext(), packageSaveFailed);
+            LegendaryExplorerCoreLib.InitLib(TaskScheduler.FromCurrentSynchronizationContext(), packageSaveFailed);
             //CoreLibSettingsBridge.MapSettingsIntoBridge(); // TODO: IMPLEMENT THIS IN LEX - this needs rewritten for new system
             PackageSaver.CheckME3Running = () =>
             {

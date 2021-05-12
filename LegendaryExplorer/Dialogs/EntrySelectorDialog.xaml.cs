@@ -4,8 +4,8 @@ using System.Windows;
 using System.Windows.Input;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
-using ME3ExplorerCore.Misc;
-using ME3ExplorerCore.Packages;
+using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorer.Dialogs
 {

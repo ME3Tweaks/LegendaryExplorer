@@ -28,16 +28,16 @@ using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.SharedUI.PeregrineTreeView;
 using LegendaryExplorer.Tools.SequenceObjects;
-using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
-using ME3ExplorerCore.Unreal;
-using ME3ExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
+using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Image = System.Drawing.Image;
-using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.Kismet;
-using ME3ExplorerCore.Misc;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Kismet;
+using LegendaryExplorerCore.Misc;
 
 namespace LegendaryExplorer.Tools.Sequence_Editor
 {

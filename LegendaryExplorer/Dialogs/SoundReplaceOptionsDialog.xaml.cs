@@ -2,7 +2,7 @@
 using System.Windows.Input;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.Misc;
-using ME3ExplorerCore.Misc;
+using LegendaryExplorerCore.Misc;
 
 namespace LegendaryExplorer.Dialogs
 {

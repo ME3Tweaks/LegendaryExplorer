@@ -11,16 +11,16 @@ using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorer.Tools.PackageEditor.Experiments;
-using ME3ExplorerCore.GameFilesystem;
-using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.Misc;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.TLK.ME1;
-using ME3ExplorerCore.Unreal;
-using ME3ExplorerCore.Unreal.BinaryConverters;
-using ME3ExplorerCore.UnrealScript;
-using ME3ExplorerCore.UnrealScript.Compiling.Errors;
-using ME3ExplorerCore.UnrealScript.Language.Tree;
+using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.TLK.ME1;
+using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.UnrealScript;
+using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
+using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
@@ -942,8 +942,8 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                     }
                     else
                     {
-                        var func = ME3ExplorerCore.ME1.Unreal.UnhoodBytecode.UE3FunctionReader.ReadFunction(export);
-                        func.Decompile(new ME3ExplorerCore.ME1.Unreal.UnhoodBytecode.TextBuilder(), false, true);
+                        var func = LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode.UE3FunctionReader.ReadFunction(export);
+                        func.Decompile(new LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode.TextBuilder(), false, true);
                         if (func.Statements.statements.Count > 0
                             && func.Statements.statements[0].Reader.ReadTokens.FirstOrDefault(tok => (short)tok.OpCode == opCode) is { })
                         {

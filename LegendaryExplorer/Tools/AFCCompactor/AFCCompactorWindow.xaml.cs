@@ -11,14 +11,14 @@ using LegendaryExplorer.Misc;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
-using ME3ExplorerCore.GameFilesystem;
-using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
-using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.Misc;
-using ME3ExplorerCore.Packages;
+using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using AFCCompactor = ME3ExplorerCore.Audio.AFCCompactor;
+using AFCCompactor = LegendaryExplorerCore.Audio.AFCCompactor;
 using Application = System.Windows.Application;
 
 namespace LegendaryExplorer.Tools.AFCCompactorWindow
@@ -155,7 +155,7 @@ namespace LegendaryExplorer.Tools.AFCCompactorWindow
                     }).Select(x => getDlcDependencyForAFC(x.afcName)).Distinct().ToList();
                 if (finalAfcPath != null && File.Exists(finalAfcPath))
                 {
-                    ME3ExplorerCoreUtilities.OpenAndSelectFileInExplorer(finalAfcPath);
+                    LegendaryExplorerCoreUtilities.OpenAndSelectFileInExplorer(finalAfcPath);
 
                 }
                 return (compactionResult, dependencyList);

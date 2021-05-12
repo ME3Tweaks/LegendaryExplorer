@@ -15,12 +15,12 @@ using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorer.Tools.TFCCompactor;
 using MassEffectModder.Images;
-using ME3ExplorerCore.GameFilesystem;
-using ME3ExplorerCore.Misc;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Unreal;
-using ME3ExplorerCore.Unreal.BinaryConverters;
-using ME3ExplorerCore.Unreal.Classes;
+using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.Classes;
 using Microsoft.Win32;
 using Image = MassEffectModder.Images.Image;
 

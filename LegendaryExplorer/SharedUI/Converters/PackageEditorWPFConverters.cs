@@ -7,7 +7,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.Tools.PackageEditor;
-using ME3ExplorerCore.Packages;
+using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorer.SharedUI.Converters
 {

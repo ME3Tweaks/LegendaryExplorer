@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
-using ME3ExplorerCore.Helpers;
+using LegendaryExplorerCore.Helpers;
 using Microsoft.AppCenter.Crashes;
 
 namespace LegendaryExplorer.Dialogs

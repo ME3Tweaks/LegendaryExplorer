@@ -11,10 +11,9 @@
              xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
              xmlns:settings="clr-namespace:LegendaryExplorer.Misc.AppSettings"
              xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
-             xmlns:soundplorer="clr-namespace:LegendaryExplorer.Tools.Soundplorer"
-             xmlns:audio="clr-namespace:ME3ExplorerCore.Audio;assembly=ME3ExplorerCore"
              xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:audio1="clr-namespace:LegendaryExplorerCore.Audio;assembly=LegendaryExplorerCore"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="400"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
@@ -55,7 +54,7 @@
                             <!-- Do not remove transparent background. It is required for mouse hit testing.-->
                             <TextBlock Text="{Binding DisplayString}" Foreground="DarkBlue"/>
                         </DataTemplate>
-                        <DataTemplate DataType="{x:Type audio:ISBankEntry}">
+                        <DataTemplate DataType="{x:Type audio1:ISBankEntry}">
                             <!-- Do not remove transparent background. It is required for mouse hit testing.-->
                             <TextBlock Text="{Binding DisplayString}" Foreground="DarkBlue" Background="Transparent">
                                 <TextBlock.ContextMenu>

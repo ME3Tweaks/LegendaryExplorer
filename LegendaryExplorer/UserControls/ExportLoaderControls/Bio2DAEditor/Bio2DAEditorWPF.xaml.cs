@@ -4,8 +4,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.Tools.TlkManagerNS;
-using ME3ExplorerCore.Misc;
-using ME3ExplorerCore.Packages;
+using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {

@@ -4,10 +4,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using LegendaryExplorer.Misc;
-using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Unreal;
-using ME3ExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SharpDX;
@@ -767,6 +767,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         }
 
         public static implicit operator Point3D(Vector3 vec) => new Point3D(vec.X, vec.Y, vec.Z);
-        public static implicit operator Point3D(ME3ExplorerCore.SharpDX.Vector3 vec) => new Point3D(vec.X, vec.Y, vec.Z);
+        public static implicit operator Point3D(LegendaryExplorerCore.SharpDX.Vector3 vec) => new Point3D(vec.X, vec.Y, vec.Z);
     }
 }

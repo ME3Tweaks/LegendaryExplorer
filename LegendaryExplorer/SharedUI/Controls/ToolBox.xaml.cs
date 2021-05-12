@@ -4,8 +4,8 @@ using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
 using LegendaryExplorer.Misc;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Helpers;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Helpers;
 
 namespace LegendaryExplorer.SharedUI.Controls
 {

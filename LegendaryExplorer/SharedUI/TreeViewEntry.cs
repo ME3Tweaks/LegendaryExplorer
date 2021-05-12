@@ -6,12 +6,12 @@ using System.Windows;
 using System.Windows.Media;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
-using ME3ExplorerCore.Gammtek.IO;
-using ME3ExplorerCore.ME1.Unreal.UnhoodBytecode;
-using ME3ExplorerCore.Misc;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Unreal;
-using ME3ExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Gammtek.IO;
+using LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode;
+using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
 
 namespace LegendaryExplorer.SharedUI
 {

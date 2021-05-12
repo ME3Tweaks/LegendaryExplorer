@@ -4,7 +4,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:misc="clr-namespace:ME3ExplorerCore.Misc;assembly=ME3ExplorerCore"
+        xmlns:misc="clr-namespace:LegendaryExplorerCore.Misc;assembly=LegendaryExplorerCore"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:bases="clr-namespace:LegendaryExplorer.SharedUI.Bases"
         mc:Ignorable="d"

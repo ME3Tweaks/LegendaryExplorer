@@ -10,7 +10,7 @@
              xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
              xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
              xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
-             xmlns:packages="clr-namespace:ME3ExplorerCore.Packages;assembly=ME3ExplorerCore"
+             xmlns:packages="clr-namespace:LegendaryExplorerCore.Packages;assembly=LegendaryExplorerCore"
              mc:Ignorable="d"
              d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
              Icon="/LegendaryExplorer;component/Tools/icons/facefxeditor_256x256.ico" Title="FaceFX Editor" Loaded="WPFBase_Loaded">

@@ -6,7 +6,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:bases="clr-namespace:LegendaryExplorer.SharedUI.Bases"
         xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
-        xmlns:audio="clr-namespace:ME3ExplorerCore.Audio;assembly=ME3ExplorerCore"
+        xmlns:audio="clr-namespace:LegendaryExplorerCore.Audio;assembly=LegendaryExplorerCore"
         xmlns:afcCompactor="clr-namespace:LegendaryExplorer.Tools.AFCCompactorWindow"
         mc:Ignorable="d"
         Icon="/LegendaryExplorer;component/Tools/Icons/afccompactor_256x256.ico"

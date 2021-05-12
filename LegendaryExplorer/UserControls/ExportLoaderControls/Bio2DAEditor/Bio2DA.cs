@@ -5,11 +5,11 @@ using System.Linq;
 using System.Windows;
 using ClosedXML.Excel;
 using LegendaryExplorer.Tools.TlkManagerNS;
-using ME3ExplorerCore.Gammtek.Extensions;
-using ME3ExplorerCore.Misc;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Unreal;
-using ME3ExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Gammtek.Extensions;
+using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {

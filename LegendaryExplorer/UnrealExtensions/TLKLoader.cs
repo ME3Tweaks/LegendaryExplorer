@@ -5,11 +5,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Tools.TlkManagerNS;
-using ME3ExplorerCore.GameFilesystem;
-using ME3ExplorerCore.ME1;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.TLK;
-using ME3ExplorerCore.TLK.ME1;
+using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.ME1;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.TLK;
+using LegendaryExplorerCore.TLK.ME1;
 using Newtonsoft.Json;
 
 namespace LegendaryExplorer.UnrealExtensions

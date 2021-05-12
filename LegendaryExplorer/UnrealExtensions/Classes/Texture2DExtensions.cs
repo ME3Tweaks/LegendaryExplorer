@@ -6,12 +6,12 @@ using System.IO;
 using System.Linq;
 using System.Windows.Media.Imaging;
 using MassEffectModder.Images;
-using ME3ExplorerCore.GameFilesystem;
-using ME3ExplorerCore.Gammtek.IO;
-using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Unreal;
-using ME3ExplorerCore.Unreal.Classes;
+using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Gammtek.IO;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.Classes;
 
 namespace LegendaryExplorer.UnrealExtensions.Classes
 {
@@ -646,17 +646,18 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
                 {
                     PixelFormat format = Image.getPixelFormatType(t2d.TextureFormat);
 
-                    PngBitmapEncoder image = Image.convertToPng(imageBytes, info.width, info.height, format);
+                    var pngdata = Image.convertToPng(imageBytes, info.width, info.height, format);
                     if (outStream == null)
                     {
                         outStream = new FileStream(outputPath, FileMode.Create);
-                        image.Save(outStream);
+                        pngdata.CopyTo(outStream);
                         outStream.Close();
                     }
                     else
                     {
-                        image.Save(outStream);
+                        pngdata.CopyTo(outStream);
                     }
+                    pngdata.Close();
                 }
             }
 
@@ -666,10 +667,8 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
         public static byte[] GetPNG(this Texture2D t2d, Texture2DMipInfo info)
         {
             PixelFormat format = Image.getPixelFormatType(t2d.TextureFormat);
-
-            MemoryStream ms = new MemoryStream();
-            Image.convertToPng(Texture2D.GetTextureData(info, t2d.Export.Game), info.width, info.height, format).Save(ms);
-            return ms.ToArray();
+            return Image.convertToPng(Texture2D.GetTextureData(info, t2d.Export.Game), info.width, info.height, format)
+                .ToArray();
         }
 
         /// <summary>

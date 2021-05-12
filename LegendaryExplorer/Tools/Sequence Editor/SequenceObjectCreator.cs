@@ -2,12 +2,12 @@
 using System.IO;
 using System.Linq;
 using LegendaryExplorer.Packages;
-using ME3ExplorerCore.GameFilesystem;
-using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
-using ME3ExplorerCore.Unreal;
-using ME3ExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
+using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
 
 namespace LegendaryExplorer.Tools.Sequence_Editor
 {
@@ -93,7 +93,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                         }
                         else if (classInfo.pccPath == UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
                         {
-                            loadStream = ME3ExplorerCoreUtilities.GetCustomAppResourceStream(game);
+                            loadStream = LegendaryExplorerCoreUtilities.GetCustomAppResourceStream(game);
                         }
                         else if (File.Exists(filepath))
                         {

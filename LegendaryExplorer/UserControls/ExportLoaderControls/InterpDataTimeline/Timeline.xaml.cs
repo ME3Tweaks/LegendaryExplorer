@@ -8,10 +8,10 @@ using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.Tools.InterpEditor;
 using LegendaryExplorer.Tools.PackageEditor;
-using ME3ExplorerCore.Matinee;
-using ME3ExplorerCore.Misc;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Unreal;
+using LegendaryExplorerCore.Matinee;
+using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
 using Point = System.Windows.Point;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls

@@ -10,14 +10,14 @@ using System.Windows.Media;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Controls;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Unreal;
-using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.Misc;
-using ME3ExplorerCore.SharpDX;
-using ME3ExplorerCore.Unreal.BinaryConverters;
-using InterpCurveVector = ME3ExplorerCore.Unreal.BinaryConverters.InterpCurve<ME3ExplorerCore.SharpDX.Vector3>;
-using InterpCurveFloat = ME3ExplorerCore.Unreal.BinaryConverters.InterpCurve<float>;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.SharpDX;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
+using InterpCurveVector = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve<LegendaryExplorerCore.SharpDX.Vector3>;
+using InterpCurveFloat = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve<float>;
 
 namespace LegendaryExplorer.Tools.PathfindingEditor
 {
