@@ -673,9 +673,9 @@ namespace LegendaryExplorerCore.Packages
                 int count = EndianReader.ToInt32(_data, 0, FileRef.Endian);
                 start += count * 2 + 4;
             }
-
-
-            if (!IsDefaultObject && this.IsA("Component") || (Game == MEGame.UDK && ClassName.EndsWith("Component")))
+            
+            //HACK: TODO: remove IsLEGame call once LE has unrealobjectinfo
+            if (!IsDefaultObject && this.IsA("Component") || ((Game == MEGame.UDK || Game.IsLEGame()) && ClassName.EndsWith("Component")))
             {
                 start += 4; //TemplateOwnerClass
                 if (ParentFullPath.Contains("Default__"))
