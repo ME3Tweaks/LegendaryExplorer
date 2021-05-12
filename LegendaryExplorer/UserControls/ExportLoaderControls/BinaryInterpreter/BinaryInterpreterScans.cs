@@ -5693,7 +5693,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     subnodes.Add(MakeUInt32Node(bin, "PS3 ME2 Unknown"));
                 }
                 subnodes.Add(MakeEntryNode(bin, "Defaults"));
-                if (Pcc.Game >= MEGame.ME3/* && Pcc.Platform = MEPackage.GamePlatform.PS3*/) // THIS NEEDS CHECKED AS IT DOESN'T SEEM ACCURATE FOR NON-PC PLATS. ME1 PS3 DOESN'T LIST FULL FUNCTION TABLE DESPITE USING ME3 ENGINE
+                if (Pcc.Game is MEGame.ME3 or MEGame.UDK or MEGame.LE3)
                 {
                     subnodes.Add(MakeArrayNode(bin, "Full Function List", i => MakeEntryNode(bin, $"{i}: ")));
                 }
