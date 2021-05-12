@@ -127,6 +127,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="BinaryPack" Version="1.0.1" />
     <PackageReference Include="ClosedXML" Version="0.95.3" />
     <PackageReference Include="ConsoleAppLauncher" Version="2.0.0" />
     <PackageReference Include="FontAwesome5" Version="2.1.0" />
@@ -420,6 +421,9 @@
     <Compile Update="SharedUI\Controls\ToolBox.xaml.cs">
       <DependentUpon>ToolBox.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Tools\AssetDatabase\AssetDB.xaml.cs">
+      <DependentUpon>AssetDB.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Tools\Dialogue Editor\ConvGraphEditor.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -508,6 +512,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Tools\AFCCompactor\AFCCompactorWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Tools\AssetDatabase\AssetDB.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Tools\AutoTOC\AutoTOCWindow.xaml">

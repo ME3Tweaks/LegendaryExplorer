@@ -1065,7 +1065,25 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }*/
 
-        // TODO: DELETE THESE AFTER CODE IS SETUP
+        // TODO: DELETE THESE STUBS AFTER CODE IS SETUP
+        public bool ViewerModeOnly
+        {
+            get => (bool)GetValue(ViewerModeOnlyProperty);
+            set => SetValue(ViewerModeOnlyProperty, value);
+        }
+        public static readonly DependencyProperty ViewerModeOnlyProperty = DependencyProperty.Register(
+            nameof(ViewerModeOnly), typeof(bool), typeof(BIKExternalExportLoader), new PropertyMetadata(false, ViewerModeOnlyCallback));
+
+        private static void ViewerModeOnlyCallback(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            BIKExternalExportLoader i = (BIKExternalExportLoader)obj;
+            i.OnPropertyChanged(nameof(ViewerModeOnly));
+        }
+
+        public BIKExternalExportLoader() : base("BIKExternal")
+        {
+
+        }
         public BIKExternalExportLoader(string memoryTrackerName) : base(memoryTrackerName)
         {
         }

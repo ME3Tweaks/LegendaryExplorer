@@ -55,6 +55,21 @@
             get => _pathfindingeditorshownodesizes; 
             set => SetProperty(ref _pathfindingeditorshownodesizes, value);
         }
+        private static string _assetdb_defaultgame = ""; 
+        public static string AssetDB_DefaultGame {
+            get => _assetdb_defaultgame; 
+            set => SetProperty(ref _assetdb_defaultgame, value);
+        }
+        private static string _assetdbgame = "ME3"; 
+        public static string AssetDBGame {
+            get => _assetdbgame; 
+            set => SetProperty(ref _assetdbgame, value);
+        }
+        private static string _assetdbpath = ""; 
+        public static string AssetDBPath {
+            get => _assetdbpath; 
+            set => SetProperty(ref _assetdbpath, value);
+        }
         private static bool _binaryinterpreter_skipautoparsesizecheck = false; 
         public static bool BinaryInterpreter_SkipAutoParseSizeCheck {
             get => _binaryinterpreter_skipautoparsesizecheck; 

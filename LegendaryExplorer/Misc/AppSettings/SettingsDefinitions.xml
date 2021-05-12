@@ -21,6 +21,11 @@
   <!-- Pathfinding Editor Specific settings-->
   <setting name="PathfindingEditorShowNodeSizes" type="bool" defaultvalue="false"/>
 
+  <!-- AssetDB Specific settings-->
+  <setting name="AssetDB_DefaultGame" type="string" defaultvalue=""/>
+  <setting name="AssetDBGame" type="string" defaultvalue="ME3"/>
+  <setting name="AssetDBPath" type="string" defaultvalue=""/>
+
   <!-- Export Loader Control settings -->
   <setting name="BinaryInterpreter_SkipAutoParseSizeCheck" type="bool" defaultvalue="false"/>
   <setting name="BinaryInterpreterWPFAutoScanAlways" type="bool" defaultvalue="false"/>

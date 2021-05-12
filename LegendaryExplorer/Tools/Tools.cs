@@ -12,6 +12,7 @@ using LegendaryExplorer.Tools.Soundplorer;
 using LegendaryExplorer.Tools.FaceFXEditor;
 using LegendaryExplorer.Tools.InterpEditor;
 using LegendaryExplorer.Tools.AFCCompactorWindow;
+using LegendaryExplorer.Tools.AssetDatabase;
 using LegendaryExplorer.Tools.PathfindingEditor;
 using LegendaryExplorer.Tools.WwiseEditor;
 using LegendaryExplorer.Tools.TFCCompactor;
@@ -376,19 +377,19 @@ namespace LegendaryExplorer
             //                subCategory = "Databases",
             //                description = "Plot Database is a cross-game utility used to store plot IDs for reference. The tool comes pre-loaded with a default .db file that can be customized by the user. Never look up a plot bool or integer again!",
             //            });
-            //            set.Add(new Tool
-            //            {
-            //                name = "Asset Database",
-            //                type = typeof(AssetDatabase.AssetDB),
-            //                icon = Application.Current.FindResource("iconAssetDatabase") as ImageSource,
-            //                open = () =>
-            //                {
-            //                    (new AssetDatabase.AssetDB()).Show();
-            //                },
-            //                tags = new List<string> { "utility", "mesh", "material", "class", "animation" },
-            //                subCategory = "Databases",
-            //                description = "Scans games and creates a database of classes, animations, materials, textures, particles and meshes.\n\nIndividual assets can be opened directly from the interface with tools for editing."
-            //            });
+            set.Add(new Tool
+            {
+                name = "Asset Database",
+                type = typeof(AssetDB),
+                icon = Application.Current.FindResource("iconAssetDatabase") as ImageSource,
+                open = () =>
+                {
+                    (new AssetDB()).Show();
+                },
+                tags = new List<string> { "utility", "mesh", "material", "class", "animation" },
+                subCategory = "Databases",
+                description = "Scans games and creates a database of classes, animations, materials, textures, particles and meshes.\n\nIndividual assets can be opened directly from the interface with tools for editing."
+            });
             //            set.Add(new Tool
             //            {
             //                name = "PSA Viewer",

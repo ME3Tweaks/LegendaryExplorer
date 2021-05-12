@@ -17,7 +17,17 @@ namespace LegendaryExplorer.Misc.AppSettings
     {
 <# // This code runs in the text template:
     // Can't use named tuples it seems
-    var settings = XDocument.Load(this.Host.ResolvePath("SettingsDefinitions.xml")).Root.Descendants("setting").Select(x => Tuple.Create(x.Attribute("name").Value, x.Attribute("type").Value, x.Attribute("defaultvalue").Value)).ToList();
+    var settings = XDocument.Load(this.Host.ResolvePath("SettingsDefinitions.xml")).Root.Descendants("setting").Select(x => 
+    {
+        string name = x.Attribute("name").Value;
+        string type = x.Attribute("type").Value;
+        string defaultValue = x.Attribute("defaultvalue").Value;
+        if (type == "string")
+        {
+            defaultValue = "\"" + defaultValue + "\"";
+        }
+        return Tuple.Create(name, type, defaultValue);
+    }).ToList();
 
     foreach (var setting in settings){ 
 #>        private static <#= setting.Item2 #> _<#= setting.Item1.ToLower() #> = <#= setting.Item3 #>; 
