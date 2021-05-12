@@ -221,19 +221,19 @@ namespace LegendaryExplorer
 //                subCategory = "Extractors + Repackers",
 //                description = "BIK Movie Extractor is a utility for extracting BIK videos from the ME3 Movies.tfc. This file contains small resolution videos played during missions, such as footage of Miranda in Sanctuary.",
 //            });
-//            set.Add(new Tool
-//            {
-//                name = "Coalesced Editor",
-//                type = typeof(Tools.CoalescedEditor.CoalescedEditorWindow),
-//                icon = Application.Current.FindResource("iconCoalescedEditor") as ImageSource,
-//                open = () =>
-//                {
-//                    (new Tools.CoalescedEditor.CoalescedEditorWindow()).Show();
-//                },
-//                tags = new List<string> { "utility", "coal", "ini", "bin" },
-//                subCategory = "Extractors + Repackers",
-//                description = "Coalesced Editor converts between XML and BIN formats for ME3's coalesced files. These are key game files that help control a large amount of content.",
-//            });
+            set.Add(new Tool
+            {
+                name = "Coalesced Compiler",
+                type = typeof(Tools.CoalescedCompiler.CoalescedCompilerWindow),
+                icon = Application.Current.FindResource("iconCoalescedEditor") as ImageSource,
+                open = () =>
+                {
+                    (new Tools.CoalescedCompiler.CoalescedCompilerWindow()).Show();
+                },
+                tags = new List<string> { "utility", "coal", "ini", "bin" },
+                subCategory = "Extractors + Repackers",
+                description = "Coalesced Compiler converts between XML and BIN formats for ME3's coalesced files. These are key game files that help control a large amount of content.",
+            });
 //            set.Add(new Tool
 //            {
 //                name = "DLC Unpacker",
