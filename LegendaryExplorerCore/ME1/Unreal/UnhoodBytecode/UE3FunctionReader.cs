@@ -65,13 +65,21 @@ namespace LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode
 
             if (dataOverride == null) dataOverride = export.Data; // Is there a way we could improve the performance of this?
             using var reader = new EndianReader(dataOverride) { Endian = export.FileRef.Endian };
-            reader.ReadBytes(12); //netindex?, none - ASSUMES INCOMING DATA IS FROM .DATA
+            reader.Skip(12); //netindex?, none - ASSUMES INCOMING DATA IS FROM .DATA
 
             int super = reader.ReadInt32();
             int nextCompilingChainItem = reader.ReadInt32();
-            reader.ReadBytes(12);
-            int line = reader.ReadInt32(); //??
-            int textPos = reader.ReadInt32(); //??
+            if (!export.Game.IsLEGame())
+            {
+                reader.ReadBytes(12);
+                int line = reader.ReadInt32(); // UE3 Debugger leftovers
+                int textPos = reader.ReadInt32(); // UE3 Debugger leftovers
+            }
+            else
+            {
+                reader.Skip(8); // ChildProbe, Line
+            }
+
             int scriptSize = reader.ReadInt32();
             byte[] bytecode = reader.ReadBytes(scriptSize);
             int nativeIndex = reader.ReadInt16();
