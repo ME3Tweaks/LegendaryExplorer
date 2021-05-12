@@ -105,7 +105,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         public ObservableCollectionExtended<string> ClassDropdownList { get; set; } = new();
 
-        public ObservableCollectionExtended<TreeViewEntry> AllTreeViewNodesX { get; set; } =new();
+        public ObservableCollectionExtended<TreeViewEntry> AllTreeViewNodesX { get; set; } = new();
 
         private TreeViewEntry _selectedItem;
 
@@ -953,7 +953,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private void PopoutCurrentView()
         {
-            if (EditorTabs.SelectedItem is TabItem {Content: ExportLoaderControl exportLoader})
+            if (EditorTabs.SelectedItem is TabItem { Content: ExportLoaderControl exportLoader })
             {
                 exportLoader.PopOut();
             }
@@ -2261,7 +2261,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
 
             InterpreterTab_Interpreter.SetParentNameList(NamesList); //reference to this control for name editor set
-            
+
             BinaryInterpreterTab_BinaryInterpreter.SetParentNameList(NamesList); //reference to this control for name editor set
             Bio2DATab_Bio2DAEditor.SetParentNameList(NamesList); //reference to this control for name editor set
 
@@ -3112,6 +3112,14 @@ namespace LegendaryExplorer.Tools.PackageEditor
             if (dropInfo.TargetItem is TreeViewEntry targetItem && dropInfo.Data is TreeViewEntry sourceItem &&
                 sourceItem.Parent != null)
             {
+                if (targetItem.Entry != null && sourceItem.Entry != null &&
+                    targetItem.Entry.Game.IsLEGame() != sourceItem.Entry.Game.IsLEGame())
+                {
+                    MessageBox.Show(
+                        "Cannot port assets between Original Rrilogy (OT) games ans Legendary Edition (LE) games.", "Cannot port asset", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
                 //Check if the path of the target and the source is the same. If so, offer to merge instead
                 crossPCCObjectMap.Clear();
 
