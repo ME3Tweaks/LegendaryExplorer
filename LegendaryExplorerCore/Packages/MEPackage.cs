@@ -416,11 +416,6 @@ namespace LegendaryExplorerCore.Packages
 
             PackageGuid = packageReader.ReadGuid();
 
-            //if (Game == MEGame.LE1)
-            //{
-            //    var le1unk1 = packageReader.ReadInt32();
-            //    var le1unk2 = packageReader.ReadInt16();
-            //}
             uint generationsTableCount = packageReader.ReadUInt32();
             if (generationsTableCount > 0)
             {
@@ -445,8 +440,8 @@ namespace LegendaryExplorerCore.Packages
                 packageReader.SkipInt32(); //always 1 in ME1, always 1966080 in ME2
             }
 
-            unknown6 = packageReader.ReadInt32();
-            var constantVal = packageReader.ReadInt32(); //always -1 in ME1 and ME2, always 145358848 in ME3
+            unknown6 = packageReader.ReadInt32(); // Build 
+            var constantVal = packageReader.ReadInt32(); // Branch - always -1 in ME1 and ME2, always 145358848 in ME3
 
             if (Game == MEGame.ME1 && Platform != GamePlatform.PS3)
             {
@@ -474,11 +469,7 @@ namespace LegendaryExplorerCore.Packages
             var savedPos = packageReader.Position;
             packageReader.Skip(NumCompressedChunksAtLoad * 16); //skip chunk table so we can find package tag
 
-            // What's this?
-            if (Game == MEGame.LE1)
-            {
-                packageReader.Skip(8); // There is 8 bytes before package tag. So not sure what this is
-            }
+
 
             packageSource = packageReader.ReadUInt32(); //this needs to be read in so it can be properly written back out.
 
