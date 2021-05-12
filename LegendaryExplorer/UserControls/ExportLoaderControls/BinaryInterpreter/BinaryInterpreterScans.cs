@@ -7275,7 +7275,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             {
                                 MakeUInt32Node(bin, "Stride"),
                                 MakeUInt32Node(bin, "NumVertices"),
-                                ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME3, () => new ITreeItem[]{ MakeUInt32Node(bin, "unk") }),
+                                ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME3 || Pcc.Game.IsLEGame(), () => new ITreeItem[]{ MakeUInt32Node(bin, "unk") }),
                                 MakeInt32Node(bin, "FVector size"),
                                 MakeArrayNode(bin, "VertexData", k => MakeVectorNode(bin, $"{k}"))
                             }
@@ -7288,7 +7288,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 MakeUInt32Node(bin, "Stride"),
                                 MakeUInt32Node(bin, "NumVertices"),
                                 new BinInterpNode(bin.Position, $"bUseFullPrecisionUVs: {bUseFullPrecisionUVs = bin.ReadBoolInt()}"),
-                                ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME3, () => new ITreeItem[]
+                                ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME3 || Pcc.Game.IsLEGame(), () => new ITreeItem[]
                                 {
                                     MakeUInt32Node(bin, "unk")
                                 }),

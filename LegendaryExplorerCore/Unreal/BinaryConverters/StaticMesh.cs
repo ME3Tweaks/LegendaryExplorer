@@ -402,7 +402,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref buff.Stride);
             sc.Serialize(ref buff.NumVertices);
             sc.Serialize(ref buff.bUseFullPrecisionUVs);
-            if (sc.Game == MEGame.ME3)
+            if (sc.Game == MEGame.ME3 || sc.Game.IsLEGame())
             {
                 sc.Serialize(ref buff.unk);
             }
@@ -467,7 +467,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             sc.Serialize(ref buff.Stride);
             sc.Serialize(ref buff.NumVertices);
-            if (sc.Game == MEGame.ME3)
+            if (sc.Game == MEGame.ME3 || sc.Game.IsLEGame())
             {
                 sc.Serialize(ref buff.unk);
             }
