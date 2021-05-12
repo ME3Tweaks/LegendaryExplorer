@@ -480,7 +480,7 @@ namespace MassEffectModder.Images
         {
             byte[] tmpData = convertRawToARGB(src, w, h, format);
             var ms = new MemoryStream();
-                .civar im = SixLabors.ImageSharp.Image.LoadPixelData<Bgra32>(tmpData, w,h);
+            var im = SixLabors.ImageSharp.Image.LoadPixelData<Bgra32>(tmpData, w,h);
             im.SaveAsPng(ms);
             ms.Position = 0;
             return ms;
