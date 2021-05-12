@@ -13,6 +13,7 @@ using LegendaryExplorer.Tools.FaceFXEditor;
 using LegendaryExplorer.Tools.InterpEditor;
 using LegendaryExplorer.Tools.AFCCompactorWindow;
 using LegendaryExplorer.Tools.AssetDatabase;
+using LegendaryExplorer.Tools.Meshplorer;
 using LegendaryExplorer.Tools.PathfindingEditor;
 using LegendaryExplorer.Tools.WwiseEditor;
 using LegendaryExplorer.Tools.TFCCompactor;
@@ -284,19 +285,19 @@ namespace LegendaryExplorer
                 subCategory = "Explorers",
                 description = "Interp Editor is a simplified version of UDK’s Matinee Editor. It loads interpdata objects and displays their children as tracks on a timeline, allowing the user to visualize the game content associated with a specific scene."
             });
-            //            set.Add(new Tool
-            //            {
-            //                name = "Meshplorer",
-            //                type = typeof(MeshplorerWPF),
-            //                icon = Application.Current.FindResource("iconMeshplorer") as ImageSource,
-            //                open = () =>
-            //                {
-            //                    (new MeshplorerWPF()).Show();
-            //                },
-            //                tags = new List<string> { "developer", "mesh" },
-            //                subCategory = "Meshes + Textures",
-            //                description = "Meshplorer loads and displays all meshes within a file. The tool skins most meshes with its associated texture.\n\nThis tool works with all three games."
-            //            });
+            set.Add(new Tool
+            {
+                name = "Meshplorer",
+                type = typeof(MeshplorerWindow),
+                icon = Application.Current.FindResource("iconMeshplorer") as ImageSource,
+                open = () =>
+                {
+                    (new MeshplorerWindow()).Show();
+                },
+                tags = new List<string> { "developer", "mesh" },
+                subCategory = "Meshes + Textures",
+                description = "Meshplorer loads and displays all meshes within a file. The tool skins most meshes with its associated texture.\n\nThis tool works with all three games."
+            });
             //            set.Add(new Tool
             //            {
             //                name = "Animation Importer/Exporter",
@@ -364,19 +365,6 @@ namespace LegendaryExplorer
             //                subCategory = "Utilities",
             //                description = "Dialogue Dumper is a utility for dumping conversation strings from games into an excel file. It shows the actor that spoke the line and which file the line is taken from. It also produces a table of who owns which conversation, for those that the owner is anonymous."
             //            });
-            //            set.Add(new Tool
-            //            {
-            //                name = "Plot Database",
-            //                type = typeof(PlotVarDB.PlotVarDB),
-            //                icon = Application.Current.FindResource("iconPlotDatabase") as ImageSource,
-            //                open = () =>
-            //                {
-            //                    (new PlotVarDB.PlotVarDB()).Show();
-            //                },
-            //                tags = new List<string> { "utility", "bool", "boolean", "flag", "int", "integer", "id" },
-            //                subCategory = "Databases",
-            //                description = "Plot Database is a cross-game utility used to store plot IDs for reference. The tool comes pre-loaded with a default .db file that can be customized by the user. Never look up a plot bool or integer again!",
-            //            });
             set.Add(new Tool
             {
                 name = "Asset Database",
@@ -390,19 +378,6 @@ namespace LegendaryExplorer
                 subCategory = "Databases",
                 description = "Scans games and creates a database of classes, animations, materials, textures, particles and meshes.\n\nIndividual assets can be opened directly from the interface with tools for editing."
             });
-            //            set.Add(new Tool
-            //            {
-            //                name = "PSA Viewer",
-            //                type = typeof(PSAViewer),
-            //                icon = Application.Current.FindResource("iconPSAViewer") as ImageSource,
-            //                open = () =>
-            //                {
-            //                    (new PSAViewer()).Show();
-            //                },
-            //                tags = new List<string> { "utility", "mesh", "animation" },
-            //                subCategory = "Explorers",
-            //                description = "View the data contained in a PSA animation file extracted using Gildor's umodel toolkit."
-            //            });
             //            set.Add(new Tool
             //            {
             //                name = "Script Database",

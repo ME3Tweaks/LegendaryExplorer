@@ -17,6 +17,13 @@
   <!-- Soundplorer Specific settings-->
   <setting name="Soundplorer_ReverseIDDisplayEndianness" type="bool" defaultvalue="false"/>
   <setting name="Soundplorer_AutoplayEntriesOnSelection" type="bool" defaultvalue="false"/>
+
+  <!-- Meshplorer specific settings-->
+  <setting name="Meshplorer_BackgroundColor" type="string" defaultvalue="#999999"/>
+  <setting name="Meshplorer_ViewFirstPerson" type="bool" defaultvalue="false"/>
+  <setting name="Meshplorer_ViewRotating" type="bool" defaultvalue="false"/>
+  <setting name="Meshplorer_View_SolidEnabled" type="bool" defaultvalue="true"/>
+  <setting name="Meshplorer_ViewWireframeEnabled" type="bool" defaultvalue="false"/>
     
   <!-- Pathfinding Editor Specific settings-->
   <setting name="PathfindingEditor_ShowNodeSizes" type="bool" defaultvalue="false"/>

@@ -4,21 +4,16 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-        xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
-        xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:dd="urn:gong-wpf-dragdrop"
         Closing="PackageEditorWPF_Closing"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:Packages="clr-namespace:LegendaryExplorerCore.Packages;assembly=LegendaryExplorerCore"
         xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
-        xmlns:global="clr-namespace:LegendaryExplorer.Tools.PackageEditor"
         xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
         xmlns:bases="clr-namespace:LegendaryExplorer.SharedUI.Bases"
         xmlns:SharedUI="clr-namespace:LegendaryExplorer.SharedUI"
         xmlns:sharedToolControls="clr-namespace:LegendaryExplorer.UserControls.SharedToolControls"
         xmlns:packageEditorControls="clr-namespace:LegendaryExplorer.UserControls.PackageEditorControls"
-        xmlns:legendaryExplorer="clr-namespace:LegendaryExplorer"
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:controls="clr-namespace:LegendaryExplorer.SharedUI.Controls"
         xmlns:peregrineTreeView="clr-namespace:LegendaryExplorer.SharedUI.PeregrineTreeView"
@@ -428,7 +423,6 @@
                                                      Visibility="{Binding Pcc, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type bases:WPFBase}},Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}"/>
                         </StackPanel>
                     </TabItem>
-                    <!--<TabItem Name="Properties_Tab" Header="Properties"/>-->
                     <TabItem Name="Interpreter_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
                             <TextBlock Text="Interpreter" ToolTip="Edit UnrealScript properties on exports"/>
@@ -459,13 +453,12 @@
                         </TabItem.Header>
                         <exportLoaderControls:BinaryInterpreterWPF x:Name="BinaryInterpreterTab_BinaryInterpreter" SubstituteImageForHexBox="{Binding IsBusy, RelativeSource={RelativeSource AncestorType=Window}}" NavigateToEntryCommand="{Binding NavigateToEntryCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
                     </TabItem>
-                    <!--
                     <TabItem Name="MeshRenderer_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
                             <TextBlock Text="Mesh" ToolTip="View 3D mesh"/>
                         </TabItem.Header>
-                        <meshplorer:MeshRendererWPF x:Name="MeshRendererTab_MeshRenderer"/>
-                    </TabItem> -->
+                        <exportLoaderControls:MeshRenderer x:Name="MeshRendererTab_MeshRenderer"/>
+                    </TabItem> 
                     <TabItem Name="Bytecode_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
                             <TextBlock Text="Bytecode" ToolTip="View and edit UnrealScript bytecode"/>
@@ -498,18 +491,18 @@
                         </TabItem.Header>
                         <exportLoaderControls:Soundpanel x:Name="SoundTab_Soundpanel" HostingControl="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
                     </TabItem>
+                    <TabItem Name="JPEXLauncher_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <TabItem.Header>
+                            <TextBlock Text="Scaleform" ToolTip="Launch embedded files in external tools"/>
+                        </TabItem.Header>
+                        <exportLoaderControls:JPEXExternalExportLoader x:Name="JPEXLauncherTab_JPEXLauncher"/>
+                    </TabItem>
                     <!--
                     <TabItem Name="ME1TlkEditorWPF_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
                             <TextBlock Text="Talktable" ToolTip="Edit entries in this BioTLKFile"/>
                         </TabItem.Header>
                         <me1tlkeditor:ME1TlkEditorWPF x:Name="ME1TlkEditorWPFTab_ME1TlkEditor"/>
-                    </TabItem>
-                    <TabItem Name="JPEXLauncher_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
-                        <TabItem.Header>
-                            <TextBlock Text="Scaleform" ToolTip="Launch embedded files in external tools"/>
-                        </TabItem.Header>
-                        <exportLoaderControls:JPEXExternalExportLoader x:Name="JPEXLauncherTab_JPEXLauncher"/>
                     </TabItem>
                     <TabItem Name="MaterialViewer_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>

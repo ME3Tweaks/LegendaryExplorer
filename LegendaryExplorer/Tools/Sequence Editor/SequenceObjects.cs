@@ -14,6 +14,7 @@ using UMD.HCIL.Piccolo.Util;
 using UMD.HCIL.GraphEditor;
 using System.Runtime.InteropServices;
 using LegendaryExplorer.Misc.AppSettings;
+using LegendaryExplorer.Resources;
 using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Kismet;
@@ -1800,16 +1801,8 @@ namespace LegendaryExplorer.Tools.SequenceObjects
         //Static constructor
         static SText()
         {
-            fontcollection = new PrivateFontCollection(); 
-            var assembly = typeof(SText).GetTypeInfo().Assembly;
-            var tmpStream = new MemoryStream();
-            Stream resourceStream = assembly.GetManifestResourceStream("LegendaryExplorer.Resources.Fonts.KismetFont.ttf");
-            if (resourceStream is null)
-            {
-                throw new Exception("Could not load LegendaryExplorer.Resources.Fonts.KismetFont.ttf");
-            }
-            resourceStream.CopyTo(tmpStream);
-            byte[] fontData = tmpStream.ToArray();
+            fontcollection = new PrivateFontCollection();
+            byte[] fontData = EmbeddedResources.KismetFont;
             IntPtr fontPtr = Marshal.AllocCoTaskMem(fontData.Length);
             Marshal.Copy(fontData, 0, fontPtr, fontData.Length);
             fontcollection.AddMemoryFont(fontPtr, fontData.Length);

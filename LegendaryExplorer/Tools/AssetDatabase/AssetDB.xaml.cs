@@ -48,19 +48,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         private int previousView { get; set; }
         private int _currentView;
         public int currentView { get => _currentView; set { previousView = _currentView; SetProperty(ref _currentView, value); } }
-        public enum DBTableType
-        {
-            Master = 0,
-            Class,
-            Materials,
-            Meshes,
-            Textures,
-            Particles,
-            Animations,
-            GUIElements,
-            Convos,
-            Lines
-        }
+
         private bool _isBusy;
         public bool IsBusy { get => _isBusy; set => SetProperty(ref _isBusy, value); }
         private string _busyText;
@@ -361,8 +349,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             Settings.AssetDBPath = CurrentDBPath;
             Settings.AssetDBGame = CurrentGame.ToString();
             
-            //TODO: implement in LEX
-            //MeshRendererTab_MeshRenderer?.Dispose();
+            MeshRendererTab_MeshRenderer?.Dispose();
             SoundpanelWPF_ADB?.Dispose();
             BIKExternalExportLoaderTab_BIKExternalExportLoader?.Dispose();
             EmbeddedTextureViewerTab_EmbeddedTextureViewer?.Dispose();
@@ -694,8 +681,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             switchME3_menu.IsChecked = false;
             ClearDataBase();
             currentView = 0;
-            //TODO: implement in LEX
-            //MeshRendererTab_MeshRenderer.UnloadExport();
+            MeshRendererTab_MeshRenderer.UnloadExport();
             meshPcc?.Dispose();
             btn_MeshRenderToggle.IsChecked = false;
             btn_MeshRenderToggle.Content = "Toggle Mesh Rendering";
@@ -936,17 +922,16 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             switch (tool)
             {
                 case "Meshplorer":
-                    //TODO: implement in LEX
-                    //var meshPlorer = new MeshplorerWPF();
-                    //meshPlorer.Show();
-                    //if (uindex != 0)
-                    //{
-                    //    meshPlorer.LoadFile(filePath, uindex);
-                    //}
-                    //else
-                    //{
-                    //    meshPlorer.LoadFile(filePath);
-                    //}
+                    var meshPlorer = new Meshplorer.MeshplorerWindow();
+                    meshPlorer.Show();
+                    if (uindex != 0)
+                    {
+                        meshPlorer.LoadFile(filePath, uindex);
+                    }
+                    else
+                    {
+                        meshPlorer.LoadFile(filePath);
+                    }
                     break;
                 case "PathEd":
                     var pathEd = new PathfindingEditor.PathfindingEditorWindow(filePath);
@@ -1102,8 +1087,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
             if (!showmesh)
             {
-                //TODO: implement in LEX
-                //MeshRendererTab_MeshRenderer.UnloadExport();
+                MeshRendererTab_MeshRenderer.UnloadExport();
                 meshPcc?.Dispose();
                 return;
             }
@@ -1132,8 +1116,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
             if (meshPcc != null) //unload existing file
             {
-                //TODO: implement in LEX
-                //MeshRendererTab_MeshRenderer.UnloadExport();
+                MeshRendererTab_MeshRenderer.UnloadExport();
                 meshPcc.Dispose();
             }
 
@@ -1152,8 +1135,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     var meshExp = meshPcc.GetUExport(uexpIdx);
                     if (meshExp.ObjectName == selecteditem.MeshName)
                     {
-                        //TODO: implement in LEX
-                        //MeshRendererTab_MeshRenderer.LoadExport(meshExp);
+                        MeshRendererTab_MeshRenderer.LoadExport(meshExp);
                         break;
                     }
                 }
@@ -2727,6 +2709,12 @@ namespace LegendaryExplorer.Tools.AssetDatabase
     }
 
     #region Database
+    /*
+     * READ THIS BEFORE MODIFYING DATABASE CLASSES!
+     * BinaryPack does not work with ValueTuples, and it requires classes to have a parameterless constructor!
+     * That is why all the records have seemingly useless contructors.
+     */
+
     /// <summary>
     /// Database Classes
     /// </summary>
@@ -2736,19 +2724,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public MEGame meGame { get; set; }
         public string GenerationDate { get; set; }
         public string DataBaseversion { get; set; }
-        //public Dictionary<AssetDB.DBTableType, bool> dbTable { get; set; } = new()
-        //{
-        //    { AssetDB.DBTableType.Master, false },
-        //    { AssetDB.DBTableType.Class, false },
-        //    { AssetDB.DBTableType.Materials, false },
-        //    { AssetDB.DBTableType.Meshes, false },
-        //    { AssetDB.DBTableType.Textures, false },
-        //    { AssetDB.DBTableType.Animations, false },
-        //    { AssetDB.DBTableType.Particles, false },
-        //    { AssetDB.DBTableType.GUIElements, false },
-        //    { AssetDB.DBTableType.Convos, false },
-        //    { AssetDB.DBTableType.Lines, false }
-        //};
+
         public List<FileNameDirKeyPair> FileList { get; set; } = new();
         public List<string> ContentDir { get; set; } = new();
 

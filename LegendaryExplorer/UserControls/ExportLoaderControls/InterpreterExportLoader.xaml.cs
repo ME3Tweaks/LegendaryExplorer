@@ -305,12 +305,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void AttemptOpenImport()
         {
-            if (CurrentLoadedExport != null && SelectedItem != null && SelectedItem.Property is ObjectProperty op && CurrentLoadedExport.FileRef.IsImport(op.Value))
+            if (CurrentLoadedExport != null && SelectedItem?.Property is ObjectProperty op && CurrentLoadedExport.FileRef.IsImport(op.Value))
             {
                 var export = EntryImporter.ResolveImport(CurrentLoadedExport.FileRef.GetImport(op.Value));
                 if (export != null)
                 {
-                    PackageEditorWindow p = new PackageEditorWindow();
+                    var p = new PackageEditorWindow();
                     p.Show();
                     p.LoadEntry(export);
                     p.Activate(); //bring to front        
@@ -324,23 +324,23 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void OpenReferenceInMeshplorer()
         {
-            /*if (SelectedItem.Property is ObjectProperty op)
+            if (SelectedItem.Property is ObjectProperty op)
             {
-                MeshplorerWPF p = new MeshplorerWPF(CurrentLoadedExport.FileRef.GetUExport(op.Value));
+                var p = new Tools.Meshplorer.MeshplorerWindow(CurrentLoadedExport.FileRef.GetUExport(op.Value));
                 p.Show();
                 p.Activate(); //bring to front
-            }*/
+            }
         }
 
         private bool CanOpenInMeshplorer()
         {
-            /*
-            if (CurrentLoadedExport != null && SelectedItem != null && SelectedItem.Property is ObjectProperty op && CurrentLoadedExport.FileRef.IsUExport(op.Value))
+
+            if (CurrentLoadedExport != null && SelectedItem?.Property is ObjectProperty op && CurrentLoadedExport.FileRef.IsUExport(op.Value))
             {
                 var entry = CurrentLoadedExport.FileRef.GetUExport(op.Value);
-                return MeshRendererWPF.CanParseStatic(entry);
+                return MeshRenderer.CanParseStatic(entry);
             }
-            */
+
             return false;
         }
 
@@ -348,7 +348,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (SelectedItem.Property is ObjectProperty op)
             {
-                PackageEditorWindow p = new PackageEditorWindow();
+                var p = new PackageEditorWindow();
                 p.Show();
                 p.LoadFile(CurrentLoadedExport.FileRef.FilePath, op.Value);
                 p.Activate(); //bring to front        
@@ -394,7 +394,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private bool ArrayPropertyIsSelected() => SelectedItem?.Property is ArrayPropertyBase;
 
         private bool IsExportLoaded() => CurrentLoadedExport != null;
-        private bool IsItemGUIDImmutable() => SelectedItem?.Property is StructProperty sp && sp.IsImmutable && sp.StructType == "Guid";
+        private bool IsItemGUIDImmutable() => SelectedItem?.Property is StructProperty {IsImmutable: true, StructType: "Guid"};
         private void GenerateNewGUID()
         {
             CurrentLoadedExport.WriteProperty(CommonStructs.GuidProp(Guid.NewGuid(), SelectedItem.Property.Name));

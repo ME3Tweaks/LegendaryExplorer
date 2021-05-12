@@ -80,7 +80,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// <summary>
         /// Assets commonly referenced by swf files
         /// </summary>
-        private static Dictionary<(string, string), string> ME3SharedAssets = new Dictionary<(string infilename, string outfilename), string>
+        private static readonly Dictionary<(string, string), string> ME3SharedAssets = new Dictionary<(string infilename, string outfilename), string>
         {
             {("PC_SharedAssets","PC_SharedAssets"), "Startup.pcc"},
             {("Xbox_ControllerIcons","Xbox_ControllerIcons"), "Startup.pcc"},
@@ -135,7 +135,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 string writeoutPath = Path.Combine(Path.GetTempPath(), CurrentLoadedExport.FullPath + ".swf");
                 extractSwf(CurrentLoadedExport, writeoutPath);
 
-                Process process = new Process
+                var process = new Process
                 {
                     StartInfo =
                     {
@@ -219,7 +219,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (CurrentLoadedExport != null)
             {
-                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new JPEXExternalExportLoader(), CurrentLoadedExport)
+                var elhw = new ExportLoaderHostedWindow(new JPEXExternalExportLoader(), CurrentLoadedExport)
                 {
                     Title = $"JPEX Launcher - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}"
                 };

@@ -50,6 +50,31 @@
             get => _soundplorer_autoplayentriesonselection; 
             set => SetProperty(ref _soundplorer_autoplayentriesonselection, value);
         }
+        private static string _meshplorer_backgroundcolor = "#999999"; 
+        public static string Meshplorer_BackgroundColor {
+            get => _meshplorer_backgroundcolor; 
+            set => SetProperty(ref _meshplorer_backgroundcolor, value);
+        }
+        private static bool _meshplorer_viewfirstperson = false; 
+        public static bool Meshplorer_ViewFirstPerson {
+            get => _meshplorer_viewfirstperson; 
+            set => SetProperty(ref _meshplorer_viewfirstperson, value);
+        }
+        private static bool _meshplorer_viewrotating = false; 
+        public static bool Meshplorer_ViewRotating {
+            get => _meshplorer_viewrotating; 
+            set => SetProperty(ref _meshplorer_viewrotating, value);
+        }
+        private static bool _meshplorer_view_solidenabled = true; 
+        public static bool Meshplorer_View_SolidEnabled {
+            get => _meshplorer_view_solidenabled; 
+            set => SetProperty(ref _meshplorer_view_solidenabled, value);
+        }
+        private static bool _meshplorer_viewwireframeenabled = false; 
+        public static bool Meshplorer_ViewWireframeEnabled {
+            get => _meshplorer_viewwireframeenabled; 
+            set => SetProperty(ref _meshplorer_viewwireframeenabled, value);
+        }
         private static bool _pathfindingeditor_shownodesizes = false; 
         public static bool PathfindingEditor_ShowNodeSizes {
             get => _pathfindingeditor_shownodesizes; 

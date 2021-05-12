@@ -114,7 +114,10 @@
     <None Remove="Tools\Icons\toolset_splash.png" />
     <None Remove="Tools\Icons\wwisebankeditor_256x256.ico" />
     <None Remove="Tools\Icons\WwiseEditor_256x256.ico" />
+    <None Remove="Tools\Meshplorer\udk.ico" />
+    <None Remove="Tools\Meshplorer\umodel.ico" />
     <None Remove="UserControls\ExportLoaderControls\Soundpanel\WwiseTemplateProject.zip" />
+    <None Remove="UserControls\SharedToolControls\Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Be.Windows.Forms.HexBox\Be.Windows.Forms.HexBox.csproj" />
@@ -137,6 +140,7 @@
     <PackageReference Include="Microsoft.AppCenter" Version="4.2.0" />
     <PackageReference Include="Microsoft.AppCenter.Analytics" Version="4.2.0" />
     <PackageReference Include="Microsoft.AppCenter.Crashes" Version="4.2.0" />
+    <PackageReference Include="Microsoft.Wpf.Interop.DirectX-x64" Version="0.9.0-beta-22856" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
     <PackageReference Include="NAudio" Version="2.0.0" />
     <PackageReference Include="SharpDX" Version="4.2.0" />
@@ -395,7 +399,18 @@
     <Resource Include="Tools\Icons\WwiseEditor_256x256.ico">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Images\udk.ico" />
+    <Resource Include="Resources\Images\umodel.ico" />
     <Resource Include="Tools\PackageEditor\ExportIcons\*" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Resources\exec\**" />
+    <EmbeddedResource Remove="Resources\exec\**" />
+    <None Remove="Resources\exec\**" />
+    <Page Remove="Resources\exec\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\StandardShader.hlsl" />
   </ItemGroup>
 
   <ItemGroup>
@@ -431,6 +446,12 @@
     </Compile>
     <Compile Update="Tools\Dialogue Editor\LinkEditor.xaml.cs">
       <DependentUpon>LinkEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Tools\Meshplorer\MeshplorerWPF.xaml.cs">
+      <DependentUpon>MeshplorerWPF.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\ExportLoaderControls\MeshRendererWPF.xaml.cs">
+      <DependentUpon>MeshRendererWPF.xaml</DependentUpon>
     </Compile>
     <Compile Update="Tools\PathfindingEditor\PathingGraphEditor.cs">
       <SubType>Component</SubType>
@@ -525,6 +546,12 @@
     <Page Update="Tools\InterpEditor\InterpEditorWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Tools\Meshplorer\MeshplorerWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UserControls\ExportLoaderControls\MeshRenderer.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Tools\PathfindingEditor\PathfindingEditorWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -592,4 +619,8 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy /f /e /y &quot;$(ProjectDir)Resources\exec&quot; &quot;$(ProjectDir)$(OutDir)\exec\&quot;" />
+  </Target>
 </Project>

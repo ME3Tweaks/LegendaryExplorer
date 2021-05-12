@@ -171,6 +171,16 @@ namespace LegendaryExplorer.Startup
                     editor.Activate();
                 };
             }
+
+            if (arg == "JUMPLIST_MESHPLORER")
+            {
+                return () =>
+                {
+                    var meshplorerWpf = new Tools.Meshplorer.MeshplorerWindow();
+                    meshplorerWpf.Show();
+                    meshplorerWpf.Activate();
+                };
+            }
             /*
 
             //Do not remove - used by Mass Effect Mod Manager to boot the tool
@@ -214,16 +224,6 @@ namespace LegendaryExplorer.Startup
                     DLCUnpacker.DLCUnpackerUI dlcUnpacker = new DLCUnpacker.DLCUnpackerUI();
                     dlcUnpacker.Show();
                     dlcUnpacker.Activate();
-                };
-            }
-
-            if (arg == "JUMPLIST_MESHPLORER")
-            {
-                return () =>
-                {
-                    MeshplorerWPF meshplorerWpf = new MeshplorerWPF();
-                    meshplorerWpf.Show();
-                    meshplorerWpf.Activate();
                 };
             }*/
 

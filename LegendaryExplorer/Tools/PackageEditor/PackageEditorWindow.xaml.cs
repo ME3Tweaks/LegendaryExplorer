@@ -70,8 +70,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         //Objects in this collection are displayed on the left list view (names, imports, exports)
 
-        readonly Dictionary<ExportLoaderControl, TabItem>
-            ExportLoaders = new Dictionary<ExportLoaderControl, TabItem>();
+        readonly Dictionary<ExportLoaderControl, TabItem> ExportLoaders = new();
 
         private CurrentViewMode _currentView;
 
@@ -100,17 +99,13 @@ namespace LegendaryExplorer.Tools.PackageEditor
             }
         }
 
-        public ObservableCollectionExtended<object> LeftSideList_ItemsSource { get; set; } =
-            new ObservableCollectionExtended<object>();
+        public ObservableCollectionExtended<object> LeftSideList_ItemsSource { get; set; } = new();
 
-        public ObservableCollectionExtended<IndexedName> NamesList { get; set; } =
-            new ObservableCollectionExtended<IndexedName>();
+        public ObservableCollectionExtended<IndexedName> NamesList { get; set; } = new();
 
-        public ObservableCollectionExtended<string> ClassDropdownList { get; set; } =
-            new ObservableCollectionExtended<string>();
+        public ObservableCollectionExtended<string> ClassDropdownList { get; set; } = new();
 
-        public ObservableCollectionExtended<TreeViewEntry> AllTreeViewNodesX { get; set; } =
-            new ObservableCollectionExtended<TreeViewEntry>();
+        public ObservableCollectionExtended<TreeViewEntry> AllTreeViewNodesX { get; set; } =new();
 
         private TreeViewEntry _selectedItem;
 
@@ -270,8 +265,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             MultiCloneTreeCommand = new GenericCommand(CloneTreeMultiple, TreeEntryIsSelected);
             FindEntryViaOffsetCommand = new GenericCommand(FindEntryViaOffset, PackageIsLoaded);
             CheckForDuplicateIndexesCommand = new GenericCommand(CheckForDuplicateIndexes, PackageIsLoaded);
-            CheckForInvalidObjectPropertiesCommand =
-                new GenericCommand(CheckForBadObjectPropertyReferences, PackageIsLoaded);
+            CheckForInvalidObjectPropertiesCommand = new GenericCommand(CheckForBadObjectPropertyReferences, PackageIsLoaded);
             EditNameCommand = new GenericCommand(EditName, NameIsSelected);
             AddNameCommand = new RelayCommand(AddName, CanAddName);
             CopyNameCommand = new GenericCommand(CopyName, NameIsSelected);
@@ -286,8 +280,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             PackageHeaderViewerCommand = new GenericCommand(ViewPackageInfo, PackageIsLoaded);
             PackageExportIsSelectedCommand = new EnableCommand(PackageExportIsSelected);
             CreateNewPackageGUIDCommand = new GenericCommand(GenerateNewGUIDForSelected, PackageExportIsSelected);
-            SetPackageAsFilenamePackageCommand =
-                new GenericCommand(SetSelectedAsFilenamePackage, PackageExportIsSelected);
+            SetPackageAsFilenamePackageCommand = new GenericCommand(SetSelectedAsFilenamePackage, PackageExportIsSelected);
             FindEntryViaTagCommand = new GenericCommand(FindEntryViaTag, PackageIsLoaded);
             PopoutCurrentViewCommand = new GenericCommand(PopoutCurrentView, ExportIsSelected);
             CompactShaderCacheCommand = new GenericCommand(CompactShaderCache, HasShaderCache);
@@ -337,11 +330,11 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
                     var treeNodes = AllTreeViewNodesX[0].FlattenTree().Where(x => x.Entry is ImportEntry);
 
-                    PackageCache cache = new PackageCache();
+                    var cache = new PackageCache();
                     foreach (var impTV in treeNodes)
                     {
                         var resolvedExp = EntryImporter.ResolveImport(impTV.Entry as ImportEntry, null, cache);
-                        if (resolvedExp != null && resolvedExp.FileRef.FilePath != null)
+                        if (resolvedExp?.FileRef.FilePath != null)
                         {
                             var fname = Path.GetFileName(resolvedExp.FileRef.FilePath);
                             impTV.SubText = fname;
@@ -413,7 +406,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     break;
             }
 
-            SaveFileDialog d = new SaveFileDialog { Filter = fileFilter };
+            var d = new SaveFileDialog { Filter = fileFilter };
             if (d.ShowDialog() == true)
             {
                 Task.Run(() => EntryExporter.ExportExportToPackage(SelectedItem.Entry as ExportEntry, d.FileName, out _))
@@ -431,7 +424,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             else
                             {
                                 MessageBox.Show("Extracted into a new package.");
-                                PackageEditorWindow nwpf = new PackageEditorWindow();
+                                var nwpf = new PackageEditorWindow();
                                 nwpf.LoadFile(d.FileName);
                                 nwpf.Show();
                                 nwpf.Activate();
@@ -491,7 +484,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     IsBusy = false;
                     if (prevTask.Result is ExportEntry res)
                     {
-                        PackageEditorWindow pwpf = new PackageEditorWindow();
+                        var pwpf = new PackageEditorWindow();
                         pwpf.Show();
                         pwpf.LoadEntry(res);
                         pwpf.RestoreAndBringToFront();
@@ -585,14 +578,14 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
                         }
                         break;
+                    case "Meshplorer":
+                        if (MeshRenderer.CanParseStatic(exp))
+                        {
+                            new Meshplorer.MeshplorerWindow(exp).Show();
+                        }
+                        break;
                         // TODO: IMPLEMENT FOR LEX
                         /*
-                        case "Meshplorer":
-                            if (MeshRendererWPF.CanParseStatic(exp))
-                            {
-                                new MeshplorerWPF(exp).Show();
-                            }
-                            break;
                         case "WwiseEditor":
                             if (exp.ClassName == "WwiseBank")
                             {
@@ -615,11 +608,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         return exp.ClassName == "BioConversation";
                     case "FaceFXEditor":
                         return exp.ClassName == "FaceFXAnimSet";
-                    //TODO: IMPLEMENT IN LEX
-                    /*
                     case "Meshplorer":
-                        return MeshRendererWPF.CanParseStatic(exp);
-                    */
+                        return MeshRenderer.CanParseStatic(exp);
                     case "PathfindingEditor":
                         return PathfindingEditor.PathfindingEditorWindow.CanParseStatic(exp);
                     case "Soundplorer":
@@ -647,7 +637,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 x.ClassName == (Pcc.Game == MEGame.ME1 ? "BioSWF" : "GFxMovieInfo") && !x.IsDefaultObject).ToList();
             if (swfsInFile.Count > 0)
             {
-                CommonOpenFileDialog m = new CommonOpenFileDialog
+                var m = new CommonOpenFileDialog
                 {
                     IsFolderPicker = true,
                     EnsurePathExists = true,
@@ -682,7 +672,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 x.ClassName == (Pcc.Game == MEGame.ME1 ? "BioSWF" : "GFxMovieInfo") && !x.IsDefaultObject).ToList();
             if (swfsInFile.Count > 0)
             {
-                CommonOpenFileDialog m = new CommonOpenFileDialog
+                var m = new CommonOpenFileDialog
                 {
                     IsFolderPicker = true,
                     EnsurePathExists = true,
@@ -690,15 +680,15 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 };
                 if (m.ShowDialog(this) == CommonFileDialogResult.Ok)
                 {
-                    BackgroundWorker bw = new BackgroundWorker();
+                    var bw = new BackgroundWorker();
                     bw.RunWorkerAsync(m.FileName);
                     bw.RunWorkerCompleted += (x, y) =>
                     {
                         IsBusy = false;
-                        ListDialog ld =
-                            new ListDialog((List<EntryStringPair>)y.Result, "Imported Files",
-                                    "The following files were imported.", this)
-                            { DoubleClickEntryHandler = entryDoubleClick };
+                        var ld = new ListDialog((List<EntryStringPair>)y.Result, "Imported Files", "The following files were imported.", this)
+                        {
+                            DoubleClickEntryHandler = entryDoubleClick
+                        };
                         ld.Show();
                     };
                     bw.DoWork += (param, eventArgs) =>
@@ -836,7 +826,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     break;
             }
 
-            SaveFileDialog d = new SaveFileDialog { Filter = fileFilter };
+            var d = new SaveFileDialog { Filter = fileFilter };
             if (d.ShowDialog() == true)
             {
                 Pcc.Save(d.FileName);
@@ -851,7 +841,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private void OpenFile()
         {
-            OpenFileDialog d = new OpenFileDialog { Filter = GameFileFilters.OpenFileFilter };
+            var d = new OpenFileDialog { Filter = GameFileFilters.OpenFileFilter };
             if (d.ShowDialog() == true)
             {
 #if !DEBUG
@@ -963,7 +953,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private void PopoutCurrentView()
         {
-            if (EditorTabs.SelectedItem is TabItem tab && tab.Content is ExportLoaderControl exportLoader)
+            if (EditorTabs.SelectedItem is TabItem {Content: ExportLoaderControl exportLoader})
             {
                 exportLoader.PopOut();
             }
@@ -1032,7 +1022,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             try
             {
                 byte[] header = Pcc.getHeader();
-                MemoryStream ms = new MemoryStream(header);
+                var ms = new MemoryStream(header);
 
                 uint magicnum = ms.ReadUInt32();
                 items.Add($"0x{ms.Position - 4:X2} Magic number: 0x{magicnum:X8}");
@@ -1427,7 +1417,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                                     //GFX is scaleform extensions for SWF
                                     //SWC is Shockwave Compressed
                                     //SWF is Shockwave Flash (uncompressed)
-                                    SaveFileDialog d = new SaveFileDialog
+                                    var d = new SaveFileDialog
                                     {
                                         Title = "Save SWF",
                                         FileName = exp.FullPath + ".swf",
@@ -1453,7 +1443,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     case "BioTlkFile":
                         {
                             string extension = Path.GetExtension(".xml");
-                            SaveFileDialog d = new SaveFileDialog
+                            var d = new SaveFileDialog
                             {
                                 Title = "Export TLK as XML",
                                 FileName = exp.FullPath + ".xml",
@@ -1483,7 +1473,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             try
                             {
                                 string extension = Path.GetExtension(".swf");
-                                OpenFileDialog d = new OpenFileDialog
+                                var d = new OpenFileDialog
                                 {
                                     Title = "Replace SWF",
                                     FileName = exp.FullPath + ".swf",
@@ -1534,7 +1524,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     case "BioTlkFile":
                         {
                             string extension = Path.GetExtension(".xml");
-                            OpenFileDialog d = new OpenFileDialog
+                            var d = new OpenFileDialog
                             {
                                 Title = "Replace TLK from exported XML (ME1 Only)",
                                 FileName = exp.FullPath + ".xml",
@@ -2260,12 +2250,12 @@ namespace LegendaryExplorer.Tools.PackageEditor
             ExportLoaders[CollectionActorEditorTab_CollectionActorEditor] = CollectionActorEditor_Tab;
             ExportLoaders[ParticleSystemTab_ParticleSystemLoader] = ParticleSystem_Tab;
             ExportLoaders[ParticleModuleTab_ParticleModuleLoader] = ParticleModule_Tab;
+            ExportLoaders[MeshRendererTab_MeshRenderer] = MeshRenderer_Tab;
+            ExportLoaders[JPEXLauncherTab_JPEXLauncher] = JPEXLauncher_Tab;
 
             // TODO: IMPLEMENT IN LEX
             //ExportLoaders[ScriptTab_UnrealScriptIDE] = Script_Tab;
             //ExportLoaders[ME1TlkEditorWPFTab_ME1TlkEditor] = ME1TlkEditorWPF_Tab;
-            //ExportLoaders[JPEXLauncherTab_JPEXLauncher] = JPEXLauncher_Tab;
-            //ExportLoaders[MeshRendererTab_MeshRenderer] = MeshRenderer_Tab;
             //ExportLoaders[MaterialViewerTab_MaterialExportLoader] = MaterialViewer_Tab;
             //ExportLoaders[RADLauncherTab_BIKLauncher] = RADLaunch_Tab;
 
@@ -3592,7 +3582,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     // TODO: IMPLEMENT IN LEX
                     /*
                     case "Meshplorer":
-                        var meshplorer = new MeshplorerWPF();
+                        var meshplorer = new MeshplorerWindow();
                         meshplorer.LoadFile(Pcc.FilePath);
                         meshplorer.Show();
                         break;

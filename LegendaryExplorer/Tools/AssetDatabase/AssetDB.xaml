@@ -497,8 +497,7 @@
                             <Border BorderBrush="LightSlateGray" BorderThickness="0.7" Grid.Row="1" Grid.Column="1">
                                 <DockPanel x:Name="details_Mesh" MinWidth="350" Margin="3" >
                                     <ToggleButton x:Name="btn_MeshRenderToggle" Content="Toggle Mesh Rendering" DockPanel.Dock="Bottom" MaxHeight="30" ClickMode="Release" Click="btn_MeshRenderToggle_Click" IsChecked="False"></ToggleButton>
-                                    <!--TODO: implement in LEX -->
-                                    <!--<meshplorer:MeshRendererWPF x:Name="MeshRendererTab_MeshRenderer" Visibility="Visible" />-->
+                                    <exportLoaderControls:MeshRenderer x:Name="MeshRendererTab_MeshRenderer" Visibility="Visible" />
                                 </DockPanel>
                             </Border>
                             <TextBlock Text="Usages" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Every file that uses this Mesh&#x0a;Right click to open in Package Editor" Grid.Row="0" Grid.Column="2"/>
