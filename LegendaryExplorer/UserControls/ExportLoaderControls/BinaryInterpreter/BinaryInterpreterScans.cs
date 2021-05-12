@@ -1805,7 +1805,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private static List<ITreeItem> ReadList(int count, Func<int, ITreeItem> selector)
         {
-            return Enumerable.Range(0, count).Select(selector).ToList();
+            //sanity check. if this number is too small, feel free to increase
+            if (count > 1048576)
+            {
+                throw new Exception($"Is this actually a list? {count} seems like an incorrect count");
+            }
+            var list = new List<ITreeItem>();
+            for (int i = 0; i < count; i++)
+            {
+                list.Add(selector(i));
+            }
+
+            return list;
         }
 
         private List<ITreeItem> StartWorldScan(byte[] data, ref int binarystart)
@@ -6491,7 +6502,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     MakeBoolIntNode(bin, "bUsesDynamicParameter"),
                     MakeBoolIntNode(bin, "bUsesLightmapUVs"),
                     MakeBoolIntNode(bin, "bUsesMaterialVertexPositionOffset"),
-                    ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game == MEGame.ME3, () => MakeBoolIntNode(bin, "unknown bool?"))
+                    ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game == MEGame.ME3 || Pcc.Game.IsLEGame(), () => MakeBoolIntNode(bin, "unknown bool?"))
                 }));
                 nodes.Add(new BinInterpNode(bin.Position, $"UsingTransforms: {(ECoordTransformUsage)bin.ReadUInt32()}"));
                 if (Pcc.Game == MEGame.ME1)
