@@ -14,7 +14,7 @@ namespace LegendaryExplorerCore.Packages
 {
     public static class CompressionHelper
     {
-        public const string OODLE_DLL_NAME = "oodle_lev_idk.dll";
+        public const string OODLE_DLL_NAME = @"X:\Downloads\oo2core_8_win64.dll";
 #if WINDOWS
         public const string COMPRESSION_WRAPPER_NAME = "CompressionWrappers.dll";
 #elif MACOS
@@ -550,7 +550,8 @@ namespace LegendaryExplorerCore.Packages
                                 throw new Exception("LZX decompression failed!");
                             break;
                         case UnrealPackageFile.CompressionType.OodleLeviathan:
-                            if (OodleHelper.Decompress(datain, (uint)datain.Length, dataout, (uint)btInfo.blockDecompressedSize) != 0)
+                            dataout = OodleHelper.Decompress(datain, datain.Length, btInfo.blockDecompressedSize);
+                            if (dataout.Length != btInfo.blockDecompressedSize)
                                 throw new Exception("Oodle-Leviathan decompression failed!");
                             break;
                         default:
@@ -694,6 +695,11 @@ namespace LegendaryExplorerCore.Packages
                         case UnrealPackageFile.CompressionType.LZX:
                             if (LZX.Decompress(datain, (uint)datain.Length, dataout, (uint)b.uncompressedsize) != 0)
                                 throw new Exception("LZX decompression failed!");
+                            break;
+                        case UnrealPackageFile.CompressionType.OodleLeviathan:
+                            dataout = OodleHelper.Decompress(datain, datain.Length, b.uncompressedsize);
+                            if (dataout.Length != b.uncompressedsize)
+                                throw new Exception("Oodle-Leviathan decompression failed!");
                             break;
                         default:
                             throw new Exception("Unknown compression type for this package.");
