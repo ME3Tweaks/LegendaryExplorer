@@ -2111,18 +2111,22 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 subnodes.Add(new BinInterpNode(bin.Position, "CompressedPCData") { Length = count });
                 bin.Skip(count);
 
-                subnodes.Add(new BinInterpNode(bin.Position, $"BulkDataFlags: {(EBulkDataFlags)bin.ReadUInt32()}"));
-                subnodes.Add(new BinInterpNode(bin.Position, $"Element Count: {count = bin.ReadInt32()}"));
-                subnodes.Add(MakeInt32Node(bin, "BulkDataSizeOnDisk"));
-                subnodes.Add(MakeUInt32HexNode(bin, "BulkDataOffsetInFile"));
-                subnodes.Add(new BinInterpNode(bin.Position, "CompressedXbox360Data") { Length = count });
-                bin.Skip(count);
+                if(!Pcc.Game.IsLEGame())
+                {
+                    subnodes.Add(new BinInterpNode(bin.Position, $"BulkDataFlags: {(EBulkDataFlags)bin.ReadUInt32()}"));
+                    subnodes.Add(new BinInterpNode(bin.Position, $"Element Count: {count = bin.ReadInt32()}"));
+                    subnodes.Add(MakeInt32Node(bin, "BulkDataSizeOnDisk"));
+                    subnodes.Add(MakeUInt32HexNode(bin, "BulkDataOffsetInFile"));
+                    subnodes.Add(new BinInterpNode(bin.Position, "CompressedXbox360Data") { Length = count });
+                    bin.Skip(count);
 
-                subnodes.Add(new BinInterpNode(bin.Position, $"BulkDataFlags: {(EBulkDataFlags)bin.ReadUInt32()}"));
-                subnodes.Add(new BinInterpNode(bin.Position, $"Element Count: {count = bin.ReadInt32()}"));
-                subnodes.Add(MakeInt32Node(bin, "BulkDataSizeOnDisk"));
-                subnodes.Add(MakeUInt32HexNode(bin, "BulkDataOffsetInFile"));
-                subnodes.Add(new BinInterpNode(bin.Position, "CompressedPS3Data") { Length = count });
+                    subnodes.Add(new BinInterpNode(bin.Position, $"BulkDataFlags: {(EBulkDataFlags)bin.ReadUInt32()}"));
+                    subnodes.Add(new BinInterpNode(bin.Position, $"Element Count: {count = bin.ReadInt32()}"));
+                    subnodes.Add(MakeInt32Node(bin, "BulkDataSizeOnDisk"));
+                    subnodes.Add(MakeUInt32HexNode(bin, "BulkDataOffsetInFile"));
+                    subnodes.Add(new BinInterpNode(bin.Position, "CompressedPS3Data") { Length = count });
+                }
+
             }
             catch (Exception ex)
             {
@@ -3796,7 +3800,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 var bin = new EndianReader(new MemoryStream(CurrentLoadedExport.Data)) { Endian = Pcc.Endian };
                 bin.JumpTo(binarystart);
-                if (Pcc.Game == MEGame.ME2 && Pcc.Platform != MEPackage.GamePlatform.PS3)
+                if (Pcc.Game is MEGame.ME2 or MEGame.LE2 && Pcc.Platform != MEPackage.GamePlatform.PS3)
                 {
                     bin.Skip(12);
                     subnodes.Add(MakeInt32Node(bin, "AnimBinary Offset"));
@@ -3998,7 +4002,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var vIdStr = versionID.ToString();
             var vers = new Version(vIdStr[0] - '0', vIdStr[1] - '0', vIdStr[2] - '0', vIdStr[3] - '0'); //Mega hack
             subnodes.Add(new BinInterpNode(bin.Position - 4, $"SDK Version: {versionID} ({vers})") { Length = 4 });
-            if (game == MEGame.ME3)
+            if (game == MEGame.ME3 || game.IsLEGame())
             {
                 subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt32():X8}") { Length = 4 });
             }

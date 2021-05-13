@@ -484,7 +484,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             IsBusy = true;
             CurrentOverallOperationText = "Database saving...";
 
-            if (!ParseConvos && CurrentGame != MEGame.ME1)
+            if (!ParseConvos && CurrentGame is not (MEGame.ME1 or MEGame.LE1))
             {
                 CurrentDataBase.Lines.Clear();
             }
@@ -499,51 +499,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     {
                         await Task.Run(() => BinaryConverter.Serialize(CurrentDataBase, entryStream));
                     }
-                    //var classjson = archive.CreateEntry($"{DBTableType.Class}.DB{CurrentGame}.bin");
-                    //using (var entryStream = classjson.Open())
-                    //{
-                    //    BinaryConverter.Serialize(CurrentDataBase.ClassRecords, entryStream);
-                    //}
-                    //var matjson = archive.CreateEntry($"{DBTableType.Materials}.DB{CurrentGame}.bin");
-                    //using (var entryStream = matjson.Open())
-                    //{
-                    //    BinaryConverter.Serialize(CurrentDataBase.Materials, entryStream);
-                    //}
-                    //var animJson = archive.CreateEntry($"{DBTableType.Animations}.DB{CurrentGame}.bin");
-                    //using (var entryStream = animJson.Open())
-                    //{
-                    //    BinaryConverter.Serialize(CurrentDataBase.Animations, entryStream);
-                    //}
-                    //var mshJson = archive.CreateEntry($"{DBTableType.Meshes}.DB{CurrentGame}.bin");
-                    //using (var entryStream = mshJson.Open())
-                    //{
-                    //    BinaryConverter.Serialize(CurrentDataBase.Meshes, entryStream);
-                    //}
-                    //var psJson = archive.CreateEntry($"{DBTableType.Particles}.DB{CurrentGame}.bin");
-                    //using (var entryStream = psJson.Open())
-                    //{
-                    //    BinaryConverter.Serialize(CurrentDataBase.Particles, entryStream);
-                    //}
-                    //var txtJson = archive.CreateEntry($"{DBTableType.Textures}.DB{CurrentGame}.bin");
-                    //using (var entryStream = txtJson.Open())
-                    //{
-                    //    BinaryConverter.Serialize(CurrentDataBase.Textures, entryStream);
-                    //}
-                    //var guiJson = archive.CreateEntry($"{DBTableType.GUIElements}.DB{CurrentGame}.bin");
-                    //using (var entryStream = guiJson.Open())
-                    //{
-                    //    BinaryConverter.Serialize(CurrentDataBase.GUIElements, entryStream);
-                    //}
-                    //var convJson = archive.CreateEntry($"{DBTableType.Convos}.DB{CurrentGame}.bin");
-                    //using (var entryStream = convJson.Open())
-                    //{
-                    //    BinaryConverter.Serialize(CurrentDataBase.Conversations, entryStream);
-                    //}
-                    //var lineJson = archive.CreateEntry($"{DBTableType.Lines}.DB{CurrentGame}.bin");
-                    //using (var entryStream = lineJson.Open())
-                    //{
-                    //    BinaryConverter.Serialize(linesExLine, entryStream);
-                    //}
                 }
             }
             menu_SaveXEmptyLines.IsEnabled = false;
@@ -577,7 +532,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         }
         private void GetConvoLinesBackground()
         {
-            if (CurrentGame == MEGame.ME1)
+            if (CurrentGame is MEGame.ME1 or MEGame.LE1)
             {
                 var spkrs = new List<string>();
                 foreach (var line in CurrentDataBase.Lines)
@@ -653,6 +608,10 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     case MEGame.ME3:
                         ol.Line = ME3TalkFiles.findDataById(ol.StrRef);
                         break;
+                    case MEGame.LE2:
+                    case MEGame.LE3:
+                        //TODO: implement in LEX
+                        break;
                 }
                 GeneratedLines.TryAdd(ol.StrRef.ToString(), ol);
             }
@@ -708,10 +667,23 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     CurrentGame = MEGame.ME2;
                     switchME2_menu.IsChecked = true;
                     break;
-                default:
+                case "ME3":
                     CurrentGame = MEGame.ME3;
                     switchME3_menu.IsChecked = true;
                     menu_fltrPerf.IsEnabled = true;
+                    break;
+                case "LE1":
+                    CurrentGame = MEGame.LE1;
+                    switchLE1_menu.IsChecked = true;
+                    btn_LinePlaybackToggle.IsEnabled = false;
+                    break;
+                case "LE2":
+                    CurrentGame = MEGame.LE2;
+                    switchLE2_menu.IsChecked = true;
+                    break;
+                case "LE3":
+                    CurrentGame = MEGame.LE3;
+                    switchLE3_menu.IsChecked = true;
                     break;
             }
 
@@ -1223,7 +1195,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         }
         private void ToggleLinePlayback()
         {
-            bool showAudio = btn_LinePlaybackToggle.IsChecked == true && lstbx_Lines.SelectedIndex >= 0 && CurrentConvo.Item1 != null && CurrentGame != MEGame.ME1 && currentView == 8;
+            bool showAudio = btn_LinePlaybackToggle.IsChecked == true && lstbx_Lines.SelectedIndex >= 0 && CurrentConvo.Item1 != null && CurrentGame is not (MEGame.ME1 or MEGame.LE1) && currentView == 8;
 
             if (!showAudio)
             {
@@ -1341,8 +1313,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 {
                     var dlg = new SaveFileDialog
                     {
-                        //TODO: implement in LEX
-                        //Filter = AnimationImporter.PSAFilter,
+                        Filter = AnimationImporterExporter.AnimationImporterExporterWindow.PSAFilter,
                         FileName = $"{anim.SeqName}.psa",
                         AddExtension = true
                     };
@@ -1356,15 +1327,14 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         }
         private void OpenInAnimationImporter()
         {
-            //TODO: implement in LEX
-            //if (lstbx_Anims.SelectedItem is AnimationRecord anim && anim.Usages.Any())
-            //{
-            //    (int fileListIndex, int animUIndex, bool _) = anim.Usages[0];
-            //    string filePath = GetFilePath(fileListIndex);
-            //    var animImporter = new AnimationImporter(filePath, animUIndex);
-            //    animImporter.Show();
-            //    animImporter.Activate();
-            //}
+            if (lstbx_Anims.SelectedItem is AnimationRecord anim && anim.Usages.Any())
+            {
+                (int fileListIndex, int animUIndex, bool _) = anim.Usages[0];
+                string filePath = GetFilePath(fileListIndex);
+                var animImporter = new AnimationImporterExporter.AnimationImporterExporterWindow(filePath, animUIndex);
+                animImporter.Show();
+                animImporter.Activate();
+            }
         }
         private string GetFilePath(int fileListIndex)
         {
@@ -2610,7 +2580,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             var elapsed = DateTime.Now - beginTime;
             MessageBox.Show(this, $"{CurrentGame} Database generated in {elapsed:mm\\:ss}");
             MemoryAnalyzer.ForceFullGC();
-            if (CurrentGame != MEGame.ME1 && ParseConvos)
+            if (CurrentGame is not (MEGame.ME1 or MEGame.LE1) && ParseConvos)
             {
                 GetConvoLinesBackground();
             }
@@ -3633,7 +3603,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                                 {
                                     bool IsAmbient = true;
                                     var speakers = new List<string> { "Shepard", "Owner" };
-                                    if (entry.Game != MEGame.ME3)
+                                    if (entry.Game is not (MEGame.ME3 or MEGame.LE3))
                                     {
                                         var s_speakers = props.GetProp<ArrayProperty<StructProperty>>("m_SpeakerList");
                                         if (s_speakers != null)
@@ -3671,13 +3641,17 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                                         if (IsAmbient)
                                             IsAmbient = ambientLine;
 
-                                        ConvoLine newLine = new(linestrref, speakers[speakerindex], objectNameInstanced);
+                                        var newLine = new ConvoLine(linestrref, speakers[speakerindex], objectNameInstanced);
                                         if (GameBeingDumped == MEGame.ME1)
                                         {
                                             newLine.Line = ME1TalkFiles.findDataById(linestrref, pcc);
                                             if (newLine.Line == "No Data" || newLine.Line == "\"\"" ||
                                                 newLine.Line == "\" \"" || newLine.Line == " ")
                                                 continue;
+                                        }
+                                        else if (GameBeingDumped == MEGame.LE1)
+                                        {
+                                            //TODO: implement in LEX
                                         }
 
                                         dbScanner.GeneratedLines.TryAdd(linestrref.ToString(), newLine);
@@ -3707,13 +3681,16 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                                                     newLine.Line == "\" \"" || newLine.Line == " ")
                                                     continue;
                                             }
+                                            else if (GameBeingDumped == MEGame.LE1)
+                                            {
+                                                //TODO: implement in LEX
+                                            }
 
                                             dbScanner.GeneratedLines.TryAdd(linestrref.ToString(), newLine);
                                         }
                                     }
 
-                                    var NewConv = new Conversation(objectNameInstanced, IsAmbient,
-                                                                   new(FileKey, uindex));
+                                    var NewConv = new Conversation(objectNameInstanced, IsAmbient, new(FileKey, uindex));
                                     dbScanner.GeneratedConvo.TryAdd(assetKey, NewConv);
                                 }
                             }

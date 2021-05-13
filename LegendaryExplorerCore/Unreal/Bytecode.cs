@@ -806,7 +806,7 @@ namespace LegendaryExplorerCore.Unreal
             byte t = memory[start];
             Token newTok = new Token { op = t };
             int end = start;
-            if ((t <= 0x65 && export.Game == MEGame.ME3)
+            if ((t <= 0x65 && export.Game is MEGame.ME3 or MEGame.LE3 )
                 || (t < 0x60 && export.FileRef.Platform == MEPackage.GamePlatform.PS3 && export.FileRef.Game <= MEGame.ME2)) //PS3 uses ME3 engine but ME1/ME2 use PC native index which are different
             {
                 switch (t)

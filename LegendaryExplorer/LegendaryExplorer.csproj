@@ -170,7 +170,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Dialogs\Splash\splash.png" />
-    <Resource Include="Tools\Icons\*.ico"/>
+    <Resource Include="Tools\Icons\*.ico" />
     <EmbeddedResource Include="UserControls\ExportLoaderControls\Soundpanel\WwiseTemplateProject.zip" />
     <Resource Include="Resources\Images\*.ico" />
     <Resource Include="Resources\Images\*.gif" />
@@ -210,6 +210,12 @@
     </Compile>
     <Compile Update="SharedUI\Controls\ToolBox.xaml.cs">
       <DependentUpon>ToolBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="ToolsetDev\FileHexViewerWPF.xaml.cs">
+      <DependentUpon>FileHexViewerWPF.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Tools\AnimationImporterExporter\AnimationImporter.xaml.cs">
+      <DependentUpon>AnimationImporter.xaml</DependentUpon>
     </Compile>
     <Compile Update="Tools\AssetDatabase\AssetDB.xaml.cs">
       <DependentUpon>AssetDB.xaml</DependentUpon>
@@ -304,7 +310,13 @@
     <Page Update="SharedUI\Controls\ToolBox.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="ToolsetDev\FileHexViewer.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Tools\AFCCompactor\AFCCompactorWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Tools\AnimationImporterExporter\AnimationImporterExporterWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Tools\AssetDatabase\AssetDB.xaml">
