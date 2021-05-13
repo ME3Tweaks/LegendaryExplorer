@@ -60,16 +60,17 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
 
         private void EditTLK(object obj)
         {
-            // TODO: IMPLEMENT IN LEX
-            //if (TLKList.SelectedItem is LoadedTLK {embedded: true} tlk)
-            //{
-            //    //Need to find a way for the export loader to register usage of the pcc.
-            //    IMEPackage pcc = MEPackageHandler.OpenME1Package(tlk.tlkPath);
-            //    var export = pcc.GetUExport(tlk.exportNumber);
-            //    ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new ME1TlkEditor.ME1TlkEditorWPF(), export);
-            //    elhw.Title = $"TLK Editor - {export.UIndex} {export.InstancedFullPath} - {export.FileRef.FilePath}";
-            //    elhw.Show();
-            //}
+            if (TLKList.SelectedItem is LoadedTLK { embedded: true } tlk)
+            {
+                //TODO: Need to find a way for the export loader to register usage of the pcc.
+                IMEPackage pcc = MEPackageHandler.OpenME1Package(tlk.tlkPath);
+                var export = pcc.GetUExport(tlk.exportNumber);
+                var elhw = new ExportLoaderHostedWindow(new TLKEditor(), export)
+                {
+                    Title = $"TLK Editor - {export.UIndex} {export.InstancedFullPath} - {export.FileRef.FilePath}"
+                };
+                elhw.Show();
+            }
         }
 
         private bool CanEditTLK(object obj)

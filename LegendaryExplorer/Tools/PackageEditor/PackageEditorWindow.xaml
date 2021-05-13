@@ -497,13 +497,13 @@
                         </TabItem.Header>
                         <exportLoaderControls:JPEXExternalExportLoader x:Name="JPEXLauncherTab_JPEXLauncher"/>
                     </TabItem>
-                    <!--
-                    <TabItem Name="ME1TlkEditorWPF_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                    <TabItem Name="TlkEditor_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
                             <TextBlock Text="Talktable" ToolTip="Edit entries in this BioTLKFile"/>
                         </TabItem.Header>
-                        <me1tlkeditor:ME1TlkEditorWPF x:Name="ME1TlkEditorWPFTab_ME1TlkEditor"/>
+                        <exportLoaderControls:TLKEditor x:Name="TlkEditorTab_TlkEditor"/>
                     </TabItem>
+                    <!--
                     <TabItem Name="MaterialViewer_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
                             <TextBlock Text="Shader Viewer" ToolTip="View Material's Shaders"/>

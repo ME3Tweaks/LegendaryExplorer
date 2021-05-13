@@ -334,6 +334,9 @@
     <Page Update="Tools\InterpEditor\InterpEditorWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="UserControls\ExportLoaderControls\TLKEditor.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Tools\Meshplorer\MeshplorerWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -409,6 +412,10 @@
     <Page Update="Dialogs\SoundReplaceOptionsDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Tools\TlkEditor\" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

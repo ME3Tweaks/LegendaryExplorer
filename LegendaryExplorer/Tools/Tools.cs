@@ -21,6 +21,7 @@ using LegendaryExplorer.Tools.TFCCompactor;
 using LegendaryExplorer.Tools.MountEditor;
 using LegendaryExplorer.ToolsetDev;
 using LegendaryExplorer.ToolsetDev.MemoryAnalyzer;
+using LegendaryExplorer.UserControls.ExportLoaderControls;
 using Newtonsoft.Json;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Packages;
@@ -302,34 +303,23 @@ namespace LegendaryExplorer
                 subCategory = "Scene Shop",
                 description = "Import and Export AnimSequences from/to PSA and UDK"
             });
-            //            set.Add(new Tool
-            //            {
-            //                name = "TLK Editor",
-            //                type = typeof(ExportLoaderHostedWindow),
-            //                icon = Application.Current.FindResource("iconTLKEditor") as ImageSource,
-            //                open = () =>
-            //                {
-            //                    ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new ME1TlkEditor.ME1TlkEditorWPF());
-            //                    elhw.Title = $"TLK Editor";
-            //                    elhw.Show();
-            //                },
-            //                tags = new List<string> { "utility", "dialogue", "subtitle", "text", "strin'" },
-            //                subCategory = "Extractors + Repackers",
-            //                description = "TLK Editor is an editor for localized text, located in TLK files. These files are embedded in package files in Mass Effect 1 and stored externally in Mass Effect 2 and 3.",
-            //            });
-            //            set.Add(new Tool
-            //            {
-            //                name = "ME3 + ME2 TLK Editor",
-            //                type = typeof(TLKEditor),
-            //                icon = Application.Current.FindResource("iconTLKEditorME23") as ImageSource,
-            //                open = () =>
-            //                {
-            //                    (new TLKEditor()).Show();
-            //                },
-            //                tags = new List<string> { "utility", "dialogue", "subtitle", "text" },
-            //                subCategory = "Extractors + Repackers",
-            //                description = "TLK Editor converts between XML and TLK formats, allowing users to edit the display of all game text in ME2 and ME3. Edits to XML files must be done in an external editor, like Notepad++.",
-            //            });
+            set.Add(new Tool
+            {
+                name = "TLK Editor",
+                type = typeof(TLKEditor),
+                icon = Application.Current.FindResource("iconTLKEditor") as ImageSource,
+                open = () =>
+                {
+                    var elhw = new ExportLoaderHostedWindow(new TLKEditor())
+                    {
+                        Title = $"TLK Editor"
+                    };
+                    elhw.Show();
+                },
+                tags = new List<string> { "utility", "dialogue", "subtitle", "text", "strin'" },
+                subCategory = "Extractors + Repackers",
+                description = "TLK Editor is an editor for localized text, located in TLK files. These files are embedded in package files in Mass Effect 1 and stored externally in Mass Effect 2 and 3.",
+            });
             //            set.Add(new Tool
             //            {
             //                name = "Package Dumper",
@@ -369,19 +359,6 @@ namespace LegendaryExplorer
                 subCategory = "Databases",
                 description = "Scans games and creates a database of classes, animations, materials, textures, particles and meshes.\n\nIndividual assets can be opened directly from the interface with tools for editing."
             });
-            //            set.Add(new Tool
-            //            {
-            //                name = "Script Database",
-            //                type = typeof(ScriptDB.ScriptDB),
-            //                icon = Application.Current.FindResource("iconScriptDatabase") as ImageSource,
-            //                open = () =>
-            //                {
-            //                    (new ScriptDB.ScriptDB()).Show();
-            //                },
-            //                tags = new List<string> { "utility", "unreal" },
-            //                subCategory = "Databases",
-            //                description = "Script Database is used to locate UnrealScript exports across multiple files for ME3. This tool is deprecated and is no longer supported.",
-            //            });
             set.Add(new Tool
             {
                 name = "TFC Compactor",
@@ -410,14 +387,6 @@ namespace LegendaryExplorer
             //                tags = new List<string> { "developer", "conditional", "plot", "boolean", "flag", "int", "integer", "cnd" },
             //                subCategory = "Core",
             //                description = "Conditionals Editor is used to create and edit ME3 files with the .cnd extension. CND files control game story by checking for specific combinations of plot events.",
-            //            });
-            //            set.Add(new Tool
-            //            {
-            //                name = "Curve Editor",
-            //                type = typeof(CurveEd.CurveEditor),
-            //                icon = Application.Current.FindResource("iconPlaceholder") as ImageSource,
-            //                tags = new List<string>(),
-            //                subCategory = other,
             //            });
             set.Add(new Tool
             {
