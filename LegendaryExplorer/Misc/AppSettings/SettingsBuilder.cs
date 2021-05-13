@@ -1,4 +1,10 @@
-﻿namespace LegendaryExplorer.Misc.AppSettings
+﻿using System.IO;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System;
+using System.Diagnostics;
+
+namespace LegendaryExplorer.Misc.AppSettings
 {
     /// <summary>
     /// Auto-generated settings: DO NOT MANUALLY EDIT THIS .CS FILE, RUN SETTINGSBUILDER.TT, DEFINE IN SETTINGSDEFINTIIONS.XML!
@@ -174,6 +180,114 @@
         public static bool PropertyParsing_ParseUnknownArrayTypeAsObject {
             get => _propertyparsing_parseunknownarraytypeasobject; 
             set => SetProperty(ref _propertyparsing_parseunknownarraytypeasobject, value);
+        }
+
+        // Settings converters
+        public static int TryGetSetting(Dictionary<string, string> settings, string key, int defaultValue) => settings.TryGetValue(key, out var value) && int.TryParse(value, out var ivalue) ? ivalue : defaultValue;
+        public static bool TryGetSetting(Dictionary<string, string> settings, string key, bool defaultValue) => settings.TryGetValue(key, out var value) && bool.TryParse(value, out var bvalue) ? bvalue : defaultValue;
+        public static string TryGetSetting(Dictionary<string, string> settings, string key, string defaultValue) => settings.TryGetValue(key, out var value) ? value : defaultValue;
+
+
+        private static string AppSettingsFile => Path.Combine(AppDirectories.AppDataFolder, "appsettings.json");
+        /// <summary>
+        /// Loads settings from disk.
+        /// </summary>
+        public static void LoadSettings()
+        {
+            if (Loaded)
+                return;
+            
+            Dictionary<string, string> settingsJson = File.Exists(AppSettingsFile)
+                ? JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(AppSettingsFile))
+                : new Dictionary<string, string>();
+            PackageEditor_HideInterpreterHexBox = TryGetSetting(settingsJson, "packageeditor_hideinterpreterhexbox", true);
+            PackageEditor_TouchComfyMode = TryGetSetting(settingsJson, "packageeditor_touchcomfymode", false);
+            PackageEditor_ShowImpExpPrefix = TryGetSetting(settingsJson, "packageeditor_showimpexpprefix", true);
+            PackageEditor_ShowExportTypeIcons = TryGetSetting(settingsJson, "packageeditor_showexporttypeicons", true);
+            PackageEditor_ShowTreeEntrySubText = TryGetSetting(settingsJson, "packageeditor_showtreeentrysubtext", true);
+            SequenceEditor_MaxVarStringLength = TryGetSetting(settingsJson, "sequenceeditor_maxvarstringlength", 40);
+            SequenceEditor_ShowParsedInfo = TryGetSetting(settingsJson, "sequenceeditor_showparsedinfo", true);
+            Soundplorer_ReverseIDDisplayEndianness = TryGetSetting(settingsJson, "soundplorer_reverseiddisplayendianness", false);
+            Soundplorer_AutoplayEntriesOnSelection = TryGetSetting(settingsJson, "soundplorer_autoplayentriesonselection", false);
+            Meshplorer_BackgroundColor = TryGetSetting(settingsJson, "meshplorer_backgroundcolor", "#999999");
+            Meshplorer_ViewFirstPerson = TryGetSetting(settingsJson, "meshplorer_viewfirstperson", false);
+            Meshplorer_ViewRotating = TryGetSetting(settingsJson, "meshplorer_viewrotating", false);
+            Meshplorer_View_SolidEnabled = TryGetSetting(settingsJson, "meshplorer_view_solidenabled", true);
+            Meshplorer_ViewWireframeEnabled = TryGetSetting(settingsJson, "meshplorer_viewwireframeenabled", false);
+            PathfindingEditor_ShowNodeSizes = TryGetSetting(settingsJson, "pathfindingeditor_shownodesizes", false);
+            PathfindingEditor_ShowPathfindingNodesLayer = TryGetSetting(settingsJson, "pathfindingeditor_showpathfindingnodeslayer", true);
+            PathfindingEditor_ShowActorsLayer = TryGetSetting(settingsJson, "pathfindingeditor_showactorslayer", false);
+            PathfindingEditor_ShowArtLayer = TryGetSetting(settingsJson, "pathfindingeditor_showartlayer", false);
+            PathfindingEditor_ShowSplinesLayer = TryGetSetting(settingsJson, "pathfindingeditor_showsplineslayer", false);
+            PathfindingEditor_ShowEverythingElseLayer = TryGetSetting(settingsJson, "pathfindingeditor_showeverythingelselayer", false);
+            AssetDB_DefaultGame = TryGetSetting(settingsJson, "assetdb_defaultgame", "");
+            AssetDBGame = TryGetSetting(settingsJson, "assetdbgame", "ME3");
+            AssetDBPath = TryGetSetting(settingsJson, "assetdbpath", "");
+            CoalescedEditor_SourcePath = TryGetSetting(settingsJson, "coalescededitor_sourcepath", "");
+            CoalescedEditor_DestinationPath = TryGetSetting(settingsJson, "coalescededitor_destinationpath", "");
+            BinaryInterpreter_SkipAutoParseSizeCheck = TryGetSetting(settingsJson, "binaryinterpreter_skipautoparsesizecheck", false);
+            BinaryInterpreterWPFAutoScanAlways = TryGetSetting(settingsJson, "binaryinterpreterwpfautoscanalways", false);
+            TextureViewer_AutoLoadMip = TryGetSetting(settingsJson, "textureviewer_autoloadmip", true);
+            Interpreter_LimitArrayPropertySize = TryGetSetting(settingsJson, "interpreter_limitarraypropertysize", true);
+            Interpreter_AdvancedDisplay = TryGetSetting(settingsJson, "interpreter_advanceddisplay", true);
+            Interpreter_Colorize = TryGetSetting(settingsJson, "interpreter_colorize", true);
+            Interpreter_ShowLinearColorWheel = TryGetSetting(settingsJson, "interpreter_showlinearcolorwheel", false);
+            Soundpanel_LoopAudio = TryGetSetting(settingsJson, "soundpanel_loopaudio", false);
+            PropertyParsing_ParseUnknownArrayTypeAsObject = TryGetSetting(settingsJson, "propertyparsing_parseunknownarraytypeasobject", false);
+
+            Loaded = true;
+        }
+
+        /// <summary>
+        /// Commits settings to disk.
+        /// </summary>
+        public static void Save()
+        {
+            Dictionary<string, string> settingsJson = new Dictionary<string,string>();
+            settingsJson["packageeditor_hideinterpreterhexbox"] = PackageEditor_HideInterpreterHexBox.ToString();
+            settingsJson["packageeditor_touchcomfymode"] = PackageEditor_TouchComfyMode.ToString();
+            settingsJson["packageeditor_showimpexpprefix"] = PackageEditor_ShowImpExpPrefix.ToString();
+            settingsJson["packageeditor_showexporttypeicons"] = PackageEditor_ShowExportTypeIcons.ToString();
+            settingsJson["packageeditor_showtreeentrysubtext"] = PackageEditor_ShowTreeEntrySubText.ToString();
+            settingsJson["sequenceeditor_maxvarstringlength"] = SequenceEditor_MaxVarStringLength.ToString();
+            settingsJson["sequenceeditor_showparsedinfo"] = SequenceEditor_ShowParsedInfo.ToString();
+            settingsJson["soundplorer_reverseiddisplayendianness"] = Soundplorer_ReverseIDDisplayEndianness.ToString();
+            settingsJson["soundplorer_autoplayentriesonselection"] = Soundplorer_AutoplayEntriesOnSelection.ToString();
+            settingsJson["meshplorer_backgroundcolor"] = Meshplorer_BackgroundColor.ToString();
+            settingsJson["meshplorer_viewfirstperson"] = Meshplorer_ViewFirstPerson.ToString();
+            settingsJson["meshplorer_viewrotating"] = Meshplorer_ViewRotating.ToString();
+            settingsJson["meshplorer_view_solidenabled"] = Meshplorer_View_SolidEnabled.ToString();
+            settingsJson["meshplorer_viewwireframeenabled"] = Meshplorer_ViewWireframeEnabled.ToString();
+            settingsJson["pathfindingeditor_shownodesizes"] = PathfindingEditor_ShowNodeSizes.ToString();
+            settingsJson["pathfindingeditor_showpathfindingnodeslayer"] = PathfindingEditor_ShowPathfindingNodesLayer.ToString();
+            settingsJson["pathfindingeditor_showactorslayer"] = PathfindingEditor_ShowActorsLayer.ToString();
+            settingsJson["pathfindingeditor_showartlayer"] = PathfindingEditor_ShowArtLayer.ToString();
+            settingsJson["pathfindingeditor_showsplineslayer"] = PathfindingEditor_ShowSplinesLayer.ToString();
+            settingsJson["pathfindingeditor_showeverythingelselayer"] = PathfindingEditor_ShowEverythingElseLayer.ToString();
+            settingsJson["assetdb_defaultgame"] = AssetDB_DefaultGame.ToString();
+            settingsJson["assetdbgame"] = AssetDBGame.ToString();
+            settingsJson["assetdbpath"] = AssetDBPath.ToString();
+            settingsJson["coalescededitor_sourcepath"] = CoalescedEditor_SourcePath.ToString();
+            settingsJson["coalescededitor_destinationpath"] = CoalescedEditor_DestinationPath.ToString();
+            settingsJson["binaryinterpreter_skipautoparsesizecheck"] = BinaryInterpreter_SkipAutoParseSizeCheck.ToString();
+            settingsJson["binaryinterpreterwpfautoscanalways"] = BinaryInterpreterWPFAutoScanAlways.ToString();
+            settingsJson["textureviewer_autoloadmip"] = TextureViewer_AutoLoadMip.ToString();
+            settingsJson["interpreter_limitarraypropertysize"] = Interpreter_LimitArrayPropertySize.ToString();
+            settingsJson["interpreter_advanceddisplay"] = Interpreter_AdvancedDisplay.ToString();
+            settingsJson["interpreter_colorize"] = Interpreter_Colorize.ToString();
+            settingsJson["interpreter_showlinearcolorwheel"] = Interpreter_ShowLinearColorWheel.ToString();
+            settingsJson["soundpanel_loopaudio"] = Soundpanel_LoopAudio.ToString();
+            settingsJson["propertyparsing_parseunknownarraytypeasobject"] = PropertyParsing_ParseUnknownArrayTypeAsObject.ToString();
+
+            var settingsText = JsonConvert.SerializeObject(settingsJson, Formatting.Indented);
+            try
+            {
+                File.WriteAllText(AppSettingsFile, settingsText);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Could not save settings: {e.Message}");
+            }
         }
     }
 }

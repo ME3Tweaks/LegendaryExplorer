@@ -43,26 +43,6 @@ namespace LegendaryExplorer.Misc.AppSettings
             return true;
         }
 
-        /// <summary>
-        /// Loads settings from disk
-        /// </summary>
-        public static void LoadSettings()
-        {
-            if (Loaded)
-                return;
-
-
-            Loaded = true;
-        }
-
-        /// <summary>
-        /// Commits settings to disk
-        /// </summary>
-        public static void Save()
-        {
-
-        }
-
         private static void LogSettingChanging(string propertyName, object value)
         {
             if (Loaded)
@@ -71,5 +51,6 @@ namespace LegendaryExplorer.Misc.AppSettings
 
         #endregion
 
+        // Do not add settings to this class. Add them to the SettingsBuilder.tt file
     }
 }
