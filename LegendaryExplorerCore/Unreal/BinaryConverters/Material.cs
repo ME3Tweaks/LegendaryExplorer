@@ -17,9 +17,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         protected override void Serialize(SerializingContainer2 sc)
         {
             sc.Serialize(ref SM3MaterialResource);
-            if (sc.Game != MEGame.UDK)
+            if (sc.Game.IsOTGame() && sc.Game != MEGame.UDK)
             {
                 sc.Serialize(ref SM2MaterialResource);
+            }
+            else if (sc.Game.IsLEGame())
+            {
+                // uhhhh
+                // TODO: SERIALIZE THIS
             }
         }
 

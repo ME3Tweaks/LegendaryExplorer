@@ -228,8 +228,9 @@ namespace LegendaryExplorerCore.Unreal.Classes
                     Buffer.BlockCopy(mipToLoad.Mip, 0, imagebytes, 0, mipToLoad.compressedSize);
                 }
             }
-            else if (mipToLoad.storageType == StorageTypes.extUnc || mipToLoad.storageType == StorageTypes.extLZO || mipToLoad.storageType == StorageTypes.extZlib || mipToLoad.storageType == StorageTypes.extLZMA)
+            else if (((int)mipToLoad.storageType & (int)StorageFlags.externalFile) != 0)
             {
+                // external 
                 string filename = null;
                 List<string> loadedFiles = MELoadedFiles.GetAllGameFiles(gamePathToUse, game, false, true);
                 if (mipToLoad.Export.Game == MEGame.ME1)
