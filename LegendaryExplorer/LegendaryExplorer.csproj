@@ -420,10 +420,6 @@
     </Page>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Tools\TlkEditor\" />
-  </ItemGroup>
-
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy /f /e /y &quot;$(ProjectDir)Resources\exec&quot; &quot;$(ProjectDir)$(OutDir)\exec\&quot;" />
   </Target>

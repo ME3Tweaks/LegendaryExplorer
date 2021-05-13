@@ -243,14 +243,14 @@ namespace LegendaryExplorerCore.Unreal
 
         public void ToFile(string filePath)
         {
-            using FileStream fs = new FileStream(filePath, FileMode.Create);
+            using var fs = new FileStream(filePath, FileMode.Create);
             Serialize(new SerializingContainer2(fs, null));
         }
 
         public static PSA FromFile(string filePath)
         {
             var psa = new PSA();
-            using FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+            using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
             psa.Serialize(new SerializingContainer2(fs, null, true));
             return psa;
         }
