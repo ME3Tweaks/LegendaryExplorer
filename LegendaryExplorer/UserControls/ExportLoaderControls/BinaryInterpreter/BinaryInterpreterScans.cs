@@ -29,12 +29,21 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
-                var platform = (EShaderPlatform)bin.ReadByte();
-                subnodes.Add(new BinInterpNode(bin.Position, $"Platform: {platform}") { Length = 1 });
+                var platformByte = bin.ReadByte();
+                if (export.Game.IsLEGame())
+                {
+                    var platform = (EShaderPlatformOT)bin.ReadByte();
+                    subnodes.Add(new BinInterpNode(bin.Position, $"Platform: {platform}") { Length = 1 });
+                }
+                else
+                {
+                    var platform = (EShaderPlatformLE)bin.ReadByte();
+                    subnodes.Add(new BinInterpNode(bin.Position, $"Platform: {platform}") { Length = 1 });
+                }
 
                 //if (platform != EShaderPlatform.XBOXDirect3D){
-                int mapCount = Pcc.Game >= MEGame.ME3 ? 2 : 1;
-                if (platform == EShaderPlatform.XBOXDirect3D) mapCount = 1;
+                int mapCount = (Pcc.Game == MEGame.ME3 || Pcc.Game == MEGame.UDK) ? 2 : 1;
+                if (platformByte == (byte)EShaderPlatformOT.XBOXDirect3D && !export.Game.IsLEGame()) mapCount = 1;
                 for (; mapCount > 0; mapCount--)
                 {
                     int vertexMapCount = bin.ReadInt32();
@@ -83,10 +92,19 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         shaderNode.Items.Add(
                             new BinInterpNode(bin.Position - 4, $"Shader End Offset: {shaderEndOffset}") { Length = 4 });
 
-
-                        shaderNode.Items.Add(
-                            new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatform)bin.ReadByte()}")
-                            { Length = 1 });
+                        if (export.Game.IsLEGame())
+                        {
+                            shaderNode.Items.Add(
+                                new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformLE)bin.ReadByte()}")
+                                    { Length = 1 });
+                        }
+                        else
+                        {
+                            shaderNode.Items.Add(
+                                new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformOT)bin.ReadByte()}")
+                                    { Length = 1 });
+                        }
+                        
                         shaderNode.Items.Add(new BinInterpNode(bin.Position,
                             $"Frequency: {(EShaderFrequency)bin.ReadByte()}")
                         { Length = 1 });
@@ -316,8 +334,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 int dataOffset = CurrentLoadedExport.DataOffset;
                 var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
-
-                subnodes.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatform)bin.ReadByte()}") { Length = 1 });
+                if (CurrentLoadedExport.Game.IsLEGame())
+                {
+                    subnodes.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformLE) bin.ReadByte()}")
+                        {Length = 1});
+                }
+                else
+                {
+                    subnodes.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformOT)bin.ReadByte()}")
+                        { Length = 1 });
+                }
 
                 int mapCount = Pcc.Game >= MEGame.ME3 ? 2 : 1;
                 for (; mapCount > 0; mapCount--)
@@ -357,8 +383,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     int shaderEndOffset = bin.ReadInt32();
                     shaderNode.Items.Add(new BinInterpNode(bin.Position - 4, $"Shader End Offset: {shaderEndOffset}") { Length = 4 });
 
+                    if (CurrentLoadedExport.Game.IsLEGame())
+                    {
+                        shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformOT)bin.ReadByte()}") { Length = 1 });
+                    }
+                    else
+                    {
+                        shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformLE)bin.ReadByte()}") { Length = 1 });
+                    }
 
-                    shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatform)bin.ReadByte()}") { Length = 1 });
                     shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Frequency: {(EShaderFrequency)bin.ReadByte()}") { Length = 1 });
 
                     int shaderSize = bin.ReadInt32();
@@ -484,7 +517,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 Items = ReadList(expressionCount, x => ReadMaterialUniformExpression(bin))
                             });
                         }
-                        nodes.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatform)bin.ReadInt32()}") { Length = 4 });
+                        nodes.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformOT)bin.ReadInt32()}") { Length = 4 });
                     }
 
                     bin.JumpTo(shaderMapEndOffset - dataOffset);
@@ -544,13 +577,19 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             Vertex = 0,
             Pixel = 1,
         }
-        enum EShaderPlatform : byte
+        enum EShaderPlatformOT : byte
         {
             PCDirect3D_ShaderModel3 = 0,
             PS3 = 1,
             XBOXDirect3D = 2,
             PCDirect3D_ShaderModel4 = 3,
-            WiiU = 5
+            WiiU = 5 // unless its LE then it's SM5!
+        }
+
+        enum EShaderPlatformLE : byte
+        {
+            PCDirect3D_ShaderModel5 = 5,
+            // Others unknown at this time
         }
 
         private BinInterpNode ReadMaterialUniformExpression(EndianReader bin, string prefix = "")
