@@ -138,9 +138,9 @@
             </Style.Triggers>
         </Style>
 
-        <BitmapImage x:Key="iconME1" UriSource="/ME3Explorer;component/Resources/ME1Game.ico"/>
-        <BitmapImage x:Key="iconME2" UriSource="/ME3Explorer;component/Resources/ME2Game.ico"/>
-        <BitmapImage x:Key="iconME3" UriSource="/ME3Explorer;component/Resources/ME3Game.ico"/>
+        <BitmapImage x:Key="iconME1" UriSource="/LegendaryExplorer;component/Resources/Images/ME1Game.ico"/>
+        <BitmapImage x:Key="iconME2" UriSource="/LegendaryExplorer;component/Resources/Images/ME2Game.ico"/>
+        <BitmapImage x:Key="iconME3" UriSource="/LegendaryExplorer;component/Resources/Images/ME3Game.ico"/>
         <BitmapImage x:Key="iconBikExtractor" UriSource="Tools/Icons/bikextractor_256x256.ico"/>
         <BitmapImage x:Key="iconHexConverter" UriSource="Tools/Icons/hexconverter_256x256.ico"/>
         <BitmapImage x:Key="iconInterpViewer" UriSource="Tools/Icons/interpviewer_256x256.ico"/>

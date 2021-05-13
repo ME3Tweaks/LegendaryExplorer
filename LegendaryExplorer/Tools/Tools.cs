@@ -507,19 +507,19 @@ namespace LegendaryExplorer
             //                subCategory = "Meshes + Textures",
             //                description = "Texture Studio is a tool designed for texture editing files in a directory of files, such as a DLC mod. It is not the same as other tools such as Mass Effect Modder, which is a game wide replacement tool.",
             //            });
-            //            set.Add(new Tool
-            //            {
-            //                name = "SFAR Explorer",
-            //                type = typeof(SFARExplorer),
-            //                icon = Application.Current.FindResource("iconSFARExplorer") as ImageSource,
-            //                open = () =>
-            //                {
-            //                    (new SFARExplorer()).Show();
-            //                },
-            //                tags = new List<string> { "developer", "dlc" },
-            //                subCategory = other,
-            //                description = "SFAR Explorer allows you to explore and extract ME3 DLC archive files (SFAR).",
-            //            });
+            set.Add(new Tool
+            {
+                name = "SFAR Explorer",
+                type = typeof(Tools.SFARExplorer.SFARExplorerWindow),
+                icon = Application.Current.FindResource("iconSFARExplorer") as ImageSource,
+                open = () =>
+                {
+                    (new Tools.SFARExplorer.SFARExplorerWindow()).Show();
+                },
+                tags = new List<string> { "developer", "dlc" },
+                subCategory = other,
+                description = "SFAR Explorer allows you to explore and extract ME3 DLC archive files (SFAR).",
+            });
             set.Add(new Tool
             {
                 name = "Soundplorer",
