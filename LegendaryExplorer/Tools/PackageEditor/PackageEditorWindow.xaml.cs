@@ -1033,8 +1033,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 uint fullheadersize = ms.ReadUInt32();
                 items.Add($"0x{ms.Position - 4:X2} Full header size:  {fullheadersize} (0x{fullheadersize:X8})");
                 int foldernameStrLen = ms.ReadInt32();
-                items.Add(
-                    $"0x{ms.Position - 4:X2} Folder name string length: {foldernameStrLen} (0x{foldernameStrLen:X8}) (Negative means Unicode)");
+                items.Add($"0x{ms.Position - 4:X2} Folder name string length: {foldernameStrLen} (0x{foldernameStrLen:X8}) (Negative means Unicode)");
                 long currentPosition = ms.Position;
                 if (foldernameStrLen > 0)
                 {
@@ -1059,7 +1058,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
                 items.Add(flagsStr);
 
-                if (Pcc.Game == MEGame.ME3 && Pcc.Flags.HasFlag(UnrealFlags.EPackageFlags.Cooked))
+                if (Pcc.Game is MEGame.ME3 or MEGame.LE3 && Pcc.Flags.HasFlag(UnrealFlags.EPackageFlags.Cooked))
                 {
                     uint unknown1 = ms.ReadUInt32();
                     items.Add($"0x{ms.Position - 4:X2} Unknown 1: {unknown1} (0x{unknown1:X8})");
@@ -1083,26 +1082,24 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 uint importOffset = ms.ReadUInt32();
                 items.Add($"0x{ms.Position - 4:X2} Import Metadata Table Offset: 0x{importOffset:X8}");
 
-                uint dependencyTableOffset = ms.ReadUInt32();
-                items.Add(
-                    $"0x{ms.Position - 4:X2} Dependency Table Offset: 0x{dependencyTableOffset:X8} (Not used in Mass Effect games)");
+                if (Pcc.Game.IsLEGame() || (Pcc.Game != MEGame.ME1 || Pcc.Platform != MEPackage.GamePlatform.Xenon))
+                {
+                    uint dependencyTableOffset = ms.ReadUInt32();
+                    items.Add($"0x{ms.Position - 4:X2} Dependency Table Offset: 0x{dependencyTableOffset:X8} (Not used in Mass Effect games)");
+                }
 
                 if (Pcc.Game >= MEGame.ME3)
                 {
                     uint importExportGuidsOffset = ms.ReadUInt32();
-                    items.Add(
-                        $"0x{ms.Position - 4:X2} ImportExportGuidsOffset: 0x{importExportGuidsOffset:X8} (Not used in Mass Effect games)");
+                    items.Add($"0x{ms.Position - 4:X2} ImportExportGuidsOffset: 0x{importExportGuidsOffset:X8} (Not used in Mass Effect games)");
 
                     uint unknown2 = ms.ReadUInt32();
-                    items.Add(
-                        $"0x{ms.Position - 4:X2} ImportGuidsCount: {unknown2} (0x{unknown2:X8}) (Not used in Mass Effect games)");
+                    items.Add($"0x{ms.Position - 4:X2} ImportGuidsCount: {unknown2} (0x{unknown2:X8}) (Not used in Mass Effect games)");
 
                     uint unknown3 = ms.ReadUInt32();
-                    items.Add(
-                        $"0x{ms.Position - 4:X2} ExportGuidsCount: {unknown3} (0x{unknown3:X8}) (Not used in Mass Effect games)");
+                    items.Add($"0x{ms.Position - 4:X2} ExportGuidsCount: {unknown3} (0x{unknown3:X8}) (Not used in Mass Effect games)");
                     uint unknown4 = ms.ReadUInt32();
-                    items.Add(
-                        $"0x{ms.Position - 4:X2} ThumbnailTableOffset: {unknown4} (0x{unknown4:X8}) (Not used in Mass Effect games)");
+                    items.Add($"0x{ms.Position - 4:X2} ThumbnailTableOffset: {unknown4} (0x{unknown4:X8}) (Not used in Mass Effect games)");
                 }
 
                 var guidBytes = new byte[16];
@@ -1192,7 +1189,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     items.Add($"0x{ms.Position - 4:X4} Always zero: {alwaysZero1}");
                 }
 
-                if (Pcc.Game == MEGame.ME2 || Pcc.Game == MEGame.ME3 || Pcc.Platform == MEPackage.GamePlatform.PS3)
+                if (Pcc.Game is MEGame.ME2 or MEGame.ME3 or MEGame.LE3 || Pcc.Platform == MEPackage.GamePlatform.PS3)
                 {
                     int additionalPackagesToCookCount = ms.ReadInt32();
                     items.Add(

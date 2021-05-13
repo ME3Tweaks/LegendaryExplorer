@@ -146,6 +146,7 @@ namespace LegendaryExplorerCore.Packages
         private uint packageSource;
         private int unknown4;
         private int unknown6;
+        private int unknown7;
         #endregion
 
         private static bool isLoaderRegistered;
@@ -441,7 +442,7 @@ namespace LegendaryExplorerCore.Packages
             }
 
             unknown6 = packageReader.ReadInt32(); // Build 
-            var constantVal = packageReader.ReadInt32(); // Branch - always -1 in ME1 and ME2, always 145358848 in ME3
+            unknown7 = packageReader.ReadInt32(); // Branch - always -1 in ME1 and ME2, always 145358848 in ME3
 
             if (Game == MEGame.ME1 && Platform != GamePlatform.PS3)
             {
@@ -1103,9 +1104,21 @@ namespace LegendaryExplorerCore.Packages
                     ms.WriteUInt16(ME3UnrealVersion);
                     ms.WriteUInt16(ME3LicenseeVersion);
                     break;
+                case MEGame.LE1:
+                    ms.WriteUInt16(LE1UnrealVersion);
+                    ms.WriteUInt16(LE1LicenseeVersion);
+                    break;
+                case MEGame.LE2:
+                    ms.WriteUInt16(LE2UnrealVersion);
+                    ms.WriteUInt16(LE2LicenseeVersion);
+                    break;
+                case MEGame.LE3:
+                    ms.WriteUInt16(LE3UnrealVersion);
+                    ms.WriteUInt16(LE3LicenseeVersion);
+                    break;
             }
             ms.WriteInt32(FullHeaderSize);
-            if (Game == MEGame.ME3)
+            if (Game is MEGame.ME3 or MEGame.LE3)
             {
                 ms.WriteUnrealStringUnicode("None");
             }
@@ -1116,7 +1129,7 @@ namespace LegendaryExplorerCore.Packages
 
             ms.WriteUInt32((uint)Flags);
 
-            if (Game == MEGame.ME3 && Flags.HasFlag(EPackageFlags.Cooked))
+            if (Game is MEGame.ME3 or MEGame.LE3 && Flags.HasFlag(EPackageFlags.Cooked))
             {
                 ms.WriteInt32(PackageTypeId);
             }
@@ -1129,7 +1142,7 @@ namespace LegendaryExplorerCore.Packages
             ms.WriteInt32(ImportOffset);
             ms.WriteInt32(DependencyTableOffset);
 
-            if (Game == MEGame.ME3)
+            if (Game == MEGame.ME3 || Game.IsLEGame())
             {
                 ms.WriteInt32(ImportExportGuidsOffset);
                 ms.WriteInt32(0); //ImportGuidsCount
@@ -1156,8 +1169,14 @@ namespace LegendaryExplorerCore.Packages
                     ms.WriteInt32(64);
                     break;
                 case MEGame.ME3:
+                case MEGame.LE3:
                     ms.WriteInt32(6383);
                     ms.WriteInt32(196715);
+                    break;
+                case MEGame.LE1:
+                case MEGame.LE2:
+                    ms.WriteInt32(6383);
+                    ms.WriteInt32(65643);
                     break;
             }
 
@@ -1192,6 +1211,13 @@ namespace LegendaryExplorerCore.Packages
                 case MEGame.ME3:
                     ms.WriteInt32(unknown6);
                     ms.WriteInt32(145358848);
+                    break;
+                //TODO: scan LE files to figure out if there's a pattern with these
+                case MEGame.LE1:
+                case MEGame.LE2:
+                case MEGame.LE3:
+                    ms.WriteInt32(unknown6);
+                    ms.WriteInt32(unknown7);
                     break;
             }
 
@@ -1240,7 +1266,7 @@ namespace LegendaryExplorerCore.Packages
                 ms.WriteInt32(0);
             }
 
-            if (Game == MEGame.ME3 || Game == MEGame.ME2)
+            if (Game == MEGame.ME2 || Game == MEGame.ME3 || Game == MEGame.LE3)
             {
                 // ME3Explorer should always save with this flag set to true.
                 // Only things that depend on legacy configuration (like Mixins) should

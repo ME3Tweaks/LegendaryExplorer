@@ -217,7 +217,11 @@ namespace LegendaryExplorerCore.GameFilesystem
         public static bool IsInBasegame(string path, MEGame game, string gameRootOverride = null)
         {
             if (game == MEGame.UDK || game == MEGame.Unknown) return false;
-            else if (game == MEGame.LE1 && path.StartsWith(LE1Directory.GetISACTPath(gameRootOverride))) return true;
+            if (gameRootOverride is null && GetDefaultGamePath(game) is null)
+            {
+                return false;
+            }
+            if (game == MEGame.LE1 && path.StartsWith(LE1Directory.GetISACTPath(gameRootOverride))) return true;
             return path.StartsWith(GetCookedPath(game, gameRootOverride));
         }
 
@@ -230,7 +234,10 @@ namespace LegendaryExplorerCore.GameFilesystem
                 return false;
             }
             string dlcPath = GetDLCPath(game, gameRootOverride);
-
+            if (dlcPath is null)
+            {
+                return false;
+            }
             return OfficialDLC(game).Any(dlcFolder => path.StartsWith(Path.Combine(dlcPath, dlcFolder)));
         }
 
