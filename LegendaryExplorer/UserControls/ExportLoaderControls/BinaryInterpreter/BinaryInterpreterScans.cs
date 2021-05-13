@@ -3796,7 +3796,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 var bin = new EndianReader(new MemoryStream(CurrentLoadedExport.Data)) { Endian = Pcc.Endian };
                 bin.JumpTo(binarystart);
-                if (Pcc.Game == MEGame.ME2 && Pcc.Platform != MEPackage.GamePlatform.PS3)
+                if (Pcc.Game is MEGame.ME2 or MEGame.LE2 && Pcc.Platform != MEPackage.GamePlatform.PS3)
                 {
                     bin.Skip(12);
                     subnodes.Add(MakeInt32Node(bin, "AnimBinary Offset"));

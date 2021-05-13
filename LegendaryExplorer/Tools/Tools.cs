@@ -12,12 +12,15 @@ using LegendaryExplorer.Tools.Soundplorer;
 using LegendaryExplorer.Tools.FaceFXEditor;
 using LegendaryExplorer.Tools.InterpEditor;
 using LegendaryExplorer.Tools.AFCCompactorWindow;
+using LegendaryExplorer.Tools.AnimationImporterExporter;
 using LegendaryExplorer.Tools.AssetDatabase;
 using LegendaryExplorer.Tools.Meshplorer;
 using LegendaryExplorer.Tools.PathfindingEditor;
 using LegendaryExplorer.Tools.WwiseEditor;
 using LegendaryExplorer.Tools.TFCCompactor;
 using LegendaryExplorer.Tools.MountEditor;
+using LegendaryExplorer.ToolsetDev;
+using LegendaryExplorer.ToolsetDev.MemoryAnalyzer;
 using Newtonsoft.Json;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Packages;
@@ -79,50 +82,37 @@ namespace LegendaryExplorer
                 description = "AutoTOC is a tool for ME3 that updates and/or creates the PCConsoleTOC.bin files associated with the base game and each DLC.\n\nRunning this tool upon mod installation is imperative to ensuring proper functionality of the game."
             });
 #if DEBUG
-//            set.Add(new Tool
-//            {
-//                name = "Memory Analyzer",
-//                type = typeof(ME3ExpMemoryAnalyzer.MemoryAnalyzerUI),
-//                icon = Application.Current.FindResource("iconMemoryAnalyzer") as ImageSource,
-//                open = () =>
-//                {
-//                    (new ME3ExpMemoryAnalyzer.MemoryAnalyzerUI()).Show();
-//                },
-//                tags = new List<string> { "utility", "toolsetdev" },
-//                subCategory = "For Toolset Devs Only",
-//                description = "Memory Analyzer allows you to track references to objects to help trace memory leaks."
-//            });
+            set.Add(new Tool
+            {
+                name = "Memory Analyzer",
+                type = typeof(MemoryAnalyzerUI),
+                icon = Application.Current.FindResource("iconMemoryAnalyzer") as ImageSource,
+                open = () =>
+                {
+                    (new MemoryAnalyzerUI()).Show();
+                },
+                tags = new List<string> { "utility", "toolsetdev" },
+                subCategory = "For Toolset Devs Only",
+                description = "Memory Analyzer allows you to track references to objects to help trace memory leaks."
+            });
 
-//            set.Add(new Tool
-//            {
-//                name = "File Hex Analyzer",
-//                type = typeof(FileHexViewerWPF),
-//                icon = Application.Current.FindResource("iconFileHexAnalyzer") as ImageSource,
-//                open = () =>
-//                {
-//                    (new FileHexViewer.FileHexViewerWPF()).Show();
-//                },
-//                tags = new List<string> { "utility", "toolsetdev", "hex" },
-//                subCategory = "For Toolset Devs Only",
-//                description = "File Hex Analyzer is a package hex viewer that shows references in the package hex. It also works with non-package files, but won't show any references, obviously."
-//            });
+            set.Add(new Tool
+            {
+                name = "File Hex Analyzer",
+                type = typeof(FileHexViewer),
+                icon = Application.Current.FindResource("iconFileHexAnalyzer") as ImageSource,
+                open = () =>
+                {
+                    (new FileHexViewer()).Show();
+                },
+                tags = new List<string> { "utility", "toolsetdev", "hex" },
+                subCategory = "For Toolset Devs Only",
+                description = "File Hex Analyzer is a package hex viewer that shows references in the package hex. It also works with non-package files, but won't show any references, obviously."
+            });
 #endif
             #endregion
 
             #region Utilities
-//            //set.Add(new Tool
-//            //{
-//            //    name = "Animation Explorer",
-//            //    type = typeof(AnimationExplorer.AnimationExplorer),
-//            //    icon = Application.Current.FindResource("iconAnimationExplorer") as ImageSource,
-//            //    open = () =>
-//            //    {
-//            //        (new AnimationExplorer.AnimationExplorer()).Show();
-//            //    },
-//            //    tags = new List<string> { "utility", "animation", "gesture", "bone", "PSA" },
-//            //    subCategory = "Explorers",
-//            //    description = "Animation Explorer can build a database of all the files containing animtrees and complete animsets in Mass Effect 3. You can import and export Animsets to PSA files."
-//            //});
 //            set.Add(new Tool
 //            {
 //                name = "Animation Viewer",
@@ -299,19 +289,19 @@ namespace LegendaryExplorer
                 subCategory = "Meshes + Textures",
                 description = "Meshplorer loads and displays all meshes within a file. The tool skins most meshes with its associated texture.\n\nThis tool works with all three games."
             });
-            //            set.Add(new Tool
-            //            {
-            //                name = "Animation Importer/Exporter",
-            //                type = typeof(AnimationImporter),
-            //                icon = Application.Current.FindResource("iconAnimationImporter") as ImageSource,
-            //                open = () =>
-            //                {
-            //                    (new AnimationImporter()).Show();
-            //                },
-            //                tags = new List<string> { "developer", "animation", "psa", "animset", "animsequence" },
-            //                subCategory = "Scene Shop",
-            //                description = "Import and Export AnimSequences from/to PSA and UDK"
-            //            });
+            set.Add(new Tool
+            {
+                name = "Animation Importer/Exporter",
+                type = typeof(AnimationImporterExporterWindow),
+                icon = Application.Current.FindResource("iconAnimationImporter") as ImageSource,
+                open = () =>
+                {
+                    (new AnimationImporterExporterWindow()).Show();
+                },
+                tags = new List<string> { "developer", "animation", "psa", "animset", "animsequence" },
+                subCategory = "Scene Shop",
+                description = "Import and Export AnimSequences from/to PSA and UDK"
+            });
             //            set.Add(new Tool
             //            {
             //                name = "TLK Editor",

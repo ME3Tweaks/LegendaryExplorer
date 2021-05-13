@@ -33,7 +33,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         protected override void Serialize(SerializingContainer2 sc)
         {
-            if (sc.Game == MEGame.ME2)
+            if (sc.Game is MEGame.ME2 or MEGame.LE2)
             {
                 int dummy = 0;
                 sc.Serialize(ref dummy);
@@ -83,7 +83,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public void UpdateProps(PropertyCollection props, MEGame newGame, AnimationCompressionFormat newRotationCompression = AnimationCompressionFormat.ACF_Float96NoW)
         {
-            if (compressedDataSource == MEGame.Unknown || (newGame != compressedDataSource && !(newGame <= MEGame.ME3 && compressedDataSource <= MEGame.ME3)))
+            if (compressedDataSource == MEGame.Unknown || (newGame != compressedDataSource && !(newGame != MEGame.UDK && compressedDataSource != MEGame.UDK)))
             {
                 CompressAnimationData(newGame, newRotationCompression);
                 props.RemoveNamedProperty("KeyEncodingFormat");
