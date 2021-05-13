@@ -35,10 +35,12 @@ namespace LegendaryExplorerCore.Unreal
         pccUnc = StorageFlags.noFlags,                                     // ME1 (Compressed PCC), ME2 (Compressed PCC)
         pccLZO = StorageFlags.compressedLZO,                               // ME1 (Uncompressed PCC)
         pccZlib = StorageFlags.compressedZlib,                             // ME1 (Uncompressed PCC)
+        pccOodle = StorageFlags.compressedOodle,                           // LE (Uncompressed PCC) - NOT SURE WHERE THIS IS YET
         extUnc = StorageFlags.externalFile,                                // ME3 (DLC TFC archive)
         extLZO = StorageFlags.externalFile | StorageFlags.compressedLZO,   // ME1 (Reference to PCC), ME2 (TFC archive)
         extZlib = StorageFlags.externalFile | StorageFlags.compressedZlib, // ME3 (non-DLC TFC archive)
         extLZMA = StorageFlags.externalFile | StorageFlags.compressedLZMA, // ME3 (non-DLC TFC archive)
+        extOodle = StorageFlags.externalFile | StorageFlags.compressedOodle, // LE TFC
         empty = StorageFlags.externalFile | StorageFlags.unused,           // ME1, ME2, ME3
     }
 
@@ -53,6 +55,7 @@ namespace LegendaryExplorerCore.Unreal
         compressedZlib = 1 << 1,
         compressedLZO = 1 << 4,
         compressedLZMA = 1 << 8,
+        compressedOodle = 1 << 12,
         unused = 1 << 5,
     }
 
@@ -110,6 +113,9 @@ namespace LegendaryExplorerCore.Unreal
                         block.compressedBuffer = LZO2.Compress(block.uncompressedBuffer);
                     else if (type == StorageTypes.extZlib || type == StorageTypes.pccZlib)
                         block.compressedBuffer = Zlib.Compress(block.uncompressedBuffer);
+                    else if (type == StorageTypes.extOodle || type == StorageTypes.pccOodle)
+                        // Todo: This is placeholder. No idea if this is correct
+                        block.compressedBuffer = OodleHelper.Compress(block.uncompressedBuffer, block.uncompressedBuffer.Length, OodleHelper.OodleFormat.LZH, OodleHelper.OodleCompressionLevel.Optimal5);
                     else
                         throw new Exception("Compression type not expected!");
                     if (block.compressedBuffer.Length == 0)

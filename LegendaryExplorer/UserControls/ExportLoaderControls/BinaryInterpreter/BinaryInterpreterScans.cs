@@ -345,7 +345,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         { Length = 1 });
                 }
 
-                int mapCount = Pcc.Game >= MEGame.ME3 ? 2 : 1;
+                int mapCount = Pcc.Game == MEGame.ME3 || Pcc.Game == MEGame.ME2 ? 2 : 1;
                 for (; mapCount > 0; mapCount--)
                 {
                     int vertexMapCount = bin.ReadInt32();
@@ -7670,7 +7670,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
 
                 bin.JumpTo(binarystart);
-                if (Pcc.Game != MEGame.ME3)
+                if (Pcc.Game != MEGame.ME3 && !Pcc.Game.IsLEGame())
                 {
                     bin.Skip(8); // 12 zeros
                     int thumbnailSize = bin.ReadInt32();
