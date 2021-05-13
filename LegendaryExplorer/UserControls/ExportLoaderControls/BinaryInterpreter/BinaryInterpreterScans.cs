@@ -345,7 +345,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         { Length = 1 });
                 }
 
-                int mapCount = Pcc.Game == MEGame.ME3 || Pcc.Game == MEGame.ME2 ? 2 : 1;
+                int mapCount = Pcc.Game is MEGame.ME3 or MEGame.ME2 or MEGame.LE2 or MEGame.LE3 ? 2 : 1;
                 for (; mapCount > 0; mapCount--)
                 {
                     int vertexMapCount = bin.ReadInt32();
@@ -372,6 +372,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     NameReference shaderName = bin.ReadNameReference(Pcc);
                     var shaderNode = new BinInterpNode(bin.Position - 8, $"Shader {i} {shaderName.Instanced}");
+                    embeddedShaderCount.Items.Add(shaderNode);
 
                     shaderNode.Items.Add(new BinInterpNode(bin.Position - 8, $"Shader Type: {shaderName.Instanced}") { Length = 8 });
                     shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader GUID {bin.ReadGuid()}") { Length = 16 });
@@ -413,7 +414,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         shaderNode.Items.Add(new BinInterpNode(bin.Position, "Unknown post-shader data") { Length = (shaderEndOffset - dataOffset) - (int)bin.Position });
                     }
 
-                    embeddedShaderCount.Items.Add(shaderNode);
 
                     bin.JumpTo(shaderEndOffset - dataOffset);
                 }
@@ -431,7 +431,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         factoryMapNode.Items.Add(new BinInterpNode(bin.Position - 12, $"{shaderCRC:X8} {shaderName.Instanced}") { Length = 12 });
                     }
                 }
-                if (Pcc.Game == MEGame.ME2 || Pcc.Game == MEGame.ME3)
+                if (Pcc.Game is MEGame.ME2 or MEGame.ME3 or MEGame.LE2 or MEGame.LE3)
                 {
                     ReadVertexFactoryMap();
                 }
@@ -523,7 +523,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     bin.JumpTo(shaderMapEndOffset - dataOffset);
                 }
 
-                if (CurrentLoadedExport.Game >= MEGame.ME2 && CurrentLoadedExport.FileRef.Platform != MEPackage.GamePlatform.Xenon)
+                if (CurrentLoadedExport.Game is MEGame.ME3 or MEGame.UDK && CurrentLoadedExport.FileRef.Platform != MEPackage.GamePlatform.Xenon)
                 {
                     int numShaderCachePayloads = bin.ReadInt32();
                     var shaderCachePayloads = new BinInterpNode(bin.Position - 4, $"Shader Cache Payloads, {numShaderCachePayloads} items");
@@ -6425,91 +6425,97 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 Items = nodes
             };
 
-            nodes.Add(new BinInterpNode(bin.Position, $"Base Material GUID {bin.ReadGuid()}") { Length = 16 });
-            int staticSwitchParameterCount = bin.ReadInt32();
-            var staticSwitchParamsNode = new BinInterpNode(bin.Position - 4, $"Static Switch Parameters, {staticSwitchParameterCount} items") { Length = 4 };
-
-            nodes.Add(staticSwitchParamsNode);
-            for (int j = 0; j < staticSwitchParameterCount; j++)
+            try
             {
-                var paramName = bin.ReadNameReference(Pcc);
-                var paramVal = bin.ReadBoolInt();
-                var paramOverride = bin.ReadBoolInt();
-                Guid g = bin.ReadGuid();
-                staticSwitchParamsNode.Items.Add(new BinInterpNode(bin.Position - 32, $"{j}: Name: {paramName.Instanced}, Value: {paramVal}, Override: {paramOverride}\nGUID:{g}")
+                nodes.Add(new BinInterpNode(bin.Position, $"Base Material GUID {bin.ReadGuid()}") { Length = 16 });
+                int staticSwitchParameterCount = bin.ReadInt32();
+                var staticSwitchParamsNode = new BinInterpNode(bin.Position - 4, $"Static Switch Parameters, {staticSwitchParameterCount} items") { Length = 4 };
+
+                nodes.Add(staticSwitchParamsNode);
+                for (int j = 0; j < staticSwitchParameterCount; j++)
                 {
-                    Length = 32
-                });
-            }
+                    var paramName = bin.ReadNameReference(Pcc);
+                    var paramVal = bin.ReadBoolInt();
+                    var paramOverride = bin.ReadBoolInt();
+                    Guid g = bin.ReadGuid();
+                    staticSwitchParamsNode.Items.Add(new BinInterpNode(bin.Position - 32, $"{j}: Name: {paramName.Instanced}, Value: {paramVal}, Override: {paramOverride}\nGUID:{g}")
+                    {
+                        Length = 32
+                    });
+                }
 
-            int staticComponentMaskParameterCount = bin.ReadInt32();
-            var staticComponentMaskParametersNode = new BinInterpNode(bin.Position - 4, $"Static Component Mask Parameters, {staticComponentMaskParameterCount} items")
-            {
-                Length = 4
-            };
-            nodes.Add(staticComponentMaskParametersNode);
-            for (int i = 0; i < staticComponentMaskParameterCount; i++)
-            {
-                var subnodes = new List<ITreeItem>();
-                staticComponentMaskParametersNode.Items.Add(new BinInterpNode(bin.Position, $"Parameter {i}")
-                {
-                    Length = 44,
-                    Items = subnodes
-                });
-                subnodes.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).Instanced}") { Length = 8 });
-                subnodes.Add(new BinInterpNode(bin.Position, $"R: {bin.ReadBoolInt()}") { Length = 4 });
-                subnodes.Add(new BinInterpNode(bin.Position, $"G: {bin.ReadBoolInt()}") { Length = 4 });
-                subnodes.Add(new BinInterpNode(bin.Position, $"B: {bin.ReadBoolInt()}") { Length = 4 });
-                subnodes.Add(new BinInterpNode(bin.Position, $"A: {bin.ReadBoolInt()}") { Length = 4 });
-                subnodes.Add(new BinInterpNode(bin.Position, $"bOverride: {bin.ReadBoolInt()}") { Length = 4 });
-                subnodes.Add(new BinInterpNode(bin.Position, $"ExpressionGUID: {bin.ReadGuid()}") { Length = 16 });
-            }
-
-            if (Pcc.Game >= MEGame.ME3)
-            {
-                int NormalParameterCount = bin.ReadInt32();
-                var NormalParametersNode = new BinInterpNode(bin.Position - 4, $"Normal Parameters, {NormalParameterCount} items")
+                int staticComponentMaskParameterCount = bin.ReadInt32();
+                var staticComponentMaskParametersNode = new BinInterpNode(bin.Position - 4, $"Static Component Mask Parameters, {staticComponentMaskParameterCount} items")
                 {
                     Length = 4
                 };
-                nodes.Add(NormalParametersNode);
-                for (int i = 0; i < NormalParameterCount; i++)
+                nodes.Add(staticComponentMaskParametersNode);
+                for (int i = 0; i < staticComponentMaskParameterCount; i++)
                 {
                     var subnodes = new List<ITreeItem>();
-                    NormalParametersNode.Items.Add(new BinInterpNode(bin.Position, $"Parameter {i}")
+                    staticComponentMaskParametersNode.Items.Add(new BinInterpNode(bin.Position, $"Parameter {i}")
                     {
-                        Length = 29,
+                        Length = 44,
                         Items = subnodes
                     });
                     subnodes.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).Instanced}") { Length = 8 });
-                    subnodes.Add(new BinInterpNode(bin.Position, $"CompressionSettings: {(TextureCompressionSettings)bin.ReadByte()}") { Length = 1 });
+                    subnodes.Add(new BinInterpNode(bin.Position, $"R: {bin.ReadBoolInt()}") { Length = 4 });
+                    subnodes.Add(new BinInterpNode(bin.Position, $"G: {bin.ReadBoolInt()}") { Length = 4 });
+                    subnodes.Add(new BinInterpNode(bin.Position, $"B: {bin.ReadBoolInt()}") { Length = 4 });
+                    subnodes.Add(new BinInterpNode(bin.Position, $"A: {bin.ReadBoolInt()}") { Length = 4 });
                     subnodes.Add(new BinInterpNode(bin.Position, $"bOverride: {bin.ReadBoolInt()}") { Length = 4 });
                     subnodes.Add(new BinInterpNode(bin.Position, $"ExpressionGUID: {bin.ReadGuid()}") { Length = 16 });
                 }
-            }
-            if (Pcc.Game == MEGame.UDK)
-            {
-                int TerrainWeightParametersCount = bin.ReadInt32();
-                var TerrainWeightParametersNode = new BinInterpNode(bin.Position - 4, $"Terrain Weight Parameters, {TerrainWeightParametersCount} items")
-                {
-                    Length = 4
-                };
-                nodes.Add(TerrainWeightParametersNode);
-                for (int i = 0; i < TerrainWeightParametersCount; i++)
-                {
-                    var subnodes = new List<ITreeItem>();
-                    TerrainWeightParametersNode.Items.Add(new BinInterpNode(bin.Position, $"Parameter {i}")
-                    {
-                        Length = 32,
-                        Items = subnodes
-                    });
-                    subnodes.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).Instanced}") { Length = 8 });
-                    subnodes.Add(MakeInt32Node(bin, "WeightmapIndex"));
-                    subnodes.Add(new BinInterpNode(bin.Position, $"bOverride: {bin.ReadBoolInt()}") { Length = 4 });
-                    subnodes.Add(new BinInterpNode(bin.Position, $"ExpressionGUID: {bin.ReadGuid()}") { Length = 16 });
-                }
-            }
 
+                if (Pcc.Game >= MEGame.ME3)
+                {
+                    int NormalParameterCount = bin.ReadInt32();
+                    var NormalParametersNode = new BinInterpNode(bin.Position - 4, $"Normal Parameters, {NormalParameterCount} items")
+                    {
+                        Length = 4
+                    };
+                    nodes.Add(NormalParametersNode);
+                    for (int i = 0; i < NormalParameterCount; i++)
+                    {
+                        var subnodes = new List<ITreeItem>();
+                        NormalParametersNode.Items.Add(new BinInterpNode(bin.Position, $"Parameter {i}")
+                        {
+                            Length = 29,
+                            Items = subnodes
+                        });
+                        subnodes.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).Instanced}") { Length = 8 });
+                        subnodes.Add(new BinInterpNode(bin.Position, $"CompressionSettings: {(TextureCompressionSettings)bin.ReadByte()}") { Length = 1 });
+                        subnodes.Add(new BinInterpNode(bin.Position, $"bOverride: {bin.ReadBoolInt()}") { Length = 4 });
+                        subnodes.Add(new BinInterpNode(bin.Position, $"ExpressionGUID: {bin.ReadGuid()}") { Length = 16 });
+                    }
+                }
+                if (Pcc.Game == MEGame.UDK)
+                {
+                    int TerrainWeightParametersCount = bin.ReadInt32();
+                    var TerrainWeightParametersNode = new BinInterpNode(bin.Position - 4, $"Terrain Weight Parameters, {TerrainWeightParametersCount} items")
+                    {
+                        Length = 4
+                    };
+                    nodes.Add(TerrainWeightParametersNode);
+                    for (int i = 0; i < TerrainWeightParametersCount; i++)
+                    {
+                        var subnodes = new List<ITreeItem>();
+                        TerrainWeightParametersNode.Items.Add(new BinInterpNode(bin.Position, $"Parameter {i}")
+                        {
+                            Length = 32,
+                            Items = subnodes
+                        });
+                        subnodes.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).Instanced}") { Length = 8 });
+                        subnodes.Add(MakeInt32Node(bin, "WeightmapIndex"));
+                        subnodes.Add(new BinInterpNode(bin.Position, $"bOverride: {bin.ReadBoolInt()}") { Length = 4 });
+                        subnodes.Add(new BinInterpNode(bin.Position, $"ExpressionGUID: {bin.ReadGuid()}") { Length = 16 });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                nodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
+            }
             return result;
         }
 

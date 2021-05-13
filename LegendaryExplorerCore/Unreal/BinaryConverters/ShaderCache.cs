@@ -24,12 +24,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             byte platform = 0;
             sc.Serialize(ref platform);
             sc.Serialize(ref ShaderTypeCRCMap, SCExt.Serialize, SCExt.Serialize);
-            if (sc.Game == MEGame.ME3 && sc.IsLoading)
+            if (sc.Game is MEGame.ME2 or MEGame.LE2 or MEGame.ME3 or MEGame.LE3 && sc.IsLoading)
             {
                 int nameMapCount = sc.ms.ReadInt32();
                 sc.ms.Skip(nameMapCount * 12);
             }
-            else if (sc.Game == MEGame.ME3 && sc.IsSaving)
+            else if (sc.Game is MEGame.ME2 or MEGame.LE2 or MEGame.ME3 or MEGame.LE3 && sc.IsSaving)
             {
                 sc.ms.Writer.WriteInt32(0);
             }
@@ -65,7 +65,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref VertexFactoryTypeCRCMap, SCExt.Serialize, SCExt.Serialize);
             }
             sc.Serialize(ref MaterialShaderMaps, SCExt.Serialize, SCExt.Serialize);
-            if (sc.Game != MEGame.ME2)
+            if (sc.Game is not (MEGame.ME2 or MEGame.LE2))
             {
                 int dummy = 0;
                 sc.Serialize(ref dummy);
