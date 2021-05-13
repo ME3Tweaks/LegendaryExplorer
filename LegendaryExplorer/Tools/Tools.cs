@@ -320,19 +320,19 @@ namespace LegendaryExplorer
                 subCategory = "Extractors + Repackers",
                 description = "TLK Editor is an editor for localized text, located in TLK files. These files are embedded in package files in Mass Effect 1 and stored externally in Mass Effect 2 and 3.",
             });
-            //            set.Add(new Tool
-            //            {
-            //                name = "Package Dumper",
-            //                type = typeof(PackageDumper.PackageDumper),
-            //                icon = Application.Current.FindResource("iconPackageDumper") as ImageSource,
-            //                open = () =>
-            //                {
-            //                    (new PackageDumper.PackageDumper()).Show();
-            //                },
-            //                tags = new List<string> { "utility", "package", "pcc", "text", "dump" },
-            //                subCategory = "Utilities",
-            //                description = "Package Dumper is a utility for dumping package information to files that can be searched with tools like GrepWin. Names, Imports, Exports, Properties and more are dumped."
-            //            });
+            set.Add(new Tool
+            {
+                name = "Package Dumper",
+                type = typeof(Tools.PackageDumper.PackageDumperWindow),
+                icon = Application.Current.FindResource("iconPackageDumper") as ImageSource,
+                open = () =>
+                {
+                    (new Tools.PackageDumper.PackageDumperWindow()).Show();
+                },
+                tags = new List<string> { "utility", "package", "pcc", "text", "dump" },
+                subCategory = "Utilities",
+                description = "Package Dumper is a utility for dumping package information to files that can be searched with tools like GrepWin. Names, Imports, Exports, Properties and more are dumped."
+            });
             //            set.Add(new Tool
             //            {
             //                name = "Dialogue Dumper",

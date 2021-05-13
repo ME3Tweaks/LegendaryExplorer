@@ -334,6 +334,9 @@
     <Page Update="Tools\InterpEditor\InterpEditorWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Tools\PackageDumper\PackageDumperWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="UserControls\ExportLoaderControls\TLKEditor.xaml">
       <SubType>Designer</SubType>
     </Page>
