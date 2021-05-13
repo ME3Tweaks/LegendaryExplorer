@@ -14,7 +14,7 @@ namespace LegendaryExplorerCore.Unreal
     {
         public static IEnumerable<string> GetTocableFiles(string path)
         {
-            string[] Pattern = { "*.pcc", "*.afc", "*.bik", "*.bin", "*.tlk", "*.txt", "*.cnd", "*.upk", "*.tfc" };
+            string[] Pattern = { "*.pcc", "*.afc", "*.bik", "*.bin", "*.tlk", "*.txt", "*.cnd", "*.upk", "*.tfc", ".isb" };
             var res = new List<string>();
             foreach (string s in Pattern)
                 res.AddRange(Directory.GetFiles(path, s));
@@ -43,6 +43,9 @@ namespace LegendaryExplorerCore.Unreal
                     {
                         if (f.Name == "CookedPCConsole" || f.Name == "Movies")
                             res.AddRange(GetFiles(Path.Combine(basefolder, f.Name)));
+                        else if (f.Name == "Content")
+                            res.AddRange(GetFiles(Path.Combine(basefolder, f.Name, "Packages\\ISACT")));
+
                     }
                 }
             }

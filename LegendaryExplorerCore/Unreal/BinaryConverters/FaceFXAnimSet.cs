@@ -35,7 +35,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 _ => 1731
             };
             sc.Serialize(ref version);
-            if (sc.Game == MEGame.ME3)
+            // TODO: Double check this is right
+            if (sc.Game == MEGame.ME3 || sc.Game.IsLEGame())
             {
                 sc.Serialize(ref int0);
             }
@@ -46,7 +47,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             string licensee = "Unreal Engine 3 Licensee";
             string project = "Unreal Engine 3 Project";
-            if (sc.IsSaving && sc.Game == MEGame.ME3)
+            if (sc.IsSaving && (sc.Game == MEGame.ME3 || sc.Game.IsLEGame()))
             {
                 licensee += '\0';
                 project += '\0';
