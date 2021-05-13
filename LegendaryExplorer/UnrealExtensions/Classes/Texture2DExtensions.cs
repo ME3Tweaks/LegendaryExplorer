@@ -705,7 +705,7 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
             Debug.WriteLine($"Generating preview texture for Texture2D {info.Export.FullPath} of format {t2d.TextureFormat}");
             if (imageBytes == null)
             {
-                imageBytes = t2d.GetImageBytesForMip(info, t2d.Export.Game, true);
+                imageBytes = t2d.GetImageBytesForMip(info, t2d.Export.Game, true, usedMip: out info);
             }
             int width = (int)info.width;
             int height = (int)info.height;

@@ -111,9 +111,10 @@ namespace LegendaryExplorerCore.Unreal.Classes
             return mips;
         }
 
-        public byte[] GetImageBytesForMip(Texture2DMipInfo info, MEGame game, bool useLowerMipsIfTFCMissing, string gamePathToUse = null, List<string> additionalTFCs = null)
+        public byte[] GetImageBytesForMip(Texture2DMipInfo info, MEGame game, bool useLowerMipsIfTFCMissing, out Texture2DMipInfo usedMip, string gamePathToUse = null, List<string> additionalTFCs = null)
         {
             byte[] imageBytes = null;
+            usedMip = info;
             try
             {
                 imageBytes = GetTextureData(info, game, gamePathToUse, true, additionalTFCs);
@@ -126,6 +127,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                     info = Mips.FirstOrDefault(x => x.storageType == StorageTypes.pccUnc);
                     if (info != null)
                     {
+                        usedMip = info;
                         imageBytes = GetTextureData(info, game, gamePathToUse);
                     }
                 }
