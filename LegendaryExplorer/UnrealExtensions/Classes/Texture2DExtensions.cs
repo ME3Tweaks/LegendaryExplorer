@@ -15,6 +15,7 @@ using LegendaryExplorerCore.Unreal.Classes;
 
 namespace LegendaryExplorer.UnrealExtensions.Classes
 {
+    // TODO: MOVE INTO LEC NOW THAT IT DOESN'T DEPEND ON HELPERS
     public static class Texture2DExtensions
     {
 
@@ -112,10 +113,20 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
                     compressedMips.Add(null);
                     continue;
                 }
-                if (t2d.Export.Game < MEGame.ME3)
-                    compressedMips.Add(TextureCompression.CompressTexture(image.mipMaps[m].data, StorageTypes.extLZO)); //LZO 
-                else
+
+                if (t2d.Export.Game.IsOTGame() && t2d.Export.Game < MEGame.ME3)
+                {
+                    compressedMips.Add(
+                        TextureCompression.CompressTexture(image.mipMaps[m].data, StorageTypes.extLZO)); //LZO 
+                }
+                else if (t2d.Export.Game == MEGame.ME3)
+                {
                     compressedMips.Add(TextureCompression.CompressTexture(image.mipMaps[m].data, StorageTypes.extZlib)); //ZLib
+                }
+                else if (t2d.Export.Game.IsLEGame())
+                {
+                    compressedMips.Add(TextureCompression.CompressTexture(image.mipMaps[m].data, StorageTypes.extOodle)); //Oodle
+                }
             }
 
             List<Texture2DMipInfo> mipmaps = new List<Texture2DMipInfo>();

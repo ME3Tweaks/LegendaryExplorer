@@ -15,7 +15,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         protected override void Serialize(SerializingContainer2 sc)
         {
-            if (sc.Game != MEGame.ME3)
+            if (sc.Game != MEGame.ME3 && !sc.Game.IsLEGame())
             {
                 int dummy = 0;
                 sc.Serialize(ref dummy);
@@ -55,7 +55,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             public byte[] Mip;
             public int SizeX;
             public int SizeY;
-            
+
             // Utility stuff
             /// <summary>
             /// The start of this mipmap 'struct' in the export, at the time it was read
@@ -66,7 +66,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             public bool IsCompressed =>
                 ((int)StorageType & (int)StorageFlags.compressedLZO) != 0 ||
                 ((int)StorageType & (int)StorageFlags.compressedLZMA) != 0 ||
-                ((int)StorageType & (int)StorageFlags.compressedZlib) != 0;
+                ((int)StorageType & (int)StorageFlags.compressedZlib) != 0 ||
+                ((int)StorageType & (int)StorageFlags.compressedOodle) != 0;
         }
     }
 
@@ -98,7 +99,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             if (sc.IsLoading)
             {
                 mip = new UTexture2D.Texture2DMipMap();
-                mip.MipInfoOffsetFromBinStart = (int) sc.ms.Position; // this is used to update the DataOffset later
+                mip.MipInfoOffsetFromBinStart = (int)sc.ms.Position; // this is used to update the DataOffset later
             }
 
             int mipStorageType = (int)mip.StorageType;

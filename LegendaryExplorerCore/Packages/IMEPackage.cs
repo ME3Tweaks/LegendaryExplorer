@@ -14,9 +14,24 @@ namespace LegendaryExplorerCore.Packages
 {
     public static class MEGameExtensions
     {
+        /// <summary>
+        /// If game is part of legendary edition (not including UDK)
+        /// </summary>
+        /// <param name="game"></param>
+        /// <returns></returns>
         public static bool IsLEGame(this MEGame game)
         {
             return game == MEGame.LE1 || game == MEGame.LE2 || game == MEGame.LE3;
+        }
+
+        /// <summary>
+        /// Is game part of original trilogy (not including UDK)
+        /// </summary>
+        /// <param name="game"></param>
+        /// <returns></returns>
+        public static bool IsOTGame(this MEGame game)
+        {
+            return game == MEGame.ME1 || game == MEGame.ME2 || game == MEGame.ME3;
         }
     }
     public enum MEGame
