@@ -84,13 +84,13 @@
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button Margin="5,0,0,0" Grid.Column="2" Name="ImportFromExcel_Button" Padding="5,0" Click="ImportFromExcel_Click" ToolTip="Import curves from excel" Background="#FF323232" BorderBrush="Transparent">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="/ME3Explorer;component/Resources/excel.png" Width="16" Height="16" Margin="0,0,2,0"/>
+                            <Image Source="/Resources/Images/excel.png" Width="16" Height="16" Margin="0,0,2,0"/>
                             <fa:ImageAwesome Icon="Solid_ArrowLeft" Width="16" Height="16" Foreground="DarkRed"/>
                         </StackPanel>
                     </Button>
                     <Button Padding="5,0" Grid.Column="3" Name="ExportToExcel_Button" Click="ExportToExcel_Click" HorizontalAlignment="Right" ToolTip="Export curves to excel" Background="#FF323232" BorderBrush="Transparent">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="/ME3Explorer;component/Resources/excel.png" Width="16" Height="16" Margin="0,0,2,0"/>
+                            <Image Source="/Resources/Images/excel.png" Width="16" Height="16" Margin="0,0,2,0"/>
                             <fa:ImageAwesome Icon="Solid_ArrowRight" Width="16" Height="16" Foreground="DarkRed"/>
                         </StackPanel>
                     </Button>

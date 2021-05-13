@@ -3998,7 +3998,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var vIdStr = versionID.ToString();
             var vers = new Version(vIdStr[0] - '0', vIdStr[1] - '0', vIdStr[2] - '0', vIdStr[3] - '0'); //Mega hack
             subnodes.Add(new BinInterpNode(bin.Position - 4, $"SDK Version: {versionID} ({vers})") { Length = 4 });
-            if (game == MEGame.ME3)
+            if (game == MEGame.ME3 || game.IsLEGame())
             {
                 subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt32():X8}") { Length = 4 });
             }

@@ -100,7 +100,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (CurrentLoadedExport != null)
             {
-                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new BytecodeEditor(), CurrentLoadedExport)
+                var elhw = new ExportLoaderHostedWindow(new BytecodeEditor(), CurrentLoadedExport)
                 {
                     Title = $"Bytecode Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}"
                 };
@@ -115,7 +115,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             ScriptHeaderBlocks.ClearEx();
             ScriptFooterBlocks.ClearEx();
             DecompiledScriptBoxTitle = "Decompiled Script";
-            if (Pcc.Game == MEGame.ME3 || Pcc.Platform == MEPackage.GamePlatform.PS3)
+            if (Pcc.Game is MEGame.ME3 or MEGame.LE3 || Pcc.Platform == MEPackage.GamePlatform.PS3)
             {
                 var func = new Function(data, CurrentLoadedExport, 32);
 
@@ -230,19 +230,21 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     //}
 
                     var numMappedFunctions = EndianReader.ToInt32(footerdata, fpos, CurrentLoadedExport.FileRef.Endian);
-                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Num of mapped functions", numMappedFunctions.ToString(), fpos));
+                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Num of mapped functions", numMappedFunctions.ToString(), fpos + footerstartpos));
                     fpos += 4;
                     for (int i = 0; i < numMappedFunctions; i++)
                     {
                         var name = EndianReader.ToInt32(footerdata, fpos, CurrentLoadedExport.FileRef.Endian);
                         var uindex = EndianReader.ToInt32(footerdata, fpos + 8, CurrentLoadedExport.FileRef.Endian);
-                        var funcMap = new ScriptHeaderItem($"FunctionMap[{i}]:", $"{CurrentLoadedExport.FileRef.GetNameEntry(name)} => {CurrentLoadedExport.FileRef.GetEntry(uindex)?.FullPath}()", fpos);
+                        var funcMap = new ScriptHeaderItem($"FunctionMap[{i}]:", 
+                                                           $"{CurrentLoadedExport.FileRef.GetNameEntry(name)} => {CurrentLoadedExport.FileRef.GetEntry(uindex)?.FullPath}()",
+                                                           fpos + footerstartpos);
                         ScriptFooterBlocks.Add(funcMap);
                         fpos += 12;
                     }
                 }
             }
-            else if (Pcc.Game == MEGame.ME1 || Pcc.Game == MEGame.ME2 || Pcc.Game == MEGame.LE1)
+            else if (Pcc.Game is MEGame.ME1 or MEGame.ME2 or MEGame.LE1 or MEGame.LE2)
             {
                 //Header
                 int pos = 16;
