@@ -537,7 +537,7 @@ namespace LegendaryExplorer
             {
                 name = "Wwise Graph Editor",
                 type = typeof(WwiseEditorWindow),
-                icon = Application.Current.FindResource("iconWwiseEditor") as ImageSource,
+                icon = Application.Current.FindResource("iconWwiseGraphEditor") as ImageSource,
                 open = () =>
                 {
                     (new WwiseEditorWindow()).Show();
