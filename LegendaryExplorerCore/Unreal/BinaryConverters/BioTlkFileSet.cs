@@ -12,7 +12,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         protected override void Serialize(SerializingContainer2 sc)
         {
-            if (sc.Game != MEGame.ME1)
+            if (sc.Game != MEGame.ME1 && sc.Game != MEGame.LE1)
             {
                 throw new Exception($"BioTlkFileSet is not a valid class for {sc.Game}!");
             }
