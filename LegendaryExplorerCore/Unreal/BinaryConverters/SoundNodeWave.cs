@@ -19,8 +19,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             sc.SerializeBulkData(ref RawData, SCExt.Serialize);
             sc.SerializeBulkData(ref CompressedPCData, SCExt.Serialize);
-            sc.SerializeBulkData(ref CompressedXbox360Data, SCExt.Serialize);
-            sc.SerializeBulkData(ref CompressedPS3Data, SCExt.Serialize);
+
+            if(!sc.Game.IsLEGame())
+            {
+                sc.SerializeBulkData(ref CompressedXbox360Data, SCExt.Serialize);
+                sc.SerializeBulkData(ref CompressedPS3Data, SCExt.Serialize);
+            }
         }
     }
 }

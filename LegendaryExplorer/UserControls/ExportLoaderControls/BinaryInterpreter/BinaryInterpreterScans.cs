@@ -2111,18 +2111,22 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 subnodes.Add(new BinInterpNode(bin.Position, "CompressedPCData") { Length = count });
                 bin.Skip(count);
 
-                subnodes.Add(new BinInterpNode(bin.Position, $"BulkDataFlags: {(EBulkDataFlags)bin.ReadUInt32()}"));
-                subnodes.Add(new BinInterpNode(bin.Position, $"Element Count: {count = bin.ReadInt32()}"));
-                subnodes.Add(MakeInt32Node(bin, "BulkDataSizeOnDisk"));
-                subnodes.Add(MakeUInt32HexNode(bin, "BulkDataOffsetInFile"));
-                subnodes.Add(new BinInterpNode(bin.Position, "CompressedXbox360Data") { Length = count });
-                bin.Skip(count);
+                if(!Pcc.Game.IsLEGame())
+                {
+                    subnodes.Add(new BinInterpNode(bin.Position, $"BulkDataFlags: {(EBulkDataFlags)bin.ReadUInt32()}"));
+                    subnodes.Add(new BinInterpNode(bin.Position, $"Element Count: {count = bin.ReadInt32()}"));
+                    subnodes.Add(MakeInt32Node(bin, "BulkDataSizeOnDisk"));
+                    subnodes.Add(MakeUInt32HexNode(bin, "BulkDataOffsetInFile"));
+                    subnodes.Add(new BinInterpNode(bin.Position, "CompressedXbox360Data") { Length = count });
+                    bin.Skip(count);
 
-                subnodes.Add(new BinInterpNode(bin.Position, $"BulkDataFlags: {(EBulkDataFlags)bin.ReadUInt32()}"));
-                subnodes.Add(new BinInterpNode(bin.Position, $"Element Count: {count = bin.ReadInt32()}"));
-                subnodes.Add(MakeInt32Node(bin, "BulkDataSizeOnDisk"));
-                subnodes.Add(MakeUInt32HexNode(bin, "BulkDataOffsetInFile"));
-                subnodes.Add(new BinInterpNode(bin.Position, "CompressedPS3Data") { Length = count });
+                    subnodes.Add(new BinInterpNode(bin.Position, $"BulkDataFlags: {(EBulkDataFlags)bin.ReadUInt32()}"));
+                    subnodes.Add(new BinInterpNode(bin.Position, $"Element Count: {count = bin.ReadInt32()}"));
+                    subnodes.Add(MakeInt32Node(bin, "BulkDataSizeOnDisk"));
+                    subnodes.Add(MakeUInt32HexNode(bin, "BulkDataOffsetInFile"));
+                    subnodes.Add(new BinInterpNode(bin.Position, "CompressedPS3Data") { Length = count });
+                }
+
             }
             catch (Exception ex)
             {
