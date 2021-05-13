@@ -320,19 +320,19 @@ namespace LegendaryExplorer
                 subCategory = "Extractors + Repackers",
                 description = "TLK Editor is an editor for localized text, located in TLK files. These files are embedded in package files in Mass Effect 1 and stored externally in Mass Effect 2 and 3.",
             });
-            //            set.Add(new Tool
-            //            {
-            //                name = "Package Dumper",
-            //                type = typeof(PackageDumper.PackageDumper),
-            //                icon = Application.Current.FindResource("iconPackageDumper") as ImageSource,
-            //                open = () =>
-            //                {
-            //                    (new PackageDumper.PackageDumper()).Show();
-            //                },
-            //                tags = new List<string> { "utility", "package", "pcc", "text", "dump" },
-            //                subCategory = "Utilities",
-            //                description = "Package Dumper is a utility for dumping package information to files that can be searched with tools like GrepWin. Names, Imports, Exports, Properties and more are dumped."
-            //            });
+            set.Add(new Tool
+            {
+                name = "Package Dumper",
+                type = typeof(Tools.PackageDumper.PackageDumperWindow),
+                icon = Application.Current.FindResource("iconPackageDumper") as ImageSource,
+                open = () =>
+                {
+                    (new Tools.PackageDumper.PackageDumperWindow()).Show();
+                },
+                tags = new List<string> { "utility", "package", "pcc", "text", "dump" },
+                subCategory = "Utilities",
+                description = "Package Dumper is a utility for dumping package information to files that can be searched with tools like GrepWin. Names, Imports, Exports, Properties and more are dumped."
+            });
             //            set.Add(new Tool
             //            {
             //                name = "Dialogue Dumper",
@@ -507,19 +507,19 @@ namespace LegendaryExplorer
             //                subCategory = "Meshes + Textures",
             //                description = "Texture Studio is a tool designed for texture editing files in a directory of files, such as a DLC mod. It is not the same as other tools such as Mass Effect Modder, which is a game wide replacement tool.",
             //            });
-            //            set.Add(new Tool
-            //            {
-            //                name = "SFAR Explorer",
-            //                type = typeof(SFARExplorer),
-            //                icon = Application.Current.FindResource("iconSFARExplorer") as ImageSource,
-            //                open = () =>
-            //                {
-            //                    (new SFARExplorer()).Show();
-            //                },
-            //                tags = new List<string> { "developer", "dlc" },
-            //                subCategory = other,
-            //                description = "SFAR Explorer allows you to explore and extract ME3 DLC archive files (SFAR).",
-            //            });
+            set.Add(new Tool
+            {
+                name = "SFAR Explorer",
+                type = typeof(Tools.SFARExplorer.SFARExplorerWindow),
+                icon = Application.Current.FindResource("iconSFARExplorer") as ImageSource,
+                open = () =>
+                {
+                    (new Tools.SFARExplorer.SFARExplorerWindow()).Show();
+                },
+                tags = new List<string> { "developer", "dlc" },
+                subCategory = other,
+                description = "SFAR Explorer allows you to explore and extract ME3 DLC archive files (SFAR).",
+            });
             set.Add(new Tool
             {
                 name = "Soundplorer",
@@ -537,7 +537,7 @@ namespace LegendaryExplorer
             {
                 name = "Wwise Graph Editor",
                 type = typeof(WwiseEditorWindow),
-                icon = Application.Current.FindResource("iconWwiseEditor") as ImageSource,
+                icon = Application.Current.FindResource("iconWwiseGraphEditor") as ImageSource,
                 open = () =>
                 {
                     (new WwiseEditorWindow()).Show();

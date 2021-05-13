@@ -130,8 +130,10 @@ namespace LegendaryExplorerCore.GameFilesystem
             }
 
             //make dictionary from basegame files
-            var loadedFiles = new List<string>(2000);
+            if (MEDirectories.GetDefaultGamePath(game) == null)
+                return new List<string>(); // Game path not set!
 
+            var loadedFiles = new List<string>(2000);
             foreach (string directory in MELoadedFiles.GetEnabledDLCFolders(game, gamePath).OrderBy(dir => GetMountPriority(dir, game)).Prepend(MEDirectories.GetBioGamePath(game, gamePath)))
             {
                 foreach (string filePath in GetCookedFiles(game, directory, includeTFC))

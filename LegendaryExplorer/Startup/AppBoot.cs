@@ -13,6 +13,7 @@ using System.Windows.Threading;
 using LegendaryExplorer.Dialogs.Splash;
 using LegendaryExplorer.DialogueEditor;
 using LegendaryExplorer.Misc;
+using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.Misc.Telemetry;
 using LegendaryExplorer.SharedUI.PeregrineTreeView;
 using LegendaryExplorer.Tools.PackageEditor;
@@ -68,7 +69,7 @@ namespace LegendaryExplorer.Startup
                 Directory.CreateDirectory(AppDirectories.AppDataFolder);
             }
 
-            // Todo: Dark mode settings
+            Settings.LoadSettings();
 
             ToolSet.Initialize();
             app.ShutdownMode = ShutdownMode.OnExplicitShutdown;

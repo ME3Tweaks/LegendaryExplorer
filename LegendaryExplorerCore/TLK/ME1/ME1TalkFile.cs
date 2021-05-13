@@ -147,7 +147,7 @@ namespace LegendaryExplorerCore.TLK.ME1
 
         public ME1TalkFile(ExportEntry export)
         {
-            if (export.FileRef.Game != MEGame.ME1)
+            if (!(export.FileRef.Game is MEGame.ME1 or MEGame.LE1))
             {
                 throw new Exception("ME1 Unreal TalkFile cannot be initialized with a non-ME1 file");
             }

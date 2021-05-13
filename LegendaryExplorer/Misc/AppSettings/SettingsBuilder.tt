@@ -8,6 +8,12 @@
 <#@ import namespace="System.IO" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
+using System.IO;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System;
+using System.Diagnostics;
+
 namespace LegendaryExplorer.Misc.AppSettings
 {
     /// <summary>
@@ -36,5 +42,56 @@ namespace LegendaryExplorer.Misc.AppSettings
             set => SetProperty(ref _<#= setting.Item1.ToLower() #>, value);
         }
 <# } #>
+
+        // Settings converters
+        public static int TryGetSetting(Dictionary<string, string> settings, string key, int defaultValue) => settings.TryGetValue(key, out var value) && int.TryParse(value, out var ivalue) ? ivalue : defaultValue;
+        public static bool TryGetSetting(Dictionary<string, string> settings, string key, bool defaultValue) => settings.TryGetValue(key, out var value) && bool.TryParse(value, out var bvalue) ? bvalue : defaultValue;
+        public static string TryGetSetting(Dictionary<string, string> settings, string key, string defaultValue) => settings.TryGetValue(key, out var value) ? value : defaultValue;
+
+
+        private static string AppSettingsFile => Path.Combine(AppDirectories.AppDataFolder, "appsettings.json");
+        /// <summary>
+        /// Loads settings from disk.
+        /// </summary>
+        public static void LoadSettings()
+        {
+            if (Loaded)
+                return;
+            
+            Dictionary<string, string> settingsJson = File.Exists(AppSettingsFile)
+                ? JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(AppSettingsFile))
+                : new Dictionary<string, string>();
+<#          foreach (var setting in settings){#>
+            <#=setting.Item1#> = TryGetSetting(settingsJson, "<#=setting.Item1.ToLower()#>", <#= setting.Item3 #>);
+<#          }#>
+
+            Loaded = true;
+        }
+
+        /// <summary>
+        /// Commits settings to disk.
+        /// </summary>
+        public static void Save()
+        {
+            Dictionary<string, string> settingsJson = new Dictionary<string,string>();
+<#          foreach (var setting in settings){#>
+            settingsJson["<#=setting.Item1.ToLower()#>"] = <#=setting.Item1#>.ToString();
+<#          }#>
+
+            var settingsText = JsonConvert.SerializeObject(settingsJson, Formatting.Indented);
+            try
+            {
+                File.WriteAllText(AppSettingsFile, settingsText);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Could not save settings: {e.Message}");
+            }
+        }
+<#
+    
+
+
+#>
     }
 }

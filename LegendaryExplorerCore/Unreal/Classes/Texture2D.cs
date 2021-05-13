@@ -111,9 +111,10 @@ namespace LegendaryExplorerCore.Unreal.Classes
             return mips;
         }
 
-        public byte[] GetImageBytesForMip(Texture2DMipInfo info, MEGame game, bool useLowerMipsIfTFCMissing, string gamePathToUse = null, List<string> additionalTFCs = null)
+        public byte[] GetImageBytesForMip(Texture2DMipInfo info, MEGame game, bool useLowerMipsIfTFCMissing, out Texture2DMipInfo usedMip, string gamePathToUse = null, List<string> additionalTFCs = null)
         {
             byte[] imageBytes = null;
+            usedMip = info;
             try
             {
                 imageBytes = GetTextureData(info, game, gamePathToUse, true, additionalTFCs);
@@ -126,6 +127,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                     info = Mips.FirstOrDefault(x => x.storageType == StorageTypes.pccUnc);
                     if (info != null)
                     {
+                        usedMip = info;
                         imageBytes = GetTextureData(info, game, gamePathToUse);
                     }
                 }
@@ -228,8 +230,9 @@ namespace LegendaryExplorerCore.Unreal.Classes
                     Buffer.BlockCopy(mipToLoad.Mip, 0, imagebytes, 0, mipToLoad.compressedSize);
                 }
             }
-            else if (mipToLoad.storageType == StorageTypes.extUnc || mipToLoad.storageType == StorageTypes.extLZO || mipToLoad.storageType == StorageTypes.extZlib || mipToLoad.storageType == StorageTypes.extLZMA)
+            else if (((int)mipToLoad.storageType & (int)StorageFlags.externalFile) != 0)
             {
+                // external 
                 string filename = null;
                 List<string> loadedFiles = MELoadedFiles.GetAllGameFiles(gamePathToUse, game, false, true);
                 if (mipToLoad.Export.Game == MEGame.ME1)
