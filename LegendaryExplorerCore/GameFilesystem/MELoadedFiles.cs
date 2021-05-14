@@ -213,12 +213,14 @@ namespace LegendaryExplorerCore.GameFilesystem
             {
                 return ME1Directory.OfficialDLC.Contains(dlcName) || File.Exists(Path.Combine(dir, "AutoLoad.ini"));
             }
+            else if (game == MEGame.LE1) return false; // TODO for LE1 DLC
             return dlcName.StartsWith("DLC_") && File.Exists(GetMountDLCFromDLCDir(dir, game));
         }
 
         public static bool IsOfficialDLC(string dir, MEGame game)
         {
             string dlcName = Path.GetFileName(dir);
+            if (game == MEGame.LE1) return false;
             return MEDirectories.OfficialDLC(game).Contains(dlcName);
         }
 
@@ -235,6 +237,11 @@ namespace LegendaryExplorerCore.GameFilesystem
                 string autoLoadPath = Path.Combine(dlcDirectory, "AutoLoad.ini");
                 var dlcAutoload = DuplicatingIni.LoadIni(autoLoadPath);
                 return Convert.ToInt32(dlcAutoload["ME1DLCMOUNT"]["ModMount"].Value); // Should we  try catch this to avoid hitting an exception on malformed mods? Like DLC_xMeow
+            }
+            else if (game == MEGame.LE1)
+            {
+                // TODO: Investigate DLC system for LE1
+                return -1;
             }
             return MountFile.GetMountPriority(GetMountDLCFromDLCDir(dlcDirectory, game));
         }

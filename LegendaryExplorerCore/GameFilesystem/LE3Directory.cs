@@ -57,7 +57,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         {
             if (rootPathOverride == null) rootPathOverride = DefaultGamePath;
             if (rootPathOverride == null) return null; // There is no usable root path
-            return null; //Path.Combine(GetExecutableDirectory(rootPathOverride), "asi"); //TODO: Implement in LEX once asis work
+            return null; //Path.Combine(GetExecutableDirectory(rootPathOverride), "asi"); //TODO: Implement in LEX?
         }
 
         public static string TextureModMarkerPath => GetTextureModMarkerPath();
@@ -80,8 +80,8 @@ namespace LegendaryExplorerCore.GameFilesystem
             "PhysXCore64.dll"
         });
 
-        public static string BioWareDocumentsPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), @"BioWare", @"Mass Effect 3");
-        public static string LODConfigFile => Path.Combine(BioWareDocumentsPath, @"BIOGame", @"Config", @"GamerSettings.ini");
+        public static string BioWareDocumentsPath => LEDirectory.BioWareDocumentsPath;
+        //public static string LODConfigFile => Path.Combine(BioWareDocumentsPath, @"BIOGame", @"Config", @"GamerSettings.ini");
         public static string CookedName => "CookedPCConsole";
 
 
@@ -119,7 +119,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         {
             if (!forceUseRegistry && !string.IsNullOrEmpty(LegendaryExplorerCoreLibSettings.Instance?.LEDirectory))
             {
-                DefaultGamePath = Path.Join(LegendaryExplorerCoreLibSettings.Instance.LEDirectory, "ME3");
+                DefaultGamePath = Path.Join(LegendaryExplorerCoreLibSettings.Instance.LEDirectory, "Game", "ME3");
             }
             else
             {

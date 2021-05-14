@@ -80,8 +80,8 @@ namespace LegendaryExplorerCore.GameFilesystem
             "PhyxXCore64.dll",
         });
 
-        public static string BioWareDocumentsPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), @"BioWare", @"Mass Effect 2");
-        public static string LODConfigFile => Path.Combine(BioWareDocumentsPath, @"BioGame", @"Config", @"GamerSettings.ini");
+        public static string BioWareDocumentsPath => LEDirectory.BioWareDocumentsPath;
+        //public static string LODConfigFile => Path.Combine(BioWareDocumentsPath, @"BioGame", @"Config", @"GamerSettings.ini");
         public static string CookedName => "CookedPCConsole";
 
 
@@ -116,7 +116,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         {
             if (!forceUseRegistry && !string.IsNullOrEmpty(LegendaryExplorerCoreLibSettings.Instance?.LEDirectory))
             {
-                DefaultGamePath = Path.Join(LegendaryExplorerCoreLibSettings.Instance.LEDirectory, "ME2");
+                DefaultGamePath = Path.Join(LegendaryExplorerCoreLibSettings.Instance.LEDirectory, "Game", "ME2");
             }
             else
             {

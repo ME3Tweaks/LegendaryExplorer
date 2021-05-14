@@ -1,5 +1,8 @@
 ﻿#if WINDOWS
 using Microsoft.Win32;
+using System;
+using System.Collections.ObjectModel;
+using System.IO;
 #endif
 
 namespace LegendaryExplorerCore.GameFilesystem
@@ -14,7 +17,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         {
 #if WINDOWS
             string hkey64 = @"HKEY_LOCAL_MACHINE\SOFTWARE\BioWare\Mass Effect Legendary Edition";
-            string test = (string)Registry.GetValue(hkey64, "Path", null);
+            string test = (string)Registry.GetValue(hkey64, "Install Dir", null);
             if (test != null)
             {
                 LegendaryExplorerCoreLibSettings.Instance.LEDirectory = test;
@@ -27,7 +30,27 @@ namespace LegendaryExplorerCore.GameFilesystem
 #endif
         }
 
-        // Todo: Launcher utility methods
-        // Will be useful for Mod Manager mods to find launcher for launcher modding
+        public static string BioWareDocumentsPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), @"BioWare", @"Mass Effect Legendary Edition");
+
+        public static string LauncherPath => GetLauncherPath();
+        public static string GetLauncherPath(string rootPathOverride = null)
+        {
+            if (rootPathOverride == null) rootPathOverride = LegendaryExplorerCoreLibSettings.Instance.LEDirectory;
+            if (rootPathOverride == null) return null; // There is no usable root path
+            return Path.Combine(rootPathOverride, "Game", "Launcher");
+        }
+
+        public static string LauncherExecutable => GetLauncherExecutable();
+        public static string GetLauncherExecutable(string rootPathOverride = null)
+        {
+            var launcherPath = GetLauncherPath(rootPathOverride);
+            if (launcherPath == null) return null;
+            return Path.Combine(launcherPath, "MassEffectLauncher.exe");
+        }
+
+        public static readonly ReadOnlyCollection<string> VanillaLauncherDlls = Array.AsReadOnly(new[]
+        {
+            "bink2w64.dll"
+        });
     }
 }

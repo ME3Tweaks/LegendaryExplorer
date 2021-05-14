@@ -92,8 +92,8 @@ namespace LegendaryExplorerCore.GameFilesystem
             "wrap_oal.dll"
         });
 
-        public static string BioWareDocumentsPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), @"BioWare", @"Mass Effect");
-        public static string LODConfigFile => Path.Combine(BioWareDocumentsPath, @"Config", @"BIOEngine.ini"); // I think this changed for LE1
+        public static string BioWareDocumentsPath => LEDirectory.BioWareDocumentsPath;
+        //public static string LODConfigFile => Path.Combine(BioWareDocumentsPath, @"Config", @"BIOEngine.ini");
         public static string CookedName => "CookedPCConsole";
 
 
@@ -128,7 +128,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         {
             if (!forceUseRegistry && !string.IsNullOrEmpty(LegendaryExplorerCoreLibSettings.Instance?.LEDirectory))
             {
-                DefaultGamePath = Path.Combine(LegendaryExplorerCoreLibSettings.Instance.LEDirectory, "ME1");
+                DefaultGamePath = Path.Combine(LegendaryExplorerCoreLibSettings.Instance.LEDirectory, "Game", "ME1");
             }
             else
             {
