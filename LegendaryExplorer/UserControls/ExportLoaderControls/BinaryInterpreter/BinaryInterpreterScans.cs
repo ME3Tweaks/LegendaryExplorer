@@ -7834,7 +7834,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 });
                 pos += 4;
-                if (Pcc.Game == MEGame.ME3)
+                if (Pcc.Game is MEGame.ME3 or MEGame.LE3)
                 {
                     int length = BitConverter.ToInt32(data, pos);
                     subnodes.Add(new BinInterpNode
@@ -7888,7 +7888,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 });
                 pos += 4;
 
-                if (Pcc.Game != MEGame.ME3)
+                if (Pcc.Game is not (MEGame.ME3 or MEGame.LE3))
                 {
                     int unkT = BitConverter.ToInt32(data, pos);
                     subnodes.Add(new BinInterpNode
