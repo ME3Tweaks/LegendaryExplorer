@@ -24,10 +24,7 @@ namespace LegendaryExplorer.Dialogs
             var errorSize = MeasureString(flattened);
 
             Height = Math.Min(900, errorSize.Height + 250);
-            if (Settings.Analytics_Enabled)
-            {
-                Crashes.TrackError(exception);
-            }
+            Crashes.TrackError(exception);
         }
 
         private Size MeasureString(string candidate)

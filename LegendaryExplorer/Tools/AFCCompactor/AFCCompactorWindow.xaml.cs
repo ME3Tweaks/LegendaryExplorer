@@ -127,15 +127,15 @@ namespace LegendaryExplorer.Tools.AFCCompactorWindow
 
                 referencesFiltered.ReplaceAll(referencesFiltered.Where(x => FilterReferences(x)).ToList()); //Must use tolist or we'll get concurrent modification
                 string finalAfcPath = null;
-            var compactionResult = AFCCompactor.CompactAFC(SelectedGame, DLCInputFolder, NewAFCName, referencesFiltered, showBrokenAudio,
-                (done, total) =>
-                {
-                    ProgressValue = done;
-                    ProgressMax = total;
-                },
-                statusUpdate => StatusText = statusUpdate,
-                fafcpath => finalAfcPath = fafcpath,
-                    (msg) => { });
+                var compactionResult = AFCCompactor.CompactAFC(SelectedGame, DLCInputFolder, NewAFCName, referencesFiltered, showBrokenAudio,
+                    (done, total) =>
+                    {
+                        ProgressValue = done;
+                        ProgressMax = total;
+                    },
+                    statusUpdate => StatusText = statusUpdate,
+                    fafcpath => finalAfcPath = fafcpath,
+                        (msg) => { });
                 if (!compactionResult) return (compactionResult, null);
 
                 // Check references
@@ -175,10 +175,7 @@ namespace LegendaryExplorer.Tools.AFCCompactorWindow
                     StatusText = "Compaction aborted or failed";
                 }
                 IsBusy = false;
-                if (Settings.Analytics_Enabled)
-                {
-                    Analytics.TrackEvent("Compacted AFC");
-                }
+                Analytics.TrackEvent("Compacted AFC");
             });
 
         }

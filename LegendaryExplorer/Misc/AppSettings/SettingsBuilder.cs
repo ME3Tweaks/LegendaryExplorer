@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System;
 using System.Diagnostics;
+using LegendaryExplorerCore;
 
 namespace LegendaryExplorer.Misc.AppSettings
 {
@@ -11,6 +12,7 @@ namespace LegendaryExplorer.Misc.AppSettings
     /// </summary>
     public static partial class Settings
     {
+        private static object settingsSyncObj = new object();
         private static bool _packageeditor_hideinterpreterhexbox = true; 
         public static bool PackageEditor_HideInterpreterHexBox {
             get => _packageeditor_hideinterpreterhexbox; 
@@ -206,7 +208,7 @@ namespace LegendaryExplorer.Misc.AppSettings
             get => _global_ledirectory; 
             set => SetProperty(ref _global_ledirectory, value);
         }
-        private static string _global_tlk_language = ""; 
+        private static string _global_tlk_language = "INT"; 
         public static string Global_TLK_Language {
             get => _global_tlk_language; 
             set => SetProperty(ref _global_tlk_language, value);
@@ -274,8 +276,17 @@ namespace LegendaryExplorer.Misc.AppSettings
             Global_ME2Directory = TryGetSetting(settingsJson, "global_me2directory", "");
             Global_ME3Directory = TryGetSetting(settingsJson, "global_me3directory", "");
             Global_LEDirectory = TryGetSetting(settingsJson, "global_ledirectory", "");
-            Global_TLK_Language = TryGetSetting(settingsJson, "global_tlk_language", "");
+            Global_TLK_Language = TryGetSetting(settingsJson, "global_tlk_language", "INT");
             Global_TLK_IsMale = TryGetSetting(settingsJson, "global_tlk_ismale", true);
+
+            // Settings Bridge Init
+            LegendaryExplorerCoreLibSettings.Instance.ParseUnknownArrayTypesAsObject = Global_PropertyParsing_ParseUnknownArrayTypeAsObject;
+            LegendaryExplorerCoreLibSettings.Instance.ME1Directory = Global_ME1Directory;
+            LegendaryExplorerCoreLibSettings.Instance.ME2Directory = Global_ME2Directory;
+            LegendaryExplorerCoreLibSettings.Instance.ME3Directory = Global_ME3Directory;
+            LegendaryExplorerCoreLibSettings.Instance.LEDirectory = Global_LEDirectory;
+            LegendaryExplorerCoreLibSettings.Instance.TLKDefaultLanguage = Global_TLK_Language;
+            LegendaryExplorerCoreLibSettings.Instance.TLKGenderIsMale = Global_TLK_IsMale;
 
             Loaded = true;
         }
@@ -331,7 +342,9 @@ namespace LegendaryExplorer.Misc.AppSettings
             var settingsText = JsonConvert.SerializeObject(settingsJson, Formatting.Indented);
             try
             {
-                File.WriteAllText(AppSettingsFile, settingsText);
+                lock (settingsSyncObj) {
+                    File.WriteAllText(AppSettingsFile, settingsText);
+                }
             }
             catch (Exception e)
             {

@@ -41,18 +41,21 @@ namespace LegendaryExplorer.Startup
         {
             LEXSplashScreen = new DPIAwareSplashScreen();
             LEXSplashScreen.Show();
-#if !DEBUG
+
+            //Peregrine's Dispatcher (for WPF Treeview selecting on virtualized lists)
+            DispatcherHelper.Initialize();
+            initCoreLib();
+            Settings.LoadSettings();
+
+            // AppCenter setup
+#if DEBUG
             //We should only track things like this in release mode so we don't pollute our dataset
-            var props = typeof(APIKeys).GetProperties();
-            if (APIKeys.HasAppCenterKey)
+            if (Settings.Global_Analytics_Enabled && APIKeys.HasAppCenterKey)
             {
                 Microsoft.AppCenter.AppCenter.Start(APIKeys.AppCenterKey,
                     typeof(Microsoft.AppCenter.Analytics.Analytics), typeof(Microsoft.AppCenter.Crashes.Crashes));
             }
 #endif
-            //Peregrine's Dispatcher (for WPF Treeview selecting on virtualized lists)
-            DispatcherHelper.Initialize();
-            initCoreLib();
 
             // Winforms setup
             System.Windows.Forms.Application.EnableVisualStyles();
@@ -74,7 +77,7 @@ namespace LegendaryExplorer.Startup
             ToolSet.Initialize();
             app.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             app.Dispatcher.UnhandledException += app.OnDispatcherUnhandledException; //only start handling them after bootup
-            
+
             Task.Run(() =>
             {
 
@@ -265,7 +268,7 @@ namespace LegendaryExplorer.Startup
             }
 
             LegendaryExplorerCoreLib.InitLib(TaskScheduler.FromCurrentSynchronizationContext(), packageSaveFailed);
-            CoreLibSettingsBridge.MapSettingsIntoBridge(); 
+            CoreLibSettingsBridge.MapSettingsIntoBridge();
             PackageSaver.CheckME3Running = () =>
             {
                 // TODO: IMPLEMENT IN LEX

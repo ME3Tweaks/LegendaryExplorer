@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AppCenter;
 
 namespace LegendaryExplorer.Misc.AppSettings
 {
@@ -39,6 +40,12 @@ namespace LegendaryExplorer.Misc.AppSettings
             {
                 LogSettingChanging(propertyName, value);
                 Save();
+
+                if (propertyName == nameof(Global_Analytics_Enabled))
+                {
+                    // Will not re-enable for this session. However, will enable on the next session
+                    AppCenter.SetEnabledAsync(Global_Analytics_Enabled);
+                }
             }
             return true;
         }

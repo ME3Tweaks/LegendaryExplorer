@@ -31,7 +31,7 @@ namespace LegendaryExplorer.SharedUI.Bases
         protected WPFBase(string memoryTrackerName, bool submitTelemetry = true)
         {
             MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended($"[WPFBase] {memoryTrackerName}", new WeakReference(this)));
-            if (submitTelemetry && Settings.Analytics_Enabled)
+            if (submitTelemetry)
             {
                 Analytics.TrackEvent("Opened tool", new Dictionary<string, string>
                 {
