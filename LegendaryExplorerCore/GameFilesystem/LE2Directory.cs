@@ -65,6 +65,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         {
             if (rootPathOverride == null) rootPathOverride = DefaultGamePath;
             if (rootPathOverride == null) return null; // There is no usable root path
+            // Todo: Not 100% sure how texture modding will work
             return null;//Path.Combine(GetCookedPCPath(rootPathOverride), "BIOC_Materials.pcc");
         }
 
@@ -80,7 +81,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         });
 
         public static string BioWareDocumentsPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), @"BioWare", @"Mass Effect 2");
-        public static string LODConfigFile => Path.Combine(BioWareDocumentsPath, @"BIOGame", @"Config", @"GamerSettings.ini");
+        public static string LODConfigFile => Path.Combine(BioWareDocumentsPath, @"BioGame", @"Config", @"GamerSettings.ini");
         public static string CookedName => "CookedPCConsole";
 
 
@@ -104,7 +105,7 @@ namespace LegendaryExplorerCore.GameFilesystem
             }
         }
 
-        public static string TocFile => DefaultGamePath != null ? Path.Combine(DefaultGamePath, @"BIOGame\PCConsoleTOC.bin") : null;
+        public static string TocFile => DefaultGamePath != null ? Path.Combine(DefaultGamePath, @"BioGame", "PCConsoleTOC.bin") : null;
 
         static LE2Directory()
         {
@@ -120,28 +121,7 @@ namespace LegendaryExplorerCore.GameFilesystem
             else
             {
 #if WINDOWS
-                // TODO: Implement in LEX
-                //string hkey32 = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\";
-                //string hkey64 = @"HKEY_LOCAL_MACHINE\SOFTWARE\";
-                //string subkey = @"BioWare\Mass Effect 2";
-
-                //string keyName = hkey32 + subkey;
-                //string test = (string)Registry.GetValue(keyName, "Path", null);
-                //if (test != null)
-                //{
-                //    DefaultGamePath = test;
-                //    LegendaryExplorerCorLibSettings.Instance.ME2Directory = DefaultGamePath;
-                //    return;
-                //}
-
-                //keyName = hkey64 + subkey;
-                //DefaultGamePath = (string)Registry.GetValue(keyName, "Path", null);
-                //if (DefaultGamePath != null)
-                //{
-                //    DefaultGamePath += Path.DirectorySeparatorChar;
-                //    LegendaryExplorerCorLibSettings.Instance.ME2Directory = DefaultGamePath;
-                //    return;
-                //}
+                if (LEDirectory.LookupDefaultPath()) ReloadDefaultGamePath(false);
 #endif
             }
         }
