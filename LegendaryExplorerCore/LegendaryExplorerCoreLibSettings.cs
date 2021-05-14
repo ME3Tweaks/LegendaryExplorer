@@ -4,7 +4,7 @@ namespace LegendaryExplorerCore
 {
     public class LegendaryExplorerCoreLibSettings : INotifyPropertyChanged
     {
-        // In ME3Explorer (not this lib) the property changed event is listened to for changes and maps them into the .net framework defaults system
+        // In LegendaryExplorer (not this lib) the property changed event is listened to for changes and maps them into the settings system for LEX
         public static LegendaryExplorerCoreLibSettings Instance { get; set; }
 
         public LegendaryExplorerCoreLibSettings()

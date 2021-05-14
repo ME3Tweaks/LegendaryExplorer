@@ -46,18 +46,15 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
         public void LoadLog(MEGame game, IMEPackage pcc = null, ExportEntry filterToSequence = null)
         {
-            if (Settings.Analytics_Enabled)
-            {
-                Analytics.TrackEvent("Used feature", new Dictionary<string, string>() { { "Feature name", "Kismet Logger for " + game } });
-            }
+            Analytics.TrackEvent("Used feature", new Dictionary<string, string>() { { "Feature name", "Kismet Logger for " + game } });
             Pcc = pcc;
-            PccFileName = Pcc == null ? null :Path.GetFileNameWithoutExtension(Pcc.FilePath);
+            PccFileName = Pcc == null ? null : Path.GetFileNameWithoutExtension(Pcc.FilePath);
             SequenceToFilterTo = filterToSequence;
             Game = game;
             LogLines.ClearEx();
             if (File.Exists(KismetLogPath(Game)))
             {
-            
+
                 LogLines.AddRange(File.ReadLines(KismetLogPath(Game)).Skip(4).Select(ParseLoggerLine).NonNull().ToList());
             }
         }

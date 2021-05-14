@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System;
 using System.Diagnostics;
+using LegendaryExplorerCore;
 
 namespace LegendaryExplorer.Misc.AppSettings
 {
@@ -21,6 +22,7 @@ namespace LegendaryExplorer.Misc.AppSettings
     /// </summary>
     public static partial class Settings
     {
+        private static object settingsSyncObj = new object();
 <# // This code runs in the text template:
     // Can't use named tuples it seems
     var settings = XDocument.Load(this.Host.ResolvePath("SettingsDefinitions.xml")).Root.Descendants("setting").Select(x => 
@@ -28,11 +30,12 @@ namespace LegendaryExplorer.Misc.AppSettings
         string name = x.Attribute("name").Value;
         string type = x.Attribute("type").Value;
         string defaultValue = x.Attribute("defaultvalue").Value;
+        string settingsBridgeName = x.Attribute("settingsbridgename")?.Value;
         if (type == "string")
         {
             defaultValue = "\"" + defaultValue + "\"";
         }
-        return Tuple.Create(name, type, defaultValue);
+        return Tuple.Create(name, type, defaultValue, settingsBridgeName);
     }).ToList();
 
     foreach (var setting in settings){ 
@@ -65,6 +68,13 @@ namespace LegendaryExplorer.Misc.AppSettings
             <#=setting.Item1#> = TryGetSetting(settingsJson, "<#=setting.Item1.ToLower()#>", <#= setting.Item3 #>);
 <#          }#>
 
+            // Settings Bridge Init
+<#          foreach (var setting in settings){
+                if (!string.IsNullOrEmpty(setting.Item4)){
+#>            LegendaryExplorerCoreLibSettings.Instance.<#=setting.Item4#> = <#=setting.Item1#>;
+<#                }#>
+<#          }#>
+
             Loaded = true;
         }
 
@@ -81,11 +91,13 @@ namespace LegendaryExplorer.Misc.AppSettings
             var settingsText = JsonConvert.SerializeObject(settingsJson, Formatting.Indented);
             try
             {
-                File.WriteAllText(AppSettingsFile, settingsText);
+                lock (settingsSyncObj) {
+                    File.WriteAllText(AppSettingsFile, settingsText);
+                }
             }
             catch (Exception e)
             {
-                Debug.WriteLine("Could not save settings: {e.Message}");
+                Debug.WriteLine($"Could not save settings: {e.Message}");
             }
         }
 <#

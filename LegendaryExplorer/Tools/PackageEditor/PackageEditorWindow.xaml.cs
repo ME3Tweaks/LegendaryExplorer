@@ -3530,7 +3530,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
         private void TouchComfyMode_Clicked(object sender, RoutedEventArgs e)
         {
             Settings.PackageEditor_TouchComfyMode = !Settings.PackageEditor_TouchComfyMode;
-            Settings.Save();
             TouchComfySettings.ModeSwitched();
         }
 
@@ -3538,7 +3537,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
         {
             Settings.PackageEditor_ShowImpExpPrefix =
                 !Settings.PackageEditor_ShowImpExpPrefix;
-            Settings.Save();
             if (Enumerable.Any(AllTreeViewNodesX))
             {
                 AllTreeViewNodesX[0].FlattenTree().ForEach(x => x.RefreshDisplayName());
@@ -3617,7 +3615,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
         {
             //BinaryInterpreterWPF_AlwaysAutoParse_MenuItem.IsChecked = !BinaryInterpreterWPF_AlwaysAutoParse_MenuItem.IsChecked;
             Settings.BinaryInterpreter_SkipAutoParseSizeCheck = !Settings.BinaryInterpreter_SkipAutoParseSizeCheck;
-            Settings.Save();
         }
 
         // TODO: Move this to a utilities class instead of attaching to a window
@@ -3642,9 +3639,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private void PropertyParsing_UnknownArrayAsObj_Click(object sender, RoutedEventArgs e)
         {
-            Settings.PropertyParsing_ParseUnknownArrayTypeAsObject =
-                !Settings.PropertyParsing_ParseUnknownArrayTypeAsObject;
-            Settings.Save();
+            Settings.Global_PropertyParsing_ParseUnknownArrayTypeAsObject =
+                !Settings.Global_PropertyParsing_ParseUnknownArrayTypeAsObject;
         }
 
         private void MountEditor_Click(object sender, RoutedEventArgs e)
@@ -3657,14 +3653,12 @@ namespace LegendaryExplorer.Tools.PackageEditor
         {
             Settings.TextureViewer_AutoLoadMip =
                 !Settings.TextureViewer_AutoLoadMip;
-            Settings.Save();
         }
 
         private void InterpreterWPF_AdvancedMode_Click(object sender, RoutedEventArgs e)
         {
             Settings.Interpreter_AdvancedDisplay =
                 !Settings.Interpreter_AdvancedDisplay;
-            Settings.Save();
         }
 
 
@@ -3672,21 +3666,18 @@ namespace LegendaryExplorer.Tools.PackageEditor
         private void InterpreterWPF_Colorize_MenuItem_Click(object sender, RoutedEventArgs e)
         {
             Settings.Interpreter_Colorize = !Settings.Interpreter_Colorize;
-            Settings.Save();
         }
 
         private void InterpreterWPF_ArrayPropertySizeLimit_MenuItem_Click(object sender, RoutedEventArgs e)
         {
             Settings.Interpreter_LimitArrayPropertySize =
                 !Settings.Interpreter_LimitArrayPropertySize;
-            Settings.Save();
         }
 
         private void ShowExportIcons_Click(object sender, RoutedEventArgs e)
         {
             Settings.PackageEditor_ShowExportTypeIcons =
                 !Settings.PackageEditor_ShowExportTypeIcons;
-            Settings.Save();
 
             // this triggers binding updates
             LeftSide_TreeView.DataContext = null;
@@ -3712,14 +3703,12 @@ namespace LegendaryExplorer.Tools.PackageEditor
         {
             Settings.Interpreter_ShowLinearColorWheel =
                 !Settings.Interpreter_ShowLinearColorWheel;
-            Settings.Save();
         }
 
         private void ShowExportMetadataInTree_Clicked(object sender, RoutedEventArgs e)
         {
             Settings.PackageEditor_ShowTreeEntrySubText =
                 !Settings.PackageEditor_ShowTreeEntrySubText;
-            Settings.Save();
             foreach (TreeViewEntry tv in AllTreeViewNodesX[0].FlattenTree())
             {
                 tv.RefreshSubText();

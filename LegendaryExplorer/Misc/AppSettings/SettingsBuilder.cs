@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System;
 using System.Diagnostics;
+using LegendaryExplorerCore;
 
 namespace LegendaryExplorer.Misc.AppSettings
 {
@@ -11,6 +12,7 @@ namespace LegendaryExplorer.Misc.AppSettings
     /// </summary>
     public static partial class Settings
     {
+        private static object settingsSyncObj = new object();
         private static bool _packageeditor_hideinterpreterhexbox = true; 
         public static bool PackageEditor_HideInterpreterHexBox {
             get => _packageeditor_hideinterpreterhexbox; 
@@ -176,15 +178,45 @@ namespace LegendaryExplorer.Misc.AppSettings
             get => _soundpanel_loopaudio; 
             set => SetProperty(ref _soundpanel_loopaudio, value);
         }
-        private static bool _propertyparsing_parseunknownarraytypeasobject = false; 
-        public static bool PropertyParsing_ParseUnknownArrayTypeAsObject {
-            get => _propertyparsing_parseunknownarraytypeasobject; 
-            set => SetProperty(ref _propertyparsing_parseunknownarraytypeasobject, value);
+        private static bool _global_propertyparsing_parseunknownarraytypeasobject = false; 
+        public static bool Global_PropertyParsing_ParseUnknownArrayTypeAsObject {
+            get => _global_propertyparsing_parseunknownarraytypeasobject; 
+            set => SetProperty(ref _global_propertyparsing_parseunknownarraytypeasobject, value);
         }
-        private static bool _analytics_enabled = true; 
-        public static bool Analytics_Enabled {
-            get => _analytics_enabled; 
-            set => SetProperty(ref _analytics_enabled, value);
+        private static bool _global_analytics_enabled = true; 
+        public static bool Global_Analytics_Enabled {
+            get => _global_analytics_enabled; 
+            set => SetProperty(ref _global_analytics_enabled, value);
+        }
+        private static string _global_me1directory = ""; 
+        public static string Global_ME1Directory {
+            get => _global_me1directory; 
+            set => SetProperty(ref _global_me1directory, value);
+        }
+        private static string _global_me2directory = ""; 
+        public static string Global_ME2Directory {
+            get => _global_me2directory; 
+            set => SetProperty(ref _global_me2directory, value);
+        }
+        private static string _global_me3directory = ""; 
+        public static string Global_ME3Directory {
+            get => _global_me3directory; 
+            set => SetProperty(ref _global_me3directory, value);
+        }
+        private static string _global_ledirectory = ""; 
+        public static string Global_LEDirectory {
+            get => _global_ledirectory; 
+            set => SetProperty(ref _global_ledirectory, value);
+        }
+        private static string _global_tlk_language = "INT"; 
+        public static string Global_TLK_Language {
+            get => _global_tlk_language; 
+            set => SetProperty(ref _global_tlk_language, value);
+        }
+        private static bool _global_tlk_ismale = true; 
+        public static bool Global_TLK_IsMale {
+            get => _global_tlk_ismale; 
+            set => SetProperty(ref _global_tlk_ismale, value);
         }
 
         // Settings converters
@@ -238,8 +270,23 @@ namespace LegendaryExplorer.Misc.AppSettings
             Interpreter_Colorize = TryGetSetting(settingsJson, "interpreter_colorize", true);
             Interpreter_ShowLinearColorWheel = TryGetSetting(settingsJson, "interpreter_showlinearcolorwheel", false);
             Soundpanel_LoopAudio = TryGetSetting(settingsJson, "soundpanel_loopaudio", false);
-            PropertyParsing_ParseUnknownArrayTypeAsObject = TryGetSetting(settingsJson, "propertyparsing_parseunknownarraytypeasobject", false);
-            Analytics_Enabled = TryGetSetting(settingsJson, "analytics_enabled", true);
+            Global_PropertyParsing_ParseUnknownArrayTypeAsObject = TryGetSetting(settingsJson, "global_propertyparsing_parseunknownarraytypeasobject", false);
+            Global_Analytics_Enabled = TryGetSetting(settingsJson, "global_analytics_enabled", true);
+            Global_ME1Directory = TryGetSetting(settingsJson, "global_me1directory", "");
+            Global_ME2Directory = TryGetSetting(settingsJson, "global_me2directory", "");
+            Global_ME3Directory = TryGetSetting(settingsJson, "global_me3directory", "");
+            Global_LEDirectory = TryGetSetting(settingsJson, "global_ledirectory", "");
+            Global_TLK_Language = TryGetSetting(settingsJson, "global_tlk_language", "INT");
+            Global_TLK_IsMale = TryGetSetting(settingsJson, "global_tlk_ismale", true);
+
+            // Settings Bridge Init
+            LegendaryExplorerCoreLibSettings.Instance.ParseUnknownArrayTypesAsObject = Global_PropertyParsing_ParseUnknownArrayTypeAsObject;
+            LegendaryExplorerCoreLibSettings.Instance.ME1Directory = Global_ME1Directory;
+            LegendaryExplorerCoreLibSettings.Instance.ME2Directory = Global_ME2Directory;
+            LegendaryExplorerCoreLibSettings.Instance.ME3Directory = Global_ME3Directory;
+            LegendaryExplorerCoreLibSettings.Instance.LEDirectory = Global_LEDirectory;
+            LegendaryExplorerCoreLibSettings.Instance.TLKDefaultLanguage = Global_TLK_Language;
+            LegendaryExplorerCoreLibSettings.Instance.TLKGenderIsMale = Global_TLK_IsMale;
 
             Loaded = true;
         }
@@ -283,17 +330,25 @@ namespace LegendaryExplorer.Misc.AppSettings
             settingsJson["interpreter_colorize"] = Interpreter_Colorize.ToString();
             settingsJson["interpreter_showlinearcolorwheel"] = Interpreter_ShowLinearColorWheel.ToString();
             settingsJson["soundpanel_loopaudio"] = Soundpanel_LoopAudio.ToString();
-            settingsJson["propertyparsing_parseunknownarraytypeasobject"] = PropertyParsing_ParseUnknownArrayTypeAsObject.ToString();
-            settingsJson["analytics_enabled"] = Analytics_Enabled.ToString();
+            settingsJson["global_propertyparsing_parseunknownarraytypeasobject"] = Global_PropertyParsing_ParseUnknownArrayTypeAsObject.ToString();
+            settingsJson["global_analytics_enabled"] = Global_Analytics_Enabled.ToString();
+            settingsJson["global_me1directory"] = Global_ME1Directory.ToString();
+            settingsJson["global_me2directory"] = Global_ME2Directory.ToString();
+            settingsJson["global_me3directory"] = Global_ME3Directory.ToString();
+            settingsJson["global_ledirectory"] = Global_LEDirectory.ToString();
+            settingsJson["global_tlk_language"] = Global_TLK_Language.ToString();
+            settingsJson["global_tlk_ismale"] = Global_TLK_IsMale.ToString();
 
             var settingsText = JsonConvert.SerializeObject(settingsJson, Formatting.Indented);
             try
             {
-                File.WriteAllText(AppSettingsFile, settingsText);
+                lock (settingsSyncObj) {
+                    File.WriteAllText(AppSettingsFile, settingsText);
+                }
             }
             catch (Exception e)
             {
-                Debug.WriteLine("Could not save settings: {e.Message}");
+                Debug.WriteLine($"Could not save settings: {e.Message}");
             }
         }
     }

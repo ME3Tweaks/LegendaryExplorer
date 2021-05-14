@@ -41,7 +41,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         {
             if (rootPathOverride == null) rootPathOverride = DefaultGamePath;
             if (rootPathOverride == null) return null; // There is no usable root path
-            return Path.Combine(rootPathOverride, "Binaries\\Win64");
+            return Path.Combine(rootPathOverride, "Binaries", "Win64");
         }
 
         public static string ExecutablePath => GetExecutablePath();
@@ -73,7 +73,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         {
             if (rootPathOverride == null) rootPathOverride = DefaultGamePath;
             if (rootPathOverride == null) return null; // There is no usable root path
-            return Path.Combine(GetBioGamePath(rootPathOverride), "Content\\Packages\\ISACT");
+            return Path.Combine(GetBioGamePath(rootPathOverride), "Content", "Packages", "ISACT");
         }
 
         public static readonly ReadOnlyCollection<string> ExecutableNames = Array.AsReadOnly(new[] { "MassEffect1.exe" });
@@ -92,8 +92,8 @@ namespace LegendaryExplorerCore.GameFilesystem
             "wrap_oal.dll"
         });
 
-        public static string BioWareDocumentsPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), @"BioWare", @"Mass Effect");
-        public static string LODConfigFile => Path.Combine(BioWareDocumentsPath, @"Config", @"BIOEngine.ini");
+        public static string BioWareDocumentsPath => LEDirectory.BioWareDocumentsPath;
+        //public static string LODConfigFile => Path.Combine(BioWareDocumentsPath, @"Config", @"BIOEngine.ini");
         public static string CookedName => "CookedPCConsole";
 
 
@@ -117,7 +117,7 @@ namespace LegendaryExplorerCore.GameFilesystem
             }
         }
 
-        public static string TocFile => DefaultGamePath != null ? Path.Combine(DefaultGamePath, @"BIOGame\PCConsoleTOC.bin") : null;
+        public static string TocFile => DefaultGamePath != null ? Path.Combine(DefaultGamePath, @"BioGame", "PCConsoleTOC.bin") : null;
 
         static LE1Directory()
         {
@@ -128,33 +128,12 @@ namespace LegendaryExplorerCore.GameFilesystem
         {
             if (!forceUseRegistry && !string.IsNullOrEmpty(LegendaryExplorerCoreLibSettings.Instance?.LEDirectory))
             {
-                DefaultGamePath = Path.Combine(LegendaryExplorerCoreLibSettings.Instance.LEDirectory, "ME1");
+                DefaultGamePath = Path.Combine(LegendaryExplorerCoreLibSettings.Instance.LEDirectory, "Game", "ME1");
             }
             else
             {
 #if WINDOWS
-                //TODO: Implement in LEX
-                //string hkey32 = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\";
-                //string hkey64 = @"HKEY_LOCAL_MACHINE\SOFTWARE\";
-                //string subkey = @"BioWare\Mass Effect";
-
-                //string keyName = hkey32 + subkey;
-                //string test = (string)Registry.GetValue(keyName, "Path", null);
-                //if (test != null)
-                //{
-                //    DefaultGamePath = test;
-                //    LegendaryExplorerCorLibSettings.Instance.LEDirectory = DefaultGamePath;
-                //    return;
-                //}
-
-                //keyName = hkey64 + subkey;
-                //DefaultGamePath = (string)Registry.GetValue(keyName, "Path", null);
-                //if (DefaultGamePath != null)
-                //{
-                //    DefaultGamePath += Path.DirectorySeparatorChar;
-                //    LegendaryExplorerCorLibSettings.Instance.LEDirectory = DefaultGamePath;
-                //    return;
-                //}
+                if (LEDirectory.LookupDefaultPath()) ReloadDefaultGamePath(false);
 #endif
             }
         }

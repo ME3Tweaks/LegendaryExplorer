@@ -70,9 +70,10 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,10">
                 <Button Command="{Binding CancelDumpCommand}" Content="Cancel" Width="79" Margin="5,5" HorizontalAlignment="Right"/>
                 <Button Command="{Binding DumpSpecificFilesCommand}" Content="Dump specific files" Padding="8,0" Margin="6,5,2,5" HorizontalAlignment="Right"/>
-                <Button Command="{Binding DumpME1Command}" Content="Dump ME1" Width="79" Margin="2,5" HorizontalAlignment="Right"/>
-                <Button Command="{Binding DumpME2Command}" Content="Dump ME2" Width="79" Margin="2,5" HorizontalAlignment="Right" />
-                <Button Command="{Binding DumpME3Command}" Content="Dump ME3" Width="79" Margin="2,5,0,5" HorizontalAlignment="Right"/>
+                <ComboBox Name="GameComboBox" Margin="10,2,2,2" Padding="6,2" Width="55" Height="20"
+                          ItemsSource="{Binding SupportedGames}" 
+                          SelectedItem="{Binding SelectedGame}"/>
+                <Button Command="{Binding DumpSelectedGameCommand}" Content="Dump game" Width="79" Margin="2,5,0,5" HorizontalAlignment="Right"/>
             </StackPanel>
         </StackPanel>
     </StackPanel>

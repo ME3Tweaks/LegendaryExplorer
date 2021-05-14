@@ -57,7 +57,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         {
             if (rootPathOverride == null) rootPathOverride = DefaultGamePath;
             if (rootPathOverride == null) return null; // There is no usable root path
-            return null; //Path.Combine(GetExecutableDirectory(rootPathOverride), "asi"); //TODO: Implement in LEX once asis work
+            return null; //Path.Combine(GetExecutableDirectory(rootPathOverride), "asi"); //TODO: Implement in LEX?
         }
 
         public static string TextureModMarkerPath => GetTextureModMarkerPath();
@@ -80,8 +80,8 @@ namespace LegendaryExplorerCore.GameFilesystem
             "PhysXCore64.dll"
         });
 
-        public static string BioWareDocumentsPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), @"BioWare", @"Mass Effect 3");
-        public static string LODConfigFile => Path.Combine(BioWareDocumentsPath, @"BIOGame", @"Config", @"GamerSettings.ini");
+        public static string BioWareDocumentsPath => LEDirectory.BioWareDocumentsPath;
+        //public static string LODConfigFile => Path.Combine(BioWareDocumentsPath, @"BIOGame", @"Config", @"GamerSettings.ini");
         public static string CookedName => "CookedPCConsole";
 
 
@@ -98,15 +98,15 @@ namespace LegendaryExplorerCore.GameFilesystem
             {
                 if (value != null)
                 {
-                    if (value.Contains("BioGame", StringComparison.OrdinalIgnoreCase))
-                        value = value.Substring(0, value.LastIndexOf("BioGame", StringComparison.OrdinalIgnoreCase));
+                    if (value.Contains("BIOGame", StringComparison.OrdinalIgnoreCase))
+                        value = value.Substring(0, value.LastIndexOf("BIOGame", StringComparison.OrdinalIgnoreCase));
                 }
                 _DefaultGamePath = value;
             }
         }
         
         // Is this useful?
-        public static string TocFile => DefaultGamePath != null ? Path.Combine(DefaultGamePath, @"BIOGame\PCConsoleTOC.bin") : null;
+        public static string TocFile => DefaultGamePath != null ? Path.Combine(DefaultGamePath, @"BIOGame", "PCConsoleTOC.bin") : null;
 
 
 
@@ -119,32 +119,12 @@ namespace LegendaryExplorerCore.GameFilesystem
         {
             if (!forceUseRegistry && !string.IsNullOrEmpty(LegendaryExplorerCoreLibSettings.Instance?.LEDirectory))
             {
-                DefaultGamePath = Path.Join(LegendaryExplorerCoreLibSettings.Instance.LEDirectory, "ME3");
+                DefaultGamePath = Path.Join(LegendaryExplorerCoreLibSettings.Instance.LEDirectory, "Game", "ME3");
             }
             else
             {
 #if WINDOWS
-                // TODO: Implement in LEX. Could extract a method as this will be the exact same as LE1 & LE2
-                //string hkey32 = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\";
-                //string hkey64 = @"HKEY_LOCAL_MACHINE\SOFTWARE\";
-                //string subkey = @"BioWare\Mass Effect 3";
-
-                //string keyName = hkey32 + subkey;
-                //string test = (string)Registry.GetValue(keyName, "Install Dir", null);
-                //if (test != null)
-                //{
-                //    DefaultGamePath = test;
-                //    LegendaryExplorerCorLibSettings.Instance.ME3Directory = DefaultGamePath;
-                //    return;
-                //}
-
-                //keyName = hkey64 + subkey;
-                //DefaultGamePath = (string)Registry.GetValue(keyName, "Install Dir", null);
-                //if (DefaultGamePath != null)
-                //{
-                //    DefaultGamePath += Path.DirectorySeparatorChar;
-                //    LegendaryExplorerCorLibSettings.Instance.ME3Directory = DefaultGamePath;
-                //}
+                if (LEDirectory.LookupDefaultPath()) ReloadDefaultGamePath(false);
 #endif
             }
         }
