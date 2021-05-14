@@ -18,6 +18,7 @@ namespace LegendaryExplorer.Misc
             LegendaryExplorerCoreLibSettings.Instance.ME1Directory = Settings.Global_ME1Directory;
             LegendaryExplorerCoreLibSettings.Instance.ME2Directory = Settings.Global_ME2Directory;
             LegendaryExplorerCoreLibSettings.Instance.ME3Directory = Settings.Global_ME3Directory;
+            LegendaryExplorerCoreLibSettings.Instance.LEDirectory = Settings.Global_LEDirectory;
 
             Settings.StaticPropertyChanged += LEXSettingChanged;
             LegendaryExplorerCoreLibSettings.Instance.PropertyChanged += CoreLibSettingChanged;
@@ -45,6 +46,9 @@ namespace LegendaryExplorer.Misc
                 case nameof(Settings.Global_ME3Directory):
                     LegendaryExplorerCoreLibSettings.Instance.ME3Directory = Settings.Global_ME3Directory;
                     break;
+                case nameof(Settings.Global_LEDirectory):
+                    LegendaryExplorerCoreLibSettings.Instance.LEDirectory = Settings.Global_LEDirectory;
+                    break;
             }
         }
 
@@ -69,6 +73,9 @@ namespace LegendaryExplorer.Misc
                     break;
                 case nameof(LegendaryExplorerCoreLibSettings.Instance.ME3Directory):
                     Settings.Global_ME3Directory = LegendaryExplorerCoreLibSettings.Instance.ME3Directory;
+                    break;
+                case nameof(LegendaryExplorerCoreLibSettings.Instance.LEDirectory):
+                    Settings.Global_LEDirectory = LegendaryExplorerCoreLibSettings.Instance.LEDirectory;
                     break;
                 default:
                     return;

@@ -103,7 +103,14 @@ namespace LegendaryExplorerCore.GameFilesystem
             get
             {
                 if (string.IsNullOrEmpty(_gamePath))
-                    return null;
+                {
+                    if (string.IsNullOrEmpty(LegendaryExplorerCoreLibSettings.Instance?.LEDirectory))
+                    {
+                        return null;
+                    }
+                    _gamePath = Path.Combine(LegendaryExplorerCoreLibSettings.Instance.LEDirectory, "Game", "ME1");
+                }
+
                 return Path.GetFullPath(_gamePath); //normalize
             }
             set
