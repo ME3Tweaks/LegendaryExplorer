@@ -265,7 +265,7 @@ namespace LegendaryExplorer.Startup
             }
 
             LegendaryExplorerCoreLib.InitLib(TaskScheduler.FromCurrentSynchronizationContext(), packageSaveFailed);
-            //CoreLibSettingsBridge.MapSettingsIntoBridge(); // TODO: IMPLEMENT THIS IN LEX - this needs rewritten for new system
+            CoreLibSettingsBridge.MapSettingsIntoBridge(); 
             PackageSaver.CheckME3Running = () =>
             {
                 // TODO: IMPLEMENT IN LEX

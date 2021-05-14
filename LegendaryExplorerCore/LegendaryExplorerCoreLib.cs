@@ -61,7 +61,11 @@ namespace LegendaryExplorerCore
             {
                 ME1UnrealObjectInfo.loadfromJSON,
                 ME2UnrealObjectInfo.loadfromJSON,
-                ME3UnrealObjectInfo.loadfromJSON
+                ME3UnrealObjectInfo.loadfromJSON,
+                // Todo: LE Load
+                // Todo: Maybe not load all of these as they use a lot of memory, like 40MB each
+                // For 6 games that will be pretty heavy
+                // Maybe require 
             };
             Parallel.ForEach(jsonLoaders, action => action());
             LegendaryExplorerCoreLibSettings.Instance = new LegendaryExplorerCoreLibSettings();
