@@ -26,6 +26,7 @@ namespace LegendaryExplorerCore.Coalesced
 				"BioLightmass",
 				"BioTest",
 				"BioUI",
+                "BioQA",
 				"BioWeapon",
 				"Core",
 				"Descriptions",

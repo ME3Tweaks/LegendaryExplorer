@@ -311,8 +311,15 @@ namespace LegendaryExplorer.Tools.AutoTOC
 
         public static void GenerateAllTOCs(IList<ListBoxTask> tocTasks = null, MEGame game = MEGame.LE3)
         {
-            List<string> folders = (new DirectoryInfo(MEDirectories.GetDLCPath(game))).GetDirectories().Select(d => d.FullName).ToList();
-            folders.Add(Path.Combine(MEDirectories.GetDefaultGamePath(game), "BIOGame"));
+            var folders = new List<string>
+            {
+                Path.Combine(MEDirectories.GetDefaultGamePath(game), "BIOGame")
+            };
+            if (Directory.Exists(MEDirectories.GetDLCPath(game)))
+            {
+                folders.AddRange((new DirectoryInfo(MEDirectories.GetDLCPath(game)).GetDirectories()
+                    .Select(d => d.FullName)));
+            }
             folders.ForEach(consoletocFile => CreateTOC(consoletocFile, tocTasks));
         }
 
@@ -323,7 +330,7 @@ namespace LegendaryExplorer.Tools.AutoTOC
         /// <param name="tocTasks">List of UI Task objects to display in UI</param>
         public static void CreateTOC(string folderToToc, IList<ListBoxTask> tocTasks = null)
         {
-            if(TOCCreator.IsTOCableFolder(folderToToc))
+            if (TOCCreator.IsTOCableFolder(folderToToc))
             {
                 ListBoxTask task = null;
                 if (tocTasks != null)

@@ -15,7 +15,7 @@
                         <Style TargetType="TextBlock">
                             <Setter Property="Background" Value="Red"/>
                             <Style.Triggers>
-
+                                <!-- Original Trilogy -->
                                 <DataTrigger Binding="{Binding GameType, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type sharedUi:StatusBarGameIDIndicator}}}" Value="ME1">
                                     <Setter Property="Background" Value="Navy" />
                                 </DataTrigger>
@@ -26,8 +26,18 @@
                                     <Setter Property="Background" Value="DarkSeaGreen" />
                                 </DataTrigger>
 
-                                <!-- TODO: Add Legendary Games here -->
+                                <!-- Legendary Edition -->
+                                <DataTrigger Binding="{Binding GameType, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type sharedUi:StatusBarGameIDIndicator}}}" Value="LE1">
+                                    <Setter Property="Background" Value="RoyalBlue" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding GameType, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type sharedUi:StatusBarGameIDIndicator}}}" Value="LE2">
+                                    <Setter Property="Background" Value="OrangeRed" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding GameType, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type sharedUi:StatusBarGameIDIndicator}}}" Value="LE3">
+                                    <Setter Property="Background" Value="DarkGreen" />
+                                </DataTrigger>
 
+                                <!-- Other Filetypes -->
                                 <DataTrigger Binding="{Binding GameType, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type sharedUi:StatusBarGameIDIndicator}}}" Value="UDK">
                                     <Setter Property="Background" Value="IndianRed" />
                                 </DataTrigger>
