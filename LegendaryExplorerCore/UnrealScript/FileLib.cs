@@ -53,7 +53,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     {
                         HadInitializationError = true;
                     }
-                    else if (Base.BaseFileNames.Contains(Path.GetFileName(Pcc.FilePath)))
+                    else if (BaseFileNames(Base.Game).Contains(Path.GetFileName(Pcc.FilePath)))
                     {
                         _symbols = Base.GetSymbolTable();
                         HadInitializationError = false;

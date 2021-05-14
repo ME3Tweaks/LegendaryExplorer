@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
@@ -188,8 +189,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     var outF = Path.Combine(dlg.FileName, t2dx.ObjectName + ".png");
                     var t2d = new Texture2D(t2dx);
-                    // TODO: IMPLEMENT IN LEX
-                    //t2d.ExportToPNG(outF);
+                    t2d.ExportToPNG(outF);
                 }
             }
 
