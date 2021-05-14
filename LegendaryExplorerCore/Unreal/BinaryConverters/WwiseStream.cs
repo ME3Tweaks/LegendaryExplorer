@@ -7,8 +7,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public partial class WwiseStream : ObjectBinary
     {
-        public uint Unk1;//ME2
-        public uint Unk2;//ME2
+        public uint Unk1;//ME2/LE2
+        public uint Unk2;//ME2/LE2
         public Guid UnkGuid;//ME2
         public uint Unk3;//ME2
         public uint Unk4;//ME2
@@ -28,31 +28,24 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 Filename = Export.GetProperty<NameProperty>("Filename")?.Value;
             }
 
-            if (sc.Game != MEGame.ME3 && sc.Game != MEGame.ME2)
+            if (sc.Game is not (MEGame.ME2 or MEGame.ME3 or MEGame.LE2 or MEGame.LE3))
             {
                 throw new Exception($"WwiseStream is not a valid class for {sc.Game}!");
             }
-            if (sc.Game == MEGame.ME2 && sc.Pcc.Platform != MEPackage.GamePlatform.PS3)
+
+            if (sc.Game is MEGame.ME2 or MEGame.LE2)
             {
                 sc.Serialize(ref Unk1);
                 sc.Serialize(ref Unk2);
-                if (Unk1 == 0 && Unk2 == 0)
+                if (sc.Game == MEGame.ME2 && sc.Pcc.Platform != MEPackage.GamePlatform.PS3)
                 {
-                    return; //not sure what's going on here
-                }
-                sc.Serialize(ref UnkGuid);
-                sc.Serialize(ref Unk3);
-                sc.Serialize(ref Unk4);
-            }
-            else if (sc.Game == MEGame.ME2 && sc.Pcc.Platform == MEPackage.GamePlatform.PS3)
-            {
-                // ME2 seems to have different wwisestream binary format than both ME2 and ME3 PC
-                sc.Serialize(ref Unk1);
-                sc.Serialize(ref Unk2);
-                if (Unk1 == 0 && Unk2 == 0)
-                {
-                    // Dunno if these matter for PS3
-                    return; //not sure what's going on here
+                    if (Unk1 == 0 && Unk2 == 0)
+                    {
+                        return; //not sure what's going on here
+                    }
+                    sc.Serialize(ref UnkGuid);
+                    sc.Serialize(ref Unk3);
+                    sc.Serialize(ref Unk4);
                 }
             }
             sc.Serialize(ref Unk5);

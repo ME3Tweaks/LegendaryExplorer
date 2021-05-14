@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Data;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorerCore.GameFilesystem;
@@ -174,7 +175,10 @@ namespace LegendaryExplorer.Tools.AFCCompactorWindow
                     StatusText = "Compaction aborted or failed";
                 }
                 IsBusy = false;
-                Analytics.TrackEvent("Compacted AFC");
+                if (Settings.Analytics_Enabled)
+                {
+                    Analytics.TrackEvent("Compacted AFC");
+                }
             });
 
         }

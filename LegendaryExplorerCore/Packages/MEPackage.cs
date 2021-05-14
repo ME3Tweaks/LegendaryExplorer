@@ -935,8 +935,8 @@ namespace LegendaryExplorerCore.Packages
                             switch (e.ClassName)
                             {
                                 //case "WwiseBank":
-                                //TODO: validate the ObjectBinary for these two classes in LE!
                                 case "WwiseStream" when e.GetProperty<NameProperty>("Filename") == null:
+                                //TODO: validate the TextureMovie ObjectBinary for LE!
                                 case "TextureMovie" when e.GetProperty<NameProperty>("TextureFileCacheName") == null:
                                     objBin = ObjectBinary.From(e);
                                     break;

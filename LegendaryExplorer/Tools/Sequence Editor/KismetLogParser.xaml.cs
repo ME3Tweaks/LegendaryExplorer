@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using LegendaryExplorer.Misc;
+using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
@@ -36,7 +37,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             DataContext = this;
         }
 
-        public ObservableCollectionExtended<LoggerInfo> LogLines { get; } = new ObservableCollectionExtended<LoggerInfo>();
+        public ObservableCollectionExtended<LoggerInfo> LogLines { get; } = new();
 
         private IMEPackage Pcc;
         private MEGame Game;
@@ -45,7 +46,10 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
         public void LoadLog(MEGame game, IMEPackage pcc = null, ExportEntry filterToSequence = null)
         {
-            Analytics.TrackEvent("Used feature", new Dictionary<string, string>() { { "Feature name", "Kismet Logger for " + game } });
+            if (Settings.Analytics_Enabled)
+            {
+                Analytics.TrackEvent("Used feature", new Dictionary<string, string>() { { "Feature name", "Kismet Logger for " + game } });
+            }
             Pcc = pcc;
             PccFileName = Pcc == null ? null :Path.GetFileNameWithoutExtension(Pcc.FilePath);
             SequenceToFilterTo = filterToSequence;
@@ -68,7 +72,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 string[] path = args[3].Split('.');
                 if (path.Length < 2) return null;
                 string nameAndIndex = path.Last();
-                string sequence = path[path.Length - 2];
+                string sequence = path[^2];
                 string packageName = args[1].Trim('(', ')');
                 if (Pcc == null || PccFileName.Equals(packageName, StringComparison.InvariantCultureIgnoreCase))
                 {
@@ -119,16 +123,14 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 {
                     if (Path.GetFileNameWithoutExtension(fileName).Equals(info.packageName, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        using (var package = MEPackageHandler.OpenMEPackage(filePath))
+                        using var package = MEPackageHandler.OpenMEPackage(filePath);
+                        foreach (ExportEntry exp in package.Exports)
                         {
-                            foreach (ExportEntry exp in package.Exports)
+                            if (exp.ClassName == info.className && exp.ObjectName == info.objectName &&
+                                exp.ParentName == info.sequenceName)
                             {
-                                if (exp.ClassName == info.className && exp.ObjectName == info.objectName &&
-                                    exp.ParentName == info.sequenceName)
-                                {
-                                    ExportFound(filePath, exp.UIndex);
-                                    return;
-                                }
+                                ExportFound(filePath, exp.UIndex);
+                                return;
                             }
                         }
                     }

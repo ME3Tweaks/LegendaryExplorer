@@ -59,5 +59,6 @@
 
   <!-- Global settings-->
   <setting name="PropertyParsing_ParseUnknownArrayTypeAsObject" type="bool" defaultvalue="false"/>
+  <setting name="Analytics_Enabled" type="bool" defaultvalue="true"/>
 
 </appsettings>

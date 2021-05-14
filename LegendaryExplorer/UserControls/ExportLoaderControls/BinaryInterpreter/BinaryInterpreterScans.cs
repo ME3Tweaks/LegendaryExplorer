@@ -4857,22 +4857,20 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 var bin = new EndianReader(new MemoryStream(data)) { Endian = Pcc.Endian };
                 bin.JumpTo(CurrentLoadedExport.propsEnd());
 
-                if (Pcc.Game == MEGame.ME2 && Pcc.Platform != MEPackage.GamePlatform.PS3)
+                if (Pcc.Game is MEGame.ME2 or MEGame.LE2)
                 {
                     subnodes.Add(MakeUInt32Node(bin, "Unk1"));
                     subnodes.Add(MakeUInt32Node(bin, "Unk2"));
-                    if (bin.Skip(-8).ReadInt64() == 0)
+                    if (Pcc.Game == MEGame.ME2 && Pcc.Platform != MEPackage.GamePlatform.PS3)
                     {
-                        return subnodes;
+                        if (bin.Skip(-8).ReadInt64() == 0)
+                        {
+                            return subnodes;
+                        }
+                        subnodes.Add(MakeGuidNode(bin, "UnkGuid"));
+                        subnodes.Add(MakeUInt32Node(bin, "Unk3"));
+                        subnodes.Add(MakeUInt32Node(bin, "Unk4"));
                     }
-                    subnodes.Add(MakeGuidNode(bin, "UnkGuid"));
-                    subnodes.Add(MakeUInt32Node(bin, "Unk3"));
-                    subnodes.Add(MakeUInt32Node(bin, "Unk4"));
-                }
-                else if (Pcc.Game == MEGame.ME2 && Pcc.Platform == MEPackage.GamePlatform.PS3)
-                {
-                    subnodes.Add(MakeUInt32Node(bin, "Unk3 PS3"));
-                    subnodes.Add(MakeUInt32Node(bin, "Unk4 PS3"));
                 }
                 subnodes.Add(MakeUInt32Node(bin, "Unk5"));
                 int dataSize = bin.ReadInt32();

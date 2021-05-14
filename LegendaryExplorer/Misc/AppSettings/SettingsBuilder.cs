@@ -181,6 +181,11 @@ namespace LegendaryExplorer.Misc.AppSettings
             get => _propertyparsing_parseunknownarraytypeasobject; 
             set => SetProperty(ref _propertyparsing_parseunknownarraytypeasobject, value);
         }
+        private static bool _analytics_enabled = true; 
+        public static bool Analytics_Enabled {
+            get => _analytics_enabled; 
+            set => SetProperty(ref _analytics_enabled, value);
+        }
 
         // Settings converters
         public static int TryGetSetting(Dictionary<string, string> settings, string key, int defaultValue) => settings.TryGetValue(key, out var value) && int.TryParse(value, out var ivalue) ? ivalue : defaultValue;
@@ -234,6 +239,7 @@ namespace LegendaryExplorer.Misc.AppSettings
             Interpreter_ShowLinearColorWheel = TryGetSetting(settingsJson, "interpreter_showlinearcolorwheel", false);
             Soundpanel_LoopAudio = TryGetSetting(settingsJson, "soundpanel_loopaudio", false);
             PropertyParsing_ParseUnknownArrayTypeAsObject = TryGetSetting(settingsJson, "propertyparsing_parseunknownarraytypeasobject", false);
+            Analytics_Enabled = TryGetSetting(settingsJson, "analytics_enabled", true);
 
             Loaded = true;
         }
@@ -278,6 +284,7 @@ namespace LegendaryExplorer.Misc.AppSettings
             settingsJson["interpreter_showlinearcolorwheel"] = Interpreter_ShowLinearColorWheel.ToString();
             settingsJson["soundpanel_loopaudio"] = Soundpanel_LoopAudio.ToString();
             settingsJson["propertyparsing_parseunknownarraytypeasobject"] = PropertyParsing_ParseUnknownArrayTypeAsObject.ToString();
+            settingsJson["analytics_enabled"] = Analytics_Enabled.ToString();
 
             var settingsText = JsonConvert.SerializeObject(settingsJson, Formatting.Indented);
             try
