@@ -505,7 +505,7 @@ namespace LegendaryExplorerCore.Helpers
 
         public static void WriteUnrealString(this Stream stream, string value, MEGame game)
         {
-            if (game == MEGame.ME3)
+            if (game is MEGame.ME3 or MEGame.LE3)
             {
                 stream.WriteUnrealStringUnicode(value);
             }
@@ -517,7 +517,7 @@ namespace LegendaryExplorerCore.Helpers
 
         public static void WriteUnrealString(this EndianWriter stream, string value, MEGame game)
         {
-            if (game == MEGame.ME3)
+            if (game is MEGame.ME3 or MEGame.LE3)
             {
                 stream.WriteUnrealStringUnicode(value);
             }

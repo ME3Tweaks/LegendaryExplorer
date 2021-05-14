@@ -345,7 +345,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         { Length = 1 });
                 }
 
-                int mapCount = Pcc.Game is MEGame.ME3 or MEGame.ME2 or MEGame.LE2 or MEGame.LE3 ? 2 : 1;
+                int mapCount = Pcc.Game is MEGame.ME3 || Pcc.Game.IsLEGame() ? 2 : 1;
                 for (; mapCount > 0; mapCount--)
                 {
                     int vertexMapCount = bin.ReadInt32();
@@ -431,7 +431,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         factoryMapNode.Items.Add(new BinInterpNode(bin.Position - 12, $"{shaderCRC:X8} {shaderName.Instanced}") { Length = 12 });
                     }
                 }
-                if (Pcc.Game is MEGame.ME2 or MEGame.ME3 or MEGame.LE2 or MEGame.LE3)
+                if (Pcc.Game is MEGame.ME2 or MEGame.ME3 or MEGame.LE1 or MEGame.LE2 or MEGame.LE3)
                 {
                     ReadVertexFactoryMap();
                 }
@@ -517,7 +517,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 Items = ReadList(expressionCount, x => ReadMaterialUniformExpression(bin))
                             });
                         }
-                        nodes.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformOT)bin.ReadInt32()}") { Length = 4 });
+                        if (Pcc.Game.IsLEGame())
+                        {
+                            nodes.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformLE)bin.ReadInt32()}") { Length = 4 });
+                        }
+                        else if (Pcc.Game is not MEGame.ME1)
+                        {
+                            nodes.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformOT)bin.ReadInt32()}") { Length = 4 });
+                        }
                     }
 
                     bin.JumpTo(shaderMapEndOffset - dataOffset);
@@ -560,7 +567,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             long pos = bin.Position;
             int strLen = bin.ReadInt32();
             string str;
-            if (Pcc.Game == MEGame.ME3)
+            if (Pcc.Game is MEGame.ME3 or MEGame.LE3)
             {
                 strLen *= -2;
                 str = bin.BaseStream.ReadStringUnicodeNull(strLen);

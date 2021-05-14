@@ -21,15 +21,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         protected override void Serialize(SerializingContainer2 sc)
         {
             if (sc.Pcc.Platform != MEPackage.GamePlatform.PC) return; //We do not support non-PC shader cache
-            byte platform = 0;
+            byte platform = sc.Game.IsLEGame() ? (byte)5 : (byte)0;
             sc.Serialize(ref platform);
             sc.Serialize(ref ShaderTypeCRCMap, SCExt.Serialize, SCExt.Serialize);
-            if (sc.Game is MEGame.ME2 or MEGame.LE2 or MEGame.ME3 or MEGame.LE3 && sc.IsLoading)
+            if (sc.Game is MEGame.ME3 or MEGame.LE1 or MEGame.LE2 or MEGame.LE3 && sc.IsLoading)
             {
                 int nameMapCount = sc.ms.ReadInt32();
                 sc.ms.Skip(nameMapCount * 12);
             }
-            else if (sc.Game is MEGame.ME2 or MEGame.LE2 or MEGame.ME3 or MEGame.LE3 && sc.IsSaving)
+            else if (sc.Game is MEGame.ME3 or MEGame.LE1 or MEGame.LE2 or MEGame.LE3 && sc.IsSaving)
             {
                 sc.ms.Writer.WriteInt32(0);
             }
@@ -65,7 +65,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref VertexFactoryTypeCRCMap, SCExt.Serialize, SCExt.Serialize);
             }
             sc.Serialize(ref MaterialShaderMaps, SCExt.Serialize, SCExt.Serialize);
-            if (sc.Game is not (MEGame.ME2 or MEGame.LE2))
+            if (sc.Game is not (MEGame.ME2 or MEGame.LE2 or MEGame.LE1))
             {
                 int dummy = 0;
                 sc.Serialize(ref dummy);
@@ -223,7 +223,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             int endOffset = 0;
             long endOffsetPos = sc.ms.Position;
             sc.Serialize(ref endOffset);
-            byte platform = 0;
+            byte platform = sc.Game.IsLEGame() ? (byte)5 : (byte)0;
             sc.Serialize(ref platform);
             sc.Serialize(ref shader.Frequency);
             sc.Serialize(ref shader.ShaderByteCode, SCExt.Serialize);
@@ -252,7 +252,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 msm = new MaterialShaderMap();
             }
-            if (sc.Game == MEGame.ME3)
+            if (sc.Game >= MEGame.ME3)
             {
                 uint unrealVersion = MEPackage.ME3UnrealVersion;
                 uint licenseeVersion = MEPackage.ME3LicenseeVersion;
@@ -268,7 +268,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref msm.FriendlyName);
             sc.Serialize(ref msm.StaticParameters);
 
-            if (sc.Game == MEGame.ME3)
+            if (sc.Game >= MEGame.ME3)
             {
                 sc.Serialize(ref msm.UniformPixelVectorExpressions, Serialize);
                 sc.Serialize(ref msm.UniformPixelScalarExpressions, Serialize);
@@ -277,9 +277,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref msm.UniformVertexVectorExpressions, Serialize);
                 sc.Serialize(ref msm.UniformVertexScalarExpressions, Serialize);
             }
-            if (sc.Game == MEGame.ME2 || sc.Game == MEGame.ME3)
+            if (sc.Game is not MEGame.ME1)
             {
-                int platform = 0;
+                int platform = sc.Game.IsLEGame() ? 5 : 0;
                 sc.Serialize(ref platform);
             }
 
