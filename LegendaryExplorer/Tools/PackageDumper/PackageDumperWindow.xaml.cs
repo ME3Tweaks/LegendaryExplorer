@@ -41,6 +41,16 @@ namespace LegendaryExplorer.Tools.PackageDumper
         /// </summary>
         public ObservableCollectionExtended<PackageDumperSingleFileTask> CurrentDumpingItems { get; set; } = new();
 
+        public ObservableCollectionExtended<MEGame> SupportedGames { get; private set; } = new()
+        {
+            MEGame.ME1,
+            MEGame.ME2,
+            MEGame.ME3,
+            MEGame.LE1,
+            MEGame.LE2,
+            MEGame.LE3
+        };
+
         /// <summary>
         /// All items in the queue
         /// </summary>
@@ -56,12 +66,13 @@ namespace LegendaryExplorer.Tools.PackageDumper
         private int _coreCount;
         public int CoreCount { get => _coreCount; set => SetProperty(ref _coreCount, value); }
 
+        private MEGame _selectedGame = MEGame.ME1;
+        public MEGame SelectedGame { get => _selectedGame; set => SetProperty(ref _selectedGame, value); }
+
         private void LoadCommands()
         {
             // Player commands
-            DumpME1Command = new RelayCommand(DumpGameME1, CanDumpGameME1);
-            DumpME2Command = new RelayCommand(DumpGameME2, CanDumpGameME2);
-            DumpME3Command = new RelayCommand(DumpGameME3, CanDumpGameME3);
+            DumpSelectedGameCommand = new GenericCommand(() => DumpGame(SelectedGame), () => CanDumpGame(SelectedGame) );
             DumpSpecificFilesCommand = new RelayCommand(DumpSpecificFiles, CanDumpSpecificFiles);
             CancelDumpCommand = new RelayCommand(CancelDump, CanCancelDump);
         }
@@ -75,8 +86,8 @@ namespace LegendaryExplorer.Tools.PackageDumper
                 Title = "Select files to dump",
             };
             dlg.Filters.Add(new CommonFileDialogFilter("All supported files", "*.pcc;*.sfm;*.u;*.upk;*.xxx"));
-            dlg.Filters.Add(new CommonFileDialogFilter("Mass Effect package files", "*.sfm;*.u;*.upk;*.xxx"));
-            dlg.Filters.Add(new CommonFileDialogFilter("Mass Effect 2/3 package files", "*.pcc;*.xxx"));
+            dlg.Filters.Add(new CommonFileDialogFilter("Mass Effect 1 package files", "*.sfm;*.u;*.upk;*.xxx"));
+            dlg.Filters.Add(new CommonFileDialogFilter("Mass Effect 2/3/LE package files", "*.pcc;*.xxx"));
 
 
             if (dlg.ShowDialog(this) == CommonFileDialogResult.Ok)
@@ -101,9 +112,7 @@ namespace LegendaryExplorer.Tools.PackageDumper
         private bool DumpCanceled;
 
         #region commands
-        public ICommand DumpME1Command { get; set; }
-        public ICommand DumpME2Command { get; set; }
-        public ICommand DumpME3Command { get; set; }
+        public ICommand DumpSelectedGameCommand { get; set; }
         public ICommand DumpSpecificFilesCommand { get; set; }
         public ICommand CancelDumpCommand { get; set; }
 
@@ -149,19 +158,9 @@ namespace LegendaryExplorer.Tools.PackageDumper
             return ProcessingQueue == null || ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation;
         }
 
-        private bool CanDumpGameME1(object obj)
+        private bool CanDumpGame(MEGame game)
         {
-            return ME1Directory.DefaultGamePath != null && Directory.Exists(ME1Directory.DefaultGamePath) && (ProcessingQueue == null || ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation);
-        }
-
-        private bool CanDumpGameME2(object obj)
-        {
-            return ME2Directory.DefaultGamePath != null && Directory.Exists(ME2Directory.DefaultGamePath) && (ProcessingQueue == null || ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation);
-        }
-
-        private bool CanDumpGameME3(object obj)
-        {
-            return ME3Directory.DefaultGamePath != null && Directory.Exists(ME3Directory.DefaultGamePath) && (ProcessingQueue == null || ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation);
+            return MEDirectories.GetDefaultGamePath(game) != null && Directory.Exists(MEDirectories.GetDefaultGamePath(game)) && (ProcessingQueue == null || ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation);
         }
 
         private bool CanCancelDump(object obj)
@@ -174,21 +173,6 @@ namespace LegendaryExplorer.Tools.PackageDumper
             DumpCanceled = true;
             AllDumpingItems?.ForEach(x => x.DumpCanceled = true);
             CommandManager.InvalidateRequerySuggested(); //Refresh commands
-        }
-
-        private void DumpGameME1(object obj)
-        {
-            DumpGame(MEGame.ME1);
-        }
-
-        private void DumpGameME2(object obj)
-        {
-            DumpGame(MEGame.ME2);
-        }
-
-        private void DumpGameME3(object obj)
-        {
-            DumpGame(MEGame.ME3);
         }
 
         #endregion

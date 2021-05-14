@@ -97,7 +97,7 @@ namespace LegendaryExplorer.Misc.AppSettings
             }
             catch (Exception e)
             {
-                Debug.WriteLine("Could not save settings: {e.Message}");
+                Debug.WriteLine($"Could not save settings: {e.Message}");
             }
         }
 <#
