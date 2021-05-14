@@ -22,6 +22,18 @@ namespace LegendaryExplorerCore.UnrealScript
 {
     public partial class FileLib
     {
+        public static string[] BaseFileNames(MEGame game) => game switch
+        {
+            MEGame.ME3 => new[] { "Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc" },
+            MEGame.ME2 => new[] { "Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "PlotManagerMap.pcc", "SFXGame.pcc", "Startup_INT.pcc" },
+            MEGame.ME1 => new[] { "Core.u", "Engine.u", "GameFramework.u", "PlotManagerMap.u", "BIOC_Base.u" },
+            //TODO: Check if these are correct for LE
+            MEGame.LE3 => new[] { "Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc" },
+            MEGame.LE2 => new[] { "Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "PlotManagerMap.pcc", "SFXGame.pcc", "Startup_INT.pcc" },
+            MEGame.LE1 => new[] { "Core.pcc", "Engine.pcc", "GameFramework.pcc", "PlotManagerMap.pcc", "SFXGame.pcc" },
+            _ => throw new ArgumentOutOfRangeException(nameof(game))
+        };
+
         private class BaseLib
         {
             #region Static
@@ -76,19 +88,11 @@ namespace LegendaryExplorerCore.UnrealScript
                 });
             }
 
-            public string[] BaseFileNames => Game switch
-            {
-                MEGame.ME3 => new[] {"Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc"},
-                MEGame.ME2 => new[] {"Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "PlotManagerMap.pcc", "SFXGame.pcc", "Startup_INT.pcc"},
-                MEGame.ME1 => new[] {"Core.u", "Engine.u", "GameFramework.u", "PlotManagerMap.u", "BIOC_Base.u"},
-                _ => throw new ArgumentOutOfRangeException(nameof(Game))
-            };
-
             private bool InternalInitialize(string[] additionalFiles, MessageLog log)
             {
                 try
                 {
-                    List<string> filePaths = BaseFileNames.Select(f => Path.Combine(MEDirectories.GetCookedPath(Game), f)).ToList();
+                    List<string> filePaths = BaseFileNames(Game).Select(f => Path.Combine(MEDirectories.GetCookedPath(Game), f)).ToList();
                     filePaths.AddRange(additionalFiles);
                     if (!filePaths.All(File.Exists))
                     {

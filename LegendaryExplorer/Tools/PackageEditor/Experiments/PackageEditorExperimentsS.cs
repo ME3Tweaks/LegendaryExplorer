@@ -8,6 +8,7 @@ using System.Windows;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
+using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
@@ -582,8 +583,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void DumpAllShaders(IMEPackage Pcc)
         {
-            // TODO: IMPLEMENT IN LEX
-            /*
             if (Pcc.Exports.FirstOrDefault(exp => exp.ClassName == "ShaderCache") is ExportEntry shaderCacheExport)
             {
                 var dlg = new CommonOpenFileDialog("Pick a folder to save Shaders to.")
@@ -606,13 +605,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                     MessageBox.Show("Done!");
                 }
-            }*/
+            }
         }
 
         public static void DumpMaterialShaders(ExportEntry matExport)
         {
-            // TODO: IMPLEMENT IN LEX
-            /*
             var dlg = new CommonOpenFileDialog("Pick a folder to save Shaders to.")
             {
                 IsFolderPicker = true,
@@ -625,20 +622,19 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 foreach (Shader shader in matInst.Shaders)
                 {
                     string shaderType = shader.ShaderType;
-                    string pathWithoutInvalids = Path.Combine(dlg.FileName,
-                        $"{shaderType.GetPathWithoutInvalids()} - {shader.Guid} - OFFICIAL.txt");
-                    File.WriteAllText(pathWithoutInvalids,
-                        SharpDX.D3DCompiler.ShaderBytecode.FromStream(new MemoryStream(shader.ShaderByteCode))
-                            .Disassemble());
+                    string pathWithoutInvalids;
+                    //pathWithoutInvalids = Path.Combine(dlg.FileName, $"{shaderType.GetPathWithoutInvalids()} - {shader.Guid} - OFFICIAL.txt");
+                    //File.WriteAllText(pathWithoutInvalids,
+                    //                  SharpDX.D3DCompiler.ShaderBytecode.FromStream(new MemoryStream(shader.ShaderByteCode))
+                    //                         .Disassemble());
 
-                    pathWithoutInvalids = Path.Combine(dlg.FileName,
-                        $"{shaderType.GetPathWithoutInvalids()} - {shader.Guid} - SirCxyrtyx.txt");
+                    pathWithoutInvalids = Path.Combine(dlg.FileName, $"{shaderType.GetPathWithoutInvalids()} - {shader.Guid}.txt");// - SirCxyrtyx.txt");
                     File.WriteAllText(pathWithoutInvalids, shader.ShaderDisassembly);
                 }
 
                 MessageBox.Show("Done!");
             }
-            */
+
         }
 
         public static void ReserializeExport(ExportEntry export)
@@ -885,17 +881,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void BuildNativeTable(PackageEditorWindow pewpf)
         {
-            // TODO: IMPLEMENT IN LEX
-            /* 
             pewpf.IsBusy = true;
             pewpf.BusyText = "Building Native Tables";
             Task.Run(() =>
             {
-                foreach (MEGame game in new[] { MEGame.ME1, MEGame.ME2 })
+                foreach (MEGame game in new[] { MEGame.LE1, MEGame.LE2, MEGame.LE3 })
                 {
                     string cookedPath = MEDirectories.GetCookedPath(game);
                     var entries = new List<(int, string)>();
-                    foreach (string fileName in BaseFileNames(game))
+                    foreach (string fileName in FileLib.BaseFileNames(game))
                     {
                         using IMEPackage pcc = MEPackageHandler.OpenMEPackage(Path.Combine(cookedPath, fileName));
                         foreach (ExportEntry export in pcc.Exports.Where(exp => exp.ClassName == "Function"))
@@ -945,7 +939,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     using var writer = new CodeWriter(fileStream);
                     writer.WriteLine("using System.Collections.Generic;");
                     writer.WriteLine();
-                    writer.WriteBlock("namespace ME3Script.Decompiling", () =>
+                    writer.WriteBlock("namespace LegendaryExplorerCore.UnrealScript.Decompiling", () =>
                     {
                         writer.WriteBlock("public partial class ByteCodeDecompiler", () =>
                         {
@@ -964,82 +958,217 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                     });
                 }
-            }).ContinueWithOnUIThread(prevTask =>
+            }).ContinueWithOnUIThread(_ =>
             {
                 pewpf.IsBusy = false;
             });
 
-            static string[] BaseFileNames(MEGame game) => game switch
-            {
-                MEGame.ME3 => new[] { "Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc" },
-                MEGame.ME2 => new[] { "Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "PlotManagerMap.pcc", "SFXGame.pcc", "Startup_INT.pcc" },
-                MEGame.ME1 => new[] { "Core.u", "Engine.u", "GameFramework.u", "BIOC_Base.u" },
-                _ => throw new ArgumentOutOfRangeException(nameof(game))
-            };
 
-            */
+        }
+        class CodeWriter : IDisposable
+        {
+            private readonly StreamWriter writer;
+            private byte indent;
+            private bool writingLine;
+            private readonly string indentString;
+
+            public CodeWriter(Stream stream, string indentString = "    ")
+            {
+                writer = new StreamWriter(stream);
+                this.indentString = indentString;
+            }
+
+            public void IncreaseIndent(byte amount = 1)
+            {
+                indent += amount;
+            }
+
+            public void DecreaseIndent(byte amount = 1)
+            {
+                if (amount > indent)
+                {
+                    throw new InvalidOperationException("Cannot have a negative indent!");
+                }
+                indent -= amount;
+            }
+
+            public void WriteIndent()
+            {
+                for (int i = 0; i < indent; i++)
+                {
+                    writer.Write(indentString);
+                }
+            }
+
+            public void Write(string text)
+            {
+                if (!writingLine)
+                {
+                    WriteIndent();
+                    writingLine = true;
+                }
+                writer.Write(text);
+            }
+
+            public void WriteLine(string line)
+            {
+                if (!writingLine)
+                {
+                    WriteIndent();
+                }
+                writingLine = false;
+                writer.WriteLine(line);
+            }
+
+            public void WriteLine()
+            {
+                writingLine = false;
+                writer.WriteLine();
+            }
+
+            public void WriteBlock(string header, Action contents)
+            {
+                WriteLine(header);
+                WriteLine("{");
+                IncreaseIndent();
+                contents();
+                DecreaseIndent();
+                WriteLine("}");
+            }
+
+            public void Dispose()
+            {
+                writer.Dispose();
+            }
         }
 
         public static void DumpSound(PackageEditorWindow packEd)
         {
-            // TODO: IMPLEMENT IN LEX
-            //if (InputComboBoxDialog.GetValue(packEd, "Choose game:", "Game to dump sound for", new[] { "ME3", "ME2" }, "ME3") is string gameStr &&
-            //    Enum.TryParse(gameStr, out MEGame game))
-            //{
-            //    string tag = PromptDialog.Prompt(packEd, "Character tag:", defaultValue: "player_f", selectText: true);
-            //    if (string.IsNullOrWhiteSpace(tag))
-            //    {
-            //        return;
-            //    }
-            //    var dlg = new CommonOpenFileDialog("Pick a folder to save WAVs to.")
-            //    {
-            //        IsFolderPicker = true,
-            //        EnsurePathExists = true
-            //    };
-            //    if (dlg.ShowDialog() != CommonFileDialogResult.Ok)
-            //    {
-            //        return;
-            //    }
+            if (InputComboBoxDialog.GetValue(packEd, "Choose game:", "Game to dump sound for", new[] { "ME3", "ME2" }, "ME3") is string gameStr &&
+                Enum.TryParse(gameStr, out MEGame game))
+            {
+                string tag = PromptDialog.Prompt(packEd, "Character tag:", defaultValue: "player_f", selectText: true);
+                if (string.IsNullOrWhiteSpace(tag))
+                {
+                    return;
+                }
+                var dlg = new CommonOpenFileDialog("Pick a folder to save WAVs to.")
+                {
+                    IsFolderPicker = true,
+                    EnsurePathExists = true
+                };
+                if (dlg.ShowDialog() != CommonFileDialogResult.Ok)
+                {
+                    return;
+                }
 
-            //    string outFolder = dlg.FileName;
-            //    var filePaths = MELoadedFiles.GetOfficialFiles(game);
-            //    packEd.IsBusy = true;
-            //    packEd.BusyText = "Scanning";
-            //    Task.Run(() =>
-            //    {
-            //        //preload base files for faster scanning
-            //        using var baseFiles = MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(game)
-            //                                                                           .Select(f => Path.Combine(MEDirectories.GetCookedPath(game), f)));
-            //        if (game is MEGame.ME3)
-            //        {
-            //            baseFiles.Add(MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "BIOP_MP_COMMON.pcc")));
-            //        }
+                string outFolder = dlg.FileName;
+                var filePaths = MELoadedFiles.GetOfficialFiles(game);
+                packEd.IsBusy = true;
+                packEd.BusyText = "Scanning";
+                Task.Run(() =>
+                {
+                    //preload base files for faster scanning
+                    using var baseFiles = MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(game)
+                                                                                       .Select(f => Path.Combine(MEDirectories.GetCookedPath(game), f)));
+                    if (game is MEGame.ME3)
+                    {
+                        baseFiles.Add(MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "BIOP_MP_COMMON.pcc")));
+                    }
 
-            //        foreach (string filePath in filePaths)
-            //        {
-            //            using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
-            //            if (game is MEGame.ME3 or MEGame.ME2)
-            //            {
-            //                foreach (ExportEntry export in pcc.Exports.Where(exp => exp.ClassName == "WwiseStream"))
-            //                {
-            //                    if (export.ObjectNameString.Split(',') is string[] { Length: > 1 } parts && parts[0] == "en-us" && parts[1] == tag)
-            //                    {
-            //                        string fileName = Path.Combine(outFolder, $"{export.ObjectNameString}.wav");
-            //                        using var fs = new FileStream(fileName, FileMode.Create);
-            //                        Stream wavStream = export.GetBinaryData<WwiseStream>().CreateWaveStream();
-            //                        wavStream.SeekBegin();
-            //                        wavStream.CopyTo(fs);
-            //                    }
-            //                }
-            //            }
-            //        }
-            //    }).ContinueWithOnUIThread(prevTask =>
-            //    {
-            //        packEd.IsBusy = false;
-            //        MessageBox.Show("Done");
-            //    });
-            //}
+                    foreach (string filePath in filePaths)
+                    {
+                        using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
+                        if (game is MEGame.ME3 or MEGame.ME2)
+                        {
+                            foreach (ExportEntry export in pcc.Exports.Where(exp => exp.ClassName == "WwiseStream"))
+                            {
+                                if (export.ObjectNameString.Split(',') is string[] { Length: > 1 } parts && parts[0] == "en-us" && parts[1] == tag)
+                                {
+                                    string fileName = Path.Combine(outFolder, $"{export.ObjectNameString}.wav");
+                                    using var fs = new FileStream(fileName, FileMode.Create);
+                                    Stream wavStream = export.GetBinaryData<WwiseStream>().CreateWaveStream();
+                                    wavStream.SeekBegin();
+                                    wavStream.CopyTo(fs);
+                                }
+                            }
+                        }
+                    }
+                }).ContinueWithOnUIThread(prevTask =>
+                {
+                    packEd.IsBusy = false;
+                    MessageBox.Show("Done");
+                });
+            }
 
+        }
+
+        public static void DumpShaderTypes(PackageEditorWindow pewpf)
+        {
+            var game = MEGame.ME3;
+            var filePaths = MELoadedFiles.GetOfficialFiles(game);//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME2));//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME1));
+            var shaderTypes = new HashSet<string>();
+
+            pewpf.IsBusy = true;
+            pewpf.BusyText = "Scanning";
+            Task.Run(() =>
+            {
+                //preload base files for faster scanning
+                using var baseFiles = MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(game)
+                    .Select(f => Path.Combine(MEDirectories.GetCookedPath(game), f)));
+                if (game is MEGame.ME3)
+                {
+                    baseFiles.Add(MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "BIOP_MP_COMMON.pcc")));
+                }
+
+                foreach (string filePath in filePaths)
+                {
+                    using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
+
+                    if (pcc.Exports.FirstOrDefault(exp => exp.ClassName == "ShaderCache") is ExportEntry scEntry)
+                    {
+                        int entryDataOffset = scEntry.DataOffset;
+                        var binData = new MemoryStream(scEntry.Data);
+                        binData.Seek(scEntry.propsEnd() + 1, SeekOrigin.Begin);
+
+                        int nameList1Count = binData.ReadInt32();
+                        binData.Seek(nameList1Count * 12, SeekOrigin.Current);
+
+                        if (game is MEGame.ME3 || game.IsLEGame())
+                        {
+                            int namelist2Count = binData.ReadInt32();//namelist2
+                            binData.Seek(namelist2Count * 12, SeekOrigin.Current);
+                        }
+
+                        if (game is MEGame.ME1)
+                        {
+                            int vertexFactoryMapCount = binData.ReadInt32();
+                            binData.Seek(vertexFactoryMapCount * 12, SeekOrigin.Current);
+                        }
+
+                        int shaderCount = binData.ReadInt32();
+                        for (int i = 0; i < shaderCount; i++)
+                        {
+                            shaderTypes.Add(binData.ReadNameReference(pcc));
+                            binData.Seek(16, SeekOrigin.Current);
+                            int nextShaderOffset = binData.ReadInt32() - entryDataOffset;
+                            binData.Seek(nextShaderOffset, SeekOrigin.Begin);
+                        }
+                    }
+                }
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                //the base files will have been in memory for so long at this point that they take a looong time to clear out automatically, so force it.
+                MemoryAnalyzer.ForceFullGC();
+                pewpf.IsBusy = false;
+
+                var list = shaderTypes.ToList();
+                list.Sort();
+                string scriptFile = Path.Combine("ShaderTypes.txt");
+                scriptFile = Path.GetFullPath(scriptFile);
+                File.WriteAllText(scriptFile, string.Join('\n', list));
+                Process.Start("notepad++", $"\"{scriptFile}\"");
+            });
         }
     }
 }

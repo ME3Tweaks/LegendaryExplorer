@@ -959,6 +959,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                 dlg.Show();
             }
         }
+
+        private void DumpShaderTypes_OnClick(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsS.DumpShaderTypes(GetPEWindow());
+        }
         #endregion
 
         // EXPERIMENTS: KINKOJIRO ------------------------------------------------------------

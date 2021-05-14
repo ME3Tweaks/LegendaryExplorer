@@ -488,6 +488,10 @@ namespace LegendaryExplorerCore.Helpers
         }
 
         public static bool CaseInsensitiveEquals(this string left, string right) => string.Equals(left, right, StringComparison.OrdinalIgnoreCase);
+        public static string GetPathWithoutInvalids(this string filename)
+        {
+            return string.Concat(filename.Split(Path.GetInvalidFileNameChars()));
+        }
     }
 
 
