@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorerCore.Compression
@@ -49,7 +51,41 @@ namespace LegendaryExplorerCore.Compression
             Mermaid,
             BitKnit,
             Selkie,
-            Akkorokamui
+            Akkorokamui,
+            Leviathan // 13 
+        }
+
+        public static bool EnsureOodleDll()
+        {
+            // Ported from M3
+            // Required for single file .net 5
+
+            var t = AppContext.GetData("NATIVE_DLL_SEARCH_DIRECTORIES");
+            if (t is string str)
+            {
+                var paths = str.Split(';');
+                foreach (var path in paths)
+                {
+                    if (string.IsNullOrWhiteSpace(path)) continue;
+                    var tpath = Path.Combine(path, CompressionHelper.OODLE_DLL_NAME);
+                    if (File.Exists(tpath))
+                        return true;
+                }
+
+
+                if (LE1Directory.ExecutableFolder != null)
+                {
+                    var oodPath = Path.Combine(LE1Directory.ExecutableFolder);
+                    if (File.Exists(oodPath))
+                    {
+                        var destPath = paths.Last();
+                        File.Copy(oodPath, Path.Combine(destPath, oodPath));
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         public static byte[] Compress(byte[] buffer, int size, OodleFormat format, OodleCompressionLevel level)
@@ -80,7 +116,7 @@ namespace LegendaryExplorerCore.Compression
             }
             else
             {
-                throw new Exception("There was an error while decompressing");
+                throw new Exception("Error decompressing Oodle data!");
             }
         }
 

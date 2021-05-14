@@ -147,7 +147,7 @@ namespace LegendaryExplorerCore.Unreal
                 ArrayTypeLookupJustFailed = true;
 #endif
                 Debug.WriteLine("UDK Array type lookup failed due to no info provided, defaulting to int");
-                if (LegendaryExplorerCorLibSettings.Instance.ParseUnknownArrayTypesAsObject) return ArrayType.Object;
+                if (LegendaryExplorerCoreLibSettings.Instance.ParseUnknownArrayTypesAsObject) return ArrayType.Object;
                 return ArrayType.Int;
             }
         }

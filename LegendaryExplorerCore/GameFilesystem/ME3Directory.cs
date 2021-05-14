@@ -123,9 +123,9 @@ namespace LegendaryExplorerCore.GameFilesystem
 
         public static void ReloadDefaultGamePath(bool forceUseRegistry = false)
         {
-            if (!forceUseRegistry && !string.IsNullOrEmpty(LegendaryExplorerCorLibSettings.Instance?.ME3Directory))
+            if (!forceUseRegistry && !string.IsNullOrEmpty(LegendaryExplorerCoreLibSettings.Instance?.ME3Directory))
             {
-                DefaultGamePath = LegendaryExplorerCorLibSettings.Instance.ME3Directory;
+                DefaultGamePath = LegendaryExplorerCoreLibSettings.Instance.ME3Directory;
             }
             else
             {
@@ -139,7 +139,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 if (test != null)
                 {
                     DefaultGamePath = test;
-                    LegendaryExplorerCorLibSettings.Instance.ME3Directory = DefaultGamePath;
+                    LegendaryExplorerCoreLibSettings.Instance.ME3Directory = DefaultGamePath;
                     return;
                 }
 
@@ -148,7 +148,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 if (DefaultGamePath != null)
                 {
                     DefaultGamePath += Path.DirectorySeparatorChar;
-                    LegendaryExplorerCorLibSettings.Instance.ME3Directory = DefaultGamePath;
+                    LegendaryExplorerCoreLibSettings.Instance.ME3Directory = DefaultGamePath;
                 }
 #endif
             }

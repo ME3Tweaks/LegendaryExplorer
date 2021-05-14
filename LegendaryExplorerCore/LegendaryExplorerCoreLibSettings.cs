@@ -2,12 +2,12 @@
 
 namespace LegendaryExplorerCore
 {
-    public class LegendaryExplorerCorLibSettings : INotifyPropertyChanged
+    public class LegendaryExplorerCoreLibSettings : INotifyPropertyChanged
     {
         // In ME3Explorer (not this lib) the property changed event is listened to for changes and maps them into the .net framework defaults system
-        public static LegendaryExplorerCorLibSettings Instance { get; set; }
+        public static LegendaryExplorerCoreLibSettings Instance { get; set; }
 
-        public LegendaryExplorerCorLibSettings()
+        public LegendaryExplorerCoreLibSettings()
         {
             Instance = this;
         }

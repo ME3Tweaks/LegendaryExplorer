@@ -117,9 +117,9 @@ namespace LegendaryExplorerCore.GameFilesystem
 
         public static void ReloadDefaultGamePath(bool forceUseRegistry = false)
         {
-            if (!forceUseRegistry && !string.IsNullOrEmpty(LegendaryExplorerCorLibSettings.Instance?.LEDirectory))
+            if (!forceUseRegistry && !string.IsNullOrEmpty(LegendaryExplorerCoreLibSettings.Instance?.LEDirectory))
             {
-                DefaultGamePath = Path.Join(LegendaryExplorerCorLibSettings.Instance.LEDirectory, "ME3");
+                DefaultGamePath = Path.Join(LegendaryExplorerCoreLibSettings.Instance.LEDirectory, "ME3");
             }
             else
             {

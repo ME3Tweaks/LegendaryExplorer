@@ -260,25 +260,25 @@ namespace LegendaryExplorerCore.GameFilesystem
             {
                 if (!string.IsNullOrEmpty(BIOGames[0]))
                 {
-                    LegendaryExplorerCorLibSettings.Instance.ME1Directory = BIOGames[0];
+                    LegendaryExplorerCoreLibSettings.Instance.ME1Directory = BIOGames[0];
                     ME1Directory.DefaultGamePath = BIOGames[0];
                 }
 
                 if (!string.IsNullOrEmpty(BIOGames[1]))
                 {
-                    LegendaryExplorerCorLibSettings.Instance.ME2Directory = BIOGames[1];
+                    LegendaryExplorerCoreLibSettings.Instance.ME2Directory = BIOGames[1];
                     ME2Directory.DefaultGamePath = BIOGames[1];
                 }
 
                 if (!string.IsNullOrEmpty(BIOGames[2]))
                 {
-                    LegendaryExplorerCorLibSettings.Instance.ME3Directory = BIOGames[2];
+                    LegendaryExplorerCoreLibSettings.Instance.ME3Directory = BIOGames[2];
                     ME3Directory.DefaultGamePath = BIOGames[2];
                 }
 
                 if (!string.IsNullOrEmpty(BIOGames[3]))
                 {
-                    LegendaryExplorerCorLibSettings.Instance.LEDirectory = BIOGames[3];
+                    LegendaryExplorerCoreLibSettings.Instance.LEDirectory = BIOGames[3];
                     LE1Directory.ReloadDefaultGamePath();
                     LE2Directory.ReloadDefaultGamePath();
                     LE3Directory.ReloadDefaultGamePath();
