@@ -19,20 +19,14 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         /// <param name="game"></param>
         /// <returns></returns>
-        public static bool IsLEGame(this MEGame game)
-        {
-            return game == MEGame.LE1 || game == MEGame.LE2 || game == MEGame.LE3;
-        }
+        public static bool IsLEGame(this MEGame game) => game is MEGame.LE1 or MEGame.LE2 or MEGame.LE3;
 
         /// <summary>
         /// Is game part of original trilogy (not including UDK)
         /// </summary>
         /// <param name="game"></param>
         /// <returns></returns>
-        public static bool IsOTGame(this MEGame game)
-        {
-            return game == MEGame.ME1 || game == MEGame.ME2 || game == MEGame.ME3;
-        }
+        public static bool IsOTGame(this MEGame game) => game is MEGame.ME1 or MEGame.ME2 or MEGame.ME3;
     }
     public enum MEGame
     {

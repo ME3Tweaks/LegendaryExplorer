@@ -18,7 +18,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
     {
         private Action<string> RecentItemClicked;
 
-        public ObservableCollectionExtended<string> RecentPaths { get; } = new ObservableCollectionExtended<string>();
+        public ObservableCollectionExtended<string> RecentPaths { get; } = new();
 
         public bool IsFolderRecents
         {

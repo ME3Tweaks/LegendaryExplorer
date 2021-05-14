@@ -7,6 +7,6 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <local:ToolPanel x:Name="mainToolPanel" Rows="5" Columns="7" Category="Tools"/>
+        <local:ToolPanel x:Name="mainToolPanel" Rows="3" Columns="7" Category="Tools"/>
     </Grid>
 </Window>

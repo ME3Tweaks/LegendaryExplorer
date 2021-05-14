@@ -14,6 +14,7 @@ using LegendaryExplorer.Tools.InterpEditor;
 using LegendaryExplorer.Tools.AFCCompactorWindow;
 using LegendaryExplorer.Tools.AnimationImporterExporter;
 using LegendaryExplorer.Tools.AssetDatabase;
+using LegendaryExplorer.Tools.ConditionalsEditor;
 using LegendaryExplorer.Tools.Meshplorer;
 using LegendaryExplorer.Tools.PathfindingEditor;
 using LegendaryExplorer.Tools.WwiseEditor;
@@ -375,19 +376,19 @@ namespace LegendaryExplorer
             #endregion
 
             #region Create Mods
-            //            set.Add(new Tool
-            //            {
-            //                name = "Conditionals Editor",
-            //                type = typeof(Conditionals),
-            //                icon = Application.Current.FindResource("iconConditionalsEditor") as ImageSource,
-            //                open = () =>
-            //                {
-            //                    (new Conditionals()).Show();
-            //                },
-            //                tags = new List<string> { "developer", "conditional", "plot", "boolean", "flag", "int", "integer", "cnd" },
-            //                subCategory = "Core",
-            //                description = "Conditionals Editor is used to create and edit ME3 files with the .cnd extension. CND files control game story by checking for specific combinations of plot events.",
-            //            });
+            set.Add(new Tool
+            {
+                name = "Conditionals Editor",
+                type = typeof(ConditionalsEditorWindow),
+                icon = Application.Current.FindResource("iconConditionalsEditor") as ImageSource,
+                open = () =>
+                {
+                    (new ConditionalsEditorWindow()).Show();
+                },
+                tags = new List<string> { "developer", "conditional", "plot", "boolean", "flag", "int", "integer", "cnd" },
+                subCategory = "Core",
+                description = "Conditionals Editor is used to create and edit ME3 files with the .cnd extension. CND files control game story by checking for specific combinations of plot events.",
+            });
             set.Add(new Tool
             {
                 name = "Dialogue Editor",

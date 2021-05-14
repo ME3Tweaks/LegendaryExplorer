@@ -577,6 +577,7 @@ namespace LegendaryExplorerCore.Packages
             }
 
             if ((Game == MEGame.ME1 || Game == MEGame.LE1) && Platform == GamePlatform.PC)
+            if (Game is MEGame.ME1 or MEGame.LE1 && Platform == GamePlatform.PC)
             {
                 ReadLocalTLKs();
             }
@@ -860,7 +861,12 @@ namespace LegendaryExplorerCore.Packages
                             ms.WriteInt32(-14);
                             break;
                         case MEGame.ME3:
+                        case MEGame.LE3:
                             ms.WriteUnrealStringUnicode(name);
+                            break;
+                        case MEGame.LE1:
+                        case MEGame.LE2:
+                            ms.WriteUnrealStringASCII(name);
                             break;
                     }
                 }
@@ -931,6 +937,7 @@ namespace LegendaryExplorerCore.Packages
                             {
                                 //case "WwiseBank":
                                 case "WwiseStream" when e.GetProperty<NameProperty>("Filename") == null:
+                                //TODO: validate the TextureMovie ObjectBinary for LE!
                                 case "TextureMovie" when e.GetProperty<NameProperty>("TextureFileCacheName") == null:
                                     objBin = ObjectBinary.From(e);
                                     break;
@@ -990,100 +997,70 @@ namespace LegendaryExplorerCore.Packages
 
         private static void UpdateShaderCacheOffsets(ExportEntry export, int newDataOffset)
         {
+            //This method has been updated for LE
             int oldDataOffset = export.DataOffset;
-            switch (export.Game)
+
+            MEGame game = export.Game;
+            var binData = new MemoryStream(export.Data);
+            binData.Seek(export.propsEnd() + 1, SeekOrigin.Begin);
+
+            int nameList1Count = binData.ReadInt32();
+            binData.Seek(nameList1Count * 12, SeekOrigin.Current);
+
+            if (game is MEGame.ME3 || game.IsLEGame())
             {
-                case MEGame.ME2:
-                    {
-                        MemoryStream binData = new MemoryStream(export.Data);
-                        binData.Seek(export.propsEnd() + 1, SeekOrigin.Begin);
-
-                        int nameList1Count = binData.ReadInt32();
-                        binData.Seek(nameList1Count * 12, SeekOrigin.Current);
-
-                        int shaderCount = binData.ReadInt32();
-                        for (int i = 0; i < shaderCount; i++)
-                        {
-                            binData.Seek(24, SeekOrigin.Current);
-                            int nextShaderOffset = binData.ReadInt32() - oldDataOffset;
-                            binData.Seek(-4, SeekOrigin.Current);
-                            binData.WriteInt32(nextShaderOffset + newDataOffset);
-                            binData.Seek(nextShaderOffset, SeekOrigin.Begin);
-                        }
-
-                        int vertexFactoryMapCount = binData.ReadInt32();
-                        binData.Seek(vertexFactoryMapCount * 12, SeekOrigin.Current);
-
-                        int materialShaderMapCount = binData.ReadInt32();
-                        for (int i = 0; i < materialShaderMapCount; i++)
-                        {
-                            binData.Seek(16, SeekOrigin.Current);
-
-                            int switchParamCount = binData.ReadInt32();
-                            binData.Seek(switchParamCount * 32, SeekOrigin.Current);
-
-                            int componentMaskParamCount = binData.ReadInt32();
-                            binData.Seek(componentMaskParamCount * 44, SeekOrigin.Current);
-
-                            int nextMaterialShaderMapOffset = binData.ReadInt32() - oldDataOffset;
-                            binData.Seek(-4, SeekOrigin.Current);
-                            binData.WriteInt32(nextMaterialShaderMapOffset + newDataOffset);
-                            binData.Seek(nextMaterialShaderMapOffset, SeekOrigin.Begin);
-                        }
-
-                        export.Data = binData.ToArray();
-                        break;
-                    }
-                case MEGame.ME3:
-                    {
-                        MemoryStream binData = new MemoryStream(export.Data);
-                        binData.Seek(export.propsEnd() + 1, SeekOrigin.Begin);
-
-                        int nameList1Count = binData.ReadInt32();
-                        binData.Seek(nameList1Count * 12, SeekOrigin.Current);
-
-                        int namelist2Count = binData.ReadInt32();//namelist2
-                        binData.Seek(namelist2Count * 12, SeekOrigin.Current);
-
-                        int shaderCount = binData.ReadInt32();
-                        for (int i = 0; i < shaderCount; i++)
-                        {
-                            binData.Seek(24, SeekOrigin.Current);
-                            int nextShaderOffset = binData.ReadInt32() - oldDataOffset;
-                            binData.Seek(-4, SeekOrigin.Current);
-                            binData.WriteInt32(nextShaderOffset + newDataOffset);
-                            binData.Seek(nextShaderOffset, SeekOrigin.Begin);
-                        }
-
-                        int vertexFactoryMapCount = binData.ReadInt32();
-                        binData.Seek(vertexFactoryMapCount * 12, SeekOrigin.Current);
-
-                        int materialShaderMapCount = binData.ReadInt32();
-                        for (int i = 0; i < materialShaderMapCount; i++)
-                        {
-                            binData.Seek(16, SeekOrigin.Current);
-
-                            int switchParamCount = binData.ReadInt32();
-                            binData.Seek(switchParamCount * 32, SeekOrigin.Current);
-
-                            int componentMaskParamCount = binData.ReadInt32();
-                            binData.Seek(componentMaskParamCount * 44, SeekOrigin.Current);
-
-                            int normalParams = binData.ReadInt32();
-                            binData.Seek(normalParams * 29, SeekOrigin.Current);
-
-                            binData.Seek(8, SeekOrigin.Current);
-
-                            int nextMaterialShaderMapOffset = binData.ReadInt32() - oldDataOffset;
-                            binData.Seek(-4, SeekOrigin.Current);
-                            binData.WriteInt32(nextMaterialShaderMapOffset + newDataOffset);
-                            binData.Seek(nextMaterialShaderMapOffset, SeekOrigin.Begin);
-                        }
-
-                        export.Data = binData.ToArray();
-                        break;
-                    }
+                int namelist2Count = binData.ReadInt32();//namelist2
+                binData.Seek(namelist2Count * 12, SeekOrigin.Current);
             }
+
+            if (game is MEGame.ME1)
+            {
+                int vertexFactoryMapCount = binData.ReadInt32();
+                binData.Seek(vertexFactoryMapCount * 12, SeekOrigin.Current);
+            }
+
+            int shaderCount = binData.ReadInt32();
+            for (int i = 0; i < shaderCount; i++)
+            {
+                binData.Seek(24, SeekOrigin.Current);
+                int nextShaderOffset = binData.ReadInt32() - oldDataOffset;
+                binData.Seek(-4, SeekOrigin.Current);
+                binData.WriteInt32(nextShaderOffset + newDataOffset);
+                binData.Seek(nextShaderOffset, SeekOrigin.Begin);
+            }
+
+            if (game is not MEGame.ME1)
+            {
+                int vertexFactoryMapCount = binData.ReadInt32();
+                binData.Seek(vertexFactoryMapCount * 12, SeekOrigin.Current);
+            }
+
+            int materialShaderMapCount = binData.ReadInt32();
+            for (int i = 0; i < materialShaderMapCount; i++)
+            {
+                binData.Seek(16, SeekOrigin.Current);
+
+                int switchParamCount = binData.ReadInt32();
+                binData.Seek(switchParamCount * 32, SeekOrigin.Current);
+
+                int componentMaskParamCount = binData.ReadInt32();
+                binData.Seek(componentMaskParamCount * 44, SeekOrigin.Current);
+
+                if (game is MEGame.ME3 || game.IsLEGame())
+                {
+                    int normalParams = binData.ReadInt32();
+                    binData.Seek(normalParams * 29, SeekOrigin.Current);
+
+                    binData.Seek(8, SeekOrigin.Current);
+                }
+
+                int nextMaterialShaderMapOffset = binData.ReadInt32() - oldDataOffset;
+                binData.Seek(-4, SeekOrigin.Current);
+                binData.WriteInt32(nextMaterialShaderMapOffset + newDataOffset);
+                binData.Seek(nextMaterialShaderMapOffset, SeekOrigin.Begin);
+            }
+
+            export.Data = binData.ToArray();
         }
 
         private void WriteHeader(Stream ms, CompressionType compressionType = CompressionType.None, List<CompressionHelper.Chunk> chunks = null, bool includeAdditionalPackageToCook = true)

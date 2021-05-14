@@ -13,10 +13,10 @@ namespace LegendaryExplorer.SharedUI.Converters
             {
                 if (str == "Reversed")
                 {
-                    return value != null ? Visibility.Collapsed : Visibility.Visible;
+                    return value is null ? Visibility.Visible : Visibility.Collapsed;
                 }
             }
-            return value == null ? Visibility.Collapsed : Visibility.Visible;
+            return value is null ? Visibility.Collapsed : Visibility.Visible;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

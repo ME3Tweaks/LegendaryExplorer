@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
+using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorerCore.Helpers;
 using Microsoft.AppCenter.Crashes;
 
@@ -23,7 +24,10 @@ namespace LegendaryExplorer.Dialogs
             var errorSize = MeasureString(flattened);
 
             Height = Math.Min(900, errorSize.Height + 250);
-            Crashes.TrackError(exception);
+            if (Settings.Analytics_Enabled)
+            {
+                Crashes.TrackError(exception);
+            }
         }
 
         private Size MeasureString(string candidate)

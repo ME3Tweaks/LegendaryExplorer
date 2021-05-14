@@ -674,7 +674,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref mres.bUsesDynamicParameter);
                 sc.Serialize(ref mres.bUsesLightmapUVs);
                 sc.Serialize(ref mres.bUsesMaterialVertexPositionOffset);
-                if (sc.Game == MEGame.ME3)
+                if (sc.Game == MEGame.ME3 || sc.Game.IsLEGame())
                 {
                     sc.Serialize(ref mres.unkBool1);
                 }

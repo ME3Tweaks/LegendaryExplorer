@@ -291,7 +291,7 @@ namespace LegendaryExplorerCore.Unreal
         {
             //Debug.WriteLine("Writing string property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
             int strLen = value.Length == 0 ? 0 : value.Length + 1;
-            if (pcc.Game == MEGame.ME3)
+            if (pcc.Game is MEGame.ME3 or MEGame.LE3)
             {
                 stream.WritePropHeader(pcc, propName, PropertyType.StrProperty, (strLen * 2) + 4, staticArrayIndex);
                 stream.WriteUnrealStringUnicode(value);

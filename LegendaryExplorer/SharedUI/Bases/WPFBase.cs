@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using LegendaryExplorer.Misc;
+using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.ToolsetDev.MemoryAnalyzer;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
@@ -30,7 +31,7 @@ namespace LegendaryExplorer.SharedUI.Bases
         protected WPFBase(string memoryTrackerName, bool submitTelemetry = true)
         {
             MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended($"[WPFBase] {memoryTrackerName}", new WeakReference(this)));
-            if (submitTelemetry)
+            if (submitTelemetry && Settings.Analytics_Enabled)
             {
                 Analytics.TrackEvent("Opened tool", new Dictionary<string, string>
                 {
