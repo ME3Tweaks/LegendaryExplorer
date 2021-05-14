@@ -930,7 +930,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                                     type = paramCount == 1 ? NativeType.PostOperator : NativeType.Operator;
                                 }
-                                entries.Add(nativeIndex, $"{{ 0x{nativeIndex:X}, new NativeTableEntry {{ Name=\"{func.FriendlyName}\", Type=NativeType.{type}, Precedence={func.OperatorPrecedence}}} }},");
+
+                                string name = func.FriendlyName;
+                                if (game is MEGame.ME3 or MEGame.LE3)
+                                {
+                                    name = export.ObjectName;
+                                }
+                                entries.Add(nativeIndex, $"{{ 0x{nativeIndex:X}, new {nameof(NativeTableEntry)} {{ {nameof(NativeTableEntry.Name)}=\"{name}\", " +
+                                                         $"{nameof(NativeTableEntry.Type)}={nameof(NativeType)}.{type}, {nameof(NativeTableEntry.Precedence)}={func.OperatorPrecedence}}} }},");
                             }
                         }
                     }
@@ -941,9 +948,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     writer.WriteLine();
                     writer.WriteBlock("namespace LegendaryExplorerCore.UnrealScript.Decompiling", () =>
                     {
-                        writer.WriteBlock("public partial class ByteCodeDecompiler", () =>
+                        writer.WriteBlock($"public partial class {nameof(ByteCodeDecompiler)}", () =>
                         {
-                            writer.WriteLine($"public static readonly Dictionary<int, NativeTableEntry> {game}NativeTable = new() ");
+                            if (game is MEGame.ME3 or MEGame.LE3)
+                            {
+                                writer.WriteLine("//TODO: Names need fixing for operators with symbols in name");
+                            }
+                            writer.WriteLine($"public static readonly Dictionary<int, {nameof(NativeTableEntry)}> {game}NativeTable = new() ");
                             writer.WriteLine("{");
                             writer.IncreaseIndent();
 

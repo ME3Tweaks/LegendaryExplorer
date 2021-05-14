@@ -19,7 +19,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 MEGame.ME2 => ME2Directory.GetCookedPCPath(gamePathRoot),
                 MEGame.ME3 => ME3Directory.GetCookedPCPath(gamePathRoot),
                 MEGame.LE1 => LE1Directory.GetCookedPCPath(gamePathRoot),
-                MEGame.LE2 => LE3Directory.GetCookedPCPath(gamePathRoot),
+                MEGame.LE2 => LE2Directory.GetCookedPCPath(gamePathRoot),
                 MEGame.LE3 => LE3Directory.GetCookedPCPath(gamePathRoot),
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
             };

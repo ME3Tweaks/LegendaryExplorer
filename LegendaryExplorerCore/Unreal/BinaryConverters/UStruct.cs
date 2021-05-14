@@ -18,7 +18,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         protected override void Serialize(SerializingContainer2 sc)
         {
             base.Serialize(sc);
-            if (sc.Game <= MEGame.ME2 && sc.Pcc.Platform != MEPackage.GamePlatform.PS3)
+            if (sc.Game is MEGame.ME1 or MEGame.ME2 && sc.Pcc.Platform != MEPackage.GamePlatform.PS3)
             {
                 int dummy = 0;
                 sc.Serialize(ref dummy);
@@ -31,8 +31,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref Line);
                 sc.Serialize(ref TextPos);
             }
+            else if (sc.Game is MEGame.LE1 or MEGame.LE2)
+            {
+                sc.Serialize(ref Line);
+            }
 
-            if (sc.Game >= MEGame.ME3 || sc.Pcc.Platform == MEPackage.GamePlatform.PS3)
+            if (sc.Game is MEGame.ME3 or MEGame.LE3 || sc.Pcc.Platform == MEPackage.GamePlatform.PS3)
             {
                 sc.Serialize(ref ScriptBytecodeSize);
             }
@@ -41,7 +45,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 ScriptStorageSize = ScriptBytes.Length;
             }
             sc.Serialize(ref ScriptStorageSize);
-            if (sc.Game <= MEGame.ME2)
+            if (sc.Game is MEGame.ME1 or MEGame.ME2 or MEGame.LE1 or MEGame.LE2)
             {
                 ScriptBytecodeSize = ScriptStorageSize;
             }
@@ -55,7 +59,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             if (Export.ClassName == "Function" || Export.ClassName == "State")
             {
-                if (Export.Game == MEGame.ME3)
+                if (Export.Game is MEGame.ME3 or MEGame.LE3)
                 {
                     try
                     {
@@ -99,7 +103,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             if (Export.ClassName == "Function" || Export.ClassName == "State")
             {
-                if (Export.Game == MEGame.ME3)
+                if (Export.Game is MEGame.ME3 or MEGame.LE3)
                 {
                     try
                     {
