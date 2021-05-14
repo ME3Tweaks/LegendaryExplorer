@@ -44,10 +44,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 //if (platform != EShaderPlatform.XBOXDirect3D){
                 int mapCount = (Pcc.Game == MEGame.ME3 || Pcc.Game == MEGame.UDK) ? 2 : 1;
                 if (platformByte == (byte)EShaderPlatformOT.XBOXDirect3D && !export.Game.IsLEGame()) mapCount = 1;
-                for (; mapCount > 0; mapCount--)
+                var nameMappings = new[] { "CompressedCacheMap", "ShaderTypeCRCMap" };
+                while (mapCount > 0)
                 {
+                    mapCount--;
                     int vertexMapCount = bin.ReadInt32();
-                    var mappingNode = new BinInterpNode(bin.Position - 4, $"Name Mapping {mapCount}, {vertexMapCount} items");
+                    var mappingNode = new BinInterpNode(bin.Position - 4, $"{nameMappings[mapCount]}, { vertexMapCount } items");
                     subnodes.Add(mappingNode);
 
                     for (int i = 0; i < vertexMapCount; i++)
@@ -96,15 +98,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         {
                             shaderNode.Items.Add(
                                 new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformLE)bin.ReadByte()}")
-                                    { Length = 1 });
+                                { Length = 1 });
                         }
                         else
                         {
                             shaderNode.Items.Add(
                                 new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformOT)bin.ReadByte()}")
-                                    { Length = 1 });
+                                { Length = 1 });
                         }
-                        
+
                         shaderNode.Items.Add(new BinInterpNode(bin.Position,
                             $"Frequency: {(EShaderFrequency)bin.ReadByte()}")
                         { Length = 1 });
@@ -336,20 +338,22 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 bin.JumpTo(binarystart);
                 if (CurrentLoadedExport.Game.IsLEGame())
                 {
-                    subnodes.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformLE) bin.ReadByte()}")
-                        {Length = 1});
+                    subnodes.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformLE)bin.ReadByte()}")
+                    { Length = 1 });
                 }
                 else
                 {
                     subnodes.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformOT)bin.ReadByte()}")
-                        { Length = 1 });
+                    { Length = 1 });
                 }
 
-                int mapCount = Pcc.Game is MEGame.ME3 || Pcc.Game.IsLEGame() ? 2 : 1;
-                for (; mapCount > 0; mapCount--)
+                int mapCount = Pcc.Game is MEGame.ME3 || Pcc.Game.IsLEGame() ?  2 : 1;
+                var nameMappings = new[] { "CompressedCacheMap", "ShaderTypeCRCMap" }; // hack...
+                while (mapCount > 0)
                 {
+                    mapCount--;
                     int vertexMapCount = bin.ReadInt32();
-                    var mappingNode = new BinInterpNode(bin.Position - 4, $"Name Mapping {mapCount}, {vertexMapCount} items");
+                    var mappingNode = new BinInterpNode(bin.Position - 4, $"{nameMappings[mapCount]}, { vertexMapCount } items");
                     subnodes.Add(mappingNode);
 
                     for (int i = 0; i < vertexMapCount; i++)
@@ -2118,7 +2122,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 subnodes.Add(new BinInterpNode(bin.Position, "CompressedPCData") { Length = count });
                 bin.Skip(count);
 
-                if(!Pcc.Game.IsLEGame())
+                if (!Pcc.Game.IsLEGame())
                 {
                     subnodes.Add(new BinInterpNode(bin.Position, $"BulkDataFlags: {(EBulkDataFlags)bin.ReadUInt32()}"));
                     subnodes.Add(new BinInterpNode(bin.Position, $"Element Count: {count = bin.ReadInt32()}"));

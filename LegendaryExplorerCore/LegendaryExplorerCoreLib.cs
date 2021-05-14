@@ -1,6 +1,8 @@
 ﻿using LegendaryExplorerCore.Packages;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
+using LegendaryExplorerCore.Compression;
 using LegendaryExplorerCore.Unreal;
 
 namespace LegendaryExplorerCore
@@ -62,7 +64,11 @@ namespace LegendaryExplorerCore
                 ME3UnrealObjectInfo.loadfromJSON
             };
             Parallel.ForEach(jsonLoaders, action => action());
-            LegendaryExplorerCorLibSettings.Instance = new LegendaryExplorerCorLibSettings();
+            LegendaryExplorerCoreLibSettings.Instance = new LegendaryExplorerCoreLibSettings();
+            if (!OodleHelper.EnsureOodleDll())
+            {
+                Debug.WriteLine("Oodle decompression library not available. Make sure game is installed!");
+            }
             initialized = true;
         }
 

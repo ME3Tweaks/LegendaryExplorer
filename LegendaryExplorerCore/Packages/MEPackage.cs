@@ -576,6 +576,7 @@ namespace LegendaryExplorerCore.Packages
                 }
             }
 
+            if ((Game == MEGame.ME1 || Game == MEGame.LE1) && Platform == GamePlatform.PC)
             if (Game is MEGame.ME1 or MEGame.LE1 && Platform == GamePlatform.PC)
             {
                 ReadLocalTLKs();
@@ -1277,9 +1278,9 @@ namespace LegendaryExplorerCore.Packages
             {
                 foreach ((NameReference lang, BioTlkFileSet.BioTlkSet bioTlkSet) in tlkFileSet.TlkSets)
                 {
-                    if (LegendaryExplorerCorLibSettings.Instance.TLKDefaultLanguage.Equals(lang, StringComparison.InvariantCultureIgnoreCase))
+                    if (LegendaryExplorerCoreLibSettings.Instance.TLKDefaultLanguage.Equals(lang, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        exportsToLoad.Add(GetUExport(LegendaryExplorerCorLibSettings.Instance.TLKGenderIsMale ? bioTlkSet.Male : bioTlkSet.Female));
+                        exportsToLoad.Add(GetUExport(LegendaryExplorerCoreLibSettings.Instance.TLKGenderIsMale ? bioTlkSet.Male : bioTlkSet.Female));
                         break;
                     }
                 }
