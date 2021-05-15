@@ -10,6 +10,10 @@ namespace LegendaryExplorerCore
         public LegendaryExplorerCoreLibSettings()
         {
             Instance = this;
+            GameFilesystem.ME1Directory.ReloadDefaultGamePath();
+            GameFilesystem.ME2Directory.ReloadDefaultGamePath();
+            GameFilesystem.ME3Directory.ReloadDefaultGamePath();
+            GameFilesystem.LEDirectory.LookupDefaultPath(); // LE Directory is root of 3 games plus the launcher 
         }
         public bool TLKGenderIsMale { get; set; }
         public string TLKDefaultLanguage { get; set; } = "INT"; // maybe should be enum?
