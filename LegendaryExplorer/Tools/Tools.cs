@@ -468,20 +468,20 @@ namespace LegendaryExplorer
                 subCategory = "Core",
                 description = "Pathfinding Editor allows you to modify pathing nodes so squadmates and enemies can move around a map. You can also edit placement of several different types of level objects such as StaticMeshes, Splines, CoverSlots, and more.",
             });
-//            set.Add(new Tool
-//            {
-//                name = "Plot Editor",
-//                type = typeof(MassEffect.NativesEditor.Views.PlotEditor),
-//                icon = Application.Current.FindResource("iconPlotEditor") as ImageSource,
-//                open = () =>
-//                {
-//                    var plotEd = new MassEffect.NativesEditor.Views.PlotEditor();
-//                    plotEd.Show();
-//                },
-//                tags = new List<string> { "developer", "codex", "state transition", "quest", "natives" },
-//                subCategory = "Core",
-//                description = "Plot Editor is used to examine, edit, and search ME3's plot maps for quests, state events, and codices."
-//            });
+            set.Add(new Tool
+            {
+                name = "Plot Editor",
+                type = typeof(Tools.PlotEditor.PlotEditorWindow),
+                icon = Application.Current.FindResource("iconPlotEditor") as ImageSource,
+                open = () =>
+                {
+                    var plotEd = new Tools.PlotEditor.PlotEditorWindow();
+                    plotEd.Show();
+                },
+                tags = new List<string> { "developer", "codex", "state transition", "quest", "natives" },
+                subCategory = "Core",
+                description = "Plot Editor is used to examine, edit, and search ME3's plot maps for quests, state events, and codices."
+            });
             set.Add(new Tool
             {
                 name = "Sequence Editor",
