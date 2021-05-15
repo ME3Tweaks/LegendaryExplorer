@@ -409,13 +409,19 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                     shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader End GUID: {bin.ReadGuid()}") { Length = 16 });
 
-                    shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader Type: {bin.ReadNameReference(Pcc)}") { Length = 8 });
+                    string shaderType;
+                    shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader Type: {shaderType = bin.ReadNameReference(Pcc)}") { Length = 8 });
 
                     shaderNode.Items.Add(MakeInt32Node(bin, "Number of Instructions"));
 
+                    if (ReadShaderParameters(bin, shaderType) is BinInterpNode paramsNode)
+                    {
+                        shaderNode.Items.Add(paramsNode);
+                    }
+
                     if (bin.Position != (shaderEndOffset - dataOffset))
                     {
-                        shaderNode.Items.Add(new BinInterpNode(bin.Position, "Unknown post-shader data") { Length = (shaderEndOffset - dataOffset) - (int)bin.Position });
+                        shaderNode.Items.Add(new BinInterpNode(bin.Position, "Unparsed Shader Parameters") { Length = (shaderEndOffset - dataOffset) - (int)bin.Position });
                     }
 
 
@@ -566,6 +572,217 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             return subnodes;
         }
 
+        private BinInterpNode ReadShaderParameters(EndianReader bin, string shaderType)
+        {
+            var node = new BinInterpNode(bin.Position, "ShaderParameters") { IsExpanded = true };
+
+            switch (shaderType)
+            {
+                case "FFogVolumeApplyVertexShader":
+                case "FHitMaskVertexShader":
+                case "FHitProxyVertexShader":
+                case "FModShadowMeshVertexShader":
+                case "FSFXWorldNormalVertexShader":
+                case "FTextureDensityVertexShader":
+                case "TDepthOnlyVertexShader<0>":
+                case "TDepthOnlyVertexShader<1>":
+                case "FVelocityVertexShader":
+                case "TFogIntegralVertexShader<FConstantDensityPolicy>":
+                case "TFogIntegralVertexShader<FLinearHalfspaceDensityPolicy>":
+                case "TFogIntegralVertexShader<FSphereDensityPolicy>":
+                case "FShadowDepthVertexShader":
+                case "TShadowDepthVertexShader<ShadowDepth_OutputDepth>":
+                case "TShadowDepthVertexShader<ShadowDepth_OutputDepthToColor>":
+                case "TShadowDepthVertexShader<ShadowDepth_PerspectiveCorrect>":
+                case "TAOMeshVertexShader<0>":
+                case "TAOMeshVertexShader<1>":
+                case "TDistortionMeshVertexShader<FDistortMeshAccumulatePolicy>":
+                case "TLightMapDensityVertexShader<FNoLightMapPolicy>":
+                case "TLightVertexShaderFSphericalHarmonicLightPolicyFNoStaticShadowingPolicy":
+                case "TBasePassVertexShaderFNoLightMapPolicyFConstantDensityPolicy":
+                case "TBasePassVertexShaderFNoLightMapPolicyFLinearHalfspaceDensityPolicy":
+                case "TBasePassVertexShaderFNoLightMapPolicyFNoDensityPolicy":
+                case "TBasePassVertexShaderFNoLightMapPolicyFSphereDensityPolicy":
+                case "FShadowDepthNoPSVertexShader":
+                    node.Items.Add(FVertexFactoryParameterRef());
+                    break;
+                case "TLightMapDensityVertexShader<FDirectionalLightMapTexturePolicy>":
+                case "TLightMapDensityVertexShader<FDummyLightMapTexturePolicy>":
+                case "TLightMapDensityVertexShader<FSimpleLightMapTexturePolicy>":
+                case "TLightVertexShaderFDirectionalLightPolicyFNoStaticShadowingPolicy":
+                case "TLightVertexShaderFDirectionalLightPolicyFShadowVertexBufferPolicy":
+                case "TLightVertexShaderFPointLightPolicyFNoStaticShadowingPolicy":
+                case "TLightVertexShaderFPointLightPolicyFShadowVertexBufferPolicy":
+                case "TLightVertexShaderFSpotLightPolicyFNoStaticShadowingPolicy":
+                case "TLightVertexShaderFSpotLightPolicyFShadowVertexBufferPolicy":
+                case "TBasePassVertexShaderFDirectionalLightLightMapPolicyFConstantDensityPolicy":
+                case "TBasePassVertexShaderFDirectionalLightLightMapPolicyFLinearHalfspaceDensityPolicy":
+                case "TBasePassVertexShaderFDirectionalLightLightMapPolicyFNoDensityPolicy":
+                case "TBasePassVertexShaderFDirectionalLightLightMapPolicyFSphereDensityPolicy":
+                case "TBasePassVertexShaderFDirectionalLightMapTexturePolicyFConstantDensityPolicy":
+                case "TBasePassVertexShaderFDirectionalLightMapTexturePolicyFLinearHalfspaceDensityPolicy":
+                case "TBasePassVertexShaderFDirectionalLightMapTexturePolicyFNoDensityPolicy":
+                case "TBasePassVertexShaderFDirectionalLightMapTexturePolicyFSphereDensityPolicy":
+                case "TBasePassVertexShaderFDirectionalVertexLightMapPolicyFConstantDensityPolicy":
+                case "TBasePassVertexShaderFDirectionalVertexLightMapPolicyFLinearHalfspaceDensityPolicy":
+                case "TBasePassVertexShaderFDirectionalVertexLightMapPolicyFNoDensityPolicy":
+                case "TBasePassVertexShaderFDirectionalVertexLightMapPolicyFSphereDensityPolicy":
+                case "TBasePassVertexShaderFSHLightLightMapPolicyFConstantDensityPolicy":
+                case "TBasePassVertexShaderFSHLightLightMapPolicyFLinearHalfspaceDensityPolicy":
+                case "TBasePassVertexShaderFSHLightLightMapPolicyFNoDensityPolicy":
+                case "TBasePassVertexShaderFSHLightLightMapPolicyFSphereDensityPolicy":
+                case "TBasePassVertexShaderFSimpleLightMapTexturePolicyFConstantDensityPolicy":
+                case "TBasePassVertexShaderFSimpleLightMapTexturePolicyFLinearHalfspaceDensityPolicy":
+                case "TBasePassVertexShaderFSimpleLightMapTexturePolicyFNoDensityPolicy":
+                case "TBasePassVertexShaderFSimpleLightMapTexturePolicyFSphereDensityPolicy":
+                case "TBasePassVertexShaderFSimpleVertexLightMapPolicyFConstantDensityPolicy":
+                case "TBasePassVertexShaderFSimpleVertexLightMapPolicyFLinearHalfspaceDensityPolicy":
+                case "TBasePassVertexShaderFSimpleVertexLightMapPolicyFNoDensityPolicy":
+                case "TBasePassVertexShaderFSimpleVertexLightMapPolicyFSphereDensityPolicy":
+                case "TBasePassVertexShaderFPointLightLightMapPolicyFNoDensityPolicy":
+                case "TBasePassVertexShaderFCustomSimpleLightMapTexturePolicyFConstantDensityPolicy":
+                case "TBasePassVertexShaderFCustomSimpleLightMapTexturePolicyFLinearHalfspaceDensityPolicy":
+                case "TBasePassVertexShaderFCustomSimpleLightMapTexturePolicyFNoDensityPolicy":
+                case "TBasePassVertexShaderFCustomSimpleLightMapTexturePolicyFSphereDensityPolicy":
+                case "TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFConstantDensityPolicy":
+                case "TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFLinearHalfspaceDensityPolicy":
+                case "TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFNoDensityPolicy":
+                case "TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFSphereDensityPolicy":
+                case "TBasePassVertexShaderFCustomVectorLightMapTexturePolicyFConstantDensityPolicy":
+                case "TBasePassVertexShaderFCustomVectorLightMapTexturePolicyFLinearHalfspaceDensityPolicy":
+                case "TBasePassVertexShaderFCustomVectorLightMapTexturePolicyFNoDensityPolicy":
+                case "TBasePassVertexShaderFCustomVectorLightMapTexturePolicyFSphereDensityPolicy":
+                case "TBasePassVertexShaderFCustomVectorVertexLightMapPolicyFConstantDensityPolicy":
+                case "TBasePassVertexShaderFCustomVectorVertexLightMapPolicyFLinearHalfspaceDensityPolicy":
+                case "TBasePassVertexShaderFCustomVectorVertexLightMapPolicyFNoDensityPolicy":
+                case "TBasePassVertexShaderFCustomVectorVertexLightMapPolicyFSphereDensityPolicy":
+                    node.Items.Add(FShaderParameter(""));
+                    node.Items.Add(FVertexFactoryParameterRef());
+                    break;
+                case "TLightVertexShaderFDirectionalLightPolicyFShadowTexturePolicy":
+                case "TLightVertexShaderFDirectionalLightPolicyFSignedDistanceFieldShadowTexturePolicy":
+                case "TLightVertexShaderFPointLightPolicyFShadowTexturePolicy":
+                case "TLightVertexShaderFPointLightPolicyFSignedDistanceFieldShadowTexturePolicy":
+                case "TLightVertexShaderFSpotLightPolicyFShadowTexturePolicy":
+                case "TLightVertexShaderFSpotLightPolicyFSignedDistanceFieldShadowTexturePolicy":
+                case "TLightVertexShaderFSFXPointLightPolicyFNoStaticShadowingPolicy":
+                    node.Items.Add(FShaderParameter(""));
+                    node.Items.Add(FShaderParameter(""));
+                    node.Items.Add(FVertexFactoryParameterRef());
+                    break;
+                default:
+                    node = null;
+                    break;
+            }
+
+            return node;
+
+            BinInterpNode FShaderParameter(string name)
+            {
+                return new BinInterpNode(bin.Position, $"{name}: FShaderParameter")
+                {
+                    Items =
+                    {
+                        MakeUInt16Node(bin, "BaseIndex"),
+                        MakeUInt16Node(bin, "NumBytes"),
+                        MakeUInt16Node(bin, "BufferIndex"),
+                    }
+                };
+            }
+
+            BinInterpNode FShaderResourceParameter(string name)
+            {
+                return new BinInterpNode(bin.Position, $"{name}: FShaderResourceParameter")
+                {
+                    Items =
+                    {
+                        MakeUInt16Node(bin, "BaseIndex"),
+                        MakeUInt16Node(bin, "NumResources"),
+                        MakeUInt16Node(bin, "SamplerIndex"),
+                    }
+                };
+            }
+
+            BinInterpNode FVertexFactoryParameterRef()
+            {
+                return new BinInterpNode(bin.Position, $"VertexFactoryParameters: FVertexFactoryParameterRef")
+                {
+                    Items =
+                    {
+                        MakeNameNode(bin, "VertexFactoryType"),
+                        MakeUInt32HexNode(bin, "File offset to end of FVertexFactoryParameterRef (may be inaccurate in modded files)")
+                        //more after...
+                    },
+                    IsExpanded = true
+                };
+            }
+
+            BinInterpNode FSceneTextureShaderParameters(string name)
+            {
+                return new BinInterpNode(bin.Position, $"{name}: FSceneTextureShaderParameters")
+                {
+                    Items =
+                    {
+                        FShaderResourceParameter("SceneColorTextureParameter"),
+                        FShaderResourceParameter("SceneDepthTextureParameter"),
+                        FShaderParameter("SceneDepthCalcParameter"),
+                        FShaderParameter("ScreenPositionScaleBiasParameter"),
+                        FShaderResourceParameter("NvStereoFixTextureParameter"),
+                    }
+                };
+            }
+
+            BinInterpNode FMaterialShaderParameters(string name, string type = "FMaterialShaderParameters")
+            {
+                return new BinInterpNode(bin.Position, $"{name}: {type}")
+                {
+                    Items =
+                    {
+                        FShaderParameter("CameraWorldPositionParameter"),
+                        FShaderParameter("ObjectWorldPositionAndRadiusParameter"),
+                        FShaderParameter("ObjectOrientationParameter"),
+                        FShaderParameter("WindDirectionAndSpeedParameter"),
+                        FShaderParameter("FoliageImpulseDirectionParameter"),
+                        FShaderParameter("FoliageNormalizedRotationAxisAndAngleParameter"),
+                    }
+                };
+            }
+
+            BinInterpNode FMaterialPixelShaderParameters(string name)
+            {
+                var super = FMaterialShaderParameters(name, "FMaterialPixelShaderParameters");
+                super.Items.AddRange(new[]
+                {
+                    MakeArrayNode(bin, "UniformPixelScalarShaderParameters", i => TUniformParameter(FShaderParameter)),
+                    MakeArrayNode(bin, "UniformPixelVectorShaderParameters", i => TUniformParameter(FShaderParameter)),
+                    MakeArrayNode(bin, "UniformPixel2DShaderResourceParameters", i => TUniformParameter(FShaderResourceParameter)),
+                    MakeArrayNode(bin, "UniformPixelCubeShaderResourceParameters", i => TUniformParameter(FShaderResourceParameter)),
+                    FShaderParameter("LocalToWorldParameter"),
+                    FShaderParameter("WorldToLocalParameter"),
+                    FShaderParameter("WorldToViewParameter"),
+                    FShaderParameter("InvViewProjectionParameter"),
+                    FShaderParameter("ViewProjectionParameter"),
+                    FSceneTextureShaderParameters("SceneTextureParameters"),
+                    FShaderParameter("TwoSidedSignParameter"),
+                    FShaderParameter("InvGammaParameter"),
+                    FShaderParameter("DecalFarPlaneDistanceParameter"),
+                    FShaderParameter("ObjectPostProjectionPositionParameter"),
+                    FShaderParameter("ObjectMacroUVScalesParameter"),
+                    FShaderParameter("ObjectNDCPositionParameter"),
+                    FShaderParameter("OcclusionPercentageParameter"),
+                    FShaderParameter("EnableScreenDoorFadeParameter"),
+                    FShaderParameter("ScreenDoorFadeSettingsParameter"),
+                    FShaderParameter("ScreenDoorFadeSettings2Parameter"),
+                    FShaderResourceParameter("ScreenDoorNoiseTextureParameter"),
+                });
+                return super;
+            }
+
+            BinInterpNode TUniformParameter(Func<string, BinInterpNode> parameter)
+            {
+                return parameter($"[{bin.ReadInt32()}]");
+            }
+        }
         private BinInterpNode MakeStringNode(EndianReader bin, string nodeName)
         {
             long pos = bin.Position;
