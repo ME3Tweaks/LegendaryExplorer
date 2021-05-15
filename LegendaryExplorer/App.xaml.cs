@@ -27,6 +27,8 @@ namespace LegendaryExplorer
 #else
         public static bool IsDebug => false;
 #endif
+
+        public static int CoreCount;
         #endregion
 
 

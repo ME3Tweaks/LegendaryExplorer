@@ -80,6 +80,19 @@ namespace LegendaryExplorer.Startup
 
             Task.Run(() =>
             {
+                //Fetch core count from WMI - this can take like 1-2 seconds
+                try
+                {
+                    App.CoreCount = 2;
+                    foreach (var item in new System.Management.ManagementObjectSearcher("Select NumberOfCores from Win32_Processor").Get())
+                    {
+                        App.CoreCount = int.Parse(item["NumberOfCores"].ToString());
+                    }
+                }
+                catch
+                {
+                    //???
+                }
 
                 Action actionDelegate = HandleCommandLineJumplistCall(Environment.GetCommandLineArgs(), out int exitCode);
                 if (actionDelegate == null)

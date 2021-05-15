@@ -63,9 +63,6 @@ namespace LegendaryExplorer.Tools.PackageDumper
             set => SetProperty(ref _listViewHeight, value);
         }
 
-        private int _coreCount;
-        public int CoreCount { get => _coreCount; set => SetProperty(ref _coreCount, value); }
-
         private MEGame _selectedGame = MEGame.ME1;
         public MEGame SelectedGame { get => _selectedGame; set => SetProperty(ref _selectedGame, value); }
 
@@ -182,26 +179,8 @@ namespace LegendaryExplorer.Tools.PackageDumper
             Owner = owner;
             DataContext = this;
             LoadCommands();
-            ListViewHeight = 25 * 2;//App.CoreCount
+            ListViewHeight = 25 * App.CoreCount;
             InitializeComponent();
-
-            // TODO: Move Core Count to startup/main window class in LEX (it is just here temporarily)
-            Task.Run(() =>
-            {
-                //Fetch core count from WMI - this can take like 1-2 seconds and is not typically necessary until a tool is opened
-                try
-                {
-                    CoreCount = 2;
-                    foreach (var item in new System.Management.ManagementObjectSearcher("Select * from Win32_Processor").Get())
-                    {
-                        CoreCount = int.Parse(item["NumberOfCores"].ToString());
-                    }
-                }
-                catch
-                {
-                    //???
-                }
-            });
         }
 
         private bool verbose;
@@ -279,7 +258,7 @@ namespace LegendaryExplorer.Tools.PackageDumper
                     CurrentDumpingItems.Remove(x);
                 });
             },
-            new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = CoreCount }); // How many items at the same time
+            new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = App.CoreCount }); // How many items at the same time
 
             AllDumpingItems = new List<PackageDumperSingleFileTask>();
             CurrentDumpingItems.ClearEx();
