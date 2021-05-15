@@ -426,6 +426,43 @@ namespace LegendaryExplorerCore.Packages
             throw new FormatException("Not an ME1 package file.");
         }
 
+        // LEGENDARY EDITION
+        public static IMEPackage OpenLE3Package(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false)
+        {
+            IMEPackage pck = OpenMEPackage(pathToFile, user, forceLoadFromDisk);
+            if (pck.Game == MEGame.LE3)
+            {
+                return pck;
+            }
+
+            pck.Release(user);
+            throw new FormatException("Not an LE3 package file.");
+        }
+
+        public static IMEPackage OpenLE2Package(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false)
+        {
+            IMEPackage pck = OpenMEPackage(pathToFile, user, forceLoadFromDisk);
+            if (pck.Game == MEGame.LE2)
+            {
+                return pck;
+            }
+
+            pck.Release(user);
+            throw new FormatException("Not an LE2 package file.");
+        }
+
+        public static IMEPackage OpenLE1Package(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false)
+        {
+            IMEPackage pck = OpenMEPackage(pathToFile, user, forceLoadFromDisk);
+            if (pck.Game == MEGame.LE1)
+            {
+                return pck;
+            }
+
+            pck.Release(user);
+            throw new FormatException("Not an LE1 package file.");
+        }
+
         public static bool IsPackageInUse(string pathToFile) => openPackages.ContainsKey(Path.GetFullPath(pathToFile));
 
         public static void PrintOpenPackages()

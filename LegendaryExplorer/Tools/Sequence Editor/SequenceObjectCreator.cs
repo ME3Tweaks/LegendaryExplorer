@@ -8,6 +8,7 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorer.Tools.Sequence_Editor
 {
@@ -36,34 +37,34 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 "BioSeqAct_PMCheckState",
                 "BioSeqAct_PMExecuteTransition",
                 "SeqAct_FinishSequence"
-            }.Select(className => UnrealObjectInfo.GetClassOrStructInfo(game, className)).NonNull().ToList();
+            }.Select(className => GlobalUnrealObjectInfo.GetClassOrStructInfo(game, className)).NonNull().ToList();
         }
 
         public static List<ClassInfo> GetSequenceVariables(MEGame game)
         {
-            List<ClassInfo> classes = UnrealObjectInfo.GetNonAbstractDerivedClassesOf(SequenceVariableName, game);
+            List<ClassInfo> classes = GlobalUnrealObjectInfo.GetNonAbstractDerivedClassesOf(SequenceVariableName, game);
             return classes;
         }
 
         public static List<ClassInfo> GetSequenceActions(MEGame game)
         {
-            List<ClassInfo> classes = UnrealObjectInfo.GetNonAbstractDerivedClassesOf(SequenceActionName, game);
+            List<ClassInfo> classes = GlobalUnrealObjectInfo.GetNonAbstractDerivedClassesOf(SequenceActionName, game);
             return classes;
         }
 
         public static List<ClassInfo> GetSequenceEvents(MEGame game)
         {
-            List<ClassInfo> classes = UnrealObjectInfo.GetNonAbstractDerivedClassesOf(SequenceEventName, game);
+            List<ClassInfo> classes = GlobalUnrealObjectInfo.GetNonAbstractDerivedClassesOf(SequenceEventName, game);
             return classes;
         }
 
         public static List<ClassInfo> GetSequenceConditions(MEGame game)
         {
-            List<ClassInfo> classes = UnrealObjectInfo.GetNonAbstractDerivedClassesOf(SequenceConditionName, game);
+            List<ClassInfo> classes = GlobalUnrealObjectInfo.GetNonAbstractDerivedClassesOf(SequenceConditionName, game);
             return classes;
         }
 
-        public static PropertyCollection GetSequenceObjectDefaults(IMEPackage pcc, string className, MEGame game) => GetSequenceObjectDefaults(pcc, UnrealObjectInfo.GetClassOrStructInfo(game, className));
+        public static PropertyCollection GetSequenceObjectDefaults(IMEPackage pcc, string className, MEGame game) => GetSequenceObjectDefaults(pcc, GlobalUnrealObjectInfo.GetClassOrStructInfo(game, className));
 
         public static PropertyCollection GetSequenceObjectDefaults(IMEPackage pcc, ClassInfo info)
         {
@@ -79,7 +80,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 ArrayProperty<StructProperty> outLinksProp = null;
                 ArrayProperty<StructProperty> eventLinksProp = null;
                 ArrayProperty<StructProperty> inLinksProp = null;
-                Dictionary<string, ClassInfo> classes = UnrealObjectInfo.GetClasses(game);
+                Dictionary<string, ClassInfo> classes = GlobalUnrealObjectInfo.GetClasses(game);
                 try
                 {
                     ClassInfo classInfo = info;
@@ -91,7 +92,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                         {
                             loadStream = new MemoryStream(File.ReadAllBytes(classInfo.pccPath));
                         }
-                        else if (classInfo.pccPath == UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
+                        else if (classInfo.pccPath == GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
                         {
                             loadStream = LegendaryExplorerCoreUtilities.GetCustomAppResourceStream(game);
                         }
@@ -202,7 +203,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 }
             }
 
-            int objInstanceVersion = UnrealObjectInfo.getSequenceObjectInfo(game, info.ClassName)?.ObjInstanceVersion ?? 1;
+            int objInstanceVersion = GlobalUnrealObjectInfo.getSequenceObjectInfo(game, info.ClassName)?.ObjInstanceVersion ?? 1;
             defaults.Add(new IntProperty(objInstanceVersion, "ObjInstanceVersion"));
 
             return defaults;

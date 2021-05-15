@@ -19,6 +19,7 @@ using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Classes;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
@@ -1115,7 +1116,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 if (import.InstancedFullPath.StartsWith("Core."))
                     continue; // Most of these are native-native
-                if (UnrealObjectInfo.IsAKnownNativeClass(import))
+                if (GlobalUnrealObjectInfo.IsAKnownNativeClass(import))
                     continue; // Native is always loaded iirc
                 Debug.WriteLine($@"Resolving {import.FullPath}");
                 var export = EntryImporter.ResolveImport(import, pc);

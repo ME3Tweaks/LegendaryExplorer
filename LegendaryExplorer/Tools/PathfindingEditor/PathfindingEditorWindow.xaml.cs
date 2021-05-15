@@ -32,6 +32,7 @@ using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.SharpDX;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using RectangleF = System.Drawing.RectangleF;
 
 namespace LegendaryExplorer.Tools.PathfindingEditor

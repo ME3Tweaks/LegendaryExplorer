@@ -5,6 +5,7 @@ using System.Windows.Media;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using SharpDX;
 using Color = System.Windows.Media.Color;
 

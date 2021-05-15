@@ -38,6 +38,7 @@ using Image = System.Drawing.Image;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Kismet;
 using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorer.Tools.Sequence_Editor
 {
@@ -262,7 +263,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
             IEntry classEntry;
             if (Pcc.Exports.Any(exp => exp.ObjectName == info.ClassName) || Pcc.Imports.Any(imp => imp.ObjectName == info.ClassName) ||
-                UnrealObjectInfo.GetClassOrStructInfo(Pcc.Game, info.ClassName) is { } classInfo && EntryImporter.IsSafeToImportFrom(classInfo.pccPath, Pcc.Game))
+                GlobalUnrealObjectInfo.GetClassOrStructInfo(Pcc.Game, info.ClassName) is { } classInfo && EntryImporter.IsSafeToImportFrom(classInfo.pccPath, Pcc.Game))
             {
                 classEntry = EntryImporter.EnsureClassIsInFile(Pcc, info.ClassName, RelinkResultsAvailable: EntryImporterExtended.ShowRelinkResults);
             }

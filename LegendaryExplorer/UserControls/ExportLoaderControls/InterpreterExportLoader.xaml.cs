@@ -22,6 +22,7 @@ using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -640,8 +641,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         newProperty = new DelegateProperty(0, "None", propName);
                         break;
                     case PropertyType.StructProperty:
-                        PropertyCollection structProps = UnrealObjectInfo.getDefaultStructValue(Pcc.Game, propInfo.Reference, true);
-                        newProperty = new StructProperty(propInfo.Reference, structProps, propName, isImmutable: UnrealObjectInfo.IsImmutable(propInfo.Reference, Pcc.Game));
+                        PropertyCollection structProps = GlobalUnrealObjectInfo.getDefaultStructValue(Pcc.Game, propInfo.Reference, true);
+                        newProperty = new StructProperty(propInfo.Reference, structProps, propName, isImmutable: GlobalUnrealObjectInfo.IsImmutable(propInfo.Reference, Pcc.Game));
                         break;
                 }
 
@@ -688,7 +689,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi && tvi.Property is StructProperty sp)
             {
-                PropertyCollection defaultProps = UnrealObjectInfo.getDefaultStructValue(Pcc.Game, sp.StructType, true);
+                PropertyCollection defaultProps = GlobalUnrealObjectInfo.getDefaultStructValue(Pcc.Game, sp.StructType, true);
                 foreach (Property prop in sp.Properties)
                 {
                     defaultProps.AddOrReplaceProp(prop);
@@ -703,12 +704,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi && tvi.Property is StructProperty sp && !sp.IsImmutable)
             {
-                ClassInfo info = UnrealObjectInfo.GetClassOrStructInfo(Pcc.Game, sp.StructType);
+                ClassInfo info = GlobalUnrealObjectInfo.GetClassOrStructInfo(Pcc.Game, sp.StructType);
                 var allPropNames = new List<string>();
                 while (info != null)
                 {
                     allPropNames.AddRange(info.properties.Select(kvp => kvp.Key));
-                    info = UnrealObjectInfo.GetClassOrStructInfo(Pcc.Game, info.baseClass);
+                    info = GlobalUnrealObjectInfo.GetClassOrStructInfo(Pcc.Game, info.baseClass);
                 }
                 HashSet<string> existingPropNames = tvi.ChildrenProperties.Select(t => t.Property.Name.Name).ToHashSet();
                 if (!allPropNames.All(existingPropNames.Contains))
@@ -996,7 +997,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     break;
                 case ArrayPropertyBase ap:
                     {
-                        ArrayType at = UnrealObjectInfo.GetArrayType(parsingExport.FileRef.Game, prop.Name.Name, parent.Property is StructProperty sp ? sp.StructType : parsingExport.ClassName, parsingExport);
+                        ArrayType at = GlobalUnrealObjectInfo.GetArrayType(parsingExport.FileRef.Game, prop.Name.Name, parent.Property is StructProperty sp ? sp.StructType : parsingExport.ClassName, parsingExport);
                         editableValue = $"{at} array";
                     }
                     break;
@@ -2096,7 +2097,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         break;
                     case ArrayProperty<EnumProperty> aep:
                         {
-                            PropertyInfo p = UnrealObjectInfo.GetPropertyInfo(Pcc.Game, aep.Name, containingType);
+                            PropertyInfo p = GlobalUnrealObjectInfo.GetPropertyInfo(Pcc.Game, aep.Name, containingType);
                             string typeName = p.Reference;
                             EnumProperty ep = new EnumProperty(typeName, Pcc.Game);
                             aep.Insert(insertIndex, ep);
@@ -2132,7 +2133,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 break;
                             }
 
-                            PropertyInfo p = UnrealObjectInfo.GetPropertyInfo(Pcc.Game, astructp.Name, containingType);
+                            PropertyInfo p = GlobalUnrealObjectInfo.GetPropertyInfo(Pcc.Game, astructp.Name, containingType);
                             if (p == null)
                             {
                                 //Attempt dynamic lookup
@@ -2140,13 +2141,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 {
                                     exportToBuildFor = CurrentLoadedExport;
                                 }
-                                ClassInfo classInfo = UnrealObjectInfo.generateClassInfo(exportToBuildFor);
-                                p = UnrealObjectInfo.GetPropertyInfo(Pcc.Game, astructp.Name, containingType, classInfo);
+                                ClassInfo classInfo = GlobalUnrealObjectInfo.generateClassInfo(exportToBuildFor);
+                                p = GlobalUnrealObjectInfo.GetPropertyInfo(Pcc.Game, astructp.Name, containingType, classInfo);
                             }
                             if (p != null)
                             {
                                 string typeName = p.Reference;
-                                PropertyCollection props = UnrealObjectInfo.getDefaultStructValue(Pcc.Game, typeName, true);
+                                PropertyCollection props = GlobalUnrealObjectInfo.getDefaultStructValue(Pcc.Game, typeName, true);
                                 astructp.Insert(insertIndex, new StructProperty(typeName, props));
                             }
                         }
@@ -2483,7 +2484,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         case ObjectProperty op:
                             if (op.Name.Name != null)
                             {
-                                var type = UnrealObjectInfo.GetPropertyInfo(AttachedExport.Game, op.Name.Name, AttachedExport.ClassName, containingExport: AttachedExport);
+                                var type = GlobalUnrealObjectInfo.GetPropertyInfo(AttachedExport.Game, op.Name.Name, AttachedExport.ClassName, containingExport: AttachedExport);
                                 if (type != null)
                                 {
                                     return $"ObjectProperty ({type.Reference})";

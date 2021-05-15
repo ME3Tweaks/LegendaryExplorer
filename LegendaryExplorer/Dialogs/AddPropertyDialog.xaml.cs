@@ -10,6 +10,7 @@ using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorer.Dialogs
 {
@@ -204,6 +205,15 @@ namespace LegendaryExplorer.Dialogs
                 default:
                     classList = ME3UnrealObjectInfo.Classes;
                     break;
+                case MEGame.LE1:
+                    classList = LE1UnrealObjectInfo.Classes;
+                    break;
+                case MEGame.LE2:
+                    classList = LE2UnrealObjectInfo.Classes;
+                    break;
+                case MEGame.LE3:
+                    classList = LE3UnrealObjectInfo.Classes;
+                    break;
             }
 
             if (!classList.ContainsKey(temp) && export.Class is ImportEntry)
@@ -228,6 +238,16 @@ namespace LegendaryExplorer.Dialogs
                     default:
                         currentInfo = ME3UnrealObjectInfo.generateClassInfo(export);
                         break;
+                    case MEGame.LE1:
+                        currentInfo = LE1UnrealObjectInfo.generateClassInfo(export);
+                        break;
+                    case MEGame.LE2:
+                        currentInfo = LE2UnrealObjectInfo.generateClassInfo(export);
+                        break;
+                    case MEGame.LE3:
+                        currentInfo = LE3UnrealObjectInfo.generateClassInfo(export);
+                        break;
+
                 }
                 currentInfo.baseClass = export.SuperClassName;
                 classList = classList.ToDictionary(entry => entry.Key, entry => entry.Value);
@@ -235,7 +255,7 @@ namespace LegendaryExplorer.Dialogs
                 classExport = classExport.SuperClass as ExportEntry;
                 while (!classList.ContainsKey(currentInfo.baseClass) && classExport != null)
                 {
-                    currentInfo = UnrealObjectInfo.generateClassInfo(classExport);
+                    currentInfo = GlobalUnrealObjectInfo.generateClassInfo(classExport);
                     if (currentInfo == null)
                     {
                         break;

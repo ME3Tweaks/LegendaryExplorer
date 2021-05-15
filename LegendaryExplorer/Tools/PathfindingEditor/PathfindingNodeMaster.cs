@@ -9,6 +9,7 @@ using System.Diagnostics;
 using LegendaryExplorer.Tools.SequenceObjects;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorer.Tools.PathfindingEditor
 {

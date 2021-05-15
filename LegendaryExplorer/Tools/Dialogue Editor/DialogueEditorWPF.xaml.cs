@@ -42,6 +42,7 @@ using LegendaryExplorerCore.Dialogue;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorer.DialogueEditor
 {
@@ -2363,7 +2364,7 @@ namespace LegendaryExplorer.DialogueEditor
 
             if (command == "AddReply")
             {
-                PropertyCollection newprop = UnrealObjectInfo.getDefaultStructValue(Pcc.Game, "BioDialogReplyNode", true);
+                PropertyCollection newprop = GlobalUnrealObjectInfo.getDefaultStructValue(Pcc.Game, "BioDialogReplyNode", true);
                 var props = SelectedConv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_ReplyList") ??
                             new ArrayProperty<StructProperty>("m_ReplyList");
                 //Set to needed defaults.
@@ -2384,7 +2385,7 @@ namespace LegendaryExplorer.DialogueEditor
 
             if (command == "AddEntry")
             {
-                PropertyCollection newprop = UnrealObjectInfo.getDefaultStructValue(Pcc.Game, "BioDialogEntryNode", true);
+                PropertyCollection newprop = GlobalUnrealObjectInfo.getDefaultStructValue(Pcc.Game, "BioDialogEntryNode", true);
                 var props = SelectedConv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_EntryList") ??
                             new ArrayProperty<StructProperty>("m_EntryList");
                 var EGUIStyles = new EnumProperty("GUI_STYLE_NONE", "EConvGUIStyles", Pcc.Game, "eGUIStyle");
