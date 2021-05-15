@@ -233,6 +233,30 @@
     <Compile Update="Tools\Meshplorer\MeshplorerWPF.xaml.cs">
       <DependentUpon>MeshplorerWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Tools\PlotEditor\CodexMapView.xaml.cs">
+      <DependentUpon>CodexMapView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Tools\PlotEditor\Dialogs\ChangeObjectIdDialog.xaml.cs">
+      <DependentUpon>ChangeObjectIdDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Tools\PlotEditor\Dialogs\CopyObjectDialog.xaml.cs">
+      <DependentUpon>CopyObjectDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Tools\PlotEditor\Dialogs\NewObjectDialog.xaml.cs">
+      <DependentUpon>NewObjectDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Tools\PlotEditor\FindObjectUsagesView.xaml.cs">
+      <DependentUpon>FindObjectUsagesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Tools\PlotEditor\QuestMapView.xaml.cs">
+      <DependentUpon>QuestMapView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Tools\PlotEditor\StateEventMapView.xaml.cs">
+      <DependentUpon>StateEventMapView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Tools\PlotEditor\StateTaskListsView.xaml.cs">
+      <DependentUpon>StateTaskListsView.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Tools\TextureStudio\MasterTextureSelector.xaml.cs">
       <DependentUpon>MasterTextureSelector.xaml</DependentUpon>
     </Compile>
@@ -350,6 +374,42 @@
     <Page Update="Tools\PackageDumper\PackageDumperWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Tools\PlotEditor\CodexMapView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Tools\PlotEditor\Dialogs\ChangeObjectIdDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Tools\PlotEditor\Dialogs\CopyObjectDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Tools\PlotEditor\Dialogs\NewObjectDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Tools\PlotEditor\FindObjectUsagesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Tools\PlotEditor\PlotEditorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Tools\PlotEditor\QuestMapView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Tools\PlotEditor\StateEventMapView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Tools\PlotEditor\StateTaskListsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Tools\SFARExplorer\SFARExplorerWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -437,6 +497,10 @@
     <Page Update="Dialogs\SoundReplaceOptionsDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Tools\PlotEditor\SFXGame\biodefine\" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
