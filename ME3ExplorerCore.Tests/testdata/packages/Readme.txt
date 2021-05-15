@@ -1,1 +1,0 @@
-Files in this folder are only for testing code against. DO NOT MODIFY THE CONTENTS OF THIS FOLDER.
