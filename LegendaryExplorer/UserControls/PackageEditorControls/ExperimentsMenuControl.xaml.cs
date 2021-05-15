@@ -77,11 +77,41 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             MessageBox.Show(GetPEWindow(), "Done");
         }
 
-        private void BuildAllObjectInfo_Clicked(object sender, RoutedEventArgs e)
+        private void BuildAllObjectInfoOT_Clicked(object sender, RoutedEventArgs e)
         {
             ME1UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "ME1ObjectInfo.json"));
             ME2UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "ME2ObjectInfo.json"));
             ME3UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "ME3ObjectInfo.json"));
+            GetPEWindow().RestoreAndBringToFront();
+            MessageBox.Show(GetPEWindow(), "Done");
+        }
+
+        private void BuildLE1ObjectInfo_Clicked(object sender, RoutedEventArgs e)
+        {
+            ME1UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE1ObjectInfo.json"));
+            GetPEWindow().RestoreAndBringToFront();
+            MessageBox.Show(GetPEWindow(), "Done");
+        }
+
+        private void BuildLE2ObjectInfo_Clicked(object sender, RoutedEventArgs e)
+        {
+            LE2UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE2ObjectInfo.json"));
+            GetPEWindow().RestoreAndBringToFront();
+            MessageBox.Show(GetPEWindow(), "Done");
+        }
+
+        private void BuildLE3ObjectInfo_Clicked(object sender, RoutedEventArgs e)
+        {
+            LE3UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE3ObjectInfo.json"));
+            GetPEWindow().RestoreAndBringToFront();
+            MessageBox.Show(GetPEWindow(), "Done");
+        }
+
+        private void BuildAllObjectInfoLE_Clicked(object sender, RoutedEventArgs e)
+        {
+            LE1UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE1ObjectInfo.json"));
+            LE2UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE2ObjectInfo.json"));
+            LE3UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE3ObjectInfo.json"));
             GetPEWindow().RestoreAndBringToFront();
             MessageBox.Show(GetPEWindow(), "Done");
         }

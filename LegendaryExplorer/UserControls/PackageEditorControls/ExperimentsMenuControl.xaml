@@ -20,8 +20,13 @@
         <MenuItem Header="Build ME1 Object Info" Click="BuildME1ObjectInfo_Clicked"/>
         <MenuItem Header="Build ME2 Object Info" Click="BuildME2ObjectInfo_Clicked"/>
         <MenuItem Header="Build ME3 Object Info" Click="BuildME3ObjectInfo_Clicked"/>
+        <MenuItem Header="Build All 3 OT Object Infos" Click="BuildAllObjectInfoOT_Clicked"/>
         <Separator/>
-        <MenuItem Header="Build All 3 Object Info" Click="BuildAllObjectInfo_Clicked"/>
+        <MenuItem Header="Build LE1 Object Info" Click="BuildLE1ObjectInfo_Clicked"/>
+        <MenuItem Header="Build LE2 Object Info" Click="BuildLE2ObjectInfo_Clicked"/>
+        <MenuItem Header="Build LE3 Object Info" Click="BuildLE3ObjectInfo_Clicked"/>
+        <MenuItem Header="Build All 3 LE Object Infos" Click="BuildAllObjectInfoLE_Clicked"/>
+        <Separator/>
         <!--<MenuItem Header="Generate ME3 Code" Click="GenerateME3Code_Click"/>-->
         <MenuItem Header="Generate ME2/ME3 object info diff" Click="GenerateObjectInfoDiff_Click"/>
     </MenuItem>
