@@ -877,7 +877,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
             if (rootPath == null || !Directory.Exists(rootPath))
             {
-                MessageBox.Show($"{CurrentGame} has not been found. Please check your ME3Explorer settings");
+                MessageBox.Show($"{CurrentGame} has not been found. Please check your Legendary Explorer settings");
                 return;
             }
 
@@ -1071,7 +1071,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
             if (rootPath == null)
             {
-                MessageBox.Show($"{CurrentGame} has not been found. Please check your ME3Explorer settings");
+                MessageBox.Show($"{CurrentGame} has not been found. Please check your Legendary Explorer settings");
                 return;
             }
             filename = $"{filename}.*";
@@ -1135,7 +1135,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             var cdir = CurrentDataBase.ContentDir[dirKey];
             if (rootPath == null)
             {
-                MessageBox.Show($"{CurrentGame} has not been found. Please check your ME3Explorer settings");
+                MessageBox.Show($"{CurrentGame} has not been found. Please check your Legendary Explorer settings");
                 return;
             }
 
@@ -1210,7 +1210,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             string rootPath = MEDirectories.GetDefaultGamePath(CurrentGame);
             if (rootPath == null)
             {
-                MessageBox.Show($"{CurrentGame} has not been found. Please check your ME3Explorer settings");
+                MessageBox.Show($"{CurrentGame} has not been found. Please check your Legendary Explorer settings");
                 return;
             }
 
@@ -2414,7 +2414,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
             if (rootPath == null || !Directory.Exists(rootPath))
             {
-                MessageBox.Show($"{CurrentGame} has not been found. Please check your ME3Explorer settings");
+                MessageBox.Show($"{CurrentGame} has not been found. Please check your Legendary Explorer settings");
                 return;
             }
 
