@@ -124,8 +124,6 @@
     <ProjectReference Include="..\HexConverterWPF\HexConverterWPF.csproj" />
     <ProjectReference Include="..\LegendaryExplorerCore\LegendaryExplorerCore.csproj" />
     <ProjectReference Include="..\Piccolo\Piccolo.csproj" />
-    <ProjectReference Include="..\SharpDX.Mathematics.LEX\SharpDX.Mathematics.LEX.csproj" />
-    <ProjectReference Include="..\Xceed.Wpf.Toolkit\DotNetProjects.Wpf.Extended.Toolkit.csproj" />
   </ItemGroup>
 
   <ItemGroup>
