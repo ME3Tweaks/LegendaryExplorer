@@ -361,6 +361,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             audioPcc = null;
             meshPcc = null;
             textPcc = null;
+
+            ClearDataBase();
         }
 
         #endregion
