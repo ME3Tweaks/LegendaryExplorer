@@ -3618,18 +3618,16 @@ namespace LegendaryExplorer.Tools.PackageEditor
             Settings.BinaryInterpreter_SkipAutoParseSizeCheck = !Settings.BinaryInterpreter_SkipAutoParseSizeCheck;
         }
 
-        // TODO: Move this to a utilities class instead of attaching to a window
         private void AssociatePCCSFM_Clicked(object sender, RoutedEventArgs e)
         {
-            // TODO: IMPLEMENT IN LEX
-            //Main_Window.Utilities.FileAssociations.EnsureAssociationsSet("pcc", "Mass Effect 2/3 Package File");
-            //Main_Window.Utilities.FileAssociations.EnsureAssociationsSet("sfm", "Mass Effect 1 Package File");
+            FileAssociations.EnsureAssociationsSet("pcc", "Mass Effect Series Package File");
+            FileAssociations.EnsureAssociationsSet("sfm", "Mass Effect 1 Package File");
         }
 
         private void AssociateUPKUDK_Clicked(object sender, RoutedEventArgs e)
         {
-            //Main_Window.Utilities.FileAssociations.EnsureAssociationsSet("upk", "Unreal Package File");
-            //Main_Window.Utilities.FileAssociations.EnsureAssociationsSet("udk", "UDK Package File");
+            FileAssociations.EnsureAssociationsSet("upk", "Unreal Package File");
+            FileAssociations.EnsureAssociationsSet("udk", "UDK Package File");
         }
 
 

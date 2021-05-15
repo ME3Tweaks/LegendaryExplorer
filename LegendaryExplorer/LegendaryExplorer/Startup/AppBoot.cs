@@ -78,6 +78,7 @@ namespace LegendaryExplorer.Startup
             app.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             app.Dispatcher.UnhandledException += app.OnDispatcherUnhandledException; //only start handling them after bootup
 
+            Action actionDelegate = null;
             Task.Run(() =>
             {
                 //Fetch core count from WMI - this can take like 1-2 seconds
@@ -94,7 +95,7 @@ namespace LegendaryExplorer.Startup
                     //???
                 }
 
-                Action actionDelegate = HandleCommandLineJumplistCall(Environment.GetCommandLineArgs(), out int exitCode);
+                actionDelegate = HandleCommandLineJumplistCall(Environment.GetCommandLineArgs(), out int exitCode);
                 if (actionDelegate == null)
                 {
                     app.Shutdown(exitCode);
@@ -107,14 +108,8 @@ namespace LegendaryExplorer.Startup
                     GC.Collect();
                     //PendingAppLoadedAction = actionDelegate;
 
-
-
-                    //close splash after
-                    Thread.Sleep(2000);
-
                     // TODO: IMPLEMENT IN LEX
                     //GameController.InitializeMessageHook(mainWindow);
-                    //PendingAppLoadedAction?.Invoke();
 
 #if DEBUG
                     //StandardLibrary.InitializeStandardLib();
@@ -126,18 +121,33 @@ namespace LegendaryExplorer.Startup
                 app.ShutdownMode = ShutdownMode.OnMainWindowClose;
                 var mainWindow = new MainWindow();
                 mainWindow.Show();
+                actionDelegate?.Invoke();
             });
         }
 
         private static Action HandleCommandLineJumplistCall(string[] args, out int exitCode)
         {
             exitCode = 0;
-            if (args.Length < 2)
+            if (args.Any())
             {
-                return () => { }; //do nothing delgate. Will do nothing when main UI loads
+                // Non-single file have dll as first parameter
+                if (Path.GetFileName(args[0]) == "LegendaryExplorer.dll")
+                {
+                    if (args.Length == 1) return () => { };
+                    var l = args.ToList();
+                    l.RemoveAt(0);
+                    args = l.ToArray();
+                }
+            }
+            else
+            {
+                return () => { };
             }
 
-            string arg = args[1];
+            //TODO: REFACTOR THIS UGLY MESS
+            string arg = args[0];
+
+            /*
             if (arg == "JUMPLIST_PACKAGE_EDITOR")
             {
                 return () =>
@@ -197,55 +207,9 @@ namespace LegendaryExplorer.Startup
                     meshplorerWpf.Show();
                     meshplorerWpf.Activate();
                 };
-            }
-            /*
-
-            //Do not remove - used by Mass Effect Mod Manager to boot the tool
-            if (arg == "JUMPLIST_ASIMANAGER")
-            {
-                return () =>
-                {
-                    ASIManager asiManager = new ASIManager();
-                    asiManager.Show();
-                    asiManager.Activate();
-                };
-            }
-
-            //Do not remove - used by Mass Effect Mod Manager to boot the tool
-            if (arg == "JUMPLIST_MOUNTEDITOR")
-            {
-                return () =>
-                {
-                    MountEditorWPF mountEditorWpf = new MountEditorWPF();
-                    mountEditorWpf.Show();
-                    mountEditorWpf.Activate();
-                };
-            }
-
-            //Do not remove - used by Mass Effect Mod Manager to boot the tool
-            if (arg == "JUMPLIST_PACKAGEDUMPER")
-            {
-                return () =>
-                {
-                    PackageDumper.PackageDumper packageDumper = new PackageDumper.PackageDumper();
-                    packageDumper.Show();
-                    packageDumper.Activate();
-                };
-            }
-
-            //Do not remove - used by Mass Effect Mod Manager to boot the tool
-            if (arg == "JUMPLIST_DLCUNPACKER")
-            {
-                return () =>
-                {
-                    DLCUnpacker.DLCUnpackerUI dlcUnpacker = new DLCUnpacker.DLCUnpackerUI();
-                    dlcUnpacker.Show();
-                    dlcUnpacker.Activate();
-                };
             }*/
 
-
-            string ending = Path.GetExtension(args[1]).ToLower();
+            string ending = Path.GetExtension(arg).ToLower();
             switch (ending)
             {
                 case ".pcc":
@@ -257,7 +221,7 @@ namespace LegendaryExplorer.Startup
                     {
                         var editor = new PackageEditorWindow();
                         editor.Show();
-                        editor.LoadFile(args[1]);
+                        editor.LoadFile(arg);
                         editor.RestoreAndBringToFront();
                     };
                     //return 2; //Do not signal bring main forward
@@ -299,7 +263,10 @@ namespace LegendaryExplorer.Startup
         /// <param name="args"></param>
         public static void HandleDuplicateInstanceArgs(string[] args)
         {
-            // TODO: IMPLEMENT IN LEX
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                HandleCommandLineJumplistCall(args, out _)?.Invoke();
+            });
         }
     }
 }

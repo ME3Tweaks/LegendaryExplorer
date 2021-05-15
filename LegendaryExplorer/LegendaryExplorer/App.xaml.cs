@@ -73,5 +73,11 @@ namespace LegendaryExplorer
         {
             AppBoot.HandleDuplicateInstanceArgs(args);
         }
+
+        private void Application_Exit(object sender, ExitEventArgs e)
+        {
+            // Clean up single instance
+            SingleInstance<App>.Cleanup();
+        }
     }
 }
