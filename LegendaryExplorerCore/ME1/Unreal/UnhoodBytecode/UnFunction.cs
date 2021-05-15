@@ -307,7 +307,8 @@ namespace LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode
             //var childIdx = EndianReader.ToInt32(Export.DataReadOnly, 0x18, Export.FileRef.Endian);
             try
             {
-                var childIdx = EndianReader.ToInt32(Export.Data, 0x18, Export.FileRef.Endian);
+                var childProbe = Export.Game.IsLEGame() ? 0x14 : 0x18;
+                var childIdx = EndianReader.ToInt32(Export.Data, childProbe, Export.FileRef.Endian);
                 while (Export.FileRef.TryGetUExport(childIdx, out var parsingExp))
                 {
                     var data = parsingExp.DataReadOnly;
@@ -326,6 +327,7 @@ namespace LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode
 
                         return parsingExp.ClassName;
                     }
+
                     var nCdx = EndianReader.ToInt32(data, 0x10, Export.FileRef.Endian);
                     if (nCdx == childIdx || (parsingExp.Parent.UIndex != Export.UIndex)) // not sure what second half of this if statement is for, but i'm not going not modify it
                     {
