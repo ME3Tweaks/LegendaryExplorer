@@ -495,19 +495,19 @@ namespace LegendaryExplorer
                 subCategory = "Core",
                 description = "Sequence Editor is the toolset’s version of UDK’s UnrealKismet. With this cross-game tool, users can edit and create new sequences that control gameflow within and across levels.",
             });
-            //            set.Add(new Tool
-            //            {
-            //                name = "Texture Studio",
-            //                type = typeof(TextureStudioUI),
-            //                icon = Application.Current.FindResource("iconTextureStudio") as ImageSource,
-            //                open = () =>
-            //                {
-            //                    (new TextureStudioUI()).Show();
-            //                },
-            //                tags = new List<string> { "texture", "developer", "studio", "graphics" },
-            //                subCategory = "Meshes + Textures",
-            //                description = "Texture Studio is a tool designed for texture editing files in a directory of files, such as a DLC mod. It is not the same as other tools such as Mass Effect Modder, which is a game wide replacement tool.",
-            //            });
+            set.Add(new Tool
+            {
+                name = "Texture Studio",
+                type = typeof(Tools.TextureStudio.TextureStudioWindow),
+                icon = Application.Current.FindResource("iconTextureStudio") as ImageSource,
+                open = () =>
+                {
+                    (new Tools.TextureStudio.TextureStudioWindow()).Show();
+                },
+                tags = new List<string> { "texture", "developer", "studio", "graphics" },
+                subCategory = "Meshes + Textures",
+                description = "Texture Studio is a tool designed for texture editing files in a directory of files, such as a DLC mod. It is not the same as other tools such as Mass Effect Modder, which is a game wide replacement tool.",
+            });
             set.Add(new Tool
             {
                 name = "SFAR Explorer",

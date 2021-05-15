@@ -205,6 +205,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>SettingsBuilder.tt</DependentUpon>
     </Compile>
+    <Compile Update="SharedUI\Controls\InputComboBoxWPF.xaml.cs">
+      <DependentUpon>InputComboBoxWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Update="SharedUI\Controls\SearchBox.xaml.cs">
       <DependentUpon>SearchBox.xaml</DependentUpon>
     </Compile>
@@ -231,6 +234,9 @@
     </Compile>
     <Compile Update="Tools\Meshplorer\MeshplorerWPF.xaml.cs">
       <DependentUpon>MeshplorerWPF.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Tools\TextureStudio\MasterTextureSelector.xaml.cs">
+      <DependentUpon>MasterTextureSelector.xaml</DependentUpon>
     </Compile>
     <Compile Update="UserControls\ExportLoaderControls\MeshRendererWPF.xaml.cs">
       <DependentUpon>MeshRendererWPF.xaml</DependentUpon>
@@ -304,6 +310,9 @@
     <Page Update="MainWindow\ToolPanel.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="SharedUI\Controls\InputComboBoxWPF.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="SharedUI\Controls\SearchBox.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -338,6 +347,12 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Tools\SFARExplorer\SFARExplorerWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Tools\TextureStudio\MasterTextureSelector.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Tools\TextureStudio\TextureStudioWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="UserControls\ExportLoaderControls\TLKEditor.xaml">
