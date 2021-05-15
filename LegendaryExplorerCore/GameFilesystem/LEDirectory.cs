@@ -7,6 +7,9 @@ using System.IO;
 
 namespace LegendaryExplorerCore.GameFilesystem
 {
+    /// <summary>
+    /// Contains information about the main LE directory as well as Launcher location. LE[X]Directory classes will use the LEDirectory default path to build their game paths.
+    /// </summary>
     class LEDirectory
     {
         /// <summary>
@@ -30,6 +33,9 @@ namespace LegendaryExplorerCore.GameFilesystem
 #endif
         }
 
+        /// <summary>
+        /// Only useful if executable is run with -NoHomeDir. Otherwise this folder won't exist and will be worthless.
+        /// </summary>
         public static string BioWareDocumentsPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), @"BioWare", @"Mass Effect Legendary Edition");
 
         public static string LauncherPath => GetLauncherPath();

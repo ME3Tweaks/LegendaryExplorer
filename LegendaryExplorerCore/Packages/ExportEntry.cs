@@ -11,6 +11,7 @@ using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using PropertyChanged;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 

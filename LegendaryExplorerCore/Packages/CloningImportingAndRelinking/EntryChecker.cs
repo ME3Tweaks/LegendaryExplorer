@@ -11,6 +11,7 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 {
@@ -410,7 +411,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         if (op.Name == "TrackingSound" && entry.ClassName == "SFXSeqAct_SecurityCam" && referencedEntry.ClassName == "WwiseEvent") return; // Appears to be incorrect in vanilla. Don't report it as an issue
                     }
 
-                    var propInfo = UnrealObjectInfo.GetPropertyInfo(entry.Game, op.Name, containingClassOrStructName, containingExport: entry as ExportEntry);
+                    var propInfo = GlobalUnrealObjectInfo.GetPropertyInfo(entry.Game, op.Name, containingClassOrStructName, containingExport: entry as ExportEntry);
                     var customClassInfos = new Dictionary<string, ClassInfo>();
 
                     if (referencedEntry.ClassName == @"Class" && op.Value > 0)
@@ -418,10 +419,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                         // Make sure we have info about this class.
                         var lookupEnt = referencedEntry as ExportEntry;
-                        while (lookupEnt != null && lookupEnt.IsClass && !UnrealObjectInfo.GetClasses(entry.FileRef.Game).ContainsKey(lookupEnt.ObjectName))
+                        while (lookupEnt != null && lookupEnt.IsClass && !GlobalUnrealObjectInfo.GetClasses(entry.FileRef.Game).ContainsKey(lookupEnt.ObjectName))
                         {
                             // Needs dynamically generated
-                            var cc = UnrealObjectInfo.generateClassInfo(lookupEnt);
+                            var cc = GlobalUnrealObjectInfo.generateClassInfo(lookupEnt);
                             customClassInfos[lookupEnt.ObjectName] = cc;
                             lookupEnt = lookupEnt.Parent as ExportEntry;
                         }
@@ -429,7 +430,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         // If we did not pull it previously, we should try again with our custom info.
                         if (propInfo == null && customClassInfos.Any())
                         {
-                            propInfo = UnrealObjectInfo.GetPropertyInfo(entry.Game, op.Name,
+                            propInfo = GlobalUnrealObjectInfo.GetPropertyInfo(entry.Game, op.Name,
                                 containingClassOrStructName, customClassInfos[referencedEntry.ObjectName],
                                 containingExport: entry as ExportEntry);
                         }

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.Compression;
 using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorerCore
 {

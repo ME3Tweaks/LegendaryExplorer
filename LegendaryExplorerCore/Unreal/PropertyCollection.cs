@@ -11,6 +11,8 @@ using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
+
 #if AZURE
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #endif
@@ -69,7 +71,7 @@ namespace LegendaryExplorerCore.Unreal
 
             if (info.TryGetPropInfo(name, game, out PropertyInfo propInfo))
             {
-                return (T)UnrealObjectInfo.getDefaultProperty(game, name, propInfo, true, IsImmutable);
+                return (T)GlobalUnrealObjectInfo.getDefaultProperty(game, name, propInfo, true, IsImmutable);
             }
             //dynamic lookup
             try
@@ -80,10 +82,10 @@ namespace LegendaryExplorerCore.Unreal
                 {
                     exportToBuildFor = classExport;
                 }
-                ClassInfo classInfo = UnrealObjectInfo.generateClassInfo(exportToBuildFor);
+                ClassInfo classInfo = GlobalUnrealObjectInfo.generateClassInfo(exportToBuildFor);
                 if (classInfo.TryGetPropInfo(name, game, out propInfo))
                 {
-                    return (T)UnrealObjectInfo.getDefaultProperty(game, name, propInfo, true, IsImmutable);
+                    return (T)GlobalUnrealObjectInfo.getDefaultProperty(game, name, propInfo, true, IsImmutable);
                 }
             }
             catch
@@ -145,7 +147,7 @@ namespace LegendaryExplorerCore.Unreal
             sourceFilePath = export.FileRef.FilePath;
             TypeName = typeName;
             game = export.FileRef.Game;
-            info = UnrealObjectInfo.GetClassOrStructInfo(export.FileRef.Platform != MEPackage.GamePlatform.PS3 ? game : MEGame.ME3, typeName);
+            info = GlobalUnrealObjectInfo.GetClassOrStructInfo(export.FileRef.Platform != MEPackage.GamePlatform.PS3 ? game : MEGame.ME3, typeName);
         }
 
         public static PropertyCollection ReadProps(ExportEntry export, Stream rawStream, string typeName, bool includeNoneProperty = false, bool requireNoneAtEnd = true, IEntry entry = null)
@@ -201,7 +203,7 @@ namespace LegendaryExplorerCore.Unreal
                             string structType = pcc.GetNameEntry(stream.ReadInt32());
                             stream.Seek(4, SeekOrigin.Current);
                             long valOffset = stream.Position;
-                            if (UnrealObjectInfo.IsImmutable(structType, pcc.Game))
+                            if (GlobalUnrealObjectInfo.IsImmutable(structType, pcc.Game))
                             {
                                 PropertyCollection structProps = ReadImmutableStruct(export, stream, structType, size, entry);
                                 prop = new StructProperty(structType, structProps, nameRef, true) { ValueOffset = valOffset };
@@ -250,15 +252,15 @@ namespace LegendaryExplorerCore.Unreal
                                         //Debug.WriteLine("Reading enum for ME1/ME2 at 0x" + propertyStartPosition.ToString("X6"));
 
                                         //Attempt to get info without lookup first
-                                        var enumname = UnrealObjectInfo.GetEnumType(pcc.Game, name, typeName);
+                                        var enumname = GlobalUnrealObjectInfo.GetEnumType(pcc.Game, name, typeName);
                                         ClassInfo classInfo = null;
                                         if (enumname == null && entry is ExportEntry exp)
                                         {
-                                            classInfo = UnrealObjectInfo.generateClassInfo(exp);
+                                            classInfo = GlobalUnrealObjectInfo.generateClassInfo(exp);
                                         }
 
                                         //Use DB info or attempt lookup
-                                        enumType = new NameReference(enumname ?? UnrealObjectInfo.GetEnumType(pcc.Game, name, typeName, classInfo));
+                                        enumType = new NameReference(enumname ?? GlobalUnrealObjectInfo.GetEnumType(pcc.Game, name, typeName, classInfo));
                                     }
                                     try
                                     {
@@ -465,7 +467,7 @@ namespace LegendaryExplorerCore.Unreal
                 case PropertyType.ByteProperty:
                     if (template is EnumProperty)
                     {
-                        string enumType = UnrealObjectInfo.GetEnumType(pcc.Game, template.Name, structType);
+                        string enumType = GlobalUnrealObjectInfo.GetEnumType(pcc.Game, template.Name, structType);
                         return new EnumProperty(stream, pcc, enumType, template.Name) { StartOffset = startPos };
                     }
                     return new ByteProperty(stream, template.Name) { StartOffset = startPos };
@@ -479,7 +481,7 @@ namespace LegendaryExplorerCore.Unreal
                     return arrayProperty;//this implementation needs checked, as I am not 100% sure of it's validity.
                 case PropertyType.StructProperty:
                     long valuePos = stream.Position;
-                    PropertyCollection structProps = ReadImmutableStruct(export, stream, UnrealObjectInfo.GetPropertyInfo(pcc.Game, template.Name, structType, containingExport: export).Reference, 0, export);
+                    PropertyCollection structProps = ReadImmutableStruct(export, stream, GlobalUnrealObjectInfo.GetPropertyInfo(pcc.Game, template.Name, structType, containingExport: export).Reference, 0, export);
                     var structProp = new StructProperty(nestedStructType ?? structType, structProps, template.Name, true)
                     {
                         StartOffset = startPos,
@@ -500,7 +502,7 @@ namespace LegendaryExplorerCore.Unreal
         {
             IMEPackage pcc = export.FileRef;
             long arrayOffset = IsInImmutable ? stream.Position : stream.Position - 24;
-            ArrayType arrayType = UnrealObjectInfo.GetArrayType(pcc.Game, name, enclosingType, parsingEntry);
+            ArrayType arrayType = GlobalUnrealObjectInfo.GetArrayType(pcc.Game, name, enclosingType, parsingEntry);
             //Debug.WriteLine("Reading array length at 0x" + stream.Position.ToString("X5"));
             int count = stream.ReadInt32();
             switch (arrayType)
@@ -529,15 +531,15 @@ namespace LegendaryExplorerCore.Unreal
                     {
                         //Attempt to get info without lookup first
                         // PS3 is based on ME3 engine. So use ME3
-                        var enumname = UnrealObjectInfo.GetEnumType(pcc.Platform != MEPackage.GamePlatform.PS3 ? pcc.Game : MEGame.ME3, name, enclosingType);
+                        var enumname = GlobalUnrealObjectInfo.GetEnumType(pcc.Platform != MEPackage.GamePlatform.PS3 ? pcc.Game : MEGame.ME3, name, enclosingType);
                         ClassInfo classInfo = null;
                         if (enumname == null && parsingEntry is ExportEntry parsingExport)
                         {
-                            classInfo = UnrealObjectInfo.generateClassInfo(parsingExport);
+                            classInfo = GlobalUnrealObjectInfo.generateClassInfo(parsingExport);
                         }
 
                         //Use DB info or attempt lookup
-                        NameReference enumType = new NameReference(enumname ?? UnrealObjectInfo.GetEnumType(pcc.Game, name, enclosingType, classInfo));
+                        NameReference enumType = new NameReference(enumname ?? GlobalUnrealObjectInfo.GetEnumType(pcc.Game, name, enclosingType, classInfo));
 
                         var props = new List<EnumProperty>();
                         for (int i = 0; i < count; i++)
@@ -551,15 +553,15 @@ namespace LegendaryExplorerCore.Unreal
                     {
                         long startPos = stream.Position;
                         var props = new List<StructProperty>();
-                        var propertyInfo = UnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType, containingExport: parsingEntry as ExportEntry);
+                        var propertyInfo = GlobalUnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType, containingExport: parsingEntry as ExportEntry);
                         if (propertyInfo == null && parsingEntry is ExportEntry parsingExport)
                         {
-                            var currentInfo = UnrealObjectInfo.generateClassInfo(parsingExport);
-                            propertyInfo = UnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType, currentInfo, parsingExport);
+                            var currentInfo = GlobalUnrealObjectInfo.generateClassInfo(parsingExport);
+                            propertyInfo = GlobalUnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType, currentInfo, parsingExport);
                         }
 
                         string arrayStructType = propertyInfo?.Reference;
-                        if (IsInImmutable || UnrealObjectInfo.IsImmutable(arrayStructType, pcc.Platform != MEPackage.GamePlatform.PS3 ? pcc.Game : MEGame.ME3))
+                        if (IsInImmutable || GlobalUnrealObjectInfo.IsImmutable(arrayStructType, pcc.Platform != MEPackage.GamePlatform.PS3 ? pcc.Game : MEGame.ME3))
                         {
                             int arraySize = 0;
                             if (!IsInImmutable)
@@ -1319,7 +1321,7 @@ namespace LegendaryExplorerCore.Unreal
         {
             ValueOffset = stream.Position;
             EnumType = enumType;
-            EnumValues = UnrealObjectInfo.GetEnumValues(pcc.Game, enumType, true);
+            EnumValues = GlobalUnrealObjectInfo.GetEnumValues(pcc.Game, enumType, true);
 
             if (pcc.Game == MEGame.ME1 && pcc.Platform == MEPackage.GamePlatform.Xenon)
             {
@@ -1342,7 +1344,7 @@ namespace LegendaryExplorerCore.Unreal
             EnumType = enumType;
             NameReference enumVal = value;
             Value = enumVal;
-            EnumValues = UnrealObjectInfo.GetEnumValues(meGame, enumType, true);
+            EnumValues = GlobalUnrealObjectInfo.GetEnumValues(meGame, enumType, true);
         }
 
         /// <summary>
@@ -1354,7 +1356,7 @@ namespace LegendaryExplorerCore.Unreal
         public EnumProperty(NameReference enumType, MEGame meGame, NameReference? name = null) : base(name)
         {
             EnumType = enumType;
-            EnumValues = UnrealObjectInfo.GetEnumValues(meGame, enumType, true);
+            EnumValues = GlobalUnrealObjectInfo.GetEnumValues(meGame, enumType, true);
             if (EnumValues == null)
             {
                 throw new Exception($"{enumType} is not a valid enum type in {meGame}!");

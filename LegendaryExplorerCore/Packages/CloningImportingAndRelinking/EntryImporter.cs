@@ -11,6 +11,7 @@ using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 {
@@ -637,7 +638,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 _ => me3FilesSafeToImportFrom
             };
 
-        public static bool CanImport(string className, MEGame game) => CanImport(UnrealObjectInfo.GetClassOrStructInfo(game, className), game);
+        public static bool CanImport(string className, MEGame game) => CanImport(GlobalUnrealObjectInfo.GetClassOrStructInfo(game, className), game);
 
         public static bool CanImport(ClassInfo classInfo, MEGame game) => classInfo != null && IsSafeToImportFrom(classInfo.pccPath, game);
 
@@ -891,7 +892,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 }
             }
 
-            ClassInfo info = UnrealObjectInfo.GetClassOrStructInfo(pcc.Game, className);
+            ClassInfo info = GlobalUnrealObjectInfo.GetClassOrStructInfo(pcc.Game, className);
 
             //backup some package state so we can undo changes if something goes wrong
             int exportCount = pcc.ExportCount;
@@ -940,7 +941,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     }
 
                     //It's a class that's defined locally in every file that uses it.
-                    if (info.pccPath == UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
+                    if (info.pccPath == GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
                     {
                         loadStream = LegendaryExplorerCoreUtilities.GetCustomAppResourceStream(pcc.Game);
                         //string resourceFilePath = App.CustomResourceFilePath(pcc.Game);

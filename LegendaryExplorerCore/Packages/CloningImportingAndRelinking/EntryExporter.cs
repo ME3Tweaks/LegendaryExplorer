@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 {

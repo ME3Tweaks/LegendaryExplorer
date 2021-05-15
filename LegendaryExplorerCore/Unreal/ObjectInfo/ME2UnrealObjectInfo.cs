@@ -7,10 +7,9 @@ using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
-using LegendaryExplorerCore.Unreal.ObjectInfo;
 using Newtonsoft.Json;
 
-namespace LegendaryExplorerCore.Unreal
+namespace LegendaryExplorerCore.Unreal.ObjectInfo
 {
     public static class ME2UnrealObjectInfo
     {
@@ -316,7 +315,7 @@ namespace LegendaryExplorerCore.Unreal
 
         public static PropertyCollection getDefaultStructValue(string className, bool stripTransients)
         {
-            bool isImmutable = UnrealObjectInfo.IsImmutable(className, MEGame.ME2);
+            bool isImmutable =  GlobalUnrealObjectInfo.IsImmutable(className, MEGame.ME2);
             if (Structs.ContainsKey(className))
             {
                 ClassInfo info = Structs[className];
@@ -356,7 +355,7 @@ namespace LegendaryExplorerCore.Unreal
                         filepath = info.pccPath;
                         loadStream = new MemoryStream(File.ReadAllBytes(info.pccPath));
                     }
-                    else if (info.pccPath == UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
+                    else if (info.pccPath ==  GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
                     {
                         filepath = "GAMERESOURCES_ME2";
                         loadStream = LegendaryExplorerCoreUtilities.LoadFileFromCompressedResource("GameResources.zip", LegendaryExplorerCoreLib.CustomResourceFileName(MEGame.ME2));
@@ -449,7 +448,7 @@ namespace LegendaryExplorerCore.Unreal
                             return null;
                     }
                 case PropertyType.StructProperty:
-                    isImmutable = isImmutable || UnrealObjectInfo.IsImmutable(propInfo.Reference, MEGame.ME2);
+                    isImmutable = isImmutable ||  GlobalUnrealObjectInfo.IsImmutable(propInfo.Reference, MEGame.ME2);
                     return new StructProperty(propInfo.Reference, getDefaultStructValue(propInfo.Reference, stripTransients), propName, isImmutable);
                 case PropertyType.None:
                 case PropertyType.Unknown:
@@ -522,14 +521,14 @@ namespace LegendaryExplorerCore.Unreal
             {
                 baseClass = "Texture2D",
                 exportIndex = 0,
-                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
+                pccPath =  GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
             };
 
             NewClasses["StaticMesh"] = new ClassInfo
             {
                 baseClass = "Object",
                 exportIndex = 0,
-                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                pccPath =  GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 properties =
                     {
                         new KeyValuePair<string, PropertyInfo>("UseSimpleRigidBodyCollision", new PropertyInfo(PropertyType.BoolProperty)),
@@ -564,7 +563,7 @@ namespace LegendaryExplorerCore.Unreal
             {
                 baseClass = "SequenceAction",
                 exportIndex = 2,
-                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
+                pccPath =  GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
             };
             sequenceObjects["SeqAct_SendMessageToME3Explorer"] = new SequenceObjectInfo {ObjInstanceVersion = 2};
 
@@ -572,7 +571,7 @@ namespace LegendaryExplorerCore.Unreal
             {
                 baseClass = "SequenceAction",
                 exportIndex = 4,
-                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
+                pccPath =  GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
             };
             sequenceObjects["SeqAct_ME3ExpDumpActors"] = new SequenceObjectInfo {ObjInstanceVersion = 2};
 
@@ -580,7 +579,7 @@ namespace LegendaryExplorerCore.Unreal
             {
                 baseClass = "SequenceAction",
                 exportIndex = 6,
-                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
+                pccPath =  GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
             };
             sequenceObjects["SeqAct_ME3ExpAcessDumpedActorsList"] = new SequenceObjectInfo {ObjInstanceVersion = 2};
 
@@ -588,7 +587,7 @@ namespace LegendaryExplorerCore.Unreal
             {
                 baseClass = "SequenceAction",
                 exportIndex = 8,
-                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
+                pccPath =  GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
             };
             sequenceObjects["SeqAct_ME3ExpGetPlayerCamPOV"] = new SequenceObjectInfo {ObjInstanceVersion = 2};
 
@@ -596,7 +595,7 @@ namespace LegendaryExplorerCore.Unreal
             {
                 baseClass = "SequenceAction",
                 exportIndex = 10,
-                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                pccPath =  GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 properties =
                 {
                     new KeyValuePair<string, PropertyInfo>("m_oTarget", new PropertyInfo(PropertyType.ObjectProperty, "Actor")),
@@ -610,7 +609,7 @@ namespace LegendaryExplorerCore.Unreal
             {
                 baseClass = "SequenceAction",
                 exportIndex = 16,
-                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                pccPath =  GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 properties =
                 {
                     new KeyValuePair<string, PropertyInfo>("bSetRotation", new PropertyInfo(PropertyType.BoolProperty)),

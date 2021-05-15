@@ -5,6 +5,7 @@ using System.Text;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using InterpCurveVector = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve<LegendaryExplorerCore.SharpDX.Vector3>;
 using InterpCurveFloat = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve<float>;
 
@@ -49,7 +50,7 @@ namespace LegendaryExplorerCore.Matinee
             return group;
         }
 
-        public static List<ClassInfo> GetInterpTracks(MEGame game) => UnrealObjectInfo.GetNonAbstractDerivedClassesOf("InterpTrack", game);
+        public static List<ClassInfo> GetInterpTracks(MEGame game) => GlobalUnrealObjectInfo.GetNonAbstractDerivedClassesOf("InterpTrack", game);
 
         public static ExportEntry AddNewTrackToGroup(ExportEntry interpGroup, string trackClass)
         {

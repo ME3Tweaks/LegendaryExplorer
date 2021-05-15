@@ -8,6 +8,7 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -132,8 +133,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public static void TrashIncompatibleEntries(MEPackage pcc, MEGame oldGame, MEGame newGame)
         {
             var entries = new EntryTree(pcc);
-            var oldClasses = UnrealObjectInfo.GetClasses(oldGame);
-            var newClasses = UnrealObjectInfo.GetClasses(newGame);
+            var oldClasses = GlobalUnrealObjectInfo.GetClasses(oldGame);
+            var newClasses = GlobalUnrealObjectInfo.GetClasses(newGame);
             var classesToRemove = oldClasses.Keys.Except(newClasses.Keys).ToHashSet();
             foreach (IEntry entry in entries)
             {
@@ -147,7 +148,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public static PropertyCollection RemoveIncompatibleProperties(IMEPackage sourcePcc, PropertyCollection props, string typeName, MEGame newGame)
         {
-            var infoProps = UnrealObjectInfo.GetAllProperties(newGame, typeName);
+            var infoProps = GlobalUnrealObjectInfo.GetAllProperties(newGame, typeName);
             infoProps.KeyComparer = StringComparer.OrdinalIgnoreCase;
             var newProps = new PropertyCollection();
             foreach (Property prop in props)
@@ -160,7 +161,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                             //don't think these exist? if they do, delete them
                             break;
                         case ArrayProperty<EnumProperty> aep:
-                            if (UnrealObjectInfo.GetEnumValues(newGame, aep.Reference) is List<NameReference> enumValues)
+                            if (GlobalUnrealObjectInfo.GetEnumValues(newGame, aep.Reference) is List<NameReference> enumValues)
                             {
                                 foreach (EnumProperty enumProperty in aep)
                                 {
@@ -185,7 +186,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                             newProps.Add(asp);
                             break;
                         case ArrayProperty<StructProperty> asp:
-                            if (UnrealObjectInfo.GetStructs(newGame).ContainsKey(asp.Reference))
+                            if (GlobalUnrealObjectInfo.GetStructs(newGame).ContainsKey(asp.Reference))
                             {
                                 if (HasIncompatibleImmutabilities(asp.Reference, out bool newImmutability)) break;
                                 foreach (StructProperty structProperty in asp)
@@ -200,7 +201,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                             //script related, so just delete it.
                             break;
                         case EnumProperty enumProperty:
-                            if (UnrealObjectInfo.GetEnumValues(newGame, enumProperty.EnumType) is List<NameReference> values)
+                            if (GlobalUnrealObjectInfo.GetEnumValues(newGame, enumProperty.EnumType) is List<NameReference> values)
                             {
                                 if (!values.Contains(enumProperty.Value))
                                 {
@@ -219,7 +220,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                             }
                         case StructProperty structProperty:
                             string structType = structProperty.StructType;
-                            if (UnrealObjectInfo.GetStructs(newGame).ContainsKey(structType))
+                            if (GlobalUnrealObjectInfo.GetStructs(newGame).ContainsKey(structType))
                             {
                                 if (HasIncompatibleImmutabilities(structType, out bool newImmutability)) break;
                                 structProperty.Properties = RemoveIncompatibleProperties(sourcePcc, structProperty.Properties, structType, newGame);
@@ -238,11 +239,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             bool HasIncompatibleImmutabilities(string structType, out bool newImmutability)
             {
-                bool sourceIsImmutable = UnrealObjectInfo.IsImmutable(structType, sourcePcc.Game);
-                newImmutability = UnrealObjectInfo.IsImmutable(structType, newGame);
+                bool sourceIsImmutable = GlobalUnrealObjectInfo.IsImmutable(structType, sourcePcc.Game);
+                newImmutability = GlobalUnrealObjectInfo.IsImmutable(structType, newGame);
 
-                if (sourceIsImmutable && newImmutability && !UnrealObjectInfo.GetClassOrStructInfo(sourcePcc.Game, structType).properties
-                                                                             .SequenceEqual(UnrealObjectInfo.GetClassOrStructInfo(newGame, structType).properties))
+                if (sourceIsImmutable && newImmutability && !GlobalUnrealObjectInfo.GetClassOrStructInfo(sourcePcc.Game, structType).properties
+                                                                             .SequenceEqual(GlobalUnrealObjectInfo.GetClassOrStructInfo(newGame, structType).properties))
                 {
                     //both immutable, but have different properties
                     return true;

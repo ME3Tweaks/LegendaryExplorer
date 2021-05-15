@@ -7,6 +7,7 @@ using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Lexing;
@@ -260,7 +261,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         }
                         break;
                     case EnumProperty enumProperty:
-                        if (enumProperty.Value != UnrealObjectInfo.GetEnumValues(game, enumProperty.EnumType).FirstOrDefault())
+                        if (enumProperty.Value != GlobalUnrealObjectInfo.GetEnumValues(game, enumProperty.EnumType).FirstOrDefault())
                         {
                             result.Add(prop);
                         }

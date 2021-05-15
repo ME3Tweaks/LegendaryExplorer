@@ -7,6 +7,7 @@ using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.TLK.ME1;
 using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using Newtonsoft.Json;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
@@ -140,7 +141,7 @@ namespace LegendaryExplorerCore.Packages
         public bool isAbstract;
 
         public bool TryGetPropInfo(string name, MEGame game, out PropertyInfo propInfo) =>
-            properties.TryGetValue(name, out propInfo) || (UnrealObjectInfo.GetClassOrStructInfo(game, baseClass)?.TryGetPropInfo(name, game, out propInfo) ?? false);
+            properties.TryGetValue(name, out propInfo) || (GlobalUnrealObjectInfo.GetClassOrStructInfo(game, baseClass)?.TryGetPropInfo(name, game, out propInfo) ?? false);
     }
 
     public interface IMEPackage : IDisposable
