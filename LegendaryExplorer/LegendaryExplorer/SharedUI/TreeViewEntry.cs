@@ -192,8 +192,7 @@ namespace LegendaryExplorer.SharedUI
                                 {
                                     //check if exec
                                     var data = ee.Data;
-                                    if (Entry.FileRef.Game == MEGame.ME3 ||
-                                        Entry.FileRef.Platform == MEPackage.GamePlatform.PS3)
+                                    if (Entry.FileRef.Game == MEGame.ME3 || Entry.FileRef.Platform == MEPackage.GamePlatform.PS3 || Entry.Game.IsLEGame())
                                     {
                                         var flags = EndianReader.ToInt32(data, data.Length - 4, ee.FileRef.Endian);
                                         FlagValues fs = new FlagValues(flags, UE3FunctionReader._flagSet);
@@ -223,7 +222,7 @@ namespace LegendaryExplorer.SharedUI
 
                                         if (_subtext == "") _subtext = null;
                                     }
-                                    else
+                                    else if (Entry.Game.IsOTGame()) // ME1 / ME2
                                     {
                                         //This could be -14 if it's defined as Net... we would have to decompile the whole function to know though...
                                         var flags = EndianReader.ToInt32(data, data.Length - 12, ee.FileRef.Endian);
