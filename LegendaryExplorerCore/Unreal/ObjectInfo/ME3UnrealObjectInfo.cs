@@ -904,7 +904,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                         }
                     }
                 }
-                nextExport = EndianReader.ToInt32(entry.Data, export.Game.IsOTGame() ? 0x10 : 0x08, export.FileRef.Endian);
+                nextExport = EndianReader.ToInt32(entry.Data, 0x10, export.FileRef.Endian);
             }
             return info;
         }
