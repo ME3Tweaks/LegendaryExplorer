@@ -847,6 +847,16 @@ namespace ME3Explorer.FaceFX
             set => SetProperty(ref _lengthAsString, value);
         }
 
+        public string NameAsString
+        {
+            get => Line.NameAsString;
+            set
+            {
+                Line.NameAsString = value;
+                OnPropertyChanged();
+            }
+        }
+
         public List<FaceFXControlPoint> Points
         {
             get => Line?.Points;

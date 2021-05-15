@@ -39,7 +39,7 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="SelectedLineEntry">
                         <StackPanel>
-                            <TextBlock Text="{Binding Line.NameAsString}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding NameAsString}" VerticalAlignment="Center"/>
                             <TextBlock Text="{Binding TLKString}" TextWrapping="Wrap" FontSize="10" FontStyle="Italic"  Visibility="{Binding TLKString, Converter={StaticResource NullVisibilityConverter}}"/>
                             <TextBlock Text="{Binding LengthAsString}" VerticalAlignment="Center" Foreground="Gray"/>
                             <StackPanel.ContextMenu>

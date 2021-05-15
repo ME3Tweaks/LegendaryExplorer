@@ -371,9 +371,12 @@ namespace ME3Explorer.AssetDatabase
             meshPcc?.Dispose();
             textPcc?.Dispose();
 
+
             audioPcc = null;
             meshPcc = null;
             textPcc = null;
+
+            ClearDataBase();
         }
 
         #endregion
