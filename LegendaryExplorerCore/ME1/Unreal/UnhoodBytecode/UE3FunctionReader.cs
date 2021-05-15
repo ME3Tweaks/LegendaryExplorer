@@ -85,7 +85,7 @@ namespace LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode
             int nativeIndex = reader.ReadInt16();
             int operatorPrecedence = reader.ReadByte();
             int functionFlags = reader.ReadInt32();
-            if ((functionFlags & _flagSet.GetMask("Net")) != 0)
+            if (export.Game.IsOTGame() && (functionFlags & _flagSet.GetMask("Net")) != 0)
             {
                 reader.ReadInt16(); // repOffset
             }

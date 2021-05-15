@@ -303,7 +303,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 //Footer
                 if (CurrentLoadedExport.ClassName == "Function")
                 {
-                    pos = data.Length - (func.HasFlag("Net") ? 17 : 15);
+                    pos = data.Length - (func.HasFlag("Net") && Pcc.Game.IsOTGame() ? 17 : 15);
                     string flagStr = func.GetFlags();
                     ScriptFooterBlocks.Add(new ScriptHeaderItem("Native Index",
                         EndianReader.ToInt16(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
@@ -316,11 +316,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     ScriptFooterBlocks.Add(new ScriptHeaderItem("Flags", $"0x{functionFlags:X8} {flagStr}", pos));
                     pos += 4;
 
-                    //if ((functionFlags & func._flagSet.GetMask("Net")) != 0)
-                    //{
-                    //ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 1 (RepOffset?)", EndianReader.ToInt16(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
-                    //pos += 2;
-                    //}
+                    if (Pcc.Game.IsOTGame() && func.HasFlag("Net"))
+                    {
+                        ScriptFooterBlocks.Add(new ScriptHeaderItem("ReplicationOffset", EndianReader.ToInt16(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
+                        pos += 2;
+                    }
 
                     int friendlyNameIndex = EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian);
                     ScriptFooterBlocks.Add(

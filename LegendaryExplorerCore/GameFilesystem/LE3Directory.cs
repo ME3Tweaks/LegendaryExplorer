@@ -96,7 +96,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                     {
                         return null;
                     }
-                    _DefaultGamePath = Path.Combine(LegendaryExplorerCoreLibSettings.Instance.LEDirectory, "Game", "ME1");
+                    _DefaultGamePath = Path.Combine(LegendaryExplorerCoreLibSettings.Instance.LEDirectory, "Game", "ME3");
                 }
                 return Path.GetFullPath(_DefaultGamePath); //normalize
             }

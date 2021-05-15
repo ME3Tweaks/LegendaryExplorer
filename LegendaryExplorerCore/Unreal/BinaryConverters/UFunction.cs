@@ -19,16 +19,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             base.Serialize(sc);
             sc.Serialize(ref NativeIndex);
-            if (sc.Game <= MEGame.ME2) //This is present on PS3 ME1/ME2 but not ME3 for some reason.
+            if (sc.Game is MEGame.ME1 or MEGame.ME2 or MEGame.LE1 or MEGame.LE2) //This is present on PS3 ME1/ME2 but not ME3 for some reason.
             {
                 sc.Serialize(ref OperatorPrecedence);
             }
             sc.Serialize(ref FunctionFlags);
-            if (sc.Game <= MEGame.ME2 && sc.Pcc.Platform != MEPackage.GamePlatform.PS3 && FunctionFlags.HasFlag(FunctionFlags.Net))
+            if (sc.Game is MEGame.ME1 or MEGame.ME2 && sc.Pcc.Platform != MEPackage.GamePlatform.PS3 && FunctionFlags.HasFlag(FunctionFlags.Net))
             {
                 sc.Serialize(ref ReplicationOffset);
             }
-            if (sc.Game <= MEGame.ME2 && sc.Pcc.Platform != MEPackage.GamePlatform.PS3)
+            if (sc.Game is MEGame.ME1 or MEGame.ME2 or MEGame.LE1 or MEGame.LE2 && sc.Pcc.Platform != MEPackage.GamePlatform.PS3)
             {
                 sc.Serialize(ref FriendlyName);
             }
