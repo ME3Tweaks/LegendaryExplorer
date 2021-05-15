@@ -187,19 +187,19 @@ namespace LegendaryExplorer
 //                subCategory = "Debugging",
 //                description = "ASI Manager allows you to install and uninstall ASI mods for all three Mass Effect Trilogy games. ASI mods allow you to run native mods that allow you to do things such as kismet logging or function call monitoring."
 //            });
-//            set.Add(new Tool
-//            {
-//                name = "Audio Localizer",
-//                type = typeof(AudioLocalizer),
-//                icon = Application.Current.FindResource("iconAudioLocalizer") as ImageSource,
-//                open = () =>
-//                {
-//                    (new AudioLocalizer()).Show();
-//                },
-//                tags = new List<string> { "utility", "localization", "LOC_INT", "translation" },
-//                subCategory = "Utilities",
-//                description = "Audio Localizer allows you to copy the afc offsets and filenames from localized files to your mods LOC_INT files."
-//            });
+            set.Add(new Tool
+            {
+                name = "Audio Localizer",
+                type = typeof(Tools.AudioLocalizer.AudioLocalizerWindow),
+                icon = Application.Current.FindResource("iconAudioLocalizer") as ImageSource,
+                open = () =>
+                {
+                    (new Tools.AudioLocalizer.AudioLocalizerWindow()).Show();
+                },
+                tags = new List<string> { "utility", "localization", "LOC_INT", "translation" },
+                subCategory = "Utilities",
+                description = "Audio Localizer allows you to copy the afc offsets and filenames from localized files to your mods LOC_INT files."
+            });
 //            set.Add(new Tool
 //            {
 //                name = "Bik Movie Extractor",
@@ -334,19 +334,19 @@ namespace LegendaryExplorer
                 subCategory = "Utilities",
                 description = "Package Dumper is a utility for dumping package information to files that can be searched with tools like GrepWin. Names, Imports, Exports, Properties and more are dumped."
             });
-            //            set.Add(new Tool
-            //            {
-            //                name = "Dialogue Dumper",
-            //                type = typeof(DialogueDumper.DialogueDumper),
-            //                icon = Application.Current.FindResource("iconDialogueDumper") as ImageSource,
-            //                open = () =>
-            //                {
-            //                    (new DialogueDumper.DialogueDumper()).Show();
-            //                },
-            //                tags = new List<string> { "utility", "convo", "dialogue", "text", "dump" },
-            //                subCategory = "Utilities",
-            //                description = "Dialogue Dumper is a utility for dumping conversation strings from games into an excel file. It shows the actor that spoke the line and which file the line is taken from. It also produces a table of who owns which conversation, for those that the owner is anonymous."
-            //            });
+            set.Add(new Tool
+            {
+                name = "Dialogue Dumper",
+                type = typeof(Tools.DialogueDumper.DialogueDumperWindow),
+                icon = Application.Current.FindResource("iconDialogueDumper") as ImageSource,
+                open = () =>
+                {
+                    (new Tools.DialogueDumper.DialogueDumperWindow()).Show();
+                },
+                tags = new List<string> { "utility", "convo", "dialogue", "text", "dump" },
+                subCategory = "Utilities",
+                description = "Dialogue Dumper is a utility for dumping conversation strings from games into an excel file. It shows the actor that spoke the line and which file the line is taken from. It also produces a table of who owns which conversation, for those that the owner is anonymous."
+            });
             set.Add(new Tool
             {
                 name = "Asset Database",

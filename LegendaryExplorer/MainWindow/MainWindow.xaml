@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LegendaryExplorer"
         mc:Ignorable="d"
-        Title="Legendary Explorer" Height="450" Width="800">
+        Title="Legendary Explorer" Height="600" Width="800">
     <Grid>
-        <local:ToolPanel x:Name="mainToolPanel" Rows="3" Columns="7" Category="Tools"/>
+        <local:ToolPanel x:Name="mainToolPanel" Rows="4" Columns="7" Category="Tools"/>
     </Grid>
 </Window>
