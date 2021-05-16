@@ -33,6 +33,13 @@ namespace LegendaryExplorer.Tools.CoalescedCompiler
 			ConvertCommand = new GenericCommand(Convert, () => !string.IsNullOrEmpty(SourcePath) && !string.IsNullOrEmpty(DestinationPath));
 		}
 
+        private bool _convertingLECoalesced;
+        public bool ConvertingLECoalesced
+        {
+            get => _convertingLECoalesced;
+            set => SetProperty(ref _convertingLECoalesced, value);
+        }
+
 		private string _destinationPath = Settings.CoalescedEditor_DestinationPath;
 		public string DestinationPath
 		{
@@ -64,9 +71,10 @@ namespace LegendaryExplorer.Tools.CoalescedCompiler
 		private void SelectSourceFile()
 		{
 			var dlg = new CommonOpenFileDialog("Open File");
-			dlg.Filters.Add(new CommonFileDialogFilter("Coalesced Files", "*.bin;*.xml"));
+			dlg.Filters.Add(new CommonFileDialogFilter("Coalesced Files", "*.bin;*.xml;*.extractedbin"));
 			dlg.Filters.Add(new CommonFileDialogFilter("Binary Coalesced Files", "*.bin"));
 			dlg.Filters.Add(new CommonFileDialogFilter("XML Coalesced Files", "*.xml"));
+            dlg.Filters.Add(new CommonFileDialogFilter("LE Coalesced Manifest Files", "*.extractedbin"));
 
 			if (dlg.ShowDialog(this) != CommonFileDialogResult.Ok)
 			{
@@ -85,12 +93,16 @@ namespace LegendaryExplorer.Tools.CoalescedCompiler
 					break;
 				}
 				case ".xml":
-				{
-					SourceType = CoalescedType.Xml;
-
-					break;
+                {
+                    SourceType = CoalescedType.Xml;
+                    break;
 				}
-			}
+                case ".extractedbin":
+                {
+                    SourceType = CoalescedType.ExtractedBin;
+                    break;
+                }
+            }
 
 			if (!string.IsNullOrEmpty(DestinationPath) && ChangeDestinationCheckBox.IsChecked == false)
 			{
@@ -100,19 +112,34 @@ namespace LegendaryExplorer.Tools.CoalescedCompiler
 			switch (SourceType)
 			{
 				case CoalescedType.Binary:
-				{
-					DestinationPath = Path.ChangeExtension(SourcePath, null);
-					DestinationType = CoalescedType.Xml;
+                {
+                    if (CoalescedConverter.IsOTCoalesced(SourcePath))
+                    {
+                        ConvertingLECoalesced = false;
+                        DestinationPath = Path.ChangeExtension(SourcePath, null);
+                        DestinationType = CoalescedType.Xml;
+                    }
+                    else
+                    {
+                        ConvertingLECoalesced = true;
+                        DestinationPath = Path.ChangeExtension(SourcePath, null);
+                        DestinationType = CoalescedType.ExtractedBin;
+                    }
 
 					break;
 				}
 				case CoalescedType.Xml:
-				{
+                {
 					DestinationPath = Path.ChangeExtension(SourcePath, "bin");
 					DestinationType = CoalescedType.Binary;
-
-					break;
+                    break;
 				}
+                case CoalescedType.ExtractedBin:
+                {
+                    DestinationPath = Path.Combine(Path.GetDirectoryName(SourcePath), LECoalescedConverter.GetDestinationPathFromManifest(SourcePath));
+                    DestinationType = CoalescedType.Binary;
+                    break;
+                }
 			}
 		}
 
@@ -121,31 +148,29 @@ namespace LegendaryExplorer.Tools.CoalescedCompiler
 			switch (SourceType)
 			{
 				case CoalescedType.Binary:
+				{
+					var dlg = new CommonOpenFileDialog("Select Folder")
 					{
-						var dlg = new CommonOpenFileDialog("Select Folder")
-						{
-							IsFolderPicker = true
-						};
+						IsFolderPicker = true
+					};
 
-						if (dlg.ShowDialog(this) != CommonFileDialogResult.Ok)
-						{
-							return;
-						}
-
-						DestinationPath = dlg.FileName;
-						//DestinationType = CoalescedType.Binary;
-
-						break;
+					if (dlg.ShowDialog(this) != CommonFileDialogResult.Ok)
+					{
+						return;
 					}
 
-				case CoalescedType.Xml:
-					{
-						var dlg = new CommonOpenFileDialog("Open File");
-						dlg.Filters.Add(new CommonFileDialogFilter("Coalesced Files", "*.bin;*.xml"));
-						dlg.Filters.Add(new CommonFileDialogFilter("Binary Coalesced Files", "*.bin"));
-						dlg.Filters.Add(new CommonFileDialogFilter("XML Coalesced Files", "*.xml"));
+					DestinationPath = dlg.FileName;
 
-						if (dlg.ShowDialog(this) != CommonFileDialogResult.Ok)
+                    break;
+				}
+
+				case CoalescedType.Xml:
+				case CoalescedType.ExtractedBin:
+                {
+						var dlg = new CommonOpenFileDialog("Open File");
+                        dlg.Filters.Add(new CommonFileDialogFilter("Binary Coalesced Files", "*.bin"));
+
+                        if (dlg.ShowDialog(this) != CommonFileDialogResult.Ok)
 						{
 							return;
 						}
@@ -193,22 +218,38 @@ namespace LegendaryExplorer.Tools.CoalescedCompiler
 				throw new FileNotFoundException("Source file not found.");
 			}
 
-			switch (DestinationType)
+			switch (SourceType)
 			{
+
 				case CoalescedType.Binary:
 					if (!Directory.Exists(Path.GetDirectoryName(DestinationPath) ?? DestinationPath))
 					{
 						Directory.CreateDirectory(DestinationPath);
 					}
-                    CoalescedConverter.ConvertToBin(SourcePath, DestinationPath);
+
+                    if (ConvertingLECoalesced)
+                    {
+                        LECoalescedConverter.Unpack(SourcePath, DestinationPath);
+					}
+                    else
+                    {
+                        CoalescedConverter.ConvertToXML(SourcePath, DestinationPath);
+                    }
 					break;
 				case CoalescedType.Xml:
-					if (!Directory.Exists(DestinationPath))
+                    if (!Directory.Exists(DestinationPath))
 					{
 						Directory.CreateDirectory(DestinationPath);
 					}
-                    CoalescedConverter.ConvertToXML(SourcePath, DestinationPath);
+                    CoalescedConverter.ConvertToBin(SourcePath, DestinationPath);
 					break;
+				case CoalescedType.ExtractedBin:
+                    if (!Directory.Exists(DestinationPath))
+                    {
+                        Directory.CreateDirectory(DestinationPath);
+                    }
+					LECoalescedConverter.Pack(SourcePath, DestinationPath);
+                    break;
 				default:
                     throw new ArgumentOutOfRangeException();
 			}

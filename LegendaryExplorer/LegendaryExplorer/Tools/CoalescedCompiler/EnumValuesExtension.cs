@@ -37,6 +37,9 @@ namespace LegendaryExplorer.Tools.CoalescedCompiler
 
 		//[Display(Name = "Xml")]
 		[Description("Xml Coalesced file.")]
-		Xml
+		Xml,
+
+        [Description("Unpacked LE Coalesced.")]
+        ExtractedBin
 	}
 }

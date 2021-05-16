@@ -12,8 +12,10 @@ using LegendaryExplorerCore.Gammtek.IO;
 namespace LegendaryExplorerCore.Coalesced
 {
     public static class CoalescedConverter
-	{
-		public static readonly SortedSet<string> ProperNames =
+    {
+        public static readonly int CoalescedMagicNumber = 1718448749;
+
+        public static readonly SortedSet<string> ProperNames =
 			new SortedSet<string>
 			{
 				"BioAI",
@@ -309,5 +311,13 @@ namespace LegendaryExplorerCore.Coalesced
 		{
 			return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 		}
+
+        public static bool IsOTCoalesced(string sourceFile)
+        {
+            byte[] bytes = new byte[4];
+            using FileStream fs = new FileStream(sourceFile, FileMode.Open);
+            fs.Read(bytes, 0, 4);
+            return (BitConverter.ToInt32(bytes, 0) == CoalescedMagicNumber);
+        }
 	}
 }
