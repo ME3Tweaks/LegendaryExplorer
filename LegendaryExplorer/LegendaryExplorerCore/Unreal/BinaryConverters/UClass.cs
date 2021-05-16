@@ -73,7 +73,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
 
             uIndices.Add((Defaults, "Defaults"));
-            if (game >= MEGame.ME3)
+            if (game is MEGame.UDK or MEGame.ME3 or MEGame.LE3)
             {
                 uIndices.AddRange(FullFunctionsList.Select((u, i) => (u, $"FullFunctionsList[{i}]")));
             }

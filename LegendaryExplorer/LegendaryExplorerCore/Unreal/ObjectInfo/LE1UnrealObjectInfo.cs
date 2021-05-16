@@ -413,9 +413,10 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             }
         }
 
-        public static bool InheritsFrom(string className, string baseClass, Dictionary<string, ClassInfo> customClassInfos = null)
+        public static bool InheritsFrom(string className, string baseClass, Dictionary<string, ClassInfo> customClassInfos = null, string knownSuperclass = null)
         {
             if (baseClass == @"Object") return true; //Everything inherits from Object
+            if (knownSuperclass != null && baseClass == knownSuperclass) return true; // We already know it's a direct descendant
             while (true)
             {
                 if (className == baseClass)
@@ -430,6 +431,13 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 else if (Classes.ContainsKey(className))
                 {
                     className = Classes[className].baseClass;
+                }
+                else if (knownSuperclass != null && Classes.ContainsKey(knownSuperclass))
+                {
+                    // We don't have this class in DB but we have super class (e.g. this is custom class without custom class info generated).
+                    // We will just ignore this class and jump to our known super class
+                    className = Classes[knownSuperclass].baseClass;
+                    knownSuperclass = null; // Don't use it again
                 }
                 else
                 {
@@ -451,6 +459,8 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
             foreach (string filePath in MELoadedFiles.GetOfficialFiles(MEGame.LE1))
             {
+                if (!filePath.EndsWith("Engine.pcc"))
+                    continue;
                 if (Path.GetExtension(filePath) == ".pcc")
                 {
                     using IMEPackage pcc = MEPackageHandler.OpenLE1Package(filePath);
@@ -461,6 +471,8 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                         string objectName = exportEntry.ObjectName.Name;
                         if (className == "Enum")
                         {
+                            if (exportEntry.ObjectName == "TriangleSorting")
+                                Debugger.Break();
                             generateEnumValues(exportEntry, NewEnums);
                         }
                         else if (className == "Class")

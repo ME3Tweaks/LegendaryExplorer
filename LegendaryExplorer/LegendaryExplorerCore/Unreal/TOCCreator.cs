@@ -70,17 +70,17 @@ namespace LegendaryExplorerCore.Unreal
         /// </summary>
         /// <param name="game">Game to search installation directory for</param>
         /// <returns></returns>
-        private static List<string> GetTOCableFoldersForGame(MEGame game)
+        private static List<string> GetTOCableFoldersForGame(MEGame game, string gamePathRoot = null)
         {
             List<string> tocDirectories = new()
             {
-                MEDirectories.GetBioGamePath(game)
+                MEDirectories.GetBioGamePath(game, gamePathRoot)
             };
 
 
-            if (Directory.Exists(MEDirectories.GetDLCPath(game)))
+            if (Directory.Exists(MEDirectories.GetDLCPath(game, gamePathRoot)))
             {
-                var dlcFolders = new DirectoryInfo(MEDirectories.GetDLCPath(game)).GetDirectories();
+                var dlcFolders = new DirectoryInfo(MEDirectories.GetDLCPath(game, gamePathRoot)).GetDirectories();
                 tocDirectories.AddRange(dlcFolders.Where(f => f.Name.StartsWith("DLC_")).Select(f => f.ToString()));
             }
 
@@ -96,14 +96,14 @@ namespace LegendaryExplorerCore.Unreal
         public static bool IsTOCableFolder(string directory) => GetFiles(directory).Count > 0;
 
 
-        public static void CreateTOCForGame(MEGame game, Action<int> percentDoneCallback = null)
+        public static void CreateTOCForGame(MEGame game, Action<int> percentDoneCallback = null, string gameRootOverride = null)
         {
             if (game is MEGame.ME1 or MEGame.ME2)
             {
                 throw new ArgumentOutOfRangeException("TOC files cannot be created for ME1 or ME2");
             }
 
-            var tocFolders = GetTOCableFoldersForGame(game);
+            var tocFolders = GetTOCableFoldersForGame(game, gameRootOverride);
 
             foreach(var dir in tocFolders)
             {

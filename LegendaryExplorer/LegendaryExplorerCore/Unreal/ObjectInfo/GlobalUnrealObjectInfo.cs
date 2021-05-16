@@ -28,10 +28,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 MEGame.ME2 => ME2UnrealObjectInfo.IsImmutableStruct(structType),
                 MEGame.ME3 => ME3UnrealObjectInfo.IsImmutableStruct(structType),
                 MEGame.UDK => ME3UnrealObjectInfo.IsImmutableStruct(structType),
-                //HACK. TODO: generate actual information for LE games
-                MEGame.LE1 => ME1UnrealObjectInfo.IsImmutableStruct(structType),
-                MEGame.LE2 => ME2UnrealObjectInfo.IsImmutableStruct(structType),
-                MEGame.LE3 => ME3UnrealObjectInfo.IsImmutableStruct(structType),
+                MEGame.LE1 => LE1UnrealObjectInfo.IsImmutableStruct(structType),
+                MEGame.LE2 => LE2UnrealObjectInfo.IsImmutableStruct(structType),
+                MEGame.LE3 => LE3UnrealObjectInfo.IsImmutableStruct(structType),
                 _ => false,
             };
 
@@ -44,10 +43,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 MEGame.ME2 => ME2UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
                 MEGame.ME3 => ME3UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
                 MEGame.UDK => ME3UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
-                //HACK. TODO: generate actual information for LE games
-                MEGame.LE1 => ME1UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
-                MEGame.LE2 => ME2UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
-                MEGame.LE3 => ME3UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
+                MEGame.LE1 => LE1UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
+                MEGame.LE2 => LE2UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
+                MEGame.LE3 => LE3UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
                 _ => false
             };
 
@@ -55,10 +53,13 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         public static bool InheritsFrom(string className, string baseClass, MEGame game, Dictionary<string, ClassInfo> customClassInfos = null, string knownSuperClass = null) =>
             className == baseClass || game switch
             {
-                // todo: others
-                MEGame.ME1 => ME1UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
+                MEGame.ME1 => ME1UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos, knownSuperClass),
                 MEGame.ME2 => ME2UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos, knownSuperClass),
-                MEGame.ME3 => ME3UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
+                MEGame.ME3 => ME3UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos, knownSuperClass),
+                MEGame.LE1 => LE1UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos, knownSuperClass),
+                MEGame.LE2 => LE2UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos, knownSuperClass),
+                MEGame.LE3 => LE3UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos, knownSuperClass),
+
                 MEGame.UDK => ME3UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
                 _ => false
             };
@@ -98,10 +99,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 MEGame.ME2 => ME2UnrealObjectInfo.getSequenceObjectInfo(className),
                 MEGame.ME3 => ME3UnrealObjectInfo.getSequenceObjectInfo(className),
                 MEGame.UDK => ME3UnrealObjectInfo.getSequenceObjectInfo(className),
-                //HACK: TODO: generate actual object info for LE
-                MEGame.LE1 => ME1UnrealObjectInfo.getSequenceObjectInfo(className),
-                MEGame.LE2 => ME2UnrealObjectInfo.getSequenceObjectInfo(className),
-                MEGame.LE3 => ME3UnrealObjectInfo.getSequenceObjectInfo(className),
+                MEGame.LE1 => LE1UnrealObjectInfo.getSequenceObjectInfo(className),
+                MEGame.LE2 => LE2UnrealObjectInfo.getSequenceObjectInfo(className),
+                MEGame.LE3 => LE3UnrealObjectInfo.getSequenceObjectInfo(className),
                 _ => null
             };
 
@@ -112,10 +112,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 MEGame.ME2 => ME2UnrealObjectInfo.getEnumTypefromProp(typeName, propName, nonVanillaClassInfo: nonVanillaClassInfo),
                 MEGame.ME3 => ME3UnrealObjectInfo.getEnumTypefromProp(typeName, propName, nonVanillaClassInfo),
                 MEGame.UDK => ME3UnrealObjectInfo.getEnumTypefromProp(typeName, propName, nonVanillaClassInfo) ?? UDKUnrealObjectInfo.getEnumTypefromProp(typeName, propName),
-                //HACK: TODO: generate actual object info for LE
-                MEGame.LE1 => ME1UnrealObjectInfo.getEnumTypefromProp(typeName, propName, nonVanillaClassInfo: nonVanillaClassInfo),
-                MEGame.LE2 => ME2UnrealObjectInfo.getEnumTypefromProp(typeName, propName, nonVanillaClassInfo: nonVanillaClassInfo),
-                MEGame.LE3 => ME3UnrealObjectInfo.getEnumTypefromProp(typeName, propName, nonVanillaClassInfo),
+                MEGame.LE1 => LE1UnrealObjectInfo.getEnumTypefromProp(typeName, propName, nonVanillaClassInfo: nonVanillaClassInfo),
+                MEGame.LE2 => LE2UnrealObjectInfo.getEnumTypefromProp(typeName, propName, nonVanillaClassInfo: nonVanillaClassInfo),
+                MEGame.LE3 => LE3UnrealObjectInfo.getEnumTypefromProp(typeName, propName, nonVanillaClassInfo),
                 _ => null
             };
 
@@ -126,10 +125,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 MEGame.ME2 => ME2UnrealObjectInfo.getEnumValues(enumName, includeNone),
                 MEGame.ME3 => ME3UnrealObjectInfo.getEnumValues(enumName, includeNone),
                 MEGame.UDK => ME3UnrealObjectInfo.getEnumValues(enumName, includeNone),
-                //HACK: TODO: generate actual object info for LE
-                MEGame.LE1 => ME1UnrealObjectInfo.getEnumValues(enumName, includeNone),
-                MEGame.LE2 => ME2UnrealObjectInfo.getEnumValues(enumName, includeNone),
-                MEGame.LE3 => ME3UnrealObjectInfo.getEnumValues(enumName, includeNone),
+                MEGame.LE1 => LE1UnrealObjectInfo.getEnumValues(enumName, includeNone),
+                MEGame.LE2 => LE2UnrealObjectInfo.getEnumValues(enumName, includeNone),
+                MEGame.LE3 => LE3UnrealObjectInfo.getEnumValues(enumName, includeNone),
                 _ => null
             };
 

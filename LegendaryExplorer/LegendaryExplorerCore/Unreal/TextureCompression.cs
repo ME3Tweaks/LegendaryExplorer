@@ -190,6 +190,8 @@ namespace LegendaryExplorerCore.Unreal
                     dstLen = LZO2.Decompress(block.compressedBuffer, block.comprSize, block.uncompressedBuffer);
                 else if (type == StorageTypes.extZlib || type == StorageTypes.pccZlib)
                     dstLen = Zlib.Decompress(block.compressedBuffer, block.comprSize, block.uncompressedBuffer);
+                else if (type == StorageTypes.extOodle || type == StorageTypes.extOodle)
+                    dstLen = Zlib.Decompress(block.compressedBuffer, block.comprSize, block.uncompressedBuffer);
                 else if (type == StorageTypes.extLZMA)
                 {
                     block.uncompressedBuffer = LZMA.Decompress(block.compressedBuffer, block.uncomprSize);

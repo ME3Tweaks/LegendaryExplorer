@@ -15,7 +15,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         protected override void Serialize(SerializingContainer2 sc)
         {
-            if (sc.Game != MEGame.ME3 && !sc.Game.IsLEGame())
+            if (sc.Game is MEGame.ME1 or MEGame.ME2 or MEGame.LE1)
             {
                 int dummy = 0;
                 sc.Serialize(ref dummy);
