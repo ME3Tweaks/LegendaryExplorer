@@ -31,7 +31,8 @@ namespace LegendaryExplorerCore.Packages
         /// <summary>
         /// Maximum size of a block within a chunk
         /// </summary>
-        public const int MAX_BLOCK_SIZE = 0x20000; //128 Kibibytes
+        public const int MAX_BLOCK_SIZE_OT = 0x20000; //128 Kibibytes
+        public const int MAX_BLOCK_SIZE_LE = 0x40000; //256 Kibibytes
 
         public const int SIZE_OF_CHUNK_HEADER = 16;
         public const int SIZE_OF_CHUNK_BLOCK_HEADER = 8;

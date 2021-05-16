@@ -677,7 +677,20 @@ namespace LegendaryExplorerCore.Packages
             MemoryStream compressedStream = MemoryManager.GetMemoryStream();
             package.WriteHeader(compressedStream, includeAdditionalPackageToCook: includeAdditionalPackageToCook); //for positioning
             var chunks = new List<CompressionHelper.Chunk>();
-            var compressionType = package.Game != MEGame.ME3 ? CompressionType.LZO : CompressionType.Zlib;
+            var compressionType = CompressionType.LZO;
+            switch (package.Game)
+            {
+                case MEGame.ME3:
+                    compressionType = CompressionType.Zlib;
+                    break;
+                case MEGame.LE1:
+                case MEGame.LE2:
+                case MEGame.LE3:
+                    compressionType = CompressionType.OodleLeviathan;
+                    break;
+            }
+
+            var maxBlockSize = package.Game.IsOTGame() ? CompressionHelper.MAX_BLOCK_SIZE_OT : CompressionHelper.MAX_BLOCK_SIZE_LE;
 
             //Compression format:
             //uint ChunkMetaDataTableCount (chunk table)
@@ -745,7 +758,7 @@ namespace LegendaryExplorerCore.Packages
                 chunk.compressedSize = 0; // filled later
 
                 int dataSizeRemainingToCompress = chunk.uncompressedSize;
-                int numBlocksInChunk = (int)Math.Ceiling(chunk.uncompressedSize * 1.0 / CompressionHelper.MAX_BLOCK_SIZE);
+                int numBlocksInChunk = (int)Math.Ceiling(chunk.uncompressedSize * 1.0 / maxBlockSize);
                 // skip chunk header and blocks table - filled later
                 compressedStream.Seek(CompressionHelper.SIZE_OF_CHUNK_HEADER + CompressionHelper.SIZE_OF_CHUNK_BLOCK_HEADER * numBlocksInChunk, SeekOrigin.Current);
 
@@ -757,7 +770,7 @@ namespace LegendaryExplorerCore.Packages
                 for (int b = 0; b < numBlocksInChunk; b++)
                 {
                     CompressionHelper.Block block = new CompressionHelper.Block();
-                    block.uncompressedsize = Math.Min(CompressionHelper.MAX_BLOCK_SIZE, dataSizeRemainingToCompress);
+                    block.uncompressedsize = Math.Min(maxBlockSize, dataSizeRemainingToCompress);
                     dataSizeRemainingToCompress -= block.uncompressedsize;
                     block.uncompressedData = uncompressedStream.ReadToBuffer(block.uncompressedsize);
                     chunk.blocks.Add(block);
@@ -773,6 +786,8 @@ namespace LegendaryExplorerCore.Packages
                         block.compressedData = LZO2.Compress(block.uncompressedData);
                     else if (compressionType == CompressionType.Zlib)
                         block.compressedData = Zlib.Compress(block.uncompressedData);
+                    else if (compressionType == CompressionType.OodleLeviathan)
+                        block.compressedData = OodleHelper.Compress(block.uncompressedData, block.uncompressedsize, OodleHelper.OodleFormat.Leviathan, OodleHelper.OodleCompressionLevel.Normal);
                     else
                         throw new Exception("Internal error: Unsupported compression type for compressing blocks: " + compressionType);
                     if (block.compressedData.Length == 0)
@@ -796,7 +811,7 @@ namespace LegendaryExplorerCore.Packages
             {
                 compressedStream.JumpTo(c.compressedOffset); // jump to blocks header
                 compressedStream.WriteUInt32(packageTagLittleEndian);
-                compressedStream.WriteUInt32(CompressionHelper.MAX_BLOCK_SIZE); //128 KB
+                compressedStream.WriteInt32(maxBlockSize); // technically this is apparently a UINT
                 compressedStream.WriteInt32(c.compressedSize);
                 compressedStream.WriteInt32(c.uncompressedSize);
 
