@@ -524,13 +524,25 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public enum EventActionScope : byte
         {
             Global = 0x10,
-            GameAction = 0x11
+            GameAction = 0x11,
+            Global_LE = 0x02,
+            GameAction_LE = 0x03
         }
 
         public enum EventActionType : byte
         {
             Play = 0x40,
-            Stop = 0x10
+            Stop = 0x10,
+            SetVolume = 0xA0,
+            ResetVolume = 0xB0,
+            SetLPF = 0xE0,
+            ResetLPF = 0xF0,
+            Play_LE = 0x04,
+            Stop_LE = 0x01,
+            SetVolume_LE = 0x0A,
+            ResetVolume_LE = 0x0B,
+            SetLPF_LE = 0x0E,
+            ResetLPF_LE = 0x0F
         }
 
         public class EventAction : HIRCObject
