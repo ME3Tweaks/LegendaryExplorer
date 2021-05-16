@@ -10,7 +10,7 @@ namespace LegendaryExplorerCore.GameFilesystem
     /// <summary>
     /// Contains information about the main LE directory as well as Launcher location. LE[X]Directory classes will use the LEDirectory default path to build their game paths.
     /// </summary>
-    class LEDirectory
+    public class LEDirectory
     {
         /// <summary>
         /// Uses the registry to find the default game path for the Legendary Edition installation. On non-windows platforms, this method does nothing and simply returns false.
