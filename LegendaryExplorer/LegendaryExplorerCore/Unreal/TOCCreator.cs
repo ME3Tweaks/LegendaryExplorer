@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
+using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorerCore.Unreal
 {
@@ -12,6 +14,11 @@ namespace LegendaryExplorerCore.Unreal
     /// </summary>
     public class TOCCreator
     {
+        /// <summary>
+        /// Returns the files in a given directory that match the pattern of a TOCable file
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public static IEnumerable<string> GetTocableFiles(string path)
         {
             string[] Pattern = { "*.pcc", "*.afc", "*.bik", "*.bin", "*.tlk", "*.txt", "*.cnd", "*.upk", "*.tfc", "*.isb" };
@@ -21,6 +28,11 @@ namespace LegendaryExplorerCore.Unreal
             return res.ToArray();
         }
 
+        /// <summary>
+        /// Recursively finds all TOCable files in a directory and it's subfolders
+        /// </summary>
+        /// <param name="basefolder"></param>
+        /// <returns></returns>
         private static List<string> GetFiles(string basefolder)
         {
             var res = new List<string>();
@@ -53,10 +65,58 @@ namespace LegendaryExplorerCore.Unreal
             return res;
         }
 
-        public static bool IsTOCableFolder(string directory) => GetFiles(directory).Count > 0;
+        /// <summary>
+        /// Finds directories that need TOC files created. Includes BioGame, all DLC folders
+        /// </summary>
+        /// <param name="game">Game to search installation directory for</param>
+        /// <returns></returns>
+        private static List<string> GetTOCableFoldersForGame(MEGame game)
+        {
+            List<string> tocDirectories = new()
+            {
+                MEDirectories.GetBioGamePath(game)
+            };
+
+
+            if (Directory.Exists(MEDirectories.GetDLCPath(game)))
+            {
+                var dlcFolders = new DirectoryInfo(MEDirectories.GetDLCPath(game)).GetDirectories();
+                tocDirectories.AddRange(dlcFolders.Where(f => f.Name.StartsWith("DLC_")).Select(f => f.ToString()));
+            }
+
+            return tocDirectories;
+        }
 
         /// <summary>
-        /// Creates the binary for a TOC file for a specified DLC directory root
+        /// Returns whether or not a folder should be TOCable
+        /// </summary>
+        /// <param name="directory">Directory to checl</param>
+        /// <returns></returns>
+        /// TODO: Is there an easy way to make this not iterate over all files?
+        public static bool IsTOCableFolder(string directory) => GetFiles(directory).Count > 0;
+
+
+        public static void CreateTOCForGame(MEGame game, Action<int> percentDoneCallback = null)
+        {
+            if (game is MEGame.ME1 or MEGame.ME2)
+            {
+                throw new ArgumentOutOfRangeException("TOC files cannot be created for ME1 or ME2");
+            }
+
+            var tocFolders = GetTOCableFoldersForGame(game);
+
+            foreach(var dir in tocFolders)
+            {
+                var tocFileLocation = Path.Combine(dir, "PCConsoleTOC.bin");
+                File.WriteAllBytes(tocFileLocation, CreateTOCForDirectory(dir).GetBuffer());
+                var percent = ((float)tocFolders.IndexOf(dir) / tocFolders.Count);
+                percentDoneCallback?.Invoke((int)(percent * 100));
+            }
+        }
+
+
+        /// <summary>
+        /// Creates the binary for a TOC file for a specified directory root
         /// </summary>
         /// <param name="directory">DLC_ directory, like DLC_CON_JAM, or the BIOGame directory of the game.</param>
         /// <returns>Memorystream of TOC created, null if there are no entries or input was invalid</returns>
@@ -83,11 +143,7 @@ namespace LegendaryExplorerCore.Unreal
                     }
                 }
 
-                var entries = new List<(string file, int size)>();
-                for (int i = 0; i < originalFilesList.Count; i++)
-                {
-                    entries.Add((files[i], (int)new FileInfo(originalFilesList[i]).Length));
-                }
+                var entries = originalFilesList.Select((t, i) => (files[i], (int) new FileInfo(t).Length)).ToList();
 
                 return CreateTOCForEntries(entries);
             }

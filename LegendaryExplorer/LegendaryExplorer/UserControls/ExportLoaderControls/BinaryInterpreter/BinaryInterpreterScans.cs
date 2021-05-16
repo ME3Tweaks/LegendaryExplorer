@@ -5287,12 +5287,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             BinInterpNode ScanHircObject(EndianReader bin, int idx)
             {
                 var startPos = bin.Position;
-                HIRCType hircType = (HIRCType)(Pcc.Game == MEGame.ME3 ? bin.ReadByte() : bin.ReadUInt32());
+                HIRCType hircType = (HIRCType)(Pcc.Game == MEGame.ME2 ? bin.ReadUInt32() : bin.ReadByte());
                 int len = bin.ReadInt32();
                 uint id = bin.ReadUInt32();
                 var node = new BinInterpNode(startPos, $"{idx}: Type: {AudioStreamHelper.GetHircObjTypeString(hircType)} | Length:{len} | ID:{id:X8}")
                 {
-                    Length = len + 4 + (Pcc.Game == MEGame.ME3 ? 1 : 4)
+                    Length = len + 4 + (Pcc.Game == MEGame.ME2 ? 4 : 1)
                 };
                 bin.JumpTo(startPos);
                 node.Items.Add(MakeByteNode(bin, "Type"));
@@ -5302,14 +5302,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 switch (hircType)
                 {
                     case HIRCType.Event:
-                        node.Items.Add(MakeArrayNode(bin, "Event Actions", i => MakeUInt32HexNode(bin, $"{i}")));
+                        node.Items.Add(Pcc.Game == MEGame.LE3 ? MakeArrayNodeByteCount(bin, "Event Actions", i => MakeUInt32HexNode(bin, $"{i}")) : MakeArrayNode(bin, "Event Actions", i => MakeUInt32HexNode(bin, $"{i}")));
                         break;
                     case HIRCType.EventAction:
                         {
+
                             node.Items.Add(new BinInterpNode(bin.Position, $"Scope: {(WwiseBank.EventActionScope)bin.ReadByte()}", NodeType.StructLeafByte) { Length = 1 });
                             WwiseBank.EventActionType actType;
                             node.Items.Add(new BinInterpNode(bin.Position, $"Action Type: {actType = (WwiseBank.EventActionType)bin.ReadByte()}", NodeType.StructLeafByte) { Length = 1 });
-                            node.Items.Add(MakeUInt16Node(bin, "Unknown1"));
+                            if (Pcc.Game.IsOTGame())
+                                node.Items.Add(MakeUInt16Node(bin, "Unknown1"));
                             node.Items.Add(MakeUInt32HexNode(bin, "Referenced Object ID"));
                             switch (actType)
                             {
@@ -5333,152 +5335,206 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                     node.Items.Add(MakeInt32Node(bin, "Fade-out Randomization Range upper bound (ms)"));
                                     node.Items.Add(MakeByteNode(bin, "Fade-out curve Shape"));
                                     break;
+                                case WwiseBank.EventActionType.Play_LE:
+                                    node.Items.Add(MakeByteNode(bin, "Unknown1"));
+                                    bool playHasFadeIn;
+                                    node.Items.Add(new BinInterpNode(bin.Position, $"Has Fade In: {playHasFadeIn = (bool)bin.ReadBoolByte()}", NodeType.StructLeafByte) { Length = 1 });
+                                    if (playHasFadeIn)
+                                    {
+                                        node.Items.Add(MakeByteNode(bin, "Unknown byte"));
+                                        node.Items.Add(MakeUInt32Node(bin, "Fade-in (ms)"));
+                                    }
+                                    bool hasUnknown2;
+                                    node.Items.Add(new BinInterpNode(bin.Position, $"Unknown 2: {hasUnknown2 = (bool)bin.ReadBoolByte()}", NodeType.StructLeafByte) { Length = 1 });
+                                    if (hasUnknown2)
+                                    {
+                                        node.Items.Add(MakeUInt32Node(bin, "Unknown Int A"));
+                                        node.Items.Add(MakeByteNode(bin, "Unknown byte"));
+                                        node.Items.Add(MakeUInt32Node(bin, "Unknown Int B"));
+                                    }
+                                    node.Items.Add(MakeByteNode(bin, "Fade-out curve Shape"));
+                                    node.Items.Add(MakeUInt32HexNode(bin, "Bank ID"));
+                                    break;
+                                case WwiseBank.EventActionType.Stop_LE:
+                                    node.Items.Add(MakeByteNode(bin, "Unknown1"));
+                                    bool stopHasFadeOut;
+                                    node.Items.Add(new BinInterpNode(bin.Position, $"Has Fade In: {stopHasFadeOut = (bool)bin.ReadBoolByte()}", NodeType.StructLeafByte) { Length = 1 });
+                                    if (stopHasFadeOut)
+                                    {
+                                        node.Items.Add(MakeByteNode(bin, "Unknown byte"));
+                                        node.Items.Add(MakeUInt32Node(bin, "Fade-in (ms)"));
+                                    }
+                                    node.Items.Add(MakeByteNode(bin, "Unknown2"));
+                                    node.Items.Add(MakeByteNode(bin, "Fade-out curve Shape"));
+                                    node.Items.Add(MakeByteNode(bin, "Unknown3"));
+                                    node.Items.Add(MakeByteNode(bin, "Unknown4"));
+                                    break;
+                                case WwiseBank.EventActionType.SetLPF_LE:
+                                case WwiseBank.EventActionType.SetVolume_LE:
+                                case WwiseBank.EventActionType.ResetLPF_LE:
+                                case WwiseBank.EventActionType.ResetVolume_LE:
+                                    node.Items.Add(MakeByteNode(bin, "Unknown1"));
+                                    bool HasFade;
+                                    node.Items.Add(new BinInterpNode(bin.Position, $"Has Fade In: {HasFade = (bool)bin.ReadBoolByte()}", NodeType.StructLeafByte) { Length = 1 });
+                                    if (HasFade)
+                                    {
+                                        node.Items.Add(MakeByteNode(bin, "Unknown byte"));
+                                        node.Items.Add(MakeUInt32Node(bin, "Fade-in (ms)"));
+                                    }
+                                    node.Items.Add(MakeByteNode(bin, "Unknown2"));
+                                    node.Items.Add(MakeByteNode(bin, "Fade-out curve Shape"));
+                                    node.Items.Add(MakeByteNode(bin, "Unknown3"));
+                                    node.Items.Add(MakeFloatNode(bin, "Unknown float A"));
+                                    node.Items.Add(MakeInt32Node(bin, "Unknown int/float B"));
+                                    node.Items.Add(MakeInt32Node(bin, "Unknown int/float C"));
+                                    node.Items.Add(MakeByteNode(bin, "Unknown4"));
+                                    break;
                             }
                             goto default;
                         }
                     case HIRCType.SoundSXFSoundVoice:
-                        node.Items.Add(MakeUInt32Node(bin, "Unknown1"));
-                        WwiseBank.SoundState soundState;
-                        node.Items.Add(new BinInterpNode(bin.Position, $"State: {soundState = (WwiseBank.SoundState)bin.ReadUInt32()}", NodeType.StructLeafInt) { Length = 4 });
-                        switch (soundState)
-                        {
-                            case WwiseBank.SoundState.Embed:
-                                node.Items.Add(MakeUInt32HexNode(bin, "Audio ID"));
-                                node.Items.Add(MakeUInt32HexNode(bin, "Source ID"));
-                                node.Items.Add(MakeInt32Node(bin, "Type?"));
-                                node.Items.Add(MakeInt32Node(bin, "Prefetch length?"));
-                                break;
-                            case WwiseBank.SoundState.Streamed:
-                                node.Items.Add(MakeUInt32HexNode(bin, "Audio ID"));
-                                node.Items.Add(MakeUInt32HexNode(bin, "Source ID"));
-                                break;
-                            case WwiseBank.SoundState.StreamPrefetched:
-                                node.Items.Add(MakeUInt32HexNode(bin, "Audio ID"));
-                                node.Items.Add(MakeUInt32HexNode(bin, "Source ID"));
-                                node.Items.Add(MakeInt32Node(bin, "Type?"));
-                                node.Items.Add(MakeInt32Node(bin, "Prefetch length?"));
-                                break;
+                        //node.Items.Add(MakeUInt32Node(bin, "Unknown1"));
+                        //WwiseBank.SoundState soundState;
+                        //node.Items.Add(new BinInterpNode(bin.Position, $"State: {soundState = (WwiseBank.SoundState)bin.ReadUInt32()}", NodeType.StructLeafInt) { Length = 4 });
+                        //switch (soundState)
+                        //{
+                        //    case WwiseBank.SoundState.Embed:
+                        //        node.Items.Add(MakeUInt32HexNode(bin, "Audio ID"));
+                        //        node.Items.Add(MakeUInt32HexNode(bin, "Source ID"));
+                        //        node.Items.Add(MakeInt32Node(bin, "Type?"));
+                        //        node.Items.Add(MakeInt32Node(bin, "Prefetch length?"));
+                        //        break;
+                        //    case WwiseBank.SoundState.Streamed:
+                        //        node.Items.Add(MakeUInt32HexNode(bin, "Audio ID"));
+                        //        node.Items.Add(MakeUInt32HexNode(bin, "Source ID"));
+                        //        break;
+                        //    case WwiseBank.SoundState.StreamPrefetched:
+                        //        node.Items.Add(MakeUInt32HexNode(bin, "Audio ID"));
+                        //        node.Items.Add(MakeUInt32HexNode(bin, "Source ID"));
+                        //        node.Items.Add(MakeInt32Node(bin, "Type?"));
+                        //        node.Items.Add(MakeInt32Node(bin, "Prefetch length?"));
+                        //        break;
 
-                        }
+                        //}
 
-                        WwiseBank.SoundType soundType;
-                        node.Items.Add(new BinInterpNode(bin.Position, $"SoundType: {soundType = (WwiseBank.SoundType)bin.ReadUInt32()}", NodeType.StructLeafInt) { Length = 4 });
-                        switch (soundType)
-                        {
-                            case WwiseBank.SoundType.SFX:
-                                node.Items.Add(MakeByteNode(bin, "Unknown"));
-                                node.Items.Add(MakeByteNode(bin, "Unknown"));
-                                node.Items.Add(MakeByteNode(bin, "Unknown"));
-                                node.Items.Add(MakeUInt32HexNode(bin, "Mixer Out Reference ID"));
-                                break;
-                            case WwiseBank.SoundType.Voice:
-                                node.Items.Add(MakeByteNode(bin, "Unknown"));
-                                node.Items.Add(MakeByteNode(bin, "Unknown"));
-                                node.Items.Add(MakeByteNode(bin, "Unknown"));
-                                node.Items.Add(MakeUInt32HexNode(bin, "Mixer Out Reference ID"));
-                                break;
-                            default:
-                                node.Items.Add(MakeByteNode(bin, "Unknown"));
-                                node.Items.Add(MakeByteNode(bin, "Unknown"));
-                                node.Items.Add(MakeByteNode(bin, "Unknown"));
-                                node.Items.Add(MakeUInt32HexNode(bin, "Mixer Out Reference ID"));
-                                break;
-                        }
-                        node.Items.Add(MakeByteNode(bin, "Unknown_hex32"));  //Maybe standard mixer package (shared with actor/mixer)
-                        node.Items.Add(MakeByteNode(bin, "Unknown"));
-                        node.Items.Add(MakeByteNode(bin, "Unknown"));
-                        node.Items.Add(MakeByteNode(bin, "PreVolume-UnknownF6"));
-                        node.Items.Add(MakeFloatNode(bin, "Volume (-db)"));
-                        node.Items.Add(MakeInt32Node(bin, "Unknown_A_4bytes"));  //These maybe link or RTPC or randomizer?
-                        node.Items.Add(MakeInt32Node(bin, "Unknown_B_4bytes"));
-                        node.Items.Add(MakeFloatNode(bin, "Low Frequency Effect (LFE)"));
-                        node.Items.Add(MakeInt32Node(bin, "Unknown_C_4bytes"));
-                        node.Items.Add(MakeInt32Node(bin, "Unknown_D_4bytes"));
-                        node.Items.Add(MakeFloatNode(bin, "Pitch"));
-                        node.Items.Add(MakeFloatNode(bin, "Unknown_E_float"));
-                        node.Items.Add(MakeFloatNode(bin, "Unknown_F_float"));
-                        node.Items.Add(MakeFloatNode(bin, "Low Pass Filter"));
-                        node.Items.Add(MakeUInt32Node(bin, "Unknown_G_4bytes"));
-                        node.Items.Add(MakeUInt32Node(bin, "Unknown_H_4bytes"));
-                        node.Items.Add(MakeUInt32Node(bin, "Unknown_I_4bytes"));
-                        node.Items.Add(MakeUInt32Node(bin, "Unknown_J_4bytes"));
-                        node.Items.Add(MakeUInt32Node(bin, "Unknown_K_4bytes"));
-                        node.Items.Add(MakeUInt32Node(bin, "Unknown_L_4bytes")); //In v56 banks?
-                                                                                 //node.Items.Add(MakeByteNode(bin, "Unknown"));  In imported v53 banks?
-                                                                                 //node.Items.Add(MakeByteNode(bin, "Unknown"));
-                        node.Items.Add(MakeInt32Node(bin, "Loop Count (0=infinite)"));
-                        node.Items.Add(MakeByteNode(bin, "Unknown"));
-                        node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        //WwiseBank.SoundType soundType;
+                        //node.Items.Add(new BinInterpNode(bin.Position, $"SoundType: {soundType = (WwiseBank.SoundType)bin.ReadUInt32()}", NodeType.StructLeafInt) { Length = 4 });
+                        //switch (soundType)
+                        //{
+                        //    case WwiseBank.SoundType.SFX:
+                        //        node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        //        node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        //        node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        //        node.Items.Add(MakeUInt32HexNode(bin, "Mixer Out Reference ID"));
+                        //        break;
+                        //    case WwiseBank.SoundType.Voice:
+                        //        node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        //        node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        //        node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        //        node.Items.Add(MakeUInt32HexNode(bin, "Mixer Out Reference ID"));
+                        //        break;
+                        //    default:
+                        //        node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        //        node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        //        node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        //        node.Items.Add(MakeUInt32HexNode(bin, "Mixer Out Reference ID"));
+                        //        break;
+                        //}
+                        //node.Items.Add(MakeByteNode(bin, "Unknown_hex32"));  //Maybe standard mixer package (shared with actor/mixer)
+                        //node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        //node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        //node.Items.Add(MakeByteNode(bin, "PreVolume-UnknownF6"));
+                        //node.Items.Add(MakeFloatNode(bin, "Volume (-db)"));
+                        //node.Items.Add(MakeInt32Node(bin, "Unknown_A_4bytes"));  //These maybe link or RTPC or randomizer?
+                        //node.Items.Add(MakeInt32Node(bin, "Unknown_B_4bytes"));
+                        //node.Items.Add(MakeFloatNode(bin, "Low Frequency Effect (LFE)"));
+                        //node.Items.Add(MakeInt32Node(bin, "Unknown_C_4bytes"));
+                        //node.Items.Add(MakeInt32Node(bin, "Unknown_D_4bytes"));
+                        //node.Items.Add(MakeFloatNode(bin, "Pitch"));
+                        //node.Items.Add(MakeFloatNode(bin, "Unknown_E_float"));
+                        //node.Items.Add(MakeFloatNode(bin, "Unknown_F_float"));
+                        //node.Items.Add(MakeFloatNode(bin, "Low Pass Filter"));
+                        //node.Items.Add(MakeUInt32Node(bin, "Unknown_G_4bytes"));
+                        //node.Items.Add(MakeUInt32Node(bin, "Unknown_H_4bytes"));
+                        //node.Items.Add(MakeUInt32Node(bin, "Unknown_I_4bytes"));
+                        //node.Items.Add(MakeUInt32Node(bin, "Unknown_J_4bytes"));
+                        //node.Items.Add(MakeUInt32Node(bin, "Unknown_K_4bytes"));
+                        //node.Items.Add(MakeUInt32Node(bin, "Unknown_L_4bytes")); //In v56 banks?
+                        //                                                         //node.Items.Add(MakeByteNode(bin, "Unknown"));  In imported v53 banks?
+                        //                                                         //node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        //node.Items.Add(MakeInt32Node(bin, "Loop Count (0=infinite)"));
+                        //node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        //node.Items.Add(MakeByteNode(bin, "Unknown"));
 
 
                         goto default;
                     case HIRCType.RandomOrSequenceContainer:
                     case HIRCType.SwitchContainer:
                     case HIRCType.ActorMixer:
-                        node.Items.Add(MakeByteNode(bin, "Unknown"));
-                        int nEffects = 0;
-                        node.Items.Add(new BinInterpNode(bin.Position, $"Count of Effects (?Aux Bus?): {nEffects = bin.ReadByte()}") { Length = 1 });
-                        for (int b = 0; b < nEffects; b++)
-                        {
-                            node.Items.Add(MakeByteNode(bin, "Unknown"));
-                            node.Items.Add(MakeByteNode(bin, "Unknown"));
-                            node.Items.Add(MakeUInt32HexNode(bin, "Effect Reference ID"));
-                            node.Items.Add(MakeByteNode(bin, "Unknown"));
-                        }
-                        if (nEffects > 0)
-                        {
-                            node.Items.Add(MakeByteNode(bin, "Unknown"));
-                        }
-                        node.Items.Add(MakeUInt32HexNode(bin, "Master Audio Bus Reference ID"));
-                        node.Items.Add(MakeUInt32HexNode(bin, "Audio Out link"));
-                        node.Items.Add(MakeByteNode(bin, "Unknown_hex32"));  //Is here on a standard mixer? Appears in SoundSFX/voice
-                        node.Items.Add(MakeByteNode(bin, "Unknown"));
-                        node.Items.Add(MakeByteNode(bin, "Unknown"));
-                        node.Items.Add(MakeByteNode(bin, "PreVolume-Unknown_hexF6"));
-                        node.Items.Add(MakeFloatNode(bin, "Volume (-db)"));
-                        node.Items.Add(MakeUInt32Node(bin, "Unknown_A_4bytes"));  //These maybe link or RTPC or randomizer?
-                        node.Items.Add(MakeUInt32Node(bin, "Unknown_B_4bytes"));
-                        node.Items.Add(MakeFloatNode(bin, "Low Frequency Effect (LFE)"));
-                        node.Items.Add(MakeUInt32Node(bin, "Unknown_C_4bytes"));
-                        node.Items.Add(MakeUInt32Node(bin, "Unknown_D_4bytes"));
-                        node.Items.Add(MakeFloatNode(bin, "Pitch"));
-                        node.Items.Add(MakeFloatNode(bin, "Unknown_E_float"));
-                        node.Items.Add(MakeFloatNode(bin, "Unknown_F_float"));
-                        node.Items.Add(MakeFloatNode(bin, "Low Pass Filter"));
-                        node.Items.Add(MakeUInt32Node(bin, "Unknown_G_4bytes"));
-                        node.Items.Add(MakeUInt32Node(bin, "Unknown_H_4bytes")); //Mixer end
+                        //node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        //int nEffects = 0;
+                        //node.Items.Add(new BinInterpNode(bin.Position, $"Count of Effects (?Aux Bus?): {nEffects = bin.ReadByte()}") { Length = 1 });
+                        //for (int b = 0; b < nEffects; b++)
+                        //{
+                        //    node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        //    node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        //    node.Items.Add(MakeUInt32HexNode(bin, "Effect Reference ID"));
+                        //    node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        //}
+                        //if (nEffects > 0)
+                        //{
+                        //    node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        //}
+                        //node.Items.Add(MakeUInt32HexNode(bin, "Master Audio Bus Reference ID"));
+                        //node.Items.Add(MakeUInt32HexNode(bin, "Audio Out link"));
+                        //node.Items.Add(MakeByteNode(bin, "Unknown_hex32"));  //Is here on a standard mixer? Appears in SoundSFX/voice
+                        //node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        //node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        //node.Items.Add(MakeByteNode(bin, "PreVolume-Unknown_hexF6"));
+                        //node.Items.Add(MakeFloatNode(bin, "Volume (-db)"));
+                        //node.Items.Add(MakeUInt32Node(bin, "Unknown_A_4bytes"));  //These maybe link or RTPC or randomizer?
+                        //node.Items.Add(MakeUInt32Node(bin, "Unknown_B_4bytes"));
+                        //node.Items.Add(MakeFloatNode(bin, "Low Frequency Effect (LFE)"));
+                        //node.Items.Add(MakeUInt32Node(bin, "Unknown_C_4bytes"));
+                        //node.Items.Add(MakeUInt32Node(bin, "Unknown_D_4bytes"));
+                        //node.Items.Add(MakeFloatNode(bin, "Pitch"));
+                        //node.Items.Add(MakeFloatNode(bin, "Unknown_E_float"));
+                        //node.Items.Add(MakeFloatNode(bin, "Unknown_F_float"));
+                        //node.Items.Add(MakeFloatNode(bin, "Low Pass Filter"));
+                        //node.Items.Add(MakeUInt32Node(bin, "Unknown_G_4bytes"));
+                        //node.Items.Add(MakeUInt32Node(bin, "Unknown_H_4bytes")); //Mixer end
 
 
-                        //Minimum is 4 x 4bytes but can expanded
-                        bool hasEffects = false; //Maybe something else
-                        node.Items.Add(new BinInterpNode(bin.Position, $"Unknown_Byte->Int + Unk4 + Float: {hasEffects = bin.ReadBoolByte()}") { Length = 1 }); //Count of something? effects?
-                        if (hasEffects)
-                        {
-                            node.Items.Add(MakeInt32Node(bin, "Unknown_Int"));
-                            node.Items.Add(MakeUInt32Node(bin, "Unknown_I_4bytes"));
-                            node.Items.Add(MakeFloatNode(bin, "Unknown Float"));
-                        }
-                        bool hasAttenuation = false;
-                        node.Items.Add(new BinInterpNode(bin.Position, $"Attenuations?: {hasAttenuation = bin.ReadBoolByte()}") { Length = 1 }); //RPTCs? Count? Attenuations?
-                        if (hasAttenuation)
-                        {
-                            node.Items.Add(MakeInt32Node(bin, "Unknown_J_Int")); //<= extra if byte?
-                            node.Items.Add(MakeUInt32HexNode(bin, "Attenuation? Reference")); //<= extra if byte?
-                            node.Items.Add(MakeUInt32Node(bin, "Unknown_L_4bytes"));
-                            node.Items.Add(MakeUInt32Node(bin, "Unknown_M_4bytes"));
-                            node.Items.Add(MakeByteNode(bin, "UnknownByte"));
-                        }
-                        else
-                        {
-                            node.Items.Add(MakeInt32Node(bin, "Unknown_J_Int"));
-                            node.Items.Add(MakeUInt32Node(bin, "Unknown_L_4bytes"));
-                        }
+                        ////Minimum is 4 x 4bytes but can expanded
+                        //bool hasEffects = false; //Maybe something else
+                        //node.Items.Add(new BinInterpNode(bin.Position, $"Unknown_Byte->Int + Unk4 + Float: {hasEffects = bin.ReadBoolByte()}") { Length = 1 }); //Count of something? effects?
+                        //if (hasEffects)
+                        //{
+                        //    node.Items.Add(MakeInt32Node(bin, "Unknown_Int"));
+                        //    node.Items.Add(MakeUInt32Node(bin, "Unknown_I_4bytes"));
+                        //    node.Items.Add(MakeFloatNode(bin, "Unknown Float"));
+                        //}
+                        //bool hasAttenuation = false;
+                        //node.Items.Add(new BinInterpNode(bin.Position, $"Attenuations?: {hasAttenuation = bin.ReadBoolByte()}") { Length = 1 }); //RPTCs? Count? Attenuations?
+                        //if (hasAttenuation)
+                        //{
+                        //    node.Items.Add(MakeInt32Node(bin, "Unknown_J_Int")); //<= extra if byte?
+                        //    node.Items.Add(MakeUInt32HexNode(bin, "Attenuation? Reference")); //<= extra if byte?
+                        //    node.Items.Add(MakeUInt32Node(bin, "Unknown_L_4bytes"));
+                        //    node.Items.Add(MakeUInt32Node(bin, "Unknown_M_4bytes"));
+                        //    node.Items.Add(MakeByteNode(bin, "UnknownByte"));
+                        //}
+                        //else
+                        //{
+                        //    node.Items.Add(MakeInt32Node(bin, "Unknown_J_Int"));
+                        //    node.Items.Add(MakeUInt32Node(bin, "Unknown_L_4bytes"));
+                        //}
 
 
-                        node.Items.Add(MakeUInt32Node(bin, "Unknown_N_4bytes"));
-                        node.Items.Add(MakeUInt32Node(bin, "Unknown_O_4bytes"));
-                        goto default;
-                        node.Items.Add(MakeArrayNode(bin, "Input References", i => MakeUInt32HexNode(bin, $"{i}")));
+                        //node.Items.Add(MakeUInt32Node(bin, "Unknown_N_4bytes"));
+                        //node.Items.Add(MakeUInt32Node(bin, "Unknown_O_4bytes"));
+                        //goto default;
+                        //node.Items.Add(MakeArrayNode(bin, "Input References", i => MakeUInt32HexNode(bin, $"{i}")));
                         goto default;
                     case HIRCType.AudioBus:
                     case HIRCType.BlendContainer:
@@ -6567,6 +6623,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             int count;
             return new BinInterpNode(bin.Position, $"{name} ({count = bin.ReadInt32()})")
+            {
+                IsExpanded = IsExpanded,
+                Items = ReadList(count, selector),
+                ArrayAddAlgoritm = arrayAddAlgo
+            };
+        }
+
+        private static BinInterpNode MakeArrayNodeByteCount(EndianReader bin, string name, Func<int, BinInterpNode> selector, bool IsExpanded = false,
+                                           BinInterpNode.ArrayPropertyChildAddAlgorithm arrayAddAlgo = BinInterpNode.ArrayPropertyChildAddAlgorithm.None)
+        {
+            int count;
+            return new BinInterpNode(bin.Position, $"{name} ({count = bin.ReadByte()})")
             {
                 IsExpanded = IsExpanded,
                 Items = ReadList(count, selector),
