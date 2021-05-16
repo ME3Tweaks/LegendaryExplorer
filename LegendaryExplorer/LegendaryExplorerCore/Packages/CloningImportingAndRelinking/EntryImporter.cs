@@ -624,6 +624,23 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             "Startup.pcc", "GesturesConfig.pcc", "BIOG_Humanoid_MASTER_MTR_R.pcc", "BIOG_HMM_HED_PROMorph.pcc"
         };
 
+        //TODO: make LE lists more exhaustive
+        private static readonly string[] le1FilesSafeToImportFrom =
+        {
+            "Core.pcc", "Engine.pcc", "GFxUI.pcc", "PlotManagerMap.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc"
+        };
+
+        private static readonly string[] le2FilesSafeToImportFrom =
+        {
+            "Core.pcc", "Engine.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "PlotManagerMap.pcc", "SFXGame.pcc", "Startup_INT.pcc"
+        };
+
+        private static readonly string[] le3FilesSafeToImportFrom =
+        {
+            //Class libary: These files contain ME3's standard library of classes, structs, enums... Also a few assets
+            "Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc",
+        };
+
         public static bool IsSafeToImportFrom(string path, MEGame game)
         {
             string fileName = Path.GetFileName(path);
@@ -635,8 +652,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 MEGame.ME1 => me1FilesSafeToImportFrom,
                 MEGame.ME2 => me2FilesSafeToImportFrom,
-                _ => me3FilesSafeToImportFrom
+                MEGame.ME3 => me3FilesSafeToImportFrom,
+                MEGame.LE1 => le1FilesSafeToImportFrom,
+                MEGame.LE2 => le2FilesSafeToImportFrom,
+                MEGame.LE3 => le3FilesSafeToImportFrom,
+                _ => throw new Exception($"Cannot lookup safe files for {game}")
             };
+
 
         public static bool CanImport(string className, MEGame game) => CanImport(GlobalUnrealObjectInfo.GetClassOrStructInfo(game, className), game);
 

@@ -2251,10 +2251,10 @@ namespace LegendaryExplorer.Tools.PackageEditor
             ExportLoaders[MeshRendererTab_MeshRenderer] = MeshRenderer_Tab;
             ExportLoaders[JPEXLauncherTab_JPEXLauncher] = JPEXLauncher_Tab;
             ExportLoaders[TlkEditorTab_TlkEditor] = TlkEditor_Tab;
+            ExportLoaders[MaterialViewerTab_MaterialExportLoader] = MaterialViewer_Tab;
 
             // TODO: IMPLEMENT IN LEX
             //ExportLoaders[ScriptTab_UnrealScriptIDE] = Script_Tab;
-            //ExportLoaders[MaterialViewerTab_MaterialExportLoader] = MaterialViewer_Tab;
             //ExportLoaders[RADLauncherTab_BIKLauncher] = RADLaunch_Tab;
 
 

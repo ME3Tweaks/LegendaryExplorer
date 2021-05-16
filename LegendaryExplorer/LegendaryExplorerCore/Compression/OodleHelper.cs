@@ -75,11 +75,11 @@ namespace LegendaryExplorerCore.Compression
 
                 if (LE1Directory.ExecutableFolder != null)
                 {
-                    var oodPath = Path.Combine(LE1Directory.ExecutableFolder);
+                    var oodPath = Path.Combine(LE1Directory.ExecutableFolder, CompressionHelper.OODLE_DLL_NAME);
                     if (File.Exists(oodPath))
                     {
-                        var destPath = paths.Last();
-                        File.Copy(oodPath, Path.Combine(destPath, oodPath));
+                        var destPath = Path.Combine(paths.First(), CompressionHelper.OODLE_DLL_NAME);
+                        File.Copy(oodPath, destPath, true);
                         return true;
                     }
                 }

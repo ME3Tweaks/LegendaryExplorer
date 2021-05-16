@@ -1115,56 +1115,89 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         }
 
+        private record StringMEGamePair(string str, MEGame game);
+
         public static void DumpShaderTypes(PackageEditorWindow pewpf)
         {
-            var game = MEGame.ME3;
-            var filePaths = MELoadedFiles.GetOfficialFiles(game);//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME2));//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME1));
             var shaderTypes = new HashSet<string>();
+            var shaderLocs = new Dictionary<StringMEGamePair, (string, int)>();
+
+            var shadersToFind = new HashSet<string>
+            {
+                "FShadowDepthNoPSVertexShader",
+                "TLightVertexShaderFSFXPointLightPolicyFNoStaticShadowingPolicy",
+                "TBasePassVertexShaderFPointLightLightMapPolicyFNoDensityPolicy",
+                "TBasePassVertexShaderFCustomSimpleLightMapTexturePolicyFConstantDensityPolicy",
+                "TBasePassVertexShaderFCustomSimpleLightMapTexturePolicyFLinearHalfspaceDensityPolicy",
+                "TBasePassVertexShaderFCustomSimpleLightMapTexturePolicyFNoDensityPolicy",
+                "TBasePassVertexShaderFCustomSimpleLightMapTexturePolicyFSphereDensityPolicy",
+                "TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFConstantDensityPolicy",
+                "TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFLinearHalfspaceDensityPolicy",
+                "TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFNoDensityPolicy",
+                "TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFSphereDensityPolicy",
+                "TBasePassVertexShaderFCustomVectorLightMapTexturePolicyFConstantDensityPolicy",
+                "TBasePassVertexShaderFCustomVectorLightMapTexturePolicyFLinearHalfspaceDensityPolicy",
+                "TBasePassVertexShaderFCustomVectorLightMapTexturePolicyFNoDensityPolicy",
+                "TBasePassVertexShaderFCustomVectorLightMapTexturePolicyFSphereDensityPolicy",
+                "TBasePassVertexShaderFCustomVectorVertexLightMapPolicyFConstantDensityPolicy",
+                "TBasePassVertexShaderFCustomVectorVertexLightMapPolicyFLinearHalfspaceDensityPolicy",
+                "TBasePassVertexShaderFCustomVectorVertexLightMapPolicyFNoDensityPolicy",
+                "TBasePassVertexShaderFCustomVectorVertexLightMapPolicyFSphereDensityPolicy"
+            };
 
             pewpf.IsBusy = true;
             pewpf.BusyText = "Scanning";
             Task.Run(() =>
             {
-                //preload base files for faster scanning
-                using var baseFiles = MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(game)
-                    .Select(f => Path.Combine(MEDirectories.GetCookedPath(game), f)));
-                if (game is MEGame.ME3)
+                foreach (MEGame game in new[] { MEGame.ME2, MEGame.ME3, MEGame.LE1, MEGame.LE2, MEGame.LE3 })
                 {
-                    baseFiles.Add(MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "BIOP_MP_COMMON.pcc")));
-                }
-
-                foreach (string filePath in filePaths)
-                {
-                    using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
-
-                    if (pcc.Exports.FirstOrDefault(exp => exp.ClassName == "ShaderCache") is ExportEntry scEntry)
+                    var filePaths = MELoadedFiles.GetOfficialFiles(game);
+                    //preload base files for faster scanning
+                    using var baseFiles = MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(game)
+                                                                                       .Select(f => Path.Combine(MEDirectories.GetCookedPath(game), f)));
+                    if (game is MEGame.ME3)
                     {
-                        int entryDataOffset = scEntry.DataOffset;
-                        var binData = new MemoryStream(scEntry.Data);
-                        binData.Seek(scEntry.propsEnd() + 1, SeekOrigin.Begin);
+                        baseFiles.Add(MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "BIOP_MP_COMMON.pcc")));
+                    }
 
-                        int nameList1Count = binData.ReadInt32();
-                        binData.Seek(nameList1Count * 12, SeekOrigin.Current);
+                    foreach (string filePath in filePaths)
+                    {
+                        using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
 
-                        if (game is MEGame.ME3 || game.IsLEGame())
+                        if (pcc.Exports.FirstOrDefault(exp => exp.ClassName == "ShaderCache") is ExportEntry scEntry)
                         {
-                            int namelist2Count = binData.ReadInt32();//namelist2
-                            binData.Seek(namelist2Count * 12, SeekOrigin.Current);
-                        }
+                            int entryDataOffset = scEntry.DataOffset;
+                            var binData = new MemoryStream(scEntry.Data);
+                            binData.Seek(scEntry.propsEnd() + 1, SeekOrigin.Begin);
 
-                        if (game is MEGame.ME1)
-                        {
-                            int vertexFactoryMapCount = binData.ReadInt32();
-                            binData.Seek(vertexFactoryMapCount * 12, SeekOrigin.Current);
-                        }
+                            int nameList1Count = binData.ReadInt32();
+                            binData.Seek(nameList1Count * 12, SeekOrigin.Current);
 
-                        int shaderCount = binData.ReadInt32();
-                        for (int i = 0; i < shaderCount; i++)
-                        {
-                            shaderTypes.Add(binData.ReadNameReference(pcc));
-                            binData.Seek(16, SeekOrigin.Current);
-                            int nextShaderOffset = binData.ReadInt32() - entryDataOffset;
-                            binData.Seek(nextShaderOffset, SeekOrigin.Begin);
+                            if (game is MEGame.ME3 || game.IsLEGame())
+                            {
+                                int namelist2Count = binData.ReadInt32();//namelist2
+                                binData.Seek(namelist2Count * 12, SeekOrigin.Current);
+                            }
+
+                            if (game is MEGame.ME1)
+                            {
+                                int vertexFactoryMapCount = binData.ReadInt32();
+                                binData.Seek(vertexFactoryMapCount * 12, SeekOrigin.Current);
+                            }
+
+                            int shaderCount = binData.ReadInt32();
+                            for (int i = 0; i < shaderCount; i++)
+                            {
+                                string shaderType = binData.ReadNameReference(pcc);
+                                //shaderTypes.Add(shaderType);
+                                if (shadersToFind.Contains(shaderType))
+                                {
+                                    shaderLocs.TryAdd(new StringMEGamePair(shaderType, game), (pcc.FilePath, i));
+                                }
+                                binData.Seek(16, SeekOrigin.Current);
+                                int nextShaderOffset = binData.ReadInt32() - entryDataOffset;
+                                binData.Seek(nextShaderOffset, SeekOrigin.Begin);
+                            }
                         }
                     }
                 }
@@ -1174,13 +1207,24 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 MemoryAnalyzer.ForceFullGC();
                 pewpf.IsBusy = false;
 
-                var list = shaderTypes.ToList();
-                list.Sort();
-                string scriptFile = Path.Combine("ShaderTypes.txt");
-                scriptFile = Path.GetFullPath(scriptFile);
-                File.WriteAllText(scriptFile, string.Join('\n', list));
-                Process.Start("notepad++", $"\"{scriptFile}\"");
+                //var list = shaderTypes.ToList();
+                //list.Sort();
+                //string scriptFile = Path.Combine("ShaderTypes.txt");
+                //scriptFile = Path.GetFullPath(scriptFile);
+                //File.WriteAllText(scriptFile, string.Join('\n', list));
+                //Process.Start("notepad++", $"\"{scriptFile}\"");
+
+                using var fileStream = new FileStream(Path.GetFullPath($"ShaderLocs.txt"), FileMode.Create);
+                using var writer = new CodeWriter(fileStream);
+                foreach ((var shaderTypeMEGamePair, (string filePath, int index)) in shaderLocs)
+                {
+                    writer.WriteBlock($"{shaderTypeMEGamePair.str} : {shaderTypeMEGamePair.game}", () =>
+                    {
+                        writer.WriteLine($"{index}\t\t{filePath}");
+                    });
+                }
             });
         }
+
     }
 }
