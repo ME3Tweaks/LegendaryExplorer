@@ -549,7 +549,7 @@ namespace LegendaryExplorerCore.Packages
                     // 0 = PC
                     // 1 = PS3
                     // 2 = Xenon
-                    // 5 = WiiU
+                    // 5 = WiiU / SM5 (LE)
                     // See ME3Explorer's EShaderPlatform enum in it's binary interpreter scans
                     var resetPos = packageReader.Position;
                     packageReader.Position = e.DataOffset + 0xC; // Skip 4 byte + "None"

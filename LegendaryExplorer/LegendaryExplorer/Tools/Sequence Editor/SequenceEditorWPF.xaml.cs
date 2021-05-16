@@ -1240,6 +1240,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         {
             if (FindResource("nodeContextMenu") is ContextMenu contextMenu)
             {
+                // BREAK LINKS CODE
                 if (contextMenu.GetChild("breakLinksMenuItem") is MenuItem breakLinksMenuItem)
                 {
                     if (obj is SBox sBox && (sBox.Varlinks.Any() || sBox.Outlinks.Any() || sBox.EventLinks.Any()))
@@ -1273,7 +1274,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                                 outputLinksMenuItem.Items.Add(temp);
                             }
                         }
-
                         if (breakLinksMenuItem.GetChild("varLinksMenuItem") is MenuItem varLinksMenuItem)
                         {
                             varLinksMenuItem.Visibility = Visibility.Collapsed;
@@ -1354,6 +1354,34 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     }
                 }
 
+                // SKIP SEQ OBJECT CODE
+                if (contextMenu.GetChild("skipObjMenuItem") is MenuItem skipObjMenuItem)
+                {
+                    if (obj is SBox sBox && sBox.Outlinks.Any())
+                    {
+                        // TODO: LIMIT TO SINGLE INPUT CAUSE IT DOESN'T REALLY WORK
+                        // WITH MULTIPLE 
+                        bool hasLinks = false;
+                        skipObjMenuItem.Visibility = Visibility.Collapsed;
+                        skipObjMenuItem.Items.Clear();
+                        for (int i = 0; i < sBox.Outlinks.Count; i++)
+                        {
+                            skipObjMenuItem.Visibility = Visibility.Visible;
+                            hasLinks = true;
+                            var temp = new MenuItem
+                            {
+                                Header = $"Use {sBox.Outlinks[i].Desc} as skipped path"
+                            };
+                            int linkConnection = i;
+                            temp.Click += (o, args) => { SeqTools.SkipSequenceElement(obj.Export, outboundLinkIdx: linkConnection); };
+                            skipObjMenuItem.Items.Add(temp);
+                        }
+                    }
+                    else
+                    {
+                        skipObjMenuItem.Visibility = Visibility.Collapsed;
+                    }
+                }
 
                 if (contextMenu.GetChild("interpViewerMenuItem") is MenuItem interpViewerMenuItem)
                 {
@@ -2058,7 +2086,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
         private void OpenInDialogueEditor_Clicked(object sender, RoutedEventArgs e)
         {
-            
+
             if (CurrentObjects_ListBox.SelectedItem is SObj obj &&
                 (obj.Export.ClassName.EndsWith("SeqAct_StartConversation") || obj.Export.ClassName.EndsWith("StartAmbientConv")) &&
                 obj.Export.GetProperty<ObjectProperty>("Conv") is ObjectProperty conv)
@@ -2118,8 +2146,8 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
                 {
-                    //Wait for all children to finish loading
-                    LoadFile(FileQueuedForLoad);
+                //Wait for all children to finish loading
+                LoadFile(FileQueuedForLoad);
                     FileQueuedForLoad = null;
 
                     if (ExportQueuedForFocusing != null)

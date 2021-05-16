@@ -25,6 +25,7 @@ namespace LegendaryExplorerCore.Packages
             pckg.Game == MEGame.UDK ||
             pckg.Game == MEGame.ME3 ||
             pckg.Game == MEGame.ME2 ||
+            pckg.Game.IsLEGame() ||
             pckg.Game == MEGame.ME1 && ME1TextureFiles.TrueForAll(texFilePath => !path.EndsWith(texFilePath));
 
         private static Action<MEPackage, string, bool, bool, bool, bool, object> MESaveDelegate;
@@ -44,11 +45,23 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="includeAdditionalPackagesToCook"></param>
         /// <param name="includeDependencyTable"></param>
         /// <param name="diskIOSyncLock">Object that can be used to force a lock on write operations, which can be used to prevent concurrent operations on the same package file. If null, a lock is not used.</param>
-        public static void Save(this IMEPackage package, string savePath = null, bool compress = false, bool includeAdditionalPackagesToCook = true, bool includeDependencyTable = true, object diskIOSyncLock = null)
+        public static void Save(this IMEPackage package, string savePath = null, bool? compress = null, bool includeAdditionalPackagesToCook = true, bool includeDependencyTable = true, object diskIOSyncLock = null)
         {
             if (package == null)
             {
                 return;
+            }
+
+            bool compressPackage = false;
+            if (compress.HasValue)
+            {
+                compressPackage = compress.Value;
+            }
+            else
+            {
+                // Compress LE packages by default
+                // Do not compress OT packages by default
+                compressPackage = package.Game.IsLEGame() ? true : false;
             }
 
             if (package.FilePath is null && savePath == null)
@@ -58,7 +71,7 @@ namespace LegendaryExplorerCore.Packages
             switch (package)
             {
                 case MEPackage mePackage:
-                    MESave(mePackage, savePath, compress, includeAdditionalPackagesToCook, includeDependencyTable, diskIOSyncLock);
+                    MESave(mePackage, savePath, compressPackage, includeAdditionalPackagesToCook, includeDependencyTable, diskIOSyncLock);
                     break;
                 case UDKPackage udkPackage:
                     UDKSave(udkPackage, savePath, diskIOSyncLock);
