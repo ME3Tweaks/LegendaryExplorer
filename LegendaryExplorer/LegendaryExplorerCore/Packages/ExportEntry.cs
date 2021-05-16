@@ -670,7 +670,7 @@ namespace LegendaryExplorerCore.Packages
 
             int start = 0;
 
-            if ((Game == MEGame.ME3 || Game == MEGame.UDK) && ClassName == "DominantDirectionalLightComponent" || ClassName == "DominantSpotLightComponent")
+            if ((Game is MEGame.ME3 or MEGame.UDK or MEGame.LE1) && ClassName == "DominantDirectionalLightComponent" || ClassName == "DominantSpotLightComponent")
             {
                 //DominantLightShadowMap, which goes before everything for some reason
                 int count = EndianReader.ToInt32(_data, 0, FileRef.Endian);

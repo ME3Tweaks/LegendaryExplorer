@@ -276,6 +276,25 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         // EXPERIMENTS: MGAMERZ---------------------------------------------------
         #region Mgamerz's Experiments
 
+        private void FindEmptyMips_Clicked(object sender, RoutedEventArgs e)
+        {
+            var pew = GetPEWindow();
+            string[] extensions = {".pcc"};
+            FileInfo[] files = new DirectoryInfo(LE3Directory.CookedPCPath)
+                .EnumerateFiles("*", SearchOption.AllDirectories)
+                .Where(f => extensions.Contains(f.Extension.ToLower()))
+                .ToArray();
+            foreach (var f in files)
+            {
+                var p = MEPackageHandler.OpenMEPackage(f.FullName, forceLoadFromDisk: true);
+                foreach (var tex in p.Exports.Where(x => x.ClassName == "Texture2D"))
+                {
+                    var t = ObjectBinary.From<UTexture2D>(tex);
+                    if (t.Mips[0].StorageType == StorageTypes.empty)
+                        Debugger.Break();
+                }
+            }
+        }
 
         private void BuildME1TLKDB_Clicked(object sender, RoutedEventArgs e)
         {
@@ -903,7 +922,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         private void ConvertFileToME3(object sender, RoutedEventArgs e)
         {
             // TODO: IMPLEMENT IN LEX
-            
+
             // This should be moved into a specific experiments class
             /*
             var pew = GetPEWindow();

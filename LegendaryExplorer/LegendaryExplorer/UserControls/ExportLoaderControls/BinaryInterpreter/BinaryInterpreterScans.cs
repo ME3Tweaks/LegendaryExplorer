@@ -1434,6 +1434,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 int count;
                 foreach (string propName in new[] { "InclusionConvexVolumes", "ExclusionConvexVolumes" })
                 {
+                    Debug.WriteLine("hi");
                     subnodes.Add(new BinInterpNode(bin.Position, $"{propName} ({count = bin.ReadInt32()})")
                     {
                         Items = ReadList(count, i => new BinInterpNode(bin.Position, $"{i}")
@@ -7971,7 +7972,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
 
                 bin.JumpTo(binarystart);
-                if (Pcc.Game != MEGame.ME3 && !Pcc.Game.IsLEGame())
+                if (Pcc.Game is MEGame.ME1 or MEGame.ME2 or MEGame.LE1)
                 {
                     bin.Skip(8); // 12 zeros
                     int thumbnailSize = bin.ReadInt32();
