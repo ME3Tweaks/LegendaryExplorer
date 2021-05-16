@@ -6604,10 +6604,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
-                nodes.Add(MakeMaterialResourceNode(bin, "ShaderMap 3 Material Resource"));
+                nodes.Add(MakeMaterialResourceNode(bin, "Material Resource"));
                 if (Pcc.Game != MEGame.UDK)
                 {
-                    nodes.Add(MakeMaterialResourceNode(bin, "ShaderMap 2 Material Resource"));
+                    nodes.Add(MakeMaterialResourceNode(bin, "2nd Material Resource"));
                 }
 
             }
@@ -6815,6 +6815,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 MakeFloatNode(bin, "TilingUScale"),
                                 MakeFloatNode(bin, "TilingVScale")
                             }),
+                            ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game.IsLEGame(), () => MakeInt32Node(bin, "Unk"))
                         }
                     }));
                 }

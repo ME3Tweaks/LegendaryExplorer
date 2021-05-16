@@ -17,14 +17,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         protected override void Serialize(SerializingContainer2 sc)
         {
             sc.Serialize(ref SM3MaterialResource);
-            if (sc.Game.IsOTGame() && sc.Game != MEGame.UDK)
+            if (sc.Game != MEGame.UDK)
             {
                 sc.Serialize(ref SM2MaterialResource);
-            }
-            else if (sc.Game.IsLEGame())
-            {
-                // uhhhh
-                // TODO: SERIALIZE THIS
             }
         }
 
@@ -104,8 +99,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             public int TexCoordIndex;
             public int TextureIndex;
-            public int UScale;
-            public int VScale;
+            public float UScale;
+            public float VScale;
+            public uint Unk; //LE only
         }
 
         public string[] CompileErrors;
@@ -732,6 +728,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             if (sc.Game != MEGame.ME1)
             {
                 sc.Serialize(ref tLookup.VScale);
+            }
+
+            if (sc.Game.IsLEGame())
+            {
+                sc.Serialize(ref tLookup.Unk);
             }
         }
         public static void Serialize(this SerializingContainer2 sc, ref MaterialUniformExpression matExp)
