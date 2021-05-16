@@ -6,6 +6,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorerCore.Compression
@@ -16,7 +18,12 @@ namespace LegendaryExplorerCore.Compression
     class OodleHelper
     {
         [DllImport(CompressionHelper.OODLE_DLL_NAME)]
-        private static extern int OodleLZ_Compress(OodleFormat format, byte[] buffer, long bufferSize, byte[] outputBuffer, OodleCompressionLevel level, uint unused1, uint unused2, uint unused3);
+        //private static extern int OodleLZ_Compress(OodleFormat format, byte[] buffer, long bufferSize, byte[] outputBuffer, OodleCompressionLevel level);
+        //private static extern int OodleLZ_Compress(OodleFormat format, byte[] buffer, long bufferSize, byte[] outputBuffer, OodleCompressionLevel level, uint unused1, uint unused2, uint unused3,);
+        private static extern int OodleLZ_Compress(OodleFormat format, byte[] buffer, long bufferSize, byte[] outputBuffer, OodleCompressionLevel level, 
+            uint unused1, uint unused2, uint unused3,
+            uint unused4, uint unused, uint unused6);
+            
 
         [DllImport(CompressionHelper.OODLE_DLL_NAME)]
         private static extern int OodleLZ_Decompress(byte[] buffer, long bufferSize, byte[] outputBuffer, long outputBufferSize,
@@ -91,14 +98,25 @@ namespace LegendaryExplorerCore.Compression
         public static byte[] Compress(byte[] buffer, int size, OodleFormat format, OodleCompressionLevel level)
         {
             uint compressedBufferSize = GetCompressionBound((uint)size);
-            byte[] compressedBuffer = new byte[compressedBufferSize];
+            byte[] compressedBuffer = MemoryManager.GetByteArray((int)compressedBufferSize); // we will not use all of this. someday we will want to improve this i think
+            //byte[] compressedBuffer = MemoryManager.GetByteArray(size + (64 * (int)FileSize.KibiByte)); // we will not use all of this. someday we will want to improve this i think
 
-            int compressedCount = OodleLZ_Compress(format, buffer, size, compressedBuffer, level, 0, 0, 0);
+            // OodleLZ_Compress is in dll
+            //int compressedCount = OodleLZ_Compress(format, buffer, buffer.Length, compressedBuffer, level, 0, 0, 0);
+            //int compressedCount = OodleLZ_Compress(format, buffer, buffer.Length, compressedBuffer, level, 0, 0, 0,);
+            int compressedCount = OodleLZ_Compress(format, buffer, buffer.Length, compressedBuffer, level, 0, 0, 0,0,0,0);
 
             byte[] outputBuffer = new byte[compressedCount];
             Buffer.BlockCopy(compressedBuffer, 0, outputBuffer, 0, compressedCount);
 
+            MemoryManager.ReturnByteArray(compressedBuffer);
             return outputBuffer;
+        }
+
+        private static uint GetCompressionBound(uint bufferSize)
+        {
+            // Not sure how to do this
+            return bufferSize + 274 * ((bufferSize + 0x3FFFF) / 0x40000);
         }
 
         public static byte[] Decompress(byte[] buffer, int size, int uncompressedSize)
@@ -119,11 +137,5 @@ namespace LegendaryExplorerCore.Compression
                 throw new Exception("Error decompressing Oodle data!");
             }
         }
-
-        private static uint GetCompressionBound(uint bufferSize)
-        {
-            return bufferSize + 274 * ((bufferSize + 0x3FFFF) / 0x40000);
-        }
-
     }
 }
