@@ -5344,7 +5344,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                         node.Items.Add(MakeByteNode(bin, "Unknown byte"));
                                         node.Items.Add(MakeUInt32Node(bin, "Fade-in (ms)"));
                                     }
-                                    node.Items.Add(MakeByteNode(bin, "Unknown2"));
+                                    bool hasUnknown2;
+                                    node.Items.Add(new BinInterpNode(bin.Position, $"Unknown 2: {hasUnknown2 = (bool)bin.ReadBoolByte()}", NodeType.StructLeafByte) { Length = 1 });
+                                    if (hasUnknown2)
+                                    {
+                                        node.Items.Add(MakeUInt32Node(bin, "Unknown Int A"));
+                                        node.Items.Add(MakeByteNode(bin, "Unknown byte"));
+                                        node.Items.Add(MakeUInt32Node(bin, "Unknown Int B"));
+                                    }
                                     node.Items.Add(MakeByteNode(bin, "Fade-out curve Shape"));
                                     node.Items.Add(MakeUInt32HexNode(bin, "Bank ID"));
                                     break;
