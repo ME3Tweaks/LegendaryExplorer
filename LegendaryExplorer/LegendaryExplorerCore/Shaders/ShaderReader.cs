@@ -12,12 +12,10 @@ namespace LegendaryExplorerCore.Shaders
         public static ShaderInfo DisassembleShader(byte[] shaderByteCode, out string disassembly)
         {
             var sb = new StringBuilder();
-            using (var writer = new StringWriter(sb))
-            {
-                var info = DisassembleShader(shaderByteCode, writer);
-                disassembly = sb.ToString();
-                return info;
-            }
+            using var writer = new StringWriter(sb);
+            var info = DisassembleShader(shaderByteCode, writer);
+            disassembly = sb.ToString();
+            return info;
         }
         public static ShaderInfo DisassembleShader(byte[] shaderByteCode, TextWriter writer = null) => DisassembleShader(new MemoryStream(shaderByteCode), writer);
 

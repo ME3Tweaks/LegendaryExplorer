@@ -503,13 +503,13 @@
                         </TabItem.Header>
                         <exportLoaderControls:TLKEditor x:Name="TlkEditorTab_TlkEditor"/>
                     </TabItem>
-                    <!--
                     <TabItem Name="MaterialViewer_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
                             <TextBlock Text="Shader Viewer" ToolTip="View Material's Shaders"/>
                         </TabItem.Header>
-                        <materialViewer:MaterialExportLoader x:Name="MaterialViewerTab_MaterialExportLoader"/>
+                        <exportLoaderControls:MaterialExportLoader x:Name="MaterialViewerTab_MaterialExportLoader"/>
                     </TabItem>
+                    <!--
                     <TabItem Name="RADLaunch_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
                             <TextBlock Text="Movie" ToolTip="Launch Movie in external tools"/>
