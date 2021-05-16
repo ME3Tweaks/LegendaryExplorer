@@ -526,7 +526,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             Global = 0x10,
             GameAction = 0x11,
             Global_LE = 0x02,
-            GameAction_LE = 0x03
+            GameObject_LE = 0x03
         }
 
         public enum EventActionType : byte
@@ -537,12 +537,27 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             ResetVolume = 0xB0,
             SetLPF = 0xE0,
             ResetLPF = 0xF0,
-            Play_LE = 0x04,
             Stop_LE = 0x01,
+            Pause_LE = 0x02,
+            Play_LE = 0x04,
             SetVolume_LE = 0x0A,
             ResetVolume_LE = 0x0B,
             SetLPF_LE = 0x0E,
-            ResetLPF_LE = 0x0F
+            ResetLPF_LE = 0x0F,
+            Break_LE = 0x1C
+        }
+
+        public enum EventActionFadeCurve : byte
+        {
+            Log_Base3 = 0x00,
+            Sine = 0x01,
+            Log_Base141 = 0x02,
+            InvertedSCurve = 0x03,
+            Linear = 0x04,
+            SCurve = 0x05,
+            Exponential_141 = 0x06,
+            ReciprocalSine = 0x07,
+            Exponential_3 = 0x08
         }
 
         public class EventAction : HIRCObject

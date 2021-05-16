@@ -5352,7 +5352,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                         node.Items.Add(MakeByteNode(bin, "Unknown byte"));
                                         node.Items.Add(MakeUInt32Node(bin, "Unknown Int B"));
                                     }
-                                    node.Items.Add(MakeByteNode(bin, "Fade-out curve Shape"));
+                                    node.Items.Add(new BinInterpNode(bin.Position, $"Fade-out curve Shape: {(WwiseBank.EventActionFadeCurve)bin.ReadByte()}", NodeType.StructLeafByte) { Length = 1 });
                                     node.Items.Add(MakeUInt32HexNode(bin, "Bank ID"));
                                     break;
                                 case WwiseBank.EventActionType.Stop_LE:
@@ -5365,7 +5365,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                         node.Items.Add(MakeUInt32Node(bin, "Fade-in (ms)"));
                                     }
                                     node.Items.Add(MakeByteNode(bin, "Unknown2"));
-                                    node.Items.Add(MakeByteNode(bin, "Fade-out curve Shape"));
+                                    node.Items.Add(new BinInterpNode(bin.Position, $"Fade-out curve Shape: {(WwiseBank.EventActionFadeCurve)bin.ReadByte()}", NodeType.StructLeafByte) { Length = 1 });
                                     node.Items.Add(MakeByteNode(bin, "Unknown3"));
                                     node.Items.Add(MakeByteNode(bin, "Unknown4"));
                                     break;
@@ -5382,7 +5382,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                         node.Items.Add(MakeUInt32Node(bin, "Fade-in (ms)"));
                                     }
                                     node.Items.Add(MakeByteNode(bin, "Unknown2"));
-                                    node.Items.Add(MakeByteNode(bin, "Fade-out curve Shape"));
+                                    node.Items.Add(new BinInterpNode(bin.Position, $"Fade-out curve Shape: {(WwiseBank.EventActionFadeCurve)bin.ReadByte()}", NodeType.StructLeafByte) { Length = 1 });
                                     node.Items.Add(MakeByteNode(bin, "Unknown3"));
                                     node.Items.Add(MakeFloatNode(bin, "Unknown float A"));
                                     node.Items.Add(MakeInt32Node(bin, "Unknown int/float B"));
@@ -7971,7 +7971,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
 
                 bin.JumpTo(binarystart);
-                if (Pcc.Game is MEGame.ME1 or MEGame.ME2 or MEGame.LE1)
+                if (Pcc.Game != MEGame.ME3 && !Pcc.Game.IsLEGame())
                 {
                     bin.Skip(8); // 12 zeros
                     int thumbnailSize = bin.ReadInt32();
