@@ -85,6 +85,9 @@ namespace LegendaryExplorerCore.Compression
                     var oodPath = Path.Combine(LE1Directory.ExecutableFolder, CompressionHelper.OODLE_DLL_NAME);
                     if (File.Exists(oodPath))
                     {
+
+                        // Todo: FIX: CANNOT RUN IN TEST MODE
+                        // Access denied to directory
                         var destPath = Path.Combine(paths.First(), CompressionHelper.OODLE_DLL_NAME);
                         File.Copy(oodPath, destPath, true);
                         return true;
