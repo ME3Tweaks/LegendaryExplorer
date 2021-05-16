@@ -53,7 +53,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>9.0</LangVersion>
     <DefineConstants>RELEASE</DefineConstants>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'WinDebug|x64'">
     <DebugSymbols>true</DebugSymbols>

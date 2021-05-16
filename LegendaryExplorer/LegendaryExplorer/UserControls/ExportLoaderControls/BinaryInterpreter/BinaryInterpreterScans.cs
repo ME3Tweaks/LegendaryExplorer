@@ -1434,7 +1434,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 int count;
                 foreach (string propName in new[] { "InclusionConvexVolumes", "ExclusionConvexVolumes" })
                 {
-                    Debug.WriteLine("hi");
                     subnodes.Add(new BinInterpNode(bin.Position, $"{propName} ({count = bin.ReadInt32()})")
                     {
                         Items = ReadList(count, i => new BinInterpNode(bin.Position, $"{i}")
