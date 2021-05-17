@@ -87,7 +87,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref ForceStreamTextures, SCExt.Serialize, SCExt.Serialize);
             if (sc.Game == MEGame.UDK)
             {
-                KCachedConvexData dummy = new KCachedConvexData { CachedConvexElements = Array.Empty<KCachedConvexDataElement>() };
+                var dummy = new KCachedConvexData { CachedConvexElements = Array.Empty<KCachedConvexDataElement>() };
                 sc.Serialize(ref dummy);
                 int dummyInt = 0;
                 sc.Serialize(ref dummyInt);
@@ -101,7 +101,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref PylonListStart);
                 sc.Serialize(ref PylonListEnd);
             }
-            if (sc.Game == MEGame.ME3)
+            if (sc.Game is MEGame.ME3 or MEGame.LE3)
             {
                 sc.Serialize(ref guidToIntMap, SCExt.Serialize, SCExt.Serialize);
                 sc.Serialize(ref CoverLinks, SCExt.Serialize);
@@ -130,7 +130,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref dummy);
             }
 
-            if (sc.Game == MEGame.ME1)
+            if (sc.Game is MEGame.ME1 or MEGame.LE1)
             {
                 sc.Serialize(ref ArtPlaceable1);
                 sc.Serialize(ref ArtPlaceable2);
@@ -148,7 +148,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.ms.BaseStream.WriteZeros(45); //unk data
             }
 
-            if (sc.Game == MEGame.ME3)
+            if (sc.Game == MEGame.ME3 || sc.Game.IsLEGame())
             {
                 //PrecomputedLightVolume
                 bool bIsInitialized = false;
@@ -178,15 +178,18 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             uIndexes.Add((NavListEnd, nameof(NavListEnd)));
             uIndexes.Add((CoverListStart, nameof(CoverListStart)));
             uIndexes.Add((CoverListEnd, nameof(CoverListEnd)));
-            if (game == MEGame.ME3)
+            if (game >= MEGame.ME3)
             {
                 uIndexes.Add((PylonListStart, nameof(PylonListStart)));
                 uIndexes.Add((PylonListEnd, nameof(PylonListEnd)));
+            }
+            if (game is MEGame.ME3 or MEGame.LE3)
+            {
                 uIndexes.AddRange(CoverLinks.Select((u, i) => (u, $"{nameof(CoverLinks)}[{i}]")));
                 uIndexes.AddRange(NavPoints.Select((u, i) => (u, $"{nameof(NavPoints)}[{i}]")));
             }
             uIndexes.AddRange(CrossLevelActors.Select((u, i) => (u, $"{nameof(CrossLevelActors)}[{i}]")));
-            if (game == MEGame.ME1)
+            if (game is MEGame.ME1 or MEGame.LE1)
             {
                 uIndexes.Add((ArtPlaceable1, nameof(ArtPlaceable1)));
                 uIndexes.Add((ArtPlaceable2, nameof(ArtPlaceable2)));

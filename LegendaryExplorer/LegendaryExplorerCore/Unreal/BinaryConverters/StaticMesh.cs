@@ -64,11 +64,25 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             if (sc.IsSaving)
             {
-                //This will improve loading times by preventing the engine from rebuilding the mesh
-                if (sc.Game == MEGame.ME1) InternalVersion = 15;
-                if (sc.Game == MEGame.ME2) InternalVersion = 16;
-                if (sc.Game == MEGame.ME3) InternalVersion = 18;
-                if (sc.Game == MEGame.UDK) InternalVersion = 18;
+                switch (sc.Game)
+                {
+                    //This will improve loading times by preventing the engine from rebuilding the mesh
+                    case MEGame.ME1:
+                        InternalVersion = 15;
+                        break;
+                    case MEGame.ME2:
+                        InternalVersion = 16;
+                        break;
+                    case MEGame.ME3:
+                    case MEGame.LE3:
+                    case MEGame.LE2:
+                    case MEGame.UDK:
+                        InternalVersion = 18;
+                        break;
+                    case MEGame.LE1:
+                        InternalVersion = 19;
+                        break;
+                }
             }
             sc.Serialize(ref InternalVersion);
             if (sc.Game == MEGame.UDK)

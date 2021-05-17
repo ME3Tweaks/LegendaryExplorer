@@ -77,7 +77,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             var names = base.GetNames(game);
 
             names.AddRange(ShaderTypeCRCMap.Select((kvp, i) => (kvp.Key, $"ShaderTypeCRCMap[{i}]")));
-            names.AddRange(Shaders.Select((kvp, i) => (kvp.Value.ShaderType, $"Shaders[{i}].ShaderType")));
+            for (int i = 0; i < Shaders.Count; i++)
+            {
+                (_, Shader shader) = Shaders[i];
+                names.Add(shader.ShaderType, $"Shaders[{i}].ShaderType");
+                if (shader.VertexFactoryType.HasValue)
+                {
+                    names.Add(shader.VertexFactoryType.Value, $"Shaders[{i}].VertexFactoryType");
+                }
+            }
             names.AddRange(VertexFactoryTypeCRCMap.Select((kvp, i) => (kvp.Key, $"VertexFactoryTypeCRCMap[{i}]")));
 
             int j = 0;

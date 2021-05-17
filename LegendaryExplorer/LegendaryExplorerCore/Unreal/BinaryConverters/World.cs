@@ -21,7 +21,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         protected override void Serialize(SerializingContainer2 sc)
         {
             sc.Serialize(ref PersistentLevel);
-            if (sc.Game == MEGame.ME3)
+            if (sc.Game == MEGame.ME3 || sc.Game.IsLEGame())
             {
                 sc.Serialize(ref PersistentFaceFXAnimSet);
             }
@@ -42,7 +42,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             int dummy = 0;
             sc.Serialize(ref dummy);
-            if (sc.Game == MEGame.ME1)
+            if (sc.Game is MEGame.ME1 or MEGame.LE1)
             {
                 sc.Serialize(ref DecalManager);
             }
@@ -57,11 +57,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
         {
             var uIndexes = new List<(UIndex, string)> { (PersistentLevel, "PersistentLevel") };
-            if (game == MEGame.ME3)
+            if (game == MEGame.ME3 || game.IsLEGame())
             {
                 uIndexes.Add((PersistentFaceFXAnimSet, "PersistentFaceFXAnimSet"));
             }
-            else if (game == MEGame.ME1)
+            else if (game is MEGame.ME1 or MEGame.LE1)
             {
                 uIndexes.Add((DecalManager, "DecalManager"));
             }
