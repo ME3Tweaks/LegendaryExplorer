@@ -59,7 +59,7 @@ namespace LegendaryExplorerCore
             MEPackageHandler.Initialize();
             PackageSaver.Initialize();
             PackageSaver.PackageSaveFailedCallback = packageSavingFailed;
-            Action[] jsonLoaders =
+            Action<string>[] jsonLoaders =
             {
                 ME1UnrealObjectInfo.loadfromJSON,
                 ME2UnrealObjectInfo.loadfromJSON,
@@ -73,7 +73,7 @@ namespace LegendaryExplorerCore
                 LE2UnrealObjectInfo.loadfromJSON,
                 LE3UnrealObjectInfo.loadfromJSON,
             };
-            Parallel.ForEach(jsonLoaders, action => action());
+            Parallel.ForEach(jsonLoaders, action => action(null));
             LegendaryExplorerCoreLibSettings.Instance = new LegendaryExplorerCoreLibSettings();
             if (!OodleHelper.EnsureOodleDll())
             {

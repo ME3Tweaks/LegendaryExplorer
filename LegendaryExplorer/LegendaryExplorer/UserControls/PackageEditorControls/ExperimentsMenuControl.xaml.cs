@@ -88,43 +88,115 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
         private void BuildLE1ObjectInfo_Clicked(object sender, RoutedEventArgs e)
         {
-            LE1UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE1ObjectInfo.json"));
-            GetPEWindow().RestoreAndBringToFront();
-            MessageBox.Show(GetPEWindow(), "Done");
+            var pew = GetPEWindow();
+            pew.BusyText = "Building LE1 Object Info";
+            pew.IsBusy = true;
+
+            void setProgress(int done, int total)
+            {
+                Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    pew.BusyText = $"Building LE1 Object Info [{done}/{total}]";
+                });
+            }
+
+            Task.Run(() =>
+            {
+                LE1UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE1ObjectInfo.json"), true, setProgress);
+            }).ContinueWithOnUIThread(x =>
+            {
+                pew.IsBusy = false;
+                pew.RestoreAndBringToFront();
+                MessageBox.Show(GetPEWindow(), "Done");
+            });
         }
+
 
         private void BuildLE2ObjectInfo_Clicked(object sender, RoutedEventArgs e)
         {
-            LE2UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE2ObjectInfo.json"));
-            GetPEWindow().RestoreAndBringToFront();
-            MessageBox.Show(GetPEWindow(), "Done");
+            var pew = GetPEWindow();
+            pew.BusyText = "Building LE2 Object Info";
+            pew.IsBusy = true;
+
+            void setProgress(int done, int total)
+            {
+                Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    pew.BusyText = $"Building LE2 Object Info [{done}/{total}]";
+                });
+            }
+
+            Task.Run(() =>
+            {
+                LE2UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE2ObjectInfo.json"), true, setProgress);
+            }).ContinueWithOnUIThread(x =>
+            {
+                pew.IsBusy = false;
+                pew.RestoreAndBringToFront();
+                MessageBox.Show(GetPEWindow(), "Done");
+            });
         }
 
         private void BuildLE3ObjectInfo_Clicked(object sender, RoutedEventArgs e)
         {
-            LE3UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE3ObjectInfo.json"));
-            GetPEWindow().RestoreAndBringToFront();
-            MessageBox.Show(GetPEWindow(), "Done");
+            var pew = GetPEWindow();
+            pew.BusyText = "Building LE3 Object Info";
+            pew.IsBusy = true;
+
+            void setProgress(int done, int total)
+            {
+                Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    pew.BusyText = $"Building LE3 Object Info [{done}/{total}]";
+                });
+            }
+
+            Task.Run(() =>
+            {
+                LE3UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE3ObjectInfo.json"), true, setProgress);
+            }).ContinueWithOnUIThread(x =>
+            {
+                pew.IsBusy = false;
+                pew.RestoreAndBringToFront();
+                MessageBox.Show(GetPEWindow(), "Done");
+            });
         }
 
         private void BuildAllObjectInfoLE_Clicked(object sender, RoutedEventArgs e)
         {
-            //Stopwatch sw = new Stopwatch();
-            //sw.Start();
-            LE1UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE1ObjectInfo.json"), true);
-            LE2UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE2ObjectInfo.json"), true);
-            LE3UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE3ObjectInfo.json"), true);
-            //sw.Stop();
-            //var time1 = sw.Elapsed;
-            //sw.Reset();
-            //sw.Start();
-            //LE1UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE1ObjectInfo.json"), false);
-            //LE2UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE2ObjectInfo.json"), false);
-            //LE3UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE3ObjectInfo.json"), false);
-            //sw.Stop();
+            var pew = GetPEWindow();
+            pew.BusyText = "Building LE Object Info";
+            pew.IsBusy = true;
 
-            GetPEWindow().RestoreAndBringToFront();
-            MessageBox.Show(GetPEWindow(), "Done");
+            MEGame currentGame = MEGame.LE1;
+            void setProgress(int done, int total)
+            {
+                Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    pew.BusyText = $"Building {currentGame} Object Info [{done}/{total}]";
+                });
+            }
+            Stopwatch sw = new Stopwatch();
+
+            Task.Run(() =>
+            {
+                sw.Start();
+                LE1UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE1ObjectInfo.json"), true, setProgress);
+                currentGame = MEGame.LE2;
+                LE2UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE2ObjectInfo.json"), true, setProgress);
+                currentGame = MEGame.LE3;
+                LE3UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE3ObjectInfo.json"), true, setProgress);
+                sw.Stop();
+            }).ContinueWithOnUIThread(x =>
+            {
+                pew.IsBusy = false;
+                pew.RestoreAndBringToFront();
+                MessageBox.Show(GetPEWindow(), $"Done. Took {sw.Elapsed.TotalSeconds} seconds");
+            });
+            
+
+
+
         }
         private void ObjectInfosSearch_Click(object sender, RoutedEventArgs e)
         {
@@ -290,7 +362,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         private void FindEmptyMips_Clicked(object sender, RoutedEventArgs e)
         {
             var pew = GetPEWindow();
-            string[] extensions = {".pcc"};
+            string[] extensions = { ".pcc" };
             FileInfo[] files = new DirectoryInfo(LE3Directory.CookedPCPath)
                 .EnumerateFiles("*", SearchOption.AllDirectories)
                 .Where(f => extensions.Contains(f.Extension.ToLower()))

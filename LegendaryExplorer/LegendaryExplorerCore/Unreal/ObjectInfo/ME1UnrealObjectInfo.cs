@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Newtonsoft.Json;
@@ -26,13 +27,13 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         public static Dictionary<string, SequenceObjectInfo> SequenceObjects = new();
 
         public static bool IsLoaded;
-        public static void loadfromJSON()
+        public static void loadfromJSON(string jsonTextOverride = null)
         {
             if (!IsLoaded)
             {
                 try
                 {
-                    var infoText = ObjectInfoLoader.LoadEmbeddedJSONText(MEGame.ME1);
+                    var infoText = jsonTextOverride ?? ObjectInfoLoader.LoadEmbeddedJSONText(MEGame.ME1);
                     if (infoText != null)
                     {
                         var blob = JsonConvert.DeserializeAnonymousType(infoText, new { SequenceObjects, Classes, Structs, Enums });
@@ -463,65 +464,75 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             return false;
         }
 
-#region Generating
+        #region Generating
         //call this method to regenerate ME1ObjectInfo.json
         //Takes a long time (10 to 20 minutes maybe?). Application will be completely unresponsive during that time.
-        public static void generateInfo(string outpath)
+        public static void generateInfo(string outpath, bool usePooledMemory = true, Action<int, int> progressDelegate = null)
         {
-            Classes = new Dictionary<string, ClassInfo>();
-            Structs = new Dictionary<string, ClassInfo>();
-            Enums = new Dictionary<string, List<NameReference>>();
-            SequenceObjects = new Dictionary<string, SequenceObjectInfo>();
-            foreach (string file in MELoadedFiles.GetOfficialFiles(MEGame.ME1))
-            {
-                if (Path.GetExtension(file) == ".upk" || Path.GetExtension(file) == ".sfm" || Path.GetExtension(file) == ".u")
-                {
-                    Debug.WriteLine($"File: {file}");
-                    using IMEPackage pcc = MEPackageHandler.OpenME1Package(file);
-                    for (int j = 1; j <= pcc.ExportCount; j++)
-                    {
-                        ExportEntry exportEntry = pcc.GetUExport(j);
-                        string className = exportEntry.ClassName;
-                        if (className == "Enum")
-                        {
-                            generateEnumValues(exportEntry);
-                        }
-                        else if (className == "Class")
-                        {
-                            string objectName = exportEntry.ObjectName;
-                            Debug.WriteLine($"Generating information for {objectName}");
-                            if (!Classes.ContainsKey(objectName))
-                            {
-                                Classes.Add(objectName, generateClassInfo(exportEntry));
-                            }
-                        }
-                        else if (className == "ScriptStruct")
-                        {
-                            string objectName = exportEntry.ObjectName;
-                            if (!Structs.ContainsKey(exportEntry.ObjectName))
-                            {
-                                Structs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
-                            }
-                        }
-                        else if (exportEntry.IsA("SequenceObject"))
-                        {
-                            if (!SequenceObjects.TryGetValue(className, out SequenceObjectInfo seqObjInfo))
-                            {
-                                seqObjInfo = new SequenceObjectInfo();
-                                SequenceObjects.Add(className, seqObjInfo);
-                            }
+            MemoryManager.SetUsePooledMemory(usePooledMemory);
+            Enums.Clear();
+            Structs.Clear();
+            Classes.Clear();
+            SequenceObjects.Clear();
+            var NewClasses = new Dictionary<string, ClassInfo>();
+            var NewStructs = new Dictionary<string, ClassInfo>();
+            var NewEnums = new Dictionary<string, List<NameReference>>();
+            var NewSequenceObjects = new Dictionary<string, SequenceObjectInfo>();
 
-                            int objInstanceVersion = exportEntry.GetProperty<IntProperty>("ObjInstanceVersion");
-                            if (objInstanceVersion > seqObjInfo.ObjInstanceVersion)
-                            {
-                                seqObjInfo.ObjInstanceVersion = objInstanceVersion;
-                            }
+            var allFiles = MELoadedFiles.GetOfficialFiles(MEGame.ME1).Where(x => Path.GetExtension(x) == ".upk" || Path.GetExtension(x) == ".sfm" || Path.GetExtension(x) == ".u").ToList();
+            int totalFiles = allFiles.Count;
+            int numDone = 0;
+            foreach (var filePath in allFiles)
+            {
+                using IMEPackage pcc = MEPackageHandler.OpenME1Package(filePath);
+                for (int j = 1; j <= pcc.ExportCount; j++)
+                {
+                    ExportEntry exportEntry = pcc.GetUExport(j);
+                    string className = exportEntry.ClassName;
+                    if (className == "Enum")
+                    {
+                        generateEnumValues(exportEntry);
+                    }
+                    else if (className == "Class")
+                    {
+                        string objectName = exportEntry.ObjectName;
+                        Debug.WriteLine($"Generating information for {objectName}");
+                        if (!Classes.ContainsKey(objectName))
+                        {
+                            Classes.Add(objectName, generateClassInfo(exportEntry));
+                        }
+                    }
+                    else if (className == "ScriptStruct")
+                    {
+                        string objectName = exportEntry.ObjectName;
+                        if (!Structs.ContainsKey(exportEntry.ObjectName))
+                        {
+                            Structs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
+                        }
+                    }
+                    else if (exportEntry.IsA("SequenceObject"))
+                    {
+                        if (!SequenceObjects.TryGetValue(className, out SequenceObjectInfo seqObjInfo))
+                        {
+                            seqObjInfo = new SequenceObjectInfo();
+                            SequenceObjects.Add(className, seqObjInfo);
+                        }
+
+                        int objInstanceVersion = exportEntry.GetProperty<IntProperty>("ObjInstanceVersion");
+                        if (objInstanceVersion > seqObjInfo.ObjInstanceVersion)
+                        {
+                            seqObjInfo.ObjInstanceVersion = objInstanceVersion;
                         }
                     }
                 }
+                numDone++;
+                progressDelegate?.Invoke(numDone, totalFiles);
             }
 
-            File.WriteAllText(outpath, JsonConvert.SerializeObject(new { SequenceObjects, Classes, Structs, Enums }, Formatting.Indented));
+            var jsonText = JsonConvert.SerializeObject(new { SequenceObjects = NewSequenceObjects, Classes = NewClasses, Structs = NewStructs, Enums = NewEnums }, Formatting.Indented);
+            File.WriteAllText(outpath, jsonText);
+            MemoryManager.SetUsePooledMemory(false);
+            loadfromJSON(jsonText);
         }
 
         private static void AddCustomAndNativeClasses()

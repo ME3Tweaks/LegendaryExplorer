@@ -17,6 +17,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using LegendaryExplorerCore.Gammtek.IO.Converters;
 using LegendaryExplorerCore.Helpers;
@@ -751,9 +752,11 @@ namespace LegendaryExplorerCore.Gammtek.IO
         /// <returns></returns>
         public static int ToInt32(ReadOnlyCollection<byte> buffer, int offset, Endian endianness)
         {
-
-            var readMagic = (buffer[offset] << 24) + (buffer[offset + 1] << 16) + (buffer[offset + 2] <<
-                            8) + buffer[offset + 3];
+            var arr = buffer.ToArray();
+            var readMagic = (buffer[offset + 3] << 24) + (buffer[offset + 2] << 16) + (buffer[offset + 1] <<
+                            8) + buffer[offset];
+            // Original Logic:
+            //var readMagic = (buffer[offset] << 24) + (buffer[offset + 1] << 16) + (buffer[offset + 2] <<8) + buffer[offset + 3];
             if (Endian.Native != endianness)
             {
                 //swap

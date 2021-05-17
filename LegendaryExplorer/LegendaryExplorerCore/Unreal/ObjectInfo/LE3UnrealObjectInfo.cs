@@ -38,13 +38,13 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         }
 
         public static bool IsLoaded;
-        public static void loadfromJSON()
+        public static void loadfromJSON(string jsonTextOverride = null)
         {
             if (!IsLoaded)
             {
                 try
                 {
-                    var infoText = ObjectInfoLoader.LoadEmbeddedJSONText(MEGame.LE3);
+                    var infoText = jsonTextOverride ?? ObjectInfoLoader.LoadEmbeddedJSONText(MEGame.LE3);
                     if (infoText != null)
                     {
                         var blob = JsonConvert.DeserializeAnonymousType(infoText, new { SequenceObjects, Classes, Structs, Enums });
@@ -451,7 +451,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         #region Generating
         //call this method to regenerate LE3ObjectInfo.json
         //Takes a long time (~5 minutes maybe?). Application will be completely unresponsive during that time.
-        public static void generateInfo(string outpath, bool usePooledMemory = true)
+        public static void generateInfo(string outpath, bool usePooledMemory = true, Action<int, int> progressDelegate = null)
         {
             MemoryManager.SetUsePooledMemory(usePooledMemory);
             Enums.Clear();
@@ -463,67 +463,69 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             var NewEnums = new Dictionary<string, List<NameReference>>();
             var newSequenceObjects = new Dictionary<string, SequenceObjectInfo>();
 
-            foreach (string filePath in MELoadedFiles.GetOfficialFiles(MEGame.LE3))
+            var allFiles = MELoadedFiles.GetOfficialFiles(MEGame.LE3).Where(x => Path.GetExtension(x) == ".pcc").ToList();
+            int totalFiles = allFiles.Count;
+            int numDone = 0;
+            foreach (string filePath in allFiles)
             {
-                if (Path.GetExtension(filePath) == ".pcc")
+                using IMEPackage pcc = MEPackageHandler.OpenLE3Package(filePath);
+                for (int i = 1; i <= pcc.ExportCount; i++)
                 {
-                    using IMEPackage pcc = MEPackageHandler.OpenLE3Package(filePath);
-                    for (int i = 1; i <= pcc.ExportCount; i++)
+                    ExportEntry exportEntry = pcc.GetUExport(i);
+                    string className = exportEntry.ClassName;
+                    string objectName = exportEntry.ObjectName.Name;
+                    if (className == "Enum")
                     {
-                        ExportEntry exportEntry = pcc.GetUExport(i);
-                        string className = exportEntry.ClassName;
-                        string objectName = exportEntry.ObjectName.Name;
-                        if (className == "Enum")
+                        generateEnumValues(exportEntry, NewEnums);
+                    }
+                    else if (className == "Class")
+                    {
+                        if (!NewClasses.ContainsKey(objectName))
                         {
-                            generateEnumValues(exportEntry, NewEnums);
+                            NewClasses.Add(objectName, generateClassInfo(exportEntry));
                         }
-                        else if (className == "Class")
+                        if (GlobalUnrealObjectInfo.IsA(objectName, "SequenceObject", MEGame.LE3))
                         {
-                            if (!NewClasses.ContainsKey(objectName))
-                            {
-                                NewClasses.Add(objectName, generateClassInfo(exportEntry));
-                            }
-                            if (GlobalUnrealObjectInfo.IsA(objectName, "SequenceObject", MEGame.LE3))
-                            {
-                                List<string> inputLinks = generateSequenceObjectInfo(i, pcc);
-                                if (!newSequenceObjects.TryGetValue(objectName, out SequenceObjectInfo seqObjInfo))
-                                {
-                                    seqObjInfo = new SequenceObjectInfo();
-                                    newSequenceObjects.Add(objectName, seqObjInfo);
-                                }
-                                seqObjInfo.inputLinks = inputLinks;
-                            }
-                        }
-                        else if (className == "ScriptStruct")
-                        {
-                            if (!NewStructs.ContainsKey(objectName))
-                            {
-                                NewStructs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
-                            }
-                        }
-                        else if (exportEntry.IsA("SequenceObject"))
-                        {
-                            if (!newSequenceObjects.TryGetValue(className, out SequenceObjectInfo seqObjInfo))
+                            List<string> inputLinks = generateSequenceObjectInfo(i, pcc);
+                            if (!newSequenceObjects.TryGetValue(objectName, out SequenceObjectInfo seqObjInfo))
                             {
                                 seqObjInfo = new SequenceObjectInfo();
-                                newSequenceObjects.Add(className, seqObjInfo);
+                                newSequenceObjects.Add(objectName, seqObjInfo);
                             }
+                            seqObjInfo.inputLinks = inputLinks;
+                        }
+                    }
+                    else if (className == "ScriptStruct")
+                    {
+                        if (!NewStructs.ContainsKey(objectName))
+                        {
+                            NewStructs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
+                        }
+                    }
+                    else if (exportEntry.IsA("SequenceObject"))
+                    {
+                        if (!newSequenceObjects.TryGetValue(className, out SequenceObjectInfo seqObjInfo))
+                        {
+                            seqObjInfo = new SequenceObjectInfo();
+                            newSequenceObjects.Add(className, seqObjInfo);
+                        }
 
-                            int objInstanceVersion = exportEntry.GetProperty<IntProperty>("ObjInstanceVersion");
-                            if (objInstanceVersion > seqObjInfo.ObjInstanceVersion)
-                            {
-                                seqObjInfo.ObjInstanceVersion = objInstanceVersion;
-                            }
+                        int objInstanceVersion = exportEntry.GetProperty<IntProperty>("ObjInstanceVersion");
+                        if (objInstanceVersion > seqObjInfo.ObjInstanceVersion)
+                        {
+                            seqObjInfo.ObjInstanceVersion = objInstanceVersion;
                         }
                     }
                 }
                 // System.Diagnostics.Debug.WriteLine($"{i} of {length} processed");
+                numDone++;
+                progressDelegate?.Invoke(numDone, totalFiles);
             }
 
-            File.WriteAllText(outpath,
-                              JsonConvert.SerializeObject(new { SequenceObjects = newSequenceObjects, Classes = NewClasses, Structs = NewStructs, Enums = NewEnums }, Formatting.Indented));
+            var jsonText = JsonConvert.SerializeObject(new { SequenceObjects = newSequenceObjects, Classes = NewClasses, Structs = NewStructs, Enums = NewEnums }, Formatting.Indented);
+            File.WriteAllText(outpath, jsonText);
             MemoryManager.SetUsePooledMemory(false);
-
+            loadfromJSON(jsonText);
         }
 
         private static void AddCustomAndNativeClasses(Dictionary<string, ClassInfo> classes, Dictionary<string, SequenceObjectInfo> sequenceObjects)
@@ -592,7 +594,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             }
 
             // Is this code correct for console platforms?
-            int nextExport = EndianReader.ToInt32(export.Data, isStruct ? 0x14 : 0xC, export.FileRef.Endian);
+            int nextExport = EndianReader.ToInt32(export.DataReadOnly, isStruct ? 0x14 : 0xC, export.FileRef.Endian);
             while (nextExport > 0)
             {
                 var entry = pcc.GetUExport(nextExport);
@@ -609,7 +611,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                         }
                     }
                 }
-                nextExport = EndianReader.ToInt32(entry.Data, export.Game.IsOTGame() ? 0x10 : 0x08, export.FileRef.Endian);
+                nextExport = EndianReader.ToInt32(entry.DataReadOnly, 0x10, export.FileRef.Endian);
             }
             return info;
         }

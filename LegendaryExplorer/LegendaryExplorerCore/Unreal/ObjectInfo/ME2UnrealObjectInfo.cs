@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Newtonsoft.Json;
@@ -25,13 +26,13 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         public static Dictionary<string, SequenceObjectInfo> SequenceObjects = new();
 
         public static bool IsLoaded;
-        public static void loadfromJSON()
+        public static void loadfromJSON(string jsonTextOverride = null)
         {
             if (!IsLoaded)
             {
                 try
                 {
-                    var infoText = ObjectInfoLoader.LoadEmbeddedJSONText(MEGame.ME2);
+                    var infoText = jsonTextOverride ?? ObjectInfoLoader.LoadEmbeddedJSONText(MEGame.ME2);
                     if (infoText != null)
                     {
                         var blob = JsonConvert.DeserializeAnonymousType(infoText, new { SequenceObjects, Classes, Structs, Enums });
@@ -296,7 +297,8 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     // We will just ignore this class and jump to our known super class
                     className = Classes[knownSuperclass].baseClass;
                     knownSuperclass = null; // Don't use it again
-                } else
+                }
+                else
                 {
                     break;
                 }
@@ -315,7 +317,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
         public static PropertyCollection getDefaultStructValue(string className, bool stripTransients)
         {
-            bool isImmutable =  GlobalUnrealObjectInfo.IsImmutable(className, MEGame.ME2);
+            bool isImmutable = GlobalUnrealObjectInfo.IsImmutable(className, MEGame.ME2);
             if (Structs.ContainsKey(className))
             {
                 ClassInfo info = Structs[className];
@@ -355,7 +357,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                         filepath = info.pccPath;
                         loadStream = new MemoryStream(File.ReadAllBytes(info.pccPath));
                     }
-                    else if (info.pccPath ==  GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
+                    else if (info.pccPath == GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
                     {
                         filepath = "GAMERESOURCES_ME2";
                         loadStream = LegendaryExplorerCoreUtilities.LoadFileFromCompressedResource("GameResources.zip", LegendaryExplorerCoreLib.CustomResourceFileName(MEGame.ME2));
@@ -448,7 +450,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                             return null;
                     }
                 case PropertyType.StructProperty:
-                    isImmutable = isImmutable ||  GlobalUnrealObjectInfo.IsImmutable(propInfo.Reference, MEGame.ME2);
+                    isImmutable = isImmutable || GlobalUnrealObjectInfo.IsImmutable(propInfo.Reference, MEGame.ME2);
                     return new StructProperty(propInfo.Reference, getDefaultStructValue(propInfo.Reference, stripTransients), propName, isImmutable);
                 case PropertyType.None:
                 case PropertyType.Unknown:
@@ -460,60 +462,66 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         #region Generating
         //call this method to regenerate ME2ObjectInfo.json
         //Takes a long time (10 minutes maybe?). Application will be completely unresponsive during that time.
-        public static void generateInfo(string outpath)
+        public static void generateInfo(string outpath, bool usePooledMemory = true, Action<int,int> progressDelegate = null)
         {
+            MemoryManager.SetUsePooledMemory(usePooledMemory);
+            Enums.Clear();
+            Structs.Clear();
+            Classes.Clear();
+            SequenceObjects.Clear();
             var NewClasses = new Dictionary<string, ClassInfo>();
             var NewStructs = new Dictionary<string, ClassInfo>();
             var NewEnums = new Dictionary<string, List<NameReference>>();
             var NewSequenceObjects = new Dictionary<string, SequenceObjectInfo>();
 
-            foreach (string filePath in MELoadedFiles.GetOfficialFiles(MEGame.ME2))
+            var allFiles = MELoadedFiles.GetOfficialFiles(MEGame.ME2).Where(x => Path.GetExtension(x) == ".pcc").ToList();
+            int totalFiles = allFiles.Count;
+            int numDone = 0;
+            foreach (string filePath in allFiles)
             {
-                if (Path.GetExtension(filePath) == ".pcc")
+                using IMEPackage pcc = MEPackageHandler.OpenME2Package(filePath);
+                for (int j = 1; j <= pcc.ExportCount; j++)
                 {
-                    using IMEPackage pcc = MEPackageHandler.OpenME2Package(filePath);
-                    for (int j = 1; j <= pcc.ExportCount; j++)
+                    ExportEntry exportEntry = pcc.GetUExport(j);
+                    string className = exportEntry.ClassName;
+                    if (className == "Enum")
                     {
-                        ExportEntry exportEntry = pcc.GetUExport(j);
-                        string className = exportEntry.ClassName;
-                        if (className == "Enum")
+                        generateEnumValues(exportEntry, NewEnums);
+                    }
+                    else if (className == "Class")
+                    {
+                        string objectName = exportEntry.ObjectName;
+                        if (!NewClasses.ContainsKey(objectName))
                         {
-                            generateEnumValues(exportEntry, NewEnums);
-                        }
-                        else if (className == "Class")
-                        {
-                            string objectName = exportEntry.ObjectName;
-                            if (!NewClasses.ContainsKey(objectName))
-                            {
-                                NewClasses.Add(objectName, generateClassInfo(exportEntry));
-                            }
-                        }
-                        else if (className == "ScriptStruct")
-                        {
-                            string objectName = exportEntry.ObjectName;
-                            if (!NewStructs.ContainsKey(objectName))
-                            {
-                                NewStructs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
-
-                            }
-                        }
-                        else if (exportEntry.IsA("SequenceObject"))
-                        {
-                            if (!NewSequenceObjects.TryGetValue(className, out SequenceObjectInfo seqObjInfo))
-                            {
-                                seqObjInfo = new SequenceObjectInfo();
-                                NewSequenceObjects.Add(className, seqObjInfo);
-                            }
-
-                            int objInstanceVersion = exportEntry.GetProperty<IntProperty>("ObjInstanceVersion");
-                            if (objInstanceVersion > seqObjInfo.ObjInstanceVersion)
-                            {
-                                seqObjInfo.ObjInstanceVersion = objInstanceVersion;
-                            }
+                            NewClasses.Add(objectName, generateClassInfo(exportEntry));
                         }
                     }
-                    //Debug.WriteLine("Releasing " + pcc.FileName);
+                    else if (className == "ScriptStruct")
+                    {
+                        string objectName = exportEntry.ObjectName;
+                        if (!NewStructs.ContainsKey(objectName))
+                        {
+                            NewStructs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
+
+                        }
+                    }
+                    else if (exportEntry.IsA("SequenceObject"))
+                    {
+                        if (!NewSequenceObjects.TryGetValue(className, out SequenceObjectInfo seqObjInfo))
+                        {
+                            seqObjInfo = new SequenceObjectInfo();
+                            NewSequenceObjects.Add(className, seqObjInfo);
+                        }
+
+                        int objInstanceVersion = exportEntry.GetProperty<IntProperty>("ObjInstanceVersion");
+                        if (objInstanceVersion > seqObjInfo.ObjInstanceVersion)
+                        {
+                            seqObjInfo.ObjInstanceVersion = objInstanceVersion;
+                        }
+                    }
                 }
+                numDone++;
+                progressDelegate?.Invoke(numDone, totalFiles);
             }
 
             //native classes not defined in data files
@@ -521,14 +529,14 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             {
                 baseClass = "Texture2D",
                 exportIndex = 0,
-                pccPath =  GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
             };
 
             NewClasses["StaticMesh"] = new ClassInfo
             {
                 baseClass = "Object",
                 exportIndex = 0,
-                pccPath =  GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 properties =
                     {
                         new KeyValuePair<string, PropertyInfo>("UseSimpleRigidBodyCollision", new PropertyInfo(PropertyType.BoolProperty)),
@@ -553,7 +561,10 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
             NewClasses["SFXWeapon"].properties.Add("InstantHitDamageTypes", new PropertyInfo(PropertyType.ArrayProperty, "Class"));
 
-            File.WriteAllText("ME2ObjectInfo.json", JsonConvert.SerializeObject(new { SequenceObjects = NewSequenceObjects, Classes = NewClasses, Structs = NewStructs, Enums = NewEnums }, Formatting.Indented));
+            var jsonText = JsonConvert.SerializeObject(new { SequenceObjects = NewSequenceObjects, Classes = NewClasses, Structs = NewStructs, Enums = NewEnums }, Formatting.Indented);
+            File.WriteAllText(outpath, jsonText);
+            MemoryManager.SetUsePooledMemory(false);
+            loadfromJSON(jsonText);
         }
 
         private static void AddCustomAndNativeClasses(Dictionary<string, ClassInfo> classes, Dictionary<string, SequenceObjectInfo> sequenceObjects)
@@ -563,39 +574,39 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             {
                 baseClass = "SequenceAction",
                 exportIndex = 2,
-                pccPath =  GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
             };
-            sequenceObjects["SeqAct_SendMessageToME3Explorer"] = new SequenceObjectInfo {ObjInstanceVersion = 2};
+            sequenceObjects["SeqAct_SendMessageToME3Explorer"] = new SequenceObjectInfo { ObjInstanceVersion = 2 };
 
             classes["SeqAct_ME3ExpDumpActors"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
                 exportIndex = 4,
-                pccPath =  GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
             };
-            sequenceObjects["SeqAct_ME3ExpDumpActors"] = new SequenceObjectInfo {ObjInstanceVersion = 2};
+            sequenceObjects["SeqAct_ME3ExpDumpActors"] = new SequenceObjectInfo { ObjInstanceVersion = 2 };
 
             classes["SeqAct_ME3ExpAcessDumpedActorsList"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
                 exportIndex = 6,
-                pccPath =  GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
             };
-            sequenceObjects["SeqAct_ME3ExpAcessDumpedActorsList"] = new SequenceObjectInfo {ObjInstanceVersion = 2};
+            sequenceObjects["SeqAct_ME3ExpAcessDumpedActorsList"] = new SequenceObjectInfo { ObjInstanceVersion = 2 };
 
             classes["SeqAct_ME3ExpGetPlayerCamPOV"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
                 exportIndex = 8,
-                pccPath =  GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
             };
-            sequenceObjects["SeqAct_ME3ExpGetPlayerCamPOV"] = new SequenceObjectInfo {ObjInstanceVersion = 2};
+            sequenceObjects["SeqAct_ME3ExpGetPlayerCamPOV"] = new SequenceObjectInfo { ObjInstanceVersion = 2 };
 
             classes["SeqAct_GetLocationAndRotation"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
                 exportIndex = 10,
-                pccPath =  GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 properties =
                 {
                     new KeyValuePair<string, PropertyInfo>("m_oTarget", new PropertyInfo(PropertyType.ObjectProperty, "Actor")),
@@ -603,13 +614,13 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     new KeyValuePair<string, PropertyInfo>("RotationVector", new PropertyInfo(PropertyType.StructProperty, "Vector"))
                 }
             };
-            sequenceObjects["SeqAct_GetLocationAndRotation"] = new SequenceObjectInfo {ObjInstanceVersion = 0};
+            sequenceObjects["SeqAct_GetLocationAndRotation"] = new SequenceObjectInfo { ObjInstanceVersion = 0 };
 
             classes["SeqAct_SetLocationAndRotation"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
                 exportIndex = 16,
-                pccPath =  GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 properties =
                 {
                     new KeyValuePair<string, PropertyInfo>("bSetRotation", new PropertyInfo(PropertyType.BoolProperty)),
@@ -619,7 +630,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     new KeyValuePair<string, PropertyInfo>("RotationVector", new PropertyInfo(PropertyType.StructProperty, "Vector")),
                 }
             };
-            sequenceObjects["SeqAct_SetLocationAndRotation"] = new SequenceObjectInfo {ObjInstanceVersion = 0};
+            sequenceObjects["SeqAct_SetLocationAndRotation"] = new SequenceObjectInfo { ObjInstanceVersion = 0 };
         }
 
         public static ClassInfo generateClassInfo(ExportEntry export, bool isStruct = false)

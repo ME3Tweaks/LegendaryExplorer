@@ -317,7 +317,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     case MEGame.ME1 when containingExport.FileRef.Platform == MEPackage.GamePlatform.PS3:
                     case MEGame.ME2 when containingExport.FileRef.Platform == MEPackage.GamePlatform.PS3:
                     case MEGame.ME3:
-                    //HACK: TODO: generate actual object info for LE
                         p = ME3UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct);
                         break;
                     case MEGame.UDK:
