@@ -21,9 +21,12 @@ namespace LegendaryExplorerCore.Unreal
 {
     public class PropertyCollection : ObservableCollection<Property>
     {
-        static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesME3 = new ConcurrentDictionary<string, PropertyCollection>();
-        static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesME2 = new ConcurrentDictionary<string, PropertyCollection>();
-        static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesME1 = new ConcurrentDictionary<string, PropertyCollection>();
+        static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesME3 = new();
+        static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesME2 = new();
+        static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesME1 = new();
+        static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesLE3 = new();
+        static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesLE2 = new();
+        static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesLE1 = new();
 
         public int endOffset;
         public bool IsImmutable;
@@ -375,10 +378,6 @@ namespace LegendaryExplorerCore.Unreal
                 case MEGame.ME2 when parsingEntry != null && parsingEntry.FileRef.Platform == MEPackage.GamePlatform.PS3 && ME3UnrealObjectInfo.Structs.ContainsKey(structType):
                 case MEGame.ME3 when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
                 case MEGame.UDK when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
-                    //HACK: TODO: generate actual info for LE
-                case MEGame.LE1 when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
-                case MEGame.LE2 when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
-                case MEGame.LE3 when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
                     defaultStructDict = defaultStructValuesME3;
                     getDefaultStructValueFunc = ME3UnrealObjectInfo.getDefaultStructValue;
                     break;
@@ -389,6 +388,18 @@ namespace LegendaryExplorerCore.Unreal
                 case MEGame.ME1 when ME1UnrealObjectInfo.Structs.ContainsKey(structType):
                     defaultStructDict = defaultStructValuesME1;
                     getDefaultStructValueFunc = ME1UnrealObjectInfo.getDefaultStructValue;
+                    break;
+                case MEGame.LE3 when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
+                    defaultStructDict = defaultStructValuesLE3;
+                    getDefaultStructValueFunc = LE3UnrealObjectInfo.getDefaultStructValue;
+                    break;
+                case MEGame.LE2 when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
+                    defaultStructDict = defaultStructValuesLE2;
+                    getDefaultStructValueFunc = LE2UnrealObjectInfo.getDefaultStructValue;
+                    break;
+                case MEGame.LE1 when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
+                    defaultStructDict = defaultStructValuesLE1;
+                    getDefaultStructValueFunc = LE1UnrealObjectInfo.getDefaultStructValue;
                     break;
                 default:
                     Debug.WriteLine("Unknown struct type: " + structType);
@@ -566,10 +577,10 @@ namespace LegendaryExplorerCore.Unreal
                             int arraySize = 0;
                             if (!IsInImmutable)
                             {
-                                stream.Seek(-16, SeekOrigin.Current);
+                                stream.Seek(-12, SeekOrigin.Current);
                                 //Debug.WriteLine("Arraysize at 0x" + stream.Position.ToString("X5"));
                                 arraySize = stream.ReadInt32();
-                                stream.Seek(12, SeekOrigin.Current);
+                                stream.Seek(8, SeekOrigin.Current);
                             }
                             for (int i = 0; i < count; i++)
                             {

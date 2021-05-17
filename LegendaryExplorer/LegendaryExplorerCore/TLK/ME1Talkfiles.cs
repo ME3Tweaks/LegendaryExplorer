@@ -10,15 +10,15 @@ namespace LegendaryExplorerCore.ME1
 {
     public static class ME1TalkFiles
     {
-        public static List<ME1TalkFile> tlkList = new List<ME1TalkFile>();
-        public static Dictionary<ME1TalkFile, string> localtlkList = new Dictionary<ME1TalkFile, string>();
+        public static List<ME1TalkFile> tlkList = new();
+        public static Dictionary<ME1TalkFile, string> localtlkList = new();
         
         public static void LoadTlkData(string fileName, int index)
         {
             if (File.Exists(fileName))
             {
                 IMEPackage pcc = MEPackageHandler.OpenME1Package(fileName, forceLoadFromDisk: true); //do not cache this in the packages list.
-                ME1TalkFile tlk = new ME1TalkFile(pcc, index);
+                var tlk = new ME1TalkFile(pcc, index);
                 tlk.LoadTlkData();
                 tlkList.Add(tlk);
             }

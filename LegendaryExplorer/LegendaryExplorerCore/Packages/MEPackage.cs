@@ -575,8 +575,7 @@ namespace LegendaryExplorerCore.Packages
                     packageReader.Position = resetPos;
                 }
             }
-
-            if ((Game == MEGame.ME1 || Game == MEGame.LE1) && Platform == GamePlatform.PC)
+            
             if (Game is MEGame.ME1 or MEGame.LE1 && Platform == GamePlatform.PC)
             {
                 ReadLocalTLKs();
@@ -705,10 +704,12 @@ namespace LegendaryExplorerCore.Packages
             // Each chunk block has it's own block header specifying the uncompressed and compressed size of the block.
             //
 
-            CompressionHelper.Chunk chunk = new CompressionHelper.Chunk();
             //Tables chunk
-            chunk.uncompressedSize = package.FullHeaderSize - package.NameOffset;
-            chunk.uncompressedOffset = package.NameOffset;
+            var chunk = new CompressionHelper.Chunk
+            {
+                uncompressedSize = package.FullHeaderSize - package.NameOffset,
+                uncompressedOffset = package.NameOffset
+            };
 
             #region DEBUG STUFF
             //string firstElement = "Tables";

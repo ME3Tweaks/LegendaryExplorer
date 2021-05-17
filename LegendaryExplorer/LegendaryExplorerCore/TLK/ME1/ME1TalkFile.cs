@@ -355,7 +355,7 @@ namespace LegendaryExplorerCore.TLK.ME1
 
         public void saveToFile(string fileName)
         {
-            using XmlTextWriter xr = new XmlTextWriter(fileName, Encoding.UTF8);
+            using var xr = new XmlTextWriter(fileName, Encoding.UTF8);
 
             WriteXML(StringRefs, Name, xr);
         }
@@ -389,9 +389,9 @@ namespace LegendaryExplorerCore.TLK.ME1
 
         public static string TLKtoXmlstring(string name, IEnumerable<TLKStringRef> tlkStringRefs)
         {
-            StringBuilder InputTLK = new StringBuilder();
-            using StringWriter stringWriter = new StringWriter(InputTLK);
-            using XmlTextWriter writer = new XmlTextWriter(stringWriter);
+            var InputTLK = new StringBuilder();
+            using var stringWriter = new StringWriter(InputTLK);
+            using var writer = new XmlTextWriter(stringWriter);
             WriteXML(tlkStringRefs, name, writer);
             return InputTLK.ToString();
         }
