@@ -9,6 +9,7 @@ using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Shaders;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
@@ -63,7 +64,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         {
             relinkMap ??= new Dictionary<IEntry, IEntry>();
             IMEPackage sourcePcc = sourceEntry.FileRef;
-            EntryTree sourcePackageTree = new EntryTree(sourcePcc);
+            var sourcePackageTree = new EntryTree(sourcePcc);
 
             if (portingOption == PortingOption.ReplaceSingular)
             {
@@ -104,10 +105,27 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 importChildrenOf(sourceEntry, newEntry);
             }
 
+            //for shader porting. For some reason the relinkMap gets cleared during relinking, so make the list here
+            var sourceExports = relinkMap.Keys.OfType<ExportEntry>().ToList();
+
             List<EntryStringPair> relinkResults = null;
             if (shouldRelink)
             {
                 relinkResults = Relinker.RelinkAll(relinkMap, portingOption == PortingOption.CloneAllDependencies);
+            }
+
+            //Port Shaders
+            var portingCache = ShaderCacheManipulator.GetLocalShadersForMaterials(sourceExports);
+            if (portingCache is not null)
+            {
+                if (destPcc.Game != sourcePcc.Game)
+                {
+                    errorOccuredCallback?.Invoke($"You cannot port Materials from {sourcePcc.Game} into {destPcc.Game}");
+                }
+                else
+                {
+                    ShaderCacheManipulator.AddShadersToFile(destPcc, portingCache);
+                }
             }
 
             // Reindex - disabled for now as it causes issues

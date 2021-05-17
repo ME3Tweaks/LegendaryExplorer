@@ -50,7 +50,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     public class MaterialInstance : ObjectBinary
     {
         public MaterialResource SM3StaticPermutationResource;
-        public StaticParameterSet SM3StaticParameterSet;
+        public StaticParameterSet SM3StaticParameterSet; //Not SM3 in LE... not sure what to call the variable though
         public MaterialResource SM2StaticPermutationResource;
         public StaticParameterSet SM2StaticParameterSet;
         protected override void Serialize(SerializingContainer2 sc)
@@ -248,14 +248,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
     public class StaticParameterSet : IEquatable<StaticParameterSet>
     {
-        public class StaticSwitchParameter
+        public record StaticSwitchParameter
         {
             public NameReference ParameterName;
             public bool Value;
             public bool bOverride;
             public Guid ExpressionGUID;
         }
-        public class StaticComponentMaskParameter
+        public record StaticComponentMaskParameter
         {
             public NameReference ParameterName;
             public bool R;
@@ -265,7 +265,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             public bool bOverride;
             public Guid ExpressionGUID;
         }
-        public class NormalParameter
+        public record NormalParameter
         {
             public NameReference ParameterName;
             public byte CompressionSettings;
@@ -332,9 +332,18 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             unchecked
             {
                 int hashCode = BaseMaterialId.GetHashCode();
-                hashCode = (hashCode * 397) ^ StaticSwitchParameters.GetHashCode();
-                hashCode = (hashCode * 397) ^ StaticComponentMaskParameters.GetHashCode();
-                hashCode = (hashCode * 397) ^ NormalParameters.GetHashCode();
+                foreach (StaticSwitchParameter staticSwitchParameter in StaticSwitchParameters)
+                {
+                    hashCode = hashCode * 31 + staticSwitchParameter.GetHashCode();
+                }
+                foreach (StaticComponentMaskParameter staticComponentMaskParameter in StaticComponentMaskParameters)
+                {
+                    hashCode = hashCode * 31 + staticComponentMaskParameter.GetHashCode();
+                }
+                foreach (NormalParameter normalParameter in NormalParameters)
+                {
+                    hashCode = hashCode * 31 + normalParameter.GetHashCode();
+                }
                 return hashCode;
             }
         }

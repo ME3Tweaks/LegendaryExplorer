@@ -8,6 +8,11 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 
 namespace LegendaryExplorerCore.Shaders
 {
+    /*
+     * This class is for reading each game's global shader cache. Because the ShaderCache in those files is so large,
+     * parsing it with the ShaderCache ObjectBinary class is very slow and uses an enormous amount of memory.
+     * This class parses only what it needs to, and then caches file offsets to make subsequent reads even faster
+     */
     public static class ShaderCacheReader
     {
         public static string GlobalShaderFileName(MEGame game) => game.IsLEGame() ? "RefShaderCache-PC-D3D-SM5.upk" : "RefShaderCache -PC-D3D-SM3.upk";

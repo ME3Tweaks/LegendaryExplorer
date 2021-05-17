@@ -145,7 +145,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
 
                     MaterialShaderMap msmFromGlobalCache = ShaderCacheReader.GetMaterialShaderMap(Pcc.Game, sps);
-                    if (msmFromGlobalCache != null)
+                    if (msmFromGlobalCache != null && CurrentLoadedExport is not null)
                     {
                         var topInfoText = $"Shaders in {ShaderCacheReader.GlobalShaderFileName(Pcc.Game)}";
                         return (GetMeshShaderMaps(msmFromGlobalCache), topInfoText);

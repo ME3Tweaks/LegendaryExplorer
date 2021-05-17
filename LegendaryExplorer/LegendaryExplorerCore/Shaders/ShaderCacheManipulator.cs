@@ -3,19 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
+using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.Shaders
 {
     public static class ShaderCacheManipulator
     {
-        public static void CompactShaderCaches(IMEPackage mePackage)
+        public static void CompactSeekFreeShaderCaches(IMEPackage pcc)
         {
             var staticParamSetsInFile = new HashSet<StaticParameterSet>();
             //figure out which MaterialShaderMaps to keep
-            foreach (ExportEntry export in mePackage.Exports)
+            foreach (ExportEntry export in pcc.Exports)
             {
                 if (export.ClassName == "Material")
                 {
@@ -27,69 +29,131 @@ namespace LegendaryExplorerCore.Shaders
                 }
             }
 
-            var compactedShaderCache = new ShaderCache
-            {
-                Shaders = new OrderedMultiValueDictionary<Guid, Shader>(),
-                MaterialShaderMaps = new OrderedMultiValueDictionary<StaticParameterSet, MaterialShaderMap>()
-            };
+            var localCache = pcc.FindExport("SeekFreeShaderCache");
 
-            //add MaterialShaderMaps
-            foreach (ExportEntry shaderCacheExport in mePackage.Exports.Where(exp => exp.ClassName == "ShaderCache"))
+            localCache?.WriteBinary(GetLocalShaders(staticParamSetsInFile, localCache));
+        }
+
+        public static ShaderCache GetLocalShadersForMaterials(List<ExportEntry> materials)
+        {
+            if (materials.Count is 0)
             {
-                var shaderCache = ObjectBinary.From<ShaderCache>(shaderCacheExport);
-                compactedShaderCache.ShaderTypeCRCMap = shaderCache.ShaderTypeCRCMap;
-                compactedShaderCache.VertexFactoryTypeCRCMap = shaderCache.VertexFactoryTypeCRCMap;
-                foreach ((StaticParameterSet key, MaterialShaderMap msm) in shaderCache.MaterialShaderMaps)
+                return null;
+            }
+            IMEPackage pcc = materials[0].FileRef;
+
+            var localCache = pcc.FindExport("SeekFreeShaderCache");
+            if (localCache is null)
+            {
+                return null;
+            }
+
+            var staticParamSets = new HashSet<StaticParameterSet>();
+
+            foreach (ExportEntry export in materials)
+            {
+                if (export.ClassName == "Material")
                 {
-                    if (staticParamSetsInFile.Any(sps => sps == key) && !compactedShaderCache.MaterialShaderMaps.ContainsKey(key))
-                    {
-                        compactedShaderCache.MaterialShaderMaps.Add(key, msm);
-                    }
+                    staticParamSets.Add((StaticParameterSet)ObjectBinary.From<Material>(export).SM3MaterialResource.ID);
+                }
+                else if (export.IsA("MaterialInstance") && export.GetProperty<BoolProperty>("bHasStaticPermutationResource"))
+                {
+                    staticParamSets.Add(ObjectBinary.From<MaterialInstance>(export).SM3StaticParameterSet);
                 }
             }
 
-            //Figure out which shaders to keep
-            var shaderGuids = new HashSet<Guid>();
-            foreach ((_, MaterialShaderMap materialShaderMap) in compactedShaderCache.MaterialShaderMaps)
+            //can happen if list of exports passed in does not contain any materials
+            if (staticParamSets.Count is 0)
             {
-                foreach ((_, ShaderReference shaderRef) in materialShaderMap.Shaders)
+                return null;
+            }
+
+            return GetLocalShaders(staticParamSets, localCache);
+        }
+
+        public static ShaderCache GetLocalShaders(HashSet<StaticParameterSet> staticParamSets, ExportEntry seekFreeShaderCacheExport)
+        {
+            var localCache = seekFreeShaderCacheExport.GetBinaryData<ShaderCache>();
+
+            var tempCache = new ShaderCache
+            {
+                Shaders = new OrderedMultiValueDictionary<Guid, Shader>(),
+                MaterialShaderMaps = new OrderedMultiValueDictionary<StaticParameterSet, MaterialShaderMap>(),
+                ShaderTypeCRCMap = localCache.ShaderTypeCRCMap,
+                VertexFactoryTypeCRCMap = localCache.VertexFactoryTypeCRCMap
+            };
+
+            //get corresponding MaterialShaderMap for each StaticParameterSet
+            foreach ((StaticParameterSet key, MaterialShaderMap msm) in localCache.MaterialShaderMaps)
+            {
+                if (staticParamSets.Contains(key) && !tempCache.MaterialShaderMaps.ContainsKey(key))
+                {
+                    tempCache.MaterialShaderMaps.Add(key, msm);
+                }
+            }
+
+            //get the guids for every shader referenced by the MaterialShaderMaps
+            var shaderGuids = new HashSet<Guid>();
+            foreach (MaterialShaderMap materialShaderMap in tempCache.MaterialShaderMaps.Values())
+            {
+                foreach (ShaderReference shaderRef in materialShaderMap.Shaders.Values())
                 {
                     shaderGuids.Add(shaderRef.Id);
                 }
 
                 foreach (MeshShaderMap meshShaderMap in materialShaderMap.MeshShaderMaps)
                 {
-                    foreach ((_, ShaderReference shaderRef) in meshShaderMap.Shaders)
+                    foreach (ShaderReference shaderRef in meshShaderMap.Shaders.Values())
                     {
                         shaderGuids.Add(shaderRef.Id);
                     }
                 }
             }
-
-            ExportEntry firstShaderCache = null;
-            //add Shaders
-            foreach (ExportEntry shaderCacheExport in mePackage.Exports.Where(exp => exp.ClassName == "ShaderCache"))
+            foreach ((Guid key, Shader shader) in localCache.Shaders)
             {
-                var shaderCache = ObjectBinary.From<ShaderCache>(shaderCacheExport);
-                foreach ((Guid key, Shader shader) in shaderCache.Shaders)
+                if (shaderGuids.Contains(key) && !tempCache.Shaders.ContainsKey(key))
                 {
-                    if (shaderGuids.Contains(key) && !compactedShaderCache.Shaders.ContainsKey(key))
-                    {
-                        compactedShaderCache.Shaders.Add(key, shader);
-                    }
-                }
-
-                if (firstShaderCache == null)
-                {
-                    firstShaderCache = shaderCacheExport;
-                }
-                else
-                {
-                    EntryPruner.TrashEntryAndDescendants(shaderCacheExport);
+                    tempCache.Shaders.Add(key, shader);
                 }
             }
 
-            firstShaderCache.WriteBinary(compactedShaderCache);
+            return tempCache;
+        }
+
+        public static void AddShadersToFile(IMEPackage destFile, ShaderCache shadersToAdd)
+        {
+            var destCacheExport = destFile.FindExport("SeekFreeShaderCache");
+
+            if (destCacheExport is null)
+            {
+                destFile.AddExport(new ExportEntry(destFile, BitConverter.GetBytes(-1), binary: shadersToAdd)
+                {
+                    Class = EntryImporter.EnsureClassIsInFile(destFile, "ShaderCache"),
+                    ObjectName = "SeekFreeShaderCache",
+                    ObjectFlags = EObjectFlags.LoadForClient | EObjectFlags.LoadForEdit | EObjectFlags.LoadForServer | EObjectFlags.Standalone
+                });
+                return;
+            }
+
+            var destCache = destCacheExport.GetBinaryData<ShaderCache>();
+
+            foreach ((StaticParameterSet key, MaterialShaderMap materialShaderMap) in shadersToAdd.MaterialShaderMaps)
+            {
+                if (!destCache.MaterialShaderMaps.ContainsKey(key))
+                {
+                    destCache.MaterialShaderMaps.Add(key, materialShaderMap);
+                }
+            }
+
+            foreach ((Guid key, Shader shader) in shadersToAdd.Shaders)
+            {
+                if (!destCache.Shaders.ContainsKey(key))
+                {
+                    destCache.Shaders.Add(key, shader);
+                }
+            }
+
+            destCacheExport.WriteBinary(destCache);
         }
     }
 }

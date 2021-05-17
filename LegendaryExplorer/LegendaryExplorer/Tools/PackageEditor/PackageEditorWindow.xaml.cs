@@ -29,6 +29,7 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
+using LegendaryExplorerCore.Shaders;
 using LegendaryExplorerCore.TLK.ME1;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -3683,20 +3684,14 @@ namespace LegendaryExplorer.Tools.PackageEditor
             LeftSide_TreeView.DataContext = this;
         }
 
-
-
-        // Is this experiment code?
         private bool HasShaderCache() => PackageIsLoaded() && Pcc.Exports.Any(exp => exp.ClassName == "ShaderCache");
 
         private void CompactShaderCache()
         {
-            // TODO: IMPLEMENT INTO LEX?
-            //IsBusy = true;
-            //BusyText = "Compacting local ShaderCaches";
-            //Task.Run(() => ShaderCacheManipulator.CompactShaderCaches(Pcc))
-            //    .ContinueWithOnUIThread(_ => IsBusy = false);
+            IsBusy = true;
+            BusyText = "Compacting local ShaderCaches";
+            Task.Run(() => ShaderCacheManipulator.CompactSeekFreeShaderCaches(Pcc)).ContinueWithOnUIThread(_ => IsBusy = false);
         }
-
 
         private void InterpreterWPF_LinearColorWheel_MenuItem_Click(object sender, RoutedEventArgs e)
         {
