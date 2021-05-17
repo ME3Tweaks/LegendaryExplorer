@@ -210,7 +210,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             {
                 Buffer.BlockCopy(mipToLoad.Mip, 0, imagebytes, 0, mipToLoad.uncompressedSize);
             }
-            else if (mipToLoad.storageType == StorageTypes.pccLZO || mipToLoad.storageType == StorageTypes.pccZlib)
+            else if (mipToLoad.storageType is StorageTypes.pccLZO or StorageTypes.pccZlib or StorageTypes.pccOodle)
             {
                 if (decompress)
                 {
@@ -268,7 +268,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                     }
                     else
                     {
-                        var tfcs = loadedFiles.Where(x => x.EndsWith(@".tfc")).ToList();
+                        //var tfcs = loadedFiles.Where(x => x.EndsWith(@".tfc")).ToList();
 
                         var fullPath = loadedFiles.FirstOrDefault(x => Path.GetFileName(x).Equals(archive, StringComparison.InvariantCultureIgnoreCase));
                         if (fullPath != null)
@@ -284,7 +284,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                                 var sfarPath = Path.Combine(ME3Directory.DLCPath, dlcName, "CookedPCConsole", "Default.sfar");
                                 if (File.Exists(sfarPath))
                                 {
-                                    DLCPackage dpackage = new DLCPackage(sfarPath);
+                                    var dpackage = new DLCPackage(sfarPath);
                                     var entryId = dpackage.FindFileEntry(archive);
                                     if (entryId >= 0)
                                     {
@@ -323,41 +323,37 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 {
                     try
                     {
-                        using (FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read))
+                        try
                         {
-                            try
+                            using var fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
+                            fs.Seek(mipToLoad.externalOffset, SeekOrigin.Begin);
+                            if (mipToLoad.storageType is StorageTypes.extLZO or StorageTypes.extZlib or StorageTypes.extOodle)
                             {
-                                fs.Seek(mipToLoad.externalOffset, SeekOrigin.Begin);
-                                if (mipToLoad.storageType == StorageTypes.extLZO || mipToLoad.storageType == StorageTypes.extZlib)
+                                if (decompress)
                                 {
-                                    if (decompress)
+                                    try
                                     {
-                                        using (MemoryStream tmpStream = fs.ReadToMemoryStream(mipToLoad.compressedSize))
-                                        {
-                                            try
-                                            {
-                                                TextureCompression.DecompressTexture(imagebytes, tmpStream, mipToLoad.storageType, mipToLoad.uncompressedSize, mipToLoad.compressedSize);
-                                            }
-                                            catch (Exception e)
-                                            {
-                                                throw new Exception(GetLocalizedTextureExceptionExternalMessage(e.Message, filename, mipToLoad.storageType.ToString(), mipToLoad.externalOffset.ToString()));
-                                            }
-                                        }
+                                        using MemoryStream tmpStream = fs.ReadToMemoryStream(mipToLoad.compressedSize);
+                                        TextureCompression.DecompressTexture(imagebytes, tmpStream, mipToLoad.storageType, mipToLoad.uncompressedSize, mipToLoad.compressedSize);
                                     }
-                                    else
+                                    catch (Exception e)
                                     {
-                                        fs.Read(imagebytes, 0, mipToLoad.compressedSize);
+                                        throw new Exception(GetLocalizedTextureExceptionExternalMessage(e.Message, filename, mipToLoad.storageType.ToString(), mipToLoad.externalOffset.ToString()));
                                     }
                                 }
                                 else
                                 {
-                                    fs.Read(imagebytes, 0, mipToLoad.uncompressedSize);
+                                    fs.Read(imagebytes, 0, mipToLoad.compressedSize);
                                 }
                             }
-                            catch (Exception e)
+                            else
                             {
-                                throw new Exception(GetLocalizedTextureExceptionExternalMessage(e.Message, filename, mipToLoad.storageType.ToString(), mipToLoad.externalOffset.ToString()));
+                                fs.Read(imagebytes, 0, mipToLoad.uncompressedSize);
                             }
+                        }
+                        catch (Exception e)
+                        {
+                            throw new Exception(GetLocalizedTextureExceptionExternalMessage(e.Message, filename, mipToLoad.storageType.ToString(), mipToLoad.externalOffset.ToString()));
                         }
                     }
                     catch (Exception e)

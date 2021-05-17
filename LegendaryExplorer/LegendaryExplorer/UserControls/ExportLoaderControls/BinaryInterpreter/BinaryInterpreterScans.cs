@@ -2095,7 +2095,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 bin.JumpTo(binarystart);
 
                 subnodes.Add(MakeEntryNode(bin, "PersistentLevel"));
-                if (Pcc.Game == MEGame.ME3)
+                if (Pcc.Game == MEGame.ME3 || Pcc.Game.IsLEGame())
                 {
                     subnodes.Add(MakeEntryNode(bin, "PersistentFaceFXAnimSet"));
                 }
@@ -2113,7 +2113,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     subnodes.Add(MakeFloatNode(bin, "unkFloat"));
                 }
                 subnodes.Add(MakeEntryNode(bin, "Null"));
-                if (Pcc.Game == MEGame.ME1)
+                if (Pcc.Game is MEGame.ME1 or MEGame.LE1)
                 {
                     subnodes.Add(MakeEntryNode(bin, "DecalManager"));
                 }
@@ -2319,10 +2319,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 bin.JumpTo(binarystart);
 
                 int count;
-                if (CurrentLoadedExport.FileRef.Platform == MEPackage.GamePlatform.PS3)
+                if (Pcc.Game.IsLEGame() || CurrentLoadedExport.FileRef.Platform == MEPackage.GamePlatform.PS3)
                 {
-                    subnodes.Add(new BinInterpNode(bin.Position, $"Unknown int 1 (PS3): {bin.ReadInt32()}"));
-                    subnodes.Add(new BinInterpNode(bin.Position, $"Unknown int 2 (PS3): {bin.ReadInt32()}"));
+                    subnodes.Add(new BinInterpNode(bin.Position, $"Unknown int 1: {bin.ReadInt32()}"));
+                    subnodes.Add(new BinInterpNode(bin.Position, $"Unknown int 2: {bin.ReadInt32()}"));
                 }
 
                 subnodes.Add(new BinInterpNode(bin.Position, $"BulkDataFlags: {(EBulkDataFlags)bin.ReadUInt32()}"));
@@ -2331,7 +2331,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 subnodes.Add(MakeUInt32HexNode(bin, "BulkDataOffsetInFile"));
                 subnodes.Add(new BinInterpNode(bin.Position, "RawData") { Length = count });
                 bin.Skip(count);
-
+                if (Pcc.Game.IsLEGame())
+                {
+                    subnodes.Add(new BinInterpNode(bin.Position, $"Unknown int 3: {bin.ReadInt32()}"));
+                }
                 subnodes.Add(new BinInterpNode(bin.Position, $"BulkDataFlags: {(EBulkDataFlags)bin.ReadUInt32()}"));
                 subnodes.Add(new BinInterpNode(bin.Position, $"Element Count: {count = bin.ReadInt32()}"));
                 subnodes.Add(MakeInt32Node(bin, "BulkDataSizeOnDisk"));
@@ -2339,21 +2342,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 subnodes.Add(new BinInterpNode(bin.Position, "CompressedPCData") { Length = count });
                 bin.Skip(count);
 
-                if (!Pcc.Game.IsLEGame())
-                {
-                    subnodes.Add(new BinInterpNode(bin.Position, $"BulkDataFlags: {(EBulkDataFlags)bin.ReadUInt32()}"));
-                    subnodes.Add(new BinInterpNode(bin.Position, $"Element Count: {count = bin.ReadInt32()}"));
-                    subnodes.Add(MakeInt32Node(bin, "BulkDataSizeOnDisk"));
-                    subnodes.Add(MakeUInt32HexNode(bin, "BulkDataOffsetInFile"));
-                    subnodes.Add(new BinInterpNode(bin.Position, "CompressedXbox360Data") { Length = count });
-                    bin.Skip(count);
+                subnodes.Add(new BinInterpNode(bin.Position, $"BulkDataFlags: {(EBulkDataFlags)bin.ReadUInt32()}"));
+                subnodes.Add(new BinInterpNode(bin.Position, $"Element Count: {count = bin.ReadInt32()}"));
+                subnodes.Add(MakeInt32Node(bin, "BulkDataSizeOnDisk"));
+                subnodes.Add(MakeUInt32HexNode(bin, "BulkDataOffsetInFile"));
+                subnodes.Add(new BinInterpNode(bin.Position, "CompressedXbox360Data") { Length = count });
+                bin.Skip(count);
 
-                    subnodes.Add(new BinInterpNode(bin.Position, $"BulkDataFlags: {(EBulkDataFlags)bin.ReadUInt32()}"));
-                    subnodes.Add(new BinInterpNode(bin.Position, $"Element Count: {count = bin.ReadInt32()}"));
-                    subnodes.Add(MakeInt32Node(bin, "BulkDataSizeOnDisk"));
-                    subnodes.Add(MakeUInt32HexNode(bin, "BulkDataOffsetInFile"));
-                    subnodes.Add(new BinInterpNode(bin.Position, "CompressedPS3Data") { Length = count });
-                }
+                subnodes.Add(new BinInterpNode(bin.Position, $"BulkDataFlags: {(EBulkDataFlags)bin.ReadUInt32()}"));
+                subnodes.Add(new BinInterpNode(bin.Position, $"Element Count: {count = bin.ReadInt32()}"));
+                subnodes.Add(MakeInt32Node(bin, "BulkDataSizeOnDisk"));
+                subnodes.Add(MakeUInt32HexNode(bin, "BulkDataOffsetInFile"));
+                subnodes.Add(new BinInterpNode(bin.Position, "CompressedPS3Data") { Length = count });
 
             }
             catch (Exception ex)
@@ -6370,7 +6370,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     subnodes.Add(MakeEntryNode(bin, "PylonListStart"));
                     subnodes.Add(MakeEntryNode(bin, "PylonListEnd"));
                 }
-                if (Pcc.Game == MEGame.ME3)
+                if (Pcc.Game is MEGame.ME3 or MEGame.LE3)
                 {
                     int guidToIntMapCount;
                     subnodes.Add(new BinInterpNode(bin.Position, $"guidToIntMap?: ({guidToIntMapCount = bin.ReadInt32()})")
@@ -6415,7 +6415,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     Items = ReadList(crossLevelActorsCount, i => MakeEntryNode(bin, $"{i}"))
                 });
 
-                if (Pcc.Game == MEGame.ME1)
+                if (Pcc.Game is MEGame.ME1 or MEGame.LE1)
                 {
                     subnodes.Add(MakeEntryNode(bin, "BioArtPlaceable 1?"));
                     subnodes.Add(MakeEntryNode(bin, "BioArtPlaceable 2?"));
@@ -7971,7 +7971,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
 
                 bin.JumpTo(binarystart);
-                if (Pcc.Game != MEGame.ME3 && !Pcc.Game.IsLEGame())
+                if (Pcc.Game is not(MEGame.ME3 or MEGame.LE3))
                 {
                     bin.Skip(8); // 12 zeros
                     int thumbnailSize = bin.ReadInt32();
@@ -8067,7 +8067,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 if (Pcc.Game >= MEGame.ME3 && CurrentLoadedExport.ClassName == "LightMapTexture2D")
                 {
-                    if (Pcc.Game == MEGame.ME3)
+                    if (Pcc.Game == MEGame.ME3 || Pcc.Game.IsLEGame())
                     {
                         bin.Skip(4);
                     }
@@ -8079,13 +8079,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
-        }
-
-        enum ELightMapFlags
-        {
-            LMF_None,
-            LMF_Streamed,
-            LMF_SimpleLightmap
         }
 
         private List<ITreeItem> StartTextureMovieScan(byte[] data, ref int binarystart)

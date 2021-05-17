@@ -72,7 +72,7 @@ namespace LegendaryExplorerCore.Unreal
         /// <returns></returns>
         private static List<string> GetTOCableFoldersForGame(MEGame game, string gamePathRoot = null)
         {
-            List<string> tocDirectories = new()
+            List<string> tocTargets = new()
             {
                 MEDirectories.GetBioGamePath(game, gamePathRoot)
             };
@@ -81,10 +81,15 @@ namespace LegendaryExplorerCore.Unreal
             if (Directory.Exists(MEDirectories.GetDLCPath(game, gamePathRoot)))
             {
                 var dlcFolders = new DirectoryInfo(MEDirectories.GetDLCPath(game, gamePathRoot)).GetDirectories();
-                tocDirectories.AddRange(dlcFolders.Where(f => f.Name.StartsWith("DLC_")).Select(f => f.ToString()));
+                tocTargets.AddRange(dlcFolders.Where(f => f.Name.StartsWith("DLC_")).Select(f => f.ToString()));
             }
 
-            return tocDirectories;
+            if (game is MEGame.ME3)
+            {
+                tocTargets.Add(Path.Combine(MEDirectories.GetBioGamePath(game, gamePathRoot), @"Patches\PCConsole\Patch_001.sfar"));
+            }
+
+            return tocTargets;
         }
 
         /// <summary>
@@ -111,10 +116,30 @@ namespace LegendaryExplorerCore.Unreal
 
             foreach(var dir in tocFolders)
             {
-                var tocFileLocation = Path.Combine(dir, "PCConsoleTOC.bin");
-                File.WriteAllBytes(tocFileLocation, CreateTOCForDirectory(dir).GetBuffer());
+                string sfar = Path.Combine(dir, "Default.sfar");
+                
+                //This is a sfar - code ported from M3
+                if (dir.EndsWith(".sfar") || (File.Exists(sfar) && new FileInfo(sfar).Length != 32))
+                {
+                    var sfarToToc = dir;
+                    if (File.Exists(sfar)) sfarToToc = sfar;
+
+                    DLCPackage dlc = new DLCPackage(sfarToToc);
+                    var tocResult = dlc.UpdateTOCbin();
+                    if (tocResult is DLCPackage.DLCTOCUpdateResult.RESULT_ERROR_NO_ENTRIES)
+                    {
+                        var tocFileLocation = Path.Combine(dir, "PCConsoleTOC.bin");
+                        File.WriteAllBytes(tocFileLocation, CreateTOCForDirectory(dir).GetBuffer());
+                    }
+                }
+                // This is an unpacked folder
+                else
+                {
+                    var tocFileLocation = Path.Combine(dir, "PCConsoleTOC.bin");
+                    File.WriteAllBytes(tocFileLocation, CreateTOCForDirectory(dir).GetBuffer());
+                }
                 var percent = ((float)tocFolders.IndexOf(dir) / tocFolders.Count);
-                percentDoneCallback?.Invoke((int)(percent * 100));
+                percentDoneCallback?.Invoke((int)(percent * 100.0));
             }
         }
 
