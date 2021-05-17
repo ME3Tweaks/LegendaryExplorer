@@ -19,6 +19,7 @@
         xmlns:peregrineTreeView="clr-namespace:LegendaryExplorer.SharedUI.PeregrineTreeView"
         xmlns:appsettings="clr-namespace:LegendaryExplorer.Misc.AppSettings"
         xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
+        xmlns:scriptEditor="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor"
         Title="Package Editor" Height="720" Width="1100"
         DragOver="Window_DragOver"
         Drop="Window_Drop"
@@ -465,14 +466,12 @@
                         </TabItem.Header>
                         <exportLoaderControls:BytecodeEditor x:Name="BytecodeTab_BytecodeEditor"/>
                     </TabItem>
-                    <!--
                     <TabItem Name="Script_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
                             <TextBlock Text="Script Viewer" ToolTip="View decompiled UnrealScript"/>
                         </TabItem.Header>
-                        <ide:UnrealScriptIDE x:Name="ScriptTab_UnrealScriptIDE"/>
+                        <scriptEditor:UnrealScriptIDE x:Name="ScriptTab_UnrealScriptIDE"/>
                     </TabItem>
-                    -->
                     <TabItem Name="CurveEditor_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
                             <TextBlock Text="Curve Editor" ToolTip="Edit curves"/>

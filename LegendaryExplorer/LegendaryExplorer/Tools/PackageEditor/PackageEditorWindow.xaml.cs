@@ -34,9 +34,6 @@ using LegendaryExplorerCore.TLK.ME1;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
-using LegendaryExplorerCore.UnrealScript;
-using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
-using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
@@ -2218,8 +2215,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         internal class UnmoddedCandidatesLookup
         {
-            public List<string> DiskFiles = new List<string>();
-            public Dictionary<string, Stream> SFARPackageStreams = new Dictionary<string, Stream>();
+            public List<string> DiskFiles = new();
+            public Dictionary<string, Stream> SFARPackageStreams = new();
             public bool Any() => Enumerable.Any(DiskFiles) || Enumerable.Any(SFARPackageStreams);
         }
 
@@ -2253,9 +2250,9 @@ namespace LegendaryExplorer.Tools.PackageEditor
             ExportLoaders[JPEXLauncherTab_JPEXLauncher] = JPEXLauncher_Tab;
             ExportLoaders[TlkEditorTab_TlkEditor] = TlkEditor_Tab;
             ExportLoaders[MaterialViewerTab_MaterialExportLoader] = MaterialViewer_Tab;
+            ExportLoaders[ScriptTab_UnrealScriptIDE] = Script_Tab;
 
             // TODO: IMPLEMENT IN LEX
-            //ExportLoaders[ScriptTab_UnrealScriptIDE] = Script_Tab;
             //ExportLoaders[RADLauncherTab_BIKLauncher] = RADLaunch_Tab;
 
 

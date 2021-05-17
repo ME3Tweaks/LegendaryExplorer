@@ -129,6 +129,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AvalonEdit" Version="6.1.1" />
     <PackageReference Include="BinaryPack" Version="1.0.1" />
     <PackageReference Include="ClosedXML" Version="0.95.3" />
     <PackageReference Include="ConsoleAppLauncher" Version="2.0.0" />
@@ -503,6 +504,7 @@
 
   <ItemGroup>
     <Folder Include="Tools\PlotEditor\SFXGame\biodefine\" />
+    <Folder Include="UserControls\ExportLoaderControls\ScriptEditor\" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
