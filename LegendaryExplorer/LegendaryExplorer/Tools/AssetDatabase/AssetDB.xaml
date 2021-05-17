@@ -49,6 +49,9 @@
         <KeyBinding Key="D1" Modifiers="Control" Command="{Binding SwitchMECommand}" CommandParameter="ME1"/>
         <KeyBinding Key="D2" Modifiers="Control" Command="{Binding SwitchMECommand}" CommandParameter="ME2"/>
         <KeyBinding Key="D3" Modifiers="Control" Command="{Binding SwitchMECommand}" CommandParameter="ME3"/>
+        <KeyBinding Key="D4" Modifiers="Control" Command="{Binding SwitchMECommand}" CommandParameter="LE1"/>
+        <KeyBinding Key="D5" Modifiers="Control" Command="{Binding SwitchMECommand}" CommandParameter="LE2"/>
+        <KeyBinding Key="D6" Modifiers="Control" Command="{Binding SwitchMECommand}" CommandParameter="LE3"/>
     </Window.InputBindings>
     <xctk:BusyIndicator x:Name="dbBusyIndicator" IsBusy="{Binding IsBusy, FallbackValue=False}">
         <DockPanel>
@@ -63,9 +66,9 @@
                         <MenuItem Name="switchME1_menu" Header="ME1 Database" Command="{Binding SwitchMECommand}" CommandParameter="ME1" InputGestureText="Ctrl+1" ToolTip="Switch to ME1 Database"/>
                         <MenuItem Name="switchME2_menu" Header="ME2 Database" Command="{Binding SwitchMECommand}" CommandParameter="ME2" InputGestureText="Ctrl+2" ToolTip="Switch to ME2 Database"/>
                         <MenuItem Name="switchME3_menu" Header="ME3 Database" Command="{Binding SwitchMECommand}" CommandParameter="ME3" InputGestureText="Ctrl+3" ToolTip="Switch to ME3 Database"/>
-                        <MenuItem Name="switchLE1_menu" Header="LE1 Database" Command="{Binding SwitchMECommand}" CommandParameter="LE1" InputGestureText="Ctrl+1" ToolTip="Switch to LE1 Database"/>
-                        <MenuItem Name="switchLE2_menu" Header="LE2 Database" Command="{Binding SwitchMECommand}" CommandParameter="LE2" InputGestureText="Ctrl+2" ToolTip="Switch to LE2 Database"/>
-                        <MenuItem Name="switchLE3_menu" Header="LE3 Database" Command="{Binding SwitchMECommand}" CommandParameter="LE3" InputGestureText="Ctrl+3" ToolTip="Switch to LE3 Database"/>
+                        <MenuItem Name="switchLE1_menu" Header="LE1 Database" Command="{Binding SwitchMECommand}" CommandParameter="LE1" InputGestureText="Ctrl+4" ToolTip="Switch to LE1 Database"/>
+                        <MenuItem Name="switchLE2_menu" Header="LE2 Database" Command="{Binding SwitchMECommand}" CommandParameter="LE2" InputGestureText="Ctrl+5" ToolTip="Switch to LE2 Database"/>
+                        <MenuItem Name="switchLE3_menu" Header="LE3 Database" Command="{Binding SwitchMECommand}" CommandParameter="LE3" InputGestureText="Ctrl+6" ToolTip="Switch to LE3 Database"/>
                     </MenuItem>
                     <MenuItem Header="Tools" Padding="4">
                         <MenuItem Header="Open Definition" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor."/>

@@ -640,6 +640,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             switchME1_menu.IsChecked = false;
             switchME2_menu.IsChecked = false;
             switchME3_menu.IsChecked = false;
+            switchLE1_menu.IsChecked = false;
+            switchLE2_menu.IsChecked = false;
+            switchLE3_menu.IsChecked = false;
             ClearDataBase();
             currentView = 0;
             MeshRendererTab_MeshRenderer.UnloadExport();
