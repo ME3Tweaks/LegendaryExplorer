@@ -95,7 +95,11 @@ namespace LegendaryExplorerCore.Unreal
         /// TODO: Is there an easy way to make this not iterate over all files?
         public static bool IsTOCableFolder(string directory) => GetFiles(directory).Count > 0;
 
-
+        /// <summary>
+        /// Creates all TOC files for a game and it's DLC, using the game folder set in MEDirectories
+        /// </summary>
+        /// <param name="game">Game to create TOCs for, cannot be ME1 or ME2</param>
+        /// <param name="percentDoneCallback">Invoked after every TOC file with the percent completed</param>
         public static void CreateTOCForGame(MEGame game, Action<int> percentDoneCallback = null, string gameRootOverride = null)
         {
             if (game is MEGame.ME1 or MEGame.ME2)

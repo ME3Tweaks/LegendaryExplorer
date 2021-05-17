@@ -6,57 +6,47 @@
         xmlns:bases="clr-namespace:LegendaryExplorer.SharedUI.Bases"
         xmlns:local="clr-namespace:LegendaryExplorer.Tools.CoalescedCompiler"
 		mc:Ignorable="d"
-		Title="Coalesced Compiler" MinHeight="300" MinWidth="600" d:DesignHeight="300" d:DesignWidth="600" SizeToContent="WidthAndHeight"
+		Title="Coalesced Compiler" MinHeight="290" Height="290" MinWidth="600" Width="600" d:DesignHeight="300" d:DesignWidth="600"
+        DragOver="Window_DragOver"
+        Drop="Window_Drop"
+        AllowDrop="True"
         Closed="Root_Closed">
-    <Grid Margin="5">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="10" />
-			<ColumnDefinition Width="Auto" />
-		</Grid.ColumnDefinitions>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="25" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="25" />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
-		<!-- Source -->
-		<Label Content="Source:" Grid.Column="0" Grid.Row="0" />
-		<TextBox x:Name="SourceTextBox" Text="{Binding Path=SourcePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="0"
-				 Grid.Row="1" ToolTip="Source XML or Binary Coalesced file." />
-		<Button x:Name="SourceBrowseButton" Width="80" Content="Browse" Grid.Column="2" Grid.Row="1" Command="{Binding SelectSourceCommand}"/>
+    <DockPanel>
+        <TextBlock DockPanel.Dock="Top"  Padding="5" Background="LightGray" TextWrapping="Wrap" Text="Coalesced Compiler converts Coalesced.bin files from ME3 and Legendary Edition into a folder with editable .XML or .INI files. Select a .bin, .xml, or .extractedbin file to convert in either direction. You can also drag and drop a file onto this window to select as source."/>
 
-		<!-- Destination -->
-		<Label Content="Destination:" Grid.Column="0" Grid.Row="3" />
-		<TextBox x:Name="DestinationTextBox" Text="{Binding Path=DestinationPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-				 Grid.Column="0" Grid.Row="4" ToolTip="Destination XML or Binary Coalesced file." />
-        <Button x:Name="DestinationBrowseButton" Width="80" Content="Browse" Grid.Column="2" Grid.Row="4" Command="{Binding SelectDestinationCommand}" />
+        <!-- Compile/Decompile -->
+        <DockPanel DockPanel.Dock="Bottom" Margin="5">
+            <CheckBox x:Name="ChangeDestinationCheckBox" Content="Change destination path after browsing for source" IsChecked="True" DockPanel.Dock="Left"/>
+            <Button x:Name="ConvertButton" Width="80" Content="Convert" Command="{Binding ConvertCommand}" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+        </DockPanel>
 
-		<!-- Compile/Decompile -->
-		<Grid Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="3">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="Auto" />
-				<ColumnDefinition Width="Auto" />
-				<ColumnDefinition Width="*" />
-				<ColumnDefinition Width="10" />
-				<ColumnDefinition Width="Auto" />
-			</Grid.ColumnDefinitions>
-			<Grid.RowDefinitions>
-				<RowDefinition Height="*" />
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="25" />
-				<RowDefinition Height="Auto" />
-			</Grid.RowDefinitions>
-			<Label Content="Destination Type:" ToolTip="Auto-detected on selecting the source file." Grid.Column="0" Grid.Row="0" />
-			<ComboBox x:Name="ConvertComboBox" IsEnabled="False" Width="100" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="1"
-					  ItemsSource="{local:EnumValues local:CoalescedType}" SelectedItem="{Binding Path=DestinationType, Mode=TwoWay}" />
-            <Button x:Name="ConvertButton" Width="80" Content="Convert" Grid.Column="4" Grid.Row="3" Command="{Binding ConvertCommand}" />
+        <Grid Margin="5">
+		    <Grid.ColumnDefinitions>
+			    <ColumnDefinition Width="*" />
+			    <ColumnDefinition Width="10" />
+			    <ColumnDefinition Width="Auto" />
+		    </Grid.ColumnDefinitions>
+		    <Grid.RowDefinitions>
+			    <RowDefinition Height="Auto" />
+			    <RowDefinition Height="Auto" />
+			    <RowDefinition Height="25" />
+                <RowDefinition Height="Auto" />
+			    <RowDefinition Height="Auto" />
+			    <RowDefinition Height="25" />
+            </Grid.RowDefinitions>
 
-			<CheckBox x:Name="ChangeDestinationCheckBox" Content="Change destination path after browsing for source" IsChecked="True"
-					  Grid.Column="0" Grid.Row="3" />
-		</Grid>
+		    <!-- Source -->
+		    <Label Content="Path to Source:" Grid.Column="0" Grid.Row="0" FontWeight="Bold"/>
+		    <TextBox x:Name="SourceTextBox" Text="{Binding Path=SourcePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="0"
+				     Grid.Row="1" ToolTip="Source XML or Binary Coalesced file." />
+		    <Button x:Name="SourceBrowseButton" Width="80" Content="Browse" Grid.Column="2" Grid.Row="1" Command="{Binding SelectSourceCommand}"/>
+            
+            <!-- Destination -->
+		    <Label Content="Path to Destination:" Grid.Column="0" Grid.Row="3" FontWeight="Bold"/>
+		    <TextBox x:Name="DestinationTextBox" Text="{Binding Path=DestinationPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+				     Grid.Column="0" Grid.Row="4" ToolTip="Destination XML or Binary Coalesced file." />
+            <Button x:Name="DestinationBrowseButton" Width="80" Content="Browse" Grid.Column="2" Grid.Row="4" Command="{Binding SelectDestinationCommand}" />
+
 	</Grid>
+    </DockPanel>
 </bases:TrackingNotifyPropertyChangedWindowBase>
