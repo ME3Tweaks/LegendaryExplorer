@@ -44,11 +44,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         protected override void Serialize(SerializingContainer2 sc)
         {
-            if (sc.Game != MEGame.ME3 && sc.Game != MEGame.ME2)
+            if (sc.Game != MEGame.ME3 && sc.Game != MEGame.ME2 && sc.Game != MEGame.LE3 && sc.Game != MEGame.LE2)
             {
                 throw new Exception($"WwiseBank is not a valid class for {sc.Game}!");
             }
-            if (sc.Game == MEGame.ME2)
+            if (sc.Game is MEGame.ME2 or MEGame.LE2)
             {
                 sc.Serialize(ref Unk1);
                 sc.Serialize(ref Unk2);
@@ -372,7 +372,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             public static HIRCObject Create(SerializingContainer2 sc)
             {
-                HIRCType type = (HIRCType)(sc.Game == MEGame.ME3 ? sc.ms.ReadByte() : (byte)sc.ms.ReadInt32());
+                HIRCType type = (HIRCType)((sc.Game == MEGame.ME3 || sc.Game == MEGame.LE2 || sc.Game == MEGame.LE3) ? sc.ms.ReadByte() : (byte)sc.ms.ReadInt32());
                 int len = sc.ms.ReadInt32();
                 uint id = sc.ms.ReadUInt32();
                 return type switch
@@ -517,7 +517,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     Type = HIRCType.Event,
                     ID = id,
                     // Just call .ToList()?
-                    EventActions = Enumerable.Range(0, sc.ms.ReadInt32()).Select(i => (uint)sc.ms.ReadUInt32()).ToList()
+                    EventActions = Enumerable.Range(0, sc.Game.IsLEGame() ? sc.ms.ReadByte() : sc.ms.ReadInt32()).Select(i => (uint)sc.ms.ReadUInt32()).ToList()
                 };
         }
 

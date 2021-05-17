@@ -5165,7 +5165,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 var bin = new EndianReader(new MemoryStream(data)) { Endian = Pcc.Endian };
                 bin.JumpTo(CurrentLoadedExport.propsEnd());
 
-                if (Pcc.Game == MEGame.ME2)
+                if (Pcc.Game is MEGame.ME2 or MEGame.LE2)
                 {
                     subnodes.Add(MakeUInt32Node(bin, "Unk1"));
                     subnodes.Add(MakeUInt32Node(bin, "Unk2"));
@@ -5175,10 +5175,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                 }
                 subnodes.Add(MakeUInt32Node(bin, "Unk3"));
-                subnodes.Add(MakeInt32Node(bin, "DataSize1"));
+                subnodes.Add(MakeInt32Node(bin, "DataSize1", out var datasize));
                 int dataSize = bin.Skip(-4).ReadInt32();
                 subnodes.Add(MakeInt32Node(bin, "DataSize2"));
                 subnodes.Add(MakeInt32Node(bin, "DataOffset"));
+
+                if (dataSize == 0)
+                {
+                    // Nothing more
+                    return subnodes;
+                }
 
                 var chunksNode = new BinInterpNode(bin.Position, "Chunks")
                 {
@@ -5340,7 +5346,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 switch (hircType)
                 {
                     case HIRCType.Event:
-                        node.Items.Add(Pcc.Game == MEGame.LE3 ? MakeArrayNodeByteCount(bin, "Event Actions", i => MakeUInt32HexNode(bin, $"{i}")) : MakeArrayNode(bin, "Event Actions", i => MakeUInt32HexNode(bin, $"{i}")));
+                        node.Items.Add((Pcc.Game == MEGame.LE3 || Pcc.Game == MEGame.LE2) ? MakeArrayNodeByteCount(bin, "Event Actions", i => MakeUInt32HexNode(bin, $"{i}")) : MakeArrayNode(bin, "Event Actions", i => MakeUInt32HexNode(bin, $"{i}")));
                         break;
                     case HIRCType.EventAction:
                         {
