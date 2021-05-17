@@ -19,7 +19,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref WwiseEventID);
                 sc.Serialize(ref Links, SCExt.Serialize);
             }
-            else if (sc.Game is MEGame.ME3 or MEGame.ME3)
+            else if (sc.Game is MEGame.ME3 or MEGame.LE3)
             {
                 if (Links is null || Links.Count == 0)
                 {
