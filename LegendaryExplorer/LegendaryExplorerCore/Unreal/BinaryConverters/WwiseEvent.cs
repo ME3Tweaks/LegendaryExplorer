@@ -31,6 +31,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 sc.Serialize(ref WwiseEventID);
             }
+            else
             {
                 throw new Exception($"WwiseEvent is not a valid class for {sc.Game}!");
             }
