@@ -41,11 +41,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             List<(UIndex, string)> uIndexes = base.GetUIndexes(game);
 
-            if (game == MEGame.ME3)
+            if (game == MEGame.ME3 || game == MEGame.LE3)
             {
                 uIndexes.AddRange(Links[0].WwiseStreams.Select(((u, i) => (u, $"Wwisestreams[{i}]"))));
             }
-            else
+            else if (game == MEGame.ME2) // LE2 doesn't have links, they're in properties
             {
                 for (int i = 0; i < Links.Count; i++)
                 {

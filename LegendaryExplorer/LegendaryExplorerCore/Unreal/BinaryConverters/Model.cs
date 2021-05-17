@@ -39,7 +39,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.BulkSerialize(ref Nodes, SCExt.Serialize, 64);
             sc.Serialize(ref Self);
             sc.Serialize(ref Surfs, SCExt.Serialize);
-            sc.BulkSerialize(ref Verts, SCExt.Serialize, sc.Game == MEGame.ME3 ? 16 : 24);
+            sc.BulkSerialize(ref Verts, SCExt.Serialize, sc.Game is MEGame.ME3 or MEGame.LE3 ? 16 : 24);
             sc.Serialize(ref NumSharedSides);
             sc.Serialize(ref Zones, SCExt.Serialize);
             sc.Serialize(ref Polys);
@@ -141,7 +141,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public int pVertex;
         public int iSide;
         public Vector2 ShadowTexCoord;
-        public Vector2 BackfaceShadowTexCoord; //not ME3
+        public Vector2 BackfaceShadowTexCoord; //not ME3, not LE3
     }
 
     public class ZoneProperties
@@ -222,7 +222,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref vert.pVertex);
             sc.Serialize(ref vert.iSide);
             sc.Serialize(ref vert.ShadowTexCoord);
-            if (sc.Game != MEGame.ME3)
+            if (sc.Game != MEGame.ME3 && sc.Game != MEGame.LE3)
             {
                 sc.Serialize(ref vert.BackfaceShadowTexCoord);
             }
