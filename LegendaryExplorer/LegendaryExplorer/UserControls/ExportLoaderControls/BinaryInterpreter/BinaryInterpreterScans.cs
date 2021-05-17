@@ -3785,7 +3785,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         });
                         offset += 4;
                     }
-                    else if (instVersion == 3) //ME2 use Section then no sound reference 
+                    else if (instVersion == 3 && Pcc.Game != MEGame.LE1) //ME2 use Section then no sound reference //LE1 uses something else...
                     {
                         int pSection = BitConverter.ToInt32(data, offset); //Section ID
                         PageIDs.Items.Add(new BinInterpNode
@@ -3795,6 +3795,44 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             Tag = NodeType.StructLeafInt
                         });
                         offset += 4;
+                    }
+                    else if (instVersion == 3 && Pcc.Game == MEGame.LE1)
+                    {
+                        int unkSection = BitConverter.ToInt32(data, offset); //Unknown ID
+                        PageIDs.Items.Add(new BinInterpNode
+                        {
+                            Header = $"0x{offset:X5} Unknown Int: {unkSection} ",
+                            Name = "_" + offset,
+                            Tag = NodeType.StructLeafInt
+                        });
+                        offset += 4;
+
+                        int pSection = BitConverter.ToInt32(data, offset); //Section ID
+                        PageIDs.Items.Add(new BinInterpNode
+                        {
+                            Header = $"0x{offset:X5} Section Reference: {pSection} ",
+                            Name = "_" + offset,
+                            Tag = NodeType.StructLeafInt
+                        });
+                        offset += 4;
+
+
+                        int sndStrLgth = BitConverter.ToInt32(data, offset); //String length for sound
+                        offset += 4;
+                        string sndRef = "No sound data";
+                        if (sndStrLgth > 0)
+                        {
+                            MemoryStream ms = new MemoryStream(data);
+                            ms.Position = offset;
+                            sndRef = ms.ReadStringASCIINull(sndStrLgth);
+                        }
+                        PageIDs.Items.Add(new BinInterpNode
+                        {
+                            Header = $"0x{offset:X5} SoundRef String: {sndRef} ",
+                            Name = "_" + offset,
+                            Tag = NodeType.StructLeafObject
+                        });
+                        offset += sndStrLgth;
                     }
                     else  //ME1 has different order (section ID then codex sound) and uses a string reference.
                     {
@@ -5344,13 +5382,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                         node.Items.Add(MakeByteNode(bin, "Unknown byte"));
                                         node.Items.Add(MakeUInt32Node(bin, "Fade-in (ms)"));
                                     }
-                                    bool hasUnknown2;
-                                    node.Items.Add(new BinInterpNode(bin.Position, $"Unknown 2: {hasUnknown2 = (bool)bin.ReadBoolByte()}", NodeType.StructLeafByte) { Length = 1 });
-                                    if (hasUnknown2)
+                                    bool RandomFade;
+                                    node.Items.Add(new BinInterpNode(bin.Position, $"Unknown 2: {RandomFade = (bool)bin.ReadBoolByte()}", NodeType.StructLeafByte) { Length = 1 });
+                                    if (RandomFade)
                                     {
-                                        node.Items.Add(MakeUInt32Node(bin, "Unknown Int A"));
-                                        node.Items.Add(MakeByteNode(bin, "Unknown byte"));
-                                        node.Items.Add(MakeUInt32Node(bin, "Unknown Int B"));
+                                        node.Items.Add(MakeByteNode(bin, "Enabled?"));
+                                        node.Items.Add(MakeUInt32Node(bin, "MinOffset"));
+                                        node.Items.Add(MakeUInt32Node(bin, "MaxOffset"));
                                     }
                                     node.Items.Add(new BinInterpNode(bin.Position, $"Fade-out curve Shape: {(WwiseBank.EventActionFadeCurve)bin.ReadByte()}", NodeType.StructLeafByte) { Length = 1 });
                                     node.Items.Add(MakeUInt32HexNode(bin, "Bank ID"));
