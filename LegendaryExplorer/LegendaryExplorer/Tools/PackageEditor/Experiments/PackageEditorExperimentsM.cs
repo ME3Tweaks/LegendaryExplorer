@@ -775,29 +775,45 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
 
                     BinaryReader reader = new EndianReader(new MemoryStream(export.Data)) { Endian = package.Endian };
-                    reader.ReadBytes(12);
+                    reader.ReadBytes(12); // skip props
                     int super = reader.ReadInt32();
-                    int children = reader.ReadInt32();
-                    reader.ReadBytes(12);
-                    int line = reader.ReadInt32();
-                    int textPos = reader.ReadInt32();
+                    int nextItemInCompChain = reader.ReadInt32();
+                    int childProbe = reader.ReadInt32();
+                    if (package.Game is MEGame.ME1 or MEGame.ME2)
+                    {
+                        reader.ReadBytes(8); // some name
+                        int line = reader.ReadInt32();
+                        int textPos = reader.ReadInt32();
+                    }
+                    else
+                    {
+                        reader.ReadInt32(); // memorySize
+                    }
+
                     int scriptSize = reader.ReadInt32();
                     byte[] bytecode = reader.ReadBytes(scriptSize);
                     int nativeIndex = reader.ReadInt16();
-                    int operatorPrecedence = reader.ReadByte();
+                    if (package.Game is MEGame.ME1 or MEGame.ME2)
+                    {
+                        int operatorPrecedence = reader.ReadByte();
+                    }
+
                     int functionFlags = reader.ReadInt32();
                     if ((functionFlags & UE3FunctionReader._flagSet.GetMask("Net")) != 0)
                     {
                         reader.ReadInt16(); // repOffset
                     }
 
-                    int friendlyNameIndex = reader.ReadInt32();
-                    reader.ReadInt32();
-                    var function = new UnFunction(export, package.GetNameEntry(friendlyNameIndex),
-                        new FlagValues(functionFlags, UE3FunctionReader._flagSet), bytecode, nativeIndex,
-                        operatorPrecedence);
+                    if (package.Game is MEGame.ME1 or MEGame.ME2)
+                    {
+                        int friendlyNameIndex = reader.ReadInt32();
+                        reader.ReadInt32();
+                    }
 
-                    if (nativeIndex != 0 && CachedNativeFunctionInfo.GetNativeFunction(nativeIndex) == null)
+                    var function = new UnFunction(export, export.ObjectName,
+                        new FlagValues(functionFlags, UE3FunctionReader._flagSet), bytecode, nativeIndex, 1); // USES PRESET 1 DO NOT TRUST
+
+                    if (nativeIndex != 0 /*&& CachedNativeFunctionInfo.GetNativeFunction(nativeIndex) == null*/)
                     {
                         Debug.WriteLine($">>NATIVE Function {nativeIndex} {export.ObjectName}");
                         var newInfo = new CachedNativeFunctionInfo
@@ -813,7 +829,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     }
                 }
             }
-            Debug.WriteLine(JsonConvert.SerializeObject(new { NativeFunctionInfo = newCachedInfo }, Formatting.Indented));
+            //Debug.WriteLine(JsonConvert.SerializeObject(new { NativeFunctionInfo = newCachedInfo }, Formatting.Indented));
 
             //Dictionary<int, string> nativeMap = new Dictionary<int, string>();
             //foreach (var ee in package.Exports.Where(x => x.ClassName == "Function"))
@@ -1201,6 +1217,24 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     }
                 }
             });
+        }
+
+        public static void TestLODBias(PackageEditorWindow pew)
+        {
+            string[] extensions = { ".pcc" };
+            FileInfo[] files = new DirectoryInfo(LE3Directory.CookedPCPath)
+                .EnumerateFiles("*", SearchOption.AllDirectories)
+                .Where(f => f.Name.Contains("Cat002") && extensions.Contains(f.Extension.ToLower()))
+                .ToArray();
+            foreach (var f in files)
+            {
+                var p = MEPackageHandler.OpenMEPackage(f.FullName, forceLoadFromDisk: true);
+                foreach (var tex in p.Exports.Where(x => x.ClassName == "Texture2D"))
+                {
+                    tex.WriteProperty(new IntProperty(-5, "InternalFormatLODBias"));
+                }
+                p.Save();
+            }
         }
     }
 }

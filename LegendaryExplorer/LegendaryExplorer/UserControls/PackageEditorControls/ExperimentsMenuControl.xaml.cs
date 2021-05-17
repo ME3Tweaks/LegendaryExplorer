@@ -193,7 +193,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                 pew.RestoreAndBringToFront();
                 MessageBox.Show(GetPEWindow(), $"Done. Took {sw.Elapsed.TotalSeconds} seconds");
             });
-            
+
 
 
 
@@ -377,6 +377,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                         Debugger.Break();
                 }
             }
+        }
+
+        private void LODBiasTest_Clicked(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.TestLODBias(GetPEWindow());
         }
 
         private void BuildME1TLKDB_Clicked(object sender, RoutedEventArgs e)
