@@ -1,11 +1,14 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using DocumentFormat.OpenXml.Bibliography;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorerCore.Coalesced;
+using LegendaryExplorerCore.Unreal;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace LegendaryExplorer.Tools.CoalescedCompiler
@@ -18,20 +21,23 @@ namespace LegendaryExplorer.Tools.CoalescedCompiler
 		public CoalescedCompilerWindow() : base("Coalesced Compiler", true)
 		{
 			LoadCommands();
+            if (!string.IsNullOrEmpty(SourcePath))
+                (SourceType, DestinationType) = GetCoalescedTupleFromPath(SourcePath);
+
             InitializeComponent();
 			DataContext = this;
-		}
+        }
 
 		public ICommand SelectSourceCommand { get; set; }
 		public ICommand SelectDestinationCommand { get; set; }
-		public ICommand ConvertCommand { get; set; }
+        public ICommand ConvertCommand { get; set; }
 
 		private void LoadCommands()
         {
 			SelectSourceCommand = new GenericCommand(SelectSourceFile);
 			SelectDestinationCommand = new GenericCommand(SelectDestinationFile, () => !string.IsNullOrEmpty(SourcePath));
-			ConvertCommand = new GenericCommand(Convert, () => !string.IsNullOrEmpty(SourcePath) && !string.IsNullOrEmpty(DestinationPath));
-		}
+            ConvertCommand = new GenericCommand(Convert, () => !string.IsNullOrEmpty(SourcePath) && !string.IsNullOrEmpty(DestinationPath));
+        }
 
         private bool _convertingLECoalesced;
         public bool ConvertingLECoalesced
@@ -81,69 +87,44 @@ namespace LegendaryExplorer.Tools.CoalescedCompiler
 				return;
 			}
 
-			SourcePath = dlg.FileName;
-			var sourceExtension = Path.GetExtension(SourcePath) ?? "";
+			SetSourceFile(dlg.FileName);
+        }
 
-			switch (sourceExtension.ToLower())
-			{
-				case ".bin":
-				{
-					SourceType = CoalescedType.Binary;
+        private void SetSourceFile(string sourcePath)
+        {
+            SourcePath = sourcePath;
 
-					break;
-				}
-				case ".xml":
+            (SourceType, DestinationType) = GetCoalescedTupleFromPath(sourcePath);
+
+            if (!string.IsNullOrEmpty(DestinationPath) && ChangeDestinationCheckBox.IsChecked == false)
+            {
+                return;
+            }
+
+            switch (SourceType)
+            {
+                case CoalescedType.Binary:
                 {
-                    SourceType = CoalescedType.Xml;
+                    // Output to folder
+                    ConvertingLECoalesced = !CoalescedConverter.IsOTCoalesced(SourcePath);
+                    DestinationPath = Path.ChangeExtension(SourcePath, null);
                     break;
-				}
-                case ".extractedbin":
+                }
+                case CoalescedType.Xml:
                 {
-                    SourceType = CoalescedType.ExtractedBin;
+                    DestinationPath = Path.ChangeExtension(SourcePath, "bin");
+                    break;
+                }
+                case CoalescedType.ExtractedBin:
+                {
+                    DestinationPath = Path.Combine(Path.GetDirectoryName(SourcePath),
+                        LECoalescedConverter.GetDestinationPathFromManifest(SourcePath));
                     break;
                 }
             }
+        }
 
-			if (!string.IsNullOrEmpty(DestinationPath) && ChangeDestinationCheckBox.IsChecked == false)
-			{
-				return;
-			}
-
-			switch (SourceType)
-			{
-				case CoalescedType.Binary:
-                {
-                    if (CoalescedConverter.IsOTCoalesced(SourcePath))
-                    {
-                        ConvertingLECoalesced = false;
-                        DestinationPath = Path.ChangeExtension(SourcePath, null);
-                        DestinationType = CoalescedType.Xml;
-                    }
-                    else
-                    {
-                        ConvertingLECoalesced = true;
-                        DestinationPath = Path.ChangeExtension(SourcePath, null);
-                        DestinationType = CoalescedType.ExtractedBin;
-                    }
-
-					break;
-				}
-				case CoalescedType.Xml:
-                {
-					DestinationPath = Path.ChangeExtension(SourcePath, "bin");
-					DestinationType = CoalescedType.Binary;
-                    break;
-				}
-                case CoalescedType.ExtractedBin:
-                {
-                    DestinationPath = Path.Combine(Path.GetDirectoryName(SourcePath), LECoalescedConverter.GetDestinationPathFromManifest(SourcePath));
-                    DestinationType = CoalescedType.Binary;
-                    break;
-                }
-			}
-		}
-
-		private void SelectDestinationFile()
+        private void SelectDestinationFile()
 		{
 			switch (SourceType)
 			{
@@ -159,8 +140,7 @@ namespace LegendaryExplorer.Tools.CoalescedCompiler
 						return;
 					}
 
-					DestinationPath = dlg.FileName;
-
+                    DestinationPath = dlg.FileName;
                     break;
 				}
 
@@ -201,7 +181,7 @@ namespace LegendaryExplorer.Tools.CoalescedCompiler
 			}
 		}
 
-		private void Convert()
+        private void Convert()
 		{
 			if (!Path.IsPathRooted(SourcePath))
 			{
@@ -218,11 +198,12 @@ namespace LegendaryExplorer.Tools.CoalescedCompiler
 				throw new FileNotFoundException("Source file not found.");
 			}
 
-			switch (SourceType)
+            switch (SourceType)
 			{
 
 				case CoalescedType.Binary:
-					if (!Directory.Exists(Path.GetDirectoryName(DestinationPath) ?? DestinationPath))
+                    ConvertingLECoalesced = !CoalescedConverter.IsOTCoalesced(SourcePath);
+                    if (!Directory.Exists(Path.GetDirectoryName(DestinationPath) ?? DestinationPath))
 					{
 						Directory.CreateDirectory(DestinationPath);
 					}
@@ -237,18 +218,11 @@ namespace LegendaryExplorer.Tools.CoalescedCompiler
                     }
 					break;
 				case CoalescedType.Xml:
-                    if (!Directory.Exists(DestinationPath))
-					{
-						Directory.CreateDirectory(DestinationPath);
-					}
                     CoalescedConverter.ConvertToBin(SourcePath, DestinationPath);
 					break;
 				case CoalescedType.ExtractedBin:
-                    if (!Directory.Exists(DestinationPath))
-                    {
-                        Directory.CreateDirectory(DestinationPath);
-                    }
-					LECoalescedConverter.Pack(SourcePath, DestinationPath);
+                    var containingFolder = Path.GetDirectoryName(SourcePath);
+                    LECoalescedConverter.Pack(containingFolder, DestinationPath);
                     break;
 				default:
                     throw new ArgumentOutOfRangeException();
@@ -263,5 +237,80 @@ namespace LegendaryExplorer.Tools.CoalescedCompiler
 			Settings.CoalescedEditor_SourcePath = SourcePath;
 			Settings.Save();
 		}
+
+        private void Window_DragOver(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                // Note that you can have more than one file.
+                var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                // Checking for unpacked coalesced folder
+                if (Directory.Exists(files[0]))
+                {
+                    var info = new DirectoryInfo(files[0]);
+
+                    // We don't check for XML because it's hard to tell if there's actually a manifest
+                    if (!info.GetFiles().Any((f) =>
+                        f.Name.ToLower().EndsWith(".extractedbin")))
+                    {
+                        e.Effects = DragDropEffects.None;
+                        e.Handled = true;
+                    }
+                }
+                else
+                {
+
+                    string ext = Path.GetExtension(files[0]).ToLower();
+                    if (ext != ".bin" && ext != ".xml" && ext != ".extractedbin")
+                    {
+                        e.Effects = DragDropEffects.None;
+                        e.Handled = true;
+                    }
+                }
+            }
+        }
+
+        private void Window_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                // Note that you can have more than one file.
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+
+                if (Directory.Exists(files[0]))
+                {
+                    var dirFiles = (new DirectoryInfo(files[0])).GetFiles();
+                    var extractedBin = dirFiles.FirstOrDefault(f => f.Extension == "extractedbin");
+                    if(extractedBin != default(FileInfo)) SetSourceFile(extractedBin.FullName);
+
+                }
+                else
+                {
+                    SetSourceFile(files[0]);
+                }
+
+            }
+		}
+
+        /// <summary>
+        /// Returns a tuple of the Source and Destination types for the given file path
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        private (CoalescedType, CoalescedType) GetCoalescedTupleFromPath(string path)
+        {
+            var info = new FileInfo(path);
+            switch (info.Extension)
+            {
+                case ".bin":
+                    return CoalescedConverter.IsOTCoalesced(path) ? (CoalescedType.Binary, CoalescedType.Xml) : (CoalescedType.Binary, CoalescedType.ExtractedBin);
+                case ".extractedbin":
+                    return (CoalescedType.ExtractedBin, CoalescedType.Binary);
+                default:
+                    return (CoalescedType.Xml, CoalescedType.Binary);
+            }
+        }
     }
 }

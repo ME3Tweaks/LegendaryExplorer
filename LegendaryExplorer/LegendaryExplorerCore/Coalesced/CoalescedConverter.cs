@@ -314,10 +314,14 @@ namespace LegendaryExplorerCore.Coalesced
 
         public static bool IsOTCoalesced(string sourceFile)
         {
-            byte[] bytes = new byte[4];
-            using FileStream fs = new FileStream(sourceFile, FileMode.Open);
-            fs.Read(bytes, 0, 4);
-            return (BitConverter.ToInt32(bytes, 0) == CoalescedMagicNumber);
+            if (File.Exists(sourceFile))
+            {
+                byte[] bytes = new byte[4];
+                using FileStream fs = new FileStream(sourceFile, FileMode.Open);
+                fs.Read(bytes, 0, 4);
+                return (BitConverter.ToInt32(bytes, 0) == CoalescedMagicNumber);
+            }
+            return true;
         }
 	}
 }

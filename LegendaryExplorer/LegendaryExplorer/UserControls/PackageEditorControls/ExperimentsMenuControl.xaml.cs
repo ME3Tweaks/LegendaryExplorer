@@ -88,7 +88,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
         private void BuildLE1ObjectInfo_Clicked(object sender, RoutedEventArgs e)
         {
-            ME1UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE1ObjectInfo.json"));
+            LE1UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE1ObjectInfo.json"));
             GetPEWindow().RestoreAndBringToFront();
             MessageBox.Show(GetPEWindow(), "Done");
         }
@@ -109,9 +109,20 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
         private void BuildAllObjectInfoLE_Clicked(object sender, RoutedEventArgs e)
         {
-            LE1UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE1ObjectInfo.json"));
-            LE2UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE2ObjectInfo.json"));
-            LE3UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE3ObjectInfo.json"));
+            //Stopwatch sw = new Stopwatch();
+            //sw.Start();
+            LE1UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE1ObjectInfo.json"), true);
+            LE2UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE2ObjectInfo.json"), true);
+            LE3UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE3ObjectInfo.json"), true);
+            //sw.Stop();
+            //var time1 = sw.Elapsed;
+            //sw.Reset();
+            //sw.Start();
+            //LE1UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE1ObjectInfo.json"), false);
+            //LE2UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE2ObjectInfo.json"), false);
+            //LE3UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE3ObjectInfo.json"), false);
+            //sw.Stop();
+
             GetPEWindow().RestoreAndBringToFront();
             MessageBox.Show(GetPEWindow(), "Done");
         }

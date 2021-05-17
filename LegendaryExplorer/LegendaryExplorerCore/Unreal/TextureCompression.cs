@@ -197,8 +197,7 @@ namespace LegendaryExplorerCore.Unreal
                 }
                 else if (type == StorageTypes.extOodle || type == StorageTypes.pccOodle)
                 {
-                    block.uncompressedBuffer = OodleHelper.Decompress(block.compressedBuffer, block.comprSize, block.uncomprSize);
-                    dstLen = (uint)block.uncompressedBuffer.Length;
+                    dstLen = (uint)OodleHelper.Decompress(block.compressedBuffer, block.comprSize, block.uncomprSize, block.uncompressedBuffer);
                 }
                 else if (type == StorageTypes.extLZMA)
                 {
