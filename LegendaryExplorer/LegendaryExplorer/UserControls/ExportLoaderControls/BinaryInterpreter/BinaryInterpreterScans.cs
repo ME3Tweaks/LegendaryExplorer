@@ -347,7 +347,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     { Length = 1 });
                 }
 
-                int mapCount = Pcc.Game is MEGame.ME3 || Pcc.Game.IsLEGame() ?  2 : 1;
+                int mapCount = Pcc.Game is MEGame.ME3 || Pcc.Game.IsLEGame() ? 2 : 1;
                 var nameMappings = new[] { "CompressedCacheMap", "ShaderTypeCRCMap" }; // hack...
                 while (mapCount > 0)
                 {
@@ -5578,7 +5578,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var subnodes = new List<ITreeItem>();
             try
             {
-                if (CurrentLoadedExport.FileRef.Game == MEGame.ME3 || CurrentLoadedExport.FileRef.Platform == MEPackage.GamePlatform.PS3)
+                // Is this right for LE3?
+                if (CurrentLoadedExport.FileRef.Game is MEGame.ME3 or MEGame.LE3 || CurrentLoadedExport.FileRef.Platform == MEPackage.GamePlatform.PS3)
                 {
                     int count = EndianReader.ToInt32(data, binarystart, CurrentLoadedExport.FileRef.Endian);
                     subnodes.Add(new BinInterpNode { Header = $"0x{binarystart:X4} Count: {count.ToString()}", Name = "_" + binarystart });
@@ -5676,9 +5677,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         }
                     }
                 }
+                else if (CurrentLoadedExport.Game.IsLEGame())
+                {
+                    int count = EndianReader.ToInt32(data, binarystart, CurrentLoadedExport.FileRef.Endian);
+                    subnodes.Add(new BinInterpNode { Header = $"0x{binarystart:X4} Unknown: {count} (0x{count:X8})", Name = "_" + binarystart });
+                }
                 else
                 {
-                    subnodes.Add(new BinInterpNode("Only ME3 and ME2 are supported for this scan."));
+                    subnodes.Add(new BinInterpNode($"{CurrentLoadedExport.Game} is not supported for this scan."));
                     return subnodes;
                 }
 
@@ -7971,7 +7977,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
 
                 bin.JumpTo(binarystart);
-                if (Pcc.Game is not(MEGame.ME3 or MEGame.LE3))
+                if (Pcc.Game is not (MEGame.ME3 or MEGame.LE3))
                 {
                     bin.Skip(8); // 12 zeros
                     int thumbnailSize = bin.ReadInt32();

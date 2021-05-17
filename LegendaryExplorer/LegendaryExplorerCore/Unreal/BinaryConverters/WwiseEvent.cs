@@ -19,15 +19,18 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref WwiseEventID);
                 sc.Serialize(ref Links, SCExt.Serialize);
             }
-            else if (sc.Game == MEGame.ME3)
+            else if (sc.Game is MEGame.ME3 or MEGame.ME3)
             {
                 if (Links is null || Links.Count == 0)
                 {
-                    Links = new List<WwiseEventLink>{new WwiseEventLink{WwiseStreams = new List<UIndex>()}};
+                    Links = new List<WwiseEventLink> { new WwiseEventLink { WwiseStreams = new List<UIndex>() } };
                 }
                 sc.Serialize(ref Links[0].WwiseStreams, SCExt.Serialize);
             }
-            else
+            else if (sc.Game == MEGame.LE2)
+            {
+                sc.Serialize(ref WwiseEventID);
+            }
             {
                 throw new Exception($"WwiseEvent is not a valid class for {sc.Game}!");
             }
