@@ -640,6 +640,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             switchME1_menu.IsChecked = false;
             switchME2_menu.IsChecked = false;
             switchME3_menu.IsChecked = false;
+            switchLE1_menu.IsChecked = false;
+            switchLE2_menu.IsChecked = false;
+            switchLE3_menu.IsChecked = false;
             ClearDataBase();
             currentView = 0;
             MeshRendererTab_MeshRenderer.UnloadExport();
@@ -2422,7 +2425,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
             rootPath = Path.GetFullPath(rootPath);
             var supportedExtensions = new List<string> { ".u", ".upk", ".sfm", ".pcc" };
-            List<string> files = Directory.GetFiles(rootPath, "*.*", SearchOption.AllDirectories).Where(s => supportedExtensions.Contains(Path.GetExtension(s.ToLower()))).ToList();
+            string ShaderCacheName = CurrentGame.IsLEGame() ? "RefShaderCache-PC-D3D-SM5.upk" : "RefShaderCache-PC-D3D-SM3.upk";
+            List<string> files = Directory.GetFiles(rootPath, "*.*", SearchOption.AllDirectories)
+                                          .Where(s => supportedExtensions.Contains(Path.GetExtension(s.ToLower())) && !s.EndsWith(ShaderCacheName)).ToList();
 
             await dumpPackages(files, CurrentGame);
         }

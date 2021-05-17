@@ -166,6 +166,20 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.CodexMap
                     page.CodexSound = ReadInt32();
                     page.Section = ReadInt32();
                 }
+                else if (page.InstanceVersion == 3) //if 3 & LE read section then string else just section
+                {
+                    int unknown = ReadInt32();
+                    if (unknown == 0) // This is only in LE
+                    {
+                        page.Section = ReadInt32();
+                        int strLength = ReadInt32();
+                        page.CodexSoundString = new string(ReadChars(strLength));
+                    }
+                    else
+                    {
+                        page.Section = unknown;
+                    }
+                }
                 else if (page.InstanceVersion == 2) //if 2 read section then string else just section
                 {
                     page.Section = ReadInt32();

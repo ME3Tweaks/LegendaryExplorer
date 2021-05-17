@@ -393,7 +393,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                     }
                 }
-                else if (entry.FileRef.GetEntry(op.Value)?.ObjectName.ToString() == @"Trash" || entry.FileRef.GetEntry(op.Value)?.ObjectName.ToString() == @"ME3ExplorerTrashPackage")
+                else if (entry.FileRef.GetEntry(op.Value)?.ObjectName.ToString() == @"Trash" || entry.FileRef.GetEntry(op.Value)?.ObjectName.ToString() == UnrealPackageFile.TrashPackageName)
                 {
                     item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_nested_warningTrashedExportReference, prefix, op.Value), entry);
                     validRef = false;
