@@ -62,7 +62,8 @@ namespace LegendaryExplorerCore.Unreal
     public static class TextureCompression
     {
         const uint textureTag = 0x9E2A83C1;
-        const uint maxBlockSize = 0x20000; // 128KB
+        const uint maxBlockSizeOT = 0x20000; // 128KB
+        const uint maxBlockSizeOodle = 0x40000; // 256KB
 
         const int SizeOfChunkBlock = 8;
         public struct ChunkBlock
@@ -85,69 +86,69 @@ namespace LegendaryExplorerCore.Unreal
 
         public static byte[] CompressTexture(byte[] inputData, StorageTypes type)
         {
-            using (MemoryStream ouputStream = MemoryManager.GetMemoryStream())
+            uint maxBlockSize = type is StorageTypes.extOodle or StorageTypes.pccOodle ? maxBlockSizeOodle : maxBlockSizeOT;
+            using MemoryStream ouputStream = MemoryManager.GetMemoryStream();
+            uint compressedSize = 0;
+            uint dataBlockLeft = (uint)inputData.Length;
+            uint newNumBlocks = ((uint)inputData.Length + maxBlockSize - 1) / maxBlockSize;
+            List<ChunkBlock> blocks = new List<ChunkBlock>();
+            using (MemoryStream inputStream = new MemoryStream(inputData))
             {
-                uint compressedSize = 0;
-                uint dataBlockLeft = (uint)inputData.Length;
-                uint newNumBlocks = ((uint)inputData.Length + maxBlockSize - 1) / maxBlockSize;
-                List<ChunkBlock> blocks = new List<ChunkBlock>();
-                using (MemoryStream inputStream = new MemoryStream(inputData))
-                {
-                    // skip blocks header and table - filled later
-                    ouputStream.Seek(SizeOfChunk + SizeOfChunkBlock * newNumBlocks, SeekOrigin.Begin);
+                // skip blocks header and table - filled later
+                ouputStream.Seek(SizeOfChunk + SizeOfChunkBlock * newNumBlocks, SeekOrigin.Begin);
 
-                    for (int b = 0; b < newNumBlocks; b++)
-                    {
-                        ChunkBlock block = new ChunkBlock();
-                        block.uncomprSize = Math.Min(maxBlockSize, dataBlockLeft);
-                        dataBlockLeft -= block.uncomprSize;
-                        block.uncompressedBuffer = inputStream.ReadToBuffer(block.uncomprSize);
-                        blocks.Add(block);
-                    }
+                for (int b = 0; b < newNumBlocks; b++)
+                {
+                    ChunkBlock block = new ChunkBlock();
+                    block.uncomprSize = Math.Min(maxBlockSize, dataBlockLeft);
+                    dataBlockLeft -= block.uncomprSize;
+                    block.uncompressedBuffer = inputStream.ReadToBuffer(block.uncomprSize);
+                    blocks.Add(block);
                 }
-
-                Parallel.For(0, blocks.Count, b =>
-                {
-                    ChunkBlock block = blocks[b];
-                    if (type == StorageTypes.extLZO || type == StorageTypes.pccLZO)
-                        block.compressedBuffer = LZO2.Compress(block.uncompressedBuffer);
-                    else if (type == StorageTypes.extZlib || type == StorageTypes.pccZlib)
-                        block.compressedBuffer = Zlib.Compress(block.uncompressedBuffer);
-                    else if (type == StorageTypes.extOodle || type == StorageTypes.pccOodle)
-                        // Todo: This is placeholder. No idea if this is correct
-                        block.compressedBuffer = OodleHelper.Compress(block.uncompressedBuffer, block.uncompressedBuffer.Length, OodleHelper.OodleFormat.Leviathan, OodleHelper.OodleCompressionLevel.Normal);
-                    else
-                        throw new Exception("Compression type not expected!");
-                    if (block.compressedBuffer.Length == 0)
-                        throw new Exception("Compression failed!");
-                    block.comprSize = (uint)block.compressedBuffer.Length;
-                    blocks[b] = block;
-                });
-
-                for (int b = 0; b < blocks.Count; b++)
-                {
-                    ChunkBlock block = blocks[b];
-                    ouputStream.Write(block.compressedBuffer, 0, (int)block.comprSize);
-                    compressedSize += block.comprSize;
-                }
-
-                ouputStream.SeekBegin();
-                ouputStream.WriteUInt32(textureTag);
-                ouputStream.WriteUInt32(maxBlockSize);
-                ouputStream.WriteUInt32(compressedSize);
-                ouputStream.WriteInt32(inputData.Length);
-                foreach (ChunkBlock block in blocks)
-                {
-                    ouputStream.WriteUInt32(block.comprSize);
-                    ouputStream.WriteUInt32(block.uncomprSize);
-                }
-
-                return ouputStream.ToArray();
             }
+
+            Parallel.For(0, blocks.Count, b =>
+            {
+                ChunkBlock block = blocks[b];
+                if (type == StorageTypes.extLZO || type == StorageTypes.pccLZO)
+                    block.compressedBuffer = LZO2.Compress(block.uncompressedBuffer);
+                else if (type == StorageTypes.extZlib || type == StorageTypes.pccZlib)
+                    block.compressedBuffer = Zlib.Compress(block.uncompressedBuffer);
+                else if (type == StorageTypes.extOodle || type == StorageTypes.pccOodle)
+                    // Todo: This is placeholder. No idea if this is correct
+                    block.compressedBuffer = OodleHelper.Compress(block.uncompressedBuffer, block.uncompressedBuffer.Length, OodleHelper.OodleFormat.Leviathan, OodleHelper.OodleCompressionLevel.Normal);
+                else
+                    throw new Exception("Compression type not expected!");
+                if (block.compressedBuffer.Length == 0)
+                    throw new Exception("Compression failed!");
+                block.comprSize = (uint)block.compressedBuffer.Length;
+                blocks[b] = block;
+            });
+
+            for (int b = 0; b < blocks.Count; b++)
+            {
+                ChunkBlock block = blocks[b];
+                ouputStream.Write(block.compressedBuffer, 0, (int)block.comprSize);
+                compressedSize += block.comprSize;
+            }
+
+            ouputStream.SeekBegin();
+            ouputStream.WriteUInt32(textureTag);
+            ouputStream.WriteUInt32(maxBlockSize);
+            ouputStream.WriteUInt32(compressedSize);
+            ouputStream.WriteInt32(inputData.Length);
+            foreach (ChunkBlock block in blocks)
+            {
+                ouputStream.WriteUInt32(block.comprSize);
+                ouputStream.WriteUInt32(block.uncomprSize);
+            }
+
+            return ouputStream.ToArray();
         }
 
         public static void DecompressTexture(byte[] DecompressedBuffer, MemoryStream stream, StorageTypes type, int uncompressedSize, int compressedSize)
         {
+            uint maxBlockSize = type is StorageTypes.extOodle or StorageTypes.pccOodle ? maxBlockSizeOodle : maxBlockSizeOT;
             uint blockTag = stream.ReadUInt32();
             if (blockTag != textureTag)
                 throw new Exception("Texture tag wrong");
@@ -166,7 +167,7 @@ namespace LegendaryExplorerCore.Unreal
             var blocks = new List<ChunkBlock>();
             for (uint b = 0; b < blocksCount; b++)
             {
-                ChunkBlock block = new ChunkBlock
+                var block = new ChunkBlock
                 {
                     comprSize = stream.ReadUInt32(),
                     uncomprSize = stream.ReadUInt32()
@@ -187,11 +188,18 @@ namespace LegendaryExplorerCore.Unreal
                 uint dstLen;
                 ChunkBlock block = blocks[b];
                 if (type == StorageTypes.extLZO || type == StorageTypes.pccLZO)
+                {
                     dstLen = LZO2.Decompress(block.compressedBuffer, block.comprSize, block.uncompressedBuffer);
+                }
                 else if (type == StorageTypes.extZlib || type == StorageTypes.pccZlib)
+                {
                     dstLen = Zlib.Decompress(block.compressedBuffer, block.comprSize, block.uncompressedBuffer);
-                else if (type == StorageTypes.extOodle || type == StorageTypes.extOodle)
-                    dstLen = Zlib.Decompress(block.compressedBuffer, block.comprSize, block.uncompressedBuffer);
+                }
+                else if (type == StorageTypes.extOodle || type == StorageTypes.pccOodle)
+                {
+                    block.uncompressedBuffer = OodleHelper.Decompress(block.compressedBuffer, block.comprSize, block.uncomprSize);
+                    dstLen = (uint)block.uncompressedBuffer.Length;
+                }
                 else if (type == StorageTypes.extLZMA)
                 {
                     block.uncompressedBuffer = LZMA.Decompress(block.compressedBuffer, block.uncomprSize);

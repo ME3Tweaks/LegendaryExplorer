@@ -7971,7 +7971,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
 
                 bin.JumpTo(binarystart);
-                if (Pcc.Game != MEGame.ME3 && !Pcc.Game.IsLEGame())
+                if (Pcc.Game is not(MEGame.ME3 or MEGame.LE3))
                 {
                     bin.Skip(8); // 12 zeros
                     int thumbnailSize = bin.ReadInt32();
@@ -8067,7 +8067,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 if (Pcc.Game >= MEGame.ME3 && CurrentLoadedExport.ClassName == "LightMapTexture2D")
                 {
-                    if (Pcc.Game == MEGame.ME3)
+                    if (Pcc.Game == MEGame.ME3 || Pcc.Game.IsLEGame())
                     {
                         bin.Skip(4);
                     }
@@ -8079,13 +8079,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
-        }
-
-        enum ELightMapFlags
-        {
-            LMF_None,
-            LMF_Streamed,
-            LMF_SimpleLightmap
         }
 
         private List<ITreeItem> StartTextureMovieScan(byte[] data, ref int binarystart)

@@ -122,7 +122,7 @@ namespace LegendaryExplorerCore.Compression
             return bufferSize + 274 * ((bufferSize + 0x3FFFF) / 0x40000);
         }
 
-        public static byte[] Decompress(byte[] buffer, int size, int uncompressedSize)
+        public static byte[] Decompress(byte[] buffer, long size, long uncompressedSize)
         {
             byte[] decompressedBuffer = new byte[uncompressedSize];
             int decompressedCount = OodleLZ_Decompress(buffer, size, decompressedBuffer, uncompressedSize, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3);
@@ -133,7 +133,7 @@ namespace LegendaryExplorerCore.Compression
             }
             else if (decompressedCount < uncompressedSize)
             {
-                return decompressedBuffer.Take(decompressedCount).ToArray();
+                return decompressedBuffer.Slice(0, decompressedCount);
             }
             else
             {
