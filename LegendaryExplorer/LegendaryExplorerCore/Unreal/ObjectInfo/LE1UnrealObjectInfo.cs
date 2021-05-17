@@ -6,6 +6,7 @@ using System.Linq;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Newtonsoft.Json;
@@ -139,6 +140,13 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     }
                 }
             }
+#if DEBUG
+            if (p.Reference == null)
+            {
+                // Reference should not be null
+                Debugger.Break();
+            }
+#endif
             return getArrayType(p);
         }
 
@@ -150,6 +158,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         {
             if (p != null)
             {
+
                 if (p.Reference == "NameProperty")
                 {
                     return ArrayType.Name;
@@ -450,8 +459,13 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         #region Generating
         //call this method to regenerate LE1ObjectInfo.json
         //Takes a long time (~5 minutes maybe?). Application will be completely unresponsive during that time.
-        public static void generateInfo(string outpath)
+        public static void generateInfo(string outpath, bool usePooledMemory = true)
         {
+            MemoryManager.SetUsePooledMemory(usePooledMemory);
+            Enums.Clear();
+            Structs.Clear();
+            Classes.Clear();
+            SequenceObjects.Clear();
             var NewClasses = new Dictionary<string, ClassInfo>();
             var NewStructs = new Dictionary<string, ClassInfo>();
             var NewEnums = new Dictionary<string, List<NameReference>>();
@@ -459,8 +473,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
             foreach (string filePath in MELoadedFiles.GetOfficialFiles(MEGame.LE1))
             {
-                if (!filePath.EndsWith("Engine.pcc"))
-                    continue;
                 if (Path.GetExtension(filePath) == ".pcc")
                 {
                     using IMEPackage pcc = MEPackageHandler.OpenLE1Package(filePath);
@@ -471,8 +483,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                         string objectName = exportEntry.ObjectName.Name;
                         if (className == "Enum")
                         {
-                            if (exportEntry.ObjectName == "TriangleSorting")
-                                Debugger.Break();
                             generateEnumValues(exportEntry, NewEnums);
                         }
                         else if (className == "Class")
@@ -520,6 +530,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
             File.WriteAllText(outpath,
                               JsonConvert.SerializeObject(new { SequenceObjects = newSequenceObjects, Classes = NewClasses, Structs = NewStructs, Enums = NewEnums }, Formatting.Indented));
+            MemoryManager.SetUsePooledMemory(false);
         }
 
         private static void AddCustomAndNativeClasses(Dictionary<string, ClassInfo> classes, Dictionary<string, SequenceObjectInfo> sequenceObjects)

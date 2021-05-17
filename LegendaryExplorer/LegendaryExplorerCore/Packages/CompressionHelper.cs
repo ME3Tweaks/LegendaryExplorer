@@ -551,7 +551,7 @@ namespace LegendaryExplorerCore.Packages
                                 throw new Exception("LZX decompression failed!");
                             break;
                         case UnrealPackageFile.CompressionType.OodleLeviathan:
-                            dataout = OodleHelper.Decompress(datain, datain.Length, btInfo.blockDecompressedSize);
+                            OodleHelper.Decompress(datain, datain.Length, btInfo.blockDecompressedSize, dataout);
                             if (dataout.Length != btInfo.blockDecompressedSize)
                                 throw new Exception("Oodle-Leviathan decompression failed!");
                             break;
@@ -561,7 +561,7 @@ namespace LegendaryExplorerCore.Packages
                 }
 
                 index++;
-                outStream.Write(dataout, 0, btInfo.blockDecompressedSize);
+                outStream.Write(dataout, 0, btInfo.blockDecompressedSize); // write from start to decomp size as the amount we receive may not be the actual size of the buffer we got from memory manager
                 MemoryManager.ReturnByteArray(dataout);
             }
 
@@ -689,7 +689,7 @@ namespace LegendaryExplorerCore.Packages
                                 break;
                             }
                         case UnrealPackageFile.CompressionType.LZMA:
-                            dataout = LZMA.Decompress(datain, (uint)b.uncompressedsize);
+                            dataout = LZMA.Decompress(datain, (uint)b.uncompressedsize); // does not work with memory manager!
                             if (dataout.Length != b.uncompressedsize)
                                 throw new Exception("LZMA decompression failed!");
                             break;
@@ -698,9 +698,8 @@ namespace LegendaryExplorerCore.Packages
                                 throw new Exception("LZX decompression failed!");
                             break;
                         case UnrealPackageFile.CompressionType.OodleLeviathan:
-                            dataout = OodleHelper.Decompress(datain, datain.Length, b.uncompressedsize);
-                            if (dataout.Length != b.uncompressedsize)
-                                throw new Exception("Oodle-Leviathan decompression failed!");
+                            // Error decompressing exception is thrown in decompress method itself
+                            OodleHelper.Decompress(datain, datain.Length, b.uncompressedsize, dataout);
                             break;
                         default:
                             throw new Exception("Unknown compression type for this package.");
