@@ -242,6 +242,16 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.CodexMap
                     Write(page.CodexSound);
                     Write(page.Section);
                 }
+                else if (page.InstanceVersion == 3)
+                {
+                    Write(page.Section);
+                    if (page.Section == 0) // LE1 Codex Page
+                    {
+                        int Length = page.CodexSoundString.Length;
+                        Write(Length);
+                        Write(page.CodexSoundString.ToCharArray(), 0, Length);
+                    }
+                }
                 else if (page.InstanceVersion == 2)
                 {
                     Write(page.Section);

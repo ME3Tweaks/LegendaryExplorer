@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Forms.Integration;
 using System.Windows.Threading;
@@ -15,6 +16,7 @@ using LegendaryExplorer.DialogueEditor;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.Misc.Telemetry;
+using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.PeregrineTreeView;
 using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorer.Tools.Sequence_Editor;
@@ -103,9 +105,6 @@ namespace LegendaryExplorer.Startup
                 }
                 else
                 {
-
-                    GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
-                    GC.Collect();
                     //PendingAppLoadedAction = actionDelegate;
 
                     // TODO: IMPLEMENT IN LEX
@@ -144,71 +143,34 @@ namespace LegendaryExplorer.Startup
                 return () => { };
             }
 
-            //TODO: REFACTOR THIS UGLY MESS
-            string arg = args[0];
+            var arg = args[0];
 
-            /*
-            if (arg == "JUMPLIST_PACKAGE_EDITOR")
+            // JUMPLIST
+            Action CreateJumplistAction<T>(Action<T> toolAction = null) // I heard you like actions
+                where T : WPFBase, new()
             {
                 return () =>
                 {
-                    var editor = new PackageEditorWindow();
+                    var editor = new T();
                     editor.Show();
+                    toolAction?.Invoke(editor);
                     editor.Activate();
                 };
             }
 
-            if (arg == "JUMPLIST_SEQUENCE_EDITOR")
+            // TODO: Add more detailed CLI args. EG: -PackageEditor %1, -TLKEditor %1, -UIndex 112
+            switch (arg)
             {
-                return () =>
-                {
-                    var editor = new SequenceEditorWPF();
-                    editor.Show();
-                    editor.Activate();
-                };
+                // Tool must have a parameterless constructor for this to work
+                case "-PackageEditor": return CreateJumplistAction<PackageEditorWindow>();
+                case "-SequenceEditor": return CreateJumplistAction<SequenceEditorWPF>();
+                case "-Soundplorer": return CreateJumplistAction<SoundplorerWPF>();
+                case "-DialogueEditor": return CreateJumplistAction<DialogueEditorWindow>();
+                case "-PathfindingEditor": return CreateJumplistAction<Tools.PathfindingEditor.PathfindingEditorWindow>();
+                case "-Meshplorer": return CreateJumplistAction<Tools.Meshplorer.MeshplorerWindow>();
             }
 
-            if (arg == "JUMPLIST_SOUNDPLORER")
-            {
-                return () =>
-                {
-                    var soundplorerWpf = new SoundplorerWPF();
-                    soundplorerWpf.Show();
-                    soundplorerWpf.Activate();
-
-                };
-            }
-
-            if (arg == "JUMPLIST_DIALOGUEEDITOR")
-            {
-                return () =>
-                {
-                    var editor = new DialogueEditorWindow();
-                    editor.Show();
-                    editor.Activate();
-                };
-            }
-
-            if (arg == "JUMPLIST_PATHFINDING_EDITOR")
-            {
-                return () =>
-                {
-                    var editor = new Tools.PathfindingEditor.PathfindingEditorWindow();
-                    editor.Show();
-                    editor.Activate();
-                };
-            }
-
-            if (arg == "JUMPLIST_MESHPLORER")
-            {
-                return () =>
-                {
-                    var meshplorerWpf = new Tools.Meshplorer.MeshplorerWindow();
-                    meshplorerWpf.Show();
-                    meshplorerWpf.Activate();
-                };
-            }*/
-
+            // OPENING PACKAGE FILE DIRECTLY
             string ending = Path.GetExtension(arg).ToLower();
             switch (ending)
             {
@@ -217,14 +179,8 @@ namespace LegendaryExplorer.Startup
                 case ".upk":
                 case ".u":
                 case ".udk":
-                    return () =>
-                    {
-                        var editor = new PackageEditorWindow();
-                        editor.Show();
-                        editor.LoadFile(arg);
-                        editor.RestoreAndBringToFront();
-                    };
-                    //return 2; //Do not signal bring main forward
+                    return CreateJumplistAction<PackageEditorWindow>((p) => p.LoadFile(arg));
+                //return 2; //Do not signal bring main forward
             }
             exitCode = 0; //is this even used?
             return null;

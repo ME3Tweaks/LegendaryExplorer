@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime;
 using System.Text;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
@@ -56,7 +57,7 @@ namespace LegendaryExplorerCore.Misc
             TrackedMemoryObjects.RemoveAll(x => !x.IsAlive());
         }
 
-        public static void ForceFullGC()
+        public static void ForceFullGC(bool compactLargeObjectHeap = false)
         {
             // This should promote things into future generations and clear out. This is how jetbrains seems to do it in dotMemory according to stackoverflow
             // https://stackoverflow.com/questions/42022723/what-exactly-happens-when-i-ask-dotmemory-to-force-garbage-collection
@@ -66,6 +67,11 @@ namespace LegendaryExplorerCore.Misc
                 GC.WaitForPendingFinalizers();
             }
 
+            if (compactLargeObjectHeap)
+            {
+                GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
+                GC.Collect(2, GCCollectionMode.Forced, true, true);
+            }
         }
     }
 }

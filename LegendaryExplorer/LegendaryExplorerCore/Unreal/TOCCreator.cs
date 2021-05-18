@@ -81,7 +81,7 @@ namespace LegendaryExplorerCore.Unreal
             if (Directory.Exists(MEDirectories.GetDLCPath(game, gamePathRoot)))
             {
                 var dlcFolders = new DirectoryInfo(MEDirectories.GetDLCPath(game, gamePathRoot)).GetDirectories();
-                tocTargets.AddRange(dlcFolders.Where(f => f.Name.StartsWith("DLC_")).Select(f => f.ToString()));
+                tocTargets.AddRange(dlcFolders.Where(f => f.Name.StartsWith("DLC_", StringComparison.OrdinalIgnoreCase)).Select(f => f.ToString()));
             }
 
             if (game is MEGame.ME3)

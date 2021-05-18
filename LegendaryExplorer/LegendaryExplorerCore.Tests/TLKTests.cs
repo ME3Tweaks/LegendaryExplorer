@@ -29,11 +29,11 @@ namespace LegendaryExplorerCore.Tests
             {
                 Console.WriteLine($"Opening package {p}");
                 (MEGame expectedGame, MEPackage.GamePlatform expectedPlatform) = GlobalTest.GetExpectedTypes(p);
-                var package = MEPackageHandler.OpenMEPackage(p, forceLoadFromDisk: true);
+                using var package = MEPackageHandler.OpenMEPackage(p, forceLoadFromDisk: true);
 
                 foreach (var export in package.Exports.Where(x => x.ClassName == "BioTlkFile"))
                 {
-                    ME1TalkFile me1Tf = new ME1TalkFile(export);
+                    var me1Tf = new ME1TalkFile(export);
                     foreach (var stringId in me1Tf.StringRefs)
                     {
                         var expected = stringId.Data;
@@ -54,7 +54,7 @@ namespace LegendaryExplorerCore.Tests
                 // Do not use package caching in tests
                 Debug.WriteLine($"Opening TLK file {tlkFilePath}");
                 (MEGame expectedGame, MEPackage.GamePlatform expectedPlatform) = GlobalTest.GetExpectedTypes(tlkFilePath);
-                TalkFile tf = new TalkFile();
+                var tf = new TalkFile();
                 tf.LoadTlkData(tlkFilePath);
 
                 foreach (var stringId in tf.StringRefs)

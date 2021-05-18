@@ -352,7 +352,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         {
             switch (game)
             {
-                //HACK: TODO: generate actual object info for LE
 
                 case MEGame.ME1:
                     return ME1UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients);
@@ -393,18 +392,23 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             ClassInfo result = null;
             switch (game)
             {
-                //HACK: TODO: generate actual object info for LE
-                case MEGame.LE1:
                 case MEGame.ME1:
                     _ = ME1UnrealObjectInfo.Classes.TryGetValue(typeName, out result) || ME1UnrealObjectInfo.Structs.TryGetValue(typeName, out result);
                     break;
-                case MEGame.LE2:
                 case MEGame.ME2:
                     _ = ME2UnrealObjectInfo.Classes.TryGetValue(typeName, out result) || ME2UnrealObjectInfo.Structs.TryGetValue(typeName, out result);
                     break;
-                case MEGame.LE3:
                 case MEGame.ME3:
                     _ = ME3UnrealObjectInfo.Classes.TryGetValue(typeName, out result) || ME3UnrealObjectInfo.Structs.TryGetValue(typeName, out result);
+                    break;
+                case MEGame.LE1:
+                    _ = LE1UnrealObjectInfo.Classes.TryGetValue(typeName, out result) || LE1UnrealObjectInfo.Structs.TryGetValue(typeName, out result);
+                    break;
+                case MEGame.LE2:
+                    _ = LE2UnrealObjectInfo.Classes.TryGetValue(typeName, out result) || LE2UnrealObjectInfo.Structs.TryGetValue(typeName, out result);
+                    break;
+                case MEGame.LE3:
+                    _ = LE3UnrealObjectInfo.Classes.TryGetValue(typeName, out result) || LE3UnrealObjectInfo.Structs.TryGetValue(typeName, out result);
                     break;
                 case MEGame.UDK:
                     _ = UDKUnrealObjectInfo.Classes.TryGetValue(typeName, out result) || UDKUnrealObjectInfo.Structs.TryGetValue(typeName, out result)
@@ -506,24 +510,32 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
         public static Property getDefaultProperty(MEGame game, string propName, PropertyInfo propInfo, bool stripTransients = true, bool isImmutable = false)
         {
-            switch (game)
+            return game switch
             {
-                case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getDefaultProperty(propName, propInfo, stripTransients, isImmutable);
-                case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getDefaultProperty(propName, propInfo, stripTransients, isImmutable);
-                case MEGame.ME3:
-                case MEGame.UDK:
-                    return ME3UnrealObjectInfo.getDefaultProperty(propName, propInfo, stripTransients, isImmutable);
-                case MEGame.LE1:
-                    return LE1UnrealObjectInfo.getDefaultProperty(propName, propInfo, stripTransients, isImmutable);
-                case MEGame.LE2:
-                    return LE2UnrealObjectInfo.getDefaultProperty(propName, propInfo, stripTransients, isImmutable);
-                case MEGame.LE3:
-                    return LE2UnrealObjectInfo.getDefaultProperty(propName, propInfo, stripTransients, isImmutable);
-            }
+                MEGame.ME1 => ME1UnrealObjectInfo.getDefaultProperty(propName, propInfo, stripTransients, isImmutable),
+                MEGame.ME2 => ME2UnrealObjectInfo.getDefaultProperty(propName, propInfo, stripTransients, isImmutable),
+                MEGame.ME3 => ME3UnrealObjectInfo.getDefaultProperty(propName, propInfo, stripTransients, isImmutable),
+                MEGame.UDK => ME3UnrealObjectInfo.getDefaultProperty(propName, propInfo, stripTransients, isImmutable),
+                MEGame.LE1 => LE1UnrealObjectInfo.getDefaultProperty(propName, propInfo, stripTransients, isImmutable),
+                MEGame.LE2 => LE2UnrealObjectInfo.getDefaultProperty(propName, propInfo, stripTransients, isImmutable),
+                MEGame.LE3 => LE3UnrealObjectInfo.getDefaultProperty(propName, propInfo, stripTransients, isImmutable),
+                _ => null
+            };
+        }
 
-            return null;
+        public static List<string> GetSequenceObjectInfoInputLinks(MEGame game, string exportClassName)
+        {
+            return game switch
+            {
+                MEGame.ME1 => ME1UnrealObjectInfo.getSequenceObjectInfoInputLinks(exportClassName),
+                MEGame.ME2 => ME2UnrealObjectInfo.getSequenceObjectInfoInputLinks(exportClassName),
+                MEGame.ME3 => ME3UnrealObjectInfo.getSequenceObjectInfoInputLinks(exportClassName),
+                MEGame.UDK => ME3UnrealObjectInfo.getSequenceObjectInfoInputLinks(exportClassName),
+                MEGame.LE1 => LE1UnrealObjectInfo.getSequenceObjectInfoInputLinks(exportClassName),
+                MEGame.LE2 => LE2UnrealObjectInfo.getSequenceObjectInfoInputLinks(exportClassName),
+                MEGame.LE3 => LE3UnrealObjectInfo.getSequenceObjectInfoInputLinks(exportClassName),
+                _ => null
+            };
         }
     }
 }
