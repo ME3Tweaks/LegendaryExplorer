@@ -603,7 +603,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 switch (CurrentGame)
                 {
                     case MEGame.ME1:
-                        //Shouldn't be called in ME1
+                    case MEGame.LE1:
+                        //Shouldn't be called in ME1/LE1
                         break;
                     case MEGame.ME2:
                         ol.Line = ME2TalkFiles.findDataById(ol.StrRef);
@@ -612,8 +613,10 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                         ol.Line = ME3TalkFiles.findDataById(ol.StrRef);
                         break;
                     case MEGame.LE2:
+                        ol.Line = LE2TalkFiles.findDataById(ol.StrRef);
+                        break;
                     case MEGame.LE3:
-                        //TODO: implement in LEX
+                        ol.Line = LE3TalkFiles.findDataById(ol.StrRef);
                         break;
                 }
                 GeneratedLines.TryAdd(ol.StrRef.ToString(), ol);
@@ -690,6 +693,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 case "LE3":
                     CurrentGame = MEGame.LE3;
                     switchLE3_menu.IsChecked = true;
+                    menu_fltrPerf.IsEnabled = true;
                     break;
             }
 
@@ -3661,7 +3665,10 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                                         }
                                         else if (GameBeingDumped == MEGame.LE1)
                                         {
-                                            //TODO: implement in LEX
+                                            newLine.Line = LE1TalkFiles.findDataById(linestrref, pcc);
+                                            if (newLine.Line == "No Data" || newLine.Line == "\"\"" ||
+                                                newLine.Line == "\" \"" || newLine.Line == " ")
+                                                continue;
                                         }
 
                                         dbScanner.GeneratedLines.TryAdd(linestrref.ToString(), newLine);
@@ -3693,7 +3700,10 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                                             }
                                             else if (GameBeingDumped == MEGame.LE1)
                                             {
-                                                //TODO: implement in LEX
+                                                newLine.Line = LE1TalkFiles.findDataById(linestrref, pcc);
+                                                if (newLine.Line == "No Data" || newLine.Line == "\"\"" ||
+                                                    newLine.Line == "\" \"" || newLine.Line == " ")
+                                                    continue;
                                             }
 
                                             dbScanner.GeneratedLines.TryAdd(linestrref.ToString(), newLine);
