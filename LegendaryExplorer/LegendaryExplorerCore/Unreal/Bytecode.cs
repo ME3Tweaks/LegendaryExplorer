@@ -454,8 +454,8 @@ namespace LegendaryExplorerCore.Unreal
             NATIVE_PS3_EqualEqual_ObjectObject = 0x72,
             NATIVE_PS3_Less_StrStr = 0x73,
             NATIVE_PS3_Greater_StrStr = 0x74,
-            NATIVE_PS3_Enable = 0x75,
-            NATIVE_PS3_Disable = 0x76,
+            //NATIVE_PS3_Enable = 0x75, // Defined below
+            //NATIVE_PS3_Disable = 0x76, // Defined below
             NATIVE_PS3_NotEqual_ObjectObject = 0x77,
             NATIVE_PS3_LessEqual_StrStr = 0x78,
             NATIVE_PS3_GreaterEqual_StrStr = 0x79,
@@ -806,8 +806,8 @@ namespace LegendaryExplorerCore.Unreal
             byte t = memory[start];
             Token newTok = new Token { op = t };
             int end = start;
-            if ((t <= 0x65 && export.Game is MEGame.ME3 or MEGame.LE3 )
-                || (t < 0x60 && export.FileRef.Platform == MEPackage.GamePlatform.PS3 && export.FileRef.Game <= MEGame.ME2)) //PS3 uses ME3 engine but ME1/ME2 use PC native index which are different
+            if ((t <= 0x65 && (export.Game is MEGame.ME3 or MEGame.LE3))
+                || (t < 0x60 && (export.FileRef.Platform == MEPackage.GamePlatform.PS3 || (export.Game is MEGame.ME1 or MEGame.ME2 or MEGame.LE1 or MEGame.LE2)))) //PS3 uses ME3 engine but ME1/ME2 use PC native index which are different
             {
                 switch (t)
                 {
@@ -1321,7 +1321,7 @@ namespace LegendaryExplorerCore.Unreal
                         break;
                 }
             }
-            else if (t < (export.Game < MEGame.ME3 ? 0x60 : 0x70)) //PS3 uses 0x60 as native table
+            else if (t < (export.Game is MEGame.ME1 or MEGame.ME2 or MEGame.LE1 or MEGame.LE2 ? 0x60 : 0x70)) //PS3 uses 0x60 as native table
             {
                 //Never reached?
                 newTok = ReadExtNative(start, export);
@@ -1363,7 +1363,7 @@ namespace LegendaryExplorerCore.Unreal
 
             // This doesn't work as the native call IDs seem to maybe have changed
             // So while some native calls keep same ID, others don't
-            int nativeId = export.Game < MEGame.ME3 ? 0x60 : 0x70;
+            int nativeId = export.Game is MEGame.ME1 or MEGame.ME2 or MEGame.LE1 or MEGame.LE2 ? 0x60 : 0x70;
 
             byte byte1 = memory[start];
             byte byte2 = memory[start + 1];
@@ -2681,6 +2681,20 @@ namespace LegendaryExplorerCore.Unreal
                     pos += a.raw.Length;
                     t.text = "GetStatename()";
                     break;
+                case (int)ENatives.NATIVE_Enable: // 0x75
+                    a = ReadToken(pos, export);
+                    pos += a.raw.Length;
+                    b = ReadToken(pos, export); // End function parms?
+                    pos += b.raw.Length;
+                    t.text = $"Enable({a.text})";
+                    break;
+                case (int)ENatives.NATIVE_Disable: // 0x76
+                    a = ReadToken(pos, export);
+                    pos += a.raw.Length;
+                    b = ReadToken(pos, export); // End function parms?
+                    pos += b.raw.Length;
+                    t.text = $"Disable({a.text})";
+                    break;
                 case (int)ENatives.NATIVE_Multiply_RotatorFloat: // 0x011F
                     a = ReadToken(pos, export);
                     pos += a.raw.Length;
@@ -3192,6 +3206,20 @@ namespace LegendaryExplorerCore.Unreal
                     }
                     t.text += ")";
                     break;
+                case (int)ENatives.NATIVE_CanSeeByPoints:
+                    t.text = "CanSeeByPoints(";
+                    int i = 3;
+                    while (i > 0)
+                    {
+                        if (i != 3) t.text += ",";
+                        i--;
+                        a = ReadToken(pos, export);
+                        pos += a.raw.Length;
+                        t.text += a.text;
+                    }
+                    pos += ReadToken(pos, export).raw.Length; // End Function Parms
+                    t.text += ")";
+                    break;
                 case (int)ENatives.NATIVE_PS3_Concat_StrStr:
                 case (int)ENatives.NATIVE_Concat_StrStr: // 0x0258
                     a = ReadToken(pos, export);
@@ -3252,6 +3280,7 @@ namespace LegendaryExplorerCore.Unreal
                     pos += c.raw.Length;
                     t.text = "(" + a.text + " == " + b.text + ")";
                     break;
+                case (int)ENatives.NATIVE_PS3_NotEqual_StrStr: // 0x7B
                 case (int)ENatives.NATIVE_NotEqual_StrStr: // 0x025E
                     a = ReadToken(pos, export);
                     pos += a.raw.Length;
@@ -3270,6 +3299,22 @@ namespace LegendaryExplorerCore.Unreal
                     c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " ~= " + b.text;
+                    break;
+                case (int)ENatives.NATIVE_WarnInternal:
+                    a = ReadToken(pos, export); //String
+                    pos += a.raw.Length;
+                    b = ReadToken(pos, export); // End function parms
+                    pos += b.raw.Length;
+                    t.text = $"WarnInternal({a.text}, {b.text})";
+                    break;
+                case (int)ENatives.NATIVE_LogInternal:
+                    a = ReadToken(pos, export); // String
+                    pos += a.raw.Length;
+                    b = ReadToken(pos, export); // Log name? Interpolation params?
+                    pos += b.raw.Length;
+                    c = ReadToken(pos, export); // End function parms
+                    pos += c.raw.Length;
+                    t.text = $"LogInternal({a.text}, {b.text})";
                     break;
                 case (int)ENatives.NATIVE_PS3_GotoState:
                 case (int)ENatives.NATIVE_GotoState: // 0x026C
@@ -3509,6 +3554,7 @@ namespace LegendaryExplorerCore.Unreal
                     t.text += ")";
                     break;
                 default:
+                    Debug.WriteLine($"Found an unknown native: {index} 0x{index:X4}!");
                     t.text = "UnknownNative(" + index + ")";
                     break;
             }

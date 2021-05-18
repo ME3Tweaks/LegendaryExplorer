@@ -55,7 +55,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             memory = raw;
             memsize = raw.Length;
             flagint = GetFlagInt();
-            flags = new FlagValues(flagint, export.Game is MEGame.ME3 ? _me3flags : _flags);
+            flags = new FlagValues(flagint, export.Game == MEGame.ME3 || export.Game.IsLEGame()  ? _me3flags : _flags);
             nativeindex = GetNatIdx();
             Deserialize(clippingSize);
         }
