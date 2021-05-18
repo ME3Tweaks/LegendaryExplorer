@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorerCore.Tests
 {
@@ -24,6 +25,9 @@ namespace LegendaryExplorerCore.Tests
             ME1Directory.DefaultGamePath = ME1UnrealObjectInfo.MiniGameFilesPath = GetTestMiniGamePath(MEGame.ME1);
             ME2Directory.DefaultGamePath = ME2UnrealObjectInfo.MiniGameFilesPath = GetTestMiniGamePath(MEGame.ME2);
             ME3Directory.DefaultGamePath = ME3UnrealObjectInfo.MiniGameFilesPath = GetTestMiniGamePath(MEGame.ME3);
+            LE1Directory.DefaultGamePath = LE1UnrealObjectInfo.MiniGameFilesPath = GetTestMiniGamePath(MEGame.LE1);
+            LE2Directory.DefaultGamePath = LE2UnrealObjectInfo.MiniGameFilesPath = GetTestMiniGamePath(MEGame.LE2);
+            LE3Directory.DefaultGamePath = LE3UnrealObjectInfo.MiniGameFilesPath = GetTestMiniGamePath(MEGame.LE3);
 #endif
             initialized = true;
         }
@@ -37,8 +41,8 @@ namespace LegendaryExplorerCore.Tests
             while (Directory.GetParent(dir.FullName) != null)
             {
                 dir = Directory.GetParent(dir.FullName);
-                var testDataPath = Path.Combine(dir.FullName, "testdata");
-                if (Directory.Exists(testDataPath)) return testDataPath;
+                var testDataPath = Path.Combine(dir.FullName, "Testing");
+                if (Directory.Exists(testDataPath)) return Path.Combine(testDataPath, "testdata");
             }
 
             throw new Exception("Could not find testdata directory!");

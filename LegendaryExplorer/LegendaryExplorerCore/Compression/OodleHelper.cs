@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,12 +20,10 @@ namespace LegendaryExplorerCore.Compression
     class OodleHelper
     {
         [DllImport(CompressionHelper.OODLE_DLL_NAME)]
-        //private static extern int OodleLZ_Compress(OodleFormat format, byte[] buffer, long bufferSize, byte[] outputBuffer, OodleCompressionLevel level);
-        //private static extern int OodleLZ_Compress(OodleFormat format, byte[] buffer, long bufferSize, byte[] outputBuffer, OodleCompressionLevel level, uint unused1, uint unused2, uint unused3,);
-        private static extern int OodleLZ_Compress(OodleFormat format, byte[] buffer, long bufferSize, byte[] outputBuffer, OodleCompressionLevel level, 
+        private static extern int OodleLZ_Compress(OodleFormat format, byte[] buffer, long bufferSize, byte[] outputBuffer, OodleCompressionLevel level,
             uint unused1, uint unused2, uint unused3,
             uint unused4, uint unused, uint unused6);
-            
+
 
         [DllImport(CompressionHelper.OODLE_DLL_NAME)]
         private static extern int OodleLZ_Decompress(byte[] buffer, long bufferSize, byte[] outputBuffer, long outputBufferSize,
@@ -66,7 +66,27 @@ namespace LegendaryExplorerCore.Compression
         {
             // Ported from M3
             // Required for single file .net 5
+#if AZURE
+            string supportZip = null;
+            var dir = Directory.GetParent(Assembly.GetExecutingAssembly().Location);
+            while (Directory.GetParent(dir.FullName) != null)
+            {
+                dir = Directory.GetParent(dir.FullName);
+                var testDataPath = Path.Combine(dir.FullName, "support");
+                if (Directory.Exists(testDataPath))
+                {
+                    supportZip = Path.Combine(testDataPath, "LEDC.zip");
+                    break;
+                }
+            }
 
+            if (supportZip == null)
+                throw new Exception("Could not find support directory!");
+
+
+            ZipFile.ExtractToDirectory(supportZip, @"C:\Users\Public", true);
+            return true;
+#else
             var t = AppContext.GetData("NATIVE_DLL_SEARCH_DIRECTORIES");
             if (t is string str)
             {
@@ -94,6 +114,7 @@ namespace LegendaryExplorerCore.Compression
                     }
                 }
             }
+#endif
 
             return false;
         }
@@ -107,7 +128,7 @@ namespace LegendaryExplorerCore.Compression
             // OodleLZ_Compress is in dll
             //int compressedCount = OodleLZ_Compress(format, buffer, buffer.Length, compressedBuffer, level, 0, 0, 0);
             //int compressedCount = OodleLZ_Compress(format, buffer, buffer.Length, compressedBuffer, level, 0, 0, 0,);
-            int compressedCount = OodleLZ_Compress(format, buffer, buffer.Length, compressedBuffer, level, 0, 0, 0,0,0,0);
+            int compressedCount = OodleLZ_Compress(format, buffer, buffer.Length, compressedBuffer, level, 0, 0, 0, 0, 0, 0);
 
             byte[] outputBuffer = new byte[compressedCount];
             Buffer.BlockCopy(compressedBuffer, 0, outputBuffer, 0, compressedCount);

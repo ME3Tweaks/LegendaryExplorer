@@ -14,7 +14,13 @@ namespace LegendaryExplorerCore.Packages
 {
     public static class CompressionHelper
     {
+
+#if AZURE
+        public const string OODLE_DLL_NAME = @"C:\Users\Public\LEDC.dll";
+#else
         public const string OODLE_DLL_NAME = @"oo2core_8_win64.dll";
+#endif
+
 #if WINDOWS
         public const string COMPRESSION_WRAPPER_NAME = "CompressionWrappers.dll";
 #elif MACOS

@@ -12,12 +12,12 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  solution: 'ME3Explorer.sln'
+  solution: 'LegendaryExplorer\LegendaryExplorer.sln'
   buildPlatform: 'x64'
   buildConfiguration: 'WinAzureRelease'
-  appMajorMin: '5.1'
-  appMajor: '5'
-  appMinor: '1'
+  appMajorMin: '6.0'
+  appMajor: '6'
+  appMinor: '0'
   appPatch: '0'
   disable.coverage.autogenerate: 'true'
 
@@ -28,7 +28,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      $artifactname = "me3explorernightly_$(appMajorMin).$(appPatch).$(Build.BuildId)"
+      $artifactname = "legendaryexplorernightly_$(appMajorMin).$(appPatch).$(Build.BuildId)"
       # Date--------------------------------------------
       $date=$(Get-Date -Format s);
       Write-Host "##vso[task.setvariable variable=time]$date"
@@ -43,13 +43,15 @@ steps:
       $author = git log -1 --pretty=format:'%an'
       Write-Host "##vso[task.setvariable variable=author]$author"
       Write-Host "Author: $($author)"
-      # Set version (ME3Explorer)
+      # Set version (LEX)
+      # This needs updated, it's totally wrong for .NET 5
       (Get-Content .\ME3Explorer\Properties\AssemblyInfo.cs).replace("0`"","$(Build.BuildId)`"") | out-file -FilePath .\ME3Explorer\Properties\AssemblyInfo.cs
-      # Set version (ME3ExplorerCore)
-      $xml = [xml](Get-Content .\ME3ExplorerCore\ME3ExplorerCore.csproj)
-      $ver = New-Object System.Version($appMajor, $appMinor, $appPatch, [int]$(Build.BuildId))
-      $xml.Project.PropertyGroup[0].Version = $ver.ToString() #Hopefully nobody re-organizes the csproj!
-      $xml.Save(".\ME3ExplorerCore\ME3ExplorerCore.csproj")
+      # Set version (LegendaryExplorerCore)
+      $ver = "TESTING"
+      #$xml = [xml](Get-Content .\LegendaryExplorer\LegendaryExplorerCore\LegendaryExplorerCore.csproj)
+      #$ver = New-Object System.Version($appMajor, $appMinor, $appPatch, [int]$(Build.BuildId))
+      #$xml.Project.PropertyGroup[0].Version = $ver.ToString() #Hopefully nobody re-organizes the csproj!
+      #$xml.Save(".\LegendaryExplorer\LegendaryExplorerCore\LegendaryExplorerCore.csproj")
 
       # Get report generator
       dotnet tool install -g dotnet-reportgenerator-globaltool
@@ -74,10 +76,10 @@ steps:
 
 # Test ME3ExplorerCore
 - task: DotNetCoreCLI@2
-  displayName: 'Test ME3ExplorerCore'
+  displayName: 'Test LEC'
   inputs:
     command: 'test'
-    projects: 'ME3ExplorerCore.Tests/ME3ExplorerCore.Tests.csproj'
+    projects: 'LegendaryExplorer/LegendaryExplorerCore.Tests/LegendaryExplorerCore.Tests.csproj'
     arguments: '--configuration WinAzureTest /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:DebugType=pdbonly -v normal'
     publishTestResults: true
 
@@ -99,27 +101,27 @@ steps:
 
 # Build ME3Explorer UI Application
 - task: VSBuild@1
-  displayName: 'Build ME3Explorer'
+  displayName: 'Build LEX'
   inputs:
     solution: '$(solution)'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
 - task: ArchiveFiles@2
-  displayName: '7z ME3Explorer'
+  displayName: '7z LEX'
   inputs:
-    rootFolderOrFile: '$(Build.SourcesDirectory)/ME3Explorer/bin/x64/$(buildConfiguration)'
+    rootFolderOrFile: '$(Build.SourcesDirectory)/LegendaryExplorer/LegendaryExplorer/bin/x64/$(buildConfiguration)'
     includeRootFolder: false
     archiveType: '7z'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/me3explorer_nightly_cibuild_$(appMajorMin).$(appPatch).$(Build.BuildId).7z'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/legendaryexplorer_nightly_cibuild_$(appMajorMin).$(appPatch).$(Build.BuildId).7z'
     replaceExistingArchive: true
     sevenZipCompression: maximum
 
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish ME3Explorer'
+  displayName: 'Publish LEX'
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'me3explorernightly_$(appMajorMin).$(appPatch).$(Build.BuildId)'
+    ArtifactName: 'legendaryexplorernightly_$(appMajorMin).$(appPatch).$(Build.BuildId)'
     publishLocation: 'Container'
 
 # Notify ME3Tweaks that a new beta build has been built
@@ -145,8 +147,8 @@ steps:
     messageType: 'embeds'
     embeds: |
       [{
-        "title": "ME3Explorer - ME3Tweaks Fork Build Complete",
-        "description": "A new nightly build of ME3Explorer has been built. You can automatically download the latest build with ME3Tweaks Mod Manager by going to Tools > ME3Explorer (Nightly). You can manually download this build through this link. Nightly builds may be unstable and have bugs.",
+        "title": "Legendary Explorer Build Complete",
+        "description": "A new nightly build of Legendary Explorer has been built. You can manually download this build through this link. Nightly builds may be unstable and have bugs.",
         "thumbnail": {
           "url": "https://i.imgur.com/mUtPj2S.png",
           "height": 64,

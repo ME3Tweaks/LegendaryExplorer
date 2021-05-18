@@ -33,6 +33,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Folder Include="support\" />
 		<Folder Include="testdata\*" />
 	</ItemGroup>
 

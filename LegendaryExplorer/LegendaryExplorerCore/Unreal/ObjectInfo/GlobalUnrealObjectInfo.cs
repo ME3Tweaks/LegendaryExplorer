@@ -288,10 +288,12 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 case MEGame.ME1 when containingExport.FileRef.Platform == MEPackage.GamePlatform.PS3:
                 case MEGame.ME2 when containingExport.FileRef.Platform == MEPackage.GamePlatform.PS3:
                 case MEGame.ME3:
-                    p = ME3UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct, nonVanillaClassInfo, containingExport: containingExport);
-                    break;
                 case MEGame.UDK:
-                    p = UDKUnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct, nonVanillaClassInfo, containingExport: containingExport);
+                    p = ME3UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct, nonVanillaClassInfo, containingExport: containingExport);
+                    if (p == null && game == MEGame.UDK)
+                    {
+                        p = UDKUnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct, nonVanillaClassInfo, containingExport: containingExport);
+                    }
                     break;
                 case MEGame.LE1:
                     p = LE1UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct, nonVanillaClassInfo, containingExport: containingExport);
