@@ -584,9 +584,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 UClass classBinary = ObjectBinary.From<UClass>(export);
                 info.isAbstract = classBinary.ClassFlags.HasFlag(UnrealFlags.EClassFlags.Abstract);
             }
-            if (pcc.FilePath.Contains("BIOGame"))
+            if (pcc.FilePath.Contains("BioGame", StringComparison.InvariantCultureIgnoreCase))
             {
-                info.pccPath = new string(pcc.FilePath.Skip(pcc.FilePath.LastIndexOf("BIOGame") + 8).ToArray());
+                info.pccPath = new string(pcc.FilePath.Skip(pcc.FilePath.LastIndexOf("BIOGame", StringComparison.InvariantCultureIgnoreCase) + 8).ToArray());
             }
             else
             {
