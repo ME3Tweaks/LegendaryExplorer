@@ -36,24 +36,35 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
     {
         public static void EnumerateAllFunctions(PackageEditorWindow pewpf)
         {
+
             Task.Run(() =>
             {
                 pewpf.BusyText = "Enumerating functions...";
                 pewpf.IsBusy = true;
-                foreach (var f in pewpf.Pcc.Exports.Where(x => x.ClassName == "Function"))
+                var allFiles = MELoadedFiles.GetOfficialFiles(MEGame.LE3).Where(x => Path.GetExtension(x) == ".pcc").ToList();
+                int totalFiles = allFiles.Count;
+                int numDone = 0;
+                foreach (string filePath in allFiles)
                 {
-                    // Todo: States?
-                    if (pewpf.Pcc.Game is MEGame.ME1 or MEGame.ME2)
+                    //if (!filePath.EndsWith("Engine.pcc"))
+                    //    continue;
+                    using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
+                    foreach (var f in pcc.Exports.Where(x => x.ClassName is "Function" or "State"))
                     {
-                        var func = f.ClassName == "State" ? UE3FunctionReader.ReadState(f, f.Data) : UE3FunctionReader.ReadFunction(f, f.Data);
-                        func.Decompile(new TextBuilder(), false, true); //parse bytecode
-                    }
-                    else
-                    {
-                        var func = new Function(f.Data, f);
-                        func.ParseFunction();
+                        if (pcc.Game is MEGame.ME1 or MEGame.ME2)
+                        {
+                            var func = f.ClassName == "State" ? UE3FunctionReader.ReadState(f, f.Data) : UE3FunctionReader.ReadFunction(f, f.Data);
+                            func.Decompile(new TextBuilder(), false, true); //parse bytecode
+                        }
+                        else
+                        {
+                            var func = new Function(f.Data, f);
+                            func.ParseFunction();
+                        }
                     }
 
+                    numDone++;
+                    pewpf.BusyText = $"Enumerating functions [{numDone}/{totalFiles}]";
                 }
             }).ContinueWithOnUIThread(foundCandidates => { pewpf.IsBusy = false; });
         }
@@ -1258,6 +1269,237 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     tex.WriteProperty(new IntProperty(-5, "InternalFormatLODBias"));
                 }
                 p.Save();
+            }
+        }
+
+        public static void FindEmptyMips(PackageEditorWindow pew)
+        {
+            string[] extensions = { ".pcc" };
+            FileInfo[] files = new DirectoryInfo(LE3Directory.CookedPCPath)
+                .EnumerateFiles("*", SearchOption.AllDirectories)
+                .Where(f => extensions.Contains(f.Extension.ToLower()))
+                .ToArray();
+            foreach (var f in files)
+            {
+                var p = MEPackageHandler.OpenMEPackage(f.FullName, forceLoadFromDisk: true);
+                foreach (var tex in p.Exports.Where(x => x.ClassName == "Texture2D"))
+                {
+                    var t = ObjectBinary.From<UTexture2D>(tex);
+                    if (t.Mips[0].StorageType == StorageTypes.empty)
+                        Debugger.Break();
+                }
+            }
+        }
+
+        public static void ListNetIndexes(PackageEditorWindow pew)
+        {
+            // Not sure this works
+            var strs = new List<string>();
+            var Pcc = pew.Pcc;
+            foreach (ExportEntry exp in Pcc.Exports)
+            {
+                if (exp.ParentName == "PersistentLevel")
+                {
+                    strs.Add($"{exp.NetIndex} {exp.InstancedFullPath}");
+                }
+            }
+
+            var d = new ListDialog(strs, "NetIndexes", "Here are the netindexes in Package Editor's loaded file", pew);
+            d.Show();
+        }
+
+        public static void GenerateNewGUIDForFile(PackageEditorWindow pew)
+        {
+            MessageBox.Show(
+                "GetPEWindow() process applies immediately and cannot be undone.\nEnsure the file you are going to regenerate is not open in ME3Explorer in any tools.\nBe absolutely sure you know what you're doing before you use GetPEWindow()!");
+            OpenFileDialog d = new OpenFileDialog
+            {
+                Title = "Select file to regen guid for",
+                Filter = "*.pcc|*.pcc"
+            };
+            if (d.ShowDialog() == true)
+            {
+                using (IMEPackage sourceFile = MEPackageHandler.OpenMEPackage(d.FileName))
+                {
+                    string fname = Path.GetFileNameWithoutExtension(d.FileName);
+                    Guid newGuid = Guid.NewGuid();
+                    ExportEntry selfNamingExport = null;
+                    foreach (ExportEntry exp in sourceFile.Exports)
+                    {
+                        if (exp.ClassName == "Package"
+                            && exp.idxLink == 0
+                            && string.Equals(exp.ObjectName.Name, fname, StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            selfNamingExport = exp;
+                            break;
+                        }
+                    }
+
+                    if (selfNamingExport == null)
+                    {
+                        MessageBox.Show(
+                            "Selected package does not contain a self-naming package export.\nCannot regenerate package file-level GUID if it doesn't contain self-named export.");
+                        return;
+                    }
+
+                    selfNamingExport.PackageGUID = newGuid;
+                    sourceFile.PackageGuid = newGuid;
+                    sourceFile.Save();
+                }
+
+                MessageBox.Show("Generated a new GUID for package.");
+            }
+        }
+
+        public static void GenerateGUIDCacheForFolder(PackageEditorWindow pew)
+        {
+            CommonOpenFileDialog m = new CommonOpenFileDialog
+            {
+                IsFolderPicker = true,
+                EnsurePathExists = true,
+                Title = "Select folder to generate GUID cache on"
+            };
+            if (m.ShowDialog(pew) == CommonFileDialogResult.Ok)
+            {
+                string dir = m.FileName;
+                string[] files = Directory.GetFiles(dir, "*.pcc");
+                if (Enumerable.Any(files))
+                {
+                    var packageGuidMap = new Dictionary<string, Guid>();
+                    var GuidPackageMap = new Dictionary<Guid, string>();
+
+                    pew.IsBusy = true;
+                    string guidcachefile = null;
+                    foreach (string file in files)
+                    {
+                        string fname = Path.GetFileNameWithoutExtension(file);
+                        if (fname.StartsWith("GuidCache"))
+                        {
+                            guidcachefile = file;
+                            continue;
+                        }
+
+                        if (fname.Contains("_LOC_"))
+                        {
+                            Debug.WriteLine("--> Skipping " + fname);
+                            continue; //skip localizations
+                        }
+
+                        Debug.WriteLine(Path.GetFileName(file));
+                        bool hasPackageNamingItself = false;
+                        using (var package = MEPackageHandler.OpenMEPackage(file))
+                        {
+                            var filesToSkip = new[]
+                            {
+                                "BioD_Cit004_270ShuttleBay1", "BioD_Cit003_600MechEvent", "CAT6_Executioner",
+                                "SFXPawn_Demo", "SFXPawn_Sniper", "SFXPawn_Heavy", "GethAssassin",
+                                "BioD_OMG003_125LitExtra"
+                            };
+                            foreach (ExportEntry exp in package.Exports)
+                            {
+                                if (exp.ClassName == "Package" && exp.idxLink == 0 &&
+                                    !filesToSkip.Contains(exp.ObjectName.Name))
+                                {
+                                    if (string.Equals(exp.ObjectName.Name, fname,
+                                        StringComparison.InvariantCultureIgnoreCase))
+                                    {
+                                        hasPackageNamingItself = true;
+                                    }
+
+                                    Guid guid = exp.PackageGUID;
+                                    if (guid != Guid.Empty)
+                                    {
+                                        GuidPackageMap.TryGetValue(guid, out string packagename);
+                                        if (packagename != null && packagename != exp.ObjectName.Name)
+                                        {
+                                            Debug.WriteLine(
+                                                $"-> {exp.UIndex} {exp.ObjectName.Name} has a guid different from already found one ({packagename})! {guid}");
+                                        }
+
+                                        if (packagename == null)
+                                        {
+                                            GuidPackageMap[guid] = exp.ObjectName.Name;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        if (!hasPackageNamingItself)
+                        {
+                            Debug.WriteLine("----HAS NO SELF NAMING EXPORT");
+                        }
+                    }
+
+                    foreach (KeyValuePair<Guid, string> entry in GuidPackageMap)
+                    {
+                        // do something with entry.Value or entry.Key
+                        Debug.WriteLine($"  {entry.Value} {entry.Key}");
+                    }
+
+                    if (guidcachefile != null)
+                    {
+                        Debug.WriteLine("Opening GuidCache file " + guidcachefile);
+                        using (var package = MEPackageHandler.OpenMEPackage(guidcachefile))
+                        {
+                            var cacheExp = package.Exports.FirstOrDefault(x => x.ObjectName == "GuidCache");
+                            if (cacheExp != null)
+                            {
+                                var data = new MemoryStream();
+                                var expPre = cacheExp.Data.Take(12).ToArray();
+                                data.Write(expPre, 0, 12); //4 byte header, None
+                                data.WriteInt32(GuidPackageMap.Count);
+                                foreach (KeyValuePair<Guid, string> entry in GuidPackageMap)
+                                {
+                                    int nametableIndex = cacheExp.FileRef.FindNameOrAdd(entry.Value);
+                                    data.WriteInt32(nametableIndex);
+                                    data.WriteInt32(0);
+                                    data.Write(entry.Key.ToByteArray(), 0, 16);
+                                }
+
+                                cacheExp.Data = data.ToArray();
+                            }
+
+                            package.Save();
+                        }
+                    }
+
+                    Debug.WriteLine("Done. Cache size: " + GuidPackageMap.Count);
+                    pew.IsBusy = false;
+                }
+            }
+        }
+
+        public static void MakeAllGrenadesAndAmmoRespawn(PackageEditorWindow pew)
+        {
+            var ammoGrenades = pew.Pcc.Exports.Where(x =>
+                x.ClassName != "Class" && !x.IsDefaultObject && (x.ObjectName == "SFXAmmoContainer" ||
+                                                                 x.ObjectName == "SFXGrenadeContainer" ||
+                                                                 x.ObjectName == "SFXAmmoContainer_Simulator"));
+            foreach (var container in ammoGrenades)
+            {
+                BoolProperty respawns = new BoolProperty(true, "bRespawns");
+                float respawnTimeVal = 20;
+                if (container.ObjectName == "SFXGrenadeContainer")
+                {
+                    respawnTimeVal = 8;
+                }
+
+                if (container.ObjectName == "SFXAmmoContainer")
+                {
+                    respawnTimeVal = 3;
+                }
+
+                if (container.ObjectName == "SFXAmmoContainer_Simulator")
+                {
+                    respawnTimeVal = 5;
+                }
+
+                FloatProperty respawnTime = new FloatProperty(respawnTimeVal, "RespawnTime");
+                var currentprops = container.GetProperties();
+                currentprops.AddOrReplaceProp(respawns);
+                currentprops.AddOrReplaceProp(respawnTime);
+                container.WriteProperties(currentprops);
             }
         }
     }

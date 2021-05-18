@@ -84,7 +84,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public override bool CanParse(ExportEntry exportEntry)
         {
-            return ((exportEntry.ClassName == "Function" || exportEntry.ClassName == "State") && exportEntry.FileRef.Game != MEGame.UDK);
+            return ((exportEntry.ClassName is "Function" or "State") && exportEntry.FileRef.Game != MEGame.UDK);
         }
 
         public override void LoadExport(ExportEntry exportEntry)

@@ -1324,6 +1324,7 @@ namespace LegendaryExplorerCore.Unreal
             else if (t < (export.Game is MEGame.ME1 or MEGame.ME2 or MEGame.LE1 or MEGame.LE2 ? 0x60 : 0x70)) //PS3 uses 0x60 as native table
             {
                 //Never reached?
+                // Is this right? Extended Native is 0x61
                 newTok = ReadExtNative(start, export);
                 newTok.stop = false;
                 end = start + newTok.raw.Length;
@@ -1337,9 +1338,10 @@ namespace LegendaryExplorerCore.Unreal
                 res = newTok;
             }
             BytecodeSingularToken msg = new BytecodeSingularToken();
-            byteOpnameMap.TryGetValue(t < 0x66 ? t : newTok.op, out string opname);
+            byteOpnameMap.TryGetValue(t < 0x66 ? t : newTok.op, out string opname); // Should this be updated to 0x
             if (string.IsNullOrEmpty(opname))
             {
+                Debug.WriteLine("FOUND DEFINED OPCODE, BUT WITHOUT A DEFINED NAME");
                 opname = $"UNKNOWN(0x{t:X2})";
             }
 
@@ -1365,8 +1367,11 @@ namespace LegendaryExplorerCore.Unreal
             // So while some native calls keep same ID, others don't
             int nativeId = export.Game is MEGame.ME1 or MEGame.ME2 or MEGame.LE1 or MEGame.LE2 ? 0x60 : 0x70;
 
+            // Determine if this is an extended native
             byte byte1 = memory[start];
             byte byte2 = memory[start + 1];
+            if (byte1 == 0x61)
+                Debug.WriteLine("hi");
             int index;
             if ((byte1 & 0xF0) == nativeId)
                 index = ((byte1 - nativeId) << 8) + byte2;
@@ -1377,6 +1382,8 @@ namespace LegendaryExplorerCore.Unreal
                 pos++;
             else
                 pos += 2;
+
+
             switch (index)
             {
                 case (int)ENatives.NATIVE_Not_PreBool: //0x0081
@@ -2994,6 +3001,15 @@ namespace LegendaryExplorerCore.Unreal
                     pos += c.raw.Length;
                     t.text = a.text + " $= " + b.text;
                     break;
+                case (int)ENatives.NATIVE_AtEqual_StrStr:// 0x0143
+                    a = ReadToken(pos, export);
+                    pos += a.raw.Length;
+                    b = ReadToken(pos, export);
+                    pos += b.raw.Length;
+                    c = ReadToken(pos, export);
+                    pos += c.raw.Length;
+                    t.text = a.text + " @= " + b.text;
+                    break;
                 case (int)ENatives.NATIVE_MakeNoise: // 0x0200
                     t.text = "MakeNoise(";
                     count = 0;
@@ -3536,6 +3552,44 @@ namespace LegendaryExplorerCore.Unreal
                     break;
                 case (int)ENatives.NATIVE_AutonomousPhysics: // 0x0F83
                     t.text = "AutonomousPhysics(";
+                    count = 0;
+                    while (pos < memsize - 6)
+                    {
+                        a = ReadToken(pos, export);
+                        pos += a.raw.Length;
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
+                            break;
+                        if (count != 0)
+                            t.text += "," + a.text;
+                        else
+                            t.text += a.text;
+                        count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
+                    }
+                    t.text += ")";
+                    break;
+                case (int)ENatives.NATIVE_MoveToward: // 0x01F6
+                    t.text = "MoveToward(";
+                    count = 0;
+                    while (pos < memsize - 6)
+                    {
+                        a = ReadToken(pos, export);
+                        pos += a.raw.Length;
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
+                            break;
+                        if (count != 0)
+                            t.text += "," + a.text;
+                        else
+                            t.text += a.text;
+                        count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
+                    }
+                    t.text += ")";
+                    break;
+                case (int)ENatives.NATIVE_MoveTo: // 0x01F4
+                    t.text = "MoveTo(";
                     count = 0;
                     while (pos < memsize - 6)
                     {
@@ -4103,6 +4157,7 @@ namespace LegendaryExplorerCore.Unreal
             }
             else
             {
+                Debug.WriteLine("FOUND UNKNOWN CAST");
                 castStr = "UNKNOWN_CAST";
             }
             t.text = $"{castStr}({a.text})";
@@ -4582,7 +4637,7 @@ namespace LegendaryExplorerCore.Unreal
                 count++;
 
             }
-            t.text += ");";
+            t.text += ")";
             int len = pos - start;
             t.raw = new byte[len];
             for (int i = 0; i < len; i++)
@@ -4925,6 +4980,8 @@ namespace LegendaryExplorerCore.Unreal
 
         private Token ReadUnknown(int start, ExportEntry export)
         {
+            Debug.WriteLine($"FOUND UNKNOWN TOKEN IN {export?.InstancedFullPath}");
+
             Token t = new Token();
             t.raw = new byte[1];
             t.raw[0] = memory[start];
