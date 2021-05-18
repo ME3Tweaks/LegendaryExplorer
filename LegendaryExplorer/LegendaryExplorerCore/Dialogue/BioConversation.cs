@@ -466,7 +466,7 @@ namespace LegendaryExplorerCore.Dialogue
             };
             try
             {
-                if (Export.FileRef.Game is not (MEGame.ME3 or MEGame.LE3))
+                if (!Export.FileRef.Game.IsME3Game())
                 {
                     var s_speakers = BioConvo.GetProp<ArrayProperty<StructProperty>>("m_SpeakerList");
                     if (s_speakers != null)
@@ -504,7 +504,7 @@ namespace LegendaryExplorerCore.Dialogue
         public void ParseScripts() 
         {
             ScriptList.Add("None");
-            if (Export.FileRef.Game is MEGame.ME3 or MEGame.LE3)
+            if (Export.FileRef.Game.IsME3Game())
             {
                 var a_scripts = BioConvo.GetProp<ArrayProperty<NameProperty>>("m_aScriptList");
                 if (a_scripts != null)
@@ -536,7 +536,7 @@ namespace LegendaryExplorerCore.Dialogue
         public void ParseNSFFX()
         {
             string propname = "m_pNonSpeakerFaceFXSet";
-            if (Export.FileRef.Game is MEGame.ME1 or MEGame.LE1)
+            if (Export.FileRef.Game.IsME1Game())
             {
                 propname = "m_pConvFaceFXSet";
             }
@@ -557,7 +557,7 @@ namespace LegendaryExplorerCore.Dialogue
         public void ParseWwiseBank()
         {
             WwiseBank = null;
-            if (Export.FileRef.Game is not (MEGame.ME1 or MEGame.LE1))
+            if (!Export.FileRef.Game.IsME1Game())
             {
                 try
                 {
@@ -598,7 +598,7 @@ namespace LegendaryExplorerCore.Dialogue
                         return;
                     }
 
-                    if (Export.FileRef.Game is MEGame.ME3 or MEGame.LE3)
+                    if (Export.FileRef.Game.IsME3Game())
                     {
                         StructProperty r = Export.FileRef.GetUExport(wwevents[0].Value).GetProperty<StructProperty>("Relationships"); //lookup bank
                         var bank = r.GetProp<ObjectProperty>("Bank");
@@ -639,7 +639,7 @@ namespace LegendaryExplorerCore.Dialogue
         public void ParseSequence()
         {
             string propname = "MatineeSequence";
-            if (Export.FileRef.Game is MEGame.ME1 or MEGame.LE1)
+            if (Export.FileRef.Game.IsME1Game())
             {
                 propname = "m_pEvtSystemSeq";
             }
@@ -657,7 +657,7 @@ namespace LegendaryExplorerCore.Dialogue
 
         public void ParseStageDirections(Func<int, IMEPackage, string> tlkLookup = null)
         {
-            if (Export.FileRef.Game is MEGame.ME3 or MEGame.LE3)
+            if (Export.FileRef.Game.IsME3Game())
             {
                 var dprop = BioConvo.GetProp<ArrayProperty<StructProperty>>("m_aStageDirections"); //ME3 Only not in ME1/2
                 if (dprop != null)

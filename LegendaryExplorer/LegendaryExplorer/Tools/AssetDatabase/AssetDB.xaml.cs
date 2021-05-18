@@ -487,7 +487,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             IsBusy = true;
             CurrentOverallOperationText = "Database saving...";
 
-            if (!ParseConvos && CurrentGame is not (MEGame.ME1 or MEGame.LE1))
+            if (!ParseConvos && !CurrentGame.IsME1Game())
             {
                 CurrentDataBase.Lines.Clear();
             }
@@ -535,7 +535,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         }
         private void GetConvoLinesBackground()
         {
-            if (CurrentGame is MEGame.ME1 or MEGame.LE1)
+            if (CurrentGame.IsME1Game())
             {
                 var spkrs = new List<string>();
                 foreach (var line in CurrentDataBase.Lines)
@@ -1205,7 +1205,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         }
         private void ToggleLinePlayback()
         {
-            bool showAudio = btn_LinePlaybackToggle.IsChecked == true && lstbx_Lines.SelectedIndex >= 0 && CurrentConvo.Item1 != null && CurrentGame is not (MEGame.ME1 or MEGame.LE1) && currentView == 8;
+            bool showAudio = btn_LinePlaybackToggle.IsChecked == true && lstbx_Lines.SelectedIndex >= 0 && CurrentConvo.Item1 != null && !CurrentGame.IsME1Game() && currentView == 8;
 
             if (!showAudio)
             {
@@ -2594,7 +2594,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             var elapsed = DateTime.Now - beginTime;
             MessageBox.Show(this, $"{CurrentGame} Database generated in {elapsed:mm\\:ss}");
             MemoryAnalyzer.ForceFullGC(true);
-            if (CurrentGame is not (MEGame.ME1 or MEGame.LE1) && ParseConvos)
+            if (!CurrentGame.IsME1Game() && ParseConvos)
             {
                 GetConvoLinesBackground();
             }
@@ -3617,7 +3617,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                                 {
                                     bool IsAmbient = true;
                                     var speakers = new List<string> { "Shepard", "Owner" };
-                                    if (entry.Game is not (MEGame.ME3 or MEGame.LE3))
+                                    if (!entry.Game.IsME3Game())
                                     {
                                         var s_speakers = props.GetProp<ArrayProperty<StructProperty>>("m_SpeakerList");
                                         if (s_speakers != null)
