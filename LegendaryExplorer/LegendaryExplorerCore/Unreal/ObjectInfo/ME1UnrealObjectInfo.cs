@@ -75,6 +75,22 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             return SequenceObjects.TryGetValue(className, out SequenceObjectInfo seqInfo) ? seqInfo : null;
         }
 
+        public static List<string> getSequenceObjectInfoInputLinks(string className)
+        {
+            if (SequenceObjects.TryGetValue(className, out SequenceObjectInfo seqInfo))
+            {
+                if (seqInfo.inputLinks != null)
+                {
+                    return SequenceObjects[className].inputLinks;
+                }
+                if (Classes.TryGetValue(className, out ClassInfo info) && info.baseClass != "Object" && info.baseClass != "Class")
+                {
+                    return getSequenceObjectInfoInputLinks(info.baseClass);
+                }
+            }
+            return null;
+        }
+
         public static string getEnumTypefromProp(string className, string propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null)
         {
             PropertyInfo p = getPropertyInfo(className, propName, inStruct, nonVanillaClassInfo);

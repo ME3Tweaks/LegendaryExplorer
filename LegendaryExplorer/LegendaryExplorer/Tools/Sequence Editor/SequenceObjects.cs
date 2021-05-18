@@ -1655,7 +1655,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
 
             void CreateInputLink(string desc, int idx, bool hasName = true)
             {
-                InputLink l = new InputLink
+                var l = new InputLink
                 {
                     Desc = desc,
                     hasName = hasName,
@@ -1677,11 +1677,11 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                     CreateInputLink(inputLinksProp[i].GetProp<StrProperty>("LinkDesc"), i);
                 }
             }
-            else if (pcc.Game == MEGame.ME3)
+            else 
             {
                 try
                 {
-                    if (ME3UnrealObjectInfo.getSequenceObjectInfoInputLinks(export.ClassName) is List<string> inputLinks)
+                    if (GlobalUnrealObjectInfo.GetSequenceObjectInfoInputLinks(export.Game, export.ClassName) is List<string> inputLinks)
                     {
                         for (int i = 0; i < inputLinks.Count; i++)
                         {
