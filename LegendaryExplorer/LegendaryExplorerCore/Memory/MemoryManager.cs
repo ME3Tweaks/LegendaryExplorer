@@ -18,6 +18,16 @@ namespace LegendaryExplorerCore.Memory
         private static ArrayPool<byte> ByteArrayPool;
         private static bool UsePooledMemory { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="usePooledMemory">If the application should use pooled memory or not. Setting to false will clear the pool</param>
+        /// <param name="generateCallStacks">If callstacks for allocations should generated. Useful for debugging</param>
+        /// <param name="aggressiveBufferReturn">If memory should be aggressively returned to the free pool</param>
+        /// <param name="blockSize">The size of blocks to give out to memorystreams. Bigger blocks mean less allocations but potentially more wasted memory</param>
+        /// <param name="maxBufferSizeMB">When a memorystream requests a block of memory bigger than this, it won't be pulled from the pool, it will just be allocated</param>
+        /// <param name="maxFreeSmallPoolSizeMB">How much of a 'buffer' we should keep in the small block pool available for use. When memory is returned, if it would create more than this much unsued memory, it just drops it out of the pool and is reclaimed by the process</param>
+        /// <param name="useExponentialBuffer">If pool size should scale linearly or exponentially</param>
         public static void SetUsePooledMemory(bool usePooledMemory,
             bool generateCallStacks = false,
             bool aggressiveBufferReturn = false,
@@ -26,8 +36,19 @@ namespace LegendaryExplorerCore.Memory
             int maxFreeSmallPoolSizeMB = 16,
             bool useExponentialBuffer = false)
         {
+            if (maxBufferSizeMB >= 2048)
+            {
+                // Will overflow if you do this
+                throw new Exception("MaxBufferSize cannot be bigger than 2048MB");
+            }
+
+            var maxBufSize = maxBufferSizeMB * (int) FileSize.MebiByte;
+
             UsePooledMemory = usePooledMemory;
-            MemManager = usePooledMemory ? new RecyclableMemoryStreamManager(blockSize, (int)FileSize.MebiByte * 4, maxBufferSizeMB * (int)FileSize.MebiByte, useExponentialBuffer) : null;
+            MemManager = !usePooledMemory ? null : new RecyclableMemoryStreamManager(blockSize, 
+                (int)FileSize.MebiByte * 4,
+                maxBufSize,
+                useExponentialBuffer);
             if (MemManager != null)
             {
                 // Setup Stream Manager
