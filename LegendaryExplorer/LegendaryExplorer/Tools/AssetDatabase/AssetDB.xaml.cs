@@ -487,7 +487,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             IsBusy = true;
             CurrentOverallOperationText = "Database saving...";
 
-            if (!ParseConvos && !CurrentGame.IsME1Game())
+            if (!ParseConvos && !CurrentGame.IsGame1())
             {
                 CurrentDataBase.Lines.Clear();
             }
@@ -535,7 +535,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         }
         private void GetConvoLinesBackground()
         {
-            if (CurrentGame.IsME1Game())
+            if (CurrentGame.IsGame1())
             {
                 var spkrs = new List<string>();
                 foreach (var line in CurrentDataBase.Lines)
@@ -1205,7 +1205,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         }
         private void ToggleLinePlayback()
         {
-            bool showAudio = btn_LinePlaybackToggle.IsChecked == true && lstbx_Lines.SelectedIndex >= 0 && CurrentConvo.Item1 != null && !CurrentGame.IsME1Game() && currentView == 8;
+            bool showAudio = btn_LinePlaybackToggle.IsChecked == true && lstbx_Lines.SelectedIndex >= 0 && CurrentConvo.Item1 != null && !CurrentGame.IsGame1() && currentView == 8;
 
             if (!showAudio)
             {
@@ -2594,7 +2594,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             var elapsed = DateTime.Now - beginTime;
             MessageBox.Show(this, $"{CurrentGame} Database generated in {elapsed:mm\\:ss}");
             MemoryAnalyzer.ForceFullGC(true);
-            if (!CurrentGame.IsME1Game() && ParseConvos)
+            if (!CurrentGame.IsGame1() && ParseConvos)
             {
                 GetConvoLinesBackground();
             }
@@ -3617,7 +3617,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                                 {
                                     bool IsAmbient = true;
                                     var speakers = new List<string> { "Shepard", "Owner" };
-                                    if (!entry.Game.IsME3Game())
+                                    if (!entry.Game.IsGame3())
                                     {
                                         var s_speakers = props.GetProp<ArrayProperty<StructProperty>>("m_SpeakerList");
                                         if (s_speakers != null)

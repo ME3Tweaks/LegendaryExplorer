@@ -34,21 +34,21 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         /// <param name="game"></param>
         /// <returns></returns>
-        public static bool IsME1Game(this MEGame game) => game is MEGame.ME1 or MEGame.LE1;
+        public static bool IsGame1(this MEGame game) => game is MEGame.ME1 or MEGame.LE1;
 
         /// <summary>
         /// Is game OT ME2 or LE ME2
         /// </summary>
         /// <param name="game"></param>
         /// <returns></returns>
-        public static bool IsME2Game(this MEGame game) => game is MEGame.ME2 or MEGame.LE2;
+        public static bool IsGame2(this MEGame game) => game is MEGame.ME2 or MEGame.LE2;
 
         /// <summary>
         /// Is game OT ME3 or LE ME3
         /// </summary>
         /// <param name="game"></param>
         /// <returns></returns>
-        public static bool IsME3Game(this MEGame game) => game is MEGame.ME3 or MEGame.LE3;
+        public static bool IsGame3(this MEGame game) => game is MEGame.ME3 or MEGame.LE3;
     }
     public enum MEGame
     {
