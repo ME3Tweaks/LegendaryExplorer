@@ -2586,7 +2586,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             IsBusy = false;
             var elapsed = DateTime.Now - beginTime;
             MessageBox.Show(this, $"{CurrentGame} Database generated in {elapsed:mm\\:ss}");
-            MemoryAnalyzer.ForceFullGC();
+            MemoryAnalyzer.ForceFullGC(true);
             if (CurrentGame is not (MEGame.ME1 or MEGame.LE1) && ParseConvos)
             {
                 GetConvoLinesBackground();

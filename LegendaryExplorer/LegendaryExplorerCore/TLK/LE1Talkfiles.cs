@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace LegendaryExplorerCore.ME1
 {
-    public static class ME1TalkFiles
+    public static class LE1TalkFiles
     {
         public static List<ME1TalkFile> tlkList = new();
         public static Dictionary<ME1TalkFile, string> localtlkList = new();
@@ -17,7 +17,7 @@ namespace LegendaryExplorerCore.ME1
         {
             if (File.Exists(fileName))
             {
-                using IMEPackage pcc = MEPackageHandler.OpenME1Package(fileName, forceLoadFromDisk: true); //do not cache this in the packages list.
+                using IMEPackage pcc = MEPackageHandler.OpenMEPackage(fileName, forceLoadFromDisk: true); //do not cache this in the packages list.
                 tlkList.Add(new ME1TalkFile(pcc, index));
             }
         }

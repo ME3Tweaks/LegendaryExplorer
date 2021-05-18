@@ -105,9 +105,6 @@ namespace LegendaryExplorer.Startup
                 }
                 else
                 {
-
-                    GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
-                    GC.Collect();
                     //PendingAppLoadedAction = actionDelegate;
 
                     // TODO: IMPLEMENT IN LEX

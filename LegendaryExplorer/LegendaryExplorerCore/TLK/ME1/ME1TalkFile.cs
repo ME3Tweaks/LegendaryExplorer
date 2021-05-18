@@ -47,11 +47,8 @@ namespace LegendaryExplorerCore.TLK.ME1
             public int BitOffset
             {
                 get => Flags;
-                set
-                {
-                    //use same variable to save memory as flags is not used in me2/3, but bitoffset is.
-                    Flags = value;
-                }
+                //use same variable to save memory as flags is not used in me2/3, but bitoffset is.
+                set => Flags = value;
             }
 
             public int CalculatedID => StringID >= 0 ? StringID : -(int.MinValue - StringID);
@@ -114,58 +111,41 @@ namespace LegendaryExplorerCore.TLK.ME1
 
         private List<HuffmanNode> nodes;
         private BitArray Bits;
-        private int langRef;
         private readonly int tlkSetUIndex;
 
         public TLKStringRef[] StringRefs;
-        public IMEPackage pcc;
         //public int index;
-        public int uindex;
-
-        public int LangRef
-        {
-            get => langRef;
-            set { langRef = value; language = pcc.GetNameEntry(value); }
-        }
+        public int UIndex;
 
         public string language;
         public bool male;
+        public readonly string FilePath;
 
-        public string Name => pcc.GetUExport(uindex).ObjectName;
-        public string BioTlkSetName => tlkSetUIndex != 0 ? pcc.getObjectName(tlkSetUIndex) : null;
+        public string Name;
+        public string BioTlkSetName;
 
 
         #region Constructors
-        public ME1TalkFile(IMEPackage _pcc, int uindex)
+        public ME1TalkFile(IMEPackage pcc, int uIndex) : this(pcc, pcc.GetUExport(uIndex))
         {
-            pcc = _pcc;
-            //index = _index;
-            this.uindex = uindex;
-            tlkSetUIndex = 0;
-            LoadTlkData();
         }
 
-        public ME1TalkFile(ExportEntry export)
+        public ME1TalkFile(ExportEntry export) : this(export.FileRef, export)
         {
-            if (!(export.FileRef.Game is MEGame.ME1 or MEGame.LE1))
+        }
+
+        private ME1TalkFile(IMEPackage pcc, ExportEntry export)
+        {
+            if (!(pcc.Game is MEGame.ME1 or MEGame.LE1))
             {
                 throw new Exception("ME1 Unreal TalkFile cannot be initialized with a non-ME1 file");
             }
-            pcc = export.FileRef;
-            uindex = export.UIndex;
+            UIndex = export.UIndex;
             tlkSetUIndex = 0;
-            LoadTlkData();
-        }
-
-        public ME1TalkFile(IMEPackage _pcc, int uindex, bool _male, int _langRef, int _tlkSetUIndex)
-        {
-            pcc = _pcc;
-            //index = _index;
-            this.uindex = uindex;
-            LangRef = _langRef;
-            male = _male;
-            tlkSetUIndex = _tlkSetUIndex;
-            LoadTlkData();
+            LoadTlkData(pcc);
+            FilePath = pcc.FilePath;
+            Name = export.ObjectName.Instanced;
+            BioTlkSetName = export.ParentName; //Not technically the tlkset name, but should be about the same
         }
         #endregion
 
@@ -180,7 +160,7 @@ namespace LegendaryExplorerCore.TLK.ME1
                     data = $"\"{tlkStringRef.Data}\"";
                     if (withFileName)
                     {
-                        data += $" ({Path.GetFileName(pcc.FilePath)} -> {BioTlkSetName}.{Name})";
+                        data += $" ({Path.GetFileName(FilePath)} -> {BioTlkSetName}.{Name})";
                     }
                     break;
                 }
@@ -191,7 +171,7 @@ namespace LegendaryExplorerCore.TLK.ME1
         #region IEquatable
         public bool Equals(ME1TalkFile other)
         {
-            return (other?.uindex == uindex && other.pcc.FilePath == pcc.FilePath);
+            return (other?.UIndex == UIndex && other.FilePath == FilePath);
         }
 
         public override bool Equals(object obj)
@@ -210,9 +190,9 @@ namespace LegendaryExplorerCore.TLK.ME1
         #endregion
 
         #region Load Data
-        public void LoadTlkData(EndianReader r = null)
+        private void LoadTlkData(IMEPackage pcc)
         {
-            r ??= new EndianReader(pcc.GetUExport(uindex).GetReadOnlyBinaryStream(), Encoding.Unicode)
+            var r = new EndianReader(pcc.GetUExport(UIndex).GetReadOnlyBinaryStream(), Encoding.Unicode)
             {
                 Endian = pcc.Endian
             };

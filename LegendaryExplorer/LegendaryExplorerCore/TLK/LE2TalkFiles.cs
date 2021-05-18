@@ -5,7 +5,7 @@ using LegendaryExplorerCore.Unreal;
 
 namespace LegendaryExplorerCore.TLK
 {
-    public static class ME3TalkFiles
+    public static class LE2TalkFiles
     {
         public static List<TalkFile> tlkList = new();
 
