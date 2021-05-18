@@ -90,8 +90,23 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     }
                     break;
 
-                default:
-                    sc.Serialize(ref page.Section);
+                case 3:
+                    if (sc.Game is MEGame.LE1)
+                    {
+                        int unknownInt = 0;
+                        sc.Serialize(ref unknownInt);
+                        sc.Serialize(ref page.Section);
+                        if (sc.IsLoading)
+                        {
+                            page.CodexSoundString = sc.ms.ReadStringASCII(sc.ms.ReadInt32());
+                        }
+                        else
+                        {
+                            sc.ms.Writer.WriteInt32(page.CodexSoundString.Length);
+                            sc.ms.Writer.WriteStringASCII(page.CodexSoundString);
+                        }
+                    }
+                    else sc.Serialize(ref page.Section);
                     break;
             }
         }

@@ -2224,6 +2224,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         #endregion
 
+        public PackageEditorWindow() : this(submitTelemetry: true) { }
+
         public PackageEditorWindow(bool submitTelemetry = true) : base("Package Editor", submitTelemetry)
         {
             CurrentView = CurrentViewMode.Tree;
