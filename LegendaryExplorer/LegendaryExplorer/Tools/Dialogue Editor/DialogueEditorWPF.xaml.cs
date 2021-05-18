@@ -570,7 +570,7 @@ namespace LegendaryExplorer.DialogueEditor
                 StatusText = null;
 
                 Level = Path.GetFileName(Pcc.FilePath);
-                if (Pcc.Game == MEGame.ME1)
+                if (Pcc.Game is MEGame.ME1 or MEGame.LE1)
                 {
                     Level = $"{Level.Remove(Level.Length - 4)}_LOC_INT{Path.GetExtension(Pcc.FilePath)}";
                 }
@@ -773,7 +773,7 @@ namespace LegendaryExplorer.DialogueEditor
         
         public int ParseActorsNames(ConversationExtended conv, string tag)
         {
-            if (Pcc.Game == MEGame.ME1)
+            if (Pcc.Game is MEGame.ME1 or MEGame.LE1)
             {
                 try
                 {
@@ -840,7 +840,7 @@ namespace LegendaryExplorer.DialogueEditor
                 {
                     if (spkr.SpeakerID >= 0)
                     {
-                        if (Pcc.Game == MEGame.ME3)
+                        if (Pcc.Game is MEGame.ME3 or MEGame.LE3)
                         {
                             m_aSpeakerList.Add(new NameProperty(spkr.SpeakerName, "m_aSpeakerList"));
                         }
@@ -872,7 +872,7 @@ namespace LegendaryExplorer.DialogueEditor
                     }
                 }
 
-                if (m_aSpeakerList.Count > 0 && Pcc.Game == MEGame.ME3)
+                if (m_aSpeakerList.Count > 0 && Pcc.Game is MEGame.ME3 or MEGame.LE3)
                 {
                     SelectedConv.BioConvo.AddOrReplaceProp(m_aSpeakerList);
                 }
@@ -902,7 +902,7 @@ namespace LegendaryExplorer.DialogueEditor
         }
         private void SaveScriptsToProperties(ConversationExtended conv, bool pushtofile = true)
         {
-            if (Pcc.Game == MEGame.ME3)
+            if (Pcc.Game is MEGame.ME3 or MEGame.LE3)
             {
                 var newscriptList = new ArrayProperty<NameProperty>("m_aScriptList");
                 foreach (var script in conv.ScriptList)
@@ -1151,7 +1151,7 @@ namespace LegendaryExplorer.DialogueEditor
                     break;
             }
             //Skip SText
-            if (Pcc.Game == MEGame.ME3 && e.PropertyName == "HideSubtitle")
+            if (Pcc.Game is MEGame.ME3 or MEGame.LE3 && e.PropertyName == "HideSubtitle")
             {
                 var bAlwaysHideSubtitle = new BoolProperty(node.HideSubtitle, "bAlwaysHideSubtitle");
                 prop.Properties.AddOrReplaceProp(bAlwaysHideSubtitle);
@@ -1181,7 +1181,7 @@ namespace LegendaryExplorer.DialogueEditor
                 }
 
 
-                if (Pcc.Game == MEGame.ME3 && (e.PropertyName == "bIsDefaultAction" || e.PropertyName == "bIsMajorDecision"))
+                if (Pcc.Game is MEGame.ME3 or MEGame.LE3 && (e.PropertyName == "bIsDefaultAction" || e.PropertyName == "bIsMajorDecision"))
                 {
                     var bIsDefaultAction = new BoolProperty(node.IsDefaultAction, "bIsDefaultAction");
                     prop.Properties.AddOrReplaceProp(bIsDefaultAction);
@@ -1812,7 +1812,7 @@ namespace LegendaryExplorer.DialogueEditor
 
             }
 
-            StageDirections_Expander.Visibility = Pcc.Game == MEGame.ME3 ? Visibility.Visible : Visibility.Collapsed;
+            StageDirections_Expander.Visibility = Pcc.Game is MEGame.ME3 or MEGame.LE3 ? Visibility.Visible : Visibility.Collapsed;
         }
         private void ListBox_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -1912,6 +1912,12 @@ namespace LegendaryExplorer.DialogueEditor
                     viewsPath = ME2ViewsPath;
                     break;
                 case MEGame.ME1:
+                    viewsPath = ME1ViewsPath;
+                    break;
+                case MEGame.LE2:
+                    viewsPath = ME2ViewsPath;
+                    break;
+                case MEGame.LE1:
                     viewsPath = ME1ViewsPath;
                     break;
             }
@@ -2312,7 +2318,7 @@ namespace LegendaryExplorer.DialogueEditor
             Node_CB_RUnskippable.IsEnabled = false;
             Node_Combo_ReplyType.IsEnabled = false;
 
-            if (Pcc.Game == MEGame.ME3)
+            if (Pcc.Game is MEGame.ME3 or MEGame.LE3)
             {
                 Node_CB_HideSubs.IsEnabled = true;
             }
@@ -2323,7 +2329,7 @@ namespace LegendaryExplorer.DialogueEditor
                 Node_Combo_Spkr.IsEnabled = false;
                 Node_CB_RUnskippable.IsEnabled = true;
                 Node_Combo_ReplyType.IsEnabled = true;
-                if (Pcc.Game == MEGame.ME3)
+                if (Pcc.Game is MEGame.ME3 or MEGame.LE3)
                 {
                     Node_CB_RMajor.IsEnabled = true;
                     Node_CB_RDefault.IsEnabled = true;
@@ -3221,6 +3227,15 @@ namespace LegendaryExplorer.DialogueEditor
                             break;
                         case MEGame.ME3:
                             rootPath = ME3Directory.DefaultGamePath;
+                            break;
+                        case MEGame.LE1:
+                            rootPath = LE1Directory.DefaultGamePath;
+                            break;
+                        case MEGame.LE2:
+                            rootPath = LE2Directory.DefaultGamePath;
+                            break;
+                        case MEGame.LE3:
+                            rootPath = LE3Directory.DefaultGamePath;
                             break;
                     }
                     filePath = Directory.GetFiles(rootPath, Level, SearchOption.AllDirectories).FirstOrDefault();
