@@ -52,7 +52,8 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         #region General Toolset experiments/debug stuff
         private void RefreshProperties_Clicked(object sender, RoutedEventArgs e)
         {
-            var properties = GetPEWindow().InterpreterTab_Interpreter.CurrentLoadedExport?.GetProperties();
+            var exp = GetPEWindow().InterpreterTab_Interpreter.CurrentLoadedExport;
+            var properties = exp?.GetProperties();
         }
 
 
@@ -1220,6 +1221,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         private void BuildME1SuperTLK_Clicked(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsO.BuildME1SuperTLKFile(GetPEWindow());
+        }
+
+        private void StartPackageBytecodeScan_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.EnumerateAllFunctions(GetPEWindow());
         }
 
         #endregion

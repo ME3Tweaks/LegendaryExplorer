@@ -115,11 +115,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             ScriptHeaderBlocks.ClearEx();
             ScriptFooterBlocks.ClearEx();
             DecompiledScriptBoxTitle = "Decompiled Script";
-            if (Pcc.Game is MEGame.ME3 or MEGame.LE3 || Pcc.Platform == MEPackage.GamePlatform.PS3)
+            if (Pcc.Game is MEGame.ME3 or MEGame.LE1 or  MEGame.LE2 or MEGame.LE3 || Pcc.Platform == MEPackage.GamePlatform.PS3)
             {
                 var func = new Function(data, CurrentLoadedExport, 32);
-
-
                 func.ParseFunction();
                 DecompiledScriptBlocks.Add(func.GetSignature());
                 DecompiledScriptBlocks.AddRange(func.ScriptBlocks);
@@ -188,9 +186,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 if (CurrentLoadedExport.ClassName == "Function")
                 {
-                    var nativeBackOffset = (CurrentLoadedExport.FileRef.Game == MEGame.ME1 ||
-                                            CurrentLoadedExport.FileRef.Game == MEGame.ME2 ||
-                                            CurrentLoadedExport.FileRef.Game == MEGame.LE1) ? 7 : 6;
+                    // TODO: Is this right for LE?
+                    var nativeBackOffset = CurrentLoadedExport.Game is MEGame.ME1 or MEGame.ME2 or MEGame.LE1 ? 7 : 6;
                     pos = data.Length - nativeBackOffset;
                     string flagStr = func.GetFlags();
                     ScriptFooterBlocks.Add(new ScriptHeaderItem("Native Index", EndianReader.ToInt16(data, pos, CurrentLoadedExport.FileRef.Endian), pos) { length = 2 });
@@ -244,7 +241,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                 }
             }
-            else if (Pcc.Game is MEGame.ME1 or MEGame.ME2 or MEGame.LE1 or MEGame.LE2)
+            else if (Pcc.Game is MEGame.ME1 or MEGame.ME2)
             {
                 //Header
                 int pos = 16;

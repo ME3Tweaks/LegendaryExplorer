@@ -34,6 +34,30 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
     /// </summary>
     class PackageEditorExperimentsM
     {
+        public static void EnumerateAllFunctions(PackageEditorWindow pewpf)
+        {
+            Task.Run(() =>
+            {
+                pewpf.BusyText = "Enumerating functions...";
+                pewpf.IsBusy = true;
+                foreach (var f in pewpf.Pcc.Exports.Where(x => x.ClassName == "Function"))
+                {
+                    // Todo: States?
+                    if (pewpf.Pcc.Game is MEGame.ME1 or MEGame.ME2)
+                    {
+                        var func = f.ClassName == "State" ? UE3FunctionReader.ReadState(f, f.Data) : UE3FunctionReader.ReadFunction(f, f.Data);
+                        func.Decompile(new TextBuilder(), false, true); //parse bytecode
+                    }
+                    else
+                    {
+                        var func = new Function(f.Data, f);
+                        func.ParseFunction();
+                    }
+
+                }
+            }).ContinueWithOnUIThread(foundCandidates => { pewpf.IsBusy = false; });
+        }
+
         public static void ShaderCacheResearch(PackageEditorWindow pewpf)
         {
             Dictionary<string, int> mapCount = new Dictionary<string, int>();
@@ -227,7 +251,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 EntryPruner.TrashEntries(sourcePackage, entriesToTrash);
             }
         }
-        
+
 
 
         /// <summary>

@@ -15,7 +15,6 @@
     <MenuItem Header="Trigger GetProperties() on current export" Click="RefreshProperties_Clicked"/>
     <MenuItem Header="Trigger ObjectBinary GetNames() on current export" Click="TriggerObjBinGetNames_Clicked"/>
     <MenuItem Header="Trigger ObjectBinary GetUIndexes() on current export" Click="TriggerObjBinGetUIndexes_Clicked"/>
-    <MenuItem Header="Print loaded packages to debug console" Click="PrintLoadedPackages_Clicked"/>
     <MenuItem Header="Rebuild Object Infos">
         <MenuItem Header="Build ME1 Object Info" Click="BuildME1ObjectInfo_Clicked"/>
         <MenuItem Header="Build ME2 Object Info" Click="BuildME2ObjectInfo_Clicked"/>
@@ -31,6 +30,7 @@
         <MenuItem Header="Generate ME2/ME3 object info diff" Click="GenerateObjectInfoDiff_Click"/>
     </MenuItem>
     <MenuItem Header="Mgamerz's Programming Circus">
+        <MenuItem Header="Bytecode scan all functions in package" Click="StartPackageBytecodeScan_Click"/>
         <MenuItem Header="Test LODBias stuff" Click="LODBiasTest_Clicked"/>
         <MenuItem Header="Find Empty Mips" Click="FindEmptyMips_Clicked"/>
         <MenuItem Header="Shader Cache Research" Click="ShaderCacheResearch_Click"/>
@@ -41,6 +41,7 @@
         <MenuItem Header="Search ObjectInfo keys for value" Click="ObjectInfosSearch_Click"/>
         <MenuItem Header="Create Testpatch functions delta to vanilla" Click="CreateTestPatchDelta_Click"/>
         <MenuItem Header="Build ME1 TLK Database" Click="BuildME1TLKDB_Clicked"/>
+        <MenuItem Header="Print loaded packages to debug console" Click="PrintLoadedPackages_Clicked"/>
 
         <MenuItem Header="Generate GUID cache binary for folder" Click="GenerateGUIDCacheForFolder_Clicked"/>
         <MenuItem Header="Generate new GUID for package file" Click="GenerateNewGUIDForPackageFile_Clicked"/>
