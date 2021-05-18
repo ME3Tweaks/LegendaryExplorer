@@ -395,7 +395,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private bool ArrayPropertyIsSelected() => SelectedItem?.Property is ArrayPropertyBase;
 
         private bool IsExportLoaded() => CurrentLoadedExport != null;
-        private bool IsItemGUIDImmutable() => SelectedItem?.Property is StructProperty {IsImmutable: true, StructType: "Guid"};
+        private bool IsItemGUIDImmutable() => SelectedItem?.Property is StructProperty { IsImmutable: true, StructType: "Guid" };
         private void GenerateNewGUID()
         {
             CurrentLoadedExport.WriteProperty(CommonStructs.GuidProp(Guid.NewGuid(), SelectedItem.Property.Name));
@@ -2484,7 +2484,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         case ObjectProperty op:
                             if (op.Name.Name != null)
                             {
-                                var type = GlobalUnrealObjectInfo.GetPropertyInfo(AttachedExport.Game, op.Name.Name, AttachedExport.ClassName, containingExport: AttachedExport);
+                                string container = AttachedExport.ClassName;
+                                if (Parent?.Property is StructProperty psp)
+                                {
+                                    container = psp.StructType;
+                                }
+
+                                var type = GlobalUnrealObjectInfo.GetPropertyInfo(AttachedExport.Game, op.Name.Name, container, containingExport: AttachedExport);
                                 if (type != null)
                                 {
                                     return $"ObjectProperty ({type.Reference})";
