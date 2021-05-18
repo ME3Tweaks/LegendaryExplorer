@@ -13,6 +13,7 @@ using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.UserControls.ExportLoaderControls;
+using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Helpers;
@@ -486,8 +487,6 @@ namespace LegendaryExplorer.Tools.Meshplorer
                 {
 #endif
                 LoadFile(d.FileName);
-                RecentsController.AddRecent(d.FileName, false);
-                RecentsController.SaveRecentList(true);
 #if !DEBUG
                 }
                 catch (Exception ex)
@@ -539,7 +538,7 @@ namespace LegendaryExplorer.Tools.Meshplorer
                 StatusBar_LeftMostText.Text = Path.GetFileName(s);
                 Title = $"Meshplorer - {s}";
 
-                RecentsController.AddRecent(s, false);
+                RecentsController.AddRecent(s, false, Pcc?.Game);
                 RecentsController.SaveRecentList(true);
                 if (goToIndex != 0)
                 {
@@ -669,7 +668,7 @@ namespace LegendaryExplorer.Tools.Meshplorer
             }
         }
 
-        public void PropogateRecentsChange(IEnumerable<string> newRecents)
+        public void PropogateRecentsChange(IEnumerable<RecentsControl.RecentItem> newRecents)
         {
             RecentsController.PropogateRecentsChange(false, newRecents);
         }

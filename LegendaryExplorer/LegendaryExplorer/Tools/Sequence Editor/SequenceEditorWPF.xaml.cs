@@ -28,6 +28,7 @@ using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.SharedUI.PeregrineTreeView;
 using LegendaryExplorer.Tools.SequenceObjects;
+using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
@@ -540,7 +541,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 CurrentFile = Path.GetFileName(fileName);
 
                 // Streams don't work for recents
-                RecentsController.AddRecent(fileName, false);
+                RecentsController.AddRecent(fileName, false, Pcc?.Game);
                 RecentsController.SaveRecentList(true);
 
                 postloadPackage(fileName);
@@ -2146,8 +2147,8 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
                 {
-                //Wait for all children to finish loading
-                LoadFile(FileQueuedForLoad);
+                    //Wait for all children to finish loading
+                    LoadFile(FileQueuedForLoad);
                     FileQueuedForLoad = null;
 
                     if (ExportQueuedForFocusing != null)
@@ -2335,7 +2336,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             }
         }
 
-        public void PropogateRecentsChange(IEnumerable<string> newRecents)
+        public void PropogateRecentsChange(IEnumerable<RecentsControl.RecentItem> newRecents)
         {
             RecentsController.PropogateRecentsChange(false, newRecents);
         }

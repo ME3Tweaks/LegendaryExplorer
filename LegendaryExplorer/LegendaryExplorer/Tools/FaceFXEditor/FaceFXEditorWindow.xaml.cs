@@ -8,6 +8,7 @@ using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Interfaces;
+using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
@@ -126,7 +127,7 @@ namespace LegendaryExplorer.Tools.FaceFXEditor
                 RefreshComboBox();
 
                 Title = $"FaceFX Editor - {Pcc.FilePath}";
-                RecentsController.AddRecent(fileName, false);
+                RecentsController.AddRecent(fileName, false, Pcc?.Game);
                 RecentsController.SaveRecentList(true);
                 OnPropertyChanged(nameof(CurrentFile));
             }
@@ -211,7 +212,7 @@ namespace LegendaryExplorer.Tools.FaceFXEditor
             }
         }
 
-        public void PropogateRecentsChange(IEnumerable<string> newRecents)
+        public void PropogateRecentsChange(IEnumerable<RecentsControl.RecentItem> newRecents)
         {
             RecentsController.PropogateRecentsChange(false, newRecents);
         }

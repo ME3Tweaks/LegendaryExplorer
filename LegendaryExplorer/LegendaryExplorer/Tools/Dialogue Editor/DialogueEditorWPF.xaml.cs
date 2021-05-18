@@ -28,6 +28,7 @@ using LegendaryExplorer.Tools.Sequence_Editor;
 using LegendaryExplorer.Tools.Soundplorer;
 using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorer.UnrealExtensions;
+using LegendaryExplorer.UserControls.SharedToolControls;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Nodes;
@@ -562,7 +563,7 @@ namespace LegendaryExplorer.DialogueEditor
                 graphEditor.nodeLayer.RemoveAllChildren();
                 graphEditor.edgeLayer.RemoveAllChildren();
 
-                RecentsController.AddRecent(fileName, false);
+                RecentsController.AddRecent(fileName, false, Pcc?.Game);
                 RecentsController.SaveRecentList(true);
 
                 Title = $"Dialogue Editor - {fileName}";
@@ -3598,7 +3599,7 @@ namespace LegendaryExplorer.DialogueEditor
         #endregion Helpers
 
         #region IRecents interface
-        public void PropogateRecentsChange(IEnumerable<string> newRecents)
+        public void PropogateRecentsChange(IEnumerable<RecentsControl.RecentItem> newRecents)
         {
             RecentsController.PropogateRecentsChange(false, newRecents);
         }

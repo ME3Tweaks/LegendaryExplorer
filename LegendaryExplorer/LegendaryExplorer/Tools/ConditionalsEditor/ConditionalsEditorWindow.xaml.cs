@@ -15,6 +15,7 @@ using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Interfaces;
+using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Unreal;
@@ -192,8 +193,7 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
             try
             {
                 File = CNDFile.FromFile(filePath);
-
-                RecentsController.AddRecent(filePath, false);
+                RecentsController.AddRecent(filePath, false, null); // Can we infer game this file is for?
                 RecentsController.SaveRecentList(true);
             }
             catch (Exception e)
@@ -206,7 +206,7 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
             Conditionals.AddRange(File.ConditionalEntries.OrderBy(c => c.ID));
         }
 
-        public void PropogateRecentsChange(IEnumerable<string> newRecents)
+        public void PropogateRecentsChange(IEnumerable<RecentsControl.RecentItem> newRecents)
         {
             RecentsController.PropogateRecentsChange(false, newRecents);
         }

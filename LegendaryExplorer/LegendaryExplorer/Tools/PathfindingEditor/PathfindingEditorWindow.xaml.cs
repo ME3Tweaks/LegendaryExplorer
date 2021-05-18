@@ -24,6 +24,7 @@ using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.Tools.Sequence_Editor;
 using LegendaryExplorer.UserControls.ExportLoaderControls;
+using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
@@ -726,7 +727,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                     NodeName = "No node selected";
                 }
                 CurrentFile = Path.GetFileName(fileName);
-                RecentsController.AddRecent(fileName, false);
+                RecentsController.AddRecent(fileName, false, Pcc?.Game);
                 RecentsController.SaveRecentList(true);
                 Title = $"Pathfinding Editor WPF - {fileName}";
                 StatusText = null; //Nothing to prepend.
@@ -2438,7 +2439,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         }
         private void CreateSplineConnection_Click(object sender, RoutedEventArgs e)
         {
-            if (ActiveNodes_ListBox.SelectedItem is ExportEntry {ClassName: "SplineActor"} sourceActor)
+            if (ActiveNodes_ListBox.SelectedItem is ExportEntry { ClassName: "SplineActor" } sourceActor)
             {
                 var sourceAndConnections = new List<int> { sourceActor.UIndex };
                 var connections = sourceActor.GetProperty<ArrayProperty<StructProperty>>("Connections") ?? new ArrayProperty<StructProperty>("Connections");
@@ -2482,7 +2483,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         }
         private void BreakSplineConnectionClick(object sender, RoutedEventArgs e)
         {
-            if (ActiveNodes_ListBox.SelectedItem is ExportEntry {ClassName: "SplineActor"} sourceActor)
+            if (ActiveNodes_ListBox.SelectedItem is ExportEntry { ClassName: "SplineActor" } sourceActor)
             {
                 var connectionUIndexes = new List<int>();
                 var connections = sourceActor.GetProperty<ArrayProperty<StructProperty>>("Connections") ?? new ArrayProperty<StructProperty>("Connections");
@@ -3944,7 +3945,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         }
         private bool TargetPointIsSelected()
         {
-            return ActiveNodes_ListBox.SelectedItem is ExportEntry {ClassName: "TargetPoint"};
+            return ActiveNodes_ListBox.SelectedItem is ExportEntry { ClassName: "TargetPoint" };
         }
 
         #endregion
@@ -4851,7 +4852,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         #endregion
 
 
-        public void PropogateRecentsChange(IEnumerable<string> newRecents)
+        public void PropogateRecentsChange(IEnumerable<RecentsControl.RecentItem> newRecents)
         {
             RecentsController.PropogateRecentsChange(false, newRecents);
         }

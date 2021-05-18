@@ -13,6 +13,7 @@ using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Controls;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.Tools.PackageEditor;
+using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
@@ -311,7 +312,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
         /// <param name="sPackage"></param>
         /// <param name="inst"></param>
         /// <param name="masterTextureExport"></param>
-        private void CorrectMasterPackagePathing(IMEPackage sPackage, TextureMapMemoryEntryWPF memEntry,TextureMapPackageEntry inst, ExportEntry masterTextureExport)
+        private void CorrectMasterPackagePathing(IMEPackage sPackage, TextureMapMemoryEntryWPF memEntry, TextureMapPackageEntry inst, ExportEntry masterTextureExport)
         {
             var sExp = sPackage.GetUExport(inst.UIndex);
 
@@ -338,18 +339,18 @@ namespace LegendaryExplorer.Tools.TextureStudio
                 memEntry.Parent?.Children.Remove(memEntry);
                 masterPackageNode.Children.Add(memEntry);
                 memEntry.Parent = masterPackageNode;
-                
+
                 // Reattach this node to the new one
 
             }
-            
+
 
             // Todo: Support subpackage folders
 
             sExp.idxLink = masterPackageExport.UIndex;
             sExp.ObjectName = masterTextureExport.ObjectName;
-            
-            
+
+
         }
 
         private void RepointME1SlaveInstance(IMEPackage slavePackage, TextureMapPackageEntry inst, ExportEntry masterExport)
@@ -517,7 +518,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
                         lastOpenedSPackage?.Save();
                         lastOpenedSPackage = package;
                     }
-                    
+
                     var sExp = package.GetUExport(pInstance.UIndex);
                     var masterPackagePath = Texture2D.AdditionalME1MasterTexturePackages.FirstOrDefault(x => Path.GetFileNameWithoutExtension(x).Equals(pInstance.MasterPackageName));
                     if (masterPackagePath != null)
@@ -593,7 +594,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
 
         private void BeginScan()
         {
-            RecentsController.AddRecent(SelectedFolder, false);
+            RecentsController.AddRecent(SelectedFolder, false, null);
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += ScanFolderThread;
             bw.RunWorkerCompleted += (sender, args) =>
@@ -860,7 +861,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
             //if (SelectedItem )
         }
 
-        public void PropogateRecentsChange(IEnumerable<string> newRecents)
+        public void PropogateRecentsChange(IEnumerable<RecentsControl.RecentItem> newRecents)
         {
             RecentsController.PropogateRecentsChange(false, newRecents);
         }

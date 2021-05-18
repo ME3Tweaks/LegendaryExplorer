@@ -20,6 +20,7 @@ using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.UnrealExtensions;
 using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorer.UserControls.ExportLoaderControls;
+using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -166,7 +167,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
                 }
                 Title = $"Soundplorer - {Path.GetFileName(fileName)}";
                 OnPropertyChanged(nameof(AudioFileLoaded));
-                RecentsController.AddRecent(fileName, false);
+                RecentsController.AddRecent(fileName, false, Pcc?.Game);
                 RecentsController.SaveRecentList(true);
             }
             catch (Exception ex)
@@ -1119,7 +1120,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
             }
         }
 
-        public void PropogateRecentsChange(IEnumerable<string> newRecents)
+        public void PropogateRecentsChange(IEnumerable<RecentsControl.RecentItem> newRecents)
         {
             RecentsController.PropogateRecentsChange(false, newRecents);
         }

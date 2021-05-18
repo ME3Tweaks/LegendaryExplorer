@@ -56,7 +56,5 @@
                 </StackPanel>
             </StatusBarItem>
         </StatusBar>
-        </DockPanel>
-
-
+    </DockPanel>
 </bases:WPFBase>

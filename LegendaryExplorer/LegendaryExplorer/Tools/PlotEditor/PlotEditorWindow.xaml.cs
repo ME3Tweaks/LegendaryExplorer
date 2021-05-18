@@ -11,6 +11,7 @@ using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.ToolsetDev.MemoryAnalyzer;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Interfaces;
+using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorerCore.Packages;
 using Microsoft.Win32;
 
@@ -24,7 +25,7 @@ namespace LegendaryExplorer.Tools.PlotEditor
 
             InitializeComponent();
             RecentsController.InitRecentControl(Toolname, Recents_MenuItem, fileName => LoadFile(fileName));
-            
+
             FindObjectUsagesControl.parentRef = this;
         }
 
@@ -67,7 +68,7 @@ namespace LegendaryExplorer.Tools.PlotEditor
 
             ConsequenceMapControl?.Open(Pcc, "ConsequenceMap");
 
-            RecentsController.AddRecent(path, false);
+            RecentsController.AddRecent(path, false, Pcc?.Game);
             RecentsController.SaveRecentList(true);
             Title = $"Plot Editor - {path}";
             OnPropertyChanged(nameof(CurrentFile));
@@ -75,7 +76,7 @@ namespace LegendaryExplorer.Tools.PlotEditor
             //Hiding "Recents" panel
             if (MainTabControl.SelectedIndex == 0)
             {
-                MainTabControl.SelectedIndex = 1; 
+                MainTabControl.SelectedIndex = 1;
             }
         }
 
@@ -241,7 +242,7 @@ namespace LegendaryExplorer.Tools.PlotEditor
             var targetEvent = StateEventMapControl.StateEvents.FirstOrDefault(kvp => kvp.Key == id);
 
             // If the ID is the default, try the consequence map
-            if(targetEvent.Equals(default(KeyValuePair<int, BioStateEvent>)))
+            if (targetEvent.Equals(default(KeyValuePair<int, BioStateEvent>)))
             {
                 targetEvent = ConsequenceMapControl.StateEvents.FirstOrDefault(kvp => kvp.Key == id);
             }
@@ -251,7 +252,7 @@ namespace LegendaryExplorer.Tools.PlotEditor
 
         public void GoToStateEvent(KeyValuePair<int, BioStateEvent> targetEvent)
         {
-            if((bool) ConsequenceMapControl?.StateEvents.Contains(targetEvent))
+            if ((bool)ConsequenceMapControl?.StateEvents.Contains(targetEvent))
             {
                 MainTabControl.SelectedValue = ConsequenceMapControl;
                 ConsequenceMapControl.SelectStateEvent(targetEvent);
@@ -263,7 +264,7 @@ namespace LegendaryExplorer.Tools.PlotEditor
             }
         }
 
-        public void PropogateRecentsChange(IEnumerable<string> newRecents)
+        public void PropogateRecentsChange(IEnumerable<RecentsControl.RecentItem> newRecents)
         {
             RecentsController.PropogateRecentsChange(false, newRecents);
         }

@@ -15,6 +15,7 @@ using LegendaryExplorer.ToolsetDev.MemoryAnalyzer;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Interfaces;
+using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -229,7 +230,7 @@ namespace LegendaryExplorer.Tools.WwiseEditor
                 StatusBar_LeftMostText.Text = Path.GetFileName(s);
                 Title = $"Wwise Editor - {s}";
 
-                RecentsController.AddRecent(s, false);
+                RecentsController.AddRecent(s, false, Pcc?.Game);
                 RecentsController.SaveRecentList(true);
                 if (goToIndex != 0)
                 {
@@ -851,7 +852,7 @@ namespace LegendaryExplorer.Tools.WwiseEditor
             soundPanel.Dispose();
         }
 
-        public void PropogateRecentsChange(IEnumerable<string> newRecents)
+        public void PropogateRecentsChange(IEnumerable<RecentsControl.RecentItem> newRecents)
         {
             RecentsController.PropogateRecentsChange(false, newRecents);
         }

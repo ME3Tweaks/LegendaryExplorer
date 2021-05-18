@@ -12,10 +12,11 @@
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <UserControl.Resources>
         <converters:FilePathToFileNameConverter x:Key="FilePathToFileNameConverter"/>
+        <converters:GameToImageIconConverter x:Key="GameToImageIconConverter"/>
     </UserControl.Resources>
     <DockPanel>
         <TextBlock Text="Recently opened items" DockPanel.Dock="Top" TextAlignment="Center" FontSize="20" FontWeight="Light" Margin="10"/>
-        <ItemsControl ItemsSource="{Binding RecentPaths}">
+        <ItemsControl ItemsSource="{Binding RecentItems}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel Orientation="Horizontal" />
@@ -23,10 +24,13 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Button Width="252" Margin="3" Padding="3" ToolTip="{Binding}" Command="{Binding RecentFileOpenCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:RecentsControl}}}" CommandParameter="{Binding}">
+                    <Button Width="252" Margin="3" Padding="3" ToolTip="{Binding Path}" 
+                            Command="{Binding RecentFileOpenCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:RecentsControl}}}" CommandParameter="{Binding Path}">
                         <Button.Content>
-                            <!-- Cause the default is a label which doens't like _ items -->
-                            <TextBlock Text="{Binding Converter={StaticResource FilePathToFileNameConverter}}"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Image Margin="0,0,5,0" RenderOptions.BitmapScalingMode="HighQuality" Source="{Binding Game, Converter={StaticResource GameToImageIconConverter}}" Height="16" VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding Path, Converter={StaticResource FilePathToFileNameConverter}}"/>
+                            </StackPanel>
                         </Button.Content>
                     </Button>
                 </DataTemplate>

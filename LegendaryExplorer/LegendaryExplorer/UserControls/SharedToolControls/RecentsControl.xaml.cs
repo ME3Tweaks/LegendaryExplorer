@@ -6,8 +6,10 @@ using System.Windows;
 using System.Windows.Controls;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
+using LegendaryExplorer.SharedUI.Converters;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorer.UserControls.SharedToolControls
 {
@@ -16,9 +18,48 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
     /// </summary>
     public partial class RecentsControl : NotifyPropertyChangedControlBase
     {
+        public class RecentItem
+        {
+            public RecentItem(string path, MEGame? game)
+            {
+                Path = path;
+                Game = game;
+            }
+
+            public RecentItem() { }
+
+            public string ConvertToRecentEntry()
+            {
+                // Null coalescing doesn't work here apparently
+                return $"{(Game == null ? "NUL" : Game)} {Path}";
+            }
+
+            public static RecentItem FromRecentEntryString(string entry)
+            {
+#if DEBUG
+                // TRANSITION TO NEW RECENT SYSTEM ONLY CODE!!
+                // Remove later. This is debug only cause it was made when LEX was in dev
+                if (File.Exists(entry))
+                {
+                    return new RecentItem(entry, null);
+                }
+
+#endif
+                var gameId = entry.Substring(0, 3);
+                MEGame? game = null;
+                if (Enum.TryParse<MEGame>(gameId, false, out var _game))
+                {
+                    game = _game;
+                }
+                return new RecentItem(entry.Substring(4), game);
+            }
+
+            public MEGame? Game { get; }
+            public string Path { get; }
+        }
         private Action<string> RecentItemClicked;
 
-        public ObservableCollectionExtended<string> RecentPaths { get; } = new();
+        public ObservableCollectionExtended<RecentItem> RecentItems { get; } = new();
 
         public bool IsFolderRecents
         {
@@ -63,7 +104,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
             if (File.Exists(RecentsAppDataFile))
             {
                 string[] recents = File.ReadAllLines(RecentsAppDataFile);
-                SetRecents(recents);
+                SetRecents(recents.Select(RecentItem.FromRecentEntryString));
             }
         }
 
@@ -71,21 +112,21 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
         /// Sets the whole recents list. Does not propogate.
         /// </summary>
         /// <param name="recents"></param>
-        private void SetRecents(IEnumerable<string> recents)
+        private void SetRecents(IEnumerable<RecentItem> recents)
         {
-            RecentPaths.ClearEx();
-            foreach (string referencedFile in recents)
+            RecentItems.ClearEx();
+            foreach (var referencedFile in recents)
             {
                 if (IsFolderRecents)
                 {
-                    if (Directory.Exists(referencedFile))
+                    if (Directory.Exists(referencedFile.Path))
                     {
-                        AddRecent(referencedFile, true);
+                        AddRecent(referencedFile.Path, true, referencedFile.Game);
                     }
                 }
-                else if (File.Exists(referencedFile))
+                else if (File.Exists(referencedFile.Path))
                 {
-                    AddRecent(referencedFile, true);
+                    AddRecent(referencedFile.Path, true, referencedFile.Game);
                 }
             }
             RefreshRecentsMenu();
@@ -108,12 +149,14 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
         private void RefreshRecentsMenu()
         {
             RecentsMenu.Items.Clear();
-            foreach (string filepath in RecentPaths)
+            foreach (var recentItem in RecentItems)
             {
+                var iconBitmap = GameToImageIconConverter.StaticConvert(recentItem.Game);
                 MenuItem fr = new MenuItem()
                 {
-                    Header = filepath.Replace("_", "__"),
-                    Tag = filepath
+                    Icon = iconBitmap == null ? null : new Image { Source = iconBitmap },
+                    Header = recentItem.Path.Replace("_", "__"),
+                    Tag = recentItem.Path
                 };
                 fr.Click += (x, y) => RecentItemClicked?.Invoke((string)fr.Tag);
                 RecentsMenu.Items.Add(fr);
@@ -123,24 +166,24 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
         /// <summary>
         /// Adds a new item to the recents list in the appropriate position.
         /// </summary>
-        /// <param name="newRecent"></param>
+        /// <param name="path"></param>
         /// <param name="isLoading"></param>
-        public void AddRecent(string newRecent, bool isLoading)
+        public void AddRecent(string path, bool isLoading, MEGame? game)
         {
             if (isLoading)
             {
-                RecentPaths.Add(newRecent); //in order
+                RecentItems.Add(new RecentItem(path, game)); //in order
             }
             else
             {
                 // Remove the new recent from the list if it exists - as we will re-insert it (at the front)
-                RecentPaths.ReplaceAll(RecentPaths.Where(x =>
-                    !x.Equals(newRecent, StringComparison.InvariantCultureIgnoreCase)).ToList());
-                RecentPaths.Insert(0, newRecent); //put at front
+                RecentItems.ReplaceAll(RecentItems.Where(x =>
+                    !x.Path.Equals(path, StringComparison.InvariantCultureIgnoreCase)).ToList());
+                RecentItems.Insert(0, new RecentItem(path, game)); //put at front
             }
-            while (RecentPaths.Count > 10)
+            while (RecentItems.Count > 10)
             {
-                RecentPaths.RemoveAt(10); //Just remove trailing items
+                RecentItems.RemoveAt(10); //Just remove trailing items
             }
 
             RecentsMenu.IsEnabled = true; //An item exists in the menu
@@ -157,14 +200,14 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
         /// <param name="propogate">If the list of recents from this instance should be shared to other instances that are hosted by the same type of window</param>
         public void SaveRecentList(bool propogate)
         {
-            File.WriteAllLines(RecentsAppDataFile, RecentPaths);
+            File.WriteAllLines(RecentsAppDataFile, RecentItems.Select(x => x.ConvertToRecentEntry()));
             if (propogate)
             {
-                PropogateRecentsChange(true, RecentPaths);
+                PropogateRecentsChange(true, RecentItems);
             }
         }
 
-        public void PropogateRecentsChange(bool outboundPropogation, IEnumerable<string> newRecents)
+        public void PropogateRecentsChange(bool outboundPropogation, IEnumerable<RecentItem> newRecents)
         {
             if (outboundPropogation)
             {

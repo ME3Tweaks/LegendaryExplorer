@@ -7,7 +7,9 @@ using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.UserControls.ExportLoaderControls;
+using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
@@ -180,7 +182,7 @@ namespace LegendaryExplorer.Tools.SFARExplorer
             BottomLeftText =
                 $"{Path.GetFileName(sfarPath)}, compression scheme: {LoadedDLCPackage.Header.CompressionScheme}";
 
-            RecentsController.AddRecent(sfarPath, false);
+            RecentsController.AddRecent(sfarPath, false, MEGame.ME3); // SFAR is only in ME3
             RecentsController.SaveRecentList(true);
         }
 
@@ -200,7 +202,7 @@ namespace LegendaryExplorer.Tools.SFARExplorer
             }
         }
 
-        public void PropogateRecentsChange(IEnumerable<string> newRecents)
+        public void PropogateRecentsChange(IEnumerable<RecentsControl.RecentItem> newRecents)
         {
             RecentsController.PropogateRecentsChange(false, newRecents);
         }

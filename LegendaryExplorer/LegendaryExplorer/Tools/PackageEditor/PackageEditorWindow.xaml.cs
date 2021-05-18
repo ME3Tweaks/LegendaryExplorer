@@ -23,6 +23,7 @@ using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.Tools;
 using LegendaryExplorer.UserControls.ExportLoaderControls;
+using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Helpers;
@@ -880,8 +881,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 {
                     MEPackageHandler.CreateAndSavePackage(dlg.FileName, game);
                     LoadFile(dlg.FileName);
-                    RecentsController.AddRecent(dlg.FileName, false);
-                    RecentsController.SaveRecentList(true);
                 }
             }
         }
@@ -929,8 +928,10 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     package.PackageGUID = packguid;
                     Pcc.PackageGuid = packguid;
                     SaveFile();
-                    RecentsController.AddRecent(dlg.FileName, false);
-                    RecentsController.SaveRecentList(true);
+
+                    // LoadFile is called above, should add to recents: Disabled 5/17/2021 by Mgamerz
+                    //RecentsController.AddRecent(dlg.FileName, false, );
+                    //RecentsController.SaveRecentList(true);
                 }
             }
         }
@@ -2282,7 +2283,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 LoadMEPackage(s);
                 postloadPackage(Path.GetFileName(s), s, goToIndex);
 
-                RecentsController.AddRecent(s, false);
+                RecentsController.AddRecent(s, false, Pcc?.Game);
                 RecentsController.SaveRecentList(true);
             }
             catch (Exception e) when (!App.IsDebug)
@@ -3809,7 +3810,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
 
 
-        public void PropogateRecentsChange(IEnumerable<string> newRecents)
+        public void PropogateRecentsChange(IEnumerable<RecentsControl.RecentItem> newRecents)
         {
             RecentsController.PropogateRecentsChange(false, newRecents);
         }

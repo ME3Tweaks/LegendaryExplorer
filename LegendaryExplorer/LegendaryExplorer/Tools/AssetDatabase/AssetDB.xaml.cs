@@ -33,6 +33,7 @@ using SkeletalMesh = LegendaryExplorerCore.Unreal.BinaryConverters.SkeletalMesh;
 using LegendaryExplorerCore.TLK;
 using Microsoft.WindowsAPICodePack.Taskbar;
 using BinaryPack;
+using LegendaryExplorerCore.Memory;
 
 namespace LegendaryExplorer.Tools.AssetDatabase
 {
@@ -348,7 +349,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
             Settings.AssetDBPath = CurrentDBPath;
             Settings.AssetDBGame = CurrentGame.ToString();
-            
+
             MeshRendererTab_MeshRenderer?.Dispose();
             SoundpanelWPF_ADB?.Dispose();
             BIKExternalExportLoaderTab_BIKExternalExportLoader?.Dispose();
@@ -806,7 +807,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             else if (lstbx_MatUsages.SelectedIndex >= 0 && currentView == 2)
             {
                 var m = (MatUsage)lstbx_MatUsages.SelectedItem;
-                (usagepkg, contentdir)= FileListExtended[m.FileKey];
+                (usagepkg, contentdir) = FileListExtended[m.FileKey];
                 usageUID = m.UIndex;
             }
             else if (lstbx_MeshUsages.SelectedIndex >= 0 && currentView == 3)
@@ -2429,7 +2430,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             List<string> files = Directory.GetFiles(rootPath, "*.*", SearchOption.AllDirectories)
                                           .Where(s => supportedExtensions.Contains(Path.GetExtension(s.ToLower())) && !s.EndsWith(ShaderCacheName)).ToList();
 
+            //MemoryManager.SetUsePooledMemory(true, blockSize: (int)FileSize.MebiByte, maxBufferSizeMB: 128);
             await dumpPackages(files, CurrentGame);
+            MemoryManager.SetUsePooledMemory(false);
         }
         private async Task dumpPackages(List<string> files, MEGame game)
         {
@@ -2540,7 +2543,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     OverallProgressMaximum = 100;
                     BusyHeader = "Dump completed. ";
                 }
-                
+
                 TaskbarHelper.SetProgressState(TaskbarProgressBarState.NoProgress);
             }
 
@@ -2706,21 +2709,21 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public List<string> ContentDir { get; set; } = new();
 
         public List<ClassRecord> ClassRecords { get; set; } = new();
-        
+
         public List<MaterialRecord> Materials { get; set; } = new();
-        
+
         public List<AnimationRecord> Animations { get; set; } = new();
-        
+
         public List<MeshRecord> Meshes { get; set; } = new();
-        
+
         public List<ParticleSysRecord> Particles { get; set; } = new();
-        
+
         public List<TextureRecord> Textures { get; set; } = new();
-        
+
         public List<GUIElement> GUIElements { get; set; } = new();
-        
+
         public List<Conversation> Conversations { get; set; } = new();
-        
+
         public List<ConvoLine> Lines { get; set; } = new();
         public PropsDataBase(MEGame meGame, string GenerationDate, string DataBaseversion, IEnumerable<FileNameDirKeyPair> FileList, IEnumerable<string> ContentDir)
         {
@@ -2735,23 +2738,23 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         { }
 
     }
-    public sealed record FileNameDirKeyPair(string FileName, int DirectoryKey) { public FileNameDirKeyPair() : this(default, default){}}
+    public sealed record FileNameDirKeyPair(string FileName, int DirectoryKey) { public FileNameDirKeyPair() : this(default, default) { } }
 
 
     public class ClassRecord
     {
         public string Class { get; set; }
-        
+
         public string Definition_package { get; set; }
-        
+
         public int Definition_UID { get; set; }
-        
+
         public string SuperClass { get; set; }
-        
+
         public bool IsModOnly { get; set; }
-        
+
         public HashSet<PropertyRecord> PropertyRecords { get; set; } = new();
-        
+
         public List<ClassUsage> Usages { get; set; } = new();
 
         public ClassRecord(string Class, string Definition_package, int Definition_UID, string SuperClass)
@@ -2767,16 +2770,16 @@ namespace LegendaryExplorer.Tools.AssetDatabase
     }
     public sealed record PropertyRecord(string Property, string Type) { public PropertyRecord() : this(default, default) { } }
 
-    
+
     public class ClassUsage
     {
-        
+
         public int FileKey { get; set; }
-        
+
         public int UIndex { get; set; }
-        
+
         public bool IsDefault { get; set; }
-        
+
         public bool IsMod { get; set; }
 
         public ClassUsage(int FileKey, int uIndex, bool IsDefault, bool IsMod)
@@ -2789,18 +2792,18 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public ClassUsage()
         { }
     }
-    
+
     public class MaterialRecord
     {
-        
+
         public string MaterialName { get; set; }
-        
+
         public string ParentPackage { get; set; }
-        
+
         public bool IsDLCOnly { get; set; }
-        
+
         public List<MatUsage> Usages { get; set; } = new();
-        
+
         public List<MatSetting> MatSettings { get; set; } = new();
 
         public MaterialRecord(string MaterialName, string ParentPackage, bool IsDLCOnly, IEnumerable<MatSetting> MatSettings)
@@ -2821,25 +2824,25 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
     public class AnimationRecord
     {
-        
+
         public string AnimSequence { get; set; }
-        
+
         public string SeqName { get; set; }
-        
+
         public string AnimData { get; set; }
-        
+
         public float Length { get; set; }
-        
+
         public int Frames { get; set; }
-        
+
         public string Compression { get; set; }
-        
+
         public string KeyFormat { get; set; }
-        
+
         public bool IsAmbPerf { get; set; }
-        
+
         public bool IsModOnly { get; set; }
-        
+
         public List<AnimUsage> Usages { get; set; } = new();
 
         public AnimationRecord(string AnimSequence, string SeqName, string AnimData, float Length, int Frames, string Compression, string KeyFormat, bool IsAmbPerf, bool IsModOnly)
@@ -2867,18 +2870,18 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         }
     }
 
-    
+
     public class MeshRecord
     {
-        
+
         public string MeshName { get; set; }
-        
+
         public bool IsSkeleton { get; set; }
-         
+
         public int BoneCount { get; set; }
-        
+
         public bool IsModOnly { get; set; }
-        
+
         public List<MeshUsage> Usages { get; set; } = new();
 
         public MeshRecord(string MeshName, bool IsSkeleton, bool IsModOnly, int BoneCount)
@@ -2904,19 +2907,19 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             BioVFXTemplate
         }
 
-        
+
         public string PSName { get; set; }
-        
+
         public string ParentPackage { get; set; }
-        
+
         public bool IsDLCOnly { get; set; }
-        
+
         public bool IsModOnly { get; set; }
-        
+
         public int EffectCount { get; set; }
-        
+
         public VFXClass VFXType { get; set; }
-        
+
         public List<ParticleSysUsage> Usages { get; set; } = new();
 
         public ParticleSysRecord(string PSName, string ParentPackage, bool IsDLCOnly, bool IsModOnly, int EffectCount, VFXClass VFXType)
@@ -2937,25 +2940,25 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
     public class TextureRecord
     {
-        
+
         public string TextureName { get; set; }
-        
+
         public string ParentPackage { get; set; }
-        
+
         public bool IsDLCOnly { get; set; }
-        
+
         public bool IsModOnly { get; set; }
-        
+
         public string CFormat { get; set; }
-        
+
         public string TexGrp { get; set; }
-        
+
         public int SizeX { get; set; }
-        
+
         public int SizeY { get; set; }
-        
+
         public string CRC { get; set; }
-        
+
         public List<TextureUsage> Usages { get; set; } = new();
 
         public TextureRecord(string TextureName, string ParentPackage, bool IsDLCOnly, bool IsModOnly, string CFormat, string TexGrp, int SizeX, int SizeY, string CRC)
@@ -2979,13 +2982,13 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
     public class GUIElement
     {
-        
+
         public string GUIName { get; set; }
-        
+
         public int DataSize { get; set; }
-        
+
         public bool IsModOnly { get; set; }
-        
+
         public List<GUIUsage> Usages { get; set; } = new(); //File reference then export
 
         public GUIElement(string GUIName, int DataSize, bool IsModOnly)
@@ -3003,11 +3006,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
     public class Conversation
     {
-        
+
         public string ConvName { get; set; }
-        
+
         public bool IsAmbient { get; set; }
-        
+
         public FileKeyExportPair ConvFile { get; set; } //file, export
         public Conversation(string ConvName, bool IsAmbient, FileKeyExportPair ConvFile)
         {
@@ -3023,13 +3026,13 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
     public class ConvoLine
     {
-        
+
         public int StrRef { get; set; }
-        
+
         public string Speaker { get; set; }
-        
+
         public string Line { get; set; }
-        
+
         public string Convo { get; set; }
 
         public ConvoLine(int StrRef, string Speaker, string Convo)
@@ -3067,7 +3070,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
     #endregion
 
     #region SingleFileScan
-    
+
     public class ClassScanSingleFileTask
     {
         public string ShortFileName { get; }
@@ -3292,7 +3295,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                                         }
                                     }
                                 }
-                                
+
                             }
 
                             var classUsage = new ClassUsage(FileKey, uindex, isDefault, IsMod);
@@ -3347,7 +3350,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                                     {
                                         parent = GetTopParentPackage(entry);
                                     }
-                                    
+
                                     if (className == "DecalMaterial" && !objectNameInstanced.Contains("Decal"))
                                     {
                                         objectNameInstanced += "_Decal";
@@ -3704,7 +3707,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                         }
                         else if (export is not null)
                         {
-                            var newClassRecord = new ClassRecord(export.ObjectName, ShortFileName, uindex, export.SuperClassName) {IsModOnly = IsMod};
+                            var newClassRecord = new ClassRecord(export.ObjectName, ShortFileName, uindex, export.SuperClassName) { IsModOnly = IsMod };
                             var classUsage = new ClassUsage(FileKey, uindex, false, IsMod);
 
                             lock (dbScanner.ClassLocks.GetOrAdd(objectNameInstanced, new object()))

@@ -10,6 +10,7 @@ using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.ToolsetDev.MemoryAnalyzer;
+using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
@@ -143,7 +144,7 @@ namespace LegendaryExplorer.Tools.InterpEditor
             InterpDataExports.ClearEx();
             Animations.ClearEx();
             LoadMEPackage(fileName);
-            RecentsController.AddRecent(fileName, false);
+            RecentsController.AddRecent(fileName, false, Pcc?.Game);
             RecentsController.SaveRecentList(true);
             InterpDataExports.AddRange(Pcc.Exports.Where(exp => exp.ClassName == "InterpData"));
             Animations.AddRange(Pcc.Exports.Where(exp => exp.ClassName == "AnimSequence").Select(a => a.ObjectNameString));
@@ -205,7 +206,7 @@ namespace LegendaryExplorer.Tools.InterpEditor
             CurveTab_CurveEditor?.Dispose();
         }
 
-        public void PropogateRecentsChange(IEnumerable<string> newRecents)
+        public void PropogateRecentsChange(IEnumerable<RecentsControl.RecentItem> newRecents)
         {
             RecentsController.PropogateRecentsChange(false, newRecents);
         }

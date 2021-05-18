@@ -11,6 +11,7 @@ using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Interfaces;
+using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
@@ -359,6 +360,7 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
                 case MEGame.ME3:
                     fileFilter = GameFileFilters.ME3ME2SaveFileFilter;
                     break;
+                // TODO: IMPLEMENT IN HEX
                 default:
                     string extension = Path.GetExtension(Pcc.FilePath);
                     fileFilter = $"*{extension}|*{extension}";
@@ -407,7 +409,7 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
                 StatusBar_LeftMostText.Text = Path.GetFileName(s);
                 Title = $"Animation Importer/Exporter - {s}";
 
-                RecentsController.AddRecent(s, false);
+                RecentsController.AddRecent(s, false, Pcc?.Game);
                 RecentsController.SaveRecentList(true);
                 if (goToIndex != 0)
                 {
@@ -528,7 +530,7 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
             }
         }
 
-        public void PropogateRecentsChange(IEnumerable<string> newRecents)
+        public void PropogateRecentsChange(IEnumerable<RecentsControl.RecentItem> newRecents)
         {
             RecentsController.PropogateRecentsChange(false, newRecents);
         }

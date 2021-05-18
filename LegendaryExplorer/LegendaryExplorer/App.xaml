@@ -139,9 +139,16 @@
             </Style.Triggers>
         </Style>
 
-        <BitmapImage x:Key="iconME1" UriSource="/LegendaryExplorer;component/Resources/Images/ME1Game.ico"/>
-        <BitmapImage x:Key="iconME2" UriSource="/LegendaryExplorer;component/Resources/Images/ME2Game.ico"/>
-        <BitmapImage x:Key="iconME3" UriSource="/LegendaryExplorer;component/Resources/Images/ME3Game.ico"/>
+        <!-- Game icon bitmaps since they're used all over the place -->
+        <BitmapImage x:Key="me1gameicon" UriSource="pack://application:,,,/Resources/Images/GameIcons/ME1_48.ico"/>
+        <BitmapImage x:Key="me2gameicon" UriSource="pack://application:,,,/Resources/Images/GameIcons/ME2_48.ico"/>
+        <BitmapImage x:Key="me3gameicon" UriSource="pack://application:,,,/Resources/Images/GameIcons/ME3_48.ico"/>
+        <BitmapImage x:Key="le1gameicon" UriSource="pack://application:,,,/Resources/Images/GameIcons/LE1_48.ico"/>
+        <BitmapImage x:Key="le2gameicon" UriSource="pack://application:,,,/Resources/Images/GameIcons/LE2_48.ico"/>
+        <BitmapImage x:Key="le3gameicon" UriSource="pack://application:,,,/Resources/Images/GameIcons/LE3_48.ico"/>
+        <BitmapImage x:Key="unknowngameicon" UriSource="pack://application:,,,/Resources/Images/GameIcons/Unknown_48.ico"/>
+        <BitmapImage x:Key="udkgameicon" UriSource="pack://application:,,,/Resources/Images/GameIcons/UDK_48.ico"/>
+
         <BitmapImage x:Key="iconBikExtractor" UriSource="Tools/Icons/bikextractor_256x256.ico"/>
         <BitmapImage x:Key="iconHexConverter" UriSource="Tools/Icons/hexconverter_256x256.ico"/>
         <BitmapImage x:Key="iconInterpViewer" UriSource="Tools/Icons/interpviewer_256x256.ico"/>
