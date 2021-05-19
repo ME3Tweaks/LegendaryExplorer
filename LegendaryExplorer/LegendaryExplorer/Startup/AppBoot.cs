@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.CommandLine;
+using System.CommandLine.IO;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -162,7 +163,7 @@ namespace LegendaryExplorer.Startup
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                CommandLineArgs.CreateCLIHandler().Invoke(args);
+                CommandLineArgs.CreateCLIHandler().InvokeAsync(args);
             });
         }
     }

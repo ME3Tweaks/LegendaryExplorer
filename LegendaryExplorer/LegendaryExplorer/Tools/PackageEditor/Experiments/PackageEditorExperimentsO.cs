@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Packages;
@@ -319,6 +320,20 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 pew.StatusBar_LeftMostText.Text = $"Wrote {total} lines to {outputFilePath}";
             });
 
+        }
+
+        public static void AssociateAllExtensions()
+        {
+            FileAssociations.EnsureAssociationsSet("pcc", "Mass Effect Series Package File");
+            FileAssociations.EnsureAssociationsSet("sfm", "Mass Effect 1 Package File");
+            FileAssociations.EnsureAssociationsSet("u", "Mass Effect 1 Package File");
+            FileAssociations.EnsureAssociationsSet("upk", "Unreal Package File");
+            FileAssociations.EnsureAssociationsSet("udk", "UDK Package File");
+            FileAssociations.EnsureAssociationsSet("tlk", "Talk Table File");
+            FileAssociations.EnsureAssociationsSet("afc", "Audio File Cache File");
+            FileAssociations.EnsureAssociationsSet("isb", "ISACT Bank File");
+            FileAssociations.EnsureAssociationsSet("dlc", "Mass Effect DLC Mount File");
+            FileAssociations.EnsureAssociationsSet("cnd", "Mass Effect Conditionals File");
         }
     }
 }
