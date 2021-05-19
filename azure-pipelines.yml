@@ -45,7 +45,7 @@ steps:
       Write-Host "Author: $($author)"
       # Set version (LEX)
       # This needs updated, it's totally wrong for .NET 5
-      (Get-Content .\ME3Explorer\Properties\AssemblyInfo.cs).replace("0`"","$(Build.BuildId)`"") | out-file -FilePath .\ME3Explorer\Properties\AssemblyInfo.cs
+      #(Get-Content .\ME3Explorer\Properties\AssemblyInfo.cs).replace("0`"","$(Build.BuildId)`"") | out-file -FilePath .\ME3Explorer\Properties\AssemblyInfo.cs
       # Set version (LegendaryExplorerCore)
       $ver = "TESTING"
       #$xml = [xml](Get-Content .\LegendaryExplorer\LegendaryExplorerCore\LegendaryExplorerCore.csproj)
