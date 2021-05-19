@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -42,7 +43,8 @@ namespace LegendaryExplorer
             // TODO: UPDATER (using JPATCH?)
 
             // Boot single instance
-            if (SingleInstance<App>.InitializeAsFirstInstance("LegendaryExplorer"))
+            bool isFirstInstance = this.InitializeAsFirstInstance("LegendaryExplorer");
+            if (isFirstInstance)
             {
                 // Application bootup is handled in AppBoot class
                 AppBoot.Startup(this);
@@ -77,7 +79,7 @@ namespace LegendaryExplorer
         private void Application_Exit(object sender, ExitEventArgs e)
         {
             // Clean up single instance
-            SingleInstance<App>.Cleanup();
+            SingleInstance.Cleanup();
         }
     }
 }

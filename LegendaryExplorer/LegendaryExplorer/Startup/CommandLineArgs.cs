@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using LegendaryExplorer.DialogueEditor;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.Tools.AssetDatabase;
+using LegendaryExplorer.Tools.ConditionalsEditor;
 using LegendaryExplorer.Tools.FaceFXEditor;
 using LegendaryExplorer.Tools.Meshplorer;
 using LegendaryExplorer.Tools.MountEditor;
@@ -83,6 +84,12 @@ namespace LegendaryExplorer.Startup
                             case ".afc":
                                 OpenTool<SoundplorerWPF>(s => s.LoadFile(file.FullName));
                                 break;
+                            case ".cnd":
+                                var ce = new ConditionalsEditorWindow();
+                                ce.Show();
+                                ce.LoadFile(file.FullName);
+                                break;
+
                         }
                         break;
 

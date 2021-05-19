@@ -186,7 +186,7 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
             return SelectedCond is not null && !string.IsNullOrWhiteSpace(ConditionalTextBox.Text);
         }
 
-        private void LoadFile(string filePath)
+        public void LoadFile(string filePath)
         {
             Conditionals.ClearEx();
             SelectedCond = null;
