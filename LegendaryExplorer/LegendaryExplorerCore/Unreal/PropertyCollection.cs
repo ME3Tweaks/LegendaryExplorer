@@ -155,8 +155,8 @@ namespace LegendaryExplorerCore.Unreal
 
         public static PropertyCollection ReadProps(ExportEntry export, Stream rawStream, string typeName, bool includeNoneProperty = false, bool requireNoneAtEnd = true, IEntry entry = null)
         {
-            EndianReader stream = new EndianReader(rawStream) { Endian = export.FileRef.Endian };
-            PropertyCollection props = new PropertyCollection(export, typeName);
+            var stream = new EndianReader(rawStream) { Endian = export.FileRef.Endian };
+            var props = new PropertyCollection(export, typeName);
             long startPosition = stream.Position;
             IMEPackage pcc = export.FileRef;
             try
@@ -1617,7 +1617,7 @@ namespace LegendaryExplorerCore.Unreal
             }
             else if (count > 0)
             {
-                Value = stream.BaseStream.ReadStringASCIINull(count);
+                Value = stream.BaseStream.ReadStringLatin1Null(count);
             }
             else
             {
@@ -1651,14 +1651,7 @@ namespace LegendaryExplorerCore.Unreal
             }
             else
             {
-                if (pcc.Game == MEGame.ME3)
-                {
-                    stream.WriteUnrealStringUnicode(Value);
-                }
-                else
-                {
-                    stream.WriteUnrealStringASCII(Value);
-                }
+                stream.WriteUnrealString(Value, pcc.Game);
             }
         }
 
@@ -1758,14 +1751,6 @@ namespace LegendaryExplorerCore.Unreal
 
         public byte[] raw;
         public readonly string TypeName;
-
-        public UnknownProperty(NameReference? name = null) : base(name)
-        {
-#if AZURE
-            Assert.Fail("Encountered an unknownproperty!");
-#endif
-            raw = new byte[0];
-        }
 
         public UnknownProperty(EndianReader stream, int size, string typeName = null, NameReference? name = null) : base(name)
         {

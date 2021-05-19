@@ -807,6 +807,10 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsS.ScanStuff(GetPEWindow());
         }
+        private void ReSerializeAllProperties_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsS.ReSerializeAllProperties(GetPEWindow());
+        }
         private void ConvertFileToME3(object sender, RoutedEventArgs e)
         {
             // TODO: IMPLEMENT IN LEX

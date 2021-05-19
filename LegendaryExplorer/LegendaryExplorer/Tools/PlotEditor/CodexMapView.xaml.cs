@@ -328,7 +328,7 @@ namespace LegendaryExplorer.Tools.PlotEditor
             using (var stream = new MemoryStream(export.Data))
             {
                 stream.Seek(dataOffset, SeekOrigin.Begin);
-                var codexMap = BinaryBioCodexMap.Load(stream, pcc.Game == MEGame.ME3 ? Encoding.UTF8 : Encoding.ASCII);
+                var codexMap = BinaryBioCodexMap.Load(stream, pcc.Game is MEGame.ME3 or MEGame.LE3 ? Encoding.UTF8 : Encoding.Latin1);
 
                 CodexPages = InitCollection(codexMap.Pages.OrderBy(pair => pair.Key));
                 CodexSections = InitCollection(codexMap.Sections.OrderBy(pair => pair.Key));

@@ -45,7 +45,7 @@ namespace LegendaryExplorer.Startup
             var file = open;
 
             // Handle file opening
-            if (file != null && file.Exists)
+            if (file?.Exists ?? false)
             {
                 switch(tool)
                 {

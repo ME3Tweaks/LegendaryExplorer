@@ -126,6 +126,14 @@ namespace LegendaryExplorerCore.Gammtek.IO
         }
 
         /// <summary>
+        ///     Writes the bytes in the buffer to the stream.
+        /// </summary>
+        public override void Write(ReadOnlySpan<byte> buffer)
+        {
+            _source.Write(buffer);
+        }
+
+        /// <summary>
         ///     Writes a region of a byte array to the current stream.
         /// </summary>
         public override void Write(byte[] buffer, int index, int count)
@@ -242,7 +250,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
         /// <summary>
         ///     Directly writes an ASCII string to the stream. Must use a multiple of 4
         /// </summary>
-        public void WriteStringASCII(string asciistr)
+        public void WriteStringLatin1(string asciistr)
         {
             //this will be important to write magic numbers backwards.
             //if (asciistr.Length % 4 != 0) throw new Exception("Cannot write endian-aware strings that are not multiples of 4");
@@ -252,7 +260,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
             //    charsets.Add(asciistr.Substring(i * 4, 4).ToCharArray());
             //    if (Endian == Endian.Big) charsets[i].Reverse();
             //}
-            _source.BaseStream.WriteStringASCII(asciistr);
+            _source.BaseStream.WriteStringLatin1(asciistr);
             //foreach (var charset in charsets)
             //{
             //    foreach (var c in charset)
@@ -263,6 +271,11 @@ namespace LegendaryExplorerCore.Gammtek.IO
         }
 
         public void WriteFromBuffer(byte[] buffer)
+        {
+            Write(buffer);
+        }
+
+        public void WriteFromBuffer(ReadOnlySpan<byte> buffer)
         {
             Write(buffer);
         }

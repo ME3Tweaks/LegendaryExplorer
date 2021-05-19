@@ -255,7 +255,7 @@ namespace LegendaryExplorer.ToolsetDev
                 }
                 else if (strLength > 0)
                 {
-                    inStream.ReadStringASCIINull(strLength); //-1 cause we also read trailing null.
+                    inStream.ReadStringLatin1Null(strLength); //-1 cause we also read trailing null.
                     if (pcc.Game != MEGame.ME2)
                     {
                         inStream.ReadInt64(); //Read 8 bytes

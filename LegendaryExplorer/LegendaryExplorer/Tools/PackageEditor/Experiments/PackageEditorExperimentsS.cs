@@ -34,14 +34,88 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
     /// </summary>
     public class PackageEditorExperimentsS
     {
+        public static IEnumerable<string> EnumerateOfficialFiles(params MEGame[] games)
+        {
+            foreach (MEGame game in games)
+            {
+                var filePaths = MELoadedFiles.GetOfficialFiles(game);
+                //preload base files for faster scanning
+                using var baseFiles = MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(game)
+                                                                                   .Select(f => Path.Combine(MEDirectories.GetCookedPath(game), f)));
+                if (game is MEGame.ME3)
+                {
+                    baseFiles.Add(MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "BIOP_MP_COMMON.pcc")));
+                }
+
+                foreach (string filePath in filePaths)
+                {
+                    yield return filePath;
+                }
+            }
+        }
+
+        public static void ReSerializeAllProperties(PackageEditorWindow pewpf)
+        {
+            pewpf.IsBusy = true;
+            pewpf.BusyText = "Re-serializing all properties in LE";
+            var interestingExports = new List<EntryStringPair>();
+            Task.Run(() =>
+            {
+                foreach (string filePath in EnumerateOfficialFiles(MEGame.LE1, MEGame.LE2, MEGame.LE3))
+                {
+                    using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
+                    foreach (ExportEntry export in pcc.Exports)
+                    {
+                        try
+                        {
+                            var original = export.Data;
+                            PropertyCollection props = export.GetProperties();
+                            export.WriteProperties(props);
+                            if (!export.DataReadOnly.SequenceEqual(original))
+                            {
+                                interestingExports.Add(export);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            interestingExports.Add(new EntryStringPair(export, e.Message));
+                        }
+                    }
+
+                    //if (interestingExports.Count >= 2)
+                    //{
+                    //    return;
+                    //}
+                }
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                //the base files will have been in memory for so long at this point that they take a looong time to clear out automatically, so force it.
+                MemoryAnalyzer.ForceFullGC(true);
+                pewpf.IsBusy = false;
+                var listDlg = new ListDialog(interestingExports, "Interesting Exports", "", pewpf)
+                {
+                    DoubleClickEntryHandler = entryItem =>
+                    {
+                        if (entryItem?.Entry is IEntry entryToSelect)
+                        {
+                            var p = new PackageEditorWindow();
+                            p.Show();
+                            p.LoadFile(entryToSelect.FileRef.FilePath, entryToSelect.UIndex);
+                            p.Activate();
+                        }
+                    }
+                };
+                listDlg.Show();
+            });
+        }
+
 
         class OpcodeInfo
         {
-            public readonly HashSet<string> PropTypes = new HashSet<string>();
-            public readonly HashSet<string> PropLocations = new HashSet<string>();
+            public readonly HashSet<string> PropTypes = new();
+            public readonly HashSet<string> PropLocations = new();
 
-            public readonly List<(string filePath, int uIndex, int position)> Usages =
-                new List<(string filePath, int uIndex, int position)>();
+            public readonly List<(string filePath, int uIndex, int position)> Usages = new();
         }
         public static void ScanStuff(PackageEditorWindow pewpf)
         {

@@ -17,7 +17,7 @@ namespace LegendaryExplorerCore.ME1
         {
             if (File.Exists(fileName))
             {
-                using IMEPackage pcc = MEPackageHandler.OpenMEPackage(fileName, forceLoadFromDisk: true); //do not cache this in the packages list.
+                using IMEPackage pcc = MEPackageHandler.OpenLE1Package(fileName, forceLoadFromDisk: true); //do not cache this in the packages list.
                 tlkList.Add(new ME1TalkFile(pcc, index));
             }
         }

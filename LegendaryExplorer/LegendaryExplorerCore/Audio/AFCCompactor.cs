@@ -321,7 +321,7 @@ namespace LegendaryExplorerCore.Audio
 
                     // Read header
                     currentOpenAfcStream.Position = referencedAudio.audioOffset;
-                    var header = currentOpenAfcStream.ReadStringASCII(4);
+                    var header = currentOpenAfcStream.ReadStringLatin1(4);
                     if (header != "RIFF")
                     {
                         brokenAudio.Add((referencedAudio, $"Audio pointer doesn't point to data that doesn't start with the RIFF tag. This is an invalid pointer as all audio will start with RIFF. AFC {referencedAudio.afcName} @ 0x{referencedAudio.audioOffset:X8}"));

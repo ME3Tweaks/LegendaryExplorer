@@ -151,7 +151,7 @@ namespace LegendaryExplorerCore.Packages
                 string relativePath = Path.GetFullPath(pcc.FilePath).Substring(Path.GetFullPath(ME3Directory.DefaultGamePath).Length);
                 using var bin = MemoryManager.GetMemoryStream();
                 bin.WriteInt32(originalLength);
-                bin.WriteStringASCIINull(relativePath);
+                bin.WriteStringLatin1Null(relativePath);
                 File.WriteAllBytes(Path.Combine(ME3Directory.ExecutableFolder, "tocupdate"), bin.ToArray());
                 // oh boy...
                 NotifyRunningTOCUpdateRequired();

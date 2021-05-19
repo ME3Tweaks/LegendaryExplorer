@@ -51,7 +51,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 {
                     guidOffsetFromEnd += 4;
                 }
-                TextureGuid = new Guid(Export.DataReadOnly.Skip(Export.DataSize - guidOffsetFromEnd).Take(16).ToArray());
+                TextureGuid = new Guid(Export.DataReadOnly.Slice(Export.DataSize - guidOffsetFromEnd, 16));
             }
         }
 
