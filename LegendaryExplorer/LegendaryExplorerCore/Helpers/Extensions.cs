@@ -526,7 +526,7 @@ namespace LegendaryExplorerCore.Helpers
 
         public static void WriteUnrealString(this EndianWriter stream, string value, MEGame game)
         {
-            if (gameIsGame3() || game is MEGame.LE1 or MEGame.LE2 && !value.IsLatin1())
+            if (game.IsGame3() || game is MEGame.LE1 or MEGame.LE2 && !value.IsLatin1())
             {
                 stream.WriteUnrealStringUnicode(value);
             }
