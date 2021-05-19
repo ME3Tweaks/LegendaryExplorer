@@ -57,7 +57,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         {
             if (rootPathOverride == null) rootPathOverride = DefaultGamePath;
             if (rootPathOverride == null) return null; // There is no usable root path
-            return Path.Combine(GetExecutableDirectory(rootPathOverride), "asi");
+            return Path.Combine(GetExecutableDirectory(rootPathOverride), "ASI");
         }
 
         public static string TextureModMarkerPath => GetTextureModMarkerPath();
@@ -73,6 +73,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         public static readonly ReadOnlyCollection<string> VanillaDlls = Array.AsReadOnly(new[]
         {
             "amd_ags_x64.dll",
+            "bink2w64_original.dll",
             "bink2w64.dll",
             "dbdata.dll",
             "oo2core_8_win64.dll",

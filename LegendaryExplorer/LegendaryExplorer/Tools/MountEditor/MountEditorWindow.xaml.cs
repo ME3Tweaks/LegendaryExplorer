@@ -127,7 +127,7 @@ namespace LegendaryExplorer.Tools.MountEditor
 
         }
 
-        private void LoadFile(string fileName)
+        public void LoadFile(string fileName)
         {
             var mf = new MountFile(fileName);
             SelectedGame = Games.First(uig => uig.Game == mf.Game);

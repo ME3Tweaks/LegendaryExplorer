@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.CommandLine;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime;
@@ -80,7 +82,7 @@ namespace LegendaryExplorer.Startup
             app.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             app.Dispatcher.UnhandledException += app.OnDispatcherUnhandledException; //only start handling them after bootup
 
-            Action actionDelegate = null;
+            RootCommand cliHandler = CommandLineArgs.CreateCLIHandler();
             Task.Run(() =>
             {
                 //Fetch core count from WMI - this can take like 1-2 seconds
@@ -94,13 +96,12 @@ namespace LegendaryExplorer.Startup
                 }
                 catch
                 {
-                    //???
+                    Debug.WriteLine("Unable to determine core count from WMI, defaulting to 2");
                 }
 
-                actionDelegate = HandleCommandLineJumplistCall(Environment.GetCommandLineArgs(), out int exitCode);
-                if (actionDelegate == null)
+                if (cliHandler == null) // TODO: Get rid of this because it will never be null
                 {
-                    app.Shutdown(exitCode);
+                    app.Shutdown(0);
                     LEXSplashScreen?.Close();
                 }
                 else
@@ -120,70 +121,10 @@ namespace LegendaryExplorer.Startup
                 app.ShutdownMode = ShutdownMode.OnMainWindowClose;
                 var mainWindow = new MainWindow();
                 mainWindow.Show();
-                actionDelegate?.Invoke();
+
+                // If you get any of the arguments "wrong", this command will not be invoked
+                cliHandler.InvokeAsync(Environment.GetCommandLineArgs());
             });
-        }
-
-        private static Action HandleCommandLineJumplistCall(string[] args, out int exitCode)
-        {
-            exitCode = 0;
-            if (args.Any())
-            {
-                // Non-single file have dll as first parameter
-                if (Path.GetFileName(args[0]) == "LegendaryExplorer.dll")
-                {
-                    if (args.Length == 1) return () => { };
-                    var l = args.ToList();
-                    l.RemoveAt(0);
-                    args = l.ToArray();
-                }
-            }
-            else
-            {
-                return () => { };
-            }
-
-            var arg = args[0];
-
-            // JUMPLIST
-            Action CreateJumplistAction<T>(Action<T> toolAction = null) // I heard you like actions
-                where T : WPFBase, new()
-            {
-                return () =>
-                {
-                    var editor = new T();
-                    editor.Show();
-                    toolAction?.Invoke(editor);
-                    editor.Activate();
-                };
-            }
-
-            // TODO: Add more detailed CLI args. EG: -PackageEditor %1, -TLKEditor %1, -UIndex 112
-            switch (arg)
-            {
-                // Tool must have a parameterless constructor for this to work
-                case "-PackageEditor": return CreateJumplistAction<PackageEditorWindow>();
-                case "-SequenceEditor": return CreateJumplistAction<SequenceEditorWPF>();
-                case "-Soundplorer": return CreateJumplistAction<SoundplorerWPF>();
-                case "-DialogueEditor": return CreateJumplistAction<DialogueEditorWindow>();
-                case "-PathfindingEditor": return CreateJumplistAction<Tools.PathfindingEditor.PathfindingEditorWindow>();
-                case "-Meshplorer": return CreateJumplistAction<Tools.Meshplorer.MeshplorerWindow>();
-            }
-
-            // OPENING PACKAGE FILE DIRECTLY
-            string ending = Path.GetExtension(arg).ToLower();
-            switch (ending)
-            {
-                case ".pcc":
-                case ".sfm":
-                case ".upk":
-                case ".u":
-                case ".udk":
-                    return CreateJumplistAction<PackageEditorWindow>((p) => p.LoadFile(arg));
-                //return 2; //Do not signal bring main forward
-            }
-            exitCode = 0; //is this even used?
-            return null;
         }
 
         private static void initCoreLib()
@@ -221,7 +162,7 @@ namespace LegendaryExplorer.Startup
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                HandleCommandLineJumplistCall(args, out _)?.Invoke();
+                CommandLineArgs.CreateCLIHandler().Invoke(args);
             });
         }
     }
