@@ -101,7 +101,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref PylonListStart);
                 sc.Serialize(ref PylonListEnd);
             }
-            if (sc.Game is MEGame.ME3 or MEGame.LE3)
+            if (sc.Game.IsGame3())
             {
                 sc.Serialize(ref guidToIntMap, SCExt.Serialize, SCExt.Serialize);
                 sc.Serialize(ref CoverLinks, SCExt.Serialize);
@@ -130,7 +130,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref dummy);
             }
 
-            if (sc.Game is MEGame.ME1 or MEGame.LE1)
+            if (sc.Game.IsGame1())
             {
                 sc.Serialize(ref ArtPlaceable1);
                 sc.Serialize(ref ArtPlaceable2);
@@ -183,13 +183,13 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 uIndexes.Add((PylonListStart, nameof(PylonListStart)));
                 uIndexes.Add((PylonListEnd, nameof(PylonListEnd)));
             }
-            if (game is MEGame.ME3 or MEGame.LE3)
+            if (game.IsGame3())
             {
                 uIndexes.AddRange(CoverLinks.Select((u, i) => (u, $"{nameof(CoverLinks)}[{i}]")));
                 uIndexes.AddRange(NavPoints.Select((u, i) => (u, $"{nameof(NavPoints)}[{i}]")));
             }
             uIndexes.AddRange(CrossLevelActors.Select((u, i) => (u, $"{nameof(CrossLevelActors)}[{i}]")));
-            if (game is MEGame.ME1 or MEGame.LE1)
+            if (game.IsGame1())
             {
                 uIndexes.Add((ArtPlaceable1, nameof(ArtPlaceable1)));
                 uIndexes.Add((ArtPlaceable2, nameof(ArtPlaceable2)));

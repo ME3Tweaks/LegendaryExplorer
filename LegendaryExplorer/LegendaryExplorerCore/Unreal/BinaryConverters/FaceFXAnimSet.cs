@@ -211,7 +211,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             else
             {
                 sc.ms.Writer.WriteInt32(str.Length);
-                sc.ms.Writer.WriteStringASCII(str);
+                sc.ms.Writer.WriteStringLatin1(str);
             }
         }
         public static void Serialize(this SerializingContainer2 sc, ref FaceFXAnimSet.HNode node)

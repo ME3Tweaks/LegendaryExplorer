@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using LegendaryExplorer.SharedUI.Bases;
+using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
@@ -105,7 +106,7 @@ namespace LegendaryExplorer.Tools.MountEditor
 
         }
 
-        private void LoadFile(string fileName)
+        public void LoadFile(string fileName)
         {
             loadingNewData = true;
             var mf = new MountFile(fileName);
@@ -265,7 +266,7 @@ namespace LegendaryExplorer.Tools.MountEditor
         {
             if (int.TryParse(TLKID_TextBox.Text, out int tlkValue))
             {
-                CurrentTLKIDString = IsME2 ? ME2TalkFiles.findDataById(tlkValue) : ME3TalkFiles.findDataById(tlkValue);
+                CurrentTLKIDString = TLKManagerWPF.GlobalFindStrRefbyID(tlkValue, SelectedGame.Game);
             }
         }
 

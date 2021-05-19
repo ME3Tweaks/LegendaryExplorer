@@ -217,7 +217,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
 
             if (length > 0)
             {
-                return Encoding.ASCII.GetString(data, position + 4, length);
+                return Encoding.Latin1.GetString(data, position + 4, length);
             }
             else
             {
@@ -237,7 +237,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
             {
                 return "";
             }
-            return length < 0 ? _source.BaseStream.ReadStringUnicodeNull(length * -2) : _source.BaseStream.ReadStringASCIINull(length);
+            return length < 0 ? _source.BaseStream.ReadStringUnicodeNull(length * -2) : _source.BaseStream.ReadStringLatin1Null(length);
         }
 
         /// <summary>
@@ -750,9 +750,8 @@ namespace LegendaryExplorerCore.Gammtek.IO
         /// Reads an int32 from the buffer at the specified position with the specified endianness.
         /// </summary>
         /// <returns></returns>
-        public static int ToInt32(ReadOnlyCollection<byte> buffer, int offset, Endian endianness)
+        public static int ToInt32(ReadOnlySpan<byte> buffer, int offset, Endian endianness)
         {
-            var arr = buffer.ToArray();
             var readMagic = (buffer[offset + 3] << 24) + (buffer[offset + 2] << 16) + (buffer[offset + 1] <<
                             8) + buffer[offset];
             // Original Logic:

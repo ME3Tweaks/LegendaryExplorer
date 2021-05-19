@@ -57,9 +57,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             List<(UIndex, string)> uIndices = base.GetUIndexes(game);
             uIndices.Add((Children, "ChildListStart"));
 
-            if (Export.ClassName == "Function" || Export.ClassName == "State")
+            if (Export.ClassName is "Function" or "State")
             {
-                if (Export.Game is MEGame.ME3 or MEGame.LE3)
+                if (Export.Game == MEGame.ME3 || Export.Game.IsLEGame())
                 {
                     try
                     {
@@ -103,7 +103,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             if (Export.ClassName == "Function" || Export.ClassName == "State")
             {
-                if (Export.Game is MEGame.ME3 or MEGame.LE3)
+                if (Export.Game is MEGame.ME3 || Export.Game.IsLEGame())
                 {
                     try
                     {

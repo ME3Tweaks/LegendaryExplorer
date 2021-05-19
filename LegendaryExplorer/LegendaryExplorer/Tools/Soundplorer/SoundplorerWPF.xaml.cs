@@ -225,7 +225,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
 
                 if (fileStream.Position < fileStream.Length - 4)
                 {
-                    var firstMagic = fileStream.ReadStringASCII(4);
+                    var firstMagic = fileStream.ReadStringLatin1(4);
                     if (firstMagic == "RIFX") endianness = Endian.Big;
                     if (firstMagic == "RIFF") endianness = Endian.Little;
                     if (endianness == null)
@@ -246,7 +246,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
                     int offset = (int)fileStream.Position;
                     TaskbarText = $"Loading AFC: {Path.GetFileName(LoadedAFCFile)} ({(int)((fileStream.Position * 100.0) / fileStream.Length)}%)";
 
-                    string readStr = fileStream.ReadStringASCII(4);
+                    string readStr = fileStream.ReadStringLatin1(4);
                     if (readStr != "RIFF" && readStr != "RIFX")
                     {
                         //keep scanning

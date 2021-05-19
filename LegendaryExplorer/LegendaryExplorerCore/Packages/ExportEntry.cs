@@ -514,9 +514,9 @@ namespace LegendaryExplorerCore.Packages
         protected byte[] _data;
 
         /// <summary>
-        /// Returns a read-only copy of Data. This is a much more efficient than cloning with Data. Experimentally supported for now
+        /// Returns a ReadOnlySpan of Data. This is a much more efficient than cloning with Data. Experimentally supported for now
         /// </summary>
-        public ReadOnlyCollection<byte> DataReadOnly => Array.AsReadOnly(_data);
+        public ReadOnlySpan<byte> DataReadOnly => _data.AsSpan();
 
         /// <summary>
         /// RETURNS A CLONE
@@ -670,15 +670,15 @@ namespace LegendaryExplorerCore.Packages
 
             int start = 0;
 
-            if ((Game is MEGame.ME3 or MEGame.UDK || Game.IsLEGame()) && ClassName == "DominantDirectionalLightComponent" || ClassName == "DominantSpotLightComponent")
-            {
-                //DominantLightShadowMap, which goes before everything for some reason
-                int count = EndianReader.ToInt32(_data, 0, FileRef.Endian);
-                start += count * 2 + 4;
-            }
             
             if (!IsDefaultObject && this.IsA("Component") || (Game == MEGame.UDK && ClassName.EndsWith("Component")))
             {
+                if (Game >= MEGame.ME3 && ClassName == "DominantDirectionalLightComponent" || ClassName == "DominantSpotLightComponent")
+                {
+                    //DominantLightShadowMap, which goes before everything for some reason
+                    int count = EndianReader.ToInt32(_data, 0, FileRef.Endian);
+                    start += count * 2 + 4;
+                }
                 start += 4; //TemplateOwnerClass
                 if (ParentFullPath.Contains("Default__"))
                 {

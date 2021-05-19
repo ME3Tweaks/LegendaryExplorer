@@ -678,7 +678,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
                 var tlks = new List<LoadedTLK>();
                 foreach (string tlk in tlkfiles)
                 {
-                    using (IMEPackage upk = MEPackageHandler.OpenMEPackage(tlk))
+                    using (IMEPackage upk = MEPackageHandler.OpenLE1Package(tlk))
                     {
                         foreach (ExportEntry exp in upk.Exports.Where(exp => exp.ClassName == "BioTlkFile"))
                         {

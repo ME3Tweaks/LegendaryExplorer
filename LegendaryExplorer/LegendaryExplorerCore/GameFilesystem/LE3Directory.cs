@@ -57,7 +57,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         {
             if (rootPathOverride == null) rootPathOverride = DefaultGamePath;
             if (rootPathOverride == null) return null; // There is no usable root path
-            return null; //Path.Combine(GetExecutableDirectory(rootPathOverride), "asi"); //TODO: Implement in LEX?
+            return Path.Combine(GetExecutableDirectory(rootPathOverride), "ASI");
         }
 
         public static string TextureModMarkerPath => GetTextureModMarkerPath();
@@ -73,6 +73,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         public static ReadOnlyCollection<string> VanillaDlls = Array.AsReadOnly(new []
         {
             "amd_ags_x64.dll",
+            "bink2w64_original.dll",
             "bink2w64.dll",
             "dbdata.dll",
             "oo2core_8_win64.dll",
@@ -135,52 +136,52 @@ namespace LegendaryExplorerCore.GameFilesystem
             }
         }
 
-        public static readonly CaseInsensitiveDictionary<string> OfficialDLCNames = new CaseInsensitiveDictionary<string>
+        public static readonly CaseInsensitiveDictionary<string> OfficialDLCNames = new()
         {
-            ["DLC_HEN_PR"] = "From Ashes",
-            ["DLC_OnlinePassHidCE"] = "Collectors Edition Content",
-            ["DLC_CON_END"] = "Extended Cut",
-            ["DLC_CON_GUN01"] = "Firefight Pack",
-            ["DLC_EXP_Pack001"] = "Leviathan",
-            ["DLC_UPD_Patch01"] = "Multiplayer Balance Changes Cache 1",
-            ["DLC_CON_GUN02"] = "Groundside Resistance Pack",
-            ["DLC_EXP_Pack002"] = "Omega",
             ["DLC_CON_APP01"] = "Alternate Appearance Pack 1",
-            ["DLC_UPD_Patch02"] = "Multiplayer Balance Changes Cache 2",
-            ["DLC_EXP_Pack003_Base"] = "Citadel - Part I",
-            ["DLC_EXP_Pack003"] = "Citadel - Part II",
             ["DLC_CON_DH1"] = "Genesis 2",
-            ["DLC_CON_PRO1"] = "Unknown",
-            ["DLC_CON_PRO2"] = "Unknown",
-            ["DLC_CON_PRO3"] = "Unknown",
-            ["DLC_CON_PRO4"] = "Unknown",
-            ["DLC_CON_PRO5"] = "Unknown",
-            ["DLC_CON_PRO6"] = "Unknown",
-            ["DLC_METR_Patch01"] = "Day 1 Patch?"
+            ["DLC_CON_END"] = "Extended Cut",
+            ["DLC_HEN_PR"] = "From Ashes",
+            ["DLC_CON_GUN01"] = "Firefight Pack",
+            ["DLC_CON_GUN02"] = "Groundside Resistance Pack",
+            ["DLC_CON_PRO1"] = "N7 Warfare Gear",
+            ["DLC_CON_PRO2"] = "M55 Argus",
+            ["DLC_CON_PRO3"] = "AT12 Raider, M55 Argus ",
+            ["DLC_CON_PRO4"] = "M90 Indra ",
+            ["DLC_CON_PRO5"] = "Reckoner Knight",
+            ["DLC_CON_PRO6"] = "Chakram Launcher",
+            ["DLC_EXP_Pack001"] = "Leviathan",
+            ["DLC_EXP_Pack002"] = "Omega",
+            ["DLC_EXP_Pack003"] = "Citadel - Part II",
+            ["DLC_EXP_Pack003_Base"] = "Citadel - Part I",
+            ["DLC_METR_Patch01"] = "Legendary Edition Patch",
+            ["DLC_OnlinePassHidCE"] = "Collectors Edition Content",
+            ["DLC_UPD_Patch01"] = "Multiplayer Balance Changes Cache 1",
+            ["DLC_UPD_Patch02"] = "Multiplayer Balance Changes Cache 2",
         };
 
         public static readonly ReadOnlyCollection<string> OfficialDLC = Array.AsReadOnly(new[]
         {
-            "DLC_HEN_PR",
-            "DLC_OnlinePassHidCE",
-            "DLC_CON_END",
-            "DLC_CON_GUN01",
-            "DLC_EXP_Pack001",
-            "DLC_UPD_Patch01",
-            "DLC_CON_GUN02",
-            "DLC_EXP_Pack002",
-            "DLC_CON_APP01",
-            "DLC_UPD_Patch02",
-            "DLC_EXP_Pack003_Base",
-            "DLC_EXP_Pack003",
-            "DLC_CON_DH1",
-            "DLC_CON_PRO1",
-            "DLC_CON_PRO2",
-            "DLC_CON_PRO3",
-            "DLC_CON_PRO4",
-            "DLC_CON_PRO5",
-            "DLC_CON_PRO6",
-            "DLC_METR_Patch01"
+            "DLC_HEN_PR", //2000
+            "DLC_OnlinePassHidCE", //2040
+            "DLC_CON_PRO1", //2060
+            "DLC_CON_PRO2", //2070
+            "DLC_CON_PRO3", //2080
+            "DLC_CON_PRO4", //2090
+            "DLC_CON_PRO5", //2100
+            "DLC_CON_PRO6", //2110
+            "DLC_CON_END", //2900
+            "DLC_CON_GUN01", //2950
+            "DLC_EXP_Pack001", //2999
+            "DLC_UPD_Patch01", //3025
+            "DLC_CON_GUN02", //3100
+            "DLC_EXP_Pack002", //3200
+            "DLC_CON_APP01", //3210
+            "DLC_UPD_Patch02", //3220
+            "DLC_EXP_Pack003_Base", //3249
+            "DLC_EXP_Pack003", //3250
+            "DLC_CON_DH1", //3300
+            "DLC_METR_Patch01" //4000
         });
     }
 }

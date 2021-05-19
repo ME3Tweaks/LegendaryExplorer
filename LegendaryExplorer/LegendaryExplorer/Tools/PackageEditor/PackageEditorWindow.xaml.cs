@@ -1037,7 +1037,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 long currentPosition = ms.Position;
                 if (foldernameStrLen > 0)
                 {
-                    string str = ms.ReadStringASCII(foldernameStrLen - 1);
+                    string str = ms.ReadStringLatin1(foldernameStrLen - 1);
                     items.Add($"0x{currentPosition:X2} Folder name:  {str}");
                     ms.ReadByte();
                 }

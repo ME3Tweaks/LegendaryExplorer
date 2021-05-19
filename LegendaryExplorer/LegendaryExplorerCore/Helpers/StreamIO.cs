@@ -74,6 +74,11 @@ namespace LegendaryExplorerCore.Helpers
             stream.Write(buffer, 0, buffer.Length);
         }
 
+        public static void WriteFromBuffer(this Stream stream, ReadOnlySpan<byte> buffer)
+        {
+            stream.Write(buffer);
+        }
+
         public static Guid ReadGuid(this EndianReader stream)
         {
             var a = stream.ReadInt32();
@@ -161,13 +166,13 @@ namespace LegendaryExplorerCore.Helpers
             WriteFromStream(stream, inputStream, (int)count);
         }
 
-        public static string ReadStringASCII(this Stream stream, int count)
+        public static string ReadStringLatin1(this Stream stream, int count)
         {
             byte[] buffer = stream.ReadToBuffer(count);
-            return Encoding.ASCII.GetString(buffer);
+            return Encoding.Latin1.GetString(buffer);
         }
 
-        public static string ReadStringASCIINull(this Stream stream)
+        public static string ReadStringLatin1Null(this Stream stream)
         {
             string str = "";
             for (; ; )
@@ -180,9 +185,9 @@ namespace LegendaryExplorerCore.Helpers
             return str;
         }
 
-        public static string ReadStringASCIINull(this Stream stream, int count)
+        public static string ReadStringLatin1Null(this Stream stream, int count)
         {
-            return stream.ReadStringASCII(count).Trim('\0');
+            return stream.ReadStringLatin1(count).Trim('\0');
         }
 
         public static string ReadStringUnicode(this Stream stream, int count)
@@ -196,24 +201,24 @@ namespace LegendaryExplorerCore.Helpers
             return stream.ReadStringUnicode(count).Trim('\0');
         }
 
-        public static void WriteStringASCII(this Stream stream, string str)
+        public static void WriteStringLatin1(this Stream stream, string str)
         {
-            stream.Write(Encoding.ASCII.GetBytes(str), 0, Encoding.ASCII.GetByteCount(str));
+            stream.Write(Encoding.Latin1.GetBytes(str), 0, Encoding.Latin1.GetByteCount(str));
         }
 
-        public static void WriteStringASCIINull(this Stream stream, string str)
+        public static void WriteStringLatin1Null(this Stream stream, string str)
         {
-            stream.WriteStringASCII(str + "\0");
+            stream.WriteStringLatin1(str + "\0");
         }
 
-        public static void WriteStringASCII(this EndianWriter stream, string str)
+        public static void WriteStringLatin1(this EndianWriter stream, string str)
         {
-            stream.Write(Encoding.ASCII.GetBytes(str), 0, Encoding.ASCII.GetByteCount(str));
+            stream.Write(Encoding.Latin1.GetBytes(str), 0, Encoding.Latin1.GetByteCount(str));
         }
 
-        public static void WriteStringASCIINull(this EndianWriter stream, string str)
+        public static void WriteStringLatin1Null(this EndianWriter stream, string str)
         {
-            stream.WriteStringASCII(str + "\0");
+            stream.WriteStringLatin1(str + "\0");
         }
 
         public static void WriteStringUnicode(this Stream stream, string str)

@@ -57,7 +57,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         {
             if (rootPathOverride == null) rootPathOverride = DefaultGamePath;
             if (rootPathOverride == null) return null; // There is no usable root path
-            return Path.Combine(GetExecutableDirectory(rootPathOverride), "asi");
+            return Path.Combine(GetExecutableDirectory(rootPathOverride), "ASI");
         }
 
         public static string TextureModMarkerPath => GetTextureModMarkerPath();
@@ -73,6 +73,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         public static readonly ReadOnlyCollection<string> VanillaDlls = Array.AsReadOnly(new[]
         {
             "amd_ags_x64.dll",
+            "bink2w64_original.dll",
             "bink2w64.dll",
             "dbdata.dll",
             "oo2core_8_win64.dll",
@@ -132,9 +133,10 @@ namespace LegendaryExplorerCore.GameFilesystem
             }
         }
 
-        public static readonly CaseInsensitiveDictionary<string> OfficialDLCNames = new CaseInsensitiveDictionary<string>
+        public static readonly CaseInsensitiveDictionary<string> OfficialDLCNames = new()
         {
-            ["DLC_CER_01"] = "Aegis Pack",
+            ["DLC_00_Shared"] = "Shared TLK",
+            ["DLC_CER_01"] = "Cerberus Network",
             ["DLC_CER_02"] = "Aegis Pack",
             ["DLC_CER_Arc"] = "Arc Projector",
             ["DLC_CON_Pack01"] = "Alternate Appearance Pack 1",
@@ -146,35 +148,36 @@ namespace LegendaryExplorerCore.GameFilesystem
             ["DLC_HEN_VT"] = "Zaeed - The Price of Revenge",
             ["DLC_MCR_01"] = "Firepower pack",
             ["DLC_MCR_03"] = "Equalizer pack",
+            ["DLC_METR_Patch01"] = "Legendary Edition Patch",
             ["DLC_PRE_Cerberus"] = "Cerberus Weapon and Armor",
             ["DLC_PRE_Collectors"] = "Collectors' Weapon and Armor",
             ["DLC_PRE_DA"] = "Blood Dragon Armor",
-            ["DLC_PRE_Terminus"] = "Terminus Weapon and Armor",
             ["DLC_PRE_General"] = "Inferno Armor",
             ["DLC_PRE_Incisor"] = "M-29 Incisor",
+            ["DLC_PRE_Terminus"] = "Terminus Weapon and Armor",
             ["DLC_PRO_Gulp01"] = "Sentry Interface",
             ["DLC_PRO_Pepper01"] = "Umbra Visor",
             ["DLC_PRO_Pepper02"] = "Recon Hood",
             ["DLC_UNC_Hammer01"] = "Firewalker Pack",
             ["DLC_UNC_Moment01"] = "Normandy Crash Site",
             ["DLC_UNC_Pack01"] = "Overlord",
-            ["DLC_00_Shared"] = "Shared TLK",
-            ["DLC_METR_Patch01"] = "Day 1 Patch",
-            ["DLC_UPD_Patch01"] = "Patch",
-            ["DLC_UPD_Patch02"] = "Patch",
-            ["DLC_UPD_Patch03"] = "Patch",
+            ["DLC_UPD_Patch01"] = "Patch 1",
+            ["DLC_UPD_Patch02"] = "Patch 2",
+            ["DLC_UPD_Patch03"] = "Patch 3",
         };
 
         public static readonly ReadOnlyCollection<string> OfficialDLC = Array.AsReadOnly(new[]
         {
+            "DLC_00_Shared", //0
             "DLC_UNC_Moment01", //95
             "DLC_HEN_VT", //100
+            "DLC_PRE_Incisor", //104
             "DLC_PRE_Cerberus", //105
             "DLC_PRE_Collectors", //106
             "DLC_PRE_DA", //107
             "DLC_PRE_Terminus", //108
-            "DLC_PRE_General",
-            "DLC_PRE_Incisor",
+            "DLC_PRE_General", //109
+            "DLC_CER_01", //110
             "DLC_PRO_Gulp01", //111
             "DLC_PRO_Pepper01", //112
             "DLC_PRO_Pepper02", //113
@@ -182,21 +185,18 @@ namespace LegendaryExplorerCore.GameFilesystem
             "DLC_UNC_Hammer01", //118
             "DLC_HEN_MT", //119
             "DLC_CON_Pack01", //125
+            "DLC_MCR_03", //128
             "DLC_UNC_Pack01", //132
-            "DLC_CER_01",
-            "DLC_CER_02",
+            "DLC_CER_02", //134
             "DLC_MCR_01", //136
-            "DLC_MCR_03",
             "DLC_EXP_Part01", //300
             "DLC_DHME1", //375
             "DLC_CON_Pack02", //380
             "DLC_EXP_Part02", //400
-            "DLC_00_Shared",
-            "DLC_METR_Patch01",
-            "DLC_UPD_Patch01",
-            "DLC_UPD_Patch02",
-            "DLC_UPD_Patch03"
-
+            "DLC_UPD_Patch01", //1000
+            "DLC_UPD_Patch02", //1010
+            "DLC_UPD_Patch03", //1020
+            "DLC_METR_Patch01", //2000
         });
     }
 }

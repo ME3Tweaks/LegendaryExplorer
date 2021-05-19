@@ -296,7 +296,7 @@ namespace LegendaryExplorerCore.GameFilesystem
             ms.WriteInt32(TLKID); // 0x00 after Friendly Name: srFriendly Name
 
             //@ 0x00 After TLKID - FolderName
-            ms.WriteUnrealStringASCII(ME2Only_DLCFolderName); // CodeName
+            ms.WriteUnrealStringLatin1(ME2Only_DLCFolderName); // CodeName
             ms.WriteInt32(0x0); // Min Build Version
             ms.WriteInt32(TLKID); // Package Name
         }
@@ -330,14 +330,14 @@ namespace LegendaryExplorerCore.GameFilesystem
 
             //@ 0x2C - Common Name
             //ms.WriteInt32(commonname.Length);
-            ms.WriteUnrealStringASCII(ME2Only_DLCHumanName);
+            ms.WriteUnrealStringLatin1(ME2Only_DLCHumanName);
 
             //@ 0x00 After CommonName - TLK ID
             ms.WriteInt32(TLKID);
 
             //@ 0x00 After TLKID - FolderName
             //ms.WriteInt32(dlcfolder.Length);
-            ms.WriteUnrealStringASCII(ME2Only_DLCFolderName);
+            ms.WriteUnrealStringLatin1(ME2Only_DLCFolderName);
 
             //@ Final 4 bytes
             ms.WriteInt32(0x0);

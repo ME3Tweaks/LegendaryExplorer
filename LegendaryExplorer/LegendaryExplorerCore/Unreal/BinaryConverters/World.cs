@@ -42,7 +42,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             int dummy = 0;
             sc.Serialize(ref dummy);
-            if (sc.Game is MEGame.ME1 or MEGame.LE1)
+            if (sc.Game.IsGame1())
             {
                 sc.Serialize(ref DecalManager);
             }
@@ -61,7 +61,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 uIndexes.Add((PersistentFaceFXAnimSet, "PersistentFaceFXAnimSet"));
             }
-            else if (game is MEGame.ME1 or MEGame.LE1)
+            else if (game.IsGame1())
             {
                 uIndexes.Add((DecalManager, "DecalManager"));
             }

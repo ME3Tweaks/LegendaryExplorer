@@ -51,30 +51,30 @@ namespace LegendaryExplorerCore.Audio
             MemoryStream outStream = new MemoryStream();
             EndianWriter writer = new EndianWriter(outStream);
             writer.Endian = FileEndianness;
-            writer.WriteStringASCII("RIFF");
+            writer.WriteStringLatin1("RIFF");
             writer.Write(0); //Placeholder for length
-            writer.WriteStringASCII("isbf"); //titl is actually a chunk
-            writer.WriteStringASCII("LIST");
+            writer.WriteStringLatin1("isbf"); //titl is actually a chunk
+            writer.WriteStringLatin1("LIST");
             var listsizepos = writer.BaseStream.Position;
             writer.Write(0); //list size placeholder
-            writer.WriteStringASCII("samp"); //sample ahead
+            writer.WriteStringLatin1("samp"); //sample ahead
 
-            writer.WriteStringASCII("chnk");
+            writer.WriteStringLatin1("chnk");
             writer.Write(4);
             writer.Write(numberOfChannels);
 
-            writer.WriteStringASCII("chnk");
+            writer.WriteStringLatin1("chnk");
             writer.Write(10);
             writer.Write(sampleRate);
             writer.Write(pcmBytes);
             writer.Write(bps);
 
-            writer.WriteStringASCII("cpmi");
+            writer.WriteStringLatin1("cpmi");
             writer.Write(8);
             writer.Write(CodecID);
             writer.Write(CodecID2);
 
-            writer.WriteStringASCII("data");
+            writer.WriteStringLatin1("data");
             writer.Write(DataAsStored.Length);
             writer.Write(DataAsStored);
 

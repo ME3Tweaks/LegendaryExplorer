@@ -216,7 +216,7 @@ namespace LegendaryExplorerCore.Unreal
                     }
 
                     fs.Write(SHA1, 0, 20);
-                    fs.WriteStringASCII(entry.file);
+                    fs.WriteStringLatin1(entry.file);
                     //foreach (char c in file)
                     //    fs.WriteByte((byte)c);
                     fs.WriteByte(0);

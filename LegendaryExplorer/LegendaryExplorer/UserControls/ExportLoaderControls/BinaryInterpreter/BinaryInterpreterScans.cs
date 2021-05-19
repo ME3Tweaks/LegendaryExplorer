@@ -795,7 +795,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
             else
             {
-                str = bin.BaseStream.ReadStringASCIINull(strLen);
+                str = bin.BaseStream.ReadStringLatin1Null(strLen);
             }
             return new BinInterpNode(pos, $"{nodeName}: {str}", NodeType.StructLeafStr) { Length = strLen + 4 };
         }
@@ -1560,7 +1560,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 subnodes.Add(new BinInterpNode(bin.Position, $"Global Mip Data? ({count = bin.ReadInt32()})")
                 {
                     IsExpanded = true,
-                    Items = ReadList(count, i => new BinInterpNode(bin.Position, $"{bin.BaseStream.ReadStringASCIINull(bin.ReadInt32())}")
+                    Items = ReadList(count, i => new BinInterpNode(bin.Position, $"{bin.BaseStream.ReadStringLatin1Null(bin.ReadInt32())}")
                     {
                         Items =
                         {
@@ -2073,7 +2073,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private static List<ITreeItem> ReadList(int count, Func<int, ITreeItem> selector)
         {
             //sanity check. if this number is too small, feel free to increase
-            if (count > 1048576)
+            if (count > 2097152)
             {
                 throw new Exception($"Is this actually a list? {count} seems like an incorrect count");
             }
@@ -3189,7 +3189,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             //offset += 1;
                             MemoryStream ms = new MemoryStream(data);
                             ms.Position = offset;
-                            wpRef = ms.ReadStringASCIINull(wpStrLgth);
+                            wpRef = ms.ReadStringLatin1Null(wpStrLgth);
                         }
                         nTaskIDs.Items.Add(new BinInterpNode
                         {
@@ -3824,7 +3824,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         {
                             MemoryStream ms = new MemoryStream(data);
                             ms.Position = offset;
-                            sndRef = ms.ReadStringASCIINull(sndStrLgth);
+                            sndRef = ms.ReadStringLatin1Null(sndStrLgth);
                         }
                         PageIDs.Items.Add(new BinInterpNode
                         {
@@ -3852,7 +3852,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         {
                             MemoryStream ms = new MemoryStream(data);
                             ms.Position = offset;
-                            sndRef = ms.ReadStringASCIINull(sndStrLgth);
+                            sndRef = ms.ReadStringLatin1Null(sndStrLgth);
                         }
                         PageIDs.Items.Add(new BinInterpNode
                         {
@@ -4322,7 +4322,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         hNodeNodes.Add(new BinInterpNode(bin.Position, $"Name Count: {nNameCount}") { Length = 4 });
                         for (int n = 0; n < nNameCount; n++)
                         {
-                            hNodeNodes.Add(new BinInterpNode(bin.Position, $"Name: {bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"));
+                            hNodeNodes.Add(new BinInterpNode(bin.Position, $"Name: {bin.BaseStream.ReadStringLatin1(bin.ReadInt32())}"));
                             hNodeNodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                         }
                     }
@@ -4332,7 +4332,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 subnodes.Add(new BinInterpNode(bin.Position - 4, $"Names: {nameCount} items")
                 {
                     //ME2 different to ME3/1
-                    Items = ReadList(nameCount, i => new BinInterpNode(bin.Skip(Pcc.Game != MEGame.ME2 ? 0 : 4).Position, $"{i}: {bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"))
+                    Items = ReadList(nameCount, i => new BinInterpNode(bin.Skip(Pcc.Game != MEGame.ME2 ? 0 : 4).Position, $"{i}: {bin.BaseStream.ReadStringLatin1(bin.ReadInt32())}"))
                 });
 
                 subnodes.Add(MakeInt32Node(bin, "Unknown"));
@@ -4433,12 +4433,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                         nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                     }
-                    nodes.Add(new BinInterpNode(bin.Position, $"Path: {bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"));
+                    nodes.Add(new BinInterpNode(bin.Position, $"Path: {bin.BaseStream.ReadStringLatin1(bin.ReadInt32())}"));
                     if (Pcc.Game == MEGame.ME2)
                     {
                         nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                     }
-                    nodes.Add(new BinInterpNode(bin.Position, $"ID: {bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"));
+                    nodes.Add(new BinInterpNode(bin.Position, $"ID: {bin.BaseStream.ReadStringLatin1(bin.ReadInt32())}"));
                     nodes.Add(MakeInt32Node(bin, "index"));
                 }
             }
@@ -4487,7 +4487,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         hNodeNodes.Add(new BinInterpNode(bin.Position, $"Name Count: {nNameCount}") { Length = 4 });
                         for (int n = 0; n < nNameCount; n++)
                         {
-                            hNodeNodes.Add(new BinInterpNode(bin.Position, $"Name: {bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"));
+                            hNodeNodes.Add(new BinInterpNode(bin.Position, $"Name: {bin.BaseStream.ReadStringLatin1(bin.ReadInt32())}"));
                             hNodeNodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                         }
                     }
@@ -4654,7 +4654,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             else
                             {
                                 var unkStringLength = bin.ReadInt32();
-                                unkListBitems.Add(new BinInterpNode(bin.Position - 4, $"Unknown String: {bin.BaseStream.ReadStringASCII(unkStringLength)}"));
+                                unkListBitems.Add(new BinInterpNode(bin.Position - 4, $"Unknown String: {bin.BaseStream.ReadStringLatin1(unkStringLength)}"));
                                 hasNameList = unkStringLength == 0;
                             }
                             if (hasNameList)
@@ -4713,12 +4713,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     unkListCitems.Add(MakeInt32Node(bin, "Unknown int"));
                     int stringCount = bin.ReadInt32();
                     unkListCitems.Add(new BinInterpNode(bin.Position - 4, $"Unknown int: {stringCount}") { Length = 4 });
-                    unkListCitems.Add(new BinInterpNode(bin.Position, $"Unknown String: {bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"));
+                    unkListCitems.Add(new BinInterpNode(bin.Position, $"Unknown String: {bin.BaseStream.ReadStringLatin1(bin.ReadInt32())}"));
                     for (int i = 1; i < stringCount; i++)
                     {
                         c++;
                         unkListCitems.Add(MakeInt32Node(bin, "Unknown int"));
-                        unkListCitems.Add(new BinInterpNode(bin.Position, $"Unknown String: {bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"));
+                        unkListCitems.Add(new BinInterpNode(bin.Position, $"Unknown String: {bin.BaseStream.ReadStringLatin1(bin.ReadInt32())}"));
                     }
 
                 }
@@ -4808,13 +4808,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                     }
 
-                    nodes.Add(new BinInterpNode(bin.Position, $"Path: {bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"));
+                    nodes.Add(new BinInterpNode(bin.Position, $"Path: {bin.BaseStream.ReadStringLatin1(bin.ReadInt32())}"));
                     if (game == MEGame.ME2)
                     {
                         nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                     }
 
-                    nodes.Add(new BinInterpNode(bin.Position, $"ID: {bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"));
+                    nodes.Add(new BinInterpNode(bin.Position, $"ID: {bin.BaseStream.ReadStringLatin1(bin.ReadInt32())}"));
                     nodes.Add(MakeInt32Node(bin, "index"));
                 }
 
@@ -5194,7 +5194,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 while (bin.Position < bin.Length)
                 {
                     var start = bin.Position;
-                    string chunkID = bin.BaseStream.ReadStringASCII(4); //This is not endian swapped!
+                    string chunkID = bin.BaseStream.ReadStringLatin1(4); //This is not endian swapped!
                     int size = bin.ReadInt32();
                     var chunk = new BinInterpNode(start, $"{chunkID}: {size} bytes")
                     {

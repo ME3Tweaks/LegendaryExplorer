@@ -291,7 +291,7 @@ namespace LegendaryExplorerCore.Unreal
         {
             //Debug.WriteLine("Writing string property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
             int strLen = value.Length == 0 ? 0 : value.Length + 1;
-            if (pcc.Game is MEGame.ME3 or MEGame.LE3)
+            if (pcc.Game is MEGame.ME3 or MEGame.LE3 || pcc.Game is MEGame.LE1 or MEGame.LE2 && !value.IsLatin1())
             {
                 stream.WritePropHeader(pcc, propName, PropertyType.StrProperty, (strLen * 2) + 4, staticArrayIndex);
                 stream.WriteUnrealStringUnicode(value);
@@ -299,7 +299,7 @@ namespace LegendaryExplorerCore.Unreal
             else
             {
                 stream.WritePropHeader(pcc, propName, PropertyType.StrProperty, strLen + 4, staticArrayIndex);
-                stream.WriteUnrealStringASCII(value);
+                stream.WriteUnrealStringLatin1(value);
             }
         }
 

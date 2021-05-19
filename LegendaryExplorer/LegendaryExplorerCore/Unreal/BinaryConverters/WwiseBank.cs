@@ -48,7 +48,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 throw new Exception($"WwiseBank is not a valid class for {sc.Game}!");
             }
-            if (sc.Game is MEGame.ME2 or MEGame.LE2)
+            if (sc.Game.IsGame2())
             {
                 sc.Serialize(ref Unk1);
                 sc.Serialize(ref Unk2);
@@ -111,7 +111,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             while (sc.ms.Position < sc.ms.Length)
             {
                 // It looks like on consoles this is not endian
-                string chunkID = sc.ms.BaseStream.ReadStringASCII(4);
+                string chunkID = sc.ms.BaseStream.ReadStringLatin1(4);
 
                 int chunkSize = sc.ms.ReadInt32();
                 switch (chunkID)
@@ -337,7 +337,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 {
                     writer.WriteUInt32(id);
                     writer.WriteByte((byte)name.Length);
-                    writer.WriteStringASCII(name);
+                    writer.WriteStringLatin1(name);
                 }
 
                 var endPos = sc.ms.Position;

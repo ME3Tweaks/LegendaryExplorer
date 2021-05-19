@@ -492,6 +492,11 @@ namespace LegendaryExplorerCore.Helpers
         {
             return string.Concat(filename.Split(Path.GetInvalidFileNameChars()));
         }
+        
+        public static bool IsLatin1(this string value)
+        {
+            return string.Equals(value, Encoding.Latin1.GetString(Encoding.Latin1.GetBytes(value)));
+        }
     }
 
 
@@ -504,39 +509,39 @@ namespace LegendaryExplorerCore.Helpers
             {
                 return "";
             }
-            return length < 0 ? stream.ReadStringUnicodeNull(length * -2) : stream.ReadStringASCIINull(length);
+            return length < 0 ? stream.ReadStringUnicodeNull(length * -2) : stream.ReadStringLatin1Null(length);
         }
 
         public static void WriteUnrealString(this Stream stream, string value, MEGame game)
         {
-            if (game is MEGame.ME3 or MEGame.LE3)
+            if (game.IsGame3() || game is MEGame.LE1 or MEGame.LE2 && !value.IsLatin1())
             {
                 stream.WriteUnrealStringUnicode(value);
             }
             else
             {
-                stream.WriteUnrealStringASCII(value);
+                stream.WriteUnrealStringLatin1(value);
             }
         }
 
         public static void WriteUnrealString(this EndianWriter stream, string value, MEGame game)
         {
-            if (game is MEGame.ME3 or MEGame.LE3)
+            if (game.IsGame3() || game is MEGame.LE1 or MEGame.LE2 && !value.IsLatin1())
             {
                 stream.WriteUnrealStringUnicode(value);
             }
             else
             {
-                stream.WriteUnrealStringASCII(value);
+                stream.WriteUnrealStringLatin1(value);
             }
         }
 
-        public static void WriteUnrealStringASCII(this Stream stream, string value)
+        public static void WriteUnrealStringLatin1(this Stream stream, string value)
         {
             if (value?.Length > 0)
             {
                 stream.WriteInt32(value.Length + 1);
-                stream.WriteStringASCIINull(value);
+                stream.WriteStringLatin1Null(value);
             }
             else
             {
@@ -557,12 +562,12 @@ namespace LegendaryExplorerCore.Helpers
             }
         }
 
-        public static void WriteUnrealStringASCII(this EndianWriter stream, string value)
+        public static void WriteUnrealStringLatin1(this EndianWriter stream, string value)
         {
             if (value?.Length > 0)
             {
                 stream.WriteInt32(value.Length + 1);
-                stream.WriteStringASCIINull(value);
+                stream.WriteStringLatin1Null(value);
             }
             else
             {

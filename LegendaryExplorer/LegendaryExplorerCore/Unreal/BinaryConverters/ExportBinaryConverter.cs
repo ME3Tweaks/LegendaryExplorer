@@ -10,6 +10,7 @@ using static LegendaryExplorerCore.Unreal.BinaryConverters.ObjectBinary;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
+    //TODO: update for LEX!
     public static class ExportBinaryConverter
     {
         public static ObjectBinary ConvertPostPropBinary(ExportEntry export, MEGame newGame, PropertyCollection newProps)
@@ -116,7 +117,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     break;
             }
 
-            return export.DataReadOnly.Slice(0, export.GetPropertyStart());
+            return export.DataReadOnly.Slice(0, export.GetPropertyStart()).ToArray();
         }
 
         public static byte[] ConvertTexture2D(ExportEntry export, MEGame newGame, List<int> offsets = null, StorageTypes newStorageType = StorageTypes.empty)
