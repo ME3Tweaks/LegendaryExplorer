@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -36,7 +37,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// DLC is not required in game save
         /// </summary>
         //NoSaveFileDependency = 0x0,
-        
+
         /// <summary>
         /// When a game is saved while this DLC is loaded, the save is marked as requiring this DLC
         /// </summary>
@@ -109,10 +110,43 @@ namespace LegendaryExplorerCore.GameFilesystem
 
         public string DisplayString => ToString();
 
+        /// <summary>
+        /// Returns the single name of this flag. Do not use if this flag has multiple bits set
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             if (IsME2) return Enum.GetName(ME2Flag);
             return Enum.GetName(ME3Flag);
+        }
+
+        /// <summary>
+        /// Converts this mount flag to a human readable full set of flags, separated by spaces
+        /// </summary>
+        /// <returns></returns>
+        public string ToHumanReadableString()
+        {
+            List<string> setFlags = new();
+            if (IsME2)
+            {
+                var flagset = Enum.GetValues<EME2MountFileFlag>();
+                foreach (var f in flagset)
+                {
+                    if (ME2Flag.HasFlag(f))
+                        setFlags.Add(f.ToString());
+                }
+            }
+            else
+            {
+                var flagset = Enum.GetValues<EME3MountFileFlag>();
+                foreach (var f in flagset)
+                {
+                    if (ME3Flag.HasFlag(f))
+                        setFlags.Add(f.ToString());
+                }
+            }
+
+            return string.Join(' ', setFlags);
         }
 
         // Disable warnings for Fody
