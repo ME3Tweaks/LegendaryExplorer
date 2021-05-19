@@ -33,7 +33,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 throw new Exception($"WwiseStream is not a valid class for {sc.Game}!");
             }
 
-            if (sc.Game is MEGame.ME2 or MEGame.LE2)
+            if (sc.Game.IsGame2())
             {
                 sc.Serialize(ref Unk1);
                 sc.Serialize(ref Unk2);

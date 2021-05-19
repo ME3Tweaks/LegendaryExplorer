@@ -576,7 +576,7 @@ namespace LegendaryExplorerCore.Packages
                 }
             }
             
-            if (Game is MEGame.ME1 or MEGame.LE1 && Platform == GamePlatform.PC)
+            if (Game.IsGame1() && Platform == GamePlatform.PC)
             {
                 ReadLocalTLKs();
             }

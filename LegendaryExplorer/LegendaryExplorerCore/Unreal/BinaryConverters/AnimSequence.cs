@@ -33,7 +33,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         protected override void Serialize(SerializingContainer2 sc)
         {
-            if (sc.Game is MEGame.ME2 or MEGame.LE2)
+            if (sc.Game.IsGame2())
             {
                 int dummy = 0;
                 sc.Serialize(ref dummy);
