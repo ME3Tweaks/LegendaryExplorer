@@ -1110,7 +1110,7 @@ namespace LegendaryExplorerCore.Packages
                     break;
             }
             ms.WriteInt32(FullHeaderSize);
-            if (Game is MEGame.ME3 or MEGame.LE3)
+            if (Game.IsGame3())
             {
                 ms.WriteUnrealStringUnicode("None");
             }
@@ -1121,7 +1121,7 @@ namespace LegendaryExplorerCore.Packages
 
             ms.WriteUInt32((uint)Flags);
 
-            if (Game is MEGame.ME3 or MEGame.LE3 && Flags.HasFlag(EPackageFlags.Cooked))
+            if (Game.IsGame3() && Flags.HasFlag(EPackageFlags.Cooked))
             {
                 ms.WriteInt32(PackageTypeId);
             }

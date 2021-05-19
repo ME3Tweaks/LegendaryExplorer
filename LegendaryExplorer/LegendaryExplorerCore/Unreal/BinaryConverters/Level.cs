@@ -101,7 +101,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref PylonListStart);
                 sc.Serialize(ref PylonListEnd);
             }
-            if (sc.Game is MEGame.ME3 or MEGame.LE3)
+            if (sc.Game.IsGame3())
             {
                 sc.Serialize(ref guidToIntMap, SCExt.Serialize, SCExt.Serialize);
                 sc.Serialize(ref CoverLinks, SCExt.Serialize);
