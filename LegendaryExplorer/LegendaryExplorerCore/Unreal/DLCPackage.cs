@@ -36,7 +36,7 @@ namespace LegendaryExplorerCore.Unreal
                 BlockTableOffset = con + BlockTableOffset;
                 MaxBlockSize = con + MaxBlockSize;
                 if (con.isLoading)
-                    CompressionScheme = con.Memory.BaseStream.ReadStringASCII(4).Trim();
+                    CompressionScheme = con.Memory.BaseStream.ReadStringLatin1(4).Trim();
                 if (//Magic != 0x53464152 ||
                     Version != 0x00010000 ||
                     MaxBlockSize != 0x00010000)

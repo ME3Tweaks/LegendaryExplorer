@@ -136,7 +136,7 @@ namespace LegendaryExplorerCore.Packages
             int foldernameStrLen = fs.ReadInt32();
             //always "None", so don't bother saving result
             if (foldernameStrLen > 0)
-                folderName = fs.ReadStringASCIINull(foldernameStrLen);
+                folderName = fs.ReadStringLatin1Null(foldernameStrLen);
             else
                 folderName = fs.ReadStringUnicodeNull(foldernameStrLen * -2);
 
@@ -279,7 +279,7 @@ namespace LegendaryExplorerCore.Packages
             NameCount = Gen0NameCount = names.Count;
             foreach (string name in names)
             {
-                ms.WriteUnrealStringASCII(name);
+                ms.WriteUnrealStringLatin1(name);
                 ms.WriteInt32(0);
                 ms.WriteInt32(458768);
             }
@@ -342,8 +342,8 @@ namespace LegendaryExplorerCore.Packages
             ms.WriteInt32(ThumbnailTable.Count);
             foreach (Thumbnail thumbnail in ThumbnailTable)
             {
-                ms.WriteUnrealStringASCII(thumbnail.ClassName);
-                ms.WriteUnrealStringASCII(thumbnail.PathName);
+                ms.WriteUnrealStringLatin1(thumbnail.ClassName);
+                ms.WriteUnrealStringLatin1(thumbnail.PathName);
                 ms.WriteInt32(thumbnail.Offset);
             }
 
@@ -382,7 +382,7 @@ namespace LegendaryExplorerCore.Packages
             ms.WriteUInt16(0);
 
             ms.WriteInt32(FullHeaderSize);
-            ms.WriteUnrealStringASCII(folderName);
+            ms.WriteUnrealStringLatin1(folderName);
 
             ms.WriteUInt32((uint)Flags);
             ms.WriteInt32(NameCount);

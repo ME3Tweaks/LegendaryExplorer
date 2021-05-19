@@ -234,7 +234,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 int start = sourceExport.GetPropertyStart();
                 if (start == 16)
                 {
-                    var ms = new MemoryStream(sourceExport.DataReadOnly.Slice(0, 16));
+                    var ms = new MemoryStream(sourceExport.DataReadOnly.Slice(0, 16).ToArray());
                     ms.JumpTo(4);
                     int newNameIdx = destPackage.FindNameOrAdd(sourceExport.FileRef.GetNameEntry(ms.ReadInt32()));
                     ms.JumpTo(4);
@@ -243,7 +243,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 }
                 else
                 {
-                    prePropBinary = sourceExport.DataReadOnly.Slice(0, start);
+                    prePropBinary = sourceExport.DataReadOnly.Slice(0, start).ToArray();
                 }
             }
 

@@ -380,7 +380,7 @@ namespace LegendaryExplorerCore.Packages
             int foldernameStrLen = packageReader.ReadInt32();
             //always "None", so don't bother saving result
             if (foldernameStrLen > 0)
-                fs.ReadStringASCIINull(foldernameStrLen);
+                fs.ReadStringLatin1Null(foldernameStrLen);
             else
                 fs.ReadStringUnicodeNull(foldernameStrLen * -2);
 
@@ -528,7 +528,7 @@ namespace LegendaryExplorerCore.Packages
             imports = new List<ImportEntry>(ImportCount);
             for (int i = 0; i < ImportCount; i++)
             {
-                ImportEntry imp = new ImportEntry(this, packageReader) { Index = i };
+                var imp = new ImportEntry(this, packageReader) { Index = i };
                 if (MEPackageHandler.GlobalSharedCacheEnabled)
                     imp.PropertyChanged += importChanged; // If packages are not shared there is no point to attaching this
                 imports.Add(imp);
@@ -539,7 +539,7 @@ namespace LegendaryExplorerCore.Packages
             exports = new List<ExportEntry>(ExportCount);
             for (int i = 0; i < ExportCount; i++)
             {
-                ExportEntry e = new ExportEntry(this, packageReader) { Index = i };
+                var e = new ExportEntry(this, packageReader) { Index = i };
                 if (MEPackageHandler.GlobalSharedCacheEnabled)
                     e.PropertyChanged += exportChanged; // If packages are not shared there is no point to attaching this
                 exports.Add(e);
@@ -868,12 +868,12 @@ namespace LegendaryExplorerCore.Packages
                     switch (mePackage.Game)
                     {
                         case MEGame.ME1:
-                            ms.WriteUnrealStringASCII(name);
+                            ms.WriteUnrealStringLatin1(name);
                             ms.WriteInt32(0);
                             ms.WriteInt32(458768);
                             break;
                         case MEGame.ME2:
-                            ms.WriteUnrealStringASCII(name);
+                            ms.WriteUnrealStringLatin1(name);
                             ms.WriteInt32(-14);
                             break;
                         case MEGame.ME3:
@@ -882,7 +882,7 @@ namespace LegendaryExplorerCore.Packages
                             break;
                         case MEGame.LE1:
                         case MEGame.LE2:
-                            ms.WriteUnrealStringASCII(name);
+                            ms.WriteUnrealStringLatin1(name);
                             break;
                     }
                 }
@@ -1116,7 +1116,7 @@ namespace LegendaryExplorerCore.Packages
             }
             else
             {
-                ms.WriteUnrealStringASCII("None");
+                ms.WriteUnrealStringLatin1("None");
             }
 
             ms.WriteUInt32((uint)Flags);
@@ -1271,7 +1271,7 @@ namespace LegendaryExplorerCore.Packages
                         if (Game == MEGame.ME2)
                         {
                             //ME2 Uses ASCII
-                            ms.WriteUnrealStringASCII(pname);
+                            ms.WriteUnrealStringLatin1(pname);
                         }
                         else
                         {

@@ -141,7 +141,7 @@ namespace LegendaryExplorerCore.Audio
                         MemoryStream data = new MemoryStream();
                         ms.BaseStream.CopyToEx(data, (int)chunksize);
                         data.Position = 0;
-                        var str = data.ReadStringASCII(4);
+                        var str = data.ReadStringLatin1(4);
                         isbEntry.DataAsStored = data.ToArray();
                         break;
                     case "FFIR":

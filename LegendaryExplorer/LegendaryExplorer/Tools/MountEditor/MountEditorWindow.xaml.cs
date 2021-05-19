@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using LegendaryExplorer.SharedUI.Bases;
+using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
@@ -236,7 +237,7 @@ namespace LegendaryExplorer.Tools.MountEditor
         {
             if (int.TryParse(TLKID_TextBox.Text, out int tlkValue))
             {
-                CurrentTLKIDString = IsME2 ? ME2TalkFiles.findDataById(tlkValue) : ME3TalkFiles.findDataById(tlkValue);
+                CurrentTLKIDString = TLKManagerWPF.GlobalFindStrRefbyID(tlkValue, SelectedGame.Game);
             }
         }
 

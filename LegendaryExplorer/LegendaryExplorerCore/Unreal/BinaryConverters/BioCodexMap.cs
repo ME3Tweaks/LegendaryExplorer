@@ -86,7 +86,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     else
                     {
                         sc.ms.Writer.WriteInt32(page.CodexSoundString.Length);
-                        sc.ms.Writer.WriteStringASCII(page.CodexSoundString);
+                        sc.ms.Writer.WriteStringLatin1(page.CodexSoundString);
                     }
                     break;
 
@@ -103,7 +103,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                         else
                         {
                             sc.ms.Writer.WriteInt32(page.CodexSoundString.Length);
-                            sc.ms.Writer.WriteStringASCII(page.CodexSoundString);
+                            sc.ms.Writer.WriteStringLatin1(page.CodexSoundString);
                         }
                     }
                     else sc.Serialize(ref page.Section);

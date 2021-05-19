@@ -17,7 +17,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
             List<string> packageNames = null;
             {
                 using var stream = File.OpenRead(Path.Combine(AppDirectories.ExecFolder, @"TextureMap", $@"vanilla{game}.bin"));
-                if (stream.ReadStringASCII(4) != @"MD5T")
+                if (stream.ReadStringLatin1(4) != @"MD5T")
                 {
                     throw new Exception(@"Header of MD5 table doesn't match expected value!");
                 }
@@ -41,7 +41,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
                 for (int i = 0; i < numEntries; i++)
                 {
                     //Read entry
-                    packageNames.Add(table.ReadStringASCIINull().Replace('/', '\\').TrimStart('\\'));
+                    packageNames.Add(table.ReadStringLatin1Null().Replace('/', '\\').TrimStart('\\'));
                 }
             }
 
@@ -81,7 +81,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
             public static TextureMapEntry ReadTextureMapEntry(MemoryStream texMap, MEGame game, List<string> packageNames)
             {
                 TextureMapEntry tme = new TextureMapEntry();
-                tme.Name = texMap.ReadStringASCII(texMap.ReadByte());
+                tme.Name = texMap.ReadStringLatin1(texMap.ReadByte());
                 tme.CRC = texMap.ReadUInt32();
                 tme.Width = texMap.ReadInt16();
                 tme.Height = texMap.ReadInt16();
@@ -98,7 +98,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
                         if (isSlaveTexture != -1)
                         {
                             matched.IsSlave = true; //This file has external mips that point to a master package file
-                            matched.MasterPackageName = texMap.ReadStringASCIINull();
+                            matched.MasterPackageName = texMap.ReadStringLatin1Null();
                         }
                         matched.TextureOffset = texMap.ReadUInt32();
                     }

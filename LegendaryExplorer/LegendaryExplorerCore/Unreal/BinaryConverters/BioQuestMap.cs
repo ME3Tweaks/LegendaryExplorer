@@ -124,7 +124,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             else
             {
                 sc.ms.Writer.WriteInt32(task.WaypointRef.Length);
-                sc.ms.Writer.WriteStringASCII(task.WaypointRef);
+                sc.ms.Writer.WriteStringLatin1(task.WaypointRef);
             }
         }
 

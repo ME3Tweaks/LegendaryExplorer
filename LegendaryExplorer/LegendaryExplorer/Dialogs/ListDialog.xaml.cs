@@ -12,7 +12,7 @@ namespace LegendaryExplorer.Dialogs
     /// </summary>
     public partial class ListDialog : TrackingNotifyPropertyChangedWindowBase
     {
-        public ObservableCollectionExtended<object> Items { get; } = new ObservableCollectionExtended<object>();
+        public ObservableCollectionExtended<object> Items { get; } = new();
         public Action<EntryStringPair> DoubleClickEntryHandler { get; set; }
         private string topText;
 
