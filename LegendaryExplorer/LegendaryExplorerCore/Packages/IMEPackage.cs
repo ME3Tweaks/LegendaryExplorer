@@ -49,7 +49,15 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="game"></param>
         /// <returns></returns>
         public static bool IsGame3(this MEGame game) => game is MEGame.ME3 or MEGame.LE3;
+
+        public static string CookedDirName(this MEGame game) => game switch
+        {
+            MEGame.ME1 => "CookedPC",
+            MEGame.ME2 => "CookedPC",
+            _ => "CookedPCConsole"
+        };
     }
+
     public enum MEGame
     {
         Unknown = 0,

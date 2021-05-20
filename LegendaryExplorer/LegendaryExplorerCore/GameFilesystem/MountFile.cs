@@ -75,6 +75,24 @@ namespace LegendaryExplorerCore.GameFilesystem
     /// </summary>
     public class MountFlag : INotifyPropertyChanged
     {
+        protected bool Equals(MountFlag other)
+        {
+            return IsME2 == other.IsME2 && ME2Flag == other.ME2Flag && ME3Flag == other.ME3Flag;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((MountFlag) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(IsME2, (int) ME2Flag, (int) ME3Flag);
+        }
+
         private bool IsME2;
         private EME2MountFileFlag ME2Flag;
         private EME3MountFileFlag ME3Flag;
@@ -86,6 +104,17 @@ namespace LegendaryExplorerCore.GameFilesystem
                 ME2Flag = (EME2MountFileFlag)flag;
             else
                 ME3Flag = (EME3MountFileFlag)flag;
+        }
+
+        public MountFlag(EME2MountFileFlag flag)
+        {
+            IsME2 = true;
+            ME2Flag = flag;
+        }
+
+        public MountFlag(EME3MountFileFlag flag)
+        {
+            ME3Flag = flag;
         }
 
         /// <summary>
