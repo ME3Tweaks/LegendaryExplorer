@@ -173,6 +173,12 @@ namespace LegendaryExplorerCore.Unreal.Classes
 
         public int GetFlagInt()
         {
+            if (export.Game is MEGame.LE1 or MEGame.LE2)
+            {
+                // Needs updated for state
+                // -12 cause last 8 are 'friendly name' of the func
+                return EndianReader.ToInt32(memory, export.ClassName == "Function" ? memsize - 12 : memsize - 10, export.FileRef.Endian);
+            }
             return EndianReader.ToInt32(memory, export.ClassName == "Function" ? memsize - 4 : memsize - 10, export.FileRef.Endian);
         }
 

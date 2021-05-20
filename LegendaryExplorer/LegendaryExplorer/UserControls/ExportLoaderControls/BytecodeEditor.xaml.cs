@@ -186,13 +186,23 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 if (CurrentLoadedExport.ClassName == "Function")
                 {
-                    // TODO: Is this right for LE?
-                    var nativeBackOffset = CurrentLoadedExport.Game is MEGame.ME1 or MEGame.ME2 or MEGame.LE1 ? 7 : 6;
+                    int nativeBackOffset = 6; // ME3 (doesn't have friendlyname)
+                    if (CurrentLoadedExport.Game is MEGame.LE1 or MEGame.LE2)
+                    {
+                        nativeBackOffset = 14;
+                    } 
+
                     pos = data.Length - nativeBackOffset;
                     string flagStr = func.GetFlags();
                     ScriptFooterBlocks.Add(new ScriptHeaderItem("Native Index", EndianReader.ToInt16(data, pos, CurrentLoadedExport.FileRef.Endian), pos) { length = 2 });
                     pos += 2;
                     ScriptFooterBlocks.Add(new ScriptHeaderItem("Flags", $"0x{EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian):X8} {func.GetFlags().Substring(6)}", pos));
+
+                    if (CurrentLoadedExport.Game is MEGame.LE1 or MEGame.LE2)
+                    {
+                        pos += 4;
+                        ScriptFooterBlocks.Add(new ScriptHeaderItem("FriendlyName", CurrentLoadedExport.FileRef.GetNameEntry(EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian)), pos));
+                    }
                 }
                 else
                 {
