@@ -62,7 +62,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             var comparisonDict = new Dictionary<string, (byte[] original, byte[] newData)>();
             Task.Run(() =>
             {
-                foreach (string filePath in EnumerateOfficialFiles(MEGame.LE2, MEGame.LE3))
+                foreach (string filePath in EnumerateOfficialFiles(MEGame.LE1, MEGame.LE2, MEGame.LE3))
                 {
                     using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
                     foreach (ExportEntry export in pcc.Exports)
@@ -796,9 +796,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
             else
             {
-                string userFolder = Path.Combine(@"C:\Users", Environment.UserName);
-                File.WriteAllBytes(Path.Combine(userFolder, "converted.bin"), changed);
-                File.WriteAllBytes(Path.Combine(userFolder, "original.bin"), original);
+                File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "original.bin"), original);
+                File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "new.bin"), changed);
                 if (original.Length != changed.Length)
                 {
                     MessageBox.Show($"Differences detected: Lengths are not the same. Original {original.Length}, Reserialized {changed.Length}");

@@ -131,7 +131,7 @@ namespace LegendaryExplorer.Tools.PlotEditor
                         var stateEventMap = StateEventMapControl.ToStateEventMap();
                         var binaryStateEventMap = new BinaryBioStateEventMap(stateEventMap.StateEvents);
 
-                        binaryStateEventMap.Save(stream);
+                        binaryStateEventMap.Save(stream, Pcc.Game);
 
                         export.WriteBinary(stream.ToArray());
                     }
@@ -148,7 +148,7 @@ namespace LegendaryExplorer.Tools.PlotEditor
                         var consequenceMap = ConsequenceMapControl.ToStateEventMap();
                         var binaryConsequenceMap = new BinaryBioStateEventMap(consequenceMap.StateEvents);
 
-                        binaryConsequenceMap.Save(stream);
+                        binaryConsequenceMap.Save(stream, Pcc.Game);
 
                         export.WriteBinary(stream.ToArray());
                     }

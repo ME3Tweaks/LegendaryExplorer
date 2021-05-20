@@ -1692,7 +1692,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
-                if (Pcc.Game == MEGame.ME3)
+                if (Pcc.Game.IsGame3())
                 {
                     subnodes.Add(new BinInterpNode(bin.Position, $"float size ({bin.ReadInt32()})"));
                 }
@@ -2464,7 +2464,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     int iEventID = BitConverter.ToInt32(data, offset);  //EVENT ID
                     var EventIDs = new BinInterpNode
                     {
-                        Header = $"0x{offset:X5} State Transition ID: {iEventID} ",
+                        Header = $"0x{offset:X5} [{e}] State Transition ID: {iEventID} ",
                         Name = "_" + offset,
                         Tag = NodeType.StructLeafInt
                     };
@@ -2599,6 +2599,20 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             });
                             offset += 4;
 
+                            if (Pcc.Game.IsGame2())
+                            {
+                                int tIncrement = BitConverter.ToInt32(data, offset);  //Increment bool
+                                bool bIncrement = false;
+                                if (tIncrement == 1) { bIncrement = true; }
+                                nTransition.Items.Add(new BinInterpNode
+                                {
+                                    Header = $"0x{offset:X5} Increment value: {tIncrement}  {bIncrement} ",
+                                    Name = "_" + offset,
+                                    Tag = NodeType.StructLeafInt
+                                });
+                                offset += 4;
+                            }
+
                             tPlotID = BitConverter.ToInt32(data, offset);  //Plot
                             nTransition.Items.Add(new BinInterpNode
                             {
@@ -2628,16 +2642,19 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             });
                             offset += 4;
 
-                            int tIncrement = BitConverter.ToInt32(data, offset);  //Increment bool
-                            bool bIncrement = false;
-                            if (tIncrement == 1) { bIncrement = true; }
-                            nTransition.Items.Add(new BinInterpNode
+                            if (!Pcc.Game.IsGame2())
                             {
-                                Header = $"0x{offset:X5} Increment value: {tIncrement}  {bIncrement} ",
-                                Name = "_" + offset,
-                                Tag = NodeType.StructLeafInt
-                            });
-                            offset += 4;
+                                int tIncrement = BitConverter.ToInt32(data, offset);  //Increment bool
+                                bool bIncrement = false;
+                                if (tIncrement == 1) { bIncrement = true; }
+                                nTransition.Items.Add(new BinInterpNode
+                                {
+                                    Header = $"0x{offset:X5} Increment value: {tIncrement}  {bIncrement} ",
+                                    Name = "_" + offset,
+                                    Tag = NodeType.StructLeafInt
+                                });
+                                offset += 4;
+                            }
                         }
                         else if (transTYPE == 3)  // TYPE 3 = FUNCTION
                         {
@@ -5227,7 +5244,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             chunk.Items.Add(MakeUInt32Node(bin, "Unk Zero"));
                             break;
                         case "STMG":
-                            if (Pcc.Game == MEGame.ME2)
+                            if (Pcc.Game.IsGame2())
                             {
                                 chunk.Items.Add(new BinInterpNode(bin.Position, "STMG node not parsed for ME2"));
                                 break;

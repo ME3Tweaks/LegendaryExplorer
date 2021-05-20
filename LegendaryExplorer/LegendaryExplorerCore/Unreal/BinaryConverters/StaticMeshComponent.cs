@@ -213,7 +213,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             else
             {
-                if (sc.Game != MEGame.ME3 && lmap.LightMapType > ELightMapType.LMT_2D)
+                if (!sc.Game.IsGame3() && lmap.LightMapType > ELightMapType.LMT_2D)
                 {
                     lmap = new LightMap();
                 }

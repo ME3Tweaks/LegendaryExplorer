@@ -27,10 +27,10 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap
 				throw new ArgumentNullException(nameof(export));
 			}
 
-            return Load(export.GetReadOnlyBinaryStream());
+            return Load(export.GetReadOnlyBinaryStream(), export.Game);
 		}
 
-		public static BinaryBioStateEventMap Load(Stream stream)
+		public static BinaryBioStateEventMap Load(Stream stream, MEGame game)
 		{
 			if (stream == null)
 			{
@@ -46,7 +46,7 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap
             for (var i = 0; i < eventsCount; i++)
             {
                 var id = reader.ReadInt32();
-                var stateEvent = reader.ReadStateEvent();
+                var stateEvent = reader.ReadStateEvent(game);
 
                 if (!map.StateEvents.ContainsKey(id))
                 {
@@ -61,17 +61,7 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap
             return map;
         }
 
-		public void Save(string path)
-		{
-			if (string.IsNullOrEmpty(path))
-			{
-				throw new ArgumentNullException(nameof(path));
-			}
-
-			Save(File.Open(path, FileMode.Create));
-		}
-
-		public void Save(Stream stream)
+		public void Save(Stream stream, MEGame game)
 		{
 			if (stream == null)
 			{
@@ -86,7 +76,7 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap
 				foreach (var stateEvent in StateEvents)
 				{
 					writer.Write(stateEvent.Key);
-					writer.Write(stateEvent.Value);
+					writer.Write(stateEvent.Value, game);
 				}
 			}
 		}
@@ -96,7 +86,7 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap
 			public BioStateEventMapReader(Stream stream)
 				: base(stream) { }
 
-			public BioStateEvent ReadStateEvent()
+			public BioStateEvent ReadStateEvent(MEGame game)
 			{
 				var stateEvent = new BioStateEvent
 				{
@@ -127,7 +117,7 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap
 							}
 						case BioStateEventElementType.Float:
 							{
-								element = ReadEventElementFloat();
+								element = ReadEventElementFloat(game);
 
 								break;
 							}
@@ -213,16 +203,26 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap
 				return element;
 			}
 
-			public BioStateEventElementFloat ReadEventElementFloat()
+			public BioStateEventElementFloat ReadEventElementFloat(MEGame game)
 			{
 				var element = new BioStateEventElementFloat();
 
 				ReadBioStateEventElement(element);
 
-				element.GlobalFloat = ReadInt32();
-				element.NewValue = ReadSingle();
-				element.UseParam = ReadInt32().ToBoolean();
-				element.Increment = ReadInt32().ToBoolean();
+                if (game.IsGame2())
+                {
+				    element.Increment = ReadInt32().ToBoolean();
+                    element.GlobalFloat = ReadInt32();
+                    element.NewValue = ReadSingle();
+                    element.UseParam = ReadInt32().ToBoolean();
+				}
+                else
+				{
+					element.GlobalFloat = ReadInt32();
+                    element.NewValue = ReadSingle();
+                    element.UseParam = ReadInt32().ToBoolean();
+                    element.Increment = ReadInt32().ToBoolean();
+				}
 
 				return element;
 			}
@@ -346,7 +346,7 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap
 			public BioStateEventMapWriter(Stream output)
 				: base(output) { }
 
-			public void Write(BioStateEvent stateEvent)
+			public void Write(BioStateEvent stateEvent, MEGame game)
 			{
 				if (stateEvent == null)
 				{
@@ -379,7 +379,7 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap
 							}
 						case BioStateEventElementType.Float:
 							{
-								Write(element as BioStateEventElementFloat);
+								Write(element as BioStateEventElementFloat, game);
 
 								break;
 							}
@@ -453,14 +453,23 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap
 				Write(element.Consequence);
 			}
 
-			public void Write(BioStateEventElementFloat element)
+			public void Write(BioStateEventElementFloat element, MEGame game)
 			{
 				WriteEventElement(element);
-
-				Write(element.GlobalFloat);
-				Write(element.NewValue);
-				Write(element.UseParam.ToInt32());
-				Write(element.Increment.ToInt32());
+                if (game.IsGame2())
+				{
+                    Write(element.Increment.ToInt32());
+					Write(element.GlobalFloat);
+                    Write(element.NewValue);
+                    Write(element.UseParam.ToInt32());
+				}
+                else
+                {
+					Write(element.GlobalFloat);
+                    Write(element.NewValue);
+                    Write(element.UseParam.ToInt32());
+                    Write(element.Increment.ToInt32());
+				}
 			}
 
 			public void Write(BioStateEventElementFunction element)

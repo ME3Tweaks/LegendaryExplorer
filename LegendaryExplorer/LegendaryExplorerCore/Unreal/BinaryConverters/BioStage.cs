@@ -11,7 +11,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         protected override void Serialize(SerializingContainer2 sc)
         {
-            if (sc.Game != MEGame.ME3)
+            if (!sc.Game.IsGame3())
             {
                 if (sc.IsLoading)
                 {

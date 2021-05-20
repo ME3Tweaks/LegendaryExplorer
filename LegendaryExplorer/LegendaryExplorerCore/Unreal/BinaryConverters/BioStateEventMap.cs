@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Packages;
 using static LegendaryExplorerCore.Unreal.BinaryConverters.BioStateEventMap;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
@@ -10,6 +12,42 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         protected override void Serialize(SerializingContainer2 sc)
         {
             sc.Serialize(ref StateEvents, SCExt.Serialize);
+        }
+
+        public override List<(NameReference, string)> GetNames(MEGame game)
+        {
+            var names = base.GetNames(game);
+
+            for (int i = 0; i < StateEvents.Count; i++)
+            {
+                BioStateEvent stateEvent = StateEvents[i];
+                for (int j = 0; j < stateEvent.Elements.Count; j++)
+                {
+                    BioStateEventElement stateEventElement = stateEvent.Elements[j];
+                    switch (stateEventElement)
+                    {
+                        case BioStateEventElementFunction bioStateEventElementFunction:
+                            names.Add(bioStateEventElementFunction.PackageName, $"[{i}] State Transition: [{j}] Transition : Package Name");
+                            names.Add(bioStateEventElementFunction.ClassName, $"[{i}] State Transition: [{j}] Transition : Class Name");
+                            names.Add(bioStateEventElementFunction.FunctionName, $"[{i}] State Transition: [{j}] Transition : Function Name");
+                            break;
+                        case BioStateEventElementLocalBool bioStateEventElementLocalBool:
+                            names.Add(bioStateEventElementLocalBool.ObjectTag, $"[{i}] State Transition: [{j}] Transition : Object Tag");
+                            names.Add(bioStateEventElementLocalBool.FunctionName, $"[{i}] State Transition: [{j}] Transition : Function Name");
+                            break;
+                        case BioStateEventElementLocalFloat bioStateEventElementLocalFloat:
+                            names.Add(bioStateEventElementLocalFloat.ObjectTag, $"[{i}] State Transition: [{j}] Transition : Object Tag");
+                            names.Add(bioStateEventElementLocalFloat.FunctionName, $"[{i}] State Transition: [{j}] Transition : Function Name");
+                            break;
+                        case BioStateEventElementLocalInt bioStateEventElementLocalInt:
+                            names.Add(bioStateEventElementLocalInt.ObjectTag, $"[{i}] State Transition: [{j}] Transition : Object Tag");
+                            names.Add(bioStateEventElementLocalInt.FunctionName, $"[{i}] State Transition: [{j}] Transition : Function Name");
+                            break;
+                    }
+                }
+            }
+
+            return names;
         }
 
         public class BioStateEvent
@@ -62,12 +100,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public class BioStateEventElementFunction : BioStateEventElement
         {
-            public int PackageName;
-            public int PackageNameIndex;
-            public int ClassName;
-            public int ClassNameIndex;
-            public int FunctionName;
-            public int FunctionNameIndex;
+            public NameReference PackageName;
+            public NameReference ClassName;
+            public NameReference FunctionName;
             public int Parameter;
         }
 
@@ -81,10 +116,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public class BioStateEventElementLocalBool : BioStateEventElement
         {
-            public int ObjectTag;
-            public int ObjectTagIndex;
-            public int FunctionName;
-            public int FunctionNameIndex;
+            public NameReference ObjectTag;
+            public NameReference FunctionName;
             public int ObjectType;
             public bool UseParam;
             public bool NewValue;
@@ -92,10 +125,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public class BioStateEventElementLocalFloat : BioStateEventElement
         {
-            public int ObjectTag;
-            public int ObjectTagIndex;
-            public int FunctionName;
-            public int FunctionNameIndex;
+            public NameReference ObjectTag;
+            public NameReference FunctionName;
             public int ObjectType;
             public bool UseParam;
             public float NewValue;
@@ -103,10 +134,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public class BioStateEventElementLocalInt : BioStateEventElement
         {
-            public int ObjectTag;
-            public int ObjectTagIndex;
-            public int FunctionName;
-            public int FunctionNameIndex;
+            public NameReference ObjectTag;
+            public NameReference FunctionName;
             public int ObjectType;
             public bool UseParam;
             public int NewValue;
@@ -224,20 +253,27 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public static void Serialize(this SerializingContainer2 sc, ref BioStateEventElementFloat element)
         {
-            sc.Serialize(ref element.GlobalFloat);
-            sc.Serialize(ref element.NewValue);
-            sc.Serialize(ref element.UseParam);
-            sc.Serialize(ref element.Increment);
+            if (sc.Game.IsGame2())
+            {
+                sc.Serialize(ref element.Increment);
+                sc.Serialize(ref element.GlobalFloat);
+                sc.Serialize(ref element.NewValue);
+                sc.Serialize(ref element.UseParam);
+            }
+            else
+            {
+                sc.Serialize(ref element.GlobalFloat);
+                sc.Serialize(ref element.NewValue);
+                sc.Serialize(ref element.UseParam);
+                sc.Serialize(ref element.Increment);
+            }
         }
 
         public static void Serialize(this SerializingContainer2 sc, ref BioStateEventElementFunction element)
         {
             sc.Serialize(ref element.PackageName);
-            sc.Serialize(ref element.PackageNameIndex);
             sc.Serialize(ref element.ClassName);
-            sc.Serialize(ref element.ClassNameIndex);
             sc.Serialize(ref element.FunctionName);
-            sc.Serialize(ref element.FunctionNameIndex);
             sc.Serialize(ref element.Parameter);
         }
 
@@ -252,9 +288,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public static void Serialize(this SerializingContainer2 sc, ref BioStateEventElementLocalBool element)
         {
             sc.Serialize(ref element.ObjectTag);
-            sc.Serialize(ref element.ObjectTagIndex);
             sc.Serialize(ref element.FunctionName);
-            sc.Serialize(ref element.FunctionNameIndex);
             sc.Serialize(ref element.ObjectType);
             sc.Serialize(ref element.UseParam);
             sc.Serialize(ref element.NewValue);
@@ -263,9 +297,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public static void Serialize(this SerializingContainer2 sc, ref BioStateEventElementLocalFloat element)
         {
             sc.Serialize(ref element.ObjectTag);
-            sc.Serialize(ref element.ObjectTagIndex);
             sc.Serialize(ref element.FunctionName);
-            sc.Serialize(ref element.FunctionNameIndex);
             sc.Serialize(ref element.ObjectType);
             sc.Serialize(ref element.UseParam);
             sc.Serialize(ref element.NewValue);
@@ -274,9 +306,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public static void Serialize(this SerializingContainer2 sc, ref BioStateEventElementLocalInt element)
         {
             sc.Serialize(ref element.ObjectTag);
-            sc.Serialize(ref element.ObjectTagIndex);
             sc.Serialize(ref element.FunctionName);
-            sc.Serialize(ref element.FunctionNameIndex);
             sc.Serialize(ref element.ObjectType);
             sc.Serialize(ref element.UseParam);
             sc.Serialize(ref element.NewValue);

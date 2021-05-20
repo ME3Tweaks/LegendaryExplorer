@@ -30,6 +30,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         private byte[] ENVS_Chunk;//Unparsed
         private byte[] FXPR_Chunk;//Unparsed, ME2 only
         private byte[] INIT_Chunk;//Unparsed, ME2 only
+        public string Platform;
 
         #region Serialization
 
@@ -42,6 +43,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         private static readonly uint envs = BitConverter.ToUInt32(Encoding.ASCII.GetBytes("ENVS"), 0);
         private static readonly uint fxpr = BitConverter.ToUInt32(Encoding.ASCII.GetBytes("FXPR"), 0);
         private static readonly uint init = BitConverter.ToUInt32(Encoding.ASCII.GetBytes("INIT"), 0);
+        private static readonly uint plat = BitConverter.ToUInt32(Encoding.ASCII.GetBytes("PLAT"), 0);
 
         protected override void Serialize(SerializingContainer2 sc)
         {
@@ -92,9 +94,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref bkhdUnks[i]);
             }
 
-            if (Version is 38)
+            if (Version is 38 || //strangely formatted Wwisebank, unused maybe? We're going to ignore it.
+                sc.Game is MEGame.LE2 && Version is 44) //temporary hack. Todo: WwiseBank parsing should be refactored to parse based on Version, not game
             {
-                //strangely formatted Wwisebank, unused maybe? We're going to ignore it.
                 if (sc.IsLoading)
                 {
                     var amountRead = (sc.ms.Position - dataSizePos - 12);
@@ -111,19 +113,21 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     sc.ms.JumpTo(endPos);
                 }
             }
-
-            if (sc.IsLoading)
-            {
-                ReadChunks(sc);
-            }
             else
             {
-                WriteChunks(sc);
-                var endPos = sc.ms.Position;
-                sc.ms.JumpTo(dataSizePos);
-                sc.ms.Writer.WriteInt32((int)(endPos - dataSizePos - 12));
-                sc.ms.Writer.WriteInt32((int)(endPos - dataSizePos - 12));
-                sc.ms.JumpTo(endPos);
+                if (sc.IsLoading)
+                {
+                    ReadChunks(sc);
+                }
+                else
+                {
+                    WriteChunks(sc);
+                    var endPos = sc.ms.Position;
+                    sc.ms.JumpTo(dataSizePos);
+                    sc.ms.Writer.WriteInt32((int)(endPos - dataSizePos - 12));
+                    sc.ms.Writer.WriteInt32((int)(endPos - dataSizePos - 12));
+                    sc.ms.JumpTo(endPos);
+                }
             }
         }
 
@@ -139,7 +143,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 {
                     case "STMG":
                         {
-                            if (sc.Game == MEGame.ME2)
+                            if (sc.Game.IsGame2() || sc.Game is MEGame.LE3)
                             {
                                 ME2STMGFallback = sc.ms.ReadBytes(chunkSize);
                                 break;
@@ -254,6 +258,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                         //no idea what's in this chunk
                         INIT_Chunk = sc.ms.ReadBytes(chunkSize);
                         break;
+                    case "PLAT":
+                        //no idea what's in this chunk
+                        Platform = sc.ms.ReadUnrealString();
+                        break;
                     default:
                         throw new Exception($"Unknown Chunk: {sc.ms.ReadEndianASCIIString(4)} at {sc.ms.Position - 4}");
                 }
@@ -289,14 +297,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 writer.WriteFromBuffer(INIT_Chunk);
             }
 
-            if (sc.Game == MEGame.ME2 && ME2STMGFallback != null)
+            if (ME2STMGFallback != null)
             {
                 writer.WriteUInt32(stmg);
                 writer.WriteInt32(ME2STMGFallback.Length);
                 writer.WriteFromBuffer(ME2STMGFallback);
             }
 
-            if (sc.Game == MEGame.ME3 && InitStateManagement != null)
+            if (InitStateManagement != null)
             {
                 writer.WriteUInt32(stmg);
                 var lenPos = sc.ms.Position;
@@ -390,6 +398,20 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 writer.WriteUInt32(envs);
                 writer.WriteInt32(ENVS_Chunk.Length);
                 writer.WriteFromBuffer(ENVS_Chunk);
+            }
+
+            if (Platform != null)
+            {
+                writer.WriteUInt32(plat);
+                if (Platform.Length > 0)
+                {
+                    writer.WriteInt32(Platform.Length + 5);
+                }
+                else
+                {
+                    writer.WriteInt32(4);
+                }
+                writer.WriteUnrealStringLatin1(Platform);
             }
         }
 
