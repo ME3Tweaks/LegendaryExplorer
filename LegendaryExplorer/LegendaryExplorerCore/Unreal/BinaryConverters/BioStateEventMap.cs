@@ -213,16 +213,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public static void Serialize(this SerializingContainer2 sc, ref BioStateEventElementBool element)
         {
             sc.Serialize(ref element.GlobalBool);
-            if (sc.IsLoading)
-            {
-                element.NewState = sc.ms.ReadBoolInt();
-                element.UseParam = sc.ms.ReadBoolInt();
-            }
-            else
-            {
-                sc.ms.Writer.WriteBoolInt(element.NewState);
-                sc.ms.Writer.WriteBoolInt(element.UseParam);
-            }
+            sc.Serialize(ref element.NewState);
+            sc.Serialize(ref element.UseParam);
         }
 
         public static void Serialize(this SerializingContainer2 sc, ref BioStateEventElementConsequence element)
@@ -234,16 +226,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             sc.Serialize(ref element.GlobalFloat);
             sc.Serialize(ref element.NewValue);
-            if (sc.IsLoading)
-            {
-                element.UseParam = sc.ms.ReadBoolInt();
-                element.Increment = sc.ms.ReadBoolInt();
-            }
-            else
-            {
-                sc.ms.Writer.WriteBoolInt(element.UseParam);
-                sc.ms.Writer.WriteBoolInt(element.Increment);
-            }
+            sc.Serialize(ref element.UseParam);
+            sc.Serialize(ref element.Increment);
         }
 
         public static void Serialize(this SerializingContainer2 sc, ref BioStateEventElementFunction element)
@@ -261,16 +245,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             sc.Serialize(ref element.GlobalInt);
             sc.Serialize(ref element.NewValue);
-            if (sc.IsLoading)
-            {
-                element.UseParam = sc.ms.ReadBoolInt();
-                element.Increment = sc.ms.ReadBoolInt();
-            }
-            else
-            {
-                sc.ms.Writer.WriteBoolInt(element.UseParam);
-                sc.ms.Writer.WriteBoolInt(element.Increment);
-            }
+            sc.Serialize(ref element.UseParam);
+            sc.Serialize(ref element.Increment);
         }
 
         public static void Serialize(this SerializingContainer2 sc, ref BioStateEventElementLocalBool element)
@@ -280,16 +256,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref element.FunctionName);
             sc.Serialize(ref element.FunctionNameIndex);
             sc.Serialize(ref element.ObjectType);
-            if (sc.IsLoading)
-            {
-                element.UseParam = sc.ms.ReadBoolInt();
-                element.NewValue = sc.ms.ReadBoolInt();
-            }
-            else
-            {
-                sc.ms.Writer.WriteBoolInt(element.UseParam);
-                sc.ms.Writer.WriteBoolInt(element.NewValue);
-            }
+            sc.Serialize(ref element.UseParam);
+            sc.Serialize(ref element.NewValue);
         }
 
         public static void Serialize(this SerializingContainer2 sc, ref BioStateEventElementLocalFloat element)
@@ -299,14 +267,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref element.FunctionName);
             sc.Serialize(ref element.FunctionNameIndex);
             sc.Serialize(ref element.ObjectType);
-            if (sc.IsLoading)
-            {
-                element.UseParam = sc.ms.ReadBoolInt();
-            }
-            else
-            {
-                sc.ms.Writer.WriteBoolInt(element.UseParam);
-            }
+            sc.Serialize(ref element.UseParam);
             sc.Serialize(ref element.NewValue);
         }
 
@@ -317,32 +278,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref element.FunctionName);
             sc.Serialize(ref element.FunctionNameIndex);
             sc.Serialize(ref element.ObjectType);
-            if (sc.IsLoading)
-            {
-                element.UseParam = sc.ms.ReadBoolInt();
-            }
-            else
-            {
-                sc.ms.Writer.WriteBoolInt(element.UseParam);
-            }
+            sc.Serialize(ref element.UseParam);
             sc.Serialize(ref element.NewValue);
         }
 
         public static void Serialize(this SerializingContainer2 sc, ref BioStateEventElementSubstate element)
         {
             sc.Serialize(ref element.GlobalBool);
-            if (sc.IsLoading)
-            {
-                element.NewState = sc.ms.ReadBoolInt();
-                element.UseParam = sc.ms.ReadBoolInt();
-                element.ParentTypeOr = sc.ms.ReadBoolInt();
-            }
-            else
-            {
-                sc.ms.Writer.WriteBoolInt(element.NewState);
-                sc.ms.Writer.WriteBoolInt(element.UseParam);
-                sc.ms.Writer.WriteBoolInt(element.ParentTypeOr);
-            }
+            sc.Serialize(ref element.NewState);
+            sc.Serialize(ref element.UseParam);
+            sc.Serialize(ref element.ParentTypeOr);
             sc.Serialize(ref element.ParentIndex);
             sc.Serialize(ref element.SiblingIndices, Serialize);
         }

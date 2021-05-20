@@ -373,8 +373,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             if (sc.Game >= MEGame.ME3)
             {
-                uint unrealVersion = MEPackage.ME3UnrealVersion;
-                uint licenseeVersion = MEPackage.ME3LicenseeVersion;
+                uint unrealVersion = UnrealPackageFile.UnrealVersion(sc.Game);
+                uint licenseeVersion = UnrealPackageFile.LicenseeVersion(sc.Game);
                 sc.Serialize(ref unrealVersion);
                 sc.Serialize(ref licenseeVersion);
             }

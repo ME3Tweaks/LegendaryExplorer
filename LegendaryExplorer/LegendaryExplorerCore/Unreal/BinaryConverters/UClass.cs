@@ -18,7 +18,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public OrderedMultiValueDictionary<UIndex, UIndex> Interfaces;
         public NameReference unkName2;//ME3
         public uint unk2; //ME3
-        public uint me2ps3Unknown; //ME2, PS3 only
+        public uint le2ps3me2Unknown; //ME2, PS3 only and LE2
         public NameReference[] unkNameList2;//ME1/ME2
         public UIndex Defaults;
         public UIndex[] FullFunctionsList;//ME3
@@ -50,9 +50,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref unkNameList2, SCExt.Serialize);
             }
 
-            if (sc.Game == MEGame.ME2 && sc.Pcc.Platform == MEPackage.GamePlatform.PS3) //ME2 PS3 has extra integer here for some reason
+            if (sc.Game is MEGame.LE2 || sc.Game == MEGame.ME2 && sc.Pcc.Platform == MEPackage.GamePlatform.PS3) //ME2 PS3 has extra integer here for some reason
             {
-                sc.Serialize(ref me2ps3Unknown);
+                sc.Serialize(ref le2ps3me2Unknown);
             }
             sc.Serialize(ref Defaults);
             if (sc.Game is MEGame.ME3 or MEGame.UDK or MEGame.LE3) 

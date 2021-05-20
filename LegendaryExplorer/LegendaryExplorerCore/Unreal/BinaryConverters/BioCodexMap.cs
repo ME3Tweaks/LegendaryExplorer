@@ -29,6 +29,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public string CodexSoundString;
         public int InstanceVersion;
         public int Section;
+        public int LE1Unk;
         public string TitleAsString { get; set; }
 
         public BioCodexPage Clone(int newID)
@@ -79,32 +80,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     break;
                 case 2:
                     sc.Serialize(ref page.Section);
-                    if (sc.IsLoading)
-                    {
-                        page.CodexSoundString = sc.ms.ReadStringASCII(sc.ms.ReadInt32());
-                    }
-                    else
-                    {
-                        sc.ms.Writer.WriteInt32(page.CodexSoundString.Length);
-                        sc.ms.Writer.WriteStringLatin1(page.CodexSoundString);
-                    }
+                    sc.Serialize(ref page.CodexSoundString);
                     break;
 
                 case 3:
                     if (sc.Game is MEGame.LE1)
                     {
-                        int unknownInt = 0;
-                        sc.Serialize(ref unknownInt);
+                        sc.Serialize(ref page.LE1Unk);
                         sc.Serialize(ref page.Section);
-                        if (sc.IsLoading)
-                        {
-                            page.CodexSoundString = sc.ms.ReadStringASCII(sc.ms.ReadInt32());
-                        }
-                        else
-                        {
-                            sc.ms.Writer.WriteInt32(page.CodexSoundString.Length);
-                            sc.ms.Writer.WriteStringLatin1(page.CodexSoundString);
-                        }
+                        sc.Serialize(ref page.CodexSoundString);
                     }
                     else sc.Serialize(ref page.Section);
                     break;
@@ -125,9 +109,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 sc.Serialize(ref section.CodexSound);
             }
-
-            if(sc.IsLoading) section.IsPrimary = sc.ms.ReadBoolInt();
-            else sc.ms.Writer.WriteBoolInt(section.IsPrimary);
+            sc.Serialize(ref section.IsPrimary);
         }
     }
 }

@@ -16,20 +16,20 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public uint Unk1;//ME2
         public uint Unk2;//ME2
-        public uint Unk3;
 
         private uint[] bkhdUnks;
         public uint Version; //If 0, this Bank is serialized empty. When creating a bank, make sure to set this!
         public uint ID;
 
-        public OrderedMultiValueDictionary<uint, byte[]> EmbeddedFiles = new OrderedMultiValueDictionary<uint, byte[]>();
-        public OrderedMultiValueDictionary<uint, HIRCObject> HIRCObjects = new OrderedMultiValueDictionary<uint, HIRCObject>();
-        public OrderedMultiValueDictionary<uint, string> ReferencedBanks = new OrderedMultiValueDictionary<uint, string>();
+        public OrderedMultiValueDictionary<uint, byte[]> EmbeddedFiles = new();
+        public OrderedMultiValueDictionary<uint, HIRCObject> HIRCObjects = new();
+        public OrderedMultiValueDictionary<uint, string> ReferencedBanks = new();
 
         public WwiseStateManagement InitStateManagement;//Only present in Init bank. ME3 version
         private byte[] ME2STMGFallback; //STMG chunk for ME2 isn't decoded yet
         private byte[] ENVS_Chunk;//Unparsed
         private byte[] FXPR_Chunk;//Unparsed, ME2 only
+        private byte[] INIT_Chunk;//Unparsed, ME2 only
 
         #region Serialization
 
@@ -41,6 +41,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         private static readonly uint stid = BitConverter.ToUInt32(Encoding.ASCII.GetBytes("STID"), 0);
         private static readonly uint envs = BitConverter.ToUInt32(Encoding.ASCII.GetBytes("ENVS"), 0);
         private static readonly uint fxpr = BitConverter.ToUInt32(Encoding.ASCII.GetBytes("FXPR"), 0);
+        private static readonly uint init = BitConverter.ToUInt32(Encoding.ASCII.GetBytes("INIT"), 0);
 
         protected override void Serialize(SerializingContainer2 sc)
         {
@@ -57,7 +58,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     return; //not sure what's going on here
                 }
             }
-            sc.Serialize(ref Unk3);
+            sc.SerializeConstInt(0);//BulkDataFlags
             var dataSizePos = sc.ms.Position; //come back to write size at the end
             int dataSize = 0;
             sc.Serialize(ref dataSize);
@@ -89,6 +90,26 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             for (int i = 0; i < bkhdUnks.Length; i++)
             {
                 sc.Serialize(ref bkhdUnks[i]);
+            }
+
+            if (Version is 38)
+            {
+                //strangely formatted Wwisebank, unused maybe? We're going to ignore it.
+                if (sc.IsLoading)
+                {
+                    var amountRead = (sc.ms.Position - dataSizePos - 12);
+                    var amountRemaining = dataSize - amountRead;
+                    ME2STMGFallback = sc.ms.ReadBytes((int)amountRemaining);
+                }
+                else
+                {
+                    sc.ms.Writer.WriteFromBuffer(ME2STMGFallback);
+                    var endPos = sc.ms.Position;
+                    sc.ms.JumpTo(dataSizePos);
+                    sc.ms.Writer.WriteInt32((int)(endPos - dataSizePos - 12));
+                    sc.ms.Writer.WriteInt32((int)(endPos - dataSizePos - 12));
+                    sc.ms.JumpTo(endPos);
+                }
             }
 
             if (sc.IsLoading)
@@ -229,6 +250,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                         //no idea what's in this chunk
                         ENVS_Chunk = sc.ms.ReadBytes(chunkSize);
                         break;
+                    case "INIT":
+                        //no idea what's in this chunk
+                        INIT_Chunk = sc.ms.ReadBytes(chunkSize);
+                        break;
                     default:
                         throw new Exception($"Unknown Chunk: {sc.ms.ReadEndianASCIIString(4)} at {sc.ms.Position - 4}");
                 }
@@ -255,6 +280,13 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 writer.WriteUInt32(data);
                 writer.WriteInt32((int)dataChunk.Length);
                 writer.WriteFromBuffer(dataChunk.ToArray());
+            }
+
+            if (INIT_Chunk != null)
+            {
+                writer.WriteUInt32(init);
+                writer.WriteInt32(INIT_Chunk.Length);
+                writer.WriteFromBuffer(INIT_Chunk);
             }
 
             if (sc.Game == MEGame.ME2 && ME2STMGFallback != null)
@@ -367,17 +399,18 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             public HIRCType Type;
             public uint ID;
-            public virtual int DataLength => unparsed.Length + 4;
+            public virtual int DataLength(MEGame game) => unparsed.Length + 4;
             protected byte[] unparsed;
 
             public static HIRCObject Create(SerializingContainer2 sc)
             {
-                HIRCType type = (HIRCType)((sc.Game == MEGame.ME3 || sc.Game == MEGame.LE2 || sc.Game == MEGame.LE3) ? sc.ms.ReadByte() : (byte)sc.ms.ReadInt32());
+                HIRCType type = (HIRCType)((sc.Game is MEGame.ME2) ? (byte)sc.ms.ReadInt32() : sc.ms.ReadByte());
                 int len = sc.ms.ReadInt32();
                 uint id = sc.ms.ReadUInt32();
                 return type switch
                 {
-                    HIRCType.SoundSXFSoundVoice => SoundSFXVoice.Create(sc, id, len),
+                    //TODO: figure out SoundSXFSoundVoice for LE
+                    HIRCType.SoundSXFSoundVoice when sc.Game.IsOTGame() => SoundSFXVoice.Create(sc, id, len),
                     HIRCType.Event => Event.Create(sc, id),
                     HIRCType.EventAction => EventAction.Create(sc, id, len),
                     _ => new HIRCObject
@@ -399,16 +432,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             protected MemoryStream WriteHIRCObjectHeader(MEGame game)
             {
                 var ms = MemoryManager.GetMemoryStream();
-                if (game == MEGame.ME3)
-                {
-                    ms.WriteByte((byte)Type);
-                }
-                else
+                if (game is MEGame.ME2)
                 {
                     ms.WriteInt32((byte)Type);
                 }
+                else
+                {
+                    ms.WriteByte((byte)Type);
+                }
 
-                ms.WriteInt32(DataLength);
+                ms.WriteInt32(DataLength(game));
                 ms.WriteUInt32(ID);
                 return ms;
             }
@@ -432,7 +465,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             public SoundType SoundType; //0=SFX, 1=Voice
 
             private int ParsedLength => 21 + (State == SoundState.Streamed ? 0 : 8);
-            public override int DataLength => unparsed.Length + ParsedLength;
+            public override int DataLength(MEGame game) => unparsed.Length + ParsedLength;
 
             public override byte[] ToBytes(MEGame game)
             {
@@ -492,12 +525,19 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             public List<uint> EventActions;
 
-            public override int DataLength => 8 + EventActions.Count * 4;
+            public override int DataLength(MEGame game) => (game.IsLEGame() ? 5 : 8) + EventActions.Count * 4;
 
             public override byte[] ToBytes(MEGame game)
             {
                 using MemoryStream ms = WriteHIRCObjectHeader(game);
-                ms.WriteInt32(EventActions.Count);
+                if (game.IsLEGame())
+                {
+                    ms.WriteByte((byte)EventActions.Count);
+                }
+                else
+                {
+                    ms.WriteInt32(EventActions.Count);
+                }
                 foreach (uint eventAction in EventActions)
                 {
                     ms.WriteUInt32(eventAction);
@@ -516,7 +556,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 {
                     Type = HIRCType.Event,
                     ID = id,
-                    // Just call .ToList()?
                     EventActions = Enumerable.Range(0, sc.Game.IsLEGame() ? sc.ms.ReadByte() : sc.ms.ReadInt32()).Select(i => (uint)sc.ms.ReadUInt32()).ToList()
                 };
         }
@@ -567,29 +606,40 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             public ushort Unk1;
             public uint ReferencedObjectID;
 
-            public override int DataLength => 12 + unparsed.Length;
+            public override int DataLength(MEGame game) => (game.IsOTGame() ? 12 : 10) + unparsed.Length;
 
             public override byte[] ToBytes(MEGame game)
             {
                 using MemoryStream ms = WriteHIRCObjectHeader(game);
                 ms.WriteByte((byte)Scope);
                 ms.WriteByte((byte)ActionType);
-                ms.WriteUInt16(Unk1);
+                if (game.IsOTGame())
+                {
+                    ms.WriteUInt16(Unk1);
+                }
                 ms.WriteUInt32(ReferencedObjectID);
                 ms.WriteFromBuffer(unparsed);
                 return ms.ToArray();
             }
-            public static EventAction Create(SerializingContainer2 sc, uint id, int len) =>
-                new EventAction
+            public static EventAction Create(SerializingContainer2 sc, uint id, int len)
+            {
+                var action = new EventAction
                 {
                     Type = HIRCType.EventAction,
                     ID = id,
                     Scope = (EventActionScope)sc.ms.ReadByte(),
-                    ActionType = (EventActionType)sc.ms.ReadByte(),
-                    Unk1 = sc.ms.ReadUInt16(),
-                    ReferencedObjectID = sc.ms.ReadUInt32(),
-                    unparsed = sc.ms.ReadBytes(len - 12)
+                    ActionType = (EventActionType)sc.ms.ReadByte()
                 };
+                int unparsedLength = len - 10;
+                if (sc.Game.IsOTGame())
+                {
+                    unparsedLength -= 2;
+                    action.Unk1 = sc.ms.ReadUInt16();
+                }
+                action.ReferencedObjectID = sc.ms.ReadUInt32();
+                action.unparsed = sc.ms.ReadBytes(unparsedLength);
+                return action;
+            }
         }
     }
 

@@ -812,6 +812,10 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsS.ReSerializeAllProperties(GetPEWindow());
         }
+        private void ReSerializeAllObjectBinary_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsS.ReSerializeAllObjectBinary(GetPEWindow());
+        }
         private void ConvertFileToME3(object sender, RoutedEventArgs e)
         {
             // TODO: IMPLEMENT IN LEX

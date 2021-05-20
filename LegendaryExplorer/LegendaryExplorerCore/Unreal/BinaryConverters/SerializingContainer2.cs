@@ -130,6 +130,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.ms.Writer.WriteDouble(val);
         }
 
+        /// <summary>
+        /// Serializes bool as an int
+        /// </summary>
+        /// <param name="sc"></param>
+        /// <param name="val"></param>
         public static void Serialize(this SerializingContainer2 sc, ref bool val)
         {
             if (sc.IsLoading)
