@@ -79,6 +79,7 @@ namespace LegendaryExplorer
         private void Application_Exit(object sender, ExitEventArgs e)
         {
             // Clean up single instance
+            System.Threading.Thread.Sleep(500); //TODO: remove this hacky workaround once the bug in SingleInstanceCore gets fixed
             SingleInstance.Cleanup();
         }
     }

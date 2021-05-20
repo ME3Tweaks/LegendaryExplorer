@@ -1031,17 +1031,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
 
             //Extract the template project to temp
-            var assembly = Assembly.GetExecutingAssembly();
-
-            //TODO: implement in LEX
-            //Maybe don't store this static file in the Soundpanel folder?
-            const string resourceName = "LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel.WwiseTemplateProject.zip";
+            string templateproject = Path.Combine(AppDirectories.ExecFolder, "WwiseTemplateProject.zip");
             string templatefolder = Path.Combine(Path.GetTempPath(), "TemplateProject");
 
-            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+            using (StreamReader stream = new StreamReader(templateproject))
             {
                 await TryDeleteDirectory(templatefolder);
-                ZipArchive archive = new ZipArchive(stream);
+                ZipArchive archive = new ZipArchive(stream.BaseStream);
                 archive.ExtractToDirectory(Path.GetTempPath());
             }
 
@@ -1175,7 +1171,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// <returns>Path to WwiseCLI if Wwise Build 3773 x64 is found, null otherwise</returns>
         public static string GetWwiseCLIPath(bool silent)
         {
-            string wwisePath = Environment.GetEnvironmentVariable("WWiseRoot");
+            string wwisePath = Environment.GetEnvironmentVariable("WWiseRoot"); // TODO: Put Wwise paths in settings, or locate from registry
             if (wwisePath != null)
             {
                 wwisePath = Path.Combine(wwisePath, @"Authoring\x64\Release\bin\WwiseCLI.exe");

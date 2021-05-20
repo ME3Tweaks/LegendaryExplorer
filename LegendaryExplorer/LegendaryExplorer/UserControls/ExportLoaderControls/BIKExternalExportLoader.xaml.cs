@@ -81,7 +81,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private string RADExecutableLocation;
         private bool IsExportable()
         {
-            return !IsExternalFile;
+            return IsBink1() && !IsExternalFile;
         }
         private bool CanSwitchFromLocalToExternal()
         {
@@ -89,12 +89,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
         private bool IsMoviePlaying()
         {
-            return IsVLCPlaying;
+            return IsBink1() && IsVLCPlaying;
         }
         private bool IsMovieStopped()
         {
-            return !IsVLCPlaying;
+            return IsBink1() && !IsVLCPlaying;
         }
+        private bool IsBink1()
+        {
+            return Pcc?.Game.IsOTGame() ?? false;
+        }
+
         public bool ViewerModeOnly
         {
             get => (bool)GetValue(ViewerModeOnlyProperty);
@@ -1023,49 +1028,5 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 Clipboard.SetText(MovieCRC.ToString("X8"));
             }
         }
-
-        // TODO: DELETE THESE STUBS AFTER CODE IS SETUP
-        //public bool ViewerModeOnly
-        //{
-        //    get => (bool)GetValue(ViewerModeOnlyProperty);
-        //    set => SetValue(ViewerModeOnlyProperty, value);
-        //}
-        //public static readonly DependencyProperty ViewerModeOnlyProperty = DependencyProperty.Register(
-        //    nameof(ViewerModeOnly), typeof(bool), typeof(BIKExternalExportLoader), new PropertyMetadata(false, ViewerModeOnlyCallback));
-
-        //private static void ViewerModeOnlyCallback(DependencyObject obj, DependencyPropertyChangedEventArgs e)
-        //{
-        //    BIKExternalExportLoader i = (BIKExternalExportLoader)obj;
-        //    i.OnPropertyChanged(nameof(ViewerModeOnly));
-        //}
-
-        //public BIKExternalExportLoader() : base("BIKExternal")
-        //{
-
-        //}
-        //public BIKExternalExportLoader(string memoryTrackerName) : base(memoryTrackerName)
-        //{
-        //}
-
-        //public override bool CanParse(ExportEntry exportEntry)
-        //{
-        //    return false;
-        //}
-
-        //public override void LoadExport(ExportEntry exportEntry)
-        //{
-        //}
-
-        //public override void UnloadExport()
-        //{
-        //}
-
-        //public override void PopOut()
-        //{
-        //}
-
-        //public override void Dispose()
-        //{
-        //}
     }
 }

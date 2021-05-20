@@ -174,7 +174,6 @@
   <ItemGroup>
     <Resource Include="Dialogs\Splash\splash.png" />
     <Resource Include="Tools\Icons\*.ico" />
-    <EmbeddedResource Include="UserControls\ExportLoaderControls\Soundpanel\WwiseTemplateProject.zip" />
     <Resource Include="Resources\Images\**\*.ico" />
     <Resource Include="Resources\Images\*.gif" />
     <!-- Is there a fontawesome excel icon?-->

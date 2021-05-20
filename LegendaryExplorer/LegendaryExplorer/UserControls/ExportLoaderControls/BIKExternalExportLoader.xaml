@@ -44,9 +44,6 @@
             <TextBlock Foreground="Red" Text="RadTools is not installed. Click the image above to download it." Visibility="{Binding RADNotInstalled, Converter={StaticResource BoolToVisibilityConverter}}" FontWeight="Bold" TextAlignment="Center" TextWrapping="Wrap"/>
         </StackPanel>
         <DockPanel DockPanel.Dock="Top"  LastChildFill="True" HorizontalAlignment="Stretch">
-            <StackPanel HorizontalAlignment="Center" Visibility="{Binding VLCNotInstalled, Converter={StaticResource BoolToVisibilityConverter}}">
-                <Button Foreground="Red" Content="VLC is not installed. Click to download it." FontWeight="Bold" Height="50" Margin="10" Padding="8" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="DownloadVLC_Click"/>
-            </StackPanel>
             <DockPanel Name="video_Panel" LastChildFill="True" Visibility="{Binding VLCIsInstalled, Converter={StaticResource BoolToVisibilityConverter}}">
                 <Grid DockPanel.Dock="Bottom" HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
@@ -80,7 +77,7 @@
 
                 </Grid>
                 <TextBlock Name="Warning_text" Foreground="Red" Text="Error: Bik is not found or corrupted." Visibility="Collapsed" FontWeight="Bold" TextAlignment="Center" TextWrapping="Wrap" DockPanel.Dock="Top"/>
-                <TextBlock Name="Unsupported_Text" Foreground="Blue" Text="Playing BIKs is not supported in LE" Visibility="Collapsed" FontWeight="Bold" TextAlignment="Center" TextWrapping="Wrap" DockPanel.Dock="Top"/>
+                <TextBlock Name="Unsupported_Text" Foreground="Red" Text="Playing BIKs is not supported in LE" Visibility="Collapsed" FontWeight="Bold" TextAlignment="Center" TextWrapping="Wrap" DockPanel.Dock="Top"/>
                 <uc:VideoView x:Name="vlcVideoView" MinWidth="256" MinHeight="128" Background="Black" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" DockPanel.Dock="Top" />
             </DockPanel>
         </DockPanel>

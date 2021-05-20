@@ -235,10 +235,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         public ICommand GotoCommand { get; set; }
         public ICommand TabRightCommand { get; set; }
         public ICommand TabLeftCommand { get; set; }
-        public ICommand DumpAllShadersCommand { get; set; }
-        public ICommand DumpMaterialShadersCommand { get; set; }
         public ICommand FindReferencesCommand { get; set; }
-        public ICommand OpenMapInGameCommand { get; set; }
         public ICommand OpenExportInCommand { get; set; }
         public ICommand CompactShaderCacheCommand { get; set; }
         public ICommand GoToArchetypecommand { get; set; }
@@ -310,12 +307,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
             ExtractToPackageCommand = new GenericCommand(ExtractEntryToNewPackage, ExportIsSelected);
 
             RestoreExportCommand = new GenericCommand(RestoreExportData, ExportIsSelected);
-
-            // TODO: MOVE TO EXPERIMENTS CLASS
-            //OpenMapInGameCommand = new GenericCommand(OpenMapInGame,
-            //    () => PackageIsLoaded() && Pcc.Game != MEGame.UDK && Pcc.Exports.Any(exp => exp.ClassName == "Level"));
-            //DumpAllShadersCommand = new GenericCommand(DumpAllShaders, HasShaderCache);
-            //DumpMaterialShadersCommand = new GenericCommand(DumpMaterialShaders, PackageIsLoaded);
 
         }
 

@@ -102,22 +102,13 @@ namespace LegendaryExplorer.Startup
                     Debug.WriteLine("Unable to determine core count from WMI, defaulting to 2");
                 }
 
-                if (cliHandler == null) // TODO: Get rid of this because it will never be null
-                {
-                    app.Shutdown(0);
-                    LEXSplashScreen?.Close();
-                }
-                else
-                {
-                    //PendingAppLoadedAction = actionDelegate;
 
-                    // TODO: IMPLEMENT IN LEX
-                    //GameController.InitializeMessageHook(mainWindow);
+                // TODO: IMPLEMENT IN LEX
+                //GameController.InitializeMessageHook(mainWindow);
 
 #if DEBUG
-                    //StandardLibrary.InitializeStandardLib();
+                //StandardLibrary.InitializeStandardLib();
 #endif
-                }
             }).ContinueWithOnUIThread(x =>
             {
                 LEXSplashScreen?.Close();

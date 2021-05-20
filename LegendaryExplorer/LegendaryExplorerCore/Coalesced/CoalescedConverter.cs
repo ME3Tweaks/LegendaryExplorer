@@ -312,7 +312,12 @@ namespace LegendaryExplorerCore.Coalesced
 			return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 		}
 
-        public static bool IsOTCoalesced(string sourceFile)
+        /// <summary>
+        /// Returns true if this is a ME3/LE3 coalesced file, false if LE1/LE2
+        /// </summary>
+        /// <param name="sourceFile">Path to coalesced file</param>
+        /// <returns></returns>
+        public static bool IsGame3Coalesced(string sourceFile)
         {
             if (File.Exists(sourceFile))
             {

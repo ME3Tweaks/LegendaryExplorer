@@ -76,9 +76,9 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
             Slope = Left ? a.point.Value.ArriveTangent : a.point.Value.LeaveTangent;
             Line line = new Line();
             line.bind(Line.X1Property, a, nameof(X));
-            line.bind(Line.Y1Property, a, nameof(Y), new YConverter(), a.graph.ActualHeight);
+            line.bind(Line.Y1Property, a, nameof(Y), new CurveEdSubtractionConverter(), a.graph.ActualHeight);
             line.bind(Line.X2Property, this, nameof(X));
-            line.bind(Line.Y2Property, this, nameof(Y), new YConverter(), a.graph.ActualHeight);
+            line.bind(Line.Y2Property, this, nameof(Y), new CurveEdSubtractionConverter(), a.graph.ActualHeight);
             line.bind(VisibilityProperty, this, nameof(Visibility));
             line.Style = a.graph.FindResource("HandleLine") as Style;
             a.graph.graph.Children.Add(line); 

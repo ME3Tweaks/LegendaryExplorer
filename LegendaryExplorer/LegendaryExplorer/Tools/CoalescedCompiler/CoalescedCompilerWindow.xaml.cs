@@ -106,7 +106,7 @@ namespace LegendaryExplorer.Tools.CoalescedCompiler
                 case CoalescedType.Binary:
                 {
                     // Output to folder
-                    ConvertingLECoalesced = !CoalescedConverter.IsOTCoalesced(SourcePath);
+                    ConvertingLECoalesced = !CoalescedConverter.IsGame3Coalesced(SourcePath);
                     DestinationPath = Path.ChangeExtension(SourcePath, null);
                     break;
                 }
@@ -202,7 +202,7 @@ namespace LegendaryExplorer.Tools.CoalescedCompiler
 			{
 
 				case CoalescedType.Binary:
-                    ConvertingLECoalesced = !CoalescedConverter.IsOTCoalesced(SourcePath);
+                    ConvertingLECoalesced = !CoalescedConverter.IsGame3Coalesced(SourcePath);
                     if (!Directory.Exists(Path.GetDirectoryName(DestinationPath) ?? DestinationPath))
 					{
 						Directory.CreateDirectory(DestinationPath);
@@ -305,7 +305,7 @@ namespace LegendaryExplorer.Tools.CoalescedCompiler
             switch (info.Extension)
             {
                 case ".bin":
-                    return CoalescedConverter.IsOTCoalesced(path) ? (CoalescedType.Binary, CoalescedType.Xml) : (CoalescedType.Binary, CoalescedType.ExtractedBin);
+                    return CoalescedConverter.IsGame3Coalesced(path) ? (CoalescedType.Binary, CoalescedType.Xml) : (CoalescedType.Binary, CoalescedType.ExtractedBin);
                 case ".extractedbin":
                     return (CoalescedType.ExtractedBin, CoalescedType.Binary);
                 default:

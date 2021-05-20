@@ -239,7 +239,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
                 }
 
                 fileStream.Position = 0;
-                EndianReader reader = new EndianReader(fileStream) { Endian = endianness };
+                var reader = new EndianReader(fileStream) { Endian = endianness };
 
                 while (fileStream.Position < fileStream.Length - 4)
                 {
@@ -534,7 +534,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
                         string wemName = $"{spExport.Export.ObjectName}_0x{wemID:X8}";
                         if (wemHeader == "RIFF" || wemHeader == "RIFX")
                         {
-                            EmbeddedWEMFile wem = new EmbeddedWEMFile(wemData, wemName, spExport.Export); //will correct truncated stuff
+                            var wem = new EmbeddedWEMFile(wemData, wemName, spExport.Export); //will correct truncated stuff
                             Stream waveStream = soundPanel.getPCMStream(forcedWemFile: wem);
                             if (waveStream != null && waveStream.Length > 0)
                             {
@@ -747,7 +747,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
                         if (oggStream != null)// && File.Exists(outputOggPath))
                         {
                             oggStream.Seek(0, SeekOrigin.Begin);
-                            using (FileStream fs = new FileStream(d.FileName, FileMode.OpenOrCreate))
+                            using (var fs = new FileStream(d.FileName, FileMode.OpenOrCreate))
                             {
                                 oggStream.CopyTo(fs);
                                 fs.Flush();
@@ -781,7 +781,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
                         if (oggStream != null)// && File.Exists(outputOggPath))
                         {
                             oggStream.Seek(0, SeekOrigin.Begin);
-                            using (FileStream fs = new FileStream(d.FileName, FileMode.OpenOrCreate))
+                            using (var fs = new FileStream(d.FileName, FileMode.OpenOrCreate))
                             {
                                 oggStream.CopyTo(fs);
                                 fs.Flush();
@@ -884,7 +884,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
                 return;
             }
 
-            SoundReplaceOptionsDialog srod = new SoundReplaceOptionsDialog();
+            SoundReplaceOptionsDialog srod = new ();
             if (srod.ShowDialog().Value)
             {
                 string convertedFolder = await soundPanel.RunWwiseConversion(wwisePath, dlg.FileName, srod.ChosenSettings);
@@ -1055,7 +1055,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
                             string wemId = wemID.ToString("X8");
                             string wemName = "Embedded WEM 0x" + wemId;// + "(" + singleWemMetadata.Item1 + ")";
 
-                            EmbeddedWEMFile wem = new EmbeddedWEMFile(wemData, $"{i}: {wemName}", spExport.Export, wemID);
+                            var wem = new EmbeddedWEMFile(wemData, $"{i}: {wemName}", spExport.Export, wemID);
                             AllWems.Add(wem);
                             i++;
                         }

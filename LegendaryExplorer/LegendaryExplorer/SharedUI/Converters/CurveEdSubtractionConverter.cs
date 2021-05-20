@@ -3,9 +3,8 @@ using System.Windows.Data;
 
 namespace LegendaryExplorer.SharedUI.Converters
 {
-    // TODO: Name this something more descriptive
     [ValueConversion(typeof(double), typeof(double))]
-    public class YConverter : IValueConverter
+    public class CurveEdSubtractionConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {

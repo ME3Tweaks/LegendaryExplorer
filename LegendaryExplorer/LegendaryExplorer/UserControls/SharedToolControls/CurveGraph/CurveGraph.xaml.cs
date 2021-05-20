@@ -327,9 +327,9 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
                 if (node.Previous == null)
                 {
                     line = new Line { X1 = -10 };
-                    line.bind(Line.Y1Property, a, nameof(Anchor.Y), new YConverter(), ActualHeight);
+                    line.bind(Line.Y1Property, a, nameof(Anchor.Y), new CurveEdSubtractionConverter(), ActualHeight);
                     line.bind(Line.X2Property, a, nameof(Anchor.X));
-                    line.bind(Line.Y2Property, a, nameof(Anchor.Y), new YConverter(), ActualHeight);
+                    line.bind(Line.Y2Property, a, nameof(Anchor.Y), new CurveEdSubtractionConverter(), ActualHeight);
                     if (!interactable) line.Style = comparisonCurveStyle;
                     graph.Children.Add(line);
                 }
@@ -342,9 +342,9 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
                 {
                     line = new Line();
                     line.bind(Line.X1Property, a, nameof(Anchor.X));
-                    line.bind(Line.Y1Property, a, nameof(Anchor.Y), new YConverter(), ActualHeight);
+                    line.bind(Line.Y1Property, a, nameof(Anchor.Y), new CurveEdSubtractionConverter(), ActualHeight);
                     line.X2 = ActualWidth + 10;
-                    line.bind(Line.Y2Property, a, nameof(Anchor.Y), new YConverter(), ActualHeight);
+                    line.bind(Line.Y2Property, a, nameof(Anchor.Y), new CurveEdSubtractionConverter(), ActualHeight);
                     if (!interactable) line.Style = comparisonCurveStyle;
                     graph.Children.Add(line);
                 }
@@ -360,25 +360,25 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
                 case CurveMode.CIM_Linear:
                     line = new Line();
                     line.bind(Line.X1Property, a1, nameof(Anchor.X));
-                    line.bind(Line.Y1Property, a1, nameof(Anchor.Y), new YConverter(), ActualHeight);
+                    line.bind(Line.Y1Property, a1, nameof(Anchor.Y), new CurveEdSubtractionConverter(), ActualHeight);
                     line.bind(Line.X2Property, a2, nameof(Anchor.X));
-                    line.bind(Line.Y2Property, a2, nameof(Anchor.Y), new YConverter(), ActualHeight);
+                    line.bind(Line.Y2Property, a2, nameof(Anchor.Y), new CurveEdSubtractionConverter(), ActualHeight);
                     if (styleOverride != null) line.Style = styleOverride;
                     graph.Children.Add(line);
                     break;
                 case CurveMode.CIM_Constant:
                     line = new Line();
                     line.bind(Line.X1Property, a1, nameof(Anchor.X));
-                    line.bind(Line.Y1Property, a1, nameof(Anchor.Y), new YConverter(), ActualHeight);
+                    line.bind(Line.Y1Property, a1, nameof(Anchor.Y), new CurveEdSubtractionConverter(), ActualHeight);
                     line.bind(Line.X2Property, a2, nameof(Anchor.X));
-                    line.bind(Line.Y2Property, a1, nameof(Anchor.Y), new YConverter(), ActualHeight);
+                    line.bind(Line.Y2Property, a1, nameof(Anchor.Y), new CurveEdSubtractionConverter(), ActualHeight);
                     if (styleOverride != null) line.Style = styleOverride;
                     graph.Children.Add(line);
                     line = new Line();
                     line.bind(Line.X1Property, a2, nameof(Anchor.X));
-                    line.bind(Line.Y1Property, a1, nameof(Anchor.Y), new YConverter(), ActualHeight);
+                    line.bind(Line.Y1Property, a1, nameof(Anchor.Y), new CurveEdSubtractionConverter(), ActualHeight);
                     line.bind(Line.X2Property, a2, nameof(Anchor.X));
-                    line.bind(Line.Y2Property, a2, nameof(Anchor.Y), new YConverter(), ActualHeight);
+                    line.bind(Line.Y2Property, a2, nameof(Anchor.Y), new CurveEdSubtractionConverter(), ActualHeight);
                     if (styleOverride != null) line.Style = styleOverride;
                     graph.Children.Add(line);
                     break;

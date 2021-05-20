@@ -70,9 +70,9 @@
         <MenuItem Header="Scan stuff" Click="ScanStuff_Click"/>
         <MenuItem Header="Make all Dialogue Nodes in game skippable" Click="ConvertAllDialogueToSkippable_Click"/>
         <MenuItem Header="Convert To Different Game Format" Click="ConvertToDifferentGameFormat_Click"/>
-        <MenuItem Header="Dump All Shaders in File" Command="{Binding DumpAllShadersCommand}" sharedUi:Bindings.VisibilityToEnabled="True"/>
-        <MenuItem Header="Dump FLocalVertexFactory Shaders for Selected Material" Command="{Binding DumpMaterialShadersCommand}" sharedUi:Bindings.VisibilityToEnabled="True"/>
-        <MenuItem Header="Open this map in game" Command="{Binding OpenMapInGameCommand}" sharedUi:Bindings.VisibilityToEnabled="True"/>
+        <MenuItem Header="Dump All Shaders in File" Click="DumpAllShaders_Click"/>
+        <MenuItem Header="Dump FLocalVertexFactory Shaders for Selected Material" Click="DumpMaterialShaders_Click"/>
+        <MenuItem Header="Open this map in game" Click="OpenMapInGame_Click"/>
         <MenuItem Header="Re-serialize export" Click="ReSerializeExport_Click"/>
         <MenuItem Header="Run PropertyCollection test" Click="RunPropertyCollectionTest"/>
         <MenuItem Header="UDKify" Click="UDKifyTest"/>

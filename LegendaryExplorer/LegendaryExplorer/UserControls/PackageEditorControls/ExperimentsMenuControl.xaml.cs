@@ -642,15 +642,18 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsS.MakeME1TextureFileList(GetPEWindow());
         }
 
-
-        private void DumpAllShaders()
+        private void OpenMapInGame_Click(object sender, RoutedEventArgs e)
         {
-            var pew = GetPEWindow();
-            if (pew.Pcc == null) return;
-            PackageEditorExperimentsS.DumpAllShaders(pew.Pcc);
+            OpenMapInGame();
         }
 
-        private void DumpMaterialShaders()
+        private void DumpAllShaders_Click(object sender, RoutedEventArgs e)
+        {
+            if (GetPEWindow().Pcc == null) return;
+            PackageEditorExperimentsS.DumpAllShaders(GetPEWindow().Pcc);
+        }
+
+        private void DumpMaterialShaders_Click(object sender, RoutedEventArgs e)
         {
             var pew = GetPEWindow();
             if (pew.TryGetSelectedExport(out ExportEntry matExport) && matExport.IsA("MaterialInterface"))
@@ -658,8 +661,6 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                 PackageEditorExperimentsS.DumpMaterialShaders(matExport);
             }
         }
-
-
 
         void OpenMapInGame()
         {
