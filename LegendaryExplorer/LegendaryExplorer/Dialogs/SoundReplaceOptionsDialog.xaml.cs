@@ -3,6 +3,7 @@ using System.Windows.Input;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorer.Dialogs
 {
@@ -13,6 +14,11 @@ namespace LegendaryExplorer.Dialogs
     {
         public ObservableCollectionExtended<int> SampleRates { get; } = new ObservableCollectionExtended<int>();
         private static readonly int[] AcceptedSampleRates = {24000, 32000}; //may add more later
+
+        public ObservableCollectionExtended<MEGame> SupportedGames { get; } = new()
+        {
+            MEGame.ME3, MEGame.LE2, MEGame.LE3
+        };
         public WwiseConversionSettingsPackage ChosenSettings; 
 
         public SoundReplaceOptionsDialog() : base()
@@ -42,7 +48,8 @@ namespace LegendaryExplorer.Dialogs
             ChosenSettings = new WwiseConversionSettingsPackage
             {
                 TargetSamplerate = (int)SampleRate_Combobox.SelectedItem,
-                UpdateReferencedEvents = (bool)UpdateEvents_CheckBox.IsChecked
+                UpdateReferencedEvents = (bool)UpdateEvents_CheckBox.IsChecked,
+                TargetGame = (MEGame)Game_Combobox.SelectedItem
             };
             DialogResult = true;
             Close();
@@ -59,5 +66,6 @@ namespace LegendaryExplorer.Dialogs
     {
         public int TargetSamplerate = 0;
         public bool UpdateReferencedEvents = true;
+        public MEGame TargetGame = MEGame.ME3;
     }
 }

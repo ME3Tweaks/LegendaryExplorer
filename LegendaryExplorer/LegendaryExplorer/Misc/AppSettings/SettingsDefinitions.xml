@@ -55,6 +55,10 @@
   
   <setting name="Soundpanel_LoopAudio" type="bool" defaultvalue="false"/>
 
+  <!-- Wwise settings -->
+  <setting name="Wwise_3773Path" type="string" defaultvalue=""/>
+  <setting name="Wwise_7110Path" type="string" defaultvalue=""/>
+
   <!-- Global settings-->
   <setting name="Global_PropertyParsing_ParseUnknownArrayTypeAsObject" type="bool" defaultvalue="false" settingsbridgename="ParseUnknownArrayTypesAsObject"/>
   <setting name="Global_Analytics_Enabled" type="bool" defaultvalue="true"/>

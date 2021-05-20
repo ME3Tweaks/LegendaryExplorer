@@ -889,7 +889,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (ExportInfoListBox.SelectedItem is EmbeddedWEMFile wemToReplace && CurrentLoadedExport.FileRef.Game == MEGame.ME3)
             {
-                string wwisePath = GetWwiseCLIPath(false);
+                // TODO: Add Wwise 7110 to this
+                string wwisePath = Misc.AppSettings.Settings.Wwise_3773Path;
                 if (wwisePath == null) return;
                 if (sourceFile == null)
                 {
@@ -967,7 +968,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public async Task ReplaceAudioFromWave(string sourceFile = null, ExportEntry forcedExport = null, WwiseConversionSettingsPackage conversionSettings = null)
         {
-            string wwisePath = GetWwiseCLIPath(false);
+            string wwisePath = Misc.AppSettings.Settings.Wwise_3773Path;
             if (wwisePath == null) return;
             if (sourceFile == null)
             {
@@ -1162,43 +1163,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
 
             return false;
-        }
-
-        /// <summary>
-        /// Checks if Wwwise Build 3773 x64 is installed using the system environment variable. Returns the path if is valid.
-        /// </summary>
-        /// <param name="silent">Supress dialogs</param>
-        /// <returns>Path to WwiseCLI if Wwise Build 3773 x64 is found, null otherwise</returns>
-        public static string GetWwiseCLIPath(bool silent)
-        {
-            string wwisePath = Environment.GetEnvironmentVariable("WWiseRoot"); // TODO: Put Wwise paths in settings, or locate from registry
-            if (wwisePath != null)
-            {
-                wwisePath = Path.Combine(wwisePath, @"Authoring\x64\Release\bin\WwiseCLI.exe");
-                if (File.Exists(wwisePath))
-                {
-                    //check that it's a supported version...
-                    var versionInfo = FileVersionInfo.GetVersionInfo(wwisePath);
-                    string version = versionInfo.ProductVersion; // Will typically return "1.0.0" in your case
-                    if (version != "2010.3.3.3773")
-                    {
-                        //wrong version
-                        if (!silent)
-                            MessageBox.Show("WwiseCLI.exe found, but it's the wrong version:" + version + ".\nInstall Wwise Build 3773 64bit to use this feature.");
-                        return null;
-                    }
-
-                    return wwisePath;
-                }
-
-                if (!silent)
-                    MessageBox.Show("WwiseCLI.exe was not found on your system.\nInstall Wwise Build 3773 64bit to use this feature.");
-                return null;
-            }
-
-            if (!silent)
-                MessageBox.Show("Wwise does not appear to be installed on your system.\nInstall Wwise Build 3773 64bit to use this feature.");
-            return null;
         }
 
         // Player commands

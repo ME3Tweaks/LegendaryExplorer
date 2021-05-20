@@ -17,6 +17,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="20"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
@@ -28,9 +29,11 @@
         <TextBlock Text="Choose Wwise Conversion settings" Grid.Row="0" Grid.ColumnSpan="2" FontWeight="Bold"/>
         <TextBlock Text="Sample Rate" Grid.Row="2" VerticalAlignment="Center"/>
         <xctk:WatermarkComboBox Name="SampleRate_Combobox" Watermark="Select target samplerate" Grid.Row="2" Grid.Column="1"  Grid.ColumnSpan="2" ItemsSource="{Binding SampleRates}"/>
-        <TextBlock Text="Update Event Lengths" Grid.Row="3" VerticalAlignment="Center" Margin="0 5 0 0"  />
-        <CheckBox x:Name="UpdateEvents_CheckBox"  Grid.Row="3" Grid.Column="1" IsChecked="False" Margin="0 5 0 0"  />
-        <Button Content="Replace audio" Command="{Binding ConvertAudioCommand}" Grid.Row="7" Grid.Column="2" IsDefault="True"/>
-        <Button Content="Cancel" Click="Cancel_Click"  Grid.Row="8" Grid.Column="1" Margin="8,0"/>
+        <TextBlock Text="Game" Grid.Row="3" VerticalAlignment="Center"/>
+        <xctk:WatermarkComboBox Name="Game_Combobox" Watermark="Select game you're converting for" Grid.Row="3" Grid.Column="1"  Grid.ColumnSpan="2" ItemsSource="{Binding SupportedGames}"/>
+        <TextBlock Text="Update Event Lengths" Grid.Row="4" VerticalAlignment="Center" Margin="0 5 0 0"  />
+        <CheckBox x:Name="UpdateEvents_CheckBox"  Grid.Row="4" Grid.Column="1" IsChecked="False" Margin="0 5 0 0"  />
+        <Button Content="Replace audio" Command="{Binding ConvertAudioCommand}" Grid.Row="8" Grid.Column="2" IsDefault="True"/>
+        <Button Content="Cancel" Click="Cancel_Click"  Grid.Row="9" Grid.Column="1" Margin="8,0"/>
     </Grid>
 </misc:NotifyPropertyChangedWindowBase>

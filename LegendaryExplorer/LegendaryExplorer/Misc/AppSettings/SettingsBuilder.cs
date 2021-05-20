@@ -178,6 +178,16 @@ namespace LegendaryExplorer.Misc.AppSettings
             get => _soundpanel_loopaudio; 
             set => SetProperty(ref _soundpanel_loopaudio, value);
         }
+        private static string _wwise_3773path = ""; 
+        public static string Wwise_3773Path {
+            get => _wwise_3773path; 
+            set => SetProperty(ref _wwise_3773path, value);
+        }
+        private static string _wwise_7110path = ""; 
+        public static string Wwise_7110Path {
+            get => _wwise_7110path; 
+            set => SetProperty(ref _wwise_7110path, value);
+        }
         private static bool _global_propertyparsing_parseunknownarraytypeasobject = false; 
         public static bool Global_PropertyParsing_ParseUnknownArrayTypeAsObject {
             get => _global_propertyparsing_parseunknownarraytypeasobject; 
@@ -270,6 +280,8 @@ namespace LegendaryExplorer.Misc.AppSettings
             Interpreter_Colorize = TryGetSetting(settingsJson, "interpreter_colorize", true);
             Interpreter_ShowLinearColorWheel = TryGetSetting(settingsJson, "interpreter_showlinearcolorwheel", false);
             Soundpanel_LoopAudio = TryGetSetting(settingsJson, "soundpanel_loopaudio", false);
+            Wwise_3773Path = TryGetSetting(settingsJson, "wwise_3773path", "");
+            Wwise_7110Path = TryGetSetting(settingsJson, "wwise_7110path", "");
             Global_PropertyParsing_ParseUnknownArrayTypeAsObject = TryGetSetting(settingsJson, "global_propertyparsing_parseunknownarraytypeasobject", false);
             Global_Analytics_Enabled = TryGetSetting(settingsJson, "global_analytics_enabled", true);
             Global_ME1Directory = TryGetSetting(settingsJson, "global_me1directory", "");
@@ -330,6 +342,8 @@ namespace LegendaryExplorer.Misc.AppSettings
             settingsJson["interpreter_colorize"] = Interpreter_Colorize.ToString();
             settingsJson["interpreter_showlinearcolorwheel"] = Interpreter_ShowLinearColorWheel.ToString();
             settingsJson["soundpanel_loopaudio"] = Soundpanel_LoopAudio.ToString();
+            settingsJson["wwise_3773path"] = Wwise_3773Path.ToString();
+            settingsJson["wwise_7110path"] = Wwise_7110Path.ToString();
             settingsJson["global_propertyparsing_parseunknownarraytypeasobject"] = Global_PropertyParsing_ParseUnknownArrayTypeAsObject.ToString();
             settingsJson["global_analytics_enabled"] = Global_Analytics_Enabled.ToString();
             settingsJson["global_me1directory"] = Global_ME1Directory.ToString();

@@ -871,9 +871,6 @@ namespace LegendaryExplorer.Tools.Soundplorer
                 await Soundpanel.TryDeleteDirectory(Path.Combine(Path.GetTempPath(), "TemplateProject"));
             }
 
-            //Verify Wwise is installed with the correct version
-            string wwisePath = Soundpanel.GetWwiseCLIPath(false);
-            if (wwisePath == null) return; //abort. getpath is not silent so it will show dialogs before this is reached.
             var dlg = new CommonOpenFileDialog("Select folder containing .wav files") { IsFolderPicker = true };
             if (dlg.ShowDialog(this) != CommonFileDialogResult.Ok) { return; }
 
@@ -885,17 +882,25 @@ namespace LegendaryExplorer.Tools.Soundplorer
             }
 
             SoundReplaceOptionsDialog srod = new ();
-            if (srod.ShowDialog().Value)
-            {
-                string convertedFolder = await soundPanel.RunWwiseConversion(wwisePath, dlg.FileName, srod.ChosenSettings);
-                MessageBox.Show("Done. Converted ogg files have been placed into:\n" + convertedFolder);
-            }
-            else
-            {
-                return; //user didn't choose any settings
-            }
+            if (!srod.ShowDialog().Value) return;
 
+            //Verify Wwise is installed with the correct version
+            string wwisePath = Misc.AppSettings.Settings.Wwise_3773Path;
+            if (wwisePath == null)
+            {
+                MessageBox.Show("Wwise path not set for version 3773.");
+                return; //abort. getpath is not silent so it will show dialogs before this is reached.
+            }
+            
+            string convertedFolder = await soundPanel.RunWwiseConversion(wwisePath, dlg.FileName, srod.ChosenSettings);
+            MessageBox.Show("Done. Converted ogg files have been placed into:\n" + convertedFolder);
 
+        }
+
+        private void SetWwisePaths_Clicked(object sender, RoutedEventArgs e)
+        {
+            SetWwisePathDialog swpd = new ();
+            swpd.ShowDialog();
         }
 
         private void ExtractAllAudio_Clicked(object sender, RoutedEventArgs e)
