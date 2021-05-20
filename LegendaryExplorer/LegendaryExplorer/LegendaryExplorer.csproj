@@ -154,7 +154,7 @@
     <PackageReference Include="SingleInstanceCore" Version="2.0.0" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20071.2" />
     <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
-    <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.12" />
+    <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.14" />
     <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
   </ItemGroup>
 
@@ -194,6 +194,16 @@
 
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+	  <VlcWindowsX64IncludeFiles Include="plugins\d3d%2A\%2A" />
+	  <VlcWindowsX64IncludeFiles Include="libvlc.dll;libvlccore.dll;hrtfs\%2A%2A;" />
+	  <VlcWindowsX64IncludeFiles Include="locale\en_GB\%2A" />
+	  <VlcWindowsX64IncludeFiles Include="plugins\codec\libavcodec_plugin.dll" />
+	  <VlcWindowsX64IncludeFiles Include="plugins\access\libimem_plugin.dll" />
+	  <VlcWindowsX64IncludeFiles Include="plugins\audio%2A\%2A" />
+	  <VlcWindowsX64IncludeFiles Include="plugins\video_output\%2A" />
   </ItemGroup>
 
   <ItemGroup>

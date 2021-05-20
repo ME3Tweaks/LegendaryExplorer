@@ -7,12 +7,16 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.SharedUI;
+using LegendaryExplorer.SharedUI.Controls;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LibVLCSharp.Shared;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Path = System.IO.Path;
@@ -24,12 +28,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
     /// </summary>
     public partial class BIKExternalExportLoader : ExportLoaderControl
     {
-        // TODO: IMPLEMENT IN LEX WITH NEW VLC LIB
-        /*
+
         #region Declarations
         private static readonly string[] parsableClasses = { "TextureMovie", "BioLoadingMovie", "BioSeqAct_MovieBink", "SFXInterpTrackMovieBink", "SFXSeqAct_PlatformMovieBink" };
         private bool _radIsInstalled;
-        public VlcControl MoviePlayer = new VlcControl();
+        public LibVLC libvlc;
+        public MediaPlayer mediaPlayer;
         public ICommand OpenFileInRADCommand { get; private set; }
         public ICommand ImportBikFileCommand { get; private set; }
         public ICommand PlayBikInVLCCommand { get; private set; }
@@ -47,18 +51,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
         public bool RADNotInstalled => !RADIsInstalled;
-        private bool _vlcIsInstalled;
-        public bool VLCIsInstalled
-        {
-            get => _vlcIsInstalled;
-            set
-            {
-                SetProperty(ref _vlcIsInstalled, value);
-                OnPropertyChanged(nameof(VLCNotInstalled));
-            }
-        }
-
-        public bool VLCNotInstalled => !VLCIsInstalled;
         private bool _isexternallyCached;
         public bool IsExternallyCached { get => _isexternallyCached; set => SetProperty(ref _isexternallyCached, value); }
         private bool _islocallyCached;
@@ -87,7 +79,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public bool ShowInfo { get => _showInfo; set => SetProperty(ref _showInfo, value); }
         public ObservableCollectionExtended<string> AvailableTFCNames { get; } = new ObservableCollectionExtended<string>();
         private string RADExecutableLocation;
-        private string VLCDirectory;
         private bool IsExportable()
         {
             return !IsExternalFile;
@@ -98,11 +89,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
         private bool IsMoviePlaying()
         {
-            return VLCIsInstalled && IsVLCPlaying;
+            return IsVLCPlaying;
         }
         private bool IsMovieStopped()
         {
-            return VLCIsInstalled && !IsVLCPlaying;
+            return !IsVLCPlaying;
         }
         public bool ViewerModeOnly
         {
@@ -141,45 +132,33 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             DataContext = this;
             GetRADInstallationStatus();
-            GetVLCInstallationStatus();
             LoadCommands();
             InitializeComponent();
 
+            libvlc = new LibVLC();
+            mediaPlayer = new MediaPlayer(libvlc);
+            vlcVideoView.Loaded += VideoView_Loaded;
+
+            //MoviePlayer.VlcMediaplayerOptions = new[] { "--video-title-show" };  //Can we find options to show frame counts/frame rates/time etc
+
             TextureCacheComboBox.SelectionChanged += TextureCacheComboBox_SelectionChanged;
 
-
-            if (!VLCIsInstalled)
+            mediaPlayer.Playing += (sender, e) =>
             {
-                Debug.WriteLine("VLC library not found.");
-            }
-            else // Load VLC library
+                IsVLCPlaying = true;
+                Debug.WriteLine("BikMoviePlayer Started");
+            };
+            mediaPlayer.Stopped += (sender, e) =>
             {
-                var libDirectory = new DirectoryInfo(VLCDirectory);
-                vlcplayer_WinFormsHost.Child = MoviePlayer;
-                MoviePlayer.BeginInit();
-                MoviePlayer.VlcLibDirectory = libDirectory;
-                if (ShowInfo)
-                {
-                    MoviePlayer.VlcMediaplayerOptions = new[] { "--video-title-show" };  //Can we find options to show frame counts/frame rates/time etc
-                }
-                MoviePlayer.EndInit();
-                MoviePlayer.Playing += (sender, e) =>
-                {
-                    IsVLCPlaying = true;
-                    Debug.WriteLine("BikMoviePlayer Started");
-                };
-                MoviePlayer.Stopped += (sender, e) =>
-                {
-                    IsVLCPlaying = false;
-                    Debug.WriteLine("BikMoviePlayer Stopped");
-                };
-                MoviePlayer.EncounteredError += (sender, e) =>
-                {
-                    Console.Error.Write("An error occurred");
-                    IsVLCPlaying = false;
-                };
-                MoviePlayer.EndReached += MediaEndReached;
-            }
+                IsVLCPlaying = false;
+                Debug.WriteLine("BikMoviePlayer Stopped");
+            };
+            mediaPlayer.EncounteredError += (sender, e) =>
+            {
+                Console.Error.Write("An error occurred");
+                IsVLCPlaying = false;
+            };
+            mediaPlayer.EndReached += MediaEndReached;
         }
 
         public BIKExternalExportLoader(bool autoplayPopout, bool showcontrols = false) : base("BIKExternal")
@@ -216,26 +195,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             RADIsInstalled = false;
             RADExecutableLocation = null;
         }
-        private void GetVLCInstallationStatus()
-        {
-            if (VLCIsInstalled) return;
-            try
-            {
-                using RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\VideoLAN\VLC");
-                if (key?.GetValue("InstallDir") is string InstallDir && File.Exists(Path.Combine(InstallDir, "libvlc.dll")))
-                {
-                    VLCDirectory = InstallDir;
-                    VLCIsInstalled = true;
-                    return;
-                }
-            }
-            catch
-            {
-                // ignored
-            }
-            VLCIsInstalled = false;
-            VLCDirectory = null;
-        }
+
         private void LoadCommands()
         {
             OpenFileInRADCommand = new GenericCommand(OpenExportInRAD, () => RADIsInstalled);
@@ -248,18 +208,29 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
         public override bool CanParse(ExportEntry exportEntry) => parsableClasses.Contains(exportEntry.ClassName) && !exportEntry.IsDefaultObject;
 
+        private void VideoView_Loaded(object sender, RoutedEventArgs e)
+        {
+            vlcVideoView.MediaPlayer = mediaPlayer;
+        }
+
         public override void LoadExport(ExportEntry exportEntry)
         {
             MovieCRC = 0; //reset
-            if (VLCIsInstalled)
+            if (exportEntry.Game.IsOTGame())
             {
-                MoviePlayer.Stop();
-                var bik = MoviePlayer.GetCurrentMedia();
+                video_Panel.IsEnabled = true;
+                mediaPlayer.Stop();
+                var bik = mediaPlayer.Media;
                 if (bik != null)
                 {
-                    MoviePlayer.ResetMedia();
+                    mediaPlayer.Media = null;
                     bik.Dispose();
                 }
+            }
+            else
+            {
+                Unsupported_Text.Visibility = Visibility.Visible;
+                video_Panel.IsEnabled = false;
             }
             CurrentLoadedExport = exportEntry;
             AvailableTFCNames.ClearEx();
@@ -287,7 +258,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         MovieCRC = ~ParallelCRC.Compute(movieBytes);
                     }
                 }
-                catch (Exception e)
+                catch
                 {
                     // Do nothing
                 }
@@ -296,26 +267,23 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public override void UnloadExport()
         {
             MovieCRC = 0;
-            if (VLCIsInstalled)
+            mediaPlayer.Stop();
+            var bik = mediaPlayer.Media;
+            if (bik != null)
             {
-                MoviePlayer.Stop();
-                var bik = MoviePlayer.GetCurrentMedia();
-                if (bik != null)
-                {
-                    MoviePlayer.ResetMedia();
-                    bik.Dispose();
-                }
-
+                mediaPlayer.Media = null;
+                bik.Dispose();
             }
             CurrentLoadedExport = null;
             Warning_text.Visibility = Visibility.Collapsed;
+            Unsupported_Text.Visibility = Visibility.Collapsed;
             video_Panel.IsEnabled = true;
         }
         public override void PopOut()
         {
             if (CurrentLoadedExport != null)
             {
-                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new BIKExternalExportLoader(), CurrentLoadedExport)
+                ExportLoaderHostedWindow elhw = new (new BIKExternalExportLoader(), CurrentLoadedExport)
                 {
                     Title = $"BIK Viewer - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}"
                 };
@@ -326,16 +294,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public override void Dispose()
         {
             UnloadExport();
-
-            if (VLCIsInstalled)
-            {
-                MoviePlayer?.Dispose();
-                MoviePlayer = null;
-                vlcplayer_WinFormsHost.Child.Dispose();
-                vlcplayer_WinFormsHost.Child = null;
-                vlcplayer_WinFormsHost.Dispose();
-                vlcplayer_WinFormsHost = null;
-            }
+            mediaPlayer?.Dispose();
+            libvlc?.Dispose();
         }
 
         private void GetBikProps()
@@ -395,7 +355,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 File.WriteAllBytes(writeoutPath, data);
 
-                Process process = new Process
+                var process = new Process
                 {
                     StartInfo =
                     {
@@ -411,37 +371,36 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 MessageBox.Show("Error launching RADTools:\n\n" + ex.FlattenException());
             }
         }
+
         private void PlayExportInVLC()
         {
-            var bik = MoviePlayer.GetCurrentMedia();
-            if (bik?.State == Vlc.DotNet.Core.Interops.Signatures.MediaStates.Paused)
+            if (mediaPlayer.IsPlaying)
             {
-                MoviePlayer.Pause();
+                mediaPlayer.Pause();
             }
             else
             {
-                MemoryStream bikMovie = GetMovieStream();
-                if (bikMovie != null)
-                {
-                    MoviePlayer.Play(bikMovie);
-                }
+                var stream = GetMovieStream();
+                var bikMovie = new Media(libvlc, new StreamMediaInput(stream));
+                mediaPlayer.Play(bikMovie);
             }
             IsVLCPlaying = true;
         }
+
         private void PauseMoviePlayer()
         {
             IsVLCPlaying = false;
-            MoviePlayer.Pause();
+            mediaPlayer.Pause();
         }
-        private void RewindMoviePlayer() => MoviePlayer.VlcMediaPlayer.Time = 0;
+        private void RewindMoviePlayer() => mediaPlayer.Position = 0;
 
         private void StopMoviePlayer()
         {
-            MoviePlayer.Stop();
-            var bik = MoviePlayer.GetCurrentMedia();
+            mediaPlayer.Stop();
+            var bik = mediaPlayer.Media;
             if (bik != null)
             {
-                MoviePlayer.ResetMedia();
+                mediaPlayer.Media = null;
                 bik.Dispose();
             }
         }
@@ -467,7 +426,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         return null;
                     }
 
-                    using FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+                    using FileStream fs = new (filePath, FileMode.Open, FileAccess.Read);
                     return fs.ReadToBuffer(fs.Length);
                 }
                 else
@@ -495,7 +454,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         int length = binary.DataSize;
                         int offset = binary.DataOffset;
 
-                        using FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+                        using FileStream fs = new (filePath, FileMode.Open, FileAccess.Read);
                         fs.Seek(offset, SeekOrigin.Begin);
                         int bikend = offset + length;
 
@@ -558,8 +517,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public async void MediaEndReached(object sender, EventArgs args)
         {
             Debug.WriteLine("Reached End");
-            var mediaplayer = sender as VlcControl;
-            await Task.Run(() => mediaplayer.VlcMediaPlayer.Time = 0);
+            var mediaplayer = sender as MediaPlayer;
+            await Task.Run(() => mediaPlayer.Position = 0);
             IsVLCPlaying = false;
         }
 
@@ -569,7 +528,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private void SaveBikToFile()
         {
             bool saved = false;
-            SaveFileDialog d = new SaveFileDialog
+            SaveFileDialog d = new()
             {
                 Filter = "Bik Movie File (*.bik) |*.bik",
                 FileName = $"{CurrentLoadedExport.ObjectName.Instanced}.bik"
@@ -589,7 +548,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var bikBytes = GetMovieBytes();
             if (bikBytes != null)
             {
-                using (FileStream fs = new FileStream(bikfile, FileMode.Create))
+                using (FileStream fs = new (bikfile, FileMode.Create))
                 {
                     fs.WriteFromBuffer(bikBytes);
                 }
@@ -628,12 +587,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             if (IsMoviePlaying())
             {
-                MoviePlayer.Stop();
+                mediaPlayer.Stop();
             }
             bikcontrols_Panel.IsEnabled = false; //stop user playing 
 
-            MemoryStream bikMovie = new MemoryStream();
-            using (FileStream fs = new FileStream(bikfile, FileMode.OpenOrCreate, FileAccess.Read))
+            var bikMovie = new MemoryStream();
+            using (FileStream fs = new (bikfile, FileMode.OpenOrCreate, FileAccess.Read))
             {
                 fs.CopyTo(bikMovie);
             }
@@ -716,7 +675,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 byte[] bikarray = bikMovie.ToArray();
                 int biklength = bikarray.Length;
                 int bikoffset;
-                using (FileStream fs = new FileStream(tfcPath, FileMode.Open, FileAccess.ReadWrite))
+                using (FileStream fs = new (tfcPath, FileMode.Open, FileAccess.ReadWrite))
                 {
                     tfcGuid = fs.ReadGuid();
                     fs.Seek(0, SeekOrigin.End);
@@ -956,7 +915,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 return null;
             }
 
-            CommonOpenFileDialog m = new CommonOpenFileDialog
+            CommonOpenFileDialog m = new()
             {
                 IsFolderPicker = true,
                 EnsurePathExists = true,
@@ -994,7 +953,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             if (createTFC)
             {
                 Guid tfcGuid = Guid.NewGuid();
-                using FileStream fs = new FileStream(outputTFC, FileMode.OpenOrCreate, FileAccess.Write);
+                using FileStream fs = new (outputTFC, FileMode.OpenOrCreate, FileAccess.Write);
                 fs.WriteGuid(tfcGuid);
                 fs.Flush();
             }
@@ -1005,14 +964,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
 
             var tempfilepath = Path.Combine(Path.GetTempPath(), "Temp.bik");
-            bool finished = ExportBikToFile(tempfilepath);
+            ExportBikToFile(tempfilepath);
 
             CurrentLoadedExport.WriteProperty(new NameProperty(TfcName, "TextureFileCacheName"));
 
             IsLocallyCached = false;
             IsExternallyCached = true;
 
-            finished = ImportBiktoCache(tempfilepath, tfcPath);
+            bool finished = ImportBiktoCache(tempfilepath, tfcPath);
 
             File.Delete(tempfilepath);
             if (finished)
@@ -1023,7 +982,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private void SwitchExternalToLocal()
         {
             var tempfilepath = Path.Combine(Path.GetTempPath(), "Temp.bik");
-            bool finished = ExportBikToFile(tempfilepath);
+            ExportBikToFile(tempfilepath);
 
             CurrentLoadedExport.RemoveProperty("TextureFileCacheName");
 
@@ -1031,7 +990,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             TfcName = "<Store Locally>";
             IsExternallyCached = false;
 
-            finished = ImportBiktoCache(tempfilepath);
+            bool finished = ImportBiktoCache(tempfilepath);
             File.Delete(tempfilepath);
             TextureCacheComboBox.SelectedItem = TfcName;
             if (finished)
@@ -1063,50 +1022,50 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 Clipboard.SetText(MovieCRC.ToString("X8"));
             }
-        }*/
+        }
 
         // TODO: DELETE THESE STUBS AFTER CODE IS SETUP
-        public bool ViewerModeOnly
-        {
-            get => (bool)GetValue(ViewerModeOnlyProperty);
-            set => SetValue(ViewerModeOnlyProperty, value);
-        }
-        public static readonly DependencyProperty ViewerModeOnlyProperty = DependencyProperty.Register(
-            nameof(ViewerModeOnly), typeof(bool), typeof(BIKExternalExportLoader), new PropertyMetadata(false, ViewerModeOnlyCallback));
+        //public bool ViewerModeOnly
+        //{
+        //    get => (bool)GetValue(ViewerModeOnlyProperty);
+        //    set => SetValue(ViewerModeOnlyProperty, value);
+        //}
+        //public static readonly DependencyProperty ViewerModeOnlyProperty = DependencyProperty.Register(
+        //    nameof(ViewerModeOnly), typeof(bool), typeof(BIKExternalExportLoader), new PropertyMetadata(false, ViewerModeOnlyCallback));
 
-        private static void ViewerModeOnlyCallback(DependencyObject obj, DependencyPropertyChangedEventArgs e)
-        {
-            BIKExternalExportLoader i = (BIKExternalExportLoader)obj;
-            i.OnPropertyChanged(nameof(ViewerModeOnly));
-        }
+        //private static void ViewerModeOnlyCallback(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        //{
+        //    BIKExternalExportLoader i = (BIKExternalExportLoader)obj;
+        //    i.OnPropertyChanged(nameof(ViewerModeOnly));
+        //}
 
-        public BIKExternalExportLoader() : base("BIKExternal")
-        {
+        //public BIKExternalExportLoader() : base("BIKExternal")
+        //{
 
-        }
-        public BIKExternalExportLoader(string memoryTrackerName) : base(memoryTrackerName)
-        {
-        }
+        //}
+        //public BIKExternalExportLoader(string memoryTrackerName) : base(memoryTrackerName)
+        //{
+        //}
 
-        public override bool CanParse(ExportEntry exportEntry)
-        {
-            return false;
-        }
+        //public override bool CanParse(ExportEntry exportEntry)
+        //{
+        //    return false;
+        //}
 
-        public override void LoadExport(ExportEntry exportEntry)
-        {
-        }
+        //public override void LoadExport(ExportEntry exportEntry)
+        //{
+        //}
 
-        public override void UnloadExport()
-        {
-        }
+        //public override void UnloadExport()
+        //{
+        //}
 
-        public override void PopOut()
-        {
-        }
+        //public override void PopOut()
+        //{
+        //}
 
-        public override void Dispose()
-        {
-        }
+        //public override void Dispose()
+        //{
+        //}
     }
 }

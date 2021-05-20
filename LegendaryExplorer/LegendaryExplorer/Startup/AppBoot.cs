@@ -70,6 +70,8 @@ namespace LegendaryExplorer.Startup
             // WPF setup
             ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(int.MaxValue));
 
+            // Initialize VLC
+            LibVLCSharp.Shared.Core.Initialize();
 
             //set up AppData Folder
             if (!Directory.Exists(AppDirectories.AppDataFolder))
