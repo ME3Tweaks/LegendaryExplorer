@@ -25,7 +25,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref AlphaMaps, SCExt.Serialize);
             sc.Serialize(ref WeightedTextureMaps, SCExt.Serialize);
             sc.Serialize(ref CachedTerrainMaterials, SCExt.Serialize);
-            if (sc.Game > MEGame.ME1)
+            if (sc.Game != MEGame.ME1)
             {
                 sc.Serialize(ref CachedTerrainMaterials2, SCExt.Serialize);
                 sc.Serialize(ref CachedDisplacements, SCExt.Serialize);
@@ -91,7 +91,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public UIndex Terrain;
         public TerrainMaterialMask Mask;
         public Guid[] MaterialIds;
-        public Guid LightingGuid; //ME3
+        public Guid LightingGuid; // >= ME3
 
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
         {
@@ -145,7 +145,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref mat.Terrain);
             sc.Serialize(ref mat.Mask);
             sc.Serialize(ref mat.MaterialIds, SCExt.Serialize);
-            if (sc.Game == MEGame.ME3)
+            if (sc.Game >= MEGame.ME3)
             {
                 sc.Serialize(ref mat.LightingGuid);
             }

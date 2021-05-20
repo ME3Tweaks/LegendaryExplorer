@@ -25,7 +25,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 StaticReceiverData data = StaticRecievers[i];
                 uIndexes.Add((data.PrimitiveComponent, $"StaticReciever[{i}].PrimitiveComponent"));
-                if (game == MEGame.ME3)
+                if (game >= MEGame.ME3)
                 {
                     uIndexes.AddRange(data.ShadowMap1D.Select((u, j) => (u, $"StaticReciever[{i}].ShadowMap1D[{j}]")));
                 }
@@ -42,9 +42,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public ushort[] Indices;
         public uint NumTriangles;
         public LightMap LightMap;
-        public UIndex[] ShadowMap1D;//ME3
-        public int Data;//ME3
-        public int InstanceIndex;//ME3
+        public UIndex[] ShadowMap1D;//ME3/LE
+        public int Data;//ME3/LE
+        public int InstanceIndex;//ME3/LE
     }
 
     public class DecalVertex
@@ -52,10 +52,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public Vector3 Position;
         public PackedNormal TangentX;
         public PackedNormal TangentZ;
-        public Vector2 ProjectedUVs;//not ME3
+        public Vector2 ProjectedUVs;//< ME3
         public Vector2 LightMapCoordinate;
-        public Vector2 NormalTransform1;//not ME3
-        public Vector2 NormalTransform2;//not ME3
+        public Vector2 NormalTransform1;//< ME3
+        public Vector2 NormalTransform2;//< ME3
     }
 
     public static partial class SCExt
@@ -87,11 +87,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 dat = new StaticReceiverData();
             }
             sc.Serialize(ref dat.PrimitiveComponent);
-            sc.BulkSerialize(ref dat.Vertices, Serialize, sc.Game == MEGame.ME3 ? 28 : 52);
+            sc.BulkSerialize(ref dat.Vertices, Serialize, sc.Game >= MEGame.ME3 ? 28 : 52);
             sc.BulkSerialize(ref dat.Indices, SCExt.Serialize, 2);
             sc.Serialize(ref dat.NumTriangles);
             sc.Serialize(ref dat.LightMap);
-            if (sc.Game == MEGame.ME3)
+            if (sc.Game >= MEGame.ME3)
             {
                 sc.Serialize(ref dat.ShadowMap1D, Serialize);
                 sc.Serialize(ref dat.Data);

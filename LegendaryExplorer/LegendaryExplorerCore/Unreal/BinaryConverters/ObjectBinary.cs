@@ -405,8 +405,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         /// </summary>
         /// <param name="game"></param>
         /// <returns></returns>
-        public virtual List<(UIndex, string)> GetUIndexes(MEGame game) => new List<(UIndex, string)>();
-        public virtual List<(NameReference, string)> GetNames(MEGame game) => new List<(NameReference, string)>();
+        public virtual List<(UIndex, string)> GetUIndexes(MEGame game) => new();
+        public virtual List<(NameReference, string)> GetNames(MEGame game) => new();
 
         public virtual void WriteTo(EndianWriter ms, IMEPackage pcc, int fileOffset = 0)
         {

@@ -54,6 +54,70 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
+        public static void ReSerializeAllObjectBinary(PackageEditorWindow pewpf)
+        {
+            pewpf.IsBusy = true;
+            pewpf.BusyText = "Re-serializing all binary in LE2 and LE3";
+            var interestingExports = new List<EntryStringPair>();
+            var comparisonDict = new Dictionary<string, (byte[] original, byte[] newData)>();
+            Task.Run(() =>
+            {
+                foreach (string filePath in EnumerateOfficialFiles(MEGame.LE2, MEGame.LE3))
+                {
+                    using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
+                    foreach (ExportEntry export in pcc.Exports)
+                    {
+                        try
+                        {
+                            if (ObjectBinary.From(export) is ObjectBinary bin)
+                            {
+                                var original = export.Data;
+                                export.WriteBinary(bin);
+                                if (!export.DataReadOnly.SequenceEqual(original))
+                                {
+                                    interestingExports.Add(export);
+                                    comparisonDict.Add($"{export.UIndex} {export.FileRef.FilePath}", (original, export.Data));
+                                }
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            interestingExports.Add(new EntryStringPair(export, e.Message));
+                        }
+                    }
+
+                    if (interestingExports.Count >= 2)
+                    {
+                        return;
+                    }
+                }
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                //the base files will have been in memory for so long at this point that they take a looong time to clear out automatically, so force it.
+                MemoryAnalyzer.ForceFullGC(true);
+                pewpf.IsBusy = false;
+                var listDlg = new ListDialog(interestingExports, "Interesting Exports", "", pewpf)
+                {
+                    DoubleClickEntryHandler = entryItem =>
+                    {
+                        if (entryItem?.Entry is IEntry entryToSelect)
+                        {
+                            var p = new PackageEditorWindow();
+                            p.Show();
+                            p.LoadFile(entryToSelect.FileRef.FilePath, entryToSelect.UIndex);
+                            p.Activate();
+                            if (comparisonDict.TryGetValue($"{entryToSelect.UIndex} {entryToSelect.FileRef.FilePath}", out (byte[] original, byte[] newData) val))
+                            {
+                                File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "original.bin"), val.original);
+                                File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "new.bin"), val.newData);
+                            }
+                        }
+                    }
+                };
+                listDlg.Show();
+            });
+        }
+
         public static void ReSerializeAllProperties(PackageEditorWindow pewpf)
         {
             pewpf.IsBusy = true;

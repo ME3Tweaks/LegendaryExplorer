@@ -38,7 +38,7 @@ namespace LegendaryExplorerCore.Packages
         /// ONLY WORKS properly if there are NO duplicate indexes (besides trash) in the package.
         /// Is not used if the table is not populated, methods will perform a full search.
         /// </summary>
-        internal CaseInsensitiveDictionary<IEntry> EntryLookupTable = new CaseInsensitiveDictionary<IEntry>();
+        internal CaseInsensitiveDictionary<IEntry> EntryLookupTable = new();
 
         public enum CompressionType
         {
@@ -50,7 +50,31 @@ namespace LegendaryExplorerCore.Packages
             OodleLeviathan = 0x400 // LE1?
         }
 
-        public List<ME1TalkFile> LocalTalkFiles { get; } = new List<ME1TalkFile>();
+        public List<ME1TalkFile> LocalTalkFiles { get; } = new();
+
+        public static ushort UnrealVersion(MEGame game) => game switch
+        {
+            MEGame.ME1 => MEPackage.ME1UnrealVersion,
+            MEGame.ME2 => MEPackage.ME2UnrealVersion,
+            MEGame.ME3 => MEPackage.ME3UnrealVersion,
+            MEGame.LE1 => MEPackage.LE1UnrealVersion,
+            MEGame.LE2 => MEPackage.LE2UnrealVersion,
+            MEGame.LE3 => MEPackage.LE3UnrealVersion,
+            MEGame.UDK => UDKPackage.UDKUnrealVersion,
+            _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
+        };
+
+        public static ushort LicenseeVersion(MEGame game) => game switch
+        {
+            MEGame.ME1 => MEPackage.ME1LicenseeVersion,
+            MEGame.ME2 => MEPackage.ME2LicenseeVersion,
+            MEGame.ME3 => MEPackage.ME3LicenseeVersion,
+            MEGame.LE1 => MEPackage.LE1LicenseeVersion,
+            MEGame.LE2 => MEPackage.LE2LicenseeVersion,
+            MEGame.LE3 => MEPackage.LE3LicenseeVersion,
+            MEGame.UDK => UDKPackage.UDKLicenseeVersion,
+            _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
+        };
 
         #region Names
         protected uint namesAdded;

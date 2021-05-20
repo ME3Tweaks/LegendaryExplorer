@@ -126,7 +126,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         //end ME3
         public uint UsingTransforms; //ECoordTransformUsage
         public TextureLookup[] TextureLookups; //not ME1
-        public uint udkUnk1;
+        public uint unkUint1;
         public uint udkUnk2;
         public uint udkUnk3;
         public uint udkUnk4;
@@ -692,17 +692,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             else
             {
                 sc.Serialize(ref mres.TextureLookups, Serialize);
+                sc.Serialize(ref mres.unkUint1);
                 if (sc.Game == MEGame.UDK)
                 {
-                    sc.Serialize(ref mres.udkUnk1);
                     sc.Serialize(ref mres.udkUnk2);
                     sc.Serialize(ref mres.udkUnk3);
                     sc.Serialize(ref mres.udkUnk4);
-                }
-                else
-                {
-                    int dummy = 0;
-                    sc.Serialize(ref dummy);
                 }
             }
             if (sc.Game == MEGame.ME1)

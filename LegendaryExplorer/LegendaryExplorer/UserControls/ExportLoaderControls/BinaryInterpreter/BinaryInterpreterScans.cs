@@ -1116,7 +1116,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 subnodes.Add(MakeArrayNode(bin, "InfoData", i => new BinInterpNode(bin.Position, $"{i}: {(EInfoFlags)bin.ReadByte()}")));
                 subnodes.Add(MakeArrayNode(bin, "AlphaMaps", i => MakeArrayNode(bin, $"{i}: Data", j => new BinInterpNode(bin.Position, $"{j}: {bin.ReadByte()}"))));
                 subnodes.Add(MakeArrayNode(bin, "WeightedTextureMaps", i => MakeEntryNode(bin, $"{i}")));
-                for (int k = Pcc.Game == MEGame.ME1 ? 1 : 2; k > 0; k--)
+                for (int k = Pcc.Game is MEGame.ME1 ? 1 : 2; k > 0; k--)
                 {
                     subnodes.Add(MakeArrayNode(bin, "CachedTerrainMaterials", i =>
                     {
@@ -1133,7 +1133,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             }
                         });
                         node.Items.Add(MakeArrayNode(bin, "MaterialIds", j => MakeGuidNode(bin, $"{j}")));
-                        if (Pcc.Game == MEGame.ME3)
+                        if (Pcc.Game >= MEGame.ME3)
                         {
                             node.Items.Add(MakeGuidNode(bin, "LightingGuid"));
                         }
@@ -2005,60 +2005,69 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 int numStaticRecievers;
                 int count;
                 int fDecalVertexSize;
-                subnodes.Add(new BinInterpNode(bin.Position, $"StaticReceivers: {numStaticRecievers = bin.ReadInt32()}")
+                var item = new BinInterpNode(bin.Position, $"StaticReceivers: {numStaticRecievers = bin.ReadInt32()}")
                 {
-                    IsExpanded = true,
-                    Items = ReadList(numStaticRecievers, i => new BinInterpNode(bin.Position, $"{i}")
+                    IsExpanded = true
+                };
+                item.Items = ReadList(numStaticRecievers, i =>
+                {
+                    var node = new BinInterpNode(bin.Position, $"{i}");
+                    try
                     {
-                        Items =
+                        node.Items.Add(MakeEntryNode(bin, "Component"));
+                        node.Items.Add(new BinInterpNode(bin.Position, $"FDecalVertex Size: {fDecalVertexSize = bin.ReadInt32()}"));
+                        BinInterpNode interpNode = new BinInterpNode(bin.Position, $"Vertices ({count = bin.ReadInt32()})")
                         {
-                            MakeEntryNode(bin, "Component"),
-                            new BinInterpNode(bin.Position, $"FDecalVertex Size: {fDecalVertexSize = bin.ReadInt32()}"),
-                            new BinInterpNode(bin.Position, $"Vertices ({count = bin.ReadInt32()})")
+                            Length = 4 + fDecalVertexSize * count
+                        };
+                        interpNode.Items = ReadList(count, j => new BinInterpNode(bin.Position, $"{j}")
+                        {
+                            Length = fDecalVertexSize,
+                            Items =
                             {
-                                Length = 4 + fDecalVertexSize * count,
-                                Items = ReadList(count, j => new BinInterpNode(bin.Position, $"{j}")
+                                MakeVectorNode(bin, "Position"),
+                                MakePackedNormalNode(bin, "TangentX"),
+                                MakePackedNormalNode(bin, "TangentZ"),
+                                ListInitHelper.ConditionalAdd(Pcc.Game < MEGame.ME3, () => new ITreeItem[]
                                 {
-                                    Length = fDecalVertexSize,
-                                    Items =
-                                    {
-                                        MakeVectorNode(bin, "Position"),
-                                        MakePackedNormalNode(bin, "TangentX"),
-                                        MakePackedNormalNode(bin, "TangentZ"),
-                                        ListInitHelper.ConditionalAdd(Pcc.Game != MEGame.ME3, () => new ITreeItem[]
-                                        {
-                                            MakeVector2DNode(bin, "LegacyProjectedUVs")
-                                        }),
-                                        MakeVector2DNode(bin, "LightMapCoordinate"),
-                                        ListInitHelper.ConditionalAdd(Pcc.Game != MEGame.ME3, () => new ITreeItem[]
-                                        {
-                                            MakeVector2DNode(bin, "LegacyNormalTransform[0]"),
-                                            MakeVector2DNode(bin, "LegacyNormalTransform[1]")
-                                        }),
-                                    }
-                                })
-                            },
-                            MakeInt32Node(bin, "unsigned short size"),
-                            new BinInterpNode(bin.Position, $"Indices ({count = bin.ReadInt32()})")
-                            {
-                                Length = 4 + count * 2,
-                                Items = ReadList(count, j => new BinInterpNode(bin.Position, $"{j}: {bin.ReadUInt16()}") { Length = 2 })
-                            },
-                            MakeUInt32Node(bin, "NumTriangles"),
-                            MakeLightMapNode(bin),
-                            ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME3, () => new ITreeItem[]
-                            {
-                                new BinInterpNode(bin.Position, $"ShadowMap1D ({count = bin.ReadInt32()})")
+                                    MakeVector2DNode(bin, "LegacyProjectedUVs")
+                                }),
+                                MakeVector2DNode(bin, "LightMapCoordinate"),
+                                ListInitHelper.ConditionalAdd(Pcc.Game < MEGame.ME3, () => new ITreeItem[]
                                 {
-                                    Length = 4 + count * 4,
-                                    Items = ReadList(count, j => new BinInterpNode(bin.Position, $"{j}: {entryRefString(bin)}") { Length = 4 })
-                                },
-                                MakeInt32Node(bin, "Data"),
-                                MakeInt32Node(bin, "InstanceIndex"),
-                            }),
+                                    MakeVector2DNode(bin, "LegacyNormalTransform[0]"),
+                                    MakeVector2DNode(bin, "LegacyNormalTransform[1]")
+                                }),
+                            }
+                        });
+                        node.Items.Add(interpNode);
+                        node.Items.Add(MakeInt32Node(bin, "unsigned short size"));
+                        node.Items.Add(new BinInterpNode(bin.Position, $"Indices ({count = bin.ReadInt32()})")
+                        {
+                            Length = 4 + count * 2,
+                            Items = ReadList(count, j => new BinInterpNode(bin.Position, $"{j}: {bin.ReadUInt16()}") { Length = 2 })
+                        });
+                        node.Items.Add(MakeUInt32Node(bin, "NumTriangles"));
+                        node.Items.Add(MakeLightMapNode(bin));
+                        if (Pcc.Game >= MEGame.LE3)
+                        {
+
+                            node.Items.Add(new BinInterpNode(bin.Position, $"ShadowMap1D ({count = bin.ReadInt32()})")
+                            {
+                                Length = 4 + count * 4,
+                                Items = ReadList(count, j => new BinInterpNode(bin.Position, $"{j}: {entryRefString(bin)}") { Length = 4 })
+                            });
+                            node.Items.Add(MakeInt32Node(bin, "Data"));
+                            node.Items.Add(MakeInt32Node(bin, "InstanceIndex"));
                         }
-                    })
+                    }
+                    catch (Exception e)
+                    {
+                        node.Items.Add(new BinInterpNode { Header = $"Error reading binary data: {e}" });
+                    }
+                    return node;
                 });
+                subnodes.Add(item);
 
                 binarystart = (int)bin.Position;
             }
@@ -2078,9 +2087,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 throw new Exception($"Is this actually a list? {count} seems like an incorrect count");
             }
             var list = new List<ITreeItem>();
-            for (int i = 0; i < count; i++)
+            try
             {
-                list.Add(selector(i));
+                for (int i = 0; i < count; i++)
+                {
+                    list.Add(selector(i));
+                }
+            }
+            catch (Exception ex)
+            {
+                new BinInterpNode {Header = $"Error reading binary data: {ex}"};
             }
 
             return list;
@@ -3818,12 +3834,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
 
                         int sndStrLgth = BitConverter.ToInt32(data, offset); //String length for sound
-                        offset += 4;
                         string sndRef = "No sound data";
                         if (sndStrLgth > 0)
                         {
                             MemoryStream ms = new MemoryStream(data);
-                            ms.Position = offset;
+                            ms.Position = offset + 4;
                             sndRef = ms.ReadStringLatin1Null(sndStrLgth);
                         }
                         PageIDs.Items.Add(new BinInterpNode
@@ -3832,6 +3847,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             Name = "_" + offset,
                             Tag = NodeType.StructLeafObject
                         });
+                        offset += 4;
                         offset += sndStrLgth;
                     }
                     else  //ME1 has different order (section ID then codex sound) and uses a string reference.
@@ -4923,7 +4939,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }));
 
                 int count;
-                if (CurrentLoadedExport.Game == MEGame.ME1)
+                if (CurrentLoadedExport.Game.IsGame1())
                 {
                     var propDataNode = new BinInterpNode(bin.Position, $"m_mapCharTypeOverrides ({count = bin.ReadInt32()} items)");
                     subnodes.Add(propDataNode);
@@ -5174,7 +5190,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         return subnodes;
                     }
                 }
-                subnodes.Add(MakeUInt32Node(bin, "Unk3"));
+                subnodes.Add(MakeUInt32Node(bin, "BulkDataFlags"));
                 subnodes.Add(MakeInt32Node(bin, "DataSize1", out var datasize));
                 int dataSize = bin.Skip(-4).ReadInt32();
                 subnodes.Add(MakeInt32Node(bin, "DataSize2"));
@@ -5346,7 +5362,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 switch (hircType)
                 {
                     case HIRCType.Event:
-                        node.Items.Add((Pcc.Game == MEGame.LE3 || Pcc.Game == MEGame.LE2) ? MakeArrayNodeByteCount(bin, "Event Actions", i => MakeUInt32HexNode(bin, $"{i}")) : MakeArrayNode(bin, "Event Actions", i => MakeUInt32HexNode(bin, $"{i}")));
+                        node.Items.Add((Pcc.Game.IsLEGame()) ? MakeArrayNodeByteCount(bin, "Event Actions", i => MakeUInt32HexNode(bin, $"{i}")) : MakeArrayNode(bin, "Event Actions", i => MakeUInt32HexNode(bin, $"{i}")));
                         break;
                     case HIRCType.EventAction:
                         {
@@ -6074,9 +6090,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     subnodes.Add(MakeArrayNode(bin, "Unknown name list 2", i => MakeNameNode(bin, $"{i}")));
                 }
 
-                if (Pcc.Platform == MEPackage.GamePlatform.PS3 && Pcc.Game == MEGame.ME2)
+                if (Pcc.Game is MEGame.LE2 || Pcc.Platform == MEPackage.GamePlatform.PS3 && Pcc.Game == MEGame.ME2)
                 {
-                    subnodes.Add(MakeUInt32Node(bin, "PS3 ME2 Unknown"));
+                    subnodes.Add(MakeUInt32Node(bin, "LE2 & PS3 ME2 Unknown"));
                 }
                 subnodes.Add(MakeEntryNode(bin, "Defaults"));
                 if (Pcc.Game is MEGame.ME3 or MEGame.UDK or MEGame.LE3)

@@ -18,7 +18,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         protected override void Serialize(SerializingContainer2 sc)
         {
             sc.Serialize(ref m_mapAnimSetOwners, SCExt.Serialize, SCExt.Serialize);
-            if (sc.Game == MEGame.ME1)
+            if (sc.Game.IsGame1())
             {
                 sc.Serialize(ref m_mapCharTypeOverrides, SCExt.Serialize, SCExt.Serialize);
             }
@@ -38,7 +38,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 names.Add((m_mapAnimSetOwners[i].Value, $"{nameof(m_mapAnimSetOwners)}[{i}].Value"));
             }
 
-            if (game == MEGame.ME1)
+            if (game.IsGame1())
             {
                 for (int i = 0; i < m_mapCharTypeOverrides.Count; i++)
                 {
@@ -149,7 +149,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 d = new BioGestureRuntimeData.BioMeshPropActionData();
             }
             sc.Serialize(ref d.nmActionName);
-            if (sc.Game == MEGame.ME2)
+            if (sc.Game.IsGame2())
             {
                 sc.Serialize(ref d.sClientEffect);
             }
@@ -158,7 +158,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref d.vOffsetLocation);
             sc.Serialize(ref d.rOffsetRotation);
             sc.Serialize(ref d.vOffsetScale);
-            if (sc.Game == MEGame.ME3)
+            if (sc.Game.IsGame3())
             {
                 sc.Serialize(ref d.sParticleSys);
                 sc.Serialize(ref d.sClientEffect);
