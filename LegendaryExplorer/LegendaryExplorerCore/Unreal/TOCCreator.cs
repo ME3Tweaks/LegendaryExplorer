@@ -21,7 +21,7 @@ namespace LegendaryExplorerCore.Unreal
         /// <returns></returns>
         public static IEnumerable<string> GetTocableFiles(string path)
         {
-            string[] Pattern = { "*.pcc", "*.afc", "*.bik", "*.bin", "*.tlk", "*.txt", "*.cnd", "*.upk", "*.tfc", "*.isb" };
+            string[] Pattern = { "*.pcc", "*.afc", "*.bik", "*.bin", "*.tlk", "*.cnd", "*.upk", "*.tfc", "*.isb" };
             var res = new List<string>();
             foreach (string s in Pattern)
                 res.AddRange(Directory.GetFiles(path, s));

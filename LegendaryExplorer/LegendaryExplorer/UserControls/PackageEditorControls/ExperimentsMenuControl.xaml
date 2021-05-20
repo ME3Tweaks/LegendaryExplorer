@@ -96,5 +96,6 @@
     <MenuItem Header="Other people's box of Legos">
         <MenuItem Header="Export level to T3D" Click="ExportLevelToT3D_Click"/>
         <MenuItem Header="Build ME1 SuperTlk File" Click="BuildME1SuperTLK_Clicked"/>
+        <MenuItem Header="Associate all file extensions" Click="AssociateAllExtensions_Clicked"/>
     </MenuItem>
 </MenuItem>

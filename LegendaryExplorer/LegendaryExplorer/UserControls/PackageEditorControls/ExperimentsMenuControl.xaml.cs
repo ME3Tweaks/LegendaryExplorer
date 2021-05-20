@@ -1029,6 +1029,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsO.BuildME1SuperTLKFile(GetPEWindow());
         }
+
+        private void AssociateAllExtensions_Clicked(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.AssociateAllExtensions();
+        }
         #endregion
 
 

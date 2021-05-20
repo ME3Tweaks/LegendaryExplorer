@@ -24,7 +24,12 @@
             </StackPanel>
             <xctk:WatermarkTextBox Watermark="TLK ID" PreviewTextInput="PreviewIntegerInput" Name="TLKID_TextBox" TextChanged="TLKID_TextChanged" ToolTip="The TLK value of this string is displayed to the user if DLC authorization fails.&#10;It should always be the human readable name of the mod."/>
             <TextBlock Text="DLC Mount Flags" Margin="0,5,0,0"/>
-            <ComboBox Name="MountComboBox" ItemsSource="{Binding MountIDValues}" DisplayMemberPath="DisplayString" ToolTip="Mount flags determine how a DLC is marked in saves.&#10;In ME3, this flag also defines if the DLC loads in SP or MP, or both.&#10;Note that all players in MP MUST have all the same DLC, so you should not mark as loading in MP unless you are making an MP content mod."/>
+            <xctk:CheckComboBox Name="MountFlagsComboBox" IsEditable="False" Delimiter=" " VerticalAlignment="Center"
+                                ItemsSource="{Binding MountOptions}"
+                                DisplayMemberPath="DisplayString"
+                                SelectedMemberPath="IsUISelected"
+                                ToolTip="Flags that determine how the DLC mounts"/>
+            <!--<ComboBox Name="MountComboBox" ItemsSource="{Binding MountIDValues}" DisplayMemberPath="DisplayString" ToolTip="Mount flags determine how a DLC is marked in saves.&#10;In ME3, this flag also defines if the DLC loads in SP or MP, or both.&#10;Note that all players in MP MUST have all the same DLC, so you should not mark as loading in MP unless you are making an MP content mod."/>-->
             <TextBlock IsEnabled="{Binding IsME2}" Text="Human Readable DLC Name" Margin="0,5,0,0">
                 <TextBlock.Style>
                     <Style TargetType="{x:Type TextBlock}">

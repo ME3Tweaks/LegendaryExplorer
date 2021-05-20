@@ -28,9 +28,9 @@ namespace LegendaryExplorerCore.Tests
 
                 var mountName = mountProps[0];
 
-                var expectedMountPriority = ushort.Parse(mountProps[1]);
+                var expectedMountPriority = int.Parse(mountProps[1]);
                 var expectedMountTLK = int.Parse(mountProps[2]);
-                EMountFileFlag expectedMountFlag = (EMountFileFlag)byte.Parse(mountProps[3], NumberStyles.HexNumber);
+                int expectedMountFlag = int.Parse(mountProps[3], NumberStyles.HexNumber);
 
                 string me2DlcName = expectedGame == MEGame.ME2 ? mountProps[4] : null;
                 string me2HRDlcName = expectedGame == MEGame.ME2 ? mountProps[5] : null;
@@ -40,7 +40,7 @@ namespace LegendaryExplorerCore.Tests
                 Assert.AreEqual(expectedGame, mf.Game, $"Mount file {mountName} parsed to the wrong game");
                 Assert.AreEqual(expectedMountPriority, mf.MountPriority, $"Mount file {mountName} has wrong parsed mount priority");
                 Assert.AreEqual(expectedMountTLK, mf.TLKID, $"Mount file {mountName} has wrong parsed mount TLKID");
-                Assert.AreEqual(expectedMountFlag, mf.MountFlag, $"Mount file {mountName} has wrong parsed mount flag");
+                Assert.AreEqual(expectedMountFlag, mf.MountFlags.FlagValue, $"Mount file {mountName} has wrong parsed mount flag");
                 if (expectedGame == MEGame.ME2)
                 {
                     Assert.AreEqual(me2DlcName, mf.ME2Only_DLCFolderName, $"Mount file {mountName} has wrong DLC folder name");

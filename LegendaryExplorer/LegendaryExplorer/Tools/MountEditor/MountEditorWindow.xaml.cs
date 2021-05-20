@@ -9,9 +9,12 @@ using System.Windows.Input;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.TLK;
+using LegendaryExplorerCore.Unreal;
+using Xceed.Wpf.Toolkit.Primitives;
 
 namespace LegendaryExplorer.Tools.MountEditor
 {
@@ -20,9 +23,9 @@ namespace LegendaryExplorer.Tools.MountEditor
     /// </summary>
     public partial class MountEditorWindow : TrackingNotifyPropertyChangedWindowBase
     {
-        public ObservableCollectionExtended<UIMountFlag> MountIDValues { get; } = new();
-        private readonly List<UIMountFlag> ME2MountFlags = new();
-        private readonly List<UIMountFlag> ME3MountFlags = new();
+        public ObservableCollectionExtended<MountFlag> MountOptions { get; } = new();
+        //private readonly List<UIMountFlag> ME2MountFlags = new();
+        //private readonly List<UIMountFlag> ME3MountFlags = new();
 
         public ObservableCollectionExtended<UIGameID> Games { get; } = new()
         {
@@ -68,23 +71,10 @@ namespace LegendaryExplorer.Tools.MountEditor
 
         public MountEditorWindow() : base("Mount Editor", true)
         {
-            ME2MountFlags.Add(new UIMountFlag(EMountFileFlag.ME2_UNKNOWNMOUNTFLAG, "0x00 | Mount Flag (Unknown purpose)"));
-            ME2MountFlags.Add(new UIMountFlag(EMountFileFlag.ME2_NoSaveFileDependency, "0x01 | No save file dependency on DLC"));
-            ME2MountFlags.Add(new UIMountFlag(EMountFileFlag.ME2_SaveFileDependency, "0x02 | Save file dependency on DLC"));
-            ME2MountFlags.Add(new UIMountFlag(EMountFileFlag.ME2_UNKNOWNMOUNTFLAG2, "0x03 | Mount Flag (Unknown purpose)"));
-
-            ME3MountFlags.Add(new UIMountFlag(EMountFileFlag.ME3_SPOnly_NoSaveFileDependency, "0x08 - SP only | No file dependency on DLC"));
-            ME3MountFlags.Add(new UIMountFlag(EMountFileFlag.ME3_SPOnly_SaveFileDependency, "0x09 - SP only | Save file dependency on DLC"));
-            ME3MountFlags.Add(new UIMountFlag(EMountFileFlag.ME3_SPMP_SaveFileDependency, "0x1C - SP & MP | No save file dependency on DLC"));
-            ME3MountFlags.Add(new UIMountFlag(EMountFileFlag.ME3_Patch, "0x0C - PATCH"));
-            ME3MountFlags.Add(new UIMountFlag(EMountFileFlag.ME3_MPOnly_1, "0x14 - MP only | Loads in MP"));
-            ME3MountFlags.Add(new UIMountFlag(EMountFileFlag.ME3_MPOnly_2, "0x34 - MP only | Loads in MP"));
             CurrentMountFileText = "No mount file loaded. Mouse over fields for descriptions of their values.";
-            MountIDValues.AddRange(ME3MountFlags);
             DataContext = this;
             InitializeComponent();
             SelectedGame = Games[0];
-            MountComboBox.SelectedIndex = 0;
         }
 
         private void PreviewIntegerInput(object sender, TextCompositionEventArgs e)
@@ -95,19 +85,7 @@ namespace LegendaryExplorer.Tools.MountEditor
             var fullText = textBox.Text.Insert(textBox.SelectionStart, e.Text);
 
             // If parsing is successful, set Handled to false
-            e.Handled = !double.TryParse(fullText, out double _);
-        }
-
-        public class UIMountFlag
-        {
-            public UIMountFlag(EMountFileFlag flag, string displayString)
-            {
-                this.Flag = flag;
-                this.DisplayString = displayString;
-            }
-
-            public EMountFileFlag Flag { get; }
-            public string DisplayString { get; }
+            e.Handled = !double.TryParse(fullText, out double _); // Why is this double
         }
 
         public sealed record UIGameID(MEGame Game, string DisplayString);
@@ -130,18 +108,51 @@ namespace LegendaryExplorer.Tools.MountEditor
 
         public void LoadFile(string fileName)
         {
+            loadingNewData = true;
             var mf = new MountFile(fileName);
             SelectedGame = Games.First(uig => uig.Game == mf.Game);
-            DLCFolder_TextBox.Text = IsME2 ? mf.ME2Only_DLCFolderName : "Not used in ME3";
-            HumanReadable_TextBox.Text = IsME2 ? mf.ME2Only_DLCHumanName : "Not used in ME3";
-            MountIDValues.ClearEx();
-            MountIDValues.AddRange(IsME2 ? ME2MountFlags : ME3MountFlags);
+            DLCFolder_TextBox.Text = IsME2 ? mf.ME2Only_DLCFolderName : "Not used in ME3"; // Update for LE3
+            HumanReadable_TextBox.Text = IsME2 ? mf.ME2Only_DLCHumanName : "Not used in ME3"; // Update for LE3
             TLKID_TextBox.Text = mf.TLKID.ToString();
             MountPriority_TextBox.Text = mf.MountPriority.ToString();
-            var flagset = IsME2 ? ME2MountFlags : ME3MountFlags;
-            var flag = flagset.First(x => x.Flag == mf.MountFlag);
-            MountComboBox.SelectedItem = flag;
+
+            // Mount flags
+            if (IsME2)
+            {
+                var flagset = Enum.GetValues<EME2MountFileFlag>();
+                MountOptions.ReplaceAll(flagset.Select(x => new MountFlag((int)x, true)));
+            }
+            else
+            {
+                var flagset = Enum.GetValues<EME3MountFileFlag>();
+                MountOptions.ReplaceAll(flagset.Select(x => new MountFlag((int)x, false)));
+            }
+
             CurrentMountFileText = fileName;
+            SetSelectedFlagsUI(mf.MountFlags.FlagValue);
+            loadingNewData = false;
+        }
+
+        private void SetSelectedFlagsUI(int flag)
+        {
+            if (IsME2)
+            {
+                var flagset = Enum.GetValues<EME2MountFileFlag>();
+                var selectedFlags = flagset.Where(testflag => ((int)testflag & flag) != 0).ToList();
+                foreach (var item in MountOptions)
+                {
+                    item.IsUISelected = selectedFlags.Any(x => x == (EME2MountFileFlag)item.FlagValue);
+                }
+            }
+            else
+            {
+                var flagset = Enum.GetValues<EME3MountFileFlag>();
+                var selectedFlags = flagset.Where(testflag => ((int)testflag & flag) != 0).ToList();
+                foreach (var item in MountOptions)
+                {
+                    item.IsUISelected = selectedFlags.Any(x => x == (EME3MountFileFlag)item.FlagValue);
+                }
+            }
         }
 
         private void SaveMountFile_Click(object sender, RoutedEventArgs e)
@@ -165,10 +176,10 @@ namespace LegendaryExplorer.Tools.MountEditor
                         Game = SelectedGame.Game,
                         MountPriority = ushort.Parse(MountPriority_TextBox.Text.Trim()),
                         TLKID = int.Parse(TLKID_TextBox.Text.Trim()),
-                        MountFlag = ((UIMountFlag)MountComboBox.SelectedItem).Flag
+                        MountFlags = GetCurrentMountFlag()
                     };
 
-                    if (mf.Game is MEGame.ME2 or MEGame.LE2)
+                    if (mf.Game.IsGame2())
                     {
                         mf.ME2Only_DLCFolderName = DLCFolder_TextBox.Text;
                         mf.ME2Only_DLCHumanName = HumanReadable_TextBox.Text;
@@ -179,8 +190,26 @@ namespace LegendaryExplorer.Tools.MountEditor
             }
         }
 
+        private MountFlag GetCurrentMountFlag()
+        {
+            MountFlag mf = new MountFlag(0, IsME2);
+            foreach (var flag in MountOptions.Where(x => x.IsUISelected))
+            {
+                mf.SetFlagBit(flag.FlagValue);
+            }
+
+            return mf;
+        }
+
         private bool Validate()
         {
+            var saveDep = IsME2 ? (int)EME2MountFileFlag.SaveFileDependency : (int)EME3MountFileFlag.SaveFileDependency;
+            if ((saveDep & GetCurrentMountFlag().FlagValue) != 0)
+            {
+                Xceed.Wpf.Toolkit.MessageBox.Show($"Cannot save a mount file with the SaveFileDependency flag set. This flag causes serious issues with save games when used with mods.", "Validation error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+
             if (!ushort.TryParse(MountPriority_TextBox.Text, out ushort _))
             {
                 Xceed.Wpf.Toolkit.MessageBox.Show("Mount priority must be a value between 1 and " + ushort.MaxValue + ".", "Validation error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -246,9 +275,7 @@ namespace LegendaryExplorer.Tools.MountEditor
             IsME2 = SelectedGame.Game is MEGame.ME2 or MEGame.LE2;
             DLCFolder_TextBox.Watermark = IsME2 ? "DLC Folder Name (e.g. DLC_MOD_MYMOD)" : "Not used in ME3";
             HumanReadable_TextBox.Watermark = IsME2 ? "DLC Human Readable Name (e.g. Superpowers Pack)" : "Not used in ME3";
-            MountIDValues.ClearEx();
-            MountIDValues.AddRange(IsME2 ? ME2MountFlags : ME3MountFlags);
-            MountComboBox.SelectedIndex = 0;
+            //MountComboBox.SelectedIndex = 0;
             TLKID_TextChanged(null, null);
         }
         private void Window_Drop(object sender, DragEventArgs e)
@@ -282,6 +309,20 @@ namespace LegendaryExplorer.Tools.MountEditor
                 e.Effects = DragDropEffects.None;
                 e.Handled = true;
             }
+        }
+
+        private void MountOptionsComboBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private bool loadingNewData;
+        private void MountOptionsComboBox_ItemSelectionChanged(object sender, Xceed.Wpf.Toolkit.Primitives.ItemSelectionChangedEventArgs e)
+        {
+            //if (!loadingNewData)
+            //{
+            //    MountFlagsComboBox.SelectedItem = GetCurrentMountFlag();
+            //}
         }
     }
 }

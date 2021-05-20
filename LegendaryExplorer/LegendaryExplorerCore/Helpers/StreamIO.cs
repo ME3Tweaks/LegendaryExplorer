@@ -221,6 +221,32 @@ namespace LegendaryExplorerCore.Helpers
             stream.WriteStringLatin1(str + "\0");
         }
 
+        // DO NOT REMOVE ASCII CODE
+        public static string ReadStringASCII(this Stream stream, int count)
+        {
+            byte[] buffer = stream.ReadToBuffer(count);
+            return Encoding.ASCII.GetString(buffer);
+        }
+
+        public static string ReadStringASCIINull(this Stream stream)
+        {
+            string str = "";
+            for (; ; )
+            {
+                char c = (char)stream.ReadByte();
+                if (c == 0)
+                    break;
+                str += c;
+            }
+            return str;
+        }
+
+        public static string ReadStringASCIINull(this Stream stream, int count)
+        {
+            return stream.ReadStringASCII(count).Trim('\0');
+        }
+
+
         public static void WriteStringUnicode(this Stream stream, string str)
         {
             stream.Write(Encoding.Unicode.GetBytes(str), 0, Encoding.Unicode.GetByteCount(str));

@@ -508,13 +508,12 @@
                         </TabItem.Header>
                         <exportLoaderControls:MaterialExportLoader x:Name="MaterialViewerTab_MaterialExportLoader"/>
                     </TabItem>
-                    <!--
                     <TabItem Name="RADLaunch_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
                             <TextBlock Text="Movie" ToolTip="Launch Movie in external tools"/>
                         </TabItem.Header>
-                        <packageEditor:BIKExternalExportLoader x:Name="RADLauncherTab_BIKLauncher"/>
-                    </TabItem> -->
+                        <exportLoaderControls:BIKExternalExportLoader x:Name="RADLauncherTab_BIKLauncher"/>
+                    </TabItem>
                     <TabItem Name="CollectionActorEditor_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
                             <TextBlock Text="Location/Rotation/Scale" ToolTip="Edit the transformation matrix for this component"/>

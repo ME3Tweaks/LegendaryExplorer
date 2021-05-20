@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:fa="http://schemas.fontawesome.com/icons/"
              xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
+             xmlns:uc="clr-namespace:LibVLCSharp.WPF;assembly=LibVLCSharp.WPF"
              xmlns:Converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -13,8 +14,7 @@
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <Converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
     </UserControl.Resources>
-    <!-- TODO: IMPLEMENT IN LEX (with new vlc) -->
-    <!--<DockPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" LastChildFill="True">
+    <DockPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" LastChildFill="True">
         <StackPanel Name="biktools_Panel" MaxWidth="500" VerticalAlignment="Center" HorizontalAlignment="Center" DockPanel.Dock="Bottom" Visibility="{Binding ViewerModeOnly, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Not}">
             <StackPanel HorizontalAlignment="Center">
                 <DockPanel Name ="External_Dock" Visibility="{Binding IsExternalFile, Converter={StaticResource BoolToVisibilityConverter}}" >
@@ -80,8 +80,9 @@
 
                 </Grid>
                 <TextBlock Name="Warning_text" Foreground="Red" Text="Error: Bik is not found or corrupted." Visibility="Collapsed" FontWeight="Bold" TextAlignment="Center" TextWrapping="Wrap" DockPanel.Dock="Top"/>
-                <WindowsFormsHost x:Name="vlcplayer_WinFormsHost" MinWidth="256" MinHeight="128" Background="Black" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" DockPanel.Dock="Top"/>
+                <TextBlock Name="Unsupported_Text" Foreground="Blue" Text="Playing BIKs is not supported in LE" Visibility="Collapsed" FontWeight="Bold" TextAlignment="Center" TextWrapping="Wrap" DockPanel.Dock="Top"/>
+                <uc:VideoView x:Name="vlcVideoView" MinWidth="256" MinHeight="128" Background="Black" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" DockPanel.Dock="Top" />
             </DockPanel>
         </DockPanel>
-    </DockPanel>-->
+    </DockPanel>
 </exportLoaderControls:ExportLoaderControl>

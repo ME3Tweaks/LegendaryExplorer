@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.CommandLine;
+using System.CommandLine.IO;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -69,6 +70,8 @@ namespace LegendaryExplorer.Startup
             // WPF setup
             ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(int.MaxValue));
 
+            // Initialize VLC
+            LibVLCSharp.Shared.Core.Initialize();
 
             //set up AppData Folder
             if (!Directory.Exists(AppDirectories.AppDataFolder))
@@ -162,7 +165,7 @@ namespace LegendaryExplorer.Startup
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                CommandLineArgs.CreateCLIHandler().Invoke(args);
+                CommandLineArgs.CreateCLIHandler().InvokeAsync(args);
             });
         }
     }
