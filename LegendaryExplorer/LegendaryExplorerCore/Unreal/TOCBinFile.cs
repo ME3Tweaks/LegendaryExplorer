@@ -239,8 +239,6 @@ namespace LegendaryExplorerCore.Unreal
                 {
                     var entry = hb.TOCEntries[j];
                     var dontWriteEntrySize = hb == lastBucketWithEntries && j == (hb.TOCEntries.Count - 1);
-                    if (dontWriteEntrySize)
-                        Debugger.Break();
                     entry.WriteOut(fs, dontWriteEntrySize); // byte aligns automatically
                 }
 
