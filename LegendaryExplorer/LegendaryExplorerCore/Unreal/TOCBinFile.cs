@@ -76,8 +76,8 @@ namespace LegendaryExplorerCore.Unreal
                         (2 * sizeof(short) // ToCSize, Flags
                          + 1 * sizeof(int)    // Filesize
                          + 20 // SHA1
-                         // DVD information (not used on PC)
-                         //+ Sectors.Length * sizeof(int) // integer for each sector
+                              // DVD information (not used on PC)
+                              //+ Sectors.Length * sizeof(int) // integer for each sector
                          + (name.Length + 1));    // String + Null Terminator
                 }
             }
@@ -86,21 +86,30 @@ namespace LegendaryExplorerCore.Unreal
             /// Writes this entry out to the stream
             /// </summary>
             /// <param name="fs">Stream to write to</param>
-            /// <param name="writeToCSize">If ToCSize should be written out. The final entry in the TOC file will not write this out</param>
+            /// <param name="dontWriteEntrySize">If ToCSize should be written out. The final entry in the TOC file will not write this out</param>
+            /// <param name="byteAligned">If entries should byte align the next entry. ME3 does not use byte alignment, LE games do</param>
             public void WriteOut(MemoryStream fs, bool dontWriteEntrySize)
             {
                 var expectedEndPos = (int)fs.Position + ToCSize;
-                fs.WriteInt16(dontWriteEntrySize ? (short) 0 : ToCSize);
+                fs.WriteInt16(dontWriteEntrySize ? (short)0 : ToCSize);
                 fs.WriteInt16(flags);
                 fs.WriteInt32(size);
-                fs.Write(sha1);
-                fs.WriteStringLatin1(name);
+                if (sha1 != null)
+                    fs.Write(sha1);
+                else
+                    fs.WriteZeros(20); // must not have flag for CRC
+
+                fs.WriteStringLatin1Null(name);
                 var padding = expectedEndPos - fs.Position;
-                fs.WriteZeros((int)padding);
+                fs.WriteZeros((int)padding); // Byte align
             }
         }
 
         public List<TOCHashTableEntry> HashBuckets = new List<TOCHashTableEntry>();
+
+        public TOCBinFile()
+        {
+        }
 
         public TOCBinFile(MemoryStream m)
         {
@@ -111,6 +120,7 @@ namespace LegendaryExplorerCore.Unreal
         {
             ReadFile(new MemoryStream(File.ReadAllBytes(path).ToArray()));
         }
+
 
 #if DEBUG
         public void DumpTOC()
@@ -170,6 +180,7 @@ namespace LegendaryExplorerCore.Unreal
                 reader.Position = newEntry.offset + pos;
                 for (int j = 0; j < newEntry.entrycount; j++)
                 {
+
                     Entry e = new()
                     {
                         offset = (int)reader.Position,
@@ -180,9 +191,7 @@ namespace LegendaryExplorerCore.Unreal
                         name = reader.ReadStringASCIINull()
                     };
 
-                    var alignment = reader.Position % 4;
-                    if (alignment != 0) alignment = 4 - alignment;
-                    reader.Skip(alignment);
+                    reader.Seek(e.offset + e.entrydisksize, SeekOrigin.Begin);
 
                     maxReadValue = Math.Max(maxReadValue, reader.Position);
 
@@ -208,6 +217,8 @@ namespace LegendaryExplorerCore.Unreal
 
         public MemoryStream Save()
         {
+            var lastBucketWithEntries = HashBuckets.LastOrDefault(x => x.TOCEntries.Any());
+
             MemoryStream fs = MemoryManager.GetMemoryStream();
 
             fs.WriteInt32(TOCBinFile.TOCMagicNumber); // Endian check
@@ -221,13 +232,19 @@ namespace LegendaryExplorerCore.Unreal
 
             for (int i = 0; i < HashBuckets.Count; i++)
             {
-                var hbEntryStartPos = fs.Position;
                 var hb = HashBuckets[i];
+
+                var hbEntryStartPos = fs.Position;
                 for (int j = 0; j < hb.TOCEntries.Count; j++)
                 {
                     var entry = hb.TOCEntries[j];
-                    entry.WriteOut(fs, i == (HashBuckets.Count - 1) && j == (hb.TOCEntries.Count - 1)); // byte aligns automatically
+                    var dontWriteEntrySize = hb == lastBucketWithEntries && j == (hb.TOCEntries.Count - 1);
+                    if (dontWriteEntrySize)
+                        Debugger.Break();
+                    entry.WriteOut(fs, dontWriteEntrySize); // byte aligns automatically
                 }
+
+
 
                 var nextEntryPos = fs.Position;
 
@@ -235,8 +252,9 @@ namespace LegendaryExplorerCore.Unreal
                 fs.Seek(hashTableStartPos + (i * 8), SeekOrigin.Begin);
                 if (hb.TOCEntries.Any())
                 {
-                    fs.WriteInt32((int) (hbEntryStartPos - fs.Position)); // Offset from hash entry to first TOC file entry
-                    fs.WriteInt32(hb.TOCEntries.Count);
+                    var firstEntryOffset = (int)(hbEntryStartPos - fs.Position);
+                    fs.WriteInt32(firstEntryOffset); // Offset from hash entry to first TOC file entry
+                    fs.WriteInt32(hb.TOCEntries.Count); // How many files have this hash
                 }
                 else
                 {

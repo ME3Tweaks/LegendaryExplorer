@@ -27,7 +27,7 @@ namespace LegendaryExplorerCore.Unreal
             var res = new List<string>();
             foreach (string s in Pattern)
                 res.AddRange(Directory.GetFiles(path, s));
-            return res.ToArray();
+            return res;
         }
 
         /// <summary>
@@ -35,20 +35,21 @@ namespace LegendaryExplorerCore.Unreal
         /// </summary>
         /// <param name="basefolder"></param>
         /// <returns></returns>
-        private static List<string> GetFiles(string basefolder)
+        private static List<string> GetFiles(string basefolder, bool isLE2LE3)
         {
             var res = new List<string>();
             string directoryName = Path.GetFileName(Path.GetDirectoryName(basefolder));
-            res.AddRange(GetTocableFiles(basefolder));
+            // Do not include the directory's existing PCConsoleTOC.bin
+            res.AddRange(GetTocableFiles(basefolder).Except(new[] { Path.Combine(basefolder, "PCConsoleTOC.bin") }, StringComparer.InvariantCultureIgnoreCase));
             DirectoryInfo folder = new DirectoryInfo(basefolder);
             var folders = folder.GetDirectories();
             if (folders.Length != 0)
             {
-                if (directoryName != "BIOGame")
+                if (!directoryName.Equals("BioGame", StringComparison.InvariantCultureIgnoreCase))
                 {
                     //treat as dlc and include all folders.
                     foreach (DirectoryInfo f in folders)
-                        res.AddRange(GetFiles(Path.Combine(basefolder, f.Name)));
+                        res.AddRange(GetFiles(Path.Combine(basefolder, f.Name), isLE2LE3));
                 }
                 else
                 {
@@ -56,9 +57,11 @@ namespace LegendaryExplorerCore.Unreal
                     foreach (DirectoryInfo f in folders)
                     {
                         if (f.Name == "CookedPCConsole" || f.Name == "Movies")
-                            res.AddRange(GetFiles(Path.Combine(basefolder, f.Name)));
+                            res.AddRange(GetFiles(Path.Combine(basefolder, f.Name), isLE2LE3));
+                        else if (isLE2LE3 && f.Name == "DLC")
+                            res.AddRange(GetFiles(Path.Combine(basefolder, f.Name), isLE2LE3));  // may need updated when we get LE1 DLC system up
                         else if (f.Name == "Content")
-                            res.AddRange(GetFiles(Path.Combine(basefolder, f.Name, "Packages\\ISACT")));
+                            res.AddRange(GetFiles(Path.Combine(basefolder, f.Name, "Packages", "ISACT"), isLE2LE3));
 
                     }
                 }
@@ -100,7 +103,7 @@ namespace LegendaryExplorerCore.Unreal
         /// <param name="directory">Directory to checl</param>
         /// <returns></returns>
         /// TODO: Is there an easy way to make this not iterate over all files?
-        public static bool IsTOCableFolder(string directory) => GetFiles(directory).Count > 0;
+        public static bool IsTOCableFolder(string directory, bool isLE2LE3) => GetFiles(directory, isLE2LE3).Any();
 
         /// <summary>
         /// Creates all TOC files for a game and it's DLC, using the game folder set in MEDirectories
@@ -131,14 +134,14 @@ namespace LegendaryExplorerCore.Unreal
                     if (tocResult is DLCPackage.DLCTOCUpdateResult.RESULT_ERROR_NO_ENTRIES)
                     {
                         var tocFileLocation = Path.Combine(dir, "PCConsoleTOC.bin");
-                        File.WriteAllBytes(tocFileLocation, CreateTOCForDirectory(dir).GetBuffer());
+                        CreateTOCForDirectory(dir, game).WriteToFile(tocFileLocation);
                     }
                 }
                 // This is an unpacked folder
                 else
                 {
                     var tocFileLocation = Path.Combine(dir, "PCConsoleTOC.bin");
-                    CreateTOCForDirectory(dir).WriteToFile(tocFileLocation);
+                    CreateTOCForDirectory(dir, game).WriteToFile(tocFileLocation);
                     //Debug.WriteLine($"{tocFileLocation}-------------------------");
                     //TOCBinFile tbf = new TOCBinFile(tocFileLocation);
                     //tbf.DumpTOC();
@@ -154,9 +157,9 @@ namespace LegendaryExplorerCore.Unreal
         /// </summary>
         /// <param name="directory">DLC_ directory, like DLC_CON_JAM, or the BIOGame directory of the game.</param>
         /// <returns>Memorystream of TOC created, null if there are no entries or input was invalid</returns>
-        public static MemoryStream CreateTOCForDirectory(string directory)
+        public static MemoryStream CreateTOCForDirectory(string directory, MEGame game)
         {
-            var files = GetFiles(directory);
+            var files = GetFiles(directory, game is MEGame.LE2 or MEGame.LE3);
             var originalFilesList = files;
             if (files.Count > 0)
             {
@@ -165,11 +168,13 @@ namespace LegendaryExplorerCore.Unreal
                 int dlcFolderStartSubStrPos = file0fullpath.IndexOf("DLC_", StringComparison.InvariantCultureIgnoreCase);
                 if (dlcFolderStartSubStrPos > 0)
                 {
+                    // DLC TOC
                     files = files.Select(x => x.Substring(dlcFolderStartSubStrPos)).ToList();
                     files = files.Select(x => x.Substring(x.IndexOf(Path.DirectorySeparatorChar) + 1)).ToList(); //remove first slash
                 }
                 else
                 {
+                    // Basegame TOC
                     int biogameStrPos = file0fullpath.IndexOf("BIOGame", StringComparison.InvariantCultureIgnoreCase);
                     if (biogameStrPos > 0)
                     {
@@ -193,15 +198,31 @@ namespace LegendaryExplorerCore.Unreal
         {
             if (filesystemInfo.Count != 0)
             {
-                long selfSizePosition = -1;
-                MemoryStream fs = MemoryManager.GetMemoryStream();
+                TOCBinFile tbf = new TOCBinFile();
+
+                // Todo: Update this someday so it lines up with the actual correct implementation
+                var hashBucket = new TOCBinFile.TOCHashTableEntry();
+                tbf.HashBuckets.Add(hashBucket);
+                hashBucket.TOCEntries.AddRange(filesystemInfo.Select(x => new TOCBinFile.Entry()
+                {
+                    flags = 0,
+                    name = x.filename,
+                    size = x.size
+                }));
+
+                return tbf.Save();
+            }
+
+            return null;
+            /*
+            MemoryStream fs = MemoryManager.GetMemoryStream();
 
                 fs.WriteInt32(TOCBinFile.TOCMagicNumber); // Endian check
                 fs.WriteInt32(0x0); // Media Data Count
                 fs.WriteInt32(0x1); // Hash Table Count
 
-                // FTOCHashTableEntry (Only have 1 entry)
-                fs.WriteInt32(0x8); // Offset of first entry from... Beginning of FTOCHashTableEntry?
+                // TOCHashTableEntry (Only have 1 entry)
+                fs.WriteInt32(0x8); // Offset of first entry from 
                 fs.WriteInt32(filesystemInfo.Count); // Number of files in this table
 
                 for (int i = 0; i < filesystemInfo.Count; i++)
@@ -254,7 +275,7 @@ namespace LegendaryExplorerCore.Unreal
                 return fs;
             }
 
-            return null;
+            return null;*/
         }
     }
 }

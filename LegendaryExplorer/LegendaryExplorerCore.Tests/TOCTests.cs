@@ -22,19 +22,23 @@ namespace LegendaryExplorerCore.Tests
             // Generate a TOC and compare against the TOC already in that folder
             var gameFolder = GlobalTest.GetTestMiniGamePath(MEGame.ME3);
             var folderToToc = Path.Combine(gameFolder, "BIOGame");
-            var comparisonTocFile = Path.Combine(gameFolder, "BIOGame\\PCConsoleTOC.bin");
+            var comparisonTocFile = Path.Combine(gameFolder, "BIOGame", "PCConsoleTOC.bin");
 
-            var toc = TOCCreator.CreateTOCForDirectory(folderToToc);
-            CollectionAssert.AreEqual(File.ReadAllBytes(comparisonTocFile), toc.ToArray());
+            var toc = TOCCreator.CreateTOCForDirectory(folderToToc, MEGame.ME3);
+            //toc.WriteToFile(comparisonTocFile);
+
+            var tocDiskBytes = File.ReadAllBytes(comparisonTocFile);
+            CollectionAssert.AreEqual(tocDiskBytes, toc.ToArray());
 
             // Test full reserialization
-            foreach (var tocF in Directory.GetFiles(GlobalTest.GetTestDataDirectory(),"PCConsoleTOC.bin",SearchOption.AllDirectories))
+            foreach (var tocF in Directory.GetFiles(GlobalTest.GetTestDataDirectory(), "*PCConsoleTOC.bin", SearchOption.AllDirectories))
             {
-                var tocDiskBytes = File.ReadAllBytes(tocF);
+                tocDiskBytes = File.ReadAllBytes(tocF);
                 TOCBinFile tbf = new TOCBinFile(new MemoryStream(tocDiskBytes));
                 var reserialized = tbf.Save();
 
                 var reserializedArray = reserialized.ToArray();
+                reserialized.WriteToFile(@"C:\users\mgame\desktop\me3toc.bin");
                 Assert.IsTrue(tocDiskBytes.SequenceEqual(reserializedArray), $"Re-serialized TOC file is not the same as the original! File: {tocF}");
             }
 
@@ -50,8 +54,7 @@ namespace LegendaryExplorerCore.Tests
 
             var TOC = new TOCBinFile(tocFile);
             var allEntries = TOC.GetAllEntries();
-            // We add one to this to include the TOC file itself
-            Assert.AreEqual(tocEntryFiles.Length + 1,  allEntries.Count);
+            Assert.AreEqual(tocEntryFiles.Length, allEntries.Count);
 
             foreach (var file in tocEntryFiles)
             {
