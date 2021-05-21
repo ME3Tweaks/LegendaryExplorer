@@ -139,9 +139,9 @@ namespace LegendaryExplorerCore.Unreal
                 {
                     var tocFileLocation = Path.Combine(dir, "PCConsoleTOC.bin");
                     CreateTOCForDirectory(dir).WriteToFile(tocFileLocation);
-                    Debug.WriteLine($"{tocFileLocation}-------------------------");
-                    TOCBinFile tbf = new TOCBinFile(tocFileLocation);
-                    tbf.DumpTOC();
+                    //Debug.WriteLine($"{tocFileLocation}-------------------------");
+                    //TOCBinFile tbf = new TOCBinFile(tocFileLocation);
+                    //tbf.DumpTOC();
                 }
                 var percent = ((float)tocFolders.IndexOf(dir) / tocFolders.Count);
                 percentDoneCallback?.Invoke((int)(percent * 100.0));

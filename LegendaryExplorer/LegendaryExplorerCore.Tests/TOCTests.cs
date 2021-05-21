@@ -25,7 +25,19 @@ namespace LegendaryExplorerCore.Tests
             var comparisonTocFile = Path.Combine(gameFolder, "BIOGame\\PCConsoleTOC.bin");
 
             var toc = TOCCreator.CreateTOCForDirectory(folderToToc);
-            CollectionAssert.AreEqual(File.ReadAllBytes(comparisonTocFile).ToArray(), toc.ToArray());
+            CollectionAssert.AreEqual(File.ReadAllBytes(comparisonTocFile), toc.ToArray());
+
+            // Test full reserialization
+            foreach (var tocF in Directory.GetFiles(GlobalTest.GetTestDataDirectory(),"PCConsoleTOC.bin",SearchOption.AllDirectories))
+            {
+                var tocDiskBytes = File.ReadAllBytes(tocF);
+                TOCBinFile tbf = new TOCBinFile(new MemoryStream(tocDiskBytes));
+                var reserialized = tbf.Save();
+
+                var reserializedArray = reserialized.ToArray();
+                Assert.IsTrue(tocDiskBytes.SequenceEqual(reserializedArray), $"Re-serialized TOC file is not the same as the original! File: {tocF}");
+            }
+
         }
 
         [TestMethod]
@@ -37,14 +49,14 @@ namespace LegendaryExplorerCore.Tests
             var tocEntryFiles = Directory.GetFiles(Path.Combine(gameFolder, "BIOGame\\CookedPCConsole"));
 
             var TOC = new TOCBinFile(tocFile);
-
+            var allEntries = TOC.GetAllEntries();
             // We add one to this to include the TOC file itself
-            Assert.AreEqual(tocEntryFiles.Length + 1, TOC.Entries.Count);
+            Assert.AreEqual(tocEntryFiles.Length + 1,  allEntries.Count);
 
             foreach (var file in tocEntryFiles)
             {
                 var size = new FileInfo(file).Length;
-                Assert.IsTrue(TOC.Entries.Any((e) => file.EndsWith(e.name) && size == e.size));
+                Assert.IsTrue(allEntries.Any((e) => file.EndsWith(e.name) && size == e.size));
             }
         }
     }
