@@ -39,6 +39,9 @@ namespace LegendaryExplorerCore.GameFilesystem
         public static string BioWareDocumentsPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), @"BioWare", @"Mass Effect Legendary Edition");
 
         public static string LauncherPath => GetLauncherPath();
+        public static readonly ReadOnlyCollection<string> ExecutableNames = Array.AsReadOnly(new[] { "MassEffectLauncher.exe" });
+
+
         public static string GetLauncherPath(string rootPathOverride = null)
         {
             if (rootPathOverride == null) rootPathOverride = LegendaryExplorerCoreLibSettings.Instance.LEDirectory;

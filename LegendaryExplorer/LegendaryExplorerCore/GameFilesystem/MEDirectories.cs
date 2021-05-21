@@ -68,6 +68,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 MEGame.LE1 => LE1Directory.GetDLCPath(gamePathRoot),
                 MEGame.LE2 => LE2Directory.GetDLCPath(gamePathRoot),
                 MEGame.LE3 => LE3Directory.GetDLCPath(gamePathRoot),
+                MEGame.Unknown => null,
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
             };
         }
@@ -139,6 +140,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 MEGame.LE1 => LE1Directory.ExecutableNames,
                 MEGame.LE2 => LE2Directory.ExecutableNames,
                 MEGame.LE3 => LE3Directory.ExecutableNames,
+                MEGame.Unknown => LEDirectory.ExecutableNames,
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
             };
         }
@@ -167,6 +169,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 MEGame.LE1 => LE1Directory.VanillaDlls,
                 MEGame.LE2 => LE2Directory.VanillaDlls,
                 MEGame.LE3 => LE3Directory.VanillaDlls,
+                MEGame.Unknown => LEDirectory.VanillaLauncherDlls,
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
             };
             throw new NotImplementedException();
