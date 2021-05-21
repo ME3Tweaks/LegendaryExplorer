@@ -38,7 +38,6 @@ namespace LegendaryExplorerCore.Tests
                 var reserialized = tbf.Save();
 
                 var reserializedArray = reserialized.ToArray();
-                reserialized.WriteToFile(@"C:\users\mgame\desktop\me3toc.bin");
                 Assert.IsTrue(tocDiskBytes.SequenceEqual(reserializedArray), $"Re-serialized TOC file is not the same as the original! File: {tocF}");
             }
 
