@@ -858,13 +858,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             if (CurrentLoadedExport == null) return false;
             if (CurrentLoadedExport.ClassName == "WwiseStream")
             {
-                return CurrentLoadedExport.FileRef.Game == MEGame.ME3;
+                return CurrentLoadedExport.FileRef.Game is MEGame.ME3 or MEGame.LE2 or MEGame.LE3;
             }
 
             if (CurrentLoadedExport.ClassName == "WwiseBank")
             {
                 object currentWEMItem = ExportInfoListBox.SelectedItem;
-                bool result = currentWEMItem != null && currentWEMItem is EmbeddedWEMFile && CurrentLoadedExport.FileRef.Game == MEGame.ME3;
+                bool result = currentWEMItem != null && currentWEMItem is EmbeddedWEMFile && CurrentLoadedExport.FileRef.Game is MEGame.ME3 or MEGame.LE2 or MEGame.LE3;
                 return result;
             }
 
@@ -889,9 +889,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (ExportInfoListBox.SelectedItem is EmbeddedWEMFile wemToReplace && CurrentLoadedExport.FileRef.Game == MEGame.ME3)
             {
-                // TODO: Add Wwise 7110 to this
-                string wwisePath = Misc.AppSettings.Settings.Wwise_3773Path;
-                if (wwisePath == null) return;
                 if (sourceFile == null)
                 {
                     OpenFileDialog d = new OpenFileDialog { Filter = "Wave PCM|*.wav" };
@@ -920,7 +917,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
 
                 //Convert and replace
-                ReplaceWEMAudioFromWwiseOgg(await RunWwiseConversion(wwisePath, sourceFile, conversionSettings), wemToReplace);
+                ReplaceWEMAudioFromWwiseOgg(await WwiseCliHandler.RunWwiseConversion(Pcc.Game, sourceFile, conversionSettings), wemToReplace);
             }
         }
 
@@ -933,7 +930,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (oggPath == null)
             {
-                OpenFileDialog d = new OpenFileDialog { Filter = "Wwise Encoded Ogg|*.ogg" };
+                OpenFileDialog d = new OpenFileDialog { Filter = Pcc.Game is MEGame.ME3 ? "Wwise Encoded Ogg|*.ogg" : "Wwise Wem File|*.wem" };
                 bool? res = d.ShowDialog();
                 if (res.HasValue && res.Value)
                 {
@@ -945,10 +942,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
             }
 
-            MemoryStream convertedStream;
+            MemoryStream convertedStream = new MemoryStream();
             using (var fileStream = new FileStream(oggPath, FileMode.Open))
             {
-                convertedStream = AudioStreamHelper.ConvertWwiseOggToME3Ogg(fileStream);
+                if (Pcc.Game is MEGame.ME3)
+                {
+                    //Convert wwiseoggstream
+                    AudioStreamHelper.ConvertWwiseOggToME3Ogg(fileStream);
+                }
+                else
+                {
+                    fileStream.CopyToEx(convertedStream, (int)fileStream.Length);
+                }
             }
 
             //Update the EmbeddedWEMFile. As this is an object it will be updated in the references.
@@ -968,8 +973,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public async Task ReplaceAudioFromWave(string sourceFile = null, ExportEntry forcedExport = null, WwiseConversionSettingsPackage conversionSettings = null)
         {
-            string wwisePath = Misc.AppSettings.Settings.Wwise_3773Path;
-            if (wwisePath == null) return;
             if (sourceFile == null)
             {
                 OpenFileDialog d = new OpenFileDialog { Filter = "Wave PCM|*.wav" };
@@ -1003,134 +1006,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 HostingControl.IsBusy = true;
             }
 
-            var conversion = await Task.Run(async () => await RunWwiseConversion(wwisePath, sourceFile, conversionSettings));
+            var conversion = await Task.Run(async () => await WwiseCliHandler.RunWwiseConversion(Pcc.Game, sourceFile, conversionSettings));
 
             ReplaceAudioFromWwiseOgg(conversion, forcedExport, conversionSettings?.UpdateReferencedEvents ?? false); ;
         }
-
-        /// <summary>
-        /// Converts a 
-        /// </summary>
-        /// <param name="wwiseCLIPath">Path to Wwise CLI executable</param>
-        /// <param name="fileOrFolderPath">Path of file or folder to convert</param>
-        /// <param name="conversionSettings">Settings to place into the templated project that will be used when CLI runs</param>
-        /// <returns></returns>
-        public async Task<string> RunWwiseConversion(string wwiseCLIPath, string fileOrFolderPath, WwiseConversionSettingsPackage conversionSettings)
-        {
-            /* The process for converting is going to be pretty in depth but will make converting files much easier and faster.
-                         * 1. User chooses a folder of .wav (or this method is passed a .wav and we will return that)
-                         * 2. Conversion takes place
-                         * 
-                         * Program steps when conversion starts:
-                         * 1. Extract the Wwise TemplateProject as it is required for command line. This is extracted to the root of %Temp%.
-                         * 2. Generate the external sources file that points to the folder and each item to convert within it
-                         * 3. Run the generate command
-                         * 4. Move files from OutputFiles directory in the project
-                         * 5. Delete the project
-                         * */
-
-
-
-            //Extract the template project to temp
-            string templateproject = Path.Combine(AppDirectories.ExecFolder, "WwiseTemplateProject.zip");
-            string templatefolder = Path.Combine(Path.GetTempPath(), "TemplateProject");
-
-            using (StreamReader stream = new StreamReader(templateproject))
-            {
-                await TryDeleteDirectory(templatefolder);
-                ZipArchive archive = new ZipArchive(stream.BaseStream);
-                archive.ExtractToDirectory(Path.GetTempPath());
-            }
-
-            //Generate the external sources document
-            string[] filesToConvert = null;
-            string folderParent = null;
-            bool isSingleFile = false;
-            if (Directory.Exists(fileOrFolderPath))
-            {
-                //it's a directory
-                filesToConvert = Directory.GetFiles(fileOrFolderPath, "*.wav");
-                folderParent = fileOrFolderPath;
-            }
-            else
-            {
-                //it's a single file
-                isSingleFile = true;
-                filesToConvert = new[] { fileOrFolderPath };
-                folderParent = Directory.GetParent(fileOrFolderPath).FullName;
-            }
-
-
-
-            XElement externalSourcesList = new XElement("ExternalSourcesList", new XAttribute("SchemaVersion", 1.ToString()), new XAttribute("Root", folderParent));
-            foreach (string file in filesToConvert)
-            {
-                XElement source = new XElement("Source", new XAttribute("Path", Path.GetFileName(file)), new XAttribute("Conversion", "Vorbis"));
-                externalSourcesList.Add(source);
-            }
-
-            //Write ExternalSources.wsources
-            string wsourcesFile = Path.Combine(Path.GetTempPath(), "TemplateProject", "ExternalSources.wsources");
-
-            File.WriteAllText(wsourcesFile, externalSourcesList.ToString());
-            Debug.WriteLine(externalSourcesList.ToString());
-
-            string conversionSettingsFile = Path.Combine(Path.GetTempPath(), "TemplateProject", "Conversion Settings", "Default Work Unit.wwu");
-            XmlDocument conversionDoc = new XmlDocument();
-            conversionDoc.Load(conversionSettingsFile);
-
-            //Samplerate
-            XmlNode node = conversionDoc.DocumentElement.SelectSingleNode("/WwiseDocument/Conversions/Conversion/PropertyList/Property[@Name='SampleRate']/ValueList/Value[@Platform='Windows']");
-            node.InnerText = conversionSettings.TargetSamplerate.ToString();
-            conversionDoc.Save(conversionSettingsFile);
-            //Run Conversion
-
-            string projFile = Path.Combine(Path.GetTempPath(), "TemplateProject", "TemplateProject.wproj");
-            Process process = new Process
-            {
-                StartInfo =
-                {
-                    FileName = wwiseCLIPath,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    Arguments = $"\"{projFile}\" -ConvertExternalSources Windows",
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    RedirectStandardInput = true
-                }
-            };
-            //uncomment the following lines to view output from wwisecli
-            //DebugOutput.StartDebugger("Wwise Wav to Ogg Converter");
-            //process.OutputDataReceived += (s, eventArgs) => { Debug.WriteLine(eventArgs.Data); DebugOutput.PrintLn(eventArgs.Data); };
-            //process.ErrorDataReceived += (s, eventArgs) => { Debug.WriteLine(eventArgs.Data); DebugOutput.PrintLn(eventArgs.Data); };
-
-            process.Start();
-            //process.BeginOutputReadLine();
-            process.WaitForExit();
-            Debug.WriteLine("Process output: \n" + process.StandardOutput.ReadToEnd());
-            process.Close();
-
-            //Files generates
-            string outputDirectory = Path.Combine(Path.GetTempPath(), "TemplateProject", "OutputFiles");
-            string copyToDirectory = Path.Combine(folderParent, "Converted");
-            Directory.CreateDirectory(copyToDirectory);
-            foreach (string file in filesToConvert)
-            {
-                string basename = Path.GetFileNameWithoutExtension(file);
-                File.Copy(Path.Combine(outputDirectory, basename + ".ogg"), Path.Combine(copyToDirectory, basename + ".ogg"), true);
-            }
-
-            var deleteResult = await TryDeleteDirectory(templatefolder);
-            Debug.WriteLine("Deleted templatedproject: " + deleteResult);
-
-            if (isSingleFile)
-            {
-                return Path.Combine(copyToDirectory, Path.GetFileNameWithoutExtension(fileOrFolderPath) + ".ogg");
-            }
-
-            return copyToDirectory;
-        }
-
 
         public static async Task<bool> TryDeleteDirectory(string directoryPath, int maxRetries = 10, int millisecondsDelay = 30)
         {
@@ -1587,7 +1466,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 WwiseStream w = exportToWorkOn.GetBinaryData<WwiseStream>();
                 if (oggPath == null)
                 {
-                    OpenFileDialog d = new OpenFileDialog { Filter = "Wwise Encoded Ogg|*.ogg" };
+                    OpenFileDialog d = new OpenFileDialog { Filter = Pcc.Game is MEGame.ME3 ? "Wwise Encoded Ogg|*.ogg" : "Wwise Wem File|*.wem" };
                     bool? res = d.ShowDialog();
                     if (res.HasValue && res.Value)
                     {

@@ -7,7 +7,6 @@ using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Audio;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
-using LegendaryExplorerCore.Audio;
 
 namespace LegendaryExplorer.UnrealExtensions
 {
@@ -52,7 +51,7 @@ namespace LegendaryExplorer.UnrealExtensions
         /// <param name="fullSetup">Full setup flag - use for ME2</param>
         public static MemoryStream ConvertRiffToWav(string riffPath, bool fullSetup)
         {
-            Stream oggStream = ConvertRIFFToWWwiseOGG(riffPath, fullSetup);
+            Stream oggStream = ConvertRIFFToWwiseOGG(riffPath, fullSetup);
             if (oggStream != null)// && File.Exists(outputOggPath))
             {
                 oggStream.Seek(0, SeekOrigin.Begin);
@@ -123,7 +122,7 @@ namespace LegendaryExplorer.UnrealExtensions
         /// </summary>
         /// <param name="riffPath">Path to RIFF RAW data</param>
         /// <param name="fullSetup">Full setup flag - use for ME2</param>
-        public static MemoryStream ConvertRIFFToWWwiseOGG(string riffPath, bool fullSetup)
+        public static MemoryStream ConvertRIFFToWwiseOGG(string riffPath, bool fullSetup)
         {
             //convert RIFF to WwiseOGG
             // Is this useful?

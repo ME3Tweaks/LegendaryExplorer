@@ -1,5 +1,7 @@
 ﻿using System.IO;
 using System.Windows.Forms;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 
 namespace LegendaryExplorer.UnrealExtensions.Classes
@@ -97,8 +99,14 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
         {
             if ((!ws.IsPCCStored && !File.Exists(pathafc)) || wwiseOggStream == null)
                 return;
-            //Convert wwiseoggstream
-            MemoryStream convertedStream = AudioStreamHelper.ConvertWwiseOggToME3Ogg(wwiseOggStream);
+            MemoryStream convertedStream = new MemoryStream();
+            if (ws.Export.FileRef.Game is MEGame.ME3)
+            {
+                //Convert wwiseoggstream
+                AudioStreamHelper.ConvertWwiseOggToME3Ogg(wwiseOggStream);
+            }
+            else wwiseOggStream.CopyToEx(convertedStream, (int)wwiseOggStream.Length);
+
             byte[] newWavfile = convertedStream.ToArray();
 
             if (ws.IsPCCStored)

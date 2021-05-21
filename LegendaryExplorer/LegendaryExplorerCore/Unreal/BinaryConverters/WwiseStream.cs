@@ -28,7 +28,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 Filename = Export.GetProperty<NameProperty>("Filename")?.Value;
             }
 
-            if (sc.Game is not (MEGame.ME2 or MEGame.ME3 or MEGame.LE2 or MEGame.LE3))
+            if (!sc.Game.IsGame2() && !sc.Game.IsGame3())
             {
                 throw new Exception($"WwiseStream is not a valid class for {sc.Game}!");
             }

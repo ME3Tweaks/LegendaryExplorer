@@ -13,7 +13,7 @@ namespace LegendaryExplorer.Dialogs
     public partial class SoundReplaceOptionsDialog : NotifyPropertyChangedWindowBase
     {
         public ObservableCollectionExtended<int> SampleRates { get; } = new ObservableCollectionExtended<int>();
-        private static readonly int[] AcceptedSampleRates = {24000, 32000}; //may add more later
+        private static readonly int[] AcceptedSampleRates = {24000, 32000, 44100}; //may add more later
 
         public ObservableCollectionExtended<MEGame> SupportedGames { get; } = new()
         {

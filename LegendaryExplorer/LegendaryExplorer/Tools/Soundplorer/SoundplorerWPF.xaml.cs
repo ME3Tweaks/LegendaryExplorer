@@ -742,7 +742,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
 
                     if (w.ExtractRawFromSourceToFile(riffOutputFile))
                     {
-                        MemoryStream oggStream = AudioStreamHelper.ConvertRIFFToWWwiseOGG(riffOutputFile, spExport.Export.FileRef.Game == MEGame.ME2);
+                        MemoryStream oggStream = AudioStreamHelper.ConvertRIFFToWwiseOGG(riffOutputFile, spExport.Export.FileRef.Game == MEGame.ME2);
                         //string outputOggPath = 
                         if (oggStream != null)// && File.Exists(outputOggPath))
                         {
@@ -776,7 +776,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
 
                     if (AudioStreamHelper.ExtractRawFromSourceToFile(riffOutputFile, afE.AFCPath, afE.DataSize, afE.Offset))
                     {
-                        MemoryStream oggStream = AudioStreamHelper.ConvertRIFFToWWwiseOGG(riffOutputFile, afE.ME2);
+                        MemoryStream oggStream = AudioStreamHelper.ConvertRIFFToWwiseOGG(riffOutputFile, afE.ME2);
                         //string outputOggPath = 
                         if (oggStream != null)// && File.Exists(outputOggPath))
                         {
@@ -885,15 +885,15 @@ namespace LegendaryExplorer.Tools.Soundplorer
             if (!srod.ShowDialog().Value) return;
 
             //Verify Wwise is installed with the correct version
-            string wwisePath = Misc.AppSettings.Settings.Wwise_3773Path;
+            string wwisePath = WwiseCliHandler.GetWwiseCliPath(srod.ChosenSettings.TargetGame);
             if (wwisePath == null)
             {
-                MessageBox.Show("Wwise path not set for version 3773.");
+                MessageBox.Show("Wwise path not set for specified game.");
                 return; //abort. getpath is not silent so it will show dialogs before this is reached.
             }
             
-            string convertedFolder = await soundPanel.RunWwiseConversion(wwisePath, dlg.FileName, srod.ChosenSettings);
-            MessageBox.Show("Done. Converted ogg files have been placed into:\n" + convertedFolder);
+            string convertedFolder = await WwiseCliHandler.RunWwiseConversion(srod.ChosenSettings.TargetGame, dlg.FileName, srod.ChosenSettings);
+            MessageBox.Show("Done. Converted files have been placed into:\n" + convertedFolder);
 
         }
 
