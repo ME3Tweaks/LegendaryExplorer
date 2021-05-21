@@ -64,5 +64,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.ms.JumpTo(endPos);
             }
         }
+
+        //GetNames for this class must be implemented whereever ObjectBinary::GetNames is called
+        //Gross, should fix this someday
     }
 }

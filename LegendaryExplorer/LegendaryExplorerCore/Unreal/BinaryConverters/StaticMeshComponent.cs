@@ -93,7 +93,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public Vector3 ScaleVector1;
         public Vector3 ScaleVector2;
         public Vector3 ScaleVector3;
-        public Vector3 ScaleVector4;//not ME3
+        public Vector3 ScaleVector4;//< ME3
         public QuantizedSimpleLightSample[] SimpleSamples; //BULKDATA
     }
 
@@ -106,8 +106,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public Vector3 ScaleVector2;
         public UIndex Texture3;
         public Vector3 ScaleVector3;
-        public UIndex Texture4;//not ME3
-        public Vector3 ScaleVector4;//not ME3
+        public UIndex Texture4;//< ME3
+        public Vector3 ScaleVector4;//< ME3
         public Vector2 CoordinateScale;
         public Vector2 CoordinateBias;
     }

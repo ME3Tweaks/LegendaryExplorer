@@ -6,7 +6,7 @@ using LegendaryExplorerCore.SharpDX;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    //When using these classes, DON'T specify T where you us it, just put one or more of these in the file.
+    //When using these classes, DON'T specify T where you use it, just put one or more of these in the file.
     //These are the only valid versions
     using InterpCurveVector = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve<LegendaryExplorerCore.SharpDX.Vector3>;
     using InterpCurveVector2D = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve<LegendaryExplorerCore.SharpDX.Vector2>;
@@ -148,7 +148,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     //ONLY WORKS WHEN T is float, LegendaryExplorerCore.SharpDX.Vector3 or LegendaryExplorerCore.SharpDX.Vector2
     public class InterpCurve<T>
     {
-        public List<InterpCurvePoint<T>> Points = new List<InterpCurvePoint<T>>();
+        public List<InterpCurvePoint<T>> Points = new();
         public EInterpMethodType InterpMethod = EInterpMethodType.IMT_UseFixedTangentEvalAndNewAutoTangents;
 
         public int AddPoint(float inVal, T outVal)

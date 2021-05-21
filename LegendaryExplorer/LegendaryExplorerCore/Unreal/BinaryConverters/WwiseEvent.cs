@@ -19,7 +19,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref WwiseEventID);
                 sc.Serialize(ref Links, SCExt.Serialize);
             }
-            else if (sc.Game is MEGame.ME3 or MEGame.LE3)
+            else if (sc.Game.IsGame3())
             {
                 if (Links is null || Links.Count == 0)
                 {
@@ -41,7 +41,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             List<(UIndex, string)> uIndexes = base.GetUIndexes(game);
 
-            if (game == MEGame.ME3 || game == MEGame.LE3)
+            if (game.IsGame3())
             {
                 uIndexes.AddRange(Links[0].WwiseStreams.Select(((u, i) => (u, $"Wwisestreams[{i}]"))));
             }

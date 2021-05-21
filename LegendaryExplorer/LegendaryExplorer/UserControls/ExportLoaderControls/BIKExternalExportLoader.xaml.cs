@@ -142,28 +142,34 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             libvlc = new LibVLC();
             mediaPlayer = new MediaPlayer(libvlc);
-            vlcVideoView.Loaded += VideoView_Loaded;
 
             //MoviePlayer.VlcMediaplayerOptions = new[] { "--video-title-show" };  //Can we find options to show frame counts/frame rates/time etc
 
+            vlcVideoView.Loaded += VideoView_Loaded;
             TextureCacheComboBox.SelectionChanged += TextureCacheComboBox_SelectionChanged;
 
-            mediaPlayer.Playing += (sender, e) =>
-            {
-                IsVLCPlaying = true;
-                Debug.WriteLine("BikMoviePlayer Started");
-            };
-            mediaPlayer.Stopped += (sender, e) =>
-            {
-                IsVLCPlaying = false;
-                Debug.WriteLine("BikMoviePlayer Stopped");
-            };
-            mediaPlayer.EncounteredError += (sender, e) =>
-            {
-                Console.Error.Write("An error occurred");
-                IsVLCPlaying = false;
-            };
+            mediaPlayer.Playing += OnPlaying;
+            mediaPlayer.Stopped += OnStopped;
+            mediaPlayer.EncounteredError += OnEncounteredError;
             mediaPlayer.EndReached += MediaEndReached;
+        }
+
+        private void OnEncounteredError(object? sender, EventArgs e)
+        {
+            Console.Error.Write("An error occurred");
+            IsVLCPlaying = false;
+        }
+
+        private void OnStopped(object? sender, EventArgs e)
+        {
+            IsVLCPlaying = false;
+            Debug.WriteLine("BikMoviePlayer Stopped");
+        }
+
+        private void OnPlaying(object? sender, EventArgs e)
+        {
+            IsVLCPlaying = true;
+            Debug.WriteLine("BikMoviePlayer Started");
         }
 
         public BIKExternalExportLoader(bool autoplayPopout, bool showcontrols = false) : base("BIKExternal")
@@ -299,6 +305,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public override void Dispose()
         {
             UnloadExport();
+
+            vlcVideoView.Loaded -= VideoView_Loaded;
+            TextureCacheComboBox.SelectionChanged -= TextureCacheComboBox_SelectionChanged;
+
+            mediaPlayer.Playing -= OnPlaying;
+            mediaPlayer.Stopped -= OnStopped;
+            mediaPlayer.EncounteredError -= OnEncounteredError;
+            mediaPlayer.EndReached -= MediaEndReached;
             mediaPlayer?.Dispose();
             libvlc?.Dispose();
         }

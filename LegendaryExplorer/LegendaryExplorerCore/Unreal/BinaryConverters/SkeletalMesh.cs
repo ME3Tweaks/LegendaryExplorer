@@ -47,7 +47,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 if (sc.IsSaving && sc.Game == MEGame.UDK)
                 {
-                    ClothingAssets = new UIndex[0];
+                    ClothingAssets = Array.Empty<UIndex>();
                 }
                 sc.Serialize(ref BoneBreakNames, SCExt.Serialize);
                 sc.Serialize(ref ClothingAssets, SCExt.Serialize);
@@ -76,7 +76,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             List<(UIndex t, string)> uIndexes = Materials.Select((t, i) => (t, $"Materials[{i}]")).ToList();
 
-            if (game == MEGame.ME3)
+            if (game == MEGame.ME3 || game.IsLEGame())
             {
                 uIndexes.AddRange(ClothingAssets.Select((t, i) => (t, $"ClothingAssets[{i}]")));
             }

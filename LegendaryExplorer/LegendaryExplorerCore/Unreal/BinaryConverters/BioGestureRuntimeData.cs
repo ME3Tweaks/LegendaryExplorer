@@ -68,7 +68,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                         names.Add((mapAction.Key, $"{nameof(m_mapMeshProps)}[{i}].Value.{nameof(BioMeshPropData.mapActions)}.Key"));
                         names.Add((mapAction.Value.nmActionName, $"{nameof(m_mapMeshProps)}[{i}].Value.{nameof(BioMeshPropData.mapActions)}[{j}].Value.{nameof(BioMeshPropActionData.nmActionName)}"));
                         names.Add((mapAction.Value.nmAttachTo, $"{nameof(m_mapMeshProps)}[{i}].Value.{nameof(BioMeshPropData.mapActions)}[{j}].Value.{nameof(BioMeshPropActionData.nmAttachTo)}"));
-                        if (game == MEGame.ME3)
+                        if (game.IsGame3())
                         {
                             names.Add((mapAction.Value.TSpawnParams.nmHitBone,
                                 $"{nameof(m_mapMeshProps)}[{i}].Value.{nameof(BioMeshPropData.mapActions)}[{j}].Value.{nameof(BioMeshPropActionData.TSpawnParams)}.{nameof(BioPropClientEffectParams.nmHitBone)}"));

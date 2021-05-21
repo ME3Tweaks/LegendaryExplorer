@@ -14,7 +14,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public BoxSphereBounds Bounds;
         public UIndex BodySetup;
         public kDOPTree kDOPTreeME1ME2;
-        public kDOPTreeCompact kDOPTreeME3UDK;
+        public kDOPTreeCompact kDOPTreeME3UDKLE;
         public int InternalVersion;
         public StaticMeshRenderData[] LODModels;
         public uint unk2; //ME1
@@ -42,20 +42,20 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref BodySetup);
             if (sc.IsSaving)
             {
-                if (sc.Game >= MEGame.ME3 && kDOPTreeME3UDK == null)
+                if (sc.Game >= MEGame.ME3 && kDOPTreeME3UDKLE == null)
                 {
-                    kDOPTreeME3UDK = KDOPTreeBuilder.ToCompact(kDOPTreeME1ME2.Triangles, LODModels[0].PositionVertexBuffer.VertexData);
+                    kDOPTreeME3UDKLE = KDOPTreeBuilder.ToCompact(kDOPTreeME1ME2.Triangles, LODModels[0].PositionVertexBuffer.VertexData);
                 }
                 else if (sc.Game < MEGame.ME3 && kDOPTreeME1ME2 == null)
                 {
                     //todo: need to convert kDOPTreeCompact to kDOPTree
-                    throw new NotImplementedException("Cannot convert ME3 StaticMeshes to ME1 or ME2 format :(");
+                    throw new NotImplementedException("Cannot convert ME3 or LE StaticMeshes to ME1 or ME2 format :(");
                 }
             }
 
             if (sc.Game >= MEGame.ME3)
             {
-                sc.Serialize(ref kDOPTreeME3UDK);
+                sc.Serialize(ref kDOPTreeME3UDKLE);
             }
             else
             {

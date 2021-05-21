@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Packages;
 using static LegendaryExplorerCore.Unreal.BinaryConverters.BioQuestMap;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
@@ -18,6 +20,23 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref TaskEvals, SCExt.Serialize);
             sc.Serialize(ref IntTaskEvals, SCExt.Serialize);
             sc.Serialize(ref FloatTaskEvals, SCExt.Serialize);
+        }
+
+        public override List<(NameReference, string)> GetNames(MEGame game)
+        {
+            var names = base.GetNames(game);
+
+            for (int i = 0; i < Quests.Count; i++)
+            {
+                var q = Quests[i];
+                for (int j = 0; j < q.Tasks.Count; j++)
+                {
+                    var task = q.Tasks[j];
+                    names.Add(task.PlanetName, $"[{i}] Quest {q.ID}: [{j}] Task : PlanetName");
+                }
+            }
+
+            return names;
         }
 
         public class BioQuest
@@ -46,8 +65,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             public int Name;
             public int Description;
             public List<int> PlotIndices;
-            public int PlanetName;
-            public int PlanetNameIndex;
+            public NameReference PlanetName;
             public string WaypointRef;
         }
 
@@ -86,10 +104,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             if (sc.IsLoading) quest = new BioQuest();
             sc.Serialize(ref quest.ID);
             sc.Serialize(ref quest.InstanceVersion);
-
-            if (sc.IsLoading) quest.IsMission = sc.ms.ReadBoolInt();
-            else sc.ms.Writer.WriteBoolInt(quest.IsMission);
-
+            sc.Serialize(ref quest.IsMission);
             sc.Serialize(ref quest.Goals, Serialize);
             sc.Serialize(ref quest.Tasks, Serialize);
             sc.Serialize(ref quest.PlotItems, Serialize);
@@ -110,22 +125,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             if (sc.IsLoading) task = new BioQuestTask();
             sc.Serialize(ref task.InstanceVersion);
-            if (sc.IsLoading) task.QuestCompleteTask = sc.ms.ReadBoolInt();
-            else sc.ms.Writer.WriteBoolInt(task.QuestCompleteTask);
+            sc.Serialize(ref task.QuestCompleteTask);
             sc.Serialize(ref task.Name);
             sc.Serialize(ref task.Description);
             sc.Serialize(ref task.PlotIndices, Serialize);
             sc.Serialize(ref task.PlanetName);
-            sc.Serialize(ref task.PlanetNameIndex);
-            if (sc.IsLoading)
-            {
-                task.WaypointRef = sc.ms.ReadStringASCII(sc.ms.ReadInt32());
-            }
-            else
-            {
-                sc.ms.Writer.WriteInt32(task.WaypointRef.Length);
-                sc.ms.Writer.WriteStringLatin1(task.WaypointRef);
-            }
+            sc.Serialize(ref task.WaypointRef);
         }
 
         public static void Serialize(this SerializingContainer2 sc, ref BioQuestPlotItem item)

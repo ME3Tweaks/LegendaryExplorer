@@ -346,7 +346,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 }
                 else
                 {
-                    var kdop = m.kDOPTreeME3UDK;
+                    var kdop = m.kDOPTreeME3UDKLE;
                     for (int i = 0; i < kdop.Triangles.Length; i++)
                     {
                         triangles.Add(new Triangle(kdop.Triangles[i].Vertex1, kdop.Triangles[i].Vertex2, kdop.Triangles[i].Vertex3));

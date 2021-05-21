@@ -39,7 +39,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.BulkSerialize(ref Nodes, SCExt.Serialize, 64);
             sc.Serialize(ref Self);
             sc.Serialize(ref Surfs, SCExt.Serialize);
-            sc.BulkSerialize(ref Verts, SCExt.Serialize, sc.Game is MEGame.ME3 or MEGame.LE3 ? 16 : 24);
+            sc.BulkSerialize(ref Verts, SCExt.Serialize, sc.Game.IsGame3() ? 16 : 24);
             sc.Serialize(ref NumSharedSides);
             sc.Serialize(ref Zones, SCExt.Serialize);
             sc.Serialize(ref Polys);

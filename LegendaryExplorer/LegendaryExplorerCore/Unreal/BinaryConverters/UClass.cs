@@ -67,10 +67,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             uIndices.Add((OuterClass, "OuterClass"));
             uIndices.AddRange(ComponentNameToDefaultObjectMap.Select((kvp, i) => (kvp.Value, $"ComponentMap[{i}]")));
 
-            if (game >= MEGame.ME3)
-            {
-                uIndices.AddRange(Interfaces.SelectMany((kvp, i) => new []{(kvp.Key, $"InterfacesMap[{i}]"), (kvp.Value, $"InterfacesMap[{i}].PropertyPointer")}));
-            }
+            uIndices.AddRange(Interfaces.SelectMany((kvp, i) => new []{(kvp.Key, $"InterfacesMap[{i}]"), (kvp.Value, $"InterfacesMap[{i}].PropertyPointer")}));
 
             uIndices.Add((Defaults, "Defaults"));
             if (game is MEGame.UDK or MEGame.ME3 or MEGame.LE3)
@@ -91,12 +88,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 names.AddRange(unkNameList1.Select((name, i) => (name, $"unkNameList1[{i}]")));
             }
             names.AddRange(ComponentNameToDefaultObjectMap.Select((kvp, i) => (kvp.Key, $"ComponentNameToDefaultObjectMap[{i}]")));
-            if (game == MEGame.ME3)
+            if (game >= MEGame.ME3)
             {
                 names.Add((unkName2, nameof(unkName2)));
             }
-
-            if (game <= MEGame.ME2)
+            else
             {
                 names.AddRange(unkNameList2.Select((name, i) => (name, $"unkNameList2[{i}]")));
             }

@@ -12,7 +12,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         protected override void Serialize(SerializingContainer2 sc)
         {
-            if (sc.Game is not (MEGame.ME3 or MEGame.LE3))
+            if (!sc.Game.IsGame3())
             {
                 var empty = new byte[0];
                 sc.SerializeBulkData(ref empty);
