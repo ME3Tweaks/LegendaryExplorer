@@ -114,8 +114,8 @@ namespace LegendaryExplorer.Tools.AutoTOC
             var BioEngine = DuplicatingIni.LoadIni(bioEnginePath);
 
             //Clean out seekfreepaths and moviepaths
-             BioEngine["Core.System"].RemoveAllNamedEntries("SeekFreePCPaths");
-             BioEngine["Core.System"].RemoveAllNamedEntries("DLC_MoviePaths");
+            BioEngine["Core.System"].RemoveAllNamedEntries("SeekFreePCPaths");
+            BioEngine["Core.System"].RemoveAllNamedEntries("DLC_MoviePaths");
 
             // 4. ADD SEEKFREE PATHS IN REVERSE ORDER (HIGHEST= BIOGAME, ETC).
             //SORT INTO REVERSE ORDER 0 => HIGHEST FOR BIOENGINE
@@ -258,7 +258,8 @@ namespace LegendaryExplorer.Tools.AutoTOC
         private void GenerateSingleTOC_BackgroundThread(object sender, DoWorkEventArgs e)
         {
             TOCTasks.ClearEx();
-            CreateTOC(e.Argument as string, TOCTasks);
+            // TODO: PASS GAME THROUGH HERE... as single DLC I don't think this matters, it's only useful on full game TOC
+            CreateTOC(MEGame.ME3, e.Argument as string, TOCTasks);
             TOCTasks.Add(new ListBoxTask
             {
                 Header = "TOC created",
@@ -320,7 +321,7 @@ namespace LegendaryExplorer.Tools.AutoTOC
                 folders.AddRange((new DirectoryInfo(MEDirectories.GetDLCPath(game)).GetDirectories()
                     .Select(d => d.FullName)));
             }
-            folders.ForEach(consoletocFile => CreateTOC(consoletocFile, tocTasks));
+            folders.ForEach(consoletocFile => CreateTOC(game, consoletocFile, tocTasks));
         }
 
         /// <summary>
@@ -328,9 +329,9 @@ namespace LegendaryExplorer.Tools.AutoTOC
         /// </summary>
         /// <param name="folderToToc">BIOGame/DLC Folder to generate TOC file in</param>
         /// <param name="tocTasks">List of UI Task objects to display in UI</param>
-        public static void CreateTOC(string folderToToc, IList<ListBoxTask> tocTasks = null)
+        public static void CreateTOC(MEGame game, string folderToToc, IList<ListBoxTask> tocTasks = null)
         {
-            if (TOCCreator.IsTOCableFolder(folderToToc))
+            if (TOCCreator.IsTOCableFolder(folderToToc, game is MEGame.LE2 or MEGame.LE3))
             {
                 ListBoxTask task = null;
                 if (tocTasks != null)
@@ -342,7 +343,7 @@ namespace LegendaryExplorer.Tools.AutoTOC
                 try
                 {
                     var tocOutFile = Path.Combine(folderToToc, "PCConsoleTOC.bin");
-                    var toc = TOCCreator.CreateTOCForDirectory(folderToToc);
+                    var toc = TOCCreator.CreateTOCForDirectory(folderToToc, game);
                     File.WriteAllBytes(tocOutFile, toc.ToArray());
                     task?.Complete($"Created TOC for {folderToToc}");
                 }
