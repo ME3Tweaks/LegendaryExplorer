@@ -19,6 +19,7 @@ using Color = System.Drawing.Color;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 using System.Windows.Threading;
+using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
@@ -27,8 +28,10 @@ using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.SharedUI.PeregrineTreeView;
+using LegendaryExplorer.Tools.PlotEditor;
 using LegendaryExplorer.Tools.SequenceObjects;
 using LegendaryExplorer.UserControls.SharedToolControls;
+using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
@@ -1414,8 +1417,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
                 if (contextMenu.GetChild("plotEditorMenuItem") is MenuItem plotEditorMenuItem)
                 {
-
-                    if (Pcc.Game == MEGame.ME3 && obj is SAction sAction &&
+                    if (obj is SAction sAction &&
                         sAction.Export.ClassName == "BioSeqAct_PMExecuteTransition" &&
                         sAction.Export.GetProperty<IntProperty>("m_nIndex") != null)
                     {
@@ -2209,48 +2211,80 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 }
             }
         }
-        //TODO: Make this work for ME2 and ME1
+
         private void PlotEditorMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            //TODO: Implement in LEX
-            //if (Pcc.Game == MEGame.ME3 &&
-            //    CurrentObjects_ListBox.SelectedItem is SAction sAction &&
-            //    sAction.Export.ClassName == "BioSeqAct_PMExecuteTransition" &&
-            //    sAction.Export.GetProperty<IntProperty>("m_nIndex")?.Value is int m_nIndex)
-            //{
-            //    var plotFiles = MELoadedFiles.GetEnabledDLCFolders(MEGame.ME3).OrderByDescending(dir => MELoadedFiles.GetMountPriority(dir, MEGame.ME3))
-            //                                  .Select(dir => Path.Combine(dir, "CookedPCConsole", $"Startup_{MELoadedFiles.GetDLCNameFromDir(dir)}_INT.pcc"))
-            //                                  .Append(Path.Combine(ME3Directory.CookedPCPath, "SFXGameInfoSP_SF.pcc"))
-            //                                  .Where(File.Exists);
-            //    string filePath = null;
-            //    foreach (string plotFile in plotFiles)
-            //    {
-            //        using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(plotFile))
-            //        {
-            //            if (StateEventMapView.TryFindStateEventMap(pcc, out ExportEntry export))
-            //            {
-            //                var stateEventMap = BinaryBioStateEventMap.Load(export);
-            //                if (stateEventMap.StateEvents.ContainsKey(m_nIndex))
-            //                {
-            //                    filePath = plotFile;
-            //                }
-            //            }
-            //        }
-            //    }
+            if (CurrentObjects_ListBox.SelectedItem is SAction sAction && 
+                sAction.Export.ClassName == "BioSeqAct_PMExecuteTransition" &&
+                sAction.Export.GetProperty<IntProperty>("m_nIndex")?.Value is int m_nIndex)
+            {
+                IEnumerable<string> plotFiles = new List<string>();
+                int stateEventKey = m_nIndex;
 
-            //    if (filePath != null)
-            //    {
+                if (Pcc.Game is MEGame.ME3 or MEGame.LE3)
+                {
+                    plotFiles = MELoadedFiles.GetEnabledDLCFolders(Pcc.Game).OrderByDescending(dir => MELoadedFiles.GetMountPriority(dir, Pcc.Game))
+                                                  .Select(dir => Path.Combine(dir, "CookedPCConsole", $"Startup_{MELoadedFiles.GetDLCNameFromDir(dir)}_INT.pcc"))
+                                                  .Append(Path.Combine(MEDirectories.GetCookedPath(Pcc.Game), "SFXGameInfoSP_SF.pcc"))
+                                                  .Where(File.Exists);
+                }
 
-            //        var plotEd = new PlotEditor();
-            //        plotEd.Show();
-            //        plotEd.LoadFile(filePath);
-            //        plotEd.GoToStateEvent(m_nIndex);
-            //    }
-            //    else
-            //    {
-            //        MessageBox.Show(this, $"Could not find State Event {m_nIndex}");
-            //    }
-            //}
+                if (Pcc.Game is MEGame.ME2 or MEGame.LE2)
+                {
+                    plotFiles = MELoadedFiles.GetEnabledDLCFolders(Pcc.Game).OrderByDescending(dir => MELoadedFiles.GetMountPriority(dir, Pcc.Game))
+                        .Select(dir => Path.Combine(dir, (Pcc.Game is MEGame.LE2 ? "CookedPCConsole" : "CookedPC"), $"Startup_{MELoadedFiles.GetDLCNameFromDir(dir)}_INT.pcc"))
+                        .Append(Path.Combine(MEDirectories.GetCookedPath(Pcc.Game), "Startup_INT.pcc"))
+                        .Where(File.Exists);
+                }
+
+                if (Pcc.Game is MEGame.LE1)
+                {
+                    plotFiles = MELoadedFiles.GetEnabledDLCFolders(Pcc.Game).OrderByDescending(dir => MELoadedFiles.GetMountPriority(dir, Pcc.Game))
+                        //.Select(dir => Path.Combine(dir, "CookedPCConsole", $"Startup_{MELoadedFiles.GetDLCNameFromDir(dir)}_INT.pcc")) // TODO: implement once ME1 DLC folders work
+                        .Append(Path.Combine(MEDirectories.GetCookedPath(Pcc.Game), "BIOC_Materials.pcc"))
+                        .Where(File.Exists);
+                }
+
+                if (Pcc.Game is MEGame.ME1)
+                {
+                    plotFiles = MELoadedFiles.GetEnabledDLCFolders(Pcc.Game).OrderByDescending(dir => MELoadedFiles.GetMountPriority(dir, Pcc.Game))
+                        .Select(dir => Path.Combine(dir, "CookedPC", $@"Packages\PlotManagerAuto{MELoadedFiles.GetDLCNameFromDir(dir)}.upk"))
+                        .Append(Path.Combine(MEDirectories.GetCookedPath(Pcc.Game), @"Packages\PlotManagerAuto.upk"))
+                        .Where(File.Exists);
+                }
+
+                if (stateEventKey != 0 && plotFiles.Any())
+                {
+                    string filePath = null;
+                    foreach (var plotFile in plotFiles)
+                    {
+                        using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(plotFile))
+                        {
+                            if (StateEventMapView.TryFindStateEventMap(pcc, out ExportEntry export))
+                            {
+                                var stateEventMap = BinaryBioStateEventMap.Load(export);
+                                if (stateEventMap.StateEvents.ContainsKey(stateEventKey))
+                                {
+                                    filePath = plotFile;
+                                }
+                            }
+                        }
+                    }
+
+                    if (filePath != null)
+                    {
+
+                        var plotEd = new PlotEditorWindow();
+                        plotEd.Show();
+                        plotEd.LoadFile(filePath);
+                        plotEd.GoToStateEvent(stateEventKey);
+                    }
+                    else
+                    {
+                        MessageBox.Show(this, $"Could not find State Event {stateEventKey}");
+                    }
+                }
+            }
         }
 
         private void RepointIncomingReferences_Click(object sender, RoutedEventArgs e)
