@@ -135,6 +135,16 @@ namespace LegendaryExplorerCore.GameFilesystem
             else ME3Flag |= (EME3MountFileFlag)flag;
         }
 
+        public void SetFlagBit(EME2MountFileFlag flag)
+        {
+            ME2Flag |= flag;
+        }
+
+        public void SetFlagBit(EME3MountFileFlag flag)
+        {
+            ME3Flag |= flag;
+        }
+
         public bool IsUISelected { get; set; }
 
         public string DisplayString => ToString();
