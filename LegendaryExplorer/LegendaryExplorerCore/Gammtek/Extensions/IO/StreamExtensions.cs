@@ -718,27 +718,27 @@ namespace LegendaryExplorerCore.Gammtek.Extensions.IO
             }
         }
 
-        //        public static void WriteAligned(this Stream stream, byte[] buffer, int offset, int size, int align)
-        //        {
-        //            if (size == 0)
-        //            {
-        //                return;
-        //            }
+        public static void WriteAligned(this Stream stream, byte[] buffer, int offset, int size, int align)
+        {
+            if (size == 0)
+            {
+                return;
+            }
 
-        //            stream.Write(buffer, offset, size);
+            stream.Write(buffer, offset, size);
 
-        //            var skip = size % align;
+            var skip = size % align;
 
-        //            // this is a dumbfuck way to do this but it'll work for now
-        //            if (skip <= 0)
-        //            {
-        //                return;
-        //            }
+            // this is a dumbfuck way to do this but it'll work for now
+            if (skip <= 0)
+            {
+                return;
+            }
 
-        //            var junk = new byte[align - skip];
+            var junk = new byte[align - skip];
 
-        //            stream.Write(junk, 0, align - skip);
-        //        }
+            stream.Write(junk, 0, align - skip);
+        }
 
         //        public static void WriteBoolean(this Stream stream, bool value)
         //        {

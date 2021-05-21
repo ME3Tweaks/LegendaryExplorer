@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Gammtek.Extensions.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Packages;
@@ -114,10 +116,10 @@ namespace LegendaryExplorerCore.Unreal
 
             var tocFolders = GetTOCableFoldersForGame(game, gameRootOverride);
 
-            foreach(var dir in tocFolders)
+            foreach (var dir in tocFolders)
             {
                 string sfar = Path.Combine(dir, "Default.sfar");
-                
+
                 //This is a sfar - code ported from M3
                 if (dir.EndsWith(".sfar") || (File.Exists(sfar) && new FileInfo(sfar).Length != 32))
                 {
@@ -136,7 +138,10 @@ namespace LegendaryExplorerCore.Unreal
                 else
                 {
                     var tocFileLocation = Path.Combine(dir, "PCConsoleTOC.bin");
-                    File.WriteAllBytes(tocFileLocation, CreateTOCForDirectory(dir).GetBuffer());
+                    CreateTOCForDirectory(dir).WriteToFile(tocFileLocation);
+                    Debug.WriteLine($"{tocFileLocation}-------------------------");
+                    TOCBinFile tbf = new TOCBinFile(tocFileLocation);
+                    tbf.DumpTOC();
                 }
                 var percent = ((float)tocFolders.IndexOf(dir) / tocFolders.Count);
                 percentDoneCallback?.Invoke((int)(percent * 100.0));
@@ -161,7 +166,7 @@ namespace LegendaryExplorerCore.Unreal
                 if (dlcFolderStartSubStrPos > 0)
                 {
                     files = files.Select(x => x.Substring(dlcFolderStartSubStrPos)).ToList();
-                    files = files.Select(x => x.Substring(x.IndexOf('\\') + 1)).ToList(); //remove first slash
+                    files = files.Select(x => x.Substring(x.IndexOf(Path.DirectorySeparatorChar) + 1)).ToList(); //remove first slash
                 }
                 else
                 {
@@ -172,7 +177,7 @@ namespace LegendaryExplorerCore.Unreal
                     }
                 }
 
-                var entries = originalFilesList.Select((t, i) => (files[i], (int) new FileInfo(t).Length)).ToList();
+                var entries = originalFilesList.Select((t, i) => (files[i], (int)new FileInfo(t).Length)).ToList();
 
                 return CreateTOCForEntries(entries);
             }
@@ -189,34 +194,50 @@ namespace LegendaryExplorerCore.Unreal
             if (filesystemInfo.Count != 0)
             {
                 long selfSizePosition = -1;
-                byte[] SHA1 = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
                 MemoryStream fs = MemoryManager.GetMemoryStream();
 
-                fs.WriteInt32(TOCBinFile.TOCMagicNumber);
-                fs.WriteInt32(0x0);
-                fs.WriteInt32(0x1);
-                fs.WriteInt32(0x8);
-                fs.WriteInt32(filesystemInfo.Count);
+                fs.WriteInt32(TOCBinFile.TOCMagicNumber); // Endian check
+                fs.WriteInt32(0x0); // Media Data Count
+                fs.WriteInt32(0x1); // Hash Table Count
+
+                // FTOCHashTableEntry (Only have 1 entry)
+                fs.WriteInt32(0x8); // Offset of first entry from... Beginning of FTOCHashTableEntry?
+                fs.WriteInt32(filesystemInfo.Count); // Number of files in this table
+
                 for (int i = 0; i < filesystemInfo.Count; i++)
                 {
+
+                    // TOCFileEntry - 4 Byte Aligned
                     (string file, int size) entry = filesystemInfo[i];
-                    if (i == filesystemInfo.Count - 1) //Entry Size - is last item?
-                        fs.WriteUInt16(0);
+
+                    // Next Entry Offset
+                    if (i == filesystemInfo.Count - 1) // Last entry has no next offset
+                        fs.WriteAligned(BitConverter.GetBytes((ushort)0), 0, 2, 4);
                     else
-                        fs.WriteUInt16((ushort)(0x1D + entry.file.Length));
-                    fs.WriteUInt16(0); //Flags
-                    if (Path.GetFileName(entry.file).ToLower() != @"pcconsoletoc.bin")
+                        fs.WriteAligned(BitConverter.GetBytes((ushort)entry.file.Length), 0, 2, 4);
+
+                    //nextEntryOffsetPos = fs.Position;
+                    fs.WriteUInt16((ushort)(0x1D + entry.file.Length)); // Next entry start offset
+
+                    // Flags
+                    fs.WriteUInt16(0);
+
+                    // FileSize
+                    if (!Path.GetFileName(entry.file).Equals("PCConsoleTOC.bin", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        fs.WriteInt32(entry.size); //Filesize
+                        fs.WriteInt32(entry.size);
                     }
                     else
                     {
-                        selfSizePosition = fs.Position;
-                        fs.WriteInt32(0); //Filesize
+                        selfSizePosition = fs.Position; // Save self-position so we can rewrite our own file size at the end
+                        fs.WriteInt32(0);
                     }
 
-                    fs.Write(SHA1, 0, 20);
-                    fs.WriteStringLatin1(entry.file);
+                    // SHA1 - Not used by games...
+                    fs.WriteZeros(20);
+                    fs.WriteStringLatin1(entry.file); // Not present in hash table?
+
+                    // Old method
                     //foreach (char c in file)
                     //    fs.WriteByte((byte)c);
                     fs.WriteByte(0);

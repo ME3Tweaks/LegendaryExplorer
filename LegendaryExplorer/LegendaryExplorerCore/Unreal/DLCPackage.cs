@@ -905,9 +905,10 @@ namespace LegendaryExplorerCore.Unreal
             var tocMemoryStream = DecompressEntry(archiveFileIndex);
             TOCBinFile toc = new TOCBinFile(tocMemoryStream);
 
-            int actualTocEntries = toc.Entries.Count;
-            actualTocEntries -= toc.Entries.Count(x => x.name.EndsWith(@"PCConsoleTOC.txt", StringComparison.InvariantCultureIgnoreCase));
-            actualTocEntries -= toc.Entries.Count(x => x.name.EndsWith(@"GlobalPersistentCookerData.upk", StringComparison.InvariantCultureIgnoreCase));
+            var allEntries = toc.GetAllEntries();
+            int actualTocEntries = allEntries.Count;
+            actualTocEntries -= allEntries.Count(x => x.name.EndsWith(@"PCConsoleTOC.txt", StringComparison.InvariantCultureIgnoreCase));
+            actualTocEntries -= allEntries.Count(x => x.name.EndsWith(@"GlobalPersistentCookerData.upk", StringComparison.InvariantCultureIgnoreCase));
             if (actualTocEntries != incomingNewEntries.Count)
             {
                 tocNeedsUpdating = true;
@@ -915,7 +916,7 @@ namespace LegendaryExplorerCore.Unreal
             else
             {
                 //Check sizes to see if all of ours match.
-                foreach (var existingEntry in toc.Entries)
+                foreach (var existingEntry in allEntries)
                 {
                     if (existingEntry.name.EndsWith(@"PCConsoleTOC.txt", StringComparison.InvariantCultureIgnoreCase) || existingEntry.name.EndsWith("GlobalPersistentCookerData.upk", StringComparison.InvariantCultureIgnoreCase)) continue; //These files don't actually exist in SFARs
                     var matchingNewEntry = incomingNewEntries.FirstOrDefault(x => x.filepath.Equals(existingEntry.name, StringComparison.InvariantCultureIgnoreCase));
