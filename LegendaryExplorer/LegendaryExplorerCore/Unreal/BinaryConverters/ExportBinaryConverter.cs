@@ -10,7 +10,6 @@ using static LegendaryExplorerCore.Unreal.BinaryConverters.ObjectBinary;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    //TODO: update for LEX!
     public static class ExportBinaryConverter
     {
         public static ObjectBinary ConvertPostPropBinary(ExportEntry export, MEGame newGame, PropertyCollection newProps)
@@ -65,9 +64,13 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 var ms = new MemoryStream(export.Data);
                 int node = ms.ReadInt32();
-                int stateNode = ms.ReadInt32();
+                int stateNode = 0;
+                if (export.Game != MEGame.UDK)
+                {
+                    stateNode = ms.ReadInt32();
+                }
                 ulong probeMask = ms.ReadUInt64();
-                if (export.Game == MEGame.ME3)
+                if (export.Game >= MEGame.ME3)
                 {
                     ms.SkipInt16();
                 }
@@ -88,9 +91,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
                 using var os = MemoryManager.GetMemoryStream();
                 os.WriteInt32(node);
-                os.WriteInt32(stateNode);
+                if (newGame != MEGame.UDK)
+                {
+                    os.WriteInt32(stateNode);
+                }
                 os.WriteUInt64(probeMask);
-                if (newGame == MEGame.ME3)
+                if (newGame >= MEGame.ME3)
                 {
                     os.WriteUInt16(0);
                 }
@@ -129,11 +135,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             using var os = MemoryManager.GetMemoryStream();
 
-            if (export.Game != MEGame.ME3)
+            if (!export.Game.IsGame3())
             {
                 bin.Skip(16);
             }
-            if (newGame != MEGame.ME3)
+            if (!newGame.IsGame3())
             {
                 os.WriteZeros(16);//includes fileOffset, but that will be set during save
             }
@@ -158,9 +164,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                         break;
                     case StorageTypes.pccLZO:
                     case StorageTypes.pccZlib:
+                    case StorageTypes.pccOodle:
                         texture = bin.ReadToBuffer(compressedSize);
                         if (offsets != null)
                         {
+                            //the caller has transferred this mip, so use the provided data
                             texture = Array.Empty<byte>();
                             fileOffset = offsets[offsetIdx++];
                             compressedSize = offsets[offsetIdx] - fileOffset;
@@ -235,11 +243,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 os.WriteZeros(4 * 8);
             }
 
-            if (export.Game == MEGame.ME3)
+            if (export.Game == MEGame.ME3 || export.Game.IsLEGame())
             {
                 bin.Skip(4);
             }
-            if (newGame == MEGame.ME3)
+            if (newGame == MEGame.ME3 || newGame.IsLEGame())
             {
                 os.WriteInt32(0);
             }

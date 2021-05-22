@@ -69,7 +69,6 @@ namespace LegendaryExplorer.Tools.Meshplorer
 
         private string FileQueuedForLoad;
         private ExportEntry ExportQueuedForFocusing;
-        public MeshRenderer BindableMesh3DViewer => Mesh3DViewer;
 
 
         /// <summary>
@@ -152,6 +151,7 @@ namespace LegendaryExplorer.Tools.Meshplorer
         public ICommand ExportToUDKCommand { get; set; }
         public ICommand ReplaceLODFromUDKCommand { get; set; }
         public ICommand ExportToPSKUModelCommand { get; set; }
+        public ICommand ExportToPSKCommand { get; set; }
         private void LoadCommands()
         {
             OpenFileCommand = new GenericCommand(OpenFile);
@@ -164,12 +164,34 @@ namespace LegendaryExplorer.Tools.Meshplorer
             ReplaceFromUDKCommand = new GenericCommand(ReplaceFromUDK, IsMeshSelected);
             ExportToUDKCommand = new GenericCommand(ExportToUDK, IsMeshSelected);
             ReplaceLODFromUDKCommand = new GenericCommand(ImportLODFromUDK, IsSkeletalMeshSelected);
-            ExportToPSKUModelCommand = new GenericCommand(ExportUsingUModel, IsMeshSelected);
+            ExportToPSKUModelCommand = new GenericCommand(() => Mesh3DViewer.EnsureUModel(), IsMeshSelected);
+            ExportToPSKCommand = new GenericCommand(ExportToPSK, IsSkeletalMeshSelected);
         }
 
-        private void ExportUsingUModel()
+        private void ExportToPSK()
         {
-            Mesh3DViewer.EnsureUModel();
+            var d = new SaveFileDialog { Filter = "PSK|*.psk" };
+            if (d.ShowDialog() == true)
+            {
+                try
+                {
+
+                    switch (ObjectBinary.From(CurrentExport))
+                    {
+                        case SkeletalMesh skelMesh:
+                            PSK.CreateFromSkeletalMesh(skelMesh).ToFile(d.FileName);
+                            break;
+                        default:
+                            MessageBox.Show($"Cannot export a '{CurrentExport.ClassName}' to PSK");
+                            return;
+                    }
+                    MessageBox.Show(this, "Done!");
+                }
+                catch (Exception e)
+                {
+                    new ExceptionHandlerDialog(e).ShowDialog();
+                }
+            }
         }
 
         private void ImportLODFromUDK()

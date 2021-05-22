@@ -247,9 +247,6 @@
     <Compile Update="Tools\Dialogue Editor\LinkEditor.xaml.cs">
       <DependentUpon>LinkEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Tools\Meshplorer\MeshplorerWPF.xaml.cs">
-      <DependentUpon>MeshplorerWPF.xaml</DependentUpon>
-    </Compile>
     <Compile Update="Tools\PlotEditor\CodexMapView.xaml.cs">
       <DependentUpon>CodexMapView.xaml</DependentUpon>
     </Compile>
@@ -276,9 +273,6 @@
     </Compile>
     <Compile Update="Tools\TextureStudio\MasterTextureSelector.xaml.cs">
       <DependentUpon>MasterTextureSelector.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="UserControls\ExportLoaderControls\MeshRendererWPF.xaml.cs">
-      <DependentUpon>MeshRendererWPF.xaml</DependentUpon>
     </Compile>
     <Compile Update="Tools\PathfindingEditor\PathingGraphEditor.cs">
       <SubType>Component</SubType>

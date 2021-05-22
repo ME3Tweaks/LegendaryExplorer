@@ -2381,21 +2381,20 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// The UProperty object from the export's properties that this node represents
         /// </summary>
         public Property Property { get; set; }
+
         /// <summary>
         /// List of children properties that link to this node.
         /// Only Struct and ArrayProperties will have this populated.
         /// </summary>
-        public ObservableCollectionExtended<UPropertyTreeViewEntry> ChildrenProperties { get; set; }
+        public ObservableCollectionExtended<UPropertyTreeViewEntry> ChildrenProperties { get; } = new();
         public UPropertyTreeViewEntry(Property property, string displayName = null)
         {
             Property = property;
             DisplayName = displayName;
-            ChildrenProperties = new ObservableCollectionExtended<UPropertyTreeViewEntry>();
         }
 
         public UPropertyTreeViewEntry()
         {
-            ChildrenProperties = new ObservableCollectionExtended<UPropertyTreeViewEntry>();
         }
 
         private string _editableValue;
