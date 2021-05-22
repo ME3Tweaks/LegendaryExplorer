@@ -7,6 +7,7 @@
              xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
              xmlns:scene3D="clr-namespace:LegendaryExplorer.UserControls.SharedToolControls.Scene3D"
              xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
+             xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
              mc:Ignorable="d" 
              Loaded="MeshRenderer_Loaded"
              d:DesignHeight="450" d:DesignWidth="800"
@@ -42,7 +43,8 @@
                     <TextBlock Text="Background color:" VerticalAlignment="Center" Margin="2,0"/>
                     <xctk:ColorPicker Name="Background_ColorPicker" Width="40" UsingAlphaChannel="False" SelectedColorChanged="BackgroundColorPicker_Changed" Margin="2,0"/>
                     <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="2,0"/>
-                    <Button Command="{Binding UModelExportCommand}"  ToolTip="Export with umodel" Margin="2,0">
+                    <Button Command="{Binding UModelExportCommand}"  ToolTip="Export with umodel" Margin="2,0"
+                            sharedUi:Bindings.VisibilityToEnabled="true">
                         <Image Source="/Resources/Images/umodel.ico" Width="16" RenderOptions.BitmapScalingMode="HighQuality"/>
                     </Button>
                 </StackPanel>

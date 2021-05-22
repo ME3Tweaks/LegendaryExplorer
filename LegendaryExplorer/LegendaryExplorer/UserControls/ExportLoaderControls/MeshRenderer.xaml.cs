@@ -356,12 +356,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public ICommand UModelExportCommand { get; set; }
         private void LoadCommands()
         {
-            UModelExportCommand = new GenericCommand(EnsureUModel, ExportLoaded);
+            UModelExportCommand = new GenericCommand(EnsureUModel, CanExportViaUModel);
         }
 
         public event EventHandler IsBusyChanged;
 
-        private bool ExportLoaded() => CurrentLoadedExport != null;
+        private bool CanExportViaUModel() => CurrentLoadedExport != null && !CurrentLoadedExport.Game.IsLEGame() && (IsStaticMesh || IsSkeletalMesh);
         private void ExportViaUModel()
         {
             BusyText = "Waiting for user input";

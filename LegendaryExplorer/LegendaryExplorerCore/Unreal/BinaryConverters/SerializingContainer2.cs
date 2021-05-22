@@ -106,6 +106,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.ms.Writer.WriteByte(val);
         }
 
+        public static void SerializeConstByte(this SerializingContainer2 sc, byte val)
+        {
+            sc.Serialize(ref val);
+        }
+
         public static void Serialize(this SerializingContainer2 sc, ref string val)
         {
             if (sc.IsLoading)

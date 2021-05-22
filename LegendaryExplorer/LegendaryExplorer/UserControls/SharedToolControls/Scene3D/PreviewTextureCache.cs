@@ -82,7 +82,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         /// <summary>
         /// Stores loaded textures by their full name.
         /// </summary>
-        public readonly List<PreviewTextureEntry> cache = new List<PreviewTextureEntry>();
+        public readonly List<PreviewTextureEntry> cache = new();
 
         /// <summary>
         /// Queues a texture for eventual loading.

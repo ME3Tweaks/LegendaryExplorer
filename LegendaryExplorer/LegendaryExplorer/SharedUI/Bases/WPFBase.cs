@@ -52,6 +52,7 @@ namespace LegendaryExplorer.SharedUI.Bases
             else
             {
                 DataContext = null; //Remove all binding sources
+                Closing -= WPFBase_Closing;
             }
         }
 

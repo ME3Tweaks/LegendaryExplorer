@@ -158,8 +158,8 @@ namespace LegendaryExplorerCore.Unreal
                     for (int boneIdx = 0; boneIdx < numBones; boneIdx++)
                     {
                         AnimTrack animTrack = animSeq.RawAnimationData[boneIdx];
-                        Vector3 posVec = animTrack.Positions.Count > frameIdx ? animTrack.Positions[frameIdx] : animTrack.Positions[animTrack.Positions.Count - 1];
-                        Quaternion rotQuat = animTrack.Rotations.Count > frameIdx ? animTrack.Rotations[frameIdx] : animTrack.Rotations[animTrack.Rotations.Count - 1];
+                        Vector3 posVec = animTrack.Positions.Count > frameIdx ? animTrack.Positions[frameIdx] : animTrack.Positions[^1];
+                        Quaternion rotQuat = animTrack.Rotations.Count > frameIdx ? animTrack.Rotations[frameIdx] : animTrack.Rotations[^1];
                         rotQuat = new Quaternion(rotQuat.X, rotQuat.Y * -1, rotQuat.Z, rotQuat.W  * -1);
                         posVec = new Vector3(posVec.X, posVec.Y * -1, posVec.Z);
                         psa.Keys.Add(new PSAAnimKeys
@@ -256,6 +256,10 @@ namespace LegendaryExplorerCore.Unreal
         }
     }
 
+}
+
+namespace LegendaryExplorerCore.Unreal.BinaryConverters
+{
     public static partial class SCExt
     {
         public static void Serialize(this SerializingContainer2 sc, ref PSA.ChunkHeader h)
@@ -264,7 +268,7 @@ namespace LegendaryExplorerCore.Unreal
             {
                 h = new PSA.ChunkHeader();
             }
-            
+
             sc.SerializeFixedSizeString(ref h.ChunkID, 20);
             sc.Serialize(ref h.Version);
             sc.Serialize(ref h.DataSize);
@@ -320,7 +324,7 @@ namespace LegendaryExplorerCore.Unreal
             sc.Serialize(ref k.Time);
         }
 
-        private static void SerializeFixedSizeString(this SerializingContainer2 sc, ref string s, int length)
+        public static void SerializeFixedSizeString(this SerializingContainer2 sc, ref string s, int length)
         {
             if (sc.IsLoading)
             {

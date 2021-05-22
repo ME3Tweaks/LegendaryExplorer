@@ -57,6 +57,8 @@
                     <MenuItem Header="Replace single LOD from UDK" ToolTip="Replaces a single LOD from UDK (.upk file). Use this if full replacement is wonky"  Command="{Binding ReplaceLODFromUDKCommand}"/>
                     <MenuItem Header="Export Mesh to UDK" Command="{Binding ExportToUDKCommand}"/>
                     <MenuItem Header="Convert ME3 Skeletal Mesh to ME3 Static Mesh" Command="{Binding ConvertToStaticMeshCommand}"/>
+                    <MenuItem Header="Export Mesh to PSK with UModel" Command="{Binding ExportToPSKUModelCommand}"/>
+                    <MenuItem Header="Export Mesh to PSK (Experimental)" Command="{Binding ExportToPSKCommand}"/>
                 </MenuItem>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">
@@ -176,11 +178,13 @@
                                         <Image Source="/Resources/Images/udk.ico" Width="16"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
-                                <MenuItem Header="Export Mesh to PSK with UModel" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ExportToPSKUModelCommand}">
+                                <MenuItem Header="Export Mesh to PSK with UModel" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ExportToPSKUModelCommand}"
+                                          sharedUi:Bindings.VisibilityToEnabled="True">
                                     <MenuItem.Icon>
                                         <Image Source="/Resources/Images/umodel.ico" Width="16"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
+                                <MenuItem Header="Export Mesh to PSK (Experimental)" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ExportToPSKCommand}"/>
                                 <MenuItem Header="Convert ME3 Skeletal Mesh to ME3 Static Mesh" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ConvertToStaticMeshCommand}"/>
                             </ContextMenu>
                             <Style TargetType="{x:Type ListBoxItem}">
