@@ -324,8 +324,9 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
             if (files.TryGetValue(Path.GetFileName(Pcc.FilePath), out var matchingVersion))
             {
+                TryGetSelectedEntry(out var entry);
                 PackageEditorWindow pe = new PackageEditorWindow();
-                pe.LoadFile(matchingVersion);
+                pe.LoadFile(matchingVersion, goToEntry: entry?.InstancedFullPath);
                 pe.Show();
             }
             else
@@ -2283,17 +2284,18 @@ namespace LegendaryExplorer.Tools.PackageEditor
             RecentsController.InitRecentControl(Toolname, Recents_MenuItem, fileName => LoadFile(fileName));
         }
 
-        public void LoadFile(string s, int goToIndex = 0)
+        public void LoadFile(string s, int goToIndex = 0, string goToEntry = null)
         {
 
             Debug.WriteLine(Directory.GetCurrentDirectory());
-
-
-
             try
             {
                 preloadPackage(Path.GetFileName(s), new FileInfo(s).Length);
                 LoadMEPackage(s);
+                if (goToIndex == 0 && !string.IsNullOrWhiteSpace(goToEntry))
+                {
+                    goToIndex = Pcc.FindEntry(goToEntry)?.UIndex ?? 0;
+                }
                 postloadPackage(Path.GetFileName(s), s, goToIndex);
 
                 RecentsController.AddRecent(s, false, Pcc?.Game);
