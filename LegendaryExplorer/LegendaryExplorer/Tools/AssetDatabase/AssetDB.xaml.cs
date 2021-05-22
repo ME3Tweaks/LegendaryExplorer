@@ -2508,7 +2508,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     OverallProgressValue++; //Concurrency 
                     CurrentDumpingItems.Remove(x);
                 });
-            }, new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = Environment.ProcessorCount });
+            }, new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = Math.Clamp(Environment.ProcessorCount, 1, 4) });
 
             AllDumpingItems = new List<ClassScanSingleFileTask>();
             CurrentDumpingItems.ClearEx();

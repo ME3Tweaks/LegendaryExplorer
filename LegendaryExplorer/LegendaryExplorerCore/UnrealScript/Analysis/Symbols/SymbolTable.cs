@@ -87,7 +87,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             table.AddType(ByteType);
             table.AddType(StringType);
             table.AddType(StringRefType);
-            if (game is MEGame.ME3)
+            if (game >= MEGame.ME3)
             {
                 table.AddType(BioMask4Type);
             }
@@ -95,7 +95,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
 
             
             Class packageType = null;
-            if (game is MEGame.ME3)
+            if (game >= MEGame.ME3)
             {
                 packageType = new Class("Package", objectClass, objectClass, intrinsicClassFlags);
                 table.AddType(packageType);
