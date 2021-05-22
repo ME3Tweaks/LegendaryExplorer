@@ -781,6 +781,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             SearchStatusText = "Hex not found";
         }
 
+        public static void VerifyWwisePathsExist()
+        {
+            if (string.IsNullOrEmpty(Settings.Wwise_3773Path) && string.IsNullOrEmpty(Settings.Wwise_7110Path))
+            {
+                SetWwisePathDialog swpd = new ();
+                swpd.ShowDialog();
+            }
+        }
+
         public static bool isHexString(string s)
         {
             const string hexChars = "0123456789abcdefABCDEF";
@@ -891,6 +900,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 if (sourceFile == null)
                 {
+                    VerifyWwisePathsExist();
                     OpenFileDialog d = new OpenFileDialog { Filter = "Wave PCM|*.wav" };
                     bool? res = d.ShowDialog();
                     if (res.HasValue && res.Value)
@@ -975,6 +985,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (sourceFile == null)
             {
+                VerifyWwisePathsExist();
                 OpenFileDialog d = new OpenFileDialog { Filter = "Wave PCM|*.wav" };
                 if (d.ShowDialog() == true)
                 {

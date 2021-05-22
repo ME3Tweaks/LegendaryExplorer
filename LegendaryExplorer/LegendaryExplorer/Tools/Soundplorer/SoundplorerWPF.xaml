@@ -115,7 +115,7 @@
                             Audio replacement information:
                             <Italic>
                             <LineBreak/>
-                            ME1: No authoring tools (ISACT) are available
+                            ME1 and LE1: No authoring tools (ISACT) are available
                             <LineBreak/>
                             ME2: The correct version of Wwise is not available (ME2 predates public Wwise)
                             <LineBreak/>
@@ -123,8 +123,15 @@
                             <Hyperlink NavigateUri="https://1drv.ms/u/s!AorirBfl09VNrC9eh-_sOj_eqLIa?e=8lzC4j" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
                                 <Run Text="the 64 bit version of Wwise 2010.3.3 (Build 3773)"/>
                             </Hyperlink>
+                            <LineBreak/>
+                            LE2 and LE3: Requires 
+                            <Hyperlink NavigateUri="https://www.audiokinetic.com/download/" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
+                                <Run Text="the 64 bit version of Wwise 2019.1.6 (Build 7110)"/>
+                            </Hyperlink>. You must create a Wwise account and install through the Wwise launcher.
                             </Italic>
-
+                            <LineBreak/>
+                            <LineBreak/>
+                            You will need to set the path to each WwiseCLI.exe file from the dialog in the Wwise menu in order to replace audio
                             <LineBreak/>
                             <LineBreak/>
 

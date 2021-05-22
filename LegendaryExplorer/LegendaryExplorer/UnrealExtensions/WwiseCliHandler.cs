@@ -197,5 +197,14 @@ namespace LegendaryExplorer.UnrealExtensions
 
             return false;
         }
+
+        internal static async void DeleteTemplateProjectDirectory()
+        {
+            var templateDirectory = Path.Combine(Path.GetTempPath(), "TemplateProject");
+            if (Directory.Exists(templateDirectory))
+            {
+                await TryDeleteDirectory(templateDirectory);
+            }
+        }
     }
 }

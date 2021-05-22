@@ -21,16 +21,21 @@ namespace LegendaryExplorer.Dialogs
         };
         public WwiseConversionSettingsPackage ChosenSettings; 
 
-        public SoundReplaceOptionsDialog() : base()
+        public SoundReplaceOptionsDialog(bool showUpdateEvents = true) : base()
         {
             DataContext = this;
             SampleRates.AddRange(AcceptedSampleRates);
             LoadCommands();
             InitializeComponent();
+            if (!showUpdateEvents)
+            {
+                UpdateEvents_Text.Visibility = Visibility.Collapsed;
+                UpdateEvents_CheckBox.Visibility = Visibility.Collapsed;
+            }
             SampleRate_Combobox.SelectedIndex = 0;
         }
 
-        public SoundReplaceOptionsDialog(Window w) : this()
+        public SoundReplaceOptionsDialog(Window w, bool showUpdateEvents = true) : this(showUpdateEvents)
         {
             Owner = w;
         }

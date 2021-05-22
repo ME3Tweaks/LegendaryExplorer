@@ -866,10 +866,10 @@ namespace LegendaryExplorer.Tools.Soundplorer
         /// <param name="e"></param>
         private async void ConvertFolderToWwise_Clicked(object sender, RoutedEventArgs e)
         {
-            if (Directory.Exists(Path.Combine(Path.GetTempPath(), "TemplateProject")))
-            {
-                await Soundpanel.TryDeleteDirectory(Path.Combine(Path.GetTempPath(), "TemplateProject"));
-            }
+            WwiseCliHandler.DeleteTemplateProjectDirectory();
+
+            // Shows wwise path dialog if no paths are set
+            Soundpanel.VerifyWwisePathsExist();
 
             var dlg = new CommonOpenFileDialog("Select folder containing .wav files") { IsFolderPicker = true };
             if (dlg.ShowDialog(this) != CommonFileDialogResult.Ok) { return; }
@@ -881,7 +881,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
                 return;
             }
 
-            SoundReplaceOptionsDialog srod = new ();
+            SoundReplaceOptionsDialog srod = new (showUpdateEvents: false);
             if (!srod.ShowDialog().Value) return;
 
             //Verify Wwise is installed with the correct version
