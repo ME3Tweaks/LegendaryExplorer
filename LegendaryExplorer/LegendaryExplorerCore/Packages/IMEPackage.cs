@@ -50,6 +50,22 @@ namespace LegendaryExplorerCore.Packages
         /// <returns></returns>
         public static bool IsGame3(this MEGame game) => game is MEGame.ME3 or MEGame.LE3;
 
+        public static MEGame ToOTVersion(this MEGame game)
+        {
+            if (game == MEGame.LE1) return MEGame.ME1;
+            if (game == MEGame.LE2) return MEGame.ME2;
+            if (game == MEGame.LE3) return MEGame.ME3;
+            return game;
+        }
+
+        public static MEGame ToLEVersion(this MEGame game)
+        {
+            if (game == MEGame.ME1) return MEGame.LE1;
+            if (game == MEGame.ME2) return MEGame.LE2;
+            if (game == MEGame.ME3) return MEGame.LE3;
+            return game;
+        }
+
         public static string CookedDirName(this MEGame game) => game switch
         {
             MEGame.ME1 => "CookedPC",

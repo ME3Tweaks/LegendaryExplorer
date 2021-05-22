@@ -194,6 +194,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
         #region Commands
         public ICommand ForceReloadPackageCommand { get; set; }
         public ICommand ComparePackagesCommand { get; set; }
+        public ICommand OpenLEVersionCommand { get; set; }
+        public ICommand OpenOTVersionCommand { get; set; }
         public ICommand CompareToUnmoddedCommand { get; set; }
         public ICommand ExportAllDataCommand { get; set; }
         public ICommand ExportBinaryDataCommand { get; set; }
@@ -238,7 +240,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         public ICommand FindReferencesCommand { get; set; }
         public ICommand OpenExportInCommand { get; set; }
         public ICommand CompactShaderCacheCommand { get; set; }
-        public ICommand GoToArchetypecommand { get; set; }
+        public ICommand GoToArchetypeCommand { get; set; }
         public ICommand ReplaceNamesCommand { get; set; }
         public ICommand NavigateToEntryCommand { get; set; }
         public ICommand ResolveImportCommand { get; set; }
@@ -281,7 +283,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             FindEntryViaTagCommand = new GenericCommand(FindEntryViaTag, PackageIsLoaded);
             PopoutCurrentViewCommand = new GenericCommand(PopoutCurrentView, ExportIsSelected);
             CompactShaderCacheCommand = new GenericCommand(CompactShaderCache, HasShaderCache);
-            GoToArchetypecommand = new GenericCommand(GoToArchetype, CanGoToArchetype);
+            GoToArchetypeCommand = new GenericCommand(GoToArchetype, CanGoToArchetype);
             ReplaceNamesCommand = new GenericCommand(SearchReplaceNames, PackageIsLoaded);
             ReindexDuplicateIndexesCommand = new GenericCommand(ReindexDuplicateIndexes, PackageIsLoaded);
             ReplaceReferenceLinksCommand = new GenericCommand(ReplaceReferenceLinks, PackageIsLoaded);
@@ -307,7 +309,29 @@ namespace LegendaryExplorer.Tools.PackageEditor
             ExtractToPackageCommand = new GenericCommand(ExtractEntryToNewPackage, ExportIsSelected);
 
             RestoreExportCommand = new GenericCommand(RestoreExportData, ExportIsSelected);
+            OpenLEVersionCommand = new GenericCommand(()=> OpenOtherVersion(true), IsLoadedPackageOT);
+            OpenOTVersionCommand = new GenericCommand(()=> OpenOtherVersion(false), IsLoadedPackageLE);
+        }
 
+        private bool IsLoadedPackageOT() => Pcc != null && Pcc.Game.IsOTGame();
+        private bool IsLoadedPackageLE() => Pcc != null && Pcc.Game.IsLEGame();
+
+        private void OpenOtherVersion(bool openLegendaryVersion)
+        {
+            var files = MELoadedFiles.GetFilesLoadedInGame(openLegendaryVersion
+                ? Pcc.Game.ToLEVersion()
+                : Pcc.Game.ToOTVersion());
+
+            if (files.TryGetValue(Path.GetFileName(Pcc.FilePath), out var matchingVersion))
+            {
+                PackageEditorWindow pe = new PackageEditorWindow();
+                pe.LoadFile(matchingVersion);
+                pe.Show();
+            }
+            else
+            {
+                MessageBox.Show($"Could not find {Path.GetFileName(Pcc.FilePath)} in the other version of this game.");
+            }
         }
 
         private void ResolveImportsTreeView()

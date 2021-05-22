@@ -64,7 +64,7 @@
                 <MenuItem Header="Multi-clone entry" ToolTip="Clone only this entry multiple times" Command="{Binding MultiCloneCommand}"/>
                 <MenuItem Header="Multi-clone Tree" ToolTip="Clone this entry and all children multiple times" Command="{Binding MultiCloneTreeCommand}"/>
             </MenuItem>
-            <MenuItem Header="Go to Archetype" ToolTip="Go to this object's archetype" Command="{Binding GoToArchetypecommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+            <MenuItem Header="Go to Archetype" ToolTip="Go to this object's archetype" Command="{Binding GoToArchetypeCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Package utilities" Command="{Binding PackageExportIsSelectedCommand}" SharedUI:Bindings.VisibilityToEnabled="True">
                 <MenuItem Header="Generate new GUID for package" ToolTip="Generates a new GUID for this package. Only use this if you really know what you're doing." Command="{Binding CreateNewPackageGUIDCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                 <MenuItem Header="Set as filename package" ToolTip="Sets the name of this export to the same as the file." Command="{Binding SetPackageAsFilenamePackageCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
@@ -148,6 +148,8 @@
                     <MenuItem Header="Package file header info" ToolTip="View information stored in package header" Command="{Binding PackageHeaderViewerCommand}"/>
                     <MenuItem Header="Compare with another package" ToolTip="Compare another version of this package to see what exports and imports have changed" Command="{Binding ComparePackagesCommand}"/>
                     <MenuItem Header="Compare with unmodded" ToolTip="Compare with the (hopefully) unmodded version of this package to see what exports and imports have changed" Command="{Binding CompareToUnmoddedCommand}"/>
+                    <MenuItem Header="Open LE version of file" ToolTip="Opens the Legendary Edition version of this file, if it exists." Command="{Binding OpenLEVersionCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+                    <MenuItem Header="Open OT version of file" ToolTip="Opens the Origianl Triology version of this file, if it exists." Command="{Binding OpenOTVersionCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                     <MenuItem Header="Find all instances of class in package" Command="{Binding FindAllClassInstancesCommand}" InputGestureText="CTRL+Shift+F"/>
 
                     <MenuItem Header="Pop out current tab into new standalone window" ToolTip="Opens the panel on the right side in a new window" Command="{Binding PopoutCurrentViewCommand}" InputGestureText="CTRL+P"/>
