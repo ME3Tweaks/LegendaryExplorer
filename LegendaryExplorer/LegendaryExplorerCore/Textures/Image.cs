@@ -31,6 +31,7 @@ using BCnEncoder.Decoder;
 using BCnEncoder.Encoder;
 using BCnEncoder.ImageSharp;
 using BCnEncoder.Shared;
+using DirectXTexNet;
 using LegendaryExplorerCore.Helpers;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Advanced;
@@ -52,7 +53,7 @@ namespace LegendaryExplorerCore.Textures
 
     public enum PixelFormat
     {
-        Unknown, DXT1, DXT3, DXT5, ATI2, V8U8, ARGB, RGB, G8, BC7
+        Unknown, DXT1, DXT3, DXT5, ATI2, V8U8, ARGB, RGB, G8, BC7, BC5
     }
 
     [DebuggerDisplay("MEM MipMap {width}x{height}")]
@@ -100,7 +101,7 @@ namespace LegendaryExplorerCore.Textures
             data = src;
         }
 
-        static public int getBufferSize(int w, int h, PixelFormat format)
+        public static int getBufferSize(int w, int h, PixelFormat format)
         {
             switch (format)
             {
@@ -113,6 +114,7 @@ namespace LegendaryExplorerCore.Textures
                 case PixelFormat.DXT3:
                 case PixelFormat.DXT5:
                 case PixelFormat.ATI2:
+                case PixelFormat.BC5:
                 case PixelFormat.G8:
                 case PixelFormat.BC7:
                     return w * h;
@@ -285,10 +287,16 @@ namespace LegendaryExplorerCore.Textures
                         tmpData = Image.decompressMipmap(format, src, w, h);
                         break;
                     }
+                case PixelFormat.BC5:
                 case PixelFormat.ATI2:
                     if (w < 4 || h < 4)
                         return new byte[w * h * 4];
                     tmpData = Image.decompressMipmap(format, src, w, h);
+                    if (format == PixelFormat.BC5)
+                    {
+                        // Swap R and G
+                        SwapChannelsARGB(tmpData, 1, 2);
+                    }
                     break;
                 case PixelFormat.ARGB: tmpData = src; break;
                 case PixelFormat.RGB: tmpData = RGBToARGB(src, w, h); break;
@@ -313,12 +321,39 @@ namespace LegendaryExplorerCore.Textures
             var bytes = SLImageToRawBytes(image);
             // Swap red and blue channels. 
             // idk if there is faster way to do this
+            return SwapChannelsARGB(bytes, 0, 2);
+        }
+
+        /// <summary>
+        /// Swaps two color bytes in an A R G B (not specificaly in this order) byte array
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <param name="c1">Channel index 1</param>
+        /// <param name="c2">Channel index 2</param>
+        /// <returns></returns>
+        private static byte[] SwapChannelsARGB(byte[] bytes, int c1, int c2)
+        {
             for (int i = 0; i < bytes.Length / 4; i++)
             {
-                var b1 = bytes[i * 4 + 0];
-                bytes[i * 4 + 0] = bytes[i * 4 + 2];
-                bytes[i * 4 + 2] = b1;
+                var b1 = bytes[i * 4 + c1];
+                bytes[i * 4 + c1] = bytes[i * 4 + c2];
+                bytes[i * 4 + c2] = b1;
             }
+
+            return bytes;
+        }
+
+        private static byte[] ShiftChannels(byte[] bytes, int numRight)
+        {
+            for (int i = 0; i < bytes.Length / 4; i++)
+            {
+                var b1 = bytes[i * 4 + 3];
+                bytes[i * 4 + 1] = bytes[i * 4];
+                bytes[i * 4 + 2] = bytes[i * 4 + 1];
+                bytes[i * 4 + 3] = bytes[i * 4 + 2];
+                bytes[i * 4] = b1;
+            }
+
             return bytes;
         }
 
@@ -526,7 +561,12 @@ namespace LegendaryExplorerCore.Textures
                 case PixelFormat.DXT5:
                 case PixelFormat.ATI2:
                     tempData = convertRawToARGB(src, w, h, srcFormat);
-                    if (dstFormat == PixelFormat.ATI2 && (w < 4 || h < 4))
+                    if (dstFormat is PixelFormat.BC5)
+                    {
+                        // Swap R and G
+                        //ShiftChannels(src, 1);
+                    }
+                    if (dstFormat is PixelFormat.ATI2 or PixelFormat.BC5 && (w < 4 || h < 4))
                         tempData = new byte[MipMap.getBufferSize(w, h, dstFormat)];
                     else if (w < 4 || h < 4)
                     {
@@ -553,8 +593,11 @@ namespace LegendaryExplorerCore.Textures
                     tempData = convertRawToARGB(src, w, h, srcFormat);
                     tempData = ARGBtoG8(tempData, w, h);
                     break;
+                case PixelFormat.BC5:
+                    tempData = convertRawToBC(src, w, h, dstFormat);
+                    break;
                 case PixelFormat.BC7:
-                    tempData = convertRawToBC7(src, w, h, srcFormat);
+                    tempData = convertRawToBC(src, w, h, dstFormat);
                     break;
                 default:
                     throw new Exception("not supported format");
@@ -563,13 +606,17 @@ namespace LegendaryExplorerCore.Textures
             return tempData;
         }
 
-        private static byte[] convertRawToBC7(byte[] imageBytes, int w, int h, PixelFormat srcFormat)
+        private static byte[] convertRawToBC(byte[] imageBytes, int w, int h, PixelFormat dstFormat)
         {
+#if WINDOWS
+            // todo: Use native method on windows
+#endif
+
             var i = SixLabors.ImageSharp.Image.LoadPixelData<Rgba32>(imageBytes, w, h);
             BcEncoder encoder = new BcEncoder();
             encoder.OutputOptions.GenerateMipMaps = false;
             encoder.OutputOptions.Quality = CompressionQuality.Balanced;
-            encoder.OutputOptions.Format = CompressionFormat.Bc7;
+            encoder.OutputOptions.Format = dstFormat == PixelFormat.BC5 ? CompressionFormat.Bc5 : CompressionFormat.Bc7;
             return encoder.EncodeToRawBytes(i, 0, out var mipW, out var mipH);
         }
 
@@ -614,7 +661,7 @@ namespace LegendaryExplorerCore.Textures
                 width = origW;
                 height = origH;
 
-                if (pixelFormat == PixelFormat.ATI2 && (width < 4 || height < 4))
+                if (pixelFormat is PixelFormat.ATI2 or PixelFormat.BC5 && (width < 4 || height < 4))
                 {
                     mipMaps.Add(new MipMap(width, height, pixelFormat));
                     continue;
@@ -659,8 +706,9 @@ namespace LegendaryExplorerCore.Textures
                 case "PF_BC3":
                     return PixelFormat.DXT5;
                 case "PF_NormalMap_HQ":
-                case "PF_BC5":
                     return PixelFormat.ATI2;
+                case "PF_BC5":
+                    return PixelFormat.BC5;
                 case "PF_V8U8":
                     return PixelFormat.V8U8;
                 case "PF_A8R8G8B8":
@@ -696,6 +744,10 @@ namespace LegendaryExplorerCore.Textures
                     return "PF_R8G8B8";
                 case PixelFormat.G8:
                     return "PF_G8";
+                case PixelFormat.BC7:
+                    return "PF_BC7";
+                case PixelFormat.BC5:
+                    return "PF_BC5";
                 default:
                     throw new Exception("invalid texture format");
             }

@@ -128,6 +128,7 @@
   <ItemGroup>
     <PackageReference Include="BCnEncoder.Net" Version="2.0.3" />
     <PackageReference Include="BCnEncoder.Net.ImageSharp" Version="1.0.4" />
+    <PackageReference Include="DirectXTexNet" Version="1.0.2" />
     <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.0.0" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
     <PackageReference Include="MSTest.TestFramework" Version="2.1.2" Condition="$(Configuration.Contains('Azure'))" />

@@ -591,7 +591,7 @@ namespace LegendaryExplorerCore.Textures
                             uint[] block = Codecs.Codecs.CompressRGBABlock(srcBlock);
                             writeBlock4X4BPP8(block, dst, w, x, y);
                         }
-                        else if (dstFormat == PixelFormat.ATI2)
+                        else if (dstFormat is PixelFormat.ATI2 or PixelFormat.BC5)
                         {
                             byte[] srcBlockX = new byte[Codecs.Codecs.BLOCK_SIZE_4X4BPP8];
                             byte[] srcBlockY = new byte[Codecs.Codecs.BLOCK_SIZE_4X4BPP8];
@@ -657,7 +657,7 @@ namespace LegendaryExplorerCore.Textures
                             blockDst = Codecs.Codecs.DecompressRGBABlock(block);
                             writeBlock4X4ARGB(blockDst, dst, w, x, y);
                         }
-                        else if (srcFormat == PixelFormat.ATI2)
+                        else if (srcFormat is PixelFormat.ATI2 or PixelFormat.BC5)
                         {
                             block = readBlock4X4BPP8(src, w, x, y);
                             uint[] blockX = new uint[2];
