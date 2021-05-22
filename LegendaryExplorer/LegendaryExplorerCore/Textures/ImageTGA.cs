@@ -23,7 +23,7 @@ using System;
 using System.IO;
 using LegendaryExplorerCore.Helpers;
 
-namespace MassEffectModder.Images
+namespace LegendaryExplorerCore.Textures
 {
     public partial class Image
     {

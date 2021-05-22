@@ -115,7 +115,6 @@ namespace LegendaryExplorerCore.Unreal
                 else if (type == StorageTypes.extZlib || type == StorageTypes.pccZlib)
                     block.compressedBuffer = Zlib.Compress(block.uncompressedBuffer);
                 else if (type == StorageTypes.extOodle || type == StorageTypes.pccOodle)
-                    // Todo: This is placeholder. No idea if this is correct
                     block.compressedBuffer = OodleHelper.Compress(block.uncompressedBuffer, block.uncompressedBuffer.Length, OodleHelper.OodleFormat.Leviathan, OodleHelper.OodleCompressionLevel.Normal);
                 else
                     throw new Exception("Compression type not expected!");

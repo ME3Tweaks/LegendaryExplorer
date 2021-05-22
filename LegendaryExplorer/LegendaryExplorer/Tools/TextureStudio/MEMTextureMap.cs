@@ -5,7 +5,7 @@ using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Compression;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
-using MassEffectModder.Images;
+using LegendaryExplorerCore.Textures;
 
 namespace LegendaryExplorer.Tools.TextureStudio
 {

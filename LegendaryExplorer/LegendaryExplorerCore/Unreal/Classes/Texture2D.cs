@@ -146,7 +146,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
         public byte[] SerializeNewData()
         {
             using MemoryStream ms = MemoryManager.GetMemoryStream();
-            if (Export.FileRef.Game != MEGame.ME3)
+            if (!Export.FileRef.Game.IsGame3()) // Is this rig
             {
                 for (int i = 0; i < 12; i++)
                     ms.WriteByte(0); //12 0s
@@ -161,9 +161,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 ms.WriteInt32(mip.uncompressedSize);
                 ms.WriteInt32(mip.compressedSize);
                 ms.WriteInt32(mip.externalOffset);
-                if (mip.storageType == StorageTypes.pccUnc ||
-                    mip.storageType == StorageTypes.pccLZO ||
-                    mip.storageType == StorageTypes.pccZlib)
+                if (mip.storageType is StorageTypes.pccUnc or StorageTypes.pccLZO or StorageTypes.pccZlib or StorageTypes.pccOodle)
                 {
                     ms.Write(mip.Mip, 0, mip.Mip.Length);
                 }
@@ -175,7 +173,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             {
                 ms.WriteInt32(0);
             }
-            if (Export.Game != MEGame.ME1)
+            if (Export.Game > MEGame.ME1) // Is this right for LE?
             {
                 ms.WriteGuid(TextureGuid);
             }
@@ -183,7 +181,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             {
                 ms.WriteZeros(4 * 8);
             }
-            if (Export.Game == MEGame.ME3)
+            if (Export.Game == MEGame.ME3 || Export.Game.IsLEGame())
             {
                 ms.WriteInt32(0);
                 if (Export.ClassName == "LightMapTexture2D")

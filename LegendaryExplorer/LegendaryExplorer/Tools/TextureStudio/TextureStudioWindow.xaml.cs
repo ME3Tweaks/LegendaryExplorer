@@ -7,7 +7,6 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using LegendaryExplorer.Dialogs;
-using MassEffectModder.Images;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Controls;
@@ -17,11 +16,13 @@ using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Textures;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Classes;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using Image = LegendaryExplorerCore.Textures.Image;
 
 namespace LegendaryExplorer.Tools.TextureStudio
 {

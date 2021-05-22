@@ -20,22 +20,26 @@
  */
 
 using System;
-using System.IO;
 using System.Collections.Generic;
-using SixLabors.ImageSharp.Advanced;
-using System.Drawing;
-using System.Runtime.InteropServices;
 using System.Diagnostics;
+using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
+using BCnEncoder.Decoder;
+using BCnEncoder.Encoder;
+using BCnEncoder.ImageSharp;
+using BCnEncoder.Shared;
 using LegendaryExplorerCore.Helpers;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Advanced;
+using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Formats.Png;
-using SixLabors.ImageSharp.Formats;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats.Bmp;
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace MassEffectModder.Images
+namespace LegendaryExplorerCore.Textures
 {
     // For passing to another project.
     public enum GamePlatform
@@ -48,7 +52,7 @@ namespace MassEffectModder.Images
 
     public enum PixelFormat
     {
-        Unknown, DXT1, DXT3, DXT5, ATI2, V8U8, ARGB, RGB, G8
+        Unknown, DXT1, DXT3, DXT5, ATI2, V8U8, ARGB, RGB, G8, BC7
     }
 
     [DebuggerDisplay("MEM MipMap {width}x{height}")]
@@ -83,9 +87,7 @@ namespace MassEffectModder.Images
             width = origWidth = w;
             height = origHeight = h;
 
-            if (format == PixelFormat.DXT1 ||
-                format == PixelFormat.DXT3 ||
-                format == PixelFormat.DXT5)
+            if (format is PixelFormat.DXT1 or PixelFormat.DXT3 or PixelFormat.DXT5 or PixelFormat.BC7)
             {
                 if (width < 4)
                     width = 4;
@@ -112,6 +114,7 @@ namespace MassEffectModder.Images
                 case PixelFormat.DXT5:
                 case PixelFormat.ATI2:
                 case PixelFormat.G8:
+                case PixelFormat.BC7:
                     return w * h;
                 case PixelFormat.DXT1:
                     return (w * h) / 2;
@@ -221,7 +224,7 @@ namespace MassEffectModder.Images
                             ? new PngDecoder()
                             : new JpegDecoder();
 
-                        var image = decoder.Decode(Configuration.Default, stream);
+                        var image = decoder.Decode<Rgba32>(Configuration.Default, stream);
 
                         if (!IsPowerOfTwo(image.Width) || !IsPowerOfTwo(image.Height))
                             throw new TextureSizeNotPowerOf2Exception();
@@ -241,7 +244,7 @@ namespace MassEffectModder.Images
                         //var pixels = new byte[srcBitmap.PixelWidth * srcBitmap.PixelHeight * 4];
                         //decoder.CopyPixels(pixels, srcBitmap.PixelWidth * 4, 0);
 
-                        var pixels = ToArray(image, SixLabors.ImageSharp.Formats.Bmp.BmpFormat.Instance);
+                        var pixels = SLImageToRawBytes(image);
 
                         pixelFormat = PixelFormat.ARGB;
                         MipMap mipmap = new MipMap(pixels, image.Width, image.Height, PixelFormat.ARGB);
@@ -255,12 +258,10 @@ namespace MassEffectModder.Images
 
         public static byte[] ToArray(SixLabors.ImageSharp.Image image, IImageFormat imageFormat)
         {
-            using (var memoryStream = new MemoryStream())
-            {
-                var imageEncoder = image.GetConfiguration().ImageFormatsManager.FindEncoder(imageFormat);
-                image.Save(memoryStream, imageEncoder);
-                return memoryStream.ToArray();
-            }
+            using var memoryStream = new MemoryStream();
+            var imageEncoder = image.GetConfiguration().ImageFormatsManager.FindEncoder(imageFormat);
+            image.Save(memoryStream, imageEncoder);
+            return memoryStream.ToArray();
         }
 
         public static byte[] convertRawToARGB(byte[] src, int w, int h, PixelFormat format, bool clearAlpha = false)
@@ -281,18 +282,19 @@ namespace MassEffectModder.Images
                                 h = 4;
                             return new byte[w * h * 4];
                         }
-                        tmpData = decompressMipmap(format, src, w, h);
+                        tmpData = Image.decompressMipmap(format, src, w, h);
                         break;
                     }
                 case PixelFormat.ATI2:
                     if (w < 4 || h < 4)
                         return new byte[w * h * 4];
-                    tmpData = decompressMipmap(format, src, w, h);
+                    tmpData = Image.decompressMipmap(format, src, w, h);
                     break;
                 case PixelFormat.ARGB: tmpData = src; break;
                 case PixelFormat.RGB: tmpData = RGBToARGB(src, w, h); break;
                 case PixelFormat.V8U8: tmpData = V8U8ToARGB(src, w, h); break;
                 case PixelFormat.G8: tmpData = G8ToARGB(src, w, h); break;
+                case PixelFormat.BC7: tmpData = BC7ToARGB(src, w, h); break;
                 default:
                     throw new Exception("invalid texture format " + format);
             }
@@ -301,6 +303,33 @@ namespace MassEffectModder.Images
                 clearAlphaFromARGB(tmpData, w, h);
 
             return tmpData;
+        }
+
+        private static byte[] BC7ToARGB(byte[] src, int w, int h)
+        {
+            BcDecoder decoder = new BcDecoder();
+            using Image<Rgba32> image = decoder.DecodeRawToImageRgba32(new MemoryStream(src), w, h, CompressionFormat.Bc7);
+
+            var bytes = SLImageToRawBytes(image);
+            // Swap red and blue channels. 
+            // idk if there is faster way to do this
+            for (int i = 0; i < bytes.Length / 4; i++)
+            {
+                var b1 = bytes[i * 4 + 0];
+                bytes[i * 4 + 0] = bytes[i * 4 + 2];
+                bytes[i * 4 + 2] = b1;
+            }
+            return bytes;
+        }
+
+        /// <summary>
+        /// Converts a SixLabors Image to raw bytes
+        /// </summary>
+        /// <param name="image"></param>
+        /// <returns></returns>
+        private static byte[] SLImageToRawBytes(Image<Rgba32> image)
+        {
+            return MemoryMarshal.AsBytes(image.GetPixelMemoryGroup().ToArray()[0].Span).ToArray();
         }
 
         public static byte[] convertRawToRGB(byte[] src, int w, int h, PixelFormat format)
@@ -480,13 +509,13 @@ namespace MassEffectModder.Images
         {
             byte[] tmpData = convertRawToARGB(src, w, h, format);
             var ms = new MemoryStream();
-            var im = SixLabors.ImageSharp.Image.LoadPixelData<Bgra32>(tmpData, w,h);
+            var im = SixLabors.ImageSharp.Image.LoadPixelData<Bgra32>(tmpData, w, h);
             im.SaveAsPng(ms);
             ms.Position = 0;
             return ms;
         }
 
-        static private byte[] convertToFormat(PixelFormat srcFormat, byte[] src, int w, int h, PixelFormat dstFormat, bool dxt1HasAlpha = false, byte dxt1Threshold = 128)
+        private static byte[] convertToFormat(PixelFormat srcFormat, byte[] src, int w, int h, PixelFormat dstFormat, bool dxt1HasAlpha = false, byte dxt1Threshold = 128)
         {
             byte[] tempData;
 
@@ -508,7 +537,7 @@ namespace MassEffectModder.Images
                         tempData = new byte[MipMap.getBufferSize(w, h, dstFormat)];
                     }
                     else
-                        tempData = compressMipmap(dstFormat, tempData, w, h, dxt1HasAlpha, dxt1Threshold);
+                        tempData = Image.compressMipmap(dstFormat, tempData, w, h, dxt1HasAlpha, dxt1Threshold);
                     break;
                 case PixelFormat.ARGB:
                     tempData = convertRawToARGB(src, w, h, srcFormat);
@@ -524,11 +553,24 @@ namespace MassEffectModder.Images
                     tempData = convertRawToARGB(src, w, h, srcFormat);
                     tempData = ARGBtoG8(tempData, w, h);
                     break;
+                case PixelFormat.BC7:
+                    tempData = convertRawToBC7(src, w, h, srcFormat);
+                    break;
                 default:
                     throw new Exception("not supported format");
             }
 
             return tempData;
+        }
+
+        private static byte[] convertRawToBC7(byte[] imageBytes, int w, int h, PixelFormat srcFormat)
+        {
+            var i = SixLabors.ImageSharp.Image.LoadPixelData<Rgba32>(imageBytes, w, h);
+            BcEncoder encoder = new BcEncoder();
+            encoder.OutputOptions.GenerateMipMaps = false;
+            encoder.OutputOptions.Quality = CompressionQuality.Balanced;
+            encoder.OutputOptions.Format = CompressionFormat.Bc7;
+            return encoder.EncodeToRawBytes(i, 0, out var mipW, out var mipH);
         }
 
         public void correctMips(PixelFormat dstFormat, bool dxt1HasAlpha = false, byte dxt1Threshold = 128)
@@ -578,9 +620,7 @@ namespace MassEffectModder.Images
                     continue;
                 }
 
-                if (pixelFormat == PixelFormat.DXT1 ||
-                    pixelFormat == PixelFormat.DXT3 ||
-                    pixelFormat == PixelFormat.DXT5)
+                if (pixelFormat is PixelFormat.DXT1 or PixelFormat.DXT3 or PixelFormat.DXT5)
                 {
                     if (width < 4 || height < 4)
                     {
@@ -610,13 +650,16 @@ namespace MassEffectModder.Images
         {
             switch (format)
             {
+                case "PF_BC1":
                 case "PF_DXT1":
                     return PixelFormat.DXT1;
                 case "PF_DXT3":
                     return PixelFormat.DXT3;
                 case "PF_DXT5":
+                case "PF_BC3":
                     return PixelFormat.DXT5;
                 case "PF_NormalMap_HQ":
+                case "PF_BC5":
                     return PixelFormat.ATI2;
                 case "PF_V8U8":
                     return PixelFormat.V8U8;
@@ -626,6 +669,8 @@ namespace MassEffectModder.Images
                     return PixelFormat.RGB;
                 case "PF_G8":
                     return PixelFormat.G8;
+                case "PF_BC7":
+                    return PixelFormat.BC7;
                 default:
                     throw new Exception("invalid texture format");
             }

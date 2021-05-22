@@ -22,7 +22,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace CompressonatorCodecs
+namespace LegendaryExplorerCore.Textures.Codecs
 {
     public static class Codecs
     {

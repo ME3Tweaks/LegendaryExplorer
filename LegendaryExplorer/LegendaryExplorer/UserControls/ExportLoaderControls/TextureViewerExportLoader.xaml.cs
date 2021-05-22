@@ -14,15 +14,15 @@ using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorer.Tools.TFCCompactor;
-using MassEffectModder.Images;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Textures;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Classes;
 using Microsoft.Win32;
-using Image = MassEffectModder.Images.Image;
+using Image = LegendaryExplorerCore.Textures.Image;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -166,7 +166,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 catch (TextureSizeNotPowerOf2Exception)
                 {
                     MessageBox.Show("The width and height of a texture must both be a power of 2\n" +
-                                    "(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096)", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    "(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192 (LE only))", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
                 catch (Exception e)
@@ -225,7 +225,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 if (forcedTFCName == PACKAGE_STORED_STRING) forcedTFCName = null;
                 replaceTextures(image, props, selectDDS.FileName, forcedTFCName);
 
-                // ME2R: Dump to disk
+                // MER: Dump to disk
                 //var binName = Path.Combine(Directory.GetParent(selectDDS.FileName).FullName, Path.GetFileNameWithoutExtension(selectDDS.FileName) + ".bin");
                 //File.WriteAllBytes(binName, CurrentLoadedExport.GetBinaryData());
             }

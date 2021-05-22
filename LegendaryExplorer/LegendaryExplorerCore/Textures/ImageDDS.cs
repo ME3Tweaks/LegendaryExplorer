@@ -24,7 +24,7 @@ using System.IO;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.Helpers;
 
-namespace MassEffectModder.Images
+namespace LegendaryExplorerCore.Textures
 {
     public partial class Image
     {
@@ -241,7 +241,7 @@ namespace MassEffectModder.Images
             }
         }
 
-        public Image convertToARGB()
+        public LegendaryExplorerCore.Textures.Image convertToARGB()
         {
             for (int i = 0; i < mipMaps.Count; i++)
             {
@@ -253,7 +253,7 @@ namespace MassEffectModder.Images
             return this;
         }
 
-        public Image convertToRGB()
+        public LegendaryExplorerCore.Textures.Image convertToRGB()
         {
             for (int i = 0; i < mipMaps.Count; i++)
             {
@@ -542,9 +542,9 @@ namespace MassEffectModder.Images
         {
             if (src.Length != w * h * 4)
                 throw new Exception("not ARGB buffer input");
-            int blockSize = CompressonatorCodecs.Codecs.BLOCK_SIZE_4X4BPP8;
+            int blockSize = Codecs.Codecs.BLOCK_SIZE_4X4BPP8;
             if (dstFormat == PixelFormat.DXT1)
-                blockSize = CompressonatorCodecs.Codecs.BLOCK_SIZE_4X4BPP4;
+                blockSize = Codecs.Codecs.BLOCK_SIZE_4X4BPP4;
 
             byte[] dst = new byte[blockSize * (w / 4) * (h / 4)];
             int cores = Environment.ProcessorCount;
@@ -576,28 +576,28 @@ namespace MassEffectModder.Images
                         if (dstFormat == PixelFormat.DXT1)
                         {
                             srcBlock = readBlock4X4ARGB(src, w, x, y);
-                            uint[] block = CompressonatorCodecs.Codecs.CompressRGBBlock(srcBlock, true, useDXT1Alpha, DXT1Threshold);
+                            uint[] block = Codecs.Codecs.CompressRGBBlock(srcBlock, true, useDXT1Alpha, DXT1Threshold);
                             writeBlock4X4BPP4(block, dst, w, x, y);
                         }
                         else if (dstFormat == PixelFormat.DXT3)
                         {
                             srcBlock = readBlock4X4ARGB(src, w, x, y);
-                            uint[] block = CompressonatorCodecs.Codecs.CompressRGBABlock_ExplicitAlpha(srcBlock);
+                            uint[] block = Codecs.Codecs.CompressRGBABlock_ExplicitAlpha(srcBlock);
                             writeBlock4X4BPP8(block, dst, w, x, y);
                         }
                         else if (dstFormat == PixelFormat.DXT5)
                         {
                             srcBlock = readBlock4X4ARGB(src, w, x, y);
-                            uint[] block = CompressonatorCodecs.Codecs.CompressRGBABlock(srcBlock);
+                            uint[] block = Codecs.Codecs.CompressRGBABlock(srcBlock);
                             writeBlock4X4BPP8(block, dst, w, x, y);
                         }
                         else if (dstFormat == PixelFormat.ATI2)
                         {
-                            byte[] srcBlockX = new byte[CompressonatorCodecs.Codecs.BLOCK_SIZE_4X4BPP8];
-                            byte[] srcBlockY = new byte[CompressonatorCodecs.Codecs.BLOCK_SIZE_4X4BPP8];
+                            byte[] srcBlockX = new byte[Codecs.Codecs.BLOCK_SIZE_4X4BPP8];
+                            byte[] srcBlockY = new byte[Codecs.Codecs.BLOCK_SIZE_4X4BPP8];
                             readBlock4X4ATI2(src, w, srcBlockX, srcBlockY, x, y);
-                            uint[] blockX = CompressonatorCodecs.Codecs.CompressAlphaBlock(srcBlockX);
-                            uint[] blockY = CompressonatorCodecs.Codecs.CompressAlphaBlock(srcBlockY);
+                            uint[] blockX = Codecs.Codecs.CompressAlphaBlock(srcBlockX);
+                            uint[] blockY = Codecs.Codecs.CompressAlphaBlock(srcBlockY);
                             writeBlock4X4ATI2(blockX, blockY, dst, w, x, y);
                         }
                         else
@@ -642,19 +642,19 @@ namespace MassEffectModder.Images
                         if (srcFormat == PixelFormat.DXT1)
                         {
                             block = readBlock4X4BPP4(src, w, x, y);
-                            blockDst = CompressonatorCodecs.Codecs.DecompressRGBBlock(block, true);
+                            blockDst = Codecs.Codecs.DecompressRGBBlock(block, true);
                             writeBlock4X4ARGB(blockDst, dst, w, x, y);
                         }
                         else if (srcFormat == PixelFormat.DXT3)
                         {
                             block = readBlock4X4BPP8(src, w, x, y);
-                            blockDst = CompressonatorCodecs.Codecs.DecompressRGBABlock_ExplicitAlpha(block);
+                            blockDst = Codecs.Codecs.DecompressRGBABlock_ExplicitAlpha(block);
                             writeBlock4X4ARGB(blockDst, dst, w, x, y);
                         }
                         else if (srcFormat == PixelFormat.DXT5)
                         {
                             block = readBlock4X4BPP8(src, w, x, y);
-                            blockDst = CompressonatorCodecs.Codecs.DecompressRGBABlock(block);
+                            blockDst = Codecs.Codecs.DecompressRGBABlock(block);
                             writeBlock4X4ARGB(blockDst, dst, w, x, y);
                         }
                         else if (srcFormat == PixelFormat.ATI2)
@@ -664,8 +664,8 @@ namespace MassEffectModder.Images
                             uint[] blockY = new uint[2];
                             Array.Copy(block, 2, blockX, 0, 2);
                             Array.Copy(block, 0, blockY, 0, 2);
-                            byte[] blockDstR = CompressonatorCodecs.Codecs.DecompressAlphaBlock(blockX);
-                            byte[] blockDstG = CompressonatorCodecs.Codecs.DecompressAlphaBlock(blockY);
+                            byte[] blockDstR = Codecs.Codecs.DecompressAlphaBlock(blockX);
+                            byte[] blockDstG = Codecs.Codecs.DecompressAlphaBlock(blockY);
                             writeBlock4X4ARGBATI2(blockDstR, blockDstG, dst, w, x, y);
                         }
                         else
