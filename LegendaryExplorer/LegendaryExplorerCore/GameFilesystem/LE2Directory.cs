@@ -77,8 +77,8 @@ namespace LegendaryExplorerCore.GameFilesystem
             "bink2w64.dll",
             "dbdata.dll",
             "oo2core_8_win64.dll",
-            "PhyxXCooking64.dll",
-            "PhyxXCore64.dll",
+            "PhysXCooking64.dll",
+            "PhysXCore64.dll",
         });
 
         public static string BioWareDocumentsPath => LEDirectory.BioWareDocumentsPath;
