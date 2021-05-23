@@ -5,20 +5,23 @@ using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reactive.Concurrency;
+using System.Reactive.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Dialogs.Splash;
 using LegendaryExplorer.Startup;
-using SingleInstanceCore;
 
 namespace LegendaryExplorer
 {
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application, ISingleInstance
+    public partial class App : Application
     {
         #region Application-wide variables
         public static Visibility IsDebugVisibility => IsDebug ? Visibility.Visible : Visibility.Collapsed;
@@ -30,6 +33,7 @@ namespace LegendaryExplorer
 #endif
 
         public static int CoreCount;
+
         #endregion
 
 
@@ -43,17 +47,23 @@ namespace LegendaryExplorer
             // TODO: UPDATER (using JPATCH?)
 
             // Boot single instance
-            bool isFirstInstance = this.InitializeAsFirstInstance("LegendaryExplorer");
-            if (isFirstInstance)
+            var singleInstance = new SingleInstance.SingleInstance("LegendaryExplorer");
+            Current.Exit += (o, args) => singleInstance.Dispose();
+
+            if(singleInstance.IsFirstInstance)
             {
                 // Application bootup is handled in AppBoot class
+                singleInstance.ArgumentsReceived.Subscribe(OnInstanceInvoked);
+                singleInstance.ListenForArgumentsFromSuccessiveInstances();
                 AppBoot.Startup(this);
             }
             else
             {
                 // Arguments will be passed through on OnInstanceInvoked().
+                singleInstance.PassArgumentsToFirstInstance(e.Args);
                 Shutdown(0);
             }
+
 
         }
 
@@ -74,13 +84,6 @@ namespace LegendaryExplorer
         public void OnInstanceInvoked(string[] args)
         {
             AppBoot.HandleDuplicateInstanceArgs(args);
-        }
-
-        private void Application_Exit(object sender, ExitEventArgs e)
-        {
-            // Clean up single instance
-            System.Threading.Thread.Sleep(500); //TODO: remove this hacky workaround once the bug in SingleInstanceCore gets fixed
-            SingleInstance.Cleanup();
         }
     }
 }
