@@ -32,9 +32,10 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// </summary>
         /// <param name="game"></param>
         /// <returns></returns>
-        public static CaseInsensitiveDictionary<string> GetFilesLoadedInGame(MEGame game, bool forceReload = false, bool includeTFCs = false, bool includeAFCs = false)
+        public static CaseInsensitiveDictionary<string> GetFilesLoadedInGame(MEGame game, bool forceReload = false, bool includeTFCs = false, bool includeAFCs = false, string gameRootOverride = null)
         {
-            if (!forceReload)
+            //Override: Do not use cached items
+            if (!forceReload && gameRootOverride == null)
             {
                 if (game == MEGame.ME1 && cachedME1LoadedFiles != null) return cachedME1LoadedFiles;
                 if (game == MEGame.ME2 && cachedME2LoadedFiles != null)
@@ -80,10 +81,10 @@ namespace LegendaryExplorerCore.GameFilesystem
                 return loadedFiles;
             }
 
-            var bgPath = MEDirectories.GetBioGamePath(game);
+            var bgPath = MEDirectories.GetBioGamePath(game, gameRootOverride);
             if (bgPath != null)
             {
-                foreach (string directory in GetEnabledDLCFolders(game).OrderBy(dir => GetMountPriority(dir, game)).Prepend(bgPath))
+                foreach (string directory in GetEnabledDLCFolders(game, gameRootOverride).OrderBy(dir => GetMountPriority(dir, game)).Prepend(bgPath))
                 {
                     foreach (string filePath in GetCookedFiles(game, directory, includeTFCs, includeAFCs))
                     {
@@ -93,12 +94,16 @@ namespace LegendaryExplorerCore.GameFilesystem
                 }
             }
 
-            if (game == MEGame.ME1) cachedME1LoadedFiles = loadedFiles;
-            else if (game == MEGame.ME2) cachedME2LoadedFiles = loadedFiles;
-            else if (game == MEGame.ME3) cachedME3LoadedFiles = loadedFiles;
-            else if (game == MEGame.LE1) cachedLE1LoadedFiles = loadedFiles;
-            else if (game == MEGame.LE2) cachedLE2LoadedFiles = loadedFiles;
-            else if (game == MEGame.LE3) cachedLE3LoadedFiles = loadedFiles;
+            if (gameRootOverride == null)
+            {
+                // Cache results
+                if (game == MEGame.ME1) cachedME1LoadedFiles = loadedFiles;
+                else if (game == MEGame.ME2) cachedME2LoadedFiles = loadedFiles;
+                else if (game == MEGame.ME3) cachedME3LoadedFiles = loadedFiles;
+                else if (game == MEGame.LE1) cachedLE1LoadedFiles = loadedFiles;
+                else if (game == MEGame.LE2) cachedLE2LoadedFiles = loadedFiles;
+                else if (game == MEGame.LE3) cachedLE3LoadedFiles = loadedFiles;
+            }
 
             return loadedFiles;
         }

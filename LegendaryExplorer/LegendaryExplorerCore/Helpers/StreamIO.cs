@@ -222,6 +222,7 @@ namespace LegendaryExplorerCore.Helpers
         }
 
         // DO NOT REMOVE ASCII CODE
+        #region ASCII SUPPORT
         public static string ReadStringASCII(this Stream stream, int count)
         {
             byte[] buffer = stream.ReadToBuffer(count);
@@ -246,6 +247,27 @@ namespace LegendaryExplorerCore.Helpers
             return stream.ReadStringASCII(count).Trim('\0');
         }
 
+        public static void WriteStringASCII(this Stream stream, string str)
+        {
+            stream.Write(Encoding.ASCII.GetBytes(str), 0, Encoding.ASCII.GetByteCount(str));
+        }
+
+        public static void WriteStringASCIINull(this Stream stream, string str)
+        {
+            stream.WriteStringASCII(str + "\0");
+        }
+
+        public static void WriteStringASCII(this EndianWriter stream, string str)
+        {
+            stream.Write(Encoding.ASCII.GetBytes(str), 0, Encoding.ASCII.GetByteCount(str));
+        }
+
+        public static void WriteStringASCIINull(this EndianWriter stream, string str)
+        {
+            stream.WriteStringASCII(str + "\0");
+        }
+
+        #endregion
 
         public static void WriteStringUnicode(this Stream stream, string str)
         {
