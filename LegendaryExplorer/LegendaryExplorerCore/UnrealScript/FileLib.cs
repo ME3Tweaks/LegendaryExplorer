@@ -138,6 +138,9 @@ namespace LegendaryExplorerCore.UnrealScript
                 MEGame.ME3 => BaseLib.ME3BaseLib,
                 MEGame.ME2 => BaseLib.ME2BaseLib,
                 MEGame.ME1 => BaseLib.ME1BaseLib,
+                MEGame.LE3 => BaseLib.LE3BaseLib,
+                MEGame.LE2 => BaseLib.LE2BaseLib,
+                MEGame.LE1 => BaseLib.LE1BaseLib,
                 _ => throw new ArgumentOutOfRangeException(nameof(pcc), $"Cannot compile scripts for this game version: {pcc.Game}")
             };
         }

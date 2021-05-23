@@ -66,7 +66,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 {
                     validator.VisitVarDecl(local, false);
                     validator2.VisitVarDecl(local, false);
-                    hasStructDefaults |= ((local.VarType as StaticArrayType)?.ElementType ?? local.VarType) is Struct s && (game is MEGame.ME3 ? s.DefaultProperties.Statements.Any() : isNotInState);
+                    hasStructDefaults |= ((local.VarType as StaticArrayType)?.ElementType ?? local.VarType) is Struct s && (game.IsGame3()  ? s.DefaultProperties.Statements.Any() : isNotInState);
                 }
             }
             if (hasStructDefaults)
@@ -1581,7 +1581,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
             else if (Matches(SORT, EF.Function))
             {
-                if (Game <= MEGame.ME2)
+                if (Game <= MEGame.ME2) //TODO: verify sort exists for LE1/2
                 {
                     throw ParseError($"'{SORT}' is not a valid dynamic array function in {Game}", CurrentPosition);
                 }
@@ -1865,7 +1865,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     ExpressionScopes.Push(ExpressionScopes.Last());
 
                     Expression valueArg = CompositeRef() ?? throw ParseError("Expected argument to dynamic array iterator!", CurrentPosition);
-                    if (!NodeUtils.TypeEqual(valueArg.ResolveType(), dynArrType.ElementType) && (Game is MEGame.ME3 || 
+                    if (!NodeUtils.TypeEqual(valueArg.ResolveType(), dynArrType.ElementType) && (Game.IsGame3() || 
                         //documentation says this shouldn't be allowed, but bioware code does this in ME2
                         valueArg.ResolveType() is Class argClass && dynArrType.ElementType is Class dynArrClass && !dynArrClass.SameAsOrSubClassOf(argClass.Name)))
                     {

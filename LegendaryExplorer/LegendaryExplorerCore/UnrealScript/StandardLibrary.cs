@@ -30,7 +30,7 @@ namespace LegendaryExplorerCore.UnrealScript
             //TODO: Check if these are correct for LE
             MEGame.LE3 => new[] { "Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc" },
             MEGame.LE2 => new[] { "Core.pcc", "Engine.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "PlotManagerMap.pcc", "SFXGame.pcc", "Startup_INT.pcc" },
-            MEGame.LE1 => new[] { "Core.pcc", "Engine.pcc", "GFxUI.pcc", "PlotManagerMap.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc" },
+            MEGame.LE1 => new[] { "Core.pcc", "Engine.pcc", "GFxUI.pcc", "PlotManagerMap.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc", "SFXStrategicAI.pcc" },
             _ => throw new ArgumentOutOfRangeException(nameof(game))
         };
 
@@ -41,6 +41,9 @@ namespace LegendaryExplorerCore.UnrealScript
             public static BaseLib ME3BaseLib { get; } = new(MEGame.ME3);
             public static BaseLib ME2BaseLib { get; } = new(MEGame.ME2);
             public static BaseLib ME1BaseLib { get; } = new(MEGame.ME1);
+            public static BaseLib LE3BaseLib { get; } = new(MEGame.LE3);
+            public static BaseLib LE2BaseLib { get; } = new(MEGame.LE2);
+            public static BaseLib LE1BaseLib { get; } = new(MEGame.LE1);
 
             #endregion
 
@@ -190,8 +193,8 @@ namespace LegendaryExplorerCore.UnrealScript
 
                 switch (fileName)
                 {
-                    case "Core" when pcc.Game is MEGame.ME3:
-                        symbols.InitializeME3Operators();
+                    case "Core" when pcc.Game.IsGame3():
+                        symbols.InitializeME3LE3Operators();
                         break;
                     case "Engine":
                         symbols.ValidateIntrinsics();

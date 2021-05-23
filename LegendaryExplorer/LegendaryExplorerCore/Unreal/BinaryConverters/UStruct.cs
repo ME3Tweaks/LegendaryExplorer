@@ -31,12 +31,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref Line);
                 sc.Serialize(ref TextPos);
             }
-            else if (sc.Game is MEGame.LE1 or MEGame.LE2)
-            {
-                sc.Serialize(ref Line);
-            }
 
-            if (sc.Game is MEGame.ME3 or MEGame.LE3 || sc.Pcc.Platform == MEPackage.GamePlatform.PS3)
+            if (sc.Game is MEGame.ME3 || sc.Game.IsLEGame() || sc.Pcc.Platform == MEPackage.GamePlatform.PS3)
             {
                 sc.Serialize(ref ScriptBytecodeSize);
             }
@@ -45,7 +41,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 ScriptStorageSize = ScriptBytes.Length;
             }
             sc.Serialize(ref ScriptStorageSize);
-            if (sc.Game is MEGame.ME1 or MEGame.ME2 or MEGame.LE1 or MEGame.LE2)
+            if (sc.Game is MEGame.ME1 or MEGame.ME2 )
             {
                 ScriptBytecodeSize = ScriptStorageSize;
             }

@@ -16,6 +16,7 @@ using System.Windows.Forms.Integration;
 using System.Windows.Threading;
 using LegendaryExplorer.Dialogs.Splash;
 using LegendaryExplorer.DialogueEditor;
+using LegendaryExplorer.GameInterop;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.Misc.Telemetry;
@@ -102,9 +103,7 @@ namespace LegendaryExplorer.Startup
                     Debug.WriteLine("Unable to determine core count from WMI, defaulting to 2");
                 }
 
-
-                // TODO: IMPLEMENT IN LEX
-                //GameController.InitializeMessageHook(mainWindow);
+                
 
 #if DEBUG
                 //StandardLibrary.InitializeStandardLib();
@@ -115,6 +114,8 @@ namespace LegendaryExplorer.Startup
                 app.ShutdownMode = ShutdownMode.OnMainWindowClose;
                 var mainWindow = new MainWindow();
                 mainWindow.Show();
+
+                GameController.InitializeMessageHook(mainWindow);
 
                 // If you get any of the arguments "wrong", this command will not be invoked
                 cliHandler.InvokeAsync(Environment.GetCommandLineArgs());

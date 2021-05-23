@@ -414,7 +414,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         private JumpPlaceholder EmitConditionalJump(Expression condition)
         {
             JumpPlaceholder jump;
-            if (Game is MEGame.ME3 && condition is InOpReference inOp && inOp.LeftOperand.ResolveType()?.PropertyType == EPropertyType.Object
+            if (Game.IsGame3() && condition is InOpReference inOp && inOp.LeftOperand.ResolveType()?.PropertyType == EPropertyType.Object
                                                                       && inOp.LeftOperand.GetType() == typeof(SymbolReference) && inOp.RightOperand is NoneLiteral
                                                                       && (inOp.Operator.OperatorKeyword == "==" || inOp.Operator.OperatorKeyword == "!="))
             {
@@ -424,7 +424,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 WriteByte((byte)(inOp.Operator.OperatorKeyword == "!=" ? 1 : 0));
                 jump = WriteJumpPlaceholder(JumpType.Conditional);
             }
-            else if (Game is MEGame.ME3 && condition is PreOpReference preOp && preOp.Operator.OperatorKeyword == "!"
+            else if (Game.IsGame3() && condition is PreOpReference preOp && preOp.Operator.OperatorKeyword == "!"
                                                                              && preOp.Operand.GetType() == typeof(SymbolReference) && preOp.Operand.ResolveType() == SymbolTable.BoolType)
             {
                 SymbolReference symRef = (SymbolReference)preOp.Operand;
@@ -433,7 +433,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 WriteByte(0);
                 jump = WriteJumpPlaceholder(JumpType.Conditional);
             }
-            else if (Game is MEGame.ME3 && condition is SymbolReference sr && sr.GetType() == typeof(SymbolReference) && sr.ResolveType() == SymbolTable.BoolType)
+            else if (Game.IsGame3() && condition is SymbolReference sr && sr.GetType() == typeof(SymbolReference) && sr.ResolveType() == SymbolTable.BoolType)
             {
                 WriteOpCode(sr.Node.Outer is Function ? OpCodes.OptIfLocal : OpCodes.OptIfInstance);
                 WriteObjectRef(ResolveSymbol(sr.Node));
@@ -688,7 +688,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 WriteOpCode(OpCodes.FinalFunction);
                 WriteObjectRef(ResolveFunction(func));
             }
-            else if (Game <= MEGame.ME2 || node.IsCalledOnInterface || func.Outer is State)
+            else if (!Game.IsGame3() || node.IsCalledOnInterface || func.Outer is State)
             {
                 WriteOpCode(OpCodes.VirtualFunction);
                 WriteName(func.Name);
@@ -873,7 +873,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 {
                     WriteOpCode(OpCodes.LocalOutVariable);
                 }
-                else if (varDecl.IsStaticArray || Game <= MEGame.ME2)
+                else if (varDecl.IsStaticArray || !Game.IsGame3())
                 {
                     WriteOpCode(OpCodes.LocalVariable);
                 }
@@ -901,7 +901,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
             else
             {
-                if (varDecl.IsStaticArray || Game <= MEGame.ME2)
+                if (varDecl.IsStaticArray || !Game.IsGame3())
                 {
                     WriteOpCode(OpCodes.InstanceVariable);
                 }

@@ -24,9 +24,9 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             ExportEntry uClassExport = uClass.Export;
             IMEPackage pcc = uClassExport.FileRef;
 
-            VariableType parent = new VariableType(pcc.GetEntry(uClass.SuperClass)?.ObjectName.Instanced ?? "object");
+            var parent = new VariableType(pcc.GetEntry(uClass.SuperClass)?.ObjectName.Instanced ?? "object");
 
-            VariableType outer = new VariableType(pcc.GetEntry(uClass.OuterClass)?.ObjectName.Instanced ?? parent.Name);
+            var outer = new VariableType(pcc.GetEntry(uClass.OuterClass)?.ObjectName.Instanced ?? parent.Name);
 
             // TODO: components
 
@@ -109,7 +109,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
 
             var virtFuncLookup = new CaseInsensitiveDictionary<ushort>();
-            if (pcc.Game is MEGame.ME3)
+            if (pcc.Game.IsGame3())
             {
                 for (ushort i = 0; i < uClass.FullFunctionsList.Length; i++)
                 {
@@ -512,7 +512,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 FilePath = pcc.FilePath,
                 UIndex = obj.Export.UIndex,
             };
-            if (obj.Export.Game <= MEGame.ME2)
+            if (!obj.Export.Game.IsGame3())
             {
                 func.OperatorPrecedence = obj.OperatorPrecedence;
                 func.FriendlyName = obj.FriendlyName;

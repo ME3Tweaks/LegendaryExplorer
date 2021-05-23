@@ -531,7 +531,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     return Error("Error in function parameters.", node.StartPos, node.EndPos);
 
 
-                if (node.FriendlyName is not null //true in ME2 and ME1
+                if (node.FriendlyName is not null //true in ME1, ME2, LE1, and LE2
                  && node.IsOperator)
                 {
                     if (node.Flags.Has(FunctionFlags.PreOperator))

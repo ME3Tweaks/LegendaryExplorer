@@ -46,7 +46,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
         private Stack<ushort> ForEachScopes; // For tracking ForEach etc endpoints
 
-        private bool isInContextExpression = false; // For super lookups
+        private bool isInContextExpression; // For super lookups
 
         private bool CurrentIs(OpCodes val)
         {
@@ -58,7 +58,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
         {
             var index = ReadInt32();
 
-            //in ME3, script object references have 4 extra 0 bytes 
+            //in ME3 and LE, script object references have 4 extra 0 bytes 
             if (Game >= MEGame.ME3)
             {
                 var remaining = DataContainer.ScriptStorageSize - (Position - _totalPadding);
@@ -86,7 +86,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             ReturnType = returnType;
             FileLib = lib;
             Game = dataContainer.Export.Game;
-            extNativeIndex = (byte) (Game is MEGame.ME3 ? 0x70 : 0x60);
+            extNativeIndex = (byte) (Game.IsGame3() ? 0x70 : 0x60);
         }
 
         public CodeBody Decompile()
@@ -226,7 +226,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
             //a void return at the end of a function is a bytecode implementation detail, get rid of it.
             //This will also get rid of returnnothings, so loop to make sure we get both
-            while (statements.Count > 0 && statements.Last() is ReturnStatement ret && ret.Value is null)
+            while (statements.Count > 0 && statements.Last() is ReturnStatement {Value: null})
             {
                 statements.RemoveAt(statements.Count - 1);
             }

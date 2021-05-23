@@ -20,7 +20,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         {
             Pcc = pcc;
             Game = pcc.Game;
-            extNativeIndex = (byte) (Game is MEGame.ME3 ? 0x70 : 0x60);
+            extNativeIndex = (byte) (Game.IsGame3() ? 0x70 : 0x60);
         }
 
         public byte[] GetByteCode() => bytecode.ToArray();

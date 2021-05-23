@@ -531,7 +531,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     if (Consume(TokenType.Comma) == null && CurrentTokenType != TokenType.RightParenth) throw ParseError("Unexpected parameter content!", CurrentPosition);
                 }
 
-                if (Game is MEGame.ME3 && hasOptionalParams)
+                if (Game >= MEGame.ME3 && hasOptionalParams)
                 {
                     flags |= FunctionFlags.HasOptionalParms; //TODO: does this flag exist in ME1/ME2?
                 }

@@ -95,7 +95,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 case (byte)OpCodes.Self:
                     PopByte();
                     StartPositions.Pop();
-                    return new SymbolReference(null, SELF, null, null); // TODO: solve better
+                    return new SymbolReference(null, SELF); // TODO: solve better
 
                 // Skip(numBytes)
                 case (byte)OpCodes.Skip: // handles skips in operator arguments
@@ -313,7 +313,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
         {
             var obj = ReadObject();
             if (obj == null)
-                return null; // ERROR
+                return new SymbolReference(null, "ERRORNULL"); // ERROR
 
             StartPositions.Pop();
             ASTNode node = null;
@@ -389,14 +389,14 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             isInContextExpression = false;
 
             //testing code TODO: remove when done testing
-            if (false)//Game <= MEGame.ME2)
-            {
-                if (right is not PrimitiveCast && propType is not (0 or 1 or 4 or 8 or 12 or 0x24))
-                {
-                    string message = $"proptype: {propType} for expression of type {right.GetType()}";
-                    Debugger.Log(0, "", $"{message}\n");
-                }
-            }
+            //if (false)//Game <= MEGame.ME2)
+            //{
+            //    if (right is not PrimitiveCast && propType is not (0 or 1 or 4 or 8 or 12 or 0x24))
+            //    {
+            //        string message = $"proptype: {propType} for expression of type {right.GetType()}";
+            //        Debugger.Log(0, "", $"{message}\n");
+            //    }
+            //}
 
             StartPositions.Pop();
             switch (right)

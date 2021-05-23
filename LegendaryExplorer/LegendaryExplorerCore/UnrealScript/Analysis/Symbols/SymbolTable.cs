@@ -234,11 +234,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
 
         }
 
-        private bool me3operatorsInitialized;
+        private bool me3le3operatorsInitialized;
         //must be called AFTER Core.pcc has been parsed and validated, and BEFORE parsing any CodeBody!
-        public void InitializeME3Operators()
+        public void InitializeME3LE3Operators()
         {
-            if (me3operatorsInitialized)
+            if (me3le3operatorsInitialized)
             {
                 return;
             }
@@ -469,7 +469,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
 
 
             Operators.InFixOperatorSymbols.AddRange(Operators.InfixOperators.Keys);
-            me3operatorsInitialized = true;
+            me3le3operatorsInitialized = true;
         }
 
         private readonly List<Class> intrinsicClasses = new();

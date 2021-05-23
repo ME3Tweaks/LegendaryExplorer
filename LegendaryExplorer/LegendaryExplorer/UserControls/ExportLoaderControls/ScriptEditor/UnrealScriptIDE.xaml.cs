@@ -74,7 +74,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
         }
 
         public override bool CanParse(ExportEntry exportEntry) =>
-            exportEntry.Game <= MEGame.ME3 && exportEntry.FileRef.Platform == MEPackage.GamePlatform.PC && (exportEntry.ClassName switch
+            exportEntry.Game != MEGame.UDK && exportEntry.FileRef.Platform == MEPackage.GamePlatform.PC && (exportEntry.ClassName switch
             {
                 "Class" => true,
                 "State" => true,

@@ -160,7 +160,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     var expr = DecompileExpression();
                     if (expr != null)
                     {
-                        var statement = new ExpressionOnlyStatement(expr, null, null);
+                        var statement = new ExpressionOnlyStatement(expr);
                         StatementLocations.Add(StartPositions.Pop(), statement);
                         return statement;
                     }
@@ -202,7 +202,8 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 StatementLocations.Add(StartPositions.Pop(), returnNothingStatement);
                 return returnNothingStatement;
             }
-            else if(CurrentIs(OpCodes.Nothing))
+
+            if(CurrentIs(OpCodes.Nothing))
             {
                 PopByte();
             }
@@ -234,7 +235,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             if (isDynArray)
             {
                 Expression dynArrVar = DecompileExpression();
-                bool hasIndex = Convert.ToBoolean((byte) ReadByte());
+                bool hasIndex = Convert.ToBoolean(ReadByte());
                 Expression dynArrIndex = DecompileExpression();
                 iteratorFunc = new DynArrayIterator(iteratorFunc, dynArrVar, dynArrIndex);
             }
@@ -400,15 +401,11 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             }
             else
             {
-                var statement = new BreakStatement(null, null);
+                var statement = new BreakStatement();
                 StatementLocations.Add(StartPositions.Pop(), statement);
                 return statement;
             }
         }
-
-        #endregion
-
-        #region Unsupported Decompilers
 
         #endregion
     }

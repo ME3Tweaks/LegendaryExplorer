@@ -183,7 +183,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         }
         public static void ScanStuff(PackageEditorWindow pewpf)
         {
-            var game = MEGame.ME2;
+            var game = MEGame.LE3;
             var filePaths = MELoadedFiles.GetOfficialFiles(game);//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME2));//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME1));
             //var filePaths = MELoadedFiles.GetAllFiles(game);
             /*"Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc" */
@@ -219,8 +219,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     //ScanLevel(filePath);
                     //if (findClass(filePath, "ShaderCache", true)) break;
                     //findClassesWithBinary(filePath);
-                    await ScanScripts2(filePath);
-                    //RecompileAllFunctions(filePath);
+                    //await ScanScripts2(filePath);
+                    await RecompileAllFunctions(filePath);
                     //if (interestingExports.Count > 0)
                     //{
                     //    break;
@@ -542,7 +542,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     {
                         try
                         {
-                            var originalData = exp.Data;
+                            //var originalData = exp.Data;
                             (_, string originalScript) = UnrealScriptCompiler.DecompileExport(exp, fileLib);
                             (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileFunction(exp, originalScript, fileLib);
                             if (ast == null || log.AllErrors.Count > 0)
