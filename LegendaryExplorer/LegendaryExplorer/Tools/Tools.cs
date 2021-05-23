@@ -5,6 +5,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Media;
 using LegendaryExplorer.Misc;
+using LegendaryExplorer.SharedUI.Controls;
 using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorer.Tools.Sequence_Editor;
 using LegendaryExplorer.Tools.TlkManagerNS;
@@ -115,52 +116,52 @@ namespace LegendaryExplorer
             #endregion
 
             #region Utilities
-//            set.Add(new Tool
-//            {
-//                name = "Animation Viewer",
-//                type = typeof(AnimationExplorer.AnimationViewer),
-//                icon = Application.Current.FindResource("iconAnimViewer") as ImageSource,
-//                open = () =>
-//                {
-//                    if (AnimationExplorer.AnimationViewer.Instance == null)
-//                    {
-//                        (new AnimationExplorer.AnimationViewer()).Show();
-//                    }
-//                    else
-//                    {
-//                        AnimationExplorer.AnimationViewer.Instance.RestoreAndBringToFront();
-//                    }
-//                },
-//                tags = new List<string> { "utility", "animation", "gesture" },
-//                subCategory = "Explorers",
-//                description = "Animation Viewer allows you to preview any animation in Mass Effect 3"
-//            });
-//            set.Add(new Tool
-//            {
-//                name = "Live Level Editor",
-//                type = typeof(GameInterop.LiveLevelEditor),
-//                icon = Application.Current.FindResource("iconLiveLevelEditor") as ImageSource,
-//                open = () =>
-//                {
-//                    var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Live Level Editor with.", "Live Level Editor game selector",
-//                                              new[] {"ME3", "ME2"}, "ME3");
+            set.Add(new Tool
+            {
+                name = "Animation Viewer",
+                type = typeof(Tools.AnimationViewer.AnimationViewerWindow),
+                icon = Application.Current.FindResource("iconAnimViewer") as ImageSource,
+                open = () =>
+                {
+                    if (Tools.AnimationViewer.AnimationViewerWindow.Instance == null)
+                    {
+                        (new Tools.AnimationViewer.AnimationViewerWindow()).Show();
+                    }
+                    else
+                    {
+                        Tools.AnimationViewer.AnimationViewerWindow.Instance.RestoreAndBringToFront();
+                    }
+                },
+                tags = new List<string> { "utility", "animation", "gesture" },
+                subCategory = "Explorers",
+                description = "Animation Viewer allows you to preview any animation in Mass Effect 3"
+            });
+            set.Add(new Tool
+            {
+                name = "Live Level Editor",
+                type = typeof(Tools.LiveLevelEditor.LiveLevelEditorWindow),
+                icon = Application.Current.FindResource("iconLiveLevelEditor") as ImageSource,
+                open = () =>
+                {
+                    var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Live Level Editor with.", "Live Level Editor game selector",
+                                              new[] { "ME3", "ME2" }, "ME3");
 
-//                    if (Enum.TryParse(gameStr, out MEGame game))
-//                    {
-//                        if (GameInterop.LiveLevelEditor.Instance(game) is {} instance)
-//                        {
-//                            instance.RestoreAndBringToFront();
-//                        }
-//                        else
-//                        {
-//                            (new GameInterop.LiveLevelEditor(game)).Show();
-//                        }
-//                    }
-//                },
-//                tags = new List<string> { "utility" },
-//                subCategory = "Utilities",
-//                description = "Live Level Editor allows you to preview the effect of property changes to Actors in game, to reduce iteration times. It also has a Camera Path Editor, which lets you make camera pans quickly."
-//            });
+                    if (Enum.TryParse(gameStr, out MEGame game))
+                    {
+                        if (Tools.LiveLevelEditor.LiveLevelEditorWindow.Instance(game) is { } instance)
+                        {
+                            instance.RestoreAndBringToFront();
+                        }
+                        else
+                        {
+                            (new Tools.LiveLevelEditor.LiveLevelEditorWindow(game)).Show();
+                        }
+                    }
+                },
+                tags = new List<string> { "utility" },
+                subCategory = "Utilities",
+                description = "Live Level Editor allows you to preview the effect of property changes to Actors in game, to reduce iteration times. It also has a Camera Path Editor, which lets you make camera pans quickly."
+            });
             set.Add(new Tool
             {
                 name = "AFC Compactor",
