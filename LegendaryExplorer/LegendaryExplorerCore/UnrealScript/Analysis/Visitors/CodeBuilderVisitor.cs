@@ -702,7 +702,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             Space();
             Append("Class", EF.Keyword);
             Append("=");
-            Append(node.Class, EF.TypeName);
+            Append(node.Class.Name, EF.TypeName);
             Space();
             Append(NAME, EF.Keyword);
             Append("=");
@@ -1992,7 +1992,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public int ForcedAlignment { get; set; }
         public bool ForceNoNewLines { get; set; }
 
-        private readonly List<string> Lines = new List<string>();
+        private readonly List<string> Lines = new();
         private string currentLine;
         private int lineDisplayLength;
 

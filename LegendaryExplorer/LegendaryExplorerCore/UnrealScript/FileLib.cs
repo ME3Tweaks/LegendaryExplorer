@@ -183,21 +183,21 @@ namespace LegendaryExplorerCore.UnrealScript
             {
                 return;
             }
-            //foreach (PackageUpdate update in updates.Where(u => u.Change.Has(PackageChange.Export)))
-            //{
-            //    if (ScriptUIndexes.Contains(update.Index)
-            //     || Pcc.GetEntry(update.Index) is ExportEntry exp && (IsScriptExport(exp) || exp.ClassName == "Function"))
-            //    {
-            //        lock (initializationLock)
-            //        {
-            //            IsInitialized = false;
-            //            HadInitializationError = false;
-            //            _symbols = null;
-            //        }
-            //        InitializationStatusChange?.Invoke(false);
-            //        return;
-            //    }
-            //}
+            foreach (PackageUpdate update in updates.Where(u => u.Change.Has(PackageChange.Export)))
+            {
+                if (ScriptUIndexes.Contains(update.Index)
+                 || Pcc.GetEntry(update.Index) is ExportEntry exp && (IsScriptExport(exp) || exp.ClassName == "Function"))
+                {
+                    lock (initializationLock)
+                    {
+                        IsInitialized = false;
+                        HadInitializationError = false;
+                        _symbols = null;
+                    }
+                    InitializationStatusChange?.Invoke(false);
+                    return;
+                }
+            }
         }
 
         void IPackageUser.RegisterClosed(Action handler)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
@@ -42,6 +43,8 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             ASTNodeType.Enumeration,
             ASTNodeType.ObjectLiteral
         };
+
+        protected SymbolTable Symbols;
 
         protected ParseException ParseError(string msg, Token<string> token)
         {
@@ -245,6 +248,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return false;
         }
 
+        public bool NextIs(string str)
+        {
+            return Tokens.LookAhead(1) is {} nextToken && nextToken.Type != TokenType.EOF && nextToken.Value.Equals(str, StringComparison.OrdinalIgnoreCase);
+        }
+
         public bool CurrentIs(string str)
         {
             return CurrentToken.Type != TokenType.EOF && CurrentToken.Value.Equals(str, StringComparison.OrdinalIgnoreCase);
@@ -421,6 +429,67 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             var val = int.Parse(Tokens.Prev().Value, CultureInfo.InvariantCulture);
             return isNegative ? -val : val;
+        }
+
+        protected Expression ParseObjectLiteral(Token<string> className, Token<string> objName)
+        {
+            className.SyntaxType = EF.TypeName;
+            bool isClassLiteral = className.Value.CaseInsensitiveEquals(CLASS);
+
+            var classType = new VariableType((isClassLiteral ? objName : className).Value);
+            if (!Symbols.TryResolveType(ref classType))
+            {
+                throw ParseError($"No type named '{classType.Name}' exists!", className);
+            }
+
+            if (classType is Class cls)
+            {
+                if (isClassLiteral)
+                {
+                    objName.AssociatedNode = classType;
+                    classType = new ClassType(classType);
+                }
+                else
+                {
+                    if (cls.SameAsOrSubClassOf("Actor"))
+                    {
+                        TypeError("Object constants must not be Actors!", className);
+                    }
+
+                    className.AssociatedNode = classType;
+                }
+                
+
+                return new ObjectLiteral(new NameLiteral(objName.Value, objName.StartPos, objName.EndPos), classType, className.StartPos, objName.EndPos);
+            }
+
+            throw ParseError($"'{classType.Name}' is not a class!", className);
+        }
+
+        protected SymbolReference NewSymbolReference(ASTNode symbol, Token<string> token, bool isDefaultRef)
+        {
+            SymbolReference symRef;
+            if (isDefaultRef)
+            {
+                symRef = new DefaultReference(symbol, token.Value, token.StartPos, token.EndPos);
+            }
+            else
+            {
+                symRef = new SymbolReference(symbol, token.Value, token.StartPos, token.EndPos);
+            }
+
+            token.AssociatedNode = symbol;
+            if (symRef.Node is Function)
+            {
+                token.SyntaxType = EF.Function;
+                if (isDefaultRef)
+                {
+                    TypeError("Expected property name!", token);
+                }
+            }
+
+            return symRef;
+
         }
     }
 

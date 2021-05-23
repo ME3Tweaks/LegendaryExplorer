@@ -21,7 +21,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
     public class CodeBodyParser : StringParserBase
     {
         private const int NOPRECEDENCE = int.MaxValue;
-        private readonly SymbolTable Symbols;
         private readonly string OuterClassScope;
         private readonly ASTNode Node;
         private readonly CodeBody Body;
@@ -47,7 +46,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         //these have to be checked against labels after the whole body is parsed
         private readonly List<Statement> gotoStatements = new();
 
-        public static TokenStream<string> ParseFunction(Function func, MEGame game, string source, SymbolTable symbols, MessageLog log = null)
+        public static TokenStream<string> ParseFunction(Function func, MEGame game, string source, SymbolTable symbols, MessageLog log)
         {
             symbols.PushScope(func.Name);
 
@@ -194,7 +193,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 switch (stmnt)
                 {
-                    case Goto g when g.ContainingForEach is null:
+                    case Goto {ContainingForEach: null} g:
                     {
                         if (labels.FirstOrDefault(l => l.Name.CaseInsensitiveEquals(g.LabelName)) is Label label)
                         {
@@ -207,7 +206,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                         break;
                     }
-                    case StateGoto sg when sg.LabelExpression is NameLiteral nameLiteral && labels.FirstOrDefault(l => l.Name.CaseInsensitiveEquals(nameLiteral.Value)) is null:
+                    case StateGoto {LabelExpression: NameLiteral nameLiteral} sg when labels.FirstOrDefault(l => l.Name.CaseInsensitiveEquals(nameLiteral.Value)) is null:
                         ParseError($"Could not find label '{nameLiteral.Value}'! (gotos cannot jump out of or into a foreach)", sg);
                         break;
                 }
@@ -2424,32 +2423,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
         }
 
-        private Expression NewSymbolReference(ASTNode symbol, Token<string> token, bool isDefaultRef)
-        {
-            SymbolReference symRef;
-            if (isDefaultRef)
-            {
-                symRef = new DefaultReference(symbol, token.Value, token.StartPos, token.EndPos);
-            }
-            else
-            {
-                symRef = new SymbolReference(symbol, token.Value, token.StartPos, token.EndPos);
-            }
-
-            token.AssociatedNode = symbol;
-            if (symRef.Node is Function)
-            {
-                token.SyntaxType = EF.Function;
-                if (isDefaultRef)
-                {
-                    TypeError("Expected property name!", token);
-                }
-            }
-
-            return symRef;
-
-        }
-
         private Expression ParsePrimitiveOrDynamicCast(Token<string> token, VariableType destType)
         {
             Token<string> castToken = token;
@@ -2499,41 +2472,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
 
             return new PrimitiveCast(CastHelper.PureCastType(cast), destType, expr, castToken.StartPos, CurrentPosition);
-        }
-
-        private Expression ParseObjectLiteral(Token<string> className, Token<string> objName)
-        {
-            className.SyntaxType = EF.TypeName;
-            bool isClassLiteral = className.Value.CaseInsensitiveEquals(CLASS);
-
-            var classType = new VariableType((isClassLiteral ? objName : className).Value);
-            if (!Symbols.TryResolveType(ref classType))
-            {
-                throw ParseError($"No type named '{classType.Name}' exists!", className);
-            }
-
-            if (classType is Class cls)
-            {
-                if (isClassLiteral)
-                {
-                    objName.AssociatedNode = classType;
-                    classType = new ClassType(classType);
-                }
-                else
-                {
-                    if (cls.SameAsOrSubClassOf("Actor"))
-                    {
-                        TypeError("Object constants must not be Actors!", className);
-                    }
-
-                    className.AssociatedNode = classType;
-                }
-                
-
-                return new ObjectLiteral(new NameLiteral(objName.Value, objName.StartPos, objName.EndPos), classType, className.StartPos, objName.EndPos);
-            }
-
-            throw ParseError($"'{classType.Name}' is not a class!", className);
         }
 
         #endregion

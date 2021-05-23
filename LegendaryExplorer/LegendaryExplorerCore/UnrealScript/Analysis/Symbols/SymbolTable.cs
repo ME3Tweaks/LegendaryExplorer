@@ -485,10 +485,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             }
         }
 
-        public void PushScope(string name, string secondaryScope = null)
+        public void PushScope(string name, string secondaryScope = null, bool useCache = true)
         {
             string fullName = (CurrentScopeName == "" ? "" : $"{CurrentScopeName}.") + name;
-            bool cached = Cache.TryGetValue(fullName, out ASTNodeDict scope);
+            ASTNodeDict scope = null;
+            bool cached = useCache && Cache.TryGetValue(fullName, out scope);
             if (!cached)
             {
                 scope = new ASTNodeDict();
@@ -501,7 +502,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             Scopes.AddLast(scope);
             ScopeNames.AddLast(fullName);
             
-            if (!cached)
+            if (useCache && !cached)
                 Cache.Add(fullName, scope);
         }
 

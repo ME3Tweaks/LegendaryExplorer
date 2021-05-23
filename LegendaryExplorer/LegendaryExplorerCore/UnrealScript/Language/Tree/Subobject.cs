@@ -8,9 +8,9 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
     {
         public VariableDeclaration Name;
 
-        public string Class;
+        public SymbolReference Class;
 
-        public Subobject(VariableDeclaration name, string @class, List<Statement> contents, SourcePosition start = null, SourcePosition end = null) : base(contents, start, end)
+        public Subobject(VariableDeclaration name, SymbolReference @class, List<Statement> contents, SourcePosition start = null, SourcePosition end = null) : base(contents, start, end)
         {
             Name = name;
             Class = @class;

@@ -44,7 +44,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private IEntry CurrentLoadedEntry;
         private byte[] OriginalHeader;
 
-        public ObservableCollectionExtended<object> AllEntriesList { get; } = new ObservableCollectionExtended<object>();
+        public ObservableCollectionExtended<object> AllEntriesList { get; } = new();
         public int CurrentObjectNameIndex { get; private set; }
 
         private HexBox Header_Hexbox;
@@ -118,7 +118,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void SaveHexChanges()
         {
-            MemoryStream m = new MemoryStream();
+            var m = new MemoryStream();
             for (int i = 0; i < headerByteProvider.Length; i++)
                 m.WriteByte(headerByteProvider.ReadByte(i));
             CurrentLoadedEntry.Header = m.ToArray();
@@ -137,6 +137,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public void RefreshAllEntriesList(IMEPackage pcc)
         {
+            if (pcc is null)
+            {
+                AllEntriesList.ClearEx();
+                return;
+            }
             var allEntriesNew = new List<object>();
             for (int i = pcc.Imports.Count - 1; i >= 0; i--)
             {
@@ -155,7 +160,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             if (CurrentLoadedEntry is ExportEntry export)
             {
                 var mde = new EntryMetadataExportLoader();
-                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(mde, export)
+                var elhw = new ExportLoaderHostedWindow(mde, export)
                 {
                     Height = 620,
                     Width = 780,
@@ -756,6 +761,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             Header_Hexbox_Host?.Child.Dispose();
             Header_Hexbox_Host?.Dispose();
             Header_Hexbox_Host = null;
+            AllEntriesList.Clear();
         }
 
         /// <summary>
@@ -763,7 +769,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// </summary>
         private class ZeroUIndexClassEntry
         {
-            public static readonly ZeroUIndexClassEntry instance = new ZeroUIndexClassEntry();
+            public static readonly ZeroUIndexClassEntry instance = new();
 
             private ZeroUIndexClassEntry() { }
 

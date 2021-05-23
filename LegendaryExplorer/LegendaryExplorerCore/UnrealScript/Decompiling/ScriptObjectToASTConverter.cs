@@ -596,7 +596,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                             {
                                 var type = new VariableType(objExp.ClassName);
                                 var decl = new VariableDeclaration(type, default, name);
-                                subObj = new Subobject(decl, objExp.ClassName, ConvertProperties(objExp.GetProperties(), objExp));
+                                subObj = new Subobject(decl, new SymbolReference(null, objExp.ClassName), ConvertProperties(objExp.GetProperties(), objExp));
                                 statements.Add(subObj);
                             }
                             return new SymbolReference(subObj.Name, name);

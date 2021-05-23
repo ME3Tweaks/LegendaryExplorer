@@ -401,7 +401,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
 
                     RootNode = ast;
                     ScriptText = text;
-                    if (RootNode is Function {IsNative: false})
+                    if (RootNode is Function)
                     {
                         textEditor.IsReadOnly = false;
                         Document.TextChanged += TextChanged;
