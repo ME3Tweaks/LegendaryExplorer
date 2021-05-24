@@ -17,7 +17,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         {
             if (rootPathOverride == null) rootPathOverride = DefaultGamePath;
             if (rootPathOverride == null) return null; // There is no usable root path
-            return Path.Combine(rootPathOverride, "BIOGame");
+            return Path.Combine(rootPathOverride, "BioGame");
         }
 
         public static string DLCPath => GetDLCPath();
