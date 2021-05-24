@@ -212,3 +212,4 @@ Release_x64/
 *APIKeysPrivate.cs
 /ME3ExplorerCore.Tests/coverage.cobertura.xml
 /ME3Explorer/Deployment
+/ME3Explorer/TexConverter/DirectXTex/Shaders/Compiled
