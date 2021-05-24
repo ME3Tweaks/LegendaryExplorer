@@ -358,7 +358,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 if (bikprop != null)
                 {
                     BikFileName = bikprop.ToString();
-                    if (BikFileName.EndsWith(".bik"))
+                    if (BikFileName.EndsWith(".bik", true, System.Globalization.CultureInfo.InvariantCulture))
                         BikFileName = BikFileName.Replace(".bik", "", true, System.Globalization.CultureInfo.InvariantCulture);
                     IsExternalFile = true;
                 }
