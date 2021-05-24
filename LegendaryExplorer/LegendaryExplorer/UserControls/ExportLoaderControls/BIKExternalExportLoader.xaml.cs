@@ -193,7 +193,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 using RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\RAD Game Tools\RADVideo\");
                 if (key?.GetValue("InstallDir") is string InstallDir)
                 {
-                    RADExecutableLocation = Path.Combine(InstallDir, "binkpl64.exe");
+                    RADExecutableLocation = Path.Combine(InstallDir, "binkplay.exe");
                     RADIsInstalled = true;
                     return;
                 }
@@ -358,6 +358,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 if (bikprop != null)
                 {
                     BikFileName = bikprop.ToString();
+                    if (BikFileName.EndsWith(".bik"))
+                        BikFileName = BikFileName.Replace(".bik", "", true, System.Globalization.CultureInfo.InvariantCulture);
                     IsExternalFile = true;
                 }
             }
@@ -369,20 +371,40 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             try
             {
-                byte[] data = GetMovieBytes();
-                string writeoutPath = Path.Combine(Path.GetTempPath(), CurrentLoadedExport.FullPath + ".bik");
-
-                File.WriteAllBytes(writeoutPath, data);
-
-                var process = new Process
+                string moviePath;
+                if(IsExternalFile)
                 {
-                    StartInfo =
+                    string bikName = BikFileName + ".bik";
+                    moviePath = Path.GetDirectoryName(Path.GetDirectoryName(CurrentLoadedExport.FileRef.FilePath));
+                    moviePath = Path.Combine(moviePath, "Movies", bikName);
+                    if (!File.Exists(moviePath))
+                    {
+                        string rootPath = MEDirectories.GetDefaultGamePath(CurrentLoadedExport.Game);
+                        moviePath = Directory.GetFiles(rootPath, bikName, SearchOption.AllDirectories).FirstOrDefault();
+                    }
+                }
+                else
+                {
+                    byte[] data = GetMovieBytes();
+                    moviePath = Path.Combine(Path.GetTempPath(), CurrentLoadedExport.FullPath + ".bik");
+
+                    File.WriteAllBytes(moviePath, data);
+                }
+
+                if (!File.Exists(moviePath))
+                    MessageBox.Show("bik movie not found.");
+                else
+                {
+                    var process = new Process
+                    {
+                        StartInfo =
                     {
                         FileName = RADExecutableLocation,
-                        Arguments = $"{writeoutPath} /P"
+                        Arguments = $"\"{moviePath}\" /P"
                     }
-                };
-                process.Start();
+                    };
+                    process.Start();
+                }
             }
             catch (Exception ex)
             {
