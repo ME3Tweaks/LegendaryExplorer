@@ -177,7 +177,7 @@ namespace LegendaryExplorerCore.Packages
                         MemoryStream ms;
                         lock (diskIOSyncLock)
                         {
-                            ms = new MemoryStream(File.ReadAllBytes(pathToFile));
+                            ms = ReadAllFileBytesIntoMemoryStream(pathToFile);
                         }
                         var p = LoadPackage(ms, pathToFile, true);
                         ms.Dispose();
@@ -185,8 +185,7 @@ namespace LegendaryExplorerCore.Packages
                     }
                     else
                     {
-                        using var ms = new MemoryStream(File.ReadAllBytes(pathToFile));
-                        return LoadPackage(ms, pathToFile, true);
+                        return LoadPackage(ReadAllFileBytesIntoMemoryStream(pathToFile), pathToFile, true);
                     }
 
                 }
@@ -202,7 +201,7 @@ namespace LegendaryExplorerCore.Packages
                         MemoryStream ms;
                         lock (diskIOSyncLock)
                         {
-                            ms = new MemoryStream(File.ReadAllBytes(pathToFile));
+                            ms = ReadAllFileBytesIntoMemoryStream(pathToFile);
                         }
                         var p = LoadPackage(ms, pathToFile, true);
                         ms.Dispose();
@@ -210,8 +209,7 @@ namespace LegendaryExplorerCore.Packages
                     }
                     else
                     {
-                        using var ms = new MemoryStream(File.ReadAllBytes(pathToFile));
-                        return LoadPackage(ms, pathToFile, true);
+                        return LoadPackage(ReadAllFileBytesIntoMemoryStream(pathToFile), pathToFile, true);
                     }
                 });
             }
@@ -228,6 +226,18 @@ namespace LegendaryExplorerCore.Packages
                 package.RegisterUse();
             }
             return package;
+        }
+
+        /// <summary>
+        /// Essentially just <code>new MemoryStream(File.ReadAllBytes(<paramref name="filePath"/>))</code>, but with some setup that improves decompression performance 
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public static MemoryStream ReadAllFileBytesIntoMemoryStream(string filePath)
+        {
+            byte[] buffer = File.ReadAllBytes(filePath);
+            //lengthy constructor is neccesary so that TryGetBuffer can be used in decompression code
+            return new MemoryStream(buffer, 0, buffer.Length, true, true);
         }
 
         /// <summary>

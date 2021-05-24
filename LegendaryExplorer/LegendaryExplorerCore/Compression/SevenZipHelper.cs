@@ -32,6 +32,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
@@ -46,10 +47,25 @@ namespace LegendaryExplorerCore.Compression
         private static extern int SevenZipDecompress([In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
 
         [DllImport(CompressionHelper.COMPRESSION_WRAPPER_NAME, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int SevenZipDecompress(in byte srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
+
+        [DllImport(CompressionHelper.COMPRESSION_WRAPPER_NAME, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern int SevenZipCompress(int compressionLevel, [In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
 
         [DllImport(CompressionHelper.COMPRESSION_WRAPPER_NAME, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern int SevenZipUnpackFile([In] string archive, [In] string outputpath, [In] int keepArchivePaths);
+
+        public static int Decompress(ReadOnlySpan<byte> src, uint srcLen, byte[] dst, uint dstLen)
+        {
+            uint len = dstLen;
+            unsafe
+            {
+                fixed (byte* ptr = &MemoryMarshal.GetReference(src))
+                {
+                    return SevenZipDecompress(Unsafe.AsRef<byte>(ptr), srcLen, dst, ref len);
+                }
+            }
+        }
 
         public static byte[] Decompress(byte[] src, uint dstLen)
         {

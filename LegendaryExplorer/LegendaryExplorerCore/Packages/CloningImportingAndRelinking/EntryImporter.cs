@@ -995,14 +995,14 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         string testPath = Path.Combine(MEDirectories.GetBioGamePath(pcc.Game, gamePathOverride), info.pccPath);
                         if (File.Exists(testPath))
                         {
-                            loadStream = new MemoryStream(File.ReadAllBytes(testPath));
+                            loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(testPath);
                         }
                         else if (pcc.Game == MEGame.ME1)
                         {
                             testPath = Path.Combine(gamePathOverride ?? ME1Directory.DefaultGamePath, info.pccPath);
                             if (File.Exists(testPath))
                             {
-                                loadStream = new MemoryStream(File.ReadAllBytes(testPath));
+                                loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(testPath);
                             }
                         }
                     }

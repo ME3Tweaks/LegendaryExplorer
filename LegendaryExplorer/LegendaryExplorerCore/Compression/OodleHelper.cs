@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,7 +27,7 @@ namespace LegendaryExplorerCore.Compression
 
 
         [DllImport(CompressionHelper.OODLE_DLL_NAME)]
-        private static extern int OodleLZ_Decompress(byte[] buffer, long bufferSize, byte[] outputBuffer, long outputBufferSize,
+        private static extern int OodleLZ_Decompress(in byte buffer, long bufferSize, byte[] outputBuffer, long outputBufferSize,
             uint a, uint b, ulong c, uint d, uint e, uint f, uint g, uint h, uint i, uint threadModule);
 
         public enum OodleCompressionLevel : ulong
@@ -42,8 +43,7 @@ namespace LegendaryExplorerCore.Compression
             Optimal4,
             Optimal5
         }
-
-        // Todo: Add Leviathan
+        
         public enum OodleFormat : uint
         {
             LZH,
@@ -143,10 +143,17 @@ namespace LegendaryExplorerCore.Compression
             return bufferSize + 274 * ((bufferSize + 0x3FFFF) / 0x40000);
         }
 
-        public static int Decompress(byte[] buffer, long size, long uncompressedSize, byte[] decompressedBuffer)
+        public static int Decompress(ReadOnlySpan<byte> buffer, long size, long uncompressedSize, byte[] decompressedBuffer)
         {
             decompressedBuffer ??= new byte[uncompressedSize];
-            int decompressedCount = OodleLZ_Decompress(buffer, size, decompressedBuffer, uncompressedSize, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3);
+            int decompressedCount;
+            unsafe
+            {
+                fixed (byte* ptr = &MemoryMarshal.GetReference(buffer))
+                {
+                    decompressedCount = OodleLZ_Decompress(Unsafe.AsRef<byte>(ptr), size, decompressedBuffer, uncompressedSize, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3);
+                }
+            }
             if (decompressedCount != uncompressedSize)
             {
                 throw new Exception("Error decompressing Oodle data!");

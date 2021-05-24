@@ -13,6 +13,8 @@
 	limitations under the License.
 */
 
+//#define LITTLEENDIANSTREAM
+
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -26,6 +28,7 @@ using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorerCore.Gammtek.IO
 {
+
     [DebuggerDisplay("EndianReader @ {Position.ToString(\"X8\")}, endian is native to platform: {Endian.IsNative}")]
 
     /// <summary>
@@ -260,7 +263,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
         public override byte ReadByte()
         {
             var b = _source.ReadByte();
-#if DEBUG
+#if LITTLEENDIANSTREAM
             LittleEndianStream?.WriteByte(b);
 #endif
             return b;
@@ -280,7 +283,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
         public override byte[] ReadBytes(int count)
         {
             var bytes = _source.ReadBytes(count);
-#if DEBUG
+#if LITTLEENDIANSTREAM
             LittleEndianStream?.WriteFromBuffer(bytes);
 #endif
             return bytes;
@@ -329,7 +332,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
                 return val;
             }
             val = _endianConverter.Convert(val);
-#if DEBUG
+#if LITTLEENDIANSTREAM
             LittleEndianStream?.WriteDouble(val);
 #endif
             return val;
@@ -349,7 +352,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
                 return val;
             }
             val = _endianConverter.Convert(val);
-#if DEBUG
+#if LITTLEENDIANSTREAM
             LittleEndianStream?.WriteInt16(val);
 #endif
             return val;
@@ -371,7 +374,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
                 return val;
             }
             val = _endianConverter.Convert(val);
-#if DEBUG
+#if LITTLEENDIANSTREAM
             LittleEndianStream?.WriteInt32(val);
 #endif
             return val;
@@ -391,7 +394,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
                 return val;
             }
             val = _endianConverter.Convert(val);
-#if DEBUG
+#if LITTLEENDIANSTREAM
 
             LittleEndianStream?.WriteInt64(val);
 #endif
@@ -407,7 +410,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
         public override sbyte ReadSByte()
         {
             var val = (sbyte)ReadByte();
-#if DEBUG
+#if LITTLEENDIANSTREAM
             LittleEndianStream?.WriteByte((byte)val);
 #endif
             return val;
@@ -428,7 +431,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
                 return val;
             }
             val = _endianConverter.Convert(val);
-#if DEBUG
+#if LITTLEENDIANSTREAM
             LittleEndianStream?.WriteFloat(val);
 #endif
             return val;
@@ -463,7 +466,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
                 return val;
             }
             val = _endianConverter.Convert(val);
-#if DEBUG
+#if LITTLEENDIANSTREAM
             LittleEndianStream?.WriteUInt16(val);
 #endif
             return val;
@@ -483,7 +486,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
                 return val;
             }
             val = _endianConverter.Convert(val);
-#if DEBUG
+#if LITTLEENDIANSTREAM
             LittleEndianStream?.WriteUInt32(val);
 #endif
             return val;
@@ -503,7 +506,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
                 return val;
             }
             val = _endianConverter.Convert(val);
-#if DEBUG
+#if LITTLEENDIANSTREAM
             LittleEndianStream?.WriteUInt64(val);
 #endif
             return val;
@@ -520,7 +523,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
         public void Seek(long offset, SeekOrigin origin)
         {
             _source.BaseStream.Seek(offset, origin);
-#if DEBUG
+#if LITTLEENDIANSTREAM
             LittleEndianStream?.Seek(offset, origin);
 #endif
         }
@@ -531,7 +534,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
             set
             {
                 _source.BaseStream.Position = value;
-#if DEBUG
+#if LITTLEENDIANSTREAM
                 if (LittleEndianStream != null)
                     LittleEndianStream.Position = value;
 #endif
@@ -630,7 +633,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
             ushort u = ToUInt16(buffer, 0, Endian);
 
             //This definitely needs checked
-#if DEBUG
+#if LITTLEENDIANSTREAM
             if (LittleEndianStream != null)
             {
                 if (Endian == Endian.Big)
@@ -834,7 +837,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
 
         #endregion
 
-#if DEBUG
+#if LITTLEENDIANSTREAM
         /// <summary>
         /// Initializes the LittleEndianStream memorystream. All reads will write the little endian version to this stream. Used to reverse endian of files read by this reader
         /// </summary>

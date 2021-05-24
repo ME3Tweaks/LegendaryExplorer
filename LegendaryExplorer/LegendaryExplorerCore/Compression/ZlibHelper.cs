@@ -29,6 +29,7 @@
  */
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using LegendaryExplorerCore.Packages;
 
@@ -37,17 +38,24 @@ namespace LegendaryExplorerCore.Compression
     public static class Zlib
     {
         [DllImport(CompressionHelper.COMPRESSION_WRAPPER_NAME, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
-        private static extern int ZlibDecompress([In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
+        private static extern int ZlibDecompress(in byte srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
 
         [DllImport(CompressionHelper.COMPRESSION_WRAPPER_NAME, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern int ZlibCompress(int compressionLevel, [In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
 
-        public static uint Decompress(byte[] src, uint srcLen, byte[] dst, uint dstLen = 0)
+        public static uint Decompress(ReadOnlySpan<byte> src, uint srcLen, byte[] dst, uint dstLen = 0)
         {
             if (dstLen == 0)
                 dstLen = (uint)dst.Length;
 
-            int status = ZlibDecompress(src, srcLen, dst, ref dstLen);
+            int status;
+            unsafe
+            {
+                fixed (byte* ptr = &MemoryMarshal.GetReference(src))
+                {
+                    status = ZlibDecompress(Unsafe.AsRef<byte>(ptr), srcLen, dst, ref dstLen);
+                }
+            }
             if (status != 0)
                 return 0;
 

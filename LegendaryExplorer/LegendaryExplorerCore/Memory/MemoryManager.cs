@@ -94,7 +94,7 @@ namespace LegendaryExplorerCore.Memory
             if (UsePooledMemory)
                 return MemManager.GetStream(memoryStreamTag, bufferSize);
 
-            return new MemoryStream();
+            return new MemoryStream(bufferSize);
         }
         #endregion
 

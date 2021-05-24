@@ -334,7 +334,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     if (File.Exists(info.pccPath)) //dynamic lookup (relative path)
                     {
                         filepath = info.pccPath;
-                        loadStream = new MemoryStream(File.ReadAllBytes(info.pccPath));
+                        loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(info.pccPath);
                     }
                     else if (info.pccPath == GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
                     {
@@ -343,7 +343,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     }
                     else if (filepath != null && File.Exists(filepath))
                     {
-                        loadStream = new MemoryStream(File.ReadAllBytes(filepath));
+                        loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(filepath);
                     }
 #if AZURE
                     else if (MiniGameFilesPath != null && File.Exists(Path.Combine(MiniGameFilesPath, info.pccPath)))
@@ -352,7 +352,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
                         // Load from test minigame folder. This is only really useful on azure where we don't have access to 
                         // games
-                        loadStream = new MemoryStream(File.ReadAllBytes(filepath));
+                        loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(filepath);
                     }
 #endif
                     if (loadStream == null)
@@ -360,7 +360,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                         filepath = Path.Combine(ME1Directory.DefaultGamePath, info.pccPath); //for files from ME1 DLC
                         if (File.Exists(filepath))
                         {
-                            loadStream = new MemoryStream(File.ReadAllBytes(filepath));
+                            loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(filepath);
                         }
                     }
                     if (loadStream != null)
