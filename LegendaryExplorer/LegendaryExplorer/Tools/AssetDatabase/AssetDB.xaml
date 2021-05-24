@@ -117,7 +117,7 @@
                             <MenuItem Name="menu_TMovie" Header="Only TextureMovies" Command="{Binding FilterTexCommand}" CommandParameter="Movie" ToolTip="Show Texture Movies only." StaysOpenOnClick="True"/>
                             <Separator/>
                             <MenuItem Name="menu_T1024" Header="Only Textures 1024 or larger" Command="{Binding FilterTexCommand}" CommandParameter="1024" ToolTip="Show Textures with size 1024 or greater." StaysOpenOnClick="True"/>
-                            <MenuItem Name="menu_T4096" Header="Only Textures 4096" Command="{Binding FilterTexCommand}" CommandParameter="4096" ToolTip="Show Textures with size 4096." StaysOpenOnClick="True"/>
+                            <MenuItem Name="menu_T4096" Header="Only Textures 4096 or larger" Command="{Binding FilterTexCommand}" CommandParameter="4096" ToolTip="Show Textures with size 4096 or greater." StaysOpenOnClick="True"/>
                             <Separator/>
                             <MenuItem Header="Filter LODGroups">
                                 <MenuItem Name="menu_TGWorld" Header="World" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup World." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
