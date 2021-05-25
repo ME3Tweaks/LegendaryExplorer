@@ -8,7 +8,7 @@
              d:DesignHeight="204" d:DesignWidth="620" DataContext="{Binding Mode=OneWay, RelativeSource={RelativeSource Self}}">
     <Border Background="#7210192A">
         <StackPanel Orientation="Vertical" Margin="6,0">
-            <DockPanel Height="30">
+            <!--<DockPanel Height="30">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{Binding Category}" FontFamily="{StaticResource TitilliumWeb-Regular}"
                                FontSize="20"
@@ -36,7 +36,7 @@
                     </Button>
                 </StackPanel>
             </DockPanel>
-            <Rectangle Fill="#A3FBFBFB" Height="2"/>
+            <Rectangle Fill="#A3FBFBFB" Height="2"/> -->
             <ItemsControl x:Name="ToolList" Margin="{Binding ItemControlMargin, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type legendaryExplorer:ToolPanel}}}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate >

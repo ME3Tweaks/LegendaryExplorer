@@ -182,9 +182,13 @@
     <Resource Include="Tools\PackageEditor\ExportIcons\*" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Remove="MainWindow\OldMainWindow\**" />
     <Compile Remove="Resources\exec\**" />
+    <EmbeddedResource Remove="MainWindow\OldMainWindow\**" />
     <EmbeddedResource Remove="Resources\exec\**" />
+    <None Remove="MainWindow\OldMainWindow\**" />
     <None Remove="Resources\exec\**" />
+    <Page Remove="MainWindow\OldMainWindow\**" />
     <Page Remove="Resources\exec\**" />
   </ItemGroup>
   <ItemGroup>
@@ -515,7 +519,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Tools\PlotEditor\SFXGame\biodefine\" />
+	  <Folder Include="Tools\PlotEditor\SFXGame\biodefine\" />
     <Folder Include="UserControls\ExportLoaderControls\ScriptEditor\" />
   </ItemGroup>
 

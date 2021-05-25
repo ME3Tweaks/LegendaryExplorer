@@ -112,22 +112,22 @@ namespace LegendaryExplorer
         private void updateContents()
         {
             ToolList.ItemsSource = tools.Skip(index).Take(viewCapacity);
-            if (tools.Count > index + viewCapacity)
-            {
-                forwardButton.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                forwardButton.Visibility = Visibility.Collapsed;
-            }
-            if (index > 0)
-            {
-                backButton.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                backButton.Visibility = Visibility.Collapsed;
-            }
+            //if (tools.Count > index + viewCapacity)
+            //{
+            //    forwardButton.Visibility = Visibility.Visible;
+            //}
+            //else
+            //{
+            //    forwardButton.Visibility = Visibility.Collapsed;
+            //}
+            //if (index > 0)
+            //{
+            //    backButton.Visibility = Visibility.Visible;
+            //}
+            //else
+            //{
+            //    backButton.Visibility = Visibility.Collapsed;
+            //}
         }
 
         protected override void Button_MouseEnter(object sender, MouseEventArgs e)
