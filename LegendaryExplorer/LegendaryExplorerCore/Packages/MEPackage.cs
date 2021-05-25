@@ -663,6 +663,7 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="compress"></param>
         private static void saveByReconstructing(MEPackage mePackage, string path, bool isSaveAs, bool compress, bool includeAdditionalPackagesToCook, bool includeDependencyTable, object diskIOSyncLockObject = null)
         {
+            //var sw = Stopwatch.StartNew();
             using var saveStream = saveByReconstructingToStream(mePackage, isSaveAs, compress, includeAdditionalPackagesToCook, includeDependencyTable);
 
             // Lock writing with the sync object (if not null) to prevent disk concurrency issues
@@ -683,6 +684,10 @@ namespace LegendaryExplorerCore.Packages
             {
                 mePackage.AfterSave();
             }
+
+            //var milliseconds = sw.ElapsedMilliseconds;
+            //Debug.WriteLine($"Saved {Path.GetFileName(path)} in {milliseconds}");
+            //sw.Stop();
         }
 
         /// <summary>
@@ -694,8 +699,12 @@ namespace LegendaryExplorerCore.Packages
         private static MemoryStream compressPackage(MEPackage package, MemoryStream uncompressedStream, bool includeAdditionalPackageToCook = true)
         {
             uncompressedStream.Position = 0;
-            MemoryStream compressedStream = MemoryManager.GetMemoryStream();
-            package.WriteHeader(compressedStream, includeAdditionalPackageToCook: includeAdditionalPackageToCook); //for positioning
+
+            //very rough estimate, better to err on the high side though. If the estimate is slightly too low, it will end up allocating an array almost twice as big as needed
+            //TODO: scan through all files, per compression type, to come up with a better estimate
+            int compressedLengthEstimate = (int)(uncompressedStream.Length / 3.5);  
+            MemoryStream compressedStream = MemoryManager.GetMemoryStream(compressedLengthEstimate);
+
             var chunks = new List<CompressionHelper.Chunk>();
             var compressionType = package.Game switch
             {
@@ -768,7 +777,27 @@ namespace LegendaryExplorerCore.Packages
             compressedStream.Position = 0;
             package.WriteHeader(compressedStream, compressionType, chunks, includeAdditionalPackageToCook: includeAdditionalPackageToCook);
             //MemoryStream m1 = new MemoryStream();
-
+            var compressionOutputSize = compressionType switch
+            {
+                CompressionType.Zlib => Zlib.GetCompressionBound(maxBlockSize),
+                CompressionType.LZO => LZO2.GetCompressionBound(maxBlockSize),
+                CompressionType.OodleLeviathan => OodleHelper.GetCompressionBound(maxBlockSize),
+                _ => throw new Exception("Internal error: Unsupported compression type for compressing blocks: " + compressionType)
+            };
+            var rentedOutputArrays = new List<byte[]>
+            {
+                MemoryManager.GetByteArray(compressionOutputSize),
+                MemoryManager.GetByteArray(compressionOutputSize),
+                MemoryManager.GetByteArray(compressionOutputSize),
+                MemoryManager.GetByteArray(compressionOutputSize),
+            };
+            var rentedInputArrays = new List<byte[]>
+            {
+                MemoryManager.GetByteArray(maxBlockSize),
+                MemoryManager.GetByteArray(maxBlockSize),
+                MemoryManager.GetByteArray(maxBlockSize),
+                MemoryManager.GetByteArray(maxBlockSize),
+            };
             for (int c = 0; c < chunks.Count; c++)
             {
                 chunk = chunks[c];
@@ -777,6 +806,14 @@ namespace LegendaryExplorerCore.Packages
 
                 int dataSizeRemainingToCompress = chunk.uncompressedSize;
                 int numBlocksInChunk = (int)Math.Ceiling(chunk.uncompressedSize * 1.0 / maxBlockSize);
+                if (numBlocksInChunk > rentedOutputArrays.Count)
+                {
+                    for (int i = rentedOutputArrays.Count; i < numBlocksInChunk; i++)
+                    {
+                        rentedOutputArrays.Add(MemoryManager.GetByteArray(compressionOutputSize));
+                        rentedInputArrays.Add(MemoryManager.GetByteArray(maxBlockSize));
+                    }
+                }
                 // skip chunk header and blocks table - filled later
                 compressedStream.Seek(CompressionHelper.SIZE_OF_CHUNK_HEADER + CompressionHelper.SIZE_OF_CHUNK_BLOCK_HEADER * numBlocksInChunk, SeekOrigin.Current);
 
@@ -787,43 +824,48 @@ namespace LegendaryExplorerCore.Packages
                 //Calculate blocks by splitting data into 128KB "block chunks".
                 for (int b = 0; b < numBlocksInChunk; b++)
                 {
-                    CompressionHelper.Block block = new CompressionHelper.Block();
+                    var block = new CompressionHelper.Block();
                     block.uncompressedsize = Math.Min(maxBlockSize, dataSizeRemainingToCompress);
                     dataSizeRemainingToCompress -= block.uncompressedsize;
-                    block.uncompressedData = uncompressedStream.ReadToBuffer(block.uncompressedsize);
+                    uncompressedStream.Read(rentedInputArrays[b].AsSpan(0, block.uncompressedsize));
+                    block.uncompressedData = rentedInputArrays[b].AsMemory(0, block.uncompressedsize);
+                    block.compressedData = rentedOutputArrays[b];
                     chunk.blocks.Add(block);
                 }
 
                 if (chunk.blocks.Count != numBlocksInChunk) throw new Exception("Number of blocks does not match expected amount");
 
                 //Compress blocks
-                Parallel.For(0, chunk.blocks.Count, b =>
+                Parallel.ForEach(chunk.blocks, block =>
                 {
-                    CompressionHelper.Block block = chunk.blocks[b];
-                    if (compressionType == CompressionType.LZO)
-                        block.compressedData = LZO2.Compress(block.uncompressedData);
-                    else if (compressionType == CompressionType.Zlib)
-                        block.compressedData = Zlib.Compress(block.uncompressedData);
-                    else if (compressionType == CompressionType.OodleLeviathan)
-                        block.compressedData = OodleHelper.Compress(block.uncompressedData, block.uncompressedsize, OodleHelper.OodleFormat.Leviathan, OodleHelper.OodleCompressionLevel.Normal);
-                    else
-                        throw new Exception("Internal error: Unsupported compression type for compressing blocks: " + compressionType);
-                    if (block.compressedData.Length == 0)
+                    block.compressedsize = compressionType switch
+                    {
+                        CompressionType.LZO => LZO2.Compress(block.uncompressedData.Span, block.compressedData),
+                        CompressionType.Zlib => Zlib.Compress(block.uncompressedData.Span, block.compressedData),
+                        CompressionType.OodleLeviathan => OodleHelper.Compress(block.uncompressedData.Span, block.compressedData),
+                        _ => throw new Exception("Internal error: Unsupported compression type for compressing blocks: " + compressionType)
+                    };
+                    if (block.compressedsize == 0)
                         throw new Exception("Internal error: Block compression failed! Compressor returned no bytes");
-                    block.compressedsize = (int)block.compressedData.Length;
-                    chunk.blocks[b] = block;
                 });
 
                 //Write compressed data to stream 
                 for (int b = 0; b < numBlocksInChunk; b++)
                 {
                     var block = chunk.blocks[b];
-                    compressedStream.Write(block.compressedData, 0, (int)block.compressedsize);
+                    compressedStream.Write(block.compressedData, 0, block.compressedsize);
                     chunk.compressedSize += block.compressedsize;
                 }
-                chunks[c] = chunk;
             }
 
+            foreach (byte[] rentedArray in rentedOutputArrays)
+            {
+                MemoryManager.ReturnByteArray(rentedArray);
+            }
+            foreach (byte[] rentedArray in rentedInputArrays)
+            {
+                MemoryManager.ReturnByteArray(rentedArray);
+            }
             //Update each chunk header with new information
             foreach (var c in chunks)
             {
