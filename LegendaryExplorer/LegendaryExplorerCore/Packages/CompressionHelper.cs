@@ -78,6 +78,7 @@ namespace LegendaryExplorerCore.Packages
         {
             public int compressedsize;
             public int uncompressedsize;
+            public int uncompressedOffset;
             public byte[] uncompressedData;
             public byte[] compressedData;
         }
@@ -585,7 +586,8 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="game"></param>
         /// <param name="platform"></param>
         /// <returns></returns>
-        public static MemoryStream DecompressPackage(EndianReader raw, long compressionInfoOffset, UnrealPackageFile.CompressionType compressionType = UnrealPackageFile.CompressionType.None, int NumChunks = 0, MEGame game = MEGame.Unknown, GamePlatform platform = GamePlatform.PC)
+        public static Stream DecompressPackage(EndianReader raw, long compressionInfoOffset, UnrealPackageFile.CompressionType compressionType = UnrealPackageFile.CompressionType.None,
+                                               int NumChunks = 0, MEGame game = MEGame.Unknown, GamePlatform platform = GamePlatform.PC, bool canUseLazyDecompression = false)
         {
             raw.BaseStream.JumpTo(compressionInfoOffset);
             if (compressionType == UnrealPackageFile.CompressionType.None)
@@ -612,7 +614,7 @@ namespace LegendaryExplorerCore.Packages
 
             for (int i = 0; i < NumChunks; i++)
             {
-                Chunk c = new Chunk
+                var c = new Chunk
                 {
                     uncompressedOffset = raw.ReadInt32(),
                     uncompressedSize = raw.ReadInt32(),
@@ -653,13 +655,16 @@ namespace LegendaryExplorerCore.Packages
 
                 c.blocks = new List<Block>(blockCount);
                 //DebugOutput.PrintLn("\t\t" + count + " Read Blockheaders...");
+                int blockUncompressedOffset = c.uncompressedOffset;
                 for (int j = 0; j < blockCount; j++)
                 {
-                    Block b = new Block
+                    var b = new Block
                     {
                         compressedsize = EndianReader.ToInt32(c.Compressed.Span, pos, raw.Endian),
-                        uncompressedsize = EndianReader.ToInt32(c.Compressed.Span, pos + 4, raw.Endian)
+                        uncompressedsize = EndianReader.ToInt32(c.Compressed.Span, pos + 4, raw.Endian),
+                        uncompressedOffset = blockUncompressedOffset
                     };
+                    blockUncompressedOffset += b.uncompressedsize;
                     maxUncompressedBlockSize = Math.Max(b.uncompressedsize, maxUncompressedBlockSize); // find the max size to reduce allocations
                     //DebugOutput.PrintLn("Block " + j + ", compressed size = " + b.compressedsize + ", uncompressed size = " + b.uncompressedsize);
                     pos += 8;
@@ -670,6 +675,11 @@ namespace LegendaryExplorerCore.Packages
                 Chunks.Add(c);
 
                 raw.Seek(nextChunkPos, SeekOrigin.Begin);
+            }
+
+            if (canUseLazyDecompression && isMemoryStream)
+            {
+                return new PackageDecompressionStream(Chunks, maxUncompressedBlockSize, compressionType);
             }
 
             var firstChunkOffset = Chunks.MinBy(x => x.uncompressedOffset).uncompressedOffset;
@@ -683,7 +693,6 @@ namespace LegendaryExplorerCore.Packages
             // We will allocate the largest uncompressed size block we can find
 
             var dataout = MemoryManager.GetByteArray(maxUncompressedBlockSize);
-            //var dataout = new byte[maxUncompressedBlockSize]); // Make sure we return!
 
 
             for (int i = 0; i < Chunks.Count; i++)
@@ -963,5 +972,184 @@ namespace LegendaryExplorerCore.Packages
         //            CompressAndSave(new MemoryStream(uncompressedPcc), pccFileName);
         //        }
         //        #endregion
+
+        public class PackageDecompressionStream : Stream
+        {
+            private readonly List<Chunk> Chunks;
+            private readonly UnrealPackageFile.CompressionType CompressionType;
+            private long _position;
+            private readonly int firstChunkOffset;
+            private int segStartPos;
+            private readonly byte[] Segment;
+            private int SegmentLength;
+            private int chunkIdx;
+            private int blockIdx;
+
+            private int SegmentPosition => (int)(_position - segStartPos);
+
+            public override bool CanRead => true;
+            public override bool CanSeek => true;
+            public override bool CanWrite => false;
+            public override long Length { get; }
+
+            public override long Position
+            {
+                get => _position;
+                set => Seek(value, SeekOrigin.Begin);
+            }
+
+            public PackageDecompressionStream(IEnumerable<Chunk> chunks, int maxBlockSize, UnrealPackageFile.CompressionType compressionType)
+            {
+                CompressionType = compressionType;
+                Chunks = chunks.OrderBy(c => c.uncompressedOffset).ToList();
+                segStartPos = firstChunkOffset = Chunks.MinBy(x => x.uncompressedOffset).uncompressedOffset;
+                var fullUncompressedSize = Chunks.Sum(x => x.uncompressedSize);
+                Length = fullUncompressedSize + firstChunkOffset;
+                Segment = MemoryManager.GetByteArray(maxBlockSize);
+                for (chunkIdx = 0; chunkIdx < Chunks.Count; chunkIdx++)
+                {
+                    for (blockIdx = 0; blockIdx < Chunks[chunkIdx].blocks.Count;)
+                    {
+                        DecompressBlock();
+                        return;
+                    }
+                }
+            }
+
+            public override int Read(byte[] buffer, int offset, int count)
+            {
+                if (_position == Length)
+                {
+                    //at end
+                    return 0;
+                }
+                int segEndPos = segStartPos + SegmentLength;
+                if (_position < segStartPos)
+                {
+                    //go to previous block (hopefully never happens)
+                    chunkIdx = 0;
+                    blockIdx = -1;
+                    return DecompressNewBlockAndRead(buffer, offset, count);
+                }
+                if (_position >= segEndPos)
+                {
+                    //go to next block
+                    return DecompressNewBlockAndRead(buffer, offset, count);
+                }
+                if (_position + count > segEndPos)
+                {
+                    //multi-segment read
+                    int bytesRemainingInBlock = SegmentLength - SegmentPosition;
+                    Buffer.BlockCopy(Segment, SegmentPosition, buffer, offset, bytesRemainingInBlock);
+                    Seek(bytesRemainingInBlock, SeekOrigin.Current);
+                    return bytesRemainingInBlock + Read(buffer, offset + bytesRemainingInBlock, count - bytesRemainingInBlock);
+                }
+
+                Buffer.BlockCopy(Segment, SegmentPosition, buffer, offset, count);
+                Seek(count, SeekOrigin.Current);
+                return count;
+            }
+
+            private int DecompressNewBlockAndRead(byte[] buffer, int offset, int count)
+            {
+                for (; chunkIdx < Chunks.Count; chunkIdx++)
+                {
+                    Chunk chunk = Chunks[chunkIdx];
+                    if (chunk.uncompressedOffset <= _position && chunk.uncompressedOffset + chunk.uncompressedSize > _position)
+                    {
+                        for (blockIdx++; blockIdx < chunk.blocks.Count; blockIdx++)
+                        {
+                            Block block = chunk.blocks[blockIdx];
+                            if (block.uncompressedOffset <= _position && block.uncompressedOffset + block.uncompressedsize > _position)
+                            {
+                                DecompressBlock();
+                                return Read(buffer, offset, count);
+                            }
+                        }
+                    }
+                    blockIdx = -1;
+                }
+
+                return 0;
+            }
+
+            private void DecompressBlock()
+            {
+                Chunk chunk = Chunks[chunkIdx];
+                Block b = chunk.blocks[blockIdx];
+                segStartPos = b.uncompressedOffset;
+                int blockstart = 16 + 8 * chunk.blocks.Count;
+                for (int i = 0; i < blockIdx; i++)
+                {
+                    blockstart += chunk.blocks[i].compressedsize;
+                }
+                SegmentLength = b.uncompressedsize;
+                ReadOnlySpan<byte> datain = chunk.Compressed.Span.Slice(blockstart, b.compressedsize);
+                switch (CompressionType)
+                {
+                    case UnrealPackageFile.CompressionType.LZO:
+                        if (LZO2.Decompress(datain, (uint)datain.Length, Segment, (uint)b.uncompressedsize) != b.uncompressedsize)
+                            throw new Exception("LZO decompression failed!");
+                        break;
+                    case UnrealPackageFile.CompressionType.Zlib:
+                        if (Zlib.Decompress(datain, (uint)datain.Length, Segment, (uint)b.uncompressedsize) != b.uncompressedsize)
+                            throw new Exception("Zlib decompression failed!");
+                        break;
+                    case UnrealPackageFile.CompressionType.LZMA:
+                        if (LZMA.Decompress(datain, (uint)datain.Length, Segment, (uint)b.uncompressedsize) != 0)
+                            throw new Exception("LZMA decompression failed!");
+                        break;
+                    case UnrealPackageFile.CompressionType.LZX:
+                        if (LZX.Decompress(datain, (uint)datain.Length, Segment, (uint)b.uncompressedsize) != 0)
+                            throw new Exception("LZX decompression failed!");
+                        break;
+                    case UnrealPackageFile.CompressionType.OodleLeviathan:
+                        // Error decompressing exception is thrown in decompress method itself
+                        OodleHelper.Decompress(datain, datain.Length, b.uncompressedsize, Segment);
+                        break;
+                    default:
+                        throw new Exception("Unknown compression type for this package.");
+                }
+
+            }
+
+            public override long Seek(long offset, SeekOrigin origin)
+            {
+                var len = Length;
+                switch (origin)
+                {
+                    case SeekOrigin.Begin:
+                        _position = offset;
+                        break;
+                    case SeekOrigin.Current:
+                        _position += offset;
+                        break;
+                    case SeekOrigin.End:
+                        _position = len - offset;
+                        break;
+                }
+                if (_position > len)
+                {
+                    _position = len;
+                }
+                else if (_position < firstChunkOffset)
+                {
+                    throw new Exception("PackageDecompressionStream cannot read header!");
+                }
+                return _position;
+            }
+
+            protected override void Dispose(bool disposing)
+            {
+                if (disposing)
+                {
+                    MemoryManager.ReturnByteArray(Segment);
+                }
+            }
+
+            public override void Write(byte[] buffer, int offset, int count) => throw new InvalidOperationException("This stream is read-only!");
+            public override void Flush() { }
+            public override void SetLength(long value) { }
+        }
     }
 }

@@ -499,11 +499,21 @@ namespace LegendaryExplorerCore.Packages
             #endregion
 
             #region Decompression of package data
+
+            //determine if tables are in order
+            bool tablesInOrder =  NameOffset < 500 && NameOffset < ImportOffset && ImportOffset < ExportOffset;
+
             packageReader.Position = savedPos; //restore position to chunk table
             Stream inStream = fs;
+            bool readExportDataInConstructor = true;
             if (IsCompressed && NumCompressedChunksAtLoad > 0)
             {
-                inStream = CompressionHelper.DecompressPackage(packageReader, compressionFlagPosition, game: Game, platform: Platform);
+                inStream = CompressionHelper.DecompressPackage(packageReader, compressionFlagPosition, game: Game, platform: Platform, 
+                                                               canUseLazyDecompression: tablesInOrder && !platformNeedsResolved);
+                if (inStream is CompressionHelper.PackageDecompressionStream)
+                {
+                    readExportDataInConstructor = false;
+                }
             }
             #endregion
 
@@ -534,12 +544,12 @@ namespace LegendaryExplorerCore.Packages
                 imports.Add(imp);
             }
 
-            //read exportTable (ExportEntry constructor reads export data)
+            //read exportTable (ExportEntry constructor reads export data if readExportDataInConstructor is true)
             inStream.JumpTo(ExportOffset);
             exports = new List<ExportEntry>(ExportCount);
             for (int i = 0; i < ExportCount; i++)
             {
-                var e = new ExportEntry(this, packageReader) { Index = i };
+                var e = new ExportEntry(this, packageReader, readExportDataInConstructor) { Index = i };
                 if (MEPackageHandler.GlobalSharedCacheEnabled)
                     e.PropertyChanged += exportChanged; // If packages are not shared there is no point to attaching this
                 exports.Add(e);
@@ -575,7 +585,17 @@ namespace LegendaryExplorerCore.Packages
                     packageReader.Position = resetPos;
                 }
             }
+
+            if (!readExportDataInConstructor)
+            {
+                foreach (var export in Exports)
+                {
+                    inStream.JumpTo(export.DataOffset);
+                    export.Data = packageReader.ReadBytes(export.DataSize);
+                }
+            }
             
+            packageReader.Dispose();
             if (Game.IsGame1() && Platform == GamePlatform.PC)
             {
                 ReadLocalTLKs();

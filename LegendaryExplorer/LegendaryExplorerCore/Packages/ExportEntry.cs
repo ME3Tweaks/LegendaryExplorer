@@ -76,7 +76,7 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         /// <param name="file"></param>
         /// <param name="stream"></param>
-        public ExportEntry(IMEPackage file, EndianReader stream)
+        public ExportEntry(IMEPackage file, EndianReader stream, bool readData = true)
         {
             FileRef = file;
             OriginalDataSize = 0;
@@ -142,11 +142,14 @@ namespace LegendaryExplorerCore.Packages
                     throw new ArgumentOutOfRangeException();
             }
             OriginalDataSize = DataSize;
-            long headerEnd = stream.Position;
+            if (readData)
+            {
+                long headerEnd = stream.Position;
 
-            stream.Seek(DataOffset, SeekOrigin.Begin);
-            _data = stream.ReadBytes(DataSize);
-            stream.Seek(headerEnd, SeekOrigin.Begin);
+                stream.Seek(DataOffset, SeekOrigin.Begin);
+                _data = stream.ReadBytes(DataSize);
+                stream.Seek(headerEnd, SeekOrigin.Begin);
+            }
         }
 
         public bool HasStack => ObjectFlags.HasFlag(EObjectFlags.HasStack);
@@ -527,7 +530,17 @@ namespace LegendaryExplorerCore.Packages
 
             set
             {
-                if (_data != null && value != null && _data.SequenceEqual(value))
+                if (_data is null)
+                {
+                    //first time initialization
+                    _data = value;
+                    return;
+                }
+                if (value is null)
+                {
+                    throw new Exception("Cannot set an ExportEntry's Data to null!");
+                }
+                if (_data.AsSpan().SequenceEqual(value))
                 {
                     return; //if the data is the same don't write it and trigger the side effects
                 }

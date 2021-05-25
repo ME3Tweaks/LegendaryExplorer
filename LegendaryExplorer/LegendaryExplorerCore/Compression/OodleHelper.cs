@@ -18,7 +18,7 @@ namespace LegendaryExplorerCore.Compression
     /// <summary>
     /// This helper class works by copying the game's oodle dll to the native libs folder of LEC and pulling it in from there.
     /// </summary>
-    class OodleHelper
+    public class OodleHelper
     {
         [DllImport(CompressionHelper.OODLE_DLL_NAME)]
         private static extern int OodleLZ_Compress(OodleFormat format, byte[] buffer, long bufferSize, byte[] outputBuffer, OodleCompressionLevel level,
