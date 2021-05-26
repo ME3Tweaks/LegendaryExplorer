@@ -2096,7 +2096,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
             catch (Exception ex)
             {
-                new BinInterpNode {Header = $"Error reading binary data: {ex}"};
+                new BinInterpNode { Header = $"Error reading binary data: {ex}" };
             }
 
             return list;
@@ -2386,7 +2386,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 int offset = binarystart;
 
-
+                // Size of the entire data to follow
                 int numBytesOfStreamingData = BitConverter.ToInt32(data, offset);
                 subnodes.Add(new BinInterpNode
                 {
@@ -2396,18 +2396,19 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 });
                 offset += 4;
 
-                var nextFileOffset = BitConverter.ToInt32(data, offset);
+                // ISB Offset
+                var isbOffset = BitConverter.ToInt32(data, offset);
                 var node = new BinInterpNode
                 {
-                    Header = $"0x{offset:X5} Next file offset: {nextFileOffset}",
+                    Header = $"0x{offset:X5} ISB file offset: 0x{isbOffset:X8}",
                     Name = "_" + offset,
                     Tag = NodeType.StructLeafInt
                 };
 
                 var clickToGotoOffset = new BinInterpNode
                 {
-                    Header = $"0x{offset:X5} Click to go to referenced offset 0x{nextFileOffset:X5}",
-                    Name = "_" + (nextFileOffset + offset)
+                    Header = $"0x{offset:X5} Click to go to referenced offset 0x{isbOffset:X5}",
+                    Name = "_" + (isbOffset + offset)
                 };
                 node.Items.Add(clickToGotoOffset);
 
@@ -2416,6 +2417,63 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 MemoryStream asStream = new MemoryStream(data);
                 asStream.Position = offset;
+
+                // ICB RIFF START
+                var icbNode = new BinInterpNode(asStream.Position, "Embedded ICB file");
+                subnodes.Add(icbNode);
+
+                while (asStream.Position < isbOffset)
+                {
+                    var pos = asStream.Position;
+                    var title = asStream.ReadStringASCII(4);
+                    var size = asStream.ReadInt32();
+
+                    if (title == "RIFF")
+                    {
+                        icbNode.Items.Add(new BinInterpNode(pos, $"File type: {asStream.ReadStringASCII(4)}"));
+                        continue; // Don't skip the whole file.
+                    }
+                    else if (title == "ctdx")
+                    {
+                        var startPos = asStream.Position;
+                        icbNode.Items.Add(new BinInterpNode(pos, $"{title} (??): {asStream.ReadStringUnicodeNull(asStream.ReadInt32())}"));
+                        // unknown remaining data
+                        asStream.Seek(startPos + size, SeekOrigin.Begin);
+
+                    }
+                    else if (title == "LIST")
+                    {
+                        // Sub entry
+                        var subISnode = new BinInterpNode(asStream.Position, "LIST") { IsExpanded = true };
+                        icbNode.Items.Add(subISnode);
+                        var endPos = asStream.Position + size;
+                        while (asStream.Position < endPos)
+                        {
+                            var spos = asStream.Position;
+                            var stitle = asStream.ReadStringASCII(4);
+                            var ssize = asStream.ReadInt32();
+
+                            if (stitle == "sdqu")
+                            {
+                                // ignore this i guess
+                                asStream.Position -= 4;
+                            }
+                            else
+                            {
+                                var nodeX = ReadISACTNode(asStream, stitle, ssize);
+                                if (nodeX != null)
+                                    subISnode.Items.Add(nodeX);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var nodeX = ReadISACTNode(asStream, title, size);
+                        if (nodeX != null)
+                            icbNode.Items.Add(nodeX);
+                    }
+                }
+
 
                 //while (asStream.Position < asStream.Length)
                 //{
@@ -2440,6 +2498,46 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
+        }
+
+        private ITreeItem ReadISACTNode(Stream inStream, string title, int size)
+        {
+            var pos = inStream.Position - 8;
+            switch (title)
+            {
+                case "snde":
+                    // not a section?
+                    inStream.Position -= 4;
+                    return null;
+                case "titl":
+                    {
+                        return new BinInterpNode(pos, $"{title} (Title): {inStream.ReadStringUnicodeNull(size)}");
+                    }
+                case "indx":
+                    {
+                        return new BinInterpNode(pos, $"{title} (Index): {inStream.ReadInt32()}");
+                    }
+                case "geix":
+                    {
+                        return new BinInterpNode(pos, $"{title} (???): {inStream.ReadInt32()}");
+                    }
+                case "trks":
+                    {
+                        return new BinInterpNode(pos, $"{title} (Track count?): {inStream.ReadInt32()}");
+                    }
+                case "gbst":
+                    return new BinInterpNode(pos, $"{title} (???): {inStream.ReadFloat()}");
+                case "tmcd":
+                case "dtmp":
+                case "dtsg":
+                    return new BinInterpNode(pos, $"{title} (???): {inStream.ReadInt32()}");
+                default:
+                    {
+                        var n = new BinInterpNode(pos, $"{title}, length {size}");
+                        inStream.Skip(size);
+                        return n;
+                    }
+            }
         }
 
         private List<ITreeItem> StartBioStateEventMapScan(byte[] data, ref int binarystart)
