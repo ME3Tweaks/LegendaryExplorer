@@ -105,5 +105,33 @@ namespace LegendaryExplorer
         {
             ToolSet.saveFavorites();
         }
+
+
+        private void SystemCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void CloseCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.CloseWindow(this);
+        }
+        
+        private void MinimizeCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.MinimizeWindow(this);
+        }
+
+        private void BackgroundMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                if (SearchBox.IsFocused)
+                {
+                    SearchBox.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+                }
+                this.DragMove();
+            }
+        }
     }
 }

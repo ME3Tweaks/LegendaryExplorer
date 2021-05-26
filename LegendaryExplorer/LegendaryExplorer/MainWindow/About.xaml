@@ -39,7 +39,7 @@
                 <TextBlock Text="Developers" FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="17"/>
                 <TextBlock Text="Main contributors" FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="14"/>
                 <TextBlock FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="15" Margin="7,0,0,0">
-                    <Run Text="• Mgamerz - Developer&#10;• SirCxyrtyx - Developer&#10;• Kinkojiro - Developer"/>
+                    <Run Text="• Mgamerz - Developer&#10;• SirCxyrtyx - Developer&#10;• Kinkojiro - Developer&#10;• HenBagle - Developer"/>
                 </TextBlock>
                 <TextBlock Text="Additional contributors" FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="14"/>
                 <TextBlock FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="15" Margin="7,0,0,0">
