@@ -17,6 +17,7 @@ using System.Windows.Threading;
 using LegendaryExplorer.Dialogs.Splash;
 using LegendaryExplorer.DialogueEditor;
 using LegendaryExplorer.GameInterop;
+using LegendaryExplorer.MainWindow;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.Misc.Telemetry;
@@ -112,7 +113,7 @@ namespace LegendaryExplorer.Startup
             {
                 LEXSplashScreen?.Close();
                 app.ShutdownMode = ShutdownMode.OnMainWindowClose;
-                var mainWindow = new MainWindow();
+                var mainWindow = new LEXMainWindow();
                 mainWindow.Show();
 
                 GameController.InitializeMessageHook(mainWindow);

@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace LegendaryExplorer
+namespace LegendaryExplorer.MainWindow
 {
     /// <summary>
     /// Interaction logic for About.xaml

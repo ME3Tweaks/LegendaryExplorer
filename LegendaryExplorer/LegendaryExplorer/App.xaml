@@ -150,12 +150,13 @@
 
         <BitmapImage x:Key="iconBikExtractor" UriSource="Tools/Icons/bikextractor_256x256.ico"/>
         <BitmapImage x:Key="iconHexConverter" UriSource="Tools/Icons/hexconverter_256x256.ico"/>
-        <BitmapImage x:Key="iconInterpViewer" UriSource="Tools/Icons/interpviewer_256x256.ico"/>
+        <BitmapImage x:Key="iconInterpEditor" UriSource="Tools/Icons/interpeditor_256x256.ico"/>
         <BitmapImage x:Key="iconPlotDatabase" UriSource="Tools/Icons/plotdatabase_256x256.ico"/>
         <BitmapImage x:Key="iconAssetDatabase" UriSource="Tools/Icons/AssetDatabase_256x256.ico"/>
         <BitmapImage x:Key="iconPSAViewer" UriSource="Tools/Icons/psaviewer_256x256.ico"/>
         <BitmapImage x:Key="iconPathfindingEditor" UriSource="Tools/Icons/pathfindingeditor_256x256.ico"/>
         <BitmapImage x:Key="iconScriptDatabase" UriSource="Tools/Icons/scriptdatabase_256x256.ico"/>
+        <BitmapImage x:Key="iconWwiseEditor" UriSource="Tools/Icons/wwiseeditor_256x256.ico"/>
         <BitmapImage x:Key="iconWwiseGraphEditor" UriSource="Tools/Icons/wwisegrapheditor_256x256.ico"/>
         <BitmapImage x:Key="iconAutoTOC" UriSource="Tools/Icons/autotoc_256x256.ico"/>
         <BitmapImage x:Key="iconAnimationExplorer" UriSource="Tools/Icons/animationexplorer_256x256.ico"/>
@@ -187,6 +188,7 @@
         <BitmapImage x:Key="iconAnimViewer" UriSource="Tools/Icons/animviewer_256x256.ico"/>
         <BitmapImage x:Key="iconAudioLocalizer" UriSource="Tools/Icons/audiolocalizer_256x256.ico"/>
         <BitmapImage x:Key="iconAFCCompactor" UriSource="Tools/Icons/afccompactor_256x256.ico"/>
+        <BitmapImage x:Key="iconCoalescedCompiler" UriSource="Tools/Icons/coalescedcompiler_256x256.ico"/>
 
 
         <BitmapImage x:Key="iconLoadingSpinner" UriSource="Resources/Images/loadingspinner.png"/>

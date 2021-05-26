@@ -51,6 +51,7 @@
     <None Remove="Tools\Icons\bug_icon.ico" />
     <None Remove="Tools\Icons\close.ico" />
     <None Remove="Tools\Icons\close_icon.ico" />
+    <None Remove="Tools\Icons\coalescedcompiler_256x256.ico" />
     <None Remove="Tools\Icons\coalescededitor_256x256.ico" />
     <None Remove="Tools\Icons\conditionalseditor_256x256.ico" />
     <None Remove="Tools\Icons\create_mods_icon.ico" />
@@ -71,6 +72,7 @@
     <None Remove="Tools\Icons\Hack-Bold.ttf" />
     <None Remove="Tools\Icons\hexconverter_256x256.ico" />
     <None Remove="Tools\Icons\install_mods_icon.ico" />
+    <None Remove="Tools\Icons\interpeditor_256x256.ico" />
     <None Remove="Tools\Icons\InterpViewer_256x256.ico" />
     <None Remove="Tools\Icons\KismetFont.ttf" />
     <None Remove="Tools\Icons\left_arrow.ico" />
@@ -114,7 +116,7 @@
     <None Remove="Tools\Icons\tlkmanager_256x256.ico" />
     <None Remove="Tools\Icons\toolset_splash.png" />
     <None Remove="Tools\Icons\wwisebankeditor_256x256.ico" />
-    <None Remove="Tools\Icons\WwiseEditor_256x256.ico" />
+    <None Remove="Tools\Icons\wwisegrapheditor_256x256.ico" />
     <None Remove="Tools\Meshplorer\udk.ico" />
     <None Remove="Tools\Meshplorer\umodel.ico" />
     <None Remove="UserControls\ExportLoaderControls\Soundpanel\WwiseTemplateProject.zip" />
@@ -182,14 +184,10 @@
     <Resource Include="Tools\PackageEditor\ExportIcons\*" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="MainWindow\OldMainWindow\**" />
-    <Compile Remove="Resources\exec\**" />
-    <EmbeddedResource Remove="MainWindow\OldMainWindow\**" />
-    <EmbeddedResource Remove="Resources\exec\**" />
-    <None Remove="MainWindow\OldMainWindow\**" />
-    <None Remove="Resources\exec\**" />
-    <Page Remove="MainWindow\OldMainWindow\**" />
-    <Page Remove="Resources\exec\**" />
+	<Compile Remove="Resources\exec\**" />
+	<EmbeddedResource Remove="Resources\exec\**" />
+	<None Remove="Resources\exec\**" />
+	<Page Remove="Resources\exec\**" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\StandardShader.hlsl" />
