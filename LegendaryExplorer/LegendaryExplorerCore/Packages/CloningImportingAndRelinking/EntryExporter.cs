@@ -12,7 +12,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 {
     public class EntryExporter
     {
-        public static List<EntryStringPair> ExportExportToPackage(ExportEntry sourceExport, IMEPackage targetPackage, out IEntry portedEntry, PackageCache globalCache = null, PackageCache pc = null)
+        private static List<EntryStringPair> ExportExportToPackageInternal(ExportEntry sourceExport, IMEPackage targetPackage, out IEntry portedEntry, PackageCache globalCache = null, PackageCache pc = null)
         {
             List<EntryStringPair> issues = new List<EntryStringPair>();
 
@@ -65,14 +65,40 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             return issues;
         }
 
-        public static List<EntryStringPair> ExportExportToPackage(ExportEntry sourceExport, string newPackagePath, out IEntry newEntry, bool compress = false)
+        /// <summary>
+        /// Exports the export and all required dependencies to the target package. Does not save the target package.
+        /// </summary>
+        /// <param name="sourceExport"></param>
+        /// <param name="targetPackage"></param>
+        /// <param name="newEntry"></param>
+        /// <param name="compress"></param>
+        /// <param name="globalCache"></param>
+        /// <param name="pc"></param>
+        /// <returns></returns>
+        public static List<EntryStringPair> ExportExportToPackage(ExportEntry sourceExport, IMEPackage targetPackage, out IEntry newEntry, PackageCache globalCache = null, PackageCache pc = null)
+        {
+            var exp = ExportExportToPackageInternal(sourceExport, targetPackage, out var nEntry, globalCache, pc);
+            newEntry = nEntry;
+            return exp;
+        }
+
+        /// <summary>
+        /// Exporst the export and all rqeuired dependencies to a package file located at the specified path. The package is saved to disk.
+        /// </summary>
+        /// <param name="sourceExport"></param>
+        /// <param name="newPackagePath"></param>
+        /// <param name="newEntry"></param>
+        /// <param name="compress"></param>
+        /// <param name="globalCache"></param>
+        /// <param name="pc"></param>
+        /// <returns></returns>
+        public static List<EntryStringPair> ExportExportToFile(ExportEntry sourceExport, string newPackagePath, out IEntry newEntry, bool? compress = null, PackageCache globalCache = null, PackageCache pc = null)
         {
             MEPackageHandler.CreateAndSavePackage(newPackagePath, sourceExport.Game);
             using var p = MEPackageHandler.OpenMEPackage(newPackagePath);
-            var exp = ExportExportToPackage(sourceExport, p, out var nEntry);
-            newEntry = nEntry;
+            var result = ExportExportToPackage(sourceExport, p, out newEntry, globalCache, pc);
             p.Save(compress: compress);
-            return exp;
+            return result;
         }
 
         /// <summary>
@@ -207,7 +233,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 // Populate imports to next file up
                 var instancedFullPath = import.InstancedFullPath;
-                if (instancedFullPath.StartsWith("Core."))
+                if (instancedFullPath.StartsWith("Core.") || instancedFullPath.StartsWith("Engine."))
                     continue; // A lot of these are not resolvable cause they're native
                 if (import.Game == MEGame.ME2 && instancedFullPath == "BioVFX_Z_TEXTURES.Generic.Glass_Shards_Norm")
                     continue; // This texture for some reason is not stored in package files... not sure where, or how it is loaded into memory

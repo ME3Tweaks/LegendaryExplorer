@@ -172,7 +172,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     //UStruct is abstract baseclass for Class, State, and Function, and can have script in it
                     if (objBin is UStruct uStructBinary && uStructBinary.ScriptBytes.Length > 0)
                     {
-                        if (relinkingExport.Game == MEGame.ME3)
+                        if (relinkingExport.Game == MEGame.ME3 || relinkingExport.Game.IsLEGame())
                         {
                             (List<Token> tokens, _) = Bytecode.ParseBytecode(uStructBinary.ScriptBytes, sourceExport);
                             foreach (Token token in tokens)

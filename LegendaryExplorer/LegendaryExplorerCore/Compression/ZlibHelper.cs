@@ -43,6 +43,9 @@ namespace LegendaryExplorerCore.Compression
         [DllImport(CompressionHelper.COMPRESSION_WRAPPER_NAME, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern int ZlibCompress(int compressionLevel, [In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
 
+        [DllImport(CompressionHelper.COMPRESSION_WRAPPER_NAME, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int ZlibCompress(int compressionLevel, in byte srcBuf, uint srcLen, in byte dstBuf, ref uint dstLen);
+
         public static uint Decompress(ReadOnlySpan<byte> src, uint srcLen, byte[] dst, uint dstLen = 0)
         {
             if (dstLen == 0)
@@ -64,7 +67,7 @@ namespace LegendaryExplorerCore.Compression
 
         public static byte[] Compress(byte[] src, int compressionLevel = -1)
         {
-            byte[] tmpbuf = new byte[(src.Length * 2) + 128];
+            byte[] tmpbuf = new byte[GetCompressionBound(src.Length)];
             uint dstLen = (uint)tmpbuf.Length;
 
             int status = ZlibCompress(compressionLevel, src, (uint)src.Length, tmpbuf, ref dstLen);
@@ -75,6 +78,29 @@ namespace LegendaryExplorerCore.Compression
             Array.Copy(tmpbuf, dst, (int)dstLen);
 
             return dst;
+        }
+
+        public static int Compress(ReadOnlySpan<byte> inputBuffer, Span<byte> outputBuffer)
+        {
+            uint compressedCount = (uint)outputBuffer.Length;
+            unsafe
+            {
+                fixed (byte* inPtr = &MemoryMarshal.GetReference(inputBuffer))
+                fixed (byte* outPtr = &MemoryMarshal.GetReference(outputBuffer))
+                {
+                    int status = ZlibCompress(-1, Unsafe.AsRef<byte>(inPtr), (uint)inputBuffer.Length, Unsafe.AsRef<byte>(outPtr), ref compressedCount);
+                    if (status != 0)
+                    {
+                        return 0;
+                    }
+                }
+            }
+            return (int)compressedCount;
+        }
+
+        public static int GetCompressionBound(int length)
+        {
+            return length + ((length + 7) >> 3) + ((length + 63) >> 6) + 11;
         }
     }
 }

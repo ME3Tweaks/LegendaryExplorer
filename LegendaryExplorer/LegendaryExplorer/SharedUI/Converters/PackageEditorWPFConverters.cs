@@ -132,7 +132,7 @@ namespace LegendaryExplorer.SharedUI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (Settings.PackageEditor_ShowExportTypeIcons  && value is ExportEntry exp && (exp.IsDefaultObject || PackageEditorWindow.ExportIconTypes.Contains(exp.ClassName)))
+            if (Settings.PackageEditor_ShowExportTypeIcons && value is ExportEntry exp && (exp.IsDefaultObject || PackageEditorWindow.ExportIconTypes.Contains(exp.ClassName)))
             {
                 return Visibility.Visible;
             }
@@ -151,7 +151,7 @@ namespace LegendaryExplorer.SharedUI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (Settings.PackageEditor_ShowExportTypeIcons  && value is ExportEntry exp && parameter is string type)
+            if (Settings.PackageEditor_ShowExportTypeIcons && value is ExportEntry exp && parameter is string type)
             {
                 return exp.ClassName == type ? Visibility.Visible : Visibility.Collapsed;
             }
@@ -177,6 +177,8 @@ namespace LegendaryExplorer.SharedUI.Converters
                     case "BioSWF":
                     case "GFxMovieInfo":
                         return $"{(parameter as string)} shockwave flash file";
+                    case "BioSoundNodeWaveStreamingData":
+                        return "ISACT Content Bank files";
                 }
             }
             return null;

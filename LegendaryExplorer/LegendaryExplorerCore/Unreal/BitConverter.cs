@@ -1,4 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Buffers.Binary;
+using System.Linq;
+using System.Runtime.InteropServices;
+using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Gammtek.IO;
 
 namespace LegendaryExplorerCore.Unreal
@@ -131,7 +135,7 @@ namespace LegendaryExplorerCore.Unreal
             }
             else
             {
-                return System.BitConverter.GetBytes(value).Reverse().ToArray();
+                return System.BitConverter.GetBytes(value.Swap());
             }
         }
         ///
@@ -153,7 +157,7 @@ namespace LegendaryExplorerCore.Unreal
             }
             else
             {
-                return System.BitConverter.GetBytes(value).Reverse().ToArray();
+                return System.BitConverter.GetBytes(value.Swap());
             }
         }
         ///
@@ -175,7 +179,7 @@ namespace LegendaryExplorerCore.Unreal
             }
             else
             {
-                return System.BitConverter.GetBytes(value).Reverse().ToArray();
+                return System.BitConverter.GetBytes(value.Swap());
             }
         }
         ///
@@ -197,7 +201,7 @@ namespace LegendaryExplorerCore.Unreal
             }
             else
             {
-                return System.BitConverter.GetBytes(value).Reverse().ToArray();
+                return System.BitConverter.GetBytes(value.Swap());
             }
         }
         ///
@@ -219,7 +223,7 @@ namespace LegendaryExplorerCore.Unreal
             }
             else
             {
-                return System.BitConverter.GetBytes(value).Reverse().ToArray();
+                return System.BitConverter.GetBytes(value.Swap());
             }
         }
         ///
@@ -241,7 +245,60 @@ namespace LegendaryExplorerCore.Unreal
             }
             else
             {
-                return System.BitConverter.GetBytes(value).Reverse().ToArray();
+                return System.BitConverter.GetBytes(value.Swap());
+            }
+        }
+
+        public static void WriteAsBytes(long value, Span<byte> buff, Endian endian)
+        {
+            if (endian.IsNative)
+            {
+                MemoryMarshal.Write(buff, ref value);
+            }
+            else
+            {
+                value = value.Swap();
+                MemoryMarshal.Write(buff, ref value);
+            }
+        }
+
+        public static void WriteAsBytes(ulong value, Span<byte> buff, Endian endian)
+        {
+            if (endian.IsNative)
+            {
+                MemoryMarshal.Write(buff, ref value);
+            }
+            else
+            {
+                value = value.Swap();
+                MemoryMarshal.Write(buff, ref value);
+            }
+        }
+
+        public static void WriteAsBytes(int value, Span<byte> buff, Endian endian)
+        {
+            if (endian.IsNative)
+            {
+                MemoryMarshal.Write(buff, ref value);
+            }
+            else
+            {
+                value = value.Swap();
+                MemoryMarshal.Write(buff, ref value);
+            }
+        }
+
+        public static void WriteAsBytes(Guid value, Span<byte> buff, Endian endian)
+        {
+            MemoryMarshal.Write(buff, ref value);
+            if (!endian.IsNative)
+            {
+                int a = BinaryPrimitives.ReadInt32BigEndian(buff);
+                int b = BinaryPrimitives.ReadInt16BigEndian(buff.Slice(4));
+                int c = BinaryPrimitives.ReadInt16BigEndian(buff.Slice(8));
+                MemoryMarshal.Write(buff, ref a);
+                MemoryMarshal.Write(buff.Slice(4), ref b);
+                MemoryMarshal.Write(buff.Slice(8), ref c);
             }
         }
         ///

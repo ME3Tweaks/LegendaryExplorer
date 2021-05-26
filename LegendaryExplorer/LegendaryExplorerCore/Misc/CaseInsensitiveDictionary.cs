@@ -10,6 +10,14 @@ namespace LegendaryExplorerCore.Misc
         {
         }
 
+        /// <summary>
+        /// Initializes a case insensitive dictionary with a specific capacity
+        /// </summary>
+        /// <param name="capacity"></param>
+        public CaseInsensitiveDictionary(int capacity) : base(capacity, StringComparer.OrdinalIgnoreCase)
+        {
+        }
+
         public CaseInsensitiveDictionary(IDictionary<string, TValue> dictionary) : base(dictionary, StringComparer.OrdinalIgnoreCase)
         {
         }

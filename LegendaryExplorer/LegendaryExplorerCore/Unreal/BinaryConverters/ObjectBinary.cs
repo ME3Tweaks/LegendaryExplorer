@@ -209,6 +209,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     return FromDEBUG<ObjectRedirector>(export);
                 case "TextureMovie":
                     return FromDEBUG<TextureMovie>(export);
+                case "BioSoundNodeWaveStreamingData":
+                    return FromDEBUG<BioSoundNodeWaveStreamingData>(export);
                 default:
                     return null;
             }
@@ -393,6 +395,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     return From<BioQuestMap>(export);
                 case "BioStateEventMap":
                     return From<BioStateEventMap>(export);
+                case "BioSoundNodeWaveStreamingData":
+                    return From<BioSoundNodeWaveStreamingData>(export);
                 default:
                     return null;
             }

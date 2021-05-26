@@ -16,6 +16,7 @@
 //#define LITTLEENDIANSTREAM
 
 using System;
+using System.Buffers.Binary;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
@@ -460,7 +461,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
             else
             {
                 //cast to int to ensure we have some comparisons.
-                var reversed = (int)Endian.Native.To(Endian.NonNative).Convert(readMagic);
+                var reversed = (int)BinaryPrimitives.ReverseEndianness(readMagic);
                 if (reversed != magic)
                 {
                     throw new Exception($"Magic number {readMagic:X8} does not match either big or little endianness for expected value 0x{magic:X8}");
@@ -600,7 +601,11 @@ namespace LegendaryExplorerCore.Gammtek.IO
         {
             return ReadBytes(size);
         }
-
+        
+        /// <summary>
+        /// Copies stream to a new array. Consider using a more performant method if at all possible.
+        /// </summary>
+        /// <returns></returns>
         public byte[] ToArray()
         {
             var pos = Position;
@@ -615,7 +620,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
         public static float ToSingle(byte[] buffer, int offset, Endian endianness)
         {
             var readMagic = BitConverter.ToSingle(buffer, offset);
-            if (Endian.Native != endianness)
+            if (!endianness.IsNative)
             {
                 //swap
                 return Endian.Native.To(Endian.NonNative).Convert(readMagic);
@@ -626,10 +631,10 @@ namespace LegendaryExplorerCore.Gammtek.IO
         public static ushort ToUInt16(byte[] buffer, int offset, Endian endianness)
         {
             var readMagic = BitConverter.ToUInt16(buffer, offset);
-            if (Endian.Native != endianness)
+            if (!endianness.IsNative)
             {
                 //swap
-                return Endian.Native.To(Endian.NonNative).Convert(readMagic);
+                return BinaryPrimitives.ReverseEndianness(readMagic);
             }
             return readMagic;
         }
@@ -641,10 +646,10 @@ namespace LegendaryExplorerCore.Gammtek.IO
         public static int ToInt32(byte[] buffer, int offset, Endian endianness)
         {
             var readMagic = BitConverter.ToInt32(buffer, offset);
-            if (Endian.Native != endianness)
+            if (!endianness.IsNative)
             {
                 //swap
-                return Endian.Native.To(Endian.NonNative).Convert(readMagic);
+                return BinaryPrimitives.ReverseEndianness(readMagic);
             }
             return readMagic;
         }
@@ -656,10 +661,25 @@ namespace LegendaryExplorerCore.Gammtek.IO
         public static int ToInt32(ReadOnlySpan<byte> buffer, int offset, Endian endianness)
         {
             var readMagic = MemoryMarshal.Read<int>(buffer.Slice(offset));
-            if (Endian.Native != endianness)
+            if (!endianness.IsNative)
             {
                 //swap
-                return Endian.Native.To(Endian.NonNative).Convert(readMagic);
+                return BinaryPrimitives.ReverseEndianness(readMagic);
+            }
+            return readMagic;
+        }
+
+        /// <summary>
+        /// Reads an int32 from the span.
+        /// </summary>
+        /// <returns></returns>
+        public static int ToInt32(ReadOnlySpan<byte> buffer, Endian endianness)
+        {
+            var readMagic = MemoryMarshal.Read<int>(buffer);
+            if (!endianness.IsNative)
+            {
+                //swap
+                return BinaryPrimitives.ReverseEndianness(readMagic);
             }
             return readMagic;
         }
@@ -671,10 +691,10 @@ namespace LegendaryExplorerCore.Gammtek.IO
         public static short ToInt16(byte[] buffer, int offset, Endian endianness)
         {
             var readMagic = BitConverter.ToInt16(buffer, offset);
-            if (Endian.Native != endianness)
+            if (!endianness.IsNative)
             {
                 //swap
-                return Endian.Native.To(Endian.NonNative).Convert(readMagic);
+                return BinaryPrimitives.ReverseEndianness(readMagic);
             }
             return readMagic;
         }
@@ -686,10 +706,10 @@ namespace LegendaryExplorerCore.Gammtek.IO
         public static uint ToUInt32(byte[] buffer, int offset, Endian endianness)
         {
             var readMagic = BitConverter.ToUInt32(buffer, offset);
-            if (Endian.Native != endianness)
+            if (!endianness.IsNative)
             {
                 //swap
-                return Endian.Native.To(Endian.NonNative).Convert(readMagic);
+                return BinaryPrimitives.ReverseEndianness(readMagic);
             }
             return readMagic;
         }
@@ -701,12 +721,35 @@ namespace LegendaryExplorerCore.Gammtek.IO
         public static ulong ToUInt64(byte[] buffer, int offset, Endian endianness)
         {
             var readMagic = BitConverter.ToUInt64(buffer, offset);
-            if (Endian.Native != endianness)
+            if (!endianness.IsNative)
             {
                 //swap
-                return Endian.Native.To(Endian.NonNative).Convert(readMagic);
+                return BinaryPrimitives.ReverseEndianness(readMagic);
             }
             return readMagic;
+        }
+        
+        public static Guid ToGuid(ReadOnlySpan<byte> span, Endian endianness)
+        {
+            if (endianness.IsNative)
+            {
+                return new Guid(span);
+            }
+            else
+            {
+                return new Guid(
+                    BinaryPrimitives.ReadInt32BigEndian(span),
+                    BinaryPrimitives.ReadInt16BigEndian(span.Slice(4)),
+                    BinaryPrimitives.ReadInt16BigEndian(span.Slice(8)),
+                    span[8],
+                    span[9],
+                    span[10],
+                    span[11],
+                    span[12],
+                    span[13],
+                    span[14],
+                    span[15]);
+            }
         }
 
         /// <summary>
@@ -724,10 +767,10 @@ namespace LegendaryExplorerCore.Gammtek.IO
                               (buffer[offset + 5] << 16) +
                               (buffer[offset + 6] << 8) +
                               buffer[offset + 7]);
-            if (Endian.Native != endianness)
+            if (!endianness.IsNative)
             {
                 //swap
-                return Endian.Native.To(Endian.NonNative).Convert(readMagic);
+                return BinaryPrimitives.ReverseEndianness(readMagic);
             }
             return readMagic;
         }

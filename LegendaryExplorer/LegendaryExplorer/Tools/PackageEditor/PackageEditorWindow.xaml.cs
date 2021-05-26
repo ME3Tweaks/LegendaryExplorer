@@ -18,6 +18,7 @@ using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.DialogueEditor;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
+using LegendaryExplorer.Misc.ME3Tweaks;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Interfaces;
@@ -309,8 +310,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
             ExtractToPackageCommand = new GenericCommand(ExtractEntryToNewPackage, ExportIsSelected);
 
             RestoreExportCommand = new GenericCommand(RestoreExportData, ExportIsSelected);
-            OpenLEVersionCommand = new GenericCommand(()=> OpenOtherVersion(true), IsLoadedPackageOT);
-            OpenOTVersionCommand = new GenericCommand(()=> OpenOtherVersion(false), IsLoadedPackageLE);
+            OpenLEVersionCommand = new GenericCommand(() => OpenOtherVersion(true), IsLoadedPackageOT);
+            OpenOTVersionCommand = new GenericCommand(() => OpenOtherVersion(false), IsLoadedPackageLE);
         }
 
         private bool IsLoadedPackageOT() => Pcc != null && Pcc.Game.IsOTGame();
@@ -425,7 +426,26 @@ namespace LegendaryExplorer.Tools.PackageEditor
             var d = new SaveFileDialog { Filter = fileFilter };
             if (d.ShowDialog() == true)
             {
-                Task.Run(() => EntryExporter.ExportExportToPackage(SelectedItem.Entry as ExportEntry, d.FileName, out _))
+                Func<List<EntryStringPair>> PortFunc = () => EntryExporter.ExportExportToFile(SelectedItem.Entry as ExportEntry, d.FileName, out _);
+                if (File.Exists(d.FileName))
+                {
+                    var portIntoExistingRes = MessageBox.Show(this, $"Export the selected export ({SelectedItem.Entry.InstancedFullPath}) into the selected file ({d.FileName})? Or port into a new file, overwriting it?\n\nPress Yes to port into the existing file.\nPress No to port as a new file\nPress cancel to abort", "Port into new or existing file?", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+                    if (portIntoExistingRes == MessageBoxResult.Yes)
+                    {
+                        PortFunc = () =>
+                        {
+                            using var package = MEPackageHandler.OpenMEPackage(d.FileName);
+                            var results = EntryExporter.ExportExportToFile(SelectedItem.Entry as ExportEntry, d.FileName, out _);
+                            package.Save();
+                            return results;
+                        };
+                    }
+                    else if (portIntoExistingRes == MessageBoxResult.Cancel)
+                    {
+                        return;
+                    } // No condition changes nothing
+                }
+                Task.Run(() => PortFunc.Invoke())
                     .ContinueWithOnUIThread(results =>
                         {
                             IsBusy = false;
@@ -1395,6 +1415,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     case "BioSWF":
                     case "GFxMovieInfo":
                     case "BioTlkFile":
+                    case "BioSoundNodeWaveStreamingData":
                         return true;
                 }
             }
@@ -1466,6 +1487,39 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             {
                                 var exportingTalk = new ME1TalkFile(exp);
                                 exportingTalk.saveToFile(d.FileName);
+                                MessageBox.Show("Done");
+                            }
+                        }
+                        break;
+                    case "BioSoundNodeWaveStreamingData":
+                        {
+                            var d = new CommonOpenFileDialog()
+                            {
+                                Title = "Select output folder for ICBs",
+                                IsFolderPicker = true
+                            };
+                            if (d.ShowDialog() == CommonFileDialogResult.Ok)
+                            {
+                                var outDir = d.FileName;
+                                // todo: Use objectbinary when we implement it
+                                var data = new MemoryStream(exp.GetBinaryData());
+                                var totalStreamingDataLen = data.ReadInt32();
+                                var isbOffset = data.ReadInt32();
+
+                                while (data.Position < data.Length)
+                                {
+                                    var dataStartPos = data.Position; // RIFF start
+                                    data.Skip(0x4); // get riff length
+                                    var riffLen = data.ReadInt32() + 0x8; // include len and RIFF
+                                    data.Skip(0x8); // Jump to start of unicode string
+                                    var strLen = data.ReadInt32();
+                                    var icbName = data.ReadStringUnicodeNull(strLen);
+
+                                    data.Position = dataStartPos;
+                                    using FileStream fs = new FileStream(Path.Combine(outDir, icbName), FileMode.Create);
+                                    data.CopyToEx(fs, riffLen);
+                                }
+
                                 MessageBox.Show("Done");
                             }
                         }
@@ -1548,6 +1602,41 @@ namespace LegendaryExplorer.Tools.PackageEditor
                                 HuffmanCompression compressor = new HuffmanCompression();
                                 compressor.LoadInputData(d.FileName);
                                 compressor.serializeTalkfileToExport(exp, false);
+                            }
+                        }
+                        break;
+                    case "BioSoundNodeWaveStreamingData":
+                        {
+                            // Requires ICB and ISB
+                            string extension = Path.GetExtension(".icb");
+                            var d = new OpenFileDialog
+                            {
+                                Title = "Select processed ICB from ISACT",
+                                Filter = $"*{extension}|*{extension}"
+                            };
+
+                            string embeddedICBf = null;
+                            string embeddedISBf = null;
+                            if (d.ShowDialog() == true)
+                            {
+                                var baseName = Path.GetFileNameWithoutExtension(d.FileName);
+                                var basePath = Directory.GetParent(d.FileName).FullName;
+
+                                // Strip data from ISB
+                                //MemoryStream 
+                                //MemoryStream outStr = new MemoryStream();
+                                //outStr.WriteStringASCII("RIFF");
+                                //outStr.WriteInt32(0); // Placeolder position
+
+                                //while ()
+
+                                //// Re-write RIFF size
+                                //outStr.Seek(0x4, SeekOrigin.Begin);
+                                //outStr.WriteInt32((int)outStr.Length);
+
+                                var bsnwsd = ObjectBinary.From<BioSoundNodeWaveStreamingData>(exp);
+                                bsnwsd.EmbeddedICB = File.ReadAllBytes(d.FileName);
+                                exp.WriteBinary(bsnwsd);
                             }
                         }
                         break;
@@ -2090,9 +2179,9 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private void CompareUnmodded()
         {
-            if (Pcc.Game != MEGame.ME1 && Pcc.Game != MEGame.ME2 && Pcc.Game != MEGame.ME3)
+            if (!Pcc.Game.IsLEGame() && !Pcc.Game.IsOTGame())
             {
-                MessageBox.Show(this, "Not a trilogy file!");
+                MessageBox.Show(this, "Can only compare packages from the Original Trilogy or Legendary Edition.", "Can't compare", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -2134,8 +2223,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         {
             string lookupFilename = Path.GetFileName(Pcc.FilePath);
             string dlcPath = MEDirectories.GetDLCPath(Pcc.Game);
-            string backupPath = null; //TODO: IMPLEMENT INTO LEX
-                                      //ME3TweaksBackups.GetGameBackupPath(Pcc.Game);
+            string backupPath = ME3TweaksBackups.GetGameBackupPath(Pcc.Game);
             var unmoddedCandidates = new UnmoddedCandidatesLookup();
 
             // Lookup unmodded ON DISK files
