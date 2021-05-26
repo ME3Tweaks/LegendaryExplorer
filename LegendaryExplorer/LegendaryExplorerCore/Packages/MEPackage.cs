@@ -664,7 +664,9 @@ namespace LegendaryExplorerCore.Packages
         private static void saveByReconstructing(MEPackage mePackage, string path, bool isSaveAs, bool compress, bool includeAdditionalPackagesToCook, bool includeDependencyTable, object diskIOSyncLockObject = null)
         {
             //var sw = Stopwatch.StartNew();
-            using var saveStream = saveByReconstructingToStream(mePackage, isSaveAs, compress, includeAdditionalPackagesToCook, includeDependencyTable);
+            using var saveStream = compress 
+                ? saveCompressed(mePackage, isSaveAs, includeAdditionalPackagesToCook, includeDependencyTable) 
+                : saveUncompressed(mePackage, includeAdditionalPackagesToCook, includeDependencyTable);
 
             // Lock writing with the sync object (if not null) to prevent disk concurrency issues
             // (the good old 'This file is in use by another process' message)
@@ -692,11 +694,13 @@ namespace LegendaryExplorerCore.Packages
 
         /// <summary>
         /// Compresses a package's uncompressed stream to a compressed stream and returns it.
+        /// Obsolete now. Delete in the future if saveCompressed doesn't have unforeseen problems.
         /// </summary>
         /// <param name="package"></param>
         /// <param name="uncompressedStream"></param>
         /// <returns></returns>
-        private static MemoryStream compressPackage(MEPackage package, MemoryStream uncompressedStream, bool includeAdditionalPackageToCook = true)
+        [Obsolete]
+        private static MemoryStream compressUncompressedPackageStream(MEPackage package, MemoryStream uncompressedStream, bool includeAdditionalPackageToCook = true)
         {
             uncompressedStream.Position = 0;
 
@@ -893,190 +897,394 @@ namespace LegendaryExplorerCore.Packages
         /// Saves the package to stream. If this saving operation is not going to be committed to disk in the same place as the package was loaded from, you should mark this as a 'save as'.
         /// </summary>
         /// <param name="mePackage"></param>
-        /// <param name="isSaveAs"></param>
-        /// <param name="compress"></param>
         /// <param name="includeAdditionalPackageToCook"></param>
         /// <param name="includeDependencyTable"></param>
         /// <returns></returns>
-        private static MemoryStream saveByReconstructingToStream(MEPackage mePackage, bool isSaveAs, bool compress, bool includeAdditionalPackageToCook = true, bool includeDependencyTable = true)
+        private static MemoryStream saveUncompressed(MEPackage mePackage, bool includeAdditionalPackageToCook = true, bool includeDependencyTable = true)
         {
             if (mePackage.Platform != GamePlatform.PC) throw new Exception("Cannot save packages for platforms other than PC");
             //if (mePackage.Game == MEGame.ME1 && compress) throw new Exception("Cannot save ME1 packages compressed due to texture linking issues");
 
-            var sourceIsCompressed = mePackage.IsCompressed;
-
-            // Set the compression flag that will be saved
-            if (!compress)
+            //calculate total size, to prevent MemoryStream re-sizing
+            int nameTableSize = mePackage.names.Sum(name => name.Length);
+            switch (mePackage.Game)
             {
-                mePackage.Flags &= ~EPackageFlags.Compressed;
+                case MEGame.ME1:
+                    nameTableSize += 13 * mePackage.NameCount;
+                    break;
+                case MEGame.ME2:
+                    nameTableSize += 9 * mePackage.NameCount;
+                    break;
+                case MEGame.ME3:
+                case MEGame.LE3:
+                    nameTableSize = nameTableSize * 2 + 6 * mePackage.NameCount;
+                    break;
+                case MEGame.LE1:
+                case MEGame.LE2:
+                    nameTableSize += 5 * mePackage.NameCount;
+                    break;
             }
-            else
-            {
-                mePackage.Flags |= EPackageFlags.Compressed;
-            }
 
-            try
+            int importTableSize = mePackage.imports.Count * ImportEntry.headerSize;
+            int exportTableSize = mePackage.exports.Sum(exp => exp.Header.Length);
+            int dependencyTableSize = (includeDependencyTable ? mePackage.ExportCount * 4 : 4);
+            int totalSize = 500 //fake header size. will mean allocating a few hundred extra bytes, but that's not a huge deal.
+                          + nameTableSize
+                          + importTableSize
+                          + exportTableSize
+                          + dependencyTableSize
+                          + mePackage.exports.Sum(exp => exp.DataSize);
+
+
+            var ms = MemoryManager.GetMemoryStream(totalSize);
+
+            //just for positioning. We write over this later when the header values have been updated
+            mePackage.WriteHeader(ms, includeAdditionalPackageToCook: includeAdditionalPackageToCook);
+
+            //name table
+            mePackage.NameOffset = (int)ms.Position;
+            mePackage.NameCount = mePackage.Gen0NameCount = mePackage.names.Count;
+            foreach (string name in mePackage.names)
             {
-                //calculate total size, to prevent MemoryStream re-sizing
-                int nameSize = mePackage.names.Sum(name => name.Length);
                 switch (mePackage.Game)
                 {
                     case MEGame.ME1:
-                        nameSize += 13 * mePackage.NameCount;
+                        ms.WriteUnrealStringLatin1(name);
+                        ms.WriteInt32(0);
+                        ms.WriteInt32(458768);
                         break;
                     case MEGame.ME2:
-                        nameSize += 9 * mePackage.NameCount;
+                        ms.WriteUnrealStringLatin1(name);
+                        ms.WriteInt32(-14);
                         break;
                     case MEGame.ME3:
                     case MEGame.LE3:
-                        nameSize = nameSize * 2 + 6 * mePackage.NameCount;
+                        ms.WriteUnrealStringUnicode(name);
                         break;
                     case MEGame.LE1:
                     case MEGame.LE2:
-                        nameSize += 5 * mePackage.NameCount;
+                        ms.WriteUnrealStringLatin1(name);
                         break;
                 }
-                int totalSize = 500 //fake header size. will mean allocating a few hundred extra bytes, but that's not a huge deal.
-                              + nameSize
-                              + mePackage.imports.Count * ImportEntry.headerSize 
-                              + mePackage.exports.Sum(exp => exp.Header.Length + exp.DataSize)
-                              + (includeDependencyTable ? mePackage.ExportCount * 4 : 4);
+            }
 
+            //import table
+            mePackage.ImportOffset = (int)ms.Position;
+            mePackage.ImportCount = mePackage.imports.Count;
+            foreach (ImportEntry e in mePackage.imports)
+            {
+                ms.WriteFromBuffer(e.Header);
+            }
 
-                var ms = MemoryManager.GetMemoryStream(totalSize);
+            //export table
+            mePackage.ExportOffset = (int)ms.Position;
+            mePackage.ExportCount = mePackage.Gen0ExportCount = mePackage.exports.Count;
+            foreach (ExportEntry e in mePackage.exports)
+            {
+                e.HeaderOffset = (int)ms.Position;
+                ms.WriteFromBuffer(e.Header);
+            }
 
-                //just for positioning. We write over this later when the header values have been updated
-                mePackage.WriteHeader(ms, includeAdditionalPackageToCook: includeAdditionalPackageToCook);
+            mePackage.DependencyTableOffset = (int)ms.Position;
 
-                //name table
-                mePackage.NameOffset = (int)ms.Position;
-                mePackage.NameCount = mePackage.Gen0NameCount = mePackage.names.Count;
-                foreach (string name in mePackage.names)
+            if (includeDependencyTable)
+            {
+                //Unreal Engine style (keeping in line with the package specification)
+                //write the table out. No count for this table.
+                ms.Position += mePackage.ExportCount * 4; //no need to allocate an array then copy a bunch of zeros, setting position past Length will call Array.Clear
+            }
+            else
+            {
+                //ME3EXP STYLE -BLANK(?) table
+                ms.WriteInt32(0); //Technically this is not a count. The count is the number of exports. but this is just for consistency with ME3Exp.
+            }
+
+            mePackage.FullHeaderSize = mePackage.ImportExportGuidsOffset = (int)ms.Position;
+
+            //export data
+            foreach (ExportEntry e in mePackage.exports)
+            {
+                int oldDataOffset = e.DataOffset;
+
+                // Update the header position
+                //needs to be updated BEFORE the offsets are updated 
+                e.DataOffset = (int)ms.Position;
+
+                UpdateOffsets(e, oldDataOffset);
+
+                ms.Write(e.DataReadOnly);
+                //update size and offset in already-written header
+                long pos = ms.Position;
+                ms.JumpTo(e.HeaderOffset + 32);
+                ms.WriteInt32(e.DataSize);
+                ms.WriteInt32(e.DataOffset);
+                ms.JumpTo(pos);
+            }
+
+            ms.JumpTo(0);
+            //re-write header with updated values
+            mePackage.WriteHeader(ms, includeAdditionalPackageToCook: includeAdditionalPackageToCook);
+            return ms;
+        }
+
+        private static MemoryStream saveCompressed(MEPackage package, bool isSaveAs, bool includeAdditionalPackageToCook = true, bool includeDependencyTable = true)
+        {
+            if (package.Platform != GamePlatform.PC) throw new Exception("Cannot save packages for platforms other than PC");
+            var sourceIsCompressed = package.IsCompressed;
+            try
+            {
+                package.Flags |= EPackageFlags.Compressed;
+            
+                int nameTableSize = package.names.Sum(name => name.Length);
+                switch (package.Game)
                 {
-                    switch (mePackage.Game)
+                    case MEGame.ME1:
+                        nameTableSize += 13 * package.NameCount;
+                        break;
+                    case MEGame.ME2:
+                        nameTableSize += 9 * package.NameCount;
+                        break;
+                    case MEGame.ME3:
+                    case MEGame.LE3:
+                        nameTableSize = nameTableSize * 2 + 6 * package.NameCount;
+                        break;
+                    case MEGame.LE1:
+                    case MEGame.LE2:
+                        nameTableSize += 5 * package.NameCount;
+                        break;
+                }
+
+                int importTableSize = package.imports.Count * ImportEntry.headerSize;
+                int exportTableSize = package.exports.Sum(exp => exp.Header.Length);
+                int dependencyTableSize = (includeDependencyTable ? package.ExportCount * 4 : 4);
+                int totalSize = 500 //fake header size.
+                              + nameTableSize
+                              + importTableSize
+                              + exportTableSize
+                              + dependencyTableSize
+                              + package.exports.Sum(exp => exp.DataSize);
+
+                int compressedLengthEstimate = (int)(totalSize / 3.5);
+                var compressedStream = new MemoryStream(compressedLengthEstimate);
+                package.WriteHeader(compressedStream, includeAdditionalPackageToCook:includeAdditionalPackageToCook);
+
+                //calculate all offsets
+                package.NameOffset = (int)compressedStream.Position;
+                package.NameCount = package.Gen0NameCount = package.names.Count;
+                package.ImportOffset = package.NameOffset + nameTableSize;
+                package.ImportCount = package.imports.Count;
+                package.ExportOffset = package.ImportOffset + importTableSize;
+                package.ExportCount = package.Gen0ExportCount = package.exports.Count;
+                int offset = package.ExportOffset;
+                foreach (ExportEntry export in package.exports)
+                {
+                    export.HeaderOffset = offset;
+                    offset += export.Header.Length;
+                }
+                package.DependencyTableOffset = offset;
+                package.FullHeaderSize = package.ImportExportGuidsOffset = offset + dependencyTableSize;
+
+                //calculate chunks
+                var chunks = new List<CompressionHelper.Chunk>();
+                var compressionType = package.Game switch
+                {
+                    MEGame.ME3 => CompressionType.Zlib,
+                    MEGame.LE1 => CompressionType.OodleLeviathan,
+                    MEGame.LE2 => CompressionType.OodleLeviathan,
+                    MEGame.LE3 => CompressionType.OodleLeviathan,
+                    _ => CompressionType.LZO
+                };
+                var maxBlockSize = package.Game.IsOTGame() ? CompressionHelper.MAX_BLOCK_SIZE_OT : CompressionHelper.MAX_BLOCK_SIZE_LE;
+                //Tables chunk
+                var chunk = new CompressionHelper.Chunk
+                {
+                    uncompressedSize = package.FullHeaderSize - package.NameOffset,
+                    uncompressedOffset = package.NameOffset,
+                    blocks = new List<CompressionHelper.Block>()
+                };
+                int actualMaxChunkSize = chunk.uncompressedSize;
+                //Export data chunks
+                offset = package.FullHeaderSize;
+                foreach (ExportEntry e in package.Exports)
+                {
+                    int exportDataSize = e.DataSize;
+                    int oldExportOffset = e.DataOffset;
+                    e.DataOffset = offset;
+                    offset += exportDataSize;
+
+                    UpdateOffsets(e, oldExportOffset);
+
+                    if (chunk.uncompressedSize + exportDataSize > CompressionHelper.MAX_CHUNK_SIZE)
                     {
-                        case MEGame.ME1:
-                            ms.WriteUnrealStringLatin1(name);
-                            ms.WriteInt32(0);
-                            ms.WriteInt32(458768);
+                        //Rollover to the next chunk as this chunk would be too big if we tried to put this export into the chunk
+                        actualMaxChunkSize = Math.Max(actualMaxChunkSize, chunk.uncompressedSize);
+                        chunks.Add(chunk);
+                        chunk = new CompressionHelper.Chunk
+                        {
+                            uncompressedSize = exportDataSize,
+                            uncompressedOffset = e.DataOffset,
+                            blocks = new List<CompressionHelper.Block>()
+                        };
+                    }
+                    else
+                    {
+                        chunk.uncompressedSize += exportDataSize; //This chunk can fit this export
+                    }
+                }
+                actualMaxChunkSize = Math.Max(actualMaxChunkSize, chunk.uncompressedSize);
+                chunks.Add(chunk);
+
+                //Rewrite header with chunk table information so we can position the data blocks after table
+                compressedStream.Position = 0;
+                package.WriteHeader(compressedStream, compressionType, chunks, includeAdditionalPackageToCook);
+
+                var uncompressedData = MemoryManager.GetByteArray(actualMaxChunkSize);
+                int positionInChunkData;
+            
+                //write tables to first chunk
+                using (var ms = new MemoryStream(uncompressedData))
+                {
+                    foreach (string name in package.names)
+                    {
+                        switch (package.Game)
+                        {
+                            case MEGame.ME1:
+                                ms.WriteUnrealStringLatin1(name);
+                                ms.WriteInt32(0);
+                                ms.WriteInt32(458768);
+                                break;
+                            case MEGame.ME2:
+                                ms.WriteUnrealStringLatin1(name);
+                                ms.WriteInt32(-14);
+                                break;
+                            case MEGame.ME3:
+                            case MEGame.LE3:
+                                ms.WriteUnrealStringUnicode(name);
+                                break;
+                            case MEGame.LE1:
+                            case MEGame.LE2:
+                                ms.WriteUnrealStringLatin1(name);
+                                break;
+                        }
+                    }
+                    foreach (ImportEntry e in package.imports)
+                    {
+                        ms.WriteFromBuffer(e.Header);
+                    }
+                    foreach (ExportEntry e in package.exports)
+                    {
+                        ms.WriteFromBuffer(e.Header);
+                    }
+                    Array.Clear(uncompressedData, (int)ms.Position, dependencyTableSize);
+                    positionInChunkData = (int)ms.Position + dependencyTableSize;
+                }
+
+                var compressionOutputSize = compressionType switch
+                {
+                    CompressionType.Zlib => Zlib.GetCompressionBound(maxBlockSize),
+                    CompressionType.LZO => LZO2.GetCompressionBound(maxBlockSize),
+                    CompressionType.OodleLeviathan => OodleHelper.GetCompressionBound(maxBlockSize),
+                    _ => throw new Exception("Internal error: Unsupported compression type for compressing blocks: " + compressionType)
+                };
+                int maxBlocksInChunk = (int)Math.Ceiling(actualMaxChunkSize * 1.0 / maxBlockSize);
+                var rentedOutputArrays = new List<byte[]>();
+                for (int j = rentedOutputArrays.Count; j < maxBlocksInChunk; j++)
+                {
+                    rentedOutputArrays.Add(MemoryManager.GetByteArray(compressionOutputSize));
+                }
+                int exportIdx = 0;
+                ExportEntry curExport = package.exports[exportIdx];
+                for (int i = 0; i < chunks.Count; i++)
+                {
+                    chunk = chunks[i];
+                    chunk.compressedOffset = (int)compressedStream.Position;
+                    chunk.compressedSize = 0;
+                    int dataSizeRemainingToCompress = chunk.uncompressedSize;
+                    int chunkUncompressedEndOffset = chunk.uncompressedOffset + chunk.uncompressedSize;
+                    int numBlocksInChunk = (int)Math.Ceiling(chunk.uncompressedSize * 1.0 / maxBlockSize);
+
+                    // skip chunk header and blocks table - filled later
+                    compressedStream.Seek(CompressionHelper.SIZE_OF_CHUNK_HEADER + CompressionHelper.SIZE_OF_CHUNK_BLOCK_HEADER * numBlocksInChunk, SeekOrigin.Current);
+
+                    //write Export Data to chunk
+                    //export data never crosses chunk boundaries, so we only need to check if the beginning of the data is in the chunk
+                    while (curExport.DataOffset < chunkUncompressedEndOffset)
+                    {
+                        curExport.DataReadOnly.CopyTo(uncompressedData.AsSpan(positionInChunkData));
+                        positionInChunkData += curExport.DataSize;
+                        ++exportIdx;
+                        if (exportIdx >= package.ExportCount)
+                        {
                             break;
-                        case MEGame.ME2:
-                            ms.WriteUnrealStringLatin1(name);
-                            ms.WriteInt32(-14);
-                            break;
-                        case MEGame.ME3:
-                        case MEGame.LE3:
-                            ms.WriteUnrealStringUnicode(name);
-                            break;
-                        case MEGame.LE1:
-                        case MEGame.LE2:
-                            ms.WriteUnrealStringLatin1(name);
-                            break;
+                        }
+                        curExport = package.exports[exportIdx];
+                    }
+
+                    //Calculate blocks by splitting data into 128KB "block chunks".
+                    positionInChunkData = 0;
+                    for (int b = 0; b < numBlocksInChunk; b++)
+                    {
+                        var block = new CompressionHelper.Block();
+                        block.uncompressedsize = Math.Min(maxBlockSize, dataSizeRemainingToCompress);
+                        dataSizeRemainingToCompress -= block.uncompressedsize;
+                        block.uncompressedData = uncompressedData.AsMemory(positionInChunkData, block.uncompressedsize);
+                        block.compressedData = rentedOutputArrays[b];
+                        chunk.blocks.Add(block);
+
+                        positionInChunkData += block.uncompressedsize;
+                    }
+
+                    //Compress blocks
+                    Parallel.ForEach(chunk.blocks, block =>
+                    {
+                        block.compressedsize = compressionType switch
+                        {
+                            CompressionType.LZO => LZO2.Compress(block.uncompressedData.Span, block.compressedData),
+                            CompressionType.Zlib => Zlib.Compress(block.uncompressedData.Span, block.compressedData),
+                            CompressionType.OodleLeviathan => OodleHelper.Compress(block.uncompressedData.Span, block.compressedData),
+                            _ => throw new Exception("Internal error: Unsupported compression type for compressing blocks: " + compressionType)
+                        };
+                        if (block.compressedsize == 0)
+                            throw new Exception("Internal error: Block compression failed! Compressor returned no bytes");
+                    });
+
+                    //Write compressed data to stream 
+                    for (int b = 0; b < numBlocksInChunk; b++)
+                    {
+                        var block = chunk.blocks[b];
+                        compressedStream.Write(block.compressedData, 0, block.compressedsize);
+                        chunk.compressedSize += block.compressedsize;
+                    }
+
+                    positionInChunkData = 0;
+                }
+                MemoryManager.ReturnByteArray(uncompressedData);
+                foreach (byte[] rentedArray in rentedOutputArrays)
+                {
+                    MemoryManager.ReturnByteArray(rentedArray);
+                }
+
+                //Update each chunk header with new information
+                foreach (var c in chunks)
+                {
+                    compressedStream.JumpTo(c.compressedOffset); // jump to blocks header
+                    compressedStream.WriteUInt32(packageTagLittleEndian);
+                    compressedStream.WriteInt32(maxBlockSize); // technically this is apparently a UINT
+                    compressedStream.WriteInt32(c.compressedSize);
+                    compressedStream.WriteInt32(c.uncompressedSize);
+
+                    //write block header table
+                    foreach (var block in c.blocks)
+                    {
+                        compressedStream.WriteInt32(block.compressedsize);
+                        compressedStream.WriteInt32(block.uncompressedsize);
                     }
                 }
 
-                //import table
-                mePackage.ImportOffset = (int)ms.Position;
-                mePackage.ImportCount = mePackage.imports.Count;
-                foreach (ImportEntry e in mePackage.imports)
-                {
-                    ms.WriteFromBuffer(e.Header);
-                }
-
-                //export table
-                mePackage.ExportOffset = (int)ms.Position;
-                mePackage.ExportCount = mePackage.Gen0ExportCount = mePackage.exports.Count;
-                foreach (ExportEntry e in mePackage.exports)
-                {
-                    e.HeaderOffset = (uint)ms.Position;
-                    ms.WriteFromBuffer(e.Header);
-                }
-
-                mePackage.DependencyTableOffset = (int)ms.Position;
-
-                if (includeDependencyTable)
-                {
-                    //Unreal Engine style (keeping in line with the package specification)
-                    //write the table out. No count for this table.
-                    ms.Position += mePackage.ExportCount * 4; //no need to allocate an array then copy a bunch of zeros, setting position past Length will call Array.Clear
-                }
-                else
-                {
-                    //ME3EXP STYLE -BLANK(?) table
-                    ms.WriteInt32(0); //Technically this is not a count. The count is the number of exports. but this is just for consistency with ME3Exp.
-                }
-
-                mePackage.FullHeaderSize = mePackage.ImportExportGuidsOffset = (int)ms.Position;
-
-                //export data
-                foreach (ExportEntry e in mePackage.exports)
-                {
-                    int oldDataOffset = e.DataOffset;
-
-                    // Update the header position
-                    //needs to be updated BEFORE the offsets are updated 
-                    e.DataOffset = (int)ms.Position;
-
-                    //update offsets
-                    if (!e.IsDefaultObject)
-                    {
-                        if (mePackage.Game == MEGame.ME1 && e.IsTexture())
-                        {
-                            // For us to reliably have in-memory textures, the data offset of 'externally' stored textures
-                            // needs to be updated to be accurate so that master and slave textures are in sync.
-                            // So any texture mips stored as pccLZO needs their DataOffsets updated
-                            var t2d = ObjectBinary.From<UTexture2D>(e);
-                            var binStart = -1;
-                            var newDataStartOffset = (int)ms.Position;
-                            foreach (var mip in t2d.Mips.Where(x => x.IsCompressed && x.IsLocallyStored))
-                            {
-                                if (binStart == -1)
-                                {
-                                    binStart = newDataStartOffset + e.propsEnd();
-                                }
-                                // This is 
-                                mip.DataOffset = binStart + mip.MipInfoOffsetFromBinStart + 0x10; // actual data offset is past storagetype, uncomp, comp, dataoffset
-                            }
-                            e.WriteBinary(t2d);
-                        }
-                        else
-                        {
-                            switch (e.ClassName)
-                            {
-                                //case "WwiseBank":
-                                case "WwiseStream" when e.GetProperty<NameProperty>("Filename") == null:
-                                case "TextureMovie" when e.GetProperty<NameProperty>("TextureFileCacheName") == null:
-                                    e.WriteBinary(ObjectBinary.From(e));
-                                    break;
-                                case "ShaderCache":
-                                    UpdateShaderCacheOffsets(e, oldDataOffset);
-                                    break;
-                            }
-                        }
-                    }
-
-                    ms.Write(e.DataReadOnly);
-                    //update size and offset in already-written header
-                    long pos = ms.Position;
-                    ms.JumpTo(e.HeaderOffset + 32);
-                    ms.WriteInt32(e.DataSize); //DataSize might have been changed by UpdateOffsets
-                    ms.WriteInt32(e.DataOffset);
-                    ms.JumpTo(pos);
-                }
-
-                ms.JumpTo(0);
-
-                if (compress)
-                {
-                    return compressPackage(mePackage, ms);
-                }
-                else
-                {
-                    //re-write header with updated values
-                    mePackage.WriteHeader(ms, includeAdditionalPackageToCook: includeAdditionalPackageToCook);
-                }
-
-                return ms;
+                //Write final header
+                compressedStream.Position = 0;
+                package.WriteHeader(compressedStream, compressionType, chunks, includeAdditionalPackageToCook: includeAdditionalPackageToCook);
+                return compressedStream;
             }
             finally
             {
@@ -1085,11 +1293,53 @@ namespace LegendaryExplorerCore.Packages
                 {
                     if (sourceIsCompressed)
                     {
-                        mePackage.Flags |= EPackageFlags.Compressed;
+                        package.Flags |= EPackageFlags.Compressed;
                     }
                     else
                     {
-                        mePackage.Flags &= ~EPackageFlags.Compressed;
+                        package.Flags &= ~EPackageFlags.Compressed;
+                    }
+                }
+            }
+        }
+
+        //Must not change export's DataSize!
+        private static void UpdateOffsets(ExportEntry e, int oldDataOffset)
+        {
+            if (!e.IsDefaultObject)
+            {
+                if (e.Game == MEGame.ME1 && e.IsTexture())
+                {
+                    // For us to reliably have in-memory textures, the data offset of 'externally' stored textures
+                    // needs to be updated to be accurate so that master and slave textures are in sync.
+                    // So any texture mips stored as pccLZO needs their DataOffsets updated
+                    var t2d = ObjectBinary.From<UTexture2D>(e);
+                    var binStart = -1;
+                    foreach (var mip in t2d.Mips.Where(x => x.IsCompressed && x.IsLocallyStored))
+                    {
+                        if (binStart == -1)
+                        {
+                            binStart = e.DataOffset + e.propsEnd();
+                        }
+
+                        // This is 
+                        mip.DataOffset = binStart + mip.MipInfoOffsetFromBinStart + 0x10; // actual data offset is past storagetype, uncomp, comp, dataoffset
+                    }
+
+                    e.WriteBinary(t2d);
+                }
+                else
+                {
+                    switch (e.ClassName)
+                    {
+                        //case "WwiseBank":
+                        case "WwiseStream" when e.GetProperty<NameProperty>("Filename") == null:
+                        case "TextureMovie" when e.GetProperty<NameProperty>("TextureFileCacheName") == null:
+                            e.WriteBinary(ObjectBinary.From(e));
+                            break;
+                        case "ShaderCache":
+                            UpdateShaderCacheOffsets(e, oldDataOffset);
+                            break;
                     }
                 }
             }
@@ -1097,7 +1347,9 @@ namespace LegendaryExplorerCore.Packages
 
         public MemoryStream SaveToStream(bool compress = false, bool includeAdditionalPackagesToCook = true, bool includeDependencyTable = true)
         {
-            return saveByReconstructingToStream(this, true, compress, includeAdditionalPackagesToCook, includeDependencyTable);
+            return compress
+                ? saveCompressed(this, true, includeAdditionalPackagesToCook, includeDependencyTable)
+                : saveUncompressed(this, includeAdditionalPackagesToCook, includeDependencyTable);
         }
 
         private static void UpdateShaderCacheOffsets(ExportEntry export, int oldDataOffset)

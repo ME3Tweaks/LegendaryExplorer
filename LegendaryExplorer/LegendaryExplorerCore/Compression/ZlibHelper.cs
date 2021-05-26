@@ -100,7 +100,7 @@ namespace LegendaryExplorerCore.Compression
 
         public static int GetCompressionBound(int length)
         {
-            return (length * 2) + 128; //twice the size of the source? is this a reasonable upper bound?
+            return length + ((length + 7) >> 3) + ((length + 63) >> 6) + 11;
         }
     }
 }
