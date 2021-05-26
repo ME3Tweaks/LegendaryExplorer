@@ -34,6 +34,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
     /// </summary>
     class PackageEditorExperimentsM
     {
+        public static void CompareISB()
+        {
+
+        }
+
         public static void EnumerateAllFunctions(PackageEditorWindow pewpf)
         {
 

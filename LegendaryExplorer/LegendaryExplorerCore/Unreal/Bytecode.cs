@@ -1370,8 +1370,7 @@ namespace LegendaryExplorerCore.Unreal
             // Determine if this is an extended native
             byte byte1 = memory[start];
             byte byte2 = memory[start + 1];
-            if (byte1 == 0x61)
-                Debug.WriteLine("hi");
+
             int index;
             if ((byte1 & 0xF0) == nativeId)
                 index = ((byte1 - nativeId) << 8) + byte2;
