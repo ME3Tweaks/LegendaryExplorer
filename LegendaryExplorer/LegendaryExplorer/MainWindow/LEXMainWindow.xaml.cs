@@ -17,14 +17,14 @@ using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorer.UnrealExtensions;
 
-namespace LegendaryExplorer
+namespace LegendaryExplorer.MainWindow
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for LEXMainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class LEXMainWindow : Window
     {
-        public MainWindow()
+        public LEXMainWindow()
         {
             InitializeComponent();
             mainToolPanel.setToolList(ToolSet.Items);

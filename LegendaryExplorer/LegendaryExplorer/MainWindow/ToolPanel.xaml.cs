@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace LegendaryExplorer
+namespace LegendaryExplorer.MainWindow
 {
     /// <summary>
     /// Interaction logic for ToolPanel.xaml

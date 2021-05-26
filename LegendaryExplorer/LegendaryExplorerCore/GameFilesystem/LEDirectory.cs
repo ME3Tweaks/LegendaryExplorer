@@ -51,6 +51,14 @@ namespace LegendaryExplorerCore.GameFilesystem
         public static string LauncherPath => GetLauncherPath();
         public static readonly ReadOnlyCollection<string> ExecutableNames = Array.AsReadOnly(new[] { "MassEffectLauncher.exe" });
 
+        // This is here just for consistency with the other directory classes - some external tools use this
+        public static string ExecutableFolder => GetExecutableDirectory();
+        /// <summary>
+        /// Proxy for GetLauncherPath()
+        /// </summary>
+        /// <param name="rootPathOverride"></param>
+        /// <returns></returns>
+        public static string GetExecutableDirectory(string rootPathOverride = null) => GetLauncherPath(rootPathOverride);
 
         public static string GetLauncherPath(string rootPathOverride = null)
         {

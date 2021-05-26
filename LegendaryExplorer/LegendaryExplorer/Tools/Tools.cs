@@ -73,6 +73,8 @@ namespace LegendaryExplorer
             HashSet<Tool> set = new();
 
             #region Toolset Devs
+
+#if DEBUG
             set.Add(new Tool
             {
                 name = "AutoTOC",
@@ -86,7 +88,7 @@ namespace LegendaryExplorer
                 category = "Toolset Devs",
                 description = "AutoTOC is a tool for ME3 that updates and/or creates the PCConsoleTOC.bin files associated with the base game and each DLC.\n\nRunning this tool upon mod installation is imperative to ensuring proper functionality of the game."
             });
-#if DEBUG
+
             set.Add(new Tool
             {
                 name = "Memory Analyzer",
@@ -113,6 +115,20 @@ namespace LegendaryExplorer
                 tags = new List<string> { "utility", "toolsetdev", "hex" },
                 category = "Toolset Devs",
                 description = "File Hex Analyzer is a package hex viewer that shows references in the package hex. It also works with non-package files, but won't show any references, obviously."
+            });
+
+            set.Add(new Tool
+            {
+                name = "SFAR Explorer",
+                type = typeof(Tools.SFARExplorer.SFARExplorerWindow),
+                icon = Application.Current.FindResource("iconSFARExplorer") as ImageSource,
+                open = () =>
+                {
+                    (new Tools.SFARExplorer.SFARExplorerWindow()).Show();
+                },
+                tags = new List<string> { "developer", "dlc" },
+                category = "Toolset Devs",
+                description = "SFAR Explorer allows you to explore and extract ME3 DLC archive files (SFAR).",
             });
 #endif
             #endregion
@@ -223,7 +239,7 @@ namespace LegendaryExplorer
             {
                 name = "Coalesced Compiler",
                 type = typeof(Tools.CoalescedCompiler.CoalescedCompilerWindow),
-                icon = Application.Current.FindResource("iconCoalescedEditor") as ImageSource,
+                icon = Application.Current.FindResource("iconCoalescedCompiler") as ImageSource,
                 open = () =>
                 {
                     (new Tools.CoalescedCompiler.CoalescedCompilerWindow()).Show();
@@ -276,7 +292,7 @@ namespace LegendaryExplorer
             {
                 name = "Interp Editor",
                 type = typeof(InterpEditorWindow),
-                icon = Application.Current.FindResource("iconInterpViewer") as ImageSource,
+                icon = Application.Current.FindResource("iconInterpEditor") as ImageSource,
                 open = () =>
                 {
                     (new InterpEditorWindow()).Show();
@@ -522,19 +538,6 @@ namespace LegendaryExplorer
                 tags = new List<string> { "texture", "developer", "studio", "graphics" },
                 category = "Meshes + Textures",
                 description = "Texture Studio is a tool designed for texture editing files in a directory of files, such as a DLC mod. It is not the same as other tools such as Mass Effect Modder, which is a game wide replacement tool.",
-            });
-            set.Add(new Tool
-            {
-                name = "SFAR Explorer",
-                type = typeof(Tools.SFARExplorer.SFARExplorerWindow),
-                icon = Application.Current.FindResource("iconSFARExplorer") as ImageSource,
-                open = () =>
-                {
-                    (new Tools.SFARExplorer.SFARExplorerWindow()).Show();
-                },
-                tags = new List<string> { "developer", "dlc" },
-                category = "Toolset Devs",
-                description = "SFAR Explorer allows you to explore and extract ME3 DLC archive files (SFAR).",
             });
             set.Add(new Tool
             {
