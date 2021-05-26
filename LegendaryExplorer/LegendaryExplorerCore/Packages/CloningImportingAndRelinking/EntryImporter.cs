@@ -544,16 +544,15 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             //        }
             //    }
 
-            //    //see if this export exists locally
-            //    foreach (ExportEntry exp in destinationPCC.Exports)
-            //    {
-            //        if (exp.FullPath == localSearchPath)
-            //        {
-            //            return exp;
-            //        }
-            //    }
-            //}
-            var foundEntry = destinationPCC.FindEntry(importFullNameInstanced);
+            //see if this export exists locally in the package, under a class of same name (Engine class in Engine.pcc for example)
+            var foundEntry = destinationPCC.FindEntry(localSearchPath);
+            if (foundEntry != null)
+            {
+                return foundEntry;
+            }
+
+            // Try the name directly
+            foundEntry = destinationPCC.FindEntry(importFullNameInstanced);
             if (foundEntry != null)
             {
                 return foundEntry;
@@ -564,28 +563,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             //recursively ensure parent exists
             IEntry parent = GetOrAddCrossImportOrPackageFromGlobalFile(string.Join(".", importParts.Take(importParts.Length - 1)), sourcePcc, destinationPCC, objectMapping, doubleClickCallback);
 
-
             ImportEntry matchingSourceImport = sourcePcc.FindImport(importFullNameInstanced);
-            /*
-            if (relinkerCache != null)
-            {
-                if (relinkerCache.sourceFullPathToEntryMap.TryGetValue(importFullNameInstanced, out var me) && me is ImportEntry imp)
-                {
-                    matchingSourceImport = imp;
-                }
-            }
-            else
-            {
-                foreach (ImportEntry sourceImport in sourcePcc.Imports)
-                {
-                    if (sourceImport.FullPath == importFullNameInstanced)
-                    {
-                        matchingSourceImport = sourceImport;
-                        break;
-                    }
-                }
-            }*/
-
             if (matchingSourceImport != null)
             {
                 var newImport = new ImportEntry(destinationPCC)
@@ -607,6 +585,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             ExportEntry matchingSourceExport = sourcePcc.FindExport(importFullNameInstanced);
             if (matchingSourceExport != null)
             {
+                var foundImp = destinationPCC.FindImport(importFullNameInstanced);
+                if (foundImp != null) return foundImp;
                 var newImport = new ImportEntry(destinationPCC)
                 {
                     idxLink = parent?.UIndex ?? 0,

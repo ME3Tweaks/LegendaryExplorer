@@ -426,7 +426,26 @@ namespace LegendaryExplorer.Tools.PackageEditor
             var d = new SaveFileDialog { Filter = fileFilter };
             if (d.ShowDialog() == true)
             {
-                Task.Run(() => EntryExporter.ExportExportToPackage(SelectedItem.Entry as ExportEntry, d.FileName, out _))
+                Func<List<EntryStringPair>> PortFunc = () => EntryExporter.ExportExportToFile(SelectedItem.Entry as ExportEntry, d.FileName, out _);
+                if (File.Exists(d.FileName))
+                {
+                    var portIntoExistingRes = MessageBox.Show(this, $"Export the selected export ({SelectedItem.Entry.InstancedFullPath}) into the selected file ({d.FileName})? Or port into a new file, overwriting it?\n\nPress Yes to port into the existing file.\nPress No to port as a new file\nPress cancel to abort", "Port into new or existing file?", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+                    if (portIntoExistingRes == MessageBoxResult.Yes)
+                    {
+                        PortFunc = () =>
+                        {
+                            using var package = MEPackageHandler.OpenMEPackage(d.FileName);
+                            var results = EntryExporter.ExportExportToFile(SelectedItem.Entry as ExportEntry, d.FileName, out _);
+                            package.Save();
+                            return results;
+                        };
+                    }
+                    else if (portIntoExistingRes == MessageBoxResult.Cancel)
+                    {
+                        return;
+                    } // No condition changes nothing
+                }
+                Task.Run(() => PortFunc.Invoke())
                     .ContinueWithOnUIThread(results =>
                         {
                             IsBusy = false;
