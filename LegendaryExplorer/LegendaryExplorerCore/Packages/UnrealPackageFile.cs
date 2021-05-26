@@ -38,7 +38,7 @@ namespace LegendaryExplorerCore.Packages
         /// ONLY WORKS properly if there are NO duplicate indexes (besides trash) in the package.
         /// Is not used if the table is not populated, methods will perform a full search.
         /// </summary>
-        internal CaseInsensitiveDictionary<IEntry> EntryLookupTable = new();
+        internal CaseInsensitiveDictionary<IEntry> EntryLookupTable;
 
         public enum CompressionType
         {
@@ -334,7 +334,14 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         public void RebuildLookupTable()
         {
-            EntryLookupTable.Clear();
+            if (EntryLookupTable == null)
+            {
+                EntryLookupTable = new CaseInsensitiveDictionary<IEntry>(ImportCount + ExportCount);
+            }
+            else
+            {
+                EntryLookupTable.Clear();
+            }
             foreach (var exportEntry in exports)
             {
                 EntryLookupTable[exportEntry.InstancedFullPath] = exportEntry; // ADD TO LOOKUP CACHE

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using LegendaryExplorerCore.Helpers;
 
 // Tools to unpack/repack LE1 and LE2 coalesced files. 
 // Originally by d00t (https://github.com/d00telemental/LECoal)
@@ -312,7 +313,7 @@ namespace LegendaryExplorerCore.Coalesced
                 }
             }
 
-            File.WriteAllBytes(destinationPath, (writer.BaseStream as MemoryStream).ToArray());
+            (writer.BaseStream as MemoryStream).WriteToFile(destinationPath);
         }
 
         internal List<string> splitValue(string val)
