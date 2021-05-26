@@ -500,7 +500,8 @@ namespace LegendaryExplorerCore.Packages
 
             #region Decompression of package data
 
-            //determine if tables are in order
+            //determine if tables are in order.
+            //The < 500 is just to check that the tables are all at the start of the file. (will never not be the case for unedited files, but for modded ones, all things are possible)
             bool tablesInOrder =  NameOffset < 500 && NameOffset < ImportOffset && ImportOffset < ExportOffset;
 
             packageReader.Position = savedPos; //restore position to chunk table
@@ -662,7 +663,8 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="compress"></param>
         private static void saveByReconstructing(MEPackage mePackage, string path, bool isSaveAs, bool compress, bool includeAdditionalPackagesToCook, bool includeDependencyTable, object diskIOSyncLockObject = null)
         {
-            var saveStream = saveByReconstructingToStream(mePackage, isSaveAs, compress, includeAdditionalPackagesToCook, includeDependencyTable);
+            //var sw = Stopwatch.StartNew();
+            using var saveStream = saveByReconstructingToStream(mePackage, isSaveAs, compress, includeAdditionalPackagesToCook, includeDependencyTable);
 
             // Lock writing with the sync object (if not null) to prevent disk concurrency issues
             // (the good old 'This file is in use by another process' message)
@@ -682,6 +684,10 @@ namespace LegendaryExplorerCore.Packages
             {
                 mePackage.AfterSave();
             }
+
+            //var milliseconds = sw.ElapsedMilliseconds;
+            //Debug.WriteLine($"Saved {Path.GetFileName(path)} in {milliseconds}");
+            //sw.Stop();
         }
 
         /// <summary>
@@ -693,21 +699,21 @@ namespace LegendaryExplorerCore.Packages
         private static MemoryStream compressPackage(MEPackage package, MemoryStream uncompressedStream, bool includeAdditionalPackageToCook = true)
         {
             uncompressedStream.Position = 0;
-            MemoryStream compressedStream = MemoryManager.GetMemoryStream();
-            package.WriteHeader(compressedStream, includeAdditionalPackageToCook: includeAdditionalPackageToCook); //for positioning
+
+            //very rough estimate, better to err on the high side though. If the estimate is slightly too low, it will end up allocating an array almost twice as big as needed
+            //TODO: scan through all files, per compression type, to come up with a better estimate
+            int compressedLengthEstimate = (int)(uncompressedStream.Length / 3.5);  
+            MemoryStream compressedStream = MemoryManager.GetMemoryStream(compressedLengthEstimate);
+
             var chunks = new List<CompressionHelper.Chunk>();
-            var compressionType = CompressionType.LZO;
-            switch (package.Game)
+            var compressionType = package.Game switch
             {
-                case MEGame.ME3:
-                    compressionType = CompressionType.Zlib;
-                    break;
-                case MEGame.LE1:
-                case MEGame.LE2:
-                case MEGame.LE3:
-                    compressionType = CompressionType.OodleLeviathan;
-                    break;
-            }
+                MEGame.ME3 => CompressionType.Zlib,
+                MEGame.LE1 => CompressionType.OodleLeviathan,
+                MEGame.LE2 => CompressionType.OodleLeviathan,
+                MEGame.LE3 => CompressionType.OodleLeviathan,
+                _ => CompressionType.LZO
+            };
 
             var maxBlockSize = package.Game.IsOTGame() ? CompressionHelper.MAX_BLOCK_SIZE_OT : CompressionHelper.MAX_BLOCK_SIZE_LE;
 
@@ -771,7 +777,27 @@ namespace LegendaryExplorerCore.Packages
             compressedStream.Position = 0;
             package.WriteHeader(compressedStream, compressionType, chunks, includeAdditionalPackageToCook: includeAdditionalPackageToCook);
             //MemoryStream m1 = new MemoryStream();
-
+            var compressionOutputSize = compressionType switch
+            {
+                CompressionType.Zlib => Zlib.GetCompressionBound(maxBlockSize),
+                CompressionType.LZO => LZO2.GetCompressionBound(maxBlockSize),
+                CompressionType.OodleLeviathan => OodleHelper.GetCompressionBound(maxBlockSize),
+                _ => throw new Exception("Internal error: Unsupported compression type for compressing blocks: " + compressionType)
+            };
+            var rentedOutputArrays = new List<byte[]>
+            {
+                MemoryManager.GetByteArray(compressionOutputSize),
+                MemoryManager.GetByteArray(compressionOutputSize),
+                MemoryManager.GetByteArray(compressionOutputSize),
+                MemoryManager.GetByteArray(compressionOutputSize),
+            };
+            var rentedInputArrays = new List<byte[]>
+            {
+                MemoryManager.GetByteArray(maxBlockSize),
+                MemoryManager.GetByteArray(maxBlockSize),
+                MemoryManager.GetByteArray(maxBlockSize),
+                MemoryManager.GetByteArray(maxBlockSize),
+            };
             for (int c = 0; c < chunks.Count; c++)
             {
                 chunk = chunks[c];
@@ -780,6 +806,14 @@ namespace LegendaryExplorerCore.Packages
 
                 int dataSizeRemainingToCompress = chunk.uncompressedSize;
                 int numBlocksInChunk = (int)Math.Ceiling(chunk.uncompressedSize * 1.0 / maxBlockSize);
+                if (numBlocksInChunk > rentedOutputArrays.Count)
+                {
+                    for (int i = rentedOutputArrays.Count; i < numBlocksInChunk; i++)
+                    {
+                        rentedOutputArrays.Add(MemoryManager.GetByteArray(compressionOutputSize));
+                        rentedInputArrays.Add(MemoryManager.GetByteArray(maxBlockSize));
+                    }
+                }
                 // skip chunk header and blocks table - filled later
                 compressedStream.Seek(CompressionHelper.SIZE_OF_CHUNK_HEADER + CompressionHelper.SIZE_OF_CHUNK_BLOCK_HEADER * numBlocksInChunk, SeekOrigin.Current);
 
@@ -790,43 +824,48 @@ namespace LegendaryExplorerCore.Packages
                 //Calculate blocks by splitting data into 128KB "block chunks".
                 for (int b = 0; b < numBlocksInChunk; b++)
                 {
-                    CompressionHelper.Block block = new CompressionHelper.Block();
+                    var block = new CompressionHelper.Block();
                     block.uncompressedsize = Math.Min(maxBlockSize, dataSizeRemainingToCompress);
                     dataSizeRemainingToCompress -= block.uncompressedsize;
-                    block.uncompressedData = uncompressedStream.ReadToBuffer(block.uncompressedsize);
+                    uncompressedStream.Read(rentedInputArrays[b].AsSpan(0, block.uncompressedsize));
+                    block.uncompressedData = rentedInputArrays[b].AsMemory(0, block.uncompressedsize);
+                    block.compressedData = rentedOutputArrays[b];
                     chunk.blocks.Add(block);
                 }
 
                 if (chunk.blocks.Count != numBlocksInChunk) throw new Exception("Number of blocks does not match expected amount");
 
                 //Compress blocks
-                Parallel.For(0, chunk.blocks.Count, b =>
+                Parallel.ForEach(chunk.blocks, block =>
                 {
-                    CompressionHelper.Block block = chunk.blocks[b];
-                    if (compressionType == CompressionType.LZO)
-                        block.compressedData = LZO2.Compress(block.uncompressedData);
-                    else if (compressionType == CompressionType.Zlib)
-                        block.compressedData = Zlib.Compress(block.uncompressedData);
-                    else if (compressionType == CompressionType.OodleLeviathan)
-                        block.compressedData = OodleHelper.Compress(block.uncompressedData, block.uncompressedsize, OodleHelper.OodleFormat.Leviathan, OodleHelper.OodleCompressionLevel.Normal);
-                    else
-                        throw new Exception("Internal error: Unsupported compression type for compressing blocks: " + compressionType);
-                    if (block.compressedData.Length == 0)
+                    block.compressedsize = compressionType switch
+                    {
+                        CompressionType.LZO => LZO2.Compress(block.uncompressedData.Span, block.compressedData),
+                        CompressionType.Zlib => Zlib.Compress(block.uncompressedData.Span, block.compressedData),
+                        CompressionType.OodleLeviathan => OodleHelper.Compress(block.uncompressedData.Span, block.compressedData),
+                        _ => throw new Exception("Internal error: Unsupported compression type for compressing blocks: " + compressionType)
+                    };
+                    if (block.compressedsize == 0)
                         throw new Exception("Internal error: Block compression failed! Compressor returned no bytes");
-                    block.compressedsize = (int)block.compressedData.Length;
-                    chunk.blocks[b] = block;
                 });
 
                 //Write compressed data to stream 
                 for (int b = 0; b < numBlocksInChunk; b++)
                 {
                     var block = chunk.blocks[b];
-                    compressedStream.Write(block.compressedData, 0, (int)block.compressedsize);
+                    compressedStream.Write(block.compressedData, 0, block.compressedsize);
                     chunk.compressedSize += block.compressedsize;
                 }
-                chunks[c] = chunk;
             }
 
+            foreach (byte[] rentedArray in rentedOutputArrays)
+            {
+                MemoryManager.ReturnByteArray(rentedArray);
+            }
+            foreach (byte[] rentedArray in rentedInputArrays)
+            {
+                MemoryManager.ReturnByteArray(rentedArray);
+            }
             //Update each chunk header with new information
             foreach (var c in chunks)
             {
@@ -855,6 +894,9 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         /// <param name="mePackage"></param>
         /// <param name="isSaveAs"></param>
+        /// <param name="compress"></param>
+        /// <param name="includeAdditionalPackageToCook"></param>
+        /// <param name="includeDependencyTable"></param>
         /// <returns></returns>
         private static MemoryStream saveByReconstructingToStream(MEPackage mePackage, bool isSaveAs, bool compress, bool includeAdditionalPackageToCook = true, bool includeDependencyTable = true)
         {
@@ -875,7 +917,33 @@ namespace LegendaryExplorerCore.Packages
 
             try
             {
-                var ms = MemoryManager.GetMemoryStream();
+                //calculate total size, to prevent MemoryStream re-sizing
+                int nameSize = mePackage.names.Sum(name => name.Length);
+                switch (mePackage.Game)
+                {
+                    case MEGame.ME1:
+                        nameSize += 13 * mePackage.NameCount;
+                        break;
+                    case MEGame.ME2:
+                        nameSize += 9 * mePackage.NameCount;
+                        break;
+                    case MEGame.ME3:
+                    case MEGame.LE3:
+                        nameSize = nameSize * 2 + 6 * mePackage.NameCount;
+                        break;
+                    case MEGame.LE1:
+                    case MEGame.LE2:
+                        nameSize += 5 * mePackage.NameCount;
+                        break;
+                }
+                int totalSize = 500 //fake header size. will mean allocating a few hundred extra bytes, but that's not a huge deal.
+                              + nameSize
+                              + mePackage.imports.Count * ImportEntry.headerSize 
+                              + mePackage.exports.Sum(exp => exp.Header.Length + exp.DataSize)
+                              + (includeDependencyTable ? mePackage.ExportCount * 4 : 4);
+
+
+                var ms = MemoryManager.GetMemoryStream(totalSize);
 
                 //just for positioning. We write over this later when the header values have been updated
                 mePackage.WriteHeader(ms, includeAdditionalPackageToCook: includeAdditionalPackageToCook);
@@ -930,7 +998,7 @@ namespace LegendaryExplorerCore.Packages
                 {
                     //Unreal Engine style (keeping in line with the package specification)
                     //write the table out. No count for this table.
-                    ms.WriteFromBuffer(new byte[mePackage.ExportCount * 4]);
+                    ms.Position += mePackage.ExportCount * 4; //no need to allocate an array then copy a bunch of zeros, setting position past Length will call Array.Clear
                 }
                 else
                 {
@@ -943,10 +1011,13 @@ namespace LegendaryExplorerCore.Packages
                 //export data
                 foreach (ExportEntry e in mePackage.exports)
                 {
-                    //update offsets
-                    var newDataStartOffset = (int)ms.Position;
+                    int oldDataOffset = e.DataOffset;
 
-                    ObjectBinary objBin = null;
+                    // Update the header position
+                    //needs to be updated BEFORE the offsets are updated 
+                    e.DataOffset = (int)ms.Position;
+
+                    //update offsets
                     if (!e.IsDefaultObject)
                     {
                         if (mePackage.Game == MEGame.ME1 && e.IsTexture())
@@ -956,6 +1027,7 @@ namespace LegendaryExplorerCore.Packages
                             // So any texture mips stored as pccLZO needs their DataOffsets updated
                             var t2d = ObjectBinary.From<UTexture2D>(e);
                             var binStart = -1;
+                            var newDataStartOffset = (int)ms.Position;
                             foreach (var mip in t2d.Mips.Where(x => x.IsCompressed && x.IsLocallyStored))
                             {
                                 if (binStart == -1)
@@ -964,8 +1036,8 @@ namespace LegendaryExplorerCore.Packages
                                 }
                                 // This is 
                                 mip.DataOffset = binStart + mip.MipInfoOffsetFromBinStart + 0x10; // actual data offset is past storagetype, uncomp, comp, dataoffset
-                                objBin = t2d; // Assign it here so it gets picked up down below
                             }
+                            e.WriteBinary(t2d);
                         }
                         else
                         {
@@ -974,24 +1046,16 @@ namespace LegendaryExplorerCore.Packages
                                 //case "WwiseBank":
                                 case "WwiseStream" when e.GetProperty<NameProperty>("Filename") == null:
                                 case "TextureMovie" when e.GetProperty<NameProperty>("TextureFileCacheName") == null:
-                                    objBin = ObjectBinary.From(e);
+                                    e.WriteBinary(ObjectBinary.From(e));
                                     break;
                                 case "ShaderCache":
-                                    UpdateShaderCacheOffsets(e, (int)ms.Position);
+                                    UpdateShaderCacheOffsets(e, oldDataOffset);
                                     break;
                             }
                         }
                     }
 
-                    if (objBin != null)
-                    {
-                        e.WriteBinary(objBin);
-                    }
-
-                    // Update the header position
-                    e.DataOffset = (int)ms.Position;
-
-                    ms.WriteFromBuffer(e.Data);
+                    ms.Write(e.DataReadOnly);
                     //update size and offset in already-written header
                     long pos = ms.Position;
                     ms.JumpTo(e.HeaderOffset + 32);
@@ -1000,12 +1064,18 @@ namespace LegendaryExplorerCore.Packages
                     ms.JumpTo(pos);
                 }
 
-                //re-write header with updated values
                 ms.JumpTo(0);
-                mePackage.WriteHeader(ms, includeAdditionalPackageToCook: includeAdditionalPackageToCook);
 
                 if (compress)
+                {
                     return compressPackage(mePackage, ms);
+                }
+                else
+                {
+                    //re-write header with updated values
+                    mePackage.WriteHeader(ms, includeAdditionalPackageToCook: includeAdditionalPackageToCook);
+                }
+
                 return ms;
             }
             finally
@@ -1030,13 +1100,12 @@ namespace LegendaryExplorerCore.Packages
             return saveByReconstructingToStream(this, true, compress, includeAdditionalPackagesToCook, includeDependencyTable);
         }
 
-        private static void UpdateShaderCacheOffsets(ExportEntry export, int newDataOffset)
+        private static void UpdateShaderCacheOffsets(ExportEntry export, int oldDataOffset)
         {
-            //This method has been updated for LE
-            int oldDataOffset = export.DataOffset;
+            int newDataOffset = export.DataOffset;
 
             MEGame game = export.Game;
-            var binData = new MemoryStream(export.Data);
+            var binData = new MemoryStream(export.Data, 0, export.DataSize, true, true);
             binData.Seek(export.propsEnd() + 1, SeekOrigin.Begin);
 
             int nameList1Count = binData.ReadInt32();
@@ -1095,7 +1164,7 @@ namespace LegendaryExplorerCore.Packages
                 binData.Seek(nextMaterialShaderMapOffset, SeekOrigin.Begin);
             }
 
-            export.Data = binData.ToArray();
+            export.Data = binData.GetBuffer();
         }
 
         private void WriteHeader(Stream ms, CompressionType compressionType = CompressionType.None, List<CompressionHelper.Chunk> chunks = null, bool includeAdditionalPackageToCook = true)

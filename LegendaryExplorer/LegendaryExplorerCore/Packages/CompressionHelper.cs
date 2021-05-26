@@ -47,7 +47,7 @@ namespace LegendaryExplorerCore.Packages
         /// <summary>
         /// Represents an item in the Chunk table of a package
         /// </summary>
-        public struct Chunk
+        public class Chunk
         {
             public int uncompressedOffset;
             public int uncompressedSize;
@@ -74,12 +74,12 @@ namespace LegendaryExplorerCore.Packages
         /// <summary>
         /// Represents a block in the block table of a chunk
         /// </summary>
-        public struct Block
+        public class Block
         {
             public int compressedsize;
             public int uncompressedsize;
             public int uncompressedOffset;
-            public byte[] uncompressedData;
+            public Memory<byte> uncompressedData;
             public byte[] compressedData;
         }
 

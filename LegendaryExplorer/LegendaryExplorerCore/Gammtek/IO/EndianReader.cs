@@ -600,7 +600,11 @@ namespace LegendaryExplorerCore.Gammtek.IO
         {
             return ReadBytes(size);
         }
-
+        
+        /// <summary>
+        /// Copies stream to a new array. Consider using a more performant method if at all possible.
+        /// </summary>
+        /// <returns></returns>
         public byte[] ToArray()
         {
             var pos = Position;
