@@ -1105,7 +1105,7 @@ namespace LegendaryExplorerCore.Packages
                 int actualMaxChunkSize = chunk.uncompressedSize;
                 //Export data chunks
                 offset = package.FullHeaderSize;
-                foreach (ExportEntry e in package.Exports)
+                foreach (ExportEntry e in package.exports)
                 {
                     int exportDataSize = e.DataSize;
                     int oldExportOffset = e.DataOffset;
@@ -1193,7 +1193,7 @@ namespace LegendaryExplorerCore.Packages
                     rentedOutputArrays.Add(MemoryManager.GetByteArray(compressionOutputSize));
                 }
                 int exportIdx = 0;
-                ExportEntry curExport = package.exports[exportIdx];
+                ExportEntry curExport = package.ExportCount > 0 ? package.exports[exportIdx] : null;
                 for (int i = 0; i < chunks.Count; i++)
                 {
                     chunk = chunks[i];
@@ -1208,7 +1208,7 @@ namespace LegendaryExplorerCore.Packages
 
                     //write Export Data to chunk
                     //export data never crosses chunk boundaries, so we only need to check if the beginning of the data is in the chunk
-                    while (curExport.DataOffset < chunkUncompressedEndOffset)
+                    while (curExport is not null && curExport.DataOffset < chunkUncompressedEndOffset)
                     {
                         curExport.DataReadOnly.CopyTo(uncompressedData.AsSpan(positionInChunkData));
                         positionInChunkData += curExport.DataSize;
