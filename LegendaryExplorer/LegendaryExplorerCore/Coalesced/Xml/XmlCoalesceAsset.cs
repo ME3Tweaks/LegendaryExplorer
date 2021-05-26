@@ -29,6 +29,33 @@ namespace LegendaryExplorerCore.Coalesced.Xml
 		public string SourcePath { get; protected set; }
 
 		public IList<CoalesceInclude> Includes { get; set; }
+		
+        // DO NOT REMOVE
+        public static XmlCoalesceAsset LoadFromMemory(string text)
+        {
+            var sourcePath = "virtualized";
+            var doc = XDocument.Parse(text);
+
+            var root = doc.Root;
+            var id = (string)root.Attribute("id");
+            var name = (string)root.Attribute("name");
+            var source = (string)root.Attribute("source");
+
+            var result = new XmlCoalesceAsset(name)
+            {
+                //BaseUri = (doc.BaseUri != "") ? doc.BaseUri : new Uri(sourcePath).AbsoluteUri,
+                Id = id,
+                Source = source,
+                SourcePath = sourcePath
+                //SourceDirectory = Path.GetDirectoryName(sourcePath)
+            };
+
+            // Read includes before the sections
+            //result.ReadIncludes(root);
+            result.ReadSections(root);
+
+            return result;
+        }
 
 		public static XmlCoalesceAsset Load(string path)
 		{

@@ -42,7 +42,16 @@ namespace LegendaryExplorerCore.Coalesced.Xml
 			}
 
 			var doc = XDocument.Load(path);
-			
+            return LoadXmlDocument(sourcePath, doc);
+        }
+
+        /// <summary>
+        /// Loads a coalesced file from XML that has already been parsed into an XDocument. Use to avoid double parsing the file
+        /// </summary>
+        /// <param name="sourcePath"></param>
+        /// <param name="doc"></param>
+        public static XmlCoalesceFile LoadXmlDocument(string sourcePath, XDocument doc)
+        {
 			var result = new XmlCoalesceFile
 			{
 				BaseUri = doc.BaseUri != "" ? doc.BaseUri : new Uri(sourcePath).AbsoluteUri,
