@@ -1,0 +1,192 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="WinDebug|x64">
+      <Configuration>WinDebug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="WinRelease|x64">
+      <Configuration>WinRelease</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>TexConverter</ProjectName>
+    <ProjectGuid>{371B9FA9-4C90-4AC6-A123-ACED756D6C77}</ProjectGuid>
+    <RootNamespace>TexConverter</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WinDebug|X64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WinRelease|X64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='WinRelease|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='WinDebug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WinDebug|X64'">
+    <OutDir>bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>bin\$(Platform)\$(Configuration)\</IntDir>
+    <TargetName>TexConverter</TargetName>
+    <GenerateManifest>true</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WinRelease|X64'">
+    <OutDir>bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>bin\$(Platform)\$(Configuration)\</IntDir>
+    <TargetName>TexConverter</TargetName>
+    <GenerateManifest>true</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='WinDebug|X64'">
+    <ClCompile>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <OpenMPSupport>true</OpenMPSupport>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <AdditionalOptions>/Zc:twoPhase- /Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;WIN32;_DEBUG;_LIB;_WIN7_PLATFORM_UPDATE;_WIN32_WINNT=0x0601;_CRT_STDIO_ARBITRARY_WIDE_SPECIFIERS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>DirectXTexP.h</PrecompiledHeaderFile>
+      <ProgramDataBaseFileName>$(IntDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <DisableSpecificWarnings>26812</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Manifest>
+      <EnableDPIAwareness>false</EnableDPIAwareness>
+    </Manifest>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='WinRelease|X64'">
+    <ClCompile>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <OpenMPSupport>true</OpenMPSupport>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <AdditionalOptions>/Zc:twoPhase- /Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;WIN32;NDEBUG;_LIB;_WIN7_PLATFORM_UPDATE;_WIN32_WINNT=0x0601;_CRT_STDIO_ARBITRARY_WIDE_SPECIFIERS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>DirectXTexP.h</PrecompiledHeaderFile>
+      <ProgramDataBaseFileName>$(IntDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <DisableSpecificWarnings>26812</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+    </Link>
+    <Manifest>
+      <EnableDPIAwareness>false</EnableDPIAwareness>
+    </Manifest>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="DLLMain.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='WinDebug|x64'">DirectXTex/DirectXTexP.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='WinRelease|x64'">DirectXTex/DirectXTexP.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="TexConverter.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='WinDebug|x64'">DirectXTex/DirectXTexP.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='WinRelease|x64'">DirectXTex/DirectXTexP.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <CLInclude Include="DirectXTex\BC.h" />
+    <ClCompile Include="DirectXTex\BC.cpp" />
+    <ClCompile Include="DirectXTex\BC4BC5.cpp" />
+    <ClCompile Include="DirectXTex\BC6HBC7.cpp" />
+    <ClInclude Include="DirectXTex\BCDirectCompute.h" />
+    <CLInclude Include="DirectXTex\DDS.h" />
+    <ClInclude Include="DirectXTex\filters.h" />
+    <CLInclude Include="DirectXTex\scoped.h" />
+    <CLInclude Include="DirectXTex\DirectXTex.h" />
+    <CLInclude Include="DirectXTex\DirectXTexP.h" />
+    <CLInclude Include="DirectXTex\DirectXTex.inl" />
+    <ClCompile Include="DirectXTex\BCDirectCompute.cpp" />
+    <ClCompile Include="DirectXTex\DirectXTexCompress.cpp" />
+    <ClCompile Include="DirectXTex\DirectXTexCompressGPU.cpp" />
+    <ClCompile Include="DirectXTex\DirectXTexConvert.cpp" />
+    <ClCompile Include="DirectXTex\DirectXTexD3D11.cpp" />
+    <ClCompile Include="DirectXTex\DirectXTexDDS.cpp" />
+    <ClCompile Include="DirectXTex\DirectXTexFlipRotate.cpp" />
+    <ClCompile Include="DirectXTex\DirectXTexHDR.cpp" />
+    <ClCompile Include="DirectXTex\DirectXTexImage.cpp" />
+    <ClCompile Include="DirectXTex\DirectXTexMipMaps.cpp" />
+    <ClCompile Include="DirectXTex\DirectXTexMisc.cpp" />
+    <ClCompile Include="DirectXTex\DirectXTexNormalMaps.cpp" />
+    <ClCompile Include="DirectXTex\DirectXTexPMAlpha.cpp" />
+    <ClCompile Include="DirectXTex\DirectXTexResize.cpp" />
+    <ClCompile Include="DirectXTex\DirectXTexTGA.cpp" />
+    <ClCompile Include="DirectXTex\DirectXTexUtil.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='WinDebug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='WinRelease|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="DirectXTex\DirectXTexWIC.cpp" />
+    <ClInclude Include="TexConverter.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DirectXTex\Shaders\BC6HEncode.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="DirectXTex\Shaders\BC7Encode.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DirectXTex\Shaders\CompileShaders.cmd" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+  <Target Name="ATGEnsureShaders" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <_ATGFXCPath>$(WindowsSDK_ExecutablePath_x64.Split(';')[0])</_ATGFXCPath>
+      <_ATGFXCPath>$(_ATGFXCPath.Replace("x64",""))</_ATGFXCPath>
+      <_ATGFXCPath Condition="'$(_ATGFXCPath)' != '' and !HasTrailingSlash('$(_ATGFXCPath)')">$(_ATGFXCPath)\</_ATGFXCPath>
+    </PropertyGroup>
+    <Exec Condition="!Exists('DirectXTex/Shaders/Compiled/BC6HEncode_EncodeBlockCS.inc')" WorkingDirectory="$(ProjectDir)DirectXTex\Shaders" Command="CompileShaders" EnvironmentVariables="WindowsSdkVerBinPath=$(_ATGFXCPath)" />
+    <PropertyGroup>
+      <_ATGFXCPath />
+    </PropertyGroup>
+  </Target>
+  <Target Name="ATGDeleteShaders" AfterTargets="Clean">
+    <ItemGroup>
+      <_ATGShaderHeaders Include="$(ProjectDir)DirectXTex/Shaders/Compiled/*.inc" />
+      <_ATGShaderSymbols Include="$(ProjectDir)DirectXTex/Shaders/Compiled/*.pdb" />
+    </ItemGroup>
+    <Delete Files="@(_ATGShaderHeaders)" />
+    <Delete Files="@(_ATGShaderSymbols)" />
+  </Target>
+</Project>

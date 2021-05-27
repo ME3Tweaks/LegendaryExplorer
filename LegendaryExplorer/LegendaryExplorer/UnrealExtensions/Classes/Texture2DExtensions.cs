@@ -582,6 +582,39 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
             return errors;
         }
 
+        public static bool ExportToFile(this Texture2D t2d, string outputPath)
+        {
+            if (String.IsNullOrEmpty(outputPath))
+                throw new ArgumentException("Output path must be specified.", nameof(outputPath));
+
+            Texture2DMipInfo info = new Texture2DMipInfo();
+            info = t2d.Mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
+            if (info != null)
+            {
+                byte[] imageBytes = null;
+                try
+                {
+                    imageBytes = Texture2D.GetTextureData(info, t2d.Export.Game);
+                }
+                catch (FileNotFoundException e)
+                {
+                    Debug.WriteLine("External cache not found. Defaulting to internal mips.");
+                    //External archive not found - using built in mips (will be hideous, but better than nothing)
+                    info = t2d.Mips.FirstOrDefault(x => x.storageType == StorageTypes.pccUnc);
+                    if (info != null)
+                    {
+                        imageBytes = Texture2D.GetTextureData(info, t2d.Export.Game);
+                    }
+                }
+
+                if (imageBytes != null)
+                {
+                    PixelFormat format = Image.getPixelFormatType(t2d.TextureFormat);
+                    TexConverter.SaveTexture(imageBytes, (uint)info.width, (uint)info.height, format, outputPath);
+                }
+            }
+            return true;
+        }
 
         /// <summary>
         /// Exports the texture to PNG format. Writes to the specified stream, or the specified path if not defined.

@@ -520,6 +520,6 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /f /e /y &quot;$(ProjectDir)Resources\exec&quot; &quot;$(ProjectDir)$(OutDir)\exec\&quot;" />
+    <Exec Command="xcopy /f /e /y &quot;$(ProjectDir)Resources\exec&quot; &quot;$(ProjectDir)$(OutDir)\exec\&quot;&#xD;&#xA;xcopy /y &quot;$(SolutionDir)TexConverter\Bin\$(PlatformName)\$(ConfigurationName)\TexConverter.dll&quot; &quot;$(ProjectDir)$(OutDir)&quot;" />
   </Target>
 </Project>

@@ -236,13 +236,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             SaveFileDialog d = new SaveFileDialog
             {
-                Filter = "PNG files|*.png",
+                //Filter = "PNG files|*.png",
+                Filter = "DDS files|*.dds|PNG files|*.png|TGA files|*.tga",
                 FileName = CurrentLoadedExport.ObjectName.Instanced + ".png"
             };
             if (d.ShowDialog() == true)
             {
                 Texture2D t2d = new Texture2D(CurrentLoadedExport);
-                t2d.ExportToPNG(d.FileName);
+                //t2d.ExportToPNG(d.FileName);
+                t2d.ExportToFile(d.FileName);
+                //Texture2DMipInfo topMip = t2d.GetTopMip();
+                //byte[] topMipData 
             }
 
         }
