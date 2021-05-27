@@ -3,6 +3,9 @@
 <appsettings>
   <!-- All settings should have a prefix of where they primarily apply! -->
 
+  <!-- Main Window Settings-->
+  <setting name="MainWindow_DisableTransparencyAndAnimations" type="bool" defaultvalue="false"/>
+
   <!-- Package Editor specific settings -->
   <setting name="PackageEditor_HideInterpreterHexBox" type="bool" defaultvalue="true"/>
   <setting name="PackageEditor_TouchComfyMode" type="bool" defaultvalue="false"/>

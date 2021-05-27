@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Data;
+using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Converters;
 

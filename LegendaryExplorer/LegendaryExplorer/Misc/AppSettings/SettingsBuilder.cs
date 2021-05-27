@@ -13,6 +13,11 @@ namespace LegendaryExplorer.Misc.AppSettings
     public static partial class Settings
     {
         private static object settingsSyncObj = new object();
+        private static bool _mainwindow_disabletransparencyandanimations = false; 
+        public static bool MainWindow_DisableTransparencyAndAnimations {
+            get => _mainwindow_disabletransparencyandanimations; 
+            set => SetProperty(ref _mainwindow_disabletransparencyandanimations, value);
+        }
         private static bool _packageeditor_hideinterpreterhexbox = true; 
         public static bool PackageEditor_HideInterpreterHexBox {
             get => _packageeditor_hideinterpreterhexbox; 
@@ -247,6 +252,7 @@ namespace LegendaryExplorer.Misc.AppSettings
             Dictionary<string, string> settingsJson = File.Exists(AppSettingsFile)
                 ? JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(AppSettingsFile))
                 : new Dictionary<string, string>();
+            MainWindow_DisableTransparencyAndAnimations = TryGetSetting(settingsJson, "mainwindow_disabletransparencyandanimations", false);
             PackageEditor_HideInterpreterHexBox = TryGetSetting(settingsJson, "packageeditor_hideinterpreterhexbox", true);
             PackageEditor_TouchComfyMode = TryGetSetting(settingsJson, "packageeditor_touchcomfymode", false);
             PackageEditor_ShowImpExpPrefix = TryGetSetting(settingsJson, "packageeditor_showimpexpprefix", true);
@@ -309,6 +315,7 @@ namespace LegendaryExplorer.Misc.AppSettings
         public static void Save()
         {
             Dictionary<string, string> settingsJson = new Dictionary<string,string>();
+            settingsJson["mainwindow_disabletransparencyandanimations"] = MainWindow_DisableTransparencyAndAnimations.ToString();
             settingsJson["packageeditor_hideinterpreterhexbox"] = PackageEditor_HideInterpreterHexBox.ToString();
             settingsJson["packageeditor_touchcomfymode"] = PackageEditor_TouchComfyMode.ToString();
             settingsJson["packageeditor_showimpexpprefix"] = PackageEditor_ShowImpExpPrefix.ToString();

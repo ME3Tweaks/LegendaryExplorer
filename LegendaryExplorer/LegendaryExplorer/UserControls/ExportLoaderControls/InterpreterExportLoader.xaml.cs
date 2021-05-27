@@ -16,6 +16,7 @@ using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.Tools.PackageEditor;
+using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
@@ -1015,10 +1016,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     editableValue = ep.Value.Instanced;
                     break;
                 case StringRefProperty strrefp:
-                    // TODO: IMPLEMENT IN LEX
-                    parsedValue = "NOT IMPLEMENTED IN LEX";
-                    //editableValue = strrefp.Value.ToString();
-                    //parsedValue = TLKManagerWPF.GlobalFindStrRefbyID(strrefp.Value, parsingExport.FileRef.Game, parsingExport.FileRef);
+                    editableValue = strrefp.Value.ToString();
+                    parsedValue = TLKManagerWPF.GlobalFindStrRefbyID(strrefp.Value, parsingExport.FileRef.Game, parsingExport.FileRef);
                     break;
                 case StrProperty strp:
                     editableValue = strp.Value;
@@ -1256,9 +1255,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             if (name == "m_nStrRefID" || name == "nLineStrRef" || name == "nStrRefID" || name == "m_iStringRef" || name == "m_iDescriptionStringRef")
             {
-                // TODO: IMPLEMENT IN LEX
-                return "NOT IMPLEMENTED IN LEX";
-                //return TLKManagerWPF.GlobalFindStrRefbyID(value, export.FileRef.Game, export.FileRef);
+                return TLKManagerWPF.GlobalFindStrRefbyID(value, export.FileRef.Game, export.FileRef);
             }
             return "";
         }
@@ -1554,8 +1551,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         break;
                     case StringRefProperty _:
                         {
-                            ParsedValue_TextBlock.Text = "NOT IMPLEMENTED IN LEX YET";
-                            /*
                             if (int.TryParse(Value_TextBox.Text, out int index))
                             {
 
@@ -1570,7 +1565,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             else
                             {
                                 ParsedValue_TextBlock.Text = "Invalid value";
-                            }*/
+                            }
                         }
                         break;
                     case NameProperty _:

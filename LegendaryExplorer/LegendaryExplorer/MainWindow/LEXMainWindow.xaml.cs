@@ -10,12 +10,16 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorer.UnrealExtensions;
+using LegendaryExplorer.Misc;
+using LegendaryExplorer.Misc.AppSettings;
+using LegendaryExplorerCore.Helpers;
 
 namespace LegendaryExplorer.MainWindow
 {
@@ -43,6 +47,28 @@ namespace LegendaryExplorer.MainWindow
 #endif
 
             Task.Run(TLKLoader.LoadSavedTlkList);
+        }
+
+        public void TransitionFromSplashToMainWindow(Window splashScreen)
+        {
+            if (Settings.MainWindow_DisableTransparencyAndAnimations)
+            {
+                Opacity = 1;
+                AllowsTransparency = false;
+                Show();
+                splashScreen.Close();
+            }
+            else
+            {
+                Show();
+                splashScreen.SetForegroundWindow();
+
+                var sb = new Storyboard();
+                sb.AddDoubleAnimation(1, 300, this, nameof(Opacity));
+                sb.AddDoubleAnimation(0, 300, splashScreen, nameof(Opacity));
+                sb.Completed += (_, _) => splashScreen.Close();
+                sb.Begin();
+            }
         }
 
         private void ToolSet_FavoritesChanged(object sender, EventArgs e)

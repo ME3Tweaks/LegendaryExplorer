@@ -5,6 +5,7 @@
                                  Title="SplashScreenView"
                                  Width="912"
                                  Height="400"
+                                 AllowsTransparency="True"
                                  WindowStartupLocation="CenterScreen" WindowStyle="None" 
                                  ShowInTaskbar="False" ResizeMode="NoResize">
     <Grid>

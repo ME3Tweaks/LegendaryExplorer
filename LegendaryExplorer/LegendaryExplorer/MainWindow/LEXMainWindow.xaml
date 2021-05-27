@@ -10,17 +10,7 @@
         MaxWidth="915"
         Title="Legendary Explorer" Height="600" Width="875" Opacity="0" SizeToContent="Width" 
         WindowStyle="None" Foreground="{x:Null}" AllowsTransparency="True"
-        Background="#F015181D">
-    <Window.Triggers>
-        <EventTrigger RoutedEvent="Window.Loaded">
-            <BeginStoryboard>
-                <Storyboard>
-                    <DoubleAnimation Duration="00:00:00.3" Storyboard.TargetProperty="Opacity" To="1" />
-                    <!-- Fade in of window -->
-                </Storyboard>
-            </BeginStoryboard>
-        </EventTrigger>
-    </Window.Triggers>
+        Background="#F015181D"  WindowStartupLocation="CenterScreen"  ResizeMode="CanMinimize">
     <Window.CommandBindings>
         <CommandBinding Command="{x:Static SystemCommands.CloseWindowCommand}" CanExecute="SystemCommand_CanExecute" Executed="CloseCommand_Executed" />
         <CommandBinding Command="{x:Static SystemCommands.MinimizeWindowCommand}" CanExecute="SystemCommand_CanExecute" Executed="MinimizeCommand_Executed" />
@@ -163,7 +153,7 @@
                         <Style x:Key="CategoriesButton" TargetType="{x:Type Button}"
                                BasedOn="{StaticResource BorderedButton}">
                             <Setter Property="Height" Value="45" />
-                            <Setter Property="Width" Value="100" /> 
+                            <Setter Property="Width" Value="100" />
                             <Setter Property="Margin" Value="10,0" />
                             <Setter Property="FocusVisualStyle" Value="{StaticResource MainWindowFocusVisualStyle}"/>
                             <Setter Property="Template">
