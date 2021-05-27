@@ -466,12 +466,8 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             Structs.Clear();
             Classes.Clear();
             SequenceObjects.Clear();
-            var NewClasses = new Dictionary<string, ClassInfo>();
-            var NewStructs = new Dictionary<string, ClassInfo>();
-            var NewEnums = new Dictionary<string, List<NameReference>>();
-            var newSequenceObjects = new Dictionary<string, SequenceObjectInfo>();
             var allFiles = MELoadedFiles.GetOfficialFiles(MEGame.LE1).Where(x => Path.GetExtension(x) == ".pcc").ToList();
-            int totalFiles = allFiles.Count;
+            int totalFiles = allFiles.Count * 2;
             int numDone = 0;
             foreach (string filePath in allFiles)
             {
@@ -485,44 +481,17 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     string objectName = exportEntry.ObjectName.Name;
                     if (className == "Enum")
                     {
-                        generateEnumValues(exportEntry, NewEnums);
+                        generateEnumValues(exportEntry, Enums);
                     }
-                    else if (className == "Class")
+                    else if (className == "Class" && !Classes.ContainsKey(objectName))
                     {
-                        if (!NewClasses.ContainsKey(objectName))
-                        {
-                            NewClasses.Add(objectName, generateClassInfo(exportEntry));
-                        }
-                        if (GlobalUnrealObjectInfo.IsA(objectName, "SequenceObject", MEGame.LE1))
-                        {
-                            List<string> inputLinks = generateSequenceObjectInfo(i, pcc);
-                            if (!newSequenceObjects.TryGetValue(objectName, out SequenceObjectInfo seqObjInfo))
-                            {
-                                seqObjInfo = new SequenceObjectInfo();
-                                newSequenceObjects.Add(objectName, seqObjInfo);
-                            }
-                            seqObjInfo.inputLinks = inputLinks;
-                        }
+                        Classes.Add(objectName, generateClassInfo(exportEntry));
                     }
                     else if (className == "ScriptStruct")
                     {
-                        if (!NewStructs.ContainsKey(objectName))
+                        if (!Structs.ContainsKey(objectName))
                         {
-                            NewStructs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
-                        }
-                    }
-                    else if (exportEntry.IsA("SequenceObject"))
-                    {
-                        if (!newSequenceObjects.TryGetValue(className, out SequenceObjectInfo seqObjInfo))
-                        {
-                            seqObjInfo = new SequenceObjectInfo();
-                            newSequenceObjects.Add(className, seqObjInfo);
-                        }
-
-                        int objInstanceVersion = exportEntry.GetProperty<IntProperty>("ObjInstanceVersion");
-                        if (objInstanceVersion > seqObjInfo.ObjInstanceVersion)
-                        {
-                            seqObjInfo.ObjInstanceVersion = objInstanceVersion;
+                            Structs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
                         }
                     }
                 }
@@ -530,10 +499,45 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 progressDelegate?.Invoke(numDone, totalFiles);
                 // System.Diagnostics.Debug.WriteLine($"{i} of {length} processed");
             }
+            
+            foreach (string filePath in allFiles)
+            {
+                using IMEPackage pcc = MEPackageHandler.OpenLE1Package(filePath);
+                foreach (ExportEntry exportEntry in pcc.Exports)
+                {
+                    if (exportEntry.IsA("SequenceObject"))
+                    {
+                        string className = exportEntry.ClassName;
+                        if (!SequenceObjects.TryGetValue(className, out SequenceObjectInfo seqObjInfo))
+                        {
+                            seqObjInfo = new SequenceObjectInfo();
+                            SequenceObjects.Add(className, seqObjInfo);
+                        }
 
-            var jsonText = JsonConvert.SerializeObject(new { SequenceObjects = newSequenceObjects, Classes = NewClasses, Structs = NewStructs, Enums = NewEnums }, Formatting.Indented);
+                        int objInstanceVersion = exportEntry.GetProperty<IntProperty>("ObjInstanceVersion");
+                        if (objInstanceVersion > seqObjInfo.ObjInstanceVersion)
+                        {
+                            seqObjInfo.ObjInstanceVersion = objInstanceVersion;
+                        }
+
+                        if (seqObjInfo.inputLinks is null && exportEntry.IsDefaultObject)
+                        {
+                            List<string> inputLinks = generateSequenceObjectInfo(exportEntry);
+                            seqObjInfo.inputLinks = inputLinks;
+                        }
+                    }
+                }
+                numDone++;
+                progressDelegate?.Invoke(numDone, totalFiles);
+            }
+
+            var jsonText = JsonConvert.SerializeObject(new { SequenceObjects, Classes, Structs, Enums }, Formatting.Indented);
             File.WriteAllText(outpath, jsonText);
             MemoryManager.SetUsePooledMemory(false);
+            Enums.Clear();
+            Structs.Clear();
+            Classes.Clear();
+            SequenceObjects.Clear();
             loadfromJSON(jsonText); // Load the new information into memory
         }
 
@@ -561,11 +565,10 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
         }
 
-
-        private static List<string> generateSequenceObjectInfo(int i, IMEPackage pcc)
+        //call on the _Default object
+        private static List<string> generateSequenceObjectInfo(ExportEntry export)
         {
-            //+1 to get the Default__ instance
-            var inLinks = pcc.GetUExport(i + 1).GetProperty<ArrayProperty<StructProperty>>("InputLinks");
+            var inLinks = export.GetProperty<ArrayProperty<StructProperty>>("InputLinks");
             if (inLinks != null)
             {
                 var inputLinks = new List<string>();
