@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using ClosedXML.Excel;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
@@ -170,6 +171,158 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     }
                 };
                 listDlg.Show();
+            });
+        }
+
+        record CompressionData(string filePath, int compressedSize, int uncompressedSize);
+
+        public static void CompileCompressionStats(PackageEditorWindow pewpf)
+        {
+            pewpf.IsBusy = true;
+            pewpf.BusyText = "Compiling statistics on file compression";
+            var zLibData = new List<CompressionData>();
+            var lzoData = new List<CompressionData>();
+            var oodleData = new List<CompressionData>();
+            Task.Run(() =>
+            {
+                foreach (MEGame game in new []{MEGame.LE1, MEGame.LE2, MEGame.LE3})//, MEGame.ME1, MEGame.ME2, MEGame.ME3})
+                {
+                    var filePaths = MELoadedFiles.GetOfficialFiles(game);
+                    foreach (string filePath in filePaths)
+                    {
+                        using var fs = File.OpenRead(filePath);
+                        EndianReader raw = EndianReader.SetupForPackageReading(fs);
+
+                        #region Header
+
+                        raw.SkipInt32(); //skip magic as we have already read it
+                        var versionLicenseePacked = raw.ReadUInt32();
+                        
+                        raw.ReadInt32();
+                        int foldernameStrLen = raw.ReadInt32();
+                        if (foldernameStrLen > 0)
+                            fs.ReadStringLatin1Null(foldernameStrLen);
+                        else
+                            fs.ReadStringUnicodeNull(foldernameStrLen * -2);
+
+                        var Flags = (UnrealFlags.EPackageFlags)raw.ReadUInt32();
+                        
+                        if ((game == MEGame.ME3 || game == MEGame.LE3)
+                         && Flags.HasFlag(UnrealFlags.EPackageFlags.Cooked))
+                        {
+                            raw.ReadInt32();
+                        }
+
+                        var NameCount = raw.ReadInt32();
+                        var NameOffset = raw.ReadInt32();
+                        var ExportCount = raw.ReadInt32();
+                        var ExportOffset = raw.ReadInt32();
+                        var ImportCount = raw.ReadInt32();
+                        var ImportOffset = raw.ReadInt32();
+
+                        if (game.IsLEGame() || (game != MEGame.ME1))
+                        {
+                            raw.ReadInt32();
+                        }
+
+                        if (game.IsLEGame() || game == MEGame.ME3)
+                        {
+                            raw.ReadInt32();
+                            raw.ReadInt32(); //ImportGuidsCount always 0
+                            raw.ReadInt32(); //ExportGuidsCount always 0
+                            raw.ReadInt32(); //ThumbnailTableOffset always 0
+                        }
+
+                        raw.ReadGuid();
+
+                        uint generationsTableCount = raw.ReadUInt32();
+                        if (generationsTableCount > 0)
+                        {
+                            generationsTableCount--;
+                            raw.ReadInt32();
+                            raw.ReadInt32();
+                            raw.ReadInt32();
+                        }
+                        //should never be more than 1 generation, but just in case
+                        raw.Skip(generationsTableCount * 12);
+                        
+                        raw.SkipInt32(); //engineVersion          Like unrealVersion and licenseeVersion, these 2 are determined by what game this is,
+                        raw.SkipInt32(); //cookedContentVersion   so we don't have to read them in
+
+                        if ((game == MEGame.ME2 || game == MEGame.ME1)) //PS3 on ME3 engine
+                        {
+                            raw.SkipInt32(); //always 0
+                            raw.SkipInt32(); //always 47699
+                            raw.ReadInt32();
+                            raw.SkipInt32(); //always 1 in ME1, always 1966080 in ME2
+                        }
+
+                        raw.ReadInt32(); // Build 
+                        raw.ReadInt32(); // Branch - always -1 in ME1 and ME2, always 145358848 in ME3
+
+                        if (game == MEGame.ME1)
+                        {
+                            raw.SkipInt32(); //always -1
+                        }
+
+                        #endregion
+
+                        //COMPRESSION AND COMPRESSION CHUNKS
+                        var compressionType = (UnrealPackageFile.CompressionType)raw.ReadUInt32();
+
+                        if (compressionType is UnrealPackageFile.CompressionType.None)
+                        {
+                            continue;
+                        }
+
+                        var NumChunks = raw.ReadInt32();
+                        int compressedSize = 0;
+                        int uncompressedSize = 0; 
+                        for (int i = 0; i < NumChunks; i++)
+                        {
+                            raw.ReadInt32();
+                            uncompressedSize += raw.ReadInt32();
+                            raw.ReadInt32();
+                            compressedSize += raw.ReadInt32();
+                        }
+
+                        switch (compressionType)
+                        {
+                            case UnrealPackageFile.CompressionType.Zlib:
+                                zLibData.Add(new CompressionData(filePath, compressedSize, uncompressedSize));
+                                break;
+                            case UnrealPackageFile.CompressionType.LZO:
+                                lzoData.Add(new CompressionData(filePath, compressedSize, uncompressedSize));
+                                break;
+                            case UnrealPackageFile.CompressionType.OodleLeviathan:
+                                oodleData.Add(new CompressionData(filePath, compressedSize, uncompressedSize));
+                                break;
+                        }
+                    }
+                }
+
+                var xl = new XLWorkbook();
+                var oodleWS = xl.AddWorksheet("Oodle");
+                var lzoWS = xl.AddWorksheet("lzo");
+                var zlibWS = xl.AddWorksheet("zlib");
+                foreach ((List<CompressionData> data, IXLWorksheet ws) in new []{oodleData, lzoData, zLibData}.Zip(new []{oodleWS, lzoWS, zlibWS}))
+                {
+                    ws.Cell(1, 1).SetValue("Compressed Size");
+                    ws.Cell(1, 2).SetValue("Uncompressed Size");
+                    ws.Cell(1, 3).SetValue("Path");
+                    int i = 2;
+                    foreach ((string filePath, int compressedSize, int uncompressedSize) in data)
+                    {
+                        ws.Cell(i, 1).SetValue(compressedSize);
+                        ws.Cell(i, 2).SetValue(uncompressedSize);
+                        ws.Cell(i, 3).SetValue(filePath);
+                        ++i;
+                    }
+                }
+                xl.SaveAs(Path.Combine(AppDirectories.ExecFolder, "CompressionStats.xlsx"));
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                pewpf.IsBusy = false;
             });
         }
 

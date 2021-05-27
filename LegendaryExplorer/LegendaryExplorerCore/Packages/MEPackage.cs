@@ -1064,7 +1064,8 @@ namespace LegendaryExplorerCore.Packages
                               + dependencyTableSize
                               + package.exports.Sum(exp => exp.DataSize);
 
-                int compressedLengthEstimate = (int)(totalSize / 3.5);
+                //This will be enough to prevent resizing for 84% of LE files, and only 2% will have to resize twice
+                int compressedLengthEstimate = (int)(totalSize * 0.4); 
                 var compressedStream = MemoryManager.GetMemoryStream(compressedLengthEstimate);
                 package.WriteHeader(compressedStream, includeAdditionalPackageToCook:includeAdditionalPackageToCook);
 

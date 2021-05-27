@@ -234,14 +234,6 @@ namespace LegendaryExplorerCore.Helpers
         public static bool IsEmpty<T>(this IEnumerable<T> enumerable) => !enumerable.Any();
         public static bool Any<T>(this ICollection<T> collection) => collection.Count > 0;
 
-        /// <summary>
-        /// Creates a sequence of tuples by combining the two sequences. The resulting sequence will length of the shortest of the two.
-        /// </summary>
-        public static IEnumerable<(TFirst, TSecond)> ZipTuple<TFirst, TSecond>(this IEnumerable<TFirst> first, IEnumerable<TSecond> second)
-        {
-            return first.Zip(second, ValueTuple.Create);
-        }
-
         public static bool HasExactly<T>(this IEnumerable<T> src, int count)
         {
             if (count < 0) return false;

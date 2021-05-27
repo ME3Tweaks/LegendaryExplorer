@@ -84,6 +84,7 @@
         <MenuItem Header="Build Native Table" Click="BuildNativeTable_OnClick" />
         <MenuItem Header="DumpTaggedWwiseStreams" Click="DumptTaggedWwiseStreams_OnClick" />
         <MenuItem Header="Dump Shader Types" Click="DumpShaderTypes_OnClick" />
+        <MenuItem Header="Compile Compression Stats" Click="CompileCompressionStats_Click" />
     </MenuItem>
     <MenuItem Header="Kinkojiro's 101 ways to cause an aneurysm">
         <MenuItem Header="Transfer game level's art to a different game (ME2 -> ME3 Only)" Click="TransferLevelBetweenGames"/>
