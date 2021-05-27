@@ -7,10 +7,8 @@
         xmlns:local="clr-namespace:LegendaryExplorer"
         xmlns:mainWindow="clr-namespace:LegendaryExplorer.MainWindow"
         mc:Ignorable="d"
+        MaxWidth="915"
         Title="Legendary Explorer" Height="600" Width="875" Opacity="0" SizeToContent="Width" 
-        MinWidth="820"
-        MinHeight="365"
-        Closing="MainWindow_OnClosing"
         WindowStyle="None" Foreground="{x:Null}" AllowsTransparency="True"
         Background="#F015181D">
     <Window.Triggers>
@@ -30,11 +28,26 @@
 
     <Window.Resources>
         <SolidColorBrush x:Key="ForegroundBrush" Color="#FF7e8285"/>
-
+        <SolidColorBrush x:Key="MouseOverBrush" Color="White"/>
+        <Style x:Key="MainWindowFocusVisualStyle">  
+            <Setter Property="Control.Template">  
+                <Setter.Value>  
+                    <ControlTemplate>  
+                        <Rectangle StrokeThickness="1"  
+                                   Stroke="White"  
+                                   StrokeDashArray="1 2"  
+                                   SnapsToDevicePixels="true"/>  
+                    </ControlTemplate>  
+                </Setter.Value>  
+            </Setter>  
+        </Style>
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource MainWindowFocusVisualStyle}"/>
+        </Style>
     </Window.Resources>
 
 
-    <Grid>
+    <Grid FocusVisualStyle="{DynamicResource {x:Static SystemParameters.FocusVisualStyleKey}}">
         <Rectangle MouseDown="BackgroundMouseDown" Fill="#00000000"/>
         <DockPanel>
             <!-- Top toolbar -->
@@ -59,6 +72,7 @@
                         <StackPanel.Resources>
                             <Style x:Key="TopBarButton" TargetType="{x:Type Button}"
                                    BasedOn="{StaticResource BorderlessButton}">
+                                <Setter Property="FocusVisualStyle" Value="{StaticResource MainWindowFocusVisualStyle}"/>
                                 <Setter Property="ContentTemplate">
                                     <Setter.Value>
                                         <DataTemplate>
@@ -76,7 +90,7 @@
                                                 <DataTrigger
                                                     Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
                                                     Value="True">
-                                                    <Setter TargetName="rect1" Property="Fill" Value="#FFFFFFFF" />
+                                                    <Setter TargetName="rect1" Property="Fill" Value="{DynamicResource MouseOverBrush}" />
                                                 </DataTrigger>
                                             </DataTemplate.Triggers>
                                         </DataTemplate>
@@ -100,35 +114,42 @@
 
                     <!-- Search box -->
                     <Border BorderBrush="{DynamicResource ForegroundBrush}" BorderThickness="2" Margin="10, 0,5,0"
-                            VerticalAlignment="Center" Height="55">
-                        <Grid Background="#FF30343E">
-                            <Grid.Resources>
-                                <Style x:Key="WaterMark" TargetType="{x:Type FrameworkElement}">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                    <Style.Triggers>
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding IsFocused, ElementName=SearchBox}"
-                                                           Value="False" />
-                                                <Condition Binding="{Binding Text, ElementName=SearchBox}" Value="" />
-                                            </MultiDataTrigger.Conditions>
-                                            <Setter Property="Visibility" Value="Visible" />
-                                        </MultiDataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Grid.Resources>
-                            <TextBox x:Name="SearchBox" FontFamily="{StaticResource TitilliumWeb-Regular}"
-                                     FontSize="24"
-                                     Background="{x:Null}"
-                                     BorderBrush="{x:Null}" Foreground="#FFFBFBFB" VerticalContentAlignment="Center"
-                                     CaretBrush="#FFFBFBFB"
-                                     TextChanged="SearchBox_TextChanged" GotFocus="SearchBox_OnGotFocus" />
-                            <TextBlock IsHitTestVisible="False" Text="Search the Toolset..." VerticalAlignment="Center"
-                                       HorizontalAlignment="Left" Margin="10,0,0,0"
-                                       Foreground="#FFFBFBFB" FontFamily="{StaticResource TitilliumWeb-Italic}"
-                                       FontSize="19" Style="{StaticResource WaterMark}" />
-                            <!--<Image Source="../Resources/Images/search.ico" Height="32" HorizontalAlignment="Right"
-                                   Margin="0,8,8,8" Style="{StaticResource WaterMark}" /> -->
+                            VerticalAlignment="Center" Height="55" CornerRadius="8">
+                        <Grid>
+                            <Border x:Name="searchMask" Background="White" CornerRadius="7"></Border>
+                            <Grid Background="#FF30343E">
+                                <Grid.Resources>
+                                    <Style x:Key="WaterMark" TargetType="{x:Type FrameworkElement}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding IsFocused, ElementName=SearchBox}"
+                                                               Value="False" />
+                                                    <Condition Binding="{Binding Text, ElementName=SearchBox}" Value="" />
+                                                </MultiDataTrigger.Conditions>
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </MultiDataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Resources>
+                                <Grid.OpacityMask>
+                                    <VisualBrush Visual="{Binding ElementName=searchMask}"></VisualBrush>
+                                </Grid.OpacityMask>
+
+                                <TextBox x:Name="SearchBox" FontFamily="{StaticResource BioMass-Bold}"
+                                         FontSize="18"
+                                         Background="{x:Null}"
+                                         BorderBrush="{x:Null}" Foreground="#FFFBFBFB" VerticalContentAlignment="Center"
+                                         CaretBrush="#FFFBFBFB" Margin="3,0,0,0"
+                                         TextChanged="SearchBox_TextChanged" GotFocus="SearchBox_OnGotFocus" />
+                                <TextBlock IsHitTestVisible="False" Text="Search the Toolset..." VerticalAlignment="Center"
+                                           HorizontalAlignment="Left" Margin="10,0,0,0"
+                                           Foreground="#FFFBFBFB" FontFamily="{StaticResource BioMass-Light}"
+                                           FontSize="17" Style="{StaticResource WaterMark}" />
+                                <!--<Image Source="../Resources/Images/search.ico" Height="32" HorizontalAlignment="Right"
+                                       Margin="0,8,8,8" Style="{StaticResource WaterMark}" /> -->
+                            </Grid>
                         </Grid>
                     </Border>
 
@@ -142,99 +163,104 @@
                         <Style x:Key="CategoriesButton" TargetType="{x:Type Button}"
                                BasedOn="{StaticResource BorderedButton}">
                             <Setter Property="Height" Value="45" />
-                            <Setter Property="MinWidth" Value="100" />
+                            <Setter Property="Width" Value="100" /> 
                             <Setter Property="Margin" Value="10,0" />
+                            <Setter Property="FocusVisualStyle" Value="{StaticResource MainWindowFocusVisualStyle}"/>
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type Button}">
-                                        <Border BorderBrush="{DynamicResource ForegroundBrush}" BorderThickness="1">
-                                            <ContentPresenter Margin="2"
-                                                              HorizontalAlignment="Center"
-                                                              VerticalAlignment="Center"
-                                                              TextBlock.Foreground="AliceBlue"
-                                                              x:Name="tbContentPresenter">
-                                            </ContentPresenter>
+                                        <Border Background="Transparent">
+                                            <Grid>
+                                                <Viewbox>
+                                                    <Path x:Name="CategoryShape" Data="M 0 624.38 0 180.38 180.38 0 1332 0 1332 513.38 1227.94 617.44 0 624.38z" 
+                                                          Opacity="1"
+                                                          Stroke="{DynamicResource ForegroundBrush}" StrokeThickness="30" />
+                                                </Viewbox>
+                                                <TextBlock VerticalAlignment="Center" Margin="4,0"
+                                                           TextAlignment="Center" FontFamily="{StaticResource BioMass-Bold}" FontSize="12"
+                                                           TextWrapping="Wrap" FontWeight="Bold" Text="{TemplateBinding ContentPresenter.Content}">
+                                                </TextBlock>
+                                            </Grid>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="TextBlock.Foreground" Value="#FFFFFFFF" />
+                                                <Setter Property="TextBlock.Foreground" Value="{DynamicResource MouseOverBrush}" />
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="False">
+                                                <Setter Property="TextBlock.Foreground" Value="{DynamicResource ForegroundBrush}" />
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
                                 </Setter.Value>
                             </Setter>
                         </Style>
-
-                        <Style x:Key="FavoritesButton" TargetType="{x:Type Button}"
-                               BasedOn="{StaticResource CategoriesButton}">
-                            <Setter Property="MinWidth" Value="45" />
-                        </Style>
-
-                        <Style TargetType="{x:Type TextBlock}">
-                            <Setter Property="TextAlignment" Value="Center" />
-                            <Setter Property="FontFamily" Value="{StaticResource TitilliumWeb-Regular}" />
-                            <Setter Property="FontSize" Value="14" />
-                            <Setter Property="FontWeight" Value="Bold" />
-                            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
-                        </Style>
                     </StackPanel.Resources>
 
-                    <Button Style="{StaticResource FavoritesButton}" Click="Favorites_Clicked"
+                    <!-- Favorites Button -->
+                    <Button x:Name="Favorites_Button" Click="Favorites_Clicked" Height="45" Width="45" Margin="10, 0"
                             ToolTip="Favorites - Shift-click on a tool to add to favorites">
-                        <fa5:ImageAwesome Icon="Solid_Star" Margin="5" Foreground="{DynamicResource ForegroundBrush}" />
+                        <Button.Template>
+                            <ControlTemplate>
+                                <Border Background="Transparent">
+                                    <Grid>
+                                        <Viewbox>
+                                            <Polygon Points="740 614.93 594.08 740 0 740 0 144.76 114.65 0 740 0 740 614.93"
+                                                  Opacity="1"
+                                                  Stroke="{DynamicResource ForegroundBrush}" StrokeThickness="40" />
+                                        </Viewbox>
+                                        <fa5:ImageAwesome x:Name="FavStar" Icon="Solid_Star" Width="30" Height="30"/>
+                                    </Grid>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="FavStar" Property="fa5:ImageAwesome.Foreground" Value="{DynamicResource MouseOverBrush}" />
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="False">
+                                        <Setter TargetName="FavStar" Property="fa5:ImageAwesome.Foreground" Value="{DynamicResource ForegroundBrush}" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
                     </Button>
-                    <Button Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked" Tag="Core Editors"
-                            ToolTip="Core package editing tools">
-                        <TextBlock>
-                            Core Editors
-                        </TextBlock>
+
+                    <!-- Rest of the buttons - tag determines category name -->
+                    <Button Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked" 
+                            Tag="Core Editors" ToolTip="Core package editing tools">
+                        Core Editors
                     </Button>
                     <Button Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked"
                             Tag="Cinematic Tools" ToolTip="Tools related to conversation and cutscene editing">
-                        <TextBlock>
-                            Cinematic <LineBreak />
-                            Tools
-                        </TextBlock>
+                        Cinematic Tools
                     </Button>
-                    <Button Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked" Tag="Audio Tools"
-                            ToolTip="Audio modification tools">
-                        <TextBlock>
-                            Audio Tools
-                        </TextBlock>
+                    <Button Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked" 
+                            Tag="Audio Tools" ToolTip="Audio modification tools">
+                        Audio Tools
                     </Button>
                     <Button Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked"
                             Tag="Meshes + Textures">
-                        <TextBlock>
-                            Mesh &amp; <LineBreak />
-                            Texture Tools
-                        </TextBlock>
+                        Meshes &amp; Textures
                     </Button>
                     <Button Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked"
                             Tag="Extractors + Repackers">
-                        <TextBlock>
-                            Extractors &amp; <LineBreak />
-                            Repackers
-                        </TextBlock>
+                        Extract &amp; Repack
                     </Button>
-                    <Button Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked" Tag="Utilities">
-                        <TextBlock>
-                            Utilities
-                        </TextBlock>
+                    <Button Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked" 
+                            Tag="Utilities">
+                        Utilities
                     </Button>
-                    <Button x:Name="toolsetDevsButton" Style="{StaticResource CategoriesButton}"
-                            Click="CategoryButton_Clicked" Tag="Toolset Devs" Visibility="Collapsed">
-                        <TextBlock>
-                            Toolset Devs <LineBreak />
-                            Only
-                        </TextBlock>
+                    <Button x:Name="toolsetDevsButton" Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked" 
+                            Tag="Toolset Devs" Visibility="Collapsed">
+                        Toolset Devs Only
                     </Button>
                 </StackPanel>
             </Border>
 
             <!-- Tool panel -->
-            <ScrollViewer Background="#1A4b5568"
-                HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                <mainWindow:ToolPanel x:Name="mainToolPanel" Rows="5" Columns="7" />
+            <ScrollViewer Background="#1A4b5568" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+
+                <mainWindow:ToolPanel x:Name="mainToolPanel"/>
+
+                <!-- Fancy scrollbar -->
                 <ScrollViewer.Resources>
                     <Style x:Key="ScrollBarTrackThumb"
                            TargetType="{x:Type Thumb}">
@@ -367,7 +393,6 @@
                         </Setter>
                     </Style>
                 </ScrollViewer.Resources>
-
             </ScrollViewer>
 
         </DockPanel>

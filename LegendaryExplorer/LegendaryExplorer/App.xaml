@@ -13,6 +13,8 @@
         <FontFamily x:Key="TitilliumWeb-Regular">/LegendaryExplorer;component/Resources/Fonts/TitilliumWeb-Regular.ttf#Titillium Web</FontFamily>
         <FontFamily x:Key="Exo-SemiBold">/LegendaryExplorer;component/Resources/Fonts/Exo-SemiBold.ttf#Exo</FontFamily>
         <FontFamily x:Key="Exo-Regular">/LegendaryExplorer;component/Resources/Fonts/Exo-Regular.ttf#Exo</FontFamily>
+        <FontFamily x:Key="BioMass-Light">/LegendaryExplorer;component/Resources/Fonts/BIOMASS2-LIGHT.TTF#Biomass2 Light</FontFamily>
+        <FontFamily x:Key="BioMass-Bold">/LegendaryExplorer;component/Resources/Fonts/BIOMASS2-BOLD.TTF#Biomass2 Bold</FontFamily>
 
         <SolidColorBrush x:Key="HighlightColor" Color="#FF4F9DB1"/>
         <SolidColorBrush x:Key="LabelTextBrush" Color="#FFFDFDFD"/>

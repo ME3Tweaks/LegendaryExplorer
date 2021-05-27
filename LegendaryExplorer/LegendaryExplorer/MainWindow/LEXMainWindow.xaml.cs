@@ -27,7 +27,15 @@ namespace LegendaryExplorer.MainWindow
         public LEXMainWindow()
         {
             InitializeComponent();
-            mainToolPanel.setToolList(ToolSet.Items);
+
+            if (ToolSet.Items.Any((t) => t.IsFavorited))
+            {
+                mainToolPanel.setToolList(ToolSet.Items.Where(t => t.IsFavorited));
+            }
+            else
+            {
+                mainToolPanel.setToolList(ToolSet.Items.Where(t => t.category == "Core Editors" || t.category2 == "Core Editors"));
+            }
             ToolSet.FavoritesChanged += ToolSet_FavoritesChanged;
 
 #if DEBUG
@@ -39,7 +47,8 @@ namespace LegendaryExplorer.MainWindow
 
         private void ToolSet_FavoritesChanged(object sender, EventArgs e)
         {
-            
+            // TODO: If favorite tab is selected, update displayed tools
+            // We need this event handler to exist for the favorites system to work
         }
 
         private void About_Click(object sender, RoutedEventArgs e)
@@ -100,12 +109,6 @@ namespace LegendaryExplorer.MainWindow
             var category = (string) button.Tag;
             mainToolPanel.setToolList(ToolSet.Items.Where((t) => t.category == category || t.category2 == category));
         }
-
-        private void MainWindow_OnClosing(object sender, CancelEventArgs e)
-        {
-            ToolSet.saveFavorites();
-        }
-
 
         private void SystemCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {

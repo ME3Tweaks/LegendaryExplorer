@@ -123,6 +123,8 @@
     <Resource Include="Resources\Fonts\TitilliumWeb-Light.ttf" />
     <Resource Include="Resources\Fonts\TitilliumWeb-Regular.ttf" />
     <Resource Include="Resources\Fonts\TitilliumWeb-SemiBold.ttf" />
+    <Resource Include="Resources\Fonts\BIOMASS2-LIGHT.ttf" />
+    <Resource Include="Resources\Fonts\BIOMASS2-BOLD.ttf" />
     <!-- Kismet font being an EmbeddedResource instead of a Resource like the other fonts is intentional, do not change it!-->
     <EmbeddedResource Include="Resources\Fonts\KismetFont.ttf" />
   </ItemGroup>

@@ -38,11 +38,11 @@
                 </StackPanel>
             </DockPanel>
             <Rectangle Fill="#A3FBFBFB" Height="2"/> -->
-            <ItemsControl x:Name="ToolList" Margin="{Binding ItemControlMargin, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type mainWindow:ToolPanel}}}">
+            <ItemsControl x:Name="ToolList" Margin="{Binding ItemControlMargin, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type mainWindow:ToolPanel}}}"
+                          HorizontalContentAlignment="Stretch">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate >
-                        <UniformGrid Rows="{Binding Rows, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type mainWindow:ToolPanel}}}"
-                                     Columns="{Binding Columns, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type mainWindow:ToolPanel}}}"/>
+                        <UniformGrid Columns="7"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
