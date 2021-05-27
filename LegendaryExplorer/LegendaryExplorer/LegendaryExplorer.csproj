@@ -64,18 +64,14 @@
     <None Remove="Tools\Icons\error_x.png" />
     <None Remove="Tools\Icons\excel.gif" />
     <None Remove="Tools\Icons\excel.png" />
-    <None Remove="Tools\Icons\Exo-Regular.ttf" />
-    <None Remove="Tools\Icons\Exo-SemiBold.ttf" />
     <None Remove="Tools\Icons\eye_white.ico" />
     <None Remove="Tools\Icons\facefxeditor_256x256.ico" />
     <None Remove="Tools\Icons\filehexanalyzer_256x256.ico" />
     <None Remove="Tools\Icons\folder.ico" />
-    <None Remove="Tools\Icons\Hack-Bold.ttf" />
     <None Remove="Tools\Icons\hexconverter_256x256.ico" />
     <None Remove="Tools\Icons\install_mods_icon.ico" />
     <None Remove="Tools\Icons\interpeditor_256x256.ico" />
     <None Remove="Tools\Icons\InterpViewer_256x256.ico" />
-    <None Remove="Tools\Icons\KismetFont.ttf" />
     <None Remove="Tools\Icons\left_arrow.ico" />
     <None Remove="Tools\Icons\liveleveleditor_256x256.ico" />
     <None Remove="Tools\Icons\loadingspinner.png" />
@@ -109,10 +105,6 @@
     <None Remove="Tools\Icons\taskbar.ico" />
     <None Remove="Tools\Icons\texturestudio_256x256.ico" />
     <None Remove="Tools\Icons\tfccompactor_256x256.ico" />
-    <None Remove="Tools\Icons\TitilliumWeb-Italic.ttf" />
-    <None Remove="Tools\Icons\TitilliumWeb-Light.ttf" />
-    <None Remove="Tools\Icons\TitilliumWeb-Regular.ttf" />
-    <None Remove="Tools\Icons\TitilliumWeb-SemiBold.ttf" />
     <None Remove="Tools\Icons\tlkeditor_256x256.ico" />
     <None Remove="Tools\Icons\tlkmanager_256x256.ico" />
     <None Remove="Tools\Icons\toolset_splash.png" />
@@ -122,6 +114,17 @@
     <None Remove="Tools\Meshplorer\umodel.ico" />
     <None Remove="UserControls\ExportLoaderControls\Soundpanel\WwiseTemplateProject.zip" />
     <None Remove="UserControls\SharedToolControls\Scene3D\StandardShader.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Fonts\Exo-Regular.ttf" />
+    <Resource Include="Resources\Fonts\Exo-SemiBold.ttf" />
+    <Resource Include="Resources\Fonts\Hack-Bold.ttf" />
+    <Resource Include="Resources\Fonts\TitilliumWeb-Italic.ttf" />
+    <Resource Include="Resources\Fonts\TitilliumWeb-Light.ttf" />
+    <Resource Include="Resources\Fonts\TitilliumWeb-Regular.ttf" />
+    <Resource Include="Resources\Fonts\TitilliumWeb-SemiBold.ttf" />
+    <!-- Kismet font being an EmbeddedResource instead of a Resource like the other fonts is intentional, do not change it!-->
+    <EmbeddedResource Include="Resources\Fonts\KismetFont.ttf" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\SharedProjects\Be.Windows.Forms.HexBox\Be.Windows.Forms.HexBox.csproj" />
@@ -181,7 +184,6 @@
     <Resource Include="Resources\Images\*.gif" />
     <!-- Is there a fontawesome excel icon?-->
     <Resource Include="Resources\Images\*.png" />
-    <EmbeddedResource Include="Resources\Fonts\*.ttf" />
     <Resource Include="Tools\PackageEditor\ExportIcons\*" />
   </ItemGroup>
   <ItemGroup>
