@@ -490,13 +490,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             Structs.Clear();
             Classes.Clear();
             SequenceObjects.Clear();
-            var NewClasses = new Dictionary<string, ClassInfo>();
-            var NewStructs = new Dictionary<string, ClassInfo>();
-            var NewEnums = new Dictionary<string, List<NameReference>>();
-            var NewSequenceObjects = new Dictionary<string, SequenceObjectInfo>();
 
             var allFiles = MELoadedFiles.GetOfficialFiles(MEGame.ME1).Where(x => Path.GetExtension(x) == ".upk" || Path.GetExtension(x) == ".sfm" || Path.GetExtension(x) == ".u").ToList();
-            int totalFiles = allFiles.Count;
+            int totalFiles = allFiles.Count * 2;
             int numDone = 0;
             foreach (var filePath in allFiles)
             {
@@ -526,8 +522,19 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                             Structs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
                         }
                     }
-                    else if (exportEntry.IsA("SequenceObject"))
+                }
+                numDone++;
+                progressDelegate?.Invoke(numDone, totalFiles);
+            }
+
+            foreach (string filePath in allFiles)
+            {
+                using IMEPackage pcc = MEPackageHandler.OpenME1Package(filePath);
+                foreach (ExportEntry exportEntry in pcc.Exports)
+                {
+                    if (exportEntry.IsA("SequenceObject"))
                     {
+                        string className = exportEntry.ClassName;
                         if (!SequenceObjects.TryGetValue(className, out SequenceObjectInfo seqObjInfo))
                         {
                             seqObjInfo = new SequenceObjectInfo();
@@ -545,9 +552,13 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 progressDelegate?.Invoke(numDone, totalFiles);
             }
 
-            var jsonText = JsonConvert.SerializeObject(new { SequenceObjects = NewSequenceObjects, Classes = NewClasses, Structs = NewStructs, Enums = NewEnums }, Formatting.Indented);
+            var jsonText = JsonConvert.SerializeObject(new { SequenceObjects, Classes, Structs, Enums }, Formatting.Indented);
             File.WriteAllText(outpath, jsonText);
             MemoryManager.SetUsePooledMemory(false);
+            Enums.Clear();
+            Structs.Clear();
+            Classes.Clear();
+            SequenceObjects.Clear();
             loadfromJSON(jsonText);
         }
 

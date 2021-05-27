@@ -1065,7 +1065,7 @@ namespace LegendaryExplorerCore.Packages
                               + package.exports.Sum(exp => exp.DataSize);
 
                 int compressedLengthEstimate = (int)(totalSize / 3.5);
-                var compressedStream = new MemoryStream(compressedLengthEstimate);
+                var compressedStream = MemoryManager.GetMemoryStream(compressedLengthEstimate);
                 package.WriteHeader(compressedStream, includeAdditionalPackageToCook:includeAdditionalPackageToCook);
 
                 //calculate all offsets
