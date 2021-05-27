@@ -384,7 +384,7 @@
                         <StackPanel>
                             <TextBlock Margin="5" Text="Welcome to Package Editor" FontWeight="Bold"/>
                             <TextBlock Margin="5">
-                            Package Editor is the primary modding tool for editing game package files and contains
+                            Package Editor is the primary modding tool for editing game package files (.pcc) and contains
                             <LineBreak/>
                             many embedded tools that appear as tabs on the right pane.
                             <LineBreak/>
@@ -413,7 +413,7 @@
                             If you have issues, please report them to one of the following places:
                             <LineBreak/>
                             - <Hyperlink NavigateUri="{Binding Path=(misc:AppLinks.DiscordInviteURL)}" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
-                                <Run Text="The ME3Tweaks Discord (ME3Explorer channel)"/>
+                                <Run Text="The ME3Tweaks Discord (Legendary_Explorer channel)"/>
                             </Hyperlink>
                             <LineBreak/>
                             - The issues list on GitHub at 

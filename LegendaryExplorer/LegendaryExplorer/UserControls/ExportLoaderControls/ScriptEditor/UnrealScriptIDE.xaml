@@ -187,18 +187,6 @@
                     </Style>
                 </avalonedit:TextEditor.Resources>
             </ide:UnrealScriptTextEditor>
-            <!--<TextBox Name="scriptTextBox" IsReadOnly="False" Text="{Binding ScriptText}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
-                     FontFamily="Consolas" IsInactiveSelectionHighlightEnabled="True" AcceptsReturn="True"/>-->
-            <!--<TreeView DockPanel.Dock="Right" Visibility="{x:Static me3Explorer:App.IsDebugVisibility}" ItemsSource="{Binding RootNode.ChildNodes}">
-                <TreeView.Resources>
-                    <HierarchicalDataTemplate DataType="{x:Type tree:ASTNode}" ItemsSource="{Binding ChildNodes}">
-                        <TextBlock Text="{Binding Type, Mode=OneTime}"/>
-                    </HierarchicalDataTemplate>
-                    <HierarchicalDataTemplate DataType="{x:Type tree:Function}" ItemsSource="{Binding ChildNodes}">
-                        <TextBlock Text="{Binding Name}"/>
-                    </HierarchicalDataTemplate>
-                </TreeView.Resources>
-            </TreeView>-->
         </DockPanel>
     </xctk:BusyIndicator>
 </exportLoaderControls:ExportLoaderControl>

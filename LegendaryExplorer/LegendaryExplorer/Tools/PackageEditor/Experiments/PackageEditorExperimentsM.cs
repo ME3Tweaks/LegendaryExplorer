@@ -1316,7 +1316,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         public static void GenerateNewGUIDForFile(PackageEditorWindow pew)
         {
             MessageBox.Show(
-                "GetPEWindow() process applies immediately and cannot be undone.\nEnsure the file you are going to regenerate is not open in ME3Explorer in any tools.\nBe absolutely sure you know what you're doing before you use GetPEWindow()!");
+                "GetPEWindow() process applies immediately and cannot be undone.\nEnsure the file you are going to regenerate is not open in Legendary Explorer in any tools.\nBe absolutely sure you know what you're doing before you use GetPEWindow()!");
             OpenFileDialog d = new OpenFileDialog
             {
                 Title = "Select file to regen guid for",

@@ -3258,7 +3258,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 {
                     // It's a duplicate. Offer to index it, as this will break the lookup if it's identical on inbound
                     // (it will just install into an existing entry)
-                    var result = MessageBox.Show("The item being ported in has the same full path as an object in the target package. This will cause issues in the game as well as with the toolset if the imported object is not renamed beforehand or has its index changed.\n\nME3Explorer will automatically adjust the index for you. You may need to adjust it back after changing the name.", "Indexing issues", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
+                    var result = MessageBox.Show("The item being ported in has the same full path as an object in the target package. This will cause issues in the game as well as with the toolset if the imported object is not renamed beforehand or has its index changed.\n\nLegendary Explorer will automatically adjust the index for you. You may need to adjust it back after changing the name.", "Indexing issues", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
                     if (result == MessageBoxResult.No)
                     {
                         return; // User canceled

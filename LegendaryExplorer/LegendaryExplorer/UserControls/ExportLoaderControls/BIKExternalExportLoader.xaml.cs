@@ -456,7 +456,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     string rootPath = MEDirectories.GetDefaultGamePath(Pcc.Game);
                     if (rootPath == null || !Directory.Exists(rootPath))
                     {
-                        MessageBox.Show($"{Pcc.Game} has not been found. Please check your ME3Explorer settings");
+                        MessageBox.Show($"{Pcc.Game} has not been found. Please check your Legendary Explorer settings");
                         return null;
                     }
 
@@ -481,7 +481,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         string rootPath = MEDirectories.GetDefaultGamePath(Pcc.Game);
                         if (rootPath == null || !Directory.Exists(rootPath))
                         {
-                            MessageBox.Show($"{Pcc.Game} has not been found. Please check your ME3Explorer settings");
+                            MessageBox.Show($"{Pcc.Game} has not been found. Please check your Legendary Explorer settings");
                             return null;
                         }
 
@@ -686,7 +686,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     string rootPath = MEDirectories.GetDefaultGamePath(Pcc.Game);
                     if (rootPath == null || !Directory.Exists(rootPath))
                     {
-                        MessageBox.Show($"{Pcc.Game} has not been found. Please check your ME3Explorer settings");
+                        MessageBox.Show($"{Pcc.Game} has not been found. Please check your Legendary Explorer settings");
                         bikcontrols_Panel.IsEnabled = true;
                         return false;
                     }
@@ -785,7 +785,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             string rootPath = MEDirectories.GetDefaultGamePath(Pcc.Game);
                             if (rootPath == null || !Directory.Exists(rootPath))
                             {
-                                MessageBox.Show($"{Pcc.Game} has not been found. Please check your ME3Explorer settings");
+                                MessageBox.Show($"{Pcc.Game} has not been found. Please check your Legendary Explorer settings");
                                 TextureCacheComboBox.SelectedItem = oldselection;
                                 break;
                             }

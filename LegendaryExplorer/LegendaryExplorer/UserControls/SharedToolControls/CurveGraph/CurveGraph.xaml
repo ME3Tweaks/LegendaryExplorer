@@ -46,7 +46,7 @@
         </Style>
         <Style TargetType="Label">
             <Setter Property="Foreground" Value="#FFE0E0E0"/>
-            <Setter Property="FontFamily" Value="/ME3Explorer;component/Resources/#FFF Hero"/>
+            <Setter Property="FontFamily" Value="/LegendaryExplorer;component/Resources/Fonts/KismetFont.ttf#FFF Hero"/>
             <Setter Property="FontSize" Value="10"/>
         </Style>
         <Style TargetType="{x:Type curves:Anchor}">

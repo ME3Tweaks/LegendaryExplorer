@@ -141,13 +141,13 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="16,3">
                 <Button Margin="5,0,5,0" Grid.Column="2" Name="ImportFromExcel_Button" Padding="5,0" Click="ImportToExcel_Click" >
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="/ME3Explorer;component/Resources/excel.png" Width="16" Height="16" Margin="0,0,2,0"/>
+                        <Image Source="/Resources/Images/excel.png" Width="16" Height="16" Margin="0,0,2,0"/>
                         <TextBlock Text="Import from Excel"/>
                     </StackPanel>
                 </Button>
                 <Button Padding="5,0" Grid.Column="3" Name="ExportToExcel_Button" Click="ExportToExcel_Click" HorizontalAlignment="Right">
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="/ME3Explorer;component/Resources/excel.png" Width="16" Height="16" Margin="0,0,2,0"/>
+                        <Image Source="/Resources/Images/excel.png" Width="16" Height="16" Margin="0,0,2,0"/>
                         <TextBlock Text="Export to Excel"/>
                     </StackPanel>
                 </Button>

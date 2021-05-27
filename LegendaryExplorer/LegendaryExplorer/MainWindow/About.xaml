@@ -141,11 +141,6 @@
                 <TabItem Header="Art + Design">
                     <ScrollViewer HorizontalScrollBarVisibility="Auto">
                         <TextBlock>
-                        Toolset Splashscreen artwork (Antares) by JoeyJazz                         <LineBreak/>
-                        Used with permission for ME3Explorer - ME3Tweaks Fork                      <LineBreak/>
-                        <Underline>Derivatives of this product must acquire their own license.</Underline><LineBreak/>
-                        
-                        <LineBreak/>
                         Toolset splash screen (not artwork) designed by Jade                       <LineBreak/>
                         Minilogo designed by Audemus                                               <LineBreak/>
                         Tool icons designed by Mgamerz, SirCyxrtyx, Kinkojiro                      <LineBreak/>
