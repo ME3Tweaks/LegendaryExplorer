@@ -193,7 +193,7 @@ HRESULT LoadTexture(const char* inputFilename, TextureBuffer* outputBuffer) {
 	}
 
 	// If the output buffer's format is UNKNOWN, then no conversion was requested
-	if (outputBuffer->Format == DXGI_FORMAT_UNKNOWN) {
+	if (outputBuffer->Format == DXGI_FORMAT_UNKNOWN || outputBuffer->Format == outputBuffer->_ScratchImage->GetMetadata().format) {
 		outputBuffer->PixelData = outputBuffer->_ScratchImage->GetPixels();
 		outputBuffer->PixelDataLength = outputBuffer->_ScratchImage->GetPixelsSize();
 		outputBuffer->Width = outputBuffer->_ScratchImage->GetMetadata().width;
