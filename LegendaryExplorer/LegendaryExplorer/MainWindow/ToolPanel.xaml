@@ -42,14 +42,14 @@
                           HorizontalContentAlignment="Stretch">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate >
-                        <UniformGrid Columns="7"/>
+                        <UniformGrid Columns="6"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="legendaryExplorer:Tool">
                         <Grid>
                             <Button Padding="0" Margin="{Binding ItemMargin, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type mainWindow:ToolPanel}}}"
-                                    Style="{StaticResource BorderlessButton}" Width="96" ToolTip="{Binding name}" Click="Button_Click" GotFocus="Button_GotFocus"
+                                    Style="{StaticResource BorderlessButton}" Width="96" Click="Button_Click" GotFocus="Button_GotFocus"
                                     MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" MouseRightButtonDown="Button_MouseRightButtonDown">
                                     <StackPanel Name="border">
                                         <Border BorderThickness="1" BorderBrush="{DynamicResource ForegroundBrush}">
