@@ -34,6 +34,8 @@ namespace LegendaryExplorer
 
         public static int CoreCount;
 
+        public static DateTime BuildDateTime = new(App.CompileTime, DateTimeKind.Utc);
+
         #endregion
 
 

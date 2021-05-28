@@ -7,6 +7,7 @@
         xmlns:local="clr-namespace:LegendaryExplorer"
         xmlns:mainWindow="clr-namespace:LegendaryExplorer.MainWindow"
         mc:Ignorable="d"
+        d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
         MaxWidth="915"
         Title="Legendary Explorer" Height="600" Width="875" Opacity="0" SizeToContent="Width" 
         WindowStyle="None" Foreground="{x:Null}" AllowsTransparency="True"
@@ -17,9 +18,10 @@
     </Window.CommandBindings>
 
     <Window.Resources>
-        <SolidColorBrush x:Key="ForegroundBrush" Color="#FF7e8285"/>
+        <SolidColorBrush x:Key="ForegroundBrush" Color="#7e8285"/>
         <SolidColorBrush x:Key="MouseOverBrush" Color="White"/>
         <SolidColorBrush x:Key="CheckedBrush" Color="#E1E1E1"/>
+        <SolidColorBrush x:Key="UncheckedBrush" Color="#BFBFBF" />
         <Style x:Key="MainWindowFocusVisualStyle">  
             <Setter Property="Control.Template">  
                 <Setter.Value>  
@@ -35,24 +37,36 @@
         <Style TargetType="{x:Type Button}">
             <Setter Property="FocusVisualStyle" Value="{StaticResource MainWindowFocusVisualStyle}"/>
         </Style>
+        <Style TargetType="{x:Type RadioButton}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource MainWindowFocusVisualStyle}"/>
+        </Style>
     </Window.Resources>
 
 
-    <Grid FocusVisualStyle="{DynamicResource {x:Static SystemParameters.FocusVisualStyleKey}}">
+    <Grid>
         <Rectangle MouseDown="BackgroundMouseDown" Fill="#00000000"/>
         <DockPanel>
             <!-- Top toolbar -->
             <Grid DockPanel.Dock="Top">
+                
+                <!-- Minimize/Close buttons -->
                 <DockPanel HorizontalAlignment="Right" VerticalAlignment="Top" Height="30">
-                    <Button Command="{x:Static SystemCommands.MinimizeWindowCommand}" Width="30" Height="30"
+                    <Button Command="{x:Static SystemCommands.MinimizeWindowCommand}" Width="30" Height="30" TabIndex="0"
                             Style="{DynamicResource WindowManagementButton}" VerticalContentAlignment="Center">
                         <Image Source="/Resources/Images/minimize_icon.ico" Height="15" Width="15" />
                     </Button>
-                    <Button Command="{x:Static SystemCommands.CloseWindowCommand}" Width="30" Height="30"
+                    <Button Command="{x:Static SystemCommands.CloseWindowCommand}" Width="30" Height="30" TabIndex="1"
                             Style="{DynamicResource WindowManagementButton}" VerticalContentAlignment="Center">
                         <Image Source="/Resources/Images/close_icon.ico" />
                     </Button>
                 </DockPanel>
+                
+                <!-- Version -->
+                <DockPanel HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="32">
+                            <Label Content="{Binding DisplayedVersion}" FontFamily="{StaticResource Exo-Regular}" FontSize="18" 
+                                   Foreground="{DynamicResource ForegroundBrush}"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                </DockPanel>
+                
                 <DockPanel Margin="5,5,5,0" LastChildFill="True">
                     <!-- Logo -->
                     <Image DockPanel.Dock="Left" Source="../Resources/Images/Legendary_Explorer_Graphic2.png" Height="110"
@@ -60,51 +74,54 @@
 
                     <!-- Top bar settings buttons -->
                     <StackPanel DockPanel.Dock="Right" VerticalAlignment="Center" Orientation="Horizontal">
-                        <StackPanel.Resources>
-                            <Style x:Key="TopBarButton" TargetType="{x:Type Button}"
-                                   BasedOn="{StaticResource BorderlessButton}">
-                                <Setter Property="FocusVisualStyle" Value="{StaticResource MainWindowFocusVisualStyle}"/>
-                                <Setter Property="ContentTemplate">
-                                    <Setter.Value>
-                                        <DataTemplate>
-                                            <Border BorderBrush="{DynamicResource ForegroundBrush}" BorderThickness="0"
-                                                    Margin="5, 0">
-                                                <Rectangle x:Name="rect1" Fill="{DynamicResource ForegroundBrush}"
-                                                           Height="32"
-                                                           Width="32" Margin="4">
-                                                    <Rectangle.OpacityMask>
-                                                        <ImageBrush ImageSource="{Binding Source}" />
-                                                    </Rectangle.OpacityMask>
-                                                </Rectangle>
-                                            </Border>
-                                            <DataTemplate.Triggers>
-                                                <DataTrigger
-                                                    Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
-                                                    Value="True">
-                                                    <Setter TargetName="rect1" Property="Fill" Value="{DynamicResource MouseOverBrush}" />
-                                                </DataTrigger>
-                                            </DataTemplate.Triggers>
-                                        </DataTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </StackPanel.Resources>
-                        <Button Style="{StaticResource TopBarButton}" Click="Help_Click" ToolTip="Help Resources">
-                            <Image Source="/Resources/Images/LEX_Toolbar_Qmark.ico" />
-                        </Button>
+                            <StackPanel.Resources>
+                                <Style x:Key="TopBarButton" TargetType="{x:Type Button}"
+                                       BasedOn="{StaticResource BorderlessButton}">
+                                    <Setter Property="FocusVisualStyle"
+                                            Value="{StaticResource MainWindowFocusVisualStyle}" />
+                                    <Setter Property="ContentTemplate">
+                                        <Setter.Value>
+                                            <DataTemplate>
+                                                <Border BorderBrush="{DynamicResource ForegroundBrush}"
+                                                        BorderThickness="0"
+                                                        Margin="5, 0">
+                                                    <Rectangle x:Name="rect1" Fill="{DynamicResource ForegroundBrush}"
+                                                               Height="32"
+                                                               Width="32" Margin="4">
+                                                        <Rectangle.OpacityMask>
+                                                            <ImageBrush ImageSource="{Binding Source}" />
+                                                        </Rectangle.OpacityMask>
+                                                    </Rectangle>
+                                                </Border>
+                                                <DataTemplate.Triggers>
+                                                    <DataTrigger
+                                                        Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                                        Value="True">
+                                                        <Setter TargetName="rect1" Property="Fill"
+                                                                Value="{DynamicResource MouseOverBrush}" />
+                                                    </DataTrigger>
+                                                </DataTemplate.Triggers>
+                                            </DataTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </StackPanel.Resources>
+                            <Button Style="{StaticResource TopBarButton}" Click="Help_Click" ToolTip="Help Resources">
+                                <Image Source="/Resources/Images/LEX_Toolbar_Qmark.ico" />
+                            </Button>
 
-                        <Button Style="{StaticResource TopBarButton}" Click="Settings_Click" ToolTip="Settings">
-                            <Image Source="/Resources/Images/LEX_Toolbar_Settings.ico" />
-                        </Button>
+                            <Button Style="{StaticResource TopBarButton}" Click="Settings_Click" ToolTip="Settings">
+                                <Image Source="/Resources/Images/LEX_Toolbar_Settings.ico" />
+                            </Button>
 
-                        <Button Style="{StaticResource TopBarButton}" Click="About_Click"
-                                ToolTip="About LegendaryExplorer">
-                            <Image Source="/Resources/Images/LEX_Toolbar_About.ico" />
-                        </Button>
+                            <Button Style="{StaticResource TopBarButton}" Click="About_Click"
+                                    ToolTip="About LegendaryExplorer">
+                                <Image Source="/Resources/Images/LEX_Toolbar_About.ico" />
+                            </Button>
                     </StackPanel>
 
                     <!-- Search box -->
-                    <Border BorderBrush="{DynamicResource ForegroundBrush}" BorderThickness="2" Margin="10, 0,5,0"
+                    <Border BorderBrush="{DynamicResource ForegroundBrush}" BorderThickness="2" Margin="10,0,5,0"
                             VerticalAlignment="Center" Height="55" CornerRadius="8">
                         <Grid>
                             <Border x:Name="searchMask" Background="White" CornerRadius="7"></Border>
@@ -129,10 +146,11 @@
                                 </Grid.OpacityMask>
 
                                 <TextBox x:Name="SearchBox" FontFamily="{StaticResource BioMass-Bold}"
+                                         TabIndex="2"
                                          FontSize="18"
                                          Background="{x:Null}"
                                          BorderBrush="{x:Null}" Foreground="#FFFBFBFB" VerticalContentAlignment="Center"
-                                         CaretBrush="#FFFBFBFB" Margin="3,0,0,0"
+                                         CaretBrush="#FFFBFBFB" Padding="3,0"
                                          TextChanged="SearchBox_TextChanged" GotFocus="SearchBox_OnGotFocus" />
                                 <TextBlock IsHitTestVisible="False" Text="Search the Toolset..." VerticalAlignment="Center"
                                            HorizontalAlignment="Left" Margin="10,0,0,0"
@@ -143,7 +161,6 @@
                             </Grid>
                         </Grid>
                     </Border>
-
                 </DockPanel>
             </Grid>
 
@@ -151,6 +168,10 @@
             <Border BorderBrush="{DynamicResource ForegroundBrush}" BorderThickness="0,2,0,0"  DockPanel.Dock="Top" Margin="5,0">
                 <StackPanel x:Name="categoriesMenu" Orientation="Horizontal" Height="75">
                     <StackPanel.Resources>
+                        <SolidColorBrush x:Key="ButtonBackground" Color="#FF30343E"/>
+                        <SolidColorBrush x:Key="SelectedButtonBackground" Color="#5C1A1C"/>
+                        <SolidColorBrush x:Key="HoverButtonBackground" Color="#FFC80000"/>
+                        
                         <Style x:Key="CategoriesButton" TargetType="{x:Type RadioButton}"
                                BasedOn="{StaticResource BorderedRadioButton}">
                             <Setter Property="Height" Value="45" />
@@ -163,12 +184,13 @@
                                         <Border Background="Transparent">
                                             <Grid>
                                                 <Viewbox>
-                                                    <Path x:Name="CategoryShape" Data="M 0 624.38 0 180.38 180.38 0 1332 0 1332 513.38 1227.94 617.44 0 624.38z" 
-                                                          Opacity="1"
+                                                    <Path x:Name="categoryShape" Data="M 0 624.38 0 180.38 180.38 0 1332 0 1332 513.38 1227.94 617.44 0 624.38z" 
+                                                          Opacity="1" Fill="{StaticResource ButtonBackground}"
                                                           Stroke="{DynamicResource ForegroundBrush}" StrokeThickness="30" />
                                                 </Viewbox>
-                                                <TextBlock VerticalAlignment="Center" Margin="4,0"
+                                                <TextBlock VerticalAlignment="Center" Margin="4,0,4,2"
                                                            TextAlignment="Center" FontFamily="{StaticResource BioMass-Bold}" FontSize="12"
+                                                           LineStackingStrategy="BlockLineHeight" LineHeight="15"
                                                            TextWrapping="Wrap" FontWeight="Bold" Text="{TemplateBinding ContentPresenter.Content}">
                                                 </TextBlock>
                                             </Grid>
@@ -176,12 +198,14 @@
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
                                                 <Setter Property="TextBlock.Foreground" Value="{DynamicResource MouseOverBrush}" />
+                                                <Setter TargetName="categoryShape" Property="Path.Fill" Value="{StaticResource HoverButtonBackground}" />
                                             </Trigger>
                                             <Trigger Property="IsMouseOver" Value="False">
-                                                <Setter Property="TextBlock.Foreground" Value="{DynamicResource ForegroundBrush}" />
+                                                <Setter Property="TextBlock.Foreground" Value="{DynamicResource UncheckedBrush}" />
                                             </Trigger>
                                             <Trigger Property="IsChecked" Value="True">
                                                 <Setter Property="TextBlock.Foreground" Value="{DynamicResource CheckedBrush}" />
+                                                <Setter TargetName="categoryShape" Property="Path.Fill" Value="{StaticResource SelectedButtonBackground}" />
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
@@ -198,22 +222,26 @@
                                 <Border Background="Transparent">
                                     <Grid>
                                         <Viewbox>
-                                            <Polygon Points="740 614.93 594.08 740 0 740 0 144.76 114.65 0 740 0 740 614.93"
-                                                  Opacity="1"
+                                            <Polygon x:Name="favoritesBorder" Points="740 614.93 594.08 740 0 740 0 144.76 114.65 0 740 0 740 614.93"
+                                                  Opacity="1" Fill="{StaticResource ButtonBackground}"
                                                   Stroke="{DynamicResource ForegroundBrush}" StrokeThickness="40" />
                                         </Viewbox>
-                                        <fa5:ImageAwesome x:Name="FavStar" Icon="Solid_Star" Width="30" Height="30"/>
+                                        <fa5:ImageAwesome x:Name="FavStar" Icon="Regular_Star" Width="30" Height="30"/>
                                     </Grid>
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
                                         <Setter TargetName="FavStar" Property="fa5:ImageAwesome.Foreground" Value="{DynamicResource MouseOverBrush}" />
+                                        <Setter TargetName="favoritesBorder" Property="Polygon.Fill" Value="{StaticResource HoverButtonBackground}" />
+                                        <Setter TargetName="FavStar" Property="fa5:ImageAwesome.Icon" Value="Solid_Star" />
                                     </Trigger>
                                     <Trigger Property="IsMouseOver" Value="False">
-                                        <Setter TargetName="FavStar" Property="fa5:ImageAwesome.Foreground" Value="{DynamicResource ForegroundBrush}" />
+                                        <Setter TargetName="FavStar" Property="fa5:ImageAwesome.Foreground" Value="{DynamicResource UncheckedBrush}" />
                                     </Trigger>
                                     <Trigger Property="IsChecked" Value="True">
                                         <Setter TargetName="FavStar" Property="fa5:ImageAwesome.Foreground" Value="{DynamicResource CheckedBrush}" />
+                                        <Setter TargetName="favoritesBorder" Property="Polygon.Fill" Value="{StaticResource SelectedButtonBackground}" />
+                                        <Setter TargetName="FavStar" Property="fa5:ImageAwesome.Icon" Value="Solid_Star" />
                                     </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
