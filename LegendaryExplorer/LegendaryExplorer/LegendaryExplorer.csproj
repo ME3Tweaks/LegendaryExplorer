@@ -9,6 +9,7 @@
     <ApplicationIcon>LEX_ico_test.ico</ApplicationIcon>
     <Configurations>WinDebug;WinRelease;WinAzureRelease;WinAzureTest</Configurations>
     <DebugSymbols>true</DebugSymbols>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='WinDebug'">

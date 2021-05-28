@@ -162,7 +162,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 try
                 {
 #if WINDOWS
-                    image = Image.LoadFromFile(selectDDS.FileName);
+                    image = Image.LoadFromFile(selectDDS.FileName, LegendaryExplorerCore.Textures.PixelFormat.ARGB);
 #else
                     image = new Image(selectDDS.FileName);
 #endif

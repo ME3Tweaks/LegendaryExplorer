@@ -21,24 +21,30 @@ typedef struct {
 	DirectX::ScratchImage* _ScratchImage;
 } TextureBuffer;
 
+/**
+ * Initializes the static resources used by TexConverter.
+ */
 HRESULT EXPORT Initialize();
 
+/**
+ * Disposes the static resources used by TexConverter.
+ */
 HRESULT EXPORT Dispose();
 
 /**
  * @brief Converts the pixel data in the given input buffer to the given output buffer.
  * 
+ * Note that the output `TextureBuffer` is overwritten, including a new pixel buffer that must must be freed using `FreePixelData(...)`.
+ * 
  * @param inputBuffer The texture to convert.
  * @param outputBuffer The buffer to write the converted pixel data to.
  */
-HRESULT EXPORT ConvertTexture(const TextureBuffer* inputBuffer, const TextureBuffer* outputBuffer);
+HRESULT EXPORT ConvertTexture(const TextureBuffer* inputBuffer, TextureBuffer* outputBuffer);
 
 /**
  * @brief Saves the given texture to the given filename.
  * 
  * The output file format is determined by the extension of the given filename.
- * 
- * Note that the output `TextureBuffer` is overwritten, including a new pixel buffer that must must be freed using `FreePixelData(...)`.
  * 
  * @param inputBuffer The texture to save.
  * @param outputFilename The filename to save to.
@@ -51,7 +57,7 @@ HRESULT EXPORT SaveTexture(const TextureBuffer* inputBuffer, const char* outputF
  * Note that the output `TextureBuffer` is overwritten, including a new pixel buffer that must must be freed using `FreePixelData(...)`.
  * 
  * @param inputFilename The filename of the texture to load.
- * @param outputBuffer The buffer to load the texture into.
+ * @param outputBuffer The buffer to load the texture into. If the output buffer's `Format` is not `DXGI_FORMAT_UNKNOWN`, the data will be converted to the output buffer's `Format`.
  */
 HRESULT EXPORT LoadTexture(const char* inputFilename, TextureBuffer* outputBuffer);
 
@@ -61,6 +67,7 @@ HRESULT EXPORT LoadTexture(const char* inputFilename, TextureBuffer* outputBuffe
  * @param textureBuffer The texture buffer containing the pixels to free.
  */
 HRESULT EXPORT FreePixelData(TextureBuffer* textureBuffer);
+
 #ifdef __cplusplus
 }
 #endif

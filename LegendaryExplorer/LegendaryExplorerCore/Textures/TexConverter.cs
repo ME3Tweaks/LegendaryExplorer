@@ -231,12 +231,40 @@ namespace LegendaryExplorerCore.Textures
             }
         }
 
-        public static unsafe byte[] ConvertTexture(byte[] pixelData, uint width, uint height, Image.ImageFormat inputFormat, Image.ImageFormat outputFormat)
+        public static unsafe byte[] ConvertTexture(byte[] pixelData, uint width, uint height, PixelFormat inputFormat, PixelFormat outputFormat)
         {
             TexConverter.EnsureInitialized();
 
-            // TODO: Implement!
-            throw new NotImplementedException();
+            fixed (byte* inputDataPointer = pixelData)
+            {
+                TextureBuffer inputBuffer = new TextureBuffer()
+                {
+                    PixelData = inputDataPointer,
+                    PixelDataLength = (nuint)pixelData.Length,
+                    Width = width,
+                    Height = height,
+                    Format = GetDXGIFormatForPixelFormat(inputFormat)
+                };
+                TextureBuffer outputBuffer = new TextureBuffer()
+                {
+                    PixelData = null,
+                    PixelDataLength = 0,
+                    Width = width,
+                    Height = height,
+                    Format = GetDXGIFormatForPixelFormat(outputFormat)
+                };
+
+                int hr = TCConvertTexture(&inputBuffer, &outputBuffer);
+                Marshal.ThrowExceptionForHR(hr);
+
+                byte[] result = new byte[outputBuffer.PixelDataLength];
+                Marshal.Copy((IntPtr)outputBuffer.PixelData, result, 0, (int)outputBuffer.PixelDataLength);
+
+                hr = TCFreePixelData(&outputBuffer);
+                Marshal.ThrowExceptionForHR(hr);
+
+                return result;
+            }
         }
 
         public static unsafe void SaveTexture(byte[] pixelData, uint width, uint height, PixelFormat pixelFormat, string filename)
@@ -258,11 +286,12 @@ namespace LegendaryExplorerCore.Textures
             }
         }
 
-        public static unsafe byte[] LoadTexture(string filename, out uint width, out uint height, out PixelFormat pixelFormat)
+        public static unsafe byte[] LoadTexture(string filename, out uint width, out uint height, ref PixelFormat pixelFormat)
         {
             TexConverter.EnsureInitialized();
 
             TextureBuffer outputBuffer = new TextureBuffer();
+            outputBuffer.Format = GetDXGIFormatForPixelFormat(pixelFormat);
 
             int hr = TCLoadTexture(filename, &outputBuffer);
             Marshal.ThrowExceptionForHR(hr);
