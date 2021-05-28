@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -31,6 +32,7 @@ namespace LegendaryExplorer.MainWindow
         public LEXMainWindow()
         {
             InitializeComponent();
+            DataContext = this;
 
             if (ToolSet.Items.Any((t) => t.IsFavorited))
             {
@@ -49,6 +51,33 @@ namespace LegendaryExplorer.MainWindow
 #endif
 
             Task.Run(TLKLoader.LoadSavedTlkList);
+        }
+
+        /// <summary>
+        /// Displayed version in the UI. About page will be more detailed.
+        /// </summary>
+        public string DisplayedVersion
+        {
+            get
+            {
+                Version assemblyVersion = Assembly.GetEntryAssembly().GetName().Version;
+                string version = $"{assemblyVersion.Major}.{assemblyVersion.Minor}";
+                if (assemblyVersion.Build != 0)
+                {
+                    version += "." + assemblyVersion.Build;
+                }
+                
+#if DEBUG
+                version += " DEBUG";
+#elif NIGHTLY
+                //This is what will be placed in release. Comment this out when building for a stable!
+                version += " NIGHTLY"; //ENSURE THIS IS CHANGED FOR MAJOR RELEASES AND RELEASE CANDIDATES
+#elif RELEASE
+                // UPDATE THIS FOR RELEASE
+                //version += " RC";
+#endif
+                return $"{version} {App.BuildDateTime.ToShortDateString()}";
+            }
         }
 
         public void TransitionFromSplashToMainWindow(Window splashScreen)

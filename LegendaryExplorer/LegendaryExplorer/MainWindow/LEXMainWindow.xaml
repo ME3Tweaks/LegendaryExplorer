@@ -7,6 +7,7 @@
         xmlns:local="clr-namespace:LegendaryExplorer"
         xmlns:mainWindow="clr-namespace:LegendaryExplorer.MainWindow"
         mc:Ignorable="d"
+        d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
         MaxWidth="915"
         Title="Legendary Explorer" Height="600" Width="875" Opacity="0" SizeToContent="Width" 
         WindowStyle="None" Foreground="{x:Null}" AllowsTransparency="True"
@@ -59,48 +60,56 @@
                            RenderOptions.BitmapScalingMode="HighQuality" MouseDown="BackgroundMouseDown"/>
 
                     <!-- Top bar settings buttons -->
-                    <StackPanel DockPanel.Dock="Right" VerticalAlignment="Center" Orientation="Horizontal">
-                        <StackPanel.Resources>
-                            <Style x:Key="TopBarButton" TargetType="{x:Type Button}"
-                                   BasedOn="{StaticResource BorderlessButton}">
-                                <Setter Property="FocusVisualStyle" Value="{StaticResource MainWindowFocusVisualStyle}"/>
-                                <Setter Property="ContentTemplate">
-                                    <Setter.Value>
-                                        <DataTemplate>
-                                            <Border BorderBrush="{DynamicResource ForegroundBrush}" BorderThickness="0"
-                                                    Margin="5, 0">
-                                                <Rectangle x:Name="rect1" Fill="{DynamicResource ForegroundBrush}"
-                                                           Height="32"
-                                                           Width="32" Margin="4">
-                                                    <Rectangle.OpacityMask>
-                                                        <ImageBrush ImageSource="{Binding Source}" />
-                                                    </Rectangle.OpacityMask>
-                                                </Rectangle>
-                                            </Border>
-                                            <DataTemplate.Triggers>
-                                                <DataTrigger
-                                                    Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
-                                                    Value="True">
-                                                    <Setter TargetName="rect1" Property="Fill" Value="{DynamicResource MouseOverBrush}" />
-                                                </DataTrigger>
-                                            </DataTemplate.Triggers>
-                                        </DataTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </StackPanel.Resources>
-                        <Button Style="{StaticResource TopBarButton}" Click="Help_Click" ToolTip="Help Resources">
-                            <Image Source="/Resources/Images/LEX_Toolbar_Qmark.ico" />
-                        </Button>
+                    <StackPanel DockPanel.Dock="Right" VerticalAlignment="Bottom" Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel.Resources>
+                                <Style x:Key="TopBarButton" TargetType="{x:Type Button}"
+                                       BasedOn="{StaticResource BorderlessButton}">
+                                    <Setter Property="FocusVisualStyle"
+                                            Value="{StaticResource MainWindowFocusVisualStyle}" />
+                                    <Setter Property="ContentTemplate">
+                                        <Setter.Value>
+                                            <DataTemplate>
+                                                <Border BorderBrush="{DynamicResource ForegroundBrush}"
+                                                        BorderThickness="0"
+                                                        Margin="5, 0">
+                                                    <Rectangle x:Name="rect1" Fill="{DynamicResource ForegroundBrush}"
+                                                               Height="32"
+                                                               Width="32" Margin="4">
+                                                        <Rectangle.OpacityMask>
+                                                            <ImageBrush ImageSource="{Binding Source}" />
+                                                        </Rectangle.OpacityMask>
+                                                    </Rectangle>
+                                                </Border>
+                                                <DataTemplate.Triggers>
+                                                    <DataTrigger
+                                                        Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                                        Value="True">
+                                                        <Setter TargetName="rect1" Property="Fill"
+                                                                Value="{DynamicResource MouseOverBrush}" />
+                                                    </DataTrigger>
+                                                </DataTemplate.Triggers>
+                                            </DataTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </StackPanel.Resources>
+                            <Button Style="{StaticResource TopBarButton}" Click="Help_Click" ToolTip="Help Resources">
+                                <Image Source="/Resources/Images/LEX_Toolbar_Qmark.ico" />
+                            </Button>
 
-                        <Button Style="{StaticResource TopBarButton}" Click="Settings_Click" ToolTip="Settings">
-                            <Image Source="/Resources/Images/LEX_Toolbar_Settings.ico" />
-                        </Button>
+                            <Button Style="{StaticResource TopBarButton}" Click="Settings_Click" ToolTip="Settings">
+                                <Image Source="/Resources/Images/LEX_Toolbar_Settings.ico" />
+                            </Button>
 
-                        <Button Style="{StaticResource TopBarButton}" Click="About_Click"
-                                ToolTip="About LegendaryExplorer">
-                            <Image Source="/Resources/Images/LEX_Toolbar_About.ico" />
-                        </Button>
+                            <Button Style="{StaticResource TopBarButton}" Click="About_Click"
+                                    ToolTip="About LegendaryExplorer">
+                                <Image Source="/Resources/Images/LEX_Toolbar_About.ico" />
+                            </Button></StackPanel>
+                        <StackPanel Height="36">
+                            <Label Content="{Binding DisplayedVersion}" FontFamily="{StaticResource Exo-Regular}" FontSize="18" 
+                                   Foreground="{DynamicResource ForegroundBrush}"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                        </StackPanel>
                     </StackPanel>
 
                     <!-- Search box -->
