@@ -104,7 +104,7 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
             {
                 // Mips go big to small
 
-                if (m > 5) // 0 indexed
+                if (m > image.mipMaps.Count - 6) // 0 indexed
                 {
                     // Lower 6 mips are never stored compressed so don't bother wasting time compressing the data
                     compressedMips.Add(null);
