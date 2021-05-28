@@ -766,5 +766,17 @@ namespace LegendaryExplorerCore.Textures
             n++;
             return n;
         }
+
+        public static Image LoadFromFile(string filename)
+        {
+            List<MipMap> mips = new List<MipMap>();
+
+
+            byte[] pixelData = TexConverter.LoadTexture(filename, out uint width, out uint height, out PixelFormat pixelFormat);
+
+            mips.Add(new MipMap(pixelData, (int)width, (int)height, pixelFormat));
+
+            return new Image(mips, pixelFormat);
+        }
     }
 }

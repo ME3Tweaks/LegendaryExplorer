@@ -161,7 +161,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 Image image;
                 try
                 {
+#if WINDOWS
+                    image = Image.LoadFromFile(selectDDS.FileName);
+#else
                     image = new Image(selectDDS.FileName);
+#endif
                 }
                 catch (TextureSizeNotPowerOf2Exception)
                 {
@@ -236,17 +240,21 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             SaveFileDialog d = new SaveFileDialog
             {
-                //Filter = "PNG files|*.png",
+#if WINDOWS
                 Filter = "DDS files|*.dds|PNG files|*.png|TGA files|*.tga",
+#else
+                Filter = "PNG files|*.png",
+#endif
                 FileName = CurrentLoadedExport.ObjectName.Instanced + ".png"
             };
             if (d.ShowDialog() == true)
             {
                 Texture2D t2d = new Texture2D(CurrentLoadedExport);
-                //t2d.ExportToPNG(d.FileName);
+#if WINDOWS
                 t2d.ExportToFile(d.FileName);
-                //Texture2DMipInfo topMip = t2d.GetTopMip();
-                //byte[] topMipData 
+#else
+                t2d.ExportToPNG(d.FileName);
+#endif
             }
 
         }

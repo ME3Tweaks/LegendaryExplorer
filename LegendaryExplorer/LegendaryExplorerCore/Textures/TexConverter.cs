@@ -200,9 +200,34 @@ namespace LegendaryExplorerCore.Textures
                 case PixelFormat.RGB:
                     return DXGIFormat.UNKNOWN; // There is no hardware support for 24bit pixels. (see https://stackoverflow.com/a/27971434)
                 case PixelFormat.V8U8:
-                    return DXGIFormat.R8G8_UNORM;
+                    return DXGIFormat.R8G8_UNORM; // TODO: Not quite sure if these are equivalent
                 default:
-                    throw new ArgumentException("Invalid pixel format.");
+                    return DXGIFormat.UNKNOWN;
+            }
+        }
+
+        private static PixelFormat GetPixelFormatForDXGIFormat(DXGIFormat format)
+        {
+            switch (format)
+            {
+                case DXGIFormat.B8G8R8A8_UNORM:
+                    return PixelFormat.ARGB;
+                case DXGIFormat.BC5_UNORM:
+                    return PixelFormat.BC5; // TODO: When should this return ATI2?
+                case DXGIFormat.BC7_UNORM:
+                    return PixelFormat.BC7;
+                case DXGIFormat.BC1_UNORM:
+                    return PixelFormat.DXT1;
+                case DXGIFormat.BC2_UNORM:
+                    return PixelFormat.DXT3;
+                case DXGIFormat.BC3_UNORM:
+                    return PixelFormat.DXT5;
+                case DXGIFormat.R8_UNORM:
+                    return PixelFormat.G8;
+                case DXGIFormat.R8G8_UNORM:
+                    return PixelFormat.V8U8; // TODO: Not quite sure if these are equivalent
+                default:
+                    return PixelFormat.Unknown;
             }
         }
 
@@ -233,12 +258,25 @@ namespace LegendaryExplorerCore.Textures
             }
         }
 
-        public static unsafe byte[] LoadTexture(string filename, out uint width, out uint height, out Image.ImageFormat dataFormat)
+        public static unsafe byte[] LoadTexture(string filename, out uint width, out uint height, out PixelFormat pixelFormat)
         {
             TexConverter.EnsureInitialized();
 
-            // TODO: Implement!
-            throw new NotImplementedException();
+            TextureBuffer outputBuffer = new TextureBuffer();
+
+            int hr = TCLoadTexture(filename, &outputBuffer);
+            Marshal.ThrowExceptionForHR(hr);
+
+            byte[] result = new byte[outputBuffer.PixelDataLength];
+            Marshal.Copy((IntPtr)outputBuffer.PixelData, result, 0, (int)outputBuffer.PixelDataLength);
+
+            hr = TCFreePixelData(&outputBuffer);
+            Marshal.ThrowExceptionForHR(hr);
+
+            width = outputBuffer.Width;
+            height = outputBuffer.Height;
+            pixelFormat = GetPixelFormatForDXGIFormat(outputBuffer.Format);
+            return result;
         }
     }
 }
