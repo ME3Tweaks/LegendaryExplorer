@@ -5,6 +5,7 @@
 
   <!-- Main Window Settings-->
   <setting name="MainWindow_DisableTransparencyAndAnimations" type="bool" defaultvalue="false"/>
+  <setting name="MainWindow_Favorites" type="string" defaultvalue=""/>
 
   <!-- Package Editor specific settings -->
   <setting name="PackageEditor_HideInterpreterHexBox" type="bool" defaultvalue="true"/>
@@ -16,6 +17,9 @@
   <!-- Sequence Editor specific settings -->
   <setting name="SequenceEditor_MaxVarStringLength" type="int" defaultvalue="40"/>
   <setting name="SequenceEditor_ShowParsedInfo" type="bool" defaultvalue="true"/>
+  <setting name="SequenceEditor_AutoSaveView" type="bool" defaultvalue="false"/>
+  <setting name="SequenceEditor_ShowOutputNumbers" type="bool" defaultvalue="false"/>
+  <setting name="SequenceEditor_GlobalSeqRefViewSaves" type="bool" defaultvalue="false"/>
     
   <!-- Soundplorer specific settings-->
   <setting name="Soundplorer_ReverseIDDisplayEndianness" type="bool" defaultvalue="false"/>
@@ -36,7 +40,6 @@
   <setting name="PathfindingEditor_ShowSplinesLayer" type="bool" defaultvalue="false"/>
   <setting name="PathfindingEditor_ShowEverythingElseLayer" type="bool" defaultvalue="false"/>
 
-
   <!-- AssetDB specific settings-->
   <setting name="AssetDB_DefaultGame" type="string" defaultvalue=""/>
   <setting name="AssetDBGame" type="string" defaultvalue="ME3"/>
@@ -46,6 +49,9 @@
   <setting name="CoalescedEditor_SourcePath" type="string" defaultvalue=""/>
   <setting name="CoalescedEditor_DestinationPath" type="string" defaultvalue=""/>
 
+  <!-- Wwise Graph Editor specific settings -->
+  <setting name="WwiseGraphEditor_AutoSaveView" type="bool" defaultvalue="false"/>
+	
   <!-- Export Loader Control settings -->
   <setting name="BinaryInterpreter_SkipAutoParseSizeCheck" type="bool" defaultvalue="false"/>
   <setting name="BinaryInterpreterWPFAutoScanAlways" type="bool" defaultvalue="false"/>
@@ -61,6 +67,7 @@
   <!-- Wwise settings -->
   <setting name="Wwise_3773Path" type="string" defaultvalue=""/>
   <setting name="Wwise_7110Path" type="string" defaultvalue=""/>
+	
 
   <!-- Global settings-->
   <setting name="Global_PropertyParsing_ParseUnknownArrayTypeAsObject" type="bool" defaultvalue="false" settingsbridgename="ParseUnknownArrayTypesAsObject"/>

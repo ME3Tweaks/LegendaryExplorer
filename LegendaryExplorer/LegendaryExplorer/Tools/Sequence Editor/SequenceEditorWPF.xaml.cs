@@ -113,17 +113,10 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             conditionsToolBox.DoubleClickCallback = CreateNewObject;
             variablesToolBox.DoubleClickCallback = CreateNewObject;
 
-            if (File.Exists(OptionsPath))
-            {
-                var options = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(OptionsPath));
-                if (options.ContainsKey("AutoSave"))
-                    AutoSaveView_MenuItem.IsChecked = (bool)options["AutoSave"];
-                if (options.ContainsKey("OutputNumbers"))
-                    ShowOutputNumbers_MenuItem.IsChecked = (bool)options["OutputNumbers"];
-                if (options.ContainsKey("GlobalSeqRefView"))
-                    GlobalSeqRefViewSavesMenuItem.IsChecked = (bool)options["GlobalSeqRefView"];
-                SObj.OutputNumbers = ShowOutputNumbers_MenuItem.IsChecked;
-            }
+            AutoSaveView_MenuItem.IsChecked = Settings.SequenceEditor_AutoSaveView;
+            ShowOutputNumbers_MenuItem.IsChecked = Settings.SequenceEditor_ShowOutputNumbers;
+            GlobalSeqRefViewSavesMenuItem.IsChecked = Settings.SequenceEditor_GlobalSeqRefViewSaves;
+            SObj.OutputNumbers = ShowOutputNumbers_MenuItem.IsChecked;
         }
 
         public SequenceEditorWPF(ExportEntry export) : this()
@@ -1639,16 +1632,9 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             if (AutoSaveView_MenuItem.IsChecked)
                 saveView();
 
-            var options = new Dictionary<string, object>
-            {
-                {"OutputNumbers", SObj.OutputNumbers},
-                {"AutoSave", AutoSaveView_MenuItem.IsChecked},
-                {"GlobalSeqRefView", GlobalSeqRefViewSavesMenuItem.IsChecked}
-            };
-            string outputFile = JsonConvert.SerializeObject(options);
-            if (!Directory.Exists(SequenceEditorDataFolder))
-                Directory.CreateDirectory(SequenceEditorDataFolder);
-            File.WriteAllText(OptionsPath, outputFile);
+            Settings.SequenceEditor_AutoSaveView = AutoSaveView_MenuItem.IsChecked;
+            Settings.SequenceEditor_ShowOutputNumbers = SObj.OutputNumbers;
+            Settings.SequenceEditor_GlobalSeqRefViewSaves = GlobalSeqRefViewSavesMenuItem.IsChecked;
 
             //Code here remove these objects from leaking the window memory
             graphEditor.Camera.MouseDown -= backMouseDown_Handler;

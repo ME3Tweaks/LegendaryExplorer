@@ -105,8 +105,10 @@ namespace LegendaryExplorer.MainWindow
 
         private void ToolSet_FavoritesChanged(object sender, EventArgs e)
         {
-            // TODO: If favorite tab is selected, update displayed tools
-            // We need this event handler to exist for the favorites system to work
+            if(favoritesButton.IsChecked ?? false)
+            {
+                mainToolPanel.setToolList(ToolSet.Items.Where(tool => tool.IsFavorited));
+            }
         }
 
         private void Tool_MouseOver(object sender, Tool t)

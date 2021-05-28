@@ -27,6 +27,7 @@ using LegendaryExplorer.UserControls.ExportLoaderControls;
 using Newtonsoft.Json;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Packages;
+using System.Text;
 
 namespace LegendaryExplorer
 {
@@ -579,8 +580,7 @@ namespace LegendaryExplorer
             {
                 if (File.Exists(FavoritesPath))
                 {
-                    string raw = File.ReadAllText(FavoritesPath);
-                    var favorites = JsonConvert.DeserializeObject<HashSet<string>>(raw);
+                    var favorites = new HashSet<string>(Misc.AppSettings.Settings.MainWindow_Favorites.Split(';'));
                     foreach (var tool in items)
                     {
                         if (favorites.Contains(tool.name))
@@ -604,16 +604,16 @@ namespace LegendaryExplorer
                 FavoritesChanged.Invoke(null, EventArgs.Empty);
                 try
                 {
-                    var favorites = new HashSet<string>();
+                    var favorites = new StringBuilder();
                     foreach (var tool in items)
                     {
                         if (tool.IsFavorited)
                         {
-                            favorites.Add(tool.name);
+                            favorites.Append(tool.name + ";");
                         }
                     }
-                    string file = JsonConvert.SerializeObject(favorites);
-                    File.WriteAllText(FavoritesPath, file);
+                    if(favorites.Length > 0) favorites.Remove(favorites.Length - 1, 1);
+                    Misc.AppSettings.Settings.MainWindow_Favorites = favorites.ToString();
                 }
                 catch
                 {
