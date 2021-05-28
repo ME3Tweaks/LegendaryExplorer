@@ -144,7 +144,7 @@ namespace LegendaryExplorerCore.Textures
             public uint Width;
             public uint Height;
             public DXGIFormat Format;
-            public void* _ScratchImage; // Only used to keep track of things by the native code
+            private void* _ScratchImage; // Only used to keep track of things by the native code
         }
 
         [DllImport(TEXCONVERTER_DLL_FILENAME, EntryPoint = "Initialize")]
@@ -166,7 +166,6 @@ namespace LegendaryExplorerCore.Textures
         private static unsafe extern int TCFreePixelData(TextureBuffer* textureBuffer);
         #endregion
 
-        // TODO: Keep track of whether each thread has initialized yet
         private static bool IsInitialized = false;
         private static void EnsureInitialized()
         {

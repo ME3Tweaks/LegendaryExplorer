@@ -148,7 +148,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             OpenFileDialog selectDDS = new OpenFileDialog
             {
                 Title = "Select texture file",
+#if WINDOWS
+                Filter = "PNG files (*.png)|*.png|DDS files (*.dds)|*.dds|TGA files (*.tga)|*.tga"
+#else
                 Filter = "Texture (DDS PNG BMP TGA)|*.dds;*.png;*.bmp;*.tga"
+#endif
             };
             var result = selectDDS.ShowDialog();
             if (result.HasValue && result.Value)
@@ -241,7 +245,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             SaveFileDialog d = new SaveFileDialog
             {
 #if WINDOWS
-                Filter = "DDS files|*.dds|PNG files|*.png|TGA files|*.tga",
+                Filter = "PNG files (*.png)|*.png|DDS files (*.dds)|*.dds|TGA files (*.tga)|*.tga",
 #else
                 Filter = "PNG files|*.png",
 #endif

@@ -119,12 +119,13 @@ HRESULT SaveTexture(const TextureBuffer* inputBuffer, const char* outputFilename
 	
 	const char* extension = FindExtension(outputFilename);
 	if (extension == nullptr) {
-		return E_INVALIDARG; // No extension
+		hr = E_INVALIDARG; // No extension
 	}
 	else if (strcasecmp(extension, EXTENSION_DDS) == 0) {
-		return DirectX::SaveToDDSFile(image, DirectX::DDS_FLAGS_NONE, StringConverter.from_bytes(outputFilename).c_str());
+		hr = DirectX::SaveToDDSFile(image, DirectX::DDS_FLAGS_NONE, StringConverter.from_bytes(outputFilename).c_str());
 	}
 	else if (strcasecmp(extension, EXTENSION_PNG) == 0) {
+		// PNG files can't store compressed formats, so decompress before saving if necessary
 		if (DirectX::IsCompressed(inputBuffer->Format)) {
 			TextureBuffer decompressed = { };
 			decompressed.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
@@ -139,6 +140,7 @@ HRESULT SaveTexture(const TextureBuffer* inputBuffer, const char* outputFilename
 		}
 	}
 	else if (strcasecmp(extension, EXTENSION_TGA) == 0) {
+		// TGA files can't store compressed formats, so decompress before saving if necessary
 		if (DirectX::IsCompressed(inputBuffer->Format)) {
 			TextureBuffer decompressed = { };
 			decompressed.Format = DXGI_FORMAT_B8G8R8A8_UNORM;

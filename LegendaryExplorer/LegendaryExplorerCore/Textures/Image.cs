@@ -775,9 +775,7 @@ namespace LegendaryExplorerCore.Textures
         {
             List<MipMap> mips = new List<MipMap>();
 
-
             byte[] pixelData = TexConverter.LoadTexture(filename, out uint width, out uint height, ref targetFormat);
-
             mips.Add(new MipMap(pixelData, (int)width, (int)height, targetFormat));
 
             return new Image(mips, targetFormat);
