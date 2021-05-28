@@ -42,7 +42,7 @@
                           HorizontalContentAlignment="Stretch">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate >
-                        <UniformGrid Columns="6"/>
+                        <UniformGrid Columns="6" Margin="0,0,0,10"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>

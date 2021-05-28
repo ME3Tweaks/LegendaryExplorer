@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
         MaxWidth="915"
-        Title="Legendary Explorer" Height="600" Width="875" Opacity="0" SizeToContent="Width" 
+        Title="Legendary Explorer" Height="670" Width="875" Opacity="0" SizeToContent="Width" 
         WindowStyle="None" Foreground="{x:Null}" AllowsTransparency="True"
         Background="#F015181D"  WindowStartupLocation="CenterScreen"  ResizeMode="CanMinimize">
     <Window.CommandBindings>
@@ -19,6 +19,7 @@
 
     <Window.Resources>
         <SolidColorBrush x:Key="ForegroundBrush" Color="#7e8285"/>
+        <SolidColorBrush x:Key="ButtonBackground" Color="#FF30343E"/>
         <SolidColorBrush x:Key="MouseOverBrush" Color="White"/>
         <SolidColorBrush x:Key="CheckedBrush" Color="#E1E1E1"/>
         <SolidColorBrush x:Key="UncheckedBrush" Color="#BFBFBF" />
@@ -46,7 +47,8 @@
     <Grid>
         <Rectangle MouseDown="BackgroundMouseDown" Fill="#00000000"/>
         <DockPanel>
-            <!-- Top toolbar -->
+            
+            <!--#region Top Toolbar-->
             <Grid DockPanel.Dock="Top">
                 
                 <!-- Minimize/Close buttons -->
@@ -163,12 +165,12 @@
                     </Border>
                 </DockPanel>
             </Grid>
+            <!--#endregion-->
 
-            <!-- Tool categories menu -->
+            <!--#region Categories Bar-->
             <Border BorderBrush="{DynamicResource ForegroundBrush}" BorderThickness="0,2,0,0"  DockPanel.Dock="Top" Margin="5,0">
                 <StackPanel x:Name="categoriesMenu" Orientation="Horizontal" Height="75">
                     <StackPanel.Resources>
-                        <SolidColorBrush x:Key="ButtonBackground" Color="#FF30343E"/>
                         <SolidColorBrush x:Key="SelectedButtonBackground" Color="#5C1A1C"/>
                         <SolidColorBrush x:Key="HoverButtonBackground" Color="#FFC80000"/>
                         
@@ -279,25 +281,36 @@
                     </RadioButton>
                 </StackPanel>
             </Border>
-
-            <!-- Tool panel -->
-            <ScrollViewer Background="#1A4b5568" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <!--#endregion-->
+            
+            <!-- Tool info panel -->
+            <DockPanel x:Name="toolInfoPanel" DockPanel.Dock="Bottom" Height="80" Background="DarkSlateGray" Visibility="Collapsed">
+                <Border DockPanel.Dock="Left" BorderThickness="1" BorderBrush="{DynamicResource ForegroundBrush}" Margin="10,5" Height="60">
+                      <Image x:Name="toolInfoIcon" VerticalAlignment="Center" Width="60" Height="60" Opacity="0.85" RenderOptions.BitmapScalingMode="HighQuality"/>
+                 </Border>
+                <TextBlock x:Name="toolInfoText" Foreground="{StaticResource UncheckedBrush}" Margin="0,0,10,0" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontSize="17" FontFamily="{StaticResource Exo-Regular}"
+                           TextWrapping="Wrap"/>
+            </DockPanel>
+            
+            <!--#region Tool Panel-->
+            <ScrollViewer Background="#1A4b5568" 
+                            HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
 
                 <mainWindow:ToolPanel x:Name="mainToolPanel"/>
 
                 <!-- Fancy scrollbar -->
                 <ScrollViewer.Resources>
                     <Style x:Key="ScrollBarTrackThumb"
-                           TargetType="{x:Type Thumb}">
+                            TargetType="{x:Type Thumb}">
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type Thumb}">
                                     <Grid x:Name="Grid">
                                         <Rectangle HorizontalAlignment="Stretch"
-                                                   VerticalAlignment="Stretch"
-                                                   Width="Auto"
-                                                   Height="Auto"
-                                                   Fill="Transparent" />
+                                                    VerticalAlignment="Stretch"
+                                                    Width="Auto"
+                                                    Height="Auto"
+                                                    Fill="Transparent" />
                                         <Border x:Name="CornerScrollBarRectangle"
                                                 HorizontalAlignment="Stretch"
                                                 VerticalAlignment="Stretch"
@@ -308,7 +321,7 @@
                                     </Grid>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="Tag"
-                                                 Value="Horizontal">
+                                                    Value="Horizontal">
                                             <Setter TargetName="CornerScrollBarRectangle"
                                                     Property="Width"
                                                     Value="Auto" />
@@ -334,58 +347,58 @@
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type ScrollBar}">
                                     <Grid x:Name="GridRoot"
-                                          Width="7"
-                                          Background="{TemplateBinding Background}">
+                                            Width="7"
+                                            Background="{TemplateBinding Background}">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="0.00001*" />
                                         </Grid.RowDefinitions>
                                         <Track x:Name="PART_Track"
-                                               Grid.Row="0"
-                                               IsDirectionReversed="true"
-                                               Focusable="false">
+                                                Grid.Row="0"
+                                                IsDirectionReversed="true"
+                                                Focusable="false">
                                             <Track.Thumb>
                                                 <Thumb x:Name="Thumb"
-                                                       Background="{TemplateBinding Foreground}"
-                                                       Style="{DynamicResource ScrollBarTrackThumb}" />
+                                                        Background="{TemplateBinding Foreground}"
+                                                        Style="{DynamicResource ScrollBarTrackThumb}" />
                                             </Track.Thumb>
                                             <Track.IncreaseRepeatButton>
                                                 <RepeatButton x:Name="PageUp"
-                                                              Command="ScrollBar.PageDownCommand"
-                                                              Opacity="0"
-                                                              Focusable="false" />
+                                                                Command="ScrollBar.PageDownCommand"
+                                                                Opacity="0"
+                                                                Focusable="false" />
                                             </Track.IncreaseRepeatButton>
                                             <Track.DecreaseRepeatButton>
                                                 <RepeatButton x:Name="PageDown"
-                                                              Command="ScrollBar.PageUpCommand"
-                                                              Opacity="0"
-                                                              Focusable="false" />
+                                                                Command="ScrollBar.PageUpCommand"
+                                                                Opacity="0"
+                                                                Focusable="false" />
                                             </Track.DecreaseRepeatButton>
                                         </Track>
                                     </Grid>
                                     <ControlTemplate.Triggers>
                                         <Trigger SourceName="Thumb"
-                                                 Property="IsMouseOver"
-                                                 Value="true">
+                                                    Property="IsMouseOver"
+                                                    Value="true">
                                             <Setter Value="{DynamicResource ButtonSelectBrush}"
                                                     TargetName="Thumb"
                                                     Property="Background" />
                                         </Trigger>
                                         <Trigger SourceName="Thumb"
-                                                 Property="IsDragging"
-                                                 Value="true">
+                                                    Property="IsDragging"
+                                                    Value="true">
                                             <Setter Value="{DynamicResource DarkBrush}"
                                                     TargetName="Thumb"
                                                     Property="Background" />
                                         </Trigger>
 
                                         <Trigger Property="IsEnabled"
-                                                 Value="false">
+                                                    Value="false">
                                             <Setter TargetName="Thumb"
                                                     Property="Visibility"
                                                     Value="Collapsed" />
                                         </Trigger>
                                         <Trigger Property="Orientation"
-                                                 Value="Horizontal">
+                                                    Value="Horizontal">
                                             <Setter TargetName="GridRoot"
                                                     Property="LayoutTransform">
                                                 <Setter.Value>
@@ -419,7 +432,7 @@
                     </Style>
                 </ScrollViewer.Resources>
             </ScrollViewer>
-
+            <!--#endregion-->
         </DockPanel>
     </Grid>
 </Window>

@@ -86,7 +86,7 @@ namespace LegendaryExplorer
                 },
                 tags = new List<string> { "user", "toc", "tocing", "crash", "infinite", "loop", "loading" },
                 category = "Toolset Devs",
-                description = "AutoTOC is a tool for ME3 that updates and/or creates the PCConsoleTOC.bin files associated with the base game and each DLC.\n\nRunning this tool upon mod installation is imperative to ensuring proper functionality of the game."
+                description = "AutoTOC is a tool for ME3 and LE that updates and/or creates the PCConsoleTOC.bin files associated with the base game and each DLC."
             });
 
             set.Add(new Tool
@@ -312,7 +312,7 @@ namespace LegendaryExplorer
                 },
                 tags = new List<string> { "developer", "mesh" },
                 category = "Meshes + Textures",
-                description = "Meshplorer loads and displays all meshes within a file. The tool skins most meshes with its associated texture.\n\nThis tool works with all three games."
+                description = "Meshplorer loads and displays all meshes within a file. The tool skins most meshes with its associated texture.\nThis tool works with all three games."
             });
             set.Add(new Tool
             {
@@ -384,7 +384,7 @@ namespace LegendaryExplorer
                 },
                 tags = new List<string> { "utility", "mesh", "material", "class", "animation" },
                 category = "Utilities",
-                description = "Scans games and creates a database of classes, animations, materials, textures, particles and meshes.\n\nIndividual assets can be opened directly from the interface with tools for editing."
+                description = "Scans games and creates a database of classes, animations, materials, textures, particles and meshes.\nIndividual assets can be opened directly from the interface with tools for editing."
             });
             set.Add(new Tool
             {
@@ -483,8 +483,8 @@ namespace LegendaryExplorer
                 },
                 tags = new List<string> { "user", "developer", "pcc", "cloning", "import", "export", "sfm", "upk", ".u", "me2", "me1", "me3", "name" },
                 category = "Core Editors",
-                description = "Package Editor is Legendary Explorer's general purpose editing tool for unreal package files. It can edit ME3 and ME2 .pcc files, as well as ME1 .sfm, .upk, and .u files." +
-                              "\n\nEdit trilogy game files in a single window with access to external tools such as Curve Editor and Soundplorer, right in the same window."
+                description = "Package Editor is Legendary Explorer's general purpose editing tool for Unreal package files in all games. " +
+                              "Edit trilogy game files in a single window with easy access to external tools such as Curve Editor and Soundplorer."
             });
             set.Add(new Tool
             {
@@ -511,7 +511,7 @@ namespace LegendaryExplorer
                 },
                 tags = new List<string> { "developer", "codex", "state transition", "quest", "natives" },
                 category = "Core Editors",
-                description = "Plot Editor is used to examine, edit, and search ME3's plot maps for quests, state events, and codices."
+                description = "Plot Editor is used to examine, edit, and search plot maps in all 3 games for quests, state events, and codex entries."
             });
             set.Add(new Tool
             {
@@ -550,7 +550,7 @@ namespace LegendaryExplorer
                 },
                 tags = new List<string> { "user", "developer", "audio", "dialogue", "music", "wav", "ogg", "sound", "afc", "wwise", "bank" },
                 category = "Audio Tools",
-                description = "Extract and play audio from all 3 games, and replace audio directly in Mass Effect 3.",
+                description = "Extract and play audio from all 3 games, and replace audio directly in Mass Effect 3 and Mass Effect 2 LE.",
             });
             set.Add(new Tool
             {
@@ -563,9 +563,8 @@ namespace LegendaryExplorer
                 },
                 tags = new List<string> { "developer", "audio", "music", "sound", "wwise", "bank" },
                 category = "Audio Tools",
-                description = "Wwise Editor currently has no editing functionality. " +
-                "It can be used to help visualize the relationships between HIRC objects as well as their connection to WwiseEvent and WwiseStream Exports. " +
-                "There are many relationships not shown, due to most HIRC objects not being parsed yet.",
+                description = "Wwise Graph Editor currently has no editing functionality. " +
+                "It can be used to help visualize the relationships between HIRC objects as well as their connection to WwiseEvent and WwiseStream Exports."
             });
             #endregion
 

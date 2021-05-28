@@ -45,6 +45,7 @@ namespace LegendaryExplorer.MainWindow
                 mainToolPanel.setToolList(ToolSet.Items.Where(t => t.category == "Core Editors" || t.category2 == "Core Editors"));
             }
             ToolSet.FavoritesChanged += ToolSet_FavoritesChanged;
+            mainToolPanel.ToolMouseOver += Tool_MouseOver;
 
 #if DEBUG
             toolsetDevsButton.Visibility = Visibility.Visible;
@@ -108,6 +109,13 @@ namespace LegendaryExplorer.MainWindow
             // We need this event handler to exist for the favorites system to work
         }
 
+        private void Tool_MouseOver(object sender, Tool t)
+        {
+            toolInfoPanel.Visibility = Visibility.Visible;
+            toolInfoIcon.Source = t.icon;
+            toolInfoText.Text = t.description;
+        }
+
         private void About_Click(object sender, RoutedEventArgs e)
         {
             (new About()).Show();
@@ -153,6 +161,7 @@ namespace LegendaryExplorer.MainWindow
             }
 
             mainToolPanel.setToolList(results);
+            toolInfoPanel.Visibility = Visibility.Collapsed;
             foreach (object child in LogicalTreeHelper.GetChildren(categoriesMenu))
             {
                 if (child is RadioButton rb)
@@ -165,6 +174,7 @@ namespace LegendaryExplorer.MainWindow
         private void Favorites_Clicked(object sender, RoutedEventArgs e)
         {
             mainToolPanel.setToolList(ToolSet.Items.Where(tool => tool.IsFavorited));
+            toolInfoPanel.Visibility = Visibility.Collapsed;
         }
 
         private void CategoryButton_Clicked(object sender, RoutedEventArgs e)
@@ -172,6 +182,7 @@ namespace LegendaryExplorer.MainWindow
             var button = (RadioButton)sender;
             var category = (string)button.Tag;
             mainToolPanel.setToolList(ToolSet.Items.Where((t) => t.category == category || t.category2 == category));
+            toolInfoPanel.Visibility = Visibility.Collapsed;
         }
 
         private void SystemCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
