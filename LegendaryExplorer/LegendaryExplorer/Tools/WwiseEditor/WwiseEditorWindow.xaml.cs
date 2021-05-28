@@ -170,8 +170,7 @@ namespace LegendaryExplorer.Tools.WwiseEditor
 
         private void OpenFile()
         {
-            // TODO: Implement in LEX
-            OpenFileDialog d = new (); //{ Filter = FileFilters.OpenFileFilter };
+            OpenFileDialog d = new (){ Filter = GameFileFilters.ME3ME2SaveFileFilter };
             if (d.ShowDialog() == true)
             {
 #if !DEBUG

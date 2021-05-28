@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.Misc.ME3Tweaks;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorerCore.GameFilesystem;
@@ -602,16 +603,15 @@ namespace LegendaryExplorer.Tools.TFCCompactor
                                     //Can't find TFC!
 
                                     //Can we try ME3Tweaks backup?
-
-                                    // TODO: Implement in LEX
-                                    string me3BackupPath = null; //ME3Tweaks.ME3TweaksBackups.GetGameBackupPath(MEGame.ME3);
+                                    
+                                    string me3BackupPath = ME3TweaksBackups.GetGameBackupPath(MEGame.ME3);
                                     if (me3BackupPath != null && Directory.Exists(me3BackupPath))
                                     {
                                         sfar = Path.Combine(me3BackupPath, "BioGame", "DLC", dlcFolderName, "CookedPCConsole", "Default.sfar");
                                         if (File.Exists(sfar) && new FileInfo(sfar).Length > 32)
                                         {
                                             //sfar exists and is not fully unpacked (with mem style 32 byte sfar)
-                                            DLCPackage p = new DLCPackage(sfar);
+                                            var p = new DLCPackage(sfar);
                                             var tfcIndex = p.FindFileEntry(tfcShortName + ".tfc");
                                             if (tfcIndex >= 0)
                                             {

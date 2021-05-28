@@ -161,8 +161,7 @@ namespace LegendaryExplorer.UnrealExtensions
                 LE3TalkFiles.LoadTlkData(tlkPath);
             }
         }
-
-        //TODO: Call this from somewhere in LEX
+        
         public static void LoadSavedTlkList()
         {
             Action[] loaders =

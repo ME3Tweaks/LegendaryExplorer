@@ -23,6 +23,7 @@ using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.Tools;
+using LegendaryExplorer.Tools.Meshplorer;
 using LegendaryExplorer.UserControls.ExportLoaderControls;
 using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorerCore.GameFilesystem;
@@ -620,16 +621,14 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             new Meshplorer.MeshplorerWindow(exp).Show();
                         }
                         break;
-                        // TODO: IMPLEMENT FOR LEX
-                        /*
-                        case "WwiseEditor":
-                            if (exp.ClassName == "WwiseBank")
-                            {
-                                var w = new WwiseEditor.WwiseEditorWPF(exp);
-                                w.Show();
-                            }
-                            break;
-                        */
+                    case "WwiseEditor":
+                        if (exp.ClassName == "WwiseBank")
+                        {
+                            var w = new WwiseEditor.WwiseEditorWindow(exp);
+                            w.Show();
+                        }
+                        break;
+
                 }
             }
         }
@@ -2976,13 +2975,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 {
                     foreach ((ExportLoaderControl exportLoader, TabItem tab) in ExportLoaders)
                     {
-                        //TODO: re-enable Mesh rendering for LEX once we have the format parsed
-                        if (Pcc.Game.IsLEGame() && exportLoader is MeshRenderer)
-                        {
-                            tab.Visibility = Visibility.Collapsed;
-                            exportLoader.UnloadExport();
-                        }
-                        else if (exportLoader.CanParse(exportEntry))
+                        if (exportLoader.CanParse(exportEntry))
                         {
                             exportLoader.LoadExport(exportEntry);
                             tab.Visibility = Visibility.Visible;
@@ -3693,14 +3686,12 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     var pathEditor = new PathfindingEditor.PathfindingEditorWindow(Pcc.FilePath);
                     pathEditor.Show();
                     break;
-                    // TODO: IMPLEMENT IN LEX
-                    /*
-                    case "Meshplorer":
-                        var meshplorer = new MeshplorerWindow();
-                        meshplorer.LoadFile(Pcc.FilePath);
-                        meshplorer.Show();
-                        break;
-                    */
+                case "Meshplorer":
+                    var meshplorer = new MeshplorerWindow();
+                    meshplorer.LoadFile(Pcc.FilePath);
+                    meshplorer.Show();
+                    break;
+
             }
         }
 
@@ -3748,8 +3739,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private void MountEditor_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: IMPLEMENT IN LEX
-            //new MountEditor.MountEditorWPF().Show();
+            new MountEditor.MountEditorWindow().Show();
         }
 
         private void EmbeddedTextureViewer_AutoLoad_Click(object sender, RoutedEventArgs e)
