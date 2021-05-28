@@ -79,10 +79,10 @@ HRESULT ConvertTexture(const TextureBuffer* inputBuffer, TextureBuffer* outputBu
 				|| outputBuffer->Format == DXGI_FORMAT_BC6H_SF16
 				|| outputBuffer->Format == DXGI_FORMAT_BC6H_UF16) {
 
-				hr = DirectX::Compress(D3DDevice, sourceImage, outputBuffer->Format, DirectX::TEX_COMPRESS_FLAGS::TEX_COMPRESS_BC7_QUICK, 0.5f, *outputBuffer->_ScratchImage);
+				hr = DirectX::Compress(D3DDevice, sourceImage, outputBuffer->Format, DirectX::TEX_COMPRESS_FLAGS::TEX_COMPRESS_BC7_QUICK, 1.0f, *outputBuffer->_ScratchImage);
 			}
 			else {
-				hr = DirectX::Compress(sourceImage, outputBuffer->Format, DirectX::TEX_COMPRESS_FLAGS::TEX_COMPRESS_PARALLEL | DirectX::TEX_COMPRESS_FLAGS::TEX_COMPRESS_BC7_QUICK, 0.5f, *outputBuffer->_ScratchImage);
+				hr = DirectX::Compress(sourceImage, outputBuffer->Format, DirectX::TEX_COMPRESS_FLAGS::TEX_COMPRESS_PARALLEL | DirectX::TEX_COMPRESS_FLAGS::TEX_COMPRESS_BC7_QUICK, 1.0f, *outputBuffer->_ScratchImage);
 			}
 		}
 		else {
