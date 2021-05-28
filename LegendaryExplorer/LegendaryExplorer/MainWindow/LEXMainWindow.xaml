@@ -19,6 +19,7 @@
     <Window.Resources>
         <SolidColorBrush x:Key="ForegroundBrush" Color="#FF7e8285"/>
         <SolidColorBrush x:Key="MouseOverBrush" Color="White"/>
+        <SolidColorBrush x:Key="CheckedBrush" Color="#E1E1E1"/>
         <Style x:Key="MainWindowFocusVisualStyle">  
             <Setter Property="Control.Template">  
                 <Setter.Value>  
@@ -150,15 +151,15 @@
             <Border BorderBrush="{DynamicResource ForegroundBrush}" BorderThickness="0,2,0,0"  DockPanel.Dock="Top" Margin="5,0">
                 <StackPanel x:Name="categoriesMenu" Orientation="Horizontal" Height="75">
                     <StackPanel.Resources>
-                        <Style x:Key="CategoriesButton" TargetType="{x:Type Button}"
-                               BasedOn="{StaticResource BorderedButton}">
+                        <Style x:Key="CategoriesButton" TargetType="{x:Type RadioButton}"
+                               BasedOn="{StaticResource BorderedRadioButton}">
                             <Setter Property="Height" Value="45" />
                             <Setter Property="Width" Value="100" />
                             <Setter Property="Margin" Value="10,0" />
                             <Setter Property="FocusVisualStyle" Value="{StaticResource MainWindowFocusVisualStyle}"/>
                             <Setter Property="Template">
                                 <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type Button}">
+                                    <ControlTemplate TargetType="{x:Type RadioButton}">
                                         <Border Background="Transparent">
                                             <Grid>
                                                 <Viewbox>
@@ -179,6 +180,9 @@
                                             <Trigger Property="IsMouseOver" Value="False">
                                                 <Setter Property="TextBlock.Foreground" Value="{DynamicResource ForegroundBrush}" />
                                             </Trigger>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter Property="TextBlock.Foreground" Value="{DynamicResource CheckedBrush}" />
+                                            </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
                                 </Setter.Value>
@@ -187,10 +191,10 @@
                     </StackPanel.Resources>
 
                     <!-- Favorites Button -->
-                    <Button x:Name="Favorites_Button" Click="Favorites_Clicked" Height="45" Width="45" Margin="10, 0"
-                            ToolTip="Favorites - Shift-click on a tool to add to favorites">
-                        <Button.Template>
-                            <ControlTemplate>
+                    <RadioButton x:Name="favoritesButton" Click="Favorites_Clicked" Height="45" Width="45" Margin="10, 0"
+                                 ToolTip="Favorites - Shift-click on a tool to add to favorites">
+                        <RadioButton.Template>
+                            <ControlTemplate TargetType="{x:Type RadioButton}">
                                 <Border Background="Transparent">
                                     <Grid>
                                         <Viewbox>
@@ -208,40 +212,43 @@
                                     <Trigger Property="IsMouseOver" Value="False">
                                         <Setter TargetName="FavStar" Property="fa5:ImageAwesome.Foreground" Value="{DynamicResource ForegroundBrush}" />
                                     </Trigger>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter TargetName="FavStar" Property="fa5:ImageAwesome.Foreground" Value="{DynamicResource CheckedBrush}" />
+                                    </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
-                        </Button.Template>
-                    </Button>
+                        </RadioButton.Template>
+                    </RadioButton>
 
                     <!-- Rest of the buttons - tag determines category name -->
-                    <Button Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked" 
+                    <RadioButton Name="coreEditorsButton" Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked" 
                             Tag="Core Editors" ToolTip="Core package editing tools">
                         Core Editors
-                    </Button>
-                    <Button Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked"
-                            Tag="Cinematic Tools" ToolTip="Tools related to conversation and cutscene editing">
+                    </RadioButton>
+                    <RadioButton Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked"
+                                 Tag="Cinematic Tools" ToolTip="Tools related to conversation and cutscene editing">
                         Cinematic Tools
-                    </Button>
-                    <Button Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked" 
-                            Tag="Audio Tools" ToolTip="Audio modification tools">
+                    </RadioButton>
+                    <RadioButton Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked" 
+                                 Tag="Audio Tools" ToolTip="Audio modification tools">
                         Audio Tools
-                    </Button>
-                    <Button Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked"
-                            Tag="Meshes + Textures">
+                    </RadioButton>
+                    <RadioButton Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked"
+                                 Tag="Meshes + Textures">
                         Meshes &amp; Textures
-                    </Button>
-                    <Button Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked"
-                            Tag="Extractors + Repackers">
+                    </RadioButton>
+                    <RadioButton Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked"
+                                 Tag="Extractors + Repackers">
                         Extract &amp; Repack
-                    </Button>
-                    <Button Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked" 
-                            Tag="Utilities">
+                    </RadioButton>
+                    <RadioButton Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked" 
+                                 Tag="Utilities">
                         Utilities
-                    </Button>
-                    <Button x:Name="toolsetDevsButton" Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked" 
-                            Tag="Toolset Devs" Visibility="Collapsed">
+                    </RadioButton>
+                    <RadioButton x:Name="toolsetDevsButton" Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked" 
+                                 Tag="Toolset Devs" Visibility="Collapsed">
                         Toolset Devs Only
-                    </Button>
+                    </RadioButton>
                 </StackPanel>
             </Border>
 

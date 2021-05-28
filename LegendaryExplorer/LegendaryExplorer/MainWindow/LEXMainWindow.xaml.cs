@@ -34,10 +34,12 @@ namespace LegendaryExplorer.MainWindow
 
             if (ToolSet.Items.Any((t) => t.IsFavorited))
             {
+                favoritesButton.IsChecked = true;
                 mainToolPanel.setToolList(ToolSet.Items.Where(t => t.IsFavorited));
             }
             else
             {
+                coreEditorsButton.IsChecked = true;
                 mainToolPanel.setToolList(ToolSet.Items.Where(t => t.category == "Core Editors" || t.category2 == "Core Editors"));
             }
             ToolSet.FavoritesChanged += ToolSet_FavoritesChanged;
@@ -122,6 +124,13 @@ namespace LegendaryExplorer.MainWindow
             }
 
             mainToolPanel.setToolList(results);
+            foreach (object child in LogicalTreeHelper.GetChildren(categoriesMenu))
+            {
+                if (child is RadioButton rb)
+                {
+                    rb.IsChecked = false;
+                }
+            }
         }
 
         private void Favorites_Clicked(object sender, RoutedEventArgs e)
@@ -131,8 +140,8 @@ namespace LegendaryExplorer.MainWindow
 
         private void CategoryButton_Clicked(object sender, RoutedEventArgs e)
         {
-            var button = (Button)sender;
-            var category = (string) button.Tag;
+            var button = (RadioButton)sender;
+            var category = (string)button.Tag;
             mainToolPanel.setToolList(ToolSet.Items.Where((t) => t.category == category || t.category2 == category));
         }
 
