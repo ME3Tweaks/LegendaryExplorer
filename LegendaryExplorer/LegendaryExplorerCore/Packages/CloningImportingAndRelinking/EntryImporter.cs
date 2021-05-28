@@ -372,8 +372,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
             else
             {
-                int start = incomingExport.GetPropertyStart();
-                res.Writer.Write(new byte[start], 0, start);
+                //int start = incomingExport.GetPropertyStart();
+                res.Writer.WriteZeros(incomingExport.GetPropertyStart());
+                //res.Writer.Write(new byte[start], 0, start);
             }
 
             //store copy of names list in case something goes wrong
