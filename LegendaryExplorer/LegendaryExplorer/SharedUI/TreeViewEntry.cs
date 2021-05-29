@@ -257,7 +257,7 @@ namespace LegendaryExplorer.SharedUI
                                 }
                             case "Const":
                                 {
-                                    var data = ee.Data;
+                                    var data = ee.DataReadOnly;
                                     //This is kind of a hack. 
                                     var value = EndianReader.ReadUnrealString(data, 0x14, ee.FileRef.Endian);
                                     _subtext = "Value: " + value;
@@ -269,7 +269,7 @@ namespace LegendaryExplorer.SharedUI
                             case "ComponentProperty":
                                 {
                                     // Objects of this type
-                                    var typeRef = EndianReader.ToInt32(ee.Data, Entry.FileRef.Platform == MEPackage.GamePlatform.PC ? 0x2C : 0x20, ee.FileRef.Endian);
+                                    var typeRef = EndianReader.ToInt32(ee.DataReadOnly, Entry.FileRef.Platform == MEPackage.GamePlatform.PC ? 0x2C : 0x20, ee.FileRef.Endian);
                                     if (ee.FileRef.TryGetEntry(typeRef, out var type))
                                     {
                                         _subtext = type.ObjectName;
@@ -279,7 +279,7 @@ namespace LegendaryExplorer.SharedUI
                                 }
                             case "ClassProperty":
                                 {
-                                    var data = ee.Data;
+                                    var data = ee.DataReadOnly;
                                     var typeRef = EndianReader.ToInt32(data, data.Length - 4, ee.FileRef.Endian);
                                     if (ee.FileRef.TryGetEntry(typeRef, out var type))
                                     {

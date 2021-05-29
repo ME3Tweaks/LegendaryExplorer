@@ -153,6 +153,29 @@ namespace LegendaryExplorerCore.Gammtek.IO
         /// </summary>
         /// <param name="stream"></param>
         /// <returns></returns>
+        public static string ReadUnrealString(ReadOnlySpan<byte> data, int position, Endian endian)
+        {
+            int length = ToInt32(data, position, endian);
+            if (length == 0)
+            {
+                return "";
+            }
+
+            if (length > 0)
+            {
+                return Encoding.Latin1.GetString(data.Slice(position + 4, length));
+            }
+            else
+            {
+                return Encoding.Unicode.GetString(data.Slice(position + 4, length * -2));
+            }
+        }
+
+        /// <summary>
+        /// Reads an unreal-style prefixed string from the underlying stream.
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
         public static string ReadUnrealString(byte[] data, int position, Endian endian)
         {
             int length = ToInt32(data, position, endian);
