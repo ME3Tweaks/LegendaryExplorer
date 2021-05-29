@@ -68,7 +68,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 MEGame.LE1 => LE1Directory.GetDLCPath(gamePathRoot),
                 MEGame.LE2 => LE2Directory.GetDLCPath(gamePathRoot),
                 MEGame.LE3 => LE3Directory.GetDLCPath(gamePathRoot),
-                MEGame.Unknown => null,
+                MEGame.LELauncher => null,
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
             };
         }
@@ -140,7 +140,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 MEGame.LE1 => LE1Directory.ExecutableNames,
                 MEGame.LE2 => LE2Directory.ExecutableNames,
                 MEGame.LE3 => LE3Directory.ExecutableNames,
-                MEGame.Unknown => LEDirectory.ExecutableNames,
+                MEGame.LELauncher => LEDirectory.ExecutableNames,
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
             };
         }
@@ -169,7 +169,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 MEGame.LE1 => LE1Directory.VanillaDlls,
                 MEGame.LE2 => LE2Directory.VanillaDlls,
                 MEGame.LE3 => LE3Directory.VanillaDlls,
-                MEGame.Unknown => LEDirectory.VanillaLauncherDlls,
+                MEGame.LELauncher => LEDirectory.VanillaLauncherDlls,
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
             };
             throw new NotImplementedException();
@@ -219,7 +219,7 @@ namespace LegendaryExplorerCore.GameFilesystem
 
         public static bool IsInBasegame(string path, MEGame game, string gameRootOverride = null)
         {
-            if (game == MEGame.UDK || game == MEGame.Unknown) return false;
+            if (game == MEGame.UDK || game == MEGame.LELauncher) return false;
             if (gameRootOverride is null && GetDefaultGamePath(game) is null)
             {
                 return false;
@@ -232,7 +232,7 @@ namespace LegendaryExplorerCore.GameFilesystem
 
         public static bool IsInOfficialDLC(string path, MEGame game, string gameRootOverride = null)
         {
-            if (game == MEGame.UDK || game == MEGame.Unknown || game == MEGame.LE1)
+            if (game is MEGame.UDK or MEGame.LELauncher or MEGame.LE1)
             {
                 return false;
             }
@@ -245,7 +245,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         }
 
         /// <summary>
-        /// Refreshes the registry active paths for all three games
+        /// Refreshes the registry active paths for all games
         /// </summary>
         public static void ReloadGamePaths(bool forceUseRegistry)
         {
