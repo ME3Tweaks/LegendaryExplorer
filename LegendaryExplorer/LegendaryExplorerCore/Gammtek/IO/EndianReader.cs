@@ -601,7 +601,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
         {
             return ReadBytes(size);
         }
-        
+
         /// <summary>
         /// Copies stream to a new array. Consider using a more performant method if at all possible.
         /// </summary>
@@ -700,6 +700,22 @@ namespace LegendaryExplorerCore.Gammtek.IO
         }
 
         /// <summary>
+        /// Reads an int16 from the buffer at the specified position with the specified endianness.
+        /// </summary>
+        /// <returns></returns>
+        public static short ToInt16(ReadOnlySpan<byte> buffer, int offset, Endian endianness)
+        {
+            var readMagic = MemoryMarshal.Read<short>(buffer.Slice(offset));
+            if (!endianness.IsNative)
+            {
+                //swap
+                return BinaryPrimitives.ReverseEndianness(readMagic);
+            }
+
+            return readMagic;
+        }
+
+        /// <summary>
         /// Reads an uint32 from the buffer at the specified position with the specified endianness.
         /// </summary>
         /// <returns></returns>
@@ -728,7 +744,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
             }
             return readMagic;
         }
-        
+
         public static Guid ToGuid(ReadOnlySpan<byte> span, Endian endianness)
         {
             if (endianness.IsNative)

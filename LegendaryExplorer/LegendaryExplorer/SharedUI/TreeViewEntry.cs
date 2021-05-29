@@ -193,10 +193,11 @@ namespace LegendaryExplorer.SharedUI
                             case "Function":
                                 {
                                     //check if exec
-                                    var data = ee.Data;
+                                    var data = ee.DataReadOnly;
                                     if (Entry.FileRef.Game == MEGame.ME3 || Entry.FileRef.Platform == MEPackage.GamePlatform.PS3 || Entry.Game.IsLEGame())
                                     {
-                                        var flags = EndianReader.ToInt32(data, data.Length - 4, ee.FileRef.Endian);
+                                        var flagOffset = Entry.Game == MEGame.ME3 || Entry.FileRef.Platform == MEPackage.GamePlatform.PS3 ? 4 : 12;
+                                        var flags = EndianReader.ToInt32(data, data.Length - flagOffset, ee.FileRef.Endian);
                                         FlagValues fs = new FlagValues(flags, UE3FunctionReader._flagSet);
                                         _subtext = "";
                                         if (fs.HasFlag("Static"))
@@ -208,8 +209,8 @@ namespace LegendaryExplorer.SharedUI
                                         {
                                             if (_subtext != "") _subtext += " ";
                                             _subtext += "Native";
-                                            var nativeBackOffset = Entry.FileRef.Game < MEGame.ME3 ? 7 : 6;
-                                            var nativeIndex = EndianReader.ToInt16(data, data.Length - nativeBackOffset, ee.FileRef.Endian);
+                                            var nativeBackOffset = Entry.FileRef.Game < MEGame.ME3 ? 3 : 2; // can be ps3 me1/me2
+                                            var nativeIndex = EndianReader.ToInt16(data, data.Length - nativeBackOffset - flagOffset, ee.FileRef.Endian);
                                             if (nativeIndex > 0)
                                             {
                                                 _subtext += ", index " + nativeIndex;
