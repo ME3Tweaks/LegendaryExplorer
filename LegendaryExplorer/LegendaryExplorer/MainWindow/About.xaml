@@ -14,7 +14,7 @@
             <Grid Width="362" Height="109" Background="#FF1F283C">
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                     <TextBlock Text="LegendaryExplorer" TextAlignment="Center" Foreground="#FFD8D8D8" FontSize="26" FontFamily="{StaticResource Exo-SemiBold}"/>
-                    <TextBlock Text="6.0" Foreground="White" FontSize="26" 
+                    <TextBlock Text="{Binding Source={x:Static misc:AppVersion.FullDisplayedVersion}}" Foreground="White" FontSize="26" 
                                FontFamily="{StaticResource TitilliumWeb-Regular}" HorizontalAlignment="Center" Margin="0,-6,0,0"/>
                 </StackPanel>
             </Grid>
@@ -115,11 +115,13 @@
                         John33 - Oggdec                                 <LineBreak/>
                         Newtonsoft - JSON.NET                           <LineBreak/>
                         NAudio - NAudio sound system                    <LineBreak/>
+                        VideoLAN - LibVLCSharp library                  <LineBreak/>
                         Peregrine66 - WPF Tree View Helpers             <LineBreak/>
                         Piccolo Team - Piccolo Graphics Framework       <LineBreak/>
                         bgbennyboy - Psychonauts Explorer (ME1 Audio)   <LineBreak/>
                         TheFeckless - UE3 SDK Generator                 <LineBreak/>
                         Aquadran - Mass Effect Modder  (Textures)       <LineBreak/>
+                        d00t - LE Coalesced Tool                        <LineBreak/>
                         VGMStream - Audio decoding                      <LineBreak/>
                         AppCenter (Microsoft) - Crash telemetry         <LineBreak/>
                         Xceed WPF Toolkit - UI controls                 <LineBreak/>
@@ -128,25 +130,12 @@
                         </TextBlock>
                     </ScrollViewer>
                 </TabItem>
-                <!--<TabItem Header="Documentation">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <TextBlock>
-                        GitHub - SirCxyrtyx                       <LineBreak/>
-                        Toolset GUI Text - Giftfish, SirCxyrtyx, Kinkojiro, Mgamerz<LineBreak/>
-                        Web Portal - Giftfish and SirCxyrtyx      <LineBreak/>
-                        Wikia - Giftfish and Wiki Contributors    <LineBreak/>
-                        </TextBlock>
-                    </ScrollViewer>
-                </TabItem>-->
                 <TabItem Header="Art + Design">
                     <ScrollViewer HorizontalScrollBarVisibility="Auto">
                         <TextBlock>
-                        Toolset splash screen (not artwork) designed by Jade                       <LineBreak/>
-                        Minilogo designed by Audemus                                               <LineBreak/>
-                        Tool icons designed by Mgamerz, SirCyxrtyx, Kinkojiro                      <LineBreak/>
+                        Toolset logo and tool icons designed by Audemus                            <LineBreak/>
+                        Main window designed by Audemus                                            <LineBreak/>
                         Outline icons © Flaticon.com                                               <LineBreak/>
-                                                                                                   <LineBreak/>
-                        Main Window Design by Audemus                                              <LineBreak/>
                                                                                                    <LineBreak/>
                         FONTS                                                                      <LineBreak/>
                         Exo © Nataneal Gama                                                        <LineBreak/>
@@ -154,6 +143,7 @@
                         Korataki © Ray Larabie                                                     <LineBreak/>
                         Slider, Creator Unknown                                                    <LineBreak/>
                         Titillium Web © Accademia di Belle Arti di Urbino                          <LineBreak/>
+                        BioMass2 © BioWare                                                         <LineBreak/>
                         </TextBlock>
                     </ScrollViewer>
                 </TabItem>

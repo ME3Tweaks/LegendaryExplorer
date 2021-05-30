@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Reflection;
+using System.Windows;
 
 namespace LegendaryExplorer.MainWindow
 {

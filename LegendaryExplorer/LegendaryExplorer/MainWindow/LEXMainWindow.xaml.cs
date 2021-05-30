@@ -37,48 +37,22 @@ namespace LegendaryExplorer.MainWindow
             if (ToolSet.Items.Any((t) => t.IsFavorited))
             {
                 favoritesButton.IsChecked = true;
-                mainToolPanel.setToolList(ToolSet.Items.Where(t => t.IsFavorited));
+                SetToolListFromFavorites();
             }
             else
             {
                 coreEditorsButton.IsChecked = true;
-                mainToolPanel.setToolList(ToolSet.Items.Where(t => t.category == "Core Editors" || t.category2 == "Core Editors"));
+                SetToolList("Core Editors");
             }
             ToolSet.FavoritesChanged += ToolSet_FavoritesChanged;
             mainToolPanel.ToolMouseOver += Tool_MouseOver;
 
 #if DEBUG
+            MaxWidth = 915;
             toolsetDevsButton.Visibility = Visibility.Visible;
 #endif
 
             Task.Run(TLKLoader.LoadSavedTlkList);
-        }
-
-        /// <summary>
-        /// Displayed version in the UI. About page will be more detailed.
-        /// </summary>
-        public string DisplayedVersion
-        {
-            get
-            {
-                Version assemblyVersion = Assembly.GetEntryAssembly().GetName().Version;
-                string version = $"{assemblyVersion.Major}.{assemblyVersion.Minor}";
-                if (assemblyVersion.Build != 0)
-                {
-                    version += "." + assemblyVersion.Build;
-                }
-                
-#if DEBUG
-                version += " DEBUG";
-#elif NIGHTLY
-                //This is what will be placed in release. Comment this out when building for a stable!
-                version += " NIGHTLY"; //ENSURE THIS IS CHANGED FOR MAJOR RELEASES AND RELEASE CANDIDATES
-#elif RELEASE
-                // UPDATE THIS FOR RELEASE
-                //version += " RC";
-#endif
-                return $"{version} {App.BuildDateTime.ToShortDateString()}";
-            }
         }
 
         public void TransitionFromSplashToMainWindow(Window splashScreen)
@@ -107,7 +81,7 @@ namespace LegendaryExplorer.MainWindow
         {
             if(favoritesButton.IsChecked ?? false)
             {
-                mainToolPanel.setToolList(ToolSet.Items.Where(tool => tool.IsFavorited));
+                SetToolListFromFavorites();
             }
         }
 
@@ -162,8 +136,7 @@ namespace LegendaryExplorer.MainWindow
                 }
             }
 
-            mainToolPanel.setToolList(results);
-            toolInfoPanel.Visibility = Visibility.Collapsed;
+            SetToolList(results);
             foreach (object child in LogicalTreeHelper.GetChildren(categoriesMenu))
             {
                 if (child is RadioButton rb)
@@ -175,15 +148,35 @@ namespace LegendaryExplorer.MainWindow
 
         private void Favorites_Clicked(object sender, RoutedEventArgs e)
         {
-            mainToolPanel.setToolList(ToolSet.Items.Where(tool => tool.IsFavorited));
-            toolInfoPanel.Visibility = Visibility.Collapsed;
+            SetToolListFromFavorites();
         }
 
         private void CategoryButton_Clicked(object sender, RoutedEventArgs e)
         {
             var button = (RadioButton)sender;
-            var category = (string)button.Tag;
-            mainToolPanel.setToolList(ToolSet.Items.Where((t) => t.category == category || t.category2 == category));
+            string category = (string)button.Tag;
+            SetToolList(category);
+        }
+
+        private void SetToolListFromFavorites()
+        {
+            var favorites = ToolSet.Items.Where(tool => tool.IsFavorited);
+            SetToolList(favorites);
+            if (!favorites.Any())
+            {
+                favoritesHint.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void SetToolList(string category)
+        {
+            SetToolList(ToolSet.Items.Where((t) => t.category == category || t.category2 == category));
+        }
+
+        private void SetToolList(IEnumerable<Tool> tools)
+        {
+            mainToolPanel.setToolList(tools);
+            favoritesHint.Visibility = Visibility.Collapsed;
             toolInfoPanel.Visibility = Visibility.Collapsed;
         }
 
