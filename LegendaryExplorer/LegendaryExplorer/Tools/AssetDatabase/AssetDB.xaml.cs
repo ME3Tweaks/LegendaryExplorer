@@ -1287,28 +1287,27 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         }
         private void OpenInAnimViewer(object obj)
         {
-            //TODO: implement in LEX
-            //if (lstbx_Anims.SelectedItem is AnimationRecord anim)
-            //{
-            //    if (!Application.Current.Windows.OfType<AnimationExplorer.AnimationViewer>().Any())
-            //    {
-            //        AnimationExplorer.AnimationViewer av = new(CurrentDataBase, anim);
-            //        av.Show();
-            //    }
-            //    else
-            //    {
-            //        var aexp = Application.Current.Windows.OfType<AnimationExplorer.AnimationViewer>().First();
-            //        if (aexp.ReadyToView)
-            //        {
-            //            aexp.LoadAnimation(anim);
-            //        }
-            //        else
-            //        {
-            //            aexp.AnimQueuedForFocus = anim;
-            //        }
-            //        aexp.Focus();
-            //    }
-            //}
+            if (lstbx_Anims.SelectedItem is AnimationRecord anim)
+            {
+                if (!Application.Current.Windows.OfType<AnimationViewer.AnimationViewerWindow>().Any())
+                {
+                    var av = new AnimationViewer.AnimationViewerWindow(CurrentDataBase, anim);
+                    av.Show();
+                }
+                else
+                {
+                    var aexp = Application.Current.Windows.OfType<AnimationViewer.AnimationViewerWindow>().First();
+                    if (aexp.ReadyToView)
+                    {
+                        aexp.LoadAnimation(anim);
+                    }
+                    else
+                    {
+                        aexp.AnimQueuedForFocus = anim;
+                    }
+                    aexp.Focus();
+                }
+            }
         }
         private void ExportToPSA()
         {

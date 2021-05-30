@@ -17,6 +17,7 @@ using System.Windows.Threading;
 using LegendaryExplorer.Dialogs.Splash;
 using LegendaryExplorer.DialogueEditor;
 using LegendaryExplorer.GameInterop;
+using LegendaryExplorer.MainWindow;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.Misc.Telemetry;
@@ -110,15 +111,17 @@ namespace LegendaryExplorer.Startup
 #endif
             }).ContinueWithOnUIThread(x =>
             {
-                LEXSplashScreen?.Close();
+                string[] commandLineArgs = Environment.GetCommandLineArgs();
+
+                var mainWindow = new LEXMainWindow();
+                app.MainWindow = mainWindow;
                 app.ShutdownMode = ShutdownMode.OnMainWindowClose;
-                var mainWindow = new MainWindow();
-                mainWindow.Show();
+                mainWindow.TransitionFromSplashToMainWindow(LEXSplashScreen);
 
                 GameController.InitializeMessageHook(mainWindow);
 
                 // If you get any of the arguments "wrong", this command will not be invoked
-                cliHandler.InvokeAsync(Environment.GetCommandLineArgs());
+                cliHandler.InvokeAsync(commandLineArgs);
             });
         }
 
@@ -140,10 +143,8 @@ namespace LegendaryExplorer.Startup
             CoreLibSettingsBridge.MapSettingsIntoBridge();
             PackageSaver.CheckME3Running = () =>
             {
-                // TODO: IMPLEMENT IN LEX
-                return false;
-                //GameController.TryGetMEProcess(MEGame.ME3, out var me3Proc);
-                //return me3Proc != null;
+                GameController.TryGetMEProcess(MEGame.ME3, out var me3Proc);
+                return me3Proc != null;
             };
             //PackageSaver.NotifyRunningTOCUpdateRequired = GameController.SendME3TOCUpdateMessage;
             PackageSaver.GetPNGForThumbnail = texture2D => texture2D.GetPNG(texture2D.GetTopMip()); // Used for UDK packages

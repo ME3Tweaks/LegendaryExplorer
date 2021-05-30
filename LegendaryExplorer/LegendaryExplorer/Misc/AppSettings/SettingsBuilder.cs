@@ -13,6 +13,16 @@ namespace LegendaryExplorer.Misc.AppSettings
     public static partial class Settings
     {
         private static object settingsSyncObj = new object();
+        private static bool _mainwindow_disabletransparencyandanimations = false; 
+        public static bool MainWindow_DisableTransparencyAndAnimations {
+            get => _mainwindow_disabletransparencyandanimations; 
+            set => SetProperty(ref _mainwindow_disabletransparencyandanimations, value);
+        }
+        private static string _mainwindow_favorites = ""; 
+        public static string MainWindow_Favorites {
+            get => _mainwindow_favorites; 
+            set => SetProperty(ref _mainwindow_favorites, value);
+        }
         private static bool _packageeditor_hideinterpreterhexbox = true; 
         public static bool PackageEditor_HideInterpreterHexBox {
             get => _packageeditor_hideinterpreterhexbox; 
@@ -47,6 +57,21 @@ namespace LegendaryExplorer.Misc.AppSettings
         public static bool SequenceEditor_ShowParsedInfo {
             get => _sequenceeditor_showparsedinfo; 
             set => SetProperty(ref _sequenceeditor_showparsedinfo, value);
+        }
+        private static bool _sequenceeditor_autosaveview = false; 
+        public static bool SequenceEditor_AutoSaveView {
+            get => _sequenceeditor_autosaveview; 
+            set => SetProperty(ref _sequenceeditor_autosaveview, value);
+        }
+        private static bool _sequenceeditor_showoutputnumbers = false; 
+        public static bool SequenceEditor_ShowOutputNumbers {
+            get => _sequenceeditor_showoutputnumbers; 
+            set => SetProperty(ref _sequenceeditor_showoutputnumbers, value);
+        }
+        private static bool _sequenceeditor_globalseqrefviewsaves = false; 
+        public static bool SequenceEditor_GlobalSeqRefViewSaves {
+            get => _sequenceeditor_globalseqrefviewsaves; 
+            set => SetProperty(ref _sequenceeditor_globalseqrefviewsaves, value);
         }
         private static bool _soundplorer_reverseiddisplayendianness = false; 
         public static bool Soundplorer_ReverseIDDisplayEndianness {
@@ -137,6 +162,11 @@ namespace LegendaryExplorer.Misc.AppSettings
         public static string CoalescedEditor_DestinationPath {
             get => _coalescededitor_destinationpath; 
             set => SetProperty(ref _coalescededitor_destinationpath, value);
+        }
+        private static bool _wwisegrapheditor_autosaveview = false; 
+        public static bool WwiseGraphEditor_AutoSaveView {
+            get => _wwisegrapheditor_autosaveview; 
+            set => SetProperty(ref _wwisegrapheditor_autosaveview, value);
         }
         private static bool _binaryinterpreter_skipautoparsesizecheck = false; 
         public static bool BinaryInterpreter_SkipAutoParseSizeCheck {
@@ -247,6 +277,8 @@ namespace LegendaryExplorer.Misc.AppSettings
             Dictionary<string, string> settingsJson = File.Exists(AppSettingsFile)
                 ? JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(AppSettingsFile))
                 : new Dictionary<string, string>();
+            MainWindow_DisableTransparencyAndAnimations = TryGetSetting(settingsJson, "mainwindow_disabletransparencyandanimations", false);
+            MainWindow_Favorites = TryGetSetting(settingsJson, "mainwindow_favorites", "");
             PackageEditor_HideInterpreterHexBox = TryGetSetting(settingsJson, "packageeditor_hideinterpreterhexbox", true);
             PackageEditor_TouchComfyMode = TryGetSetting(settingsJson, "packageeditor_touchcomfymode", false);
             PackageEditor_ShowImpExpPrefix = TryGetSetting(settingsJson, "packageeditor_showimpexpprefix", true);
@@ -254,6 +286,9 @@ namespace LegendaryExplorer.Misc.AppSettings
             PackageEditor_ShowTreeEntrySubText = TryGetSetting(settingsJson, "packageeditor_showtreeentrysubtext", true);
             SequenceEditor_MaxVarStringLength = TryGetSetting(settingsJson, "sequenceeditor_maxvarstringlength", 40);
             SequenceEditor_ShowParsedInfo = TryGetSetting(settingsJson, "sequenceeditor_showparsedinfo", true);
+            SequenceEditor_AutoSaveView = TryGetSetting(settingsJson, "sequenceeditor_autosaveview", false);
+            SequenceEditor_ShowOutputNumbers = TryGetSetting(settingsJson, "sequenceeditor_showoutputnumbers", false);
+            SequenceEditor_GlobalSeqRefViewSaves = TryGetSetting(settingsJson, "sequenceeditor_globalseqrefviewsaves", false);
             Soundplorer_ReverseIDDisplayEndianness = TryGetSetting(settingsJson, "soundplorer_reverseiddisplayendianness", false);
             Soundplorer_AutoplayEntriesOnSelection = TryGetSetting(settingsJson, "soundplorer_autoplayentriesonselection", false);
             Meshplorer_BackgroundColor = TryGetSetting(settingsJson, "meshplorer_backgroundcolor", "#999999");
@@ -272,6 +307,7 @@ namespace LegendaryExplorer.Misc.AppSettings
             AssetDBPath = TryGetSetting(settingsJson, "assetdbpath", "");
             CoalescedEditor_SourcePath = TryGetSetting(settingsJson, "coalescededitor_sourcepath", "");
             CoalescedEditor_DestinationPath = TryGetSetting(settingsJson, "coalescededitor_destinationpath", "");
+            WwiseGraphEditor_AutoSaveView = TryGetSetting(settingsJson, "wwisegrapheditor_autosaveview", false);
             BinaryInterpreter_SkipAutoParseSizeCheck = TryGetSetting(settingsJson, "binaryinterpreter_skipautoparsesizecheck", false);
             BinaryInterpreterWPFAutoScanAlways = TryGetSetting(settingsJson, "binaryinterpreterwpfautoscanalways", false);
             TextureViewer_AutoLoadMip = TryGetSetting(settingsJson, "textureviewer_autoloadmip", true);
@@ -309,6 +345,8 @@ namespace LegendaryExplorer.Misc.AppSettings
         public static void Save()
         {
             Dictionary<string, string> settingsJson = new Dictionary<string,string>();
+            settingsJson["mainwindow_disabletransparencyandanimations"] = MainWindow_DisableTransparencyAndAnimations.ToString();
+            settingsJson["mainwindow_favorites"] = MainWindow_Favorites.ToString();
             settingsJson["packageeditor_hideinterpreterhexbox"] = PackageEditor_HideInterpreterHexBox.ToString();
             settingsJson["packageeditor_touchcomfymode"] = PackageEditor_TouchComfyMode.ToString();
             settingsJson["packageeditor_showimpexpprefix"] = PackageEditor_ShowImpExpPrefix.ToString();
@@ -316,6 +354,9 @@ namespace LegendaryExplorer.Misc.AppSettings
             settingsJson["packageeditor_showtreeentrysubtext"] = PackageEditor_ShowTreeEntrySubText.ToString();
             settingsJson["sequenceeditor_maxvarstringlength"] = SequenceEditor_MaxVarStringLength.ToString();
             settingsJson["sequenceeditor_showparsedinfo"] = SequenceEditor_ShowParsedInfo.ToString();
+            settingsJson["sequenceeditor_autosaveview"] = SequenceEditor_AutoSaveView.ToString();
+            settingsJson["sequenceeditor_showoutputnumbers"] = SequenceEditor_ShowOutputNumbers.ToString();
+            settingsJson["sequenceeditor_globalseqrefviewsaves"] = SequenceEditor_GlobalSeqRefViewSaves.ToString();
             settingsJson["soundplorer_reverseiddisplayendianness"] = Soundplorer_ReverseIDDisplayEndianness.ToString();
             settingsJson["soundplorer_autoplayentriesonselection"] = Soundplorer_AutoplayEntriesOnSelection.ToString();
             settingsJson["meshplorer_backgroundcolor"] = Meshplorer_BackgroundColor.ToString();
@@ -334,6 +375,7 @@ namespace LegendaryExplorer.Misc.AppSettings
             settingsJson["assetdbpath"] = AssetDBPath.ToString();
             settingsJson["coalescededitor_sourcepath"] = CoalescedEditor_SourcePath.ToString();
             settingsJson["coalescededitor_destinationpath"] = CoalescedEditor_DestinationPath.ToString();
+            settingsJson["wwisegrapheditor_autosaveview"] = WwiseGraphEditor_AutoSaveView.ToString();
             settingsJson["binaryinterpreter_skipautoparsesizecheck"] = BinaryInterpreter_SkipAutoParseSizeCheck.ToString();
             settingsJson["binaryinterpreterwpfautoscanalways"] = BinaryInterpreterWPFAutoScanAlways.ToString();
             settingsJson["textureviewer_autoloadmip"] = TextureViewer_AutoLoadMip.ToString();

@@ -7,238 +7,268 @@
         xmlns:local="clr-namespace:LegendaryExplorer.Tools.TlkManagerNS"
         xmlns:bases="clr-namespace:LegendaryExplorer.SharedUI.Bases"
         mc:Ignorable="d"
-        Title="TLK Manager" Height="450" Width="1600"
+        Title="TLK Manager" Height="450" Width="800"
         Icon="/Tools/Icons/tlkmanager_256x256.ico"
         Closing="TLKManager_Closing"
         d:DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
     <xctk:BusyIndicator IsBusy="{Binding Path=IsBusy}" BusyContent="{Binding BusyText}">
-        <DockPanel>
-            <Grid Margin="5">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="33*"/>
-                    <ColumnDefinition Width="5"/>
-                    <ColumnDefinition Width="33*"/>
-                    <ColumnDefinition Width="5"/>
-                    <ColumnDefinition Width="33*"/>
-                    <ColumnDefinition Width="5"/>
-                    <ColumnDefinition Width="33*"/>
-                    <ColumnDefinition Width="5"/>
-                    <ColumnDefinition Width="33*"/>
-                    <ColumnDefinition Width="5"/>
-                    <ColumnDefinition Width="33*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="20"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="90"/>
-                    <RowDefinition Height="18"/>
-                </Grid.RowDefinitions>
+        <TabControl>
+            <TabItem x:Name="OTTab">
+                <TabItem.Header>
+                    Original Trilogy
+                </TabItem.Header>
 
-
-
-                <TextBlock Text="Mass Effect 1 TLKs" Grid.Row="0" Grid.Column="0" TextAlignment="Center" FontWeight="Bold"/>
-                <TextBlock Text="Mass Effect 2 TLKs" Grid.Row="0" Grid.Column="2" TextAlignment="Center" FontWeight="Bold"/>
-                <TextBlock Text="Mass Effect 3 TLKs" Grid.Row="0" Grid.Column="4" TextAlignment="Center" FontWeight="Bold"/>
-                <TextBlock Text="Mass Effect 1 LE TLKs" Grid.Row="0" Grid.Column="6" TextAlignment="Center" FontWeight="Bold"/>
-                <TextBlock Text="Mass Effect 2 LE TLKs" Grid.Row="0" Grid.Column="8" TextAlignment="Center" FontWeight="Bold"/>
-                <TextBlock Text="Mass Effect 3 LE TLKs" Grid.Row="0" Grid.Column="10" TextAlignment="Center" FontWeight="Bold"/>
-
-                <xctk:CheckListBox Name="ME1TLKList" Grid.Column="0" Grid.Row="1" ItemsSource="{Binding ME1TLKItems}" SelectedMemberPath="selectedForLoad" DisplayMemberPath="tlkDisplayPath"/>
-                <xctk:CheckListBox Name="ME2TLKList" Grid.Column="2" Grid.Row="1" ItemsSource="{Binding ME2TLKItems}" SelectedMemberPath="selectedForLoad" DisplayMemberPath="tlkDisplayPath"/>
-                <xctk:CheckListBox Name="ME3TLKList" Grid.Column="4" Grid.Row="1" ItemsSource="{Binding ME3TLKItems}" SelectedMemberPath="selectedForLoad" DisplayMemberPath="tlkDisplayPath"/>
-                <xctk:CheckListBox Name="LE1TLKList" Grid.Column="6" Grid.Row="1" ItemsSource="{Binding LE1TLKItems}" SelectedMemberPath="selectedForLoad" DisplayMemberPath="tlkDisplayPath"/>
-                <xctk:CheckListBox Name="LE2TLKList" Grid.Column="8" Grid.Row="1" ItemsSource="{Binding LE2TLKItems}" SelectedMemberPath="selectedForLoad" DisplayMemberPath="tlkDisplayPath"/>
-                <xctk:CheckListBox Name="LE3TLKList" Grid.Column="10" Grid.Row="1" ItemsSource="{Binding LE3TLKItems}" SelectedMemberPath="selectedForLoad" DisplayMemberPath="tlkDisplayPath"/>
-
-                <!-- ME1 -->
-                <Grid Grid.Column="0" Grid.Row="2">
+                <Grid Margin="5">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="33*"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="33*"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="33*"/>
+                        <ColumnDefinition Width="5"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="90"/>
+                        <RowDefinition Height="18"/>
                     </Grid.RowDefinitions>
-                    <Button Content="Auto find TLKs" Margin="2" Command="{Binding ME1AutoFindTLK}" ToolTip="Automatically finds TLK files in game directory" />
-                    <Button Content="Apply Changes" Margin="2" Grid.Row="1" Command="{Binding ME1ApplyChanges}"  ToolTip="Apply changes and loads strings from the selected TLKs"/>
-                    <xctk:WatermarkComboBox Name="ME1TLKLangCombobox" Grid.Column="1" Margin="2" Watermark="Language" SelectedIndex="0" SelectionChanged="ME1TLKLangCombobox_SelectionChanged">
-                        <ComboBoxItem>Default - Female</ComboBoxItem>
-                        <ComboBoxItem>Default - Male</ComboBoxItem>
-                        <ComboBoxItem>ES - Female</ComboBoxItem>
-                        <ComboBoxItem>ES - Male</ComboBoxItem>
-                        <ComboBoxItem>FR - Female</ComboBoxItem>
-                        <ComboBoxItem>FR - Male</ComboBoxItem>
-                        <ComboBoxItem>IT - Female</ComboBoxItem>
-                        <ComboBoxItem>IT - Male</ComboBoxItem>
-                        <ComboBoxItem>PL - Female</ComboBoxItem>
-                        <ComboBoxItem>PL - Male</ComboBoxItem>
-                        <ComboBoxItem>PLPC - Female</ComboBoxItem>
-                        <ComboBoxItem>PLPC - Male</ComboBoxItem>
-                    </xctk:WatermarkComboBox>
-                    <Button Content="Add TLK" Margin="2" Grid.Row="1" Grid.Column="2"  Command="{Binding ME1AddManualTLK}"/>
-                    <Button Content="Export/Import/Edit" Margin="2" Grid.Row="2" Grid.Column="0"  Command="{Binding ME1ExportImportTLK}" ToolTip="Import or Export TLK to/from XML files, or edit directly with TLK Editor"/>
-                    <Button Content="Reload TLKs" Margin="2" Grid.Row="2" Grid.Column="1" Command="{Binding ME1ReloadTLKs}" ToolTip="Reload selected TLKs and loads strings into LegendaryExplorer."/>
-                </Grid>
 
-                <!-- ME2 -->
-                <Grid Grid.Column="2" Grid.Row="2">
+                    <TextBlock Text="Mass Effect 1 TLKs" Grid.Row="0" Grid.Column="0" TextAlignment="Center" FontWeight="Bold"/>
+                    <TextBlock Text="Mass Effect 2 TLKs" Grid.Row="0" Grid.Column="2" TextAlignment="Center" FontWeight="Bold"/>
+                    <TextBlock Text="Mass Effect 3 TLKs" Grid.Row="0" Grid.Column="4" TextAlignment="Center" FontWeight="Bold"/>
+
+                    <xctk:CheckListBox Name="ME1TLKList" Grid.Column="0" Grid.Row="1" ItemsSource="{Binding ME1TLKItems}" SelectedMemberPath="selectedForLoad" DisplayMemberPath="tlkDisplayPath"/>
+                    <xctk:CheckListBox Name="ME2TLKList" Grid.Column="2" Grid.Row="1" ItemsSource="{Binding ME2TLKItems}" SelectedMemberPath="selectedForLoad" DisplayMemberPath="tlkDisplayPath"/>
+                    <xctk:CheckListBox Name="ME3TLKList" Grid.Column="4" Grid.Row="1" ItemsSource="{Binding ME3TLKItems}" SelectedMemberPath="selectedForLoad" DisplayMemberPath="tlkDisplayPath"/>
+                    <!-- ME1 -->
+                    <Grid Grid.Column="0" Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <Button Content="Auto find TLKs" Margin="2" Command="{Binding ME1AutoFindTLK}" ToolTip="Automatically finds TLK files in game directory" />
+                        <Button Content="Apply Changes" Margin="2" Grid.Row="1" Command="{Binding ME1ApplyChanges}"  ToolTip="Apply changes and loads strings from the selected TLKs"/>
+                        <xctk:WatermarkComboBox Name="ME1TLKLangCombobox" Grid.Column="1" Margin="2" Watermark="Language" SelectedIndex="0" SelectionChanged="ME1TLKLangCombobox_SelectionChanged">
+                            <ComboBoxItem>Default - Female</ComboBoxItem>
+                            <ComboBoxItem>Default - Male</ComboBoxItem>
+                            <ComboBoxItem>ES - Female</ComboBoxItem>
+                            <ComboBoxItem>ES - Male</ComboBoxItem>
+                            <ComboBoxItem>FR - Female</ComboBoxItem>
+                            <ComboBoxItem>FR - Male</ComboBoxItem>
+                            <ComboBoxItem>IT - Female</ComboBoxItem>
+                            <ComboBoxItem>IT - Male</ComboBoxItem>
+                            <ComboBoxItem>PL - Female</ComboBoxItem>
+                            <ComboBoxItem>PL - Male</ComboBoxItem>
+                            <ComboBoxItem>PLPC - Female</ComboBoxItem>
+                            <ComboBoxItem>PLPC - Male</ComboBoxItem>
+                        </xctk:WatermarkComboBox>
+                        <Button Content="Add TLK" Margin="2" Grid.Row="1" Grid.Column="2"  Command="{Binding ME1AddManualTLK}"/>
+                        <Button Content="Export/Import/Edit" Margin="2" Grid.Row="2" Grid.Column="0"  Command="{Binding ME1ExportImportTLK}" ToolTip="Import or Export TLK to/from XML files, or edit directly with TLK Editor"/>
+                        <Button Content="Reload TLKs" Margin="2" Grid.Row="2" Grid.Column="1" Command="{Binding ME1ReloadTLKs}" ToolTip="Reload selected TLKs and loads strings into LegendaryExplorer."/>
+                    </Grid>
+
+                    <!-- ME2 -->
+                    <Grid Grid.Column="2" Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+
+                        </Grid.RowDefinitions>
+                        <Button Content="Auto find TLKs" Margin="2" Command="{Binding ME2AutoFindTLK}" ToolTip="Automatically finds TLK files in game directory"/>
+                        <Button Content="Apply Changes" Margin="2" Grid.Row="1" Command="{Binding ME2ApplyChanges}" ToolTip="Apply changes and loads strings from the selected TLKs"/>
+                        <xctk:WatermarkComboBox Name="ME2TLKLangCombobox" Grid.Column="1" Margin="2" Watermark="Language" SelectedIndex="0" SelectionChanged="ME2TLKLangCombobox_SelectionChanged">
+                            <ComboBoxItem>INT</ComboBoxItem>
+                            <ComboBoxItem>ESN</ComboBoxItem>
+                            <ComboBoxItem>DEU</ComboBoxItem>
+                            <ComboBoxItem>FRA</ComboBoxItem>
+                            <ComboBoxItem>ITA</ComboBoxItem>
+                            <ComboBoxItem>POL</ComboBoxItem>
+                            <ComboBoxItem>RUS</ComboBoxItem>
+                            <ComboBoxItem>JPN</ComboBoxItem>
+                        </xctk:WatermarkComboBox>
+                        <Button Content="Add TLK" Margin="2" Grid.Row="1" Grid.Column="2"  Command="{Binding ME2AddManualTLK}"/>
+                        <Button Content="Export/Import" Margin="2" Grid.Row="2" Grid.Column="0"  Command="{Binding ME2ExportImportTLK}" ToolTip="Import or Export TLK to/from XML files"/>
+                        <Button Content="Reload TLKs" Margin="2" Grid.Row="2" Grid.Column="1" Command="{Binding ME2ReloadTLKs}" ToolTip="Reload selected TLKs and loads strings into LegendaryExplorer."/>
+                    </Grid>
+
+                    <!-- ME3-->
+                    <Grid Grid.Column="4" Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <Button Content="Auto find TLKs" Margin="2" Command="{Binding ME3AutoFindTLK}"  ToolTip="Automatically finds TLK files in game directory"/>
+                        <Button Content="Apply Changes" Margin="2" Grid.Row="1" Command="{Binding ME3ApplyChanges}" ToolTip="Apply changes and loads strings from the selected TLKs"/>
+                        <xctk:WatermarkComboBox Name="ME3TLKLangCombobox" Grid.Column="1" Margin="2" Watermark="Language" SelectedIndex="0" SelectionChanged="ME3TLKLangCombobox_SelectionChanged">
+                            <ComboBoxItem>INT</ComboBoxItem>
+                            <ComboBoxItem>ESN</ComboBoxItem>
+                            <ComboBoxItem>DEU</ComboBoxItem>
+                            <ComboBoxItem>FRA</ComboBoxItem>
+                            <ComboBoxItem>ITA</ComboBoxItem>
+                            <ComboBoxItem>POL</ComboBoxItem>
+                            <ComboBoxItem>RUS</ComboBoxItem>
+                            <ComboBoxItem>JPN</ComboBoxItem>
+                        </xctk:WatermarkComboBox>
+                        <Button Content="Add TLK" Margin="2" Grid.Row="1" Grid.Column="2"  Command="{Binding ME3AddManualTLK}"/>
+                        <Button Content="Export/Import" Margin="2" Grid.Row="2" Grid.Column="0"  Command="{Binding ME3ExportImportTLK}" ToolTip="Import or Export TLK to/from XML files"/>
+                        <Button Content="Reload TLKs" Margin="2" Grid.Row="2" Grid.Column="1" Command="{Binding ME3ReloadTLKs}" ToolTip="Reload selected TLKs and loads strings into LegendaryExplorer."/>
+                    </Grid>
+
+                    <TextBlock Text="{Binding Path=(local:TLKManagerWPF.ME1LastReloaded), StringFormat='Reloaded: {0}'}" Grid.Row="3" Grid.Column="0" TextAlignment="Center"/>
+                    <TextBlock Text="{Binding Path=(local:TLKManagerWPF.ME2LastReloaded), StringFormat='Reloaded: {0}'}" Grid.Row="3" Grid.Column="2" TextAlignment="Center"/>
+                    <TextBlock Text="{Binding Path=(local:TLKManagerWPF.ME3LastReloaded), StringFormat='Reloaded: {0}'}" Grid.Row="3" Grid.Column="4" TextAlignment="Center"/>
+
+                    <GridSplitter Grid.Row="0" Grid.RowSpan="4" Grid.Column="1"/>
+                    <GridSplitter Grid.Row="0" Grid.RowSpan="4" Grid.Column="3"/>
+
+                </Grid>
+            </TabItem>
+            <TabItem x:Name="LETab">
+                <TabItem.Header>
+                    Legendary Edition
+                </TabItem.Header>
+                <Grid Margin="5">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="33*"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="33*"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="33*"/>
+                        <ColumnDefinition Width="5"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="90"/>
+                        <RowDefinition Height="18"/>
                     </Grid.RowDefinitions>
-                    <Button Content="Auto find TLKs" Margin="2" Command="{Binding ME2AutoFindTLK}" ToolTip="Automatically finds TLK files in game directory"/>
-                    <Button Content="Apply Changes" Margin="2" Grid.Row="1" Command="{Binding ME2ApplyChanges}" ToolTip="Apply changes and loads strings from the selected TLKs"/>
-                    <xctk:WatermarkComboBox Name="ME2TLKLangCombobox" Grid.Column="1" Margin="2" Watermark="Language" SelectedIndex="0" SelectionChanged="ME2TLKLangCombobox_SelectionChanged">
-                        <ComboBoxItem>INT</ComboBoxItem>
-                        <ComboBoxItem>ESN</ComboBoxItem>
-                        <ComboBoxItem>DEU</ComboBoxItem>
-                        <ComboBoxItem>FRA</ComboBoxItem>
-                        <ComboBoxItem>ITA</ComboBoxItem>
-                        <ComboBoxItem>POL</ComboBoxItem>
-                        <ComboBoxItem>RUS</ComboBoxItem>
-                        <ComboBoxItem>JPN</ComboBoxItem>
-                    </xctk:WatermarkComboBox>
-                    <Button Content="Add TLK" Margin="2" Grid.Row="1" Grid.Column="2"  Command="{Binding ME2AddManualTLK}"/>
-                    <Button Content="Export/Import" Margin="2" Grid.Row="2" Grid.Column="0"  Command="{Binding ME2ExportImportTLK}" ToolTip="Import or Export TLK to/from XML files"/>
-                    <Button Content="Reload TLKs" Margin="2" Grid.Row="2" Grid.Column="1" Command="{Binding ME2ReloadTLKs}" ToolTip="Reload selected TLKs and loads strings into LegendaryExplorer."/>
+
+                    <TextBlock Text="Mass Effect 1 LE TLKs" Grid.Row="0" Grid.Column="0" TextAlignment="Center" FontWeight="Bold"/>
+                    <TextBlock Text="Mass Effect 2 LE TLKs" Grid.Row="0" Grid.Column="2" TextAlignment="Center" FontWeight="Bold"/>
+                    <TextBlock Text="Mass Effect 3 LE TLKs" Grid.Row="0" Grid.Column="4" TextAlignment="Center" FontWeight="Bold"/>
+
+                    <xctk:CheckListBox Name="LE1TLKList" Grid.Column="0" Grid.Row="1" ItemsSource="{Binding LE1TLKItems}" SelectedMemberPath="selectedForLoad" DisplayMemberPath="tlkDisplayPath"/>
+                    <xctk:CheckListBox Name="LE2TLKList" Grid.Column="2" Grid.Row="1" ItemsSource="{Binding LE2TLKItems}" SelectedMemberPath="selectedForLoad" DisplayMemberPath="tlkDisplayPath"/>
+                    <xctk:CheckListBox Name="LE3TLKList" Grid.Column="4" Grid.Row="1" ItemsSource="{Binding LE3TLKItems}" SelectedMemberPath="selectedForLoad" DisplayMemberPath="tlkDisplayPath"/>
+                    
+                    <!-- LE1 -->
+                    <Grid Grid.Column="0" Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <Button Content="Auto find TLKs" Margin="2" Command="{Binding LE1AutoFindTLK}" ToolTip="Automatically finds TLK files in game directory" />
+                        <Button Content="Apply Changes" Margin="2" Grid.Row="1" Command="{Binding LE1ApplyChanges}"  ToolTip="Apply changes and loads strings from the selected TLKs"/>
+                        <xctk:WatermarkComboBox Name="LE1TLKLangCombobox" Grid.Column="1" Margin="2" Watermark="Language" SelectedIndex="0" SelectionChanged="LE1TLKLangCombobox_SelectionChanged">
+                            <ComboBoxItem>Default - Female</ComboBoxItem>
+                            <ComboBoxItem>Default - Male</ComboBoxItem>
+                            <ComboBoxItem>ES - Female</ComboBoxItem>
+                            <ComboBoxItem>ES - Male</ComboBoxItem>
+                            <ComboBoxItem>FR - Female</ComboBoxItem>
+                            <ComboBoxItem>FR - Male</ComboBoxItem>
+                            <ComboBoxItem>DE - Female</ComboBoxItem>
+                            <ComboBoxItem>DE - Male</ComboBoxItem>
+                            <ComboBoxItem>IT - Female</ComboBoxItem>
+                            <ComboBoxItem>IT - Male</ComboBoxItem>
+                            <ComboBoxItem>PLPC - Female</ComboBoxItem>
+                            <ComboBoxItem>PLPC - Male</ComboBoxItem>
+                            <ComboBoxItem>JA - Female</ComboBoxItem>
+                            <ComboBoxItem>JA - Male</ComboBoxItem>
+                            <ComboBoxItem>RA - Female</ComboBoxItem>
+                            <ComboBoxItem>RA - Male</ComboBoxItem>
+                        </xctk:WatermarkComboBox>
+                        <Button Content="Add TLK" Margin="2" Grid.Row="1" Grid.Column="2"  Command="{Binding LE1AddManualTLK}"/>
+                        <Button Content="Export/Import/Edit" Margin="2" Grid.Row="2" Grid.Column="0"  Command="{Binding LE1ExportImportTLK}" ToolTip="Import or Export TLK to/from XML files, or edit directly with TLK Editor"/>
+                        <Button Content="Reload TLKs" Margin="2" Grid.Row="2" Grid.Column="1" Command="{Binding LE1ReloadTLKs}" ToolTip="Reload selected TLKs and loads strings into LegendaryExplorer."/>
+                    </Grid>
+
+                    <!-- LE2 -->
+                    <Grid Grid.Column="2" Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+
+                        </Grid.RowDefinitions>
+                        <Button Content="Auto find TLKs" Margin="2" Command="{Binding LE2AutoFindTLK}" ToolTip="Automatically finds TLK files in game directory"/>
+                        <Button Content="Apply Changes" Margin="2" Grid.Row="1" Command="{Binding LE2ApplyChanges}" ToolTip="Apply changes and loads strings from the selected TLKs"/>
+                        <xctk:WatermarkComboBox Name="LE2TLKLangCombobox" Grid.Column="1" Margin="2" Watermark="Language" SelectedIndex="0" SelectionChanged="LE2TLKLangCombobox_SelectionChanged">
+                            <ComboBoxItem>INT</ComboBoxItem>
+                            <ComboBoxItem>ESN</ComboBoxItem>
+                            <ComboBoxItem>DEU</ComboBoxItem>
+                            <ComboBoxItem>FRA</ComboBoxItem>
+                            <ComboBoxItem>ITA</ComboBoxItem>
+                            <ComboBoxItem>POL</ComboBoxItem>
+                            <ComboBoxItem>RUS</ComboBoxItem>
+                            <ComboBoxItem>JPN</ComboBoxItem>
+                        </xctk:WatermarkComboBox>
+                        <Button Content="Add TLK" Margin="2" Grid.Row="1" Grid.Column="2"  Command="{Binding LE2AddManualTLK}"/>
+                        <Button Content="Export/Import" Margin="2" Grid.Row="2" Grid.Column="0"  Command="{Binding LE2ExportImportTLK}" ToolTip="Import or Export TLK to/from XML files"/>
+                        <Button Content="Reload TLKs" Margin="2" Grid.Row="2" Grid.Column="1" Command="{Binding LE2ReloadTLKs}" ToolTip="Reload selected TLKs and loads strings into LegendaryExplorer."/>
+                    </Grid>
+
+                    <!-- LE3-->
+                    <Grid Grid.Column="4" Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <Button Content="Auto find TLKs" Margin="2" Command="{Binding LE3AutoFindTLK}"  ToolTip="Automatically finds TLK files in game directory"/>
+                        <Button Content="Apply Changes" Margin="2" Grid.Row="1" Command="{Binding LE3ApplyChanges}" ToolTip="Apply changes and loads strings from the selected TLKs"/>
+                        <xctk:WatermarkComboBox Name="LE3TLKLangCombobox" Grid.Column="1" Margin="2" Watermark="Language" SelectedIndex="0" SelectionChanged="LE3TLKLangCombobox_SelectionChanged">
+                            <ComboBoxItem>INT</ComboBoxItem>
+                            <ComboBoxItem>ESN</ComboBoxItem>
+                            <ComboBoxItem>DEU</ComboBoxItem>
+                            <ComboBoxItem>FRA</ComboBoxItem>
+                            <ComboBoxItem>ITA</ComboBoxItem>
+                            <ComboBoxItem>POL</ComboBoxItem>
+                            <ComboBoxItem>RUS</ComboBoxItem>
+                            <ComboBoxItem>JPN</ComboBoxItem>
+                        </xctk:WatermarkComboBox>
+                        <Button Content="Add TLK" Margin="2" Grid.Row="1" Grid.Column="2"  Command="{Binding LE3AddManualTLK}"/>
+                        <Button Content="Export/Import" Margin="2" Grid.Row="2" Grid.Column="0"  Command="{Binding LE3ExportImportTLK}" ToolTip="Import or Export TLK to/from XML files"/>
+                        <Button Content="Reload TLKs" Margin="2" Grid.Row="2" Grid.Column="1" Command="{Binding LE3ReloadTLKs}" ToolTip="Reload selected TLKs and loads strings into LegendaryExplorer."/>
+                    </Grid>
+
+                    <TextBlock Text="{Binding Path=(local:TLKManagerWPF.LE1LastReloaded), StringFormat='Reloaded: {0}'}" Grid.Row="3" Grid.Column="0" TextAlignment="Center"/>
+                    <TextBlock Text="{Binding Path=(local:TLKManagerWPF.LE2LastReloaded), StringFormat='Reloaded: {0}'}" Grid.Row="3" Grid.Column="2" TextAlignment="Center"/>
+                    <TextBlock Text="{Binding Path=(local:TLKManagerWPF.LE3LastReloaded), StringFormat='Reloaded: {0}'}" Grid.Row="3" Grid.Column="4" TextAlignment="Center"/>
+
+                    <GridSplitter Grid.Row="0" Grid.RowSpan="4" Grid.Column="1"/>
+                    <GridSplitter Grid.Row="0" Grid.RowSpan="4" Grid.Column="3"/>
                 </Grid>
-
-                <!-- ME3-->
-                <Grid Grid.Column="4" Grid.Row="2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                    </Grid.RowDefinitions>
-                    <Button Content="Auto find TLKs" Margin="2" Command="{Binding ME3AutoFindTLK}"  ToolTip="Automatically finds TLK files in game directory"/>
-                    <Button Content="Apply Changes" Margin="2" Grid.Row="1" Command="{Binding ME3ApplyChanges}" ToolTip="Apply changes and loads strings from the selected TLKs"/>
-                    <xctk:WatermarkComboBox Name="ME3TLKLangCombobox" Grid.Column="1" Margin="2" Watermark="Language" SelectedIndex="0" SelectionChanged="ME3TLKLangCombobox_SelectionChanged">
-                        <ComboBoxItem>INT</ComboBoxItem>
-                        <ComboBoxItem>ESN</ComboBoxItem>
-                        <ComboBoxItem>DEU</ComboBoxItem>
-                        <ComboBoxItem>FRA</ComboBoxItem>
-                        <ComboBoxItem>ITA</ComboBoxItem>
-                        <ComboBoxItem>POL</ComboBoxItem>
-                        <ComboBoxItem>RUS</ComboBoxItem>
-                        <ComboBoxItem>JPN</ComboBoxItem>
-                    </xctk:WatermarkComboBox>
-                    <Button Content="Add TLK" Margin="2" Grid.Row="1" Grid.Column="2"  Command="{Binding ME3AddManualTLK}"/>
-                    <Button Content="Export/Import" Margin="2" Grid.Row="2" Grid.Column="0"  Command="{Binding ME3ExportImportTLK}" ToolTip="Import or Export TLK to/from XML files"/>
-                    <Button Content="Reload TLKs" Margin="2" Grid.Row="2" Grid.Column="1" Command="{Binding ME3ReloadTLKs}" ToolTip="Reload selected TLKs and loads strings into LegendaryExplorer."/>
-                </Grid>
-
-                <!-- LE1 -->
-                <Grid Grid.Column="6" Grid.Row="2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                    </Grid.RowDefinitions>
-                    <Button Content="Auto find TLKs" Margin="2" Command="{Binding LE1AutoFindTLK}" ToolTip="Automatically finds TLK files in game directory" />
-                    <Button Content="Apply Changes" Margin="2" Grid.Row="1" Command="{Binding LE1ApplyChanges}"  ToolTip="Apply changes and loads strings from the selected TLKs"/>
-                    <xctk:WatermarkComboBox Name="LE1TLKLangCombobox" Grid.Column="1" Margin="2" Watermark="Language" SelectedIndex="0" SelectionChanged="LE1TLKLangCombobox_SelectionChanged">
-                        <ComboBoxItem>Default - Female</ComboBoxItem>
-                        <ComboBoxItem>Default - Male</ComboBoxItem>
-                        <ComboBoxItem>ES - Female</ComboBoxItem>
-                        <ComboBoxItem>ES - Male</ComboBoxItem>
-                        <ComboBoxItem>FR - Female</ComboBoxItem>
-                        <ComboBoxItem>FR - Male</ComboBoxItem>
-                        <ComboBoxItem>IT - Female</ComboBoxItem>
-                        <ComboBoxItem>IT - Male</ComboBoxItem>
-                        <ComboBoxItem>PL - Female</ComboBoxItem>
-                        <ComboBoxItem>PL - Male</ComboBoxItem>
-                        <ComboBoxItem>PLPC - Female</ComboBoxItem>
-                        <ComboBoxItem>PLPC - Male</ComboBoxItem>
-                    </xctk:WatermarkComboBox>
-                    <Button Content="Add TLK" Margin="2" Grid.Row="1" Grid.Column="2"  Command="{Binding LE1AddManualTLK}"/>
-                    <Button Content="Export/Import/Edit" Margin="2" Grid.Row="2" Grid.Column="0"  Command="{Binding LE1ExportImportTLK}" ToolTip="Import or Export TLK to/from XML files, or edit directly with TLK Editor"/>
-                    <Button Content="Reload TLKs" Margin="2" Grid.Row="2" Grid.Column="1" Command="{Binding LE1ReloadTLKs}" ToolTip="Reload selected TLKs and loads strings into LegendaryExplorer."/>
-                </Grid>
-
-                <!-- LE2 -->
-                <Grid Grid.Column="8" Grid.Row="2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-
-                    </Grid.RowDefinitions>
-                    <Button Content="Auto find TLKs" Margin="2" Command="{Binding LE2AutoFindTLK}" ToolTip="Automatically finds TLK files in game directory"/>
-                    <Button Content="Apply Changes" Margin="2" Grid.Row="1" Command="{Binding LE2ApplyChanges}" ToolTip="Apply changes and loads strings from the selected TLKs"/>
-                    <xctk:WatermarkComboBox Name="LE2TLKLangCombobox" Grid.Column="1" Margin="2" Watermark="Language" SelectedIndex="0" SelectionChanged="LE2TLKLangCombobox_SelectionChanged">
-                        <ComboBoxItem>INT</ComboBoxItem>
-                        <ComboBoxItem>ESN</ComboBoxItem>
-                        <ComboBoxItem>DEU</ComboBoxItem>
-                        <ComboBoxItem>FRA</ComboBoxItem>
-                        <ComboBoxItem>ITA</ComboBoxItem>
-                        <ComboBoxItem>POL</ComboBoxItem>
-                        <ComboBoxItem>RUS</ComboBoxItem>
-                        <ComboBoxItem>JPN</ComboBoxItem>
-                    </xctk:WatermarkComboBox>
-                    <Button Content="Add TLK" Margin="2" Grid.Row="1" Grid.Column="2"  Command="{Binding LE2AddManualTLK}"/>
-                    <Button Content="Export/Import" Margin="2" Grid.Row="2" Grid.Column="0"  Command="{Binding LE2ExportImportTLK}" ToolTip="Import or Export TLK to/from XML files"/>
-                    <Button Content="Reload TLKs" Margin="2" Grid.Row="2" Grid.Column="1" Command="{Binding LE2ReloadTLKs}" ToolTip="Reload selected TLKs and loads strings into LegendaryExplorer."/>
-                </Grid>
-
-                <!-- LE3-->
-                <Grid Grid.Column="10" Grid.Row="2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                    </Grid.RowDefinitions>
-                    <Button Content="Auto find TLKs" Margin="2" Command="{Binding LE3AutoFindTLK}"  ToolTip="Automatically finds TLK files in game directory"/>
-                    <Button Content="Apply Changes" Margin="2" Grid.Row="1" Command="{Binding LE3ApplyChanges}" ToolTip="Apply changes and loads strings from the selected TLKs"/>
-                    <xctk:WatermarkComboBox Name="LE3TLKLangCombobox" Grid.Column="1" Margin="2" Watermark="Language" SelectedIndex="0" SelectionChanged="LE3TLKLangCombobox_SelectionChanged">
-                        <ComboBoxItem>INT</ComboBoxItem>
-                        <ComboBoxItem>ESN</ComboBoxItem>
-                        <ComboBoxItem>DEU</ComboBoxItem>
-                        <ComboBoxItem>FRA</ComboBoxItem>
-                        <ComboBoxItem>ITA</ComboBoxItem>
-                        <ComboBoxItem>POL</ComboBoxItem>
-                        <ComboBoxItem>RUS</ComboBoxItem>
-                        <ComboBoxItem>JPN</ComboBoxItem>
-                    </xctk:WatermarkComboBox>
-                    <Button Content="Add TLK" Margin="2" Grid.Row="1" Grid.Column="2"  Command="{Binding LE3AddManualTLK}"/>
-                    <Button Content="Export/Import" Margin="2" Grid.Row="2" Grid.Column="0"  Command="{Binding LE3ExportImportTLK}" ToolTip="Import or Export TLK to/from XML files"/>
-                    <Button Content="Reload TLKs" Margin="2" Grid.Row="2" Grid.Column="1" Command="{Binding LE3ReloadTLKs}" ToolTip="Reload selected TLKs and loads strings into LegendaryExplorer."/>
-                </Grid>
-
-                <TextBlock Text="{Binding Path=(local:TLKManagerWPF.ME1LastReloaded), StringFormat='Reloaded: {0}'}" Grid.Row="3" Grid.Column="0" TextAlignment="Center"/>
-                <TextBlock Text="{Binding Path=(local:TLKManagerWPF.ME2LastReloaded), StringFormat='Reloaded: {0}'}" Grid.Row="3" Grid.Column="2" TextAlignment="Center"/>
-                <TextBlock Text="{Binding Path=(local:TLKManagerWPF.ME3LastReloaded), StringFormat='Reloaded: {0}'}" Grid.Row="3" Grid.Column="4" TextAlignment="Center"/>
-                <TextBlock Text="{Binding Path=(local:TLKManagerWPF.LE1LastReloaded), StringFormat='Reloaded: {0}'}" Grid.Row="3" Grid.Column="6" TextAlignment="Center"/>
-                <TextBlock Text="{Binding Path=(local:TLKManagerWPF.LE2LastReloaded), StringFormat='Reloaded: {0}'}" Grid.Row="3" Grid.Column="8" TextAlignment="Center"/>
-                <TextBlock Text="{Binding Path=(local:TLKManagerWPF.LE3LastReloaded), StringFormat='Reloaded: {0}'}" Grid.Row="3" Grid.Column="10" TextAlignment="Center"/>
-
-                <GridSplitter Grid.Row="0" Grid.RowSpan="4" Grid.Column="1"/>
-                <GridSplitter Grid.Row="0" Grid.RowSpan="4" Grid.Column="3"/>
-            </Grid>
-        </DockPanel>
+            </TabItem>
+        </TabControl>
     </xctk:BusyIndicator>
 </bases:TrackingNotifyPropertyChangedWindowBase>

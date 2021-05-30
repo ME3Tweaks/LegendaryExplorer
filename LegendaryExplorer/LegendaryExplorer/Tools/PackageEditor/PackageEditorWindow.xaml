@@ -73,7 +73,7 @@
             <MenuItem Header="Trash entry and children" ToolTip="Converts this entry and its children into empty data" Command="{Binding TrashCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Set all object indexes in this tree to 0 " Command="{Binding SetIndicesInTreeToZeroCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Export..." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
-                <MenuItem Header="Embedded file" Command="{Binding ExportEmbeddedFileCommand}" ToolTip="{Binding Converter={StaticResource EmbeddedFileToolTipConverter}, ConverterParameter='Export'}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+                <MenuItem Header="Embedded file(s)" Command="{Binding ExportEmbeddedFileCommand}" ToolTip="{Binding Converter={StaticResource EmbeddedFileToolTipConverter}, ConverterParameter='Export'}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                 <MenuItem Header="Complete export data"  Command="{Binding ExportAllDataCommand}" ToolTip="Export all export data (properties + binary) to a .bin file"/>
                 <MenuItem Header="Binary data only"   Command="{Binding ExportBinaryDataCommand}" ToolTip="Export only binary data (bytes after properties) to a .bin file"/>
             </MenuItem>
@@ -384,7 +384,7 @@
                         <StackPanel>
                             <TextBlock Margin="5" Text="Welcome to Package Editor" FontWeight="Bold"/>
                             <TextBlock Margin="5">
-                            Package Editor is the primary modding tool for editing game package files and contains
+                            Package Editor is the primary modding tool for editing game package files (.pcc) and contains
                             <LineBreak/>
                             many embedded tools that appear as tabs on the right pane.
                             <LineBreak/>
@@ -412,8 +412,8 @@
                             <LineBreak/>
                             If you have issues, please report them to one of the following places:
                             <LineBreak/>
-                            - <Hyperlink NavigateUri="{Binding Path=(misc:AppLinks.DiscordInviteURL)}" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
-                                <Run Text="The ME3Tweaks Discord (ME3Explorer channel)"/>
+                            - <Hyperlink NavigateUri="{Binding Path=(misc:AppLinks.ME3TweaksDiscordInviteURL)}" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
+                                <Run Text="The ME3Tweaks Discord (Legendary_Explorer channel)"/>
                             </Hyperlink>
                             <LineBreak/>
                             - The issues list on GitHub at 

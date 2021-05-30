@@ -812,6 +812,10 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsS.ReSerializeAllProperties(GetPEWindow());
         }
+        private void CompileCompressionStats_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsS.CompileCompressionStats(GetPEWindow());
+        }
         private void ReSerializeAllObjectBinary_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsS.ReSerializeAllObjectBinary(GetPEWindow());

@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
-    <TargetFrameworks>net48;net5.0-windows</TargetFrameworks>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <TargetFrameworks>net5.0-windows</TargetFrameworks>
     <OutputType>WinExe</OutputType>
     <RootNamespace>HexConverter</RootNamespace>
     <AssemblyName>HexConverter</AssemblyName>
@@ -11,12 +10,13 @@
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <Platforms>x64</Platforms>
     <Configurations>WinDebug;WinRelease;WinAzureRelease;WinAzureTest</Configurations>
+    <PreserveCompilationContext>false</PreserveCompilationContext>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>hexconverter_icon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <RunPostBuildEvent>Always</RunPostBuildEvent>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'WinDebug'">
     <DebugSymbols>true</DebugSymbols>

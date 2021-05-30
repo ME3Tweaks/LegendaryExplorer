@@ -11,14 +11,37 @@ namespace LegendaryExplorerCore.Gammtek.Extensions
             if (game == MEGame.ME1) return 1;
             if (game == MEGame.ME2) return 2;
             if (game == MEGame.ME3) return 3;
+            if (game == MEGame.LE1) return 4;
+            if (game == MEGame.LE2) return 5;
+            if (game == MEGame.LE3) return 6;
             return 0;
         }
 
-        public static string ToGameName(this MEGame game)
+        public static string ToGameName(this MEGame game, bool useLEShortName = false)
         {
             if (game == MEGame.ME1) return "Mass Effect";
             if (game == MEGame.ME2) return "Mass Effect 2";
             if (game == MEGame.ME3) return "Mass Effect 3";
+            if (game == MEGame.LE1)
+            {
+                if (useLEShortName) return "Mass Effect LE";
+                return "Mass Effect (Legendary Edition)";
+            }
+            if (game == MEGame.LE2)
+            {
+                if (useLEShortName) return "Mass Effect 2 LE";
+                return "Mass Effect 2 (Legendary Edition)";
+            }
+            if (game == MEGame.LE3)
+            {
+                if (useLEShortName) return "Mass Effect 3 LE";
+                return "Mass Effect 3 (Legendary Edition)";
+            }
+            if (game == MEGame.LELauncher)
+            {
+                if (useLEShortName) return "LE Launcher";
+                return "Mass Effect Legendary Edition Launcher";
+            }
             return "UNKNOWN GAME";
         }
 

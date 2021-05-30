@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Shapes;
 
-namespace LegendaryExplorer
+namespace LegendaryExplorer.MainWindow
 {
     public abstract class ToolListControl : UserControl
     {

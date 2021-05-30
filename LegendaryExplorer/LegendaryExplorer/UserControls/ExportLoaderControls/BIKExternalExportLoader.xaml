@@ -77,7 +77,7 @@
 
                 </Grid>
                 <TextBlock Name="Warning_text" Foreground="Red" Text="Error: Bik is not found or corrupted." Visibility="Collapsed" FontWeight="Bold" TextAlignment="Center" TextWrapping="Wrap" DockPanel.Dock="Top"/>
-                <TextBlock Name="Unsupported_Text" Foreground="Red" Text="Playing BIKs is not supported in LE" Visibility="Collapsed" FontWeight="Bold" TextAlignment="Center" TextWrapping="Wrap" DockPanel.Dock="Top"/>
+                <TextBlock Name="Unsupported_Text" Foreground="Red" Text="Playing BIKs in window is not supported in LE" Visibility="Collapsed" FontWeight="Bold" TextAlignment="Center" TextWrapping="Wrap" DockPanel.Dock="Top"/>
                 <uc:VideoView x:Name="vlcVideoView" MinWidth="256" MinHeight="128" Background="Black" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" DockPanel.Dock="Top" />
             </DockPanel>
         </DockPanel>

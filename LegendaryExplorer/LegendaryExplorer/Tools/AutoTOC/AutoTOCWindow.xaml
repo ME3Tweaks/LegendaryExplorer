@@ -23,7 +23,7 @@
             </StackPanel>
         </DockPanel>
         <!--
-        <TextBlock DockPanel.Dock="Bottom"  Padding="5" Background="LightGray" TextWrapping="Wrap" Text="TOC files can be automatically generated with the use of the AutoTOC asi, which is automatically installed by ALOT Installer, ME3Tweaks Mod Manager on mod install, or through the ASI Manager in ME3Explorer/ASI Mod Manager in ME3Tweaks Mod Manager."/>
+        <TextBlock DockPanel.Dock="Bottom"  Padding="5" Background="LightGray" TextWrapping="Wrap" Text="TOC files can be automatically generated with the use of the AutoTOC asi, which is automatically installed by ALOT Installer, ME3Tweaks Mod Manager on mod install, or through the ASI Manager in LegendaryExplorer/ASI Mod Manager in ME3Tweaks Mod Manager."/>
         -->
         <ListBox Name="TOCTasks_ListBox" ItemsSource="{Binding TOCTasks}"  Margin="3" Loaded="ListBox_OnLoaded">
             <ListBox.ItemTemplate>

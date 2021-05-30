@@ -24,6 +24,8 @@
  * https://github.com/gildor2/UEViewer
  */
 
+using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using LegendaryExplorerCore.Packages;
 
@@ -32,7 +34,7 @@ namespace LegendaryExplorerCore.Compression
     public static class LZX
     {
         [DllImport(CompressionHelper.COMPRESSION_WRAPPER_NAME, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
-        private static extern int LZXDecompress([In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
+        private static extern int LZXDecompress(in byte srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
 
         /// <summary>
         /// Decompresses LZX data. The return value will be 0 if the data decompressed OK
@@ -40,12 +42,19 @@ namespace LegendaryExplorerCore.Compression
         /// <param name="src"></param>
         /// <param name="srcLen"></param>
         /// <param name="dst"></param>
+        /// <param name="dstLen"></param>
         /// <returns></returns>
-        public static int Decompress(byte[] src, uint srcLen, byte[] dst, uint dstLen = 0)
+        public static int Decompress(ReadOnlySpan<byte> src, uint srcLen, byte[] dst, uint dstLen = 0)
         {
             if (dstLen == 0)
                 dstLen = (uint)dst.Length;
-            return LZXDecompress(src, srcLen, dst, ref dstLen);
+            unsafe
+            {
+                fixed (byte* ptr = &MemoryMarshal.GetReference(src))
+                {
+                    return LZXDecompress(Unsafe.AsRef<byte>(ptr), srcLen, dst, ref dstLen);
+                }
+            }
         }
     }
 }

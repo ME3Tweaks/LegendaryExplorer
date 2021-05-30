@@ -258,8 +258,7 @@ namespace LegendaryExplorer.Tools.AutoTOC
         private void GenerateSingleTOC_BackgroundThread(object sender, DoWorkEventArgs e)
         {
             TOCTasks.ClearEx();
-            // TODO: PASS GAME THROUGH HERE... as single DLC I don't think this matters, it's only useful on full game TOC
-            CreateTOC(MEGame.ME3, e.Argument as string, TOCTasks);
+            CreateTOC(SelectedGame, e.Argument as string, TOCTasks);
             TOCTasks.Add(new ListBoxTask
             {
                 Header = "TOC created",

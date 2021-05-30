@@ -35,7 +35,7 @@
                  AllowDrop="True" PreviewMouseLeftButtonDown="linesListBox_PreviewMouseLeftButtonDown" MouseMove="linesListBox_MouseMove"
                  DragEnter="linesListBox_DragEnter" Drop="linesListBox_Drop" HorizontalContentAlignment="Stretch" PreviewMouseRightButtonDown="linesListBox_PreviewMouseRightButtonDown">
                 <ListBox.ItemTemplate>
-                    <DataTemplate DataType="SelectedLineEntry">
+                    <DataTemplate DataType="{x:Type exportLoaderControls:FaceFXLineEntry}">
                         <StackPanel>
                             <TextBlock Text="{Binding Line.NameAsString}" VerticalAlignment="Center"/>
                             <TextBlock Text="{Binding TLKString}" TextWrapping="Wrap" FontSize="10" FontStyle="Italic"  Visibility="{Binding TLKString, Converter={StaticResource NullVisibilityConverter}}"/>
@@ -93,7 +93,7 @@
                                 <MenuItem Header="Clone" Click="CloneAnimation_Click"/>
                                 <MenuItem Header="Export Curve to Excel" Click="ExportToExcel_Click">
                                     <MenuItem.Icon>
-                                        <Image Source="/ME3Explorer;component/Resources/excel.png" Width="16" Height="16" Margin="0,0,2,0"/>
+                                        <Image Source="/Resources/Images/excel.png" Width="16" Height="16" Margin="0,0,2,0"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
                             </ContextMenu>

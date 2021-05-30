@@ -76,11 +76,11 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         /// <param name="file"></param>
         /// <param name="stream"></param>
-        public ExportEntry(IMEPackage file, EndianReader stream)
+        public ExportEntry(IMEPackage file, EndianReader stream, bool readData = true)
         {
             FileRef = file;
             OriginalDataSize = 0;
-            HeaderOffset = (uint)stream.Position;
+            HeaderOffset = (int)stream.Position;
             switch (file.Game)
             {
                 case MEGame.ME1 when file.Platform == MEPackage.GamePlatform.Xenon:
@@ -142,11 +142,14 @@ namespace LegendaryExplorerCore.Packages
                     throw new ArgumentOutOfRangeException();
             }
             OriginalDataSize = DataSize;
-            long headerEnd = stream.Position;
+            if (readData)
+            {
+                long headerEnd = stream.Position;
 
-            stream.Seek(DataOffset, SeekOrigin.Begin);
-            _data = stream.ReadBytes(DataSize);
-            stream.Seek(headerEnd, SeekOrigin.Begin);
+                stream.Seek(DataOffset, SeekOrigin.Begin);
+                _data = stream.ReadBytes(DataSize);
+                stream.Seek(headerEnd, SeekOrigin.Begin);
+            }
         }
 
         public bool HasStack => ObjectFlags.HasFlag(EObjectFlags.HasStack);
@@ -280,14 +283,14 @@ namespace LegendaryExplorerCore.Packages
             Header = GenerateHeader(componentMap, generationNetObjectCount, hasComponentMap);
         }
 
-        public uint HeaderOffset { get; set; }
+        public int HeaderOffset { get; set; }
 
         public int idxClass
         {
             get => EndianReader.ToInt32(_header, 0, FileRef.Endian);
             private set
             {
-                Buffer.BlockCopy(EndianBitConverter.GetBytes(value, FileRef.Endian), 0, _header, 0, sizeof(int));
+                EndianBitConverter.WriteAsBytes(value, _header.AsSpan(0), FileRef.Endian);
                 HeaderChanged = true;
             }
         }
@@ -302,7 +305,7 @@ namespace LegendaryExplorerCore.Packages
                 {
                     throw new Exception("Cannot set export superclass to itself, this will cause infinite recursion");
                 }
-                Buffer.BlockCopy(EndianBitConverter.GetBytes(value, FileRef.Endian), 0, _header, 4, sizeof(int));
+                EndianBitConverter.WriteAsBytes(value, _header.AsSpan(4), FileRef.Endian);
                 HeaderChanged = true;
             }
         }
@@ -317,7 +320,7 @@ namespace LegendaryExplorerCore.Packages
                 {
                     throw new Exception("Cannot set import link to itself, this will cause infinite recursion");
                 }
-                Buffer.BlockCopy(EndianBitConverter.GetBytes(value, FileRef.Endian), 0, _header, 8, sizeof(int));
+                EndianBitConverter.WriteAsBytes(value, _header.AsSpan(8), FileRef.Endian);
                 HeaderChanged = true;
             }
         }
@@ -328,7 +331,7 @@ namespace LegendaryExplorerCore.Packages
             set
             {
                 // TODO: Somehow rebuild the lookup table for the package. This could get really expensive
-                Buffer.BlockCopy(EndianBitConverter.GetBytes(value, FileRef.Endian), 0, _header, 12, sizeof(int));
+                EndianBitConverter.WriteAsBytes(value, _header.AsSpan(12), FileRef.Endian);
                 HeaderChanged = true;
             }
         }
@@ -340,7 +343,7 @@ namespace LegendaryExplorerCore.Packages
             {
                 if (indexValue != value)
                 {
-                    Buffer.BlockCopy(EndianBitConverter.GetBytes(value, FileRef.Endian), 0, _header, 16, sizeof(int));
+                    EndianBitConverter.WriteAsBytes(value, _header.AsSpan(16), FileRef.Endian);
                     HeaderChanged = true;
                 }
             }
@@ -351,7 +354,7 @@ namespace LegendaryExplorerCore.Packages
             get => EndianReader.ToInt32(_header, 20, FileRef.Endian);
             private set
             {
-                Buffer.BlockCopy(EndianBitConverter.GetBytes(value, FileRef.Endian), 0, _header, 20, sizeof(int));
+                EndianBitConverter.WriteAsBytes(value, _header.AsSpan(20), FileRef.Endian);
                 HeaderChanged = true;
             }
         }
@@ -361,7 +364,7 @@ namespace LegendaryExplorerCore.Packages
             get => (EObjectFlags)EndianReader.ToUInt64(_header, 24, FileRef.Endian);
             set
             {
-                Buffer.BlockCopy(EndianBitConverter.GetBytes((ulong)value, FileRef.Endian), 0, _header, 24, sizeof(ulong));
+                EndianBitConverter.WriteAsBytes((ulong)value, _header.AsSpan(24), FileRef.Endian);
                 HeaderChanged = true;
             }
         }
@@ -369,13 +372,13 @@ namespace LegendaryExplorerCore.Packages
         public int DataSize
         {
             get => EndianReader.ToInt32(_header, 32, FileRef.Endian);
-            private set => Buffer.BlockCopy(EndianBitConverter.GetBytes(value, FileRef.Endian), 0, _header, 32, sizeof(int));
+            private set => EndianBitConverter.WriteAsBytes(value, _header.AsSpan(32), FileRef.Endian);
         }
 
         public int DataOffset
         {
             get => EndianReader.ToInt32(_header, 36, FileRef.Endian);
-            set => Buffer.BlockCopy(EndianBitConverter.GetBytes(value, FileRef.Endian), 0, _header, 36, sizeof(int));
+            set => EndianBitConverter.WriteAsBytes(value, _header.AsSpan(36), FileRef.Endian);
         }
 
         public bool HasComponentMap => FileRef.Game <= MEGame.ME2 && FileRef.Platform != MEPackage.GamePlatform.PS3;
@@ -411,7 +414,7 @@ namespace LegendaryExplorerCore.Packages
             get => (EExportFlags)EndianReader.ToUInt32(_header, ExportFlagsOffset, FileRef.Endian);
             set
             {
-                Buffer.BlockCopy(EndianBitConverter.GetBytes((uint)value, FileRef.Endian), 0, _header, ExportFlagsOffset, sizeof(uint));
+                EndianBitConverter.WriteAsBytes((uint)value, _header.AsSpan(ExportFlagsOffset), FileRef.Endian);
                 HeaderChanged = true;
             }
         }
@@ -435,10 +438,10 @@ namespace LegendaryExplorerCore.Packages
 
         public Guid PackageGUID
         {
-            get => new Guid(_header.Slice(PackageGuidOffset, 16));
+            get => EndianReader.ToGuid(_header.AsSpan(PackageGuidOffset, 16), FileRef.Endian);
             set
             {
-                Buffer.BlockCopy(value.ToByteArray(), 0, _header, PackageGuidOffset, 16);
+                EndianBitConverter.WriteAsBytes(value, _header.AsSpan(PackageGuidOffset), FileRef.Endian);
                 HeaderChanged = true;
             }
         }
@@ -448,7 +451,7 @@ namespace LegendaryExplorerCore.Packages
             get => (EPackageFlags)EndianReader.ToUInt32(_header, PackageGuidOffset + 16, FileRef.Endian);
             set
             {
-                Buffer.BlockCopy(EndianBitConverter.GetBytes((uint)value, FileRef.Endian), 0, _header, PackageGuidOffset + 16, sizeof(uint));
+                EndianBitConverter.WriteAsBytes((uint)value, _header.AsSpan(PackageGuidOffset + 16), FileRef.Endian);
                 HeaderChanged = true;
             }
         }
@@ -527,7 +530,17 @@ namespace LegendaryExplorerCore.Packages
 
             set
             {
-                if (_data != null && value != null && _data.SequenceEqual(value))
+                if (_data is null)
+                {
+                    //first time initialization
+                    _data = value;
+                    return;
+                }
+                if (value is null)
+                {
+                    throw new Exception("Cannot set an ExportEntry's Data to null!");
+                }
+                if (_data.AsSpan().SequenceEqual(value))
                 {
                     return; //if the data is the same don't write it and trigger the side effects
                 }
@@ -634,7 +647,7 @@ namespace LegendaryExplorerCore.Packages
             //{
             if (propStartPos == 0)
                 propStartPos = GetPropertyStart();
-            MemoryStream stream = new MemoryStream(_data, false);
+            var stream = new MemoryStream(_data, false);
             stream.Seek(propStartPos, SeekOrigin.Current);
             // Do not cache
             return PropertyCollection.ReadProps(this, stream, ClassName, includeNoneProperties, true, parsingClass); //do not set properties as this may interfere with some other code. may change later.

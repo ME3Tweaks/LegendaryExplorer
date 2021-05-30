@@ -11,8 +11,11 @@
         <FontFamily x:Key="TitilliumWeb-Light">/LegendaryExplorer;component/Resources/Fonts/TitilliumWeb-Light.ttf#Titillium Web</FontFamily>
         <FontFamily x:Key="TitilliumWeb-SemiBold">/LegendaryExplorer;component/Resources/Fonts/TitilliumWeb-SemiBold.ttf#Titillium Web</FontFamily>
         <FontFamily x:Key="TitilliumWeb-Regular">/LegendaryExplorer;component/Resources/Fonts/TitilliumWeb-Regular.ttf#Titillium Web</FontFamily>
+        <FontFamily x:Key="Hack-Bold">/LegendaryExplorer;component/Resources/Fonts/Hack-Bold.ttf#Hack</FontFamily>
         <FontFamily x:Key="Exo-SemiBold">/LegendaryExplorer;component/Resources/Fonts/Exo-SemiBold.ttf#Exo</FontFamily>
         <FontFamily x:Key="Exo-Regular">/LegendaryExplorer;component/Resources/Fonts/Exo-Regular.ttf#Exo</FontFamily>
+        <FontFamily x:Key="BioMass-Light">/LegendaryExplorer;component/Resources/Fonts/BIOMASS2-LIGHT.TTF#Biomass2 Light</FontFamily>
+        <FontFamily x:Key="BioMass-Bold">/LegendaryExplorer;component/Resources/Fonts/BIOMASS2-BOLD.TTF#Biomass2 Bold</FontFamily>
 
         <SolidColorBrush x:Key="HighlightColor" Color="#FF4F9DB1"/>
         <SolidColorBrush x:Key="LabelTextBrush" Color="#FFFDFDFD"/>
@@ -58,6 +61,33 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      Margin="{TemplateBinding Padding}"
+                                      RecognizesAccessKey="True"
+                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="True">
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="BorderedRadioButton" TargetType="{x:Type RadioButton}">
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RadioButton}">
                         <Border Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}">
                             <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -150,12 +180,13 @@
 
         <BitmapImage x:Key="iconBikExtractor" UriSource="Tools/Icons/bikextractor_256x256.ico"/>
         <BitmapImage x:Key="iconHexConverter" UriSource="Tools/Icons/hexconverter_256x256.ico"/>
-        <BitmapImage x:Key="iconInterpViewer" UriSource="Tools/Icons/interpviewer_256x256.ico"/>
+        <BitmapImage x:Key="iconInterpEditor" UriSource="Tools/Icons/interpeditor_256x256.ico"/>
         <BitmapImage x:Key="iconPlotDatabase" UriSource="Tools/Icons/plotdatabase_256x256.ico"/>
         <BitmapImage x:Key="iconAssetDatabase" UriSource="Tools/Icons/AssetDatabase_256x256.ico"/>
         <BitmapImage x:Key="iconPSAViewer" UriSource="Tools/Icons/psaviewer_256x256.ico"/>
         <BitmapImage x:Key="iconPathfindingEditor" UriSource="Tools/Icons/pathfindingeditor_256x256.ico"/>
         <BitmapImage x:Key="iconScriptDatabase" UriSource="Tools/Icons/scriptdatabase_256x256.ico"/>
+        <BitmapImage x:Key="iconWwiseEditor" UriSource="Tools/Icons/wwiseeditor_256x256.ico"/>
         <BitmapImage x:Key="iconWwiseGraphEditor" UriSource="Tools/Icons/wwisegrapheditor_256x256.ico"/>
         <BitmapImage x:Key="iconAutoTOC" UriSource="Tools/Icons/autotoc_256x256.ico"/>
         <BitmapImage x:Key="iconAnimationExplorer" UriSource="Tools/Icons/animationexplorer_256x256.ico"/>
@@ -187,6 +218,7 @@
         <BitmapImage x:Key="iconAnimViewer" UriSource="Tools/Icons/animviewer_256x256.ico"/>
         <BitmapImage x:Key="iconAudioLocalizer" UriSource="Tools/Icons/audiolocalizer_256x256.ico"/>
         <BitmapImage x:Key="iconAFCCompactor" UriSource="Tools/Icons/afccompactor_256x256.ico"/>
+        <BitmapImage x:Key="iconCoalescedCompiler" UriSource="Tools/Icons/coalescedcompiler_256x256.ico"/>
 
 
         <BitmapImage x:Key="iconLoadingSpinner" UriSource="Resources/Images/loadingspinner.png"/>

@@ -13,11 +13,15 @@
 	limitations under the License.
 */
 
+//#define LITTLEENDIANSTREAM
+
 using System;
+using System.Buffers.Binary;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using LegendaryExplorerCore.Gammtek.IO.Converters;
 using LegendaryExplorerCore.Helpers;
@@ -26,6 +30,7 @@ using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorerCore.Gammtek.IO
 {
+
     [DebuggerDisplay("EndianReader @ {Position.ToString(\"X8\")}, endian is native to platform: {Endian.IsNative}")]
 
     /// <summary>
@@ -36,27 +41,8 @@ namespace LegendaryExplorerCore.Gammtek.IO
     /// </summary>
     public class EndianReader : BinaryReader
     {
-        private readonly BinaryReader _source;
         public readonly EndianWriter Writer;
         private bool NoConvert;
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="EndianReader" /> class
-        ///     using the <paramref name="source" /> BinaryReader.
-        /// </summary>
-        public EndianReader(BinaryReader source)
-            : base(source.BaseStream, Encoding.UTF8)
-        {
-            _source = source;
-            if (source.BaseStream.CanWrite)
-            {
-                Writer = new EndianWriter(source.BaseStream);
-            }
-            Endian = BitConverter.IsLittleEndian ? Endian.Little : Endian.Big;
-
-            _endianConverter = Endian.To(Endian.Native);
-            NoConvert = _endianConverter.NoConvert;
-        }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="EndianReader" /> class.
@@ -64,7 +50,6 @@ namespace LegendaryExplorerCore.Gammtek.IO
         public EndianReader(Stream input, Encoding encoding)
             : base(input, encoding)
         {
-            _source = new BinaryReader(input, encoding);
             if (input.CanWrite)
             {
                 Writer = new EndianWriter(input);
@@ -125,45 +110,6 @@ namespace LegendaryExplorerCore.Gammtek.IO
         }
 
         /// <summary>
-        ///     Returns the next available character and does not advance the byte or character position.
-        /// </summary>
-        /// <returns>
-        ///     The next available character, or -1 if no more characters are available or the stream does not support seeking.
-        /// </returns>
-        public override int PeekChar()
-        {
-            return _source.PeekChar();
-        }
-
-        /// <summary>
-        ///     Reads characters from the underlying stream and advances the current position of the stream in accordance with the
-        ///     Encoding used and the specific character being read from the stream.
-        /// </summary>
-        /// <returns>
-        ///     The next character from the input stream, or -1 if no characters are currently available.
-        /// </returns>
-        public override int Read()
-        {
-            return _source.Read();
-        }
-
-        /// <summary>
-        ///     Reads the specified number of bytes from the stream, starting from a specified point in the byte array.
-        /// </summary>
-        public override int Read(byte[] buffer, int index, int count)
-        {
-            return _source.Read(buffer, index, count);
-        }
-
-        /// <summary>
-        ///     Reads the specified number of characters from the stream, starting from a specified point in the byte array.
-        /// </summary>
-        public override int Read(char[] buffer, int index, int count)
-        {
-            return _source.Read(buffer, index, count);
-        }
-
-        /// <summary>
         ///     Reads the specified number of ASCII characters from the stream.
         /// </summary>
         public string ReadEndianASCIIString(int count)
@@ -194,12 +140,35 @@ namespace LegendaryExplorerCore.Gammtek.IO
             string str = "";
             for (; ; )
             {
-                char c = (char)_source.ReadByte();
+                char c = (char)ReadByte();
                 if (c == 0)
                     break;
                 str += c;
             }
             return str;
+        }
+
+        /// <summary>
+        /// Reads an unreal-style prefixed string from the underlying stream.
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
+        public static string ReadUnrealString(ReadOnlySpan<byte> data, int position, Endian endian)
+        {
+            int length = ToInt32(data, position, endian);
+            if (length == 0)
+            {
+                return "";
+            }
+
+            if (length > 0)
+            {
+                return Encoding.Latin1.GetString(data.Slice(position + 4, length));
+            }
+            else
+            {
+                return Encoding.Unicode.GetString(data.Slice(position + 4, length * -2));
+            }
         }
 
         /// <summary>
@@ -237,7 +206,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
             {
                 return "";
             }
-            return length < 0 ? _source.BaseStream.ReadStringUnicodeNull(length * -2) : _source.BaseStream.ReadStringLatin1Null(length);
+            return length < 0 ? BaseStream.ReadStringUnicodeNull(length * -2) : BaseStream.ReadStringLatin1Null(length);
         }
 
         /// <summary>
@@ -251,6 +220,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
             return ReadBoolByte();
         }
 
+#if LITTLEENDIANSTREAM
         /// <summary>
         ///     Reads the next byte from the current stream and advances the current position of the stream by one byte.
         /// </summary>
@@ -259,10 +229,8 @@ namespace LegendaryExplorerCore.Gammtek.IO
         /// </returns>
         public override byte ReadByte()
         {
-            var b = _source.ReadByte();
-#if DEBUG
+            var b = base.ReadByte();
             LittleEndianStream?.WriteByte(b);
-#endif
             return b;
         }
 
@@ -279,40 +247,11 @@ namespace LegendaryExplorerCore.Gammtek.IO
         /// </param>
         public override byte[] ReadBytes(int count)
         {
-            var bytes = _source.ReadBytes(count);
-#if DEBUG
+            var bytes = base.ReadBytes(count);
             LittleEndianStream?.WriteFromBuffer(bytes);
-#endif
             return bytes;
         }
-
-        /// <summary>
-        ///     Reads the next character from the current stream and advances the current position of the stream in accordance
-        ///     with the Encoding used and the specific character being read from the stream.
-        /// </summary>
-        /// <returns>
-        ///     A character read from the current stream.
-        /// </returns>
-        public override char ReadChar()
-        {
-            return _source.ReadChar();
-        }
-
-        /// <summary>
-        ///     Reads the specified number of characters from the current stream, returns the data in a character array, and
-        ///     advances the current position in accordance with the Encoding used and the specific character being read from the stream.
-        /// </summary>
-        /// <returns>
-        ///     A character array containing data read from the underlying stream. This might be less than the number of
-        ///     characters requested if the end of the stream is reached.
-        /// </returns>
-        /// <param name='count'>
-        ///     The number of characters to read.
-        /// </param>
-        public override char[] ReadChars(int count)
-        {
-            return _source.ReadChars(count);
-        }
+#endif
 
         /// <summary>
         ///     Reads an 8-byte floating point value from the current stream and advances the current position of the stream by
@@ -323,13 +262,13 @@ namespace LegendaryExplorerCore.Gammtek.IO
         /// </returns>
         public override double ReadDouble()
         {
-            var val = _source.ReadDouble();
+            var val = base.ReadDouble();
             if (NoConvert)
             {
                 return val;
             }
             val = _endianConverter.Convert(val);
-#if DEBUG
+#if LITTLEENDIANSTREAM
             LittleEndianStream?.WriteDouble(val);
 #endif
             return val;
@@ -343,13 +282,13 @@ namespace LegendaryExplorerCore.Gammtek.IO
         /// </returns>
         public override short ReadInt16()
         {
-            var val = _source.ReadInt16();
+            var val = base.ReadInt16();
             if (NoConvert)
             {
                 return val;
             }
             val = _endianConverter.Convert(val);
-#if DEBUG
+#if LITTLEENDIANSTREAM
             LittleEndianStream?.WriteInt16(val);
 #endif
             return val;
@@ -365,13 +304,13 @@ namespace LegendaryExplorerCore.Gammtek.IO
         /// </returns>
         public override int ReadInt32()
         {
-            var val = _source.ReadInt32();
+            var val = base.ReadInt32();
             if (NoConvert)
             {
                 return val;
             }
             val = _endianConverter.Convert(val);
-#if DEBUG
+#if LITTLEENDIANSTREAM
             LittleEndianStream?.WriteInt32(val);
 #endif
             return val;
@@ -385,13 +324,13 @@ namespace LegendaryExplorerCore.Gammtek.IO
         /// </returns>
         public override long ReadInt64()
         {
-            var val = _source.ReadInt64();
+            var val = base.ReadInt64();
             if (NoConvert)
             {
                 return val;
             }
             val = _endianConverter.Convert(val);
-#if DEBUG
+#if LITTLEENDIANSTREAM
 
             LittleEndianStream?.WriteInt64(val);
 #endif
@@ -407,7 +346,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
         public override sbyte ReadSByte()
         {
             var val = (sbyte)ReadByte();
-#if DEBUG
+#if LITTLEENDIANSTREAM
             LittleEndianStream?.WriteByte((byte)val);
 #endif
             return val;
@@ -422,31 +361,19 @@ namespace LegendaryExplorerCore.Gammtek.IO
         /// </returns>
         public override float ReadSingle()
         {
-            var val = _source.ReadSingle();
+            var val = base.ReadSingle();
             if (NoConvert)
             {
                 return val;
             }
             val = _endianConverter.Convert(val);
-#if DEBUG
+#if LITTLEENDIANSTREAM
             LittleEndianStream?.WriteFloat(val);
 #endif
             return val;
         }
 
         public float ReadFloat() => ReadSingle();
-
-        /// <summary>
-        ///     Reads a string from the current stream. The string is prefixed with the length, encoded as an integer seven bits
-        ///     at a time.
-        /// </summary>
-        /// <returns>
-        ///     The string being read.
-        /// </returns>
-        public override string ReadString()
-        {
-            return _source.ReadString();
-        }
 
         /// <summary>
         ///     Reads a 2-byte unsigned integer from the current stream using little-endian encoding and advances the position of
@@ -457,13 +384,13 @@ namespace LegendaryExplorerCore.Gammtek.IO
         /// </returns>
         public override ushort ReadUInt16()
         {
-            var val = _source.ReadUInt16();
+            var val = base.ReadUInt16();
             if (NoConvert)
             {
                 return val;
             }
             val = _endianConverter.Convert(val);
-#if DEBUG
+#if LITTLEENDIANSTREAM
             LittleEndianStream?.WriteUInt16(val);
 #endif
             return val;
@@ -477,13 +404,13 @@ namespace LegendaryExplorerCore.Gammtek.IO
         /// </returns>
         public override uint ReadUInt32()
         {
-            var val = _source.ReadUInt32();
+            var val = base.ReadUInt32();
             if (NoConvert)
             {
                 return val;
             }
             val = _endianConverter.Convert(val);
-#if DEBUG
+#if LITTLEENDIANSTREAM
             LittleEndianStream?.WriteUInt32(val);
 #endif
             return val;
@@ -497,13 +424,13 @@ namespace LegendaryExplorerCore.Gammtek.IO
         /// </returns>
         public override ulong ReadUInt64()
         {
-            var val = _source.ReadUInt64();
+            var val = base.ReadUInt64();
             if (NoConvert)
             {
                 return val;
             }
             val = _endianConverter.Convert(val);
-#if DEBUG
+#if LITTLEENDIANSTREAM
             LittleEndianStream?.WriteUInt64(val);
 #endif
             return val;
@@ -519,19 +446,19 @@ namespace LegendaryExplorerCore.Gammtek.IO
 
         public void Seek(long offset, SeekOrigin origin)
         {
-            _source.BaseStream.Seek(offset, origin);
-#if DEBUG
+            BaseStream.Seek(offset, origin);
+#if LITTLEENDIANSTREAM
             LittleEndianStream?.Seek(offset, origin);
 #endif
         }
 
         public long Position
         {
-            get => _source.BaseStream.Position;
+            get => BaseStream.Position;
             set
             {
-                _source.BaseStream.Position = value;
-#if DEBUG
+                BaseStream.Position = value;
+#if LITTLEENDIANSTREAM
                 if (LittleEndianStream != null)
                     LittleEndianStream.Position = value;
 #endif
@@ -547,7 +474,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
         /// <returns></returns>
         public static EndianReader SetupForReading(Stream input, int magic, out int readvalue)
         {
-            EndianReader er = new EndianReader(input);
+            var er = new EndianReader(input);
             var readMagic = er.ReadUInt32();
             if (readMagic == magic)
             {
@@ -557,7 +484,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
             else
             {
                 //cast to int to ensure we have some comparisons.
-                var reversed = (int)Endian.Native.To(Endian.NonNative).Convert(readMagic);
+                var reversed = (int)BinaryPrimitives.ReverseEndianness(readMagic);
                 if (reversed != magic)
                 {
                     throw new Exception($"Magic number {readMagic:X8} does not match either big or little endianness for expected value 0x{magic:X8}");
@@ -565,7 +492,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
                 else
                 {
                     er.Endian = Endian.NonNative;
-                    readvalue = unchecked((int)reversed);
+                    readvalue = reversed;
                 }
             }
 
@@ -579,7 +506,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
         /// <returns></returns>
         public static EndianReader SetupForPackageReading(Stream input)
         {
-            EndianReader er = new EndianReader(input);
+            var er = new EndianReader(input);
             var packageTag = er.ReadUInt32();
             if (packageTag != packageTagBigEndian && packageTag != packageTagLittleEndian) throw new Exception("Magic number for this file doesn't match known value, this is not a UE3 file");
             if (packageTag == packageTagBigEndian) er.Endian = Endian.Big;
@@ -629,8 +556,8 @@ namespace LegendaryExplorerCore.Gammtek.IO
                 throw new Exception("Could not read float16");
             ushort u = ToUInt16(buffer, 0, Endian);
 
+#if LITTLEENDIANSTREAM
             //This definitely needs checked
-#if DEBUG
             if (LittleEndianStream != null)
             {
                 if (Endian == Endian.Big)
@@ -698,11 +625,15 @@ namespace LegendaryExplorerCore.Gammtek.IO
             return ReadBytes(size);
         }
 
+        /// <summary>
+        /// Copies stream to a new array. Consider using a more performant method if at all possible.
+        /// </summary>
+        /// <returns></returns>
         public byte[] ToArray()
         {
             var pos = Position;
             Position = 0;
-            var data = _source.ReadBytes((int)Length);
+            var data = ReadBytes((int)Length);
             Position = pos;
             return data;
         }
@@ -712,7 +643,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
         public static float ToSingle(byte[] buffer, int offset, Endian endianness)
         {
             var readMagic = BitConverter.ToSingle(buffer, offset);
-            if (Endian.Native != endianness)
+            if (!endianness.IsNative)
             {
                 //swap
                 return Endian.Native.To(Endian.NonNative).Convert(readMagic);
@@ -723,10 +654,10 @@ namespace LegendaryExplorerCore.Gammtek.IO
         public static ushort ToUInt16(byte[] buffer, int offset, Endian endianness)
         {
             var readMagic = BitConverter.ToUInt16(buffer, offset);
-            if (Endian.Native != endianness)
+            if (!endianness.IsNative)
             {
                 //swap
-                return Endian.Native.To(Endian.NonNative).Convert(readMagic);
+                return BinaryPrimitives.ReverseEndianness(readMagic);
             }
             return readMagic;
         }
@@ -738,10 +669,10 @@ namespace LegendaryExplorerCore.Gammtek.IO
         public static int ToInt32(byte[] buffer, int offset, Endian endianness)
         {
             var readMagic = BitConverter.ToInt32(buffer, offset);
-            if (Endian.Native != endianness)
+            if (!endianness.IsNative)
             {
                 //swap
-                return Endian.Native.To(Endian.NonNative).Convert(readMagic);
+                return BinaryPrimitives.ReverseEndianness(readMagic);
             }
             return readMagic;
         }
@@ -752,14 +683,26 @@ namespace LegendaryExplorerCore.Gammtek.IO
         /// <returns></returns>
         public static int ToInt32(ReadOnlySpan<byte> buffer, int offset, Endian endianness)
         {
-            var readMagic = (buffer[offset + 3] << 24) + (buffer[offset + 2] << 16) + (buffer[offset + 1] <<
-                            8) + buffer[offset];
-            // Original Logic:
-            //var readMagic = (buffer[offset] << 24) + (buffer[offset + 1] << 16) + (buffer[offset + 2] <<8) + buffer[offset + 3];
-            if (Endian.Native != endianness)
+            var readMagic = MemoryMarshal.Read<int>(buffer.Slice(offset));
+            if (!endianness.IsNative)
             {
                 //swap
-                return Endian.Native.To(Endian.NonNative).Convert(readMagic);
+                return BinaryPrimitives.ReverseEndianness(readMagic);
+            }
+            return readMagic;
+        }
+
+        /// <summary>
+        /// Reads an int32 from the span.
+        /// </summary>
+        /// <returns></returns>
+        public static int ToInt32(ReadOnlySpan<byte> buffer, Endian endianness)
+        {
+            var readMagic = MemoryMarshal.Read<int>(buffer);
+            if (!endianness.IsNative)
+            {
+                //swap
+                return BinaryPrimitives.ReverseEndianness(readMagic);
             }
             return readMagic;
         }
@@ -771,11 +714,27 @@ namespace LegendaryExplorerCore.Gammtek.IO
         public static short ToInt16(byte[] buffer, int offset, Endian endianness)
         {
             var readMagic = BitConverter.ToInt16(buffer, offset);
-            if (Endian.Native != endianness)
+            if (!endianness.IsNative)
             {
                 //swap
-                return Endian.Native.To(Endian.NonNative).Convert(readMagic);
+                return BinaryPrimitives.ReverseEndianness(readMagic);
             }
+            return readMagic;
+        }
+
+        /// <summary>
+        /// Reads an int16 from the buffer at the specified position with the specified endianness.
+        /// </summary>
+        /// <returns></returns>
+        public static short ToInt16(ReadOnlySpan<byte> buffer, int offset, Endian endianness)
+        {
+            var readMagic = MemoryMarshal.Read<short>(buffer.Slice(offset));
+            if (!endianness.IsNative)
+            {
+                //swap
+                return BinaryPrimitives.ReverseEndianness(readMagic);
+            }
+
             return readMagic;
         }
 
@@ -786,10 +745,10 @@ namespace LegendaryExplorerCore.Gammtek.IO
         public static uint ToUInt32(byte[] buffer, int offset, Endian endianness)
         {
             var readMagic = BitConverter.ToUInt32(buffer, offset);
-            if (Endian.Native != endianness)
+            if (!endianness.IsNative)
             {
                 //swap
-                return Endian.Native.To(Endian.NonNative).Convert(readMagic);
+                return BinaryPrimitives.ReverseEndianness(readMagic);
             }
             return readMagic;
         }
@@ -801,12 +760,35 @@ namespace LegendaryExplorerCore.Gammtek.IO
         public static ulong ToUInt64(byte[] buffer, int offset, Endian endianness)
         {
             var readMagic = BitConverter.ToUInt64(buffer, offset);
-            if (Endian.Native != endianness)
+            if (!endianness.IsNative)
             {
                 //swap
-                return Endian.Native.To(Endian.NonNative).Convert(readMagic);
+                return BinaryPrimitives.ReverseEndianness(readMagic);
             }
             return readMagic;
+        }
+
+        public static Guid ToGuid(ReadOnlySpan<byte> span, Endian endianness)
+        {
+            if (endianness.IsNative)
+            {
+                return new Guid(span);
+            }
+            else
+            {
+                return new Guid(
+                    BinaryPrimitives.ReadInt32BigEndian(span),
+                    BinaryPrimitives.ReadInt16BigEndian(span.Slice(4)),
+                    BinaryPrimitives.ReadInt16BigEndian(span.Slice(8)),
+                    span[8],
+                    span[9],
+                    span[10],
+                    span[11],
+                    span[12],
+                    span[13],
+                    span[14],
+                    span[15]);
+            }
         }
 
         /// <summary>
@@ -824,17 +806,17 @@ namespace LegendaryExplorerCore.Gammtek.IO
                               (buffer[offset + 5] << 16) +
                               (buffer[offset + 6] << 8) +
                               buffer[offset + 7]);
-            if (Endian.Native != endianness)
+            if (!endianness.IsNative)
             {
                 //swap
-                return Endian.Native.To(Endian.NonNative).Convert(readMagic);
+                return BinaryPrimitives.ReverseEndianness(readMagic);
             }
             return readMagic;
         }
 
         #endregion
 
-#if DEBUG
+#if LITTLEENDIANSTREAM
         /// <summary>
         /// Initializes the LittleEndianStream memorystream. All reads will write the little endian version to this stream. Used to reverse endian of files read by this reader
         /// </summary>

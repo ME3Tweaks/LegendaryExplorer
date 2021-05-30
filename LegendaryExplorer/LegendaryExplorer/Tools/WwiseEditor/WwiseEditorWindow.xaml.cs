@@ -59,12 +59,7 @@ namespace LegendaryExplorer.Tools.WwiseEditor
             graphEditor = (WwiseGraphEditor)GraphHost.Child;
             graphEditor.BackColor = GraphEditorBackColor;
 
-            if (File.Exists(OptionsPath))
-            {
-                var options = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(OptionsPath));
-                if (options.ContainsKey("AutoSave"))
-                    AutoSaveView_MenuItem.IsChecked = (bool)options["AutoSave"];
-            }
+            AutoSaveView_MenuItem.IsChecked = Misc.AppSettings.Settings.WwiseGraphEditor_AutoSaveView;
 
             soundPanel.SoundPanel_TabsControl.SelectedIndex = 1;
             soundPanel.HIRCObjectSelected += SoundPanel_HIRCObjectSelected;
@@ -175,8 +170,7 @@ namespace LegendaryExplorer.Tools.WwiseEditor
 
         private void OpenFile()
         {
-            // TODO: Implement in LEX
-            OpenFileDialog d = new (); //{ Filter = FileFilters.OpenFileFilter };
+            OpenFileDialog d = new (){ Filter = GameFileFilters.ME3ME2SaveFileFilter };
             if (d.ShowDialog() == true)
             {
 #if !DEBUG
@@ -840,14 +834,7 @@ namespace LegendaryExplorer.Tools.WwiseEditor
             if (AutoSaveView_MenuItem.IsChecked)
                 SaveView();
 
-            var options = new Dictionary<string, object>
-            {
-                {"AutoSave", AutoSaveView_MenuItem.IsChecked}
-            };
-            string outputFile = JsonConvert.SerializeObject(options);
-            if (!Directory.Exists(WwiseEditorDataFolder))
-                Directory.CreateDirectory(WwiseEditorDataFolder);
-            File.WriteAllText(OptionsPath, outputFile);
+            Misc.AppSettings.Settings.WwiseGraphEditor_AutoSaveView = AutoSaveView_MenuItem.IsChecked;
             soundPanel.HIRCObjectSelected -= SoundPanel_HIRCObjectSelected;
             soundPanel.Dispose();
         }

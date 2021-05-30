@@ -28,6 +28,7 @@ namespace LegendaryExplorerCore.Shaders
                     staticParamSetsInFile.Add(ObjectBinary.From<MaterialInstance>(export).SM3StaticParameterSet);
                 }
             }
+            RefShaderCacheReader.RemoveStaticParameterSetsThatAreInTheGlobalCache(staticParamSetsInFile, pcc.Game);
 
             var localCache = pcc.FindExport("SeekFreeShaderCache");
 
@@ -63,6 +64,11 @@ namespace LegendaryExplorerCore.Shaders
             }
 
             //can happen if list of exports passed in does not contain any materials
+            if (staticParamSets.Count is 0)
+            {
+                return null;
+            }
+            RefShaderCacheReader.RemoveStaticParameterSetsThatAreInTheGlobalCache(staticParamSets, pcc.Game);
             if (staticParamSets.Count is 0)
             {
                 return null;

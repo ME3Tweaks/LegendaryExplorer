@@ -67,6 +67,33 @@ namespace LegendaryExplorer.Misc
             target.BeginAnimation(dp, new DoubleAnimation(toValue, TimeSpan.FromMilliseconds(duration)));
         }
 
+        /// <summary>
+        /// Starts a DoubleAnimation for a specified animated property on this element
+        /// </summary>
+        /// <param name="target">element to perform animation on</param>
+        /// <param name="dp">The property to animate, which is specified as a dependency property identifier</param>
+        /// <param name="toValue">The destination value of the animation</param>
+        /// <param name="duration">The duration of the animation, in milliseconds</param>
+        /// <param name="onCompleted">Function to run once animation is completed</param>
+        public static void BeginDoubleAnimation(this UIElement target, DependencyProperty dp, double toValue, int duration, EventHandler onCompleted)
+        {
+            var animation = new DoubleAnimation(toValue, TimeSpan.FromMilliseconds(duration));
+            animation.Completed += onCompleted;
+            target.BeginAnimation(dp, animation);
+        }
+
+        public static void Add(this Storyboard sb, AnimationTimeline anim, DependencyObject target, string targetPropertyPath)
+        {
+            Storyboard.SetTarget(anim, target);
+            Storyboard.SetTargetProperty(anim, new PropertyPath(targetPropertyPath));
+            sb.Children.Add(anim);
+        }
+
+        public static void AddDoubleAnimation(this Storyboard sb, double toValue, int duration, DependencyObject target, string targetPropertyPath)
+        {
+            sb.Add(new DoubleAnimation(toValue, TimeSpan.FromMilliseconds(duration)), target, targetPropertyPath);
+        }
+
         public static void AppendLine(this TextBoxBase box, string text)
         {
             box.AppendText(text + Environment.NewLine);
@@ -134,6 +161,11 @@ namespace LegendaryExplorer.Misc
             }
 
             SetForegroundWindow(windowHandle);
+        }
+
+        public static void SetForegroundWindow(this Window window)
+        {
+            SetForegroundWindow(new WindowInteropHelper(window).Handle);
         }
 
         public static bool IsForegroundWindow(this System.Windows.Forms.Form form)
@@ -212,7 +244,10 @@ namespace LegendaryExplorer.Misc
 
         private static void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
-            Process.Start(e.Uri.AbsoluteUri);
+            using Process link = new Process();
+            link.StartInfo.FileName = e.Uri.AbsoluteUri;
+            link.StartInfo.UseShellExecute = true;
+            link.Start();
             e.Handled = true;
         }
     }

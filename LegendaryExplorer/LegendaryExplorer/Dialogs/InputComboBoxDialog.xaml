@@ -8,7 +8,8 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
         WindowStyle="ToolWindow"
-        Title="ME3Explorer" SizeToContent="Height" Width="500">
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Title="{Binding TitleText}" SizeToContent="Height" Width="500">
     <StackPanel Margin="5" HorizontalAlignment="Stretch">
         <StackPanel.Resources>
             <ItemsPanelTemplate x:Key="VSP">

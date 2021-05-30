@@ -371,7 +371,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     if (File.Exists(info.pccPath))
                     {
                         filepath = info.pccPath;
-                        loadStream = new MemoryStream(File.ReadAllBytes(info.pccPath));
+                        loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(info.pccPath);
                     }
                     else if (info.pccPath == GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
                     {
@@ -380,7 +380,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     }
                     else if (filepath != null && File.Exists(filepath))
                     {
-                        loadStream = new MemoryStream(File.ReadAllBytes(filepath));
+                        loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(filepath);
                     }
 #if AZURE
                     else if (MiniGameFilesPath != null && File.Exists(Path.Combine(MiniGameFilesPath, info.pccPath)))
@@ -388,7 +388,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                         // Load from test minigame folder. This is only really useful on azure where we don't have access to 
                         // games
                         filepath = Path.Combine(MiniGameFilesPath, info.pccPath);
-                        loadStream = new MemoryStream(File.ReadAllBytes(filepath));
+                        loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(filepath);
                     }
 #endif
 
@@ -485,13 +485,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             Structs.Clear();
             Classes.Clear();
             SequenceObjects.Clear();
-            var NewClasses = new Dictionary<string, ClassInfo>();
-            var NewStructs = new Dictionary<string, ClassInfo>();
-            var NewEnums = new Dictionary<string, List<NameReference>>();
-            var NewSequenceObjects = new Dictionary<string, SequenceObjectInfo>();
 
             var allFiles = MELoadedFiles.GetOfficialFiles(MEGame.ME2).Where(x => Path.GetExtension(x) == ".pcc").ToList();
-            int totalFiles = allFiles.Count;
+            int totalFiles = allFiles.Count * 2;
             int numDone = 0;
             foreach (string filePath in allFiles)
             {
@@ -502,37 +498,23 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     string className = exportEntry.ClassName;
                     if (className == "Enum")
                     {
-                        generateEnumValues(exportEntry, NewEnums);
+                        generateEnumValues(exportEntry, Enums);
                     }
                     else if (className == "Class")
                     {
                         string objectName = exportEntry.ObjectName;
-                        if (!NewClasses.ContainsKey(objectName))
+                        if (!Classes.ContainsKey(objectName))
                         {
-                            NewClasses.Add(objectName, generateClassInfo(exportEntry));
+                            Classes.Add(objectName, generateClassInfo(exportEntry));
                         }
                     }
                     else if (className == "ScriptStruct")
                     {
                         string objectName = exportEntry.ObjectName;
-                        if (!NewStructs.ContainsKey(objectName))
+                        if (!Structs.ContainsKey(objectName))
                         {
-                            NewStructs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
+                            Structs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
 
-                        }
-                    }
-                    else if (exportEntry.IsA("SequenceObject"))
-                    {
-                        if (!NewSequenceObjects.TryGetValue(className, out SequenceObjectInfo seqObjInfo))
-                        {
-                            seqObjInfo = new SequenceObjectInfo();
-                            NewSequenceObjects.Add(className, seqObjInfo);
-                        }
-
-                        int objInstanceVersion = exportEntry.GetProperty<IntProperty>("ObjInstanceVersion");
-                        if (objInstanceVersion > seqObjInfo.ObjInstanceVersion)
-                        {
-                            seqObjInfo.ObjInstanceVersion = objInstanceVersion;
                         }
                     }
                 }
@@ -541,14 +523,14 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             }
 
             //native classes not defined in data files
-            NewClasses["LightMapTexture2D"] = new ClassInfo
+            Classes["LightMapTexture2D"] = new ClassInfo
             {
                 baseClass = "Texture2D",
                 exportIndex = 0,
                 pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
             };
 
-            NewClasses["StaticMesh"] = new ClassInfo
+            Classes["StaticMesh"] = new ClassInfo
             {
                 baseClass = "Object",
                 exportIndex = 0,
@@ -566,20 +548,48 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     }
             };
 
-
             //SFXPhysicalMaterialDecals missing items
-            ClassInfo sfxpmd = NewClasses["SFXPhysicalMaterialDecals"];
+            ClassInfo sfxpmd = Classes["SFXPhysicalMaterialDecals"];
             string[] decalComponentArrays = { "HeavyPistol", "AutoPistol", "HandCannon", "SMG", "Shotgun", "HeavyShotgun", "FlakGun", "AssaultRifle", "Needler", "Machinegun", "SniperRifle", "AntiMatRifle", "MassCannon", "ParticleBeam" };
             foreach (string decal in decalComponentArrays)
             {
                 sfxpmd.properties.Add(decal, new PropertyInfo(PropertyType.ArrayProperty, "DecalComponent"));
             }
 
-            NewClasses["SFXWeapon"].properties.Add("InstantHitDamageTypes", new PropertyInfo(PropertyType.ArrayProperty, "Class"));
+            Classes["SFXWeapon"].properties.Add("InstantHitDamageTypes", new PropertyInfo(PropertyType.ArrayProperty, "Class"));
 
-            var jsonText = JsonConvert.SerializeObject(new { SequenceObjects = NewSequenceObjects, Classes = NewClasses, Structs = NewStructs, Enums = NewEnums }, Formatting.Indented);
+            foreach (string filePath in allFiles)
+            {
+                using IMEPackage pcc = MEPackageHandler.OpenME2Package(filePath);
+                foreach (ExportEntry exportEntry in pcc.Exports)
+                {
+                    if (exportEntry.IsA("SequenceObject"))
+                    {
+                        string className = exportEntry.ClassName;
+                        if (!SequenceObjects.TryGetValue(className, out SequenceObjectInfo seqObjInfo))
+                        {
+                            seqObjInfo = new SequenceObjectInfo();
+                            SequenceObjects.Add(className, seqObjInfo);
+                        }
+
+                        int objInstanceVersion = exportEntry.GetProperty<IntProperty>("ObjInstanceVersion");
+                        if (objInstanceVersion > seqObjInfo.ObjInstanceVersion)
+                        {
+                            seqObjInfo.ObjInstanceVersion = objInstanceVersion;
+                        }
+                    }
+                }
+                numDone++;
+                progressDelegate?.Invoke(numDone, totalFiles);
+            }
+
+            var jsonText = JsonConvert.SerializeObject(new { SequenceObjects, Classes, Structs, Enums }, Formatting.Indented);
             File.WriteAllText(outpath, jsonText);
             MemoryManager.SetUsePooledMemory(false);
+            Enums.Clear();
+            Structs.Clear();
+            Classes.Clear();
+            SequenceObjects.Clear();
             loadfromJSON(jsonText);
         }
 

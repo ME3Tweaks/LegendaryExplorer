@@ -144,10 +144,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         }
                     }
 
-                    MaterialShaderMap msmFromGlobalCache = ShaderCacheReader.GetMaterialShaderMap(Pcc.Game, sps);
+                    MaterialShaderMap msmFromGlobalCache = RefShaderCacheReader.GetMaterialShaderMap(Pcc.Game, sps);
                     if (msmFromGlobalCache != null && CurrentLoadedExport is not null)
                     {
-                        var topInfoText = $"Shaders in {ShaderCacheReader.GlobalShaderFileName(Pcc.Game)}";
+                        var topInfoText = $"Shaders in {RefShaderCacheReader.GlobalShaderFileName(Pcc.Game)}";
                         return (GetMeshShaderMaps(msmFromGlobalCache), topInfoText);
                     }
                 }
@@ -187,7 +187,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private string dissasembledShader;
         public string DissasembledShader
         {
-            get => dissasembledShader ??= ShaderCacheReader.GetShaderDissasembly(Game, Id);
+            get => dissasembledShader ??= RefShaderCacheReader.GetShaderDissasembly(Game, Id);
             set => dissasembledShader = value;
         }
     }

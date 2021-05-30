@@ -13,9 +13,9 @@ namespace LegendaryExplorerCore.Shaders
      * parsing it with the ShaderCache ObjectBinary class is very slow and uses an enormous amount of memory.
      * This class parses only what it needs to, and then caches file offsets to make subsequent reads even faster
      */
-    public static class ShaderCacheReader
+    public static class RefShaderCacheReader
     {
-        public static string GlobalShaderFileName(MEGame game) => game.IsLEGame() ? "RefShaderCache-PC-D3D-SM5.upk" : "RefShaderCache -PC-D3D-SM3.upk";
+        public static string GlobalShaderFileName(MEGame game) => game.IsLEGame() ? "RefShaderCache-PC-D3D-SM5.upk" : "RefShaderCache-PC-D3D-SM3.upk";
         private static string shaderfilePath(MEGame game) => Path.Combine(MEDirectories.GetCookedPath(game), GlobalShaderFileName(game));
 
         private static Dictionary<Guid, int> ME3ShaderOffsets;
@@ -36,13 +36,13 @@ namespace LegendaryExplorerCore.Shaders
             _ => null
         };
 
-        private static int ME3MaterialShaderMapsOffset;
-        private static int ME2MaterialShaderMapsOffset;
-        private static int ME1MaterialShaderMapsOffset;
+        private static int ME3MaterialShaderMapsOffset = 206341927;
+        private static int ME2MaterialShaderMapsOffset = 132795914;
+        private static int ME1MaterialShaderMapsOffset = 69550225;
 
-        private static int LE3MaterialShaderMapsOffset;
-        private static int LE2MaterialShaderMapsOffset;
-        private static int LE1MaterialShaderMapsOffset;
+        private static int LE3MaterialShaderMapsOffset = 1232556095;
+        private static int LE2MaterialShaderMapsOffset = 918786420;
+        private static int LE1MaterialShaderMapsOffset = 711522522;
         private static int MaterialShaderMapsOffset(MEGame game) => game switch
         {
             MEGame.ME3 => ME3MaterialShaderMapsOffset,
@@ -54,24 +54,26 @@ namespace LegendaryExplorerCore.Shaders
             _ => 0
         };
 
-        private static void populateOffsets(MEGame game, int binaryOffset)
+        private static void populateOffsets(MEGame game, int offsetOfShaderCacheOffset)
         {
             string filePath = shaderfilePath(game);
             if (File.Exists(filePath))
             {
                 Dictionary<Guid, int> offsetDict = game switch
                 {
-                    MEGame.ME3 => ME3ShaderOffsets = new Dictionary<Guid, int>(),
-                    MEGame.ME2 => ME2ShaderOffsets = new Dictionary<Guid, int>(),
-                    MEGame.ME1 => ME1ShaderOffsets = new Dictionary<Guid, int>(),
-                    MEGame.LE3 => LE3ShaderOffsets = new Dictionary<Guid, int>(),
-                    MEGame.LE2 => LE2ShaderOffsets = new Dictionary<Guid, int>(),
-                    MEGame.LE1 => LE1ShaderOffsets = new Dictionary<Guid, int>(),
+                    MEGame.ME3 => ME3ShaderOffsets ??= new Dictionary<Guid, int>(),
+                    MEGame.ME2 => ME2ShaderOffsets ??= new Dictionary<Guid, int>(),
+                    MEGame.ME1 => ME1ShaderOffsets ??= new Dictionary<Guid, int>(),
+                    MEGame.LE3 => LE3ShaderOffsets ??= new Dictionary<Guid, int>(),
+                    MEGame.LE2 => LE2ShaderOffsets ??= new Dictionary<Guid, int>(),
+                    MEGame.LE1 => LE1ShaderOffsets ??= new Dictionary<Guid, int>(),
                     _ => null
                 };
                 if (offsetDict == null || offsetDict.Count > 0) return;
 
                 using FileStream fs = File.OpenRead(filePath);
+                fs.JumpTo(offsetOfShaderCacheOffset);
+                int binaryOffset = fs.ReadInt32() + 12;
                 fs.JumpTo(binaryOffset);
                 fs.Skip(1);
                 int nameCount = fs.ReadInt32();
@@ -126,11 +128,12 @@ namespace LegendaryExplorerCore.Shaders
             string filePath = shaderfilePath(game);
             if (File.Exists(filePath))
             {
-                using IMEPackage shaderCachePackage = MEPackageHandler.OpenMEPackage(filePath);
-                int shaderCacheOffset = shaderCachePackage.Exports[0].DataOffset + 12;
-                populateOffsets(game, shaderCacheOffset);
-
                 using FileStream fs = File.OpenRead(filePath);
+                using IMEPackage shaderCachePackage = MEPackageHandler.OpenMEPackageFromStream(fs, quickLoad:true);
+                ReadNames(fs, shaderCachePackage);
+
+                int offsetOfShaderCacheOffset = shaderCachePackage.ExportOffset + 36;
+                populateOffsets(game, offsetOfShaderCacheOffset);
                 var sc = new SerializingContainer2(fs, shaderCachePackage, true);
                 sc.ms.JumpTo(MaterialShaderMapsOffset(game));
 
@@ -172,6 +175,56 @@ namespace LegendaryExplorerCore.Shaders
             }
 
             return "";
+        }
+
+        public static void RemoveStaticParameterSetsThatAreInTheGlobalCache(HashSet<StaticParameterSet> paramSets, MEGame game)
+        {
+            string filePath = shaderfilePath(game);
+            if (File.Exists(filePath))
+            {
+                using FileStream fs = File.OpenRead(filePath);
+                //read just the header of the package, then read the name list
+                using IMEPackage shaderCachePackage = MEPackageHandler.OpenMEPackageFromStream(fs, quickLoad: true);
+                ReadNames(fs, shaderCachePackage);
+                var sc = new SerializingContainer2(fs, shaderCachePackage, true);
+                sc.ms.JumpTo(MaterialShaderMapsOffset(game));
+
+                int count = fs.ReadInt32();
+                for (int i = 0; i < count && paramSets.Count > 0; i++)
+                {
+                    StaticParameterSet sps = null;
+                    sc.Serialize(ref sps);
+                    if (paramSets.Contains(sps))
+                    {
+                        paramSets.Remove(sps);
+                    }
+
+                    if (game >= MEGame.ME3)
+                    {
+                        sc.ms.Skip(8);
+                    }
+
+                    int nextMSMOffset = sc.ms.ReadInt32();
+                    sc.ms.Skip(nextMSMOffset - sc.ms.Position);
+                }
+            }
+        }
+
+        private static void ReadNames(FileStream fs, IMEPackage shaderCachePackage)
+        {
+            fs.JumpTo(shaderCachePackage.NameOffset);
+            var names = new List<string>(shaderCachePackage.NameCount);
+            for (int i = 0; i < shaderCachePackage.NameCount; i++)
+            {
+                var name = fs.ReadUnrealString();
+                names.Add(name);
+                if (shaderCachePackage.Game == MEGame.ME1 && shaderCachePackage.Platform != MEPackage.GamePlatform.PS3)
+                    fs.Skip(8);
+                else if (shaderCachePackage.Game == MEGame.ME2 && shaderCachePackage.Platform != MEPackage.GamePlatform.PS3)
+                    fs.Skip(4);
+            }
+
+            shaderCachePackage.restoreNames(names);
         }
     }
 }

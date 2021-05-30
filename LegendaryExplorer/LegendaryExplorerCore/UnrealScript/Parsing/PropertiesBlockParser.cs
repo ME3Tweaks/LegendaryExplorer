@@ -31,7 +31,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         private List<Statement> Parse(bool requireBrackets = true)
         {
-            if (requireBrackets && Consume(TokenType.LeftBracket) == null) throw ParseError("Expected '{'!", CurrentPosition);
+            if (Consume(TokenType.LeftBracket) == null) throw ParseError("Expected '{'!", CurrentPosition);
 
             var statements = new List<Statement>();
             try
@@ -49,7 +49,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 Symbols.PopScope();
             }
 
-            if (requireBrackets && Consume(TokenType.RightBracket) == null) throw ParseError("Expected '}'!", CurrentPosition);
+            if (Consume(TokenType.RightBracket) == null) throw ParseError("Expected '}'!", CurrentPosition);
             return statements;
         }
 
@@ -124,6 +124,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         private AssignStatement ParseNonStructAssignment()
         {
+            if (CurrentIs(TokenType.RightBracket))
+            {
+                return null;
+            }
             var statement = ParseAssignment();
             if (statement is null)
             {
@@ -136,7 +140,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         private AssignStatement ParseAssignment()
         {
-            throw new NotImplementedException();
+            if (Consume(TokenType.Word) is Token<string> propName)
+            {
+                
+            }
+
+            throw ParseError("Expected name of property!", CurrentPosition);
         }
 
         private SymbolReference ParseBasicRef(Token<string> token)

@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
         WindowStyle="ToolWindow"
-        Title="ME3Explorer" SizeToContent="Height" Width="500">
+        Title="Legendary Explorer" SizeToContent="Height" Width="500">
     <StackPanel Margin="5" HorizontalAlignment="Stretch">
         <StackPanel.Resources>
             <ItemsPanelTemplate x:Key="VSP">

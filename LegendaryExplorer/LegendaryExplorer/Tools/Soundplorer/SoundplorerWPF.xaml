@@ -137,8 +137,8 @@
 
                                 If you have issues, please report them to one of the following places:
                                 <LineBreak/>
-                                 - <Hyperlink NavigateUri="{Binding Source={x:Static misc:AppLinks.DiscordInviteURL}, Mode=OneTime}" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
-                                <Run Text="The ME3Tweaks Discord (ME3Explorer channel)"/>
+                                 - <Hyperlink NavigateUri="{Binding Source={x:Static misc:AppLinks.ME3TweaksDiscordInviteURL}, Mode=OneTime}" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
+                                <Run Text="The ME3Tweaks Discord (Legendary_Explorer channel)"/>
                             </Hyperlink>
                                 <LineBreak/>
                                  - The issues list on GitHub at 

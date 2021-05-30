@@ -16,45 +16,164 @@ namespace LegendaryExplorerCore.Coalesced
         public static readonly int CoalescedMagicNumber = 1718448749;
 
         public static readonly SortedSet<string> ProperNames =
-			new SortedSet<string>
-			{
-				"BioAI",
-				"BioCompat",
-				"BioCredits",
-				"BioDifficulty",
-				"BioEngine",
-				"BioGame",
-				"BioInput",
-				"BioLightmass",
-				"BioTest",
-				"BioUI",
+            new SortedSet<string>
+            {
+                "BioAI",
+                "BioCompat",
+                "BioCredits",
+                "BioDifficulty",
+                "BioEngine",
+                "BioGame",
+                "BioInput",
+                "BioLightmass",
+                "BioTest",
+                "BioUI",
                 "BioQA",
-				"BioWeapon",
-				"Core",
-				"Descriptions",
-				"EditorTips",
-				"Engine",
-				"GFxUI",
-				"IpDrv",
-				"Launch",
-				"OnlineSubsystemGamespy",
-				"Startup",
-				"Subtitles",
-				"UnrealEd",
-				"WinDrv",
-				"XWindow"
-			};
+                "BioWeapon",
+                "Core",
+                "Descriptions",
+                "EditorTips",
+                "Engine",
+                "GFxUI",
+                "IpDrv",
+                "Launch",
+                "OnlineSubsystemGamespy",
+                "Startup",
+                "Subtitles",
+                "UnrealEd",
+                "WinDrv",
+                "XWindow"
+            };
 
-		public static readonly Dictionary<string, string> SpecialCharacters =
-			new Dictionary<string, string>
-			{
-				{ "\t", "\\t" },
-				{ "\r", "\\r" },
-				{ "\n", "\\n" }
-			};
+        public static readonly Dictionary<string, string> SpecialCharacters =
+            new Dictionary<string, string>
+            {
+                { "\t", "\\t" },
+                { "\r", "\\r" },
+                { "\n", "\\n" }
+            };
 
-		public static void ConvertToXML(string source, string destination)
-		{
+        public static Dictionary<string, string> DecompileToMemory(Stream ms)
+        {
+            Dictionary<string, string> fileMapping = new Dictionary<string, string>();
+            var coal = new CoalescedFileXml();
+            coal.Deserialize(ms);
+
+            XDocument xDoc;
+            XElement rootElement;
+
+
+            foreach (var file in coal.Files)
+            {
+                var fileId = Path.GetFileNameWithoutExtension(file.Name);
+                fileId = ProperNames.FirstOrDefault(s => s.Equals(fileId, StringComparison.InvariantCultureIgnoreCase));
+
+                xDoc = new XDocument();
+
+                rootElement = new XElement("CoalesceAsset");
+                rootElement.SetAttributeValue("id", fileId);
+                rootElement.SetAttributeValue("name", Path.GetFileName(file.Name));
+                rootElement.SetAttributeValue("source", file.Name);
+
+                var sectionsElement = new XElement("Sections");
+
+                foreach (var section in file.Sections)
+                {
+                    var sectionElement = new XElement("Section");
+                    sectionElement.SetAttributeValue("name", section.Key);
+
+                    //
+                    //var classes = Namespace.FromStrings(section.Value.Keys);
+
+                    //
+
+                    foreach (var property in section.Value)
+                    {
+                        var propertyElement = new XElement("Property");
+                        propertyElement.SetAttributeValue("name", property.Key);
+
+                        if (property.Value.Count > 1)
+                        {
+                            foreach (var value in property.Value)
+                            {
+                                var valueElement = new XElement("Value");
+                                var propertyValue = value.Value;
+                                valueElement.SetAttributeValue("type", value.Type);
+
+                                if (!string.IsNullOrEmpty(propertyValue))
+                                {
+                                    propertyValue = SpecialCharacters.Aggregate(propertyValue, (current, c) => current.Replace(c.Key, c.Value));
+                                }
+
+                                valueElement.SetValue(propertyValue ?? "null");
+
+                                propertyElement.Add(valueElement);
+                            }
+                        }
+                        else
+                        {
+                            switch (property.Value.Count)
+                            {
+                                case 1:
+                                    {
+                                        propertyElement.SetAttributeValue("type", property.Value[0].Type);
+                                        var propertyValue = property.Value[0].Value;
+
+                                        if (!string.IsNullOrEmpty(propertyValue))
+                                        {
+                                            propertyValue = SpecialCharacters.Aggregate(propertyValue, (current, c) => current.Replace(c.Key, c.Value));
+                                        }
+
+                                        propertyElement.SetValue(propertyValue ?? "null");
+                                        break;
+                                    }
+                                case 0:
+                                    {
+                                        propertyElement.SetAttributeValue("type", CoalesceProperty.DefaultValueType);
+                                        propertyElement.SetValue("");
+                                        break;
+                                    }
+                            }
+                        }
+
+                        sectionElement.Add(propertyElement);
+                    }
+
+                    sectionsElement.Add(sectionElement);
+                }
+
+                rootElement.Add(sectionsElement);
+                xDoc.Add(rootElement);
+
+                //
+                using (StringWriter writer = new Utf8StringWriter())
+                {
+                    // Build Xml with xw.
+                    //xw.IndentChar = '\t';
+                    //xw.Indentation = 1;
+                    //xw.Formatting = Formatting.Indented;
+
+                    //xDoc.Save(xw);
+
+                    ;
+                    xDoc.Save(writer, SaveOptions.None);
+                    fileMapping[$"{fileId}.xml"] = writer.ToString();
+                }
+
+                //
+
+                //xDoc.Save(iniPath, SaveOptions.None);
+            }
+            return fileMapping;
+        }
+
+        private class Utf8StringWriter : StringWriter
+        {
+            public override Encoding Encoding { get { return Encoding.UTF8; } }
+        }
+
+        public static void ConvertToXML(string source, string destination)
+        {
             var sourcePath = source;
             var destinationPath = destination;
 
@@ -230,7 +349,75 @@ namespace LegendaryExplorerCore.Coalesced
             }
         }
 
-        public static void ConvertToBin(string source, string destination)
+        public static MemoryStream CompileFromMemory(Dictionary<string, string> fileMapping)
+        {
+            var virtualizedXmlHeader = new XmlCoalesceFile();
+            var assets = new List<CoalesceAsset>();
+            //Virtual load assets.
+            foreach (var include in fileMapping)
+            {
+                var asset = XmlCoalesceAsset.LoadFromMemory(include.Value);
+
+                if (asset != null && !string.IsNullOrEmpty(asset.Source))
+                {
+                    assets.Add(asset);
+                }
+            }
+            virtualizedXmlHeader.Assets = assets;
+
+            var coal = new CoalescedFileXml
+            {
+                Version = 1
+            };
+
+            foreach (var asset in assets)
+            {
+                var entry =
+                    new FileEntry(asset.Source)
+                    {
+                        Sections = new Dictionary<string, Dictionary<string, List<PropertyValue>>>()
+                    };
+
+                foreach (var section in asset.Sections)
+                {
+                    var eSection = new Dictionary<string, List<PropertyValue>>();
+
+                    foreach (var property in section.Value)
+                    {
+                        var eProperty = new List<PropertyValue>();
+
+                        foreach (var value in property.Value)
+                        {
+                            //if (!file.Settings.CompileTypes.Contains(value.ValueType))
+                            //{
+                            //    continue;
+                            //}
+
+                            var valueValue = value.Value;
+
+                            if (!string.IsNullOrEmpty(valueValue))
+                            {
+                                valueValue = SpecialCharacters.Aggregate(valueValue, (current, c) => current.Replace(c.Value, c.Key));
+                            }
+
+                            eProperty.Add(new PropertyValue(value.ValueType, valueValue));
+                        }
+
+                        eSection.Add(property.Key, eProperty);
+                    }
+
+                    entry.Sections.Add(section.Key, eSection);
+                }
+
+                coal.Files.Add(entry);
+            }
+
+            MemoryStream outputStream = new MemoryStream();
+            coal.Serialize(outputStream);
+            return outputStream;
+        }
+
+        public static void ConvertToBin(string source, string destination, XDocument preloadedDoc = null)
         {
             var inputPath = Path.IsPathRooted(source) ? source : Path.Combine(GetExePath(), source);
             var outputPath = !string.IsNullOrEmpty(destination) ? destination : Path.ChangeExtension(inputPath, ".bin");
@@ -245,7 +432,8 @@ namespace LegendaryExplorerCore.Coalesced
                 return;
             }
 
-            var file = XmlCoalesceFile.Load(inputPath);
+            if (preloadedDoc == null) preloadedDoc = XDocument.Load(source);
+            var file = XmlCoalesceFile.LoadXmlDocument(inputPath, preloadedDoc);
 
             var coal = new CoalescedFileXml
             {
@@ -308,9 +496,9 @@ namespace LegendaryExplorerCore.Coalesced
         }
 
         private static string GetExePath()
-		{
-			return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-		}
+        {
+            return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        }
 
         /// <summary>
         /// Returns true if this is a ME3/LE3 coalesced file, false if LE1/LE2
@@ -328,5 +516,5 @@ namespace LegendaryExplorerCore.Coalesced
             }
             return true;
         }
-	}
+    }
 }

@@ -57,10 +57,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="shouldRelink"></param>
         /// <param name="newEntry"></param>
         /// <param name="relinkMap"></param>
+        /// <param name="importExportDependencies">Import dependencies when relinking. Requires shouldRelink = true. If portingOption is CloneAllDependencies this value is ignored</param>
         /// <returns></returns>
         public static List<EntryStringPair> ImportAndRelinkEntries(PortingOption portingOption, IEntry sourceEntry, IMEPackage destPcc, IEntry targetLinkEntry, bool shouldRelink,
                                                                         out IEntry newEntry, Dictionary<IEntry, IEntry> relinkMap = null
-                                                                        , Action<string> errorOccuredCallback = null)
+                                                                        , Action<string> errorOccuredCallback = null, bool importExportDependencies = false)
         {
             relinkMap ??= new Dictionary<IEntry, IEntry>();
             IMEPackage sourcePcc = sourceEntry.FileRef;
@@ -111,7 +112,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             List<EntryStringPair> relinkResults = null;
             if (shouldRelink)
             {
-                relinkResults = Relinker.RelinkAll(relinkMap, portingOption == PortingOption.CloneAllDependencies);
+                relinkResults = Relinker.RelinkAll(relinkMap, importExportDependencies || portingOption == PortingOption.CloneAllDependencies);
             }
 
             //Port Shaders
@@ -372,8 +373,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
             else
             {
-                int start = incomingExport.GetPropertyStart();
-                res.Writer.Write(new byte[start], 0, start);
+                //int start = incomingExport.GetPropertyStart();
+                res.Writer.WriteZeros(incomingExport.GetPropertyStart());
+                //res.Writer.Write(new byte[start], 0, start);
             }
 
             //store copy of names list in case something goes wrong
@@ -415,26 +417,30 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 return null;
             }
 
-            // Cache no longer necessary as cache is attached to package itself
-            //see if this import exists locally
-            //if (relinkerCache != null)
-            //{
-            //    // Fast: Precalculated mapping of names. No need to enumerate it
-
-            //    var entry = destinationPCC.FindImport(importFullName);
-            //    if (entry != null)
-            //    {
-            //        return entry;
-            //    }
-            //}
-            //else
-            //{
             var foundEntry = destinationPCC.FindEntry(importFullNameInstanced);
             if (foundEntry != null)
             {
                 return foundEntry;
             }
-            //}
+
+            // Todo: Improve this for root same-named packages
+            // This is a hackjob.
+            if (importFullNameInstanced.StartsWith("Engine."))
+            {
+                foundEntry = destinationPCC.FindEntry(importFullNameInstanced.Substring(7));
+                if (foundEntry != null)
+                {
+                    return foundEntry;
+                }
+            }
+            else if (importFullNameInstanced.StartsWith("SFXGame."))
+            {
+                foundEntry = destinationPCC.FindEntry(importFullNameInstanced.Substring(8));
+                if (foundEntry != null)
+                {
+                    return foundEntry;
+                }
+            }
 
             if (forcedLink is int link)
             {
@@ -464,8 +470,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             var sourceEntry = sourcePcc.FindEntry(importFullNameInstanced); // should this search entries instead? What if an import has an export parent?
             if (sourceEntry is ImportEntry imp) // import not found
             {
-                // Code below forces Package objects to be imported as exports instead of imports. However is an object is an import (that works properly) the parent already has to exist upstream.
-                // Some BioP for some reason use exports instead of imports when referncing sfxgame content even if they have no export children
+                // Code below forces Package objects to be imported as exports instead of imports. However if an object is an import (that works properly) the parent already has to exist upstream.
+                // Some BioP for some reason use exports instead of imports when referencing sfxgame content even if they have no export children
                 // not sure it has any functional difference
                 // Mgamerz 3/21/2021
 
@@ -544,16 +550,15 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             //        }
             //    }
 
-            //    //see if this export exists locally
-            //    foreach (ExportEntry exp in destinationPCC.Exports)
-            //    {
-            //        if (exp.FullPath == localSearchPath)
-            //        {
-            //            return exp;
-            //        }
-            //    }
-            //}
-            var foundEntry = destinationPCC.FindEntry(importFullNameInstanced);
+            //see if this export exists locally in the package, under a class of same name (Engine class in Engine.pcc for example)
+            var foundEntry = destinationPCC.FindEntry(localSearchPath);
+            if (foundEntry != null)
+            {
+                return foundEntry;
+            }
+
+            // Try the name directly
+            foundEntry = destinationPCC.FindEntry(importFullNameInstanced);
             if (foundEntry != null)
             {
                 return foundEntry;
@@ -564,28 +569,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             //recursively ensure parent exists
             IEntry parent = GetOrAddCrossImportOrPackageFromGlobalFile(string.Join(".", importParts.Take(importParts.Length - 1)), sourcePcc, destinationPCC, objectMapping, doubleClickCallback);
 
-
             ImportEntry matchingSourceImport = sourcePcc.FindImport(importFullNameInstanced);
-            /*
-            if (relinkerCache != null)
-            {
-                if (relinkerCache.sourceFullPathToEntryMap.TryGetValue(importFullNameInstanced, out var me) && me is ImportEntry imp)
-                {
-                    matchingSourceImport = imp;
-                }
-            }
-            else
-            {
-                foreach (ImportEntry sourceImport in sourcePcc.Imports)
-                {
-                    if (sourceImport.FullPath == importFullNameInstanced)
-                    {
-                        matchingSourceImport = sourceImport;
-                        break;
-                    }
-                }
-            }*/
-
             if (matchingSourceImport != null)
             {
                 var newImport = new ImportEntry(destinationPCC)
@@ -607,6 +591,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             ExportEntry matchingSourceExport = sourcePcc.FindExport(importFullNameInstanced);
             if (matchingSourceExport != null)
             {
+                var foundImp = destinationPCC.FindImport(importFullNameInstanced);
+                if (foundImp != null) return foundImp;
                 var newImport = new ImportEntry(destinationPCC)
                 {
                     idxLink = parent?.UIndex ?? 0,
@@ -995,14 +981,14 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         string testPath = Path.Combine(MEDirectories.GetBioGamePath(pcc.Game, gamePathOverride), info.pccPath);
                         if (File.Exists(testPath))
                         {
-                            loadStream = new MemoryStream(File.ReadAllBytes(testPath));
+                            loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(testPath);
                         }
                         else if (pcc.Game == MEGame.ME1)
                         {
                             testPath = Path.Combine(gamePathOverride ?? ME1Directory.DefaultGamePath, info.pccPath);
                             if (File.Exists(testPath))
                             {
-                                loadStream = new MemoryStream(File.ReadAllBytes(testPath));
+                                loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(testPath);
                             }
                         }
                     }

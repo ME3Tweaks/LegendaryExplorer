@@ -70,6 +70,8 @@ namespace LegendaryExplorerCore.Packages
         {
             MEGame.ME1 => "CookedPC",
             MEGame.ME2 => "CookedPC",
+            MEGame.UDK => throw new Exception($"{game} does not support CookedDirName()"),
+            MEGame.LELauncher => throw new Exception($"{game} does not support CookedDirName()"),
             _ => "CookedPCConsole"
         };
     }
@@ -85,8 +87,12 @@ namespace LegendaryExplorerCore.Packages
         LE2,
         LE3,
         UDK,
+
+        // Not an actual game, but used for identifying game directories
+        LELauncher,
     }
 
+    // This does not work for ME1/LE1 as it uses two character non-int localizations
     public enum MELocalization
     {
         None = 0,

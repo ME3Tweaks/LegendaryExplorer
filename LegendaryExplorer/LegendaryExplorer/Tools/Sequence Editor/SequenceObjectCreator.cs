@@ -90,7 +90,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                         Stream loadStream = null;
                         if (File.Exists(classInfo.pccPath))
                         {
-                            loadStream = new MemoryStream(File.ReadAllBytes(classInfo.pccPath));
+                            loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(classInfo.pccPath);
                         }
                         else if (classInfo.pccPath == GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
                         {
@@ -98,14 +98,14 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                         }
                         else if (File.Exists(filepath))
                         {
-                            loadStream = new MemoryStream(File.ReadAllBytes(filepath));
+                            loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(filepath);
                         }
                         else if (game == MEGame.ME1)
                         {
                             filepath = Path.Combine(ME1Directory.DefaultGamePath, classInfo.pccPath); //for files from ME1 DLC
                             if (File.Exists(filepath))
                             {
-                                loadStream = new MemoryStream(File.ReadAllBytes(filepath));
+                                loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(filepath);
                             }
                         }
                         if (loadStream != null)

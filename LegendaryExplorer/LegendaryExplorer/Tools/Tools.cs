@@ -27,6 +27,7 @@ using LegendaryExplorer.UserControls.ExportLoaderControls;
 using Newtonsoft.Json;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Packages;
+using System.Text;
 
 namespace LegendaryExplorer
 {
@@ -36,7 +37,8 @@ namespace LegendaryExplorer
         public ImageSource icon { get; set; }
         public Action open { get; set; }
         public List<string> tags;
-        public string subCategory { get; set; }
+        public string category { get; set; }
+        public string category2 { get; set; }
         public string description { get; set; }
         public Type type { get; set; }
         public bool IsFavorited
@@ -71,7 +73,9 @@ namespace LegendaryExplorer
         {
             HashSet<Tool> set = new();
 
-            #region Install Mods
+            #region Toolset Devs
+
+#if DEBUG
             set.Add(new Tool
             {
                 name = "AutoTOC",
@@ -82,9 +86,10 @@ namespace LegendaryExplorer
                     (new Tools.AutoTOC.AutoTOCWindow()).Show();
                 },
                 tags = new List<string> { "user", "toc", "tocing", "crash", "infinite", "loop", "loading" },
-                description = "AutoTOC is a tool for ME3 that updates and/or creates the PCConsoleTOC.bin files associated with the base game and each DLC.\n\nRunning this tool upon mod installation is imperative to ensuring proper functionality of the game."
+                category = "Toolset Devs",
+                description = "AutoTOC is a tool for ME3 and LE that updates and/or creates the PCConsoleTOC.bin files associated with the base game and each DLC."
             });
-#if DEBUG
+
             set.Add(new Tool
             {
                 name = "Memory Analyzer",
@@ -95,7 +100,7 @@ namespace LegendaryExplorer
                     (new MemoryAnalyzerUI()).Show();
                 },
                 tags = new List<string> { "utility", "toolsetdev" },
-                subCategory = "For Toolset Devs Only",
+                category = "Toolset Devs",
                 description = "Memory Analyzer allows you to track references to objects to help trace memory leaks."
             });
 
@@ -109,8 +114,22 @@ namespace LegendaryExplorer
                     (new FileHexViewer()).Show();
                 },
                 tags = new List<string> { "utility", "toolsetdev", "hex" },
-                subCategory = "For Toolset Devs Only",
+                category = "Toolset Devs",
                 description = "File Hex Analyzer is a package hex viewer that shows references in the package hex. It also works with non-package files, but won't show any references, obviously."
+            });
+
+            set.Add(new Tool
+            {
+                name = "SFAR Explorer",
+                type = typeof(Tools.SFARExplorer.SFARExplorerWindow),
+                icon = Application.Current.FindResource("iconSFARExplorer") as ImageSource,
+                open = () =>
+                {
+                    (new Tools.SFARExplorer.SFARExplorerWindow()).Show();
+                },
+                tags = new List<string> { "developer", "dlc" },
+                category = "Toolset Devs",
+                description = "SFAR Explorer allows you to explore and extract ME3 DLC archive files (SFAR).",
             });
 #endif
             #endregion
@@ -133,7 +152,8 @@ namespace LegendaryExplorer
                     }
                 },
                 tags = new List<string> { "utility", "animation", "gesture" },
-                subCategory = "Explorers",
+                category = "Cinematic Tools",
+                category2 = "Utilities",
                 description = "Animation Viewer allows you to preview any animation in Mass Effect 3"
             });
             set.Add(new Tool
@@ -159,7 +179,7 @@ namespace LegendaryExplorer
                     }
                 },
                 tags = new List<string> { "utility" },
-                subCategory = "Utilities",
+                category = "Utilities",
                 description = "Live Level Editor allows you to preview the effect of property changes to Actors in game, to reduce iteration times. It also has a Camera Path Editor, which lets you make camera pans quickly."
             });
             set.Add(new Tool
@@ -172,7 +192,8 @@ namespace LegendaryExplorer
                     (new AFCCompactorWindow()).Show();
                 },
                 tags = new List<string> { "utility", "deployment", "audio", },
-                subCategory = "Deployment",
+                category = "Audio Tools",
+                category2 = "Utilities",
                 description = "AFC Compactor can compact your ME2 or ME3 Audio File Cache (AFC) files by effectively removing unreferenced chunks in it. It also can be used to reduce or remove AFC dependencies so users do not have to have DLC installed for certain audio to work.",
             });
 //            set.Add(new Tool
@@ -185,7 +206,7 @@ namespace LegendaryExplorer
 //                    (new ASI.ASIManager()).Show();
 //                },
 //                tags = new List<string> { "utility", "asi", "debug", "log" },
-//                subCategory = "Debugging",
+//                category = "Debugging",
 //                description = "ASI Manager allows you to install and uninstall ASI mods for all three Mass Effect Trilogy games. ASI mods allow you to run native mods that allow you to do things such as kismet logging or function call monitoring."
 //            });
             set.Add(new Tool
@@ -198,7 +219,8 @@ namespace LegendaryExplorer
                     (new Tools.AudioLocalizer.AudioLocalizerWindow()).Show();
                 },
                 tags = new List<string> { "utility", "localization", "LOC_INT", "translation" },
-                subCategory = "Utilities",
+                category = "Audio Tools",
+                category2 = "Utilities",
                 description = "Audio Localizer allows you to copy the afc offsets and filenames from localized files to your mods LOC_INT files."
             });
 //            set.Add(new Tool
@@ -211,20 +233,21 @@ namespace LegendaryExplorer
 //                    (new BIKExtract()).Show();
 //                },
 //                tags = new List<string> { "utility", "bik", "movie", "bink", "video", "tfc" },
-//                subCategory = "Extractors + Repackers",
+//                category = "Extractors + Repackers",
 //                description = "BIK Movie Extractor is a utility for extracting BIK videos from the ME3 Movies.tfc. This file contains small resolution videos played during missions, such as footage of Miranda in Sanctuary.",
 //            });
             set.Add(new Tool
             {
                 name = "Coalesced Compiler",
                 type = typeof(Tools.CoalescedCompiler.CoalescedCompilerWindow),
-                icon = Application.Current.FindResource("iconCoalescedEditor") as ImageSource,
+                icon = Application.Current.FindResource("iconCoalescedCompiler") as ImageSource,
                 open = () =>
                 {
                     (new Tools.CoalescedCompiler.CoalescedCompilerWindow()).Show();
                 },
                 tags = new List<string> { "utility", "coal", "ini", "bin" },
-                subCategory = "Extractors + Repackers",
+                category = "Extractors + Repackers",
+                category2 = "Utilities",
                 description = "Coalesced Compiler converts between XML and BIN formats for ME3's coalesced files. These are key game files that help control a large amount of content.",
             });
 //            set.Add(new Tool
@@ -244,7 +267,7 @@ namespace LegendaryExplorer
 //                    }
 //                },
 //                tags = new List<string> { "utility", "dlc", "sfar", "unpack", "extract" },
-//                subCategory = "Extractors + Repackers",
+//                category = "Extractors + Repackers",
 //                description = "DLC Unpacker allows you to extract Mass Effect 3 DLC SFAR files, allowing you to access their contents for modding.\n\nThis unpacker is based on MEM code, which is very fast and is compatible with the ALOT texture mod.",
 //            });
             set.Add(new Tool
@@ -263,20 +286,20 @@ namespace LegendaryExplorer
                     }
                 },
                 tags = new List<string> { "utility", "code", "endian", "convert", "integer", "float" },
-                subCategory = "Converters",
+                category = "Utilities",
                 description = "Hex Converter is a utility that converts among floats, signed/unsigned integers, and hex code in big/little endian.",
             });
             set.Add(new Tool
             {
                 name = "Interp Editor",
                 type = typeof(InterpEditorWindow),
-                icon = Application.Current.FindResource("iconInterpViewer") as ImageSource,
+                icon = Application.Current.FindResource("iconInterpEditor") as ImageSource,
                 open = () =>
                 {
                     (new InterpEditorWindow()).Show();
                 },
                 tags = new List<string> { "utility", "dialogue", "matinee", "cutscene", "animcutscene", "interpdata" },
-                subCategory = "Explorers",
+                category = "Cinematic Tools",
                 description = "Interp Editor is a simplified version of UDK’s Matinee Editor. It loads interpdata objects and displays their children as tracks on a timeline, allowing the user to visualize the game content associated with a specific scene."
             });
             set.Add(new Tool
@@ -289,8 +312,8 @@ namespace LegendaryExplorer
                     (new MeshplorerWindow()).Show();
                 },
                 tags = new List<string> { "developer", "mesh" },
-                subCategory = "Meshes + Textures",
-                description = "Meshplorer loads and displays all meshes within a file. The tool skins most meshes with its associated texture.\n\nThis tool works with all three games."
+                category = "Meshes + Textures",
+                description = "Meshplorer loads and displays all meshes within a file. The tool skins most meshes with its associated texture.\nThis tool works with all three games."
             });
             set.Add(new Tool
             {
@@ -302,7 +325,7 @@ namespace LegendaryExplorer
                     (new AnimationImporterExporterWindow()).Show();
                 },
                 tags = new List<string> { "developer", "animation", "psa", "animset", "animsequence" },
-                subCategory = "Scene Shop",
+                category = "Extractors + Repackers",
                 description = "Import and Export AnimSequences from/to PSA and UDK"
             });
             set.Add(new Tool
@@ -318,8 +341,9 @@ namespace LegendaryExplorer
                     };
                     elhw.Show();
                 },
-                tags = new List<string> { "utility", "dialogue", "subtitle", "text", "strin'" },
-                subCategory = "Extractors + Repackers",
+                tags = new List<string> { "utility", "dialogue", "subtitle", "text", "string" },
+                category = "Core Editors",
+                category2 = "Utilities",
                 description = "TLK Editor is an editor for localized text, located in TLK files. These files are embedded in package files in Mass Effect 1 and stored externally in Mass Effect 2 and 3.",
             });
             set.Add(new Tool
@@ -332,7 +356,8 @@ namespace LegendaryExplorer
                     (new Tools.PackageDumper.PackageDumperWindow()).Show();
                 },
                 tags = new List<string> { "utility", "package", "pcc", "text", "dump" },
-                subCategory = "Utilities",
+                category = "Utilities",
+                category2 = "Extractors + Repackers",
                 description = "Package Dumper is a utility for dumping package information to files that can be searched with tools like GrepWin. Names, Imports, Exports, Properties and more are dumped."
             });
             set.Add(new Tool
@@ -345,7 +370,8 @@ namespace LegendaryExplorer
                     (new Tools.DialogueDumper.DialogueDumperWindow()).Show();
                 },
                 tags = new List<string> { "utility", "convo", "dialogue", "text", "dump" },
-                subCategory = "Utilities",
+                category = "Utilities",
+                category2 = "Extractors + Repackers",
                 description = "Dialogue Dumper is a utility for dumping conversation strings from games into an excel file. It shows the actor that spoke the line and which file the line is taken from. It also produces a table of who owns which conversation, for those that the owner is anonymous."
             });
             set.Add(new Tool
@@ -358,8 +384,8 @@ namespace LegendaryExplorer
                     (new AssetDB()).Show();
                 },
                 tags = new List<string> { "utility", "mesh", "material", "class", "animation" },
-                subCategory = "Databases",
-                description = "Scans games and creates a database of classes, animations, materials, textures, particles and meshes.\n\nIndividual assets can be opened directly from the interface with tools for editing."
+                category = "Utilities",
+                description = "Scans games and creates a database of classes, animations, materials, textures, particles and meshes.\nIndividual assets can be opened directly from the interface with tools for editing."
             });
             set.Add(new Tool
             {
@@ -371,12 +397,13 @@ namespace LegendaryExplorer
                     (new TFCCompactorWindow()).Show();
                 },
                 tags = new List<string> { "utility", "deployment", "textures", "compression" },
-                subCategory = "Deployment",
+                category = "Meshes + Textures",
+                category2 = "Utilities",
                 description = "TFC Compactor can compact your ME2 or ME3 DLC mod TFC file by effectively removing unreferenced chunks in it and compressing the referenced textures. It also can be used to reduce or remove TFC dependencies so users do not have to have DLC installed for certain textures to work.",
             });
             #endregion
 
-            #region Create Mods
+            #region Core Tools
             set.Add(new Tool
             {
                 name = "Conditionals Editor",
@@ -387,7 +414,7 @@ namespace LegendaryExplorer
                     (new ConditionalsEditorWindow()).Show();
                 },
                 tags = new List<string> { "developer", "conditional", "plot", "boolean", "flag", "int", "integer", "cnd" },
-                subCategory = "Core",
+                category = "Core Editors",
                 description = "Conditionals Editor is used to create and edit ME3 files with the .cnd extension. CND files control game story by checking for specific combinations of plot events.",
             });
             set.Add(new Tool
@@ -400,7 +427,8 @@ namespace LegendaryExplorer
                     (new DialogueEditor.DialogueEditorWindow()).Show();
                 },
                 tags = new List<string> { "developer", "me1", "me2", "me3", "cutscene" },
-                subCategory = "Scene Shop",
+                category = "Core Editors",
+                category2 = "Cinematic Tools",
                 description = "Dialogue Editor is a visual tool used to edit in-game conversations. It works with all the games.",
             });
             set.Add(new Tool
@@ -413,7 +441,8 @@ namespace LegendaryExplorer
                     (new FaceFXEditorWindow()).Show();
                 },
                 tags = new List<string> { "developer", "fxa", "facefx", "lipsync", "fxe", "bones", "animation", "me3", "me3" },
-                subCategory = "Scene Shop",
+                category = "Cinematic Tools",
+                category2 = "Core Editors",
                 description = "FaceFX Editor is the toolset’s highly-simplified version of FaceFX Studio. With this tool modders can edit FaceFX AnimSets (FXEs) for all three games.",
             });
             set.Add(new Tool
@@ -426,7 +455,8 @@ namespace LegendaryExplorer
                     new MountEditorWindow().Show();
                 },
                 tags = new List<string> { "developer", "mount", "dlc", "me2", "me3" },
-                subCategory = "Core",
+                category = "Utilities",
+                category2 = "Core Editors",
                 description = "Mount Editor allows you to create or modify mount.dlc files, which are used in DLC for Mass Effect 2 and Mass Effect 3."
             });
             set.Add(new Tool
@@ -439,7 +469,8 @@ namespace LegendaryExplorer
                     new TLKManagerWPF().Show();
                 },
                 tags = new List<string> { "developer", "dialogue", "subtitle", "text", "string", "localize", "language" },
-                subCategory = "Core",
+                category = "Core Editors",
+                category2 = "Utilities",
                 description = "TLK Manager manages loaded TLK files that are used to display string data in editor tools. You can also use it to extract and recompile TLK files."
             });
             set.Add(new Tool
@@ -452,9 +483,9 @@ namespace LegendaryExplorer
                     new PackageEditorWindow().Show();
                 },
                 tags = new List<string> { "user", "developer", "pcc", "cloning", "import", "export", "sfm", "upk", ".u", "me2", "me1", "me3", "name" },
-                subCategory = "Core",
-                description = "Package Editor is ME3Explorer's general purpose editing tool for unreal package files. It can edit ME3 and ME2 .pcc files, as well as ME1 .sfm, .upk, and .u files." +
-                              "\n\nEdit trilogy game files in a single window with access to external tools such as Curve Editor and Soundplorer, right in the same window."
+                category = "Core Editors",
+                description = "Package Editor is Legendary Explorer's general purpose editing tool for Unreal package files in all games. " +
+                              "Edit trilogy game files in a single window with easy access to external tools such as Curve Editor and Soundplorer."
             });
             set.Add(new Tool
             {
@@ -466,7 +497,7 @@ namespace LegendaryExplorer
                     (new PathfindingEditorWindow()).Show();
                 },
                 tags = new List<string> { "user", "developer", "path", "ai", "combat", "spline", "spawn", "map", "path", "node", "cover", "level" },
-                subCategory = "Core",
+                category = "Core Editors",
                 description = "Pathfinding Editor allows you to modify pathing nodes so squadmates and enemies can move around a map. You can also edit placement of several different types of level objects such as StaticMeshes, Splines, CoverSlots, and more.",
             });
             set.Add(new Tool
@@ -480,8 +511,8 @@ namespace LegendaryExplorer
                     plotEd.Show();
                 },
                 tags = new List<string> { "developer", "codex", "state transition", "quest", "natives" },
-                subCategory = "Core",
-                description = "Plot Editor is used to examine, edit, and search ME3's plot maps for quests, state events, and codices."
+                category = "Core Editors",
+                description = "Plot Editor is used to examine, edit, and search plot maps in all 3 games for quests, state events, and codex entries."
             });
             set.Add(new Tool
             {
@@ -493,7 +524,7 @@ namespace LegendaryExplorer
                     (new SequenceEditorWPF()).Show();
                 },
                 tags = new List<string> { "user", "developer", "kismet", "me1", "me2", "me3" },
-                subCategory = "Core",
+                category = "Core Editors",
                 description = "Sequence Editor is the toolset’s version of UDK’s UnrealKismet. With this cross-game tool, users can edit and create new sequences that control gameflow within and across levels.",
             });
             set.Add(new Tool
@@ -506,21 +537,8 @@ namespace LegendaryExplorer
                     (new Tools.TextureStudio.TextureStudioWindow()).Show();
                 },
                 tags = new List<string> { "texture", "developer", "studio", "graphics" },
-                subCategory = "Meshes + Textures",
+                category = "Meshes + Textures",
                 description = "Texture Studio is a tool designed for texture editing files in a directory of files, such as a DLC mod. It is not the same as other tools such as Mass Effect Modder, which is a game wide replacement tool.",
-            });
-            set.Add(new Tool
-            {
-                name = "SFAR Explorer",
-                type = typeof(Tools.SFARExplorer.SFARExplorerWindow),
-                icon = Application.Current.FindResource("iconSFARExplorer") as ImageSource,
-                open = () =>
-                {
-                    (new Tools.SFARExplorer.SFARExplorerWindow()).Show();
-                },
-                tags = new List<string> { "developer", "dlc" },
-                subCategory = other,
-                description = "SFAR Explorer allows you to explore and extract ME3 DLC archive files (SFAR).",
             });
             set.Add(new Tool
             {
@@ -532,8 +550,8 @@ namespace LegendaryExplorer
                     (new SoundplorerWPF()).Show();
                 },
                 tags = new List<string> { "user", "developer", "audio", "dialogue", "music", "wav", "ogg", "sound", "afc", "wwise", "bank" },
-                subCategory = "Scene Shop",
-                description = "Extract and play audio from all 3 games, and replace audio directly in Mass Effect 3.",
+                category = "Audio Tools",
+                description = "Extract and play audio from all 3 games, and replace audio directly in Mass Effect 3 and Mass Effect 2 LE.",
             });
             set.Add(new Tool
             {
@@ -545,10 +563,9 @@ namespace LegendaryExplorer
                     (new WwiseEditorWindow()).Show();
                 },
                 tags = new List<string> { "developer", "audio", "music", "sound", "wwise", "bank" },
-                subCategory = "Scene Shop",
-                description = "Wwise Editor currently has no editing functionality. " +
-                "It can be used to help visualize the relationships between HIRC objects as well as their connection to WwiseEvent and WwiseStream Exports. " +
-                "There are many relationships not shown, due to most HIRC objects not being parsed yet.",
+                category = "Audio Tools",
+                description = "Wwise Graph Editor currently has no editing functionality. " +
+                "It can be used to help visualize the relationships between HIRC objects as well as their connection to WwiseEvent and WwiseStream Exports."
             });
             #endregion
 
@@ -563,8 +580,7 @@ namespace LegendaryExplorer
             {
                 if (File.Exists(FavoritesPath))
                 {
-                    string raw = File.ReadAllText(FavoritesPath);
-                    var favorites = JsonConvert.DeserializeObject<HashSet<string>>(raw);
+                    var favorites = new HashSet<string>(Misc.AppSettings.Settings.MainWindow_Favorites.Split(';'));
                     foreach (var tool in items)
                     {
                         if (favorites.Contains(tool.name))
@@ -588,16 +604,16 @@ namespace LegendaryExplorer
                 FavoritesChanged.Invoke(null, EventArgs.Empty);
                 try
                 {
-                    var favorites = new HashSet<string>();
+                    var favorites = new StringBuilder();
                     foreach (var tool in items)
                     {
                         if (tool.IsFavorited)
                         {
-                            favorites.Add(tool.name);
+                            favorites.Append(tool.name + ";");
                         }
                     }
-                    string file = JsonConvert.SerializeObject(favorites);
-                    File.WriteAllText(FavoritesPath, file);
+                    if(favorites.Length > 0) favorites.Remove(favorites.Length - 1, 1);
+                    Misc.AppSettings.Settings.MainWindow_Favorites = favorites.ToString();
                 }
                 catch
                 {

@@ -16,7 +16,7 @@ namespace LegendaryExplorer.Dialogs
         {
             DirectionsText = promptText;
             Topmost = topMost;
-            Title = titleText;
+            TitleText = titleText;
             DataContext = this;
             LoadCommands();
             InitializeComponent();
@@ -83,6 +83,7 @@ namespace LegendaryExplorer.Dialogs
 
         private object ChosenItem;
         public string DirectionsText { get; }
+        public string TitleText { get; } = @"TITLE NOT SET!";
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = false;

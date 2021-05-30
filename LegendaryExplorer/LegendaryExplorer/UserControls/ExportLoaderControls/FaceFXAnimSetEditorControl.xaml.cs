@@ -63,7 +63,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public FaceFXAnimSet FaceFX;
 
-        public ObservableCollectionExtended<FaceFXLineEntry> Lines { get; } = new ObservableCollectionExtended<FaceFXLineEntry>();
+        public ObservableCollectionExtended<FaceFXLineEntry> Lines { get; } = new();
 
         FaceFXLineEntry _selectedLineEntry;
 
@@ -84,7 +84,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public FaceFXLine SelectedLine => SelectedLineEntry?.Line;
 
-        public ObservableCollectionExtended<Animation> Animations { get; } = new ObservableCollectionExtended<Animation>();
+        public ObservableCollectionExtended<Animation> Animations { get; } = new();
 
         Animation _selectedAnimation;
         public Animation SelectedAnimation
@@ -168,7 +168,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             foreach (var faceFXLine in FaceFX.Lines)
             {
-                FaceFXLineEntry LineEntry = new FaceFXLineEntry(faceFXLine);
+                var LineEntry = new FaceFXLineEntry(faceFXLine);
                 if (int.TryParse(LineEntry.Line.ID, out int tlkID))
                 {
                      LineEntry.TLKString = TLKManagerWPF.GlobalFindStrRefbyID(tlkID, Pcc);
@@ -463,7 +463,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             switch (subidx)
             {
                 case 0://Name
-                    result = PromptDialog.Prompt(this, "Please enter new value", "ME3Explorer", FaceFX.Names.ElementAtOrDefault(SelectedLine.NameIndex), true);
+                    result = PromptDialog.Prompt(this, "Please enter new value", "Legendary Explorer", FaceFX.Names.ElementAtOrDefault(SelectedLine.NameIndex), true);
                     if (result == string.Empty || result is null)
                     {
                         return;
@@ -483,7 +483,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                     return;
                 case 1://FadeInTime
-                    result = PromptDialog.Prompt(this, "Please enter new value", "ME3Explorer", SelectedLine.FadeInTime.ToString(), true);
+                    result = PromptDialog.Prompt(this, "Please enter new value", "Legendary Explorer", SelectedLine.FadeInTime.ToString(), true);
                     if (float.TryParse(result, out f))
                     {
                         SelectedLine.FadeInTime = f;
@@ -491,7 +491,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                     return;
                 case 2://FadeInTime
-                    result = PromptDialog.Prompt(this, "Please enter new value", "ME3Explorer", SelectedLine.FadeOutTime.ToString(), true);
+                    result = PromptDialog.Prompt(this, "Please enter new value", "Legendary Explorer", SelectedLine.FadeOutTime.ToString(), true);
                     if (float.TryParse(result, out f))
                     {
                         SelectedLine.FadeOutTime = f;
@@ -499,14 +499,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                     return;
                 case 3://Path
-                    if (PromptDialog.Prompt(this, "Please enter new value", "ME3Explorer", SelectedLine.Path, true) is string path)
+                    if (PromptDialog.Prompt(this, "Please enter new value", "Legendary Explorer", SelectedLine.Path, true) is string path)
                     {
                         SelectedLine.Path = path;
                         break;
                     }
                     return;
                 case 4://ID
-                    if (PromptDialog.Prompt(this, "Please enter new value", "ME3Explorer", SelectedLine.ID, true) is string id)
+                    if (PromptDialog.Prompt(this, "Please enter new value", "Legendary Explorer", SelectedLine.ID, true) is string id)
                     {
                         SelectedLine.ID = id;
                         if (int.TryParse(id, out int tlkID))
@@ -517,7 +517,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                     return;
                 case 5://index
-                    result = PromptDialog.Prompt(this, "Please enter new value", "ME3Explorer", SelectedLine.Index.ToString(), true);
+                    result = PromptDialog.Prompt(this, "Please enter new value", "Legendary Explorer", SelectedLine.Index.ToString(), true);
                     if (int.TryParse(result, out int i))
                     {
                         SelectedLine.Index = i;

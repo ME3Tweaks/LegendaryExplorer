@@ -299,7 +299,7 @@ namespace LegendaryExplorerCore.Packages
             ExportCount = Gen0NetworkedObjectCount = Gen0ExportCount = exports.Count;
             foreach (ExportEntry e in exports)
             {
-                e.HeaderOffset = (uint)ms.Position;
+                e.HeaderOffset = (int)ms.Position;
                 ms.WriteFromBuffer(e.Header);
             }
 

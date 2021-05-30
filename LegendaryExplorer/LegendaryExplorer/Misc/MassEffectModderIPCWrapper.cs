@@ -1,7 +1,7 @@
 ﻿/**
  * This file is taken from ALOT Installer
  * and has been modified for use with
- * ME3Explorer - ME3Tweaks Fork
+ * Legendary Explorer
  */
 
 using System;
