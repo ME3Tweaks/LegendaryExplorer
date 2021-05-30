@@ -1,4 +1,5 @@
-﻿using LegendaryExplorer.SharedUI.Bases;
+﻿using System.Windows;
+using LegendaryExplorer.SharedUI.Bases;
 
 namespace LegendaryExplorer.Dialogs.Splash
 {
@@ -16,6 +17,8 @@ namespace LegendaryExplorer.Dialogs.Splash
         }
         public DPIAwareSplashScreen() : base("DPIAwareSplashScreen", false)
         {
+            MessageBox.Show(
+                "WARNING: Mods released before the toolset is publicly available for download (not compiled) will be blacklisted by modding tools in the scene.\nDo NOT release package mods until the tools for modding are released for public use.", "WARNING: DO NOT RELEASE MODS", MessageBoxButton.OK, MessageBoxImage.Warning);
             InitializeComponent();
         }
     }
