@@ -9,6 +9,7 @@
     <ApplicationIcon>LEX_ico_test.ico</ApplicationIcon>
     <Configurations>WinDebug;WinRelease;WinAzureRelease;WinAzureTest</Configurations>
     <DebugSymbols>true</DebugSymbols>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
     <PreserveCompilationContext>false</PreserveCompilationContext>
     <AssemblyVersion>6.0</AssemblyVersion>
   </PropertyGroup>
@@ -538,6 +539,6 @@
   </Target>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /f /e /y &quot;$(ProjectDir)Resources\exec&quot; &quot;$(ProjectDir)$(OutDir)\exec\&quot;" />
+    <Exec Command="xcopy /f /e /y &quot;$(ProjectDir)Resources\exec&quot; &quot;$(ProjectDir)$(OutDir)\exec\&quot;&#xD;&#xA;xcopy /y &quot;$(SolutionDir)TexConverter\Bin\$(PlatformName)\$(ConfigurationName)\TexConverter.dll&quot; &quot;$(ProjectDir)$(OutDir)&quot;" />
   </Target>
 </Project>

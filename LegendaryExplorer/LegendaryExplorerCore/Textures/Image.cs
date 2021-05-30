@@ -552,6 +552,9 @@ namespace LegendaryExplorerCore.Textures
 
         private static byte[] convertToFormat(PixelFormat srcFormat, byte[] src, int w, int h, PixelFormat dstFormat, bool dxt1HasAlpha = false, byte dxt1Threshold = 128)
         {
+#if WINDOWS
+            return TexConverter.ConvertTexture(src, (uint)w, (uint)h, srcFormat, dstFormat);
+#else
             byte[] tempData;
 
             switch (dstFormat)
@@ -604,6 +607,7 @@ namespace LegendaryExplorerCore.Textures
             }
 
             return tempData;
+#endif
         }
 
         private static byte[] convertRawToBC(byte[] imageBytes, int w, int h, PixelFormat dstFormat)
@@ -765,6 +769,16 @@ namespace LegendaryExplorerCore.Textures
             n |= n >> 16;
             n++;
             return n;
+        }
+
+        public static Image LoadFromFile(string filename, PixelFormat targetFormat)
+        {
+            List<MipMap> mips = new List<MipMap>();
+
+            byte[] pixelData = TexConverter.LoadTexture(filename, out uint width, out uint height, ref targetFormat);
+            mips.Add(new MipMap(pixelData, (int)width, (int)height, targetFormat));
+
+            return new Image(mips, targetFormat);
         }
     }
 }
