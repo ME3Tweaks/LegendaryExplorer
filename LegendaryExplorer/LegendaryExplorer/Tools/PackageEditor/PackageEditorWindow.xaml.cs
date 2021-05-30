@@ -900,7 +900,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         private void NewFile()
         {
             string gameString = InputComboBoxDialog.GetValue(this, "Choose a game to create a file for:",
-                "Create new package file", new[] { "ME3", "ME2", "ME1", "UDK" }, "ME3");
+                "Create new package file", new[] { "LE3", "LE2", "LE1", "ME3", "ME2", "ME1", "UDK" }, "LE3");
             if (Enum.TryParse(gameString, out MEGame game))
             {
                 var dlg = new SaveFileDialog

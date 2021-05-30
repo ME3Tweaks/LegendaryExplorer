@@ -153,6 +153,29 @@ namespace LegendaryExplorerCore.Gammtek.IO
         /// </summary>
         /// <param name="stream"></param>
         /// <returns></returns>
+        public static string ReadUnrealString(ReadOnlySpan<byte> data, int position, Endian endian)
+        {
+            int length = ToInt32(data, position, endian);
+            if (length == 0)
+            {
+                return "";
+            }
+
+            if (length > 0)
+            {
+                return Encoding.Latin1.GetString(data.Slice(position + 4, length));
+            }
+            else
+            {
+                return Encoding.Unicode.GetString(data.Slice(position + 4, length * -2));
+            }
+        }
+
+        /// <summary>
+        /// Reads an unreal-style prefixed string from the underlying stream.
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
         public static string ReadUnrealString(byte[] data, int position, Endian endian)
         {
             int length = ToInt32(data, position, endian);
@@ -601,7 +624,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
         {
             return ReadBytes(size);
         }
-        
+
         /// <summary>
         /// Copies stream to a new array. Consider using a more performant method if at all possible.
         /// </summary>
@@ -700,6 +723,22 @@ namespace LegendaryExplorerCore.Gammtek.IO
         }
 
         /// <summary>
+        /// Reads an int16 from the buffer at the specified position with the specified endianness.
+        /// </summary>
+        /// <returns></returns>
+        public static short ToInt16(ReadOnlySpan<byte> buffer, int offset, Endian endianness)
+        {
+            var readMagic = MemoryMarshal.Read<short>(buffer.Slice(offset));
+            if (!endianness.IsNative)
+            {
+                //swap
+                return BinaryPrimitives.ReverseEndianness(readMagic);
+            }
+
+            return readMagic;
+        }
+
+        /// <summary>
         /// Reads an uint32 from the buffer at the specified position with the specified endianness.
         /// </summary>
         /// <returns></returns>
@@ -728,7 +767,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
             }
             return readMagic;
         }
-        
+
         public static Guid ToGuid(ReadOnlySpan<byte> span, Endian endianness)
         {
             if (endianness.IsNative)
