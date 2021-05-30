@@ -148,7 +148,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             OpenFileDialog selectDDS = new OpenFileDialog
             {
                 Title = "Select texture file",
+#if WINDOWS
+                Filter = "PNG files (*.png)|*.png|DDS files (*.dds)|*.dds|TGA files (*.tga)|*.tga"
+#else
                 Filter = "Texture (DDS PNG BMP TGA)|*.dds;*.png;*.bmp;*.tga"
+#endif
             };
             var result = selectDDS.ShowDialog();
             if (result.HasValue && result.Value)
@@ -161,7 +165,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 Image image;
                 try
                 {
+#if WINDOWS
+                    image = Image.LoadFromFile(selectDDS.FileName, LegendaryExplorerCore.Textures.PixelFormat.ARGB);
+#else
                     image = new Image(selectDDS.FileName);
+#endif
                 }
                 catch (TextureSizeNotPowerOf2Exception)
                 {
@@ -236,13 +244,21 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             SaveFileDialog d = new SaveFileDialog
             {
+#if WINDOWS
+                Filter = "PNG files (*.png)|*.png|DDS files (*.dds)|*.dds|TGA files (*.tga)|*.tga",
+#else
                 Filter = "PNG files|*.png",
+#endif
                 FileName = CurrentLoadedExport.ObjectName.Instanced + ".png"
             };
             if (d.ShowDialog() == true)
             {
                 Texture2D t2d = new Texture2D(CurrentLoadedExport);
+#if WINDOWS
+                t2d.ExportToFile(d.FileName);
+#else
                 t2d.ExportToPNG(d.FileName);
+#endif
             }
 
         }
