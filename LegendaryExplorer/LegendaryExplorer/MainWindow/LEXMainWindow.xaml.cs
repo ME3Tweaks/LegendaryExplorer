@@ -94,7 +94,7 @@ namespace LegendaryExplorer.MainWindow
 
         private void About_Click(object sender, RoutedEventArgs e)
         {
-            (new About()).Show();
+            new About().Show();
         }
 
         private void Settings_Click(object sender, RoutedEventArgs e)
@@ -104,7 +104,7 @@ namespace LegendaryExplorer.MainWindow
 
         private void Help_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            new Help().Show();
         }
 
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)

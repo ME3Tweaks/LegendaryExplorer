@@ -63,7 +63,7 @@
                         If you have issues with FaceFX Editor, please report them to one of the following places:
                         <LineBreak />
                         -
-                        <Hyperlink NavigateUri="{Binding Source={x:Static misc:AppLinks.DiscordInviteURL}, Mode=OneTime}"
+                        <Hyperlink NavigateUri="{Binding Source={x:Static misc:AppLinks.ME3TweaksDiscordInviteURL}, Mode=OneTime}"
                                    Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
                             <Run Text="The ME3Tweaks Discord (Legendary_Explorer channel)" />
                         </Hyperlink>

@@ -412,7 +412,7 @@
                             <LineBreak/>
                             If you have issues, please report them to one of the following places:
                             <LineBreak/>
-                            - <Hyperlink NavigateUri="{Binding Path=(misc:AppLinks.DiscordInviteURL)}" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
+                            - <Hyperlink NavigateUri="{Binding Path=(misc:AppLinks.ME3TweaksDiscordInviteURL)}" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
                                 <Run Text="The ME3Tweaks Discord (Legendary_Explorer channel)"/>
                             </Hyperlink>
                             <LineBreak/>

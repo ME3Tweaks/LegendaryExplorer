@@ -352,6 +352,9 @@
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="MainWindow\Help.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
     <Page Update="MainWindow\ToolPanel.xaml">
       <SubType>Designer</SubType>
     </Page>

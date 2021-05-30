@@ -109,7 +109,7 @@
                                     </Setter>
                                 </Style>
                             </StackPanel.Resources>
-                            <Button Style="{StaticResource TopBarButton}" Click="Help_Click" ToolTip="Help Resources">
+                            <Button Style="{StaticResource TopBarButton}" Click="Help_Click" ToolTip="Help Center">
                                 <Image Source="/Resources/Images/LEX_Toolbar_Qmark.ico" />
                             </Button>
 
