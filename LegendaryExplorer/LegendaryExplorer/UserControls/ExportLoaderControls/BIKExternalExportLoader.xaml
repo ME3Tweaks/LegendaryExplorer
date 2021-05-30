@@ -8,6 +8,7 @@
              xmlns:uc="clr-namespace:LibVLCSharp.WPF;assembly=LibVLCSharp.WPF"
              xmlns:Converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
              mc:Ignorable="d" 
+             d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
@@ -44,7 +45,7 @@
             <TextBlock Foreground="Red" Text="RadTools is not installed. Click the image above to download it." Visibility="{Binding RADNotInstalled, Converter={StaticResource BoolToVisibilityConverter}}" FontWeight="Bold" TextAlignment="Center" TextWrapping="Wrap"/>
         </StackPanel>
         <DockPanel DockPanel.Dock="Top"  LastChildFill="True" HorizontalAlignment="Stretch">
-            <DockPanel Name="video_Panel" LastChildFill="True" Visibility="{Binding VLCIsInstalled, Converter={StaticResource BoolToVisibilityConverter}}">
+            <DockPanel Name="video_Panel" LastChildFill="True">
                 <Grid DockPanel.Dock="Bottom" HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>

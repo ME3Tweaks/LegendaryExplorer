@@ -466,7 +466,7 @@
                         <TabItem.Header>
                             <TextBlock Text="Bytecode" ToolTip="View and edit UnrealScript bytecode"/>
                         </TabItem.Header>
-                        <exportLoaderControls:BytecodeEditor x:Name="BytecodeTab_BytecodeEditor"/>
+                        <exportLoaderControls:BytecodeEditor x:Name="BytecodeTab_BytecodeEditor" SubstituteImageForHexBox="{Binding IsBusy, RelativeSource={RelativeSource AncestorType=Window}}"/>
                     </TabItem>
                     <TabItem Name="Script_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>

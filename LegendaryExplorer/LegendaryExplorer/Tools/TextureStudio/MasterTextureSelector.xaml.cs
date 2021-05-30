@@ -30,13 +30,6 @@ namespace LegendaryExplorer.Tools.TextureStudio
     {
         #region Binding Vars
 
-        private bool _isBusy;
-        public bool IsBusy
-        {
-            get => _isBusy;
-            set => SetProperty(ref _isBusy, value);
-        }
-
         private bool _selectorMode;
         public bool SelectorMode
         {

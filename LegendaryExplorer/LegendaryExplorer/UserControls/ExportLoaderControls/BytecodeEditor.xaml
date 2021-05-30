@@ -218,11 +218,16 @@
                     <TextBlock Name="StatusBar_LeftMostText" Text="Nothing selected"/>
                 </StatusBarItem>
             </StatusBar>
-            <WindowsFormsHost Grid.Row="2" Name="ScriptEditor_Hexbox_Host" HorizontalAlignment="Stretch">
-                <hb1:HexBox MinBytesPerLine="16" MaxBytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" SelectionStartChanged="hb1_SelectionChanged" SelectionLengthChanged="hb1_SelectionChanged" VScrollBarVisible="True">
-                </hb1:HexBox>
-            </WindowsFormsHost>
-
+            <Grid HorizontalAlignment="Stretch">
+                <WindowsFormsHost Name="ScriptEditor_Hexbox_Host" HorizontalAlignment="Stretch">
+                    <hb1:HexBox MinBytesPerLine="16" MaxBytesPerLine="16" ColumnInfoVisible="True"
+                                LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10"
+                                StringViewVisible="True" SelectionStartChanged="hb1_SelectionChanged"
+                                SelectionLengthChanged="hb1_SelectionChanged" VScrollBarVisible="True">
+                    </hb1:HexBox>
+                </WindowsFormsHost>
+                <Image Visibility="Collapsed" Name="hexboxImageSub" HorizontalAlignment="Stretch" />
+            </Grid>
         </DockPanel>
     </Grid>
 </exportLoaderControls:ExportLoaderControl>

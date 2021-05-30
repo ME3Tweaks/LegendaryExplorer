@@ -11,6 +11,7 @@
              xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
              xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
              xmlns:packages="clr-namespace:LegendaryExplorerCore.Packages;assembly=LegendaryExplorerCore"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d"
              d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
              Icon="/LegendaryExplorer;component/Tools/icons/facefxeditor_256x256.ico" Title="FaceFX Editor" Loaded="WPFBase_Loaded">
@@ -22,6 +23,7 @@
         <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveCommand}"/>
         <KeyBinding Key="S" Modifiers="Control+Shift" Command="{Binding SaveAsCommand}"/>
     </Window.InputBindings>
+    <xctk:BusyIndicator IsBusy="{Binding Path=IsBusy}" BusyContent="{Binding BusyText}">
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File" Padding="4">
@@ -96,5 +98,6 @@
             </DockPanel>
         </Grid>
     </DockPanel>
+    </xctk:BusyIndicator>
 
 </bases:WPFBase>

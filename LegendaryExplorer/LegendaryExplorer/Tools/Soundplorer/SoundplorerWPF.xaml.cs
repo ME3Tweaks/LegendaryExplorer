@@ -40,30 +40,9 @@ namespace LegendaryExplorer.Tools.Soundplorer
         private string LoadedISBFile;
         private string LoadedAFCFile;
         BackgroundWorker backgroundScanner;
-        public ObservableCollectionExtended<object> BindedItemsList { get; set; } = new ObservableCollectionExtended<object>();
+        public ObservableCollectionExtended<object> BindedItemsList { get; set; } = new();
 
         public bool AudioFileLoaded => Pcc != null || LoadedISBFile != null || LoadedAFCFile != null;
-
-        private bool _isBusy;
-        public bool IsBusy
-        {
-            get => _isBusy;
-            set => SetProperty(ref _isBusy, value);
-        }
-
-        private bool _isBusyTaskbar;
-        public bool IsBusyTaskbar
-        {
-            get => _isBusyTaskbar;
-            set => SetProperty(ref _isBusyTaskbar, value);
-        }
-
-        private string _busyText;
-        public string BusyText
-        {
-            get => _busyText;
-            set => SetProperty(ref _busyText, value);
-        }
 
         private string _statusBarIDText;
         public string StatusBarIDText
@@ -86,7 +65,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
         {
             LoadCommands();
             InitializeComponent();
-            RecentsController.InitRecentControl(Toolname, Recents_MenuItem, fileName => LoadFile(fileName));
+            RecentsController.InitRecentControl(Toolname, Recents_MenuItem, LoadFile);
         }
 
         public SoundplorerWPF(ExportEntry export) : this()
@@ -380,7 +359,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
             backgroundScanner.WorkerReportsProgress = true;
             backgroundScanner.ProgressChanged += GetStreamTimes_ReportProgress;
             backgroundScanner.WorkerSupportsCancellation = true;
-            backgroundScanner.RunWorkerAsync(exportsToReload != null ? exportsToReload.Cast<object>().ToList() : BindedItemsList.ToList());
+            backgroundScanner.RunWorkerAsync(exportsToReload?.Cast<object>().ToList() ?? BindedItemsList.ToList());
             IsBusyTaskbar = true;
             //string s = i.ToString("d6") + " : " + e.ClassName + " : \"" + e.ObjectName + "\"";
         }
@@ -397,12 +376,12 @@ namespace LegendaryExplorer.Tools.Soundplorer
             IsBusyTaskbar = false;
         }
 
-        private void SaveCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        private async void SaveCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            Pcc.Save();
+            await Pcc.SaveAsync();
         }
 
-        private void SaveAsCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        private async void SaveAsCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             string extension = Path.GetExtension(Pcc.FilePath);
             SaveFileDialog d = new()
@@ -412,7 +391,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
             bool? result = d.ShowDialog();
             if (result.HasValue && result.Value)
             {
-                Pcc.Save(d.FileName);
+                await Pcc.SaveAsync(d.FileName);
                 MessageBox.Show("Done");
             }
         }

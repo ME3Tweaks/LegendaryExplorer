@@ -24,7 +24,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
         public ICommand ExportSelectedTLK { get; private set; }
         public ICommand EditSelectedTLK { get; private set; }
 
-        public ObservableCollectionExtended<LoadedTLK> TLKSources { get; set; } = new ObservableCollectionExtended<LoadedTLK>();
+        public ObservableCollectionExtended<LoadedTLK> TLKSources { get; set; } = new();
 
 
         #region Busy variables

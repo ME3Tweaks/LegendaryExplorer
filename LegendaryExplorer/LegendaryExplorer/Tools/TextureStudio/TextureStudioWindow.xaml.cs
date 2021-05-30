@@ -31,8 +31,8 @@ namespace LegendaryExplorer.Tools.TextureStudio
     /// </summary>
     public partial class TextureStudioWindow : NotifyPropertyChangedWindowBase, IRecents
     {
-        public ObservableCollectionExtendedWPF<TextureMapMemoryEntry> AllTreeViewNodes { get; } = new ObservableCollectionExtendedWPF<TextureMapMemoryEntry>();
-        public ObservableCollectionExtendedWPF<string> ME1MasterTexturePackages { get; } = new ObservableCollectionExtendedWPF<string>();
+        public ObservableCollectionExtendedWPF<TextureMapMemoryEntry> AllTreeViewNodes { get; } = new();
+        public ObservableCollectionExtendedWPF<string> ME1MasterTexturePackages { get; } = new();
         private Dictionary<uint, MEMTextureMap.TextureMapEntry> VanillaTextureMap { get; set; }
 
         #region Variables
@@ -211,7 +211,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
 
         private void OpenInstanceInPackEd()
         {
-            PackageEditorWindow p = new PackageEditorWindow();
+            var p = new PackageEditorWindow();
             p.Show();
             p.LoadFile(Path.Combine(SelectedFolder, SelectedInstance.RelativePackagePath), SelectedInstance.UIndex);
             p.Activate(); //bring to front   
@@ -222,7 +222,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
 
         private void ChangeAllInstances()
         {
-            OpenFileDialog selectDDS = new OpenFileDialog
+            var selectDDS = new OpenFileDialog
             {
                 Title = "Select texture file",
                 Filter = "Texture (DDS PNG BMP TGA)|*.dds;*.png;*.bmp;*.tga"
@@ -501,10 +501,10 @@ namespace LegendaryExplorer.Tools.TextureStudio
 
         private void ME1UpdateMasterPointers()
         {
-            BackgroundWorker bw = new BackgroundWorker();
+            var bw = new BackgroundWorker();
             bw.DoWork += (sender, args) =>
             {
-                Dictionary<string, IMEPackage> masterCache = new Dictionary<string, IMEPackage>();
+                var masterCache = new Dictionary<string, IMEPackage>();
                 var refsToUpdate = AllTreeViewNodes.OfType<TextureMapMemoryEntryWPF>()
                     .SelectMany(x => x.GetAllTextureEntries())
                     .SelectMany(x => x.Instances.Where(y => y.HasExternalReferences && y.MasterPackageName != null && y.MasterPackageName.StartsWith(ME1_MOD_MASTER_TEXTURE_PACKAGE_PREFIX)))
@@ -524,9 +524,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
                     var masterPackagePath = Texture2D.AdditionalME1MasterTexturePackages.FirstOrDefault(x => Path.GetFileNameWithoutExtension(x).Equals(pInstance.MasterPackageName));
                     if (masterPackagePath != null)
                     {
-
-                        IMEPackage masterPackage;
-                        if (!masterCache.TryGetValue(masterPackagePath, out masterPackage))
+                        if (!masterCache.TryGetValue(masterPackagePath, out IMEPackage masterPackage))
                         {
                             masterPackage = MEPackageHandler.OpenMEPackage(masterPackagePath, forceLoadFromDisk: true);
                             masterCache[masterPackagePath] = masterPackage;

@@ -250,9 +250,6 @@
     <Compile Update="Tools\Dialogue Editor\ConvGraphEditor.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Update="Tools\Dialogue Editor\DialogueEditorWPF.xaml.cs">
-      <DependentUpon>DialogueEditorWPF.xaml</DependentUpon>
-    </Compile>
     <Compile Update="Tools\Dialogue Editor\LinkEditor.xaml.cs">
       <DependentUpon>LinkEditor.xaml</DependentUpon>
     </Compile>

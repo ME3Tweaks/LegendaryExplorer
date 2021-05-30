@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
+using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.ToolsetDev.MemoryAnalyzer;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
@@ -16,7 +17,7 @@ namespace LegendaryExplorer.SharedUI.Bases
     /// <summary>
     /// Window subclass that allows the window to operate on a single package, and subscribe to package updates for that package.
     /// </summary>
-    public abstract class WPFBase : NotifyPropertyChangedWindowBase, IPackageUser
+    public abstract class WPFBase : NotifyPropertyChangedWindowBase, IPackageUser, IBusyUIHost
     {
         private IMEPackage pcc;
         /// <summary>
@@ -39,7 +40,7 @@ namespace LegendaryExplorer.SharedUI.Bases
                 });
             }
 
-            this.Closing += WPFBase_Closing;
+            Closing += WPFBase_Closing;
         }
 
         private void WPFBase_Closing(object sender, CancelEventArgs e)
@@ -120,5 +121,55 @@ namespace LegendaryExplorer.SharedUI.Bases
             tool = null;
             return false;
         }
+
+        public void HandleSaveStateChange(bool isSaving)
+        {
+            if (isSaving)
+            {
+                SetBusy("Saving");
+            }
+            else
+            {
+                EndBusy();
+            }
+        }
+
+        #region Busy variables
+
+        private bool _isBusy;
+
+        public bool IsBusy
+        {
+            get => _isBusy;
+            set => SetProperty(ref _isBusy, value);
+        }
+
+        private bool _isBusyTaskbar;
+
+        public bool IsBusyTaskbar
+        {
+            get => _isBusyTaskbar;
+            set => SetProperty(ref _isBusyTaskbar, value);
+        }
+
+        private string _busyText;
+
+        public string BusyText
+        {
+            get => _busyText;
+            set => SetProperty(ref _busyText, value);
+        }
+
+        public virtual void SetBusy(string text = null)
+        {
+            BusyText = text;
+            IsBusy = true;
+        }
+        public virtual void EndBusy()
+        {
+            IsBusy = false;
+        }
+
+        #endregion
     }
 }

@@ -686,7 +686,6 @@ namespace LegendaryExplorerCore.Packages
             {
                 mePackage.AfterSave();
             }
-
             //var milliseconds = sw.ElapsedMilliseconds;
             //Debug.WriteLine($"Saved {Path.GetFileName(path)} in {milliseconds}");
             //sw.Stop();

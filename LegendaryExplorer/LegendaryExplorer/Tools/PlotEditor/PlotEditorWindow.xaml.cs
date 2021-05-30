@@ -80,7 +80,7 @@ namespace LegendaryExplorer.Tools.PlotEditor
             }
         }
 
-        public void SaveFile(string filepath = null)
+        public async void SaveFile(string filepath = null)
         {
             if (Pcc == null)
             {
@@ -92,15 +92,13 @@ namespace LegendaryExplorer.Tools.PlotEditor
 
                 if (CodexMapView.TryFindCodexMap(Pcc, out ExportEntry export, out int _))
                 {
-                    using (var stream = new MemoryStream())
-                    {
-                        var codexMap = CodexMapControl.ToCodexMap();
-                        var binaryCodexMap = new BinaryBioCodexMap(codexMap.Sections, codexMap.Pages);
+                    using var stream = new MemoryStream();
+                    var codexMap = CodexMapControl.ToCodexMap();
+                    var binaryCodexMap = new BinaryBioCodexMap(codexMap.Sections, codexMap.Pages);
 
-                        binaryCodexMap.Save(stream);
+                    binaryCodexMap.Save(stream);
 
-                        export.WriteBinary(stream.ToArray());
-                    }
+                    export.WriteBinary(stream.ToArray());
                 }
             }
 
@@ -109,15 +107,13 @@ namespace LegendaryExplorer.Tools.PlotEditor
 
                 if (QuestMapControl.TryFindQuestMap(Pcc, out ExportEntry export, out int _))
                 {
-                    using (var stream = new MemoryStream())
-                    {
-                        var questMap = QuestMapControl.ToQuestMap();
-                        var binaryQuestMap = new BinaryBioQuestMap(questMap.Quests, questMap.BoolTaskEvals, questMap.IntTaskEvals, questMap.FloatTaskEvals);
+                    using var stream = new MemoryStream();
+                    var questMap = QuestMapControl.ToQuestMap();
+                    var binaryQuestMap = new BinaryBioQuestMap(questMap.Quests, questMap.BoolTaskEvals, questMap.IntTaskEvals, questMap.FloatTaskEvals);
 
-                        binaryQuestMap.Save(stream);
+                    binaryQuestMap.Save(stream);
 
-                        export.WriteBinary(stream.ToArray());
-                    }
+                    export.WriteBinary(stream.ToArray());
                 }
             }
 
@@ -126,15 +122,13 @@ namespace LegendaryExplorer.Tools.PlotEditor
 
                 if (StateEventMapView.TryFindStateEventMap(Pcc, out ExportEntry export))
                 {
-                    using (var stream = new MemoryStream())
-                    {
-                        var stateEventMap = StateEventMapControl.ToStateEventMap();
-                        var binaryStateEventMap = new BinaryBioStateEventMap(stateEventMap.StateEvents);
+                    using var stream = new MemoryStream();
+                    var stateEventMap = StateEventMapControl.ToStateEventMap();
+                    var binaryStateEventMap = new BinaryBioStateEventMap(stateEventMap.StateEvents);
 
-                        binaryStateEventMap.Save(stream, Pcc.Game);
+                    binaryStateEventMap.Save(stream, Pcc.Game);
 
-                        export.WriteBinary(stream.ToArray());
-                    }
+                    export.WriteBinary(stream.ToArray());
                 }
             }
 
@@ -143,22 +137,19 @@ namespace LegendaryExplorer.Tools.PlotEditor
 
                 if (StateEventMapView.TryFindStateEventMap(Pcc, out ExportEntry export, "ConsequenceMap"))
                 {
-                    using (var stream = new MemoryStream())
-                    {
-                        var consequenceMap = ConsequenceMapControl.ToStateEventMap();
-                        var binaryConsequenceMap = new BinaryBioStateEventMap(consequenceMap.StateEvents);
+                    using var stream = new MemoryStream();
+                    var consequenceMap = ConsequenceMapControl.ToStateEventMap();
+                    var binaryConsequenceMap = new BinaryBioStateEventMap(consequenceMap.StateEvents);
 
-                        binaryConsequenceMap.Save(stream, Pcc.Game);
+                    binaryConsequenceMap.Save(stream, Pcc.Game);
 
-                        export.WriteBinary(stream.ToArray());
-                    }
+                    export.WriteBinary(stream.ToArray());
                 }
             }
 
-            if (filepath == null)
-                filepath = Pcc.FilePath;
+            filepath ??= Pcc.FilePath;
 
-            Pcc.Save(filepath);
+            await Pcc.SaveAsync(filepath);
         }
 
         public void SaveFileAs()

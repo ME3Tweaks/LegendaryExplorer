@@ -443,19 +443,19 @@ namespace LegendaryExplorer.DialogueEditor
                 }));
             }
         }
-        private void SavePackageAs()
+        private async void SavePackageAs()
         {
             string extension = Path.GetExtension(Pcc.FilePath);
             SaveFileDialog d = new() { Filter = $"*{extension}|*{extension}" };
             if (d.ShowDialog() == true)
             {
-                Pcc.Save(d.FileName);
+                await Pcc.SaveAsync(d.FileName);
                 MessageBox.Show("Done.");
             }
         }
-        private void SavePackage()
+        private async void SavePackage()
         {
-            Pcc.Save();
+            await Pcc.SaveAsync();
         }
         private async void DialogueEditorWPF_Closing(object sender, CancelEventArgs e)
         {

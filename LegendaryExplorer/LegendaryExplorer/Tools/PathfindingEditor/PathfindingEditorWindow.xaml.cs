@@ -551,32 +551,8 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
         #endregion
 
-        #region Busy variables
-        private bool _isBusy;
-        public bool IsBusy
-        {
-            get => _isBusy;
-            set => SetProperty(ref _isBusy, value);
-        }
-
-        private bool _isBusyTaskbar;
-        public bool IsBusyTaskbar
-        {
-            get => _isBusyTaskbar;
-            set => SetProperty(ref _isBusyTaskbar, value);
-        }
-
-        private string _busyText;
-
-        public string BusyText
-        {
-            get => _busyText;
-            set => SetProperty(ref _busyText, value);
-        }
-
-        #endregion
-
         #region Load+I/O
+        private static readonly System.Drawing.Color GraphEditorBackColor = System.Drawing.Color.FromArgb(130, 130, 130);
         public PathfindingEditorWindow() : base("Pathfinding Editor")
         {
             DataContext = this;
@@ -586,7 +562,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             ContextMenu contextMenu = (ContextMenu)FindResource("nodeContextMenu");
             contextMenu.DataContext = this;
             graphEditor = (PathingGraphEditor)GraphHost.Child;
-            graphEditor.BackColor = System.Drawing.Color.FromArgb(130, 130, 130);
+            graphEditor.BackColor = GraphEditorBackColor;
             AllowRefresh = true;
             RecentsController.InitRecentControl(Toolname, Recents_MenuItem, LoadFile);
             zoomController = new PathingZoomController(graphEditor);
@@ -744,10 +720,15 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 Mouse.OverrideCursor = null;
             }), DispatcherPriority.ContextIdle, null);
         }
-        private void SavePackage() => Pcc.Save();
+
+        private async void SavePackage()
+        {
+            await Pcc.SaveAsync();
+        }
+
         private void OpenPackage()
         {
-            OpenFileDialog d = new OpenFileDialog { Filter = GameFileFilters.OpenFileFilter };
+            var d = new OpenFileDialog { Filter = GameFileFilters.OpenFileFilter };
             if (d.ShowDialog() == true)
             {
 #if !DEBUG
@@ -764,13 +745,13 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 #endif
             }
         }
-        private void SavePackageAs()
+        private async void SavePackageAs()
         {
             string extension = Path.GetExtension(Pcc.FilePath);
             var d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
             if (d.ShowDialog() == true)
             {
-                Pcc.Save(d.FileName);
+                await Pcc.SaveAsync(d.FileName);
                 MessageBox.Show("Done.");
             }
         }
@@ -4625,8 +4606,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                          $"This is an experimental tool. Make backups.", "Pathfinding Editor", MessageBoxButton.OKCancel);
             if (chkdlg == MessageBoxResult.Cancel)
                 return;
-            BusyText = "Finding unreferenced entries";
-            IsBusy = true;
+            SetBusy("Finding unreferenced entries");
             AllowRefresh = false;
             //Find all level references
             if (Pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry levelExport)
@@ -4799,7 +4779,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 EntryPruner.TrashEntries(Pcc, itemsToTrash);
             }
             AllowRefresh = true;
-            IsBusy = false;
+            EndBusy();
             MessageBox.Show("Trash Compactor Done");
         }
         private void TrashActorGroup()
@@ -4815,8 +4795,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
              $"This is an experimental tool. Make backups.", "Pathfinding Editor", MessageBoxButton.OKCancel);
             if (chkdlg == MessageBoxResult.Cancel)
                 return;
-            BusyText = "Trashing Actor Group and removing from level";
-            IsBusy = true;
+            SetBusy("Trashing Actor Group and removing from level");
             AllowRefresh = false;
             List<ExportEntry> trashcollections = new List<ExportEntry>();
             foreach (var trashactor in ActorGroup)
@@ -4846,7 +4825,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             ActorGroup.ClearEx();
             AllowRefresh = true;
             ActiveNodes_ListBox.SelectedIndex = -1; //Reset selection and will force refresh
-            IsBusy = false;
+            EndBusy();
             MessageBox.Show("Trashed selected actors and removed them from level.");
         }
         #endregion
@@ -4877,5 +4856,28 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 }
             }
         }
+
+        #region Busy
+
+        public override void SetBusy(string text = null)
+        {
+            var graphImage = graphEditor.Camera.ToImage((int)graphEditor.Camera.GlobalFullWidth, (int)graphEditor.Camera.GlobalFullHeight, new SolidBrush(GraphEditorBackColor));
+            graphImageSub.Source = graphImage.ToBitmapImage();
+            graphImageSub.Width = GraphHost.ActualWidth;
+            graphImageSub.Height = GraphHost.ActualHeight;
+            graphImageSub.Visibility = Visibility.Visible;
+            GraphHost.Visibility = Visibility.Collapsed;
+            BusyText = text;
+            IsBusy = true;
+        }
+
+        public override void EndBusy()
+        {
+            IsBusy = false;
+            graphImageSub.Visibility = Visibility.Collapsed;
+            GraphHost.Visibility = Visibility.Visible;
+        }
+
+        #endregion
     }
 }

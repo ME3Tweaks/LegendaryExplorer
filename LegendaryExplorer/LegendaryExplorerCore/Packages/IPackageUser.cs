@@ -8,5 +8,6 @@ namespace LegendaryExplorerCore.Packages
         void handleUpdate(List<PackageUpdate> updates);
         void RegisterClosed(Action handler);
         void ReleaseUse();
+        void HandleSaveStateChange(bool isSaving);
     }
 }

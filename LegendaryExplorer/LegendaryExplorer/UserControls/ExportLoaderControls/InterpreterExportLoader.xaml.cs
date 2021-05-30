@@ -32,7 +32,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
     /// </summary>
     public partial class InterpreterExportLoader : ExportLoaderControl
     {
-        public ObservableCollectionExtended<UPropertyTreeViewEntry> PropertyNodes { get; set; } = new ObservableCollectionExtended<UPropertyTreeViewEntry>();
+        public ObservableCollectionExtended<UPropertyTreeViewEntry> PropertyNodes { get; set; } = new();
         //Values in this list will cause the ExportToString() method to be called on an objectproperty in InterpreterExportLoader.
         //This is useful for end user when they want to view things in a list for example, but all of the items are of the 
         //same type and are not distinguishable without changing to another export, wasting a lot of time.

@@ -469,12 +469,12 @@ namespace LegendaryExplorer.Tools.Meshplorer
 
 
 
-        private void SaveFile()
+        private async void SaveFile()
         {
-            Pcc.Save();
+            await Pcc.SaveAsync();
         }
 
-        private void SaveFileAs()
+        private async void SaveFileAs()
         {
             string fileFilter;
             switch (Pcc.Game)
@@ -491,17 +491,17 @@ namespace LegendaryExplorer.Tools.Meshplorer
                     fileFilter = $"*{extension}|*{extension}";
                     break;
             }
-            SaveFileDialog d = new SaveFileDialog { Filter = fileFilter };
+            var d = new SaveFileDialog { Filter = fileFilter };
             if (d.ShowDialog() == true)
             {
-                Pcc.Save(d.FileName);
+                await Pcc.SaveAsync(d.FileName);
                 MessageBox.Show("Done");
             }
         }
 
         private void OpenFile()
         {
-            OpenFileDialog d = new OpenFileDialog { Filter = GameFileFilters.OpenFileFilter };
+            var d = new OpenFileDialog { Filter = GameFileFilters.OpenFileFilter };
             if (d.ShowDialog() == true)
             {
 #if !DEBUG
@@ -518,31 +518,6 @@ namespace LegendaryExplorer.Tools.Meshplorer
 #endif
             }
         }
-
-        #region Busy variables
-        private bool _isBusy;
-        public bool IsBusy
-        {
-            get => _isBusy;
-            set => SetProperty(ref _isBusy, value);
-        }
-
-        private bool _isBusyTaskbar;
-        public bool IsBusyTaskbar
-        {
-            get => _isBusyTaskbar;
-            set => SetProperty(ref _isBusyTaskbar, value);
-        }
-
-        private string _busyText;
-
-        public string BusyText
-        {
-            get => _busyText;
-            set => SetProperty(ref _busyText, value);
-        }
-
-        #endregion
 
         public void LoadFile(string s, int goToIndex = 0)
         {

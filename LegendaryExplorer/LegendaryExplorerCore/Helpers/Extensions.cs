@@ -22,27 +22,27 @@ namespace LegendaryExplorerCore.Helpers
     public static class TaskExtensions
     {
         //no argument passed to continuation
-        public static Task ContinueWithOnUIThread(this Task task, Action<Task> continuationAction)
+        public static Task ContinueWithOnUIThread(this Task task, Action<Task> continuationAction, TaskContinuationOptions continuationOptions = default)
         {
-            return task.ContinueWith(continuationAction, LegendaryExplorerCoreLib.SYNCHRONIZATION_CONTEXT);
+            return task.ContinueWith(continuationAction, default, continuationOptions, LegendaryExplorerCoreLib.SYNCHRONIZATION_CONTEXT);
         }
 
         //no argument passed to and result returned from continuation
-        public static Task<TNewResult> ContinueWithOnUIThread<TNewResult>(this Task task, Func<Task, TNewResult> continuationAction)
+        public static Task<TNewResult> ContinueWithOnUIThread<TNewResult>(this Task task, Func<Task, TNewResult> continuationAction, TaskContinuationOptions continuationOptions = default)
         {
-            return task.ContinueWith(continuationAction, LegendaryExplorerCoreLib.SYNCHRONIZATION_CONTEXT);
+            return task.ContinueWith(continuationAction, default, continuationOptions, LegendaryExplorerCoreLib.SYNCHRONIZATION_CONTEXT);
         }
 
         //argument passed to continuation
-        public static Task ContinueWithOnUIThread<TResult>(this Task<TResult> task, Action<Task<TResult>> continuationAction)
+        public static Task ContinueWithOnUIThread<TResult>(this Task<TResult> task, Action<Task<TResult>> continuationAction, TaskContinuationOptions continuationOptions = default)
         {
-            return task.ContinueWith(continuationAction, LegendaryExplorerCoreLib.SYNCHRONIZATION_CONTEXT);
+            return task.ContinueWith(continuationAction, default, continuationOptions, LegendaryExplorerCoreLib.SYNCHRONIZATION_CONTEXT);
         }
 
         //argument passed to and result returned from continuation
-        public static Task<TNewResult> ContinueWithOnUIThread<TResult, TNewResult>(this Task<TResult> task, Func<Task<TResult>, TNewResult> continuationAction)
+        public static Task<TNewResult> ContinueWithOnUIThread<TResult, TNewResult>(this Task<TResult> task, Func<Task<TResult>, TNewResult> continuationAction, TaskContinuationOptions continuationOptions = default)
         {
-            return task.ContinueWith(continuationAction, LegendaryExplorerCoreLib.SYNCHRONIZATION_CONTEXT);
+            return task.ContinueWith(continuationAction, default, continuationOptions, LegendaryExplorerCoreLib.SYNCHRONIZATION_CONTEXT);
         }
     }
     public static class EnumerableExtensions

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Be.Windows.Forms;
+using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
@@ -25,10 +26,36 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private HexBox ScriptEditor_Hexbox;
         private bool ControlLoaded;
 
-        public ObservableCollectionExtended<BytecodeSingularToken> TokenList { get; private set; } = new ObservableCollectionExtended<BytecodeSingularToken>();
-        public ObservableCollectionExtended<object> DecompiledScriptBlocks { get; private set; } = new ObservableCollectionExtended<object>();
-        public ObservableCollectionExtended<ScriptHeaderItem> ScriptHeaderBlocks { get; private set; } = new ObservableCollectionExtended<ScriptHeaderItem>();
-        public ObservableCollectionExtended<ScriptHeaderItem> ScriptFooterBlocks { get; private set; } = new ObservableCollectionExtended<ScriptHeaderItem>();
+        public ObservableCollectionExtended<BytecodeSingularToken> TokenList { get; } = new();
+        public ObservableCollectionExtended<object> DecompiledScriptBlocks { get; } = new();
+        public ObservableCollectionExtended<ScriptHeaderItem> ScriptHeaderBlocks { get; } = new();
+        public ObservableCollectionExtended<ScriptHeaderItem> ScriptFooterBlocks { get; } = new();
+
+        public bool SubstituteImageForHexBox
+        {
+            get => (bool)GetValue(SubstituteImageForHexBoxProperty);
+            set => SetValue(SubstituteImageForHexBoxProperty, value);
+        }
+        public static readonly DependencyProperty SubstituteImageForHexBoxProperty = DependencyProperty.Register(
+            nameof(SubstituteImageForHexBox), typeof(bool), typeof(BytecodeEditor), new PropertyMetadata(false, SubstituteImageForHexBoxChangedCallback));
+
+        private static void SubstituteImageForHexBoxChangedCallback(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            BytecodeEditor i = (BytecodeEditor)obj;
+            if (e.NewValue is true && i.ScriptEditor_Hexbox_Host.Child.Height > 0 && i.ScriptEditor_Hexbox_Host.Child.Width > 0)
+            {
+                i.hexboxImageSub.Source = i.ScriptEditor_Hexbox_Host.Child.DrawToBitmapSource();
+                i.hexboxImageSub.Width = i.ScriptEditor_Hexbox_Host.ActualWidth;
+                i.hexboxImageSub.Height = i.ScriptEditor_Hexbox_Host.ActualHeight;
+                i.hexboxImageSub.Visibility = Visibility.Visible;
+                i.ScriptEditor_Hexbox_Host.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                i.ScriptEditor_Hexbox_Host.Visibility = Visibility.Visible;
+                i.hexboxImageSub.Visibility = Visibility.Collapsed;
+            }
+        }
 
         private bool TokenChanging = false;
         private int BytecodeStart;

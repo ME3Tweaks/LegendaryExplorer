@@ -343,12 +343,12 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
 
         private bool IsPackageLoaded() => Pcc != null;
 
-        private void SaveFile()
+        private async void SaveFile()
         {
-            Pcc.Save();
+            await Pcc.SaveAsync();
         }
 
-        private void SaveFileAs()
+        private async void SaveFileAs()
         {
             string fileFilter;
             switch (Pcc.Game)
@@ -369,7 +369,7 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
             var d = new SaveFileDialog { Filter = fileFilter };
             if (d.ShowDialog() == true)
             {
-                Pcc.Save(d.FileName);
+                await Pcc.SaveAsync(d.FileName);
                 MessageBox.Show("Done");
             }
         }

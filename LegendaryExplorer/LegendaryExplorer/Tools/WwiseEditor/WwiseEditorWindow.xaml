@@ -35,6 +35,7 @@
         <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveCommand}"/>
         <KeyBinding Key="S" Modifiers="Control+Shift" Command="{Binding SaveAsCommand}"/>
     </Window.InputBindings>
+    <!-- This windows has a BusyIndicator, it's just tucked at the bottom, inside the Grid. It needs to be that way to not cause problems with the Piccolo control -->
     <Grid>
         <DockPanel>
             <Menu DockPanel.Dock="Top">
@@ -195,7 +196,7 @@
                                         Visibility="{Binding Visibility, ElementName=graphImageSub, Converter={StaticResource InverseVisibilityConverter}}">
                         <local:WwiseGraphEditor />
                     </WindowsFormsHost>
-                    <Image Grid.Column="1" Visibility="Hidden" Name="graphImageSub" Stretch="None" />
+                    <Image Grid.Column="1" Visibility="Collapsed" Name="graphImageSub" Stretch="None" />
                 </Grid>
             </Grid>
         </DockPanel>

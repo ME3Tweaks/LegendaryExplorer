@@ -208,6 +208,10 @@ namespace LegendaryExplorerCore.UnrealScript
         {
         }
 
+        public void HandleSaveStateChange(bool isSaving)
+        {
+        }
+
         public void Dispose()
         {
             Pcc?.WeakUsers.Remove(this);

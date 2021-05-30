@@ -131,43 +131,11 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 }
             }
         }
-
-
-        /// <summary>
-        /// PCC map that maps values from a source PCC to values in this PCC. Used extensively during relinking.
-        /// </summary>
-        private readonly Dictionary<IEntry, IEntry> crossPCCObjectMap = new Dictionary<IEntry, IEntry>();
+        
 
         private int QueuedGotoNumber;
         private bool IsLoadingFile;
 
-        #region Busy variables
-
-        private bool _isBusy;
-
-        public bool IsBusy
-        {
-            get => _isBusy;
-            set => SetProperty(ref _isBusy, value);
-        }
-
-        private bool _isBusyTaskbar;
-
-        public bool IsBusyTaskbar
-        {
-            get => _isBusyTaskbar;
-            set => SetProperty(ref _isBusyTaskbar, value);
-        }
-
-        private string _busyText;
-
-        public string BusyText
-        {
-            get => _busyText;
-            set => SetProperty(ref _busyText, value);
-        }
-
-        #endregion
 
         private string _searchHintText = "Object name";
 
@@ -843,7 +811,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         }
 
 
-        private void SaveFileAs()
+        private async void SaveFileAs()
         {
             string fileFilter;
             switch (Pcc.Game)
@@ -864,14 +832,14 @@ namespace LegendaryExplorer.Tools.PackageEditor
             var d = new SaveFileDialog { Filter = fileFilter };
             if (d.ShowDialog() == true)
             {
-                Pcc.Save(d.FileName);
+                await Pcc.SaveAsync(d.FileName);
                 MessageBox.Show("Done");
             }
         }
 
-        private void SaveFile()
+        private async void SaveFile()
         {
-            Pcc.Save();
+            await Pcc.SaveAsync();
         }
 
         private void OpenFile()
@@ -963,10 +931,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     package.PackageGUID = packguid;
                     Pcc.PackageGuid = packguid;
                     SaveFile();
-
-                    // LoadFile is called above, should add to recents: Disabled 5/17/2021 by Mgamerz
-                    //RecentsController.AddRecent(dlg.FileName, false, );
-                    //RecentsController.SaveRecentList(true);
                 }
             }
         }
@@ -2438,7 +2402,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
             AllTreeViewNodesX.ClearEx();
             NamesList.ClearEx();
             ClassDropdownList.ClearEx();
-            crossPCCObjectMap.Clear();
             BackwardsIndexes = new Stack<int>();
             ForwardsIndexes = new Stack<int>();
             StatusBar_LeftMostText.Text =
@@ -3222,8 +3185,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 }
 
                 //Check if the path of the target and the source is the same. If so, offer to merge instead
-                crossPCCObjectMap.Clear();
-
                 if (sourceItem == targetItem ||
                     (targetItem.Entry != null && sourceItem.Entry.FileRef == targetItem.Entry.FileRef))
                 {
@@ -3278,11 +3239,10 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 int numExports = Pcc.ExportCount;
                 //Import!
                 var relinkResults = EntryImporter.ImportAndRelinkEntries(portingOption, sourceEntry, Pcc,
-                    targetLinkEntry, true, out IEntry newEntry, crossPCCObjectMap);
+                    targetLinkEntry, true, out IEntry newEntry);
 
                 TryAddToPersistentLevel(Pcc.Exports.Skip(numExports));
-
-                crossPCCObjectMap.Clear();
+                
                 //sw.Stop();
                 //MessageBox.Show($"Took {sw.ElapsedMilliseconds}ms");
                 //MeasureProfiler.SaveData(); // End profiling

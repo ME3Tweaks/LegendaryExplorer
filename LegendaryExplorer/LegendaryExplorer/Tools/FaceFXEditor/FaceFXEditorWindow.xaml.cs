@@ -78,27 +78,27 @@ namespace LegendaryExplorer.Tools.FaceFXEditor
             editorControl.LoadExport(SelectedExport);
         }
 
-        private void SavePackageAs()
+        private async void SavePackageAs()
         {
             string extension = Path.GetExtension(Pcc.FilePath);
-            SaveFileDialog d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
+            var d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
             if (d.ShowDialog() == true)
             {
                 editorControl.SaveChanges();
-                Pcc.Save(d.FileName);
+                await Pcc.SaveAsync(d.FileName);
                 MessageBox.Show("Done.");
             }
         }
 
-        private void SavePackage()
+        private async void SavePackage()
         {
             editorControl.SaveChanges();
-            Pcc.Save();
+            await Pcc.SaveAsync();
         }
 
         private void OpenPackage()
         {
-            OpenFileDialog d = new OpenFileDialog { Filter = GameFileFilters.OpenFileFilter };
+            var d = new OpenFileDialog { Filter = GameFileFilters.OpenFileFilter };
             if (d.ShowDialog() == true)
             {
                 try

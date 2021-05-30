@@ -198,10 +198,10 @@ namespace LegendaryExplorer.Tools.AFCCompactorWindow
 
 
         #region Binding Vars
-        public ObservableCollectionExtended<MEGame> GameOptions { get; } = new ObservableCollectionExtended<MEGame>(new[] { MEGame.ME2, MEGame.ME3 });
-        public ObservableCollectionExtended<AFCCompactor.ReferencedAudio> AudioReferences { get; } = new ObservableCollectionExtended<AFCCompactor.ReferencedAudio>();
+        public ObservableCollectionExtended<MEGame> GameOptions { get; } = new(new[] { MEGame.ME2, MEGame.ME3 });
+        public ObservableCollectionExtended<AFCCompactor.ReferencedAudio> AudioReferences { get; } = new();
         public ICollectionView AudioReferencesView => CollectionViewSource.GetDefaultView(AudioReferences);
-        public ObservableCollectionExtended<DLCDependency> DLCDependencies { get; } = new ObservableCollectionExtended<DLCDependency>();
+        public ObservableCollectionExtended<DLCDependency> DLCDependencies { get; } = new();
 
         private bool _isBusy;
         public bool IsBusy

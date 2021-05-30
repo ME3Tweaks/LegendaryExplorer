@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
@@ -38,9 +39,10 @@ namespace LegendaryExplorerCore.Packages
         }
 
         /// <summary>
-        /// Saves the package to disk.
+        /// Saves the package to disk. If calling from the UI thread, consider using SaveAsync instead.
         /// </summary>
         /// <param name="package"></param>
+        /// <param name="savePath"></param>
         /// <param name="compress"></param>
         /// <param name="includeAdditionalPackagesToCook"></param>
         /// <param name="includeDependencyTable"></param>
@@ -55,7 +57,7 @@ namespace LegendaryExplorerCore.Packages
                 return;
             }
 
-            bool compressPackage = false;
+            bool compressPackage;
             if (compress.HasValue)
             {
                 compressPackage = compress.Value;
@@ -64,13 +66,16 @@ namespace LegendaryExplorerCore.Packages
             {
                 // Compress LE packages by default
                 // Do not compress OT packages by default
-                compressPackage = package.Game.IsLEGame() ? true : false;
+                compressPackage = package.Game.IsLEGame();
             }
 
             if (package.FilePath is null && savePath == null)
             {
                 throw new InvalidOperationException("Cannot save a temporary memory-based package! You must pass a save path to save a memory package.");
             }
+
+            //if this file is open in any tool, saving needs to be done on a different thread.
+
             switch (package)
             {
                 case MEPackage mePackage:
@@ -81,6 +86,38 @@ namespace LegendaryExplorerCore.Packages
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(package));
+            }
+        }
+
+
+        /// <summary>
+        /// Saves the package to disk on a different thread
+        /// </summary>
+        /// <param name="package"></param>
+        /// <param name="savePath"></param>
+        /// <param name="compress"></param>
+        /// <param name="includeAdditionalPackagesToCook"></param>
+        /// <param name="includeDependencyTable"></param>
+        /// <param name="diskIOSyncLock">Object that can be used to force a lock on write operations, which can be used to prevent concurrent operations on the same package file. If null, a lock is not used.</param>
+        public static async Task SaveAsync(this IMEPackage package, string savePath = null, bool? compress = null, bool includeAdditionalPackagesToCook = true, bool includeDependencyTable = true, object diskIOSyncLock = null)
+        {
+#if !DEBUG && !AZURE
+            throw new Exception("Cannot save packages with LEX at this time");
+#endif
+            try
+            {
+                foreach (IPackageUser packageUser in package.Users)
+                {
+                    packageUser.HandleSaveStateChange(true);
+                }
+                await Task.Run(() => Save(package, savePath, compress, includeAdditionalPackagesToCook, includeDependencyTable, diskIOSyncLock));
+            }
+            finally
+            {
+                foreach (IPackageUser packageUser in package.Users)
+                {
+                    packageUser.HandleSaveStateChange(false);
+                }
             }
         }
 

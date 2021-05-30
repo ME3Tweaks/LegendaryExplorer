@@ -23,8 +23,8 @@ namespace LegendaryExplorerCore.Audio
         /// </summary>
         private class AFCInventory
         {
-            public List<string> LocalFolderAFCFiles = new List<string>();
-            public List<string> BasegameAFCFiles = new List<string>();
+            public readonly List<string> LocalFolderAFCFiles = new();
+            public readonly List<string> BasegameAFCFiles = new();
             /// <summary>
             /// AFCs that reside in official DLC. This includes SFAR files.
             /// </summary>
@@ -32,10 +32,10 @@ namespace LegendaryExplorerCore.Audio
             /// <summary>
             /// Mapping of DLC foldername to a list of AFCs in that SFAR
             /// </summary>
-            public CaseInsensitiveDictionary<List<string>> SFARAFCsMap = new CaseInsensitiveDictionary<List<string>>();
+            public readonly CaseInsensitiveDictionary<List<string>> SFARAFCsMap = new();
             public static AFCInventory GetInventory(string inputPath, MEGame game, Action<string> currentScanningFileCallback = null, Action<string> debugOut = null)
             {
-                AFCInventory inventory = new AFCInventory();
+                var inventory = new AFCInventory();
                 inventory.LocalFolderAFCFiles.ReplaceAll(Directory.GetFiles(inputPath, "*.afc", SearchOption.AllDirectories));
 
 
@@ -63,7 +63,7 @@ namespace LegendaryExplorerCore.Audio
                             currentScanningFileCallback?.Invoke(ME3Directory.OfficialDLCNames[officialDLC]);
                             debugOut?.Invoke($@"{ME3Directory.OfficialDLCNames[officialDLC]} is installed ({officialDLC})");
 
-                            DLCPackage dlc = new DLCPackage(sfarPath);
+                            var dlc = new DLCPackage(sfarPath);
                             inventory.SFARAFCsMap[officialDLC] = dlc.Files.Where(x => x.FileName.EndsWith(".afc")).Select(x => x.FileName).ToList();
                             foreach (var oafc in inventory.SFARAFCsMap[officialDLC])
                             {

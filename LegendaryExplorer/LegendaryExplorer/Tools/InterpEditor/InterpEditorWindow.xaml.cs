@@ -99,20 +99,20 @@ namespace LegendaryExplorer.Tools.InterpEditor
             }
         }
 
-        private void SavePackageAs()
+        private async void SavePackageAs()
         {
             string extension = Path.GetExtension(Pcc.FilePath);
             var d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
             if (d.ShowDialog() == true)
             {
-                Pcc.Save(d.FileName);
+                await Pcc.SaveAsync(d.FileName);
                 MessageBox.Show("Done.");
             }
         }
 
-        private void SavePackage()
+        private async void SavePackage()
         {
-            Pcc.Save();
+            await Pcc.SaveAsync();
         }
 
         private void OpenPackage()

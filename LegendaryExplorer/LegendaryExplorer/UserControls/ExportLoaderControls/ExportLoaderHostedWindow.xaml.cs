@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorerCore.Helpers;
@@ -21,7 +22,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
     {
         public ExportEntry LoadedExport { get; private set; }
         public readonly ExportLoaderControl HostedControl;
-        public ObservableCollectionExtended<IndexedName> NamesList { get; } = new ObservableCollectionExtended<IndexedName>();
+        public ObservableCollectionExtended<IndexedName> NamesList { get; } = new();
         public bool SupportsRecents => HostedControl is FileExportLoaderControl;
 
         private bool _fileHasPendingChanges;
@@ -58,14 +59,29 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public ExportLoaderHostedWindow(ExportLoaderControl hostedControl, ExportEntry exportToLoad) : base($"ELHW for {hostedControl.GetType()}")
         {
             DataContext = this;
-            this.HostedControl = hostedControl;
-            this.LoadedExport = exportToLoad;
+            HostedControl = hostedControl;
+            LoadedExport = exportToLoad;
             LoadedExport.EntryModifiedChanged += NotifyPendingChangesStatusChanged;
             NamesList.ReplaceAll(LoadedExport.FileRef.Names.Select((name, i) => new IndexedName(i, name))); //we replaceall so we don't add one by one and trigger tons of notifications
             LoadCommands();
             InitializeComponent();
             HostedControl.PoppedOut(Recents_MenuItem);
-            RootPanel.Children.Add(hostedControl);
+            RootPanel.Children.Add(HostedControl);
+            switch (HostedControl)
+            {
+                case BinaryInterpreterWPF binaryInterpreterWpf:
+                    binaryInterpreterWpf.bind(BinaryInterpreterWPF.SubstituteImageForHexBoxProperty, this, nameof(IsBusy));
+                    break;
+                case BytecodeEditor bytecodeEditor:
+                    bytecodeEditor.bind(BytecodeEditor.SubstituteImageForHexBoxProperty, this, nameof(IsBusy));
+                    break;
+                case EntryMetadataExportLoader entryMetadataExportLoader:
+                    entryMetadataExportLoader.bind(EntryMetadataExportLoader.SubstituteImageForHexBoxProperty, this, nameof(IsBusy));
+                    break;
+                case InterpreterExportLoader interpreterExportLoader:
+                    interpreterExportLoader.bind(InterpreterExportLoader.SubstituteImageForHexBoxProperty, this, nameof(IsBusy));
+                    break;
+            }
         }
 
         private void NotifyPendingChangesStatusChanged(object sender, EventArgs e)
@@ -154,7 +170,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             felc.OpenFile();
         }
 
-        private void SavePackageAs()
+        private async void SavePackageAs()
         {
             if (HostedControl is FileExportLoaderControl felc)
             {
@@ -164,16 +180,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             else
             {
                 string extension = Path.GetExtension(Pcc.FilePath);
-                SaveFileDialog d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
+                var d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
                 if (d.ShowDialog() == true)
                 {
-                    Pcc.Save(d.FileName);
+                    await Pcc.SaveAsync(d.FileName);
                     MessageBox.Show("Done");
                 }
             }
         }
 
-        private void SavePackage()
+        private async void SavePackage()
         {
             if (HostedControl is FileExportLoaderControl felc)
             {
@@ -182,7 +198,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
             else
             {
-                Pcc.Save();
+                await Pcc.SaveAsync();
             }
         }
 

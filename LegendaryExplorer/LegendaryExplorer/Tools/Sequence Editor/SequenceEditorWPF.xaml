@@ -65,6 +65,7 @@
         <KeyBinding Key="G" Modifiers="Control" Command="{Binding GotoCommand}"/>
         <KeyBinding Key="F" Modifiers="Control" Command="{Binding SearchCommand}"/>
     </Window.InputBindings>
+    <!-- This windows has a BusyIndicator, it's just tucked at the bottom, inside the Grid. It needs to be that way to not cause problems with the Piccolo control -->
     <Grid>
         <DockPanel>
             <Menu DockPanel.Dock="Top">

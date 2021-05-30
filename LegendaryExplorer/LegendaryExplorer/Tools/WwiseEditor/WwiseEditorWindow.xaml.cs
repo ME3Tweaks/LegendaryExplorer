@@ -152,20 +152,20 @@ namespace LegendaryExplorer.Tools.WwiseEditor
 
         private bool IsPackageLoaded() => Pcc != null;
 
-        private void SavePackageAs()
+        private async void SavePackageAs()
         {
             string extension = Path.GetExtension(Pcc.FilePath);
             SaveFileDialog d = new () { Filter = $"*{extension}|*{extension}" };
             if (d.ShowDialog() == true)
             {
-                Pcc.Save(d.FileName);
+                await Pcc.SaveAsync(d.FileName);
                 MessageBox.Show(this, "Done.");
             }
         }
 
-        private void SavePackage()
+        private async void SavePackage()
         {
-            Pcc.Save();
+            await Pcc.SaveAsync();
         }
 
         private void OpenFile()
@@ -789,34 +789,22 @@ namespace LegendaryExplorer.Tools.WwiseEditor
 
         #region Busy
 
-        private bool _isBusy;
-        public bool IsBusy
-        {
-            get => _isBusy;
-            set => SetProperty(ref _isBusy, value);
-        }
-
-        private string _busyText;
-        public string BusyText
-        {
-            get => _busyText;
-            set => SetProperty(ref _busyText, value);
-        }
-
-        void SetBusy(string text)
+        public override void SetBusy(string text = null)
         {
             Image graphImage = graphEditor.Camera.ToImage((int)graphEditor.Camera.GlobalFullWidth, (int)graphEditor.Camera.GlobalFullHeight, new SolidBrush(GraphEditorBackColor));
             graphImageSub.Source = graphImage.ToBitmapImage();
             graphImageSub.Width = graphGrid.ActualWidth;
             graphImageSub.Height = graphGrid.ActualHeight;
             graphImageSub.Visibility = Visibility.Visible;
+            GraphHost.Visibility = Visibility.Collapsed;
             BusyText = text;
             IsBusy = true;
         }
 
-        void EndBusy()
+        public override void EndBusy()
         {
             IsBusy = false;
+            GraphHost.Visibility = Visibility.Visible;
             graphImageSub.Visibility = Visibility.Collapsed;
         }
 

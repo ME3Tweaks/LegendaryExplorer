@@ -581,8 +581,8 @@ namespace LegendaryExplorerCore.Packages
         }
 
         #region packageHandler stuff
-        public ObservableCollection<IPackageUser> Users { get; } = new ObservableCollection<IPackageUser>();
-        public List<IPackageUser> WeakUsers { get; } = new List<IPackageUser>();
+        public ObservableCollection<IPackageUser> Users { get; } = new();
+        public List<IPackageUser> WeakUsers { get; } = new();
 
         public void RegisterTool(IPackageUser user)
         {
@@ -654,10 +654,10 @@ namespace LegendaryExplorerCore.Packages
             }
         }
 
-        private readonly object _updatelock = new object();
-        readonly HashSet<PackageUpdate> pendingUpdates = new HashSet<PackageUpdate>();
-        readonly List<Task> tasks = new List<Task>();
-        readonly Dictionary<int, bool> taskCompletion = new Dictionary<int, bool>();
+        private readonly object _updatelock = new();
+        readonly HashSet<PackageUpdate> pendingUpdates = new();
+        readonly List<Task> tasks = new();
+        readonly Dictionary<int, bool> taskCompletion = new();
         const int queuingDelay = 50;
         protected void updateTools(PackageChange change, int index)
         {
@@ -665,7 +665,7 @@ namespace LegendaryExplorerCore.Packages
             {
                 return;
             }
-            PackageUpdate update = new PackageUpdate(change, index);
+            var update = new PackageUpdate(change, index);
             bool isNewUpdate;
             lock (_updatelock)
             {
@@ -768,7 +768,7 @@ namespace LegendaryExplorerCore.Packages
         #endregion
 
         public const string TrashPackageName = "ME3ExplorerTrashPackage";
-        public static Guid TrashPackageGuid = "ME3ExpTrashPackage".ToGuid(); //DO NOT EDIT!!
+        public static readonly Guid TrashPackageGuid = "ME3ExpTrashPackage".ToGuid(); //DO NOT EDIT!!
 
         protected UnrealPackageFile(string filePath)
         {
