@@ -78,14 +78,14 @@ namespace ME3ExplorerCore.Packages
         {
             if (obj is null) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == this.GetType() && Equals((PropertyInfo) obj);
+            return obj.GetType() == this.GetType() && Equals((PropertyInfo)obj);
         }
 
         public override int GetHashCode()
         {
             unchecked
             {
-                int hashCode = (int) Type;
+                int hashCode = (int)Type;
                 hashCode = (hashCode * 397) ^ (Reference != null ? Reference.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ Transient.GetHashCode();
                 return hashCode;
@@ -127,7 +127,6 @@ namespace ME3ExplorerCore.Packages
     {
         EPackageFlags Flags { get; }
         bool IsCompressed { get; }
-        bool IsModified { get; }
         int NameCount { get; }
         int ExportCount { get; }
         int ImportCount { get; }
@@ -177,9 +176,26 @@ namespace ME3ExplorerCore.Packages
         /// </summary>
         /// <param name="uIndex">unreal-based index</param>
         ImportEntry GetImport(int uIndex);
-
+        /// <summary>
+        /// Try to get an ExportEntry by UIndex.
+        /// </summary>
+        /// <param name="uIndex"></param>
+        /// <param name="export"></param>
+        /// <returns></returns>
         bool TryGetUExport(int uIndex, out ExportEntry export);
+        /// <summary>
+        /// Try to get an ImportEntry by UIndex.
+        /// </summary>
+        /// <param name="uIndex"></param>
+        /// <param name="import"></param>
+        /// <returns></returns>
         bool TryGetImport(int uIndex, out ImportEntry import);
+        /// <summary>
+        /// Try to get an IEntry by UIndex.
+        /// </summary>
+        /// <param name="uIndex"></param>
+        /// <param name="entry"></param>
+        /// <returns></returns>
         bool TryGetEntry(int uIndex, out IEntry entry);
 
         int findName(string nameToFind);
@@ -189,7 +205,11 @@ namespace ME3ExplorerCore.Packages
         /// <param name="index">unreal index</param>
         string getObjectName(int index);
         string GetNameEntry(int index);
-
+        /// <summary>
+        /// Gets the next available index for a given name - this counts all names, not just the instanced full name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         int GetNextIndexForName(string name);
 
         NameReference GetNextIndexedName(string name);
@@ -220,6 +240,8 @@ namespace ME3ExplorerCore.Packages
         event UnrealPackageFile.MEPackageEventHandler noLongerUsed;
         MemoryStream SaveToStream(bool compress, bool includeAdditionalPackagesToCook = true, bool includeDependencyTable = true);
         List<ME1TalkFile> LocalTalkFiles { get; }
+        public bool IsModified { get; internal set; }
+
         /// <summary>
         /// Compares this package against the one located on disk at the specified path
         /// </summary>
@@ -238,5 +260,27 @@ namespace ME3ExplorerCore.Packages
         /// <param name="stream"></param>
         /// <returns></returns>
         List<EntryStringPair> CompareToPackage(Stream stream);
+        /// <summary>
+        /// Looks for an export with the same instanced name.
+        /// </summary>
+        /// <param name="instancedname"></param>
+        /// <returns></returns>
+        ExportEntry FindExport(string instancedname);
+        /// <summary>
+        /// Looks for an import with the same instanced name.
+        /// </summary>
+        /// <param name="instancedname"></param>
+        /// <returns></returns>
+        ImportEntry FindImport(string instancedname);
+        /// <summary>
+        /// Looks for an entry (imports first, then exports) with the same instanced name.
+        /// </summary>
+        /// <param name="instancedname"></param>
+        /// <returns></returns>
+        IEntry FindEntry(string instancedname);
+        /// <summary>
+        /// Rebuilds the entry lookup table. Is an expensive operation, use sparingly.
+        /// </summary>
+        void RebuildLookupTable();
     }
 }

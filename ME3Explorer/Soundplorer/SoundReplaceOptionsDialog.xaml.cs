@@ -40,7 +40,8 @@ namespace ME3Explorer.Soundplorer
         {
             ChosenSettings = new WwiseConversionSettingsPackage
             {
-                TargetSamplerate = (int)SampleRate_Combobox.SelectedItem
+                TargetSamplerate = (int)SampleRate_Combobox.SelectedItem,
+                UpdateReferencedEvents = (bool)UpdateEvents_CheckBox.IsChecked
             };
             DialogResult = true;
             Close();
@@ -56,5 +57,6 @@ namespace ME3Explorer.Soundplorer
     public class WwiseConversionSettingsPackage
     {
         public int TargetSamplerate = 0;
+        public bool UpdateReferencedEvents = true;
     }
 }

@@ -75,7 +75,6 @@ namespace ME3Explorer
         /// </summary>
         public MeshplorerWPF() : base("Meshplorer")
         {
-            DataContext = this;
             LoadCommands();
             InitializeComponent();
             Mesh3DViewer.IsBusyChanged += RendererIsBusyChanged;

@@ -387,5 +387,83 @@
       <sourcecode>https://github.com/ME3Tweaks/ME3-ASI-Plugins/tree/master/SteamingLevelsHUD</sourcecode>
       <downloadlink>https://github.com/ME3Tweaks/ME3-ASI-Plugins/releases/download/v1.0-StreamingLevelsHUD/StreamingLevelsHUD-v1.0.asi</downloadlink>
     </asimod>
+    <asimod>
+      <name>Streaming Levels HUD</name>
+      <installedname>StreamingLevelsHUD</installedname>
+      <author>Mgamerz</author>
+      <description>This ASI draws the list of streaming levels on the top left of the screen, as well as their current loaded state. It additionally shows the amount of memory the process is currently using, as well as as the maximum. When the amount nears the crashing point (3.5GiB), it turns, yellow, red, then begins to flash red. The HUD can be toggled on and off by pressing CTRL + T.</description>
+      <version>2</version>
+      <hash>4e8ee823fe0b3a2c8df73d3748b2a03f</hash>
+      <sourcecode>https://github.com/ME3Tweaks/ME3-ASI-Plugins/tree/master/SteamingLevelsHUD</sourcecode>
+      <downloadlink>https://github.com/ME3Tweaks/ME3-ASI-Plugins/releases/download/v2.0-StreamingLevelsHUD/StreamingLevelsHUD-v2.0.asi</downloadlink>
+    </asimod>
+  </updategroup>
+  <updategroup groupid="25" game="2" hidden="0">
+    <asimod>
+      <name>Streaming Levels HUD</name>
+      <installedname>StreamingLevelsHUD</installedname>
+      <author>Mgamerz</author>
+      <description>This ASI draws the list of streaming levels on the top left of the screen, as well as their current loaded state. It additionally shows the amount of memory the process is currently using, as well as as the maximum. When the amount nears the crashing point (3.5GiB), it turns, yellow, red, then begins to flash red.</description>
+      <version>1</version>
+      <hash>52477ccc1973864616e86d49d276afbf</hash>
+      <sourcecode>https://github.com/ME3Tweaks/ME2-ASI-Plugins/tree/master/SteamingLevelsHUD</sourcecode>
+      <downloadlink>https://github.com/ME3Tweaks/ME2-ASI-Plugins/releases/download/v1.0-StreamingLevelsHUD/StreamingLevelsHUD-v1.0.asi</downloadlink>
+    </asimod>
+    <asimod>
+      <name>Streaming Levels HUD</name>
+      <installedname>StreamingLevelsHUD</installedname>
+      <author>Mgamerz</author>
+      <description>This ASI draws the list of streaming levels on the top left of the screen, as well as their current loaded state. It additionally shows the amount of memory the process is currently using, as well as as the maximum. When the amount nears the crashing point (3.5GiB), it turns, yellow, red, then begins to flash red.</description>
+      <version>2</version>
+      <hash>302dbb9b254978ba0de80896b7eddafc</hash>
+      <sourcecode>https://github.com/ME3Tweaks/ME2-ASI-Plugins/tree/master/SteamingLevelsHUD</sourcecode>
+      <downloadlink>https://github.com/ME3Tweaks/ME2-ASI-Plugins/releases/download/v2.0-StreamingLevelsHUD/StreamingLevelsHUD-v2.0.asi</downloadlink>
+    </asimod>
+    <asimod>
+      <name>Streaming Levels HUD</name>
+      <installedname>StreamingLevelsHUD</installedname>
+      <author>Mgamerz</author>
+      <description>This ASI draws the list of streaming levels on the top left of the screen, as well as their current loaded state. The interface can be toggled on and off by pressing CTRL+T. Additionally, it shows the amount of memory the process is currently using, as well as as the maximum. When the amount nears the crashing point (3.5GiB), it turns, yellow, red, then begins to flash red.</description>
+      <version>3</version>
+      <hash>d5dfac6ac51d038c0e19b3deade7152d</hash>
+      <sourcecode>https://github.com/ME3Tweaks/ME2-ASI-Plugins/tree/master/SteamingLevelsHUD</sourcecode>
+      <downloadlink>https://github.com/ME3Tweaks/ME2-ASI-Plugins/releases/download/v3.0-StreamingLevelsHUD/StreamingLevelsHUD-v3.asi</downloadlink>
+    </asimod>
+  </updategroup>
+  <updategroup groupid="26" game="2" hidden="0">
+    <asimod>
+      <name>Death Counter LS</name>
+      <installedname>DeathCounterLS</installedname>
+      <author>Mgamerz</author>
+      <description>This ASI increments the number in a text file ever time the game over HUD is shown on screen. The file it produces is named 'deathcount.txt' and is placed next to the game executable. The count persists across sessions and can be used by things like OBS to show the death count.</description>
+      <version>1</version>
+      <hash>435fbda22dd4352118e592c1147248c7</hash>
+      <sourcecode>https://github.com/ME3Tweaks/ME2-ASI-Plugins/tree/master/DeathCounterLS</sourcecode>
+      <downloadlink>https://github.com/ME3Tweaks/ME2-ASI-Plugins/releases/download/v1.0-DeathCounterLS/DeathCounterLS-v1.0.asi</downloadlink>
+    </asimod>
+  </updategroup>
+  <updategroup groupid="27" game="2" hidden="0">
+    <asimod>
+      <name>SeqAct_Log Enabler</name>
+      <installedname>SeqAct_Log-Enabler</installedname>
+      <author>SirCxyrtyx</author>
+      <description>Will print the contents of SeqVars attached to SeqAct_Logs to the screen. Useful for debugging sequences.</description>
+      <version>1</version>
+      <hash>9f25d1dcc331079b95dd4b2ec2bc96e1</hash>
+      <sourcecode>https://github.com/ME3Tweaks/ME2-ASI-Plugins/tree/v1.0-SeqAct_LogEnabler/SeqActLogEnabler</sourcecode>
+      <downloadlink>https://github.com/ME3Tweaks/ME2-ASI-Plugins/releases/download/v1.0-SeqAct_LogEnabler/SeqActLogEnabler-v1.0.asi</downloadlink>
+    </asimod>
+  </updategroup>
+  <updategroup groupid="28" game="2" hidden="0">
+    <asimod>
+      <name>Combolution Support</name>
+      <installedname>CombolutionSupport</installedname>
+      <author>55tumbl</author>
+      <description>This ASI enables the full functionality of the DLC mod Combolutions. It also allows to switch between the Shared and Individual Cooldown systems (with adjusted cooldown durations), using the console commands "cooldown_s" and "cooldown_i", respectively.</description>
+      <version>1</version>
+      <hash>5128e70acee1515e397295da1b2c348c</hash>
+      <sourcecode>https://github.com/ME3Tweaks/ME2-ASI-Plugins/tree/v1.0-CombolutionSupport/CombolutionSupport</sourcecode>
+      <downloadlink>https://github.com/ME3Tweaks/ME2-ASI-Plugins/releases/download/v1.0-CombolutionSupport/CombolutionSupport-v1.asi</downloadlink>
+    </asimod>
   </updategroup>
 </ASIManifest>

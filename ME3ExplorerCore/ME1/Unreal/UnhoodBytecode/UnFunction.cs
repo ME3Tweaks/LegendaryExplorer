@@ -53,9 +53,9 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
 
         public List<Token> ScriptTokens = new List<Token>();
 
-        public override void Decompile(TextBuilder result)
+        public override void Decompile(TextBuilder result, bool parseSignature)
         {
-            Decompile(result, true);
+            Decompile(result, true, parseSignature);
         }
 
         public bool HasFlag(string name)
@@ -65,31 +65,36 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
 
         public string FunctionSignature = "";
 
-        public void Decompile(TextBuilder result, bool createControlStatements)
+        public void Decompile(TextBuilder result, bool createControlStatements, bool parseSignature)
         {
             result.Indent();
-            if (Native)
+            if (parseSignature)
             {
-                result.Append("native");
-                if (_nativeIndex > 0)
-                    result.Append("(").Append(_nativeIndex).Append(")");
-                result.Append(" ");
+                if (Native)
+                {
+                    result.Append("native");
+                    if (_nativeIndex > 0)
+                        result.Append("(").Append(_nativeIndex).Append(")");
+                    result.Append(" ");
+                }
+
+                _flags.Except("Native", "Event", "Delegate", "Defined", "Public", "HasDefaults", "HasOutParms").Each(f => result.Append(f.ToLower() + " "));
+
+                if (HasFlag("Event"))
+                    result.Append("event ");
+                else if (HasFlag("Delegate"))
+                    result.Append("delegate ");
+                else
+                    result.Append("function ");
+                string type = GetReturnType();
+                if (type != null)
+                {
+                    result.Append(type).Append(" ");
+                }
+
+                result.Append(_self.ObjectName.Instanced).Append("(");
             }
 
-            _flags.Except("Native", "Event", "Delegate", "Defined", "Public", "HasDefaults", "HasOutParms").Each(f => result.Append(f.ToLower() + " "));
-
-            if (HasFlag("Event"))
-                result.Append("event ");
-            else if (HasFlag("Delegate"))
-                result.Append("delegate ");
-            else
-                result.Append("function ");
-            string type = GetReturnType();
-            if (type != null)
-            {
-                result.Append(type).Append(" ");
-            }
-            result.Append(_self.ObjectName.Instanced).Append("(");
             int paramCount = 0;
             var locals = new List<ExportEntry>();
 
@@ -115,7 +120,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
                     int spos = (int)s.BaseStream.Position;
                     var name = bytecodeReader.ReadName();
                     var entry = bytecodeReader.ReadEntryRef(out var _);
-                    Statements.statements.Add(new Statement(spos, (int)s.BaseStream.Position, new NothingToken(spos, $"  {name} => {entry.FullPath}()"), bytecodeReader));
+                    Statements.statements.Add(new Statement(spos, (int)s.BaseStream.Position, new NothingToken(spos, $"  {name} => {entry.InstancedFullPath}()"), bytecodeReader));
                 }
             }
 #if !DEBUG && !AZURE
@@ -128,99 +133,116 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
             NameReferences = bytecodeReader.NameReferences;
             EntryReferences = bytecodeReader.EntryReferences;
             //var childIdx = EndianReader.ToInt32(Export.DataReadOnly, 0x18, Export.FileRef.Endian);
-            var childIdx = EndianReader.ToInt32(Export.Data, 0x18, Export.FileRef.Endian);
-            var children = new List<ExportEntry>();
-            while (Export.FileRef.TryGetUExport(childIdx, out var parsingExp))
-            {
-                children.Add(parsingExp);
-                //childIdx = EndianReader.ToInt32(parsingExp.DataReadOnly, 0x10, Export.FileRef.Endian);
-                childIdx = EndianReader.ToInt32(parsingExp.Data, 0x10, Export.FileRef.Endian);
-            }
 
-            //Get local children of this function
-            foreach (ExportEntry export in children)
+            if (parseSignature)
             {
-                //Reading parameters info...
-                if (export.ClassName.EndsWith("Property"))
+                try
                 {
-                    UnrealFlags.EPropertyFlags ObjectFlagsMask = (UnrealFlags.EPropertyFlags)EndianReader.ToUInt64(export.Data, 0x18, export.FileRef.Endian);
-                    //UnrealFlags.EPropertyFlags ObjectFlagsMask = (UnrealFlags.EPropertyFlags)EndianReader.ToUInt64(export.DataReadOnly, 0x18, export.FileRef.Endian);
-                    if (ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.Parm) && !ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.ReturnParm))
+                    var childIdx = EndianReader.ToInt32(Export.Data, 0x18, Export.FileRef.Endian);
+                    var children = new List<ExportEntry>();
+                    while (Export.FileRef.TryGetUExport(childIdx, out var parsingExp))
                     {
-                        if (paramCount > 0)
+                        children.Add(parsingExp);
+                        //childIdx = EndianReader.ToInt32(parsingExp.DataReadOnly, 0x10, Export.FileRef.Endian);
+                        var nCdx = EndianReader.ToInt32(parsingExp.DataReadOnly, 0x10, Export.FileRef.Endian);
+                        if (nCdx == childIdx || children.Any(x => x.UIndex == nCdx))
                         {
-                            result.Append(", ");
+                            throw new Exception("Infinite loop detected while parsing function!");
                         }
 
-                        if (export.ClassName == "ObjectProperty" || export.ClassName == "StructProperty")
-                        {
-                            //var uindexOfOuter = EndianReader.ToInt32(export.DataReadOnly, export.DataSize - 4, export.FileRef.Endian);
-                            var uindexOfOuter = EndianReader.ToInt32(export.Data, export.Data.Length - 4, export.FileRef.Endian);
-                            IEntry entry = export.FileRef.GetEntry(uindexOfOuter);
-                            if (entry != null)
-                            {
-                                result.Append($"{entry.ObjectName.Instanced} ");
-                            }
-                        }
-                        else
-                        {
-                            result.Append($"{GetPropertyType(export)} ");
-                        }
-
-                        result.Append(export.ObjectName.Instanced);
-                        paramCount++;
-
-                        if (ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.OptionalParm) && Statements.Count > 0)
-                        {
-                            if (Statements[0].Token is NothingToken)
-                                Statements.RemoveRange(0, 1);
-                            else if (Statements[0].Token is DefaultParamValueToken)
-                            {
-                                result.Append(" = ").Append(Statements[0].Token.ToString());
-                                Statements.RemoveRange(0, 1);
-                            }
-                        }
+                        childIdx = EndianReader.ToInt32(parsingExp.Data, 0x10, Export.FileRef.Endian);
                     }
-                    if (ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.ReturnParm))
+
+                    //Get local children of this function
+                    foreach (ExportEntry export in children)
                     {
-                        break; //return param
+                        //Reading parameters info...
+                        if (export.ClassName.EndsWith("Property"))
+                        {
+                            UnrealFlags.EPropertyFlags ObjectFlagsMask = (UnrealFlags.EPropertyFlags)EndianReader.ToUInt64(export.Data, 0x18, export.FileRef.Endian);
+                            //UnrealFlags.EPropertyFlags ObjectFlagsMask = (UnrealFlags.EPropertyFlags)EndianReader.ToUInt64(export.DataReadOnly, 0x18, export.FileRef.Endian);
+                            if (ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.Parm) && !ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.ReturnParm))
+                            {
+                                if (paramCount > 0)
+                                {
+                                    result.Append(", ");
+                                }
+
+                                if (export.ClassName == "ObjectProperty" || export.ClassName == "StructProperty")
+                                {
+                                    //var uindexOfOuter = EndianReader.ToInt32(export.DataReadOnly, export.DataSize - 4, export.FileRef.Endian);
+                                    var uindexOfOuter = EndianReader.ToInt32(export.DataReadOnly, export.DataSize - 4, export.FileRef.Endian);
+                                    IEntry entry = export.FileRef.GetEntry(uindexOfOuter);
+                                    if (entry != null)
+                                    {
+                                        result.Append($"{entry.ObjectName.Instanced} ");
+                                    }
+                                }
+                                else
+                                {
+                                    result.Append($"{GetPropertyType(export)} ");
+                                }
+
+                                result.Append(export.ObjectName.Instanced);
+                                paramCount++;
+
+                                if (ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.OptionalParm) && Statements.Count > 0)
+                                {
+                                    if (Statements[0].Token is NothingToken)
+                                        Statements.RemoveRange(0, 1);
+                                    else if (Statements[0].Token is DefaultParamValueToken)
+                                    {
+                                        result.Append(" = ").Append(Statements[0].Token.ToString());
+                                        Statements.RemoveRange(0, 1);
+                                    }
+                                }
+                            }
+
+                            if (ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.ReturnParm))
+                            {
+                                break; //return param
+                            }
+                        }
                     }
                 }
-
-
-
-                //object instance = export.ReadInstance();
-                //if (instance is UnClassProperty)
-                //{
-                //    var prop = (UnClassProperty)instance;
-                //    if (prop.Parm)
-                //    {
-                //        if (!prop.ReturnParm)
-                //        {
-                //            if (paramCount > 0)
-                //                result.Append(", ");
-
-                //            prop.Flags.Except("Parm").Each(f => result.Append(f.ToLower() + " "));
-                //            result.Append(prop.GetPropertyType()).Append(" ").Append(export.ObjectName);
-                //            if (prop.OptionalParm && statements.Count > 0)
-                //            {
-                //                if (statements[0].Token is NothingToken)
-                //                    statements.RemoveRange(0, 1);
-                //                else if (statements[0].Token is DefaultParamValueToken)
-                //                {
-                //                    result.Append(" = ").Append(statements[0].Token.ToString());
-                //                    statements.RemoveRange(0, 1);
-                //                }
-                //            }
-                //            paramCount++;
-                //        }
-                //    }
-                //    else
-                //    {
-                //        locals.Add(prop);
-                //    }
-                //}
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(@"Exception parsing parameters of function - if relinking this is expected as values have not been corrected yet");
+                }
             }
+
+            //object instance = export.ReadInstance();
+            //if (instance is UnClassProperty)
+            //{
+            //    var prop = (UnClassProperty)instance;
+            //    if (prop.Parm)
+            //    {
+            //        if (!prop.ReturnParm)
+            //        {
+            //            if (paramCount > 0)
+            //                result.Append(", ");
+
+            //            prop.Flags.Except("Parm").Each(f => result.Append(f.ToLower() + " "));
+            //            result.Append(prop.GetPropertyType()).Append(" ").Append(export.ObjectName);
+            //            if (prop.OptionalParm && statements.Count > 0)
+            //            {
+            //                if (statements[0].Token is NothingToken)
+            //                    statements.RemoveRange(0, 1);
+            //                else if (statements[0].Token is DefaultParamValueToken)
+            //                {
+            //                    result.Append(" = ").Append(statements[0].Token.ToString());
+            //                    statements.RemoveRange(0, 1);
+            //                }
+            //            }
+            //            paramCount++;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        locals.Add(prop);
+            //    }
+            //}
+
             result.Append(")");
 
             FunctionSignature = result.ToString();
@@ -283,28 +305,40 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
         private string GetReturnType()
         {
             //var childIdx = EndianReader.ToInt32(Export.DataReadOnly, 0x18, Export.FileRef.Endian);
-            var childIdx = EndianReader.ToInt32(Export.Data, 0x18, Export.FileRef.Endian);
-
-            while (Export.FileRef.TryGetUExport(childIdx, out var parsingExp))
+            try
             {
-                //var data = parsingExp.DataReadOnly;
-                var data = parsingExp.Data;
-                if (parsingExp.ObjectName == "ReturnValue")
+                var childIdx = EndianReader.ToInt32(Export.Data, 0x18, Export.FileRef.Endian);
+                while (Export.FileRef.TryGetUExport(childIdx, out var parsingExp))
                 {
-                    if (parsingExp.ClassName == "ObjectProperty" || parsingExp.ClassName == "StructProperty")
+                    var data = parsingExp.DataReadOnly;
+                    if (parsingExp.ObjectName == "ReturnValue")
                     {
-                        var uindexOfOuter = EndianReader.ToInt32(data, parsingExp.DataSize - 4,
-                            _self.FileRef.Endian);
-                        IEntry entry = parsingExp.FileRef.GetEntry(uindexOfOuter);
-                        if (entry != null)
+                        if (parsingExp.ClassName == "ObjectProperty" || parsingExp.ClassName == "StructProperty")
                         {
-                            return entry.ObjectName;
+                            var uindexOfOuter = EndianReader.ToInt32(data, parsingExp.DataSize - 4,
+                                _self.FileRef.Endian);
+                            IEntry entry = parsingExp.FileRef.GetEntry(uindexOfOuter);
+                            if (entry != null)
+                            {
+                                return entry.ObjectName;
+                            }
                         }
+
+                        return parsingExp.ClassName;
+                    }
+                    var nCdx = EndianReader.ToInt32(data, 0x10, Export.FileRef.Endian);
+                    if (nCdx == childIdx || (parsingExp.Parent.UIndex != Export.UIndex)) // not sure what second half of this if statement is for, but i'm not going not modify it
+                    {
+                        throw new Exception("Infinite loop detected while parsing function!");
                     }
 
-                    return parsingExp.ClassName;
+                    childIdx = nCdx;
                 }
-                childIdx = EndianReader.ToInt32(data, 0x10, Export.FileRef.Endian);
+            }
+            catch (Exception e)
+            {
+                // Determining the return type may fail if we are relinking as the data has not yet been corrected.
+                Debug.WriteLine($@"Error getting return type of func: {e.Message} - this may be intended if relinking is taking place");
             }
 
             return null;

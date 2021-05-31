@@ -14,6 +14,7 @@ namespace ME3Explorer.SharedUI
     {
         public ObservableCollectionExtended<object> Items { get; } = new ObservableCollectionExtended<object>();
         public Action<EntryStringPair> DoubleClickEntryHandler { get; set; }
+        public Action<EntryRefAndMessage> DoubleClickEntryHandler2 { get; set; }
         private string topText;
 
         public string TopText
@@ -31,11 +32,20 @@ namespace ME3Explorer.SharedUI
             {
                 Width = width;
             }
+
             if (height != 0)
             {
                 Height = height;
             }
+
             Owner = owner;
+        }
+
+
+        public ListDialog(IEnumerable<EntryRefAndMessage> listItems, string title, string message, Window owner, int width = 0, int height = 0) : this(title, message, owner, width, height)
+        {
+            Items.ReplaceAll(listItems);
+            TopText = message;
         }
 
 
@@ -68,17 +78,42 @@ namespace ME3Explorer.SharedUI
 
         private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (((FrameworkElement)e.OriginalSource).DataContext is EntryStringPair item && item.Entry != null)
+            switch (((FrameworkElement)e.OriginalSource).DataContext)
             {
-                if (DoubleClickEntryHandler == null)
+                case EntryStringPair {Entry: not null} item:
                 {
-                    MessageBox.Show("This dialog doesn't support double click to goto yet, please report this");
+                    if (DoubleClickEntryHandler == null)
+                    {
+                        MessageBox.Show("This dialog doesn't support double click to goto yet, please report this");
+                    }
+                    else
+                    {
+                        DoubleClickEntryHandler.Invoke(item);
+                    }
+
+                    break;
                 }
-                else
-                {
-                    DoubleClickEntryHandler.Invoke(item);
-                }
+                case EntryRefAndMessage item2:
+                    if (DoubleClickEntryHandler2 == null)
+                    {
+                        MessageBox.Show("This dialog doesn't support double click to goto yet, please report this");
+                    }
+                    else
+                    {
+                        DoubleClickEntryHandler2.Invoke(item2);
+                    }
+
+                    break;
             }
         }
     }
+
+    public record EntryRefAndMessage(int UIndex, string FilePath, string Message)
+    {
+        public EntryRefAndMessage(IEntry entry, string message = null) : this(entry?.UIndex ?? 0, entry?.FileRef.FilePath ?? null, message ?? $"{$"#{entry.UIndex}",-9} {entry.FileRef.FilePath}")
+        {
+        }
+
+        public override string ToString() => Message;
+    };
 }

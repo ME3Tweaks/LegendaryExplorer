@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.IO;
@@ -9,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ME3ExplorerCore.Gammtek;
 using ME3ExplorerCore.Gammtek.IO;
+using ME3ExplorerCore.Memory;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.SharpDX;
@@ -22,25 +24,25 @@ namespace ME3ExplorerCore.Helpers
         //no argument passed to continuation
         public static Task ContinueWithOnUIThread(this Task task, Action<Task> continuationAction)
         {
-            return task.ContinueWith(continuationAction, CoreLib.SYNCHRONIZATION_CONTEXT);
+            return task.ContinueWith(continuationAction, ME3ExplorerCoreLib.SYNCHRONIZATION_CONTEXT);
         }
 
         //no argument passed to and result returned from continuation
         public static Task<TNewResult> ContinueWithOnUIThread<TNewResult>(this Task task, Func<Task, TNewResult> continuationAction)
         {
-            return task.ContinueWith(continuationAction, CoreLib.SYNCHRONIZATION_CONTEXT);
+            return task.ContinueWith(continuationAction, ME3ExplorerCoreLib.SYNCHRONIZATION_CONTEXT);
         }
 
         //argument passed to continuation
         public static Task ContinueWithOnUIThread<TResult>(this Task<TResult> task, Action<Task<TResult>> continuationAction)
         {
-            return task.ContinueWith(continuationAction, CoreLib.SYNCHRONIZATION_CONTEXT);
+            return task.ContinueWith(continuationAction, ME3ExplorerCoreLib.SYNCHRONIZATION_CONTEXT);
         }
 
         //argument passed to and result returned from continuation
         public static Task<TNewResult> ContinueWithOnUIThread<TResult, TNewResult>(this Task<TResult> task, Func<Task<TResult>, TNewResult> continuationAction)
         {
-            return task.ContinueWith(continuationAction, CoreLib.SYNCHRONIZATION_CONTEXT);
+            return task.ContinueWith(continuationAction, ME3ExplorerCoreLib.SYNCHRONIZATION_CONTEXT);
         }
     }
     public static class EnumerableExtensions
@@ -171,6 +173,16 @@ namespace ME3ExplorerCore.Helpers
         {
             var slice = new byte[length];
             Buffer.BlockCopy(src, start, slice, 0, length);
+            return slice;
+        }
+
+        public static T[] Slice<T>(this ReadOnlyCollection<T> src, int start, int length)
+        {
+            var slice = new T[length];
+            for (int i = 0; i < length; i++)
+            {
+                slice[i] = src[i + start];
+            }
             return slice;
         }
 
@@ -320,6 +332,8 @@ namespace ME3ExplorerCore.Helpers
         public static void Add<T, U, V>(this IList<(T, U, V)> list, T item1, U item2, V item3) => list.Add((item1, item2, item3));
 
         public static void Add<T, U, V, W>(this IList<(T, U, V, W)> list, T item1, U item2, V item3, W item4) => list.Add((item1, item2, item3, item4));
+
+        public static void Add<T>(this Stack<T> stack, T item) => stack.Push(item);
     }
 
     public static class DictionaryExtensions
@@ -370,6 +384,17 @@ namespace ME3ExplorerCore.Helpers
             return s.Split(new[] { Environment.NewLine }, options);
         }
 
+        /// <summary>
+        /// Capitalizes the first letter in the string.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static string UpperFirst(this string str)
+        {
+            if (string.IsNullOrEmpty(str))
+                return string.Empty;
+            return char.ToUpper(str[0]) + str.Substring(1);
+        }
         public static bool RepresentsPackageFilePath(this string path)
         {
             string extension = Path.GetExtension(path);
@@ -568,7 +593,8 @@ namespace ME3ExplorerCore.Helpers
         /// <param name="bytes">The number of bytes to copy</param>
         public static void CopyToEx(this Stream input, Stream output, int bytes)
         {
-            var buffer = new byte[32768];
+            var bufSize = 32768;
+            var buffer = MemoryManager.GetByteArray(bufSize);
             int read;
             while (bytes > 0 &&
                    (read = input.Read(buffer, 0, Math.Min(buffer.Length, bytes))) > 0)
@@ -576,6 +602,7 @@ namespace ME3ExplorerCore.Helpers
                 output.Write(buffer, 0, read);
                 bytes -= read;
             }
+            MemoryManager.ReturnByteArray(buffer);
         }
 
         public static NameReference ReadNameReference(this Stream stream, IMEPackage pcc)

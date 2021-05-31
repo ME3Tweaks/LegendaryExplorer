@@ -7,9 +7,9 @@ using System.Text;
 using ME3ExplorerCore.Compression;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Memory;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Unreal.BinaryConverters;
 
 namespace ME3ExplorerCore.Unreal
 {
@@ -55,6 +55,9 @@ namespace ME3ExplorerCore.Unreal
             public long RealUncompressedSize { get; set; }
             public uint DataOffset;
             public byte DataOffsetAdder;
+            /// <summary>
+            /// Where the (compressed and uncompressed) data actually resides in the SFAR file
+            /// </summary>
             public long RealDataOffset { get; set; }
             public long BlockTableOffset;
             public long[] BlockOffsets;
@@ -297,7 +300,7 @@ namespace ME3ExplorerCore.Unreal
         public MemoryStream DecompressEntry(FileEntryStruct e)
         {
             //Debug.WriteLine("Decompressing " + e.FileName);
-            MemoryStream result = new MemoryStream();
+            MemoryStream result = MemoryManager.GetMemoryStream();
             uint count = 0;
             byte[] inputBlock;
             long left = e.RealUncompressedSize;
@@ -383,6 +386,11 @@ namespace ME3ExplorerCore.Unreal
             return result;
         }
 
+        public SFAREntryReader GetEntryReader(int index)
+        {
+            return new SFAREntryReader(this, index);
+        }
+
         internal class InputBlock
         {
             public const long Uncompressed = -1;
@@ -401,7 +409,7 @@ namespace ME3ExplorerCore.Unreal
 
         public MemoryStream DecompressEntry(int Index, FileStream fs)
         {
-            MemoryStream result = new MemoryStream();
+            MemoryStream result = MemoryManager.GetMemoryStream();
             FileEntryStruct e = Files[Index];
             uint count = 0;
             byte[] inputBlock;
@@ -951,6 +959,240 @@ namespace ME3ExplorerCore.Unreal
         public int FindFileEntry(string fileName)
         {
             return Files.IndexOf(Files.FirstOrDefault(x => x.FileName.Contains(fileName, StringComparison.InvariantCultureIgnoreCase)));
+        }
+
+        private void DecompressBlock(FileStream fs, FileEntryStruct entry, int blockIndex, ref long remainingUncompSize, MemoryStream decompressedData)
+        {
+            var uncompressedBlockSize = (uint)Math.Min(remainingUncompSize, Header.MaxBlockSize);
+            uint compressedBlockSize = entry.BlockSizes[blockIndex];
+            if (compressedBlockSize == 0)
+                compressedBlockSize = Header.MaxBlockSize;
+
+            uint actualUncompressedBlockSize = uncompressedBlockSize;
+            var buff = fs.ReadToBuffer((int)compressedBlockSize);
+            var outputBlock = LZMA.Decompress(buff, actualUncompressedBlockSize);
+            if (outputBlock.Length != actualUncompressedBlockSize)
+                throw new Exception("Decompression Error");
+
+            decompressedData.Write(outputBlock, 0, (int)actualUncompressedBlockSize);
+            remainingUncompSize -= uncompressedBlockSize;
+        }
+
+        /// <summary>
+        /// Reads a specific piece of data from the listed entry. Only works on PC SFARs.
+        /// </summary>
+        /// <param name="entryIdx">The entry IDX to read from</param>
+        /// <param name="uncompressedOffsetInEntry">The offset, as if the file was uncompressed, to read at.</param>
+        /// <param name="uncompressedAmountToRead">The amount of uncompressed data to read.</param>
+        /// <returns>Byte array of uncompressed data</returns>
+        public byte[] ReadFromEntry(int entryIdx, int uncompressedOffsetInEntry, int uncompressedAmountToRead)
+        {
+            var entry = Files[entryIdx];
+            using FileStream fs = File.OpenRead(FileName);
+            if (entry.BlockSizeTableIndex == 0xFFFFFFFF)
+            {
+                // It's stored uncompressed already. Just read the data directly.
+                fs.Position = entry.RealDataOffset + uncompressedOffsetInEntry;
+                return fs.ReadToBuffer(uncompressedAmountToRead);
+            }
+            else
+            {
+                MemoryStream decompressedData = MemoryManager.GetMemoryStream();
+                fs.Seek(entry.BlockOffsets[0], SeekOrigin.Begin);
+
+                // Seek to the first block we must decompress that contains the data offset we are looking for
+                int position = 0;
+                int startUncompPosition = 0;
+                var totalEntryUncompSize = entry.RealUncompressedSize;
+                bool hasBegunReading = false;
+                bool stopReading = false;
+
+                // Seek to data start
+                fs.Seek(entry.BlockOffsets[0], SeekOrigin.Begin);
+
+                for (int i = 0; i < entry.BlockSizes.Length; i++)
+                {
+                    uint compressedBlockSize = entry.BlockSizes[i];
+                    if (compressedBlockSize == 0)
+                        compressedBlockSize = Header.MaxBlockSize;
+                    if (compressedBlockSize == Header.MaxBlockSize || compressedBlockSize == entry.RealUncompressedSize)
+                    {
+                        // This block is actually uncompressed. How fun
+
+                        if (!hasBegunReading && (position <= uncompressedOffsetInEntry) && (position + uncompressedAmountToRead > uncompressedOffsetInEntry))
+                        {
+                            // We have found the first block we must decompress
+                            Debug.WriteLine($@"Begin read at 0x{position:X8}");
+                            startUncompPosition = position;
+                            hasBegunReading = true;
+                        }
+
+                        // If position (uncomp) > uncompressedoffset + size, we no longer need to read anything.
+                        if (position >= uncompressedOffsetInEntry + uncompressedAmountToRead)
+                        {
+                            Debug.WriteLine($@"End read at 0x{position:X8}");
+                            break;
+                        }
+
+                        position += (int)compressedBlockSize; // It's not compressed
+                        if (hasBegunReading)
+                        {
+                            DecompressBlock(fs, entry, i, ref totalEntryUncompSize, decompressedData);
+                        }
+                        else
+                        {
+                            // Skip
+                            fs.Seek(compressedBlockSize, SeekOrigin.Current);
+                        }
+                    }
+                    else
+                    {
+                        var uncompressedBlockSize = (uint)Math.Min(totalEntryUncompSize, Header.MaxBlockSize);
+                        if (compressedBlockSize < 5)
+                        {
+                            throw new Exception("compressed block size smaller than 5");
+                        }
+
+                        // Is the offset in this block?
+                        if (!hasBegunReading && (position <= uncompressedOffsetInEntry) && (position + uncompressedBlockSize > uncompressedOffsetInEntry))
+                        {
+                            // We have found the first block we must decompress
+                            Debug.WriteLine($@"Begin read at 0x{position:X8}");
+                            startUncompPosition = position;
+                            hasBegunReading = true;
+                        }
+
+                        // If position (uncomp) > uncompressedoffset + size, we no longer need to read anything.
+                        if (position >= uncompressedOffsetInEntry + uncompressedAmountToRead)
+                        {
+                            Debug.WriteLine($@"End read at 0x{position:X8}");
+                            break;
+                        }
+
+                        if (hasBegunReading)
+                        {
+                            DecompressBlock(fs, entry, i, ref totalEntryUncompSize, decompressedData);
+                        }
+                        else
+                        {
+                            // Skip
+                            fs.Seek(compressedBlockSize, SeekOrigin.Current);
+                        }
+
+                        position += (int)uncompressedBlockSize;
+                    }
+                }
+
+                decompressedData.Position = uncompressedOffsetInEntry - startUncompPosition; // We may start at position > 0
+                return decompressedData.ReadToBuffer(uncompressedAmountToRead);
+            }
+        }
+
+    }
+
+    /// <summary>
+    /// Reads an entry from an SFAR file, but only in areas required for seeking, to minimize amount of reading.
+    /// This is useful for large entries such as TFC when only a few entries need read
+    /// </summary>
+    public class SFAREntryReader
+    {
+        private DLCPackage dpackage;
+        private DLCPackage.FileEntryStruct entry;
+        public byte[] ReadUncompressedSize(int uncompressedOffsetInEntry, int uncompressedAmountToRead)
+        {
+            using FileStream fs = File.OpenRead(dpackage.FileName);
+            if (entry.BlockSizeTableIndex == 0xFFFFFFFF)
+            {
+                // It's stored uncompressed already. Just read the data directly.
+                fs.Position = entry.RealDataOffset + uncompressedOffsetInEntry;
+                return fs.ReadToBuffer(uncompressedAmountToRead);
+            }
+            else
+            {
+                MemoryStream decompressedData = MemoryManager.GetMemoryStream();
+                fs.Seek(entry.BlockOffsets[0], SeekOrigin.Begin);
+
+                // Seek to the first block we must decompress that contains the data offset we are looking for
+                int startBlockIndex = 0; // The index of the first block we must decompress to read the file for returning
+                int endBlockIndex = 0; // The index of the last block we must decompress to read the file for returning
+                int position = 0;
+                int startUncompPosition = 0;
+                var totalEntryUncompSize = entry.RealUncompressedSize;
+                for (int i = 0; i < entry.BlockSizes.Length; i++)
+                {
+                    uint compressedBlockSize = entry.BlockSizes[i];
+                    if (compressedBlockSize == 0)
+                        compressedBlockSize = dpackage.Header.MaxBlockSize;
+                    if (compressedBlockSize == dpackage.Header.MaxBlockSize || compressedBlockSize == entry.RealUncompressedSize)
+                    {
+                        // This block is actually uncompressed. How fun
+                        if (position <= uncompressedOffsetInEntry && position + compressedBlockSize > uncompressedOffsetInEntry)
+                        {
+                            // We have found the first block we must decompress
+                            startBlockIndex = i;
+                            startUncompPosition = position;
+                        }
+
+                        if (position > uncompressedOffsetInEntry && position - compressedBlockSize >= uncompressedOffsetInEntry)
+                        {
+                            // We have found the last block we must decompress
+                            endBlockIndex = i;
+                        }
+
+                        position += (int)entry.RealUncompressedSize; // It's not compressed
+                    }
+                    else
+                    {
+                        var uncompressedBlockSize = (uint)Math.Min(totalEntryUncompSize, dpackage.Header.MaxBlockSize);
+                        if (compressedBlockSize < 5)
+                        {
+                            throw new Exception("compressed block size smaller than 5");
+                        }
+
+                        if (position <= uncompressedOffsetInEntry && position + compressedBlockSize > uncompressedOffsetInEntry)
+                        {
+                            // We have found the first block we must decompress
+                            startBlockIndex = i;
+                            startUncompPosition = position;
+                        }
+
+                        if (position > uncompressedOffsetInEntry && position - compressedBlockSize >= uncompressedOffsetInEntry)
+                        {
+                            // We have found the last block we must decompress
+                            endBlockIndex = i;
+                        }
+
+                        position += (int)uncompressedBlockSize;
+                    }
+                }
+
+                // Decompress the blocks
+                for (int i = startBlockIndex; i < endBlockIndex; i++)
+                {
+                    var uncompressedBlockSize = (uint)Math.Min(totalEntryUncompSize, dpackage.Header.MaxBlockSize);
+                    uint compressedBlockSize = entry.BlockSizes[i];
+                    if (compressedBlockSize == 0)
+                        compressedBlockSize = dpackage.Header.MaxBlockSize;
+
+                    uint actualUncompressedBlockSize = uncompressedBlockSize;
+                    var outputBlock = LZMA.Decompress(fs.ReadToBuffer((int)compressedBlockSize), actualUncompressedBlockSize);
+                    if (outputBlock.Length != actualUncompressedBlockSize)
+                        throw new Exception("Decompression Error");
+
+                    decompressedData.Write(outputBlock, 0, (int)actualUncompressedBlockSize);
+                    totalEntryUncompSize -= uncompressedBlockSize;
+                }
+
+                // If the data to read doesn't start on a boundary we need to strip that data out.
+                decompressedData.Position = uncompressedOffsetInEntry - startUncompPosition;
+                return decompressedData.ReadToBuffer(uncompressedAmountToRead);
+            }
+        }
+
+        public SFAREntryReader(DLCPackage dpackage, int index)
+        {
+            this.dpackage = dpackage;
+            entry = dpackage.Files[index];
         }
     }
 }

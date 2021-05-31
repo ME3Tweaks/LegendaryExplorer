@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<Configurations>WinDebug;WinRelease;WinAzureRelease</Configurations>
+		<Configurations>WinDebug;WinRelease;WinAzureRelease;WinAzureTest</Configurations>
 		<TargetFramework>netcoreapp3.1</TargetFramework>
 		<Platforms>x64</Platforms>
 		<IsPackable>false</IsPackable>
@@ -12,7 +12,10 @@
 		<DefineConstants>TRACE</DefineConstants>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)'=='WinAzureRelease'">
-		<DefineConstants>TRACE;AZURE</DefineConstants>
+		<DefineConstants>TRACE;NIGHTLY</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='WinAzureTest'">
+	  <DefineConstants>TRACE;AZURE</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>

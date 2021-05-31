@@ -17,6 +17,7 @@
         AllowDrop="True"
         Closing="MeshplorerWPF_Closing"
         Icon="/Resources/meshplorer_256x256.ico"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Title="Meshplorer" Height="550" Width="1200" Loaded="MeshplorerWPF_OnLoaded">
     <Window.Resources>
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
@@ -31,6 +32,13 @@
         <Converters:GameTypeConverter x:Key="GameTypeConverter"/>
         <SharedUI:BindingProxy x:Key="bindingProxy" Data="{Binding}"/>
     </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Key="O" Modifiers="Control" Command="{Binding OpenFileCommand}"/>
+        <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveFileCommand}"/>
+        <KeyBinding Key="S" Modifiers="Control+Shift" Command="{Binding SaveAsCommand}"/>
+        <!--<KeyBinding Key="F" Modifiers="Control" Command="{Binding FindCommand}"/>
+        <KeyBinding Key="G" Modifiers="Control" Command="{Binding GotoCommand}"/>-->
+    </Window.InputBindings>
     <xctk:BusyIndicator IsBusy="{Binding Path=IsBusy}" BusyContent="{Binding BusyText}">
         <DockPanel>
             <Menu DockPanel.Dock="Top">

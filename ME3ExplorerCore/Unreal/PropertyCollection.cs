@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Memory;
 using ME3ExplorerCore.Packages;
 #if AZURE
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -722,7 +723,7 @@ namespace ME3ExplorerCore.Unreal
         /// <returns></returns>
         public long GetLength(IMEPackage pcc, bool valueOnly = false)
         {
-            var stream = new EndianReader(new MemoryStream());
+            using var stream = new EndianReader(MemoryManager.GetMemoryStream());
             WriteTo(stream.Writer, pcc, valueOnly);
             return stream.Length;
         }
@@ -808,12 +809,30 @@ namespace ME3ExplorerCore.Unreal
             {
                 stream.WriteStructProperty(pcc, Name, StructType, () =>
                 {
-                    EndianReader m = new EndianReader(new MemoryStream()) { Endian = pcc.Endian };
+                    EndianReader m = new EndianReader(MemoryManager.GetMemoryStream()) { Endian = pcc.Endian };
                     Properties.WriteTo(m.Writer, pcc);
                     return m.BaseStream;
                 }, StaticArrayIndex);
             }
         }
+
+        /// <summary>
+        /// Generates a StructProperty (with the specified name) from the specified Guid
+        /// </summary>
+        /// <param name="tfcGuid"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static StructProperty FromGuid(Guid guid, string name = null)
+        {
+            PropertyCollection pc = new PropertyCollection();
+            var ba = guid.ToByteArray();
+            pc.Add(new IntProperty(BitConverter.ToInt32(ba, 0), "A"));
+            pc.Add(new IntProperty(BitConverter.ToInt32(ba, 4), "B"));
+            pc.Add(new IntProperty(BitConverter.ToInt32(ba, 8), "C"));
+            pc.Add(new IntProperty(BitConverter.ToInt32(ba, 12), "D"));
+            return new StructProperty("Guid", pc, name, true);
+        }
+
 #pragma warning disable
         public event PropertyChangedEventHandler PropertyChanged;
 #pragma warning restore
@@ -1068,6 +1087,12 @@ namespace ME3ExplorerCore.Unreal
             // System.Object, which defines Equals as reference equality.
             return (Value == p.Value);
         }
+
+        public override int GetHashCode()
+        {
+            return Value.GetHashCode();
+        }
+
 #pragma warning disable
         public event PropertyChangedEventHandler PropertyChanged;
 #pragma warning restore
@@ -1399,7 +1424,7 @@ namespace ME3ExplorerCore.Unreal
             {
                 stream.WriteArrayProperty(pcc, Name, bytes.Length, () =>
                 {
-                    Stream m = new MemoryStream();
+                    Stream m = MemoryManager.GetMemoryStream();
                     m.WriteFromBuffer(bytes);
                     return m;
                 }, StaticArrayIndex);
@@ -1457,7 +1482,7 @@ namespace ME3ExplorerCore.Unreal
             {
                 stream.WriteArrayProperty(pcc, Name, Values.Count, () =>
                 {
-                    EndianReader m = new EndianReader(new MemoryStream()) { Endian = pcc.Endian };
+                    EndianReader m = new EndianReader(MemoryManager.GetMemoryStream()) { Endian = pcc.Endian };
                     foreach (var prop in Values)
                     {
                         prop.WriteTo(m.Writer, pcc, true);

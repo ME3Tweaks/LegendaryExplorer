@@ -34,7 +34,7 @@ namespace ME3Explorer.CurveEd
         {
             if (sender is Anchor a && a.graph != null)
             {
-                a.point.Value.OutVal = Convert.ToSingle(a.graph.unrealY((double)e.NewValue));
+                a.point.Value.OutVal = Convert.ToSingle(a.graph.toUnrealY((double)e.NewValue));
                 if (a.IsSelected)
                 {
                     string val = a.point.Value.OutVal.ToString("0.###");
@@ -60,7 +60,15 @@ namespace ME3Explorer.CurveEd
         {
             if (sender is Anchor a && a.graph != null)
             {
-                a.point.Value.InVal = Convert.ToSingle(a.graph.unrealX((double)e.NewValue));
+                a.point.Value.InVal = Convert.ToSingle(a.graph.toUnrealX((double)e.NewValue));
+                if (a.IsSelected)
+                {
+                    string val = a.point.Value.InVal.ToString("0.###");
+                    if (!a.graph.xTextBox.Text.isNumericallyEqual(val))
+                    {
+                        a.graph.xTextBox.Text = val;
+                    }
+                }
             }
         }
 
@@ -154,8 +162,8 @@ namespace ME3Explorer.CurveEd
         {
             graph = g;
             point = p;
-            X = graph.localX(point.Value.InVal);
-            Y = graph.localY(point.Value.OutVal);
+            X = graph.toLocalX(point.Value.InVal);
+            Y = graph.toLocalY(point.Value.OutVal);
             this.DragDelta += OnDragDelta;
             this.DragStarted += OnDragStarted;
             this.MouseDown += Anchor_MouseDown;
@@ -228,7 +236,7 @@ namespace ME3Explorer.CurveEd
             string res = PromptDialog.Prompt(this, $"Enter time between {prev} and {next}", "Set Time", point.Value.InVal.ToString());
             if (float.TryParse(res, out var result) && result > prev && result < next)
             {
-                X = graph.localX(result);
+                X = graph.toLocalX(result);
                 graph.Paint(true);
             }
         }
@@ -238,7 +246,7 @@ namespace ME3Explorer.CurveEd
             string res = PromptDialog.Prompt(this, "Enter new value", "Set Value", point.Value.OutVal.ToString());
             if (float.TryParse(res, out var result))
             {
-                Y = graph.localY(result);
+                Y = graph.toLocalY(result);
                 graph.Paint(true);
             }
         }
@@ -265,9 +273,24 @@ namespace ME3Explorer.CurveEd
 
         private void OnDragDelta(object sender, DragDeltaEventArgs e)
         {
-            Y -= e.VerticalChange;
-            leftHandle.Y -= e.VerticalChange;
-            rightHandle.Y -= e.VerticalChange;
+            if(Keyboard.Modifiers == ModifierKeys.Shift || Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                double prev = graph.toLocalX(point.Previous?.Value.InVal ?? float.MinValue);
+                double next = graph.toLocalX(point.Next?.Value.InVal ?? float.MaxValue);
+                double change = e.HorizontalChange;
+                if ((X + change) <= prev || (X + change) >= next) change = 0f;
+
+                X += change;
+                leftHandle.X += change;
+                rightHandle.X += change;
+            }
+
+            if (Keyboard.Modifiers != ModifierKeys.Shift)
+            {
+                Y -= e.VerticalChange;
+                leftHandle.Y -= e.VerticalChange;
+                rightHandle.Y -= e.VerticalChange;
+            }
         }
     }
 }

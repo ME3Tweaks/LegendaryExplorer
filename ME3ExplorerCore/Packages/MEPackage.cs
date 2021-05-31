@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ME3ExplorerCore.Compression;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Memory;
 using ME3ExplorerCore.TLK.ME1;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
@@ -92,6 +93,15 @@ namespace ME3ExplorerCore.Packages
         /// </summary>
         public List<string> AdditionalPackagesToCook = new List<string>();
 
+        /// <summary>
+        /// Passthrough to UnrealPackageFile's IsModified
+        /// </summary>
+        bool IMEPackage.IsModified
+        {
+            // Not sure why I can't use a private setter here.
+            get => IsModified;
+            set => IsModified = value;
+        }
 
         public Endian Endian { get; }
         public MEGame Game { get; private set; } //can only be ME1, ME2, or ME3. UDK is a separate class
@@ -110,7 +120,7 @@ namespace ME3ExplorerCore.Packages
 
         public byte[] getHeader()
         {
-            var ms = new MemoryStream();
+            using var ms = MemoryManager.GetMemoryStream();
             WriteHeader(ms, includeAdditionalPackageToCook: true);
             return ms.ToArray();
         }
@@ -210,6 +220,9 @@ namespace ME3ExplorerCore.Packages
         /// <param name="filePath"></param>
         private MEPackage(MEGame game, string filePath = null) : base(filePath != null ? Path.GetFullPath(filePath) : null)
         {
+            names = new List<string>();
+            imports = new List<ImportEntry>();
+            exports = new List<ExportEntry>();
             //new Package
             Game = game;
             //reasonable defaults?
@@ -466,6 +479,7 @@ namespace ME3ExplorerCore.Packages
             packageReader = new EndianReader(inStream) { Endian = endian };
             //read namelist
             inStream.JumpTo(NameOffset);
+            names = new List<string>(NameCount);
             for (int i = 0; i < NameCount; i++)
             {
                 var name = packageReader.ReadUnrealString();
@@ -479,19 +493,23 @@ namespace ME3ExplorerCore.Packages
 
             //read importTable
             inStream.JumpTo(ImportOffset);
+            imports = new List<ImportEntry>(ImportCount);
             for (int i = 0; i < ImportCount; i++)
             {
                 ImportEntry imp = new ImportEntry(this, packageReader) { Index = i };
-                imp.PropertyChanged += importChanged;
+                if (MEPackageHandler.GlobalSharedCacheEnabled)
+                    imp.PropertyChanged += importChanged; // If packages are not shared there is no point to attaching this
                 imports.Add(imp);
             }
 
             //read exportTable (ExportEntry constructor reads export data)
             inStream.JumpTo(ExportOffset);
+            exports = new List<ExportEntry>(ExportCount);
             for (int i = 0; i < ExportCount; i++)
             {
                 ExportEntry e = new ExportEntry(this, packageReader) { Index = i };
-                e.PropertyChanged += exportChanged;
+                if (MEPackageHandler.GlobalSharedCacheEnabled)
+                    e.PropertyChanged += exportChanged; // If packages are not shared there is no point to attaching this
                 exports.Add(e);
                 if (platformNeedsResolved && e.ClassName == "ShaderCache")
                 {
@@ -570,6 +588,7 @@ namespace ME3ExplorerCore.Packages
                 }
             }
 
+            RebuildLookupTable(); // Builds the export/import lookup tables.
 #if AZURE
             if (platformNeedsResolved)
             {
@@ -580,7 +599,7 @@ namespace ME3ExplorerCore.Packages
 
 
 
-        public static Action<MEPackage, string, bool, bool, bool, bool> RegisterSaver() => saveByReconstructing;
+        public static Action<MEPackage, string, bool, bool, bool, bool, object> RegisterSaver() => saveByReconstructing;
 
         /// <summary>
         /// Saves the package to disk by reconstructing the package file
@@ -589,10 +608,24 @@ namespace ME3ExplorerCore.Packages
         /// <param name="path"></param>
         /// <param name="isSaveAs"></param>
         /// <param name="compress"></param>
-        private static void saveByReconstructing(MEPackage mePackage, string path, bool isSaveAs, bool compress, bool includeAdditionalPackagesToCook, bool includeDependencyTable)
+        private static void saveByReconstructing(MEPackage mePackage, string path, bool isSaveAs, bool compress, bool includeAdditionalPackagesToCook, bool includeDependencyTable, object diskIOSyncLockObject = null)
         {
             var saveStream = saveByReconstructingToStream(mePackage, isSaveAs, compress, includeAdditionalPackagesToCook, includeDependencyTable);
-            saveStream.WriteToFile(path ?? mePackage.FilePath);
+
+            // Lock writing with the sync object (if not null) to prevent disk concurrency issues
+            // (the good old 'This file is in use by another process' message)
+            if (diskIOSyncLockObject == null)
+            {
+                saveStream.WriteToFile(path ?? mePackage.FilePath);
+            }
+            else
+            {
+                lock (diskIOSyncLockObject)
+                {
+                    saveStream.WriteToFile(path ?? mePackage.FilePath);
+                }
+            }
+
             if (!isSaveAs)
             {
                 mePackage.AfterSave();
@@ -608,7 +641,7 @@ namespace ME3ExplorerCore.Packages
         private static MemoryStream compressPackage(MEPackage package, MemoryStream uncompressedStream, bool includeAdditionalPackageToCook = true)
         {
             uncompressedStream.Position = 0;
-            MemoryStream compressedStream = new MemoryStream();
+            MemoryStream compressedStream = MemoryManager.GetMemoryStream();
             package.WriteHeader(compressedStream, includeAdditionalPackageToCook: includeAdditionalPackageToCook); //for positioning
             var chunks = new List<CompressionHelper.Chunk>();
             var compressionType = package.Game != MEGame.ME3 ? CompressionType.LZO : CompressionType.Zlib;
@@ -670,7 +703,7 @@ namespace ME3ExplorerCore.Packages
             //Rewrite header with chunk table information so we can position the data blocks after table
             compressedStream.Position = 0;
             package.WriteHeader(compressedStream, compressionType, chunks, includeAdditionalPackageToCook: includeAdditionalPackageToCook);
-            MemoryStream m1 = new MemoryStream();
+            //MemoryStream m1 = new MemoryStream();
 
             for (int c = 0; c < chunks.Count; c++)
             {
@@ -773,7 +806,7 @@ namespace ME3ExplorerCore.Packages
 
             try
             {
-                var ms = new MemoryStream();
+                var ms = MemoryManager.GetMemoryStream();
 
                 //just for positioning. We write over this later when the header values have been updated
                 mePackage.WriteHeader(ms, includeAdditionalPackageToCook: includeAdditionalPackageToCook);
@@ -837,29 +870,52 @@ namespace ME3ExplorerCore.Packages
                 foreach (ExportEntry e in mePackage.exports)
                 {
                     //update offsets
+                    var newDataStartOffset = (int)ms.Position;
+
                     ObjectBinary objBin = null;
                     if (!e.IsDefaultObject)
                     {
-                        switch (e.ClassName)
+                        if (mePackage.Game == MEGame.ME1 && e.IsTexture())
                         {
-                            case "WwiseBank":
-                            case "WwiseStream" when e.GetProperty<NameProperty>("Filename") == null:
-                            case "TextureMovie" when e.GetProperty<NameProperty>("TextureFileCacheName") == null:
-                                objBin = ObjectBinary.From(e);
-                                break;
-                            case "ShaderCache":
-                                UpdateShaderCacheOffsets(e, (int)ms.Position);
-                                break;
+                            // For us to reliably have in-memory textures, the data offset of 'externally' stored textures
+                            // needs to be updated to be accurate so that master and slave textures are in sync.
+                            // So any texture mips stored as pccLZO needs their DataOffsets updated
+                            var t2d = ObjectBinary.From<UTexture2D>(e);
+                            var binStart = -1;
+                            foreach (var mip in t2d.Mips.Where(x => x.IsCompressed && x.IsLocallyStored))
+                            {
+                                if (binStart == -1)
+                                {
+                                    binStart = newDataStartOffset + e.propsEnd();
+                                }
+                                // This is 
+                                mip.DataOffset = binStart + mip.MipInfoOffsetFromBinStart + 0x10; // actual data offset is past storagetype, uncomp, comp, dataoffset
+                                objBin = t2d; // Assign it here so it gets picked up down below
+                            }
+                        }
+                        else
+                        {
+                            switch (e.ClassName)
+                            {
+                                //case "WwiseBank":
+                                case "WwiseStream" when e.GetProperty<NameProperty>("Filename") == null:
+                                case "TextureMovie" when e.GetProperty<NameProperty>("TextureFileCacheName") == null:
+                                    objBin = ObjectBinary.From(e);
+                                    break;
+                                case "ShaderCache":
+                                    UpdateShaderCacheOffsets(e, (int)ms.Position);
+                                    break;
+                            }
                         }
                     }
 
-                    e.DataOffset = (int)ms.Position;
                     if (objBin != null)
                     {
                         e.WriteBinary(objBin);
                     }
 
-
+                    // Update the header position
+                    e.DataOffset = (int)ms.Position;
 
                     ms.WriteFromBuffer(e.Data);
                     //update size and offset in already-written header
@@ -1188,9 +1244,9 @@ namespace ME3ExplorerCore.Packages
             {
                 foreach ((NameReference lang, BioTlkFileSet.BioTlkSet bioTlkSet) in tlkFileSet.TlkSets)
                 {
-                    if (CoreLibSettings.Instance.TLKDefaultLanguage.Equals(lang, StringComparison.InvariantCultureIgnoreCase))
+                    if (ME3ExplorerCoreLibSettings.Instance.TLKDefaultLanguage.Equals(lang, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        exportsToLoad.Add(GetUExport(CoreLibSettings.Instance.TLKGenderIsMale ? bioTlkSet.Male : bioTlkSet.Female));
+                        exportsToLoad.Add(GetUExport(ME3ExplorerCoreLibSettings.Instance.TLKGenderIsMale ? bioTlkSet.Male : bioTlkSet.Female));
                         break;
                     }
                 }

@@ -16,15 +16,15 @@ namespace ME3Explorer
         /// </summary>
         public static void MapSettingsIntoBridge()
         {
-            CoreLibSettings.Instance.ParseUnknownArrayTypesAsObject = Properties.Settings.Default.PropertyParsingUnknownArrayAsObject;
-            CoreLibSettings.Instance.TLKDefaultLanguage = Properties.Settings.Default.TLKLanguage;
-            CoreLibSettings.Instance.TLKGenderIsMale = Properties.Settings.Default.TLKGender_IsMale;
-            CoreLibSettings.Instance.ME1Directory = Properties.Settings.Default.ME1Directory;
-            CoreLibSettings.Instance.ME2Directory = Properties.Settings.Default.ME2Directory;
-            CoreLibSettings.Instance.ME3Directory = Properties.Settings.Default.ME3Directory;
+            ME3ExplorerCoreLibSettings.Instance.ParseUnknownArrayTypesAsObject = Properties.Settings.Default.PropertyParsingUnknownArrayAsObject;
+            ME3ExplorerCoreLibSettings.Instance.TLKDefaultLanguage = Properties.Settings.Default.TLKLanguage;
+            ME3ExplorerCoreLibSettings.Instance.TLKGenderIsMale = Properties.Settings.Default.TLKGender_IsMale;
+            ME3ExplorerCoreLibSettings.Instance.ME1Directory = Properties.Settings.Default.ME1Directory;
+            ME3ExplorerCoreLibSettings.Instance.ME2Directory = Properties.Settings.Default.ME2Directory;
+            ME3ExplorerCoreLibSettings.Instance.ME3Directory = Properties.Settings.Default.ME3Directory;
 
             Properties.Settings.Default.PropertyChanged += ME3ExpSettingChanged;
-            CoreLibSettings.Instance.PropertyChanged += CoreLibSettingChanged;
+            ME3ExplorerCoreLibSettings.Instance.PropertyChanged += CoreLibSettingChanged;
         }
 
         private static void ME3ExpSettingChanged(object sender, PropertyChangedEventArgs e)
@@ -32,22 +32,22 @@ namespace ME3Explorer
             switch (e.PropertyName)
             {
                 case nameof(Properties.Settings.Default.PropertyParsingUnknownArrayAsObject):
-                    CoreLibSettings.Instance.ParseUnknownArrayTypesAsObject = Properties.Settings.Default.PropertyParsingUnknownArrayAsObject;
+                    ME3ExplorerCoreLibSettings.Instance.ParseUnknownArrayTypesAsObject = Properties.Settings.Default.PropertyParsingUnknownArrayAsObject;
                     break;
                 case nameof(Properties.Settings.Default.TLKLanguage):
-                    CoreLibSettings.Instance.TLKDefaultLanguage = Properties.Settings.Default.TLKLanguage;
+                    ME3ExplorerCoreLibSettings.Instance.TLKDefaultLanguage = Properties.Settings.Default.TLKLanguage;
                     break;
                 case nameof(Properties.Settings.Default.TLKGender_IsMale):
-                    CoreLibSettings.Instance.TLKGenderIsMale = Properties.Settings.Default.TLKGender_IsMale;
+                    ME3ExplorerCoreLibSettings.Instance.TLKGenderIsMale = Properties.Settings.Default.TLKGender_IsMale;
                     break;
                 case nameof(Properties.Settings.Default.ME1Directory):
-                    CoreLibSettings.Instance.ME1Directory = Properties.Settings.Default.ME1Directory;
+                    ME3ExplorerCoreLibSettings.Instance.ME1Directory = Properties.Settings.Default.ME1Directory;
                     break;
                 case nameof(Properties.Settings.Default.ME2Directory):
-                    CoreLibSettings.Instance.ME2Directory = Properties.Settings.Default.ME2Directory;
+                    ME3ExplorerCoreLibSettings.Instance.ME2Directory = Properties.Settings.Default.ME2Directory;
                     break;
                 case nameof(Properties.Settings.Default.ME3Directory):
-                    CoreLibSettings.Instance.ME3Directory = Properties.Settings.Default.ME3Directory;
+                    ME3ExplorerCoreLibSettings.Instance.ME3Directory = Properties.Settings.Default.ME3Directory;
                     break;
             }
         }
@@ -56,23 +56,23 @@ namespace ME3Explorer
         {
             switch (e.PropertyName)
             {
-                case nameof(CoreLibSettings.Instance.ParseUnknownArrayTypesAsObject):
-                    Properties.Settings.Default.PropertyParsingUnknownArrayAsObject = CoreLibSettings.Instance.ParseUnknownArrayTypesAsObject;
+                case nameof(ME3ExplorerCoreLibSettings.Instance.ParseUnknownArrayTypesAsObject):
+                    Properties.Settings.Default.PropertyParsingUnknownArrayAsObject = ME3ExplorerCoreLibSettings.Instance.ParseUnknownArrayTypesAsObject;
                     break;
-                case nameof(CoreLibSettings.Instance.TLKDefaultLanguage):
-                    Properties.Settings.Default.TLKLanguage = CoreLibSettings.Instance.TLKDefaultLanguage;
+                case nameof(ME3ExplorerCoreLibSettings.Instance.TLKDefaultLanguage):
+                    Properties.Settings.Default.TLKLanguage = ME3ExplorerCoreLibSettings.Instance.TLKDefaultLanguage;
                     break;
-                case nameof(CoreLibSettings.Instance.TLKGenderIsMale):
-                    Properties.Settings.Default.TLKGender_IsMale = CoreLibSettings.Instance.TLKGenderIsMale;
+                case nameof(ME3ExplorerCoreLibSettings.Instance.TLKGenderIsMale):
+                    Properties.Settings.Default.TLKGender_IsMale = ME3ExplorerCoreLibSettings.Instance.TLKGenderIsMale;
                     break;
-                case nameof(CoreLibSettings.Instance.ME1Directory):
-                    Properties.Settings.Default.ME1Directory = CoreLibSettings.Instance.ME1Directory;
+                case nameof(ME3ExplorerCoreLibSettings.Instance.ME1Directory):
+                    Properties.Settings.Default.ME1Directory = ME3ExplorerCoreLibSettings.Instance.ME1Directory;
                     break;
-                case nameof(CoreLibSettings.Instance.ME2Directory):
-                    Properties.Settings.Default.ME2Directory = CoreLibSettings.Instance.ME2Directory;
+                case nameof(ME3ExplorerCoreLibSettings.Instance.ME2Directory):
+                    Properties.Settings.Default.ME2Directory = ME3ExplorerCoreLibSettings.Instance.ME2Directory;
                     break;
-                case nameof(CoreLibSettings.Instance.ME3Directory):
-                    Properties.Settings.Default.ME3Directory = CoreLibSettings.Instance.ME3Directory;
+                case nameof(ME3ExplorerCoreLibSettings.Instance.ME3Directory):
+                    Properties.Settings.Default.ME3Directory = ME3ExplorerCoreLibSettings.Instance.ME3Directory;
                     break;
                 default:
                     return;

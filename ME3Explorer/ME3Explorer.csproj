@@ -11,7 +11,7 @@
     <RootNamespace>ME3Explorer</RootNamespace>
     <AssemblyName>ME3Explorer</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>9.0</LangVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -51,7 +51,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <OutputPath>bin\x64\WinRelease\</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>8</LangVersion>
+    <LangVersion>9.0</LangVersion>
     <DefineConstants>RELEASE</DefineConstants>
     <Optimize>false</Optimize>
   </PropertyGroup>
@@ -61,16 +61,25 @@
     <DefineConstants>DEBUG</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>8</LangVersion>
+    <LangVersion>9.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'WinAzureRelease|x64'">
     <OutputPath>bin\x64\WinAzureRelease\</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>8</LangVersion>
+    <LangVersion>9.0</LangVersion>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
+    <DefineConstants>NIGHTLY</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'WinAzureTest|x64'">
+    <OutputPath>bin\x64\WinAzureTest\</OutputPath>
     <DefineConstants>AZURE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>9.0</LangVersion>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ClosedXML, Version=0.95.3.0, Culture=neutral, processorArchitecture=MSIL">
@@ -100,20 +109,29 @@
     <Reference Include="Gu.Wpf.DataGrid2D, Version=0.2.3.0, Culture=neutral, PublicKeyToken=34988ea4e73235be, processorArchitecture=MSIL">
       <HintPath>..\packages\Gu.Wpf.DataGrid2D.0.2.3\lib\net45\Gu.Wpf.DataGrid2D.dll</HintPath>
     </Reference>
+    <Reference Include="ICSharpCode.AvalonEdit, Version=6.0.1.278, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
+      <HintPath>..\packages\AvalonEdit.6.0.1\lib\net45\ICSharpCode.AvalonEdit.dll</HintPath>
+    </Reference>
     <Reference Include="JetBrains.Profiler.Api, Version=1.1.7.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrains.Profiler.Api.1.1.7\lib\net471\JetBrains.Profiler.Api.dll</HintPath>
     </Reference>
-    <Reference Include="JetBrains.Profiler.SelfApi, Version=2.0.2.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\packages\JetBrains.Profiler.SelfApi.2.0.2\lib\net46\JetBrains.Profiler.SelfApi.dll</HintPath>
+    <Reference Include="JetBrains.Profiler.SelfApi, Version=2.1.1.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Profiler.SelfApi.2.1.1\lib\net46\JetBrains.Profiler.SelfApi.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AppCenter, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AppCenter.3.4.3\lib\net461\Microsoft.AppCenter.dll</HintPath>
+    <Reference Include="MessagePack, Version=2.2.0.0, Culture=neutral, PublicKeyToken=b4a0369545f0a1be, processorArchitecture=MSIL">
+      <HintPath>..\packages\MessagePack.2.2.85\lib\netstandard2.0\MessagePack.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AppCenter.Analytics, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AppCenter.Analytics.3.4.3\lib\net461\Microsoft.AppCenter.Analytics.dll</HintPath>
+    <Reference Include="MessagePack.Annotations, Version=2.2.0.0, Culture=neutral, PublicKeyToken=b4a0369545f0a1be, processorArchitecture=MSIL">
+      <HintPath>..\packages\MessagePack.Annotations.2.2.85\lib\netstandard2.0\MessagePack.Annotations.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AppCenter.Crashes, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AppCenter.Crashes.3.4.3\lib\net461\Microsoft.AppCenter.Crashes.dll</HintPath>
+    <Reference Include="Microsoft.AppCenter, Version=0.0.0.0, Culture=neutral, PublicKeyToken=8a600e2fee7ba272, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AppCenter.4.2.0\lib\net461\Microsoft.AppCenter.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AppCenter.Analytics, Version=0.0.0.0, Culture=neutral, PublicKeyToken=8a600e2fee7ba272, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AppCenter.Analytics.4.2.0\lib\net461\Microsoft.AppCenter.Analytics.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AppCenter.Crashes, Version=0.0.0.0, Culture=neutral, PublicKeyToken=8a600e2fee7ba272, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AppCenter.Crashes.4.2.0\lib\net461\Microsoft.AppCenter.Crashes.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.1\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
@@ -127,8 +145,8 @@
     <Reference Include="NAudio, Version=1.9.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NAudio.1.9.0\lib\net35\NAudio.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="SharpDX, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
@@ -172,6 +190,9 @@
     </Reference>
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -258,7 +279,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="lib3ds.Net">
-      <HintPath>..\Libraries\lib3ds.Net.dll</HintPath>
+      <HintPath>Libraries\lib3ds.Net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.VisualC" />
@@ -303,156 +324,50 @@
       <DependentUpon>AFCCompactorUI.xaml</DependentUpon>
     </Compile>
     <Compile Include="CoreLibSettingsBridge.cs" />
+    <Compile Include="FaceFXAnimSetEditor\LiveFaceFxEditor.cs" />
+    <Compile Include="ME3Script\IDE\DefinitionLinkGenerator.cs" />
+    <Compile Include="ME3Script\IDE\VisualLineDefinitionLinkText.cs" />
+    <Compile Include="SharedUI\ClassPickerDlg.xaml.cs">
+      <DependentUpon>ClassPickerDlg.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ME3ExpMemoryAnalyzer\MemoryAnalyzerObjectExtended.cs" />
-    <Compile Include="ME3Script\Analysis\Symbols\SymbolTable.cs" />
-    <Compile Include="ME3Script\Analysis\Visitors\ClassValidationVisitor.cs" />
-    <Compile Include="ME3Script\Analysis\Visitors\CodeBuilderVisitor.cs" />
-    <Compile Include="ME3Script\Analysis\Visitors\IAcceptASTVisitor.cs" />
-    <Compile Include="ME3Script\Analysis\Visitors\IASTVisitor.cs" />
-    <Compile Include="ME3Script\Compiling\ByteCodeCompilerVisitor.cs" />
-    <Compile Include="ME3Script\Compiling\BytecodeWriter.cs" />
-    <Compile Include="ME3Script\Compiling\Errors\Error.cs" />
-    <Compile Include="ME3Script\Compiling\Errors\LineError.cs" />
-    <Compile Include="ME3Script\Compiling\Errors\LineWarning.cs" />
-    <Compile Include="ME3Script\Compiling\Errors\LogMessage.cs" />
-    <Compile Include="ME3Script\Compiling\Errors\MessageLog.cs" />
-    <Compile Include="ME3Script\Compiling\Errors\PositionedMessage.cs" />
-    <Compile Include="ME3Script\Compiling\Errors\Warning.cs" />
-    <Compile Include="ME3Script\Decompiling\ExtendedNativeTable.cs" />
-    <Compile Include="ME3Script\Decompiling\Intermediate Statements.cs" />
-    <Compile Include="ME3Script\Decompiling\ME3ByteCodeDecompiler.cs" />
-    <Compile Include="ME3Script\Decompiling\ME3ObjectConverter.cs" />
-    <Compile Include="ME3Script\Decompiling\TokenDecompilers\Expressions\ConstValues.cs" />
-    <Compile Include="ME3Script\Decompiling\TokenDecompilers\Expressions\DynamicArrays.cs" />
-    <Compile Include="ME3Script\Decompiling\TokenDecompilers\Expressions\Expressions.cs" />
-    <Compile Include="ME3Script\Decompiling\TokenDecompilers\Statements\Statements.cs" />
-    <Compile Include="ME3Script\FileLib.cs" />
-    <Compile Include="ME3Script\Language\ByteCode\StandardTokens.cs" />
-    <Compile Include="ME3Script\Language\Tree\ArraySymbolRef.cs" />
-    <Compile Include="ME3Script\Language\Tree\AssertStatement.cs" />
-    <Compile Include="ME3Script\Language\Tree\ClassType.cs" />
-    <Compile Include="ME3Script\Language\Tree\DefaultReference.cs" />
-    <Compile Include="ME3Script\Language\Tree\DelegateCall.cs" />
-    <Compile Include="ME3Script\Language\Tree\DelegateComparison.cs" />
-    <Compile Include="ME3Script\Language\Tree\DelegateType.cs" />
-    <Compile Include="ME3Script\Language\Tree\DynamicArrayType.cs" />
-    <Compile Include="ME3Script\Language\Tree\AssignStatement.cs" />
-    <Compile Include="ME3Script\Language\Tree\ASTNode.cs" />
-    <Compile Include="ME3Script\Language\Tree\BooleanLiteral.cs" />
-    <Compile Include="ME3Script\Language\Tree\BreakStatement.cs" />
-    <Compile Include="ME3Script\Language\Tree\CaseStatement.cs" />
-    <Compile Include="ME3Script\Language\Tree\CastExpression.cs" />
-    <Compile Include="ME3Script\Language\Tree\Class.cs" />
-    <Compile Include="ME3Script\Language\Tree\CodeBody.cs" />
-    <Compile Include="ME3Script\Language\Tree\CompositeSymbolRef.cs" />
-    <Compile Include="ME3Script\Language\Tree\ConditionalExpression.cs" />
-    <Compile Include="ME3Script\Language\Tree\Const.cs" />
-    <Compile Include="ME3Script\Language\Tree\ContinueStatement.cs" />
-    <Compile Include="ME3Script\Language\Tree\DefaultPropertiesBlock.cs" />
-    <Compile Include="ME3Script\Language\Tree\DefaultCaseStatement.cs" />
-    <Compile Include="ME3Script\Language\Tree\DoUntilLoop.cs" />
-    <Compile Include="ME3Script\Language\Tree\DynamicArrayLiteral.cs" />
-    <Compile Include="ME3Script\Language\Tree\DynArray Operations.cs" />
-    <Compile Include="ME3Script\Language\Tree\Enumeration.cs" />
-    <Compile Include="ME3Script\Language\Tree\EnumValue.cs" />
-    <Compile Include="ME3Script\Language\Tree\Expression.cs" />
-    <Compile Include="ME3Script\Language\Tree\ExpressionOnlyStatement.cs" />
-    <Compile Include="ME3Script\Language\Tree\FloatLiteral.cs" />
-    <Compile Include="ME3Script\Language\Tree\ForEachLoop.cs" />
-    <Compile Include="ME3Script\Language\Tree\ForLoop.cs" />
-    <Compile Include="ME3Script\Language\Tree\Function.cs" />
-    <Compile Include="ME3Script\Language\Tree\FunctionCall.cs" />
-    <Compile Include="ME3Script\Language\Tree\FunctionParameter.cs" />
-    <Compile Include="ME3Script\Language\Tree\Goto.cs" />
-    <Compile Include="ME3Script\Language\Tree\IfStatement.cs" />
-    <Compile Include="ME3Script\Language\Tree\InOpDeclaration.cs" />
-    <Compile Include="ME3Script\Language\Tree\InOpReference.cs" />
-    <Compile Include="ME3Script\Language\Tree\IntegerLiteral.cs" />
-    <Compile Include="ME3Script\Language\Tree\IObjectType.cs" />
-    <Compile Include="ME3Script\Language\Tree\NameLiteral.cs" />
-    <Compile Include="ME3Script\Language\Tree\NewOperator.cs" />
-    <Compile Include="ME3Script\Language\Tree\NoneLiteral.cs" />
-    <Compile Include="ME3Script\Language\Tree\ObjectLiteral.cs" />
-    <Compile Include="ME3Script\Language\Tree\OperatorDeclaration.cs" />
-    <Compile Include="ME3Script\Language\Tree\PostOpDeclaration.cs" />
-    <Compile Include="ME3Script\Language\Tree\PostOpReference.cs" />
-    <Compile Include="ME3Script\Language\Tree\PreOpDeclaration.cs" />
-    <Compile Include="ME3Script\Language\Tree\PreOpReference.cs" />
-    <Compile Include="ME3Script\Language\Tree\PrimitiveCast.cs" />
-    <Compile Include="ME3Script\Language\Tree\ReturnNothingStatement.cs" />
-    <Compile Include="ME3Script\Language\Tree\ReturnStatement.cs" />
-    <Compile Include="ME3Script\Language\Tree\RotatorLiteral.cs" />
-    <Compile Include="ME3Script\Language\Tree\State.cs" />
-    <Compile Include="ME3Script\Language\Tree\Label.cs" />
-    <Compile Include="ME3Script\Language\Tree\StateGoto.cs" />
-    <Compile Include="ME3Script\Language\Tree\Statement.cs" />
-    <Compile Include="ME3Script\Language\Tree\StaticArrayType.cs" />
-    <Compile Include="ME3Script\Language\Tree\StopStatement.cs" />
-    <Compile Include="ME3Script\Language\Tree\StringLiteral.cs" />
-    <Compile Include="ME3Script\Language\Tree\StringRefLiteral.cs" />
-    <Compile Include="ME3Script\Language\Tree\Struct.cs" />
-    <Compile Include="ME3Script\Language\Tree\StructComparison.cs" />
-    <Compile Include="ME3Script\Language\Tree\StructLiteral.cs" />
-    <Compile Include="ME3Script\Language\Tree\Subobject.cs" />
-    <Compile Include="ME3Script\Language\Tree\SwitchStatement.cs" />
-    <Compile Include="ME3Script\Language\Tree\SymbolReference.cs" />
-    <Compile Include="ME3Script\Language\Tree\VariableDeclaration.cs" />
-    <Compile Include="ME3Script\Language\Tree\VariableIdentifier.cs" />
-    <Compile Include="ME3Script\Language\Tree\VariableType.cs" />
-    <Compile Include="ME3Script\Language\Tree\VectorLiteral.cs" />
-    <Compile Include="ME3Script\Language\Tree\WhileLoop.cs" />
-    <Compile Include="ME3Script\Language\Util\IContainsLocals.cs" />
-    <Compile Include="ME3Script\Language\Util\NodeUtils.cs" />
-    <Compile Include="ME3Script\Lexing\LexerBase.cs" />
-    <Compile Include="ME3Script\Lexing\Matching\ITokenMatcher.cs" />
-    <Compile Include="ME3Script\Lexing\Matching\StringMatchers\KeywordMatcher.cs" />
-    <Compile Include="ME3Script\Lexing\Matching\StringMatchers\NameLiteralMatcher.cs" />
-    <Compile Include="ME3Script\Lexing\Matching\StringMatchers\NumberMatcher.cs" />
-    <Compile Include="ME3Script\Lexing\Matching\StringMatchers\SingleLineCommentMatcher.cs" />
-    <Compile Include="ME3Script\Lexing\Matching\StringMatchers\StringLiteralMatcher.cs" />
-    <Compile Include="ME3Script\Lexing\Matching\StringMatchers\StringRefLiteralMatcher.cs" />
-    <Compile Include="ME3Script\Lexing\Matching\StringMatchers\WhiteSpaceMatcher.cs" />
-    <Compile Include="ME3Script\Lexing\Matching\StringMatchers\WordMatcher.cs" />
-    <Compile Include="ME3Script\Lexing\Matching\TokenMatcherBase.cs" />
-    <Compile Include="ME3Script\Lexing\StringLexer.cs" />
-    <Compile Include="ME3Script\Lexing\Tokenizing\StringTokenizer.cs" />
-    <Compile Include="ME3Script\Lexing\Tokenizing\Token.cs" />
-    <Compile Include="ME3Script\Lexing\Tokenizing\TokenizableDataStream.cs" />
-    <Compile Include="ME3Script\ME3ScriptCompiler.cs" />
-    <Compile Include="ME3Script\Parsing\ClassOutlineParser.cs" />
-    <Compile Include="ME3Script\Parsing\CodeBodyParser.cs" />
-    <Compile Include="ME3Script\Parsing\StringParserBase.cs" />
-    <Compile Include="ME3Script\Parsing\TokenStream.cs" />
-    <Compile Include="ME3Script\StandardLibrary.cs" />
+    <Compile Include="ME3Script\IDE\ASTColorizer.cs" />
+    <Compile Include="ME3Script\IDE\ASTHighlighter.cs" />
+    <Compile Include="ME3Script\IDE\BraceFoldingStrategy.cs" />
+    <Compile Include="ME3Script\IDE\CompletionData.cs" />
+    <Compile Include="ME3Script\IDE\SyntaxInfoCodeFormatter.cs" />
+    <Compile Include="ME3Script\IDE\UnrealScriptTextEditor.cs" />
     <Compile Include="ME3Script\UnrealScriptIDE.xaml.cs">
       <DependentUpon>UnrealScriptIDE.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ME3Script\Utilities\CastHelper.cs" />
-    <Compile Include="ME3Script\Utilities\GlobalLists.cs" />
-    <Compile Include="ME3Script\Utilities\Keywords.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Keywords.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ME3Script\Utilities\ObjectReader.cs" />
-    <Compile Include="ME3Script\Utilities\SourcePosition.cs" />
+    <Compile Include="NetFrameworkPolyfills.cs" />
     <Compile Include="PackageEditor\Experiments\PackageEditorExperimentsK.cs" />
     <Compile Include="PackageEditor\Experiments\PackageEditorExperimentsM.cs" />
     <Compile Include="PackageEditor\Experiments\PackageEditorExperimentsO.cs" />
     <Compile Include="PackageEditor\Experiments\PackageEditorExperimentsS.cs" />
     <Compile Include="Packages\EntryImporterExtended.cs" />
-    <Compile Include="Packages\ExportCreator.cs" />
     <Compile Include="Packages\PackageExtensions.cs" />
     <Compile Include="SFAREditor\Converters.cs" />
     <Compile Include="SFAREditor\SFARExplorer.xaml.cs">
       <DependentUpon>SFARExplorer.xaml</DependentUpon>
     </Compile>
     <Compile Include="SharedUI\Converters\FilePathToFilenameConverter.cs" />
+    <Compile Include="SharedUI\Converters\GameToVisibilityConverter.cs" />
     <Compile Include="SharedUI\Interfaces\IRecents.cs" />
+    <Compile Include="SharedUI\ObservableCollectionExtendedWPF.cs" />
     <Compile Include="SharedUI\RecentsControl.xaml.cs">
       <DependentUpon>RecentsControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="SharedUI\TaskbarHelper.cs" />
+    <Compile Include="TextureStudio\MasterTextureSelector.xaml.cs">
+      <DependentUpon>MasterTextureSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TextureStudio\MEMTextureMap.cs" />
+    <Compile Include="TextureStudio\TextureStudioUI.xaml.cs">
+      <DependentUpon>TextureStudioUI.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TextureStudio\TextureTreeViewEntry.cs" />
+    <Compile Include="TextureStudio\TSTextureMap.cs" />
     <Compile Include="TrackingBase.cs" />
     <Compile Include="Unreal\Classes\MaterialInstanceConstant.cs" />
     <Compile Include="Unreal\Classes\Texture2DExtensions.cs" />
@@ -475,6 +390,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AnimationExplorer\AnimationViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SharedUI\ClassPickerDlg.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -647,13 +566,11 @@
     </Compile>
     <Compile Include="Scene3D\SceneRenderContext.cs" />
     <Compile Include="Scene3D\SceneRenderControlWPF.cs" />
-    <Compile Include="Sequence Editor\KismetHelper.cs" />
     <Compile Include="Sequence Editor\SequenceObjectCreator.cs" />
     <Compile Include="SharedUI\BindingProxy.cs" />
     <Compile Include="SharedUI\Converters\BoolEnabledConverter.cs" />
     <Compile Include="SharedUI\Converters\BoolToIndexConverter.cs" />
     <Compile Include="CodeWriter.cs" />
-    <Compile Include="Dialogue Editor\BioConversation.cs" />
     <Compile Include="Dialogue Editor\ConvGraphEditor.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -742,9 +659,6 @@
     <Compile Include="InitialSetup.xaml.cs">
       <DependentUpon>InitialSetup.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Main Window\TaskPaneInfoPanel.xaml.cs">
-      <DependentUpon>TaskPaneInfoPanel.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Main Window\Utilities\FileAssociations.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Main Window\MainToolPanel.xaml.cs">
@@ -762,77 +676,72 @@
     <Compile Include="MountEditor\MountEditorWPF.xaml.cs">
       <DependentUpon>MountEditorWPF.xaml</DependentUpon>
     </Compile>
-    <Compile Include="NativesEditor\CodexMapCommands.cs" />
-    <Compile Include="NativesEditor\Commands.cs" />
-    <Compile Include="NativesEditor\Dialogs\ChangeObjectIdDialog.xaml.cs">
+    <Compile Include="PlotEditor\Dialogs\ChangeObjectIdDialog.xaml.cs">
       <DependentUpon>ChangeObjectIdDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="NativesEditor\Dialogs\CopyObjectDialog.xaml.cs">
+    <Compile Include="PlotEditor\Dialogs\CopyObjectDialog.xaml.cs">
       <DependentUpon>CopyObjectDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="NativesEditor\Dialogs\NewObjectDialog.xaml.cs">
+    <Compile Include="PlotEditor\Dialogs\NewObjectDialog.xaml.cs">
       <DependentUpon>NewObjectDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="NativesEditor\QuestMapCommands.cs" />
-    <Compile Include="NativesEditor\SFXGame\BioVersionedNativeObject.cs" />
-    <Compile Include="NativesEditor\SFXGame\CodexMap\BinaryBioCodexMap.cs" />
-    <Compile Include="NativesEditor\SFXGame\CodexMap\BioCodexEntry.cs" />
-    <Compile Include="NativesEditor\SFXGame\CodexMap\BioCodexMap.cs" />
-    <Compile Include="NativesEditor\SFXGame\CodexMap\BioCodexPage.cs" />
-    <Compile Include="NativesEditor\SFXGame\CodexMap\BioCodexSection.cs" />
-    <Compile Include="NativesEditor\SFXGame\CodexMap\XmlBioCodexMap.cs" />
-    <Compile Include="NativesEditor\SFXGame\ConsequenceMap\BioConsequenceMap.cs" />
-    <Compile Include="NativesEditor\SFXGame\DiscoveredCodexMap\BioDiscoveredCodex.cs" />
-    <Compile Include="NativesEditor\SFXGame\DiscoveredCodexMap\BioDiscoveredCodexMap.cs" />
-    <Compile Include="NativesEditor\SFXGame\DiscoveredCodexMap\BioDiscoveredCodexPage.cs" />
-    <Compile Include="NativesEditor\SFXGame\IBioVersionedNativeObject.cs" />
-    <Compile Include="NativesEditor\SFXGame\OutcomeMap\BioOutcomeMap.cs" />
-    <Compile Include="NativesEditor\SFXGame\QuestMap\BinaryBioQuestMap.cs" />
-    <Compile Include="NativesEditor\SFXGame\QuestMap\BioQuest.cs" />
-    <Compile Include="NativesEditor\SFXGame\QuestMap\BioQuestGoal.cs" />
-    <Compile Include="NativesEditor\SFXGame\QuestMap\BioQuestMap.cs" />
-    <Compile Include="NativesEditor\SFXGame\QuestMap\BioQuestPlotItem.cs" />
-    <Compile Include="NativesEditor\SFXGame\QuestMap\BioQuestProgress.cs" />
-    <Compile Include="NativesEditor\SFXGame\QuestMap\BioQuestTask.cs" />
-    <Compile Include="NativesEditor\SFXGame\QuestMap\BioStateTaskList.cs" />
-    <Compile Include="NativesEditor\SFXGame\QuestMap\BioTaskEval.cs" />
-    <Compile Include="NativesEditor\SFXGame\QuestMap\XmlBioQuestMap.cs" />
-    <Compile Include="NativesEditor\SFXGame\QuestProgressionMap\BioQuestProgressionMap.cs" />
-    <Compile Include="NativesEditor\SFXGame\StateEventMap\BinaryBioStateEventMap.cs" />
-    <Compile Include="NativesEditor\SFXGame\StateEventMap\BioStateEvent.cs" />
-    <Compile Include="NativesEditor\SFXGame\StateEventMap\BioStateEventElement.cs" />
-    <Compile Include="NativesEditor\SFXGame\StateEventMap\BioStateEventElementBool.cs" />
-    <Compile Include="NativesEditor\SFXGame\StateEventMap\BioStateEventElementConsequence.cs" />
-    <Compile Include="NativesEditor\SFXGame\StateEventMap\BioStateEventElementFloat.cs" />
-    <Compile Include="NativesEditor\SFXGame\StateEventMap\BioStateEventElementFunction.cs" />
-    <Compile Include="NativesEditor\SFXGame\StateEventMap\BioStateEventElementInt.cs" />
-    <Compile Include="NativesEditor\SFXGame\StateEventMap\BioStateEventElementLocal.cs" />
-    <Compile Include="NativesEditor\SFXGame\StateEventMap\BioStateEventElementLocalBool.cs" />
-    <Compile Include="NativesEditor\SFXGame\StateEventMap\BioStateEventElementLocalFloat.cs" />
-    <Compile Include="NativesEditor\SFXGame\StateEventMap\BioStateEventElementLocalInt.cs" />
-    <Compile Include="NativesEditor\SFXGame\StateEventMap\BioStateEventElementSubstate.cs" />
-    <Compile Include="NativesEditor\SFXGame\StateEventMap\BioStateEventElementType.cs" />
-    <Compile Include="NativesEditor\SFXGame\StateEventMap\BioStateEventMap.cs" />
-    <Compile Include="NativesEditor\TypeConverter.cs" />
-    <Compile Include="NativesEditor\TypeConverterExtension.cs" />
-    <Compile Include="NativesEditor\TypeOfConverter.cs" />
-    <Compile Include="NativesEditor\TypeOfConverterExtension.cs" />
-    <Compile Include="NativesEditor\Views\CodexMapView.xaml.cs">
+    <Compile Include="PlotEditor\SFXGame\BioVersionedNativeObject.cs" />
+    <Compile Include="PlotEditor\SFXGame\CodexMap\BinaryBioCodexMap.cs" />
+    <Compile Include="PlotEditor\SFXGame\CodexMap\BioCodexEntry.cs" />
+    <Compile Include="PlotEditor\SFXGame\CodexMap\BioCodexMap.cs" />
+    <Compile Include="PlotEditor\SFXGame\CodexMap\BioCodexPage.cs" />
+    <Compile Include="PlotEditor\SFXGame\CodexMap\BioCodexSection.cs" />
+    <Compile Include="PlotEditor\SFXGame\CodexMap\XmlBioCodexMap.cs" />
+    <Compile Include="PlotEditor\SFXGame\ConsequenceMap\BioConsequenceMap.cs" />
+    <Compile Include="PlotEditor\SFXGame\DiscoveredCodexMap\BioDiscoveredCodex.cs" />
+    <Compile Include="PlotEditor\SFXGame\DiscoveredCodexMap\BioDiscoveredCodexMap.cs" />
+    <Compile Include="PlotEditor\SFXGame\DiscoveredCodexMap\BioDiscoveredCodexPage.cs" />
+    <Compile Include="PlotEditor\SFXGame\IBioVersionedNativeObject.cs" />
+    <Compile Include="PlotEditor\SFXGame\OutcomeMap\BioOutcomeMap.cs" />
+    <Compile Include="PlotEditor\SFXGame\QuestMap\BinaryBioQuestMap.cs" />
+    <Compile Include="PlotEditor\SFXGame\QuestMap\BioQuest.cs" />
+    <Compile Include="PlotEditor\SFXGame\QuestMap\BioQuestGoal.cs" />
+    <Compile Include="PlotEditor\SFXGame\QuestMap\BioQuestMap.cs" />
+    <Compile Include="PlotEditor\SFXGame\QuestMap\BioQuestPlotItem.cs" />
+    <Compile Include="PlotEditor\SFXGame\QuestMap\BioQuestProgress.cs" />
+    <Compile Include="PlotEditor\SFXGame\QuestMap\BioQuestTask.cs" />
+    <Compile Include="PlotEditor\SFXGame\QuestMap\BioStateTaskList.cs" />
+    <Compile Include="PlotEditor\SFXGame\QuestMap\BioTaskEval.cs" />
+    <Compile Include="PlotEditor\SFXGame\QuestMap\XmlBioQuestMap.cs" />
+    <Compile Include="PlotEditor\SFXGame\QuestProgressionMap\BioQuestProgressionMap.cs" />
+    <Compile Include="PlotEditor\SFXGame\StateEventMap\BinaryBioStateEventMap.cs" />
+    <Compile Include="PlotEditor\SFXGame\StateEventMap\BioStateEvent.cs" />
+    <Compile Include="PlotEditor\SFXGame\StateEventMap\BioStateEventElement.cs" />
+    <Compile Include="PlotEditor\SFXGame\StateEventMap\BioStateEventElementBool.cs" />
+    <Compile Include="PlotEditor\SFXGame\StateEventMap\BioStateEventElementConsequence.cs" />
+    <Compile Include="PlotEditor\SFXGame\StateEventMap\BioStateEventElementFloat.cs" />
+    <Compile Include="PlotEditor\SFXGame\StateEventMap\BioStateEventElementFunction.cs" />
+    <Compile Include="PlotEditor\SFXGame\StateEventMap\BioStateEventElementInt.cs" />
+    <Compile Include="PlotEditor\SFXGame\StateEventMap\BioStateEventElementLocal.cs" />
+    <Compile Include="PlotEditor\SFXGame\StateEventMap\BioStateEventElementLocalBool.cs" />
+    <Compile Include="PlotEditor\SFXGame\StateEventMap\BioStateEventElementLocalFloat.cs" />
+    <Compile Include="PlotEditor\SFXGame\StateEventMap\BioStateEventElementLocalInt.cs" />
+    <Compile Include="PlotEditor\SFXGame\StateEventMap\BioStateEventElementSubstate.cs" />
+    <Compile Include="PlotEditor\SFXGame\StateEventMap\BioStateEventElementType.cs" />
+    <Compile Include="PlotEditor\SFXGame\StateEventMap\BioStateEventMap.cs" />
+    <Compile Include="PlotEditor\TypeConverter.cs" />
+    <Compile Include="PlotEditor\TypeConverterExtension.cs" />
+    <Compile Include="PlotEditor\CodexMapView.xaml.cs">
       <DependentUpon>CodexMapView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="NativesEditor\Views\FindObjectUsagesView.xaml.cs">
+    <Compile Include="PlotEditor\FindObjectUsagesView.xaml.cs">
       <DependentUpon>FindObjectUsagesView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="NativesEditor\Views\QuestMapView.xaml.cs">
+    <Compile Include="PlotEditor\QuestMapView.xaml.cs">
       <DependentUpon>QuestMapView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="NativesEditor\Views\PlotEditor.xaml.cs">
+    <Compile Include="PlotEditor\PlotEditor.xaml.cs">
       <DependentUpon>PlotEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="NativesEditor\Views\StateEventMapView.xaml.cs">
+    <Compile Include="PlotEditor\StateEventMapView.xaml.cs">
       <DependentUpon>StateEventMapView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="NativesEditor\Views\StateTaskListsView.xaml.cs">
+    <Compile Include="PlotEditor\StateTaskListsView.xaml.cs">
       <DependentUpon>StateTaskListsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="NotifyPropertyChangedBase.cs" />
@@ -1026,9 +935,6 @@
     <Compile Include="SharedUI\StatusBarGameIDIndicator.xaml.cs">
       <DependentUpon>StatusBarGameIDIndicator.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Main Window\TaskPane.xaml.cs">
-      <DependentUpon>TaskPane.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Splash\DPIAwareSplashScreen.xaml.cs">
       <DependentUpon>DPIAwareSplashScreen.xaml</DependentUpon>
     </Compile>
@@ -1115,10 +1021,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Main Window\TaskPaneInfoPanel.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="ME1TlkEditor\ME1TlkEditorWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1139,47 +1041,43 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Main Window\TaskPane.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="MountEditor\MountEditorWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="NativesEditor\Dialogs\ChangeObjectIdDialog.xaml">
+    <Page Include="PlotEditor\Dialogs\ChangeObjectIdDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="NativesEditor\Dialogs\CopyObjectDialog.xaml">
+    <Page Include="PlotEditor\Dialogs\CopyObjectDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="NativesEditor\Dialogs\NewObjectDialog.xaml">
+    <Page Include="PlotEditor\Dialogs\NewObjectDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="NativesEditor\Views\CodexMapView.xaml">
+    <Page Include="PlotEditor\CodexMapView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="NativesEditor\Views\FindObjectUsagesView.xaml">
+    <Page Include="PlotEditor\FindObjectUsagesView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="NativesEditor\Views\QuestMapView.xaml">
+    <Page Include="PlotEditor\QuestMapView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="NativesEditor\Views\PlotEditor.xaml">
+    <Page Include="PlotEditor\PlotEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="NativesEditor\Views\StateEventMapView.xaml">
+    <Page Include="PlotEditor\StateEventMapView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="NativesEditor\Views\StateTaskListsView.xaml">
+    <Page Include="PlotEditor\StateTaskListsView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -1307,6 +1205,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="TextureStudio\MasterTextureSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TextureStudio\TextureStudioUI.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="TFCCompactor\TFCCompactor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1416,6 +1322,7 @@
     </None>
     <AppDesigner Include="Properties\" />
     <EmbeddedResource Include="Soundplorer\WwiseTemplateProject.zip" />
+    <EmbeddedResource Include="Resources\Unrealscript-Mode.xshd" />
     <Resource Include="Resources\Exo-Regular.ttf" />
     <Resource Include="Resources\Exo-SemiBold.ttf" />
     <Resource Include="Resources\TitilliumWeb-Light.ttf" />
@@ -1536,7 +1443,7 @@
   <ItemGroup>
     <Folder Include="ME2\TlkManager\" />
     <Folder Include="ME2\Unreal\" />
-    <Folder Include="NativesEditor\SFXGame\BioDefine\" />
+    <Folder Include="PlotEditor\SFXGame\BioDefine\" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\excel.png" />
@@ -1596,15 +1503,12 @@
     <Resource Include="Resources\audiolocalizer_256x256.ico" />
     <Resource Include="Resources\liveleveleditor_256x256.ico" />
     <Resource Include="Resources\WwiseEditor_256x256.ico" />
-    <Content Include="ME3Script\Utilities\Keywords.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Keywords.cs</LastGenOutput>
-    </Content>
     <Resource Include="Resources\placeholder_256x256.ico" />
     <Resource Include="Resources\sfarexplorer_256x256.ico" />
     <Resource Include="Resources\afccompactor_256x256.ico" />
     <Resource Include="Resources\minilogo.png" />
     <Resource Include="Resources\scriptdatabase_256x256.ico" />
+    <Resource Include="Resources\texturestudio_256x256.ico" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
@@ -1612,10 +1516,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>IF NOT EXIST "$(ProjectDir)$(OutDir)lib" md $(ProjectDir)$(OutDir)lib"
+    <PostBuildEvent>IF NOT EXIST "$(ProjectDir)$(OutDir)lib" mkdir "$(ProjectDir)$(OutDir)lib"
 xcopy /f /y "$(SolutionDir)Libraries" "$(ProjectDir)$(OutDir)lib"
 
-xcopy /f /e /y "$(SolutionDir)Resources" "$(ProjectDir)$(OutDir)"
+xcopy /f /e /y "$(ProjectDir)Resources\exec" "$(ProjectDir)$(OutDir)\exec\"
 rmdir /s /q "$(ProjectDir)$(OutDir)x86"
 rmdir /s /q "$(ProjectDir)$(OutDir)x64"
 rmdir /s /q "$(ProjectDir)$(OutDir)fr-CA"

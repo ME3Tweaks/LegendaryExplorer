@@ -12,7 +12,9 @@ using ME3Explorer.AutoTOC;
 using ME3Explorer.FileHexViewer;
 using ME3Explorer.Matinee;
 using ME3Explorer.SFAREditor;
+using ME3Explorer.TextureStudio;
 using ME3ExplorerCore.GameFilesystem;
+using ME3ExplorerCore.Packages;
 
 namespace ME3Explorer
 {
@@ -55,7 +57,7 @@ namespace ME3Explorer
 
         public static void Initialize()
         {
-            HashSet<Tool> set = new HashSet<Tool>();
+            HashSet<Tool> set = new();
 
             #region Install Mods
             set.Add(new Tool
@@ -142,13 +144,19 @@ namespace ME3Explorer
                 icon = Application.Current.FindResource("iconLiveLevelEditor") as ImageSource,
                 open = () =>
                 {
-                    if (GameInterop.LiveLevelEditor.Instance == null)
+                    var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Live Level Editor with.", "Live Level Editor game selector",
+                                              new[] {"ME3", "ME2"}, "ME3");
+
+                    if (Enum.TryParse(gameStr, out MEGame game))
                     {
-                        (new GameInterop.LiveLevelEditor()).Show();
-                    }
-                    else
-                    {
-                        GameInterop.LiveLevelEditor.Instance.RestoreAndBringToFront();
+                        if (GameInterop.LiveLevelEditor.Instance(game) is {} instance)
+                        {
+                            instance.RestoreAndBringToFront();
+                        }
+                        else
+                        {
+                            (new GameInterop.LiveLevelEditor(game)).Show();
+                        }
                     }
                 },
                 tags = new List<string> { "utility" },
@@ -533,11 +541,11 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Plot Editor",
-                type = typeof(MassEffect.NativesEditor.Views.PlotEditor),
+                type = typeof(PlotEditor.PlotEditor),
                 icon = Application.Current.FindResource("iconPlotEditor") as ImageSource,
                 open = () =>
                 {
-                    var plotEd = new MassEffect.NativesEditor.Views.PlotEditor();
+                    var plotEd = new PlotEditor.PlotEditor();
                     plotEd.Show();
                 },
                 tags = new List<string> { "developer", "codex", "state transition", "quest", "natives" },
@@ -557,19 +565,19 @@ namespace ME3Explorer
                 subCategory = "Core",
                 description = "Sequence Editor is the toolset’s version of UDK’s UnrealKismet. With this cross-game tool, users can edit and create new sequences that control gameflow within and across levels.",
             });
-            //set.Add(new Tool
-            //{
-            //    name = "SFAR Editor",
-            //    type = typeof(SFAREditor2),
-            //    icon = Application.Current.FindResource("iconSFAREditor") as ImageSource,
-            //    open = () =>
-            //    {
-            //        (new SFAREditor2()).Show();
-            //    },
-            //    tags = new List<string> { "developer", "dlc" },
-            //    subCategory = other,
-            //    description = "SFAR Editor allows you to explore SFAR files in Mass Effect 3. This tool has been deprecated as DLC unpacking and AutoTOC has replaced the need to inspect SFAR files.",
-            //});
+            set.Add(new Tool
+            {
+                name = "Texture Studio",
+                type = typeof(TextureStudioUI),
+                icon = Application.Current.FindResource("iconTextureStudio") as ImageSource,
+                open = () =>
+                {
+                    (new TextureStudioUI()).Show();
+                },
+                tags = new List<string> { "texture", "developer", "studio", "graphics" },
+                subCategory = "Meshes + Textures",
+                description = "Texture Studio is a tool designed for texture editing files in a directory of files, such as a DLC mod. It is not the same as other tools such as Mass Effect Modder, which is a game wide replacement tool.",
+            });
             set.Add(new Tool
             {
                 name = "SFAR Explorer",

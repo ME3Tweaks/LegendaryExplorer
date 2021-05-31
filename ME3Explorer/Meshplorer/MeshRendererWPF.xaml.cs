@@ -16,6 +16,7 @@ using ME3Explorer.Unreal.Classes;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.Unreal.Classes;
@@ -36,12 +37,19 @@ namespace ME3Explorer.Meshplorer
 
         #region 3D
 
-        private bool _rotating = true, _wireframe, _solid = true, _firstperson;
+        private bool _rotating = Properties.Settings.Default.MeshplorerViewRotating, _wireframe, _solid = true, _firstperson;
 
         public bool Rotating
         {
             get => _rotating;
-            set => SetProperty(ref _rotating, value);
+            set
+            {
+                if (SetProperty(ref _rotating, value))
+                {
+                    Properties.Settings.Default.MeshplorerViewRotating = value;
+                    Properties.Settings.Default.Save();
+                }
+            }
         }
 
         public bool Wireframe
@@ -144,11 +152,23 @@ namespace ME3Explorer.Meshplorer
         #region Busy variables
         private bool _isBusy;
 
+        private Stopwatch sw = new Stopwatch();
         public bool IsBusy
         {
             get => _isBusy;
             set
             {
+                if (_isBusy && !value)
+                {
+                    sw.Stop();
+                    Debug.WriteLine($@"MeshRendererWPF busy time: {sw.Elapsed}");
+                }
+                else if (!_isBusy && value)
+                {
+                    sw.Reset();
+                    sw.Start();
+                }
+
                 if (SetProperty(ref _isBusy, value))
                 {
                     IsBusyChanged?.Invoke(this, EventArgs.Empty); //caller will just fetch and update this value
@@ -406,7 +426,7 @@ namespace ME3Explorer.Meshplorer
             CurrentLOD = 0;
 
             Func<ModelPreview.PreloadedModelData> loadMesh = null;
-            List<IMEPackage> cachedPackages = new List<IMEPackage>();
+            PackageCache assetCache = new PackageCache();
 
             if (CurrentLoadedExport.ClassName == "StaticMesh" || CurrentLoadedExport.ClassName == "FracturedStaticMesh")
             {
@@ -416,6 +436,7 @@ namespace ME3Explorer.Meshplorer
                     BusyText = "Fetching assets";
                     BusyProgressIndeterminate = true;
                     IsBusy = true;
+
                     var meshObject = ObjectBinary.From<StaticMesh>(CurrentLoadedExport);
                     ModelPreview.PreloadedModelData pmd = new ModelPreview.PreloadedModelData
                     {
@@ -432,15 +453,15 @@ namespace ME3Explorer.Meshplorer
                             if (meshFile.IsUExport(matIndex))
                             {
                                 ExportEntry entry = meshFile.GetUExport(matIndex);
-                                AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, entry, cachedPackages);
+                                AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, entry, assetCache);
 
                             }
                             else if (meshFile.IsImport(matIndex))
                             {
-                                var extMaterialExport = ModelPreview.FindExternalAsset(meshFile.GetImport(matIndex), pmd.texturePreviewMaterials.Select(x => x.Mip.Export).ToList(), cachedPackages);
+                                var extMaterialExport = EntryImporter.ResolveImport(meshFile.GetImport(matIndex), assetCache);
                                 if (extMaterialExport != null)
                                 {
-                                    AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, extMaterialExport, cachedPackages);
+                                    AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, extMaterialExport, assetCache);
                                 }
                                 else
                                 {
@@ -478,14 +499,15 @@ namespace ME3Explorer.Meshplorer
                         {
                             if (package.TryGetUExport(material.value, out var matExp))
                             {
-                                AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, matExp, cachedPackages);
+                                AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, matExp, assetCache);
                             }
                             else if (package.TryGetImport(material.value, out var matImp) && alreadyLoadedImportMaterials.All(x => x != matImp.InstancedFullPath))
                             {
-                                var extMaterialExport = ModelPreview.FindExternalAsset(matImp, pmd.texturePreviewMaterials.Select(x => x.Mip.Export).ToList(), cachedPackages);
+                                var extMaterialExport = EntryImporter.ResolveImport(matImp, assetCache);
+                                //var extMaterialExport = ModelPreview.FindExternalAsset(matImp, pmd.texturePreviewMaterials.Select(x => x.Mip.Export).ToList(), cachedPackages);
                                 if (extMaterialExport != null)
                                 {
-                                    AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, extMaterialExport, cachedPackages);
+                                    AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, extMaterialExport, assetCache);
                                     alreadyLoadedImportMaterials.Add(extMaterialExport.InstancedFullPath);
                                 }
                                 else
@@ -520,6 +542,7 @@ namespace ME3Explorer.Meshplorer
                 BusyText = "Fetching assets";
                 BusyProgressIndeterminate = true;
                 IsBusy = true;
+
                 loadMesh = () =>
                 {
                     var modelComp = ObjectBinary.From<ModelComponent>(CurrentLoadedExport);
@@ -536,16 +559,17 @@ namespace ME3Explorer.Meshplorer
                         {
                             if (CurrentLoadedExport.FileRef.TryGetUExport(element.Material, out var matExp))
                             {
-                                AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, matExp, cachedPackages);
+                                AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, matExp, assetCache);
                                 pmd.sections.Add(new ModelPreviewSection(matExp.ObjectName, 0, 3)); //???
 
                             }
                             else if (CurrentLoadedExport.FileRef.TryGetImport(element.Material, out var matImp))
                             {
-                                var extMaterialExport = ModelPreview.FindExternalAsset(matImp, pmd.texturePreviewMaterials.Select(x => x.Mip.Export).ToList(), cachedPackages);
+                                var extMaterialExport = EntryImporter.ResolveImport(matImp, assetCache);
+                                //var extMaterialExport = ModelPreview.FindExternalAsset(matImp, pmd.texturePreviewMaterials.Select(x => x.Mip.Export).ToList(), cachedPackages);
                                 if (extMaterialExport != null)
                                 {
-                                    AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, extMaterialExport, cachedPackages);
+                                    AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, extMaterialExport, assetCache);
                                 }
                                 else
                                 {
@@ -587,18 +611,16 @@ namespace ME3Explorer.Meshplorer
                                 if (CurrentLoadedExport.FileRef.IsUExport(element.Material))
                                 {
                                     ExportEntry entry = CurrentLoadedExport.FileRef.GetUExport(element.Material);
-                                    AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, entry,
-                                        cachedPackages);
+                                    AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, entry, assetCache);
                                 }
                                 else if (CurrentLoadedExport.FileRef.TryGetImport(element.Material, out var matImp) &&
                                          alreadyLoadedImportMaterials.All(x => x != matImp.InstancedFullPath))
                                 {
-                                    var extMaterialExport = ModelPreview.FindExternalAsset(matImp,
-                                        pmd.texturePreviewMaterials.Select(x => x.Mip.Export).ToList(), cachedPackages);
+                                    var extMaterialExport = EntryImporter.ResolveImport(matImp, assetCache);
                                     if (extMaterialExport != null)
                                     {
                                         AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials,
-                                            extMaterialExport, cachedPackages);
+                                            extMaterialExport, assetCache);
                                         alreadyLoadedImportMaterials.Add(extMaterialExport.InstancedFullPath);
                                     }
                                     else
@@ -621,15 +643,6 @@ namespace ME3Explorer.Meshplorer
             {
                 Task.Run(loadMesh).ContinueWithOnUIThread(prevTask =>
                 {
-                    Debug.WriteLine("CACHED PACKAGE DISPOSAL");
-                    foreach (var p in cachedPackages)
-                    {
-                        Debug.WriteLine($"Disposing package from asset lookup cache {p.FilePath}");
-                        p?.Dispose();
-                    }
-
-                    cachedPackages = null;
-
                     IsBusy = false;
                     if (CurrentLoadedExport == null)
                     {
@@ -642,19 +655,19 @@ namespace ME3Explorer.Meshplorer
                         {
                             case StaticMesh statM:
                                 STMCollisionMesh = GetMeshFromAggGeom(statM.GetCollisionMeshProperty(Pcc));
-                                Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, statM, CurrentLOD, SceneViewer.Context.TextureCache, cachedPackages, pmd);
+                                Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, statM, CurrentLOD, SceneViewer.Context.TextureCache, assetCache, pmd);
                                 SceneViewer.Context.Camera.FocusDepth = statM.Bounds.SphereRadius * 1.2f;
                                 break;
                             case SkeletalMesh skm:
-                                Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, skm, SceneViewer.Context.TextureCache, cachedPackages, pmd);
+                                Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, skm, SceneViewer.Context.TextureCache, assetCache, pmd);
                                 SceneViewer.Context.Camera.FocusDepth = skm.Bounds.SphereRadius * 1.2f;
                                 break;
                             case StructProperty structProp: //BrushComponent
-                                Preview = new ModelPreview(SceneViewer.Context.Device, GetMeshFromAggGeom(structProp), SceneViewer.Context.TextureCache, cachedPackages, pmd);
+                                Preview = new ModelPreview(SceneViewer.Context.Device, GetMeshFromAggGeom(structProp), SceneViewer.Context.TextureCache, assetCache, pmd);
                                 SceneViewer.Context.Camera.FocusDepth = Preview.LODs[0].Mesh.AABBHalfSize.Length() * 1.2f;
                                 break;
                             case ModelComponent mc:
-                                Preview = new ModelPreview(SceneViewer.Context.Device, GetMeshFromModelComponent(mc), SceneViewer.Context.TextureCache, cachedPackages, pmd);
+                                Preview = new ModelPreview(SceneViewer.Context.Device, GetMeshFromModelComponent(mc), SceneViewer.Context.TextureCache, assetCache, pmd);
                                 //SceneViewer.Context.Camera.FocusDepth = Preview.LODs[0].Mesh.AABBHalfSize.Length() * 1.2f;
                                 break;
                             case Model m:
@@ -666,7 +679,7 @@ namespace ME3Explorer.Meshplorer
                                     SceneViewer.Context.Camera.Position = mesh.Vertices[0].Position;
                                 }
 
-                                Preview = new ModelPreview(SceneViewer.Context.Device, mesh, SceneViewer.Context.TextureCache, cachedPackages, pmd);
+                                Preview = new ModelPreview(SceneViewer.Context.Device, mesh, SceneViewer.Context.TextureCache, assetCache, pmd);
                                 //SceneViewer.Context.Camera.FocusDepth = Preview.LODs[0].Mesh.AABBHalfSize.Length() * 1.2f;
                                 break;
                         }
@@ -690,7 +703,7 @@ namespace ME3Explorer.Meshplorer
         {
             if (CurrentLoadedExport == null) return;
             var savewarning = CurrentLoadedExport.FileRef.IsModified ? MessageBoxResult.None : MessageBoxResult.OK;
-            
+
             // show if we have not shown before
             if (savewarning == MessageBoxResult.None)
             {
@@ -859,9 +872,9 @@ namespace ME3Explorer.Meshplorer
             return new WorldMesh(SceneViewer.Context.Device, triangles, vertices);
         }
 
-        private static void AddMaterialBackgroundThreadTextures(List<ModelPreview.PreloadedTextureData> texturePreviewMaterials, ExportEntry entry, List<IMEPackage> cachedPackages)
+        private static void AddMaterialBackgroundThreadTextures(List<ModelPreview.PreloadedTextureData> texturePreviewMaterials, ExportEntry entry, PackageCache assetCache)
         {
-            var matinst = new MaterialInstanceConstant(entry, cachedPackages);
+            var matinst = new MaterialInstanceConstant(entry, assetCache);
             if (texturePreviewMaterials.Any(x => x.MaterialExport.InstancedFullPath == entry.InstancedFullPath))
                 return; //already cached
             Debug.WriteLine("Loading material assets for " + entry.InstancedFullPath);
@@ -876,7 +889,7 @@ namespace ME3Explorer.Meshplorer
                 }
                 if (tex is ImportEntry import)
                 {
-                    var extAsset = ModelPreview.FindExternalAsset(import, texturePreviewMaterials.Select(x => x.Mip.Export).ToList(), cachedPackages);
+                    var extAsset = EntryImporter.ResolveImport(import, assetCache);
                     if (extAsset != null) //Apparently some assets are cubemaps, we don't want these.
                     {
                         var preloadedTextureData = new ModelPreview.PreloadedTextureData();
@@ -987,7 +1000,7 @@ namespace ME3Explorer.Meshplorer
                 elhw.Show();
             }
         }
-    
+
 
         public override void Dispose()
         {
@@ -996,8 +1009,14 @@ namespace ME3Explorer.Meshplorer
                 tc.SelectionChanged -= MeshRendererWPF_HostingTabSelectionChanged;
             }
             Preview?.Dispose();
-            SceneViewer.Context.Update -= MeshRenderer_ViewUpdate;
-            SceneViewer.Dispose();
+            if (SceneViewer != null)
+            {
+                if (SceneViewer.Context != null)
+                {
+                    SceneViewer.Context.Update -= MeshRenderer_ViewUpdate;
+                }
+                SceneViewer.Dispose();
+            }
             CurrentLoadedExport = null;
             SceneViewer = null;
         }

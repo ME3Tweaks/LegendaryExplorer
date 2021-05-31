@@ -88,7 +88,7 @@ namespace ME3Explorer.GameInterop
                 }
             }
 
-            if (GameController.TryGetME3Process(out Process me3Process) && canHotLoad)
+            if (GameController.TryGetMEProcess(MEGame.ME3, out Process me3Process) && canHotLoad)
             {
                 IntPtr handle = me3Process.MainWindowHandle;
                 GameController.ExecuteConsoleCommands(handle, MEGame.ME3, $"at {tempMapName}");

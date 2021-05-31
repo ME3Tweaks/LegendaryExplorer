@@ -6,16 +6,15 @@ using System.Drawing;
 using System.Drawing.Text;
 using System.Windows.Forms;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.Dialogue;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Nodes;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Util;
-using ME3Explorer.Dialogue_Editor.BioConversationExtended;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
-using EReplyCategory = ME3Explorer.Dialogue_Editor.BioConversationExtended.EReplyCategory;
 
 namespace ME3Explorer.Dialogue_Editor
 {
@@ -74,26 +73,18 @@ namespace ME3Explorer.Dialogue_Editor
         public virtual void Layout(float x, float y) => SetOffset(x, y);
         public virtual IEnumerable<DiagEdEdge> Edges => Enumerable.Empty<DiagEdEdge>();
 
-        protected Color getColor(EReplyCategory t)
-        {
-            switch (t)
+        protected Color getColor(EReplyCategory t) =>
+            t switch
             {
-                case EReplyCategory.REPLY_CATEGORY_PARAGON_INTERRUPT:
-                    return paraintColor;
-                case EReplyCategory.REPLY_CATEGORY_RENEGADE_INTERRUPT:
-                    return renintColor;
-                case EReplyCategory.REPLY_CATEGORY_AGREE:
-                    return agreeColor;
-                case EReplyCategory.REPLY_CATEGORY_DISAGREE:
-                    return disagreeColor;
-                case EReplyCategory.REPLY_CATEGORY_FRIENDLY:
-                    return friendlyColor;
-                case EReplyCategory.REPLY_CATEGORY_HOSTILE:
-                    return hostileColor;
-                default:
-                    return Color.Black;
-            }
-        }
+                EReplyCategory.REPLY_CATEGORY_PARAGON_INTERRUPT => paraintColor,
+                EReplyCategory.REPLY_CATEGORY_RENEGADE_INTERRUPT => renintColor,
+                EReplyCategory.REPLY_CATEGORY_AGREE => agreeColor,
+                EReplyCategory.REPLY_CATEGORY_DISAGREE => disagreeColor,
+                EReplyCategory.REPLY_CATEGORY_FRIENDLY => friendlyColor,
+                EReplyCategory.REPLY_CATEGORY_HOSTILE => hostileColor,
+                _ => Color.Black
+            };
+
         public virtual void Dispose()
         {
             g = null;
@@ -102,7 +93,7 @@ namespace ME3Explorer.Dialogue_Editor
         }
     }
 
-    [DebuggerDisplay("DBox | #{NodeUID}")]
+    [DebuggerDisplay("DBox | #{" + nameof(NodeUID) + "}")]
     public abstract class DBox : DObj
     {
         public override IEnumerable<DiagEdEdge> Edges => Outlinks.SelectMany(l => l.Edges);

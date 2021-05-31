@@ -6,6 +6,7 @@
         xmlns:global="clr-namespace:ME3Explorer"
 		mc:Ignorable="d" xmlns:local="clr-namespace:MassEffect3.CoalesceTool"
 		Title="Coalesced Editor" MinHeight="300" MinWidth="600" d:DesignHeight="300" d:DesignWidth="600" SizeToContent="WidthAndHeight"
+        Closed="Root_Closed"
 		d:DataContext="{d:DesignInstance local:CoalescedEditor}">
 	<Window.CommandBindings>
 		<CommandBinding Command="local:Commands.Browse" CanExecute="Browse_OnCanExecute" Executed="Browse_OnExecuted" />

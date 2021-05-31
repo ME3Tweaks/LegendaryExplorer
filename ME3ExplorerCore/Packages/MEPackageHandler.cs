@@ -81,6 +81,34 @@ namespace ME3ExplorerCore.Packages
             return package;
         }
 
+
+        /// <summary>
+        /// You should only use this if you know what you're doing! This will forcibly add a package to the open packages cache. Only used when package cache is enabled.
+        /// </summary>
+        public static void ForcePackageIntoCache(IMEPackage package)
+        {
+            if (GlobalSharedCacheEnabled)
+            {
+                Debug.WriteLine($@"Forcing package into cache: {package.FilePath}");
+                if (package is UnrealPackageFile upf && upf.RefCount < 1)
+                {
+                    // Package will immediately be dropped on first dispose
+                    Debugger.Break();
+                }
+                var pathToFile = package.FilePath;
+                if (File.Exists(pathToFile))
+                {
+                    pathToFile = Path.GetFullPath(pathToFile); //STANDARDIZE INPUT IF FILE EXISTS (it might be a memory file!)
+                }
+                openPackages[pathToFile] = package;
+            }
+            else
+            {
+                Debug.WriteLine("Global Package Cache is disabled, cannot force packages into cache");
+            }
+        }
+
+
         /// <summary>
         /// Opens an already open package, registering it for use in a tool.
         /// </summary>
@@ -108,7 +136,7 @@ namespace ME3ExplorerCore.Packages
         /// <param name="user">????</param>
         /// <param name="forceLoadFromDisk">If the package being opened should skip the shared package cache and forcibly load from disk. </param>
         /// <returns></returns>
-        public static IMEPackage OpenMEPackage(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false, bool quickLoad = false)
+        public static IMEPackage OpenMEPackage(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false, bool quickLoad = false, object diskIOSyncLock = null)
         {
             if (File.Exists(pathToFile))
             {
@@ -118,19 +146,72 @@ namespace ME3ExplorerCore.Packages
             IMEPackage package;
             if (forceLoadFromDisk || !GlobalSharedCacheEnabled || quickLoad) //Quick loaded packages cannot be cached
             {
-                using (FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read))
+                if (quickLoad)
                 {
-                    package = LoadPackage(fs, pathToFile, false, quickLoad);
+                    // Quickload: Don't read entire file.
+                    if (diskIOSyncLock != null)
+                    {
+                        MemoryStream ms;
+                        lock (diskIOSyncLock)
+                        {
+                            using (FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read))
+                            {
+                                package = LoadPackage(fs, pathToFile, false, quickLoad);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        using (FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read))
+                        {
+                            package = LoadPackage(fs, pathToFile, false, quickLoad);
+                        }
+                    }
+
                 }
+                else
+                {
+                    // Reading and operating on memory is faster than seeking on disk
+                    if (diskIOSyncLock != null)
+                    {
+                        MemoryStream ms;
+                        lock (diskIOSyncLock)
+                        {
+                            ms = new MemoryStream(File.ReadAllBytes(pathToFile));
+                        }
+                        var p = LoadPackage(ms, pathToFile, true);
+                        ms.Dispose();
+                        return p;
+                    }
+                    else
+                    {
+                        using var ms = new MemoryStream(File.ReadAllBytes(pathToFile));
+                        return LoadPackage(ms, pathToFile, true);
+                    }
+
+                }
+
             }
             else
             {
                 package = openPackages.GetOrAdd(pathToFile, fpath =>
                 {
-                    using (FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read))
+                    // Reading and operating on memory is faster than seeking on disk
+                    if (diskIOSyncLock != null)
                     {
-                        Debug.WriteLine($"Adding package to package cache (File): {fpath}");
-                        return LoadPackage(fs, fpath, true);
+                        MemoryStream ms;
+                        lock (diskIOSyncLock)
+                        {
+                            ms = new MemoryStream(File.ReadAllBytes(pathToFile));
+                        }
+                        var p = LoadPackage(ms, pathToFile, true);
+                        ms.Dispose();
+                        return p;
+                    }
+                    else
+                    {
+                        using var ms = new MemoryStream(File.ReadAllBytes(pathToFile));
+                        return LoadPackage(ms, pathToFile, true);
                     }
                 });
             }
@@ -233,6 +314,11 @@ namespace ME3ExplorerCore.Packages
             return pkg;
         }
 
+        /// <summary>
+        /// Creates and saves a package. A package is not returned as the saving code will add data that must be re-read for a package to be properly used.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="game"></param>
         public static void CreateAndSavePackage(string path, MEGame game)
         {
             switch (game)

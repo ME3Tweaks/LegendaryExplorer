@@ -185,7 +185,8 @@ namespace ME3ExplorerCore.Unreal
             EditHide = 0x0000020000000000U,
             EditTextBox = 0x0000040000000000U,
             CrossLevelPassive = 0x0000100000000000U,
-            CrossLevelActive = 0x0000200000000000U
+            CrossLevelActive = 0x0000200000000000U,
+            CrossLevel = CrossLevelPassive | CrossLevelActive,
         }
 
         public static Dictionary<EPropertyFlags, string> propertyflagsdesc = new Dictionary<EPropertyFlags, string>

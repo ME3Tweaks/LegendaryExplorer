@@ -60,6 +60,9 @@ namespace ME3Explorer.Pathfinding_Editor
             "SFXNav_InteractionListening","SFXNav_InteractionListening2", "SFXNav_InteractionRavager","SFXNav_InteractionTalking",
             "SFXNav_InteractionTalking2","SFXNav_InteractionTalking3", "SFXNav_KaiLengShield",
 
+            // ME2
+            "SFXNav_WayPoint",
+
             //ME1
             "BioWp_DefensePoint", "BioWp_AssaultPoint", "BioWp_ActionStation"
         };
@@ -1087,6 +1090,9 @@ namespace ME3Explorer.Pathfinding_Editor
                     case "BioPathPoint":
                         pathNode = new BioPathPoint(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
+                    case "SFXNav_WayPoint":
+                        pathNode = new SFXNav_WayPoint(uindex, x, y, exportToLoad.FileRef, graphEditor);
+                        break;
                     case "PathNode_Dynamic":
                         pathNode = new PathNode_Dynamic(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
@@ -1183,11 +1189,13 @@ namespace ME3Explorer.Pathfinding_Editor
                         break;
                     case "SkeletalMeshActor":
                     case "SkeletalMeshCinematicActor":
-                    case "SkeletalMeshActorMAT":
                     case "SFXSkeletalMeshActor":
                     case "SFXSkeletalMeshCinematicActor":
-                    case "SFXSkeletalMeshActorMAT":
                         actorNode = new SkeletalMeshActor(uindex, x, y, exportToLoad.FileRef, graphEditor);
+                        break;
+                    case "SFXSkeletalMeshActorMAT":
+                    case "SkeletalMeshActorMAT":
+                        actorNode = new SkeletalMeshActorArchetyped(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "SFXPlaceable_Generator":
                     case "SFXPlaceable_ShieldGenerator":
@@ -2470,7 +2478,7 @@ namespace ME3Explorer.Pathfinding_Editor
         private void CreateSplineConnection(ExportEntry sourceActor, ExportEntry destActor)
         {
             ArrayProperty<StructProperty> connections = sourceActor.GetProperty<ArrayProperty<StructProperty>>("Connections") ?? new ArrayProperty<StructProperty>("Connections");
-            var splineComponentClass = EntryImporterExtended.EnsureClassIsInFile(Pcc, "SplineComponent");
+            var splineComponentClass = EntryImporter.EnsureClassIsInFile(Pcc, "SplineComponent", RelinkResultsAvailable: EntryImporterExtended.ShowRelinkResults);
             var splineComponent = new ExportEntry(Pcc, new byte[8])
             {
                 Class = splineComponentClass,

@@ -4,10 +4,10 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
 {
     public static class EntryCloner
     {
-        public static T CloneTree<T>(T entry) where T : IEntry
+        public static T CloneTree<T>(T entry, bool incrementIndex = false) where T : IEntry
         {
             var objectMap = new Dictionary<IEntry, IEntry>();
-            T newRoot = CloneEntry(entry, objectMap);
+            T newRoot = CloneEntry(entry, objectMap, incrementIndex);
             EntryTree tree = new EntryTree(entry.FileRef);
             cloneTreeRecursive(entry, newRoot);
             Relinker.RelinkAll(objectMap);
@@ -24,9 +24,14 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             }
         }
 
-        public static T CloneEntry<T>(T entry, Dictionary<IEntry, IEntry> objectMap = null) where T : IEntry
+        public static T CloneEntry<T>(T entry, Dictionary<IEntry, IEntry> objectMap = null, bool incrementIndex = false) where T : IEntry
         {
             IEntry newEntry = entry.Clone();
+            if (incrementIndex)
+            {
+                newEntry.indexValue = newEntry.FileRef.GetNextIndexForName(newEntry.ObjectName);
+            }
+
             switch (newEntry)
             {
                 case ExportEntry export:

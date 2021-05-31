@@ -7,12 +7,11 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using ME3Explorer.Dialogue_Editor.BioConversationExtended;
+using ME3ExplorerCore.Dialogue;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Unreal;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
-using EReplyCategory = ME3Explorer.Dialogue_Editor.BioConversationExtended.EReplyCategory;
 
 namespace ME3Explorer.Dialogue_Editor
 {

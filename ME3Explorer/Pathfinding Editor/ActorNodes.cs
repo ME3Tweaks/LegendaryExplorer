@@ -425,6 +425,22 @@ namespace ME3Explorer.ActorNodes
         public override PointF[] GetDefaultShapePoints() => outlineShape;
     }
 
+    public class SkeletalMeshActorArchetyped : ActorNode
+    {
+        private static readonly Color outlinePenColor = Color.FromArgb(200, 200, 200);
+        private static readonly PointF[] outlineShape = { new PointF(0, 0), new PointF(5, 0), new PointF(5, 20), new PointF(45, 0), new PointF(50, 0), new PointF(10, 25), new PointF(50, 50), new PointF(45, 50), new PointF(5, 35), new PointF(5, 50), new PointF(0, 50) };
+
+        public SkeletalMeshActorArchetyped(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, x, y, p, grapheditor, drawRotationLine: true)
+        {
+            comment.Text = export.Archetype?.ObjectName;
+        }
+
+        public override Color GetDefaultShapeColor() => outlinePenColor;
+
+        public override PointF[] GetDefaultShapePoints() => outlineShape;
+    }
+
     public class SkeletalMeshActor : ActorNode
     {
         private static readonly Color outlinePenColor = Color.FromArgb(200, 200, 200);

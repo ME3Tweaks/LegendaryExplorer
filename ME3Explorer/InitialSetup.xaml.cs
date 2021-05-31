@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -112,6 +113,21 @@ namespace ME3Explorer
                 new[] { "Mass Effect", "Mass Effect 2", "Mass Effect 3" }, "Mass Effect 3");
             if (game != "")
             {
+                List<string> allowedVersions = new List<string>();
+                switch (game)
+                {
+                    case "Mass Effect":
+                        allowedVersions.Add("1.2.20608.0");
+                        break;
+                    case "Mass Effect 2":
+                        allowedVersions.Add("1.2.1604.0"); // Steam
+                        allowedVersions.Add("01604.00"); // Origin
+                        break;
+                    case "Mass Effect 3":
+                        allowedVersions.Add("05427.124");
+                        break;
+                }
+
                 OpenFileDialog ofd = new OpenFileDialog();
                 ofd.Title = $"Select {game} executable.";
                 game = game.Replace(" ", "");
@@ -120,6 +136,14 @@ namespace ME3Explorer
 
                 if (ofd.ShowDialog() == true)
                 {
+                    var fvi = FileVersionInfo.GetVersionInfo(ofd.FileName);
+                    if (!allowedVersions.Contains(fvi.FileVersion))
+                    {
+                        MessageBox.Show($"Cannot use this executable: The only supported file versions are:\n{string.Join("\n", allowedVersions)}\n\nThe selected one has version: {fvi.FileVersion}\n\nNote: ME3Explorer does not support Mass Effect Legendary Edition games.",
+                            "Invalid game", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+
                     string result = Path.GetDirectoryName(Path.GetDirectoryName(ofd.FileName));
 
                     if (game.Last() == '3')

@@ -14,11 +14,11 @@ pool:
 variables:
   solution: 'ME3Explorer.sln'
   buildPlatform: 'x64'
-  buildConfiguration: 'WinRelease'
-  appMajorMin: '5.0'
+  buildConfiguration: 'WinAzureRelease'
+  appMajorMin: '5.1'
   appMajor: '5'
-  appMinor: '0'
-  appPatch: '2'
+  appMinor: '1'
+  appPatch: '0'
   disable.coverage.autogenerate: 'true'
 
 steps:
@@ -78,7 +78,7 @@ steps:
   inputs:
     command: 'test'
     projects: 'ME3ExplorerCore.Tests/ME3ExplorerCore.Tests.csproj'
-    arguments: '--configuration WinAzureRelease /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:DebugType=pdbonly -v normal'
+    arguments: '--configuration WinAzureTest /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:DebugType=pdbonly -v normal'
     publishTestResults: true
 
 # Find output file

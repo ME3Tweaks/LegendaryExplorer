@@ -4,14 +4,15 @@
     <Description>Core library for ME3Explorer, a toolset for modding the Mass Effect Trilogy</Description>
     <Company>ME3Tweaks</Company>
     <Authors>ME3Tweaks</Authors>
-    <Version>5.0.3.0</Version>
+    <Version>5.0.2.0</Version>
   </PropertyGroup>
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net48</TargetFrameworks>
-    <LangVersion>8.0</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>9.0</LangVersion>
     <Platforms>x64</Platforms>
-    <Configurations>WinDebug;WinRelease;LinuxDebug;LinuxRelease;MacDebug;MacRelease;WPFDebug;WPFRelease;WinAzureRelease</Configurations>
+    <Configurations>WinDebug;WinRelease;LinuxDebug;LinuxRelease;MacDebug;MacRelease;WPFDebug;WPFRelease;WinAzureRelease;WinAzureTest</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TF_BUILD)' == 'true'">
@@ -22,7 +23,6 @@
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <PlatformTarget>x64</PlatformTarget>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
   </PropertyGroup>
 
@@ -30,12 +30,20 @@
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <PlatformTarget>x64</PlatformTarget>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>WINDOWS</DefineConstants>
   </PropertyGroup>
 
-  <!-- Azure flags allow special code to make tests work on azure since game won't exist there. It should never be used locally -->
+  <!-- Nightly release from Azure-->
   <PropertyGroup Condition="'$(Configuration)'=='WinAzureRelease'">
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <PlatformTarget>x64</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>WINDOWS;NIGHTLY</DefineConstants>
+  </PropertyGroup>
+
+  <!-- Azure flags allow special code to make tests work on azure since game won't exist there. It should never be used locally -->
+  <PropertyGroup Condition="'$(Configuration)'=='WinAzureTest'">
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <PlatformTarget>x64</PlatformTarget>
@@ -47,14 +55,12 @@
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <PlatformTarget>x64</PlatformTarget>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>TRACE;DEBUG;LINUX</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='LinuxRelease'">
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <PlatformTarget>x64</PlatformTarget>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>LINUX</DefineConstants>
   </PropertyGroup>
 
@@ -70,7 +76,6 @@
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <PlatformTarget>x64</PlatformTarget>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>MAC</DefineConstants>
   </PropertyGroup>
 
@@ -78,6 +83,14 @@
     <None Remove="Embedded\GameResources.zip" />
     <None Remove="Embedded\Infos.zip" />
     <None Remove="Embedded\udkdefaultthumb.png" />
+    <None Remove="UnrealScript\Utilities\Keywords.tt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="UnrealScript\Utilities\Keywords.tt">
+      <LastGenOutput>Keywords.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -111,10 +124,28 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
+    <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="1.4.0" />
+    <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
     <PackageReference Include="MSTest.TestFramework" Version="2.1.2" Condition="$(Configuration.Contains('Azure'))" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="PropertyChanged.Fody" Version="3.2.8" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="PropertyChanged.Fody" Version="3.3.3" />
+    <PackageReference Include="System.Buffers" Version="4.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Sequencing\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="UnrealScript\Utilities\Keywords.cs">
+      <DependentUpon>Keywords.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 
 </Project>

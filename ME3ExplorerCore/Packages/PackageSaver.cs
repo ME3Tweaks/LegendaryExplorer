@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Memory;
 using ME3ExplorerCore.Unreal.Classes;
 using Newtonsoft.Json;
 
@@ -11,7 +12,7 @@ namespace ME3ExplorerCore.Packages
     public static class PackageSaver
     {
         private static List<string> _me1TextureFiles;
-        internal static List<string> ME1TextureFiles => _me1TextureFiles ??= JsonConvert.DeserializeObject<List<string>>(Utilities.LoadStringFromCompressedResource("Infos.zip", "ME1TextureFiles.json"));
+        internal static List<string> ME1TextureFiles => _me1TextureFiles ??= JsonConvert.DeserializeObject<List<string>>(ME3ExplorerCoreUtilities.LoadStringFromCompressedResource("Infos.zip", "ME1TextureFiles.json"));
 
         /// <summary>
         /// Callback that is invoked when a package fails to save, hook this up to show a message to the user that something failed
@@ -26,8 +27,8 @@ namespace ME3ExplorerCore.Packages
             pckg.Game == MEGame.ME2 ||
             pckg.Game == MEGame.ME1 && ME1TextureFiles.TrueForAll(texFilePath => !path.EndsWith(texFilePath));
 
-        private static Action<MEPackage, string, bool, bool, bool, bool> MESaveDelegate;
-        private static Action<UDKPackage, string, bool> UDKSaveDelegate;
+        private static Action<MEPackage, string, bool, bool, bool, bool, object> MESaveDelegate;
+        private static Action<UDKPackage, string, bool, object> UDKSaveDelegate;
 
         public static void Initialize()
         {
@@ -42,7 +43,8 @@ namespace ME3ExplorerCore.Packages
         /// <param name="compress"></param>
         /// <param name="includeAdditionalPackagesToCook"></param>
         /// <param name="includeDependencyTable"></param>
-        public static void Save(this IMEPackage package, string savePath = null, bool compress = false, bool includeAdditionalPackagesToCook = true, bool includeDependencyTable = true)
+        /// <param name="diskIOSyncLock">Object that can be used to force a lock on write operations, which can be used to prevent concurrent operations on the same package file. If null, a lock is not used.</param>
+        public static void Save(this IMEPackage package, string savePath = null, bool compress = false, bool includeAdditionalPackagesToCook = true, bool includeDependencyTable = true, object diskIOSyncLock = null)
         {
             if (package == null)
             {
@@ -56,10 +58,10 @@ namespace ME3ExplorerCore.Packages
             switch (package)
             {
                 case MEPackage mePackage:
-                    MESave(mePackage, savePath, compress, includeAdditionalPackagesToCook, includeDependencyTable);
+                    MESave(mePackage, savePath, compress, includeAdditionalPackagesToCook, includeDependencyTable, diskIOSyncLock);
                     break;
                 case UDKPackage udkPackage:
-                    UDKSave(udkPackage, savePath);
+                    UDKSave(udkPackage, savePath, diskIOSyncLock);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(package));
@@ -100,7 +102,7 @@ namespace ME3ExplorerCore.Packages
 
         public static Func<Texture2D, byte[]> GetPNGForThumbnail { get; set; }
 
-        private static void MESave(MEPackage pcc, string savePath, bool compress = false, bool includeAdditionalPackagesToCook = true, bool includeDependencyTable = true)
+        private static void MESave(MEPackage pcc, string savePath, bool compress = false, bool includeAdditionalPackagesToCook = true, bool includeDependencyTable = true, object diskIOSyncLock = null)
         {
             bool isSaveAs = savePath != null && savePath != pcc.FilePath;
             int originalLength = -1;
@@ -117,16 +119,16 @@ namespace ME3ExplorerCore.Packages
             }
             try
             {
-                if (CanReconstruct(pcc, savePath))
+                if (CanReconstruct(pcc, savePath ?? pcc.FilePath))
                 {
-                    MESaveDelegate(pcc, savePath, isSaveAs, compress, includeAdditionalPackagesToCook, includeDependencyTable);
+                    MESaveDelegate(pcc, savePath ?? pcc.FilePath, isSaveAs, compress, includeAdditionalPackagesToCook, includeDependencyTable, diskIOSyncLock);
                 }
                 else
                 {
-                    PackageSaveFailedCallback?.Invoke($"Cannot save ME1 packages with externally referenced textures. Please make an issue on github: {CoreLib.BugReportURL}");
+                    PackageSaveFailedCallback?.Invoke($"Cannot save ME1 packages with externally referenced textures. Please make an issue on github: {ME3ExplorerCoreLib.BugReportURL}");
                 }
             }
-            catch (Exception ex) when (!CoreLib.IsDebug)
+            catch (Exception ex) when (!ME3ExplorerCoreLib.IsDebug)
             {
                 PackageSaveFailedCallback?.Invoke($"Error saving {pcc.FilePath}:\n{ex.FlattenException()}");
             }
@@ -134,7 +136,7 @@ namespace ME3ExplorerCore.Packages
             if (originalLength > 0)
             {
                 string relativePath = Path.GetFullPath(pcc.FilePath).Substring(Path.GetFullPath(ME3Directory.DefaultGamePath).Length);
-                var bin = new MemoryStream();
+                using var bin = MemoryManager.GetMemoryStream();
                 bin.WriteInt32(originalLength);
                 bin.WriteStringASCIINull(relativePath);
                 File.WriteAllBytes(Path.Combine(ME3Directory.ExecutableFolder, "tocupdate"), bin.ToArray());
@@ -145,14 +147,14 @@ namespace ME3ExplorerCore.Packages
             }
         }
 
-        private static void UDKSave(UDKPackage pcc, string path)
+        private static void UDKSave(UDKPackage pcc, string path, object diskIOSyncLock = null)
         {
             bool isSaveAs = path != pcc.FilePath;
             try
             {
-                UDKSaveDelegate(pcc, path, isSaveAs);
+                UDKSaveDelegate(pcc, path, isSaveAs, diskIOSyncLock);
             }
-            catch (Exception ex) when (!CoreLib.IsDebug)
+            catch (Exception ex) when (!ME3ExplorerCoreLib.IsDebug)
             {
                 PackageSaveFailedCallback?.Invoke($"Error saving {pcc.FilePath}:\n{ex.FlattenException()}");
             }

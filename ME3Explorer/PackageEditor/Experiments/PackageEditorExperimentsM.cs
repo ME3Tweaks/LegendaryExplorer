@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SharedUI;
+using ME3Explorer.Unreal.Classes;
 using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
@@ -32,6 +33,169 @@ namespace ME3Explorer.PackageEditor.Experiments
     /// </summary>
     class PackageEditorExperimentsM
     {
+        public static void ShaderCacheResearch(PackageEditorWPF pewpf)
+        {
+            Dictionary<string, int> mapCount = new Dictionary<string, int>();
+            bool ScanForNames(byte[] bytes, IMEPackage package)
+            {
+                bool result = false;
+                int pos = 0;
+                //while (pos < bytes.Length - 8)
+                //{
+                var nameP1 = BitConverter.ToInt32(bytes, pos);
+                var nameP2 = BitConverter.ToInt32(bytes, pos + 4);
+
+                if (nameP1 != 0 && nameP2 == 0 && package.IsName(nameP1))
+                {
+                    var name = package.GetNameEntry(nameP1);
+                    if (!mapCount.TryGetValue(name, out var count))
+                    {
+                        count = 1;
+                    }
+                    else
+                    {
+                        count++;
+                    }
+                    mapCount[name] = count;
+                    result = name.StartsWith("F");
+                }
+                pos++;
+                //}
+
+                return result;
+            }
+
+            Task.Run(() =>
+            {
+                pewpf.BusyText = "Scanning ShaderCache files...";
+                pewpf.IsBusy = true;
+                Dictionary<string, int> typeCount = new Dictionary<string, int>();
+
+                var files = Directory.GetFiles(@"X:\Downloads\f", "*.pcc");
+                foreach (var f in files)
+                {
+                    var package = MEPackageHandler.OpenMEPackage(f, forceLoadFromDisk: true);
+                    var sfsce = package.FindExport("SeekFreeShaderCache");
+                    if (sfsce != null)
+                    {
+                        var sfsc = ObjectBinary.From<ShaderCache>(sfsce);
+                        foreach (var shaderPair in sfsc.Shaders)
+                        {
+                            var isF = ScanForNames(shaderPair.Value.unkBytes, package);
+                            if (isF)
+                            {
+                                if (!typeCount.TryGetValue(shaderPair.Value.ShaderType, out var count))
+                                {
+                                    count = 1;
+                                }
+                                else
+                                {
+                                    count++;
+                                }
+                                typeCount[shaderPair.Value.ShaderType] = count;
+                            }
+                        }
+                    }
+                }
+
+                Debug.WriteLine("");
+                foreach (var kp in mapCount.OrderByDescending(x => x.Value))
+                {
+                    Debug.WriteLine($"{kp.Key}: {kp.Value}");
+                }
+
+                Debug.WriteLine("");
+                Debug.WriteLine("Type counts:");
+                foreach (var kp in typeCount.OrderByDescending(x => x.Value))
+                {
+                    Debug.WriteLine($"{kp.Key}: {kp.Value}");
+                }
+                return true;
+            }).ContinueWithOnUIThread(foundCandidates =>
+            {
+                pewpf.IsBusy = false;
+            });
+        }
+
+        public static void ResetTexturesInFile(IMEPackage sourcePackage, PackageEditorWPF pewpf)
+        {
+            if (sourcePackage.Game != MEGame.ME1 && sourcePackage.Game != MEGame.ME2 && sourcePackage.Game != MEGame.ME3)
+            {
+                MessageBox.Show(pewpf, "Not a trilogy file!");
+                return;
+            }
+
+            Task.Run(() =>
+            {
+                pewpf.BusyText = "Finding unmodded candidates...";
+                pewpf.IsBusy = true;
+                return pewpf.GetUnmoddedCandidatesForPackage();
+            }).ContinueWithOnUIThread(foundCandidates =>
+            {
+                pewpf.IsBusy = false;
+                if (!foundCandidates.Result.Any())
+                {
+                    MessageBox.Show(pewpf, "Cannot find any candidates for this file!");
+                    return;
+                }
+
+                var choices = foundCandidates.Result.DiskFiles.ToList(); //make new list
+                choices.AddRange(foundCandidates.Result.SFARPackageStreams.Select(x => x.Key));
+
+                var choice = InputComboBoxWPF.GetValue(pewpf, "Choose file to reset to:", "Texture reset", choices, choices.Last());
+                if (string.IsNullOrEmpty(choice))
+                {
+                    return;
+                }
+
+                var restorePackage = MEPackageHandler.OpenMEPackage(choice, forceLoadFromDisk: true);
+
+                // Get classes
+                var differences = restorePackage.CompareToPackage(sourcePackage);
+
+                // Classes
+                var classNames = differences.Where(x => x.Entry != null).Select(x => x.Entry.ClassName).Distinct().OrderBy(x => x).ToList();
+                if (classNames.Any())
+                {
+                    var allDiffs = "[ALL DIFFERENCES]";
+                    classNames.Insert(0, allDiffs);
+                    var restoreClass = InputComboBoxWPF.GetValue(pewpf, "Select class type to restore instances of:", "Data reset", classNames, classNames.FirstOrDefault());
+                    if (string.IsNullOrEmpty(restoreClass))
+                    {
+                        return;
+                    }
+
+                    foreach (var exp in restorePackage.Exports.Where(x => x.ClassName != "BioMaterialInstanceConstant" || restoreClass == allDiffs || x.ClassName == restoreClass))
+                    {
+                        var origExp = restorePackage.GetUExport(exp.UIndex);
+                        sourcePackage.GetUExport(exp.UIndex).Data = origExp.Data;
+                        sourcePackage.GetUExport(exp.UIndex).Header = origExp.Header;
+                    }
+                }
+            });
+        }
+
+        public static void DumpPackageTextures(IMEPackage sourcePackage, PackageEditorWPF pewpf)
+        {
+            var dlg = new CommonOpenFileDialog
+            {
+                IsFolderPicker = true,
+                EnsurePathExists = true,
+                Title = "Select Folder Containing Localized Files"
+            };
+            if (dlg.ShowDialog(pewpf) == CommonFileDialogResult.Ok)
+            {
+                foreach (var t2dx in sourcePackage.Exports.Where(x => x.IsTexture()))
+                {
+                    var outF = Path.Combine(dlg.FileName, t2dx.ObjectName + ".png");
+                    var t2d = new Texture2D(t2dx);
+                    t2d.ExportToPNG(outF);
+                }
+            }
+
+            MessageBox.Show("Done");
+        }
+
         public static void CompactFileViaExternalFile(IMEPackage sourcePackage)
         {
             OpenFileDialog d = new OpenFileDialog { Filter = "*.pcc|*.pcc" };
@@ -128,7 +292,7 @@ namespace ME3Explorer.PackageEditor.Experiments
             // Fix the second stage interpolation where the camera moves up
             var panUpITM = entryMenuPackage.GetUExport(196); //InterpTrackMove for camera
             var panUpITF = entryMenuPackage.GetUExport(194); //FOV
-            // Just port this from the ME2 file. It'll be much easier
+                                                             // Just port this from the ME2 file. It'll be much easier
 
             using var me2em = MEPackageHandler.OpenMEPackage(@"E:\Documents\BioWare\Mass Effect 2\BIOGame\Published\CookedPC\entrymenu.pcc");
             EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, me2em.GetUExport(198), entryMenuPackage, panUpITF, true, out _); // Copy FOV ITF
@@ -818,6 +982,26 @@ namespace ME3Explorer.PackageEditor.Experiments
             }
         }
 
+        public static void ShiftInterpTrackMove(ExportEntry interpTrackMove)
+        {
+            var offsetX = int.Parse(PromptDialog.Prompt(null, "Enter X shift offset", "Offset X", "0", true));
+            var offsetY = int.Parse(PromptDialog.Prompt(null, "Enter Y shift offset", "Offset Y", "0", true));
+            var offsetZ = int.Parse(PromptDialog.Prompt(null, "Enter Z shift offset", "Offset Z", "0", true));
+
+            var props = interpTrackMove.GetProperties();
+            var posTrack = props.GetProp<StructProperty>("PosTrack");
+            var points = posTrack.GetProp<ArrayProperty<StructProperty>>("Points");
+            foreach (var point in points)
+            {
+                var outval = point.GetProp<StructProperty>("OutVal");
+                outval.GetProp<FloatProperty>("X").Value += offsetX;
+                outval.GetProp<FloatProperty>("Y").Value += offsetY;
+                outval.GetProp<FloatProperty>("Z").Value += offsetZ;
+            }
+
+            interpTrackMove.WriteProperties(props);
+        }
+
         /// <summary>
         /// Shifts an ME1 AnimCutscene by specified X Y Z values. Only supports 96NoW (3 32-bit float) animations
         /// By Mgamerz 
@@ -1300,10 +1484,14 @@ namespace ME3Explorer.PackageEditor.Experiments
             }
         }
 
-        public static void FindAllFilesWithClass(PackageEditorWPF packageEditorWpf)
+        /// <summary>
+        /// Asset Database doesn't search by memory entry, so if I'm looking to see if another entry exists I can't find it. For example I'm trying to find all copies of a specific FaceFX anim set.
+        /// </summary>
+        /// <param name="packageEditorWpf"></param>
+        public static void FindNamedObject(PackageEditorWPF packageEditorWpf)
         {
-            var classToFind = PromptDialog.Prompt(packageEditorWpf, "Enter the name of the class you want to search for in files", "Class finder");
-            if (!string.IsNullOrWhiteSpace(classToFind))
+            var namedObjToFind = PromptDialog.Prompt(packageEditorWpf, "Enter the name of the object you want to search for in files", "Object finder");
+            if (!string.IsNullOrWhiteSpace(namedObjToFind))
             {
                 var dlg = new CommonOpenFileDialog("Pick a folder to scan (includes subdirectories)")
                 {
@@ -1318,30 +1506,61 @@ namespace ME3Explorer.PackageEditor.Experiments
                         ConcurrentDictionary<string, string> threadSafeList = new ConcurrentDictionary<string, string>();
                         packageEditorWpf.BusyText = "Getting list of all package files";
                         int numPackageFiles = 0;
-                        var files = Directory.GetFiles(dlg.FileName, "*.*", SearchOption.AllDirectories).Where(x => x.RepresentsPackageFilePath()).ToList();
+                        var files = Directory.GetFiles(dlg.FileName, "*.pcc", SearchOption.AllDirectories).Where(x => x.RepresentsPackageFilePath()).ToList();
                         var totalfiles = files.Count;
                         long filesDone = 0;
                         Parallel.ForEach(files, pf =>
                         {
-                            using var package = MEPackageHandler.OpenMEPackage(pf);
-                            var hasClass = package.Exports.Any(x => x.ClassName.Equals(classToFind, StringComparison.InvariantCultureIgnoreCase));
-                            if (hasClass)
+                            try
                             {
-                                threadSafeList.TryAdd(pf, pf);
+                                using var package = MEPackageHandler.OpenMEPackage(pf);
+                                var hasObject = package.Exports.Any(x => x.ObjectName.Name.Equals(namedObjToFind, StringComparison.InvariantCultureIgnoreCase));
+                                if (hasObject)
+                                {
+                                    threadSafeList.TryAdd(pf, pf);
+                                }
+                            }
+                            catch
+                            {
+
                             }
 
                             long v = Interlocked.Increment(ref filesDone);
                             packageEditorWpf.BusyText = $"Scanning files [{v}/{totalfiles}]";
                         });
                         return threadSafeList;
-                    }).ContinueWithOnUIThread(filesWithClass =>
+                    }).ContinueWithOnUIThread(filesWithObjName =>
                     {
                         packageEditorWpf.IsBusy = false;
-                        ListDialog ld = new ListDialog(filesWithClass.Result.Select(x => x.Value), "Class scan", "Here is the list of files that have this objects of this class within them.", packageEditorWpf);
+                        ListDialog ld = new ListDialog(filesWithObjName.Result.Select(x => x.Value), "Object name scan", "Here is the list of files that have this objects of this name within them.", packageEditorWpf);
                         ld.Show();
                     });
                 }
             }
+        }
+
+        public static void CheckImports(IMEPackage Pcc)
+        {
+            PackageCache pc = new PackageCache();
+            // Enumerate and resolve all imports.
+            foreach (var import in Pcc.Imports)
+            {
+                if (import.InstancedFullPath.StartsWith("Core."))
+                    continue; // Most of these are native-native
+                if (UnrealObjectInfo.IsAKnownNativeClass(import))
+                    continue; // Native is always loaded iirc
+                Debug.WriteLine($@"Resolving {import.FullPath}");
+                var export = EntryImporter.ResolveImport(import, pc);
+                if (export != null)
+                {
+
+                }
+                else
+                {
+                    Debug.WriteLine($@"UNRESOLVABLE IMPORT: {import.FullPath}!");
+                }
+            }
+            pc.ReleasePackages();
         }
 
         public static void RandomizeTerrain(IMEPackage Pcc)
@@ -1359,6 +1578,60 @@ namespace ME3Explorer.PackageEditor.Experiments
 
                 terrain.WriteBinary(terrainBin);
             }
+        }
+
+        public static void ResetPackageVanillaPart(IMEPackage sourcePackage, PackageEditorWPF pewpf)
+        {
+            if (sourcePackage.Game != MEGame.ME1 && sourcePackage.Game != MEGame.ME2 && sourcePackage.Game != MEGame.ME3)
+            {
+                MessageBox.Show(pewpf, "Not a trilogy file!");
+                return;
+            }
+
+            Task.Run(() =>
+            {
+                pewpf.BusyText = "Finding unmodded candidates...";
+                pewpf.IsBusy = true;
+                return pewpf.GetUnmoddedCandidatesForPackage();
+            }).ContinueWithOnUIThread(foundCandidates =>
+            {
+                pewpf.IsBusy = false;
+                if (!foundCandidates.Result.Any()) MessageBox.Show(pewpf, "Cannot find any candidates for this file!");
+
+                var choices = foundCandidates.Result.DiskFiles.ToList(); //make new list
+                choices.AddRange(foundCandidates.Result.SFARPackageStreams.Select(x => x.Key));
+
+                var choice = InputComboBoxWPF.GetValue(pewpf, "Choose file to reset to:", "Package reset", choices, choices.Last());
+                if (string.IsNullOrEmpty(choice))
+                {
+                    return;
+                }
+
+                var restorePackage = MEPackageHandler.OpenMEPackage(choice, forceLoadFromDisk: true);
+                for (int i = 0; i < restorePackage.NameCount; i++)
+                {
+                    sourcePackage.replaceName(i, restorePackage.GetNameEntry(i));
+                }
+
+                foreach (var imp in sourcePackage.Imports)
+                {
+                    var origImp = restorePackage.FindImport(imp.InstancedFullPath);
+                    if (origImp != null)
+                    {
+                        imp.Header = origImp.Header;
+                    }
+                }
+
+                foreach (var exp in sourcePackage.Exports)
+                {
+                    var origExp = restorePackage.FindExport(exp.InstancedFullPath);
+                    if (origExp != null)
+                    {
+                        exp.Data = origExp.Data;
+                        exp.Header = origExp.GetHeader();
+                    }
+                }
+            });
         }
     }
 }

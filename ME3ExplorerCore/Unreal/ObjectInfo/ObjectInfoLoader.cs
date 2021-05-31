@@ -14,14 +14,12 @@ namespace ME3ExplorerCore.Unreal.ObjectInfo
         {
             try
             {
-                var infosStream = Utilities.LoadEmbeddedFile("Infos.zip");
+                var infosStream = ME3ExplorerCoreUtilities.LoadEmbeddedFile("Infos.zip");
                 if (infosStream != null)
                 {
-                    var decompressedStream = Utilities.LoadFileFromZipStream(infosStream, $"{game}ObjectInfo.json");
-                    using (StreamReader reader = new StreamReader(decompressedStream))
-                    {
-                        return reader.ReadToEnd();
-                    }
+                    var decompressedStream = ME3ExplorerCoreUtilities.LoadFileFromZipStream(infosStream, $"{game}ObjectInfo.json");
+                    using StreamReader reader = new StreamReader(decompressedStream);
+                    return reader.ReadToEnd();
                 }
 
 

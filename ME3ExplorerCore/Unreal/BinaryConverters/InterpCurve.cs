@@ -6,6 +6,16 @@ using ME3ExplorerCore.SharpDX;
 
 namespace ME3ExplorerCore.Unreal.BinaryConverters
 {
+    //When using these classes, DON'T specify T where you us it, just put one or more of these in the file.
+    //These are the only valid versions
+    using InterpCurveVector = ME3ExplorerCore.Unreal.BinaryConverters.InterpCurve<ME3ExplorerCore.SharpDX.Vector3>;
+    using InterpCurveVector2D = ME3ExplorerCore.Unreal.BinaryConverters.InterpCurve<ME3ExplorerCore.SharpDX.Vector2>;
+    using InterpCurveFloat = ME3ExplorerCore.Unreal.BinaryConverters.InterpCurve<float>;
+
+    using InterpCurvePointVector = ME3ExplorerCore.Unreal.BinaryConverters.InterpCurvePoint<ME3ExplorerCore.SharpDX.Vector3>;
+    using InterpCurvePointVector2D = ME3ExplorerCore.Unreal.BinaryConverters.InterpCurvePoint<ME3ExplorerCore.SharpDX.Vector2>;
+    using InterpCurvePointFloat = ME3ExplorerCore.Unreal.BinaryConverters.InterpCurvePoint<float>;
+
     //ONLY WORKS WHEN T is float, ME3ExplorerCore.SharpDX.Vector3 or ME3ExplorerCore.SharpDX.Vector2
     public class InterpCurvePoint<T>
     {

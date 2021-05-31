@@ -41,18 +41,23 @@ namespace ME3Explorer.Sequence_Editor
         private MEGame Game;
         private ExportEntry SequenceToFilterTo;
 
+
         public void LoadLog(MEGame game, IMEPackage pcc = null, ExportEntry filterToSequence = null)
         {
             Analytics.TrackEvent("Used feature", new Dictionary<string, string>() { { "Feature name", "Kismet Logger for " + game } });
             Pcc = pcc;
+            PccFileName = Pcc == null ? null :Path.GetFileNameWithoutExtension(Pcc.FilePath);
             SequenceToFilterTo = filterToSequence;
             Game = game;
             LogLines.ClearEx();
             if (File.Exists(KismetLogPath(Game)))
             {
+            
                 LogLines.AddRange(File.ReadLines(KismetLogPath(Game)).Skip(4).Select(ParseLoggerLine).NonNull().ToList());
             }
         }
+
+        public string PccFileName { get; set; }
 
         private LoggerInfo ParseLoggerLine(string line)
         {
@@ -63,8 +68,8 @@ namespace ME3Explorer.Sequence_Editor
                 if (path.Length < 2) return null;
                 string nameAndIndex = path.Last();
                 string sequence = path[path.Length - 2];
-                string packageName = args[1].Trim('(', ')').ToLower();
-                if (Pcc == null || Path.GetFileNameWithoutExtension(Pcc.FilePath).ToLower() == packageName)
+                string packageName = args[1].Trim('(', ')');
+                if (Pcc == null || PccFileName.Equals(packageName, StringComparison.InvariantCultureIgnoreCase))
                 {
                     if (int.TryParse(nameAndIndex.Substring(nameAndIndex.LastIndexOf('_') + 1), out int nameIndex))
                     {
@@ -79,6 +84,7 @@ namespace ME3Explorer.Sequence_Editor
 
                         if (Pcc != null && SequenceToFilterTo != null)
                         {
+                            // This is wildly inefficient
                             var referencedEntry = Pcc.Exports.FirstOrDefault(exp => exp.ClassName == newInfo.className && exp.ObjectName == newInfo.objectName && exp.ParentName == sequence);
                             if (referencedEntry != null && referencedEntry.Parent.InstancedFullPath == SequenceToFilterTo.InstancedFullPath)
                             {
@@ -110,7 +116,7 @@ namespace ME3Explorer.Sequence_Editor
             {
                 foreach ((string fileName, string filePath) in MELoadedFiles.GetFilesLoadedInGame(Game))
                 {
-                    if (Path.GetFileNameWithoutExtension(fileName.ToLower()) == info.packageName)
+                    if (Path.GetFileNameWithoutExtension(fileName).Equals(info.packageName, StringComparison.InvariantCultureIgnoreCase))
                     {
                         using (var package = MEPackageHandler.OpenMEPackage(filePath))
                         {

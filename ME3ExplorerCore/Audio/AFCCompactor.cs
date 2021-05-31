@@ -7,6 +7,7 @@ using System.Linq;
 using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Memory;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
@@ -124,7 +125,7 @@ namespace ME3ExplorerCore.Audio
             Action<string> currentScanningFileCallback = null, 
             Action<string> debugOut = null)
         {
-            var sizesJsonStr = new StreamReader(Utilities.LoadFileFromCompressedResource("Infos.zip", $"{game}-vanillaaudiosizes.json")).ReadToEnd();
+            var sizesJsonStr = new StreamReader(ME3ExplorerCoreUtilities.LoadFileFromCompressedResource("Infos.zip", $"{game}-vanillaaudiosizes.json")).ReadToEnd();
             var vanillaSizesMap = JsonConvert.DeserializeObject<CaseInsensitiveDictionary<int>>(sizesJsonStr);
             var pccFiles = Directory.GetFiles(inputPath, "*.pcc", SearchOption.AllDirectories);
 
@@ -282,7 +283,7 @@ namespace ME3ExplorerCore.Audio
             // Mapping of old reference => new reference
             var referenceMap = new Dictionary<AFCCompactor.ReferencedAudio, AFCCompactor.ReferencedAudio>();
 
-            MemoryStream memoryNewAfc = new MemoryStream();
+            using MemoryStream memoryNewAfc = MemoryManager.GetMemoryStream();
             var brokenAudio = new List<(ReferencedAudio brokenRef, string brokenReason)>();
             int i = 0;
             foreach (var referencedAudio in referencesToCompact)

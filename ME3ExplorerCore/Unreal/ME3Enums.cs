@@ -182,7 +182,7 @@ namespace ME3ExplorerCore.Unreal
         CIM_Constant,
         CIM_CurveUser,
         CIM_CurveBreak,
-        CIM_CurveAutoClamped,
+        CIM_CurveAutoClamped, //ME3 only!
     }
     public enum ETickingGroup
     {

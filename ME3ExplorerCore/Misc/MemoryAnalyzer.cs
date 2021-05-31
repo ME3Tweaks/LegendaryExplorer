@@ -25,7 +25,7 @@ namespace ME3ExplorerCore.Misc
             {
                 //Force concurrency
                 Task.Factory.StartNew(() => TrackedMemoryObjects.Add(new MemoryAnalyzerObject(objectname, reference)),
-                    default, TaskCreationOptions.None, CoreLib.SYNCHRONIZATION_CONTEXT);
+                    default, TaskCreationOptions.None, ME3ExplorerCoreLib.SYNCHRONIZATION_CONTEXT);
             }
         }
 
@@ -36,7 +36,7 @@ namespace ME3ExplorerCore.Misc
             {
                 //Force concurrency
                 Task.Factory.StartNew(() => TrackedMemoryObjects.Add(obj),
-                    default, TaskCreationOptions.None, CoreLib.SYNCHRONIZATION_CONTEXT);
+                    default, TaskCreationOptions.None, ME3ExplorerCoreLib.SYNCHRONIZATION_CONTEXT);
             }
         }
 
@@ -54,6 +54,18 @@ namespace ME3ExplorerCore.Misc
         public static void CleanupOldRefs()
         {
             TrackedMemoryObjects.RemoveAll(x => !x.IsAlive());
+        }
+
+        public static void ForceFullGC()
+        {
+            // This should promote things into future generations and clear out. This is how jetbrains seems to do it in dotMemory according to stackoverflow
+            // https://stackoverflow.com/questions/42022723/what-exactly-happens-when-i-ask-dotmemory-to-force-garbage-collection
+            for (int i = 0; i < 4; i++)
+            {
+                GC.Collect(2, GCCollectionMode.Forced, true);
+                GC.WaitForPendingFinalizers();
+            }
+
         }
     }
 }

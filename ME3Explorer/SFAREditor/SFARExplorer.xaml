@@ -14,6 +14,7 @@
     <Window.Resources>
         <converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
         <sfarEditor:FilesizeToHumanSizeConverter x:Key="FilesizeToHumanSizeConverter"/>
+        <sfarEditor:SFAREntryToStringConverter x:Key="SFAREntryToStringConverter"/>
         <sharedUi:BindingProxy x:Key="bindingProxy" Data="{Binding}"/>
     </Window.Resources>
     <DockPanel>
@@ -42,8 +43,8 @@
             <ListBox.Resources>
                 <DataTemplate DataType="{x:Type unreal:DLCPackage+FileEntryStruct}">
                     <DockPanel>
-                        <TextBlock Text ="{Binding RealUncompressedSize, Converter={StaticResource FilesizeToHumanSizeConverter}}" DockPanel.Dock="Bottom"/>
-                        <TextBlock Text ="{Binding FileName}"/>
+                        <TextBlock Text ="{Binding Converter={StaticResource SFAREntryToStringConverter}}" DockPanel.Dock="Bottom"/>
+                        <TextBlock FontWeight="Bold" Text ="{Binding FileName}"/>
                         <DockPanel.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Extract file" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ExtractFileCommand}" CommandParameter="{Binding}" sharedUi:Bindings.VisibilityToEnabled="True"/>

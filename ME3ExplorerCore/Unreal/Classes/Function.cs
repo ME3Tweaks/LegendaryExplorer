@@ -30,6 +30,14 @@ namespace ME3ExplorerCore.Unreal.Classes
                                     null, "Public", "Private", "Protected",
                                     "Delegate", "NetServer", "HasOutParms", "HasDefaults",
                                     "NetClient", "FuncInherit", "FuncOverrideMatch");
+
+        public static readonly FlagSet _me3flags = new FlagSet("Final", "Defined", "Iterator", "Latent",
+                                                            "PreOperator", "Singular", "Net", "NetReliable",
+                                                            "Simulated", "Exec", "Native", "Event",
+                                                            "Operator", "Static", "HasOptionalParms", "Const",
+                                                            null, "Public", "Private", "Protected",
+                                                            "Delegate", "NetServer", "HasOutParms", "HasDefaults",
+                                                            "NetClient", "FuncInherit", "FuncOverrideMatch");
         public string ScriptText; //This is not used but is referenced by PAckage Editor Classic, SCriptDB. Probably does not work since I refactored
         //the parsing script pretty heavily
         public string HeaderText;
@@ -47,7 +55,7 @@ namespace ME3ExplorerCore.Unreal.Classes
             memory = raw;
             memsize = raw.Length;
             flagint = GetFlagInt();
-            flags = new FlagValues(flagint, _flags);
+            flags = new FlagValues(flagint, export.Game is MEGame.ME3 ? _me3flags : _flags);
             nativeindex = GetNatIdx();
             Deserialize(clippingSize);
         }
@@ -120,7 +128,7 @@ namespace ME3ExplorerCore.Unreal.Classes
 
                         if (export.ClassName == "ObjectProperty" || export.ClassName == "StructProperty")
                         {
-                            var uindexOfOuter = EndianReader.ToInt32(export.Data, export.Data.Length - 4, export.FileRef.Endian);
+                            var uindexOfOuter = EndianReader.ToInt32(export.DataReadOnly, export.DataSize - 4, export.FileRef.Endian);
                             IEntry entry = export.FileRef.GetEntry(uindexOfOuter);
                             if (entry != null)
                             {

@@ -21,10 +21,10 @@ namespace ME3ExplorerCore.Unreal
         public static string MiniGameFilesPath { get; set; }
 #endif
 
-        public static Dictionary<string, ClassInfo> Classes = new Dictionary<string, ClassInfo>();
-        public static Dictionary<string, ClassInfo> Structs = new Dictionary<string, ClassInfo>();
-        public static Dictionary<string, List<NameReference>> Enums = new Dictionary<string, List<NameReference>>();
-        public static Dictionary<string, SequenceObjectInfo> SequenceObjects = new Dictionary<string, SequenceObjectInfo>();
+        public static Dictionary<string, ClassInfo> Classes = new();
+        public static Dictionary<string, ClassInfo> Structs = new();
+        public static Dictionary<string, List<NameReference>> Enums = new();
+        public static Dictionary<string, SequenceObjectInfo> SequenceObjects = new();
 
         public static bool IsLoaded;
         public static void loadfromJSON()
@@ -41,6 +41,8 @@ namespace ME3ExplorerCore.Unreal
                         Classes = blob.Classes;
                         Structs = blob.Structs;
                         Enums = blob.Enums;
+
+                        AddCustomAndNativeClasses();
                         foreach ((string className, ClassInfo classInfo) in Classes)
                         {
                             classInfo.ClassName = className;
@@ -285,7 +287,7 @@ namespace ME3ExplorerCore.Unreal
                 ClassInfo info = Structs[className];
                 try
                 {
-                    PropertyCollection structProps = new PropertyCollection();
+                    PropertyCollection structProps = new();
                     ClassInfo tempInfo = info;
                     while (tempInfo != null)
                     {
@@ -321,7 +323,7 @@ namespace ME3ExplorerCore.Unreal
                     else if (info.pccPath == UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
                     {
                         filepath = "GAMERESOURCES_ME1"; //used for cache
-                        loadStream = Utilities.LoadFileFromCompressedResource("GameResources.zip", CoreLib.CustomResourceFileName(MEGame.ME1)); // should this be ME3 (it was originally before corelib move)
+                        loadStream = ME3ExplorerCoreUtilities.LoadFileFromCompressedResource("GameResources.zip", ME3ExplorerCoreLib.CustomResourceFileName(MEGame.ME1)); // should this be ME3 (it was originally before corelib move)
                     }
                     else if (filepath != null && File.Exists(filepath))
                     {
@@ -350,7 +352,7 @@ namespace ME3ExplorerCore.Unreal
                         using (IMEPackage importPCC = MEPackageHandler.OpenMEPackageFromStream(loadStream, filepath, useSharedPackageCache: true))
                         {
                             var exportToRead = importPCC.GetUExport(info.exportIndex);
-                            byte[] buff = exportToRead.Data.Skip(0x30).ToArray();
+                            byte[] buff = exportToRead.DataReadOnly.Skip(0x30).ToArray();
                             PropertyCollection defaults = PropertyCollection.ReadProps(exportToRead, new MemoryStream(buff), className);
                             foreach (var prop in defaults)
                             {
@@ -512,7 +514,12 @@ namespace ME3ExplorerCore.Unreal
                 }
             }
 
-            //CUSTOM ADDITIONS
+            File.WriteAllText(outpath, JsonConvert.SerializeObject(new { SequenceObjects, Classes, Structs, Enums }, Formatting.Indented));
+        }
+
+        private static void AddCustomAndNativeClasses()
+        {
+            //Native Classes
             Classes["LightMapTexture2D"] = new ClassInfo
             {
                 baseClass = "Texture2D",
@@ -538,14 +545,12 @@ namespace ME3ExplorerCore.Unreal
                     new KeyValuePair<string, PropertyInfo>("SoundCue", new PropertyInfo(PropertyType.ObjectProperty, "SoundCue")),
                 }
             };
-
-
-            File.WriteAllText(outpath, JsonConvert.SerializeObject(new { SequenceObjects, Classes, Structs, Enums }, Formatting.Indented));
         }
+
         public static ClassInfo generateClassInfo(ExportEntry export, bool isStruct = false)
         {
             IMEPackage pcc = export.FileRef;
-            ClassInfo info = new ClassInfo
+            ClassInfo info = new()
             {
                 baseClass = export.SuperClassName,
                 exportIndex = export.UIndex,

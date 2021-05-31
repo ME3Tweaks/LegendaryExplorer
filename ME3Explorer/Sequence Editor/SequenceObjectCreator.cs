@@ -42,48 +42,24 @@ namespace ME3Explorer.Sequence_Editor
         public static List<ClassInfo> GetSequenceVariables(MEGame game)
         {
             List<ClassInfo> classes = UnrealObjectInfo.GetNonAbstractDerivedClassesOf(SequenceVariableName, game);
-
-            if (game == MEGame.ME2)
-            {
-                return classes.Where(info => EntryImporter.CanImport(info, MEGame.ME2)).ToList();
-            }
-
             return classes;
         }
 
         public static List<ClassInfo> GetSequenceActions(MEGame game)
         {
             List<ClassInfo> classes = UnrealObjectInfo.GetNonAbstractDerivedClassesOf(SequenceActionName, game);
-
-            if (game == MEGame.ME2)
-            {
-                return classes.Where(info => EntryImporter.CanImport(info, MEGame.ME2)).ToList();
-            }
-
             return classes;
         }
 
         public static List<ClassInfo> GetSequenceEvents(MEGame game)
         {
             List<ClassInfo> classes = UnrealObjectInfo.GetNonAbstractDerivedClassesOf(SequenceEventName, game);
-
-            if (game == MEGame.ME2)
-            {
-                return classes.Where(info => EntryImporter.CanImport(info, MEGame.ME2)).ToList();
-            }
-
             return classes;
         }
 
         public static List<ClassInfo> GetSequenceConditions(MEGame game)
         {
             List<ClassInfo> classes = UnrealObjectInfo.GetNonAbstractDerivedClassesOf(SequenceConditionName, game);
-
-            if (game == MEGame.ME2)
-            {
-                return classes.Where(info => EntryImporter.CanImport(info, MEGame.ME2)).ToList();
-            }
-
             return classes;
         }
 
@@ -117,7 +93,7 @@ namespace ME3Explorer.Sequence_Editor
                         }
                         else if (classInfo.pccPath == UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
                         {
-                            loadStream = Utilities.GetCustomAppResourceStream(game);
+                            loadStream = ME3ExplorerCoreUtilities.GetCustomAppResourceStream(game);
                         }
                         else if (File.Exists(filepath))
                         {
@@ -148,7 +124,7 @@ namespace ME3Explorer.Sequence_Editor
                                     {
                                         if (varLink.GetProp<ObjectProperty>("ExpectedType") is ObjectProperty expectedTypeProp &&
                                             importPCC.TryGetEntry(expectedTypeProp.Value, out IEntry expectedVar) &&
-                                            EntryImporterExtended.EnsureClassIsInFile(pcc, expectedVar.ObjectName) is IEntry portedExpectedVar)
+                                            EntryImporter.EnsureClassIsInFile(pcc, expectedVar.ObjectName, RelinkResultsAvailable: EntryImporterExtended.ShowRelinkResults) is IEntry portedExpectedVar)
                                         {
                                             expectedTypeProp.Value = portedExpectedVar.UIndex;
                                         }
@@ -167,16 +143,19 @@ namespace ME3Explorer.Sequence_Editor
                                     {
                                         if (eventLink.GetProp<ObjectProperty>("ExpectedType") is ObjectProperty expectedTypeProp &&
                                             importPCC.TryGetEntry(expectedTypeProp.Value, out IEntry expectedVar) &&
-                                            EntryImporterExtended.EnsureClassIsInFile(pcc, expectedVar.ObjectName) is IEntry portedExpectedVar)
+                                            EntryImporter.EnsureClassIsInFile(pcc, expectedVar.ObjectName, RelinkResultsAvailable: EntryImporterExtended.ShowRelinkResults) is IEntry portedExpectedVar)
                                         {
                                             expectedTypeProp.Value = portedExpectedVar.UIndex;
                                         }
                                     }
                                 }
 
-                                if (game == MEGame.ME1 && inLinksProp is null && prop.Name == "InputLinks" && prop is ArrayProperty<StructProperty> ilp)
-                                {
-                                    inLinksProp = ilp;
+                                // Jan 31 2021 change by Mgamerz: Not sure why it only adds input links if it's ME1
+                                // I removed it to let other games work too
+                                //if (game == MEGame.ME1 && inLinksProp is null && prop.Name == "InputLinks" && prop is ArrayProperty<StructProperty> ilp)
+                                if (inLinksProp is null && prop.Name == "InputLinks" && prop is ArrayProperty<StructProperty> ilp)
+                                    {
+                                        inLinksProp = ilp;
                                 }
                             }
                         }
@@ -234,7 +213,7 @@ namespace ME3Explorer.Sequence_Editor
             var seqObj = new ExportEntry(pcc, properties: GetSequenceObjectDefaults(pcc, className, game))
             {
                 ObjectName = pcc.GetNextIndexedName(className),
-                Class = EntryImporterExtended.EnsureClassIsInFile(pcc, className)
+                Class = EntryImporter.EnsureClassIsInFile(pcc, className, RelinkResultsAvailable: EntryImporterExtended.ShowRelinkResults)
             };
             seqObj.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
             pcc.AddExport(seqObj);

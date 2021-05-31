@@ -292,10 +292,10 @@ namespace ME3Explorer.PathfindingNodes
         public class Volume
         {
             public int ActorUIndex;
-            public UnrealGUID ActorReference;
+            public FGuid ActorReference;
             public Volume(StructProperty volumestruct)
             {
-                ActorReference = new UnrealGUID(volumestruct.GetProp<StructProperty>("Guid"));
+                ActorReference = new FGuid(volumestruct.GetProp<StructProperty>("Guid"));
                 ActorUIndex = volumestruct.GetProp<ObjectProperty>("Actor").Value;
             }
         }
@@ -336,6 +336,24 @@ namespace ME3Explorer.PathfindingNodes
         {
             shape.Brush = dynamicPathnodefindingNodeBrush;
         }
+    }
+
+    public class SFXNav_WayPoint : PathfindingNode
+    {
+        private static readonly Color outlinePenColor = Color.FromArgb(255, 255, 50, 125);
+        private static readonly PointF[] outlineShape = { new PointF(0, 20), 
+            new PointF(25, 20), new PointF(25, 0),  //top left right angle
+            new PointF(50, 25), new PointF(25, 50), // right point
+            new PointF(25, 30), new PointF(0, 30) }; // End
+
+        public SFXNav_WayPoint(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, x, y, p, grapheditor)
+        {
+        }
+
+        public override Color GetDefaultShapeColor() => outlinePenColor;
+
+        public override PPath GetDefaultShape() => PPath.CreatePolygon(outlineShape);
     }
 
     public class CoverLink : PathfindingNode

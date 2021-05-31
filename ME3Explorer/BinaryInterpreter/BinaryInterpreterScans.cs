@@ -490,7 +490,7 @@ namespace ME3Explorer
                     bin.JumpTo(shaderMapEndOffset - dataOffset);
                 }
 
-                if (CurrentLoadedExport.Game >= MEGame.ME2 &&CurrentLoadedExport.FileRef.Platform != MEPackage.GamePlatform.Xenon)
+                if (CurrentLoadedExport.Game >= MEGame.ME2 && CurrentLoadedExport.FileRef.Platform != MEPackage.GamePlatform.Xenon)
                 {
                     int numShaderCachePayloads = bin.ReadInt32();
                     var shaderCachePayloads = new BinInterpNode(bin.Position - 4, $"Shader Cache Payloads, {numShaderCachePayloads} items");
@@ -3929,6 +3929,41 @@ namespace ME3Explorer
             }
         }
 
+        /// <summary>
+        /// Reads the common header for FaceFX archives.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="binaryStart"></param>
+        /// <param name="tree"></param>
+        private MEGame ReadFaceFXHeader(EndianReader bin, List<ITreeItem> subnodes)
+        {
+            var archiveSize = bin.ReadInt32();
+            subnodes.Add(new BinInterpNode(bin.Position - 4, $"Archive size: {archiveSize} ({FileSize.FormatSize(archiveSize)})"));
+            subnodes.Add(new BinInterpNode(bin.Position, $"Magic: {bin.ReadInt32():X8}") { Length = 4 });
+            int versionID = bin.ReadInt32(); //1710 = ME1, 1610 = ME2, 1731 = ME3.
+            var game = versionID == 1710 ? MEGame.ME1 :
+                versionID == 1610 ? MEGame.ME2 :
+                versionID == 1731 ? MEGame.ME3 :
+                MEGame.Unknown;
+            var vIdStr = versionID.ToString();
+            var vers = new Version(vIdStr[0] - '0', vIdStr[1] - '0', vIdStr[2] - '0', vIdStr[3] - '0'); //Mega hack
+            subnodes.Add(new BinInterpNode(bin.Position - 4, $"SDK Version: {versionID} ({vers})") { Length = 4 });
+            if (game == MEGame.ME3)
+            {
+                subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt32():X8}") { Length = 4 });
+            }
+
+            subnodes.Add(new BinInterpNode(bin.Position, $"Licensee: {bin.ReadFaceFXString(game)}"));
+            subnodes.Add(new BinInterpNode(bin.Position, $"Project: {bin.ReadFaceFXString(game)}"));
+
+            var licenseeVersion = bin.ReadInt32();
+            vIdStr = licenseeVersion.ToString();
+            vers = new Version(vIdStr[0] - '0', vIdStr[1] - '0', vIdStr[2] - '0', vIdStr[3] - '0'); //Mega hack
+            subnodes.Add(new BinInterpNode(bin.Position - 4, $"Licensee version: {vIdStr} ({vers})") { Length = 4 });
+
+            return game;
+        }
+
         private List<ITreeItem> StartFaceFXAnimSetScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<ITreeItem>();
@@ -3936,25 +3971,8 @@ namespace ME3Explorer
             {
                 var bin = new EndianReader(new MemoryStream(CurrentLoadedExport.Data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
-                bin.Skip(4);
-                subnodes.Add(new BinInterpNode(bin.Position, $"Magic: {bin.ReadInt32():X8}") { Length = 4 });
-                subnodes.Add(new BinInterpNode(bin.Position, $"Version?: {bin.ReadInt32():X8}") { Length = 4 });
-                if (Pcc.Game == MEGame.ME3)
-                {
-                    subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt32():X8}") { Length = 4 });
-                }
+                ReadFaceFXHeader(bin, subnodes);
 
-                if (Pcc.Game == MEGame.ME2)
-                {
-                    subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
-                }
-                subnodes.Add(new BinInterpNode(bin.Position, $"Licensee: {bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"));
-                if (Pcc.Game == MEGame.ME2)
-                {
-                    subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
-                }
-                subnodes.Add(new BinInterpNode(bin.Position, $"Project: {bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"));
-                subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt32():X8}") { Length = 4 });
                 if (Pcc.Game == MEGame.ME2)
                 {
                     subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt32():X8}") { Length = 4 });
@@ -4110,6 +4128,7 @@ namespace ME3Explorer
             }
             return subnodes;
         }
+
         private List<ITreeItem> StartFaceFXAssetScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<ITreeItem>();
@@ -4117,27 +4136,9 @@ namespace ME3Explorer
             {
                 var bin = new EndianReader(new MemoryStream(CurrentLoadedExport.Data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
-                bin.Skip(4);
-                subnodes.Add(new BinInterpNode(bin.Position, $"Magic: {bin.ReadInt32():X8}") { Length = 4 });
-                int versionID = bin.ReadInt32(); //1710 = ME1, 1610 = ME2, 1731 = ME3.
-                subnodes.Add(new BinInterpNode(bin.Position, $"Version: {versionID} {versionID:X8}") { Length = 4 });
-                if (versionID == 1731)
-                {
-                    subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt32():X8}") { Length = 4 });
-                }
+                var game = ReadFaceFXHeader(bin, subnodes);
 
-                if (versionID == 1610)
-                {
-                    subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
-                }
-                subnodes.Add(new BinInterpNode(bin.Position, $"Licensee: {bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"));
-                if (versionID == 1610)
-                {
-                    subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
-                }
-                subnodes.Add(new BinInterpNode(bin.Position, $"Project: {bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"));
-                subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt32():X8}") { Length = 4 });
-                if (versionID == 1610)
+                if (game == MEGame.ME2)
                 {
                     subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt32():X8}") { Length = 4 });
                 }
@@ -4146,7 +4147,7 @@ namespace ME3Explorer
                     subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                 }
                 //Node Table
-                if (versionID != 1610)
+                if (game != MEGame.ME2)
                 {
                     int hNodeCount = bin.ReadInt32();
                     var hNodes = new List<ITreeItem>();
@@ -4173,17 +4174,30 @@ namespace ME3Explorer
                 }
 
                 //Name Table
+
+
+
                 var nameTable = new List<string>();
                 int nameCount = bin.ReadInt32();
                 var nametablePos = bin.Position - 4;
                 var nametabObj = new List<ITreeItem>();
+
+                // Does this need byte aligned? ME2 seems like it does...
+                //if (game == MEGame.ME2)
+                //{
+                //    bin.ReadByte(); // Align to bytes?
+                //}
+
                 for (int m = 0; m < nameCount; m++)
                 {
                     var pos = bin.Position;
-                    var mName = bin.BaseStream.ReadStringASCII(bin.ReadInt32());
+                    var mName = bin.ReadFaceFXString(game, true);
                     nameTable.Add(mName);
                     nametabObj.Add(new BinInterpNode(pos, $"{m}: {mName}"));
-                    bin.Skip(versionID != 1610 ? 0 : 4);
+                    //if (game != MEGame.ME2)
+                    //{
+                    //    bin.Skip(4);
+                    //}
                 }
 
                 subnodes.Add(new BinInterpNode(nametablePos, $"Names: {nameCount} items")
@@ -4391,7 +4405,7 @@ namespace ME3Explorer
 
 
 
-                if (versionID == 1610)
+                if (game == MEGame.ME2)
                 {
                     subnodes.Add(MakeInt32Node(bin, "Unknown"));
                     subnodes.Add(MakeInt32Node(bin, "Unknown"));
@@ -4428,7 +4442,7 @@ namespace ME3Explorer
                         });
                         animNodes.Add(new BinInterpNode(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") { Length = 4 });
                         animNodes.Add(MakeInt32Node(bin, "Unknown"));
-                        if (versionID == 1610)
+                        if (game == MEGame.ME2)
                         {
                             animNodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                         }
@@ -4453,7 +4467,7 @@ namespace ME3Explorer
 
                         if (pointsCount > 0)
                         {
-                            if (versionID == 1610)
+                            if (game == MEGame.ME2)
                             {
                                 nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                             }
@@ -4468,14 +4482,14 @@ namespace ME3Explorer
                     nodes.Add(new BinInterpNode(bin.Position, $"Fade In Time: {bin.ReadFloat()}") { Length = 4 });
                     nodes.Add(new BinInterpNode(bin.Position, $"Fade Out Time: {bin.ReadFloat()}") { Length = 4 });
                     nodes.Add(MakeInt32Node(bin, "Unknown"));
-                    if (versionID == 1610)
+                    if (game == MEGame.ME2)
                     {
                         nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                         nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                     }
 
                     nodes.Add(new BinInterpNode(bin.Position, $"Path: {bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"));
-                    if (versionID == 1610)
+                    if (game == MEGame.ME2)
                     {
                         nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                     }
@@ -6629,7 +6643,7 @@ namespace ME3Explorer
                         {
                             foreach (IEntry texture in new MaterialInstanceConstant(matExport).Textures)
                             {
-                                matNode.Items.Add(new BinInterpNode(-1, $"#{texture.UIndex} {CurrentLoadedExport.FileRef.GetEntryString(texture.UIndex)}", NodeType.StructLeafObject) { UIndexValue = texture.UIndex });
+                                matNode.Items.Add(new BinInterpNode(-1, $"#{texture.UIndex} {texture.FileRef.GetEntryString(texture.UIndex)}", NodeType.StructLeafObject) { UIndexValue = texture.UIndex });
                             }
                         }
                     }
@@ -7420,7 +7434,7 @@ namespace ME3Explorer
                             {
                                 foreach (IEntry texture in new MaterialInstanceConstant(matExport).Textures)
                                 {
-                                    matNode.Items.Add(new BinInterpNode($"#{texture.UIndex} {CurrentLoadedExport.FileRef.GetEntryString(texture.UIndex)}"));
+                                    matNode.Items.Add(new BinInterpNode($"#{texture.UIndex} {matExport.FileRef.GetEntryString(texture.UIndex)}"));
                                 }
                             }
                         }

@@ -128,7 +128,11 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             return new Vector3((float)(cp * cy), (float)(cp * sy), (float)sp);
         }
 
-        public bool IsZero => Pitch == 0 && Yaw == 0 && Roll == 0;
+        public bool IsZero => Pitch == 0 && Yaw == 0 && Roll == 0; 
+        public override string ToString()
+        {
+            return $"Pitch:{Pitch} Yaw:{Yaw} Roll:{Roll}";
+        }
     }
 
 // -1 to 1 converted to 0-255

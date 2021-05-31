@@ -155,13 +155,16 @@ namespace ME3Explorer
                         try
                         {
                             var samefolderpath = Directory.GetParent(exportEntry.FileRef.FilePath);
-                            string samefolderfilepath = Path.Combine(samefolderpath.FullName, w.Filename + ".afc");
+                            string afcPath = Path.Combine(samefolderpath.FullName, w.Filename + ".afc");
                             var headerbytes = new byte[0x56];
                             bool bytesread = false;
-
-                            if (File.Exists(samefolderfilepath))
+                            if (!File.Exists(afcPath))
                             {
-                                using FileStream fs = new FileStream(samefolderfilepath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                                afcPath = w.GetPathToAFC();
+                            }
+                            if (File.Exists(afcPath))
+                            {
+                                using FileStream fs = new FileStream(afcPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                                 fs.Seek(w.DataOffset, SeekOrigin.Begin);
                                 fs.Read(headerbytes, 0, 0x56);
                                 bytesread = true;
@@ -995,7 +998,7 @@ namespace ME3Explorer
 
             var conversion = await Task.Run(async () => await RunWwiseConversion(wwisePath, sourceFile, conversionSettings));
 
-            ReplaceAudioFromWwiseOgg(conversion, forcedExport);
+            ReplaceAudioFromWwiseOgg(conversion, forcedExport, conversionSettings?.UpdateReferencedEvents ?? false); ;
         }
 
         /// <summary>
@@ -1484,6 +1487,30 @@ namespace ME3Explorer
             audioStream = null;
         }
 
+        /// <summary>
+        /// Stops any playing audio and starts playing the currently selected entry
+        /// </summary>
+        public void StartPlayingCurrentSelection()
+        {
+            if(_playbackState == PlaybackState.Stopped)
+            {
+                StartOrPausePlaying();
+            }
+            else
+            {
+                // If there is audio playing, stop it. The new audio entry will start once the PlaybackStopped event triggers.
+                seekbarUpdateTimer.Stop();
+                if (_audioPlayer != null)
+                {
+
+                    _audioPlayer.PlaybackStopType = SoundpanelAudioPlayer.PlaybackStopTypes.PlaybackSwitchedToNewFile;
+                    _audioPlayer.Stop();
+                }
+
+                audioStream = null;
+            }
+        }
+
         private bool CanStopPlayback(object p) => _playbackState == PlaybackState.Playing || _playbackState == PlaybackState.Paused || audioStream != null;
 
         // Events
@@ -1517,6 +1544,10 @@ namespace ME3Explorer
                 RestartingDueToLoop = true;
                 StartPlayback();
                 RestartingDueToLoop = false;
+            }
+            else if (_audioPlayer.PlaybackStopType == SoundpanelAudioPlayer.PlaybackStopTypes.PlaybackSwitchedToNewFile)
+            {
+                StartPlayback();
             }
         }
 
@@ -1578,8 +1609,9 @@ namespace ME3Explorer
         /// <summary>
         /// Replaces the audio in the current loaded export, or the forced export. Will prompt user for a Wwise Encoded Ogg file.
         /// </summary>
-        /// <param name="forcedExport">Export to update. If null, the currently loadedo ne is used instead.</param>
-        public void ReplaceAudioFromWwiseOgg(string oggPath = null, ExportEntry forcedExport = null)
+        /// <param name="forcedExport">Export to update. If null, the currently loaded one is used instead.</param>
+        /// <param name="updateReferencedEvents">If true will find all WwiseEvents referencing this export and update their Duration property</param>
+        public void ReplaceAudioFromWwiseOgg(string oggPath = null, ExportEntry forcedExport = null, bool updateReferencedEvents = false)
         {
             ExportEntry exportToWorkOn = forcedExport ?? CurrentLoadedExport;
             if (exportToWorkOn != null && exportToWorkOn.ClassName == "WwiseStream")
@@ -1601,6 +1633,20 @@ namespace ME3Explorer
 
                 w.ImportFromFile(oggPath, w.GetPathToAFC());
                 exportToWorkOn.WriteBinary(w);
+
+                if(updateReferencedEvents)
+                {
+                    var ms = (float)w.GetAudioInfo().GetLength().TotalMilliseconds;
+                    var durationProperty = new ME3ExplorerCore.Unreal.FloatProperty(ms, "DurationMilliseconds");
+
+                    // Update all WwiseStream exports that reference this stream
+                    var referencedExports = exportToWorkOn.GetEntriesThatReferenceThisOne();
+                    foreach (ExportEntry re in referencedExports.Select(e => e.Key).Where(e => e.ClassName == "WwiseEvent"))
+                    {
+                        re.WriteProperty(durationProperty);
+                    }
+                }
+
                 if (HostingControl != null)
                 {
                     HostingControl.IsBusy = false;
@@ -1664,14 +1710,29 @@ namespace ME3Explorer
             object currentSelectedItem = ExportInfoListBox.SelectedItem;
             if (currentSelectedItem is EmbeddedWEMFile)
             {
-                StopPlaying();
-                StartOrPausePlaying();
+                StartPlayingCurrentSelection();
             }
 
             if (currentSelectedItem is ISBankEntry bankEntry && bankEntry.DataAsStored != null)
             {
-                StopPlaying();
-                StartOrPausePlaying();
+                StartPlayingCurrentSelection();
+            }
+        }
+
+        private void ExportInfoListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            object currentSelectedItem = ExportInfoListBox.SelectedItem;
+            if (Properties.Settings.Default.SoundplorerAutoplayEntriesOnSelection)
+            {
+                if (currentSelectedItem is EmbeddedWEMFile)
+                {
+                    StartPlayingCurrentSelection();
+                }
+
+                if (currentSelectedItem is ISBankEntry bankEntry && bankEntry.DataAsStored != null)
+                {
+                    StartPlayingCurrentSelection();
+                }
             }
         }
 

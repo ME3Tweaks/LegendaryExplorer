@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Memory;
 using static ME3ExplorerCore.TLK.ME1.ME1TalkFile;
 
 namespace ME3ExplorerCore.TLK.ME2ME3
@@ -50,7 +51,7 @@ namespace ME3ExplorerCore.TLK.ME2ME3
         /// <param name="fileName"></param>
         /// <param name="debugVersion"></param>
         /// 
-        public void LoadInputData(string fileName, bool debugVersion)
+        public void LoadInputData(string fileName, bool debugVersion = false)
         {
             _inputData.Clear();
             LoadXmlInputData(fileName, debugVersion);
@@ -114,7 +115,8 @@ namespace ME3ExplorerCore.TLK.ME2ME3
         /// </remarks>
         /// </summary>
         /// <param name="fileName"></param>
-        public static void SaveToTlkFile(string fileName, List<TLKStringRef> stringRefs = null) // having this be null in static method makes no sense. probably should not let it be null
+        /// <param name="stringRefs"></param>
+        public static void SaveToTlkFile(string fileName, List<TLKStringRef> stringRefs)
         {
             SaveToTlkStream(stringRefs).WriteToFile(fileName);
         }
@@ -122,6 +124,11 @@ namespace ME3ExplorerCore.TLK.ME2ME3
         public void SaveToFile(string fileName)
         {
             SaveToTlkFile(fileName, _inputData);
+        }
+
+        public Stream SaveToStream()
+        {
+            return SaveToTlkStream(_inputData);
         }
 
         /// <summary>
@@ -399,7 +406,7 @@ namespace ME3ExplorerCore.TLK.ME2ME3
 
         public static MemoryStream SaveToTlkStream(List<TLKStringRef> stringRefs)
         {
-            var memStream = new MemoryStream();
+            MemoryStream memStream = MemoryManager.GetMemoryStream();
             HuffmanCompression hc = new HuffmanCompression();
             if (stringRefs != null)
             {

@@ -508,16 +508,16 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
                 case ME1OpCodes.EX_LabelTable:
                     {
                         var token = new LabelTableToken(readerpos);
-                        while (true)
+
+                        var labelName = ReadName();
+                        var offset = _reader.ReadInt32();
+                        while (offset != 0xFFFF)
                         {
-                            string labelName = ReadName();
-                            if (labelName == "None") break;
-                            int offset = _reader.ReadInt32();
                             token.AddLabel(labelName, offset);
+                            labelName = ReadName();
+                            offset = _reader.ReadInt32();
                         }
 
-                        var labelTableOFfset = _reader.ReadInt16();
-                        var unknown = _reader.ReadInt16();
                         token.updateUIText();
                         return token;
                     }
@@ -964,7 +964,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
             //    _reader.ReadByte(); //This is a workaround for EX_Switch, maybe?
             //}
 
-            if (_package.Game == MEGame.ME2 && _package.Platform != MEPackage.GamePlatform.PS3)
+            if (methodName != "Add" && _package.Game == MEGame.ME2 && _package.Platform != MEPackage.GamePlatform.PS3)
             {
                 var numBytesToSkipIfExpressionNull = _reader.ReadUInt16();
             }
@@ -1043,7 +1043,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
         {
             int pos = (int)_reader.BaseStream.Position - 1;
 
-            int structIndex = _reader.ReadInt32();
+            ReadEntryRef(out int structClassUIndex);
             var operand1 = ReadNext();
             if (IsInvalid(operand1)) return operand1;
             var operand2 = ReadNext();
@@ -1090,8 +1090,9 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
             var nref = _reader.ReadInt32();
             var nrefinstance = _reader.ReadInt32();
             var name = _package.GetNameEntry(nref);
-            NameReferences[pos] = name;
-            return new NameReference(name, nrefinstance).Instanced;
+            var nameref = new NameReference(name, nrefinstance);
+            NameReferences[pos] = nameref;
+            return nameref.Instanced;
         }
 
         internal IEntry ReadEntryRef(out int idx)
@@ -1108,7 +1109,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
             //Following two conditions are for relinking
             else if (idx < 0)
             {
-                EntryReferences[pos] = new ImportEntry(_package) { Index = Math.Abs(idx) + 1 }; //Force UIndex
+                EntryReferences[pos] = new ImportEntry(_package) { Index = Math.Abs(idx) - 1 }; //Force UIndex
                 return _package.Imports.First(); //this is so rest of parser won't crash. It's a real hack...
             }
             else if (idx > 0)
@@ -1261,10 +1262,10 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
             if (ME1NativeInfoLoaded) return; //already loaded
             try
             {
-                var infosStream = Utilities.LoadEmbeddedFile("Infos.zip");
+                var infosStream = ME3ExplorerCoreUtilities.LoadEmbeddedFile("Infos.zip");
                 if (infosStream != null)
                 {
-                    var decompressedStream = Utilities.LoadFileFromZipStream(infosStream, $"ME1NativeFunctionInfo.json");
+                    using var decompressedStream = ME3ExplorerCoreUtilities.LoadFileFromZipStream(infosStream, $"ME1NativeFunctionInfo.json");
                     using StreamReader reader = new StreamReader(decompressedStream);
                     var raw = reader.ReadToEnd();
                     var blob = JsonConvert.DeserializeAnonymousType(raw, new { NativeFunctionInfo });

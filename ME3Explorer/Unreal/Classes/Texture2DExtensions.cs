@@ -104,7 +104,15 @@ namespace ME3Explorer.Unreal.Classes
 
             for (int m = 0; m < image.mipMaps.Count(); m++)
             {
-                if (t2d.Export.Game == MEGame.ME2)
+                // Mips go big to small
+
+                if (m > 5) // 0 indexed
+                {
+                    // Lower 6 mips are never stored compressed so don't bother wasting time compressing the data
+                    compressedMips.Add(null);
+                    continue;
+                }
+                if (t2d.Export.Game < MEGame.ME3)
                     compressedMips.Add(TextureCompression.CompressTexture(image.mipMaps[m].data, StorageTypes.extLZO)); //LZO 
                 else
                     compressedMips.Add(TextureCompression.CompressTexture(image.mipMaps[m].data, StorageTypes.extZlib)); //ZLib
@@ -126,6 +134,7 @@ namespace ME3Explorer.Unreal.Classes
                 }
                 else
                 {
+                    // New mipmaps
                     mipmap.storageType = t2d.Mips[0].storageType;
                     if (t2d.Mips.Count() > 1)
                     {
@@ -178,6 +187,10 @@ namespace ME3Explorer.Unreal.Classes
                     //    mipmap.storageType = StorageTypes.pccLZO;
                     if (mipmap.storageType == StorageTypes.pccUnc && m < image.mipMaps.Count() - 6 && textureCache != null) //Moving texture to store externally. make sure bottom 6 are pcc stored
                         mipmap.storageType = StorageTypes.extLZO;
+
+                    // TEXTURE WORK BRANCH TOOLING ONLY!!
+                    //if (mipmap.storageType == StorageTypes.extLZO)
+                    //    mipmap.storageType = StorageTypes.pccLZO;
                 }
 
 
@@ -357,7 +370,7 @@ namespace ME3Explorer.Unreal.Classes
                     }
                     else
                     {
-                        throw new Exception("Unknown mip storage type!");
+                        throw new Exception("Unsupported mip storage type for this operation! Are you trying to replace ext textures not using Texture Studio?");
                     }
                 }
                 else

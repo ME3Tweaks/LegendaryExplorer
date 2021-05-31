@@ -43,7 +43,7 @@
                 </Grid.ColumnDefinitions>
                 <!--<TextBox Name="infoTextBox" Text="Select an export" Grid.Column="0" Grid.Row="0"/>-->
                 <ListBox Name="ExportInfoListBox" Grid.Column="0" Grid.Row="0" ItemsSource="{Binding ExportInformationList}" 
-                         PreviewKeyDown="WEMItem_KeyDown" MouseDoubleClick="ExportInfoListBox_DoubleClick" HorizontalContentAlignment="Stretch">
+                         PreviewKeyDown="WEMItem_KeyDown" MouseDoubleClick="ExportInfoListBox_DoubleClick" SelectionChanged="ExportInfoListBox_SelectionChanged" HorizontalContentAlignment="Stretch">
                     <ListBox.Resources>
                         <!--Defines a context menu-->
                         <ContextMenu x:Key="MyElementMenu">

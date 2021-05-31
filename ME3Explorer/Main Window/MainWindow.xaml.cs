@@ -17,6 +17,7 @@ using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 using Microsoft.AppCenter.Analytics;
+using System.Diagnostics;
 
 namespace ME3Explorer
 {
@@ -59,7 +60,7 @@ namespace ME3Explorer
 
 #if DEBUG
                 version += " DEBUG";
-#elif AZURE
+#elif NIGHTLY
                 //This is what will be placed in release. Comment this out when building for a stable!
                 version += " NIGHTLY"; //ENSURE THIS IS CHANGED FOR MAJOR RELEASES AND RELEASE CANDIDATES
 #elif RELEASE
@@ -261,7 +262,7 @@ namespace ME3Explorer
                 }
                 if (TaskPaneOpen)
                 {
-                    closeTaskPane(100);
+                    //closeTaskPane(100);
                 }
                 CICOpen = true;
                 if (SearchBox.Text.Trim() != string.Empty)
@@ -458,7 +459,7 @@ namespace ME3Explorer
                 }
                 if (TaskPaneOpen)
                 {
-                    closeTaskPane(100);
+                    //closeTaskPane(100);
                 }
                 utilitiesButton.OpacityMask = HighlightBrush;
                 utilitiesPanel.BeginDoubleAnimation(WidthProperty, 650, 300);
@@ -503,7 +504,7 @@ namespace ME3Explorer
                 }
                 if (TaskPaneOpen)
                 {
-                    closeTaskPane(100);
+                    //closeTaskPane(100);
                 }
                 createModsButton.OpacityMask = HighlightBrush;
                 createModsPanel.BeginDoubleAnimation(WidthProperty, 650, 300);
@@ -591,34 +592,47 @@ namespace ME3Explorer
         private void pathBrowseButton_Click(object sender, RoutedEventArgs e)
         {
             Button b = sender as Button;
+            List<string> allowedVersions = new List<string>();
             string game;
             if (b == me1PathBrowseButton)
             {
                 game = "Mass Effect";
+                allowedVersions.Add("1.2.20608.0");
             }
             else if (b == me2PathBrowseButton)
             {
                 game = "Mass Effect 2";
+                allowedVersions.Add("1.2.1604.0"); // Steam
+                allowedVersions.Add("01604.00"); // Origin
             }
             else if (b == me3PathBrowseButton)
             {
                 game = "Mass Effect 3";
+                allowedVersions.Add("05427.124");
             }
             else
             {
                 return;
             }
+
             if (game != "")
             {
                 OpenFileDialog ofd = new OpenFileDialog
                 {
-                    Title = $"Select {game} executable."
+                    Title = $"Select {game} executable"
                 };
                 game = game.Replace(" ", "");
                 ofd.Filter = $"{game}.exe|{game}.exe";
 
                 if (ofd.ShowDialog() == true)
                 {
+                    var fvi = FileVersionInfo.GetVersionInfo(ofd.FileName);
+                    if (!allowedVersions.Contains(fvi.FileVersion))
+                    {
+                        MessageBox.Show($"Cannot use this executable: The only supported file versions are:\n{string.Join("\n", allowedVersions)}\n\nThe selected one has version: {fvi.FileVersion}\n\nNote: ME3Explorer does not support Mass Effect Legendary Edition games.",
+                            "Invalid game", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
                     string result = Path.GetDirectoryName(Path.GetDirectoryName(ofd.FileName));
 
                     switch (game)
@@ -705,69 +719,69 @@ namespace ME3Explorer
 
         private void taskPaneButton_Click(object sender, RoutedEventArgs e)
         {
-            if (TaskPaneOpen)
-            {
-                closeTaskPane();
-            }
-            else
-            {
-                Analytics.TrackEvent("Main Window Tab Changed", new Dictionary<string, string>()
-                {
-                    {"Tab Name Opened", "TaskPane"}
-                });
-                TaskPaneOpen = true;
-                if (CICOpen)
-                {
-                    closeCIC(100, false);
-                }
-                if (UtilitiesOpen)
-                {
-                    closeUtilities(100);
-                }
-                if (CreateModsOpen)
-                {
-                    closeCreateMods(100);
-                }
-                taskPaneButton.OpacityMask = HighlightBrush;
-                taskPanePanel.BeginDoubleAnimation(WidthProperty, 650, 300);
-            }
+            //if (TaskPaneOpen)
+            //{
+            //    closeTaskPane();
+            //}
+            //else
+            //{
+            //    Analytics.TrackEvent("Main Window Tab Changed", new Dictionary<string, string>()
+            //    {
+            //        {"Tab Name Opened", "TaskPane"}
+            //    });
+            //    TaskPaneOpen = true;
+            //    if (CICOpen)
+            //    {
+            //        closeCIC(100, false);
+            //    }
+            //    if (UtilitiesOpen)
+            //    {
+            //        closeUtilities(100);
+            //    }
+            //    if (CreateModsOpen)
+            //    {
+            //        closeCreateMods(100);
+            //    }
+            //    taskPaneButton.OpacityMask = HighlightBrush;
+            //    taskPanePanel.BeginDoubleAnimation(WidthProperty, 650, 300);
+            //}
         }
 
-        private void closeTaskPane(int duration = 300)
-        {
-            if (TaskPaneInfoPanelOpen)
-            {
-                Analytics.TrackEvent("Main Window Tab Changed", new Dictionary<string, string>()
-                {
-                    {"Tab Name Closed", "TaskPane"}
-                });
-                closeTaskPaneInfoPanel();
-            }
-            TaskPaneOpen = false;
-            taskPanePanel.BeginDoubleAnimation(WidthProperty, 0, duration);
-            taskPaneButton.OpacityMask = LabelTextBrush;
-        }
+        //private void closeTaskPane(int duration = 300)
+        //{
+        //    if (TaskPaneInfoPanelOpen)
+        //    {
+        //        Analytics.TrackEvent("Main Window Tab Changed", new Dictionary<string, string>()
+        //        {
+        //            {"Tab Name Closed", "TaskPane"}
+        //        });
+        //        closeTaskPaneInfoPanel();
+        //    }
+        //    TaskPaneOpen = false;
+        //    taskPanePanel.BeginDoubleAnimation(WidthProperty, 0, duration);
+        //    taskPaneButton.OpacityMask = LabelTextBrush;
+        //}
 
-        private void closeTaskPaneInfoPanel(int duration = 100)
-        {
-            TaskPaneInfoPanelOpen = false;
-            taskPaneInfoPanel.BeginDoubleAnimation(WidthProperty, 0, duration);
-        }
+        //private void closeTaskPaneInfoPanel(int duration = 100)
+        //{
+        //    TaskPaneInfoPanelOpen = false;
+        //    taskPaneInfoPanel.BeginDoubleAnimation(WidthProperty, 0, duration);
+        //}
 
-        private void taskPanePanel_ToolMouseOver(object sender, WPFBaseViewModel e)
-        {
-            taskPaneInfoPanel.setTool(e.wpf);
-            if (!TaskPaneInfoPanelOpen)
-            {
-                TaskPaneInfoPanelOpen = true;
-                taskPaneInfoPanel.BeginDoubleAnimation(WidthProperty, 300, 100);
-            }
-        }
+        //private void taskPanePanel_ToolMouseOver(object sender, WPFBaseViewModel e)
+        //{
+        //    taskPaneInfoPanel.setTool(e.wpf);
+        //    if (!TaskPaneInfoPanelOpen)
+        //    {
+        //        TaskPaneInfoPanelOpen = true;
+        //        taskPaneInfoPanel.BeginDoubleAnimation(WidthProperty, 300, 100);
+        //    }
+        //}
 
-        private void taskPaneInfoPanel_Close(object sender, EventArgs e)
-        {
-            closeTaskPaneInfoPanel();
-        }
+        //private void taskPaneInfoPanel_Close(object sender, EventArgs e)
+        //{
+        //    closeTaskPaneInfoPanel();
+        //}
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {

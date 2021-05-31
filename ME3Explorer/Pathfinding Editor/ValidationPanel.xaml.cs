@@ -14,6 +14,8 @@ using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.SharpDX;
 using ME3ExplorerCore.Unreal.BinaryConverters;
+using InterpCurveVector = ME3ExplorerCore.Unreal.BinaryConverters.InterpCurve<ME3ExplorerCore.SharpDX.Vector3>;
+using InterpCurveFloat = ME3ExplorerCore.Unreal.BinaryConverters.InterpCurve<float>;
 
 namespace ME3Explorer.Pathfinding_Editor
 {
@@ -135,7 +137,7 @@ namespace ME3Explorer.Pathfinding_Editor
                                 task.Header = $"Recalculating SplineComponents {((double)splineComponent.UIndex / mePackage.ExportCount):P}";
                             }
 
-                            var splineInfo = new InterpCurve<Vector3>();
+                            var splineInfo = new InterpCurveVector();
                             Vector3 tangent = ActorUtils.GetLocalToWorld(splineActor).TransformNormal(splineActorTangent);
 
                             splineInfo.AddPoint(0f, location, tangent, tangent, EInterpCurveMode.CIM_CurveUser);
@@ -149,7 +151,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
                             splineComponent.WriteProperty(splineInfo.ToStructProperty(mePackage.Game, "SplineInfo"));
 
-                            var splineReparamTable = new InterpCurve<float>();
+                            var splineReparamTable = new InterpCurveFloat();
                             if (splineInfo.Points.Count > 1)
                             {
                                 const int steps = 10;
@@ -229,7 +231,7 @@ namespace ME3Explorer.Pathfinding_Editor
                                 badSpecs.Add($"{reachSpecObj.Value} {spec.ObjectName.Instanced} start and end property is the same. This will crash the game.");
                             }
 
-                            var guid = new UnrealGUID(end.GetProp<StructProperty>("Guid"));
+                            var guid = new FGuid(end.GetProp<StructProperty>("Guid"));
                             if ((guid.A | guid.B | guid.C | guid.D) == 0 && endActorObj.Value == 0)
                             {
                                 isBad = true;
@@ -548,29 +550,29 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private void findDuplicateGUIDs(ListBoxTask task = null)
         {
-            var navGuidLists = new Dictionary<string, List<UnrealGUID>>();
-            var duplicateGuids = new List<UnrealGUID>();
+            var navGuidLists = new Dictionary<string, List<FGuid>>();
+            var duplicateGuids = new List<FGuid>();
 
             foreach (UIndex itemexportid in PersistentLevel.GetBinaryData<Level>().Actors)
             {
                 if (Pcc.TryGetUExport(itemexportid, out ExportEntry exportEntry) 
                  && exportEntry.GetProperty<StructProperty>("NavGuid") is StructProperty navGuid)
                 {
-                    UnrealGUID nav = new UnrealGUID(navGuid);
+                    FGuid nav = new FGuid(navGuid);
                     nav.export = exportEntry;
                     navGuidLists.AddToListAt(nav.ToString(), nav);
                 }
             }
 
             int numduplicates = 0;
-            foreach (List<UnrealGUID> guidList in navGuidLists.Values)
+            foreach (List<FGuid> guidList in navGuidLists.Values)
             {
                 if (guidList.Count > 1)
                 {
                     numduplicates++;
                     Debug.WriteLine($"Number of duplicates: {guidList.Count}");
                     //contains duplicates
-                    foreach (UnrealGUID guid in guidList)
+                    foreach (FGuid guid in guidList)
                     {
                         //Debug.WriteLine(guid.levelListIndex + " Duplicate: " + guid.export.ObjectName);
                         duplicateGuids.Add(guid);

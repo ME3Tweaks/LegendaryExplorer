@@ -20,10 +20,10 @@ namespace ME3ExplorerCore.Unreal
         /// </summary>
         public static string MiniGameFilesPath { get; set; }
 #endif
-        public static Dictionary<string, ClassInfo> Classes = new Dictionary<string, ClassInfo>();
-        public static Dictionary<string, ClassInfo> Structs = new Dictionary<string, ClassInfo>();
-        public static Dictionary<string, List<NameReference>> Enums = new Dictionary<string, List<NameReference>>();
-        public static Dictionary<string, SequenceObjectInfo> SequenceObjects = new Dictionary<string, SequenceObjectInfo>();
+        public static Dictionary<string, ClassInfo> Classes = new();
+        public static Dictionary<string, ClassInfo> Structs = new();
+        public static Dictionary<string, List<NameReference>> Enums = new();
+        public static Dictionary<string, SequenceObjectInfo> SequenceObjects = new();
 
         public static bool IsLoaded;
         public static void loadfromJSON()
@@ -40,6 +40,9 @@ namespace ME3ExplorerCore.Unreal
                         Classes = blob.Classes;
                         Structs = blob.Structs;
                         Enums = blob.Enums;
+
+                        AddCustomAndNativeClasses(Classes, SequenceObjects);
+
                         foreach ((string className, ClassInfo classInfo) in Classes)
                         {
                             classInfo.ClassName = className;
@@ -269,9 +272,10 @@ namespace ME3ExplorerCore.Unreal
             return null;
         }
 
-        public static bool InheritsFrom(string className, string baseClass, Dictionary<string, ClassInfo> customClassInfos = null)
+        public static bool InheritsFrom(string className, string baseClass, Dictionary<string, ClassInfo> customClassInfos = null, string knownSuperclass = null)
         {
             if (baseClass == @"Object") return true; //Everything inherits from Object
+            if (knownSuperclass != null && baseClass == knownSuperclass) return true; // We already know it's a direct descendant
             while (true)
             {
                 if (className == baseClass)
@@ -287,7 +291,13 @@ namespace ME3ExplorerCore.Unreal
                 {
                     className = Classes[className].baseClass;
                 }
-                else
+                else if (knownSuperclass != null && Classes.ContainsKey(knownSuperclass))
+                {
+                    // We don't have this class in DB but we have super class (e.g. this is custom class without custom class info generated).
+                    // We will just ignore this class and jump to our known super class
+                    className = Classes[knownSuperclass].baseClass;
+                    knownSuperclass = null; // Don't use it again
+                } else
                 {
                     break;
                 }
@@ -312,7 +322,7 @@ namespace ME3ExplorerCore.Unreal
                 ClassInfo info = Structs[className];
                 try
                 {
-                    PropertyCollection structProps = new PropertyCollection();
+                    PropertyCollection structProps = new();
                     ClassInfo tempInfo = info;
                     while (tempInfo != null)
                     {
@@ -349,7 +359,7 @@ namespace ME3ExplorerCore.Unreal
                     else if (info.pccPath == UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
                     {
                         filepath = "GAMERESOURCES_ME2";
-                        loadStream = Utilities.LoadFileFromCompressedResource("GameResources.zip", CoreLib.CustomResourceFileName(MEGame.ME2));
+                        loadStream = ME3ExplorerCoreUtilities.LoadFileFromCompressedResource("GameResources.zip", ME3ExplorerCoreLib.CustomResourceFileName(MEGame.ME2));
                     }
                     else if (filepath != null && File.Exists(filepath))
                     {
@@ -507,22 +517,20 @@ namespace ME3ExplorerCore.Unreal
                 }
             }
 
-            //CUSTOM ADDITIONS
-            try
+            //native classes not defined in data files
+            NewClasses["LightMapTexture2D"] = new ClassInfo
             {
-                NewClasses.Add("LightMapTexture2D", new ClassInfo
-                {
-                    baseClass = "Texture2D",
-                    exportIndex = 0,
-                    pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
-                });
+                baseClass = "Texture2D",
+                exportIndex = 0,
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
+            };
 
-                NewClasses["StaticMesh"] = new ClassInfo
-                {
-                    baseClass = "Object",
-                    exportIndex = 0,
-                    pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                    properties =
+            NewClasses["StaticMesh"] = new ClassInfo
+            {
+                baseClass = "Object",
+                exportIndex = 0,
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                properties =
                     {
                         new KeyValuePair<string, PropertyInfo>("UseSimpleRigidBodyCollision", new PropertyInfo(PropertyType.BoolProperty)),
                         new KeyValuePair<string, PropertyInfo>("UseSimpleLineCollision", new PropertyInfo(PropertyType.BoolProperty)),
@@ -533,12 +541,8 @@ namespace ME3ExplorerCore.Unreal
                         new KeyValuePair<string, PropertyInfo>("LightMapCoordinateIndex", new PropertyInfo(PropertyType.IntProperty)),
                         new KeyValuePair<string, PropertyInfo>("LightMapResolution", new PropertyInfo(PropertyType.IntProperty)),
                     }
-                };
-            }
-            catch (Exception)
-            {
+            };
 
-            }
 
             //SFXPhysicalMaterialDecals missing items
             ClassInfo sfxpmd = NewClasses["SFXPhysicalMaterialDecals"];
@@ -553,10 +557,76 @@ namespace ME3ExplorerCore.Unreal
             File.WriteAllText("ME2ObjectInfo.json", JsonConvert.SerializeObject(new { SequenceObjects = NewSequenceObjects, Classes = NewClasses, Structs = NewStructs, Enums = NewEnums }, Formatting.Indented));
         }
 
+        private static void AddCustomAndNativeClasses(Dictionary<string, ClassInfo> classes, Dictionary<string, SequenceObjectInfo> sequenceObjects)
+        {
+            //CUSTOM ADDITIONS
+            classes["SeqAct_SendMessageToME3Explorer"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                exportIndex = 2,
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
+            };
+            sequenceObjects["SeqAct_SendMessageToME3Explorer"] = new SequenceObjectInfo {ObjInstanceVersion = 2};
+
+            classes["SeqAct_ME3ExpDumpActors"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                exportIndex = 4,
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
+            };
+            sequenceObjects["SeqAct_ME3ExpDumpActors"] = new SequenceObjectInfo {ObjInstanceVersion = 2};
+
+            classes["SeqAct_ME3ExpAcessDumpedActorsList"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                exportIndex = 6,
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
+            };
+            sequenceObjects["SeqAct_ME3ExpAcessDumpedActorsList"] = new SequenceObjectInfo {ObjInstanceVersion = 2};
+
+            classes["SeqAct_ME3ExpGetPlayerCamPOV"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                exportIndex = 8,
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
+            };
+            sequenceObjects["SeqAct_ME3ExpGetPlayerCamPOV"] = new SequenceObjectInfo {ObjInstanceVersion = 2};
+
+            classes["SeqAct_GetLocationAndRotation"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                exportIndex = 10,
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                properties =
+                {
+                    new KeyValuePair<string, PropertyInfo>("m_oTarget", new PropertyInfo(PropertyType.ObjectProperty, "Actor")),
+                    new KeyValuePair<string, PropertyInfo>("Location", new PropertyInfo(PropertyType.StructProperty, "Vector")),
+                    new KeyValuePair<string, PropertyInfo>("RotationVector", new PropertyInfo(PropertyType.StructProperty, "Vector"))
+                }
+            };
+            sequenceObjects["SeqAct_GetLocationAndRotation"] = new SequenceObjectInfo {ObjInstanceVersion = 0};
+
+            classes["SeqAct_SetLocationAndRotation"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                exportIndex = 16,
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                properties =
+                {
+                    new KeyValuePair<string, PropertyInfo>("bSetRotation", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<string, PropertyInfo>("bSetLocation", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<string, PropertyInfo>("m_oTarget", new PropertyInfo(PropertyType.ObjectProperty, "Actor")),
+                    new KeyValuePair<string, PropertyInfo>("Location", new PropertyInfo(PropertyType.StructProperty, "Vector")),
+                    new KeyValuePair<string, PropertyInfo>("RotationVector", new PropertyInfo(PropertyType.StructProperty, "Vector")),
+                }
+            };
+            sequenceObjects["SeqAct_SetLocationAndRotation"] = new SequenceObjectInfo {ObjInstanceVersion = 0};
+        }
+
         public static ClassInfo generateClassInfo(ExportEntry export, bool isStruct = false)
         {
             IMEPackage pcc = export.FileRef;
-            ClassInfo info = new ClassInfo
+            ClassInfo info = new()
             {
                 baseClass = export.SuperClassName,
                 exportIndex = export.UIndex,
@@ -567,13 +637,17 @@ namespace ME3ExplorerCore.Unreal
                 UClass classBinary = ObjectBinary.From<UClass>(export);
                 info.isAbstract = classBinary.ClassFlags.HasFlag(UnrealFlags.EClassFlags.Abstract);
             }
-            if (pcc.FilePath.Contains("BioGame"))
+
+            if (pcc.FilePath != null)
             {
-                info.pccPath = new string(pcc.FilePath.Skip(pcc.FilePath.LastIndexOf("BioGame") + 8).ToArray());
-            }
-            else
-            {
-                info.pccPath = pcc.FilePath; //used for dynamic resolution of files outside the game directory.
+                if (pcc.FilePath.Contains("BioGame"))
+                {
+                    info.pccPath = new string(pcc.FilePath.Skip(pcc.FilePath.LastIndexOf("BioGame") + 8).ToArray());
+                }
+                else
+                {
+                    info.pccPath = pcc.FilePath; //used for dynamic resolution of files outside the game directory.
+                }
             }
 
             int nextExport = BitConverter.ToInt32(export.Data, isStruct ? 0x18 : 0x10);
@@ -718,7 +792,15 @@ namespace ME3ExplorerCore.Unreal
         public static string[] NativeClasses = new[]
         {
             // NEEDS CHECKED FOR ME2
-            @"Engine.CodecMovieBink"
+            @"Engine.CodecMovieBink",
+
+            // These are shared across all games
+            @"Core.Class",
+            @"Engine.StaticMesh",
+            @"Engine.SkeletalMesh",
+            @"Engine.ShaderCache",
+            @"Engine.Engine",
+            @"Engine.Level",
         };
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -47,6 +48,15 @@ namespace ME3ExplorerCore.Misc
         public Section GetSection(string sectionname)
         {
             return Sections.FirstOrDefault(x => x.Header.Equals(sectionname, StringComparison.InvariantCultureIgnoreCase));
+        }
+
+        public Section GetOrAddSection(string sectionname)
+        {
+            var s = GetSection(sectionname);
+            if (s != null) return s;
+            s = new Section() { Header = sectionname };
+            Sections.Add(s);
+            return s;
         }
 
         public Section GetSection(Section section)
@@ -102,12 +112,20 @@ namespace ME3ExplorerCore.Misc
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            //bool isFirst = true;
+            bool isFirst = true;
             foreach (var section in Sections)
             {
                 if (!section.Entries.Any())
                 {
                     continue; //Do not write out empty sections.
+                }
+                if (isFirst)
+                {
+                    isFirst = false;
+                }
+                else
+                {
+                    sb.Append("\n");
                 }
                 sb.Append($"[{section.Header}]");
                 sb.Append("\n"); //AppendLine does \r\n which we don't want.
@@ -137,7 +155,7 @@ namespace ME3ExplorerCore.Misc
 
             public IniEntry GetValue(string key)
             {
-                return Entries.FirstOrDefault(x => x.Key.Equals(key, StringComparison.InvariantCultureIgnoreCase));
+                return Entries.FirstOrDefault(x => x.Key != null && x.Key.Equals(key, StringComparison.InvariantCultureIgnoreCase));
             }
 
             public IniEntry this[string keyname]
@@ -164,14 +182,36 @@ namespace ME3ExplorerCore.Misc
 
             public void SetSingleEntry(string key, string value)
             {
-                Entries.RemoveAll(x => x.Key == key);
+                RemoveAllNamedEntries(key);
                 Entries.Add(new IniEntry(key, value));
             }
 
             public void SetSingleEntry(string key, int value)
             {
-                Entries.RemoveAll(x => x.Key == key);
+                RemoveAllNamedEntries(key);
                 Entries.Add(new IniEntry(key, value.ToString()));
+            }
+
+            public void SetSingleEntry(string key, float value)
+            {
+                RemoveAllNamedEntries(key);
+                Entries.Add(new IniEntry(key, value.ToString(CultureInfo.InvariantCulture)));
+            }
+
+            /// <summary>
+            /// Removes all entries from this section with the specified name. If the name is not specified, all entries are removed.
+            /// </summary>
+            /// <param name="name"></param>
+            public void RemoveAllNamedEntries(string name = null)
+            {
+                if (name != null)
+                {
+                    Entries.RemoveAll(x => x.Key == name);
+                }
+                else
+                {
+                    Entries.Clear();
+                }
             }
         }
 

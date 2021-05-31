@@ -55,8 +55,18 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             public byte[] Mip;
             public int SizeX;
             public int SizeY;
+            
+            // Utility stuff
+            /// <summary>
+            /// The start of this mipmap 'struct' in the export, at the time it was read
+            /// </summary>
+            public int MipInfoOffsetFromBinStart;
 
             public bool IsLocallyStored => ((int)StorageType & (int)StorageFlags.externalFile) == 0;
+            public bool IsCompressed =>
+                ((int)StorageType & (int)StorageFlags.compressedLZO) != 0 ||
+                ((int)StorageType & (int)StorageFlags.compressedLZMA) != 0 ||
+                ((int)StorageType & (int)StorageFlags.compressedZlib) != 0;
         }
     }
 
@@ -88,6 +98,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             if (sc.IsLoading)
             {
                 mip = new UTexture2D.Texture2DMipMap();
+                mip.MipInfoOffsetFromBinStart = (int) sc.ms.Position; // this is used to update the DataOffset later
             }
 
             int mipStorageType = (int)mip.StorageType;
@@ -97,6 +108,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref mip.CompressedSize);
             if (sc.IsSaving && mip.IsLocallyStored)
             {
+                // This code is not accurate as the start offset may be 0 if the export is new and doesn't have a DataOffset yet.
                 sc.SerializeFileOffset();
             }
             else

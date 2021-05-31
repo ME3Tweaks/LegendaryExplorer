@@ -26,18 +26,13 @@ namespace ME3Explorer.SharedUI
         public abstract bool CanSave();
         public List<string> RFiles;
         private const string RECENTFILES_FILE = "RECENTFILES";
+        private string RecentsAppDataFile => Path.Combine(Directory.CreateDirectory(Path.Combine(App.AppDataFolder, DataFolder)).FullName, "RECENTFILES");
+
         internal abstract string DataFolder { get; }
         internal MenuItem Recents_MenuItem;
         public void SaveRecentList()
         {
-            if (!Directory.Exists(DataFolder))
-            {
-                Directory.CreateDirectory(DataFolder);
-            }
-            string path = DataFolder + RECENTFILES_FILE;
-            if (File.Exists(path))
-                File.Delete(path);
-            File.WriteAllLines(path, RFiles);
+            File.WriteAllLines(RecentsAppDataFile, RFiles);
         }
 
         public void AddRecent(string s, bool loadingList)
@@ -122,10 +117,9 @@ namespace ME3Explorer.SharedUI
         {
             Recents_MenuItem.IsEnabled = false;
             RFiles = new List<string>();
-            string path = DataFolder + RECENTFILES_FILE;
-            if (File.Exists(path))
+            if (File.Exists(RecentsAppDataFile))
             {
-                string[] recents = File.ReadAllLines(path);
+                string[] recents = File.ReadAllLines(RecentsAppDataFile);
                 foreach (string recent in recents)
                 {
                     if (File.Exists(recent))

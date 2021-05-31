@@ -11,13 +11,20 @@
                             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
                             xmlns:me3bytecode="clr-namespace:ME3ExplorerCore.Unreal;assembly=ME3ExplorerCore"
                             xmlns:me1bytecode="clr-namespace:ME3ExplorerCore.ME1.Unreal.UnhoodBytecode;assembly=ME3ExplorerCore"
+                            xmlns:sharedUi="clr-namespace:ME3Explorer.SharedUI"
                             d:DesignHeight="450" d:DesignWidth="800"
              Loaded="UnrealScriptWPF_Loaded"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <global:ExportLoaderControl.Resources>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
         <Converters:NullOrEmptyStringVisibilityConverter x:Key="NullOrEmptyStringVisibilityConverter"/>
-    </global:ExportLoaderControl.Resources>
+        <sharedUi:BindingProxy x:Key="bindingProxy" Data="{Binding}"/>
+        <ContextMenu x:Key="StatementContextMenu">
+            <MenuItem Header="Nop out statement" 
+                      ToolTip="Replaces all data in this statement with 'No Operation' 0x0B tokens, making this statement do nothing.&#10;Make sure relevant follow up statements are nopped out if they depended on this one, like an if statment" 
+                      Command="{Binding Source={StaticResource bindingProxy}, Path=Data.NopOutStatementCommand}" CommandParameter="{Binding}" sharedUi:Bindings.VisibilityToEnabled="True"/>
+        </ContextMenu>
+</global:ExportLoaderControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="200*"/>
@@ -132,7 +139,7 @@
                             </StackPanel>
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type me1bytecode:Statement}">
-                            <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Horizontal" ContextMenu="{StaticResource StatementContextMenu}">
                                 <TextBlock x:Name="ScriptBlock" Margin="4,0,0,0" Text="{Binding OffsetDisplayableString}">
                                     <TextBlock.Style>
                                         <Style>

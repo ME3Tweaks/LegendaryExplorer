@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.ME1.Unreal.UnhoodBytecode;
 using ME3ExplorerCore.Unreal;
@@ -48,17 +49,21 @@ namespace ME3ExplorerCore.Packages
         }
 
         //if neccessary, will fill in parents as Package Imports (if the import you need has non-Package parents, don't use this method)
-        public static IEntry getEntryOrAddImport(this IMEPackage pcc, string fullPath, string className = "Class", string packageFile = "Core", int? objIdx = null)
+        public static IEntry getEntryOrAddImport(this IMEPackage pcc, string instancedFullPath, string className = "Class", string packageFile = "Core", int? objIdx = null)
         {
-            if (string.IsNullOrEmpty(fullPath))
+            if (string.IsNullOrEmpty(instancedFullPath))
             {
                 return null;
             }
 
             //see if this import exists locally
-            foreach (ImportEntry imp in pcc.Imports)
+            var entry = pcc.FindEntry(instancedFullPath);
+            if (entry != null)
+                return entry;
+
+            /*foreach (ImportEntry imp in pcc.Imports)
             {
-                if (imp.FullPath == fullPath && (objIdx == null || objIdx == imp.ObjectName.Number))
+                if (imp.FullPath == instancedFullPath && (objIdx == null || objIdx == imp.ObjectName.Number))
                 {
                     return imp;
                 }
@@ -67,13 +72,13 @@ namespace ME3ExplorerCore.Packages
             //see if this is an export and exists locally
             foreach (ExportEntry exp in pcc.Exports)
             {
-                if (exp.FullPath == fullPath && (objIdx == null || objIdx == exp.ObjectName.Number))
+                if (exp.FullPath == instancedFullPath && (objIdx == null || objIdx == exp.ObjectName.Number))
                 {
                     return exp;
                 }
-            }
+            }*/
 
-            string[] pathParts = fullPath.Split('.');
+            string[] pathParts = instancedFullPath.Split('.');
 
             IEntry parent = pcc.getEntryOrAddImport(string.Join(".", pathParts.Take(pathParts.Length - 1)), "Package");
 
@@ -91,9 +96,10 @@ namespace ME3ExplorerCore.Packages
         public static bool AddToLevelActorsIfNotThere(this IMEPackage pcc, params ExportEntry[] actors)
         {
             bool added = false;
-            if (pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry levelExport)
+            var levelE = pcc.FindExport("TheWorld.PersistentLevel");
+            if (levelE != null && levelE.ClassName == "Level")
             {
-                Level level = ObjectBinary.From<Level>(levelExport);
+                Level level = ObjectBinary.From<Level>(levelE);
                 foreach (ExportEntry actor in actors)
                 {
                     if (!level.Actors.Contains(actor.UIndex))
@@ -102,7 +108,7 @@ namespace ME3ExplorerCore.Packages
                         level.Actors.Add(actor.UIndex);
                     }
                 }
-                levelExport.WriteBinary(level);
+                levelE.WriteBinary(level);
             }
 
             return added;
@@ -141,7 +147,7 @@ namespace ME3ExplorerCore.Packages
 
                     if ((!exp.IsDefaultObject && exp.IsA("Component") || pcc.Game == MEGame.UDK && exp.ClassName.EndsWith("Component")) &&
                         exp.ParentFullPath.Contains("Default__") &&
-                        exp.DataSize >= 12 && BitConverter.ToInt32(exp.Data, 4) is int nameIdx && pcc.IsName(nameIdx) &&
+                        exp.DataSize >= 12 && EndianReader.ToInt32(exp.DataReadOnly, 4, exp.FileRef.Endian) is int nameIdx && pcc.IsName(nameIdx) &&
                         pcc.GetNameEntry(nameIdx) == name)
                     {
                         result.AddToListAt(exp, "Component TemplateName (0x4)");
@@ -667,7 +673,7 @@ namespace ME3ExplorerCore.Packages
                             result.AddToListAt(exp, "Stack");
                         }
                     }
-                    else if (exp.TemplateOwnerClassIdx is var toci && toci >= 0 && baseUIndex == BitConverter.ToInt32(exp.Data, toci))
+                    else if (exp.TemplateOwnerClassIdx is var toci && toci >= 0 && baseUIndex == EndianReader.ToInt32(exp.DataReadOnly, toci, exp.FileRef.Endian))
                     {
                         result.AddToListAt(exp, $"TemplateOwnerClass (Data offset 0x{toci:X})");
                     }
@@ -689,7 +695,7 @@ namespace ME3ExplorerCore.Packages
                         }
                     }
                 }
-                catch (Exception e) when (!CoreLib.IsDebug)
+                catch (Exception e) when (!ME3ExplorerCoreLib.IsDebug)
                 {
                     result.AddToListAt(exp, $"Exception occurred while reading this export: {e.Message}");
                 }
@@ -865,19 +871,21 @@ namespace ME3ExplorerCore.Packages
         public static void CondenseArchetypes(this ExportEntry export, bool removeArchetypeLink = true)
         {
             IEntry archetypeEntry = export.Archetype;
+            var properties = export.GetProperties();
             while (archetypeEntry is ExportEntry archetype)
             {
                 var archProps = archetype.GetProperties();
                 foreach (Property prop in archProps)
                 {
-                    if (!export.GetProperties().ContainsNamedProp(prop.Name))
+                    if (!properties.ContainsNamedProp(prop.Name))
                     {
-                        export.WriteProperty(prop);
+                        properties.AddOrReplaceProp(prop);
                     }
                 }
 
                 archetypeEntry = archetype.Archetype;
             }
+            export.WriteProperties(properties);
 
             export.Archetype = removeArchetypeLink ? null : archetypeEntry;
         }

@@ -1,9 +1,27 @@
 ﻿using System;
+using System.Collections.Generic;
+using ME3ExplorerCore.Packages;
 
 namespace ME3ExplorerCore.Gammtek.Extensions
 {
 	public static class StringExtensions
 	{
+        public static int ToGameNum(this MEGame game)
+        {
+            if (game == MEGame.ME1) return 1;
+            if (game == MEGame.ME2) return 2;
+            if (game == MEGame.ME3) return 3;
+            return 0;
+        }
+
+        public static string ToGameName(this MEGame game)
+        {
+            if (game == MEGame.ME1) return "Mass Effect";
+            if (game == MEGame.ME2) return "Mass Effect 2";
+            if (game == MEGame.ME3) return "Mass Effect 3";
+            return "UNKNOWN GAME";
+        }
+
 		public static string Left(this string value, int count)
 		{
 			if (value == null)
@@ -175,5 +193,58 @@ namespace ME3ExplorerCore.Gammtek.Extensions
                 return $"{str.Substring(0, sideLen)}...{str.Substring(str.Length - sideLen)}";
             }
         }
+
+
+        /// <summary>
+        /// Wraps a sting to a max length
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="maxLength"></param>
+        /// <returns></returns>
+        public static string WordWrap(this string text, int maxLength)
+        {
+            return string.Join("\n", WrapLines(text, maxLength));
+        }
+
+        /// <summary>
+        /// Returns a list of strings no larger than the max length sent in.
+        /// </summary>
+        /// <remarks>useful function used to wrap string text for reporting.</remarks>
+        /// <param name="text">Text to be wrapped into of List of Strings</param>
+        /// <param name="maxLength">Max length you want each line to be.</param>
+        /// <returns>List of Strings</returns>
+        public static List<String> WrapLines(this string text, int maxLength)
+        {
+
+            // Return empty list of strings if the text was empty
+            if (text.Length == 0) return new List<string>();
+
+            var words = text.Split(' ');
+            var lines = new List<string>();
+            var currentLine = "";
+
+            foreach (var currentWord in words)
+            {
+
+                if ((currentLine.Length > maxLength) || ((currentLine.Length + currentWord.Length) > maxLength))
+                {
+                    lines.Add(currentLine);
+                    currentLine = "";
+                }
+
+                if (currentLine.Length > 0)
+                    currentLine += " " + currentWord;
+                else
+                    currentLine += currentWord;
+
+            }
+
+            if (currentLine.Length > 0)
+                lines.Add(currentLine);
+
+
+            return lines;
+        }
+
     }
 }

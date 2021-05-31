@@ -198,7 +198,7 @@ namespace ME3Explorer
                 i.HexboxColumn_GridSplitter_ColumnDefinition.Width = new GridLength(1);
                 i.HexboxColumnDefinition.bind(ColumnDefinition.MinWidthProperty, i, nameof(HexBoxMinWidth));
                 i.HexboxColumnDefinition.bind(ColumnDefinition.MaxWidthProperty, i, nameof(HexBoxMaxWidth));
-                
+
             }
             i.OnPropertyChanged(nameof(ShowPropOffsets));
         }
@@ -242,6 +242,7 @@ namespace ME3Explorer
         public ICommand AddArrayElementCommand { get; set; }
         public ICommand RemoveArrayElementCommand { get; set; }
         public ICommand ClearArrayCommand { get; set; }
+        public ICommand CopyValueCommand { get; set; }
         public ICommand GenerateGUIDCommand { get; set; }
         public ICommand OpenInPackageEditorCommand { get; set; }
         public ICommand OpenInMeshplorerCommand { get; set; }
@@ -273,6 +274,33 @@ namespace ME3Explorer
             NavigateToEntryCommandInternal = new GenericCommand(FireNavigateCallback, CanFireNavigateCallback);
             OpenInPackageEditorCommand = new GenericCommand(OpenInPackageEditor, ObjectPropertyExportIsSelected);
             AttemptOpenImportDefinitionCommand = new GenericCommand(AttemptOpenImport, ObjectPropertyImportIsSelected);
+
+            CopyValueCommand = new GenericCommand(CopyPropertyValue, CanCopyPropertyValue);
+        }
+
+        private void CopyPropertyValue()
+        {
+            try
+            {
+                if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi && !string.IsNullOrWhiteSpace(tvi.ParsedValue))
+                {
+                    Clipboard.SetText(tvi.ParsedValue);
+                }
+            }
+            catch
+            {
+                // sometimes errors occur on copy when clipboard is locked. Dont do anything
+            }
+        }
+
+        private bool CanCopyPropertyValue()
+        {
+            if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi && !string.IsNullOrWhiteSpace(tvi.ParsedValue))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private void AttemptOpenImport()
@@ -992,7 +1020,7 @@ namespace ME3Explorer
                     editableValue = strp.Value;
                     break;
                 case StructProperty sp:
-
+                    // CUSTOM UI TEMPLATES GO HERE
                     if (sp.StructType == "Vector" || sp.StructType == "Rotator" || sp.StructType == "Cylinder")
                     {
                         string loc = string.Join(", ", sp.Properties.Where(x => !(x is NoneProperty)).Select(p =>
@@ -1128,6 +1156,17 @@ namespace ME3Explorer
                                 }
                             }));
                             parsedValue += $" {parmName}: {structParam}";
+                        }
+                    }
+                    else if (sp.StructType == "PowerLevelUp")
+                    {
+                        var powerClass = sp.GetProp<ObjectProperty>("PowerClass");
+                        var rank = sp.GetProp<FloatProperty>("Rank");
+                        var evolvedPowerClass = sp.GetProp<ObjectProperty>("EvolvedPowerClass");
+                        parsedValue += $" {powerClass.ResolveToEntry(parsingExport.FileRef).ObjectName} Rank {rank.Value}";
+                        if (evolvedPowerClass.Value != 0)
+                        {
+                            parsedValue += $" => {evolvedPowerClass.ResolveToEntry(parsingExport.FileRef).ObjectName}";
                         }
                     }
                     else
@@ -2143,7 +2182,7 @@ namespace ME3Explorer
         public override void Dispose()
         {
             Settings.Default.PropertyChanged -= SettingChanged;
-            
+
 
             if (Interpreter_Hexbox != null)
             {
@@ -2432,6 +2471,24 @@ namespace ME3Explorer
                             }
                         case StructProperty sp:
                             return $"{(sp.IsImmutable ? "Immutable " : "")}StructProperty({sp.StructType})";
+                        case ObjectProperty op:
+                            if (op.Name.Name != null)
+                            {
+                                var type = UnrealObjectInfo.GetPropertyInfo(AttachedExport.Game, op.Name.Name, AttachedExport.ClassName, containingExport: AttachedExport);
+                                if (type != null)
+                                {
+                                    return $"ObjectProperty ({type.Reference})";
+                                }
+                                else
+                                {
+                                    return "ObjectProperty (???)";
+                                }
+                            }
+                            else
+                            {
+                                return "ObjectProperty";
+                            }
+
                         case EnumProperty ep:
                             return $"ByteProperty(Enum): {ep.EnumType}";
                         default:
