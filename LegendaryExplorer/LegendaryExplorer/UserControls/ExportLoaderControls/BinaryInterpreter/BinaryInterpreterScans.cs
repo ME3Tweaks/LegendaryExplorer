@@ -1078,7 +1078,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                     MakeUInt16Node(bin, "NodeIndex[2]"),
                                     MakeUInt16Node(bin, "NodeIndex[3]"),
                                 }),
-                                MakeInt32Node(bin, "Unknown"),
+                                MakeFloatNode(bin, "Unknown float"),
                             }
                         })
                     }
@@ -5960,6 +5960,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         Tag = NodeType.StructLeafName,
                         Name = $"_{binarypos.ToString()}",
                     });
+                    subnodes.Add(new BinInterpNode
+                    {
+                        Header = $"0x{(binarypos + 8):X4} Unknown 1: {shouldBe1}",
+                        Tag = NodeType.StructLeafInt,
+                        Name = $"_{(binarypos + 8).ToString()}",
+                    });
                     binarypos += 12;
                 }
             }
@@ -8211,6 +8217,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             break;
                         case StorageTypes.pccLZO:
                         case StorageTypes.pccZlib:
+                        case StorageTypes.pccOodle:
                             bin.Skip(compressedSize);
                             break;
                     }
@@ -8234,7 +8241,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 if (Pcc.Game != MEGame.UDK)
                 {
-                    bin.Skip(4);
+                    subnodes.Add(MakeInt32Node(bin, "Unknown Int"));
                 }
                 if (CurrentLoadedExport.FileRef.Game != MEGame.ME1)
                 {
@@ -8246,12 +8253,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     bin.Skip(8 * 4);
                 }
 
+                if (Pcc.Game == MEGame.ME3 || Pcc.Game.IsLEGame())
+                {
+                    subnodes.Add(MakeInt32Node(bin, "Unknown Int ME3/LE"));
+                }
+                
                 if (Pcc.Game >= MEGame.ME3 && CurrentLoadedExport.ClassName == "LightMapTexture2D")
                 {
-                    if (Pcc.Game == MEGame.ME3 || Pcc.Game.IsLEGame())
-                    {
-                        bin.Skip(4);
-                    }
                     subnodes.Add(new BinInterpNode(bin.Position, $"LightMapFlags: {(ELightMapFlags)bin.ReadInt32()}"));
                 }
             }
