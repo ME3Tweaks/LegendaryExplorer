@@ -2049,7 +2049,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         });
                         node.Items.Add(MakeUInt32Node(bin, "NumTriangles"));
                         node.Items.Add(MakeLightMapNode(bin));
-                        if (Pcc.Game >= MEGame.LE3)
+                        if (Pcc.Game >= MEGame.ME3)
                         {
 
                             node.Items.Add(new BinInterpNode(bin.Position, $"ShadowMap1D ({count = bin.ReadInt32()})")
