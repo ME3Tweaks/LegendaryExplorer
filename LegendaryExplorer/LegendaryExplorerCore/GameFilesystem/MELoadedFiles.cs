@@ -175,21 +175,29 @@ namespace LegendaryExplorerCore.GameFilesystem
         }
 
         // this should have a null check on Biogamepath to avoid throwing an exception
-        public static IEnumerable<string> GetAllFiles(MEGame game, bool includeTFCs = false, bool includeAFCs = false) => GetEnabledDLCFolders(game).Prepend(MEDirectories.GetBioGamePath(game)).SelectMany(directory => GetCookedFiles(game, directory, includeTFCs, includeAFCs));
+        public static IEnumerable<string> GetAllFiles(MEGame game, bool includeTFCs = false, bool includeAFCs = false, string[] additionalExtensions = null) => GetEnabledDLCFolders(game).Prepend(MEDirectories.GetBioGamePath(game)).SelectMany(directory => GetCookedFiles(game, directory, includeTFCs, includeAFCs, additionalExtensions));
         // this should have a null check on Biogamepath to void throwing an exception
-        public static IEnumerable<string> GetOfficialFiles(MEGame game, bool includeTFCs = false, bool includeAFCs = false) => GetOfficialDLCFolders(game).Prepend(MEDirectories.GetBioGamePath(game)).SelectMany(directory => GetCookedFiles(game, directory, includeTFCs, includeAFCs));
+        public static IEnumerable<string> GetOfficialFiles(MEGame game, bool includeTFCs = false, bool includeAFCs = false, string[] additionalExtensions = null) => GetOfficialDLCFolders(game).Prepend(MEDirectories.GetBioGamePath(game)).SelectMany(directory => GetCookedFiles(game, directory, includeTFCs, includeAFCs, additionalExtensions));
 
-        public static IEnumerable<string> GetCookedFiles(MEGame game, string directory, bool includeTFCs = false, bool includeAFCs = false)
+        public static IEnumerable<string> GetCookedFiles(MEGame game, string directory, bool includeTFCs = false, bool includeAFCs = false, string[] additionalExtensions = null)
         {
             if (game == MEGame.ME1)
-                return ME1FilePatterns.SelectMany(pattern => Directory.EnumerateFiles(Path.Combine(directory, "CookedPC"), pattern, SearchOption.AllDirectories));
+            {
+                var patterns = ME1FilePatterns.ToList();
+                if (additionalExtensions != null)
+                    patterns.AddRange(additionalExtensions);
+                return patterns.SelectMany(pattern => Directory.EnumerateFiles(Path.Combine(directory, "CookedPC"), pattern, SearchOption.AllDirectories));
+
+            }
 
             List<string> extensions = new List<string>();
             if (includeTFCs) extensions.Add("*.tfc");
             if (includeAFCs) extensions.Add("*.afc");
+            if (additionalExtensions != null)
+                extensions.AddRange(additionalExtensions.Select(x=>$"*{x}"));
             extensions.Add("*.pcc"); //This is last, as any of the lookup methods will see if any of these files types exist in-order. By putting pcc's last, the lookups will be searched first when using
             //includeTFC or includeAFC.
-            return extensions.SelectMany(pattern => Directory.EnumerateFiles(Path.Combine(directory, game == MEGame.ME2 ? "CookedPC" : "CookedPCConsole" ), pattern, SearchOption.AllDirectories));
+            return extensions.SelectMany(pattern => Directory.EnumerateFiles(Path.Combine(directory, game.CookedDirName()), pattern, SearchOption.AllDirectories));
         }
 
 
