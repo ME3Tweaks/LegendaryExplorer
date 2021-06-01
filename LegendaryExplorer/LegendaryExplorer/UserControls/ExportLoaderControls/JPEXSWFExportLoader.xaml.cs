@@ -168,7 +168,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 //Write SWF metadata
                 if (CurrentLoadedExport.FileRef.Game.IsGame1() || CurrentLoadedExport.FileRef.Game.IsGame2())
                 {
-                    string sourceFilePropName = CurrentLoadedExport.FileRef.Game.IsGame1() ? "SourceFilePath" : "SourceFile";
+                    string sourceFilePropName = "SourceFilePath";
                     StrProperty sourceFilePath = props.GetProp<StrProperty>(sourceFilePropName);
                     if (sourceFilePath == null)
                     {

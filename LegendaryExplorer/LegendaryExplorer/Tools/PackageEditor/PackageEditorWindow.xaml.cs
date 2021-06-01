@@ -716,7 +716,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                                 var bytes = File.ReadAllBytes(file);
                                 var props = matchingExport.GetProperties();
 
-                                string dataPropName = matchingExport.FileRef.Game != MEGame.ME1 ? "RawData" : "Data";
+                                string dataPropName = matchingExport.ClassName == "GFxMovieInfo" ? "RawData" : "Data";
                                 var rawData = props.GetProp<ImmutableByteArrayProperty>(dataPropName);
                                 //Write SWF data
                                 rawData.bytes = bytes;
@@ -1514,7 +1514,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                                     var bytes = File.ReadAllBytes(d.FileName);
                                     var props = exp.GetProperties();
 
-                                    string dataPropName = exp.FileRef.Game.IsGame1() ? "RawData" : "Data";
+                                    string dataPropName = exp.FileRef.Game != MEGame.ME1 ? "RawData" : "Data";
                                     var rawData = props.GetProp<ImmutableByteArrayProperty>(dataPropName);
                                     //Write SWF data
                                     rawData.bytes = bytes;
@@ -1522,8 +1522,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                                     //Write SWF metadata
                                     if (exp.FileRef.Game.IsGame1() || exp.FileRef.Game.IsGame2())
                                     {
-                                        string sourceFilePropName =
-                                            exp.FileRef.Game != MEGame.ME1 ? "SourceFile" : "SourceFilePath";
+                                        string sourceFilePropName = "SourceFilePath";
                                         StrProperty sourceFilePath = props.GetProp<StrProperty>(sourceFilePropName);
                                         if (sourceFilePath == null)
                                         {
