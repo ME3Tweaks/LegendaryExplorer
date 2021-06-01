@@ -194,7 +194,7 @@ namespace LegendaryExplorer
                 tags = new List<string> { "utility", "deployment", "audio", },
                 category = "Audio Tools",
                 category2 = "Utilities",
-                description = "AFC Compactor can compact your ME2 or ME3 Audio File Cache (AFC) files by effectively removing unreferenced chunks in it. It also can be used to reduce or remove AFC dependencies so users do not have to have DLC installed for certain audio to work.",
+                description = "AFC Compactor can compact your ME2 or ME3 Audio File Cache (AFC) files by removing unreferenced chunks. It also can be used to reduce or remove AFC dependencies so users do not have to have DLC installed for certain audio to work.",
             });
 //            set.Add(new Tool
 //            {
@@ -313,7 +313,7 @@ namespace LegendaryExplorer
                 },
                 tags = new List<string> { "developer", "mesh" },
                 category = "Meshes + Textures",
-                description = "Meshplorer loads and displays all meshes within a file. The tool skins most meshes with its associated texture.\nThis tool works with all three games."
+                description = "Meshplorer loads and displays all meshes within a file. The tool skins most meshes with its associated texture. This tool works with all three games."
             });
             set.Add(new Tool
             {
@@ -399,7 +399,7 @@ namespace LegendaryExplorer
                 tags = new List<string> { "utility", "deployment", "textures", "compression" },
                 category = "Meshes + Textures",
                 category2 = "Utilities",
-                description = "TFC Compactor can compact your ME2 or ME3 DLC mod TFC file by effectively removing unreferenced chunks in it and compressing the referenced textures. It also can be used to reduce or remove TFC dependencies so users do not have to have DLC installed for certain textures to work.",
+                description = "TFC Compactor can compact your DLC mod TFC file by effectively removing unreferenced chunks and compressing the referenced textures. It can also reduce or remove TFC dependencies so users do not have to have DLC installed for certain textures to work.",
             });
             #endregion
 
@@ -415,7 +415,7 @@ namespace LegendaryExplorer
                 },
                 tags = new List<string> { "developer", "conditional", "plot", "boolean", "flag", "int", "integer", "cnd" },
                 category = "Core Editors",
-                description = "Conditionals Editor is used to create and edit ME3 files with the .cnd extension. CND files control game story by checking for specific combinations of plot events.",
+                description = "Conditionals Editor is used to create and edit ME3/LE3 files with the .cnd extension. CND files control game story by checking for specific combinations of plot events.",
             });
             set.Add(new Tool
             {
@@ -429,7 +429,7 @@ namespace LegendaryExplorer
                 tags = new List<string> { "developer", "me1", "me2", "me3", "cutscene" },
                 category = "Core Editors",
                 category2 = "Cinematic Tools",
-                description = "Dialogue Editor is a visual tool used to edit in-game conversations. It works with all the games.",
+                description = "Dialogue Editor is a visual tool used to edit in-game conversations for all games.",
             });
             set.Add(new Tool
             {
