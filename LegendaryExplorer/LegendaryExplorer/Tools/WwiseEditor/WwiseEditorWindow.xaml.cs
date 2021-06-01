@@ -718,6 +718,8 @@ namespace LegendaryExplorer.Tools.WwiseEditor
         public static readonly string OptionsPath = Path.Combine(WwiseEditorDataFolder, "WwiseEditorOptions.JSON");
         public static readonly string ME3ViewsPath = Path.Combine(WwiseEditorDataFolder, "ME3Views");
         public static readonly string ME2ViewsPath = Path.Combine(WwiseEditorDataFolder, "ME2Views");
+        public static readonly string LE3ViewsPath = Path.Combine(WwiseEditorDataFolder, "LE3Views");
+        public static readonly string LE2ViewsPath = Path.Combine(WwiseEditorDataFolder, "LE2Views");
 
         private void SetupJSON(ExportEntry export)
         {
@@ -726,6 +728,8 @@ namespace LegendaryExplorer.Tools.WwiseEditor
             var bankID = BitConverter.ToUInt32(BitConverter.GetBytes(export.GetProperty<IntProperty>("Id")), 0);
             string viewsPath = export.Game switch
             {
+                MEGame.LE2 => LE2ViewsPath,
+                MEGame.LE3 => LE3ViewsPath,
                 MEGame.ME2 => ME2ViewsPath,
                 _ => ME3ViewsPath
             };

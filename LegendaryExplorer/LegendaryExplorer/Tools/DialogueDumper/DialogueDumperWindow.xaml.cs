@@ -204,19 +204,8 @@ namespace LegendaryExplorer.Tools.DialogueDumper
 
         private void DumpGame(MEGame game)
         {
-            string rootPath = null;
-            switch (game)
-            {
-                case MEGame.ME1:
-                    rootPath = ME1Directory.DefaultGamePath;
-                    break;
-                case MEGame.ME2:
-                    rootPath = ME2Directory.DefaultGamePath;
-                    break;
-                case MEGame.ME3:
-                    rootPath = ME3Directory.DefaultGamePath;
-                    break;
-            }
+            string rootPath = MEDirectories.GetDefaultGamePath(game);
+
             CommonSaveFileDialog m = new()
             {
                 Title = "Select excel output",
@@ -589,7 +578,7 @@ namespace LegendaryExplorer.Tools.DialogueDumper
                 CheckConv = true;
                 CheckActor = true;
             }
-            else if (GameBeingDumped == MEGame.ME1 && !fileName.EndsWith(@"LOC_INT") && !fileName.EndsWith(@"LAY") && !fileName.EndsWith(@"SND") && !fileName.EndsWith(@"_T") && !fileName.StartsWith(@"BIOG") && !fileName.StartsWith(@"BIOC"))
+            else if (GameBeingDumped.IsGame1() && !fileName.EndsWith(@"LOC_INT", StringComparison.OrdinalIgnoreCase) && !fileName.EndsWith(@"LAY") && !fileName.EndsWith(@"SND") && !fileName.EndsWith(@"_T") && !fileName.StartsWith(@"BIOG") && !fileName.StartsWith(@"BIOC"))
             {
                 CheckConv = true; //Filter ME1 remove file types that never have convos. Levels only.
                 CheckActor = true;
@@ -813,7 +802,7 @@ namespace LegendaryExplorer.Tools.DialogueDumper
                                         }
                                         break;
                                     }
-                                    case "BioSeqVar_ObjectFindByTag" when GameBeingDumped == MEGame.ME3:
+                                    case "BioSeqVar_ObjectFindByTag" when GameBeingDumped.IsGame3():
                                         ownertag = svlink.GetProperty<NameProperty>("m_sObjectTagToFind").ToString();
                                         break;
                                     case "BioSeqVar_ObjectFindByTag":

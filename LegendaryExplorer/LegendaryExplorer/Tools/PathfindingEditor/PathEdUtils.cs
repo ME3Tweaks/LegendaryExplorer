@@ -319,7 +319,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         }
 
         /// <summary>
-        /// Gets the end name of a ReachSpec for property parsing. ME1 uses Nav, while ME2 and above use Actor.
+        /// Gets the end name of a ReachSpec for property parsing. ME1 and ME2 use Nav, while ME3 and above use Actor.
         /// </summary>
         /// <param name="export">export used to determine which game is being parsed</param>
         /// <returns>Actor for ME2/ME3, Nav for ME1</returns>

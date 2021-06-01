@@ -188,7 +188,7 @@ namespace LegendaryExplorer.Tools.AudioLocalizer
                         if (nameSections.Length == 4 && wwisestream.GetProperty<NameProperty>("Filename")?.Value is NameReference fileName)
                         {
                             var wsBin = wwisestream.GetBinaryData<WwiseStream>();
-                            int pos = pcc.Game == MEGame.ME3 ? 4 : 12;
+                            //int pos = pcc.Game == MEGame.ME3 ? 4 : 12;
                             infoDict[nameSections[3]] = new Wwisestreaminfo
                             {
                                 FileName = fileName,

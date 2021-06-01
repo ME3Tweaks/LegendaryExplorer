@@ -222,6 +222,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
                 if (int.TryParse(splits[i], out var parsed))
                 {
                     //Lookup TLK
+                    // TODO: Get some way of determining ME1/LE1 in isb entry and do it here
                     var data = TLKManagerWPF.GlobalFindStrRefbyID(parsed, MEGame.ME1, null);
                     if (data != "No Data")
                     {

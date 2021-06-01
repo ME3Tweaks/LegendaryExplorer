@@ -217,7 +217,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 ? Directory.EnumerateDirectories(MEDirectories.GetDLCPath(game)).Where(dir => IsOfficialDLC(dir, game))
                 : Enumerable.Empty<string>();
 
-        public static string GetMountDLCFromDLCDir(string dlcDirectory, MEGame game) => Path.Combine(dlcDirectory, game == MEGame.ME2 ? "CookedPC" : "CookedPCConsole", "Mount.dlc");
+        public static string GetMountDLCFromDLCDir(string dlcDirectory, MEGame game) => Path.Combine(dlcDirectory, game.CookedDirName(), "Mount.dlc");
 
         public static bool IsEnabledDLC(string dir, MEGame game)
         {

@@ -166,9 +166,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 rawData.bytes = bytes;
 
                 //Write SWF metadata
-                if (CurrentLoadedExport.FileRef.Game == MEGame.ME1 || CurrentLoadedExport.FileRef.Game == MEGame.ME2)
+                if (CurrentLoadedExport.FileRef.Game.IsGame1() || CurrentLoadedExport.FileRef.Game.IsGame2())
                 {
-                    string sourceFilePropName = CurrentLoadedExport.FileRef.Game != MEGame.ME1 ? "SourceFile" : "SourceFilePath";
+                    string sourceFilePropName = CurrentLoadedExport.FileRef.Game.IsGame1() ? "SourceFilePath" : "SourceFile";
                     StrProperty sourceFilePath = props.GetProp<StrProperty>(sourceFilePropName);
                     if (sourceFilePath == null)
                     {
@@ -179,7 +179,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     sourceFilePath.Value = Path.GetFileName(CurrentJPEXExportedFilepath);
                 }
 
-                if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
+                if (CurrentLoadedExport.FileRef.Game.IsGame1())
                 {
                     StrProperty sourceFileTimestamp = props.GetProp<StrProperty>("SourceFileTimestamp");
                     sourceFileTimestamp = File.GetLastWriteTime(CurrentJPEXExportedFilepath).ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);

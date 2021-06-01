@@ -361,7 +361,7 @@ namespace LegendaryExplorerCore.Audio
             var finalAfcPath = inputPath;
             if (!Path.GetFileName(finalAfcPath).StartsWith("CookedPC", StringComparison.InvariantCultureIgnoreCase))
             {
-                finalAfcPath = Path.Combine(finalAfcPath, game == MEGame.ME2 ? "CookedPC" : "CookedPCConsole");
+                finalAfcPath = Path.Combine(finalAfcPath, MEDirectories.CookedName(game));
             }
             finalAfcPath = Path.Combine(finalAfcPath, $"{newAFCBaseName}.afc");
             var tempAfcPath = Path.Combine(inputPath, $"TEMP_{newAFCBaseName}.afc");

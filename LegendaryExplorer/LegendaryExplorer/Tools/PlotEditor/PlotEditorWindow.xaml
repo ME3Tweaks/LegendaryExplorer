@@ -105,7 +105,7 @@
                     <plotEditor:QuestMapView x:Name="QuestMapControl" />
                 </TabItem>
                 <TabItem Header="Consequence Map"
-                         Visibility="{Binding Pcc.Game, Converter={StaticResource GameToVisibilityConverter}, ConverterParameter='Not_ME3'}">
+                         Visibility="{Binding Pcc.Game, Converter={StaticResource GameToVisibilityConverter}, ConverterParameter='Not_Game3'}">
                     <plotEditor:StateEventMapView x:Name="ConsequenceMapControl" />
                 </TabItem>
                 <TabItem Header="State Event Map">

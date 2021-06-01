@@ -4718,7 +4718,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 level.CoverLinks = newCLArray;
 
 
-                if (Pcc.Game == MEGame.ME3)
+                if (Pcc.Game.IsGame3())
                 {
                     //Clean up Pylon List
                     if (norefsList.Contains(level.PylonListStart ?? 0))
@@ -4746,7 +4746,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 level.CrossLevelActors = newXLArray;
 
                 //Clean up int lists if empty of NAV points
-                if (level.NavPoints.IsEmpty() && level.CoverLinks.IsEmpty() && level.CrossLevelActors.IsEmpty() && (Pcc.Game != MEGame.ME3 || level.PylonListStart == 0))
+                if (level.NavPoints.IsEmpty() && level.CoverLinks.IsEmpty() && level.CrossLevelActors.IsEmpty() && (!Pcc.Game.IsGame3() || level.PylonListStart == 0))
                 {
                     level.guidToIntMap.Clear();
                     level.guidToIntMap2.Clear();

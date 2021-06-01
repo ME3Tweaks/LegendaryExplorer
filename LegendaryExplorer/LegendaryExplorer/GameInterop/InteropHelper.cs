@@ -60,6 +60,8 @@ namespace LegendaryExplorer.GameInterop
             const string me1binkw23MD5 = "d9e2a3b9303ca80560218af9f6eebaae";
             const string me1binkw32MD5 = "30660f25ab7f7435b9f3e1a08422411a";
 
+            // TODO: Implement for lex
+
             return File.Exists(binkw23Path) && File.Exists(binkw32Path)
                 && game switch {
                     MEGame.ME1 => me1binkw23MD5,
@@ -95,34 +97,40 @@ namespace LegendaryExplorer.GameInterop
 
         public static void SelectGamePath(MEGame game)
         {
-            if (game is MEGame.ME3)
+            switch (game)
             {
-                OpenFileDialog ofd = new()
+                case MEGame.ME2:
                 {
-                    Title = "Select Mass Effect 3 executable",
-                    Filter = "MassEffect3.exe|MassEffect3.exe"
-                };
-                if (ofd.ShowDialog() == true)
-                {
-                    string gamePath = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(ofd.FileName)));
+                    OpenFileDialog ofd = new()
+                    {
+                        Title = "Select Mass Effect 2 executable",
+                        Filter = "MassEffect2.exe|MassEffect2.exe"
+                    };
+                    if (ofd.ShowDialog() == true)
+                    {
+                        string gamePath = Path.GetDirectoryName(Path.GetDirectoryName(ofd.FileName));
 
-                    Settings.Global_ME3Directory = ME3Directory.DefaultGamePath = gamePath;
-                    CommandManager.InvalidateRequerySuggested();
+                        Settings.Global_ME2Directory = ME2Directory.DefaultGamePath = gamePath;
+                        CommandManager.InvalidateRequerySuggested();
+                    }
+                    break;
                 }
-            }
-            else //ME2
-            {
-                OpenFileDialog ofd = new()
+                case MEGame.ME3:
                 {
-                    Title = "Select Mass Effect 2 executable",
-                    Filter = "MassEffect2.exe|MassEffect2.exe"
-                };
-                if (ofd.ShowDialog() == true)
-                {
-                    string gamePath = Path.GetDirectoryName(Path.GetDirectoryName(ofd.FileName));
+                    OpenFileDialog ofd = new()
+                    {
+                        Title = "Select Mass Effect 3 executable",
+                        Filter = "MassEffect3.exe|MassEffect3.exe"
+                    };
+                    if (ofd.ShowDialog() == true)
+                    {
+                        string gamePath = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(ofd.FileName)));
 
-                    Settings.Global_ME2Directory = ME2Directory.DefaultGamePath = gamePath;
-                    CommandManager.InvalidateRequerySuggested();
+                        Settings.Global_ME3Directory = ME3Directory.DefaultGamePath = gamePath;
+                        CommandManager.InvalidateRequerySuggested();
+                    }
+
+                    break;
                 }
             }
         }

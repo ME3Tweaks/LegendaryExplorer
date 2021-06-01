@@ -9,15 +9,11 @@ namespace LegendaryExplorerCore.Helpers
     /// </summary>
     public static class GameFileFilters
     {
-#if !LEGENDARYSUPPORT
         public const string OpenFileFilter = "Supported package files|*.pcc;*.u;*.upk;*sfm;*udk;*.xxx|All files (*.*)|*.*";
         public const string UDKFileFilter = "UDK package files|*.upk;*udk";
         public const string ME1SaveFileFilter = "ME1 package files|*.u;*.upk;*sfm";
         public const string ME3ME2SaveFileFilter = "ME2/ME3 package files|*.pcc";
-#else
-        // LEGENDARY FILTERS GO HERE
-
-#endif
+        public const string LESaveFileFilter = "LE package files|*.pcc";
 
     }
 }
