@@ -259,10 +259,12 @@ namespace LegendaryExplorerCore.Packages
 
         private static IMEPackage LoadPackage(Stream stream, string filePath = null, bool useSharedCache = false, bool quickLoad = false)
         {
+#if DEBUG && !AZURE
+            // This is only for net5-packagecache branch to trace package opening
             Debug.WriteLine($"Loading package {filePath}");
-            if (filePath.EndsWith("Core.pcc"))
+            if (filePath != null && filePath.EndsWith("Core.pcc"))
                 Debug.WriteLine("hi");
-
+#endif
             ushort version = 0;
             ushort licenseVersion = 0;
             bool fullyCompressed = false;
