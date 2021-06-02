@@ -25,6 +25,10 @@ namespace LegendaryExplorerCore.Packages
         /// <returns></returns>
         public virtual IMEPackage GetCachedPackage(string packagePath, bool openIfNotInCache = true)
         {
+            // Cannot look up null paths
+            if (packagePath == null)
+                return null;
+
             // May need way to set maximum size of dictionary so we don't hold onto too much memory.
             lock (syncObj)
             {
