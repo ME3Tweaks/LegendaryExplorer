@@ -295,7 +295,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             return null;
         }
 
-        public static PropertyCollection getDefaultStructValue(string className, bool stripTransients)
+        public static PropertyCollection getDefaultStructValue(string className, bool stripTransients, PackageCache packageCache)
         {
             bool isImmutable = GlobalUnrealObjectInfo.IsImmutable(className, MEGame.ME1);
             if (Structs.ContainsKey(className))
@@ -313,7 +313,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                             {
                                 continue;
                             }
-                            if (getDefaultProperty(propName, propInfo, stripTransients, isImmutable) is Property uProp)
+                            if (getDefaultProperty(propName, propInfo, packageCache, stripTransients, isImmutable) is Property uProp)
                             {
                                 structProps.Add(uProp);
                             }
@@ -386,7 +386,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             return null;
         }
 
-        public static Property getDefaultProperty(string propName, PropertyInfo propInfo, bool stripTransients = true, bool isImmutable = false)
+        public static Property getDefaultProperty(string propName, PropertyInfo propInfo, PackageCache packageCache, bool stripTransients = true, bool isImmutable = false)
         {
             switch (propInfo.Type)
             {
@@ -438,7 +438,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     }
                 case PropertyType.StructProperty:
                     isImmutable = isImmutable || GlobalUnrealObjectInfo.IsImmutable(propInfo.Reference, MEGame.ME1);
-                    return new StructProperty(propInfo.Reference, getDefaultStructValue(propInfo.Reference, stripTransients), propName, isImmutable);
+                    return new StructProperty(propInfo.Reference, getDefaultStructValue(propInfo.Reference, stripTransients, packageCache), propName, isImmutable);
                 case PropertyType.None:
                 case PropertyType.Unknown:
                 default:

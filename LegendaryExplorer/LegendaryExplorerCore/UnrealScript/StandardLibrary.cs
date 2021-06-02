@@ -34,17 +34,88 @@ namespace LegendaryExplorerCore.UnrealScript
             _ => throw new ArgumentOutOfRangeException(nameof(game))
         };
 
+        public static void FreeLibs() => BaseLib.FreeLibs();
+
         private class BaseLib
         {
             #region Static
 
-            public static BaseLib ME3BaseLib { get; } = new(MEGame.ME3);
-            public static BaseLib ME2BaseLib { get; } = new(MEGame.ME2);
-            public static BaseLib ME1BaseLib { get; } = new(MEGame.ME1);
-            public static BaseLib LE3BaseLib { get; } = new(MEGame.LE3);
-            public static BaseLib LE2BaseLib { get; } = new(MEGame.LE2);
-            public static BaseLib LE1BaseLib { get; } = new(MEGame.LE1);
+            public static void FreeLibs()
+            {
+                LE1BaseLib = null;
+                LE2BaseLib = null;
+                LE3BaseLib = null;
+                ME1BaseLib = null;
+                ME2BaseLib = null;
+                ME3BaseLib = null;
+            }
 
+            private static BaseLib _le1BaseLib;
+            private static BaseLib _le2BaseLib;
+            private static BaseLib _le3BaseLib;
+            private static BaseLib _me1BaseLib;
+            private static BaseLib _me2BaseLib;
+            private static BaseLib _me3BaseLib;
+
+            public static BaseLib ME3BaseLib
+            {
+                get
+                {
+                    _me3BaseLib ??= new(MEGame.ME3);
+                    return _me3BaseLib;
+                }
+                private set => _me3BaseLib = value;
+            }
+
+            public static BaseLib ME2BaseLib
+            {
+                get
+                {
+                    _me2BaseLib ??= new(MEGame.ME2);
+                    return _me2BaseLib;
+                }
+                private set => _me2BaseLib = value;
+            }
+
+            public static BaseLib ME1BaseLib
+            {
+                get
+                {
+                    _me1BaseLib ??= new(MEGame.ME1);
+                    return _me1BaseLib;
+                }
+                private set => _me1BaseLib = value;
+            }
+
+            public static BaseLib LE3BaseLib
+            {
+                get
+                {
+                    _le3BaseLib ??= new(MEGame.LE3);
+                    return _le3BaseLib;
+                }
+                private set => _le3BaseLib = value;
+            }
+
+            public static BaseLib LE2BaseLib
+            {
+                get
+                {
+                    _le2BaseLib ??= new(MEGame.LE2);
+                    return _le2BaseLib;
+                }
+                private set => _le2BaseLib = value;
+            }
+
+            public static BaseLib LE1BaseLib
+            {
+                get
+                {
+                    _le1BaseLib ??= new(MEGame.LE1);
+                    return _le1BaseLib;
+                }
+                private set => _le1BaseLib = value;
+            }
             #endregion
 
             public readonly MEGame Game;

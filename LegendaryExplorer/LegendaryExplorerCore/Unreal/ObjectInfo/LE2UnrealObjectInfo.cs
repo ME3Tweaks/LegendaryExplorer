@@ -275,7 +275,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             return null;
         }
 
-        public static PropertyCollection getDefaultStructValue(string structName, bool stripTransients)
+        public static PropertyCollection getDefaultStructValue(string structName, bool stripTransients, PackageCache packageCache)
         {
             bool isImmutable = IsImmutableStruct(structName);
             if (Structs.TryGetValue(structName, out ClassInfo info))
@@ -291,7 +291,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                             {
                                 continue;
                             }
-                            if (getDefaultProperty(propName, propInfo, stripTransients, isImmutable) is Property uProp)
+                            if (getDefaultProperty(propName, propInfo, packageCache, stripTransients, isImmutable) is Property uProp)
                             {
                                 props.Add(uProp);
                             }
@@ -328,15 +328,13 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 #endif
                         if (loadStream != null)
                         {
-                            using (IMEPackage importPCC = MEPackageHandler.OpenMEPackageFromStream(loadStream, filepath, useSharedPackageCache: true))
+                            using IMEPackage importPCC = MEPackageHandler.OpenMEPackageFromStream(loadStream, filepath, useSharedPackageCache: true);
+                            var exportToRead = importPCC.GetUExport(info.exportIndex);
+                            byte[] buff = exportToRead.DataReadOnly.Slice(0x24).ToArray();
+                            PropertyCollection defaults = PropertyCollection.ReadProps(exportToRead, new MemoryStream(buff), structName);
+                            foreach (var prop in defaults)
                             {
-                                var exportToRead = importPCC.GetUExport(info.exportIndex);
-                                byte[] buff = exportToRead.Data.Skip(0x24).ToArray();
-                                PropertyCollection defaults = PropertyCollection.ReadProps(exportToRead, new MemoryStream(buff), structName);
-                                foreach (var prop in defaults)
-                                {
-                                    props.TryReplaceProp(prop);
-                                }
+                                props.TryReplaceProp(prop);
                             }
                         }
 
@@ -354,7 +352,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             return null;
         }
 
-        public static Property getDefaultProperty(string propName, PropertyInfo propInfo, bool stripTransients = true, bool isImmutable = false)
+        public static Property getDefaultProperty(string propName, PropertyInfo propInfo, PackageCache packageCache, bool stripTransients = true, bool isImmutable = false)
         {
             switch (propInfo.Type)
             {
@@ -406,7 +404,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     }
                 case PropertyType.StructProperty:
                     isImmutable = isImmutable || GlobalUnrealObjectInfo.IsImmutable(propInfo.Reference, MEGame.LE2);
-                    return new StructProperty(propInfo.Reference, getDefaultStructValue(propInfo.Reference, stripTransients), propName, isImmutable);
+                    return new StructProperty(propInfo.Reference, getDefaultStructValue(propInfo.Reference, stripTransients, packageCache), propName, isImmutable);
                 case PropertyType.None:
                 case PropertyType.Unknown:
                 default:

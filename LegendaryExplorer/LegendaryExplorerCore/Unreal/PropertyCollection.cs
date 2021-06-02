@@ -62,7 +62,7 @@ namespace LegendaryExplorerCore.Unreal
         /// </summary>
         /// <param name="name">Name of property to find</param>
         /// <returns>specified UProperty</returns>
-        public T GetPropOrDefault<T>(string name) where T : Property
+        public T GetPropOrDefault<T>(string name, PackageCache packageCache) where T : Property
         {
             foreach (var prop in this)
             {
@@ -74,7 +74,7 @@ namespace LegendaryExplorerCore.Unreal
 
             if (info.TryGetPropInfo(name, game, out PropertyInfo propInfo))
             {
-                return (T)GlobalUnrealObjectInfo.getDefaultProperty(game, name, propInfo, true, IsImmutable);
+                return (T)GlobalUnrealObjectInfo.getDefaultProperty(game, name, propInfo, packageCache, true, IsImmutable);
             }
             //dynamic lookup
             try
@@ -88,7 +88,7 @@ namespace LegendaryExplorerCore.Unreal
                 ClassInfo classInfo = GlobalUnrealObjectInfo.generateClassInfo(exportToBuildFor);
                 if (classInfo.TryGetPropInfo(name, game, out propInfo))
                 {
-                    return (T)GlobalUnrealObjectInfo.getDefaultProperty(game, name, propInfo, true, IsImmutable);
+                    return (T)GlobalUnrealObjectInfo.getDefaultProperty(game, name, propInfo, packageCache, true, IsImmutable);
                 }
             }
             catch
@@ -153,7 +153,8 @@ namespace LegendaryExplorerCore.Unreal
             info = GlobalUnrealObjectInfo.GetClassOrStructInfo(export.FileRef.Platform != MEPackage.GamePlatform.PS3 ? game : MEGame.ME3, typeName);
         }
 
-        public static PropertyCollection ReadProps(ExportEntry export, Stream rawStream, string typeName, bool includeNoneProperty = false, bool requireNoneAtEnd = true, IEntry entry = null)
+        //public static PropertyCollection ReadProps(ExportEntry export, Stream rawStream, string typeName, bool includeNoneProperty = false, bool requireNoneAtEnd = true, IEntry entry = null)
+        public static PropertyCollection ReadProps(ExportEntry export, Stream rawStream, string typeName, bool includeNoneProperty = false, bool requireNoneAtEnd = true, IEntry entry = null, PackageCache packageCache = null)
         {
             var stream = new EndianReader(rawStream) { Endian = export.FileRef.Endian };
             var props = new PropertyCollection(export, typeName);
@@ -208,12 +209,12 @@ namespace LegendaryExplorerCore.Unreal
                             long valOffset = stream.Position;
                             if (GlobalUnrealObjectInfo.IsImmutable(structType, pcc.Game))
                             {
-                                PropertyCollection structProps = ReadImmutableStruct(export, stream, structType, size, entry);
+                                PropertyCollection structProps = ReadImmutableStruct(export, stream, structType, size, packageCache, entry);
                                 prop = new StructProperty(structType, structProps, nameRef, true) { ValueOffset = valOffset };
                             }
                             else
                             {
-                                PropertyCollection structProps = ReadProps(export, stream.BaseStream, structType, includeNoneProperty, entry: entry);
+                                PropertyCollection structProps = ReadProps(export, stream.BaseStream, structType, includeNoneProperty, entry: entry, packageCache: packageCache);
                                 prop = new StructProperty(structType, structProps, nameRef) { ValueOffset = valOffset };
                             }
                             break;
@@ -362,7 +363,7 @@ namespace LegendaryExplorerCore.Unreal
             return props;
         }
 
-        public static PropertyCollection ReadImmutableStruct(ExportEntry export, EndianReader stream, string structType, int size, IEntry parsingEntry = null)
+        public static PropertyCollection ReadImmutableStruct(ExportEntry export, EndianReader stream, string structType, int size, PackageCache packageCache, IEntry parsingEntry = null)
         {
             IMEPackage pcc = export.FileRef;
             //strip transients unless this is a class definition
@@ -371,7 +372,7 @@ namespace LegendaryExplorerCore.Unreal
             PropertyCollection props = new PropertyCollection(export, structType);
             PropertyCollection defaultProps;
             ConcurrentDictionary<string, PropertyCollection> defaultStructDict;
-            Func<string, bool, PropertyCollection> getDefaultStructValueFunc;
+            Func<string, bool, PackageCache, PropertyCollection> getDefaultStructValueFunc;
             switch (pcc.Game)
             {
                 case MEGame.ME1 when parsingEntry != null && parsingEntry.FileRef.Platform == MEPackage.GamePlatform.PS3 && ME3UnrealObjectInfo.Structs.ContainsKey(structType):
@@ -414,7 +415,7 @@ namespace LegendaryExplorerCore.Unreal
             }
             else
             {
-                defaultProps = getDefaultStructValueFunc(structType, stripTransients);
+                defaultProps = getDefaultStructValueFunc(structType, stripTransients, packageCache);
                 if (defaultProps == null)
                 {
                     long startPos = stream.Position;
@@ -433,11 +434,11 @@ namespace LegendaryExplorerCore.Unreal
                 if (prop is StructProperty defaultStructProperty)
                 {
                     //Set correct struct type
-                    property = ReadImmutableStructProp(export, stream, prop, structType, defaultStructProperty.StructType);
+                    property = ReadImmutableStructProp(export, stream, prop, structType, defaultStructProperty.StructType, packageCache);
                 }
                 else
                 {
-                    property = ReadImmutableStructProp(export, stream, prop, structType);
+                    property = ReadImmutableStructProp(export, stream, prop, structType, packageCache: packageCache);
                 }
 
                 if (property.PropType != PropertyType.None)
@@ -449,7 +450,7 @@ namespace LegendaryExplorerCore.Unreal
         }
 
         //Nested struct type is for structs in structs
-        static Property ReadImmutableStructProp(ExportEntry export, EndianReader stream, Property template, string structType, string nestedStructType = null)
+        static Property ReadImmutableStructProp(ExportEntry export, EndianReader stream, Property template, string structType, string nestedStructType = null, PackageCache packageCache = null)
         {
             IMEPackage pcc = export.FileRef;
             if (stream.Position + 1 >= stream.Length)
@@ -487,12 +488,12 @@ namespace LegendaryExplorerCore.Unreal
                 case PropertyType.StrProperty:
                     return new StrProperty(stream, template.Name) { StartOffset = startPos };
                 case PropertyType.ArrayProperty:
-                    var arrayProperty = ReadArrayProperty(stream, export, structType, template.Name, true);
+                    var arrayProperty = ReadArrayProperty(stream, export, structType, template.Name, true, packageCache: packageCache);
                     arrayProperty.StartOffset = startPos;
                     return arrayProperty;//this implementation needs checked, as I am not 100% sure of it's validity.
                 case PropertyType.StructProperty:
                     long valuePos = stream.Position;
-                    PropertyCollection structProps = ReadImmutableStruct(export, stream, GlobalUnrealObjectInfo.GetPropertyInfo(pcc.Game, template.Name, structType, containingExport: export).Reference, 0, export);
+                    PropertyCollection structProps = ReadImmutableStruct(export, stream, GlobalUnrealObjectInfo.GetPropertyInfo(pcc.Game, template.Name, structType, containingExport: export).Reference, 0, packageCache, export);
                     var structProp = new StructProperty(nestedStructType ?? structType, structProps, template.Name, true)
                     {
                         StartOffset = startPos,
@@ -509,7 +510,7 @@ namespace LegendaryExplorerCore.Unreal
             }
         }
 
-        public static Property ReadArrayProperty(EndianReader stream, ExportEntry export, string enclosingType, NameReference name, bool IsInImmutable = false, bool IncludeNoneProperties = false, IEntry parsingEntry = null)
+        public static Property ReadArrayProperty(EndianReader stream, ExportEntry export, string enclosingType, NameReference name, bool IsInImmutable = false, bool IncludeNoneProperties = false, IEntry parsingEntry = null, PackageCache packageCache = null)
         {
             IMEPackage pcc = export.FileRef;
             long arrayOffset = IsInImmutable ? stream.Position : stream.Position - 24;
@@ -587,7 +588,7 @@ namespace LegendaryExplorerCore.Unreal
                                 long offset = stream.Position;
                                 try
                                 {
-                                    PropertyCollection structProps = ReadImmutableStruct(export, stream, arrayStructType, arraySize / count, parsingEntry: parsingEntry);
+                                    PropertyCollection structProps = ReadImmutableStruct(export, stream, arrayStructType, arraySize / count, parsingEntry: parsingEntry, packageCache: packageCache);
                                     props.Add(new StructProperty(arrayStructType, structProps, isImmutable: true)
                                     {
                                         StartOffset = offset,
@@ -811,9 +812,9 @@ namespace LegendaryExplorerCore.Unreal
             return Properties.GetProp<T>(name);
         }
 
-        public T GetPropOrDefault<T>(string name) where T : Property
+        public T GetPropOrDefault<T>(string name, PackageCache packageCache = null) where T : Property
         {
-            return Properties.GetPropOrDefault<T>(name);
+            return Properties.GetPropOrDefault<T>(name, packageCache);
         }
 
         public override void WriteTo(EndianWriter stream, IMEPackage pcc, bool valueOnly = false)

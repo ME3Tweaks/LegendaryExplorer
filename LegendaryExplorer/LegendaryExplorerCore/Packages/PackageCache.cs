@@ -13,7 +13,7 @@ namespace LegendaryExplorerCore.Packages
         /// <summary>
         /// Cache that should only be accessed read-only. Subclasses of this can reference this shared cache object
         /// </summary>
-        public CaseInsensitiveConcurrentDictionary<IMEPackage> Cache { get; }= new CaseInsensitiveConcurrentDictionary<IMEPackage>();
+        public CaseInsensitiveConcurrentDictionary<IMEPackage> Cache { get; } = new CaseInsensitiveConcurrentDictionary<IMEPackage>();
 
         /// <summary>
         /// Thread-safe package cache fetch. Can be passed to various methods to help expedite operations by preventing package reopening. Packages opened with this method do not use the global LegendaryExplorerCore caching system and will always load from disk if not in this local cache.
@@ -55,9 +55,28 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         public void ReleasePackages(bool gc = false)
         {
+            foreach (var p in Cache.Values)
+            {
+                p.Dispose();
+            }
+
             Cache.Clear();
             if (gc)
                 GC.Collect();
+        }
+
+        /// <summary>
+        /// Attempts to open or return the existing cached package. Returns true if a package was either in the cache or was loaded from disk,
+        /// false otherwise
+        /// </summary>
+        /// <param name="filepath"></param>
+        /// <param name="openIfNotInCache"></param>
+        /// <param name="cachedPackage"></param>
+        /// <returns></returns>
+        public virtual bool TryGetCachedPackage(string filepath, bool openIfNotInCache, out IMEPackage cachedPackage)
+        {
+            cachedPackage = GetCachedPackage(filepath, openIfNotInCache);
+            return cachedPackage != null;
         }
     }
 }
