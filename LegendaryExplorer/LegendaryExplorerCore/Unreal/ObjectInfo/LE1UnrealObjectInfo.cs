@@ -305,19 +305,19 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                             }
                         }
                         string filepath = null;
+                        if (LE1Directory.GetBioGamePath() != null)
+                        {
+                            filepath = Path.Combine(LE1Directory.GetBioGamePath(), info.pccPath);
+                        }
+
+                        Stream loadStream = null;
                         IMEPackage cachedPackage = null;
                         if (packageCache != null && packageCache.TryGetCachedPackage(filepath, true, out cachedPackage))
                         {
                             // Use this one
                             readDefaultProps(cachedPackage, props, packageCache: packageCache);
                         }
-                        else if (LE1Directory.GetBioGamePath() != null)
-                        {
-                            filepath = Path.Combine(LE1Directory.GetBioGamePath(), info.pccPath);
-                        }
-
-                        Stream loadStream = null;
-                        if (File.Exists(info.pccPath))
+                        else if (File.Exists(info.pccPath))
                         {
                             filepath = info.pccPath;
                             loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(info.pccPath);
