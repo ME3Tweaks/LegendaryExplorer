@@ -261,8 +261,8 @@ Global
 		{371B9FA9-4C90-4AC6-A123-ACED756D6C77}.Profile|x64.ActiveCfg = WinDebug|x64
 		{371B9FA9-4C90-4AC6-A123-ACED756D6C77}.Release|x64.ActiveCfg = WinRelease|x64
 		{371B9FA9-4C90-4AC6-A123-ACED756D6C77}.Release|x64.Build.0 = WinRelease|x64
-		{371B9FA9-4C90-4AC6-A123-ACED756D6C77}.WinAzureRelease|x64.ActiveCfg = WinRelease|x64
-		{371B9FA9-4C90-4AC6-A123-ACED756D6C77}.WinAzureRelease|x64.Build.0 = WinRelease|x64
+		{371B9FA9-4C90-4AC6-A123-ACED756D6C77}.WinAzureRelease|x64.ActiveCfg = WinAzureRelease|x64
+		{371B9FA9-4C90-4AC6-A123-ACED756D6C77}.WinAzureRelease|x64.Build.0 = WinAzureRelease|x64
 		{371B9FA9-4C90-4AC6-A123-ACED756D6C77}.WinAzureTest|x64.ActiveCfg = WinDebug|x64
 		{371B9FA9-4C90-4AC6-A123-ACED756D6C77}.WinDebug|x64.ActiveCfg = WinDebug|x64
 		{371B9FA9-4C90-4AC6-A123-ACED756D6C77}.WinDebug|x64.Build.0 = WinDebug|x64
