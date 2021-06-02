@@ -35,7 +35,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 _ => 1731
             };
             sc.Serialize(ref version);
-            // TODO: Double check this is right
             if (sc.Game == MEGame.ME3 || sc.Game.IsLEGame())
             {
                 sc.Serialize(ref int0);

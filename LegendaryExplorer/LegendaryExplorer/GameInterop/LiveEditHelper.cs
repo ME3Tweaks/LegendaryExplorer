@@ -102,7 +102,7 @@ namespace LegendaryExplorer.GameInterop
         public static string InstallInfoPath(MEGame game) => Path.Combine(ModInstallPath(game), "InstallInfo.json");
 
         private const string camPathFileName = "ME3LiveEditorCamPath.pcc";
-        public static string CamPathFilePath(MEGame game) => Path.Combine(ModInstallPath(game), "CookedPCConsole", camPathFileName);
+        public static string CamPathFilePath(MEGame game) => Path.Combine(ModInstallPath(game), game.CookedDirName(), camPathFileName);
 
         private const string consoleExtASIName = "ConsoleExtension-v1.0.asi";
 
@@ -155,7 +155,7 @@ namespace LegendaryExplorer.GameInterop
             (string, string) AugmentAndInstall(string fileName)
             {
                 string existingFile = fileMap[fileName];
-                string destFile = Path.Combine(ModInstallPath(game), game is MEGame.ME3 ? "CookedPCConsole" : "CookedPC", fileName);
+                string destFile = Path.Combine(ModInstallPath(game), game.CookedDirName(), fileName);
                 File.Copy(existingFile, destFile, true);
                 using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(destFile))
                 {

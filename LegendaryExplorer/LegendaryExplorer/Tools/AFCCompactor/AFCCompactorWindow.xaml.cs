@@ -258,6 +258,7 @@ namespace LegendaryExplorer.Tools.AFCCompactorWindow
             set
             {
                 SetProperty(ref _dlcInputFolder, value);
+                // TODO: Implement for LEX
                 if (!string.IsNullOrWhiteSpace(_dlcInputFolder))
                 {
                     string foldername = Path.GetFileName(DLCInputFolder);
