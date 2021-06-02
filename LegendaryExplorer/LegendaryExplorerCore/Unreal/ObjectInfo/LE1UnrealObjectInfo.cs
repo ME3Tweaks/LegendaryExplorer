@@ -305,7 +305,13 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                             }
                         }
                         string filepath = null;
-                        if (LE1Directory.GetBioGamePath() != null)
+                        IMEPackage cachedPackage = null;
+                        if (packageCache != null && packageCache.TryGetCachedPackage(filepath, true, out cachedPackage))
+                        {
+                            // Use this one
+                            readDefaultProps(cachedPackage, props, packageCache: packageCache);
+                        }
+                        else if (LE1Directory.GetBioGamePath() != null)
                         {
                             filepath = Path.Combine(LE1Directory.GetBioGamePath(), info.pccPath);
                         }
@@ -334,18 +340,10 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                             loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(filepath);
                         }
 #endif
-                        if (loadStream != null)
+                        if (cachedPackage == null && loadStream != null)
                         {
-                            using (IMEPackage importPCC = MEPackageHandler.OpenMEPackageFromStream(loadStream, filepath, useSharedPackageCache: true))
-                            {
-                                var exportToRead = importPCC.GetUExport(info.exportIndex);
-                                byte[] buff = exportToRead.Data.Skip(0x24).ToArray();
-                                PropertyCollection defaults = PropertyCollection.ReadProps(exportToRead, new MemoryStream(buff), structName);
-                                foreach (var prop in defaults)
-                                {
-                                    props.TryReplaceProp(prop);
-                                }
-                            }
+                            using IMEPackage importPCC = MEPackageHandler.OpenMEPackageFromStream(loadStream, filepath, useSharedPackageCache: true);
+                            readDefaultProps(importPCC, props, packageCache);
                         }
 
                         Structs.TryGetValue(info.baseClass, out info);
@@ -360,6 +358,17 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 }
             }
             return null;
+
+            void readDefaultProps(IMEPackage impPackage, PropertyCollection defaultProps, PackageCache packageCache)
+            {
+                var exportToRead = impPackage.GetUExport(info.exportIndex);
+                byte[] buff = exportToRead.DataReadOnly.Slice(0x24).ToArray();
+                PropertyCollection defaults = PropertyCollection.ReadProps(exportToRead, new MemoryStream(buff), structName, packageCache: packageCache);
+                foreach (var prop in defaults)
+                {
+                    defaultProps.TryReplaceProp(prop);
+                }
+            }
         }
 
         public static Property getDefaultProperty(string propName, PropertyInfo propInfo, PackageCache packageCache, bool stripTransients = true, bool isImmutable = false)
@@ -499,7 +508,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 progressDelegate?.Invoke(numDone, totalFiles);
                 // System.Diagnostics.Debug.WriteLine($"{i} of {length} processed");
             }
-            
+
             foreach (string filePath in allFiles)
             {
                 using IMEPackage pcc = MEPackageHandler.OpenLE1Package(filePath);
