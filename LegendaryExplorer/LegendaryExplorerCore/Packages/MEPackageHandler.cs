@@ -138,6 +138,7 @@ namespace LegendaryExplorerCore.Packages
         /// <returns></returns>
         public static IMEPackage OpenMEPackage(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false, bool quickLoad = false, object diskIOSyncLock = null)
         {
+            Debug.WriteLine($"Opening package {pathToFile}");
             if (File.Exists(pathToFile))
             {
                 pathToFile = Path.GetFullPath(pathToFile); //STANDARDIZE INPUT IF FILE EXISTS (it might be a memory file!)
@@ -258,6 +259,10 @@ namespace LegendaryExplorerCore.Packages
 
         private static IMEPackage LoadPackage(Stream stream, string filePath = null, bool useSharedCache = false, bool quickLoad = false)
         {
+            Debug.WriteLine($"Loading package {filePath}");
+            if (filePath.EndsWith("Core.pcc"))
+                Debug.WriteLine("hi");
+
             ushort version = 0;
             ushort licenseVersion = 0;
             bool fullyCompressed = false;

@@ -134,7 +134,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 Game = game;
             }
 
-            public async Task<bool> InitializeStandardLib(MessageLog log, params string[] additionalFiles)
+            public async Task<bool> InitializeStandardLib(MessageLog log, PackageCache packageCache, params string[] additionalFiles)
             {
                 if (IsInitialized)
                 {
@@ -154,7 +154,7 @@ namespace LegendaryExplorerCore.UnrealScript
                         {
                             return true;
                         }
-                        success = InternalInitialize(additionalFiles, log);
+                        success = InternalInitialize(additionalFiles, log, packageCache);
                         IsInitialized = success;
                         HadInitializationError = !success;
                     }
@@ -162,7 +162,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 });
             }
 
-            private bool InternalInitialize(string[] additionalFiles, MessageLog log)
+            private bool InternalInitialize(string[] additionalFiles, MessageLog log, PackageCache packageCache)
             {
                 try
                 {
@@ -173,8 +173,8 @@ namespace LegendaryExplorerCore.UnrealScript
                         return false;
                     }
                     using var files = MEPackageHandler.OpenMEPackages(filePaths);
-
-                    return files.All(pcc => ResolveAllClassesInPackage(pcc, ref _symbols, log));
+                    packageCache?.InsertIntoCache(files);
+                    return files.All(pcc => ResolveAllClassesInPackage(pcc, ref _symbols, log, packageCache));
                 }
                 catch (Exception e) when(!LegendaryExplorerCoreLib.IsDebug)
                 {
@@ -182,7 +182,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
             }
 
-            public static bool ResolveAllClassesInPackage(IMEPackage pcc, ref SymbolTable symbols, MessageLog log)
+            public static bool ResolveAllClassesInPackage(IMEPackage pcc, ref SymbolTable symbols, MessageLog log, PackageCache packageCache)
             {
                 string fileName = Path.GetFileNameWithoutExtension(pcc.FilePath);
 #if DEBUGSCRIPT
@@ -193,7 +193,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 var classes = new List<(Class ast, string scriptText)>();
                 foreach (ExportEntry export in pcc.Exports.Where(exp => exp.IsClass))
                 {
-                    Class cls = ScriptObjectToASTConverter.ConvertClass(export.GetBinaryData<UClass>(), false);
+                    Class cls = ScriptObjectToASTConverter.ConvertClass(export.GetBinaryData<UClass>(), false, packageCache: packageCache);
                     if (!cls.IsFullyDefined)
                     {
                         continue;

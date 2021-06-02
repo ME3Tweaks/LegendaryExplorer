@@ -291,7 +291,7 @@ namespace LegendaryExplorerCore.Unreal
                             {
                                 //Debug.WriteLine("Reading array properties, starting at 0x" + stream.Position.ToString("X5"));
                                 var valStart = stream.Position;
-                                prop = ReadArrayProperty(stream, export, typeName, nameRef, IncludeNoneProperties: includeNoneProperty, parsingEntry: entry);
+                                prop = ReadArrayProperty(stream, export, typeName, nameRef, IncludeNoneProperties: includeNoneProperty, parsingEntry: entry, packageCache: packageCache);
                                 //this can happen with m_aObjComments that were hex edited with old versions of the toolset
                                 //technically valid, so we should support reading them
                                 if (stream.Position < valStart + size)
@@ -608,7 +608,7 @@ namespace LegendaryExplorerCore.Unreal
                             {
                                 long structOffset = stream.Position;
                                 //Debug.WriteLine("reading array struct: " + arrayStructType + " at 0x" + stream.Position.ToString("X5"));
-                                PropertyCollection structProps = ReadProps(export, stream.BaseStream, arrayStructType, includeNoneProperty: IncludeNoneProperties, entry: parsingEntry);
+                                PropertyCollection structProps = ReadProps(export, stream.BaseStream, arrayStructType, includeNoneProperty: IncludeNoneProperties, entry: parsingEntry, packageCache: packageCache);
 #if DEBUG
                                 try
                                 {

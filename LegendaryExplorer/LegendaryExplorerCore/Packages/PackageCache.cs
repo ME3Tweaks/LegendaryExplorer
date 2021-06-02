@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using LegendaryExplorerCore.Misc;
 
@@ -7,7 +9,7 @@ namespace LegendaryExplorerCore.Packages
     /// <summary>
     /// Class that allows you to cache packages in memory for fast accessing, without having to use a global package cache like ME3Explorer's system
     /// </summary>
-    public class PackageCache
+    public class PackageCache : IDisposable
     {
         private object syncObj = new object();
         /// <summary>
@@ -28,6 +30,7 @@ namespace LegendaryExplorerCore.Packages
             {
                 if (Cache.TryGetValue(packagePath, out var package))
                 {
+                    //Debug.WriteLine($@"PackageCache hit: {packagePath}");
                     return package;
                 }
 
@@ -35,9 +38,14 @@ namespace LegendaryExplorerCore.Packages
                 {
                     if (File.Exists(packagePath))
                     {
+                        Debug.WriteLine($@"PackageCache load: {packagePath}");
                         package = MEPackageHandler.OpenMEPackage(packagePath, forceLoadFromDisk: true);
                         Cache[packagePath] = package;
                         return package;
+                    }
+                    else
+                    {
+                        Debug.WriteLine($@"PackageCache miss: File not found: {packagePath}");
                     }
                 }
             }
@@ -48,6 +56,14 @@ namespace LegendaryExplorerCore.Packages
         public void InsertIntoCache(IMEPackage package)
         {
             Cache[package.FilePath] = package;
+        }
+
+        public void InsertIntoCache(IEnumerable<IMEPackage> packages)
+        {
+            foreach (var package in packages)
+            {
+                Cache[package.FilePath] = package;
+            }
         }
 
         /// <summary>
@@ -77,6 +93,11 @@ namespace LegendaryExplorerCore.Packages
         {
             cachedPackage = GetCachedPackage(filepath, openIfNotInCache);
             return cachedPackage != null;
+        }
+
+        public void Dispose()
+        {
+            ReleasePackages();
         }
     }
 }

@@ -31,7 +31,7 @@ namespace LegendaryExplorerCore.UnrealScript
 
         private readonly BaseLib Base;
 
-        public async Task<bool> Initialize()
+        public async Task<bool> Initialize(PackageCache packageCache = null)
         {
             if (IsInitialized)
             {
@@ -49,7 +49,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     }
 
                     InitializationLog = new MessageLog();
-                    if (!Base.InitializeStandardLib(InitializationLog).Result)
+                    if (!Base.InitializeStandardLib(InitializationLog, packageCache).Result)
                     {
                         HadInitializationError = true;
                     }
@@ -64,7 +64,7 @@ namespace LegendaryExplorerCore.UnrealScript
 
                     if (!IsInitialized && !HadInitializationError)
                     {
-                        success = InternalInitialize();
+                        success = InternalInitialize(packageCache);
                         IsInitialized = success;
                         HadInitializationError = !success;
                     }
@@ -75,7 +75,7 @@ namespace LegendaryExplorerCore.UnrealScript
             });
         }
 
-        private bool InternalInitialize()
+        private bool InternalInitialize(PackageCache packageCache)
         {
             try
             {
@@ -110,13 +110,13 @@ namespace LegendaryExplorerCore.UnrealScript
                     if (gameFiles.TryGetValue(fileName, out string path) && File.Exists(path))
                     {
                         using var pcc = MEPackageHandler.OpenMEPackage(path);
-                        if (!BaseLib.ResolveAllClassesInPackage(pcc, ref _symbols, InitializationLog))
+                        if (!BaseLib.ResolveAllClassesInPackage(pcc, ref _symbols, InitializationLog, packageCache))
                         {
                             return false;
                         }
                     }
                 }
-                return BaseLib.ResolveAllClassesInPackage(Pcc, ref _symbols, InitializationLog);
+                return BaseLib.ResolveAllClassesInPackage(Pcc, ref _symbols, InitializationLog, packageCache);
             }
             catch (Exception e) when (!LegendaryExplorerCoreLib.IsDebug)
             {

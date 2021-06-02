@@ -331,19 +331,17 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             return ImmutableStructs.Contains(structName);
         }
 
-        public static PropertyCollection getDefaultStructValue(string className, bool stripTransients, PackageCache packageCache)
+        public static PropertyCollection getDefaultStructValue(string structName, bool stripTransients, PackageCache packageCache)
         {
-            bool isImmutable = GlobalUnrealObjectInfo.IsImmutable(className, MEGame.ME2);
-            if (Structs.ContainsKey(className))
+            bool isImmutable = GlobalUnrealObjectInfo.IsImmutable(structName, MEGame.ME2);
+            if (Structs.TryGetValue(structName, out ClassInfo info))
             {
-                ClassInfo info = Structs[className];
                 try
                 {
-                    PropertyCollection structProps = new();
-                    ClassInfo tempInfo = info;
-                    while (tempInfo != null)
+                    PropertyCollection props = new();
+                    while (info != null)
                     {
-                        foreach ((string propName, PropertyInfo propInfo) in tempInfo.properties)
+                        foreach ((string propName, PropertyInfo propInfo) in info.properties)
                         {
                             if (stripTransients && propInfo.Transient)
                             {
@@ -351,37 +349,37 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                             }
                             if (getDefaultProperty(propName, propInfo, packageCache, stripTransients, isImmutable) is Property uProp)
                             {
-                                structProps.Add(uProp);
+                                props.Add(uProp);
                             }
                         }
-                        if (!Structs.TryGetValue(tempInfo.baseClass, out tempInfo))
+
+                        string filepath = null;
+                        if (ME2Directory.BioGamePath != null)
                         {
-                            tempInfo = null;
+                            filepath = Path.Combine(ME2Directory.BioGamePath, info.pccPath);
                         }
-                    }
-                    structProps.Add(new NoneProperty());
 
-                    string filepath = null;
-                    if (ME2Directory.BioGamePath != null)
-                    {
-                        filepath = Path.Combine(ME2Directory.BioGamePath, info.pccPath);
-                    }
-
-                    Stream loadStream = null;
-                    if (File.Exists(info.pccPath))
-                    {
-                        filepath = info.pccPath;
-                        loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(info.pccPath);
-                    }
-                    else if (info.pccPath == GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
-                    {
-                        filepath = "GAMERESOURCES_ME2";
-                        loadStream = LegendaryExplorerCoreUtilities.LoadFileFromCompressedResource("GameResources.zip", LegendaryExplorerCoreLib.CustomResourceFileName(MEGame.ME2));
-                    }
-                    else if (filepath != null && File.Exists(filepath))
-                    {
-                        loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(filepath);
-                    }
+                        Stream loadStream = null;
+                        IMEPackage cachedPackage = null;
+                        if (packageCache != null && packageCache.TryGetCachedPackage(filepath, true, out cachedPackage))
+                        {
+                            // Use this one
+                            readDefaultProps(cachedPackage, props, packageCache: packageCache);
+                        }
+                        else if (File.Exists(info.pccPath))
+                        {
+                            filepath = info.pccPath;
+                            loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(info.pccPath);
+                        }
+                        else if (info.pccPath == GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
+                        {
+                            filepath = "GAMERESOURCES_ME2";
+                            loadStream = LegendaryExplorerCoreUtilities.LoadFileFromCompressedResource("GameResources.zip", LegendaryExplorerCoreLib.CustomResourceFileName(MEGame.ME2));
+                        }
+                        else if (filepath != null && File.Exists(filepath))
+                        {
+                            loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(filepath);
+                        }
 #if AZURE
                     else if (MiniGameFilesPath != null && File.Exists(Path.Combine(MiniGameFilesPath, info.pccPath)))
                     {
@@ -391,21 +389,17 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                         loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(filepath);
                     }
 #endif
-
-                    if (loadStream != null)
-                    {
-                        using (IMEPackage importPCC = MEPackageHandler.OpenMEPackageFromStream(loadStream, filepath, useSharedPackageCache: true))
+                        if (cachedPackage == null && loadStream != null)
                         {
-                            var exportToRead = importPCC.GetUExport(info.exportIndex);
-                            byte[] buff = exportToRead.Data.Skip(0x30).ToArray();
-                            PropertyCollection defaults = PropertyCollection.ReadProps(exportToRead, new MemoryStream(buff), className);
-                            foreach (var prop in defaults)
-                            {
-                                structProps.TryReplaceProp(prop);
-                            }
+                            using IMEPackage importPCC = MEPackageHandler.OpenMEPackageFromStream(loadStream, filepath, useSharedPackageCache: true);
+                            readDefaultProps(importPCC, props, packageCache);
                         }
+
+                        Structs.TryGetValue(info.baseClass, out info);
                     }
-                    return structProps;
+                    props.Add(new NoneProperty());
+
+                    return props;
                 }
                 catch
                 {
@@ -413,6 +407,17 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 }
             }
             return null;
+
+            void readDefaultProps(IMEPackage impPackage, PropertyCollection defaultProps, PackageCache packageCache)
+            {
+                var exportToRead = impPackage.GetUExport(info.exportIndex);
+                byte[] buff = exportToRead.DataReadOnly.Slice(0x30).ToArray();
+                PropertyCollection defaults = PropertyCollection.ReadProps(exportToRead, new MemoryStream(buff), structName, packageCache: packageCache);
+                foreach (var prop in defaults)
+                {
+                    defaultProps.TryReplaceProp(prop);
+                }
+            }
         }
 
         public static Property getDefaultProperty(string propName, PropertyInfo propInfo, PackageCache packageCache, bool stripTransients = true, bool isImmutable = false)
@@ -478,7 +483,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         #region Generating
         //call this method to regenerate ME2ObjectInfo.json
         //Takes a long time (10 minutes maybe?). Application will be completely unresponsive during that time.
-        public static void generateInfo(string outpath, bool usePooledMemory = true, Action<int,int> progressDelegate = null)
+        public static void generateInfo(string outpath, bool usePooledMemory = true, Action<int, int> progressDelegate = null)
         {
             MemoryManager.SetUsePooledMemory(usePooledMemory);
             Enums.Clear();
