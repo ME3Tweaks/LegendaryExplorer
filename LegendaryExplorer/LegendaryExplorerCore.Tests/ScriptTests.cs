@@ -21,9 +21,10 @@ namespace LegendaryExplorerCore.Tests
         {
             GlobalTest.Init();
 
-            var testFiles = Directory.GetFiles(GlobalTest.GetTestDataDirectory(), "*.*", SearchOption.AllDirectories)
-                .Where(x => StringExtensions.RepresentsPackageFilePath(x)
-                            && !x.Contains(@"Xenon", StringComparison.InvariantCultureIgnoreCase) && !x.Contains("PS3", StringComparison.InvariantCultureIgnoreCase) && !x.Contains("UDK", StringComparison.InvariantCultureIgnoreCase)).ToList();
+            string testDataDirectory = GlobalTest.GetTestDataDirectory();
+            var testFiles = Directory.GetFiles(testDataDirectory, "*.*", SearchOption.AllDirectories)
+                                     .Where(x => StringExtensions.RepresentsPackageFilePath(x)
+                                              && !x.Contains(@"Xenon", StringComparison.InvariantCultureIgnoreCase) && !x.Contains("PS3", StringComparison.InvariantCultureIgnoreCase) && !x.Contains("UDK", StringComparison.InvariantCultureIgnoreCase)).ToList();
 
             //var testFile = Path.Combine(GlobalTest.GetTestPackagesDirectory(), "PC", "ME1", "BIOA_NOR10_08_DSG.SFM");
             //var testFile = Path.Combine(GlobalTest.GetTestPackagesDirectory(), "PC", "ME2", "retail", "BioD_BlbGtl_205Evacuation.pcc");
@@ -31,7 +32,7 @@ namespace LegendaryExplorerCore.Tests
 
             foreach (var testFile in testFiles)
             {
-                var shortName = Path.GetFileName(testFile);
+                var shortName = Path.GetRelativePath(testDataDirectory, testFile);
                 compileTest(testFile, shortName, true);
                 compileTest(testFile, shortName, false);
             }
@@ -52,7 +53,7 @@ namespace LegendaryExplorerCore.Tests
             Stopwatch sw = Stopwatch.StartNew();
             var testLib = new FileLib(testPackage);
             bool fileLibInitialized = testLib.Initialize(usePackageCache ? new PackageCache() : null).Result;
-            Assert.IsTrue(fileLibInitialized, $"{testPackage.Game} Script failed to compile {shortName} class definitions!");
+            Assert.IsTrue(fileLibInitialized, $"{testPackage.Game} Script failed to compile {shortName} class definitions! Errors:\n{string.Join('\n', testLib.InitializationLog.Content)}");
             sw.Stop();
             Debug.WriteLine($"With {(usePackageCache ? "packagecache" : "globalcache")} took {sw.ElapsedMilliseconds}ms to initialize lib");
 
@@ -62,12 +63,15 @@ namespace LegendaryExplorerCore.Tests
 
                 Assert.IsInstanceOfType(astNode, typeof(Function), $"#{funcExport.UIndex} {funcExport.InstancedFullPath} in {shortName} did not decompile!");
 
-                (_, MessageLog log) = UnrealScriptCompiler.CompileFunction(funcExport, text, testLib);
+                /* SirCxyrtyx: Disabling recompilation tests because succesfull re-compilation of all functions will never happen
+                 * For re-compilation testing to be useful, it will need to be targeted
+                 */
+                //(_, MessageLog log) = UnrealScriptCompiler.CompileFunction(funcExport, text, testLib);
 
-                if (Enumerable.Any(log.AllErrors))
-                {
-                    Assert.Fail($"#{funcExport.UIndex} {funcExport.InstancedFullPath} in {shortName} did not recompile!");
-                }
+                //if (Enumerable.Any(log.AllErrors))
+                //{
+                //    Assert.Fail($"#{funcExport.UIndex} {funcExport.InstancedFullPath} in {shortName} did not recompile!");
+                //}
             }
         }
     }
