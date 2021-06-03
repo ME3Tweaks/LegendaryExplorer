@@ -261,9 +261,9 @@ namespace LegendaryExplorerCore.Packages
         {
 #if DEBUG && !AZURE
             // This is only for net5-packagecache branch to trace package opening
-            Debug.WriteLine($"Loading package {filePath}");
-            if (filePath != null && filePath.EndsWith("Core.pcc"))
-                Debug.WriteLine("hi");
+            //Debug.WriteLine($"Loading package {filePath}");
+            //if (filePath != null && filePath.EndsWith("Core.pcc"))
+            //    Debug.WriteLine("hi");
 #endif
             ushort version = 0;
             ushort licenseVersion = 0;

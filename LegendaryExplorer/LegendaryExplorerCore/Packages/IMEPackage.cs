@@ -282,6 +282,12 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="name"></param>
         /// <returns></returns>
         int GetNextIndexForName(string name);
+        /// <summary>
+        /// Gets the next available index for a name, checking for other objects incrementally with a same instanced full name until a free one is found that is higher than the original one
+        /// </summary>
+        /// <param name="entry"></param>
+        /// <returns></returns>
+        int GetNextIndexForInstancedName(IEntry entry);
 
         NameReference GetNextIndexedName(string name);
         //editing
