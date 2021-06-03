@@ -753,9 +753,15 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             "Engine.ChildConnection",
             "Engine.Client",
             "Engine.Model",
+            "Engine.World",
             "Engine.NetConnection",
             "Engine.PendingLevel",
-            "Engine.StaticMesh"
+            "Engine.StaticMesh",
+            "Engine.Level",
+            "Engine.Polys",
+            "Engine.ShaderCache",
+            "Engine.ShadowMap1D",
+            "Engine.LightMapTexture2D",
         };
     }
 }
