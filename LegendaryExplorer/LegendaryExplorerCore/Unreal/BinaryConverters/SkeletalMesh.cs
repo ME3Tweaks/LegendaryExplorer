@@ -529,7 +529,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref slm.Chunks, Serialize);
             sc.Serialize(ref slm.Size);
             sc.Serialize(ref slm.NumVertices);
-            if (sc.Game <= MEGame.ME3 && slm.NumVertices > ushort.MaxValue)
+            if (sc.Game <= MEGame.LE3 && slm.NumVertices > ushort.MaxValue)
             {
                 throw new Exception($"Mass Effect games do not support SkeletalMeshes with more than {ushort.MaxValue} vertices!");
             }

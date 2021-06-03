@@ -10,24 +10,24 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public class DecalComponent : ObjectBinary
     {
-        public StaticReceiverData[] StaticRecievers;
+        public StaticReceiverData[] StaticReceivers;
 
         protected override void Serialize(SerializingContainer2 sc)
         {
-            sc.Serialize(ref StaticRecievers, SCExt.Serialize);
+            sc.Serialize(ref StaticReceivers, SCExt.Serialize);
         }
 
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
         {
             var uIndexes = new List<(UIndex, string)>();
 
-            for (int i = 0; i < StaticRecievers.Length; i++)
+            for (int i = 0; i < StaticReceivers.Length; i++)
             {
-                StaticReceiverData data = StaticRecievers[i];
-                uIndexes.Add((data.PrimitiveComponent, $"StaticReciever[{i}].PrimitiveComponent"));
+                StaticReceiverData data = StaticReceivers[i];
+                uIndexes.Add((data.PrimitiveComponent, $"StaticReceiver[{i}].PrimitiveComponent"));
                 if (game >= MEGame.ME3)
                 {
-                    uIndexes.AddRange(data.ShadowMap1D.Select((u, j) => (u, $"StaticReciever[{i}].ShadowMap1D[{j}]")));
+                    uIndexes.AddRange(data.ShadowMap1D.Select((u, j) => (u, $"StaticReceiver[{i}].ShadowMap1D[{j}]")));
                 }
             }
 

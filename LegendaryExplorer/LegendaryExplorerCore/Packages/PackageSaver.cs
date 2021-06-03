@@ -23,11 +23,7 @@ namespace LegendaryExplorerCore.Packages
         public static bool CanReconstruct(this IMEPackage pcc) => CanReconstruct(pcc, pcc.FilePath);
 
         public static bool CanReconstruct(IMEPackage pckg, string path) =>
-            pckg.Game == MEGame.UDK ||
-            pckg.Game == MEGame.ME3 ||
-            pckg.Game == MEGame.ME2 ||
-            pckg.Game.IsLEGame() ||
-            pckg.Game == MEGame.ME1 && ME1TextureFiles.TrueForAll(texFilePath => !path.EndsWith(texFilePath));
+            pckg.Game is MEGame.UDK or MEGame.ME3 or MEGame.ME2 || pckg.Game.IsLEGame() || pckg.Game == MEGame.ME1 && ME1TextureFiles.TrueForAll(texFilePath => !path.EndsWith(texFilePath));
 
         private static Action<MEPackage, string, bool, bool, bool, bool, object> MESaveDelegate;
         private static Action<UDKPackage, string, bool, object> UDKSaveDelegate;

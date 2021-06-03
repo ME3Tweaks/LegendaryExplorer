@@ -352,6 +352,8 @@ namespace LegendaryExplorerCore.Packages
                 case MEGame.UDK:
                     UDKConstructorDelegate(path, true).Save();
                     break;
+                case MEGame.LELauncher:
+                    throw new ArgumentException("Cannot create a package for LELauncher, it doesn't use packages");
                 case MEGame.Unknown:
                     throw new ArgumentException("Cannot create a package file for an Unknown game!", nameof(game));
                 default:
