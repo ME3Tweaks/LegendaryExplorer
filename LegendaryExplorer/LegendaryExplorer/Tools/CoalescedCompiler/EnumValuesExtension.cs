@@ -28,18 +28,4 @@ namespace LegendaryExplorer.Tools.CoalescedCompiler
 			return Enum.GetValues(EnumType);
 		}
 	}
-
-	public enum CoalescedType
-	{
-		//[Display(Name = "Binary")]
-		[Description("Binary Coalesced file.")]
-		Binary,
-
-		//[Display(Name = "Xml")]
-		[Description("Xml Coalesced file.")]
-		Xml,
-
-        [Description("Unpacked LE Coalesced.")]
-        ExtractedBin
-	}
 }
