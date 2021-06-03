@@ -47,7 +47,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     {
                         return Array.Empty<byte>();
                     }
-                    else if (export.Game == MEGame.UDK && newGame != MEGame.UDK)
+                    else if (export.Game == MEGame.UDK)
                     {
                         return new byte[8];
                     }

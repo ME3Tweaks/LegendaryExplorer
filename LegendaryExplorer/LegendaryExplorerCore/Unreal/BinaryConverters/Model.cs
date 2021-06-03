@@ -222,7 +222,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref vert.pVertex);
             sc.Serialize(ref vert.iSide);
             sc.Serialize(ref vert.ShadowTexCoord);
-            if (sc.Game != MEGame.ME3 && sc.Game != MEGame.LE3)
+            if (!sc.Game.IsGame3())
             {
                 sc.Serialize(ref vert.BackfaceShadowTexCoord);
             }

@@ -769,7 +769,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
             //add startup files (always loaded)
             IEnumerable<string> startups;
-            if (entry.Game == MEGame.ME2)
+            if (entry.Game.IsGame2())
             {
                 startups = gameFiles.Keys.Where(x => x.Contains("Startup_", StringComparison.InvariantCultureIgnoreCase) && x.Contains($"_{localization}", StringComparison.InvariantCultureIgnoreCase)); //me2 this will unfortunately include the main startup file
             }
