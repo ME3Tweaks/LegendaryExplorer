@@ -93,7 +93,7 @@ namespace LegendaryExplorerCore.TLK.ME1
 
         public void serializeTLKStrListToExport(ExportEntry export, bool savePackage = false)
         {
-            if (export.FileRef.Game != MEGame.ME1)
+            if (!export.FileRef.Game.IsGame1())
             {
                 throw new Exception("Cannot save a ME1 TLK to a game that is not Mass Effect 1.");
             }

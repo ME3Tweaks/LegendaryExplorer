@@ -1039,6 +1039,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsO.AssociateAllExtensions();
         }
+
+        private void GenerateAudioFileInfo_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.CreateAudioSizeInfo(GetPEWindow(), MEGame.LE3);
+        }
         #endregion
 
 

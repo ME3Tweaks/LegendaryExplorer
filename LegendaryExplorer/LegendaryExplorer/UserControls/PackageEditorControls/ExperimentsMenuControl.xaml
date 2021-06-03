@@ -98,5 +98,6 @@
         <MenuItem Header="Export level to T3D" Click="ExportLevelToT3D_Click"/>
         <MenuItem Header="Build ME1 SuperTlk File" Click="BuildME1SuperTLK_Clicked"/>
         <MenuItem Header="Associate all file extensions" Click="AssociateAllExtensions_Clicked"/>
+        <MenuItem Header="Generate audio file info JSON (check code for game)" Click="GenerateAudioFileInfo_Click"/>
     </MenuItem>
 </MenuItem>

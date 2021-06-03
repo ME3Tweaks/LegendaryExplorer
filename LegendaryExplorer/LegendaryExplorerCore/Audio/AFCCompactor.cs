@@ -28,11 +28,13 @@ namespace LegendaryExplorerCore.Audio
             /// <summary>
             /// AFCs that reside in official DLC. This includes SFAR files.
             /// </summary>
-            public List<string> OfficialDLCAFCFiles = new List<string>();
+            public List<string> OfficialDLCAFCFiles = new();
+
             /// <summary>
             /// Mapping of DLC foldername to a list of AFCs in that SFAR
             /// </summary>
             public readonly CaseInsensitiveDictionary<List<string>> SFARAFCsMap = new();
+
             public static AFCInventory GetInventory(string inputPath, MEGame game, Action<string> currentScanningFileCallback = null, Action<string> debugOut = null)
             {
                 var inventory = new AFCInventory();

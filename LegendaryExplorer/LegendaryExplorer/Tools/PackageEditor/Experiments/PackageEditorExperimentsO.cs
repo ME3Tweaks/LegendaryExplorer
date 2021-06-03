@@ -8,11 +8,14 @@ using System.Windows.Threading;
 using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.SharpDX;
 using LegendaryExplorerCore.TLK.ME1;
+using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using Newtonsoft.Json;
 
 namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 {
@@ -334,6 +337,31 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             FileAssociations.EnsureAssociationsSet("isb", "ISACT Bank File");
             FileAssociations.EnsureAssociationsSet("dlc", "Mass Effect DLC Mount File");
             FileAssociations.EnsureAssociationsSet("cnd", "Mass Effect Conditionals File");
+        }
+
+        public static void CreateAudioSizeInfo(PackageEditorWindow pew, MEGame game = MEGame.ME3)
+        {
+            pew.IsBusy = true;
+            pew.BusyText = $"Creating audio size info for {game}";
+
+            CaseInsensitiveDictionary<long> audioSizes = new();
+
+            Task.Run(() =>
+            {
+                foreach (string filePath in MELoadedFiles.GetOfficialFiles(game, includeAFCs:true).Where(f => f.EndsWith(".afc", StringComparison.OrdinalIgnoreCase)))
+                {
+                    var info = new FileInfo(filePath);
+                    audioSizes.Add(info.Name.Split('.')[0], info.Length);
+                }
+            }).ContinueWithOnUIThread((prevTask) =>
+            {
+                pew.IsBusy = false;
+
+                var outFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    $"{game}-vanillaaudiosizes.json");
+                File.WriteAllText(outFile, JsonConvert.SerializeObject(audioSizes));
+
+            });
         }
     }
 }
