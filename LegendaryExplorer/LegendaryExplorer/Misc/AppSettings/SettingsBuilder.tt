@@ -22,7 +22,7 @@ namespace LegendaryExplorer.Misc.AppSettings
     /// </summary>
     public static partial class Settings
     {
-        private static object settingsSyncObj = new object();
+        private static readonly object settingsSyncObj = new();
 <# // This code runs in the text template:
     // Can't use named tuples it seems
     var settings = XDocument.Load(this.Host.ResolvePath("SettingsDefinitions.xml")).Root.Descendants("setting").Select(x => 
@@ -61,7 +61,7 @@ namespace LegendaryExplorer.Misc.AppSettings
             if (Loaded)
                 return;
             
-            Dictionary<string, string> settingsJson = File.Exists(AppSettingsFile)
+            var settingsJson = File.Exists(AppSettingsFile)
                 ? JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(AppSettingsFile))
                 : new Dictionary<string, string>();
 <#          foreach (var setting in settings){#>
@@ -83,7 +83,7 @@ namespace LegendaryExplorer.Misc.AppSettings
         /// </summary>
         public static void Save()
         {
-            Dictionary<string, string> settingsJson = new Dictionary<string,string>();
+            var settingsJson = new Dictionary<string,string>();
 <#          foreach (var setting in settings){#>
             settingsJson["<#=setting.Item1.ToLower()#>"] = <#=setting.Item1#>.ToString();
 <#          }#>

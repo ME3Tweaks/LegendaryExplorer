@@ -48,8 +48,6 @@ namespace LegendaryExplorer.Tools.SequenceObjects
     [DebuggerDisplay("SObj | #{UIndex}: {export.ObjectName.Instanced}")]
     public abstract class SObj : PNode, IDisposable
     {
-        public IMEPackage pcc;
-        public GraphEditor g;
         static readonly Color commentColor = Color.FromArgb(74, 63, 190);
         static readonly Color intColor = Color.FromArgb(34, 218, 218);//cyan
         static readonly Color floatColor = Color.FromArgb(23, 23, 213);//blue
@@ -71,9 +69,9 @@ namespace LegendaryExplorer.Tools.SequenceObjects
         public static PNode dragTarget;
         public static bool OutputNumbers;
 
+        public IMEPackage pcc;
+        public GraphEditor g;
         public RectangleF posAtDragStart;
-
-        public int Index => UIndex - 1;
 
         public int UIndex => export.UIndex;
         //public float Width { get { return shape.Width; } }
@@ -103,7 +101,6 @@ namespace LegendaryExplorer.Tools.SequenceObjects
         }
 
         public virtual void CreateConnections(IList<SObj> objects) { }
-        public virtual void Layout() { }
         public virtual void Layout(float x, float y) => SetOffset(x, y);
 
         public virtual IEnumerable<SeqEdEdge> Edges => Enumerable.Empty<SeqEdEdge>();
@@ -290,7 +287,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
     {
         public const float RADIUS = 30;
 
-        public List<VarEdge> connections = new List<VarEdge>();
+        public List<VarEdge> connections = new();
         public override IEnumerable<SeqEdEdge> Edges => connections;
         public VarTypes type { get; set; }
         readonly SText val;
@@ -301,7 +298,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             set => val.Text = value;
         }
 
-        public SVar(ExportEntry entry, float x, float y, GraphEditor grapheditor)
+        public SVar(ExportEntry entry, GraphEditor grapheditor)
             : base(entry, grapheditor)
         {
             string s = export.ObjectName;
@@ -341,7 +338,6 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                     break;
                 }
             }
-            SetOffset(x, y);
             this.MouseEnter += OnMouseEnter;
             this.MouseLeave += OnMouseLeave;
         }
@@ -573,7 +569,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
     {
         protected PPath shape;
         protected PPath titleBox;
-        public SFrame(ExportEntry entry, float x, float y, GraphEditor grapheditor)
+        public SFrame(ExportEntry entry, GraphEditor grapheditor)
             : base(entry, grapheditor)
         {
             float w = 0;
@@ -601,7 +597,6 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             this.AddChild(titleBox);
             comment.Y -= titleBox.Height;
             this.Bounds = new RectangleF(0, -titleBox.Height, titleBox.Width, titleBox.Height);
-            SetOffset(x, y);
         }
 
         public override void Dispose()
@@ -614,7 +609,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
         protected void MakeTitleBox(string s)
         {
             s = $"#{UIndex} : {s}";
-            SText title = new SText(s, titleColor)
+            var title = new SText(s, titleColor)
             {
                 TextAlignment = StringAlignment.Center,
                 ConstrainWidthToTextWidth = false,
@@ -1299,10 +1294,10 @@ namespace LegendaryExplorer.Tools.SequenceObjects
     [DebuggerDisplay("SEvent | #{UIndex}: {export.ObjectName.Instanced}")]
     public class SEvent : SBox
     {
-        public List<EventEdge> connections = new List<EventEdge>();
+        public List<EventEdge> connections = new();
         public override IEnumerable<SeqEdEdge> Edges => connections.Union(base.Edges);
 
-        public SEvent(ExportEntry entry, float x, float y, GraphEditor grapheditor)
+        public SEvent(ExportEntry entry, GraphEditor grapheditor)
             : base(entry, grapheditor)
         {
             outlinePen = new Pen(EventColor);
@@ -1319,7 +1314,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             foreach (var varLink in Varlinks)
             {
                 string d = string.Join(",", varLink.Links.Select(l => $"#{l}"));
-                SText t2 = new SText(d + "\n" + varLink.Desc)
+                var t2 = new SText(d + "\n" + varLink.Desc)
                 {
                     X = w,
                     Y = 0,
@@ -1344,7 +1339,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                 {
                     linkDesc += $": {string.Join(",", Outlinks[i].Links.Select(l => $"#{l}"))}";
                 }
-                SText t2 = new SText(linkDesc);
+                var t2 = new SText(linkDesc);
                 if (t2.Width + 10 > midW) midW = t2.Width + 10;
                 //t2.TextAlignment = StringAlignment.Far;
                 //t2.ConstrainWidthToTextWidth = false;
@@ -1391,7 +1386,6 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             AddChild(titleBox);
             AddChild(varLinkBox);
             AddChild(outLinkBox);
-            SetOffset(x, y);
             MouseEnter += OnMouseEnter;
             MouseLeave += OnMouseLeave;
         }
@@ -1451,23 +1445,19 @@ namespace LegendaryExplorer.Tools.SequenceObjects
     public class SAction : SBox
     {
         public override IEnumerable<SeqEdEdge> Edges => InLinks.SelectMany(l => l.Edges).Union(base.Edges);
-        public List<ActionEdge> InputEdges = new List<ActionEdge>();
+        public List<ActionEdge> InputEdges = new();
         public List<InputLink> InLinks;
         protected PNode inputLinkBox;
         protected PPath box;
-        protected float originalX;
-        protected float originalY;
 
-        protected InputDragHandler inputDragHandler = new InputDragHandler();
+        protected InputDragHandler inputDragHandler = new();
 
-        public SAction(ExportEntry entry, float x, float y, GraphEditor grapheditor)
+        public SAction(ExportEntry entry, GraphEditor grapheditor)
             : base(entry, grapheditor)
         {
             GetVarLinks();
             GetEventLinks();
             GetOutputLinks();
-            originalX = x;
-            originalY = y;
         }
 
         private bool _isSelected;
@@ -1491,11 +1481,6 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             }
         }
 
-        public override void Layout()
-        {
-            Layout(originalX, originalY);
-        }
-
         public override void Layout(float x, float y)
         {
             outlinePen = new Pen(Color.Black);
@@ -1508,7 +1493,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             for (int i = 0; i < Varlinks.Count; i++)
             {
                 string d = string.Join(",", Varlinks[i].Links.Select(l => $"#{l}"));
-                SText t2 = new SText($"{d}\n{Varlinks[i].Desc}")
+                var t2 = new SText($"{d}\n{Varlinks[i].Desc}")
                 {
                     X = w,
                     Y = 0,

@@ -136,6 +136,8 @@ namespace LegendaryExplorerCore.Kismet
 
             PropertyCollection newObjectProps = newObject.GetProperties();
             newObjectProps.AddOrReplaceProp(new ObjectProperty(sequenceExport, "ParentSequence"));
+            newObjectProps.RemoveNamedProperty("ObjPosX");
+            newObjectProps.RemoveNamedProperty("ObjPosY");
             newObject.WriteProperties(newObjectProps);
             if (removeLinks)
             {

@@ -22,7 +22,7 @@
 
   <PropertyGroup Condition="'$(Configuration)'=='WinRelease'">
     <DebugType>embedded</DebugType>
-    <DefineConstants>WINDOWS</DefineConstants>
+    <DefineConstants>WINDOWS;RELEASE</DefineConstants>
   </PropertyGroup>
 
   <!-- Nightly release from Azure-->

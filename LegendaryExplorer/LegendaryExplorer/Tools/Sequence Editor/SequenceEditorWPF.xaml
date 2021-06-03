@@ -110,8 +110,6 @@
                     <MenuItem Name="ShowOutputNumbers_MenuItem" Header="Show Output Numbers" IsCheckable="True"
                                 Click="showOutputNumbers_Click" />
                     <MenuItem Name="AutoSaveView_MenuItem" Header="Auto-Save View" IsCheckable="True" />
-                    <MenuItem Name="GlobalSeqRefViewSavesMenuItem" Header="Use Global Sequence Ref View Saves"
-                                IsCheckable="True" Click="GlobalSeqRefViewSavesMenuItem_OnClick" />
                     <MenuItem Name="ShowAdditionalInfoInCommentTextMenuItem"
                                 Header="Show parsed information in comments"
                                 IsChecked="{Binding Path=(appsettings:Settings.SequenceEditor_ShowParsedInfo), Mode=TwoWay}"
