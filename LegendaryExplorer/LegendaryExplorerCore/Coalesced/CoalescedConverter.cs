@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -170,6 +171,69 @@ namespace LegendaryExplorerCore.Coalesced
         private class Utf8StringWriter : StringWriter
         {
             public override Encoding Encoding { get { return Encoding.UTF8; } }
+        }
+
+        public static void Convert(CoalescedType SourceType, string SourcePath, string DestinationPath)
+        {
+            if (!Path.IsPathRooted(SourcePath))
+            {
+                SourcePath = Path.GetFullPath(SourcePath);
+            }
+
+            if (!Path.IsPathRooted(DestinationPath))
+            {
+                DestinationPath = Path.GetFullPath(DestinationPath);
+            }
+
+            if (!File.Exists(SourcePath))
+            {
+                throw new FileNotFoundException("Source file not found.");
+            }
+
+            switch (SourceType)
+            {
+
+                case CoalescedType.Binary:
+                    var ConvertingLECoalesced = !CoalescedConverter.IsGame3Coalesced(SourcePath);
+                    if (!Directory.Exists(Path.GetDirectoryName(DestinationPath) ?? DestinationPath))
+                    {
+                        Directory.CreateDirectory(DestinationPath);
+                    }
+
+                    if (ConvertingLECoalesced)
+                    {
+                        LECoalescedConverter.Unpack(SourcePath, DestinationPath);
+                    }
+                    else
+                    {
+                        CoalescedConverter.ConvertToXML(SourcePath, DestinationPath);
+                    }
+                    break;
+                case CoalescedType.Xml:
+                    CoalescedConverter.ConvertToBin(SourcePath, DestinationPath);
+                    break;
+                case CoalescedType.ExtractedBin:
+                    var containingFolder = Path.GetDirectoryName(SourcePath);
+                    LECoalescedConverter.Pack(containingFolder, DestinationPath);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+        }
+
+        public enum CoalescedType
+        {
+            //[Display(Name = "Binary")]
+            [Description("Binary Coalesced file.")]
+            Binary,
+
+            //[Display(Name = "Xml")]
+            [Description("Xml Coalesced file.")]
+            Xml,
+
+            [Description("Unpacked LE Coalesced.")]
+            ExtractedBin
         }
 
         public static void ConvertToXML(string source, string destination)
