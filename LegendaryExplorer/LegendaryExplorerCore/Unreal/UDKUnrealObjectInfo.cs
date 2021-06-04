@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using Newtonsoft.Json;
@@ -326,20 +327,20 @@ namespace LegendaryExplorerCore.Unreal
                 case "ClassProperty":
                 case "ComponentProperty":
                     type = PropertyType.ObjectProperty;
-                    reference = pcc.getObjectName(BitConverter.ToInt32(entry.Data, entry.Data.Length - 4));
+                    reference = pcc.getObjectName(EndianReader.ToInt32(entry.DataReadOnly, entry.DataSize - 4, entry.FileRef.Endian));
                     break;
                 case "StructProperty":
                     type = PropertyType.StructProperty;
-                    reference = pcc.getObjectName(BitConverter.ToInt32(entry.Data, entry.Data.Length - 4));
+                    reference = pcc.getObjectName(EndianReader.ToInt32(entry.DataReadOnly, entry.DataSize - 4, entry.FileRef.Endian));
                     break;
                 case "BioMask4Property":
                 case "ByteProperty":
                     type = PropertyType.ByteProperty;
-                    reference = pcc.getObjectName(BitConverter.ToInt32(entry.Data, entry.Data.Length - 4));
+                    reference = pcc.getObjectName(EndianReader.ToInt32(entry.DataReadOnly, entry.DataSize - 4, entry.FileRef.Endian));
                     break;
                 case "ArrayProperty":
                     type = PropertyType.ArrayProperty;
-                    PropertyInfo arrayTypeProp = getProperty(pcc, pcc.Exports[BitConverter.ToInt32(entry.Data, 44) - 1]);
+                    PropertyInfo arrayTypeProp = getProperty(pcc, pcc.Exports[EndianReader.ToInt32(entry.DataReadOnly, 44, entry.FileRef.Endian) - 1]);
                     if (arrayTypeProp != null)
                     {
                         switch (arrayTypeProp.Type)
@@ -381,7 +382,7 @@ namespace LegendaryExplorerCore.Unreal
                     return null;
             }
 
-            bool transient = (BitConverter.ToUInt64(entry.Data, 24) & 0x0000000000002000) != 0;
+            bool transient = (EndianReader.ToUInt64(entry.DataReadOnly, 24, entry.FileRef.Endian) & 0x0000000000002000) != 0;
             return new PropertyInfo(type, reference, transient);
         }
 

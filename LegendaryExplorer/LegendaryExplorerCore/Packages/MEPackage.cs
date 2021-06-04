@@ -1352,6 +1352,7 @@ namespace LegendaryExplorerCore.Packages
                 : saveUncompressed(this, includeAdditionalPackagesToCook, includeDependencyTable);
         }
 
+        //TODO: edit memory in-place somehow? This currently requires an allocation and a copy of the sizeable shadercache export, and must happen on save for nearly every LE file
         private static void UpdateShaderCacheOffsets(ExportEntry export, int oldDataOffset)
         {
             int newDataOffset = export.DataOffset;

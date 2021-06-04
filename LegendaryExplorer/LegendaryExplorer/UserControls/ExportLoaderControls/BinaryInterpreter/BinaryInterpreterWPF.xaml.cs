@@ -163,11 +163,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             if (CurrentLoadedExport != null && NavigateToEntryCommand != null && BinaryInterpreter_TreeView.SelectedItem is BinInterpNode b && IsObjectNodeType(b.Tag))
             {
                 var pos = b.GetPos();
-                //terribly inefficient. I don't use endianconverter here as it's static and i don't want static endian setting
-                EndianReader er = new EndianReader(new MemoryStream(CurrentLoadedExport.Data))
-                { Endian = CurrentLoadedExport.FileRef.Endian };
-                er.Position = pos;
-                var value = er.ReadInt32();
+                var value = EndianReader.ToInt32(CurrentLoadedExport.DataReadOnly, (int)pos, CurrentLoadedExport.FileRef.Endian);
                 if (CurrentLoadedExport.FileRef.IsEntry(value))
                 {
                     NavigateToEntryCommand?.Execute(CurrentLoadedExport.FileRef.GetEntry(value));
@@ -181,12 +177,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 IsObjectNodeType(b.Tag))
             {
                 var pos = b.GetPos();
-                //This will be super inefficient. It may be wiser to cache the value of an object reference in BinInterpNode since we refresh the entire tree
-                //on modification anyways.
-                EndianReader er = new EndianReader(new MemoryStream(CurrentLoadedExport.Data))
-                { Endian = CurrentLoadedExport.FileRef.Endian };
-                er.Position = pos;
-                var value = er.ReadInt32();
+                var value = EndianReader.ToInt32(CurrentLoadedExport.DataReadOnly, (int)pos, CurrentLoadedExport.FileRef.Endian);
                 return CurrentLoadedExport.FileRef.IsEntry(value);
             }
 
@@ -197,17 +188,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (BinaryInterpreter_TreeView.SelectedItem is BinInterpNode b && IsObjectNodeType(b))
             {
-                int index = 0;
-                if (b.UIndexValue == 0)
-                {
-                    EndianReader er = new EndianReader(new MemoryStream(CurrentLoadedExport.Data))
-                    { Endian = CurrentLoadedExport.FileRef.Endian };
-                    index = b.GetObjectRefValue(er);
-                }
-                else
-                {
-                    index = b.UIndexValue;
-                }
+                int index = b.UIndexValue == 0 ? b.GetObjectRefValue(CurrentLoadedExport) : b.UIndexValue;
                 if (CurrentLoadedExport.FileRef.IsEntry(index))
                 {
                     var p = new PackageEditorWindow();
@@ -218,9 +199,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
-        private bool IsObjectNodeType(object nodeobj)
+        private static bool IsObjectNodeType(object nodeobj)
         {
-            if (nodeobj is BinInterpNode node && node.Tag is BinaryInterpreterWPF.NodeType type)
+            if (nodeobj is BinInterpNode {Tag: NodeType type})
             {
                 if (type == NodeType.ArrayLeafObject) return true;
                 if (type == NodeType.ObjectProperty) return true;
@@ -379,7 +360,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             OnDemand_Panel.Visibility = Visibility.Visible;
             LoadedContent_Panel.Visibility = Visibility.Collapsed;
-            if (CurrentLoadedExport.Data.Length < 20480 || Settings.BinaryInterpreterWPFAutoScanAlways || AlwaysLoadRegardlessOfSize)
+            if (CurrentLoadedExport.DataSize < 20480 || Settings.BinaryInterpreterWPFAutoScanAlways || AlwaysLoadRegardlessOfSize)
             {
                 StartBinaryScan();
             }
@@ -448,9 +429,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             OnDemand_Subtext_TextBlock.Text = "Please wait";
             ParseBinary_Button.Visibility = Visibility.Collapsed;
             ParseBinary_Spinner.Visibility = Visibility.Visible;
-            DynamicByteProvider db = new DynamicByteProvider(CurrentLoadedExport.Data);
-            BinaryInterpreter_Hexbox.ByteProvider = db;
             byte[] data = CurrentLoadedExport.Data;
+            var db = new DynamicByteProvider(data);
+            BinaryInterpreter_Hexbox.ByteProvider = db;
             int binarystart = 0;
             if (CurrentLoadedExport.ClassName != "Class")
             {
@@ -458,7 +439,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
 
             //top node will always be of this element type.
-            BinInterpNode topLevelTree = new BinInterpNode
+            var topLevelTree = new BinInterpNode
             {
                 Header = $"{binarystart:X4} : {CurrentLoadedExport.InstancedFullPath} - Binary start",
                 Tag = NodeType.Root,
@@ -865,13 +846,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void BinaryInterpreter_SaveHexChanges_Click(object sender, RoutedEventArgs e)
         {
-            IByteProvider provider = BinaryInterpreter_Hexbox.ByteProvider;
-            if (provider != null)
+            if (BinaryInterpreter_Hexbox.ByteProvider is DynamicByteProvider provider)
             {
-                MemoryStream m = new MemoryStream();
-                for (int i = 0; i < provider.Length; i++)
-                    m.WriteByte(provider.ReadByte(i));
-                CurrentLoadedExport.Data = m.ToArray();
+                CurrentLoadedExport.Data = provider.Bytes.ToArray();
             }
         }
 
@@ -883,7 +860,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private void BinaryInterpreter_TreeViewSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             BinaryInterpreter_Hexbox.UnhighlightAll();
-            List<FrameworkElement> SupportedEditorSetElements = new List<FrameworkElement>();
+            var SupportedEditorSetElements = new List<FrameworkElement>();
             switch (BinaryInterpreter_TreeView.SelectedItem)
             {
                 case BinInterpNode bitve:
@@ -907,7 +884,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         case NodeType.StructLeafObject:
                             if (dataOffset != 0)
                             {
-                                Value_TextBox.Text = BitConverter.ToInt32(CurrentLoadedExport.Data, dataOffset).ToString();
+                                Value_TextBox.Text = EndianReader.ToInt32(CurrentLoadedExport.DataReadOnly, dataOffset, CurrentLoadedExport.FileRef.Endian).ToString();
                                 SupportedEditorSetElements.Add(Value_TextBox);
                                 SupportedEditorSetElements.Add(ParsedValue_TextBlock);
                             }
@@ -930,8 +907,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             {
                                 Value_ComboBox.ItemsSource = ParentNameList;
                             }
-                            int nameIdx = BitConverter.ToInt32(CurrentLoadedExport.Data, dataOffset);
-                            int nameValueIndex = BitConverter.ToInt32(CurrentLoadedExport.Data, dataOffset + 4);
+                            int nameIdx = EndianReader.ToInt32(CurrentLoadedExport.DataReadOnly, dataOffset, CurrentLoadedExport.FileRef.Endian);
+                            int nameValueIndex = EndianReader.ToInt32(CurrentLoadedExport.DataReadOnly, dataOffset + 4, CurrentLoadedExport.FileRef.Endian);
                             string nameStr = CurrentLoadedExport.FileRef.GetNameEntry(nameIdx);
                             if (nameStr != "")
                             {
@@ -950,11 +927,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         case NodeType.StructLeafInt:
                             //Todo: We can add different nodeTypes to trigger different ParsedValue parsers, 
                             //such as IntOffset. Enter in int, parse as hex
-                            Value_TextBox.Text = BitConverter.ToInt32(CurrentLoadedExport.Data, dataOffset).ToString();
+                            Value_TextBox.Text = EndianReader.ToInt32(CurrentLoadedExport.DataReadOnly, dataOffset, CurrentLoadedExport.FileRef.Endian).ToString();
                             SupportedEditorSetElements.Add(Value_TextBox);
                             break;
                         case NodeType.StructLeafFloat:
-                            Value_TextBox.Text = BitConverter.ToSingle(CurrentLoadedExport.Data, dataOffset).ToString();
+                            Value_TextBox.Text = EndianReader.ToSingle(CurrentLoadedExport.DataReadOnly, dataOffset, CurrentLoadedExport.FileRef.Endian).ToString();
                             SupportedEditorSetElements.Add(Value_TextBox);
                             break;
                     }

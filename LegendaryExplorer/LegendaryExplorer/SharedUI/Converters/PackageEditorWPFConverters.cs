@@ -7,7 +7,9 @@ using System.Windows.Data;
 using System.Windows.Media;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.Tools.PackageEditor;
+using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
 
 namespace LegendaryExplorer.SharedUI.Converters
 {
@@ -53,8 +55,8 @@ namespace LegendaryExplorer.SharedUI.Converters
             }
 
             //attempt to find type
-            byte[] data = export.Data;
-            int importindex = BitConverter.ToInt32(data, data.Length - 4);
+            ReadOnlySpan<byte> data = export.DataReadOnly;
+            int importindex = EndianReader.ToInt32(data.Slice(data.Length - 4), export.FileRef.Endian);
             if (export.FileRef.GetEntry(importindex) is ImportEntry imp)
             {
                 return $" ({imp.ObjectName.Instanced})";
@@ -77,7 +79,7 @@ namespace LegendaryExplorer.SharedUI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (Settings.PackageEditor_ShowExportTypeIcons && value is ExportEntry exp && !exp.IsDefaultObject && PackageEditorWindow.ExportIconTypes.Contains(exp.ClassName))
+            if (Settings.PackageEditor_ShowExportTypeIcons && value is ExportEntry {IsDefaultObject: false} exp && PackageEditorWindow.ExportIconTypes.Contains(exp.ClassName))
             {
                 switch (exp.ClassName)
                 {
@@ -113,7 +115,7 @@ namespace LegendaryExplorer.SharedUI.Converters
                         return "/Tools/PackageEditor/ExportIcons/icon_state.png";
                 }
             }
-            else if (Settings.PackageEditor_ShowExportTypeIcons && value is ExportEntry exp2 && exp2.IsDefaultObject)
+            else if (Settings.PackageEditor_ShowExportTypeIcons && value is ExportEntry {IsDefaultObject: true})
             {
                 return "/Tools/PackageEditor/ExportIcons/icon_default.png";
             }

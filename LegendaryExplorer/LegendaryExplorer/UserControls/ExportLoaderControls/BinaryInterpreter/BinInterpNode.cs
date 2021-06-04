@@ -67,15 +67,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             return 0;
         }
 
-        public int GetObjectRefValue(EndianReader endianReader)
+        public int GetObjectRefValue(ExportEntry export)
         {
             if (UIndexValue != 0) return UIndexValue; //cached
             if (Tag is BinaryInterpreterWPF.NodeType type && (type == BinaryInterpreterWPF.NodeType.ArrayLeafObject || type == BinaryInterpreterWPF.NodeType.ObjectProperty || type == BinaryInterpreterWPF.NodeType.StructLeafObject))
             {
-                var oldPos = endianReader.Position;
-                endianReader.Seek(GetPos(), SeekOrigin.Begin);
-                UIndexValue = endianReader.ReadInt32();
-                endianReader.Seek(oldPos, SeekOrigin.Begin);
+                UIndexValue = EndianReader.ToInt32(export.DataReadOnly, (int)GetPos(), export.FileRef.Endian);
             }
             return UIndexValue;
         }

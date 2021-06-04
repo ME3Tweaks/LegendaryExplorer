@@ -1855,13 +1855,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void Interpreter_SaveHexChanges()
         {
-            IByteProvider provider = Interpreter_Hexbox.ByteProvider;
-            if (provider != null)
+            if (Interpreter_Hexbox.ByteProvider is DynamicByteProvider provider)
             {
-                MemoryStream m = new MemoryStream();
-                for (int i = 0; i < provider.Length; i++)
-                    m.WriteByte(provider.ReadByte(i));
-                CurrentLoadedExport.Data = m.ToArray();
+                CurrentLoadedExport.Data = provider.Bytes.ToArray();
             }
         }
 

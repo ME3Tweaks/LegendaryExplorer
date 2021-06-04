@@ -446,7 +446,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public string replaceTextures(Image image, PropertyCollection props, string fileSourcePath = null, string forcedTFCName = null)
         {
-            Texture2D texture = new Texture2D(CurrentLoadedExport);
+            var texture = new Texture2D(CurrentLoadedExport);
             return texture.Replace(image, props, fileSourcePath, forcedTFCName);
         }
 

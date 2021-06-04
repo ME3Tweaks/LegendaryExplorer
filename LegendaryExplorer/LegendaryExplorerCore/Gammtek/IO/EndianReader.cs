@@ -651,6 +651,17 @@ namespace LegendaryExplorerCore.Gammtek.IO
             return readMagic;
         }
 
+        public static float ToSingle(ReadOnlySpan<byte> buffer, int offset, Endian endianness)
+        {
+            var readMagic = MemoryMarshal.Read<float>(buffer.Slice(offset));
+            if (!endianness.IsNative)
+            {
+                //swap
+                return Endian.Native.To(Endian.NonNative).Convert(readMagic);
+            }
+            return readMagic;
+        }
+
         public static ushort ToUInt16(byte[] buffer, int offset, Endian endianness)
         {
             var readMagic = BitConverter.ToUInt16(buffer, offset);
@@ -795,17 +806,9 @@ namespace LegendaryExplorerCore.Gammtek.IO
         /// Reads an ulong from the buffer at the specified position with the specified endianness.
         /// </summary>
         /// <returns></returns>
-        public static ulong ToUInt64(ReadOnlyCollection<byte> buffer, int offset, Endian endianness)
+        public static ulong ToUInt64(ReadOnlySpan<byte> buffer, int offset, Endian endianness)
         {
-
-            ulong readMagic = (ulong)((buffer[offset] << 56) +
-                              (buffer[offset + 1] << 48) +
-                              (buffer[offset + 2] << 40) +
-                              (buffer[offset + 3] << 32) +
-                              (buffer[offset + 4] << 24) +
-                              (buffer[offset + 5] << 16) +
-                              (buffer[offset + 6] << 8) +
-                              buffer[offset + 7]);
+            var readMagic = MemoryMarshal.Read<ulong>(buffer.Slice(offset));
             if (!endianness.IsNative)
             {
                 //swap

@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
+using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Misc;
@@ -190,8 +191,8 @@ namespace LegendaryExplorerCore.Audio
                             }
 
                             string afcName = afcNameProp.ToString().ToLower();
-                            int audioSize = BitConverter.ToInt32(exp.Data, exp.Data.Length - 8);
-                            int audioOffset = BitConverter.ToInt32(exp.Data, exp.Data.Length - 4);
+                            int audioSize = EndianReader.ToInt32(exp.DataReadOnly, exp.DataSize - 8, exp.FileRef.Endian);
+                            int audioOffset = EndianReader.ToInt32(exp.DataReadOnly, exp.DataSize - 4, exp.FileRef.Endian);
                             bool isModified = false;
                             if (afcFile != null)
                             {

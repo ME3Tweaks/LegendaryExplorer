@@ -669,7 +669,7 @@ namespace LegendaryExplorerCore.Packages
                     //find stack references
                     if (exp.HasStack)
                     {
-                        if (exp.Data is byte[] data && (baseUIndex == BitConverter.ToInt32(data, 0) || baseUIndex == BitConverter.ToInt32(data, 4)))
+                        if (baseUIndex == EndianReader.ToInt32(exp.DataReadOnly, 0, exp.FileRef.Endian) || baseUIndex == EndianReader.ToInt32(exp.DataReadOnly, 4, exp.FileRef.Endian))
                         {
                             result.AddToListAt(exp, "Stack");
                         }

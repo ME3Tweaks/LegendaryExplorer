@@ -6,6 +6,7 @@ using System.Linq;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode;
+using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Tests.helpers;
 using LegendaryExplorerCore.Unreal;
@@ -449,7 +450,8 @@ namespace LegendaryExplorerCore.Tests
                                 }
                             }
                             t2d.RemoveEmptyMipsFromMipList();
-                            t2d.SerializeNewData();
+                            using MemoryStream ms = MemoryManager.GetMemoryStream();
+                            t2d.SerializeNewData(ms);
                         }
 
                     }

@@ -46,6 +46,14 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00
         };
 
+        private static byte[] GetStackDummy(MEGame game) => game switch
+        {
+            MEGame.UDK => UDKStackDummy,
+            MEGame.ME1 => me1Me2StackDummy,
+            MEGame.ME2 => me1Me2StackDummy,
+            _ => me3StackDummy
+        };
+
         /// <summary>
         /// Imports <paramref name="sourceEntry"/> (and possibly its children) to <paramref name="destPcc"/> in a manner defined by <paramref name="portingOption"/>
         /// If no <paramref name="relinkMap"/> is provided, method will create one
@@ -220,14 +228,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             byte[] prePropBinary;
             if (sourceExport.HasStack)
             {
-                var ms = MemoryManager.GetMemoryStream();
+                using var ms = MemoryManager.GetMemoryStream();
                 ms.WriteFromBuffer(sourceExport.DataReadOnly.Slice(0, 8));
-                ms.WriteFromBuffer(destPackage.Game switch
-                {
-                    MEGame.UDK => UDKStackDummy,
-                    MEGame.ME3 => me3StackDummy,
-                    _ => me1Me2StackDummy
-                });
+                ms.WriteFromBuffer(GetStackDummy(destPackage.Game));
                 prePropBinary = ms.ToArray(); // kind of poor performance-wise but not sure how to do when we have .DataReadOnly and everything takes byte[]
             }
             else
@@ -235,12 +238,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 int start = sourceExport.GetPropertyStart();
                 if (start == 16)
                 {
-                    var ms = new MemoryStream(sourceExport.DataReadOnly.Slice(0, 16).ToArray());
+                    var ms = new MemoryStream(sourceExport.DataReadOnly.Slice(0, 16).ToArray(), 0, 16, true, true);
                     ms.JumpTo(4);
                     int newNameIdx = destPackage.FindNameOrAdd(sourceExport.FileRef.GetNameEntry(ms.ReadInt32()));
                     ms.JumpTo(4);
                     ms.WriteInt32(newNameIdx);
-                    prePropBinary = ms.ToArray();
+                    prePropBinary = ms.GetBuffer();
                 }
                 else
                 {
@@ -360,16 +363,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         public static bool ReplaceExportDataWithAnother(ExportEntry incomingExport, ExportEntry targetExport, Action<string> errorOccuredCallback = null)
         {
 
-            using EndianReader res = new EndianReader(MemoryManager.GetMemoryStream()) { Endian = targetExport.FileRef.Endian };
+            using var res = new EndianReader(MemoryManager.GetMemoryStream()) { Endian = targetExport.FileRef.Endian };
             if (incomingExport.HasStack)
             {
                 res.Writer.WriteFromBuffer(incomingExport.DataReadOnly.Slice(0, 8));
-                res.Writer.WriteFromBuffer(targetExport.Game switch
-                {
-                    MEGame.UDK => UDKStackDummy,
-                    MEGame.ME3 => me3StackDummy,
-                    _ => me1Me2StackDummy
-                });
+                res.Writer.WriteFromBuffer(GetStackDummy(targetExport.Game));
             }
             else
             {
@@ -673,12 +671,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             using var ms = MemoryManager.GetMemoryStream();
             ms.WriteInt32(stateNodeUIndex);
             ms.WriteInt32(stateNodeUIndex);
-            ms.WriteFromBuffer(game switch
-            {
-                MEGame.UDK => UDKStackDummy,
-                MEGame.ME3 => me3StackDummy,
-                _ => me1Me2StackDummy
-            });
+            ms.WriteFromBuffer(GetStackDummy(game));
             return ms.ToArray();
         }
 

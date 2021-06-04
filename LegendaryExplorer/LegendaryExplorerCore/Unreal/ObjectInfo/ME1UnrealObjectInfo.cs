@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Packages;
@@ -626,7 +627,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 info.pccPath = pcc.FilePath; //used for dynamic resolution of files outside the game directory.
             }
 
-            int nextExport = BitConverter.ToInt32(export.Data, isStruct ? 0x18 : 0x10);
+            int nextExport = EndianReader.ToInt32(export.DataReadOnly, isStruct ? 0x18 : 0x10, export.FileRef.Endian);
             while (nextExport > 0)
             {
                 var entry = pcc.GetUExport(nextExport);
@@ -642,7 +643,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                         }
                     }
                 }
-                nextExport = BitConverter.ToInt32(entry.Data, 0x10);
+                nextExport = EndianReader.ToInt32(entry.DataReadOnly, 0x10, export.FileRef.Endian);
             }
             return info;
         }
@@ -653,12 +654,12 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             if (!Enums.ContainsKey(enumName))
             {
                 var values = new List<NameReference>();
-                byte[] buff = export.Data;
-                int count = BitConverter.ToInt32(buff, 20);
+                var buff = export.DataReadOnly;
+                int count = EndianReader.ToInt32(buff, 20, export.FileRef.Endian);
                 for (int i = 0; i < count; i++)
                 {
                     int enumValIndex = 24 + i * 8;
-                    values.Add(new NameReference(export.FileRef.Names[BitConverter.ToInt32(buff, enumValIndex)], BitConverter.ToInt32(buff, enumValIndex + 4)));
+                    values.Add(new NameReference(export.FileRef.Names[EndianReader.ToInt32(buff, enumValIndex, export.FileRef.Endian)], EndianReader.ToInt32(buff, enumValIndex + 4, export.FileRef.Endian)));
                 }
                 Enums.Add(enumName, values);
             }
@@ -697,20 +698,20 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 case "ClassProperty":
                 case "ComponentProperty":
                     type = PropertyType.ObjectProperty;
-                    reference = pcc.getObjectName(BitConverter.ToInt32(entry.Data, entry.Data.Length - 4));
+                    reference = pcc.getObjectName(EndianReader.ToInt32(entry.DataReadOnly, entry.DataSize - 4, entry.FileRef.Endian));
                     break;
                 case "StructProperty":
                     type = PropertyType.StructProperty;
-                    reference = pcc.getObjectName(BitConverter.ToInt32(entry.Data, entry.Data.Length - 4));
+                    reference = pcc.getObjectName(EndianReader.ToInt32(entry.DataReadOnly, entry.DataSize - 4, entry.FileRef.Endian));
                     break;
                 case "BioMask4Property":
                 case "ByteProperty":
                     type = PropertyType.ByteProperty;
-                    reference = pcc.getObjectName(BitConverter.ToInt32(entry.Data, entry.Data.Length - 4));
+                    reference = pcc.getObjectName(EndianReader.ToInt32(entry.DataReadOnly, entry.DataSize - 4, entry.FileRef.Endian));
                     break;
                 case "ArrayProperty":
                     type = PropertyType.ArrayProperty;
-                    PropertyInfo arrayTypeProp = getProperty(pcc.GetUExport(BitConverter.ToInt32(entry.Data, 44)));
+                    PropertyInfo arrayTypeProp = getProperty(pcc.GetUExport(EndianReader.ToInt32(entry.DataReadOnly, 44, entry.FileRef.Endian)));
                     if (arrayTypeProp != null)
                     {
                         switch (arrayTypeProp.Type)
@@ -752,7 +753,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     return null;
             }
 
-            bool transient = (BitConverter.ToUInt64(entry.Data, 24) & 0x0000000000002000) != 0;
+            bool transient = (EndianReader.ToUInt64(entry.DataReadOnly, 24, entry.FileRef.Endian) & 0x0000000000002000) != 0;
             return new PropertyInfo(type, reference, transient);
         }
         #endregion
@@ -762,7 +763,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         /// <summary>
         /// List of all known classes that are only defined in native code. These are not able to be handled for things like InheritsFrom as they are not in the property info database.
         /// </summary>
-        public static string[] NativeClasses = new[]
+        public static readonly string[] NativeClasses =
         {
             // NEEDS CHECKED FOR ME1
             @"Engine.CodecMovieBink"

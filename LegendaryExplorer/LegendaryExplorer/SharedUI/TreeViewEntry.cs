@@ -196,7 +196,7 @@ namespace LegendaryExplorer.SharedUI
                                     var data = ee.DataReadOnly;
                                     if (Entry.FileRef.Game == MEGame.ME3 || Entry.FileRef.Platform == MEPackage.GamePlatform.PS3 || Entry.Game.IsLEGame())
                                     {
-                                        var flagOffset = Entry.Game == MEGame.ME3 || Entry.FileRef.Platform == MEPackage.GamePlatform.PS3 ? 4 : 12;
+                                        var flagOffset = Entry.Game.IsGame3() || Entry.FileRef.Platform == MEPackage.GamePlatform.PS3 ? 4 : 12;
                                         var flags = EndianReader.ToInt32(data, data.Length - flagOffset, ee.FileRef.Endian);
                                         FlagValues fs = new FlagValues(flags, UE3FunctionReader._flagSet);
                                         _subtext = "";

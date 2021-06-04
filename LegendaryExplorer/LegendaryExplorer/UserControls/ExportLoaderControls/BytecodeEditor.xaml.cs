@@ -236,7 +236,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     //State
                     //parse remaining
                     var footerstartpos = 0x20 + diskSize;
-                    var footerdata = CurrentLoadedExport.Data.Slice(0x20 + diskSize, (int)CurrentLoadedExport.Data.Length - (0x20 + diskSize));
+                    var footerdata = CurrentLoadedExport.DataReadOnly.Slice(0x20 + diskSize, CurrentLoadedExport.DataSize - (0x20 + diskSize));
                     var fpos = 0;
                     ScriptFooterBlocks.Add(new ScriptHeaderItem("Probemask?", "??", fpos + footerstartpos) { length = 8 });
                     fpos += 0x8;
@@ -539,7 +539,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             if (CurrentLoadedExport.Game == MEGame.ME3)
             {
                 int sizeDiff = newBytes.Length - CurrentLoadedExport.DataSize;
-                int diskSize = BitConverter.ToInt32(CurrentLoadedExport.Data, 0x1C);
+                int diskSize = EndianReader.ToInt32(CurrentLoadedExport.DataReadOnly, 0x1C, CurrentLoadedExport.FileRef.Endian);
                 diskSize += sizeDiff;
                 newBytes.OverwriteRange(0x1C, BitConverter.GetBytes(diskSize));
             }
@@ -553,7 +553,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             if (CurrentLoadedExport.Game == MEGame.ME3)
             {
                 int sizeDiff = newBytes.Length - CurrentLoadedExport.DataSize;
-                int diskSize = BitConverter.ToInt32(CurrentLoadedExport.Data, 0x1C);
+                int diskSize = EndianReader.ToInt32(CurrentLoadedExport.DataReadOnly, 0x1C, CurrentLoadedExport.FileRef.Endian);
                 diskSize += sizeDiff;
                 newBytes.OverwriteRange(0x1C, BitConverter.GetBytes(diskSize));
             }

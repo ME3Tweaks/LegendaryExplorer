@@ -800,7 +800,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void CommitBankToFile()
         {
-            byte[] dataBefore = CurrentLoadedWwisebank.Export.Data;
+           // byte[] dataBefore = CurrentLoadedWwisebank.Export.Data;
             CurrentLoadedWwisebank.HIRCObjects.Clear();
             CurrentLoadedWwisebank.HIRCObjects.AddRange(HIRCObjects.Select(x => new KeyValuePair<uint, WwiseBank.HIRCObject>(x.ID, CreateHircObjectFromHex(x.Data))));
 

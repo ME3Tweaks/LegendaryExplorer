@@ -105,11 +105,11 @@ namespace LegendaryExplorerCore.Unreal.Classes
 
             // NEW CODE
             List<ExportEntry> childrenReversed = new List<ExportEntry>();
-            var childIdx = EndianReader.ToInt32(export.Data, 0x14, export.FileRef.Endian);
+            var childIdx = EndianReader.ToInt32(export.DataReadOnly, 0x14, export.FileRef.Endian);
             while (export.FileRef.TryGetUExport(childIdx, out var parsingExp))
             {
                 childrenReversed.Add(parsingExp);
-                childIdx = EndianReader.ToInt32(parsingExp.Data, 0x10, export.FileRef.Endian);
+                childIdx = EndianReader.ToInt32(parsingExp.DataReadOnly, 0x10, export.FileRef.Endian);
             }
 
             //Get local children of this function
@@ -118,7 +118,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 //Reading parameters info...
                 if (export.ClassName.EndsWith("Property"))
                 {
-                    UnrealFlags.EPropertyFlags ObjectFlagsMask = (UnrealFlags.EPropertyFlags)EndianReader.ToUInt64(export.Data, 0x18, export.FileRef.Endian);
+                    UnrealFlags.EPropertyFlags ObjectFlagsMask = (UnrealFlags.EPropertyFlags)EndianReader.ToUInt64(export.DataReadOnly, 0x18, export.FileRef.Endian);
                     if (ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.Parm) && !ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.ReturnParm))
                     {
                         if (paramCount > 0)
@@ -195,15 +195,16 @@ namespace LegendaryExplorerCore.Unreal.Classes
             for (int i = clippingSize; i < memsize; i++)
                 script[i - clippingSize] = memory[i];
         }
-        internal bool Native { get { return HasFlag("Native"); } }
+        internal bool Native => HasFlag("Native");
+
         private string GetReturnType()
         {
             // NEW CODE
-            var childIdx = EndianReader.ToInt32(export.Data, 0x14, export.FileRef.Endian);
+            var childIdx = EndianReader.ToInt32(export.DataReadOnly, 0x14, export.FileRef.Endian);
 
             while (export.FileRef.TryGetUExport(childIdx, out var parsingExp))
             {
-                var data = parsingExp.Data;
+                var data = parsingExp.DataReadOnly;
                 if (parsingExp.ObjectName == "ReturnValue")
                 {
                     if (parsingExp.ClassName == "ObjectProperty" || parsingExp.ClassName == "StructProperty")

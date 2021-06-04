@@ -4017,7 +4017,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                     List<string> boneList = ((ExportEntry)CurrentLoadedExport.Parent).GetProperty<ArrayProperty<NameProperty>>("TrackBoneNames").Select(np => $"{np}").ToList();
 
-                    var bin = new EndianReader(new MemoryStream(CurrentLoadedExport.Data)) { Endian = Pcc.Endian };
+                    var bin = new EndianReader(new MemoryStream(data)) { Endian = Pcc.Endian };
                     bin.JumpTo(binarystart);
 
                     int numTracks = bin.ReadInt32() * 2;
@@ -4195,7 +4195,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 Enum.TryParse(CurrentLoadedExport.GetProperty<EnumProperty>("RotationCompressionFormat")?.Value.Name, out AnimationCompressionFormat rotCompression);
                 Enum.TryParse(CurrentLoadedExport.GetProperty<EnumProperty>("TranslationCompressionFormat")?.Value.Name, out AnimationCompressionFormat posCompression);
 
-                var bin = new EndianReader(new MemoryStream(CurrentLoadedExport.Data)) { Endian = Pcc.Endian };
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = Pcc.Endian };
                 bin.JumpTo(binarystart);
                 if (Pcc.Game is MEGame.ME2 or MEGame.LE2 && Pcc.Platform != MEPackage.GamePlatform.PS3)
                 {
@@ -4420,7 +4420,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var subnodes = new List<ITreeItem>();
             try
             {
-                var bin = new EndianReader(new MemoryStream(CurrentLoadedExport.Data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
                 ReadFaceFXHeader(bin, subnodes);
 
@@ -4585,7 +4585,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var subnodes = new List<ITreeItem>();
             try
             {
-                var bin = new EndianReader(new MemoryStream(CurrentLoadedExport.Data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
                 var game = ReadFaceFXHeader(bin, subnodes);
 
@@ -7457,12 +7457,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         objtext = $"[Export {associatedData.UIndex}] {associatedData.ObjectName.Instanced}";
 
                         //find associated static mesh value for display.
-                        byte[] smc_data = associatedData.Data;
+                        var smc_data = associatedData.DataReadOnly;
                         int staticmeshstart = 0x4;
                         bool found = false;
                         while (staticmeshstart < smc_data.Length && smc_data.Length - 8 >= staticmeshstart)
                         {
-                            ulong nameindex = BitConverter.ToUInt64(smc_data, staticmeshstart);
+                            ulong nameindex = EndianReader.ToUInt64(smc_data, staticmeshstart, Pcc.Endian);
                             if (nameindex < (ulong)CurrentLoadedExport.FileRef.Names.Count && CurrentLoadedExport.FileRef.Names[(int)nameindex] == "StaticMesh")
                             {
                                 //found it
@@ -7477,7 +7477,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                         if (found)
                         {
-                            int staticmeshexp = BitConverter.ToInt32(smc_data, staticmeshstart + 0x18);
+                            int staticmeshexp = EndianReader.ToInt32(smc_data, staticmeshstart + 0x18, Pcc.Endian);
                             if (staticmeshexp > 0 && staticmeshexp < CurrentLoadedExport.FileRef.ExportCount)
                             {
                                 staticmesh = Pcc.GetEntry(staticmeshexp).ObjectName.Instanced;

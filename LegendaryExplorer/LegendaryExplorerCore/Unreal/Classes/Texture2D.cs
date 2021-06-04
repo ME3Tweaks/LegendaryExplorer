@@ -143,9 +143,8 @@ namespace LegendaryExplorerCore.Unreal.Classes
             return imageBytes;
         }
 
-        public byte[] SerializeNewData()
+        public void SerializeNewData(Stream ms)
         {
-            using MemoryStream ms = MemoryManager.GetMemoryStream();
             if (!Export.FileRef.Game.IsGame3()) // Is this rig
             {
                 for (int i = 0; i < 12; i++)
@@ -189,7 +188,6 @@ namespace LegendaryExplorerCore.Unreal.Classes
                     ms.WriteInt32(0);
                 }
             }
-            return ms.ToArray();
         }
 
         public void ReplaceMips(List<Texture2DMipInfo> mipmaps)

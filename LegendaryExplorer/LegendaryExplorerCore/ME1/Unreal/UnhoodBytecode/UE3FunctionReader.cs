@@ -38,19 +38,21 @@ namespace LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode
 
         public static UnFunction ReadState(ExportEntry export, byte[] dataOverride = null)
         {
-            if (dataOverride == null) dataOverride = export.Data;
-            using (BinaryReader reader = new BinaryReader(new MemoryStream(dataOverride)))
+            MemoryStream memoryStream = dataOverride == null ? export.GetReadOnlyBinaryStream() : new MemoryStream(dataOverride);
+
+            using var reader = new EndianReader(memoryStream) { Endian = export.FileRef.Endian };
+            if (dataOverride is not null)
             {
-                reader.ReadBytes(12); //netindex?, none - ASSUMES INCOMING DATA IS FROM .DATA
-                int super = reader.ReadInt32();
-                int nextCompilingChainItem = reader.ReadInt32();
-                reader.ReadBytes(12);
-                int line = reader.ReadInt32(); //??
-                int textPos = reader.ReadInt32(); //??
-                int scriptSize = reader.ReadInt32();
-                byte[] bytecode = reader.BaseStream.ReadFully(); //read the rest of the state
-                return new UnFunction(export, "STATE", new FlagValues(0, _flagSet), bytecode, 0, 0);
+                reader.ReadBytes(12); //netindex?, none
             }
+            int super = reader.ReadInt32();
+            int nextCompilingChainItem = reader.ReadInt32();
+            reader.ReadBytes(12);
+            int line = reader.ReadInt32(); //??
+            int textPos = reader.ReadInt32(); //??
+            int scriptSize = reader.ReadInt32();
+            byte[] bytecode = reader.BaseStream.ReadFully(); //read the rest of the state
+            return new UnFunction(export, "STATE", new FlagValues(0, _flagSet), bytecode, 0, 0);
         }
 
         /// <summary>
@@ -61,12 +63,13 @@ namespace LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode
         /// <returns></returns>
         public static UnFunction ReadFunction(ExportEntry export, byte[] dataOverride = null)
         {
-            // Should dataOverride be GetBinaryData()? Since reader shouldn't care at all about data offset, only binary?
+            MemoryStream memoryStream = dataOverride == null ? export.GetReadOnlyBinaryStream() : new MemoryStream(dataOverride);
 
-            if (dataOverride == null) dataOverride = export.Data; // Is there a way we could improve the performance of this?
-            using var reader = new EndianReader(dataOverride) { Endian = export.FileRef.Endian };
-            reader.Skip(12); //netindex?, none - ASSUMES INCOMING DATA IS FROM .DATA
-
+            using var reader = new EndianReader(memoryStream) { Endian = export.FileRef.Endian };
+            if (dataOverride is not null)
+            {
+                reader.ReadBytes(12); //netindex?, none
+            }
             int super = reader.ReadInt32();
             int nextCompilingChainItem = reader.ReadInt32();
             if (!export.Game.IsLEGame())
