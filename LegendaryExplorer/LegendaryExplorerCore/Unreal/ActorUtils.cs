@@ -43,8 +43,8 @@ namespace LegendaryExplorerCore.Unreal
             (float sX, float sY, float sZ) = (scale.X, scale.Y, scale.Z);
             (float pX, float pY, float pZ) = (pivot.X, pivot.Y, pivot.Z);
             return new Matrix4x4(m11: cp * cy * sX,
-                              m12: sX * sp,
-                              m13: cp * sX * sy,
+                              m12: cp * sX * sy,
+                              m13: sX * sp,
                               m14: 0f,
                               m21: sY * (cy * sp * sr - cr * sy),
                               m22: sY * (cr * cy + sp * sr * sy),
