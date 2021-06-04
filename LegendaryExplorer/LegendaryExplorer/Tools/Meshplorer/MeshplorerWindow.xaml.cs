@@ -626,11 +626,15 @@ namespace LegendaryExplorer.Tools.Meshplorer
 
         private void MeshplorerWPF_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            if (e.Cancel)
+                return;
+
             CurrentExport = null;
             Mesh3DViewer.IsBusyChanged -= RendererIsBusyChanged;
             BinaryInterpreterTab_BinaryInterpreter.Dispose();
             InterpreterTab_Interpreter.Dispose();
             Mesh3DViewer.Dispose();
+            RecentsController?.Dispose();
         }
 
         private void OpenInPackageEditor_Clicked(object sender, RoutedEventArgs e)

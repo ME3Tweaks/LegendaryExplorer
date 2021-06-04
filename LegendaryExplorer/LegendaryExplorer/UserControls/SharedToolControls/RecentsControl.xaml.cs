@@ -16,7 +16,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
     /// <summary>
     /// Control that handles the 'Recents' system, including the main no-open-file panel and the menu system for windows. All calls must be done from a UI thread.
     /// </summary>
-    public partial class RecentsControl : NotifyPropertyChangedControlBase
+    public partial class RecentsControl : NotifyPropertyChangedControlBase, IDisposable
     {
         public class RecentItem
         {
@@ -82,7 +82,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
 
         private void LoadCommands()
         {
-            RecentFileOpenCommand = new RelayCommand(filePath => RecentItemClicked((string)filePath));
+            RecentFileOpenCommand = new RelayCommand(filePath => RecentItemClicked?.Invoke((string)filePath));
         }
 
         private string RecentsAppDataFile => Path.Combine(Directory.CreateDirectory(Path.Combine(AppDirectories.AppDataFolder, RecentsFoldername)).FullName, "RECENTFILES");
@@ -96,7 +96,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
         {
             RecentsFoldername = toolname;
             RecentsMenu = recentsMenu;
-            RecentItemClicked = openFileCallback;
+            RecentItemClicked += openFileCallback;
 
             RecentsMenu.IsEnabled = false; //Default to false as there may be no recents
 
@@ -152,7 +152,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
             foreach (var recentItem in RecentItems)
             {
                 var iconBitmap = GameToImageIconConverter.StaticConvert(recentItem.Game);
-                MenuItem fr = new MenuItem()
+                var fr = new MenuItem
                 {
                     Icon = iconBitmap == null ? null : new Image { Source = iconBitmap },
                     Header = recentItem.Path.Replace("_", "__"),
@@ -226,6 +226,12 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
                 // Inbound, we are receiving an update
                 SetRecents(newRecents);
             }
+        }
+
+        public void Dispose()
+        {
+            RecentItemClicked = null;
+            RecentsMenu = null;
         }
     }
 }

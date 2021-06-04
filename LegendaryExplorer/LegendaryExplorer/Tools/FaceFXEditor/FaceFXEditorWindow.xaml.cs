@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -218,5 +219,13 @@ namespace LegendaryExplorer.Tools.FaceFXEditor
         }
 
         public string Toolname => "FaceFXEditor";
+
+        private void FaceFXEditorWindow_OnClosing(object sender, CancelEventArgs e)
+        {
+            if (e.Cancel)
+                return;
+
+            RecentsController?.Dispose();
+        }
     }
 }

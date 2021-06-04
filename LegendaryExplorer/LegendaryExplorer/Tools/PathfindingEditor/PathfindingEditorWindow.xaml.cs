@@ -651,6 +651,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 interpreterControl.Dispose();
                 PathfindingEditorWPF_ReachSpecsPanel.Dispose();
                 zoomController.Dispose();
+                RecentsController?.Dispose();
 #if DEBUG
                 //graphEditor.DebugEventHandlers();
 #endif

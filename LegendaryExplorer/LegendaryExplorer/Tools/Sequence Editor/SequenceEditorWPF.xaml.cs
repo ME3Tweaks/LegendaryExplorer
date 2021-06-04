@@ -1593,6 +1593,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             GraphHost.Dispose();
             DataContext = null;
             DispatcherHelper.EmptyQueue();
+            RecentsController?.Dispose();
         }
 
         private void OpenInPackageEditor_Clicked(object sender, RoutedEventArgs e)

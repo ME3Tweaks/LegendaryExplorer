@@ -543,8 +543,12 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
 
         private void AnimationImporter_OnClosing(object sender, CancelEventArgs e)
         {
+            if (e.Cancel)
+                return;
+
             InterpreterTab_Interpreter?.Dispose();
             BinaryInterpreterTab_BinaryInterpreter?.Dispose();
+            RecentsController?.Dispose();
         }
     }
 }

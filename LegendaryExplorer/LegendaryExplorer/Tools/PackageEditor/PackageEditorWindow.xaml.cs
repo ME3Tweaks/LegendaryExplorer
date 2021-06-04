@@ -107,7 +107,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         public ObservableCollectionExtended<string> ClassDropdownList { get; set; } = new();
 
-        public ObservableCollectionExtended<TreeViewEntry> AllTreeViewNodesX { get; set; } = new();
+        public ObservableCollectionExtended<TreeViewEntry> AllTreeViewNodesX { get; } = new();
 
         private TreeViewEntry _selectedItem;
 
@@ -3613,6 +3613,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
                 LeftSideList_ItemsSource.ClearEx();
                 AllTreeViewNodesX.ClearEx();
+                RecentsController?.Dispose();
             }
         }
 

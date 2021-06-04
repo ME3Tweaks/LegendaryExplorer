@@ -518,6 +518,7 @@ namespace LegendaryExplorer.DialogueEditor
             GraphHost.Dispose();
             DataContext = null;
             DispatcherHelper.EmptyQueue();
+            RecentsController?.Dispose();
         }
         private void OpenPackage()
         {

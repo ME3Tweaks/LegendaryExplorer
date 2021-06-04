@@ -110,11 +110,8 @@ namespace LegendaryExplorerCore.TLK.ME1
         #endregion
 
         private List<HuffmanNode> nodes;
-        private BitArray Bits;
-        private readonly int tlkSetUIndex;
 
         public TLKStringRef[] StringRefs;
-        //public int index;
         public int UIndex;
 
         public string language;
@@ -141,7 +138,6 @@ namespace LegendaryExplorerCore.TLK.ME1
                 throw new Exception("ME1 Unreal TalkFile cannot be initialized with a non-ME1 file");
             }
             UIndex = export.UIndex;
-            tlkSetUIndex = 0;
             LoadTlkData(pcc);
             FilePath = pcc.FilePath;
             Name = export.ObjectName.Instanced;
@@ -225,16 +221,16 @@ namespace LegendaryExplorerCore.TLK.ME1
             int stringCount = r.ReadInt32();
             byte[] data = new byte[r.BaseStream.Length - r.BaseStream.Position];
             r.Read(data, 0, data.Length);
-            Bits = new BitArray(data);
+            var bits = new BitArray(data);
 
             //decompress encoded data with huffman tree
             int offset = 4;
             var rawStrings = new List<string>(stringCount);
-            while (offset * 8 < Bits.Length)
+            while (offset * 8 < bits.Length)
             {
                 int size = BitConverter.ToInt32(data, offset);
                 offset += 4;
-                string s = GetString(offset * 8);
+                string s = GetString(offset * 8, bits);
                 offset += size + 4;
                 rawStrings.Add(s);
             }
@@ -249,17 +245,17 @@ namespace LegendaryExplorerCore.TLK.ME1
             }
         }
 
-        private string GetString(int bitOffset)
+        private string GetString(int bitOffset, BitArray bits)
         {
             HuffmanNode root = nodes[0];
             HuffmanNode curNode = root;
 
             var builder = new StringBuilder();
             int i;
-            for (i = bitOffset; i < Bits.Length; i++)
+            for (i = bitOffset; i < bits.Length; i++)
             {
                 /* reading bits' sequence and decoding it to Strings while traversing Huffman Tree */
-                int nextNodeID = Bits[i] ? curNode.RightNodeID : curNode.LeftNodeID;
+                int nextNodeID = bits[i] ? curNode.RightNodeID : curNode.LeftNodeID;
 
                 /* it's an internal node - keep looking for a leaf */
                 if (nextNodeID >= 0)

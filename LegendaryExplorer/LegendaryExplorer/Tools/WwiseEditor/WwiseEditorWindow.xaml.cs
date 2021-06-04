@@ -78,8 +78,8 @@ namespace LegendaryExplorer.Tools.WwiseEditor
             UIndexQueuedForFocusing = uIndex;
         }
 
-        public ObservableCollectionExtended<ExportEntry> WwiseBankExports { get; } = new ObservableCollectionExtended<ExportEntry>();
-        public ObservableCollectionExtended<WwiseHircObjNode> CurrentObjects { get; } = new ObservableCollectionExtended<WwiseHircObjNode>();
+        public ObservableCollectionExtended<ExportEntry> WwiseBankExports { get; } = new();
+        public ObservableCollectionExtended<WwiseHircObjNode> CurrentObjects { get; } = new();
 
         private List<SaveData> SavedPositions;
 
@@ -823,12 +823,27 @@ namespace LegendaryExplorer.Tools.WwiseEditor
 
         private void WwiseEditorWPF_OnClosing(object sender, CancelEventArgs e)
         {
+            if (e.Cancel)
+            {
+                return;
+            }
             if (AutoSaveView_MenuItem.IsChecked)
                 SaveView();
 
             Misc.AppSettings.Settings.WwiseGraphEditor_AutoSaveView = AutoSaveView_MenuItem.IsChecked;
             soundPanel.HIRCObjectSelected -= SoundPanel_HIRCObjectSelected;
             soundPanel.Dispose();
+            
+            foreach (var x in CurrentObjects)
+            {
+                x.MouseDown -= Node_MouseDown;
+                x.Dispose();
+            }
+
+            CurrentObjects.Clear();
+            graphEditor.Dispose();
+
+            RecentsController?.Dispose();
         }
 
         public void PropogateRecentsChange(IEnumerable<RecentsControl.RecentItem> newRecents)

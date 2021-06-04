@@ -77,7 +77,7 @@ namespace LegendaryExplorer
         internal void OnDispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
             var eh = new ExceptionHandlerDialog(e.Exception);
-            Window wpfActiveWindow = Application.Current.Windows.OfType<Window>().SingleOrDefault(x => x.IsActive);
+            Window wpfActiveWindow = Current.Windows.OfType<Window>().SingleOrDefault(x => x.IsActive);
             eh.Owner = wpfActiveWindow;
             eh.ShowDialog();
             e.Handled = eh.Handled;

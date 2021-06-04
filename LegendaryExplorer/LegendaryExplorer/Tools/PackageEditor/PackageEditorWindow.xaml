@@ -318,7 +318,7 @@
                 <TreeView x:Name="LeftSide_TreeView" Grid.Column="0" Grid.Row="1" FontFamily="Consolas" Visibility="Collapsed" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" ItemsSource="{Binding AllTreeViewNodesX}" FocusManager.IsFocusScope="True" VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
                     <TreeView.Resources>
                         <HierarchicalDataTemplate DataType="{x:Type SharedUI:TreeViewEntry}" ItemsSource="{Binding Sublinks}">
-                            <Border Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" ContextMenu="{StaticResource EntryContextMenu}" Background="Transparent"  Padding="{Binding Path=(SharedUI:TouchComfySettings.TreeViewMargin)}">
+                            <Border ContextMenu="{StaticResource EntryContextMenu}" Background="Transparent"  Padding="{Binding Path=(SharedUI:TouchComfySettings.TreeViewMargin)}">
                                 <DockPanel>
 
                                     <TextBlock DockPanel.Dock="Bottom" Text="{Binding SubText}" FontSize="10" Foreground="{Binding Path=ForegroundColor}" TextWrapping="Wrap" VerticalAlignment="Center" Visibility="{Binding SubText, Converter={StaticResource NullVisibilityConverter}}" >
