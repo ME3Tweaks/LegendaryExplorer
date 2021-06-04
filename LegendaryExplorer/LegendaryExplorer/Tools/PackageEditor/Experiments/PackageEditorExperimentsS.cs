@@ -902,30 +902,30 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void DumpMaterialShaders(ExportEntry matExport)
         {
-            var dlg = new CommonOpenFileDialog("Pick a folder to save Shaders to.")
-            {
-                IsFolderPicker = true,
-                EnsurePathExists = true
-            };
-            if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
-            {
-                var matInst = new MaterialInstanceConstant(matExport);
-                matInst.GetShaders();
-                foreach (Shader shader in matInst.Shaders)
-                {
-                    string shaderType = shader.ShaderType;
-                    string pathWithoutInvalids;
-                    //pathWithoutInvalids = Path.Combine(dlg.FileName, $"{shaderType.GetPathWithoutInvalids()} - {shader.Guid} - OFFICIAL.txt");
-                    //File.WriteAllText(pathWithoutInvalids,
-                    //                  SharpDX.D3DCompiler.ShaderBytecode.FromStream(new MemoryStream(shader.ShaderByteCode))
-                    //                         .Disassemble());
+            //var dlg = new CommonOpenFileDialog("Pick a folder to save Shaders to.")
+            //{
+            //    IsFolderPicker = true,
+            //    EnsurePathExists = true
+            //};
+            //if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
+            //{
+            //    var matInst = new MaterialInstanceConstant(matExport);
+            //    matInst.GetShaders();
+            //    foreach (Shader shader in matInst.Shaders)
+            //    {
+            //        string shaderType = shader.ShaderType;
+            //        string pathWithoutInvalids;
+            //        //pathWithoutInvalids = Path.Combine(dlg.FileName, $"{shaderType.GetPathWithoutInvalids()} - {shader.Guid} - OFFICIAL.txt");
+            //        //File.WriteAllText(pathWithoutInvalids,
+            //        //                  SharpDX.D3DCompiler.ShaderBytecode.FromStream(new MemoryStream(shader.ShaderByteCode))
+            //        //                         .Disassemble());
 
-                    pathWithoutInvalids = Path.Combine(dlg.FileName, $"{shaderType.GetPathWithoutInvalids()} - {shader.Guid}.txt");// - SirCxyrtyx.txt");
-                    File.WriteAllText(pathWithoutInvalids, shader.ShaderDisassembly);
-                }
+            //        pathWithoutInvalids = Path.Combine(dlg.FileName, $"{shaderType.GetPathWithoutInvalids()} - {shader.Guid}.txt");// - SirCxyrtyx.txt");
+            //        File.WriteAllText(pathWithoutInvalids, shader.ShaderDisassembly);
+            //    }
 
-                MessageBox.Show("Done!");
-            }
+            //    MessageBox.Show("Done!");
+            //}
 
         }
 

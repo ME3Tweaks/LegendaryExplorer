@@ -679,7 +679,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// Attempts to resolve the import by looking at associated files that are loaded before this one. This method does not use a global file cache, the passed in cache may have items added to it.
         /// </summary>
         /// <param name="entry">The import to resolve</param>
-        /// <param name="lookupCache">Package cache if you wish to keep packages held open, for example if you're resolving many imports</param>
+        /// <param name="localCache">Package cache if you wish to keep packages held open, for example if you're resolving many imports</param>
         /// <param name="localization">Three letter localization code, all upper case. Defaults to INT.</param>
         /// <returns></returns>
         public static ExportEntry ResolveImport(ImportEntry entry, PackageCache localCache = null, string localization = "INT")
@@ -762,7 +762,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
             //add startup files (always loaded)
             IEnumerable<string> startups;
-            if (entry.Game.IsGame2())
+            if (entry.Game.IsGame2() || entry.Game is MEGame.LE1)
             {
                 startups = gameFiles.Keys.Where(x => x.Contains("Startup_", StringComparison.InvariantCultureIgnoreCase) && x.Contains($"_{localization}", StringComparison.InvariantCultureIgnoreCase)); //me2 this will unfortunately include the main startup file
             }

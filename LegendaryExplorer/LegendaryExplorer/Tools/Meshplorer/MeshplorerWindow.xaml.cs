@@ -635,6 +635,8 @@ namespace LegendaryExplorer.Tools.Meshplorer
             InterpreterTab_Interpreter.Dispose();
             Mesh3DViewer.Dispose();
             RecentsController?.Dispose();
+            UnLoadMEPackage();
+            MeshExports.Clear();
         }
 
         private void OpenInPackageEditor_Clicked(object sender, RoutedEventArgs e)

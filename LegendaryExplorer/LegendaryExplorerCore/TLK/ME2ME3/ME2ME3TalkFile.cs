@@ -105,7 +105,7 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
             r.BaseStream.Seek(pos + (Header.MaleEntryCount + Header.FemaleEntryCount) * 8, SeekOrigin.Begin);
 
 
-            var characterTree = new List<HuffmanNode>();
+            var characterTree = new List<HuffmanNode>(Header.treeNodeCount);
             for (int i = 0; i < Header.treeNodeCount; i++)
                 characterTree.Add(new HuffmanNode(r));
 
@@ -150,9 +150,10 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
              * Sometimes there's no such key, in that case, our String ID is probably a substring
              * of another String present in rawStrings. 
              */
-            StringRefs = new List<TLKStringRef>();
+            int strRefCount = Header.MaleEntryCount + Header.FemaleEntryCount;
+            StringRefs = new List<TLKStringRef>(strRefCount);
             StringRefsTable = new Dictionary<int, List<TLKStringRef>>();
-            for (int i = 0; i < Header.MaleEntryCount + Header.FemaleEntryCount; i++)
+            for (int i = 0; i < strRefCount; i++)
             {
                 var sref = new TLKStringRef(r, false);
                 sref.Index = i;

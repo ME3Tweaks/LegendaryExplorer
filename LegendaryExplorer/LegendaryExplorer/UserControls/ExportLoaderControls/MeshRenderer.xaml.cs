@@ -692,6 +692,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 //SceneViewer.Context.Camera.FocusDepth = Preview.LODs[0].Mesh.AABBHalfSize.Length() * 1.2f;
                                 break;
                         }
+                        assetCache.Dispose();
 
                         CenterView();
                         LODPicker.ClearEx();

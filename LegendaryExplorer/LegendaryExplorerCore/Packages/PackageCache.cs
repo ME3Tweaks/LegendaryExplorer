@@ -11,11 +11,11 @@ namespace LegendaryExplorerCore.Packages
     /// </summary>
     public class PackageCache : IDisposable
     {
-        private object syncObj = new object();
+        private readonly object syncObj = new();
         /// <summary>
         /// Cache that should only be accessed read-only. Subclasses of this can reference this shared cache object
         /// </summary>
-        public CaseInsensitiveConcurrentDictionary<IMEPackage> Cache { get; } = new CaseInsensitiveConcurrentDictionary<IMEPackage>();
+        public CaseInsensitiveConcurrentDictionary<IMEPackage> Cache { get; } = new();
 
         /// <summary>
         /// Thread-safe package cache fetch. Can be passed to various methods to help expedite operations by preventing package reopening. Packages opened with this method do not use the global LegendaryExplorerCore caching system and will always load from disk if not in this local cache.
@@ -47,10 +47,8 @@ namespace LegendaryExplorerCore.Packages
                         Cache[packagePath] = package;
                         return package;
                     }
-                    else
-                    {
-                        Debug.WriteLine($@"PackageCache miss: File not found: {packagePath}");
-                    }
+
+                    Debug.WriteLine($@"PackageCache miss: File not found: {packagePath}");
                 }
             }
 

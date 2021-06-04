@@ -92,6 +92,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         /// </summary>
         /// <param name="texcache">The texture cache to request textures from.</param>
         /// <param name="mat">The material that this ModelPreviewMaterial will try to look like.</param>
+        /// <param name="assetCache"></param>
         protected ModelPreviewMaterial(PreviewTextureCache texcache, MaterialInstanceConstant mat, PackageCache assetCache, List<PreloadedTextureData> preloadedTextures = null)
         {
             if (mat == null) return;
@@ -165,11 +166,13 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         /// The full name of the diffuse texture property.
         /// </summary>
         public string DiffuseTextureFullName = "";
+
         /// <summary>
         /// Creates a TexturedPreviewMaterial that renders as close to what the given <see cref="MaterialInstanceConstant"/> looks like as possible. 
         /// </summary>
         /// <param name="texcache">The texture cache to request textures from.</param>
         /// <param name="mat">The material that this ModelPreviewMaterial will try to look like.</param>
+        /// <param name="assetCache"></param>
         public TexturedPreviewMaterial(PreviewTextureCache texcache, MaterialInstanceConstant mat, PackageCache assetCache, List<PreloadedTextureData> preloadedTextures = null) : base(texcache, mat, assetCache, preloadedTextures)
         {
             string matPackage = null;

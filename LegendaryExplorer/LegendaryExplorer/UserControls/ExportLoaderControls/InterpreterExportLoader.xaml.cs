@@ -2198,6 +2198,23 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             Interpreter_Hexbox_Host?.Child.Dispose();
             Interpreter_Hexbox_Host?.Dispose();
             Interpreter_Hexbox_Host = null;
+            CurrentLoadedExport = null;
+            //needed because wpf controls can take a loong time to get garbage collected,
+            //so we need to sever all links to the IMEPackage immediately if we want it to be cleaned up in a timely fashion
+            ClearTree(PropertyNodes);
+            Interpreter_TreeView = null;
+
+            static void ClearTree(ObservableCollectionExtended<UPropertyTreeViewEntry> treeViewEntries)
+            {
+                foreach (UPropertyTreeViewEntry tve in treeViewEntries)
+                {
+                    tve.AttachedExport = null;
+                    if (tve.ChildrenProperties.Count > 0)
+                    {
+                        ClearTree(tve.ChildrenProperties);
+                    }
+                }
+            }
         }
 
         public override void PopOut()

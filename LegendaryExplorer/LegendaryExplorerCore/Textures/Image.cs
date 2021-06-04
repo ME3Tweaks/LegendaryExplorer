@@ -249,7 +249,7 @@ namespace LegendaryExplorerCore.Textures
                         var pixels = SLImageToRawBytes(image);
 
                         pixelFormat = PixelFormat.ARGB;
-                        MipMap mipmap = new MipMap(pixels, image.Width, image.Height, PixelFormat.ARGB);
+                        var mipmap = new MipMap(pixels, image.Width, image.Height, PixelFormat.ARGB);
                         mipMaps.Add(mipmap);
                         break;
                     }
@@ -315,10 +315,8 @@ namespace LegendaryExplorerCore.Textures
 
         private static byte[] BC7ToARGB(byte[] src, int w, int h)
         {
-            BcDecoder decoder = new BcDecoder();
-            using Image<Rgba32> image = decoder.DecodeRawToImageRgba32(new MemoryStream(src), w, h, CompressionFormat.Bc7);
-
-            var bytes = SLImageToRawBytes(image);
+            var decoder = new BcDecoder();
+            byte[] bytes = MemoryMarshal.AsBytes(decoder.DecodeRaw(src, w, h, CompressionFormat.Bc7).AsSpan()).ToArray();
             // Swap red and blue channels. 
             // idk if there is faster way to do this
             return SwapChannelsARGB(bytes, 0, 2);

@@ -201,8 +201,8 @@ namespace LegendaryExplorerCore.TLK.ME1
             }
 
             //Huffman tree
-            nodes = new List<HuffmanNode>();
             int nodeCount = r.ReadInt32();
+            nodes = new List<HuffmanNode>(nodeCount);
             for (int i = 0; i < nodeCount; i++)
             {
                 bool leaf = r.ReadBoolean();
