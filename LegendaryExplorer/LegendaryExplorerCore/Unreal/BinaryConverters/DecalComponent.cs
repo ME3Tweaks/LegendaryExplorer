@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Numerics;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.SharpDX;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {

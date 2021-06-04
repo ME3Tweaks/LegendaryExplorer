@@ -1,5 +1,5 @@
 ﻿using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.SharpDX;
+using System.Numerics;
 using System;
 using System.Linq;
 

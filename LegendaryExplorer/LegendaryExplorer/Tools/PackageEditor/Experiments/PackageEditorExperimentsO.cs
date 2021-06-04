@@ -4,13 +4,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Numerics;
 using System.Windows.Threading;
 using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.SharpDX;
 using LegendaryExplorerCore.TLK.ME1;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -66,7 +66,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             return Angle * (180 / 3.1415f);
         }
 
-        public static void ExportT3D(StaticMesh staticMesh, string Filename, Matrix m, Vector3 IncScale3D)
+        public static void ExportT3D(StaticMesh staticMesh, string Filename, Matrix4x4 m, Vector3 IncScale3D)
         {
             StreamWriter Writer = new StreamWriter(Filename, true);
 
@@ -109,7 +109,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
 
         //UDK version, need to figure out how to apply rotation properly
-        public static void ExportT3D_UDK(StaticMesh STM, string Filename, Matrix m, Vector3 IncScale3D)
+        public static void ExportT3D_UDK(StaticMesh STM, string Filename, Matrix4x4 m, Vector3 IncScale3D)
         {
             StreamWriter Writer = new StreamWriter(Filename, true);
 
@@ -163,7 +163,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         //an attempt to recreate the assembling process in MaxScript similar to unreal t3d
         //Rotation is buggy, doesn't properly for now
-        public static void ExportT3D_MS(StaticMesh STM, string Filename, Matrix m, Vector3 IncScale3D)
+        public static void ExportT3D_MS(StaticMesh STM, string Filename, Matrix4x4 m, Vector3 IncScale3D)
         {
             StreamWriter Writer = new StreamWriter(Filename, true);
 

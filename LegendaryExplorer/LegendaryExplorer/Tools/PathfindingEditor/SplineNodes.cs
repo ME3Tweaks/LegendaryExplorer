@@ -1,19 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Collections;
 using System.Drawing;
-using UMD.HCIL.Piccolo.Nodes;
 using System;
 using System.Linq;
+using System.Numerics;
 using LegendaryExplorer.Tools.SequenceObjects;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.SharpDX;
 using LegendaryExplorerCore.Unreal;
 using UMD.HCIL.Piccolo;
+using UMD.HCIL.Piccolo.Nodes;
 using UMD.HCIL.Piccolo.Event;
 using Color = System.Drawing.Color;
 using RectangleF = System.Drawing.RectangleF;
-using InterpCurveVector = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve<LegendaryExplorerCore.SharpDX.Vector3>;
+using InterpCurveVector = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve<System.Numerics.Vector3>;
 using InterpCurveFloat = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve<float>;
 using InterpCurvePointFloat = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurvePoint<float>;
 
@@ -249,7 +249,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 if (spline.nodes.Count > 7)
                 {
                     var directionVector = new Vector2(spline.nodes[7].OffsetX, spline.nodes[7].OffsetY) - new Vector2(spline.nodes[5].OffsetX, spline.nodes[5].OffsetY);
-                    directionVector.Normalize();
+                    directionVector = Vector2.Normalize(directionVector);
                     spline.nodes[6].Rotation = (float)(Math.Atan2(directionVector.X, -directionVector.Y) * 180 / Math.PI);
                 }
 
@@ -318,7 +318,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             if (nodes.Count > 7)
             {
                 var directionVector = new Vector2(nodes[7].OffsetX, nodes[7].OffsetY) - new Vector2(nodes[5].OffsetX, nodes[5].OffsetY);
-                directionVector.Normalize();
+                directionVector = Vector2.Normalize(directionVector);
                 nodes[6].RotateBy((float)(Math.Atan2(directionVector.X, -directionVector.Y) * 180 / Math.PI));
             }
 

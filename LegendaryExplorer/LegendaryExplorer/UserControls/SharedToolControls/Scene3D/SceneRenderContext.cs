@@ -3,10 +3,11 @@ using System.IO;
 using System.Windows.Input;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Resources;
-using SharpDX;
+using System.Numerics;
 using SharpDX.DXGI;
 using SharpDX.Direct3D11;
 using SharpDX.Direct3D;
+using SharpDX.Mathematics.Interop;
 
 namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 {
@@ -14,11 +15,11 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
     {
         public struct WorldConstants
         {
-            Matrix Projection;
-            Matrix View;
-            Matrix Model;
+            Matrix4x4 Projection;
+            Matrix4x4 View;
+            Matrix4x4 Model;
 
-            public WorldConstants(Matrix Projection, Matrix View, Matrix Model)
+            public WorldConstants(Matrix4x4 Projection, Matrix4x4 View, Matrix4x4 Model)
             {
                 this.Projection = Projection;
                 this.View = View;
@@ -33,7 +34,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             Right,
         }
 
-        public Color BackgroundColor = new(1.0f, 1.0f, 1.0f); //Default
+        public LegendaryExplorerCore.SharpDX.Color BackgroundColor = new(1.0f, 1.0f, 1.0f); //Default
 
         public SharpDX.Direct3D11.Device Device { get; private set; }
         //public SwapChain SwapChain { get; private set; } = null;
@@ -116,7 +117,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             if (DepthBufferView != null && BackBufferView != null)
             {
                 ImmediateContext.ClearDepthStencilView(DepthBufferView, DepthStencilClearFlags.Depth, 1.0f, 0);
-                ImmediateContext.ClearRenderTargetView(BackBufferView, BackgroundColor);
+                ImmediateContext.ClearRenderTargetView(BackBufferView, new RawColor4(BackgroundColor.R/255.0f, BackgroundColor.G/255.0f, BackgroundColor.B/255.0f, BackgroundColor.A/255.0f));
 
 
                 // Do whatever a derived class wants
@@ -284,7 +285,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             converter.Initialize(decoder.GetFrame(0), SharpDX.WIC.PixelFormat.Format32bppPRGBA, SharpDX.WIC.BitmapDitherType.None, null, 0.0, SharpDX.WIC.BitmapPaletteType.Custom);
             SharpDX.WIC.BitmapSource bitmap = converter;
             int stride = bitmap.Size.Width * 4;
-            var buffer = new DataStream(bitmap.Size.Height * stride, true, true);
+            var buffer = new SharpDX.DataStream(bitmap.Size.Height * stride, true, true);
             bitmap.CopyPixels(stride, buffer);
             var texture = new Texture2D(Device, new Texture2DDescription
             {
@@ -298,7 +299,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 MipLevels = 1, 
                 OptionFlags = ResourceOptionFlags.None,
                 SampleDescription = new SampleDescription(1, 0)
-            }, new DataRectangle(buffer.DataPointer, stride));
+            }, new SharpDX.DataRectangle(buffer.DataPointer, stride));
             bitmap.Dispose();
             buffer.Dispose();
             ms.Dispose();

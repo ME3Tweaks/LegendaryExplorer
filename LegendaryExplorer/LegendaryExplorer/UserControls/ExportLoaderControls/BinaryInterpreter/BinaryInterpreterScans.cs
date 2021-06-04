@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorer.UnrealExtensions;
 using LegendaryExplorer.UnrealExtensions.Classes;
@@ -11,7 +12,6 @@ using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
-using SharpDX;
 using LegendaryExplorerCore.Helpers;
 using static LegendaryExplorer.Tools.TlkManagerNS.TLKManagerWPF;
 

@@ -1,22 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.SharpDX;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     //When using these classes, DON'T specify T where you use it, just put one or more of these in the file.
     //These are the only valid versions
-    using InterpCurveVector = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve<LegendaryExplorerCore.SharpDX.Vector3>;
-    using InterpCurveVector2D = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve<LegendaryExplorerCore.SharpDX.Vector2>;
+    using InterpCurveVector = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve<System.Numerics.Vector3>;
+    using InterpCurveVector2D = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve<System.Numerics.Vector2>;
     using InterpCurveFloat = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve<float>;
 
-    using InterpCurvePointVector = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurvePoint<LegendaryExplorerCore.SharpDX.Vector3>;
-    using InterpCurvePointVector2D = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurvePoint<LegendaryExplorerCore.SharpDX.Vector2>;
+    using InterpCurvePointVector = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurvePoint<System.Numerics.Vector3>;
+    using InterpCurvePointVector2D = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurvePoint<System.Numerics.Vector2>;
     using InterpCurvePointFloat = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurvePoint<float>;
 
-    //ONLY WORKS WHEN T is float, LegendaryExplorerCore.SharpDX.Vector3 or LegendaryExplorerCore.SharpDX.Vector2
+    //ONLY WORKS WHEN T is float, System.Numerics.Vector3 or System.Numerics.Vector2
     public class InterpCurvePoint<T>
     {
         public float InVal { get; set; }
@@ -111,7 +111,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
 
             #endregion
-
             #region GenericSpecializationFramework
 
             public static readonly Specializations Inst = new Specializations();
@@ -145,7 +144,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
-    //ONLY WORKS WHEN T is float, LegendaryExplorerCore.SharpDX.Vector3 or LegendaryExplorerCore.SharpDX.Vector2
+    //ONLY WORKS WHEN T is float, System.Numerics.Vector3 or System.Numerics.Vector2
     public class InterpCurve<T>
     {
         public List<InterpCurvePoint<T>> Points = new();

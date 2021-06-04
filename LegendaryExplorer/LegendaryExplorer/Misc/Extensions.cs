@@ -14,8 +14,8 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using System.Numerics;
 using LegendaryExplorerCore.Helpers;
-using SharpDX;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Point = System.Windows.Point;
 

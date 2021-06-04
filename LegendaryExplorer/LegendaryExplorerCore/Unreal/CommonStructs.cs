@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Numerics;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.SharpDX;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 
 namespace LegendaryExplorerCore.Unreal
@@ -56,7 +56,7 @@ namespace LegendaryExplorerCore.Unreal
         public static Rotator GetRotator(StructProperty rotProp) =>
             new Rotator(rotProp.GetProp<IntProperty>("Pitch"), rotProp.GetProp<IntProperty>("Yaw"), rotProp.GetProp<IntProperty>("Roll"));
 
-        public static StructProperty MatrixProp(Matrix m, NameReference? name = null)
+        public static StructProperty MatrixProp(Matrix4x4 m, NameReference? name = null)
         {
             return new StructProperty("Matrix", new PropertyCollection
             {

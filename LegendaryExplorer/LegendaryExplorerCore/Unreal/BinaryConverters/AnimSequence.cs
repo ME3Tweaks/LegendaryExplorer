@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.Gammtek;
@@ -9,7 +10,6 @@ using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.SharpDX;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -414,12 +414,13 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                                 //smallest three compression: https://gafferongames.com/post/snapshot_compression/
                                 //omit the largest component, and store its index
                                 int wPos = 0;
-                                float max = 0f;
+                                float max = 0f; 
+                                float[] rotArr = {rot.X, rot.Y, rot.Z};
                                 for (int k = 0; k < 4; k++)
                                 {
-                                    if (Math.Abs(rot[k]) > max)
+                                    if (Math.Abs(rotArr[k]) > max)
                                     {
-                                        max = Math.Abs(rot[k]);
+                                        max = Math.Abs(rotArr[k]);
                                         wPos = k;
                                     }
                                 }

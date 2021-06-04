@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Numerics;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.SharpDX;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -113,7 +113,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public static Rotator FromDirectionVector(Vector3 dirVec)
         {
-            (float x, float y, float z) = dirVec;
+            float x = dirVec.X;
+            float y = dirVec.Y;
+            float z = dirVec.Z;
             var pitch = Math.Atan2(z, Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2)));
             var yaw = Math.Atan2(y, x);
             return new Rotator(((float)pitch).RadiansToUnrealRotationUnits(), ((float)yaw).RadiansToUnrealRotationUnits(), 0);

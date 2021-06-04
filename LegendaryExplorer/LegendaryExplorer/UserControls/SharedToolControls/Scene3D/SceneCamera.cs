@@ -1,5 +1,5 @@
 ﻿using System;
-using SharpDX;
+using System.Numerics;
 
 namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 {
@@ -15,11 +15,11 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         public float ZNear = 0.1f;
         public float ZFar = 40000;
         public bool FirstPerson = false;
-        public Vector3 CameraUp => (Vector3) Vector3.Transform(Vector3.UnitY, Matrix.RotationX(Pitch) * Matrix.RotationY(Yaw)) * new Vector3(1, 1, -1);
+        public Vector3 CameraUp => Vector3.Transform(Vector3.UnitY, Matrix4x4.CreateRotationX(Pitch) * Matrix4x4.CreateRotationY(Yaw)) * new Vector3(1, 1, -1);
 
-        public Vector3 CameraLeft => (Vector3) Vector3.Transform(-Vector3.UnitX, Matrix.RotationY(-Yaw));
+        public Vector3 CameraLeft => Vector3.Transform(-Vector3.UnitX, Matrix4x4.CreateRotationY(-Yaw));
 
-        public Vector3 CameraForward => (Vector3)Vector3.Transform(Vector3.UnitZ, Matrix.RotationX(-Pitch) * Matrix.RotationY(-Yaw));
+        public Vector3 CameraForward => Vector3.Transform(Vector3.UnitZ, Matrix4x4.CreateRotationX(-Pitch) * Matrix4x4.CreateRotationY(-Yaw));
 
         public SceneCamera()
         {
@@ -31,21 +31,38 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             this.Position = Position;
         }
 
-        public Matrix ViewMatrix
+        public Matrix4x4 ViewMatrix
         {
             get
             {
                 if (FirstPerson)
                 {
-                    return Matrix.Translation(-Position) * Matrix.RotationY(Yaw) * Matrix.RotationX(Pitch);
+                    return Matrix4x4.CreateTranslation(-Position) * Matrix4x4.CreateRotationY(Yaw) * Matrix4x4.CreateRotationX(Pitch);
                 }
                 else
                 {
-                    return Matrix.Translation(-Position) * Matrix.RotationY(Yaw) * Matrix.RotationX(Pitch) * Matrix.Translation(0, 0, FocusDepth);
+                    return Matrix4x4.CreateTranslation(-Position) * Matrix4x4.CreateRotationY(Yaw) * Matrix4x4.CreateRotationX(Pitch) * Matrix4x4.CreateTranslation(0, 0, FocusDepth);
                 }
             }
         }
 
-        public Matrix ProjectionMatrix => Matrix.PerspectiveFovLH(FOV, aspect, ZNear, ZFar);
+        public Matrix4x4 ProjectionMatrix
+        {
+            get
+            {
+                // This creates a left handed FoV matrix - code ported from SharpDX
+
+                var matrix = new Matrix4x4();
+                float yScale = (float)(1.0f / Math.Tan(FOV * 0.5f));
+                float q = ZFar / (ZFar - ZNear);
+
+                matrix.M11 = yScale / aspect;
+                matrix.M22 = yScale;
+                matrix.M33 = q;
+                matrix.M34 = 1.0f;
+                matrix.M43 = -q * ZNear;
+                return matrix;
+            }
+        }
     }
 }

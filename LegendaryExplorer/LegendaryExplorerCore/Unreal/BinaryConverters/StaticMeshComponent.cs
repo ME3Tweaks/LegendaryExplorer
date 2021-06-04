@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.SharpDX;
+using System.Numerics;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -144,14 +144,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
     public class QuantizedDirectionalLightSample
     {
-        public Color Coefficient1;//not ME3
-        public Color Coefficient2;
-        public Color Coefficient3;
+        public SharpDX.Color Coefficient1;//not ME3
+        public SharpDX.Color Coefficient2;
+        public SharpDX.Color Coefficient3;
     }
 
     public class QuantizedSimpleLightSample
     {
-        public Color Coefficient;
+        public SharpDX.Color Coefficient;
     }
 
     public static partial class SCExt
