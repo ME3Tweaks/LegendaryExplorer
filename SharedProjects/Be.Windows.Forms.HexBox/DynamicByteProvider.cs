@@ -4,7 +4,6 @@ using System.Diagnostics;
 
 namespace Be.Windows.Forms
 {
-    //TODO: rewrite this as a custom resizable array implementation instead of using List<byte>. Lots of allocations and copies can be avoided that way
     /// <summary>
     /// Byte provider for a small amount of data.
     /// </summary>

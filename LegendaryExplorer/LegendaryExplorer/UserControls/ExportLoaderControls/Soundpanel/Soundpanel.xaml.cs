@@ -46,17 +46,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
     /// </summary>
     public partial class Soundpanel : ExportLoaderControl
     {
-        public ObservableCollectionExtended<object> ExportInformationList { get; } = new ObservableCollectionExtended<object>();
-        public ObservableCollectionExtended<HIRCNotableItem> HIRCNotableItems { get; } = new ObservableCollectionExtended<HIRCNotableItem>();
-        private readonly List<EmbeddedWEMFile> AllWems = new List<EmbeddedWEMFile>(); //used only for rebuilding soundbank
+        public ObservableCollectionExtended<object> ExportInformationList { get; } = new();
+        public ObservableCollectionExtended<HIRCNotableItem> HIRCNotableItems { get; } = new();
+        private readonly List<EmbeddedWEMFile> AllWems = new(); //used only for rebuilding soundbank
         WwiseStream wwiseStream;
         public string afcPath = "";
-        readonly DispatcherTimer seekbarUpdateTimer = new DispatcherTimer();
+        readonly DispatcherTimer seekbarUpdateTimer = new();
         private bool SeekUpdatingDueToTimer;
         private bool SeekDragging;
         Stream audioStream;
         private HexBox SoundpanelHIRC_Hexbox;
-        private DynamicByteProvider hircHexProvider;
+        private ReadOptimizedByteProvider hircHexProvider;
 
         public IBusyUIHost HostingControl
         {
@@ -67,7 +67,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public static readonly DependencyProperty HostingControlProperty = DependencyProperty.Register(
             nameof(HostingControl), typeof(IBusyUIHost), typeof(Soundpanel));
 
-        public ObservableCollectionExtended<HIRCDisplayObject> HIRCObjects { get; set; } = new ObservableCollectionExtended<HIRCDisplayObject>();
+        public ObservableCollectionExtended<HIRCDisplayObject> HIRCObjects { get; set; } = new();
 
         public bool PlayBackOnlyMode
         {
@@ -109,7 +109,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (CurrentLoadedExport != null)
             {
-                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new Soundpanel(), CurrentLoadedExport)
+                var elhw = new ExportLoaderHostedWindow(new Soundpanel(), CurrentLoadedExport)
                 {
                     Title = $"Sound Player - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}",
                     Height = 400,
@@ -677,7 +677,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private bool CanPlayHIRC(object obj)
         {
-            return obj is HIRCDisplayObject hirc && hirc.ObjType == 0x2 && CurrentLoadedWwisebank != null && hirc.SourceID == CurrentLoadedWwisebank.ID;
+            return obj is HIRCDisplayObject {ObjType: 0x2} hirc && CurrentLoadedWwisebank != null && hirc.SourceID == CurrentLoadedWwisebank.ID;
         }
 
 
@@ -689,7 +689,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             if (idx != -1)
             {
                 //var dataBefore = hircHexProvider.Bytes.ToArray();
-                HIRCObjects[idx] = new HIRCDisplayObject(idx, CreateHircObjectFromHex(hircHexProvider.Bytes.ToArray()), Pcc.Game)
+                HIRCObjects[idx] = new HIRCDisplayObject(idx, CreateHircObjectFromHex(hircHexProvider.Span.ToArray()), Pcc.Game)
                 {
                     DataChanged = true
                 };
@@ -1702,7 +1702,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 });
 
                 OriginalHIRCHex = null;
-                hircHexProvider.ClearBytes();
+                hircHexProvider.Clear();
                 SoundpanelHIRC_Hexbox.Refresh();
             }
         }
@@ -1714,7 +1714,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             if (!ControlLoaded)
             {
                 SoundpanelHIRC_Hexbox = (HexBox)HIRC_Hexbox_Host.Child;
-                hircHexProvider = new DynamicByteProvider();
+                hircHexProvider = new ReadOptimizedByteProvider();
 
                 SoundpanelHIRC_Hexbox.ByteProvider = hircHexProvider;
                 SoundpanelHIRC_Hexbox.ByteProvider.Changed += SoundpanelHIRC_Hexbox_BytesChanged;
@@ -1730,7 +1730,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (OriginalHIRCHex != null)
             {
-                HIRCHexChanged = !hircHexProvider.Bytes.SequenceEqual(OriginalHIRCHex);
+                HIRCHexChanged = !hircHexProvider.Span.SequenceEqual(OriginalHIRCHex);
             }
         }
 
@@ -1738,8 +1738,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (CurrentLoadedExport != null)
             {
-                DynamicByteProvider hbp = SoundpanelHIRC_Hexbox.ByteProvider as DynamicByteProvider;
-                byte[] memory = hbp.Bytes.ToArray();
+                ReadOptimizedByteProvider hbp = (ReadOptimizedByteProvider)SoundpanelHIRC_Hexbox.ByteProvider;
+                var memory = hbp.Span;
                 int start = (int)SoundpanelHIRC_Hexbox.SelectionStart;
                 int len = (int)SoundpanelHIRC_Hexbox.SelectionLength;
                 int size = (int)SoundpanelHIRC_Hexbox.ByteProvider.Length;
@@ -1750,8 +1750,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         string s = $"Byte: {memory[start]}"; //if selection is same as size this will crash.
                         if (start <= memory.Length - 4)
                         {
-                            int val = BitConverter.ToInt32(memory, start);
-                            float fval = BitConverter.ToSingle(memory, start);
+                            int val = EndianReader.ToInt32(memory, start, Pcc.Endian);
+                            float fval = EndianReader.ToSingle(memory, start, Pcc.Endian);
                             s += $", Int: {val} (0x{val:X8}) Float: {fval}";
                             var referencedHIRCbyID = HIRCObjects.FirstOrDefault(x => x.ID == val);
 

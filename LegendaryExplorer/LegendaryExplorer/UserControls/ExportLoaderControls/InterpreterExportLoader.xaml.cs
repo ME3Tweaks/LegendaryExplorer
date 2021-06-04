@@ -732,7 +732,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             EditorSetElements.ForEach(x => x.Visibility = Visibility.Collapsed);
             Set_Button.Visibility = Visibility.Collapsed;
             //EditorSet_Separator.Visibility = Visibility.Collapsed;
-            (Interpreter_Hexbox?.ByteProvider as DynamicByteProvider)?.Bytes.Clear();
+            (Interpreter_Hexbox?.ByteProvider as ReadOptimizedByteProvider)?.Clear();
             Interpreter_Hexbox?.Refresh();
             HasUnsavedChanges = false;
             PropertyNodes.Clear();
@@ -770,7 +770,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             //Debug.WriteLine("Selection offset: " + RescanSelectionOffset);
             CurrentLoadedExport = export;
             isLoadingNewData = true;
-            (Interpreter_Hexbox.ByteProvider as DynamicByteProvider)?.ReplaceBytes(export.Data);
+            (Interpreter_Hexbox.ByteProvider as ReadOptimizedByteProvider)?.ReplaceBytes(export.Data);
             hb1_SelectionChanged(null, null); //refresh bottom text
             Interpreter_Hexbox.Select(0, 1);
             Interpreter_Hexbox.ScrollByteIntoView();
@@ -1210,7 +1210,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var uptvi = (UPropertyTreeViewEntry)sender;
             switch (e.PropertyName)
             {
-                case "ColorStructCode" when uptvi.Property is StructProperty colorStruct && colorStruct.StructType == "Color":
+                case "ColorStructCode" when uptvi.Property is StructProperty {StructType: "Color"} colorStruct:
                     uptvi.ChildrenProperties.ClearEx();
                     foreach (var subProp in colorStruct.Properties)
                     {
@@ -1221,7 +1221,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     var g = colorStruct.GetProp<ByteProperty>("G");
                     var b = colorStruct.GetProp<ByteProperty>("B");
 
-                    var byteProvider = (DynamicByteProvider)Interpreter_Hexbox.ByteProvider;
+                    var byteProvider = (ReadOptimizedByteProvider)Interpreter_Hexbox.ByteProvider;
                     byteProvider.WriteByte(a.ValueOffset, a.Value);
                     byteProvider.WriteByte(r.ValueOffset, r.Value);
                     byteProvider.WriteByte(g.ValueOffset, g.Value);
@@ -1318,8 +1318,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             int start = (int)Interpreter_Hexbox.SelectionStart;
             int len = (int)Interpreter_Hexbox.SelectionLength;
             int size = (int)Interpreter_Hexbox.ByteProvider.Length;
-            //TODO: Optimize this so this is only called when data has changed
-            byte[] currentData = ((DynamicByteProvider)Interpreter_Hexbox.ByteProvider).Bytes.ToArray();
+
+            var currentData = ((ReadOptimizedByteProvider)Interpreter_Hexbox.ByteProvider).Span;
             try
             {
                 if (start != -1 && start < size)
@@ -1825,10 +1825,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private void Interpreter_Loaded(object sender, RoutedEventArgs e)
         {
             Interpreter_Hexbox = (HexBox)Interpreter_Hexbox_Host.Child;
-            if (Interpreter_Hexbox.ByteProvider == null)
-            {
-                Interpreter_Hexbox.ByteProvider = new DynamicByteProvider();
-            }
+            Interpreter_Hexbox.ByteProvider ??= new ReadOptimizedByteProvider();
             //remove in the event this object is reloaded again
             Interpreter_Hexbox.ByteProvider.Changed -= Interpreter_Hexbox_BytesChanged;
             Interpreter_Hexbox.ByteProvider.Changed += Interpreter_Hexbox_BytesChanged;
@@ -1855,9 +1852,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void Interpreter_SaveHexChanges()
         {
-            if (Interpreter_Hexbox.ByteProvider is DynamicByteProvider provider)
+            if (Interpreter_Hexbox.ByteProvider is ReadOptimizedByteProvider provider)
             {
-                CurrentLoadedExport.Data = provider.Bytes.ToArray();
+                CurrentLoadedExport.Data = provider.Span.ToArray();
             }
         }
 

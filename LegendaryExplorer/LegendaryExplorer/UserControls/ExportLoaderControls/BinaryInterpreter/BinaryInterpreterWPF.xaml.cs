@@ -430,7 +430,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             ParseBinary_Button.Visibility = Visibility.Collapsed;
             ParseBinary_Spinner.Visibility = Visibility.Visible;
             byte[] data = CurrentLoadedExport.Data;
-            var db = new DynamicByteProvider(data);
+            var db = new ReadOptimizedByteProvider(data);
             BinaryInterpreter_Hexbox.ByteProvider = db;
             int binarystart = 0;
             if (CurrentLoadedExport.ClassName != "Class")
@@ -816,7 +816,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public override void UnloadExport()
         {
             //Todo: convert to this single byteprovider and clear bytes rather than instantiating new ones.
-            BinaryInterpreter_Hexbox.ByteProvider = new DynamicByteProvider();
+            BinaryInterpreter_Hexbox.ByteProvider = new ReadOptimizedByteProvider();
             TreeViewItems.ClearEx();
             if (CurrentLoadedExport != null && CurrentLoadedExport.DataSize > 20480)
             {
@@ -846,9 +846,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void BinaryInterpreter_SaveHexChanges_Click(object sender, RoutedEventArgs e)
         {
-            if (BinaryInterpreter_Hexbox.ByteProvider is DynamicByteProvider provider)
+            if (BinaryInterpreter_Hexbox.ByteProvider is ReadOptimizedByteProvider provider)
             {
-                CurrentLoadedExport.Data = provider.Bytes.ToArray();
+                CurrentLoadedExport.Data = provider.Span.ToArray();
             }
         }
 
@@ -1036,9 +1036,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             int start = (int)BinaryInterpreter_Hexbox.SelectionStart;
             int len = (int)BinaryInterpreter_Hexbox.SelectionLength;
             int size = (int)BinaryInterpreter_Hexbox.ByteProvider.Length;
-            byte[] currentData = (BinaryInterpreter_Hexbox.ByteProvider as DynamicByteProvider)?.Bytes.ToArray();
             try
             {
+                var currentData = ((ReadOptimizedByteProvider)BinaryInterpreter_Hexbox.ByteProvider).Span;
                 if (currentData != null && start != -1 && start < size)
                 {
                     string s = $"Byte: {currentData[start]}"; //if selection is same as size this will crash.

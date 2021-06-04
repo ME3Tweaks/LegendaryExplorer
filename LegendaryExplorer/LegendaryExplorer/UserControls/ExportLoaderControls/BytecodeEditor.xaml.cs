@@ -118,7 +118,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             BytecodeStart = 0;
             CurrentLoadedExport = exportEntry;
-            ScriptEditor_Hexbox.ByteProvider = new DynamicByteProvider(CurrentLoadedExport.Data);
+            ScriptEditor_Hexbox.ByteProvider = new ReadOptimizedByteProvider(CurrentLoadedExport.Data);
             ScriptEditor_Hexbox.ByteProvider.Changed += ByteProviderBytesChanged;
             StartFunctionScan(CurrentLoadedExport.Data);
         }
@@ -399,8 +399,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 int size = (int)ScriptEditor_Hexbox.ByteProvider.Length;
                 try
                 {
-                    //TODO: Optimize this so this is only called when data has changed
-                    byte[] currentData = ((DynamicByteProvider)ScriptEditor_Hexbox.ByteProvider).Bytes.ToArray();
+                    var currentData = ((ReadOptimizedByteProvider)ScriptEditor_Hexbox.ByteProvider).Span;
                     if (start != -1 && start < size)
                     {
                         string s = $"Byte: {currentData[start]}"; //if selection is same as size this will crash.
@@ -535,27 +534,27 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void ScriptEditor_PreviewScript_Click(object sender, RoutedEventArgs e)
         {
-            byte[] newBytes = (ScriptEditor_Hexbox.ByteProvider as DynamicByteProvider).Bytes.ToArray();
+            byte[] newBytes = ((ReadOptimizedByteProvider)ScriptEditor_Hexbox.ByteProvider).Span.ToArray();
             if (CurrentLoadedExport.Game == MEGame.ME3)
             {
                 int sizeDiff = newBytes.Length - CurrentLoadedExport.DataSize;
                 int diskSize = EndianReader.ToInt32(CurrentLoadedExport.DataReadOnly, 0x1C, CurrentLoadedExport.FileRef.Endian);
                 diskSize += sizeDiff;
-                newBytes.OverwriteRange(0x1C, BitConverter.GetBytes(diskSize));
+                newBytes.OverwriteRange(0x1C, EndianBitConverter.GetBytes(diskSize, Pcc.Endian));
             }
             StartFunctionScan(newBytes);
         }
 
         private void ScriptEditor_SaveHexChanges_Click(object sender, RoutedEventArgs e)
         {
-            (ScriptEditor_Hexbox.ByteProvider as DynamicByteProvider).ApplyChanges();
-            byte[] newBytes = (ScriptEditor_Hexbox.ByteProvider as DynamicByteProvider).Bytes.ToArray();
+            ((ReadOptimizedByteProvider)ScriptEditor_Hexbox.ByteProvider).ApplyChanges();
+            byte[] newBytes = ((ReadOptimizedByteProvider)ScriptEditor_Hexbox.ByteProvider).Span.ToArray();
             if (CurrentLoadedExport.Game == MEGame.ME3)
             {
                 int sizeDiff = newBytes.Length - CurrentLoadedExport.DataSize;
                 int diskSize = EndianReader.ToInt32(CurrentLoadedExport.DataReadOnly, 0x1C, CurrentLoadedExport.FileRef.Endian);
                 diskSize += sizeDiff;
-                newBytes.OverwriteRange(0x1C, BitConverter.GetBytes(diskSize));
+                newBytes.OverwriteRange(0x1C, EndianBitConverter.GetBytes(diskSize, Pcc.Endian));
             }
             CurrentLoadedExport.Data = newBytes;
         }

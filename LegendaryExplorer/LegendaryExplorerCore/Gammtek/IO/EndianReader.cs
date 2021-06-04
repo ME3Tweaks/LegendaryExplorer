@@ -662,6 +662,17 @@ namespace LegendaryExplorerCore.Gammtek.IO
             return readMagic;
         }
 
+        public static ushort ToUInt16(ReadOnlySpan<byte> buffer, int offset, Endian endianness)
+        {
+            var readMagic = MemoryMarshal.Read<ushort>(buffer.Slice(offset));
+            if (!endianness.IsNative)
+            {
+                //swap
+                return BinaryPrimitives.ReverseEndianness(readMagic);
+            }
+            return readMagic;
+        }
+
         public static ushort ToUInt16(byte[] buffer, int offset, Endian endianness)
         {
             var readMagic = BitConverter.ToUInt16(buffer, offset);
