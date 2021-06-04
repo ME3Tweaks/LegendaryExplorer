@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Numerics;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorerCore.GameFilesystem;
@@ -23,7 +24,6 @@ using LegendaryExplorerCore.Unreal.ObjectInfo;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
-using SharpDX;
 
 //using ImageMagick;
 

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using SharpDX;
+using System.Numerics;
 using SharpDX.Direct3D11;
 
 namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D

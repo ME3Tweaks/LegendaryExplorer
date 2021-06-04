@@ -8,12 +8,12 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Numerics;
 using LegendaryExplorerCore.Gammtek;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.SharpDX;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 
@@ -825,11 +825,11 @@ namespace LegendaryExplorerCore.Helpers
             return *((int*)&f1) == *((int*)&f2);
         }
 
-        public static Rotator GetRotator(this Matrix m)
+        public static Rotator GetRotator(this Matrix4x4 m)
         {
-            var xAxis = new Vector3(m[0, 0], m[0, 1], m[0, 2]);
-            var yAxis = new Vector3(m[1, 0], m[1, 1], m[1, 2]);
-            var zAxis = new Vector3(m[2, 0], m[2, 1], m[2, 2]);
+            var xAxis = new Vector3(m.M11, m.M12, m.M13);
+            var yAxis = new Vector3(m.M21, m.M22, m.M23);
+            var zAxis = new Vector3(m.M31, m.M32, m.M33);
 
             var pitch = Math.Atan2(xAxis.Z, Math.Sqrt(Math.Pow(xAxis.X, 2) + Math.Pow(xAxis.Y, 2)));
             var yaw = Math.Atan2(xAxis.Y, xAxis.X);
@@ -850,16 +850,16 @@ namespace LegendaryExplorerCore.Helpers
             }
         }
 
-        public static (Vector3 translation, Vector3 scale, Rotator rotation) UnrealDecompose(this Matrix m)
+        public static (Vector3 translation, Vector3 scale, Rotator rotation) UnrealDecompose(this Matrix4x4 m)
         {
-            Vector3 translation = m.TranslationVector;
+            Vector3 translation = m.Translation;
             Vector3 scale = new Vector3((float)Math.Sqrt(m.M11 * m.M11 + m.M12 * m.M12 + m.M13 * m.M13),
                                         (float)Math.Sqrt(m.M21 * m.M21 + m.M22 * m.M22 + m.M23 * m.M23),
                                         (float)Math.Sqrt(m.M31 * m.M31 + m.M32 * m.M32 + m.M33 * m.M33));
 
-            if (MathUtil.IsZero(scale.X) ||
-                MathUtil.IsZero(scale.Y) ||
-                MathUtil.IsZero(scale.Z))
+            if (SharpDX.MathUtil.IsZero(scale.X) ||
+                SharpDX.MathUtil.IsZero(scale.Y) ||
+                SharpDX.MathUtil.IsZero(scale.Z))
             {
                 return (translation, scale, default);
             }

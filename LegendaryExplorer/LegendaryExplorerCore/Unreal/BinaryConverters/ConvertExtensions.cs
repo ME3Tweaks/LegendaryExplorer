@@ -1,5 +1,5 @@
-﻿using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.SharpDX;
+﻿using System.Numerics;
+using LegendaryExplorerCore.Helpers;
 using System.Linq;
 using Guid = System.Guid;
 

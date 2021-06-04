@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.SharpDX;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -9,7 +9,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public List<UIndex> Components;
 
-        public List<Matrix> LocalToWorldTransforms;
+        public List<Matrix4x4> LocalToWorldTransforms;
 
         public abstract string ComponentPropName { get; }
 
@@ -25,12 +25,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 // Components are technically not part of the binary data. However they are required to be parsed for this class so we might as well just leverage their utility here.
                 Components = components.Select(x => new UIndex(x.Value)).ToList();
-                LocalToWorldTransforms = new List<Matrix>(components.Count);
+                LocalToWorldTransforms = new List<Matrix4x4>(components.Count);
             }
 
             for (int i = 0; i < components.Count; i++)
             {
-                Matrix m = i < LocalToWorldTransforms.Count ? LocalToWorldTransforms[i] : Matrix.Identity;
+                Matrix4x4 m = i < LocalToWorldTransforms.Count ? LocalToWorldTransforms[i] : Matrix4x4.Identity;
                 sc.Serialize(ref m);
                 if (sc.IsLoading)
                 {
@@ -51,21 +51,21 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
     public static partial class SCExt
     {
-        public static void Serialize(this SerializingContainer2 sc, ref Matrix matrix)
+        public static void Serialize(this SerializingContainer2 sc, ref Matrix4x4 matrix)
         {
             if (sc.IsLoading)
             {
-                matrix = new Matrix(sc.ms.ReadFloat(), sc.ms.ReadFloat(), sc.ms.ReadFloat(), sc.ms.ReadFloat(),
+                matrix = new Matrix4x4(sc.ms.ReadFloat(), sc.ms.ReadFloat(), sc.ms.ReadFloat(), sc.ms.ReadFloat(),
                     sc.ms.ReadFloat(), sc.ms.ReadFloat(), sc.ms.ReadFloat(), sc.ms.ReadFloat(),
                     sc.ms.ReadFloat(), sc.ms.ReadFloat(), sc.ms.ReadFloat(), sc.ms.ReadFloat(),
                     sc.ms.ReadFloat(), sc.ms.ReadFloat(), sc.ms.ReadFloat(), sc.ms.ReadFloat());
             }
             else
             {
-                sc.ms.Writer.WriteFloat(matrix[0, 0]); sc.ms.Writer.WriteFloat(matrix[0, 1]); sc.ms.Writer.WriteFloat(matrix[0, 2]); sc.ms.Writer.WriteFloat(matrix[0, 3]);
-                sc.ms.Writer.WriteFloat(matrix[1, 0]); sc.ms.Writer.WriteFloat(matrix[1, 1]); sc.ms.Writer.WriteFloat(matrix[1, 2]); sc.ms.Writer.WriteFloat(matrix[1, 3]);
-                sc.ms.Writer.WriteFloat(matrix[2, 0]); sc.ms.Writer.WriteFloat(matrix[2, 1]); sc.ms.Writer.WriteFloat(matrix[2, 2]); sc.ms.Writer.WriteFloat(matrix[2, 3]);
-                sc.ms.Writer.WriteFloat(matrix[3, 0]); sc.ms.Writer.WriteFloat(matrix[3, 1]); sc.ms.Writer.WriteFloat(matrix[3, 2]); sc.ms.Writer.WriteFloat(matrix[3, 3]);
+                sc.ms.Writer.WriteFloat(matrix.M11); sc.ms.Writer.WriteFloat(matrix.M12); sc.ms.Writer.WriteFloat(matrix.M13); sc.ms.Writer.WriteFloat(matrix.M14);
+                sc.ms.Writer.WriteFloat(matrix.M21); sc.ms.Writer.WriteFloat(matrix.M22); sc.ms.Writer.WriteFloat(matrix.M23); sc.ms.Writer.WriteFloat(matrix.M24);
+                sc.ms.Writer.WriteFloat(matrix.M31); sc.ms.Writer.WriteFloat(matrix.M32); sc.ms.Writer.WriteFloat(matrix.M33); sc.ms.Writer.WriteFloat(matrix.M34);
+                sc.ms.Writer.WriteFloat(matrix.M41); sc.ms.Writer.WriteFloat(matrix.M42); sc.ms.Writer.WriteFloat(matrix.M43); sc.ms.Writer.WriteFloat(matrix.M44);
             }
         }
     }

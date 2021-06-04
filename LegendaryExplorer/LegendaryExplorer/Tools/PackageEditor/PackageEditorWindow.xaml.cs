@@ -3682,6 +3682,16 @@ namespace LegendaryExplorer.Tools.PackageEditor
         {
             FileAssociations.EnsureAssociationsSet("upk", "Unreal Package File");
             FileAssociations.EnsureAssociationsSet("udk", "UDK Package File");
+            FileAssociations.EnsureAssociationsSet("u", "Mass Effect 1 Package File");
+        }
+
+        private void AssociateOtherFiles_Clicked(object sender, RoutedEventArgs e)
+        {
+            FileAssociations.EnsureAssociationsSet("tlk", "Talk Table File");
+            FileAssociations.EnsureAssociationsSet("afc", "Audio File Cache File");
+            FileAssociations.EnsureAssociationsSet("isb", "ISACT Bank File");
+            FileAssociations.EnsureAssociationsSet("dlc", "Mass Effect DLC Mount File");
+            FileAssociations.EnsureAssociationsSet("cnd", "Mass Effect Conditionals File");
         }
 
 

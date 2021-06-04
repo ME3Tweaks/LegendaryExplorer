@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Numerics;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Tools.Sequence_Editor;
 using LegendaryExplorerCore.GameFilesystem;
@@ -11,7 +12,6 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Kismet;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
-using LegendaryExplorerCore.SharpDX;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Microsoft.VisualBasic.FileIO;
@@ -332,7 +332,7 @@ namespace LegendaryExplorer.GameInterop
         public float FOV;
 
         public int Index { get; set; }
-        public bool IsZero => Position.IsZero && Rotation.IsZero && FOV == 0f;
+        public bool IsZero => Position.Equals(Vector3.Zero) && Rotation.Equals(Vector3.Zero) && FOV == 0f;
 
         public string Str => $"Position: {Position}, Rotation: Roll:{Rotation.X}, Pitch:{Rotation.Y}, Yaw:{Rotation.Z}, FOV: {FOV}";
     }

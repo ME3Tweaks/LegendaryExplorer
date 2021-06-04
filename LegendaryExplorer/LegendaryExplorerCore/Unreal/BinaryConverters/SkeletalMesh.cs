@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Numerics;
 using LegendaryExplorerCore.Gammtek;
 using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.SharpDX;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -102,7 +102,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public Vector3 Position;
         public int NumChildren;
         public int ParentIndex;
-        public Color BoneColor; //ME3 and UDK
+        public SharpDX.Color BoneColor; //ME3 and UDK
     }
 
     public class StaticLODModel
@@ -155,7 +155,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public Vector2 UV2; //UDK
         public Vector2 UV3; //UDK
         public Vector2 UV4; //UDK
-        public Color BoneColor; //UDK
+        public SharpDX.Color BoneColor; //UDK
         public byte Bone;
     }
 
@@ -169,7 +169,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public Vector2 UV2; //UDK
         public Vector2 UV3; //UDK
         public Vector2 UV4; //UDK
-        public Color BoneColor; //UDK
+        public SharpDX.Color BoneColor; //UDK
         public byte[] InfluenceBones = new byte[4];
         public byte[] InfluenceWeights = new byte[4];
     }
@@ -221,7 +221,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             else if (sc.IsLoading)
             {
-                mb.BoneColor = new Color(255, 255, 255, 255);
+                mb.BoneColor = new SharpDX.Color(255, 255, 255, 255);
             }
         }
         public static void Serialize(this SerializingContainer2 sc, ref SkelMeshSection sms)
@@ -269,7 +269,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             else if (sc.IsLoading)
             {
-                rsv.BoneColor = new Color(255,255,255,255);
+                rsv.BoneColor = new SharpDX.Color(255,255,255,255);
             }
             sc.Serialize(ref rsv.Bone);
         }
@@ -293,7 +293,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             else if (sc.IsLoading)
             {
-                ssv.BoneColor = new Color(255, 255, 255, 255);
+                ssv.BoneColor = new SharpDX.Color(255, 255, 255, 255);
             }
             for (int i = 0; i < 4; i++)
             {
@@ -571,7 +571,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                         {
                             Position = vert.Position,
                             TangentX = vert.TangentX,
-                            TangentY = (PackedNormal)(new Vector4(Vector3.Cross((Vector3)normal, (Vector3)tangent), normal.W * tangent.W) * normal.W),
+                            TangentY = (PackedNormal)(new Vector4(Vector3.Cross((Vector3)vert.TangentZ, (Vector3)vert.TangentX), normal.W * tangent.W) * normal.W),
                             TangentZ = vert.TangentZ,
                             UV = new Vector2(vert.UV.X, vert.UV.Y),
                             InfluenceBones = vert.InfluenceBones.TypedClone(),

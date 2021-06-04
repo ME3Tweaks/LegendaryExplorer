@@ -6,7 +6,7 @@ using System.Linq;
 using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
-using SharpDX;
+using System.Numerics;
 using SharpDX.Direct3D11;
 using StaticMesh = LegendaryExplorerCore.Unreal.BinaryConverters.StaticMesh;
 using static LegendaryExplorer.UserControls.SharedToolControls.Scene3D.ModelPreview;
@@ -145,7 +145,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         /// <param name="s">Which faces to render.</param>
         /// <param name="transform">The model transformation to be applied to the vertices.</param>
         /// <param name="view">The SceneRenderControl that the given LOD should be rendered into.</param>
-        public abstract void RenderSection(ModelPreviewLOD lod, ModelPreviewSection s, Matrix transform, SceneRenderContext context);
+        public abstract void RenderSection(ModelPreviewLOD lod, ModelPreviewSection s, Matrix4x4 transform, SceneRenderContext context);
 
         /// <summary>
         /// Disposes any outstanding resources.
@@ -232,10 +232,10 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         /// <param name="s">Which faces to render.</param>
         /// <param name="transform">The model transformation to be applied to the vertices.</param>
         /// <param name="view">The SceneRenderControl that the given LOD should be rendered into.</param>
-        public override void RenderSection(ModelPreviewLOD lod, ModelPreviewSection s, Matrix transform, SceneRenderContext context)
+        public override void RenderSection(ModelPreviewLOD lod, ModelPreviewSection s, Matrix4x4 transform, SceneRenderContext context)
         {
             context.DefaultEffect.PrepDraw(context.ImmediateContext);
-            context.DefaultEffect.RenderObject(context.ImmediateContext, new SceneRenderContext.WorldConstants(Matrix.Transpose(context.Camera.ProjectionMatrix), Matrix.Transpose(context.Camera.ViewMatrix), Matrix.Transpose(transform)), lod.Mesh, (int)s.StartIndex, (int)s.TriangleCount * 3, Textures.ContainsKey(DiffuseTextureFullName) ? Textures[DiffuseTextureFullName]?.TextureView ?? context.DefaultTextureView : context.DefaultTextureView);
+            context.DefaultEffect.RenderObject(context.ImmediateContext, new SceneRenderContext.WorldConstants(Matrix4x4.Transpose(context.Camera.ProjectionMatrix), Matrix4x4.Transpose(context.Camera.ViewMatrix), Matrix4x4.Transpose(transform)), lod.Mesh, (int)s.StartIndex, (int)s.TriangleCount * 3, Textures.ContainsKey(DiffuseTextureFullName) ? Textures[DiffuseTextureFullName]?.TextureView ?? context.DefaultTextureView : context.DefaultTextureView);
         }
     }
 
@@ -805,7 +805,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         /// <param name="view">The SceneRenderControl to render the preview into.</param>
         /// <param name="LOD">Which level of detail to render at. Level 0 is traditionally the most detailed.</param>
         /// <param name="transform">The model transformation to be applied to the vertices.</param>
-        public void Render(SceneRenderContext view, int LOD, Matrix transform)
+        public void Render(SceneRenderContext view, int LOD, Matrix4x4 transform)
         {
             foreach (ModelPreviewSection section in LODs[LOD].Sections)
             {

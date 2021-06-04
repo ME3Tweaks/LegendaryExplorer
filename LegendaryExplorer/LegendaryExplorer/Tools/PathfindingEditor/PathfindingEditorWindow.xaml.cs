@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
+using System.Numerics;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Nodes;
@@ -31,7 +32,6 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
-using LegendaryExplorerCore.SharpDX;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using RectangleF = System.Drawing.RectangleF;
@@ -3360,7 +3360,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                     newNodeEntry = EntryCloner.CloneTree(nodeEntry);
                     newNodeEntry.idxLink = parent.UIndex;
                     components.Add(new ObjectProperty(newNodeEntry));
-                    sca.LocalToWorldTransforms.Add(new SharpDX.Matrix(clonedloc.M11, clonedloc.M12, clonedloc.M13, clonedloc.M14, clonedloc.M21, clonedloc.M22, clonedloc.M23, clonedloc.M24, clonedloc.M31, clonedloc.M32, clonedloc.M33, clonedloc.M34, clonedloc.M41, clonedloc.M42, clonedloc.M43, clonedloc.M44));
+                    sca.LocalToWorldTransforms.Add(new Matrix4x4(clonedloc.M11, clonedloc.M12, clonedloc.M13, clonedloc.M14, clonedloc.M21, clonedloc.M22, clonedloc.M23, clonedloc.M24, clonedloc.M31, clonedloc.M32, clonedloc.M33, clonedloc.M34, clonedloc.M41, clonedloc.M42, clonedloc.M43, clonedloc.M44));
                     parent.WriteProperty(components);
                     parent.WriteBinary(sca);
                     AllowRefresh = true;
@@ -3614,8 +3614,8 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
                             for (int i = 0; i < smca.LocalToWorldTransforms.Count; i++)
                             {
-                                Matrix m = smca.LocalToWorldTransforms[i];
-                                m.TranslationVector *= -1;
+                                Matrix4x4 m = smca.LocalToWorldTransforms[i];
+                                m.Translation *= -1;
                                 smca.LocalToWorldTransforms[i] = m;
                             }
                             exp.WriteBinary(smca);
@@ -4200,7 +4200,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                     }
                 }
 
-                var newColor = AdjustColors(new SharpDX.Color(oldred, oldgreen, oldblue));
+                var newColor = AdjustColors(new LegendaryExplorerCore.SharpDX.Color(oldred, oldgreen, oldblue));
                 newred = newColor.R;
                 newgreen = newColor.G;
                 newblue = newColor.B;
@@ -4299,7 +4299,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 tdlg.Show();
             }
         }
-        private SharpDX.Color AdjustColors(SharpDX.Color oldcolor, float brightnesscorrectionfactor = 0)
+        private LegendaryExplorerCore.SharpDX.Color AdjustColors(LegendaryExplorerCore.SharpDX.Color oldcolor, float brightnesscorrectionfactor = 0)
         {
             float oldred = oldcolor.R;
             float oldgreen = oldcolor.G;
@@ -4362,8 +4362,8 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 newblue = (255 - newblue) * brightnesscorrectionfactor * (1 + (AdjustBlue / 100)) + newblue;
             }
 
-            var vector = new SharpDX.Vector4(newred / 255, newgreen / 255, newblue / 255, oldalpha / 255);
-            var newColor = new SharpDX.Color(vector);
+            var vector = new Vector4(newred / 255, newgreen / 255, newblue / 255, oldalpha / 255);
+            var newColor = new LegendaryExplorerCore.SharpDX.Color(vector);
             return newColor;
         }
         private void CommitLevelShifts()
@@ -4491,9 +4491,9 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
                             var newYaw = uuYaw + ((float)rotateyawdegrees).DegreesToUnrealRotationUnits();
 
-                            SharpDX.Matrix newm = ActorUtils.ComposeLocalToWorld(new SharpDX.Vector3((float)calcX, (float)calcY, posZ),
+                            Matrix4x4 newm = ActorUtils.ComposeLocalToWorld(new Vector3((float)calcX, (float)calcY, posZ),
                                       new Rotator(uuPitch, newYaw, uuRoll),
-                                      new SharpDX.Vector3(scaleX, scaleY, scaleZ));
+                                      new Vector3(scaleX, scaleY, scaleZ));
                             sca.LocalToWorldTransforms[index] = newm;
                         }
                         actor.WriteBinary(sca);
