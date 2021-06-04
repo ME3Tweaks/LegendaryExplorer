@@ -596,11 +596,20 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 symRef = cast.CastTarget as SymbolReference;
             }
 
-            if (symRef?.Node is Enumeration enm && b is IntegerLiteral intLit && intLit.Value >= 0 && intLit.Value < enm.Values.Count)
+            if (symRef?.Node is Enumeration enm)
             {
-                a = symRef;
-                b = new SymbolReference(enm.Values[intLit.Value], enm.Values[intLit.Value].Name);
-                return true;
+                switch (b)
+                {
+                    case IntegerLiteral {Value: >= 0} intLit when intLit.Value < enm.Values.Count:
+                        a = symRef;
+                        b = new SymbolReference(enm.Values[intLit.Value], enm.Values[intLit.Value].Name);
+                        return true;
+                    case ConditionalExpression {TrueExpression: IntegerLiteral { Value: >= 0 } trueLit, FalseExpression: IntegerLiteral { Value: >= 0 } falseLit} condExpr:
+                        a = symRef;
+                        condExpr.TrueExpression = new SymbolReference(enm.Values[trueLit.Value], enm.Values[trueLit.Value].Name);
+                        condExpr.FalseExpression = new SymbolReference(enm.Values[falseLit.Value], enm.Values[falseLit.Value].Name);
+                        return true;
+                }
             }
 
             return false;
@@ -620,7 +629,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             {
                 return expr;
             }
-            VariableType type = new VariableType(objRef.ObjectName.Instanced);
+            var type = new VariableType(objRef.ObjectName.Instanced);
             if (meta)
             {
                 type = new ClassType(type);
@@ -668,7 +677,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 var funcObj = ReadObject();
                 funcName = funcObj.ObjectName.Instanced;
 
-                if (Decompiling.ByteCodeDecompiler.NonNativeOperators.TryGetValue(funcName, out InOpDeclaration opDecl))
+                if (NonNativeOperators.TryGetValue(funcName, out InOpDeclaration opDecl))
                 {
                     Expression parm1 = DecompileExpression();
                     if (parm1 is null)

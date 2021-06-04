@@ -295,56 +295,55 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             return null;
         }
 
-        public static PropertyCollection getDefaultStructValue(string className, bool stripTransients)
+        public static PropertyCollection getDefaultStructValue(string structName, bool stripTransients, PackageCache packageCache)
         {
-            bool isImmutable = GlobalUnrealObjectInfo.IsImmutable(className, MEGame.ME1);
-            if (Structs.ContainsKey(className))
+            bool isImmutable = GlobalUnrealObjectInfo.IsImmutable(structName, MEGame.ME1);
+            if (Structs.TryGetValue(structName, out ClassInfo info))
             {
-                ClassInfo info = Structs[className];
                 try
                 {
-                    PropertyCollection structProps = new();
-                    ClassInfo tempInfo = info;
-                    while (tempInfo != null)
+                    PropertyCollection props = new();
+                    while (info != null)
                     {
-                        foreach ((string propName, PropertyInfo propInfo) in tempInfo.properties)
+                        foreach ((string propName, PropertyInfo propInfo) in info.properties)
                         {
                             if (stripTransients && propInfo.Transient)
                             {
                                 continue;
                             }
-                            if (getDefaultProperty(propName, propInfo, stripTransients, isImmutable) is Property uProp)
+                            if (getDefaultProperty(propName, propInfo, packageCache, stripTransients, isImmutable) is Property uProp)
                             {
-                                structProps.Add(uProp);
+                                props.Add(uProp);
                             }
                         }
-                        if (!Structs.TryGetValue(tempInfo.baseClass, out tempInfo))
-                        {
-                            tempInfo = null;
-                        }
-                    }
-                    structProps.Add(new NoneProperty());
-                    string filepath = null;
-                    if (ME1Directory.BioGamePath != null)
-                    {
-                        filepath = Path.Combine(ME1Directory.BioGamePath, info.pccPath);
-                    }
 
-                    Stream loadStream = null;
-                    if (File.Exists(info.pccPath)) //dynamic lookup (relative path)
-                    {
-                        filepath = info.pccPath;
-                        loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(info.pccPath);
-                    }
-                    else if (info.pccPath == GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
-                    {
-                        filepath = "GAMERESOURCES_ME1"; //used for cache
-                        loadStream = LegendaryExplorerCoreUtilities.LoadFileFromCompressedResource("GameResources.zip", LegendaryExplorerCoreLib.CustomResourceFileName(MEGame.ME1)); // should this be ME3 (it was originally before corelib move)
-                    }
-                    else if (filepath != null && File.Exists(filepath))
-                    {
-                        loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(filepath);
-                    }
+                        string filepath = null;
+                        if (ME1Directory.BioGamePath != null)
+                        {
+                            filepath = Path.Combine(ME1Directory.BioGamePath, info.pccPath);
+                        }
+
+                        Stream loadStream = null;
+                        IMEPackage cachedPackage = null;
+                        if (packageCache != null && packageCache.TryGetCachedPackage(filepath, true, out cachedPackage))
+                        {
+                            // Use this one
+                            readDefaultProps(cachedPackage, props, packageCache: packageCache);
+                        }
+                        else if (File.Exists(info.pccPath)) //dynamic lookup (relative path)
+                        {
+                            filepath = info.pccPath;
+                            loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(info.pccPath);
+                        }
+                        else if (info.pccPath == GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
+                        {
+                            filepath = "GAMERESOURCES_ME1"; //used for cache
+                            loadStream = LegendaryExplorerCoreUtilities.LoadFileFromCompressedResource("GameResources.zip", LegendaryExplorerCoreLib.CustomResourceFileName(MEGame.ME1)); // should this be ME3 (it was originally before corelib move)
+                        }
+                        else if (filepath != null && File.Exists(filepath))
+                        {
+                            loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(filepath);
+                        }
 #if AZURE
                     else if (MiniGameFilesPath != null && File.Exists(Path.Combine(MiniGameFilesPath, info.pccPath)))
                     {
@@ -355,28 +354,25 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                         loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(filepath);
                     }
 #endif
-                    if (loadStream == null)
-                    {
-                        filepath = Path.Combine(ME1Directory.DefaultGamePath, info.pccPath); //for files from ME1 DLC
-                        if (File.Exists(filepath))
+                        if (cachedPackage == null && loadStream == null)
                         {
-                            loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(filepath);
-                        }
-                    }
-                    if (loadStream != null)
-                    {
-                        using (IMEPackage importPCC = MEPackageHandler.OpenMEPackageFromStream(loadStream, filepath, useSharedPackageCache: true))
-                        {
-                            var exportToRead = importPCC.GetUExport(info.exportIndex);
-                            byte[] buff = exportToRead.DataReadOnly.Slice(0x30).ToArray();
-                            PropertyCollection defaults = PropertyCollection.ReadProps(exportToRead, new MemoryStream(buff), className);
-                            foreach (var prop in defaults)
+                            filepath = Path.Combine(ME1Directory.DefaultGamePath, info.pccPath); //for files from ME1 DLC
+                            if (File.Exists(filepath))
                             {
-                                structProps.TryReplaceProp(prop);
+                                loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(filepath);
                             }
                         }
+                        if (cachedPackage == null && loadStream != null)
+                        {
+                            using IMEPackage importPCC = MEPackageHandler.OpenMEPackageFromStream(loadStream, filepath, useSharedPackageCache: true);
+                            readDefaultProps(importPCC, props, packageCache);
+                        }
+
+                        Structs.TryGetValue(info.baseClass, out info);
                     }
-                    return structProps;
+                    props.Add(new NoneProperty());
+
+                    return props;
                 }
                 catch
                 {
@@ -384,9 +380,20 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 }
             }
             return null;
+
+            void readDefaultProps(IMEPackage impPackage, PropertyCollection defaultProps, PackageCache packageCache)
+            {
+                var exportToRead = impPackage.GetUExport(info.exportIndex);
+                byte[] buff = exportToRead.DataReadOnly.Slice(0x30).ToArray();
+                PropertyCollection defaults = PropertyCollection.ReadProps(exportToRead, new MemoryStream(buff), structName, packageCache: packageCache);
+                foreach (var prop in defaults)
+                {
+                    defaultProps.TryReplaceProp(prop);
+                }
+            }
         }
 
-        public static Property getDefaultProperty(string propName, PropertyInfo propInfo, bool stripTransients = true, bool isImmutable = false)
+        public static Property getDefaultProperty(string propName, PropertyInfo propInfo, PackageCache packageCache, bool stripTransients = true, bool isImmutable = false)
         {
             switch (propInfo.Type)
             {
@@ -438,7 +445,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     }
                 case PropertyType.StructProperty:
                     isImmutable = isImmutable || GlobalUnrealObjectInfo.IsImmutable(propInfo.Reference, MEGame.ME1);
-                    return new StructProperty(propInfo.Reference, getDefaultStructValue(propInfo.Reference, stripTransients), propName, isImmutable);
+                    return new StructProperty(propInfo.Reference, getDefaultStructValue(propInfo.Reference, stripTransients, packageCache), propName, isImmutable);
                 case PropertyType.None:
                 case PropertyType.Unknown:
                 default:

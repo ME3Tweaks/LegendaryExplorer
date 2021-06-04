@@ -273,7 +273,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         /// <param name="containingClassOrStructName">Name of containing class or struct name</param>
         /// <param name="nonVanillaClassInfo">Dynamically built property info</param>
         /// <returns></returns>
-        public static PropertyInfo GetPropertyInfo(MEGame game, string propname, string containingClassOrStructName, ClassInfo nonVanillaClassInfo = null, ExportEntry containingExport = null)
+        public static PropertyInfo GetPropertyInfo(MEGame game, string propname, string containingClassOrStructName, ClassInfo nonVanillaClassInfo = null, ExportEntry containingExport = null, PackageCache packageCache = null)
         {
             bool inStruct = false;
             PropertyInfo p = null;
@@ -350,24 +350,24 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         /// <param name="typeName">Struct type name</param>
         /// <param name="stripTransients">Strip transients from the struct</param>
         /// <returns></returns>
-        public static PropertyCollection getDefaultStructValue(MEGame game, string typeName, bool stripTransients)
+        public static PropertyCollection getDefaultStructValue(MEGame game, string typeName, bool stripTransients, PackageCache packageCache = null)
         {
             switch (game)
             {
 
                 case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients);
+                    return ME1UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache);
                 case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients);
+                    return ME2UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache);
                 case MEGame.ME3:
                 case MEGame.UDK:
-                    return ME3UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients);
+                    return ME3UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache);
                 case MEGame.LE1:
-                    return LE1UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients);
+                    return LE1UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache);
                 case MEGame.LE2:
-                    return LE2UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients);
+                    return LE2UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache);
                 case MEGame.LE3:
-                    return LE3UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients);
+                    return LE3UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache);
             }
             return null;
         }
@@ -510,17 +510,17 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             };
         }
 
-        public static Property getDefaultProperty(MEGame game, string propName, PropertyInfo propInfo, bool stripTransients = true, bool isImmutable = false)
+        public static Property getDefaultProperty(MEGame game, string propName, PropertyInfo propInfo, PackageCache packageCache, bool stripTransients = true, bool isImmutable = false)
         {
             return game switch
             {
-                MEGame.ME1 => ME1UnrealObjectInfo.getDefaultProperty(propName, propInfo, stripTransients, isImmutable),
-                MEGame.ME2 => ME2UnrealObjectInfo.getDefaultProperty(propName, propInfo, stripTransients, isImmutable),
-                MEGame.ME3 => ME3UnrealObjectInfo.getDefaultProperty(propName, propInfo, stripTransients, isImmutable),
-                MEGame.UDK => ME3UnrealObjectInfo.getDefaultProperty(propName, propInfo, stripTransients, isImmutable),
-                MEGame.LE1 => LE1UnrealObjectInfo.getDefaultProperty(propName, propInfo, stripTransients, isImmutable),
-                MEGame.LE2 => LE2UnrealObjectInfo.getDefaultProperty(propName, propInfo, stripTransients, isImmutable),
-                MEGame.LE3 => LE3UnrealObjectInfo.getDefaultProperty(propName, propInfo, stripTransients, isImmutable),
+                MEGame.ME1 => ME1UnrealObjectInfo.getDefaultProperty(propName, propInfo, packageCache, stripTransients, isImmutable),
+                MEGame.ME2 => ME2UnrealObjectInfo.getDefaultProperty(propName, propInfo, packageCache, stripTransients, isImmutable),
+                MEGame.ME3 => ME3UnrealObjectInfo.getDefaultProperty(propName, propInfo, packageCache, stripTransients, isImmutable),
+                MEGame.UDK => ME3UnrealObjectInfo.getDefaultProperty(propName, propInfo, packageCache, stripTransients, isImmutable),
+                MEGame.LE1 => LE1UnrealObjectInfo.getDefaultProperty(propName, propInfo, packageCache, stripTransients, isImmutable),
+                MEGame.LE2 => LE2UnrealObjectInfo.getDefaultProperty(propName, propInfo, packageCache, stripTransients, isImmutable),
+                MEGame.LE3 => LE3UnrealObjectInfo.getDefaultProperty(propName, propInfo, packageCache, stripTransients, isImmutable),
                 _ => null
             };
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -55,7 +56,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref le2ps3me2Unknown);
             }
             sc.Serialize(ref Defaults);
-            if (sc.Game is MEGame.ME3 or MEGame.UDK or MEGame.LE3) 
+            if (sc.Game is MEGame.ME3 or MEGame.UDK or MEGame.LE3)
             {
                 sc.Serialize(ref FullFunctionsList, SCExt.Serialize);
             }
@@ -67,7 +68,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             uIndices.Add((OuterClass, "OuterClass"));
             uIndices.AddRange(ComponentNameToDefaultObjectMap.Select((kvp, i) => (kvp.Value, $"ComponentMap[{i}]")));
 
-            uIndices.AddRange(Interfaces.SelectMany((kvp, i) => new []{(kvp.Key, $"InterfacesMap[{i}]"), (kvp.Value, $"InterfacesMap[{i}].PropertyPointer")}));
+            uIndices.AddRange(Interfaces.SelectMany((kvp, i) => new[] { (kvp.Key, $"InterfacesMap[{i}]"), (kvp.Value, $"InterfacesMap[{i}].PropertyPointer") }));
 
             uIndices.Add((Defaults, "Defaults"));
             if (game is MEGame.UDK or MEGame.ME3 or MEGame.LE3)
@@ -98,6 +99,28 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
 
             return names;
+        }
+
+        /// <summary>
+        /// Rebuilds the compiling chain of children for this class. Items with this entry as the parent will participate in the class.
+        /// </summary>
+        public void UpdateChildrenChain()
+        {
+            var children = Export.FileRef.Exports.Where(x => x.idxLink == Export.UIndex).Reverse().ToList();
+            for (int i = 0; i < children.Count; i++)
+            {
+                var c = children[i];
+                if (ObjectBinary.From(c) is UField uf)
+                {
+                    uf.Next = i == children.Count - 1 ? 0 : children[i + 1];
+                    c.WriteBinary(uf);
+                }
+                else
+                {
+                    Debug.WriteLine($"Can't link non UField {c.InstancedFullPath}");
+                }
+            }
+            Children = children.Any() ? children[0].UIndex : 0;
         }
     }
 

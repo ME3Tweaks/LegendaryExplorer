@@ -193,6 +193,25 @@ namespace LegendaryExplorerCore.Packages
             return index + 1;
         }
 
+        /// <summary>
+        /// Gets the next available index for a name, checking for other objects incrementally with a same instanced full name until a free one is found that is higher than the original one
+        /// </summary>
+        /// <param name="entry"></param>
+        /// <returns></returns>
+        public int GetNextIndexForInstancedName(IEntry entry)
+        {
+            var parentName = entry.ParentInstancedFullPath;
+            var baseName = string.IsNullOrWhiteSpace(parentName) ? entry.ObjectName.Name : $"{parentName}.{entry.ObjectName.Name}";
+
+            var index = entry.ObjectName.Number;
+            while (true)
+            {
+                index++;
+                if (FindEntry($"{baseName}_{index - 1}") == null)
+                    return index;
+            }
+        }
+
         public NameReference GetNextIndexedName(string name)
         {
             name = name.Trim().Replace(' ', '_'); //no spaces 

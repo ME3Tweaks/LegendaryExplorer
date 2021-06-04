@@ -24,7 +24,9 @@ namespace LegendaryExplorerCore
             MEGame.ME3 => "ME3Resources.pcc",
             MEGame.ME2 => "ME2Resources.pcc",
             MEGame.ME1 => "ME1Resources.upk",
-            // Todo: Add LE resources
+            MEGame.LE3 => "LE3Resources.pcc",
+            MEGame.LE2 => "LE2Resources.pcc",
+            MEGame.LE1 => "LE1Resources.pcc",
             MEGame.UDK => "UDKResources.upk",
             _ => "ME3Resources.pcc"
         };

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using LegendaryExplorerCore.Misc;
@@ -174,10 +175,29 @@ namespace LegendaryExplorerCore.GameFilesystem
             return Enumerable.Empty<string>();
         }
 
-        // this should have a null check on Biogamepath to avoid throwing an exception
-        public static IEnumerable<string> GetAllFiles(MEGame game, bool includeTFCs = false, bool includeAFCs = false, string[] additionalExtensions = null) => GetEnabledDLCFolders(game).Prepend(MEDirectories.GetBioGamePath(game)).SelectMany(directory => GetCookedFiles(game, directory, includeTFCs, includeAFCs, additionalExtensions));
-        // this should have a null check on Biogamepath to void throwing an exception
-        public static IEnumerable<string> GetOfficialFiles(MEGame game, bool includeTFCs = false, bool includeAFCs = false, string[] additionalExtensions = null) => GetOfficialDLCFolders(game).Prepend(MEDirectories.GetBioGamePath(game)).SelectMany(directory => GetCookedFiles(game, directory, includeTFCs, includeAFCs, additionalExtensions));
+        // How is this different from GetOfficialFiles?
+        public static IEnumerable<string> GetAllFiles(MEGame game, bool includeTFCs = false, bool includeAFCs = false, string[] additionalExtensions = null)
+        {
+            var path = MEDirectories.GetBioGamePath(game);
+            if (path == null)
+            {
+                Debug.WriteLine($"Cannot get list of all files for game that cannot be found! Game: {game}. Returning empty list");
+                return new List<string>();
+            }
+            return GetEnabledDLCFolders(game).Prepend(path).SelectMany(directory => GetCookedFiles(game, directory, includeTFCs, includeAFCs, additionalExtensions));
+        }
+
+        public static IEnumerable<string> GetOfficialFiles(MEGame game, bool
+            includeTFCs = false, bool includeAFCs = false, string[] additionalExtensions = null)
+        {
+            var path = MEDirectories.GetBioGamePath(game);
+            if (path == null)
+            {
+                Debug.WriteLine($"Cannot get list of official files for game that cannot be found! Game: {game}. Returning empty list");
+                return new List<string>();
+            }
+            return GetOfficialDLCFolders(game).Prepend(path).SelectMany(directory => GetCookedFiles(game, directory, includeTFCs, includeAFCs, additionalExtensions));
+        }
 
         public static IEnumerable<string> GetCookedFiles(MEGame game, string directory, bool includeTFCs = false, bool includeAFCs = false, string[] additionalExtensions = null)
         {
@@ -186,7 +206,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 var patterns = ME1FilePatterns.ToList();
                 if (additionalExtensions != null)
                     patterns.AddRange(additionalExtensions);
-                return patterns.SelectMany(pattern => Directory.EnumerateFiles(Path.Combine(directory, "CookedPC"), pattern, SearchOption.AllDirectories));
+                return patterns.SelectMany(pattern => Directory.EnumerateFiles(Path.Combine(directory, game.CookedDirName()), pattern, SearchOption.AllDirectories));
 
             }
 
@@ -194,7 +214,7 @@ namespace LegendaryExplorerCore.GameFilesystem
             if (includeTFCs) extensions.Add("*.tfc");
             if (includeAFCs) extensions.Add("*.afc");
             if (additionalExtensions != null)
-                extensions.AddRange(additionalExtensions.Select(x=>$"*{x}"));
+                extensions.AddRange(additionalExtensions.Select(x => $"*{x}"));
             extensions.Add("*.pcc"); //This is last, as any of the lookup methods will see if any of these files types exist in-order. By putting pcc's last, the lookups will be searched first when using
             //includeTFC or includeAFC.
             return extensions.SelectMany(pattern => Directory.EnumerateFiles(Path.Combine(directory, game.CookedDirName()), pattern, SearchOption.AllDirectories));
@@ -210,7 +230,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// <returns></returns>
         public static IEnumerable<string> GetEnabledDLCFolders(MEGame game, string gameDirectoryOverride = null) =>
             Directory.Exists(MEDirectories.GetDLCPath(game, gameDirectoryOverride))
-                ? Directory.EnumerateDirectories(MEDirectories.GetDLCPath(game,gameDirectoryOverride)).Where(dir => IsEnabledDLC(dir, game))
+                ? Directory.EnumerateDirectories(MEDirectories.GetDLCPath(game, gameDirectoryOverride)).Where(dir => IsEnabledDLC(dir, game))
                 : Enumerable.Empty<string>();
         public static IEnumerable<string> GetOfficialDLCFolders(MEGame game) =>
             Directory.Exists(MEDirectories.GetDLCPath(game))

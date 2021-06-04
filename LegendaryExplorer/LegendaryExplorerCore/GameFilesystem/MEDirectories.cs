@@ -219,7 +219,7 @@ namespace LegendaryExplorerCore.GameFilesystem
 
         public static bool IsInBasegame(string path, MEGame game, string gameRootOverride = null)
         {
-            if (game == MEGame.UDK || game == MEGame.LELauncher) return false;
+            if (game is MEGame.UDK or MEGame.LELauncher) return false;
             if (gameRootOverride is null && GetDefaultGamePath(game) is null)
             {
                 return false;
@@ -257,8 +257,14 @@ namespace LegendaryExplorerCore.GameFilesystem
             LE3Directory.ReloadDefaultGamePath(forceUseRegistry);
         }
 
+        /// <summary>
+        /// Saves MEDirectory settings, with a list of game directories, in order: ME1/ME2/ME3/LE1/LE2/LE3. 
+        /// </summary>
+        /// <param name="BIOGames"></param>
         public static void SaveSettings(List<string> BIOGames)
         {
+            if (BIOGames.Count != 6)
+                throw new Exception("SaveSettings() requires 6 items in the parameter");
             try
             {
                 if (!string.IsNullOrEmpty(BIOGames[0]))
@@ -302,6 +308,13 @@ namespace LegendaryExplorerCore.GameFilesystem
             return files;
         }
 
+        /// <summary>
+        /// Enumerate a game's package and tfc files
+        /// </summary>
+        /// <param name="game"></param>
+        /// <param name="files"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
         public static List<string> EnumerateGameFiles(MEGame game, List<string> files, Predicate<string> predicate = null)
         {
             if (predicate == null)
@@ -325,6 +338,11 @@ namespace LegendaryExplorerCore.GameFilesystem
             return files.Where(t => predicate(t)).ToList();
         }
 
+        /// <summary>
+        /// Gets a mapping of DLC foldernames to human readable names
+        /// </summary>
+        /// <param name="game"></param>
+        /// <returns></returns>
         public static CaseInsensitiveDictionary<string> OfficialDLCNames(MEGame game)
         {
             return game switch

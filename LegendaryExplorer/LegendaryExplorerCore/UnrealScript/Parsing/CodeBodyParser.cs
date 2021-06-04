@@ -1007,7 +1007,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         public Expression BinaryExpression(int maxPrecedence)
         {
             Expression expr = Unary();
-
+            if (expr is null)
+            {
+                return null;
+            }
             while (IsOperator(out bool isRightShift))
             {
                 string opKeyword = isRightShift ? ">>" : CurrentToken.Value;
@@ -2011,6 +2014,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 if (Matches(SELF, EF.Keyword))
                 {
+                    PrevToken.AssociatedNode = Self;
                     if (Node is Function func && func.Flags.Has(FunctionFlags.Static))
                     {
                         TypeError($"'{SELF}' cannot be used in a static function!");
@@ -2146,6 +2150,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         private Expression ParseSuper()
         {
+            var superToken = PrevToken;
             Class superClass;
             Class superSpecifier = null;
             State state = Node switch
@@ -2205,6 +2210,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
             }
 
+            superToken.AssociatedNode = superClass;
             if (!Matches(TokenType.Dot) || !Matches(TokenType.Word))
             {
                 throw ParseError($"Expected function name after '{SUPER}'!", CurrentPosition);

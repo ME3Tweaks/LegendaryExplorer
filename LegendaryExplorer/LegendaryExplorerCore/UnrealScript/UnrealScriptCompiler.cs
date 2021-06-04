@@ -15,11 +15,11 @@ namespace LegendaryExplorerCore.UnrealScript
 {
     public static class UnrealScriptCompiler
     {
-        public static (ASTNode node, string text) DecompileExport(ExportEntry export, FileLib lib)
+        public static (ASTNode node, string text) DecompileExport(ExportEntry export, FileLib lib, PackageCache packageCache = null)
         {
             try
             {
-                ASTNode astNode = ExportToAstNode(export, lib);
+                ASTNode astNode = ExportToAstNode(export, lib, packageCache);
 
                 if (astNode != null)
                 {
@@ -36,7 +36,7 @@ namespace LegendaryExplorerCore.UnrealScript
             return (null, "Could not decompile!");
         }
 
-        public static ASTNode ExportToAstNode(ExportEntry export, FileLib lib)
+        public static ASTNode ExportToAstNode(ExportEntry export, FileLib lib, PackageCache packageCache)
         {
             ASTNode astNode;
             switch (export.ClassName)
@@ -54,7 +54,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     astNode = ScriptObjectToASTConverter.ConvertEnum(export.GetBinaryData<UEnum>());
                     break;
                 case "ScriptStruct":
-                    astNode = ScriptObjectToASTConverter.ConvertStruct(export.GetBinaryData<UScriptStruct>());
+                    astNode = ScriptObjectToASTConverter.ConvertStruct(export.GetBinaryData<UScriptStruct>(), packageCache);
                     break;
                 default:
                     if (export.ClassName.EndsWith("Property") && ObjectBinary.From(export) is UProperty uProp)
@@ -63,7 +63,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     }
                     else
                     {
-                        astNode = ScriptObjectToASTConverter.ConvertDefaultProperties(export);
+                        astNode = ScriptObjectToASTConverter.ConvertDefaultProperties(export, packageCache);
                     }
 
                     break;

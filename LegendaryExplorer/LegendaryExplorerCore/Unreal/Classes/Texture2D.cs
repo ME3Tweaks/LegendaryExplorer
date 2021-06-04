@@ -279,7 +279,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                             var dlcName = mipToLoad.TextureCacheName.Substring(9);
                             if (MEDirectories.OfficialDLC(MEGame.ME3).Contains(dlcName) && ME3Directory.DLCPath != null)
                             {
-                                var sfarPath = Path.Combine(ME3Directory.DLCPath, dlcName, "CookedPCConsole", "Default.sfar");
+                                var sfarPath = Path.Combine(ME3Directory.DLCPath, dlcName, game.CookedDirName(), "Default.sfar");
                                 if (File.Exists(sfarPath))
                                 {
                                     var dpackage = new DLCPackage(sfarPath);

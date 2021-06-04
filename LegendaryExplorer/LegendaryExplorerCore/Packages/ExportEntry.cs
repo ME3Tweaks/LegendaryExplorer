@@ -618,7 +618,7 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="forceReload">Forces full property release rather than using the property collection cache</param>
         /// <param name="includeNoneProperties">Include NoneProperties in the resulting property collection</param>
         /// <returns></returns>
-        public PropertyCollection GetProperties(bool forceReload = false, bool includeNoneProperties = false, int propStartPos = 0)
+        public PropertyCollection GetProperties(bool forceReload = false, bool includeNoneProperties = false, int propStartPos = 0, PackageCache packageCache = null)
         {
             if (properties != null && !forceReload && !includeNoneProperties)
             {
@@ -650,7 +650,7 @@ namespace LegendaryExplorerCore.Packages
             var stream = new MemoryStream(_data, false);
             stream.Seek(propStartPos, SeekOrigin.Current);
             // Do not cache
-            return PropertyCollection.ReadProps(this, stream, ClassName, includeNoneProperties, true, parsingClass); //do not set properties as this may interfere with some other code. may change later.
+            return PropertyCollection.ReadProps(this, stream, ClassName, includeNoneProperties, true, parsingClass, packageCache); //do not set properties as this may interfere with some other code. may change later.
             //}
         }
 

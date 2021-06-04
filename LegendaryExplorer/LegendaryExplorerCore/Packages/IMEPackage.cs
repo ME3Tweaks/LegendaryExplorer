@@ -79,17 +79,16 @@ namespace LegendaryExplorerCore.Packages
     public enum MEGame
     {
         Unknown = 0,
-        ME1,
-        ME2,
-        ME3,
-        // Going to need to add a bunch of checks for >= and <= game versions for UDK
-        LE1,
-        LE2,
-        LE3,
-        UDK,
+        ME1 = 1,
+        ME2 = 2,
+        ME3 = 3,
+        LE1 = 4,
+        LE2 = 5,
+        LE3 = 6,
+        UDK = 7,
 
         // Not an actual game, but used for identifying game directories
-        LELauncher,
+        LELauncher = 100, // Do not change this number. It's so we can add before this without messing up any existing items
     }
 
     // This does not work for ME1/LE1 as it uses two character non-int localizations
@@ -283,6 +282,12 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="name"></param>
         /// <returns></returns>
         int GetNextIndexForName(string name);
+        /// <summary>
+        /// Gets the next available index for a name, checking for other objects incrementally with a same instanced full name until a free one is found that is higher than the original one
+        /// </summary>
+        /// <param name="entry"></param>
+        /// <returns></returns>
+        int GetNextIndexForInstancedName(IEntry entry);
 
         NameReference GetNextIndexedName(string name);
         //editing
