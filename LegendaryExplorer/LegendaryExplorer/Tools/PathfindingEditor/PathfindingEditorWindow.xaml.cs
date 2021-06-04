@@ -1617,7 +1617,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             ExportEntry export = (ExportEntry)ActiveNodes_ListBox.SelectedItem;
             var elhw = new ExportLoaderHostedWindow(new InterpreterExportLoader(), export)
             {
-                Title = $"Interpreter - {export.UIndex} {export.InstancedFullPath} - {Pcc.FilePath}"
+                Title = $"Properties - {export.UIndex} {export.InstancedFullPath} - {Pcc.FilePath}"
             };
             elhw.Show();
         }

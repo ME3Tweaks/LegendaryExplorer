@@ -739,7 +739,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 // Subtrack imports. But they should be shown still
                 if (CurrentObjects.Count != (seqObjs.Count - nullCount))
                 {
-                    MessageBox.Show(this, "Sequence contains invalid or duplicate exports! Correct this by editing the SequenceObject array in the Interpreter");
+                    MessageBox.Show(this, "Sequence contains invalid or duplicate exports! Correct this by editing the SequenceObject array in the Properties editor");
                 }
             }
         }

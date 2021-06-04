@@ -119,7 +119,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
 
         int RescanSelectionOffset;
-        private readonly List<FrameworkElement> EditorSetElements = new List<FrameworkElement>();
+        private readonly List<FrameworkElement> EditorSetElements = new();
         public struct PropHeader
         {
             public int name;
@@ -150,7 +150,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private int ForcedRescanOffset;
         private bool ArrayElementJustAdded;
 
-        public InterpreterExportLoader() : base("Interpreter")
+        public InterpreterExportLoader() : base("Properties")
         {
             LoadCommands();
             InitializeComponent();
@@ -418,12 +418,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void PopoutInterpreterForObj()
         {
-            if (SelectedItem is UPropertyTreeViewEntry tvi && tvi.Property is ObjectProperty op && Pcc.IsUExport(op.Value))
+            if (SelectedItem is UPropertyTreeViewEntry {Property: ObjectProperty op} && Pcc.IsUExport(op.Value))
             {
                 ExportEntry export = Pcc.GetUExport(op.Value);
-                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new InterpreterExportLoader(), export)
+                var elhw = new ExportLoaderHostedWindow(new InterpreterExportLoader(), export)
                 {
-                    Title = $"Interpreter - {export.UIndex} {export.InstancedFullPath} - {Pcc.FilePath}"
+                    Title = $"Properties - {export.UIndex} {export.InstancedFullPath} - {Pcc.FilePath}"
                 };
                 elhw.Show();
             }
@@ -2204,9 +2204,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (CurrentLoadedExport != null)
             {
-                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new InterpreterExportLoader(), CurrentLoadedExport)
+                var elhw = new ExportLoaderHostedWindow(new InterpreterExportLoader(), CurrentLoadedExport)
                 {
-                    Title = $"Interpreter - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {Pcc.FilePath}"
+                    Title = $"Properties - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {Pcc.FilePath}"
                 };
                 elhw.Show();
             }

@@ -430,7 +430,7 @@ namespace LegendaryExplorer.Tools.Meshplorer
                         {
                             var ld = new ListDialog(results, "Relink report",
                                                            "The following items failed to relink.(This does not mean the import was unsuccessful, " +
-                                                           "just that the listed values will have to be corrected in the Interpreter and BinaryInterpreter)", this);
+                                                           "just that the listed values will have to be corrected in the Properties editor and Binary Interpreter)", this);
                             ld.Show();
                         }
                         else

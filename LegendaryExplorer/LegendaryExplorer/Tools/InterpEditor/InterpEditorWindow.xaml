@@ -82,7 +82,7 @@
                         <TextBlock Margin="5">
                             This tool allows you to visualize Unreal's Matinee Sequences
                             <LineBreak />
-                            It does not yet support direct editing, but you can still change values in the Interpreter and Curve Editor tabs.
+                            You can add groups and tracks, and edit those tracks in the Properties and Curve Editor tabs.
                             <LineBreak />
                         </TextBlock>
 
@@ -149,7 +149,7 @@
                                 </Setter>
                             </Style>
                         </TabControl.ItemContainerStyle>
-                        <TabItem Header="Interpreter">
+                        <TabItem Header="Properties">
 
                             <exportLoaderControls:InterpreterExportLoader x:Name="Properties_InterpreterWPF"
                                                                           HideHexBox="True"

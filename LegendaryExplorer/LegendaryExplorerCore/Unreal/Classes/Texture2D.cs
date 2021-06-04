@@ -46,7 +46,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             Mips = GetTexture2DMipInfos(export, cache?.Value);
             if (Export.Game != MEGame.ME1)
             {
-                int guidOffsetFromEnd = export.Game == MEGame.ME3 ? 20 : 16;
+                int guidOffsetFromEnd = export.Game is MEGame.ME3 || export.Game.IsLEGame() ? 20 : 16;
                 if (export.ClassName == "LightMapTexture2D")
                 {
                     guidOffsetFromEnd += 4;
@@ -172,7 +172,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             {
                 ms.WriteInt32(0);
             }
-            if (Export.Game > MEGame.ME1) // Is this right for LE?
+            if (Export.Game != MEGame.ME1)
             {
                 ms.WriteGuid(TextureGuid);
             }
