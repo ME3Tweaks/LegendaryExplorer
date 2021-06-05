@@ -21,6 +21,7 @@
  */
 
 using System;
+using System.Buffers.Binary;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -209,7 +210,8 @@ namespace LegendaryExplorerCore.Helpers
 
         public static void WriteStringLatin1Null(this Stream stream, string str)
         {
-            stream.WriteStringLatin1(str + "\0");
+            stream.WriteStringLatin1(str);
+            stream.WriteByte(0);
         }
 
         public static void WriteStringLatin1(this EndianWriter stream, string str)
@@ -219,7 +221,8 @@ namespace LegendaryExplorerCore.Helpers
 
         public static void WriteStringLatin1Null(this EndianWriter stream, string str)
         {
-            stream.WriteStringLatin1(str + "\0");
+            stream.WriteStringLatin1(str);
+            stream.WriteByte(0);
         }
 
         // DO NOT REMOVE ASCII CODE
@@ -277,7 +280,9 @@ namespace LegendaryExplorerCore.Helpers
 
         public static void WriteStringUnicodeNull(this Stream stream, string str)
         {
-            stream.WriteStringUnicode(str + "\0");
+            stream.WriteStringUnicode(str);
+            stream.WriteByte(0);
+            stream.WriteByte(0);
         }
 
         public static void WriteStringUnicode(this EndianWriter stream, string str)
@@ -287,7 +292,9 @@ namespace LegendaryExplorerCore.Helpers
 
         public static void WriteStringUnicodeNull(this EndianWriter stream, string str)
         {
-            stream.WriteStringUnicode(str + "\0");
+            stream.WriteStringUnicode(str);
+            stream.WriteByte(0);
+            stream.WriteByte(0);
         }
 
         public static ulong ReadUInt64(this Stream stream)

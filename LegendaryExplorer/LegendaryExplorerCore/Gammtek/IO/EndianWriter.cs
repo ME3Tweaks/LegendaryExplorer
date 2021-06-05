@@ -284,7 +284,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
 
         public void WriteByte(byte b)
         {
-            Write(b);
+            _source.Write(b);
         }
 
         public void WriteFloat(float val)

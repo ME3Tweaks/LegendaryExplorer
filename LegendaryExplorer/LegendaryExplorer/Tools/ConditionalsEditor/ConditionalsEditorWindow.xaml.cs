@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Interfaces;
@@ -30,17 +31,18 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
     public partial class ConditionalsEditorWindow : TrackingNotifyPropertyChangedWindowBase, IRecents
     {
         public const string CNDFileFilter = "ME3/LE3 conditional file|*.cnd";
-        public ObservableCollectionExtended<CNDFile.ConditionalEntry> Conditionals { get; } = new();
+        public ObservableCollectionExtended<CondListEntry> Conditionals { get; } = new();
 
-        private CNDFile.ConditionalEntry _selectedCond;
-        public CNDFile.ConditionalEntry SelectedCond
+        private CondListEntry _selectedCond;
+        public CondListEntry SelectedCond
         {
             get => _selectedCond;
             set
             {
                 if (SetProperty(ref _selectedCond, value))
                 {
-                    ConditionalTextBox.Text = _selectedCond is null ? "" : _selectedCond.Decompile();
+                    ConditionalTextBox.Text = _selectedCond is null ? "" : _selectedCond.Conditional.Decompile();
+                    compilationMsgBox.Clear();
                 }
             }
         }
@@ -86,15 +88,7 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
             {
                 if (int.TryParse(txt, out int newID) && newID > 0)
                 {
-                    var newCond = new CNDFile.ConditionalEntry
-                    {
-                        Data = SelectedCond.Data,
-                        ID = newID
-                    };
-                    int index = Conditionals.IndexOf(SelectedCond);
-                    Conditionals.Remove(SelectedCond);
-                    Conditionals.Insert(index, newCond);
-                    SelectedCond = newCond;
+                    SelectedCond.ID = newID;
                 }
                 else
                 {
@@ -114,10 +108,13 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
             {
                 if (int.TryParse(txt, out int newID) && newID > 0)
                 {
-                    var newCond = new CNDFile.ConditionalEntry
+                    var newCond = new CondListEntry(new CNDFile.ConditionalEntry
                     {
-                        Data = SelectedCond.Data.TypedClone(),
+                        Data = SelectedCond.Conditional.Data.TypedClone(),
                         ID = newID
+                    })
+                    {
+                        IsModified = true
                     };
                     Conditionals.Add(newCond);
                     SelectedCond = newCond;
@@ -145,8 +142,17 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
         private void SavePackage(string filePath = null)
         {
             File.ConditionalEntries.Clear();
-            File.ConditionalEntries.AddRange(Conditionals);
+            File.ConditionalEntries.AddRange(Conditionals.Select(c => c.Conditional));
             File.ToFile(filePath);
+
+            //don't reset modified state on save as
+            if (filePath is null)
+            {
+                foreach (CondListEntry listEntry in Conditionals)
+                {
+                    listEntry.IsModified = false;
+                }
+            }
         }
 
         private bool FileIsLoaded() => File is not null;
@@ -171,14 +177,7 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
         {
             if (SelectedCond is not null)
             {
-                try
-                {
-                    SelectedCond.Compile(ConditionalTextBox.Text);
-                }
-                catch (Exception e)
-                {
-                    new ExceptionHandlerDialog(e).ShowDialog();
-                }
+                compilationMsgBox.Text = SelectedCond?.Compile(ConditionalTextBox.Text);
             }
         }
 
@@ -202,9 +201,12 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
                 MessageBox.Show(e.Message);
 
                 File = null;
+                Title = "Conditionals Editor";
                 return;
             }
-            Conditionals.AddRange(File.ConditionalEntries.OrderBy(c => c.ID));
+
+            Title = $"Conditionals Editor - {Path.GetFileName(filePath)}";
+            Conditionals.AddRange(File.ConditionalEntries.OrderBy(c => c.ID).Select(c => new CondListEntry(c)));
         }
 
         public void PropogateRecentsChange(IEnumerable<RecentsControl.RecentItem> newRecents)
@@ -218,8 +220,75 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
         {
             if (e.Cancel)
                 return;
+            if (Conditionals.Any(c => c.IsModified) &&
+                MessageBoxResult.No == MessageBox.Show($"{Path.GetFileName(File.FilePath)} has unsaved changes. Do you really want to close Conditionals Editor?",
+                                                       "Unsaved changes", MessageBoxButton.YesNo))
+            {
+                e.Cancel = true;
+                return;
+            }
 
             RecentsController?.Dispose();
+        }
+
+        private void ConditionalTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            compilationMsgBox.Clear();
+        }
+
+        public class CondListEntry : NotifyPropertyChangedBase
+        {
+            private bool _isModified;
+            public bool IsModified
+            {
+                get => _isModified;
+                set => SetProperty(ref _isModified, value);
+            }
+
+            private int _iD;
+            public int ID
+            {
+                get => _iD;
+                set
+                {
+                    if (SetProperty(ref _iD, value))
+                    {
+                        IsModified = true;
+                        Conditional.ID = value;
+                    }
+                }
+            }
+
+            public CNDFile.ConditionalEntry Conditional;
+
+            public CondListEntry(CNDFile.ConditionalEntry conditional)
+            {
+                Conditional = conditional;
+                _iD = conditional.ID;
+            }
+
+            public string Compile(string text)
+            {
+                var original = Conditional.Data;
+                try
+                {
+                    Conditional.Compile(text);
+                    //the compiler is somewhat... lacking, in proper validation, so we use decompiler to see if compilation
+                    //produced something useful (it should throw if there's an error)
+                    Conditional.Decompile();
+                }
+                catch (Exception e)
+                {
+                    Conditional.Data = original;
+                    return $"Compilation Error!\n{e.GetType().Name}: {e.Message}";
+                }
+                if (!original.AsSpan().SequenceEqual(Conditional.Data))
+                {
+                    IsModified = true;
+                }
+
+                return "Compiled!";
+            }
         }
     }
 }

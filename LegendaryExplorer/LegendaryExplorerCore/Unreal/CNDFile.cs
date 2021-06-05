@@ -116,7 +116,7 @@ namespace LegendaryExplorerCore.Unreal
         [DebuggerDisplay("ID: {" + nameof(ID) + ("}, Offset: {" + nameof(Offset) + "}"))]
         public class ConditionalEntry
         {
-            public int ID { get; init; }
+            public int ID;
             public int Offset;
             public byte[] Data;
         }

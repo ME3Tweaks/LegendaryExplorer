@@ -12,7 +12,7 @@
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         mc:Ignorable="d"
         Closing="ConditionalsEditorWindow_OnClosing"
-        Title="ConditionalsEditorWindow" Height="450" Width="800">
+        Title="Conditionals Editor" Height="450" Width="800">
     <!-- UserControl Resources -->
     <Window.Resources>
         <converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
@@ -63,25 +63,51 @@
                      SelectedItem="{Binding SelectedCond}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding ID, Mode=OneTime}" Width="125">
-                            <TextBlock.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="Change Id" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ChangeIDCommand}"/>
-                                    <MenuItem Header="Clone" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.CloneCommand}"/>
-                                    <MenuItem Header="Delete" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.DeleteCommand}"/>
-                                </ContextMenu>
-                            </TextBlock.ContextMenu>
-                        </TextBlock>
+                        <Grid>
+                            <TextBlock Text="{Binding ID}" Width="125">
+                                <TextBlock.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Change Id"
+                                                  Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ChangeIDCommand}" />
+                                        <MenuItem Header="Clone"
+                                                  Command="{Binding Source={StaticResource bindingProxy}, Path=Data.CloneCommand}" />
+                                        <MenuItem Header="Delete"
+                                                  Command="{Binding Source={StaticResource bindingProxy}, Path=Data.DeleteCommand}" />
+                                    </ContextMenu>
+                                </TextBlock.ContextMenu>
+                            </TextBlock>
+                            <Grid.Style>
+                                <Style TargetType="{x:Type Grid}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=IsModified}" Value="true">
+                                            <Setter Property="Background" Value="Yellow" />
+                                            <Setter Property="ToolTip" Value="This conditional has been modified but the file has not yet been saved" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                        </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
+                <ListBox.ItemContainerStyle>
+                    <Style>
+                        <Style.Triggers>
+                            <Trigger Property="Selector.IsSelected" Value="True">
+                                <Setter Property="TextElement.Foreground" Value="Black" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.ItemContainerStyle>
             </ListBox>
             <Grid Grid.Column="1" Visibility="{Binding File, Converter={StaticResource NullVisibilityConverter}}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <TextBox x:Name="ConditionalTextBox" TextWrapping="Wrap"></TextBox>
+                <TextBox x:Name="ConditionalTextBox" TextWrapping="Wrap" TextChanged="ConditionalTextBox_OnTextChanged"></TextBox>
                 <Button Grid.Row="1" Content="Compile and Replace" Command="{Binding CompileCommand}"/>
+                <TextBox Name="compilationMsgBox" Grid.Row="2" TextWrapping="Wrap" IsReadOnly="True"/>
             </Grid>
         </Grid>
     </DockPanel>
