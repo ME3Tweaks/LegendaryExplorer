@@ -361,7 +361,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public event EventHandler IsBusyChanged;
 
-        private bool CanExportViaUModel() => CurrentLoadedExport != null && !CurrentLoadedExport.Game.IsLEGame() && (IsStaticMesh || IsSkeletalMesh);
+        private bool CanExportViaUModel() => CurrentLoadedExport != null && (IsStaticMesh || IsSkeletalMesh);
         private void ExportViaUModel()
         {
             BusyText = "Waiting for user input";
@@ -756,22 +756,27 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public void EnsureUModel_BackgroundThread(object sender, DoWorkEventArgs args)
         {
-            void progressCallback(long bytesDownloaded, long bytesToDownload)
+            if (UModelHelper.GetLocalUModelVersion() < UModelHelper.SupportedUModelBuildNum)
             {
-                BusyProgressBarMax = (int)bytesToDownload;
-                BusyProgressBarValue = (int)bytesDownloaded;
+                void progressCallback(long bytesDownloaded, long bytesToDownload)
+                {
+                    BusyProgressBarMax = (int)bytesToDownload;
+                    BusyProgressBarValue = (int)bytesDownloaded;
+                }
+
+                //try{
+                BusyText = "Downloading umodel";
+                BusyProgressIndeterminate = false;
+                BusyProgressBarValue = 0;
+                IsBusy = true;
+                args.Result =
+                    OnlineContent.EnsureStaticZippedExecutable("umodel_win32.zip", "umodel", "umodel.exe",
+                        progressCallback, forceDownload: true);
             }
-            //try{
-            BusyText = "Downloading umodel";
-            BusyProgressIndeterminate = false;
-            BusyProgressBarValue = 0;
-            IsBusy = true;
-            args.Result = OnlineContent.EnsureStaticZippedExecutable("umodel_win32.zip", "umodel", "umodel.exe", progressCallback);
-            //}
-            //catch (Exception e)
-            //{
-            //    args.Result = "Error downloading required files:\n" + ExceptionHandlerDialogWPF.FlattenException(e);
-            //}
+            else
+            {
+                args.Result = null; // OK
+            }
         }
 
 
@@ -930,7 +935,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (!HasLoaded)
             {
-                if (Parent is TabItem {Parent: TabControl tc})
+                if (Parent is TabItem { Parent: TabControl tc })
                 {
                     tc.SelectionChanged += MeshRendererWPF_HostingTabSelectionChanged;
                 }
@@ -1016,7 +1021,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public override void Dispose()
         {
-            if (Parent is TabItem {Parent: TabControl tc})
+            if (Parent is TabItem { Parent: TabControl tc })
             {
                 tc.SelectionChanged -= MeshRendererWPF_HostingTabSelectionChanged;
             }

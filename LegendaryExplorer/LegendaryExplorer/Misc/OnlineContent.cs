@@ -52,10 +52,10 @@ namespace LegendaryExplorer.Misc
             return null; //File exists
         }
 
-        public static string EnsureStaticZippedExecutable(string staticZipName, string foldername, string executablename, Action<long, long> progressCallback = null, string hash = null)
+        public static string EnsureStaticZippedExecutable(string staticZipName, string foldername, string executablename, Action<long, long> progressCallback = null, string hash = null, bool forceDownload = false)
         {
             string staticExecutable = Path.Combine(AppDirectories.StaticExecutablesDirectory, foldername, executablename);
-            if (!File.Exists(staticExecutable)) //In future we will want to have a way to hash check this or something so we can update this if necessary without user intervention.
+            if (forceDownload || !File.Exists(staticExecutable)) //In future we will want to have a way to hash check this or something so we can update this if necessary without user intervention.
             {
                 using (var wc = new System.Net.WebClient())
                 {
@@ -66,19 +66,17 @@ namespace LegendaryExplorer.Misc
                     };
                     wc.DownloadDataCompleted += (a, args) =>
                     {
-
-
                         downloadError = args.Error?.Message;
                         if (downloadError != null)
                         {
-                            if (File.Exists(staticExecutable)) File.Delete(staticExecutable);
-
+                            if (File.Exists(staticExecutable)) 
+                                File.Delete(staticExecutable);
                         }
                         else
                         {
                             ZipArchive za = new ZipArchive(new MemoryStream(args.Result));
                             var outputdir = Directory.CreateDirectory(Path.Combine(AppDirectories.StaticExecutablesDirectory, foldername)).FullName;
-                            za.ExtractToDirectory(outputdir);
+                            za.ExtractToDirectory(outputdir, true);
                         }
                         lock (args.UserState)
                         {

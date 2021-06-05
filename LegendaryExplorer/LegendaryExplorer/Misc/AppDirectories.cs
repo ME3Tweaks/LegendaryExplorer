@@ -11,9 +11,9 @@ namespace LegendaryExplorer.Misc
 
         // TODO: IMPLEMENT INTO LEX PROPERLY
         /// <summary>
-        /// Static files base URL points to the static directory on the ME3Explorer github and will have executable and other files that are no distributed in the initial download of ME3Explorer.
+        /// Static files base URL points to the static directory on the ME3Explorer github and will have executable and other files that are no distributed in the initial download of LegendaryExplorer.
         /// </summary>
-        public const string StaticFilesBaseURL = "https://github.com/ME3Tweaks/ME3Explorer/raw/Beta/StaticFiles/";
+        public const string StaticFilesBaseURL = "https://github.com/ME3Tweaks/ME3Explorer/raw/net5/StaticFiles/";
 
         // TODO: Should this be merged into the executable? Does this work in .NET Single File?
         public static string ExecFolder => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "exec");
