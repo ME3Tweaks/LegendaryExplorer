@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Packages;
@@ -295,56 +296,55 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             return null;
         }
 
-        public static PropertyCollection getDefaultStructValue(string className, bool stripTransients)
+        public static PropertyCollection getDefaultStructValue(string structName, bool stripTransients, PackageCache packageCache)
         {
-            bool isImmutable = GlobalUnrealObjectInfo.IsImmutable(className, MEGame.ME1);
-            if (Structs.ContainsKey(className))
+            bool isImmutable = GlobalUnrealObjectInfo.IsImmutable(structName, MEGame.ME1);
+            if (Structs.TryGetValue(structName, out ClassInfo info))
             {
-                ClassInfo info = Structs[className];
                 try
                 {
-                    PropertyCollection structProps = new();
-                    ClassInfo tempInfo = info;
-                    while (tempInfo != null)
+                    PropertyCollection props = new();
+                    while (info != null)
                     {
-                        foreach ((string propName, PropertyInfo propInfo) in tempInfo.properties)
+                        foreach ((string propName, PropertyInfo propInfo) in info.properties)
                         {
                             if (stripTransients && propInfo.Transient)
                             {
                                 continue;
                             }
-                            if (getDefaultProperty(propName, propInfo, stripTransients, isImmutable) is Property uProp)
+                            if (getDefaultProperty(propName, propInfo, packageCache, stripTransients, isImmutable) is Property uProp)
                             {
-                                structProps.Add(uProp);
+                                props.Add(uProp);
                             }
                         }
-                        if (!Structs.TryGetValue(tempInfo.baseClass, out tempInfo))
-                        {
-                            tempInfo = null;
-                        }
-                    }
-                    structProps.Add(new NoneProperty());
-                    string filepath = null;
-                    if (ME1Directory.BioGamePath != null)
-                    {
-                        filepath = Path.Combine(ME1Directory.BioGamePath, info.pccPath);
-                    }
 
-                    Stream loadStream = null;
-                    if (File.Exists(info.pccPath)) //dynamic lookup (relative path)
-                    {
-                        filepath = info.pccPath;
-                        loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(info.pccPath);
-                    }
-                    else if (info.pccPath == GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
-                    {
-                        filepath = "GAMERESOURCES_ME1"; //used for cache
-                        loadStream = LegendaryExplorerCoreUtilities.LoadFileFromCompressedResource("GameResources.zip", LegendaryExplorerCoreLib.CustomResourceFileName(MEGame.ME1)); // should this be ME3 (it was originally before corelib move)
-                    }
-                    else if (filepath != null && File.Exists(filepath))
-                    {
-                        loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(filepath);
-                    }
+                        string filepath = null;
+                        if (ME1Directory.BioGamePath != null)
+                        {
+                            filepath = Path.Combine(ME1Directory.BioGamePath, info.pccPath);
+                        }
+
+                        Stream loadStream = null;
+                        IMEPackage cachedPackage = null;
+                        if (packageCache != null && packageCache.TryGetCachedPackage(filepath, true, out cachedPackage))
+                        {
+                            // Use this one
+                            readDefaultProps(cachedPackage, props, packageCache: packageCache);
+                        }
+                        else if (File.Exists(info.pccPath)) //dynamic lookup (relative path)
+                        {
+                            filepath = info.pccPath;
+                            loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(info.pccPath);
+                        }
+                        else if (info.pccPath == GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
+                        {
+                            filepath = "GAMERESOURCES_ME1"; //used for cache
+                            loadStream = LegendaryExplorerCoreUtilities.LoadFileFromCompressedResource("GameResources.zip", LegendaryExplorerCoreLib.CustomResourceFileName(MEGame.ME1)); // should this be ME3 (it was originally before corelib move)
+                        }
+                        else if (filepath != null && File.Exists(filepath))
+                        {
+                            loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(filepath);
+                        }
 #if AZURE
                     else if (MiniGameFilesPath != null && File.Exists(Path.Combine(MiniGameFilesPath, info.pccPath)))
                     {
@@ -355,28 +355,25 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                         loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(filepath);
                     }
 #endif
-                    if (loadStream == null)
-                    {
-                        filepath = Path.Combine(ME1Directory.DefaultGamePath, info.pccPath); //for files from ME1 DLC
-                        if (File.Exists(filepath))
+                        if (cachedPackage == null && loadStream == null)
                         {
-                            loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(filepath);
-                        }
-                    }
-                    if (loadStream != null)
-                    {
-                        using (IMEPackage importPCC = MEPackageHandler.OpenMEPackageFromStream(loadStream, filepath, useSharedPackageCache: true))
-                        {
-                            var exportToRead = importPCC.GetUExport(info.exportIndex);
-                            byte[] buff = exportToRead.DataReadOnly.Slice(0x30).ToArray();
-                            PropertyCollection defaults = PropertyCollection.ReadProps(exportToRead, new MemoryStream(buff), className);
-                            foreach (var prop in defaults)
+                            filepath = Path.Combine(ME1Directory.DefaultGamePath, info.pccPath); //for files from ME1 DLC
+                            if (File.Exists(filepath))
                             {
-                                structProps.TryReplaceProp(prop);
+                                loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(filepath);
                             }
                         }
+                        if (cachedPackage == null && loadStream != null)
+                        {
+                            using IMEPackage importPCC = MEPackageHandler.OpenMEPackageFromStream(loadStream, filepath, useSharedPackageCache: true);
+                            readDefaultProps(importPCC, props, packageCache);
+                        }
+
+                        Structs.TryGetValue(info.baseClass, out info);
                     }
-                    return structProps;
+                    props.Add(new NoneProperty());
+
+                    return props;
                 }
                 catch
                 {
@@ -384,9 +381,20 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 }
             }
             return null;
+
+            void readDefaultProps(IMEPackage impPackage, PropertyCollection defaultProps, PackageCache packageCache)
+            {
+                var exportToRead = impPackage.GetUExport(info.exportIndex);
+                byte[] buff = exportToRead.DataReadOnly.Slice(0x30).ToArray();
+                PropertyCollection defaults = PropertyCollection.ReadProps(exportToRead, new MemoryStream(buff), structName, packageCache: packageCache);
+                foreach (var prop in defaults)
+                {
+                    defaultProps.TryReplaceProp(prop);
+                }
+            }
         }
 
-        public static Property getDefaultProperty(string propName, PropertyInfo propInfo, bool stripTransients = true, bool isImmutable = false)
+        public static Property getDefaultProperty(string propName, PropertyInfo propInfo, PackageCache packageCache, bool stripTransients = true, bool isImmutable = false)
         {
             switch (propInfo.Type)
             {
@@ -438,7 +446,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     }
                 case PropertyType.StructProperty:
                     isImmutable = isImmutable || GlobalUnrealObjectInfo.IsImmutable(propInfo.Reference, MEGame.ME1);
-                    return new StructProperty(propInfo.Reference, getDefaultStructValue(propInfo.Reference, stripTransients), propName, isImmutable);
+                    return new StructProperty(propInfo.Reference, getDefaultStructValue(propInfo.Reference, stripTransients, packageCache), propName, isImmutable);
                 case PropertyType.None:
                 case PropertyType.Unknown:
                 default:
@@ -619,7 +627,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 info.pccPath = pcc.FilePath; //used for dynamic resolution of files outside the game directory.
             }
 
-            int nextExport = BitConverter.ToInt32(export.Data, isStruct ? 0x18 : 0x10);
+            int nextExport = EndianReader.ToInt32(export.DataReadOnly, isStruct ? 0x18 : 0x10, export.FileRef.Endian);
             while (nextExport > 0)
             {
                 var entry = pcc.GetUExport(nextExport);
@@ -635,7 +643,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                         }
                     }
                 }
-                nextExport = BitConverter.ToInt32(entry.Data, 0x10);
+                nextExport = EndianReader.ToInt32(entry.DataReadOnly, 0x10, export.FileRef.Endian);
             }
             return info;
         }
@@ -646,12 +654,12 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             if (!Enums.ContainsKey(enumName))
             {
                 var values = new List<NameReference>();
-                byte[] buff = export.Data;
-                int count = BitConverter.ToInt32(buff, 20);
+                var buff = export.DataReadOnly;
+                int count = EndianReader.ToInt32(buff, 20, export.FileRef.Endian);
                 for (int i = 0; i < count; i++)
                 {
                     int enumValIndex = 24 + i * 8;
-                    values.Add(new NameReference(export.FileRef.Names[BitConverter.ToInt32(buff, enumValIndex)], BitConverter.ToInt32(buff, enumValIndex + 4)));
+                    values.Add(new NameReference(export.FileRef.Names[EndianReader.ToInt32(buff, enumValIndex, export.FileRef.Endian)], EndianReader.ToInt32(buff, enumValIndex + 4, export.FileRef.Endian)));
                 }
                 Enums.Add(enumName, values);
             }
@@ -690,20 +698,20 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 case "ClassProperty":
                 case "ComponentProperty":
                     type = PropertyType.ObjectProperty;
-                    reference = pcc.getObjectName(BitConverter.ToInt32(entry.Data, entry.Data.Length - 4));
+                    reference = pcc.getObjectName(EndianReader.ToInt32(entry.DataReadOnly, entry.DataSize - 4, entry.FileRef.Endian));
                     break;
                 case "StructProperty":
                     type = PropertyType.StructProperty;
-                    reference = pcc.getObjectName(BitConverter.ToInt32(entry.Data, entry.Data.Length - 4));
+                    reference = pcc.getObjectName(EndianReader.ToInt32(entry.DataReadOnly, entry.DataSize - 4, entry.FileRef.Endian));
                     break;
                 case "BioMask4Property":
                 case "ByteProperty":
                     type = PropertyType.ByteProperty;
-                    reference = pcc.getObjectName(BitConverter.ToInt32(entry.Data, entry.Data.Length - 4));
+                    reference = pcc.getObjectName(EndianReader.ToInt32(entry.DataReadOnly, entry.DataSize - 4, entry.FileRef.Endian));
                     break;
                 case "ArrayProperty":
                     type = PropertyType.ArrayProperty;
-                    PropertyInfo arrayTypeProp = getProperty(pcc.GetUExport(BitConverter.ToInt32(entry.Data, 44)));
+                    PropertyInfo arrayTypeProp = getProperty(pcc.GetUExport(EndianReader.ToInt32(entry.DataReadOnly, 44, entry.FileRef.Endian)));
                     if (arrayTypeProp != null)
                     {
                         switch (arrayTypeProp.Type)
@@ -745,7 +753,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     return null;
             }
 
-            bool transient = (BitConverter.ToUInt64(entry.Data, 24) & 0x0000000000002000) != 0;
+            bool transient = (EndianReader.ToUInt64(entry.DataReadOnly, 24, entry.FileRef.Endian) & 0x0000000000002000) != 0;
             return new PropertyInfo(type, reference, transient);
         }
         #endregion
@@ -755,7 +763,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         /// <summary>
         /// List of all known classes that are only defined in native code. These are not able to be handled for things like InheritsFrom as they are not in the property info database.
         /// </summary>
-        public static string[] NativeClasses = new[]
+        public static readonly string[] NativeClasses =
         {
             // NEEDS CHECKED FOR ME1
             @"Engine.CodecMovieBink"

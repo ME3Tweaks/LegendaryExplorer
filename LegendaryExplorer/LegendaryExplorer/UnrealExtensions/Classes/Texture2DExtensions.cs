@@ -526,26 +526,11 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
                 mipTailIdx.Value = t2d.Mips.Count - 1;
             }
 
-            EndianReader mem = new EndianReader(new MemoryStream()) { Endian = t2d.Export.FileRef.Endian };
+            var mem = new EndianReader(new MemoryStream()) { Endian = t2d.Export.FileRef.Endian };
+            mem.Writer.WriteFromBuffer(t2d.Export.GetPrePropBinary());
             props.WriteTo(mem.Writer, t2d.Export.FileRef);
-            mem.Position = 0;
-            var test = PropertyCollection.ReadProps(t2d.Export, mem.BaseStream, "Texture2D", true, true); //do not set properties as this may interfere with some other code. may change later.
-            int propStart = t2d.Export.GetPropertyStart();
-            var pos = mem.Position;
-            mem.Position = 0;
-            byte[] propData = mem.ToArray();
-            if (t2d.Export.Game == MEGame.ME3)
-            {
-                t2d.Export.Data = t2d.Export.Data.Take(propStart).Concat(propData).Concat(t2d.SerializeNewData()).ToArray();
-            }
-            else
-            {
-                var array = t2d.Export.Data.Take(propStart).Concat(propData).ToArray();
-                var testdata = new MemoryStream(array);
-                var test2 = PropertyCollection.ReadProps(t2d.Export, testdata, "Texture2D", true, true, t2d.Export); //do not set properties as this may interfere with some other code. may change later.
-                                                                                                                     //ME2 post-data is this right?
-                t2d.Export.Data = t2d.Export.Data.Take(propStart).Concat(propData).Concat(t2d.SerializeNewData()).ToArray();
-            }
+            t2d.SerializeNewData(mem.BaseStream); //quite slow when writing a pcc-stored texture. Pre-calc memeorystream size might help 
+            t2d.Export.Data = mem.ToArray();
 
             //using (MemoryStream newData = new MemoryStream())
             //{

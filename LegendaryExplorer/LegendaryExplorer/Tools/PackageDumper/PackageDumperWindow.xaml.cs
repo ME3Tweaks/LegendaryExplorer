@@ -622,38 +622,35 @@ namespace LegendaryExplorer.Tools.PackageDumper
                             if (isScript)
                             {
                                 stringoutput.WriteLine("==============Function==============");
-                                switch (GameBeingDumped)
+                                if (GameBeingDumped.IsGame3())
                                 {
-                                    case MEGame.ME1:
-                                    case MEGame.ME2:
-                                        var func = UE3FunctionReader.ReadFunction(exp);
-                                        func.Decompile(new TextBuilder(), false); //parse bytecode
-                                        bool defined = func.HasFlag("Defined");
-                                        if (defined)
-                                        {
-                                            stringoutput.WriteLine(func.FunctionSignature + " {");
-                                        }
-                                        else
-                                        {
-                                            stringoutput.WriteLine(func.FunctionSignature);
-                                        }
+                                    Function func3 = new(exp.Data, exp);
+                                    func3.ParseFunction();
+                                    stringoutput.WriteLine(func3.GetSignature());
+                                    foreach (var v in func3.ScriptBlocks)
+                                    {
+                                        stringoutput.WriteLine(v.text);
+                                    }
+                                }
+                                else
+                                {
+                                    var func = UE3FunctionReader.ReadFunction(exp);
+                                    func.Decompile(new TextBuilder(), false); //parse bytecode
+                                    bool defined = func.HasFlag("Defined");
+                                    if (defined)
+                                    {
+                                        stringoutput.WriteLine(func.FunctionSignature + " {");
+                                    }
+                                    else
+                                    {
+                                        stringoutput.WriteLine(func.FunctionSignature);
+                                    }
 
-                                        for (int i = 0; i < func.Statements.statements.Count; i++)
-                                        {
-                                            Statement s = func.Statements.statements[i];
-                                            stringoutput.WriteLine(s.OffsetDisplayableString);
-                                        }
-                                        break;
-                                    case MEGame.ME3:
-
-                                        Function func3 = new(exp.Data, exp);
-                                        func3.ParseFunction();
-                                        stringoutput.WriteLine(func3.GetSignature());
-                                        foreach (var v in func3.ScriptBlocks)
-                                        {
-                                            stringoutput.WriteLine(v.text);
-                                        }
-                                        break;
+                                    for (int i = 0; i < func.Statements.statements.Count; i++)
+                                    {
+                                        Statement s = func.Statements.statements[i];
+                                        stringoutput.WriteLine(s.OffsetDisplayableString);
+                                    }
                                 }
                             }
                             //TODO: Change to UProperty

@@ -198,7 +198,7 @@ namespace LegendaryExplorer.Tools.AFCCompactorWindow
 
 
         #region Binding Vars
-        public ObservableCollectionExtended<MEGame> GameOptions { get; } = new(new[] { MEGame.ME2, MEGame.ME3 });
+        public ObservableCollectionExtended<MEGame> GameOptions { get; } = new(new[] { MEGame.ME2, MEGame.ME3, MEGame.LE2, MEGame.LE3 });
         public ObservableCollectionExtended<AFCCompactor.ReferencedAudio> AudioReferences { get; } = new();
         public ICollectionView AudioReferencesView => CollectionViewSource.GetDefaultView(AudioReferences);
         public ObservableCollectionExtended<DLCDependency> DLCDependencies { get; } = new();
@@ -258,6 +258,7 @@ namespace LegendaryExplorer.Tools.AFCCompactorWindow
             set
             {
                 SetProperty(ref _dlcInputFolder, value);
+                // TODO: Implement for LEX
                 if (!string.IsNullOrWhiteSpace(_dlcInputFolder))
                 {
                     string foldername = Path.GetFileName(DLCInputFolder);

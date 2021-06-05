@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
@@ -208,5 +209,14 @@ namespace LegendaryExplorer.Tools.SFARExplorer
         }
 
         public string Toolname => "SFARExplorer";
+
+        private void SFARExplorerWindow_OnClosing(object sender, CancelEventArgs e)
+        {
+            if (e.Cancel)
+            {
+                return;
+            }
+            RecentsController?.Dispose();
+        }
     }
 }

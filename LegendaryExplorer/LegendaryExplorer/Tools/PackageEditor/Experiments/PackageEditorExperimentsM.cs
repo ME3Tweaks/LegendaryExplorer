@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Numerics;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorerCore.GameFilesystem;
@@ -23,7 +24,6 @@ using LegendaryExplorerCore.Unreal.ObjectInfo;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
-using SharpDX;
 
 //using ImageMagick;
 
@@ -1164,8 +1164,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
-        public static void CheckImports(IMEPackage Pcc)
+        public static void CheckImports(IMEPackage Pcc, PackageCache globalCache = null)
         {
+            if (Pcc == null) return;
             PackageCache pc = new PackageCache();
             // Enumerate and resolve all imports.
             foreach (var import in Pcc.Imports)
@@ -1174,15 +1175,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     continue; // Most of these are native-native
                 if (GlobalUnrealObjectInfo.IsAKnownNativeClass(import))
                     continue; // Native is always loaded iirc
-                Debug.WriteLine($@"Resolving {import.FullPath}");
-                var export = EntryImporter.ResolveImport(import, pc);
+                //Debug.WriteLine($@"Resolving {import.FullPath}");
+                var export = EntryImporter.ResolveImport(import, globalCache, pc);
                 if (export != null)
                 {
 
                 }
                 else
                 {
-                    Debug.WriteLine($@"UNRESOLVABLE IMPORT: {import.FullPath}!");
+                    Debug.WriteLine($@" >>> UNRESOLVABLE IMPORT: {import.FullPath}!");
                 }
             }
             pc.ReleasePackages();
@@ -1505,6 +1506,29 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 currentprops.AddOrReplaceProp(respawns);
                 currentprops.AddOrReplaceProp(respawnTime);
                 container.WriteProperties(currentprops);
+            }
+        }
+
+        public static void CheckAllGameImports(IMEPackage pewPcc)
+        {
+            if (pewPcc == null)
+                return;
+
+            var loadedFiles = MELoadedFiles.GetFilesLoadedInGame(pewPcc.Game);
+
+            PackageCache pc = new PackageCache();
+            var safeFiles = EntryImporter.FilesSafeToImportFrom(pewPcc.Game).ToList();
+            safeFiles.AddRange(loadedFiles.Where(x=>x.Key.StartsWith("Startup") && (!pewPcc.Game.IsGame2() || x.Key.Contains("_INT"))).Select(x=>x.Key));
+
+            foreach (var f in safeFiles.Distinct())
+            {
+                pc.GetCachedPackage(loadedFiles[f]);
+            }
+
+            foreach (var f in loadedFiles)
+            {
+                using var p = MEPackageHandler.OpenMEPackage(f.Value);
+                CheckImports(p, pc);
             }
         }
     }

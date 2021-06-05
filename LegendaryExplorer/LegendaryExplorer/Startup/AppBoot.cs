@@ -55,7 +55,7 @@ namespace LegendaryExplorer.Startup
             Settings.LoadSettings();
 
             // AppCenter setup
-#if DEBUG
+#if !DEBUG
             //We should only track things like this in release mode so we don't pollute our dataset
             if (Settings.Global_Analytics_Enabled && APIKeys.HasAppCenterKey)
             {

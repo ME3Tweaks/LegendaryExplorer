@@ -17,9 +17,8 @@
   <!-- Sequence Editor specific settings -->
   <setting name="SequenceEditor_MaxVarStringLength" type="int" defaultvalue="40"/>
   <setting name="SequenceEditor_ShowParsedInfo" type="bool" defaultvalue="true"/>
-  <setting name="SequenceEditor_AutoSaveView" type="bool" defaultvalue="false"/>
+  <setting name="SequenceEditor_AutoSaveViewV2" type="bool" defaultvalue="true"/>
   <setting name="SequenceEditor_ShowOutputNumbers" type="bool" defaultvalue="false"/>
-  <setting name="SequenceEditor_GlobalSeqRefViewSaves" type="bool" defaultvalue="false"/>
     
   <!-- Soundplorer specific settings-->
   <setting name="Soundplorer_ReverseIDDisplayEndianness" type="bool" defaultvalue="false"/>

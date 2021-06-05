@@ -78,6 +78,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 btnClamped.Visibility = CurrentLoadedExport.Game switch
                 {
                     MEGame.ME3 => Visibility.Visible,
+                    MEGame.LE3 => Visibility.Visible,
                     MEGame.UDK => Visibility.Visible,
                     _ => Visibility.Collapsed
                 };

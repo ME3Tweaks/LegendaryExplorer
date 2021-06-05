@@ -138,7 +138,7 @@ namespace LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode
             {
                 try
                 {
-                    var childIdx = EndianReader.ToInt32(Export.Data, 0x18, Export.FileRef.Endian);
+                    var childIdx = EndianReader.ToInt32(Export.DataReadOnly, 0x18, Export.FileRef.Endian);
                     var children = new List<ExportEntry>();
                     while (Export.FileRef.TryGetUExport(childIdx, out var parsingExp))
                     {
@@ -150,7 +150,7 @@ namespace LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode
                             throw new Exception("Infinite loop detected while parsing function!");
                         }
 
-                        childIdx = EndianReader.ToInt32(parsingExp.Data, 0x10, Export.FileRef.Endian);
+                        childIdx = EndianReader.ToInt32(parsingExp.DataReadOnly, 0x10, Export.FileRef.Endian);
                     }
 
                     //Get local children of this function
@@ -159,7 +159,7 @@ namespace LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode
                         //Reading parameters info...
                         if (export.ClassName.EndsWith("Property"))
                         {
-                            UnrealFlags.EPropertyFlags ObjectFlagsMask = (UnrealFlags.EPropertyFlags)EndianReader.ToUInt64(export.Data, 0x18, export.FileRef.Endian);
+                            UnrealFlags.EPropertyFlags ObjectFlagsMask = (UnrealFlags.EPropertyFlags)EndianReader.ToUInt64(export.DataReadOnly, 0x18, export.FileRef.Endian);
                             //UnrealFlags.EPropertyFlags ObjectFlagsMask = (UnrealFlags.EPropertyFlags)EndianReader.ToUInt64(export.DataReadOnly, 0x18, export.FileRef.Endian);
                             if (ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.Parm) && !ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.ReturnParm))
                             {
@@ -308,7 +308,7 @@ namespace LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode
             try
             {
                 var childProbe = Export.Game.IsLEGame() ? 0x14 : 0x18;
-                var childIdx = EndianReader.ToInt32(Export.Data, childProbe, Export.FileRef.Endian);
+                var childIdx = EndianReader.ToInt32(Export.DataReadOnly, childProbe, Export.FileRef.Endian);
                 while (Export.FileRef.TryGetUExport(childIdx, out var parsingExp))
                 {
                     var data = parsingExp.DataReadOnly;
@@ -316,8 +316,7 @@ namespace LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode
                     {
                         if (parsingExp.ClassName == "ObjectProperty" || parsingExp.ClassName == "StructProperty")
                         {
-                            var uindexOfOuter = EndianReader.ToInt32(data, parsingExp.DataSize - 4,
-                                _self.FileRef.Endian);
+                            var uindexOfOuter = EndianReader.ToInt32(data, parsingExp.DataSize - 4, _self.FileRef.Endian);
                             IEntry entry = parsingExp.FileRef.GetEntry(uindexOfOuter);
                             if (entry != null)
                             {

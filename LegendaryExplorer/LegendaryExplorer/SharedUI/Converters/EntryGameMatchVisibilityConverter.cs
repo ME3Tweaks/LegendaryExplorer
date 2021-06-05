@@ -29,6 +29,15 @@ namespace LegendaryExplorer.SharedUI.Converters
                     case "ME3":
                         gameToMatch = MEGame.ME3;
                         break;
+                    case "LE1":
+                        gameToMatch = MEGame.LE1;
+                        break;
+                    case "LE2":
+                        gameToMatch = MEGame.LE2;
+                        break;
+                    case "LE3":
+                        gameToMatch = MEGame.LE3;
+                        break;
                     case "UDK":
                         gameToMatch = MEGame.UDK;
                         break;

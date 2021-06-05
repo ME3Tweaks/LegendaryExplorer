@@ -22,6 +22,7 @@ using System;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Numerics;
 
 namespace LegendaryExplorerCore.SharpDX
 {
@@ -336,15 +337,6 @@ namespace LegendaryExplorerCore.SharpDX
         public Vector3 ToVector3()
         {
             return new Vector3(R / 255.0f, G / 255.0f, B / 255.0f);
-        }
-
-        /// <summary>
-        /// Converts the color into a three component color.
-        /// </summary>
-        /// <returns>A three component color containing the red, green, and blue components of the color.</returns>
-        public Color3 ToColor3()
-        {
-            return new Color3(R / 255.0f, G / 255.0f, B / 255.0f);
         }
 
         /// <summary>
@@ -1004,15 +996,6 @@ namespace LegendaryExplorerCore.SharpDX
             return !left.Equals(ref right);
         }
 
-        /// <summary>
-        /// Performs an explicit conversion from <see cref="Color"/> to <see cref="Color3"/>.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns>The result of the conversion.</returns>
-        public static explicit operator Color3(Color value)
-        {
-            return value.ToColor3();
-        }
 
         /// <summary>
         /// Performs an explicit conversion from <see cref="Color"/> to <see cref="Vector3"/>.
@@ -1034,24 +1017,6 @@ namespace LegendaryExplorerCore.SharpDX
             return new Vector4(value.R / 255.0f, value.G / 255.0f, value.B / 255.0f, value.A / 255.0f);
         }
 
-        /// <summary>
-        /// Convert this instance to a <see cref="Color4"/>
-        /// </summary>
-        /// <returns>The result of the conversion.</returns>
-        public Color4 ToColor4()
-        {
-            return new Color4(R / 255.0f, G / 255.0f, B / 255.0f, A / 255.0f);
-        }
-
-        /// <summary>
-        /// Performs an implicit conversion from <see cref="Color"/> to <see cref="Color4"/>.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns>The result of the conversion.</returns>
-        public static implicit operator Color4(Color value)
-        {
-            return value.ToColor4();
-        }
 
         ///// <summary>
         ///// Performs an implicit conversion from <see cref="Color"/> to <see cref="RawColor4"/>.
@@ -1095,16 +1060,6 @@ namespace LegendaryExplorerCore.SharpDX
         }
 
         /// <summary>
-        /// Performs an explicit conversion from <see cref="Color3"/> to <see cref="Color"/>.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns>The result of the conversion.</returns>
-        public static explicit operator Color(Color3 value)
-        {
-            return new Color(value.Red, value.Green, value.Blue, 1.0f);
-        }
-
-        /// <summary>
         /// Performs an explicit conversion from <see cref="Vector4"/> to <see cref="Color"/>.
         /// </summary>
         /// <param name="value">The value.</param>
@@ -1112,16 +1067,6 @@ namespace LegendaryExplorerCore.SharpDX
         public static explicit operator Color(Vector4 value)
         {
             return new Color(value.X, value.Y, value.Z, value.W);
-        }
-
-        /// <summary>
-        /// Performs an explicit conversion from <see cref="Color4"/> to <see cref="Color"/>.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns>The result of the conversion.</returns>
-        public static explicit operator Color(Color4 value)
-        {
-            return new Color(value.Red, value.Green, value.Blue, value.Alpha);
         }
 
         /// <summary>

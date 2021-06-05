@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using LegendaryExplorerCore.SharpDX;
+using System.Numerics;
 using LegendaryExplorerCore.Unreal;
 
 namespace LegendaryExplorerCore.Helpers

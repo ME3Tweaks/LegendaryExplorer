@@ -119,7 +119,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
 
         int RescanSelectionOffset;
-        private readonly List<FrameworkElement> EditorSetElements = new List<FrameworkElement>();
+        private readonly List<FrameworkElement> EditorSetElements = new();
         public struct PropHeader
         {
             public int name;
@@ -150,7 +150,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private int ForcedRescanOffset;
         private bool ArrayElementJustAdded;
 
-        public InterpreterExportLoader() : base("Interpreter")
+        public InterpreterExportLoader() : base("Properties")
         {
             LoadCommands();
             InitializeComponent();
@@ -418,12 +418,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void PopoutInterpreterForObj()
         {
-            if (SelectedItem is UPropertyTreeViewEntry tvi && tvi.Property is ObjectProperty op && Pcc.IsUExport(op.Value))
+            if (SelectedItem is UPropertyTreeViewEntry {Property: ObjectProperty op} && Pcc.IsUExport(op.Value))
             {
                 ExportEntry export = Pcc.GetUExport(op.Value);
-                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new InterpreterExportLoader(), export)
+                var elhw = new ExportLoaderHostedWindow(new InterpreterExportLoader(), export)
                 {
-                    Title = $"Interpreter - {export.UIndex} {export.InstancedFullPath} - {Pcc.FilePath}"
+                    Title = $"Properties - {export.UIndex} {export.InstancedFullPath} - {Pcc.FilePath}"
                 };
                 elhw.Show();
             }
@@ -732,7 +732,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             EditorSetElements.ForEach(x => x.Visibility = Visibility.Collapsed);
             Set_Button.Visibility = Visibility.Collapsed;
             //EditorSet_Separator.Visibility = Visibility.Collapsed;
-            (Interpreter_Hexbox?.ByteProvider as DynamicByteProvider)?.Bytes.Clear();
+            (Interpreter_Hexbox?.ByteProvider as ReadOptimizedByteProvider)?.Clear();
             Interpreter_Hexbox?.Refresh();
             HasUnsavedChanges = false;
             PropertyNodes.Clear();
@@ -770,7 +770,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             //Debug.WriteLine("Selection offset: " + RescanSelectionOffset);
             CurrentLoadedExport = export;
             isLoadingNewData = true;
-            (Interpreter_Hexbox.ByteProvider as DynamicByteProvider)?.ReplaceBytes(export.Data);
+            (Interpreter_Hexbox.ByteProvider as ReadOptimizedByteProvider)?.ReplaceBytes(export.Data);
             hb1_SelectionChanged(null, null); //refresh bottom text
             Interpreter_Hexbox.Select(0, 1);
             Interpreter_Hexbox.ScrollByteIntoView();
@@ -1210,7 +1210,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var uptvi = (UPropertyTreeViewEntry)sender;
             switch (e.PropertyName)
             {
-                case "ColorStructCode" when uptvi.Property is StructProperty colorStruct && colorStruct.StructType == "Color":
+                case "ColorStructCode" when uptvi.Property is StructProperty {StructType: "Color"} colorStruct:
                     uptvi.ChildrenProperties.ClearEx();
                     foreach (var subProp in colorStruct.Properties)
                     {
@@ -1221,7 +1221,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     var g = colorStruct.GetProp<ByteProperty>("G");
                     var b = colorStruct.GetProp<ByteProperty>("B");
 
-                    var byteProvider = (DynamicByteProvider)Interpreter_Hexbox.ByteProvider;
+                    var byteProvider = (ReadOptimizedByteProvider)Interpreter_Hexbox.ByteProvider;
                     byteProvider.WriteByte(a.ValueOffset, a.Value);
                     byteProvider.WriteByte(r.ValueOffset, r.Value);
                     byteProvider.WriteByte(g.ValueOffset, g.Value);
@@ -1318,8 +1318,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             int start = (int)Interpreter_Hexbox.SelectionStart;
             int len = (int)Interpreter_Hexbox.SelectionLength;
             int size = (int)Interpreter_Hexbox.ByteProvider.Length;
-            //TODO: Optimize this so this is only called when data has changed
-            byte[] currentData = ((DynamicByteProvider)Interpreter_Hexbox.ByteProvider).Bytes.ToArray();
+
+            var currentData = ((ReadOptimizedByteProvider)Interpreter_Hexbox.ByteProvider).Span;
             try
             {
                 if (start != -1 && start < size)
@@ -1825,10 +1825,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private void Interpreter_Loaded(object sender, RoutedEventArgs e)
         {
             Interpreter_Hexbox = (HexBox)Interpreter_Hexbox_Host.Child;
-            if (Interpreter_Hexbox.ByteProvider == null)
-            {
-                Interpreter_Hexbox.ByteProvider = new DynamicByteProvider();
-            }
+            Interpreter_Hexbox.ByteProvider ??= new ReadOptimizedByteProvider();
             //remove in the event this object is reloaded again
             Interpreter_Hexbox.ByteProvider.Changed -= Interpreter_Hexbox_BytesChanged;
             Interpreter_Hexbox.ByteProvider.Changed += Interpreter_Hexbox_BytesChanged;
@@ -1855,13 +1852,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void Interpreter_SaveHexChanges()
         {
-            IByteProvider provider = Interpreter_Hexbox.ByteProvider;
-            if (provider != null)
+            if (Interpreter_Hexbox.ByteProvider is ReadOptimizedByteProvider provider)
             {
-                MemoryStream m = new MemoryStream();
-                for (int i = 0; i < provider.Length; i++)
-                    m.WriteByte(provider.ReadByte(i));
-                CurrentLoadedExport.Data = m.ToArray();
+                CurrentLoadedExport.Data = provider.Span.ToArray();
             }
         }
 
@@ -2202,15 +2195,32 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             Interpreter_Hexbox_Host?.Child.Dispose();
             Interpreter_Hexbox_Host?.Dispose();
             Interpreter_Hexbox_Host = null;
+            CurrentLoadedExport = null;
+            //needed because wpf controls can take a loong time to get garbage collected,
+            //so we need to sever all links to the IMEPackage immediately if we want it to be cleaned up in a timely fashion
+            ClearTree(PropertyNodes);
+            Interpreter_TreeView = null;
+
+            static void ClearTree(ObservableCollectionExtended<UPropertyTreeViewEntry> treeViewEntries)
+            {
+                foreach (UPropertyTreeViewEntry tve in treeViewEntries)
+                {
+                    tve.AttachedExport = null;
+                    if (tve.ChildrenProperties.Count > 0)
+                    {
+                        ClearTree(tve.ChildrenProperties);
+                    }
+                }
+            }
         }
 
         public override void PopOut()
         {
             if (CurrentLoadedExport != null)
             {
-                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new InterpreterExportLoader(), CurrentLoadedExport)
+                var elhw = new ExportLoaderHostedWindow(new InterpreterExportLoader(), CurrentLoadedExport)
                 {
-                    Title = $"Interpreter - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {Pcc.FilePath}"
+                    Title = $"Properties - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {Pcc.FilePath}"
                 };
                 elhw.Show();
             }

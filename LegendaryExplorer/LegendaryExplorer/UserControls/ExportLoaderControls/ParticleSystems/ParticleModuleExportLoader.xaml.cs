@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
+using System.Numerics;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
-using SharpDX;
 using Color = System.Windows.Media.Color;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls

@@ -17,6 +17,7 @@
     DragOver="Window_DragOver"
     Drop="Window_Drop"
     AllowDrop="True"
+    Closing="PlotEditorWindow_OnClosing"
     Icon="/Tools/Icons/ploteditor_256x256.ico">
     <Window.Resources>
         <converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
@@ -105,7 +106,7 @@
                     <plotEditor:QuestMapView x:Name="QuestMapControl" />
                 </TabItem>
                 <TabItem Header="Consequence Map"
-                         Visibility="{Binding Pcc.Game, Converter={StaticResource GameToVisibilityConverter}, ConverterParameter='Not_ME3'}">
+                         Visibility="{Binding Pcc.Game, Converter={StaticResource GameToVisibilityConverter}, ConverterParameter='Not_Game3'}">
                     <plotEditor:StateEventMapView x:Name="ConsequenceMapControl" />
                 </TabItem>
                 <TabItem Header="State Event Map">

@@ -204,6 +204,7 @@ namespace LegendaryExplorer.Tools.InterpEditor
             timelineControl.Dispose();
             Properties_InterpreterWPF?.Dispose();
             CurveTab_CurveEditor?.Dispose();
+            RecentsController?.Dispose();
         }
 
         public void PropogateRecentsChange(IEnumerable<RecentsControl.RecentItem> newRecents)

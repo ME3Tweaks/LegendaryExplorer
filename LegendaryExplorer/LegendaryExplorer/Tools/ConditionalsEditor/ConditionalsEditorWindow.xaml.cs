@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -212,5 +213,13 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
         }
 
         public string Toolname => "ConditionalsEditor";
+
+        private void ConditionalsEditorWindow_OnClosing(object sender, CancelEventArgs e)
+        {
+            if (e.Cancel)
+                return;
+
+            RecentsController?.Dispose();
+        }
     }
 }

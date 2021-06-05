@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using System.Numerics;
 using FontAwesome5;
 using LegendaryExplorer.Tools.AssetDatabase;
 using LegendaryExplorer.GameInterop;
@@ -20,7 +21,6 @@ using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
-using SharpDX;
 using Path = System.IO.Path;
 
 namespace LegendaryExplorer.Tools.AnimationViewer
@@ -160,11 +160,12 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                         }
                         else
                         {
-                            floats = defaultPosition.ToArray();
+                            defaultPosition.CopyTo(floats);
                             break;
                         }
                     }
-                    pos = new Vector3(floats);
+
+                    pos = new Vector3(floats[0], floats[1], floats[2]);
                 }
                 noUpdate = true;
                 XPos = (int)pos.X;
@@ -499,10 +500,10 @@ namespace LegendaryExplorer.Tools.AnimationViewer
         {
             if (noUpdate) return;
 
-            (float x, float y, float z) = new Rotator(((float)Pitch).DegreesToUnrealRotationUnits(), ((float)Yaw).DegreesToUnrealRotationUnits(), 0).GetDirectionalVector();
-            GameController.ExecuteME3ConsoleCommands(VarCmd(x, FloatVarIndexes.XRotComponent),
-                                                     VarCmd(y, FloatVarIndexes.YRotComponent),
-                                                     VarCmd(z, FloatVarIndexes.ZRotComponent),
+            var rot = new Rotator(((float)Pitch).DegreesToUnrealRotationUnits(), ((float)Yaw).DegreesToUnrealRotationUnits(), 0).GetDirectionalVector();
+            GameController.ExecuteME3ConsoleCommands(VarCmd(rot.X, FloatVarIndexes.XRotComponent),
+                                                     VarCmd(rot.Y, FloatVarIndexes.YRotComponent),
+                                                     VarCmd(rot.Z, FloatVarIndexes.ZRotComponent),
                                                      "ce SetActorRotation");
         }
 
@@ -709,10 +710,10 @@ namespace LegendaryExplorer.Tools.AnimationViewer
         {
             if (noUpdate) return;
 
-            (float x, float y, float z) = new Rotator(((float)CamPitch).DegreesToUnrealRotationUnits(), ((float)CamYaw).DegreesToUnrealRotationUnits(), 0).GetDirectionalVector();
-            GameController.ExecuteME3ConsoleCommands(VarCmd(x, FloatVarIndexes.CamXRotComponent),
-                                                     VarCmd(y, FloatVarIndexes.CamYRotComponent),
-                                                     VarCmd(z, FloatVarIndexes.CamZRotComponent),
+            var rot = new Rotator(((float)CamPitch).DegreesToUnrealRotationUnits(), ((float)CamYaw).DegreesToUnrealRotationUnits(), 0).GetDirectionalVector();
+            GameController.ExecuteME3ConsoleCommands(VarCmd(rot.X, FloatVarIndexes.CamXRotComponent),
+                                                     VarCmd(rot.Y, FloatVarIndexes.CamYRotComponent),
+                                                     VarCmd(rot.Z, FloatVarIndexes.CamZRotComponent),
                                                      "ce SetCameraRotation");
         }
 

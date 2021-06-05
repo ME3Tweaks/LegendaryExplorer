@@ -178,7 +178,7 @@
                                 <Setter Property="Padding" Value="3" />
                             </Style>
                         </TabControl.Resources>
-                        <TabItem Header="Interpreter">
+                        <TabItem Header="Properties">
                             <exportLoaderControls:InterpreterExportLoader x:Name="Properties_InterpreterWPF" HideHexBox="True"/>
                         </TabItem>
                         <TabItem Header="Binary Interpreter" >

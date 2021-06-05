@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
+using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Misc;
@@ -28,11 +29,13 @@ namespace LegendaryExplorerCore.Audio
             /// <summary>
             /// AFCs that reside in official DLC. This includes SFAR files.
             /// </summary>
-            public List<string> OfficialDLCAFCFiles = new List<string>();
+            public List<string> OfficialDLCAFCFiles = new();
+
             /// <summary>
             /// Mapping of DLC foldername to a list of AFCs in that SFAR
             /// </summary>
             public readonly CaseInsensitiveDictionary<List<string>> SFARAFCsMap = new();
+
             public static AFCInventory GetInventory(string inputPath, MEGame game, Action<string> currentScanningFileCallback = null, Action<string> debugOut = null)
             {
                 var inventory = new AFCInventory();
@@ -188,8 +191,8 @@ namespace LegendaryExplorerCore.Audio
                             }
 
                             string afcName = afcNameProp.ToString().ToLower();
-                            int audioSize = BitConverter.ToInt32(exp.Data, exp.Data.Length - 8);
-                            int audioOffset = BitConverter.ToInt32(exp.Data, exp.Data.Length - 4);
+                            int audioSize = EndianReader.ToInt32(exp.DataReadOnly, exp.DataSize - 8, exp.FileRef.Endian);
+                            int audioOffset = EndianReader.ToInt32(exp.DataReadOnly, exp.DataSize - 4, exp.FileRef.Endian);
                             bool isModified = false;
                             if (afcFile != null)
                             {
@@ -361,7 +364,7 @@ namespace LegendaryExplorerCore.Audio
             var finalAfcPath = inputPath;
             if (!Path.GetFileName(finalAfcPath).StartsWith("CookedPC", StringComparison.InvariantCultureIgnoreCase))
             {
-                finalAfcPath = Path.Combine(finalAfcPath, game == MEGame.ME2 ? "CookedPC" : "CookedPCConsole");
+                finalAfcPath = Path.Combine(finalAfcPath, MEDirectories.CookedName(game));
             }
             finalAfcPath = Path.Combine(finalAfcPath, $"{newAFCBaseName}.afc");
             var tempAfcPath = Path.Combine(inputPath, $"TEMP_{newAFCBaseName}.afc");

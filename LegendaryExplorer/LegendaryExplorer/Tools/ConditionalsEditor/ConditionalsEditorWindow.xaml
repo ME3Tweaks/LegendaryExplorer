@@ -11,6 +11,7 @@
         xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         mc:Ignorable="d"
+        Closing="ConditionalsEditorWindow_OnClosing"
         Title="ConditionalsEditorWindow" Height="450" Width="800">
     <!-- UserControl Resources -->
     <Window.Resources>

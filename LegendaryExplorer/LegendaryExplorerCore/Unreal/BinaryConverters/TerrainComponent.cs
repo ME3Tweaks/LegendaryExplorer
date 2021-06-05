@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.SharpDX;
+using System.Numerics;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -35,7 +35,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public ushort NodeIndex1;
         public ushort NodeIndex2;
         public ushort NodeIndex3;
-        public uint unk;
+        public float unk;
         public ushort XPos
         {
             get => NodeIndex0;

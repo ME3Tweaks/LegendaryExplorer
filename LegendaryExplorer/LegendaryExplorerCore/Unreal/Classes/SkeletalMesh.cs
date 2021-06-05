@@ -5,7 +5,6 @@
 //using System.Linq;
 //using LegendaryExplorerCore.Gammtek.IO;
 //using LegendaryExplorerCore.Packages;
-//using LegendaryExplorerCore.SharpDX;
 
 //namespace LegendaryExplorerCore.Unreal.Classes
 //{

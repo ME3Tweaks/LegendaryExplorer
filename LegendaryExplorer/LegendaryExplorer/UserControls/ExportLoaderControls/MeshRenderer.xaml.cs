@@ -23,11 +23,12 @@ using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Classes;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
+using LegendaryExplorerCore.SharpDX;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using SharpDX;
+using System.Numerics;
 using SlavaGu.ConsoleAppLauncher;
-using Matrix = SharpDX.Matrix;
 using SkeletalMesh = LegendaryExplorerCore.Unreal.BinaryConverters.SkeletalMesh;
+using Color = LegendaryExplorerCore.SharpDX.Color;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -110,19 +111,19 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 if (Solid && CurrentLOD < Preview.LODs.Count)
                 {
                     SceneViewer.Context.Wireframe = false;
-                    Preview.Render(SceneViewer.Context, CurrentLOD, Matrix.Identity);
+                    Preview.Render(SceneViewer.Context, CurrentLOD, Matrix4x4.Identity);
                 }
                 if (Wireframe)
                 {
                     SceneViewer.Context.Wireframe = true;
-                    var ViewConstants = new SceneRenderContext.WorldConstants(Matrix.Transpose(SceneViewer.Context.Camera.ProjectionMatrix), Matrix.Transpose(SceneViewer.Context.Camera.ViewMatrix), Matrix.Identity);
+                    var ViewConstants = new SceneRenderContext.WorldConstants(Matrix4x4.Transpose(SceneViewer.Context.Camera.ProjectionMatrix), Matrix4x4.Transpose(SceneViewer.Context.Camera.ViewMatrix), Matrix4x4.Identity);
                     SceneViewer.Context.DefaultEffect.PrepDraw(SceneViewer.Context.ImmediateContext);
                     SceneViewer.Context.DefaultEffect.RenderObject(SceneViewer.Context.ImmediateContext, ViewConstants, Preview.LODs[CurrentLOD].Mesh, new SharpDX.Direct3D11.ShaderResourceView[] { null });
                 }
                 if (IsStaticMesh && ShowCollisionMesh && STMCollisionMesh != null)
                 {
                     SceneViewer.Context.Wireframe = true;
-                    var ViewConstants = new SceneRenderContext.WorldConstants(Matrix.Transpose(SceneViewer.Context.Camera.ProjectionMatrix), Matrix.Transpose(SceneViewer.Context.Camera.ViewMatrix), Matrix.Identity);
+                    var ViewConstants = new SceneRenderContext.WorldConstants(Matrix4x4.Transpose(SceneViewer.Context.Camera.ProjectionMatrix), Matrix4x4.Transpose(SceneViewer.Context.Camera.ViewMatrix), Matrix4x4.Identity);
                     SceneViewer.Context.DefaultEffect.PrepDraw(SceneViewer.Context.ImmediateContext);
                     SceneViewer.Context.DefaultEffect.RenderObject(SceneViewer.Context.ImmediateContext, ViewConstants, STMCollisionMesh, new SharpDX.Direct3D11.ShaderResourceView[] { null });
                 }
@@ -288,7 +289,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 if (SetProperty(ref _cameraFOV, value))
                 {
-                    SceneViewer.Context.Camera.FOV = MathUtil.DegreesToRadians(value);
+                    SceneViewer.Context.Camera.FOV = LegendaryExplorerCore.SharpDX.MathUtil.DegreesToRadians(value);
                 }
             }
         }
@@ -348,7 +349,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             InitializeComponent();
             var color = ColorConverter.ConvertFromString(Settings.Meshplorer_BackgroundColor) as System.Windows.Media.Color?;
             Background_ColorPicker.SelectedColor = color;
-            SceneViewer.Context.BackgroundColor = color is not null ? new SharpDX.Color(color.Value.R, color.Value.G, color.Value.B) : SharpDX.Color.FromRgba(0x999999);
+            SceneViewer.Context.BackgroundColor = color is not null ? new Color(color.Value.R, color.Value.G, color.Value.B) : Color.FromRgba(0x999999);
 
             startingUp = false;
         }
@@ -691,6 +692,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 //SceneViewer.Context.Camera.FocusDepth = Preview.LODs[0].Mesh.AABBHalfSize.Length() * 1.2f;
                                 break;
                         }
+                        assetCache.Dispose();
 
                         CenterView();
                         LODPicker.ClearEx();
@@ -953,9 +955,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     SceneViewer.Context.Camera.Yaw -= 6.28f; // Subtract so we don't overflow if this is open too long
             }
 
-            Matrix viewMatrix = SceneViewer.Context.Camera.ViewMatrix;
-            viewMatrix.Invert();
-            Vector3 eyePosition = viewMatrix.TranslationVector;
+            Matrix4x4.Invert(SceneViewer.Context.Camera.ViewMatrix, out Matrix4x4 viewMatrix);
+            Vector3 eyePosition = viewMatrix.Translation;
 
             if (UseDegrees)
             {
@@ -990,7 +991,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 var s = e.NewValue.Value.ToString();
                 Settings.Meshplorer_BackgroundColor = s;
                 Settings.Save();
-                SceneViewer.Context.BackgroundColor = new SharpDX.Color(e.NewValue.Value.R, e.NewValue.Value.G, e.NewValue.Value.B);
+                SceneViewer.Context.BackgroundColor = new Color(e.NewValue.Value.R, e.NewValue.Value.G, e.NewValue.Value.B);
             }
         }
 

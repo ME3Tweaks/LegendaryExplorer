@@ -376,6 +376,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.TestLODBias(GetPEWindow());
         }
 
+        private void ResolveAllGameImports_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.CheckAllGameImports(GetPEWindow().Pcc);
+        }
+
         private void BuildME1TLKDB_Clicked(object sender, RoutedEventArgs e)
         {
             var pew = GetPEWindow();
@@ -534,6 +539,15 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             var pew = GetPEWindow();
             Task.Run(() => PackageEditorExperimentsM.CheckImports(pew.Pcc)).ContinueWithOnUIThread(prevTask =>
+            {
+                pew.IsBusy = false;
+            });
+        }
+
+        private void ResolveAllGameImports_Clicked(object sender, RoutedEventArgs e)
+        {
+            var pew = GetPEWindow();
+            Task.Run(() => PackageEditorExperimentsM.CheckAllGameImports(pew.Pcc)).ContinueWithOnUIThread(prevTask =>
             {
                 pew.IsBusy = false;
             });
@@ -1038,6 +1052,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         private void AssociateAllExtensions_Clicked(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsO.AssociateAllExtensions();
+        }
+
+        private void GenerateAudioFileInfo_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.CreateAudioSizeInfo(GetPEWindow(), MEGame.LE3);
         }
         #endregion
 

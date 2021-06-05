@@ -1,4 +1,4 @@
-﻿using LegendaryExplorerCore.SharpDX;
+﻿using System.Numerics;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {

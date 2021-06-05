@@ -30,6 +30,7 @@
         <MenuItem Header="Generate ME2/ME3 object info diff" Click="GenerateObjectInfoDiff_Click"/>
     </MenuItem>
     <MenuItem Header="Mgamerz's Programming Circus">
+        <MenuItem Header="Resolve all imports in game of opened package (see debug console)" Click="ResolveAllGameImports_Click"/>
         <MenuItem Header="Bytecode scan all functions in package" Click="StartPackageBytecodeScan_Click"/>
         <MenuItem Header="Test LODBias stuff" Click="LODBiasTest_Clicked"/>
         <MenuItem Header="Find Empty Mips" Click="FindEmptyMips_Clicked"/>
@@ -98,5 +99,6 @@
         <MenuItem Header="Export level to T3D" Click="ExportLevelToT3D_Click"/>
         <MenuItem Header="Build ME1 SuperTlk File" Click="BuildME1SuperTLK_Clicked"/>
         <MenuItem Header="Associate all file extensions" Click="AssociateAllExtensions_Clicked"/>
+        <MenuItem Header="Generate audio file info JSON (check code for game)" Click="GenerateAudioFileInfo_Click"/>
     </MenuItem>
 </MenuItem>

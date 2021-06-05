@@ -195,8 +195,10 @@
                               ToolTip="Makes Package Editor a bit easier to use on touch devices" StaysOpenOnClick="True"/>
                     <MenuItem Name="AssociatePccSfm_MenuItem" Header="Associate PCC/SFM files" Click="AssociatePCCSFM_Clicked" 
                               ToolTip="Makes Package Editor open when you double click PCC/SFM files in Windows Explorer"/>
-                    <MenuItem Name="AssociateUPKUDK_MenuItem" Header="Associate UPK/UDK files" Click="AssociateUPKUDK_Clicked" 
-                              ToolTip="Makes Package Editor open when you double click UPK/UDK files in Windows Explorer"/>
+                    <MenuItem Name="AssociateUPKUDK_MenuItem" Header="Associate UPK/UDK/U files" Click="AssociateUPKUDK_Clicked" 
+                              ToolTip="Makes Package Editor open when you double click UPK/UDK/U files in Windows Explorer"/>
+                    <MenuItem Name="AssociateOtherFiles_MenuItem" Header="Associate other file extensions" Click="AssociateOtherFiles_Clicked" 
+                              ToolTip="Makes appropriate tool open when double clicking on TLK/AFC/ISB/DLC/CND files in Windows Explorer"/>
                     <Separator/>
 
                     <MenuItem Name="ShowImpExpPrefixes_MenuItem" Header="Show Imp/Exp entry prefixes" Click="ShowImpExpPrefix_Clicked" StaysOpenOnClick="True" IsChecked="{Binding Path=(appsettings:Settings.PackageEditor_ShowImpExpPrefix)}" ToolTip="Changes the treeview of Package Editor to display/hide the (Imp)/(Exp) text"/>
@@ -206,11 +208,11 @@
                     <MenuItem Header="Binary Interpreter">
                         <MenuItem Name="BinaryInterpreterWPF_AlwaysAutoParse_MenuItem" Header="Auto-parse generic scans > 20KB" Click="BinaryInterpreterWPF_AlwaysAutoParse_Click" StaysOpenOnClick="True" IsChecked="{Binding Path=(appsettings:Settings.BinaryInterpreter_SkipAutoParseSizeCheck)}" ToolTip="Automatically parse exports that use Generic Scan that are larger than 20KB.&#10;By default, this is disabled to improve performance"/>
                     </MenuItem>
-                    <MenuItem Header="Interpreter">
-                        <MenuItem Name="InterpreterWPF_AdvancedMode_MenuItem" Header="Advanced Mode" Click="InterpreterWPF_AdvancedMode_Click" StaysOpenOnClick="True" IsChecked="{Binding Path=(appsettings:Settings.Interpreter_AdvancedDisplay)}" ToolTip="Displays data types, array sizes for each property in InterpreterWPF. Turning this off will condense the interface"/>
+                    <MenuItem Header="Properties">
+                        <MenuItem Name="InterpreterWPF_AdvancedMode_MenuItem" Header="Advanced Mode" Click="InterpreterWPF_AdvancedMode_Click" StaysOpenOnClick="True" IsChecked="{Binding Path=(appsettings:Settings.Interpreter_AdvancedDisplay)}" ToolTip="Displays data types, array sizes for each property in Properties tab. Turning this off will condense the interface"/>
                         <MenuItem Name="InterpreterWPF_Colorize_MenuItem" Header="Colorize property types" Click="InterpreterWPF_Colorize_MenuItem_Click" StaysOpenOnClick="True" IsChecked="{Binding Path=(appsettings:Settings.Interpreter_Colorize)}" ToolTip="Changes the background color for different property types. Makes it easier to quickly identify different types of data."/>
-                        <MenuItem Name="InterpreterWPF_LinearColorWheel_MenuItem" Header="Show color wheel for LinearColor structs" Click="InterpreterWPF_LinearColorWheel_MenuItem_Click" StaysOpenOnClick="True" IsChecked="{Binding Path=(appsettings:Settings.Interpreter_ShowLinearColorWheel)}" ToolTip="Shos the color wheel picker for LinearColor structs. Linear color structs do not represent R G B values, so this option is off by default."/>
-                        <MenuItem Name="InterpreterWPF_ArrayPropertyLimit_MenuItem" Header="Limit ArrayProperties to 1000 items for performance" Click="InterpreterWPF_ArrayPropertySizeLimit_MenuItem_Click" StaysOpenOnClick="True" IsChecked="{Binding Path=(appsettings:Settings.Interpreter_LimitArrayPropertySize)}" ToolTip="Enables or disables the 1000 item limit of ArrayProperty when displaying properties.&#10;Some arrayproperties are huge and will stall the program while it generates thousands of UI nodes."/>
+                        <MenuItem Name="InterpreterWPF_LinearColorWheel_MenuItem" Header="Show color wheel for LinearColor structs" Click="InterpreterWPF_LinearColorWheel_MenuItem_Click" StaysOpenOnClick="True" IsChecked="{Binding Path=(appsettings:Settings.Interpreter_ShowLinearColorWheel)}" ToolTip="Shows the color wheel picker for LinearColor structs. LinearColor structs do not represent R G B values, so this option is off by default."/>
+                        <MenuItem Name="InterpreterWPF_ArrayPropertyLimit_MenuItem" Header="Limit ArrayProperties to 1000 items for performance" Click="InterpreterWPF_ArrayPropertySizeLimit_MenuItem_Click" StaysOpenOnClick="True" IsChecked="{Binding Path=(appsettings:Settings.Interpreter_LimitArrayPropertySize)}" ToolTip="Enables or disables the 1000 item limit of ArrayProperty when displaying properties.&#10;Some ArrayProperties are huge and will stall the program while it generates thousands of UI nodes."/>
                     </MenuItem>
                     <MenuItem Header="Texture Viewer">
                         <MenuItem Name="EmbeddedTextureViewerWPF_AutoPreviewTextures" Header="Automatically preview textures on export selection" Click="EmbeddedTextureViewer_AutoLoad_Click" StaysOpenOnClick="True" IsChecked="{Binding Path=(appsettings:Settings.TextureViewer_AutoLoadMip)}" ToolTip="Automatically load texture exports for viewing. Turn this feature off to improve performance and increase application stability"/>
@@ -316,7 +318,7 @@
                 <TreeView x:Name="LeftSide_TreeView" Grid.Column="0" Grid.Row="1" FontFamily="Consolas" Visibility="Collapsed" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" ItemsSource="{Binding AllTreeViewNodesX}" FocusManager.IsFocusScope="True" VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
                     <TreeView.Resources>
                         <HierarchicalDataTemplate DataType="{x:Type SharedUI:TreeViewEntry}" ItemsSource="{Binding Sublinks}">
-                            <Border Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" ContextMenu="{StaticResource EntryContextMenu}" Background="Transparent"  Padding="{Binding Path=(SharedUI:TouchComfySettings.TreeViewMargin)}">
+                            <Border ContextMenu="{StaticResource EntryContextMenu}" Background="Transparent"  Padding="{Binding Path=(SharedUI:TouchComfySettings.TreeViewMargin)}">
                                 <DockPanel>
 
                                     <TextBlock DockPanel.Dock="Bottom" Text="{Binding SubText}" FontSize="10" Foreground="{Binding Path=ForegroundColor}" TextWrapping="Wrap" VerticalAlignment="Center" Visibility="{Binding SubText, Converter={StaticResource NullVisibilityConverter}}" >
@@ -428,7 +430,7 @@
                     </TabItem>
                     <TabItem Name="Interpreter_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
-                            <TextBlock Text="Interpreter" ToolTip="Edit UnrealScript properties on exports"/>
+                            <TextBlock Text="Properties" ToolTip="Edit UnrealScript properties on exports"/>
                         </TabItem.Header>
                         <exportLoaderControls:InterpreterExportLoader x:Name="InterpreterTab_Interpreter" SubstituteImageForHexBox="{Binding IsBusy, RelativeSource={RelativeSource AncestorType=Window}}" NavigateToEntryCommand="{Binding NavigateToEntryCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
                     </TabItem>

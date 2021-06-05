@@ -266,7 +266,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     }
 
                     //find stack references
-                    if (exp.HasStack && exp.Data is byte[] data)
+                    if (exp.HasStack && exp.DataReadOnly is var data)
                     {
                         var stack1 = EndianReader.ToInt32(data, 0, exp.FileRef.Endian);
                         var stack2 = EndianReader.ToInt32(data, 4, exp.FileRef.Endian);
@@ -282,7 +282,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     }
                     else if (exp.TemplateOwnerClassIdx is var toci && toci >= 0)
                     {
-                        var TemplateOwnerClassIdx = EndianReader.ToInt32(exp.Data, toci, exp.FileRef.Endian);
+                        var TemplateOwnerClassIdx = EndianReader.ToInt32(exp.DataReadOnly, toci, exp.FileRef.Endian);
                         if (TemplateOwnerClassIdx != 0 && !package.IsEntry(TemplateOwnerClassIdx))
                         {
                             item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningTemplateOwnerClassOutsideTables, prefix, toci.ToString(@"X6"), TemplateOwnerClassIdx), exp);

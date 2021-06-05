@@ -107,7 +107,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         public ObservableCollectionExtended<string> ClassDropdownList { get; set; } = new();
 
-        public ObservableCollectionExtended<TreeViewEntry> AllTreeViewNodesX { get; set; } = new();
+        public ObservableCollectionExtended<TreeViewEntry> AllTreeViewNodesX { get; } = new();
 
         private TreeViewEntry _selectedItem;
 
@@ -716,7 +716,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                                 var bytes = File.ReadAllBytes(file);
                                 var props = matchingExport.GetProperties();
 
-                                string dataPropName = matchingExport.FileRef.Game != MEGame.ME1 ? "RawData" : "Data";
+                                string dataPropName = matchingExport.ClassName == "GFxMovieInfo" ? "RawData" : "Data";
                                 var rawData = props.GetProp<ImmutableByteArrayProperty>(dataPropName);
                                 //Write SWF data
                                 rawData.bytes = bytes;
@@ -1520,10 +1520,9 @@ namespace LegendaryExplorer.Tools.PackageEditor
                                     rawData.bytes = bytes;
 
                                     //Write SWF metadata
-                                    if (exp.FileRef.Game == MEGame.ME1 || exp.FileRef.Game == MEGame.ME2)
+                                    if (exp.FileRef.Game.IsGame1() || exp.FileRef.Game.IsGame2())
                                     {
-                                        string sourceFilePropName =
-                                            exp.FileRef.Game != MEGame.ME1 ? "SourceFile" : "SourceFilePath";
+                                        string sourceFilePropName = "SourceFilePath";
                                         StrProperty sourceFilePath = props.GetProp<StrProperty>(sourceFilePropName);
                                         if (sourceFilePath == null)
                                         {
@@ -1534,7 +1533,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                                         sourceFilePath.Value = d.FileName;
                                     }
 
-                                    if (exp.FileRef.Game == MEGame.ME1)
+                                    if (exp.FileRef.Game.IsGame1())
                                     {
                                         StrProperty sourceFileTimestamp = props.GetProp<StrProperty>("SourceFileTimestamp");
                                         sourceFileTimestamp = File.GetLastWriteTime(d.FileName)
@@ -3614,6 +3613,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
                 LeftSideList_ItemsSource.ClearEx();
                 AllTreeViewNodesX.ClearEx();
+                RecentsController?.Dispose();
             }
         }
 
@@ -3683,6 +3683,16 @@ namespace LegendaryExplorer.Tools.PackageEditor
         {
             FileAssociations.EnsureAssociationsSet("upk", "Unreal Package File");
             FileAssociations.EnsureAssociationsSet("udk", "UDK Package File");
+            FileAssociations.EnsureAssociationsSet("u", "Mass Effect 1 Package File");
+        }
+
+        private void AssociateOtherFiles_Clicked(object sender, RoutedEventArgs e)
+        {
+            FileAssociations.EnsureAssociationsSet("tlk", "Talk Table File");
+            FileAssociations.EnsureAssociationsSet("afc", "Audio File Cache File");
+            FileAssociations.EnsureAssociationsSet("isb", "ISACT Bank File");
+            FileAssociations.EnsureAssociationsSet("dlc", "Mass Effect DLC Mount File");
+            FileAssociations.EnsureAssociationsSet("cnd", "Mass Effect Conditionals File");
         }
 
 

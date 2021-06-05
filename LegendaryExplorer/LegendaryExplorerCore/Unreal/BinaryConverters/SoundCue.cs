@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.SharpDX;
+using System.Drawing;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {

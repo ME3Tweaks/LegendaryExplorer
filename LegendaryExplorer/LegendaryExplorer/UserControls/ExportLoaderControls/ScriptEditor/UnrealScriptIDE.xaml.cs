@@ -363,7 +363,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
         {
             try
             {
-                ASTNode ast = UnrealScriptCompiler.ExportToAstNode(CurrentLoadedExport, CurrentFileLib);
+                ASTNode ast = UnrealScriptCompiler.ExportToAstNode(CurrentLoadedExport, CurrentFileLib, null);
                 if (ast is null)
                 {
                     (RootNode, ScriptText) = (null, "Could not decompile!");

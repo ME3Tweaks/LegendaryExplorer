@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Numerics;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Tools.Sequence_Editor;
 using LegendaryExplorerCore.GameFilesystem;
@@ -11,7 +12,6 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Kismet;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
-using LegendaryExplorerCore.SharpDX;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Microsoft.VisualBasic.FileIO;
@@ -102,7 +102,7 @@ namespace LegendaryExplorer.GameInterop
         public static string InstallInfoPath(MEGame game) => Path.Combine(ModInstallPath(game), "InstallInfo.json");
 
         private const string camPathFileName = "ME3LiveEditorCamPath.pcc";
-        public static string CamPathFilePath(MEGame game) => Path.Combine(ModInstallPath(game), "CookedPCConsole", camPathFileName);
+        public static string CamPathFilePath(MEGame game) => Path.Combine(ModInstallPath(game), game.CookedDirName(), camPathFileName);
 
         private const string consoleExtASIName = "ConsoleExtension-v1.0.asi";
 
@@ -155,7 +155,7 @@ namespace LegendaryExplorer.GameInterop
             (string, string) AugmentAndInstall(string fileName)
             {
                 string existingFile = fileMap[fileName];
-                string destFile = Path.Combine(ModInstallPath(game), game is MEGame.ME3 ? "CookedPCConsole" : "CookedPC", fileName);
+                string destFile = Path.Combine(ModInstallPath(game), game.CookedDirName(), fileName);
                 File.Copy(existingFile, destFile, true);
                 using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(destFile))
                 {
@@ -332,7 +332,7 @@ namespace LegendaryExplorer.GameInterop
         public float FOV;
 
         public int Index { get; set; }
-        public bool IsZero => Position.IsZero && Rotation.IsZero && FOV == 0f;
+        public bool IsZero => Position.Equals(Vector3.Zero) && Rotation.Equals(Vector3.Zero) && FOV == 0f;
 
         public string Str => $"Position: {Position}, Rotation: Roll:{Rotation.X}, Pitch:{Rotation.Y}, Yaw:{Rotation.Z}, FOV: {FOV}";
     }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using System.Numerics;
 using FontAwesome5;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.SharedUI;
@@ -19,10 +20,9 @@ using LegendaryExplorerCore.Gammtek.Collections.ObjectModel;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.SharpDX;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
-using InterpCurveVector = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve<LegendaryExplorerCore.SharpDX.Vector3>;
+using InterpCurveVector = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve<System.Numerics.Vector3>;
 using InterpCurveFloat = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve<float>;
 using LegendaryExplorer.Tools.PackageEditor;
 
@@ -312,11 +312,11 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                         }
                         else
                         {
-                            floats = defaultPosition.ToArray();
+                            defaultPosition.CopyTo(floats);
                             break;
                         }
                     }
-                    pos = new Vector3(floats);
+                    pos = new Vector3(floats[0], floats[1], floats[3]);
 
 
                 }
@@ -342,11 +342,11 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                         }
                         else
                         {
-                            floats = defaultPosition.ToArray();
+                            defaultPosition.CopyTo(floats);
                             break;
                         }
                     }
-                    rot = Rotator.FromDirectionVector(new Vector3(floats));
+                    rot = Rotator.FromDirectionVector(new Vector3(floats[0], floats[1], floats[2]));
                     if (msg.IndexOf("int") is int rollIdx && rollIdx > 0 &&
                         msg.Substring(rollIdx + 4).Split(' ') is string[] { Length: >= 1 } rollStrings &&  int.TryParse(rollStrings[0], out int roll))
                     {
@@ -626,10 +626,10 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             }
             else
             {
-                (float x, float y, float z) = new Rotator(pitch, yaw, 0).GetDirectionalVector();
-                GameController.ExecuteConsoleCommands(Game, VarCmd(x, FloatVarIndexes.XRotComponent),
-                                                      VarCmd(y, FloatVarIndexes.YRotComponent),
-                                                      VarCmd(z, FloatVarIndexes.ZRotComponent),
+                var rot = new Rotator(pitch, yaw, 0).GetDirectionalVector();
+                GameController.ExecuteConsoleCommands(Game, VarCmd(rot.X, FloatVarIndexes.XRotComponent),
+                                                      VarCmd(rot.Y, FloatVarIndexes.YRotComponent),
+                                                      VarCmd(rot.Z, FloatVarIndexes.ZRotComponent),
                                                       "ce SetRotation");
             }
         }

@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.SharpDX;
+using Vector2 = System.Numerics.Vector2;
+using Vector3 = System.Numerics.Vector3;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -258,7 +260,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public Vector3[] Vertices = new Vector3[3];
         public Vector2[,] UVs = new Vector2[3,8];
-        public Color[] Colors = new Color[3];
+        public SharpDX.Color[] Colors = new SharpDX.Color[3];
         public int MaterialIndex;
         public int FragmentIndex; //ME3/UDK
         public uint SmoothingMask;
@@ -311,7 +313,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             public PackedNormal TangentX;
             public PackedNormal TangentZ;
-            public Color Color; //ME1/2
+            public SharpDX.Color Color; //ME1/2
             public Vector2[] FullPrecisionUVs;
             public Vector2DHalf[] HalfPrecisionUVs;
         }
@@ -328,7 +330,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public uint Stride;
         public uint NumVertices;
-        public Color[] VertexData; //BulkSerialize
+        public SharpDX.Color[] VertexData; //BulkSerialize
     }
 
     public class ExtrusionVertexBuffer

@@ -94,7 +94,7 @@
                                 This includes SkeletalMeshes, StaticMeshes, and Brushes currently. 
                                 <LineBreak/>
                                 <LineBreak/>
-                            You can view the properties of exports in the top Interpreter panel, and the binary for the
+                            You can view the properties of exports in the Properties panel, and the binary for the
                                 <LineBreak/>
                             export in the Binary Interpreter panel at the bottom. On the right is the Mesh Renderer.
                             <LineBreak/>

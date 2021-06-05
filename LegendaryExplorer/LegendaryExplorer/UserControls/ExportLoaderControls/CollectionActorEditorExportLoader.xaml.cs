@@ -1,8 +1,8 @@
 ﻿using System.Windows;
+using System.Numerics;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.SharpDX;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
@@ -159,7 +159,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (IsValidSCA(out StaticCollectionActor sca, out int index))
             {
-                Matrix m = ActorUtils.ComposeLocalToWorld(new Vector3(PosX, PosY, PosZ), 
+                Matrix4x4 m = ActorUtils.ComposeLocalToWorld(new Vector3(PosX, PosY, PosZ), 
                                                           new Rotator(UUPitch, UUYaw, UURoll), 
                                                           new Vector3(ScaleX, ScaleY, ScaleZ));
                 sca.LocalToWorldTransforms[index] = m;

@@ -360,7 +360,11 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
                 case MEGame.ME3:
                     fileFilter = GameFileFilters.ME3ME2SaveFileFilter;
                     break;
-                // TODO: IMPLEMENT IN HEX
+                case MEGame.LE1:
+                case MEGame.LE2:
+                case MEGame.LE3:
+                    fileFilter = GameFileFilters.LESaveFileFilter;
+                    break;
                 default:
                     string extension = Path.GetExtension(Pcc.FilePath);
                     fileFilter = $"*{extension}|*{extension}";
@@ -539,8 +543,12 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
 
         private void AnimationImporter_OnClosing(object sender, CancelEventArgs e)
         {
+            if (e.Cancel)
+                return;
+
             InterpreterTab_Interpreter?.Dispose();
             BinaryInterpreterTab_BinaryInterpreter?.Dispose();
+            RecentsController?.Dispose();
         }
     }
 }

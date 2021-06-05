@@ -430,7 +430,7 @@ namespace LegendaryExplorer.Tools.Meshplorer
                         {
                             var ld = new ListDialog(results, "Relink report",
                                                            "The following items failed to relink.(This does not mean the import was unsuccessful, " +
-                                                           "just that the listed values will have to be corrected in the Interpreter and BinaryInterpreter)", this);
+                                                           "just that the listed values will have to be corrected in the Properties editor and Binary Interpreter)", this);
                             ld.Show();
                         }
                         else
@@ -626,11 +626,17 @@ namespace LegendaryExplorer.Tools.Meshplorer
 
         private void MeshplorerWPF_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            if (e.Cancel)
+                return;
+
             CurrentExport = null;
             Mesh3DViewer.IsBusyChanged -= RendererIsBusyChanged;
             BinaryInterpreterTab_BinaryInterpreter.Dispose();
             InterpreterTab_Interpreter.Dispose();
             Mesh3DViewer.Dispose();
+            RecentsController?.Dispose();
+            UnLoadMEPackage();
+            MeshExports.Clear();
         }
 
         private void OpenInPackageEditor_Clicked(object sender, RoutedEventArgs e)

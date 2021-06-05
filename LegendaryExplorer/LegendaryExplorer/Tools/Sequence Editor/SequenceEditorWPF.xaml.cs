@@ -51,21 +51,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
     /// </summary>
     public partial class SequenceEditorWPF : WPFBase, IRecents
     {
-        private struct SaveData
-        {
-            public bool absoluteIndex;
-            public int index;
-            public float X;
-            public float Y;
-
-            public SaveData(int i) : this()
-            {
-                index = i;
-            }
-        }
-
-        private const float CLONED_SEQREF_MAGIC = 2.237777E-35f;
-
         private readonly GraphEditor graphEditor;
         public ObservableCollectionExtended<SObj> CurrentObjects { get; } = new();
         public ObservableCollectionExtended<SObj> SelectedObjects { get; } = new();
@@ -81,13 +66,18 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             set => SetProperty(ref _selectedSequence, value);
         }
 
-        private List<SaveData> SavedPositions;
-        public bool RefOrRefChild;
+        public record SavedViewData(Dictionary<int, PointF> Positions, RectangleF ViewBounds);
+
+        private SavedViewData SavedView;
+
         public static readonly string SequenceEditorDataFolder = Path.Combine(AppDirectories.AppDataFolder, @"SequenceEditor\");
         public static readonly string OptionsPath = Path.Combine(SequenceEditorDataFolder, "SequenceEditorOptions.JSON");
         public static readonly string ME3ViewsPath = Path.Combine(SequenceEditorDataFolder, @"ME3SequenceViews\");
         public static readonly string ME2ViewsPath = Path.Combine(SequenceEditorDataFolder, @"ME2SequenceViews\");
         public static readonly string ME1ViewsPath = Path.Combine(SequenceEditorDataFolder, @"ME1SequenceViews\");
+        public static readonly string LE3ViewsPath = Path.Combine(SequenceEditorDataFolder, @"LE3SequenceViews\");
+        public static readonly string LE2ViewsPath = Path.Combine(SequenceEditorDataFolder, @"LE2SequenceViews\");
+        public static readonly string LE1ViewsPath = Path.Combine(SequenceEditorDataFolder, @"LE1SequenceViews\");
 
         public SequenceEditorWPF() : base("Sequence Editor")
         {
@@ -103,9 +93,9 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             graphEditor.Camera.MouseDown += backMouseDown_Handler;
             graphEditor.Camera.MouseUp += back_MouseUp;
 
-            this.graphEditor.Click += graphEditor_Click;
-            this.graphEditor.DragDrop += SequenceEditor_DragDrop;
-            this.graphEditor.DragEnter += SequenceEditor_DragEnter;
+            graphEditor.Click += graphEditor_Click;
+            graphEditor.DragDrop += SequenceEditor_DragDrop;
+            graphEditor.DragEnter += SequenceEditor_DragEnter;
 
             commonToolBox.DoubleClickCallback = CreateNewObject;
             eventsToolBox.DoubleClickCallback = CreateNewObject;
@@ -113,9 +103,8 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             conditionsToolBox.DoubleClickCallback = CreateNewObject;
             variablesToolBox.DoubleClickCallback = CreateNewObject;
 
-            AutoSaveView_MenuItem.IsChecked = Settings.SequenceEditor_AutoSaveView;
+            AutoSaveView_MenuItem.IsChecked = Settings.SequenceEditor_AutoSaveViewV2;
             ShowOutputNumbers_MenuItem.IsChecked = Settings.SequenceEditor_ShowOutputNumbers;
-            GlobalSeqRefViewSavesMenuItem.IsChecked = Settings.SequenceEditor_GlobalSeqRefViewSaves;
             SObj.OutputNumbers = ShowOutputNumbers_MenuItem.IsChecked;
         }
 
@@ -146,7 +135,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             SaveAsCommand = new GenericCommand(SavePackageAs, PackageIsLoaded);
             SaveImageCommand = new GenericCommand(SaveImage, () => CurrentObjects.Any);
             SaveViewCommand = new GenericCommand(() => saveView(), () => CurrentObjects.Any);
-            AutoLayoutCommand = new GenericCommand(AutoLayout, () => CurrentObjects.Any);
+            AutoLayoutCommand = new GenericCommand(() => AutoLayout(), () => CurrentObjects.Any);
             GotoCommand = new GenericCommand(GoTo, PackageIsLoaded);
             KismetLogCommand = new RelayCommand(OpenKismetLogParser, CanOpenKismetLog);
             ScanFolderForLoopsCommand = new GenericCommand(ScanFolderPackagesForTightLoops);
@@ -663,11 +652,11 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             {
                 if (File.Exists(JSONpath))
                 {
-                    SavedPositions = JsonConvert.DeserializeObject<List<SaveData>>(File.ReadAllText(JSONpath));
+                    SavedView = JsonConvert.DeserializeObject<SavedViewData>(File.ReadAllText(JSONpath));
                 }
                 else
                 {
-                    SavedPositions = new List<SaveData>();
+                    SavedView = new(new(), RectangleF.Empty);
                 }
 
                 customSaveData.Clear();
@@ -681,6 +670,19 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     panToSelection = false;
                     CurrentObjects_ListBox.SelectedItem = selectedObj;
                 }
+
+                if (fromFile)
+                {
+                    if (SavedView.ViewBounds != RectangleF.Empty)
+                    {
+                        graphEditor.Camera.ViewBounds = SavedView.ViewBounds;
+                    }
+                    else
+                    {
+                        RectangleF viewBounds = (CurrentObjects.FirstOrDefault(obj => obj is SEvent) ?? CurrentObjects.FirstOrDefault())?.GlobalFullBounds ?? new RectangleF();
+                        graphEditor.Camera.AnimateViewToCenterBounds(viewBounds, false, 0);
+                    }
+                }
             }
             catch (Exception e) when (!App.IsDebug)
             {
@@ -693,77 +695,17 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         private void SetupJSON(ExportEntry export)
         {
             string objectName = System.Text.RegularExpressions.Regex.Replace(export.ObjectName.Name, @"[<>:""/\\|?*]", "");
-            bool isClonedSeqRef = false;
-            var defaultViewZoomProp = export.GetProperty<FloatProperty>("DefaultViewZoom");
-            if (defaultViewZoomProp != null && Math.Abs(defaultViewZoomProp.Value - CLONED_SEQREF_MAGIC) < 1.0E-30f)
+            string viewsPath = Pcc.Game switch
             {
-                isClonedSeqRef = true;
-            }
+                MEGame.LE1 => LE1ViewsPath,
+                MEGame.LE2 => LE2ViewsPath,
+                MEGame.LE3 => LE3ViewsPath,
+                MEGame.ME1 => ME1ViewsPath,
+                MEGame.ME2 => ME2ViewsPath,
+                _ => ME3ViewsPath
+            };
 
-            string parentFullPath = export.ParentFullPath;
-            if (GlobalSeqRefViewSavesMenuItem.IsChecked && parentFullPath.Contains("SequenceReference") && !isClonedSeqRef)
-            {
-                string packageName = parentFullPath.Substring(parentFullPath.LastIndexOf("SequenceReference"));
-                if (Pcc.Game == MEGame.ME3)
-                {
-                    JSONpath = $"{ME3ViewsPath}{packageName}.{objectName}.JSON";
-                }
-                else
-                {
-                    packageName = packageName.Replace("SequenceReference", "");
-                    int idx = export.UIndex;
-                    string ObjName = "";
-                    while (idx > 0)
-                    {
-                        if (Pcc.GetUExport(Pcc.GetUExport(idx).idxLink).ClassName == "SequenceReference")
-                        {
-                            var objNameProp = Pcc.GetUExport(idx).GetProperty<StrProperty>("ObjName");
-                            if (objNameProp != null)
-                            {
-                                ObjName = objNameProp.Value;
-                                break;
-                            }
-                        }
-
-                        idx = Pcc.GetUExport(idx).idxLink;
-                    }
-
-                    if (objectName == "Sequence")
-                    {
-                        objectName = ObjName;
-                        packageName = "." + packageName;
-                    }
-                    else
-                        packageName = packageName.Replace("Sequence", ObjName) + ".";
-
-                    if (Pcc.Game == MEGame.ME2)
-                    {
-                        JSONpath = $"{ME2ViewsPath}SequenceReference{packageName}{objectName}.JSON";
-                    }
-                    else
-                    {
-                        JSONpath = $"{ME1ViewsPath}SequenceReference{packageName}{objectName}.JSON";
-                    }
-                }
-
-                RefOrRefChild = true;
-            }
-            else
-            {
-                string viewsPath = ME3ViewsPath;
-                switch (Pcc.Game)
-                {
-                    case MEGame.ME2:
-                        viewsPath = ME2ViewsPath;
-                        break;
-                    case MEGame.ME1:
-                        viewsPath = ME1ViewsPath;
-                        break;
-                }
-
-                JSONpath = $"{viewsPath}{CurrentFile}.#{export.UIndex - 1}{objectName}.JSON";
-                RefOrRefChild = false;
-            }
+            JSONpath = Path.Combine(viewsPath, $"{CurrentFile}.v2#{export.UIndex - 1}{objectName}.JSON");
         }
 
         public void GetObjects(ExportEntry export)
@@ -797,7 +739,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 // Subtrack imports. But they should be shown still
                 if (CurrentObjects.Count != (seqObjs.Count - nullCount))
                 {
-                    MessageBox.Show(this, "Sequence contains invalid or duplicate exports! Correct this by editing the SequenceObject array in the Interpreter");
+                    MessageBox.Show(this, "Sequence contains invalid or duplicate exports! Correct this by editing the SequenceObject array in the Properties editor");
                 }
             }
         }
@@ -817,7 +759,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 o.Click += node_Click;
             }
 
-            if (SavedPositions.IsEmpty() && (Pcc.Game is MEGame.ME2 or MEGame.ME3))
+            if (SavedView.Positions.IsEmpty() && (Pcc.Game is MEGame.ME2 or MEGame.ME3))
             {
                 AutoLayout();
             }
@@ -829,7 +771,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
         public SObj LoadObject(ExportEntry export)
         {
-            int x = 0, y = 0;
+            float x = float.NaN, y = float.NaN;
             foreach (var prop in export.GetProperties())
             {
                 switch (prop)
@@ -845,19 +787,19 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
             if (export.IsA("SequenceEvent"))
             {
-                return new SEvent(export, x, y, graphEditor);
+                return new SEvent(export, graphEditor);
             }
             else if (export.IsA("SequenceVariable"))
             {
-                return new SVar(export, x, y, graphEditor);
+                return new SVar(export, graphEditor);
             }
             else if (export.ClassName == "SequenceFrame" && (Pcc.Game == MEGame.ME1 || Pcc.Game == MEGame.UDK || Pcc.Game.IsLEGame()))
             {
-                return new SFrame(export, x, y, graphEditor);
+                return new SFrame(export, graphEditor);
             }
             else //if (s.StartsWith("BioSeqAct_") || s.StartsWith("SeqAct_") || s.StartsWith("SFXSeqAct_") || s.StartsWith("SeqCond_") || pcc.getExport(index).ClassName == "Sequence" || pcc.getExport(index).ClassName == "SequenceReference")
             {
-                return new SAction(export, x, y, graphEditor);
+                return new SAction(export, graphEditor);
             }
         }
 
@@ -883,6 +825,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
         public void Layout()
         {
+            var objsInNeedOfLayout = new HashSet<SObj>();
             if (CurrentObjects != null && CurrentObjects.Any())
             {
                 foreach (SObj obj in CurrentObjects)
@@ -895,58 +838,72 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     obj.CreateConnections(CurrentObjects);
                 }
 
-                for (int i = 0; i < CurrentObjects.Count; i++)
+                foreach (SObj obj in CurrentObjects)
                 {
-                    SObj obj = CurrentObjects[i];
-                    var savedInfo = new SaveData(-1);
-                    if (SavedPositions.Any())
-                    {
-                        if (RefOrRefChild)
-                            savedInfo = SavedPositions.FirstOrDefault(p => i == p.index);
-                        else
-                            savedInfo = SavedPositions.FirstOrDefault(p => obj.Index == p.index);
-                    }
-
-                    bool hasSavedPosition =
-                        savedInfo.index == (RefOrRefChild ? i : obj.Index);
-                    if (hasSavedPosition)
+                    if (SavedView.Positions.TryGetValue(obj.UIndex, out PointF savedInfo))
                     {
                         obj.Layout(savedInfo.X, savedInfo.Y);
+                        continue;
                     }
-                    else if (Pcc.Game == MEGame.ME1 || Pcc.Game == MEGame.UDK || Pcc.Game.IsLEGame())
+                    if (Pcc.Game == MEGame.ME1 || Pcc.Game == MEGame.UDK || Pcc.Game.IsLEGame())
                     {
-                        obj.Layout();
-                    }
-                    else
-                    {
-                        switch (obj)
+                        var props = obj.Export.GetProperties();
+                        IntProperty xPos = props.GetProp<IntProperty>("ObjPosX");
+                        IntProperty yPos = props.GetProp<IntProperty>("ObjPosY");
+                        if (xPos is not null || yPos is not null)
                         {
-                            case SEvent:
-                                obj.Layout(StartPosEvents, 0);
-                                StartPosEvents += obj.Width + 20;
-                                break;
-                            case SAction:
-                                obj.Layout(StartPosActions, 250);
-                                StartPosActions += obj.Width + 20;
-                                break;
-                            case SVar:
-                                obj.Layout(StartPosVars, 500);
-                                StartPosVars += obj.Width + 20;
-                                break;
+                            obj.Layout(xPos?.Value ?? 0, yPos?.Value ?? 0);
+                            continue;
                         }
                     }
+
+                    objsInNeedOfLayout.Add(obj);
+                    obj.Layout(0,0);
+                    //switch (obj)
+                    //{
+                    //    case SEvent:
+                    //        obj.Layout(StartPosEvents, 0);
+                    //        StartPosEvents += obj.Width + 20;
+                    //        break;
+                    //    case SAction:
+                    //        obj.Layout(StartPosActions, 250);
+                    //        StartPosActions += obj.Width + 20;
+                    //        break;
+                    //    case SVar:
+                    //        obj.Layout(StartPosVars, 500);
+                    //        StartPosVars += obj.Width + 20;
+                    //        break;
+                    //}
                 }
 
-                foreach (SeqEdEdge edge in graphEditor.edgeLayer)
+                if (objsInNeedOfLayout.Any())
                 {
-                    GraphEditor.UpdateEdge(edge);
+                    AutoLayout(objsInNeedOfLayout);
+                }
+                else
+                {
+                    foreach (SeqEdEdge edge in graphEditor.edgeLayer)
+                    {
+                        GraphEditor.UpdateEdge(edge);
+                    }
                 }
             }
         }
 
-        private void AutoLayout()
+        private void AutoLayout(ICollection<SObj> objsToLayout = null)
         {
-            foreach (SObj obj in CurrentObjects)
+            var visitedNodes = new HashSet<int>();
+
+            if (objsToLayout is null)
+            {
+                objsToLayout = CurrentObjects;
+            }
+            else
+            {
+                visitedNodes.AddRange(CurrentObjects.Except(objsToLayout).Select(obj => obj.UIndex));
+            }
+
+            foreach (SObj obj in objsToLayout)
             {
                 obj.SetOffset(0, 0); //remove existing positioning
             }
@@ -954,11 +911,10 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             const float HORIZONTAL_SPACING = 40;
             const float VERTICAL_SPACING = 20;
             const float VAR_SPACING = 10;
-            var visitedNodes = new HashSet<int>();
-            var eventNodes = CurrentObjects.OfType<SEvent>().ToList();
+            var eventNodes = objsToLayout.OfType<SEvent>().ToList();
             SObj firstNode = eventNodes.FirstOrDefault();
-            var varNodeLookup = CurrentObjects.OfType<SVar>().ToDictionary(obj => obj.UIndex);
-            var opNodeLookup = CurrentObjects.OfType<SBox>().ToDictionary(obj => obj.UIndex);
+            var varNodeLookup = objsToLayout.OfType<SVar>().ToDictionary(obj => obj.UIndex);
+            var opNodeLookup = objsToLayout.OfType<SBox>().ToDictionary(obj => obj.UIndex);
             var rootTree = new List<SObj>();
             //SEvents are natural root nodes. ALmost everything will proceed from one of these
             foreach (SEvent eventNode in eventNodes)
@@ -967,7 +923,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             }
 
             //Find SActions with no inputs. These will not have been reached from an SEvent
-            var orphanRoots = CurrentObjects.OfType<SAction>().Where(node => node.InputEdges.IsEmpty());
+            var orphanRoots = objsToLayout.OfType<SAction>().Where(node => node.InputEdges.IsEmpty());
             foreach (SAction orphan in orphanRoots)
             {
                 LayoutTree(orphan, VERTICAL_SPACING);
@@ -975,14 +931,14 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
             //It's possible that there are groups of otherwise unconnected SActions that form cycles.
             //Might be possible to make a better heuristic for choosing a root than sequence order, but this situation is so rare it's not worth the effort
-            var cycleNodes = CurrentObjects.OfType<SAction>().Where(node => !visitedNodes.Contains(node.UIndex));
+            var cycleNodes = objsToLayout.OfType<SAction>().Where(node => !visitedNodes.Contains(node.UIndex));
             foreach (SAction cycleNode in cycleNodes)
             {
                 LayoutTree(cycleNode, VERTICAL_SPACING);
             }
 
             //Lonely unconnected variables. Put them in a row below everything else
-            var unusedVars = CurrentObjects.OfType<SVar>().Where(obj => !visitedNodes.Contains(obj.UIndex));
+            var unusedVars = objsToLayout.OfType<SVar>().Where(obj => !visitedNodes.Contains(obj.UIndex));
             float varOffset = 0;
             float vertOffset = rootTree.BoundingRect().Bottom + VERTICAL_SPACING;
             foreach (SVar unusedVar in unusedVars)
@@ -991,7 +947,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 varOffset += unusedVar.GlobalFullWidth + HORIZONTAL_SPACING;
             }
 
-            if (firstNode != null) CurrentObjects.OffsetBy(0, -firstNode.OffsetY);
+            if (firstNode != null) objsToLayout.OffsetBy(0, -firstNode.OffsetY);
 
             foreach (SeqEdEdge edge in graphEditor.edgeLayer)
                 GraphEditor.UpdateEdge(edge);
@@ -1180,7 +1136,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             }
         }
 
-        private readonly List<SaveData> customSaveData = new();
+        private readonly Dictionary<int, PointF> customSaveData = new();
         private bool panToSelection = true;
         private string FileQueuedForLoad;
         private ExportEntry ExportQueuedForFocusing;
@@ -1191,31 +1147,28 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         {
             if (CurrentObjects.Count == 0)
                 return;
-            SavedPositions = new List<SaveData>();
-            for (int i = 0; i < CurrentObjects.Count; i++)
+            SavedView = new(new(), graphEditor.Camera.ViewBounds);
+            foreach (SObj obj in CurrentObjects)
             {
-                SObj obj = CurrentObjects[i];
                 if (obj.Pickable)
                 {
-                    SavedPositions.Add(new SaveData
-                    {
-                        absoluteIndex = RefOrRefChild,
-                        index = RefOrRefChild ? i : obj.Index,
-                        X = obj.X + obj.Offset.X,
-                        Y = obj.Y + obj.Offset.Y
-                    });
+                    SavedView.Positions[obj.UIndex] = new PointF(obj.X + obj.Offset.X, obj.Y + obj.Offset.Y);
                 }
             }
-            SavedPositions.AddRange(customSaveData);
+
+            foreach ((int key, PointF value) in customSaveData)
+            {
+                SavedView.Positions[key] = value;
+            }
             customSaveData.Clear();
 
             if (toFile)
             {
-                string outputFile = JsonConvert.SerializeObject(SavedPositions);
+                string outputFile = JsonConvert.SerializeObject(SavedView);
                 if (!Directory.Exists(Path.GetDirectoryName(JSONpath)))
                     Directory.CreateDirectory(Path.GetDirectoryName(JSONpath));
                 File.WriteAllText(JSONpath, outputFile);
-                SavedPositions.Clear();
+                SavedView.Positions.Clear();
             }
         }
 
@@ -1426,7 +1379,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 if (contextMenu.GetChild("openRefInPackEdMenuItem") is MenuItem openRefInPackEdMenuItem)
                 {
 
-                    if (Pcc.Game == MEGame.ME3 && obj is SVar sVar &&
+                    if (Pcc.Game.IsGame3() && obj is SVar sVar &&
                         Pcc.IsEntry(sVar.Export.GetProperty<ObjectProperty>("ObjValue")?.Value ?? 0))
                     {
                         openRefInPackEdMenuItem.Visibility = Visibility.Visible;
@@ -1618,9 +1571,8 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             if (AutoSaveView_MenuItem.IsChecked)
                 saveView();
 
-            Settings.SequenceEditor_AutoSaveView = AutoSaveView_MenuItem.IsChecked;
+            Settings.SequenceEditor_AutoSaveViewV2 = AutoSaveView_MenuItem.IsChecked;
             Settings.SequenceEditor_ShowOutputNumbers = SObj.OutputNumbers;
-            Settings.SequenceEditor_GlobalSeqRefViewSaves = GlobalSeqRefViewSavesMenuItem.IsChecked;
 
             //Code here remove these objects from leaking the window memory
             graphEditor.Camera.MouseDown -= backMouseDown_Handler;
@@ -1641,6 +1593,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             GraphHost.Dispose();
             DataContext = null;
             DispatcherHelper.EmptyQueue();
+            RecentsController?.Dispose();
         }
 
         private void OpenInPackageEditor_Clicked(object sender, RoutedEventArgs e)
@@ -1680,12 +1633,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             if (CurrentObjects_ListBox.SelectedItem is SObj obj)
             {
                 ExportEntry clonedExport = cloneObject(obj.Export, SelectedSequence);
-                customSaveData.Add(new SaveData
-                {
-                    index = clonedExport.UIndex - 1,
-                    X = graphEditor.Camera.ViewCenterX,
-                    Y = graphEditor.Camera.ViewCenterY
-                });
+                customSaveData[clonedExport.UIndex] = new PointF(graphEditor.Camera.ViewCenterX, graphEditor.Camera.ViewCenterY);
             }
         }
 
@@ -1891,10 +1839,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 //set new Sequence's link and ParentSequence prop to SeqRef
                 newSequence.WriteProperty(new ObjectProperty(exp.UIndex, "ParentSequence"));
                 newSequence.idxLink = exp.UIndex;
-
-                //set DefaultViewZoom to magic number to flag that this is a cloned Sequence Reference and global saves cannot be used with it
-                //ugly, but it should work
-                newSequence.WriteProperty(new FloatProperty(CLONED_SEQREF_MAGIC, "DefaultViewZoom"));
             }
         }
 
@@ -1986,12 +1930,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
         private void addObject(ExportEntry exportToAdd, bool removeLinks = true)
         {
-            customSaveData.Add(new SaveData
-            {
-                index = exportToAdd.UIndex - 1,
-                X = graphEditor.Camera.ViewCenterX,
-                Y = graphEditor.Camera.ViewCenterY
-            });
+            customSaveData[exportToAdd.UIndex] = new PointF(graphEditor.Camera.ViewCenterX, graphEditor.Camera.ViewCenterY);
             KismetHelper.AddObjectToSequence(exportToAdd, SelectedSequence, removeLinks);
         }
 
@@ -2027,11 +1966,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
         private void OpenInInterpViewer_Clicked(object sender, RoutedEventArgs e)
         {
-            if (Pcc.Game > MEGame.ME3)
-            {
-                MessageBox.Show(this, "InterpViewer does not support games other than ME1/2/3.", "Unsupported operation", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
 
             if (CurrentObjects_ListBox.SelectedItem is SObj obj)
             {
@@ -2196,7 +2130,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 if (Pcc.Game is MEGame.ME3 or MEGame.LE3)
                 {
                     plotFiles = MELoadedFiles.GetEnabledDLCFolders(Pcc.Game).OrderByDescending(dir => MELoadedFiles.GetMountPriority(dir, Pcc.Game))
-                                                  .Select(dir => Path.Combine(dir, "CookedPCConsole", $"Startup_{MELoadedFiles.GetDLCNameFromDir(dir)}_INT.pcc"))
+                                                  .Select(dir => Path.Combine(dir, Pcc.Game.CookedDirName(), $"Startup_{MELoadedFiles.GetDLCNameFromDir(dir)}_INT.pcc"))
                                                   .Append(Path.Combine(MEDirectories.GetCookedPath(Pcc.Game), "SFXGameInfoSP_SF.pcc"))
                                                   .Where(File.Exists);
                 }
@@ -2204,7 +2138,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 if (Pcc.Game is MEGame.ME2 or MEGame.LE2)
                 {
                     plotFiles = MELoadedFiles.GetEnabledDLCFolders(Pcc.Game).OrderByDescending(dir => MELoadedFiles.GetMountPriority(dir, Pcc.Game))
-                        .Select(dir => Path.Combine(dir, (Pcc.Game is MEGame.LE2 ? "CookedPCConsole" : "CookedPC"), $"Startup_{MELoadedFiles.GetDLCNameFromDir(dir)}_INT.pcc"))
+                        .Select(dir => Path.Combine(dir, Pcc.Game.CookedDirName(), $"Startup_{MELoadedFiles.GetDLCNameFromDir(dir)}_INT.pcc"))
                         .Append(Path.Combine(MEDirectories.GetCookedPath(Pcc.Game), "Startup_INT.pcc"))
                         .Where(File.Exists);
                 }
@@ -2220,7 +2154,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 if (Pcc.Game is MEGame.ME1)
                 {
                     plotFiles = MELoadedFiles.GetEnabledDLCFolders(Pcc.Game).OrderByDescending(dir => MELoadedFiles.GetMountPriority(dir, Pcc.Game))
-                        .Select(dir => Path.Combine(dir, "CookedPC", $@"Packages\PlotManagerAuto{MELoadedFiles.GetDLCNameFromDir(dir)}.upk"))
+                        .Select(dir => Path.Combine(dir, Pcc.Game.CookedDirName(), $@"Packages\PlotManagerAuto{MELoadedFiles.GetDLCNameFromDir(dir)}.upk"))
                         .Append(Path.Combine(MEDirectories.GetCookedPath(Pcc.Game), @"Packages\PlotManagerAuto.upk"))
                         .Where(File.Exists);
                 }
@@ -2230,15 +2164,13 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     string filePath = null;
                     foreach (var plotFile in plotFiles)
                     {
-                        using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(plotFile))
+                        using IMEPackage pcc = MEPackageHandler.OpenMEPackage(plotFile);
+                        if (StateEventMapView.TryFindStateEventMap(pcc, out ExportEntry export))
                         {
-                            if (StateEventMapView.TryFindStateEventMap(pcc, out ExportEntry export))
+                            var stateEventMap = BinaryBioStateEventMap.Load(export);
+                            if (stateEventMap.StateEvents.ContainsKey(stateEventKey))
                             {
-                                var stateEventMap = BinaryBioStateEventMap.Load(export);
-                                if (stateEventMap.StateEvents.ContainsKey(stateEventKey))
-                                {
-                                    filePath = plotFile;
-                                }
+                                filePath = plotFile;
                             }
                         }
                     }

@@ -148,12 +148,12 @@
                                     <VisualBrush Visual="{Binding ElementName=searchMask}"></VisualBrush>
                                 </Grid.OpacityMask>
 
-                                <TextBox x:Name="SearchBox" FontFamily="{StaticResource BioMass-Bold}"
+                                <TextBox x:Name="SearchBox" FontFamily="{StaticResource BioMass-Light}"
                                          TabIndex="2"
-                                         FontSize="18"
+                                         FontSize="17"
                                          Background="{x:Null}"
                                          BorderBrush="{x:Null}" Foreground="#FFFBFBFB" VerticalContentAlignment="Center"
-                                         CaretBrush="#FFFBFBFB" Padding="3,0"
+                                         CaretBrush="#FFFBFBFB" Padding="10,0"
                                          TextChanged="SearchBox_TextChanged" GotFocus="SearchBox_OnGotFocus" />
                                 <TextBlock IsHitTestVisible="False" Text="Search the Toolset..." VerticalAlignment="Center"
                                            HorizontalAlignment="Left" Margin="10,0,0,0"

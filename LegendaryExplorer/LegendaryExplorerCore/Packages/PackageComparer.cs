@@ -79,13 +79,13 @@ namespace LegendaryExplorerCore.Packages
                         Buffer.BlockCopy(BitConverter.GetBytes((long)0), 0, header1, 32, sizeof(long));
                         Buffer.BlockCopy(BitConverter.GetBytes((long)0), 0, header2, 32, sizeof(long));
 
-                        if (!header1.SequenceEqual(header2))
+                        if (!header1.AsSpan().SequenceEqual(header2))
                         {
                             changedExports.Add(new EntryStringPair(exp1,
                                 $"Export header has changed: {exp1.UIndex} {exp1.InstancedFullPath} ({exp1.ClassName})"));
                         }
 
-                        if (!exp1.Data.SequenceEqual(exp2.Data))
+                        if (!exp1.DataReadOnly.SequenceEqual(exp2.DataReadOnly))
                         {
                             changedExports.Add(new EntryStringPair(exp1,
                                 $"Export data has changed: {exp1.UIndex} {exp1.InstancedFullPath} ({exp1.ClassName})"));

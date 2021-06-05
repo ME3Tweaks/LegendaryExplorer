@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
@@ -10,7 +11,6 @@ using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SharpDX;
 
 namespace LegendaryExplorer.Tools.PathfindingEditor
 {
@@ -319,7 +319,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         }
 
         /// <summary>
-        /// Gets the end name of a ReachSpec for property parsing. ME1 uses Nav, while ME2 and above use Actor.
+        /// Gets the end name of a ReachSpec for property parsing. ME1 and ME2 use Nav, while ME3 and above use Actor.
         /// </summary>
         /// <param name="export">export used to determine which game is being parsed</param>
         /// <returns>Actor for ME2/ME3, Nav for ME1</returns>
@@ -492,7 +492,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 return null;
 
             return ((StaticCollectionActor)ObjectBinary.From(collectionactor)).LocalToWorldTransforms
-                                                                              .Select(localToWorldTransform => (Point3D)localToWorldTransform.TranslationVector).ToList();
+                                                                              .Select(localToWorldTransform => (Point3D)localToWorldTransform.Translation).ToList();
         }
 
         public static List<ExportEntry> GetCollectionItems(ExportEntry smac)
@@ -557,8 +557,8 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 {
                     var binData = (StaticCollectionActor)ObjectBinary.From(collectionactor);
 
-                    Matrix m = binData.LocalToWorldTransforms[idx];
-                    m.TranslationVector = new Vector3(x, y, z);
+                    Matrix4x4 m = binData.LocalToWorldTransforms[idx];
+                    m.Translation = new Vector3(x, y, z);
                     binData.LocalToWorldTransforms[idx] = m;
 
                     collectionactor.WriteBinary(binData);
@@ -767,6 +767,5 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         }
 
         public static implicit operator Point3D(Vector3 vec) => new Point3D(vec.X, vec.Y, vec.Z);
-        public static implicit operator Point3D(LegendaryExplorerCore.SharpDX.Vector3 vec) => new Point3D(vec.X, vec.Y, vec.Z);
     }
 }

@@ -57,8 +57,6 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
         public List<TLKStringRef> StringRefs;
         public string name;
         public string path;
-        List<HuffmanNode> CharacterTree;
-        BitArray Bits;
 
         public delegate void ProgressChangedEventHandler(int percentProgress);
         public event ProgressChangedEventHandler ProgressChanged;
@@ -106,9 +104,10 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
             long pos = r.BaseStream.Position;
             r.BaseStream.Seek(pos + (Header.MaleEntryCount + Header.FemaleEntryCount) * 8, SeekOrigin.Begin);
 
-            CharacterTree = new List<HuffmanNode>();
+
+            var characterTree = new List<HuffmanNode>(Header.treeNodeCount);
             for (int i = 0; i < Header.treeNodeCount; i++)
-                CharacterTree.Add(new HuffmanNode(r));
+                characterTree.Add(new HuffmanNode(r));
 
             /* **************** STEP THREE ****************
              *  -- read all of coded data into memory -- 
@@ -116,7 +115,7 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
             byte[] data = new byte[Header.dataLen];
             r.BaseStream.Read(data, 0, data.Length);
             /* and store it as raw bits for further processing */
-            Bits = new BitArray(data);
+            var bits = new BitArray(data);
 
             /* rewind BinaryReader just after the Header
              * at the beginning of TLK Entries data */
@@ -128,17 +127,17 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
              *   int: bit offset of the beginning of data (offset starting at 0 and counted for Bits array)
              *        so offset == 0 means the first bit in Bits array
              *   string: actual decoded string */
-            Dictionary<int, string> rawStrings = new Dictionary<int, string>();
+            var rawStrings = new Dictionary<int, string>();
             int offset = 0;
             // int maxOffset = 0;
             var builder = new StringBuilder(); //reuse the same stringbuilder to avoid allocations
-            while (offset < Bits.Length)
+            while (offset < bits.Length)
             {
                 int key = offset;
                 // if (key > maxOffset)
                 // maxOffset = key;
                 /* read the string and update 'offset' variable to store NEXT string offset */
-                string s = GetString(ref offset, builder);
+                string s = GetString(ref offset, builder, bits, characterTree);
                 rawStrings.Add(key, s);
             }
 
@@ -151,18 +150,19 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
              * Sometimes there's no such key, in that case, our String ID is probably a substring
              * of another String present in rawStrings. 
              */
-            StringRefs = new List<ME1TalkFile.TLKStringRef>();
+            int strRefCount = Header.MaleEntryCount + Header.FemaleEntryCount;
+            StringRefs = new List<TLKStringRef>(strRefCount);
             StringRefsTable = new Dictionary<int, List<TLKStringRef>>();
-            for (int i = 0; i < Header.MaleEntryCount + Header.FemaleEntryCount; i++)
+            for (int i = 0; i < strRefCount; i++)
             {
-                ME1TalkFile.TLKStringRef sref = new ME1TalkFile.TLKStringRef(r, false);
+                var sref = new TLKStringRef(r, false);
                 sref.Index = i;
                 if (sref.BitOffset >= 0)
                 {
                     if (!rawStrings.ContainsKey(sref.BitOffset))
                     {
                         int tmpOffset = sref.BitOffset;
-                        string partString = GetString(ref tmpOffset, builder);
+                        string partString = GetString(ref tmpOffset, builder, bits, characterTree);
 
                         /* actually, it should store the fullString and subStringOffset,
                          * but as we don't have to use this compression feature,
@@ -221,15 +221,15 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
             /* for now, it's better not to sort, to preserve original order */
             // StringRefs.Sort(CompareTlkStringRef);
 
-            using XmlTextWriter xr = new XmlTextWriter(fileName, Encoding.UTF8);
+            using var xr = new XmlTextWriter(fileName, Encoding.UTF8);
             WriteXML(xr);
         }
 
         public string WriteXMLString()
         {
-            StringBuilder InputTLK = new StringBuilder();
-            using StringWriter stringWriter = new StringWriter(InputTLK);
-            using XmlTextWriter writer = new XmlTextWriter(stringWriter);
+            var InputTLK = new StringBuilder();
+            using var stringWriter = new StringWriter(InputTLK);
+            using var writer = new XmlTextWriter(stringWriter);
             WriteXML(writer);
             return InputTLK.ToString();
         }
@@ -297,29 +297,24 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
         /// <returns>
         /// decoded string or null if there's an error (last string's bit code is incomplete)
         /// </returns>
-        /// <remarks>
-        /// Global variables used:
-        /// List(of HuffmanNodes) CharacterTree
-        /// BitArray Bits
-        /// </remarks>
-        private string GetString(ref int bitOffset, StringBuilder builder)
+        private static string GetString(ref int bitOffset, StringBuilder builder, BitArray bits, List<HuffmanNode> characterTree)
         {
-            HuffmanNode root = CharacterTree[0];
+            HuffmanNode root = characterTree[0];
             HuffmanNode curNode = root;
             builder.Clear();
             int i;
-            for (i = bitOffset; i < Bits.Length; i++)
+            for (i = bitOffset; i < bits.Length; i++)
             {
                 /* reading bits' sequence and decoding it to Strings while traversing Huffman Tree */
                 int nextNodeID;
-                if (Bits[i])
+                if (bits[i])
                     nextNodeID = curNode.RightNodeID;
                 else
                     nextNodeID = curNode.LeftNodeID;
 
                 /* it's an internal node - keep looking for a leaf */
                 if (nextNodeID >= 0)
-                    curNode = CharacterTree[nextNodeID];
+                    curNode = characterTree[nextNodeID];
                 else
                 /* it's a leaf! */
                 {
@@ -382,7 +377,7 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
         }
 
         /* for sorting */
-        private static int CompareTlkStringRef(ME1TalkFile.TLKStringRef strRef1, ME1TalkFile.TLKStringRef strRef2)
+        private static int CompareTlkStringRef(TLKStringRef strRef1, TLKStringRef strRef2)
         {
             int result = strRef1.StringID.CompareTo(strRef2.StringID);
             return result;

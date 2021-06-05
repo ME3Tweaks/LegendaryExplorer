@@ -518,6 +518,7 @@ namespace LegendaryExplorer.DialogueEditor
             GraphHost.Dispose();
             DataContext = null;
             DispatcherHelper.EmptyQueue();
+            RecentsController?.Dispose();
         }
         private void OpenPackage()
         {
@@ -747,7 +748,7 @@ namespace LegendaryExplorer.DialogueEditor
                 node.IsNonTextLine = nodeprop.GetProp<BoolProperty>("bNonTextLine");
                 node.IgnoreBodyGesture = nodeprop.GetProp<BoolProperty>("bIgnoreBodyGestures");
                 node.GUIStyle = Enums.Parse<EConvGUIStyles>(nodeprop.GetProp<EnumProperty>("eGUIStyle").Value.Name);
-                if (Pcc.Game == MEGame.ME3)
+                if (Pcc.Game.IsGame3())
                 {
                     node.HideSubtitle = nodeprop.GetProp<BoolProperty>("bAlwaysHideSubtitle");
                     if (node.IsReply)

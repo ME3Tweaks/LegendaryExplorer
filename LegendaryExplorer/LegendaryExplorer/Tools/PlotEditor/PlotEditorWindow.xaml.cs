@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -24,7 +25,7 @@ namespace LegendaryExplorer.Tools.PlotEditor
             GotoCommand = new GenericCommand(FocusGoto, () => Pcc != null);
 
             InitializeComponent();
-            RecentsController.InitRecentControl(Toolname, Recents_MenuItem, fileName => LoadFile(fileName));
+            RecentsController.InitRecentControl(Toolname, Recents_MenuItem, LoadFile);
 
             FindObjectUsagesControl.parentRef = this;
         }
@@ -283,5 +284,13 @@ namespace LegendaryExplorer.Tools.PlotEditor
 
         public string Toolname => "NativesEditor";
 
+        private void PlotEditorWindow_OnClosing(object sender, CancelEventArgs e)
+        {
+            if (e.Cancel)
+            {
+                return;
+            }
+            RecentsController?.Dispose();
+        }
     }
 }

@@ -478,7 +478,14 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 symRef = new SymbolReference(symbol, token.Value, token.StartPos, token.EndPos);
             }
 
-            token.AssociatedNode = symbol;
+            if (token.Value.CaseInsensitiveEquals("Outer") && symbol is VariableDeclaration fakeOuterVarDecl)
+            {
+                token.AssociatedNode = fakeOuterVarDecl.VarType;
+            }
+            else
+            {
+                token.AssociatedNode = symbol;
+            }
             if (symRef.Node is Function)
             {
                 token.SyntaxType = EF.Function;

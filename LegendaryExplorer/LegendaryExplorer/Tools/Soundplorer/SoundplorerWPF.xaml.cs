@@ -472,12 +472,17 @@ namespace LegendaryExplorer.Tools.Soundplorer
 
         private void Soundplorer_Closing(object sender, CancelEventArgs e)
         {
+            if (e.Cancel)
+            {
+                return;
+            }
             if (backgroundScanner != null && backgroundScanner.IsBusy)
             {
                 backgroundScanner.CancelAsync();
             }
             soundPanel.FreeAudioResources();
             soundPanel.Dispose(); //Gets rid of WinForms control
+            RecentsController?.Dispose();
         }
 
         private void ExtractWEMAsWaveFromBank_Clicked(object sender, RoutedEventArgs e)

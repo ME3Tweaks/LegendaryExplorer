@@ -9,6 +9,7 @@ using Be.Windows.Forms;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
+using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
@@ -48,7 +49,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public int CurrentObjectNameIndex { get; private set; }
 
         private HexBox Header_Hexbox;
-        private DynamicByteProvider headerByteProvider;
+        private ReadOptimizedByteProvider headerByteProvider;
         private bool loadingNewData;
 
         public bool SubstituteImageForHexBox
@@ -376,8 +377,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             int start = (int)Header_Hexbox.SelectionStart;
             int len = (int)Header_Hexbox.SelectionLength;
             int size = (int)headerByteProvider.Length;
-            //TODO: Optimize this so this is only called when data has changed
-            byte[] currentData = headerByteProvider.Bytes.ToArray();
+
+            var currentData = headerByteProvider.Span;
             try
             {
                 if (start != -1 && start < size)
@@ -385,7 +386,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     string s = $"Byte: {currentData[start]}"; //if selection is same as size this will crash.
                     if (start <= currentData.Length - 4)
                     {
-                        int val = BitConverter.ToInt32(currentData, start);
+                        int val = EndianReader.ToInt32(currentData, start, CurrentLoadedEntry.FileRef.Endian);
                         s += $", Int: {val}";
                         if (CurrentLoadedEntry.FileRef.IsName(val))
                         {
@@ -436,7 +437,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             InfoTab_ExportDataSize_TextBox.Text = null;
             InfoTab_ExportOffsetHex_TextBox.Text = null;
             InfoTab_ExportOffsetDec_TextBox.Text = null;
-            headerByteProvider.ClearBytes();
+            headerByteProvider.Clear();
             loadingNewData = false;
         }
 
@@ -482,7 +483,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (OriginalHeader != null)
             {
-                HexChanged = !headerByteProvider.Bytes.SequenceEqual(OriginalHeader);
+                HexChanged = !headerByteProvider.Span.SequenceEqual(OriginalHeader);
             }
         }
 
@@ -685,7 +686,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             if (!ControlLoaded)
             {
                 Header_Hexbox = (HexBox)Header_Hexbox_Host.Child;
-                headerByteProvider = new DynamicByteProvider();
+                headerByteProvider = new ReadOptimizedByteProvider();
                 Header_Hexbox.ByteProvider = headerByteProvider;
                 if (CurrentLoadedEntry != null) headerByteProvider.ReplaceBytes(CurrentLoadedEntry.Header);
                 headerByteProvider.Changed += InfoTab_Header_ByteProvider_InternalChanged;

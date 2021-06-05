@@ -12,7 +12,7 @@ namespace LegendaryExplorer.Misc.AppSettings
     /// </summary>
     public static partial class Settings
     {
-        private static object settingsSyncObj = new object();
+        private static readonly object settingsSyncObj = new();
         private static bool _mainwindow_disabletransparencyandanimations = false; 
         public static bool MainWindow_DisableTransparencyAndAnimations {
             get => _mainwindow_disabletransparencyandanimations; 
@@ -58,20 +58,15 @@ namespace LegendaryExplorer.Misc.AppSettings
             get => _sequenceeditor_showparsedinfo; 
             set => SetProperty(ref _sequenceeditor_showparsedinfo, value);
         }
-        private static bool _sequenceeditor_autosaveview = false; 
-        public static bool SequenceEditor_AutoSaveView {
-            get => _sequenceeditor_autosaveview; 
-            set => SetProperty(ref _sequenceeditor_autosaveview, value);
+        private static bool _sequenceeditor_autosaveviewv2 = true; 
+        public static bool SequenceEditor_AutoSaveViewV2 {
+            get => _sequenceeditor_autosaveviewv2; 
+            set => SetProperty(ref _sequenceeditor_autosaveviewv2, value);
         }
         private static bool _sequenceeditor_showoutputnumbers = false; 
         public static bool SequenceEditor_ShowOutputNumbers {
             get => _sequenceeditor_showoutputnumbers; 
             set => SetProperty(ref _sequenceeditor_showoutputnumbers, value);
-        }
-        private static bool _sequenceeditor_globalseqrefviewsaves = false; 
-        public static bool SequenceEditor_GlobalSeqRefViewSaves {
-            get => _sequenceeditor_globalseqrefviewsaves; 
-            set => SetProperty(ref _sequenceeditor_globalseqrefviewsaves, value);
         }
         private static bool _soundplorer_reverseiddisplayendianness = false; 
         public static bool Soundplorer_ReverseIDDisplayEndianness {
@@ -274,7 +269,7 @@ namespace LegendaryExplorer.Misc.AppSettings
             if (Loaded)
                 return;
             
-            Dictionary<string, string> settingsJson = File.Exists(AppSettingsFile)
+            var settingsJson = File.Exists(AppSettingsFile)
                 ? JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(AppSettingsFile))
                 : new Dictionary<string, string>();
             MainWindow_DisableTransparencyAndAnimations = TryGetSetting(settingsJson, "mainwindow_disabletransparencyandanimations", false);
@@ -286,9 +281,8 @@ namespace LegendaryExplorer.Misc.AppSettings
             PackageEditor_ShowTreeEntrySubText = TryGetSetting(settingsJson, "packageeditor_showtreeentrysubtext", true);
             SequenceEditor_MaxVarStringLength = TryGetSetting(settingsJson, "sequenceeditor_maxvarstringlength", 40);
             SequenceEditor_ShowParsedInfo = TryGetSetting(settingsJson, "sequenceeditor_showparsedinfo", true);
-            SequenceEditor_AutoSaveView = TryGetSetting(settingsJson, "sequenceeditor_autosaveview", false);
+            SequenceEditor_AutoSaveViewV2 = TryGetSetting(settingsJson, "sequenceeditor_autosaveviewv2", true);
             SequenceEditor_ShowOutputNumbers = TryGetSetting(settingsJson, "sequenceeditor_showoutputnumbers", false);
-            SequenceEditor_GlobalSeqRefViewSaves = TryGetSetting(settingsJson, "sequenceeditor_globalseqrefviewsaves", false);
             Soundplorer_ReverseIDDisplayEndianness = TryGetSetting(settingsJson, "soundplorer_reverseiddisplayendianness", false);
             Soundplorer_AutoplayEntriesOnSelection = TryGetSetting(settingsJson, "soundplorer_autoplayentriesonselection", false);
             Meshplorer_BackgroundColor = TryGetSetting(settingsJson, "meshplorer_backgroundcolor", "#999999");
@@ -344,7 +338,7 @@ namespace LegendaryExplorer.Misc.AppSettings
         /// </summary>
         public static void Save()
         {
-            Dictionary<string, string> settingsJson = new Dictionary<string,string>();
+            var settingsJson = new Dictionary<string,string>();
             settingsJson["mainwindow_disabletransparencyandanimations"] = MainWindow_DisableTransparencyAndAnimations.ToString();
             settingsJson["mainwindow_favorites"] = MainWindow_Favorites.ToString();
             settingsJson["packageeditor_hideinterpreterhexbox"] = PackageEditor_HideInterpreterHexBox.ToString();
@@ -354,9 +348,8 @@ namespace LegendaryExplorer.Misc.AppSettings
             settingsJson["packageeditor_showtreeentrysubtext"] = PackageEditor_ShowTreeEntrySubText.ToString();
             settingsJson["sequenceeditor_maxvarstringlength"] = SequenceEditor_MaxVarStringLength.ToString();
             settingsJson["sequenceeditor_showparsedinfo"] = SequenceEditor_ShowParsedInfo.ToString();
-            settingsJson["sequenceeditor_autosaveview"] = SequenceEditor_AutoSaveView.ToString();
+            settingsJson["sequenceeditor_autosaveviewv2"] = SequenceEditor_AutoSaveViewV2.ToString();
             settingsJson["sequenceeditor_showoutputnumbers"] = SequenceEditor_ShowOutputNumbers.ToString();
-            settingsJson["sequenceeditor_globalseqrefviewsaves"] = SequenceEditor_GlobalSeqRefViewSaves.ToString();
             settingsJson["soundplorer_reverseiddisplayendianness"] = Soundplorer_ReverseIDDisplayEndianness.ToString();
             settingsJson["soundplorer_autoplayentriesonselection"] = Soundplorer_AutoplayEntriesOnSelection.ToString();
             settingsJson["meshplorer_backgroundcolor"] = Meshplorer_BackgroundColor.ToString();

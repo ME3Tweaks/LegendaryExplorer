@@ -46,7 +46,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             Mips = GetTexture2DMipInfos(export, cache?.Value);
             if (Export.Game != MEGame.ME1)
             {
-                int guidOffsetFromEnd = export.Game == MEGame.ME3 ? 20 : 16;
+                int guidOffsetFromEnd = export.Game is MEGame.ME3 || export.Game.IsLEGame() ? 20 : 16;
                 if (export.ClassName == "LightMapTexture2D")
                 {
                     guidOffsetFromEnd += 4;
@@ -143,9 +143,8 @@ namespace LegendaryExplorerCore.Unreal.Classes
             return imageBytes;
         }
 
-        public byte[] SerializeNewData()
+        public void SerializeNewData(Stream ms)
         {
-            using MemoryStream ms = MemoryManager.GetMemoryStream();
             if (!Export.FileRef.Game.IsGame3()) // Is this rig
             {
                 for (int i = 0; i < 12; i++)
@@ -173,7 +172,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             {
                 ms.WriteInt32(0);
             }
-            if (Export.Game > MEGame.ME1) // Is this right for LE?
+            if (Export.Game != MEGame.ME1)
             {
                 ms.WriteGuid(TextureGuid);
             }
@@ -189,7 +188,6 @@ namespace LegendaryExplorerCore.Unreal.Classes
                     ms.WriteInt32(0);
                 }
             }
-            return ms.ToArray();
         }
 
         public void ReplaceMips(List<Texture2DMipInfo> mipmaps)
@@ -279,7 +277,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                             var dlcName = mipToLoad.TextureCacheName.Substring(9);
                             if (MEDirectories.OfficialDLC(MEGame.ME3).Contains(dlcName) && ME3Directory.DLCPath != null)
                             {
-                                var sfarPath = Path.Combine(ME3Directory.DLCPath, dlcName, "CookedPCConsole", "Default.sfar");
+                                var sfarPath = Path.Combine(ME3Directory.DLCPath, dlcName, game.CookedDirName(), "Default.sfar");
                                 if (File.Exists(sfarPath))
                                 {
                                     var dpackage = new DLCPackage(sfarPath);

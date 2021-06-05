@@ -866,5 +866,14 @@ namespace LegendaryExplorer.Tools.TextureStudio
         }
 
         public string Toolname => "TextureStudio";
+
+        private void TextureStudioWindow_OnClosing(object sender, CancelEventArgs e)
+        {
+            if (e.Cancel)
+            {
+                return;
+            }
+            RecentsController?.Dispose();
+        }
     }
 }

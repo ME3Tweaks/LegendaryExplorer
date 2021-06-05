@@ -53,8 +53,8 @@ namespace LegendaryExplorer.Tools.CoalescedCompiler
 		    set => SetProperty(ref _destinationPath, value);
 		}
 
-		private CoalescedType _destinationType;
-		public CoalescedType DestinationType
+		private CoalescedConverter.CoalescedType _destinationType;
+		public CoalescedConverter.CoalescedType DestinationType
 		{
 			get => _destinationType;
 		    set => SetProperty(ref _destinationType, value);
@@ -67,8 +67,8 @@ namespace LegendaryExplorer.Tools.CoalescedCompiler
 		    set => SetProperty(ref _sourcePath, value);
 		}
 
-		private CoalescedType _sourceType;
-		public CoalescedType SourceType
+		private CoalescedConverter.CoalescedType _sourceType;
+		public CoalescedConverter.CoalescedType SourceType
 		{
 			get => _sourceType;
 		    set => SetProperty(ref _sourceType, value);
@@ -103,19 +103,19 @@ namespace LegendaryExplorer.Tools.CoalescedCompiler
 
             switch (SourceType)
             {
-                case CoalescedType.Binary:
+                case CoalescedConverter.CoalescedType.Binary:
                 {
                     // Output to folder
                     ConvertingLECoalesced = !CoalescedConverter.IsGame3Coalesced(SourcePath);
                     DestinationPath = Path.ChangeExtension(SourcePath, null);
                     break;
                 }
-                case CoalescedType.Xml:
+                case CoalescedConverter.CoalescedType.Xml:
                 {
                     DestinationPath = Path.ChangeExtension(SourcePath, "bin");
                     break;
                 }
-                case CoalescedType.ExtractedBin:
+                case CoalescedConverter.CoalescedType.ExtractedBin:
                 {
                     DestinationPath = Path.Combine(Path.GetDirectoryName(SourcePath),
                         LECoalescedConverter.GetDestinationPathFromManifest(SourcePath));
@@ -128,7 +128,7 @@ namespace LegendaryExplorer.Tools.CoalescedCompiler
 		{
 			switch (SourceType)
 			{
-				case CoalescedType.Binary:
+				case CoalescedConverter.CoalescedType.Binary:
 				{
 					var dlg = new CommonOpenFileDialog("Select Folder")
 					{
@@ -144,8 +144,8 @@ namespace LegendaryExplorer.Tools.CoalescedCompiler
                     break;
 				}
 
-				case CoalescedType.Xml:
-				case CoalescedType.ExtractedBin:
+				case CoalescedConverter.CoalescedType.Xml:
+				case CoalescedConverter.CoalescedType.ExtractedBin:
                 {
 						var dlg = new CommonOpenFileDialog("Open File");
                         dlg.Filters.Add(new CommonFileDialogFilter("Binary Coalesced Files", "*.bin"));
@@ -201,7 +201,7 @@ namespace LegendaryExplorer.Tools.CoalescedCompiler
             switch (SourceType)
 			{
 
-				case CoalescedType.Binary:
+				case CoalescedConverter.CoalescedType.Binary:
                     ConvertingLECoalesced = !CoalescedConverter.IsGame3Coalesced(SourcePath);
                     if (!Directory.Exists(Path.GetDirectoryName(DestinationPath) ?? DestinationPath))
 					{
@@ -217,10 +217,10 @@ namespace LegendaryExplorer.Tools.CoalescedCompiler
                         CoalescedConverter.ConvertToXML(SourcePath, DestinationPath);
                     }
 					break;
-				case CoalescedType.Xml:
+				case CoalescedConverter.CoalescedType.Xml:
                     CoalescedConverter.ConvertToBin(SourcePath, DestinationPath);
 					break;
-				case CoalescedType.ExtractedBin:
+				case CoalescedConverter.CoalescedType.ExtractedBin:
                     var containingFolder = Path.GetDirectoryName(SourcePath);
                     LECoalescedConverter.Pack(containingFolder, DestinationPath);
                     break;
@@ -299,17 +299,17 @@ namespace LegendaryExplorer.Tools.CoalescedCompiler
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        private (CoalescedType, CoalescedType) GetCoalescedTupleFromPath(string path)
+        private (CoalescedConverter.CoalescedType, CoalescedConverter.CoalescedType) GetCoalescedTupleFromPath(string path)
         {
             var info = new FileInfo(path);
             switch (info.Extension)
             {
                 case ".bin":
-                    return CoalescedConverter.IsGame3Coalesced(path) ? (CoalescedType.Binary, CoalescedType.Xml) : (CoalescedType.Binary, CoalescedType.ExtractedBin);
+                    return CoalescedConverter.IsGame3Coalesced(path) ? (CoalescedConverter.CoalescedType.Binary, CoalescedConverter.CoalescedType.Xml) : (CoalescedConverter.CoalescedType.Binary, CoalescedConverter.CoalescedType.ExtractedBin);
                 case ".extractedbin":
-                    return (CoalescedType.ExtractedBin, CoalescedType.Binary);
+                    return (CoalescedConverter.CoalescedType.ExtractedBin, CoalescedConverter.CoalescedType.Binary);
                 default:
-                    return (CoalescedType.Xml, CoalescedType.Binary);
+                    return (CoalescedConverter.CoalescedType.Xml, CoalescedConverter.CoalescedType.Binary);
             }
         }
     }

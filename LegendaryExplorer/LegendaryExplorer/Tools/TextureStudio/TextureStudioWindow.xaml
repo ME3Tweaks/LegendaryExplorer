@@ -14,6 +14,7 @@
         xmlns:misc="clr-namespace:LegendaryExplorer.Misc" xmlns:i1="http://schemas.microsoft.com/xaml/behaviors"
                                       mc:Ignorable="d"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Closing="TextureStudioWindow_OnClosing"
         Title="Texture Studio" MinHeight="800" MinWidth="1000" >
     <Window.Resources>
         <converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>

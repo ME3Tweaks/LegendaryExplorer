@@ -14,8 +14,8 @@ namespace LegendaryExplorer.SharedUI.PeregrineTreeView
     {
         public TreeViewEntry SelectedItem
         {
-            get { return (TreeViewEntry)GetValue(SelectedItemProperty); }
-            set { SetValue(SelectedItemProperty, value); }
+            get => (TreeViewEntry)GetValue(SelectedItemProperty);
+            set => SetValue(SelectedItemProperty, value);
         }
 
         public static readonly DependencyProperty SelectedItemProperty =
@@ -121,17 +121,33 @@ namespace LegendaryExplorer.SharedUI.PeregrineTreeView
                 currentParent = newParent;
             }
         }
+        private bool _isCleanedUp;
 
+        private void Cleanup()
+        {
+            if (!_isCleanedUp)
+            {
+                _isCleanedUp = true;
+                AssociatedObject.SelectedItemChanged -= OnTreeViewSelectedItemChanged;
+                AssociatedObject.Unloaded -= AssociatedObjectOnUnloaded;
+            }
+        }
         protected override void OnAttached()
         {
             base.OnAttached();
+            AssociatedObject.Unloaded += AssociatedObjectOnUnloaded;
             AssociatedObject.SelectedItemChanged += OnTreeViewSelectedItemChanged;
+        }
+
+        private void AssociatedObjectOnUnloaded(object sender, RoutedEventArgs e)
+        {
+            Cleanup();
         }
 
         protected override void OnDetaching()
         {
+            Cleanup();
             base.OnDetaching();
-            AssociatedObject.SelectedItemChanged -= OnTreeViewSelectedItemChanged;
         }
 
         private void OnTreeViewSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)

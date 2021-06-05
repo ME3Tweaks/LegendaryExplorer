@@ -517,7 +517,7 @@ namespace LegendaryExplorerCore.Packages
         protected byte[] _data;
 
         /// <summary>
-        /// Returns a ReadOnlySpan of Data. This is a much more efficient than cloning with Data. Experimentally supported for now
+        /// Returns a ReadOnlySpan of Data. This is a much more efficient than cloning with Data.
         /// </summary>
         public ReadOnlySpan<byte> DataReadOnly => _data.AsSpan();
 
@@ -526,6 +526,7 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         public byte[] Data
         {
+            //TODO: remove get accessor, and replace with GetDataCopy() to make behavior more obvious
             get => _data.TypedClone();
 
             set
@@ -618,7 +619,7 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="forceReload">Forces full property release rather than using the property collection cache</param>
         /// <param name="includeNoneProperties">Include NoneProperties in the resulting property collection</param>
         /// <returns></returns>
-        public PropertyCollection GetProperties(bool forceReload = false, bool includeNoneProperties = false, int propStartPos = 0)
+        public PropertyCollection GetProperties(bool forceReload = false, bool includeNoneProperties = false, int propStartPos = 0, PackageCache packageCache = null)
         {
             if (properties != null && !forceReload && !includeNoneProperties)
             {
@@ -650,7 +651,7 @@ namespace LegendaryExplorerCore.Packages
             var stream = new MemoryStream(_data, false);
             stream.Seek(propStartPos, SeekOrigin.Current);
             // Do not cache
-            return PropertyCollection.ReadProps(this, stream, ClassName, includeNoneProperties, true, parsingClass); //do not set properties as this may interfere with some other code. may change later.
+            return PropertyCollection.ReadProps(this, stream, ClassName, includeNoneProperties, true, parsingClass, packageCache); //do not set properties as this may interfere with some other code. may change later.
             //}
         }
 
@@ -729,8 +730,8 @@ namespace LegendaryExplorerCore.Packages
                 MEGame.UDK => 26,
                 MEGame.ME3 => 30,
                 MEGame.LE1 => 30,
-                MEGame.LE2 => 30, //needs tested
-                MEGame.LE3 => 30, // needs tested
+                MEGame.LE2 => 30, 
+                MEGame.LE3 => 30, 
                 MEGame.ME1 when FileRef.Platform == MEPackage.GamePlatform.PS3 => 30,
                 MEGame.ME2 when FileRef.Platform == MEPackage.GamePlatform.PS3 => 30,
                 _ => 32

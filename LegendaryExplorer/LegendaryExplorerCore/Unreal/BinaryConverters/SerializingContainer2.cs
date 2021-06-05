@@ -6,13 +6,13 @@ using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.SharpDX;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     [DebuggerDisplay("SC2, IsLoading: {IsLoading}, IsSaving: {IsSaving}, Position @ {ms.Position.ToString(\"X8\")}")]
     public class SerializingContainer2
     {
+        public readonly PackageCache packageCache;
         public readonly EndianReader ms;
         public readonly bool IsLoading;
         public readonly IMEPackage Pcc;
@@ -22,12 +22,13 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public int FileOffset => startOffset + (int)ms.Position;
         public MEGame Game => Pcc.Game;
 
-        public SerializingContainer2(Stream stream, IMEPackage pcc, bool isLoading = false, int offset = 0)
+        public SerializingContainer2(Stream stream, IMEPackage pcc, bool isLoading = false, int offset = 0, PackageCache packageCache = null)
         {
             ms = new EndianReader(stream) { Endian = pcc?.Endian ?? Endian.Little };
             IsLoading = isLoading;
             Pcc = pcc;
             startOffset = offset;
+            this.packageCache = packageCache;
         }
     }
 
@@ -340,7 +341,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
 
 
-        public static void Serialize(this SerializingContainer2 sc, ref Color color)
+        public static void Serialize(this SerializingContainer2 sc, ref SharpDX.Color color)
         {
             if (sc.IsLoading)
             {
@@ -348,7 +349,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 byte g = (byte)sc.ms.ReadByte();
                 byte r = (byte)sc.ms.ReadByte();
                 byte a = (byte)sc.ms.ReadByte();
-                color = new Color(r, g, b, a);
+                color = new SharpDX.Color(r, g, b, a);
             }
             else
             {
