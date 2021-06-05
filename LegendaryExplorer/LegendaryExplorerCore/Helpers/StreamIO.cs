@@ -22,6 +22,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 using LegendaryExplorerCore.Gammtek.IO;
@@ -291,10 +292,10 @@ namespace LegendaryExplorerCore.Helpers
 
         public static ulong ReadUInt64(this Stream stream)
         {
-            var buffer = new byte[sizeof(ulong)];
-            if (stream.Read(buffer, 0, sizeof(ulong)) != sizeof(ulong))
-                throw new Exception();
-            return BitConverter.ToUInt64(buffer, 0);
+            Span<byte> buffer = stackalloc byte[sizeof(ulong)];
+            if (stream.Read(buffer) != sizeof(ulong))
+                ThrowEndOfStreamException();
+            return BitConverter.ToUInt64(buffer);
         }
 
         public static void WriteUInt64(this Stream stream, ulong data)
@@ -304,10 +305,10 @@ namespace LegendaryExplorerCore.Helpers
 
         public static long ReadInt64(this Stream stream)
         {
-            var buffer = new byte[sizeof(long)];
-            if (stream.Read(buffer, 0, sizeof(long)) != sizeof(long))
-                throw new Exception();
-            return BitConverter.ToInt64(buffer, 0);
+            Span<byte> buffer = stackalloc byte[sizeof(long)];
+            if (stream.Read(buffer) != sizeof(long))
+                ThrowEndOfStreamException();
+            return BitConverter.ToInt64(buffer);
         }
 
         public static void WriteInt64(this Stream stream, long data)
@@ -317,10 +318,10 @@ namespace LegendaryExplorerCore.Helpers
 
         public static uint ReadUInt32(this Stream stream)
         {
-            var buffer = new byte[sizeof(uint)];
-            if (stream.Read(buffer, 0, sizeof(uint)) != sizeof(uint))
-                throw new Exception();
-            return BitConverter.ToUInt32(buffer, 0);
+            Span<byte> buffer = stackalloc byte[sizeof(uint)];
+            if (stream.Read(buffer) != sizeof(uint))
+                ThrowEndOfStreamException();
+            return BitConverter.ToUInt32(buffer);
         }
 
         public static void WriteUInt32(this Stream stream, uint data)
@@ -330,10 +331,10 @@ namespace LegendaryExplorerCore.Helpers
 
         public static int ReadInt32(this Stream stream)
         {
-            var buffer = new byte[sizeof(int)];
-            if (stream.Read(buffer, 0, sizeof(int)) != sizeof(int))
-                throw new Exception();
-            return BitConverter.ToInt32(buffer, 0);
+            Span<byte> buffer = stackalloc byte[sizeof(int)];
+            if (stream.Read(buffer) != sizeof(int))
+                ThrowEndOfStreamException();
+            return BitConverter.ToInt32(buffer);
         }
 
         public static void WriteInt32(this Stream stream, int data)
@@ -350,17 +351,17 @@ namespace LegendaryExplorerCore.Helpers
         {
             long oldPos = stream.Position;
             stream.Position = 0;
-            using (FileStream file = new FileStream(outfile, FileMode.Create, System.IO.FileAccess.Write))
+            using (var file = new FileStream(outfile, FileMode.Create, System.IO.FileAccess.Write))
                 stream.CopyTo(file);
             stream.Position = oldPos;
         }
 
         public static ushort ReadUInt16(this Stream stream)
         {
-            var buffer = new byte[sizeof(ushort)];
-            if (stream.Read(buffer, 0, sizeof(ushort)) != sizeof(ushort))
-                throw new Exception();
-            return BitConverter.ToUInt16(buffer, 0);
+            Span<byte> buffer = stackalloc byte[sizeof(ushort)];
+            if (stream.Read(buffer) != sizeof(ushort))
+                ThrowEndOfStreamException();
+            return BitConverter.ToUInt16(buffer);
         }
 
         public static void WriteUInt16(this Stream stream, ushort data)
@@ -370,10 +371,10 @@ namespace LegendaryExplorerCore.Helpers
 
         public static short ReadInt16(this Stream stream)
         {
-            var buffer = new byte[sizeof(short)];
-            if (stream.Read(buffer, 0, sizeof(short)) != sizeof(short))
-                throw new Exception();
-            return BitConverter.ToInt16(buffer, 0);
+            Span<byte> buffer = stackalloc byte[sizeof(short)];
+            if (stream.Read(buffer) != sizeof(short))
+                ThrowEndOfStreamException();
+            return BitConverter.ToInt16(buffer);
         }
 
         public static void WriteInt16(this Stream stream, short data)
@@ -383,10 +384,10 @@ namespace LegendaryExplorerCore.Helpers
 
         public static float ReadFloat16(this Stream stream)
         {
-            var buffer = new byte[sizeof(ushort)];
-            if (stream.Read(buffer, 0, sizeof(ushort)) != sizeof(ushort))
-                throw new Exception();
-            ushort u = BitConverter.ToUInt16(buffer, 0);
+            Span<byte> buffer = stackalloc byte[sizeof(ushort)];
+            if (stream.Read(buffer) != sizeof(ushort))
+                ThrowEndOfStreamException();
+            ushort u = BitConverter.ToUInt16(buffer);
             int sign = (u >> 15) & 0x00000001;
             int exp = (u >> 10) & 0x0000001F;
             int mant = u & 0x000003FF;
@@ -404,10 +405,10 @@ namespace LegendaryExplorerCore.Helpers
 
         public static float ReadFloat(this Stream stream)
         {
-            var buffer = new byte[sizeof(float)];
-            if (stream.Read(buffer, 0, sizeof(float)) != sizeof(float))
-                throw new Exception();
-            return BitConverter.ToSingle(buffer, 0);
+            Span<byte> buffer = stackalloc byte[sizeof(float)];
+            if (stream.Read(buffer) != sizeof(float))
+                ThrowEndOfStreamException();
+            return BitConverter.ToSingle(buffer);
         }
 
         public static void WriteFloat(this Stream stream, float data)
@@ -417,10 +418,10 @@ namespace LegendaryExplorerCore.Helpers
 
         public static double ReadDouble(this Stream stream)
         {
-            var buffer = new byte[sizeof(double)];
-            if (stream.Read(buffer, 0, sizeof(double)) != sizeof(double))
-                throw new Exception();
-            return BitConverter.ToDouble(buffer, 0);
+            Span<byte> buffer = stackalloc byte[sizeof(double)];
+            if (stream.Read(buffer) != sizeof(double))
+                ThrowEndOfStreamException();
+            return BitConverter.ToDouble(buffer);
         }
 
         public static void WriteDouble(this Stream stream, double data)
@@ -688,5 +689,8 @@ namespace LegendaryExplorerCore.Helpers
             stream.Skip(stream.ReadInt32());
             return stream;
         }
+
+        [DoesNotReturn]
+        private static void ThrowEndOfStreamException() => throw new EndOfStreamException();
     }
 }

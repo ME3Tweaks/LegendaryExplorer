@@ -2175,6 +2175,10 @@ namespace Be.Windows.Forms
             }
             return buffer;
         }
+
+
+        const string binarydataCopyFormatString = "HexboxBinData";
+
         /// <summary>
         /// Copies the current selection in the hex box to the Clipboard.
         /// </summary>
@@ -2200,11 +2204,13 @@ namespace Be.Windows.Forms
             {
                 sBuffer = System.Text.Encoding.ASCII.GetString(buffer, 0, buffer.Length);
             }
-            da.SetData(typeof(string), sBuffer);
 
             //set memorystream (BinaryData) clipboard data
             System.IO.MemoryStream ms = new System.IO.MemoryStream(buffer, 0, buffer.Length, false, true);
-            da.SetData("BinaryData", ms);
+            da.SetData(binarydataCopyFormatString, ms);
+
+            da.SetData(typeof(string), sBuffer);
+
 
             Clipboard.SetDataObject(da, true);
             UpdateCaret();
@@ -2270,9 +2276,9 @@ namespace Be.Windows.Forms
 
             byte[] buffer = null;
             IDataObject da = Clipboard.GetDataObject();
-            if (da.GetDataPresent("BinaryData"))
+            if (da.GetDataPresent(binarydataCopyFormatString))
             {
-                System.IO.MemoryStream ms = (System.IO.MemoryStream)da.GetData("BinaryData");
+                System.IO.MemoryStream ms = (System.IO.MemoryStream)da.GetData(binarydataCopyFormatString);
                 buffer = new byte[ms.Length];
                 ms.Read(buffer, 0, buffer.Length);
             }
@@ -2334,7 +2340,7 @@ namespace Be.Windows.Forms
                 return false;
 
             IDataObject da = Clipboard.GetDataObject();
-            if (da.GetDataPresent("BinaryData"))
+            if (da.GetDataPresent(binarydataCopyFormatString))
                 return true;
             else if (da.GetDataPresent(typeof(string)))
                 return true;
@@ -2348,12 +2354,11 @@ namespace Be.Windows.Forms
         {
             if (!CanPaste()) return false;
 
-            byte[] buffer = null;
             IDataObject da = Clipboard.GetDataObject();
             if (da.GetDataPresent(typeof(string)))
             {
                 string hexString = (string)da.GetData(typeof(string));
-                buffer = ConvertHexToBytes(hexString);
+                byte[] buffer = ConvertHexToBytes(hexString);
                 return (buffer != null);
             }
             return false;
@@ -2411,7 +2416,7 @@ namespace Be.Windows.Forms
 
             //set memorystream (BinaryData) clipboard data
             System.IO.MemoryStream ms = new System.IO.MemoryStream(buffer, 0, buffer.Length, false, true);
-            da.SetData("BinaryData", ms);
+            da.SetData(binarydataCopyFormatString, ms);
 
             Clipboard.SetDataObject(da, true);
             UpdateCaret();
