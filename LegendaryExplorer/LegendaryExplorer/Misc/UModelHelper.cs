@@ -10,7 +10,7 @@ namespace LegendaryExplorer.Misc
 {
     public class UModelHelper
     {
-        public const int SupportedUModelBuildNum = 1550;
+        public const int SupportedUModelBuildNum = 1555;
         public static int GetLocalUModelVersion()
         {
             int version = 0;
