@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Compression;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.Textures;
 
-namespace LegendaryExplorer.Tools.TextureStudio
+namespace LegendaryExplorerCore.Textures.Studio
 {
+    /// <summary>
+    /// Precomputed texture map info (from Mass EFfect Modder "MEM")
+    /// </summary>
     public class MEMTextureMap
     {
         public static Dictionary<uint, TextureMapEntry> LoadTextureMap(MEGame game)
@@ -16,17 +17,17 @@ namespace LegendaryExplorer.Tools.TextureStudio
             // Read the vanilla file name table
             List<string> packageNames = null;
             {
-                using var stream = File.OpenRead(Path.Combine(AppDirectories.ExecFolder, @"TextureMap", $@"vanilla{game}.bin"));
-                if (stream.ReadStringLatin1(4) != @"MD5T")
+                using var vanillaInfoStream = LegendaryExplorerCoreUtilities.LoadEmbeddedFile($"Precomputed.FileTable.vanilla{game}.bin");
+                if (vanillaInfoStream.ReadStringLatin1(4) != @"MD5T")
                 {
                     throw new Exception(@"Header of MD5 table doesn't match expected value!");
                 }
 
                 //Decompress
-                var decompressedSize = stream.ReadInt32();
+                var decompressedSize = vanillaInfoStream.ReadInt32();
                 //var compressedSize = stream.Length - stream.Position;
 
-                var compressedBuffer = stream.ReadToBuffer(stream.Length - stream.Position);
+                var compressedBuffer = vanillaInfoStream.ReadToBuffer(vanillaInfoStream.Length - vanillaInfoStream.Position);
                 var decompressedBuffer = LZMA.Decompress(compressedBuffer, (uint)decompressedSize);
                 if (decompressedBuffer.Length != decompressedSize)
                 {
@@ -46,8 +47,8 @@ namespace LegendaryExplorer.Tools.TextureStudio
             }
 
 
-            var tmf = Path.Combine(AppDirectories.ExecFolder, @"TextureMap", $@"vanilla{game}Map.bin");
-            using var fs = File.OpenRead(tmf);
+            using var fs = LegendaryExplorerCoreUtilities.LoadEmbeddedFile($"Precomputed.TextureMap.vanilla{game}Map.bin");
+
 
             // read the precomputed vanilla texture map.
             // this map will help identify vanilla textures
@@ -173,7 +174,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
             /// </summary>
             public uint TextureOffset { get; set; }
             /// <summary>
-            /// Instance-specific CRC
+            /// Instance-specific CRC of the top non-empty mip
             /// </summary>
             public uint CRC { get; set; }
         }

@@ -17,6 +17,7 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Textures;
+using LegendaryExplorerCore.Textures.Studio;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Classes;
@@ -507,7 +508,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
                 var masterCache = new Dictionary<string, IMEPackage>();
                 var refsToUpdate = AllTreeViewNodes.OfType<TextureMapMemoryEntryWPF>()
                     .SelectMany(x => x.GetAllTextureEntries())
-                    .SelectMany(x => x.Instances.Where(y => y.HasExternalReferences && y.MasterPackageName != null && y.MasterPackageName.StartsWith(ME1_MOD_MASTER_TEXTURE_PACKAGE_PREFIX)))
+                    .SelectMany(x => x.Instances.Where(y => y.HasExternalReferences && y.MasterPackageName != null && y.MasterPackageName.StartsWith(TextureMapGenerator.ME1_MOD_MASTER_TEXTURE_PACKAGE_PREFIX)))
                     .OrderBy(x => x.RelativePackagePath).ToList();
 
                 IMEPackage lastOpenedSPackage = null;
@@ -623,82 +624,25 @@ namespace LegendaryExplorer.Tools.TextureStudio
             return new TextureMapMemoryEntryWPF(entry);
         }
 
+        private void AddRootItem(TextureMapMemoryEntry entry)
+        {
+            AllTreeViewNodes.Add(entry);
+        }
+
         private void ScanFolderThread(object sender, DoWorkEventArgs e)
         {
 
-            // Mapping of full paths to their entries
-            BusyHeader = @"Calculating texture map";
-            Dictionary<string, TextureMapMemoryEntry> entries = new Dictionary<string, TextureMapMemoryEntry>();
-            var packageFiles = Directory.GetFiles(SelectedFolder, "*.*", SearchOption.AllDirectories).Where(x => x.RepresentsPackageFilePath()).ToList();
-            var tfcs = Directory.GetFiles(SelectedFolder, "*.tfc", SearchOption.AllDirectories).ToList();
-            BusyProgressValue = 0;
-            BusyProgressMaximum = packageFiles.Count;
+            //// Mapping of full paths to their entries
+            //BusyHeader = @"Calculating texture map";
+            //Dictionary<string, TextureMapMemoryEntry> entries = new Dictionary<string, TextureMapMemoryEntry>();
+            //var packageFiles = Directory.GetFiles(SelectedFolder, "*.*", SearchOption.AllDirectories).Where(x => x.RepresentsPackageFilePath()).ToList();
+            //var tfcs = Directory.GetFiles(SelectedFolder, "*.tfc", SearchOption.AllDirectories).ToList();
+            //BusyProgressValue = 0;
+            //BusyProgressMaximum = packageFiles.Count;
 
-            // Pass 1: Find all unique memory texture paths
-            foreach (var p in packageFiles)
-            {
-                var filename = Path.GetFileName(p);
-                BusyText = $@"Scanning {filename}";
-                if (ScanCanceled) break;
-                using var package = MEPackageHandler.OpenMEPackage(p);
+            //// Pass 1: Find all unique memory texture paths
 
-                if (CurrentStudioGame != MEGame.Unknown && CurrentStudioGame != package.Game)
-                {
-                    // This workspace has files from multiple games!
-
-                }
-                else
-                {
-                    CurrentStudioGame = package.Game;
-                    VanillaTextureMap = MEMTextureMap.LoadTextureMap(CurrentStudioGame);
-                }
-
-                var textures = package.Exports.Where(x => x.IsTexture());
-                foreach (var t in textures)
-                {
-                    if (ScanCanceled) break;
-                    ParseTexture(t, entries, tfcs, MemoryEntryGeneratorWPF);
-                }
-
-                if (filename.StartsWith(ME1_MOD_MASTER_TEXTURE_PACKAGE_PREFIX))
-                {
-                    ME1MasterTexturePackages.Add(p);
-                    Texture2D.AdditionalME1MasterTexturePackages.Add(p); // TODO: THIS NEEDS CLEANED UP AND MANAGED IN TEXTURE2D.CS
-                }
-                BusyProgressValue++;
-            }
-
-            // Pass 2: Find any unique items among the unique paths (e.g. CRC not equal to other members of same entry)
-            var allTextures = AllTreeViewNodes.OfType<TextureMapMemoryEntryWPF>().SelectMany(x => x.GetAllTextureEntries());
-
-            // Pass 3: Find items that have matching CRCs across memory entries
-            Dictionary<uint, List<TextureMapMemoryEntry>> crcMap = new Dictionary<uint, List<TextureMapMemoryEntry>>();
-            foreach (var t in allTextures)
-            {
-                if (t.Instances.Any())
-                {
-                    var firstCRC = t.Instances[0].CRC;
-
-                    var areAllEqualCRC = t.Instances.All(x => x.CRC == firstCRC);
-                    if (!areAllEqualCRC)
-                    {
-                        // Some textures are not the same across the same entry!
-                        // This will lead to weird engine behavior as memory is dumped and newly loaded data is different
-                        Debug.WriteLine(@"UNMATCHED CRCSSSSSSSSSSSSSSSSSSSSSSSSSSS");
-                        SetUnmatchedCRC(t, true);
-                    }
-                    else
-                    {
-                        if (!crcMap.TryGetValue(firstCRC, out var list))
-                        {
-                            list = new List<TextureMapMemoryEntry>();
-                            crcMap[firstCRC] = list;
-                        }
-
-                        list.Add(t);
-                    }
-                }
-            }
+            TextureMapGenerator.GenerateMapForFolder(SelectedFolder, MEGame.Unknown, MemoryEntryGeneratorWPF, x => AllTreeViewNodes.Add(x), textureMapProgress);
 
             // Pass 4: Sort
             BusyText = "Sorting tree";
@@ -713,20 +657,18 @@ namespace LegendaryExplorer.Tools.TextureStudio
             BusyProgressIndeterminate = true;
         }
 
-        /// <summary>
-        /// DO NOT CHANGE THIS
-        /// This is the prefix for ME1 mod master texture packages. This naming scheme will let us identify texture masters.
-        /// </summary>
-        public static readonly string ME1_MOD_MASTER_TEXTURE_PACKAGE_PREFIX = "Textures_Master_";
-
-        private void SetUnmatchedCRC(TextureMapMemoryEntry memEntry, bool hasUnmatchedCRC)
+        private void textureMapProgress(string text, int done, int total)
         {
-            memEntry.HasUnmatchedCRCs = hasUnmatchedCRC;
-            TextureMapMemoryEntry parent = memEntry.Parent;
-            while (parent != null)
+            BusyHeader = text;
+            if (total <= 0)
             {
-                parent.HasUnmatchedCRCs = hasUnmatchedCRC || parent.Children.Any(x => x.HasUnmatchedCRCs); // If one is corrected, another may exist under this tree.
-                parent = parent.Parent;
+                BusyProgressIndeterminate = true;
+            }
+            else
+            {
+                BusyProgressIndeterminate = false;
+                BusyProgressValue = done;
+                BusyProgressMaximum = total;
             }
         }
 
@@ -742,83 +684,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
 
         #endregion
 
-        #region TEXTURE MAP (NOT-WPF)
-        // BELOW CODE IS NOT TIED TO WPF
-        // PLEASE KEEP IT THIS WAY IN THE EVENT
-        // IT MOVES TO THE LIB
 
-        /// <summary>
-        /// Parses a Texture object
-        /// </summary>
-        /// <param name="exportEntry"></param>
-        /// <param name="textureMapMemoryEntries"></param>
-        /// <returns></returns>
-        private TextureMapMemoryEntry ParseTexture(ExportEntry exportEntry, Dictionary<string, TextureMapMemoryEntry> textureMapMemoryEntries, List<string> additionalTFCs, Func<IEntry, TextureMapMemoryEntry> generatorDelegate)
-        {
-            var parent = EnsureParent(exportEntry, textureMapMemoryEntries, additionalTFCs, generatorDelegate);
-
-            if (!textureMapMemoryEntries.TryGetValue(exportEntry.InstancedFullPath, out var memoryEntry))
-            {
-                memoryEntry = generatorDelegate(exportEntry);
-                memoryEntry.Parent = parent;
-                textureMapMemoryEntries[exportEntry.InstancedFullPath] = memoryEntry;
-                parent?.Children.Add(memoryEntry);
-            }
-
-            // Add our instance to the memory entry
-            memoryEntry.Instances.Add(new TextureMapPackageEntry(SelectedFolder, exportEntry, additionalTFCs));
-            return memoryEntry;
-        }
-
-        /// <summary>
-        /// Creates all parents of the specified export in the texture tree, if necessary
-        /// </summary>
-        /// <param name="exportEntry"></param>
-        /// <param name="textureMapMemoryEntries"></param>
-        /// <returns></returns>
-        private TextureMapMemoryEntry EnsureParent(ExportEntry exportEntry, Dictionary<string, TextureMapMemoryEntry> textureMapMemoryEntries, List<string> additionalTFCs, Func<IEntry, TextureMapMemoryEntry> generatorDelegate)
-        {
-            IEntry parentT = exportEntry;
-            List<IEntry> parents = new List<IEntry>();
-            while (parentT.HasParent)
-            {
-                parents.Insert(0, parentT.Parent);
-                parentT = parentT.Parent;
-            }
-
-
-            TextureMapMemoryEntry lastParent = null;
-            for (int i = 0; i < parents.Count; i++)
-            {
-                var p = parents[i];
-                if (!textureMapMemoryEntries.TryGetValue(p.InstancedFullPath, out lastParent))
-                {
-                    if (p.IsTexture() && p is ExportEntry pe)
-                    {
-                        // Parent is texture. Normally this doesn't occur but devs be devs
-                        lastParent = ParseTexture(pe, textureMapMemoryEntries, additionalTFCs, generatorDelegate);
-                    }
-                    else
-                    {
-                        // Parent doesn't exist, create
-                        lastParent = generatorDelegate(p);
-                        lastParent.Parent = i > 0 ? textureMapMemoryEntries[parents[i - 1].InstancedFullPath] : null;
-                        // Set the parent child
-                        lastParent.Parent?.Children.Add(lastParent);
-                        if (lastParent.Parent == null)
-                        {
-                            AllTreeViewNodes.Add(lastParent); //It's a new root node
-                        }
-                    }
-
-                    textureMapMemoryEntries[p.InstancedFullPath] = lastParent;
-                }
-
-            }
-
-            return lastParent;
-        }
-        #endregion
 
         #region Test Methods
 
@@ -874,6 +740,17 @@ namespace LegendaryExplorer.Tools.TextureStudio
                 return;
             }
             RecentsController?.Dispose();
+        }
+
+        private void SetUnmatchedCRC(TextureMapMemoryEntry memEntry, bool hasUnmatchedCRC)
+        {
+            memEntry.HasUnmatchedCRCs = hasUnmatchedCRC;
+            TextureMapMemoryEntry parent = memEntry.Parent;
+            while (parent != null)
+            {
+                parent.HasUnmatchedCRCs = hasUnmatchedCRC || parent.Children.Any(x => x.HasUnmatchedCRCs); // If one is corrected, another may exist under this tree.
+                parent = parent.Parent;
+            }
         }
     }
 }

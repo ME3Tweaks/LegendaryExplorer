@@ -12,7 +12,8 @@
         xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
         xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
         xmlns:misc="clr-namespace:LegendaryExplorer.Misc" xmlns:i1="http://schemas.microsoft.com/xaml/behaviors"
-                                      mc:Ignorable="d"
+        xmlns:studio="clr-namespace:LegendaryExplorerCore.Textures.Studio;assembly=LegendaryExplorerCore"
+        mc:Ignorable="d"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Closing="TextureStudioWindow_OnClosing"
         Title="Texture Studio" MinHeight="800" MinWidth="1000" >
@@ -190,7 +191,7 @@
                         </StatusBar>
                     <ListBox ItemsSource="{Binding SelectedItem.Instances}" SelectedItem="{Binding SelectedInstance}">
                         <ListBox.Resources>
-                            <DataTemplate DataType="{x:Type local:TextureMapPackageEntry}">
+                            <DataTemplate DataType="{x:Type studio:TextureMapPackageEntry}">
                                 <DockPanel ContextMenu="{StaticResource InstanceContextMenu}">
                                     <TextBlock DockPanel.Dock="Bottom" FontSize="10" 
                                                Visibility="{Binding TFCName, Converter={StaticResource NullVisibilityConverter}}">
