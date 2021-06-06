@@ -266,7 +266,7 @@ namespace LegendaryExplorerCore.Textures
             return memoryStream.ToArray();
         }
 
-        public static byte[] convertRawToARGB(byte[] src, int w, int h, PixelFormat format, bool clearAlpha = false)
+        public static byte[] convertRawToARGB(byte[] src, ref int w, ref int h, PixelFormat format, bool clearAlpha = false)
         {
             byte[] tmpData;
 
@@ -367,13 +367,13 @@ namespace LegendaryExplorerCore.Textures
 
         public static byte[] convertRawToRGB(byte[] src, int w, int h, PixelFormat format)
         {
-            return ARGBtoRGB(convertRawToARGB(src, w, h, format), w, h);
+            return ARGBtoRGB(convertRawToARGB(src, ref w, ref h, format), w, h);
         }
 
         public static Bitmap convertRawToBitmapARGB(byte[] src, int w, int h, PixelFormat format)
         {
-            byte[] tmpData = convertRawToARGB(src, w, h, format, true);
-            Bitmap bitmap = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            byte[] tmpData = convertRawToARGB(src, ref w, ref h, format, true);
+            var bitmap = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             BitmapData bitmapData = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, w, h), ImageLockMode.ReadWrite, bitmap.PixelFormat);
             Marshal.Copy(tmpData, 0, bitmapData.Scan0, tmpData.Length);
             bitmap.UnlockBits(bitmapData);
@@ -540,7 +540,7 @@ namespace LegendaryExplorerCore.Textures
 
         public static MemoryStream convertToPng(byte[] src, int w, int h, PixelFormat format)
         {
-            byte[] tmpData = convertRawToARGB(src, w, h, format);
+            byte[] tmpData = convertRawToARGB(src, ref w, ref h, format);
             var ms = new MemoryStream();
             var im = SixLabors.ImageSharp.Image.LoadPixelData<Bgra32>(tmpData, w, h);
             im.SaveAsPng(ms);
@@ -627,9 +627,15 @@ namespace LegendaryExplorerCore.Textures
             byte[] tempData;
 
             if (pixelFormat != PixelFormat.ARGB)
-                tempData = convertRawToARGB(mipMaps[0].data, mipMaps[0].width, mipMaps[0].height, pixelFormat);
+            {
+                int w = mipMaps[0].width;
+                int h = mipMaps[0].height;
+                tempData = convertRawToARGB(mipMaps[0].data, ref w, ref h, pixelFormat);
+            }
             else
+            {
                 tempData = mipMaps[0].data;
+            }
 
             int width = mipMaps[0].origWidth;
             int height = mipMaps[0].origHeight;
@@ -771,7 +777,7 @@ namespace LegendaryExplorerCore.Textures
 
         public static Image LoadFromFile(string filename, PixelFormat targetFormat)
         {
-            List<MipMap> mips = new List<MipMap>();
+            var mips = new List<MipMap>();
 
             byte[] pixelData = TexConverter.LoadTexture(filename, out uint width, out uint height, ref targetFormat);
             mips.Add(new MipMap(pixelData, (int)width, (int)height, targetFormat));

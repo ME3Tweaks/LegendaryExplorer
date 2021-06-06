@@ -34,26 +34,26 @@ namespace LegendaryExplorerCore.Textures.Codecs
         private static extern void CompressRGBABlock([In] byte[] rgbBlock, [Out] uint[] compressedBlock);
 
         [DllImport("CompressionWrappers.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
-        private static extern void DecompressRGBABlock([Out] byte[] rgbBlock, [In] uint[] compressedBlock);
+        private static extern unsafe void DecompressRGBABlock([Out] byte* rgbBlock, [In] uint* compressedBlock);
 
         [DllImport("CompressionWrappers.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern void CompressRGBABlock_ExplicitAlpha([In] byte[] rgbBlock, [Out] uint[] compressedBlock);
 
         [DllImport("CompressionWrappers.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
-        private static extern void DecompressRGBABlock_ExplicitAlpha([Out] byte[] rgbBlock, [In] uint[] compressedBlock);
+        private static extern unsafe void DecompressRGBABlock_ExplicitAlpha([Out] byte* rgbBlock, [In] uint* compressedBlock);
 
         [DllImport("CompressionWrappers.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern void CompressRGBBlock([In] byte[] rgbBlock, [Out] uint[] compressedBlock, int bDXT1 = 0,
             int bDXT1UseAlpha = 0, byte nDXT1AlphaThreshold = 128);
 
         [DllImport("CompressionWrappers.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
-        private static extern void DecompressRGBBlock([Out] byte[] rgbBlock, [In] uint[] compressedBlock, int bDXT1);
+        private static extern unsafe void DecompressRGBBlock([Out] byte* rgbBlock, [In] uint* compressedBlock, int bDXT1);
 
         [DllImport("CompressionWrappers.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern void CompressAlphaBlock([In] byte[] alphaBlock, [Out] uint[] compressedBlock);
 
         [DllImport("CompressionWrappers.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
-        private static extern void DecompressAlphaBlock([Out] byte[] alphaBlock, [In] uint[] compressedBlock);
+        private static extern unsafe void DecompressAlphaBlock([Out] byte* alphaBlock, [In] uint* compressedBlock);
 
 
         public static uint[] CompressRGBABlock(byte[] rgbBlock)
@@ -65,13 +65,15 @@ namespace LegendaryExplorerCore.Textures.Codecs
             return compressedBlock;
         }
 
-        public static byte[] DecompressRGBABlock(uint[] compressedBlock)
+        public static unsafe void DecompressRGBABlock(ReadOnlySpan<uint> compressedBlock, Span<byte> output64bytes)
         {
-            if (compressedBlock.Length != 4)
+            if (compressedBlock.Length != 4 || output64bytes.Length != 64)
                 throw new Exception();
-            byte[] rgbBlock = new byte[BLOCK_SIZE_4X4X4];
-            DecompressRGBABlock(rgbBlock, compressedBlock);
-            return rgbBlock;
+            fixed (byte* rgbBlock = &MemoryMarshal.GetReference(output64bytes))
+            fixed (uint* compressedBlockPtr = &MemoryMarshal.GetReference(compressedBlock))
+            {
+                DecompressRGBABlock(rgbBlock, compressedBlockPtr);
+            }
         }
 
         public static uint[] CompressRGBABlock_ExplicitAlpha(byte[] rgbBlock)
@@ -83,13 +85,15 @@ namespace LegendaryExplorerCore.Textures.Codecs
             return compressedBlock;
         }
 
-        public static byte[] DecompressRGBABlock_ExplicitAlpha(uint[] compressedBlock)
+        public static unsafe void DecompressRGBABlock_ExplicitAlpha(ReadOnlySpan<uint> compressedBlock, Span<byte> output64bytes)
         {
-            if (compressedBlock.Length != 4)
+            if (compressedBlock.Length != 4 || output64bytes.Length != 64)
                 throw new Exception();
-            byte[] rgbBlock = new byte[BLOCK_SIZE_4X4X4];
-            DecompressRGBABlock_ExplicitAlpha(rgbBlock, compressedBlock);
-            return rgbBlock;
+            fixed (byte* rgbBlock = &MemoryMarshal.GetReference(output64bytes))
+            fixed (uint* compressedBlockPtr = &MemoryMarshal.GetReference(compressedBlock))
+            {
+                DecompressRGBABlock_ExplicitAlpha(rgbBlock, compressedBlockPtr);
+            }
         }
 
         public static uint[] CompressRGBBlock(byte[] rgbBlock, bool bDXT1 = false,
@@ -102,13 +106,15 @@ namespace LegendaryExplorerCore.Textures.Codecs
             return compressedBlock;
         }
 
-        public static byte[] DecompressRGBBlock(uint[] compressedBlock, bool bDXT1)
+        public static unsafe void DecompressRGBBlock(ReadOnlySpan<uint> compressedBlock, Span<byte> output64bytes, bool bDXT1)
         {
-            if (compressedBlock.Length != 2)
+            if (compressedBlock.Length != 2 || output64bytes.Length != 64)
                 throw new Exception();
-            byte[] rgbBlock = new byte[BLOCK_SIZE_4X4X4];
-            DecompressRGBBlock(rgbBlock, compressedBlock, bDXT1 ? 1 : 0);
-            return rgbBlock;
+            fixed (byte* rgbBlock = &MemoryMarshal.GetReference(output64bytes))
+            fixed (uint* compressedBlockPtr = &MemoryMarshal.GetReference(compressedBlock))
+            {
+                DecompressRGBBlock(rgbBlock, compressedBlockPtr, bDXT1 ? 1 : 0);
+            }
         }
 
         public static uint[] CompressAlphaBlock(byte[] alphaBlock)
@@ -120,13 +126,15 @@ namespace LegendaryExplorerCore.Textures.Codecs
             return compressedBlock;
         }
 
-        public static byte[] DecompressAlphaBlock(uint[] compressedBlock)
+        public static unsafe void DecompressAlphaBlock(ReadOnlySpan<uint> compressedBlock, Span<byte> output16bytes)
         {
-            if (compressedBlock.Length != 2)
+            if (compressedBlock.Length != 2 || output16bytes.Length != 16)
                 throw new Exception();
-            byte[] alphaBlock = new byte[BLOCK_SIZE_4X4BPP8];
-            DecompressAlphaBlock(alphaBlock, compressedBlock);
-            return alphaBlock;
+            fixed (byte* alphaBlock = &MemoryMarshal.GetReference(output16bytes))
+            fixed (uint* compressedBlockPtr = &MemoryMarshal.GetReference(compressedBlock))
+            {
+                DecompressAlphaBlock(alphaBlock, compressedBlockPtr);
+            }
         }
     }
 }
