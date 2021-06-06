@@ -36,13 +36,17 @@ namespace LegendaryExplorer.Tools.TFCCompactor
 
         public TFCCompactorWindow() : base("TFC Compactor", true)
         {
+            // Debug right now
+            //LegendaryExplorerCore.Textures.TFCCompactor.CompactTFC(null, x => Debug.WriteLine($"Error!: {x}"));
+            //Debug.WriteLine("DONE");
+
             DataContext = this;
             LoadCommands();
             BusyProgressBarMax = 100;
             InitializeComponent();
             IsBusyUI = true;
             BusyText = "Verifying MEM";
-            BackgroundWorker bw = new ();
+            BackgroundWorker bw = new();
             bw.DoWork += EnsureCriticalFiles;
             bw.RunWorkerCompleted += (a, b) =>
             {
@@ -296,7 +300,7 @@ namespace LegendaryExplorer.Tools.TFCCompactor
             string[] files = Directory.GetFiles(dlcDir, "*.pcc", SearchOption.AllDirectories);
             ProgressBarMax = files.Length;
             ProgressBarIndeterminate = false;
-            SortedSet<TFCSelector> referencedTFCs = new ();
+            SortedSet<TFCSelector> referencedTFCs = new();
 
             if (Enumerable.Any(files))
             {
@@ -342,7 +346,7 @@ namespace LegendaryExplorer.Tools.TFCCompactor
                                     {
                                         //Check that external mips are referenced.
                                         //some texture2d have a tfc but don't have any external mips for some reason
-                                        Texture2D texture2d = new (texture);
+                                        Texture2D texture2d = new(texture);
                                         var topmip = texture2d.GetTopMip();
                                         if (topmip.storageType == StorageTypes.extLZO ||
                                             topmip.storageType == StorageTypes.extZlib ||
@@ -445,7 +449,7 @@ namespace LegendaryExplorer.Tools.TFCCompactor
                     {
                         File.Delete(outputTFC);
                     }
-                    using (FileStream fs = new (outputTFC, FileMode.OpenOrCreate, FileAccess.Write))
+                    using (FileStream fs = new(outputTFC, FileMode.OpenOrCreate, FileAccess.Write))
                     {
                         fs.WriteGuid(tfcGuid);
                         fs.Flush();
@@ -603,7 +607,7 @@ namespace LegendaryExplorer.Tools.TFCCompactor
                                     //Can't find TFC!
 
                                     //Can we try ME3Tweaks backup?
-                                    
+
                                     string me3BackupPath = ME3TweaksBackups.GetGameBackupPath(MEGame.ME3);
                                     if (me3BackupPath != null && Directory.Exists(me3BackupPath))
                                     {
@@ -915,7 +919,7 @@ namespace LegendaryExplorer.Tools.TFCCompactor
                 if (newItem.IsBrowseForCustom)
                 {
                     // Browse
-                    OpenFileDialog ofd = new ()
+                    OpenFileDialog ofd = new()
                     {
                         Title = "Select game executable",
                         Filter = "ME2/ME3 executable|MassEffect2.exe;MassEffect3.exe"
@@ -1003,7 +1007,7 @@ namespace LegendaryExplorer.Tools.TFCCompactor
             string tfcname = $"{tfcprop.Value}.tfc";
             string filePath = Path.Combine(StagingDirectory, tfcname);
 
-            using (FileStream fs = new (filePath, FileMode.Open, FileAccess.Read))
+            using (FileStream fs = new(filePath, FileMode.Open, FileAccess.Read))
             {
                 fs.Seek((long)offset, SeekOrigin.Begin);
                 int bikend = offset + length;
@@ -1017,7 +1021,7 @@ namespace LegendaryExplorer.Tools.TFCCompactor
 
             bikMovie.Seek(0, SeekOrigin.Begin);
             byte[] bikarray = bikMovie.ToArray();
-            using (FileStream fs = new (destination, FileMode.Create))
+            using (FileStream fs = new(destination, FileMode.Create))
             {
                 fs.WriteFromBuffer(bikarray);
             }
@@ -1025,8 +1029,8 @@ namespace LegendaryExplorer.Tools.TFCCompactor
 
         private static (int length, int offset) ImportBiktoCache(string bikfile, string tfcPath)
         {
-            MemoryStream bikMovie = new ();
-            using (FileStream fs = new (bikfile, FileMode.OpenOrCreate, FileAccess.Read))
+            MemoryStream bikMovie = new();
+            using (FileStream fs = new(bikfile, FileMode.OpenOrCreate, FileAccess.Read))
             {
                 fs.CopyTo(bikMovie);
             }
@@ -1036,7 +1040,7 @@ namespace LegendaryExplorer.Tools.TFCCompactor
             int biklength = bikarray.Length;
             int bikoffset = 0;
             Guid tfcGuid = Guid.NewGuid();
-            using (FileStream fs = new (tfcPath, FileMode.Open, FileAccess.ReadWrite))
+            using (FileStream fs = new(tfcPath, FileMode.Open, FileAccess.ReadWrite))
             {
                 tfcGuid = fs.ReadGuid();
                 fs.Seek(0, SeekOrigin.End);

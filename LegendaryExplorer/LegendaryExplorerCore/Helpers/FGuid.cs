@@ -76,5 +76,15 @@ namespace LegendaryExplorerCore.Helpers
             ms.WriteInt32(D);
             return new Guid(ms.GetBuffer());
         }
+
+        public StructProperty ToStructProperty(string structName)
+        {
+            PropertyCollection pc = new PropertyCollection();
+            pc.AddOrReplaceProp(new IntProperty(A, "A"));
+            pc.AddOrReplaceProp(new IntProperty(B, "B"));
+            pc.AddOrReplaceProp(new IntProperty(C, "C"));
+            pc.AddOrReplaceProp(new IntProperty(D, "D"));
+            return new StructProperty("Guid", pc, structName, true);
+        }
     }
 }

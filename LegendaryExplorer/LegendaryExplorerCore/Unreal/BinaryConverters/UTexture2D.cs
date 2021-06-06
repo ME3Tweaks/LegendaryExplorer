@@ -62,6 +62,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             /// </summary>
             public int MipInfoOffsetFromBinStart;
 
+            /// <summary>
+            /// If the texture is locally stored. This will return true for empty mipmaps!
+            /// </summary>
             public bool IsLocallyStored => ((int)StorageType & (int)StorageFlags.externalFile) == 0;
             public bool IsCompressed =>
                 ((int)StorageType & (int)StorageFlags.compressedLZO) != 0 ||

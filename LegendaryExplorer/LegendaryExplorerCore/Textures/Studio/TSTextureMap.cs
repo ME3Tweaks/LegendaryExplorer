@@ -200,6 +200,16 @@ namespace LegendaryExplorerCore.Textures.Studio
         {
             return Instances.Any() ? Instances[0].ExternalStorageSize : 0;
         }
+
+        public uint GetCRC()
+        {
+            if (HasUnmatchedCRCs)
+            {
+                Debug.WriteLine(@"Fetching CRC on texture that has mismatched CRCs across memory instances!");
+                return 0;
+            }
+            return Instances.Any() ? Instances[0].CRC : int.MaxValue;
+        }
     }
 
     /// <summary>
@@ -223,7 +233,7 @@ namespace LegendaryExplorerCore.Textures.Studio
         {
             RelativePackagePath = exportEntry.FileRef.FilePath.Substring(basePath.Length).TrimStart('\\', '/');
             PackageName = Path.GetFileName(RelativePackagePath);
-            UIndex = exportEntry.UIndex;
+            ExportPath = exportEntry.InstancedFullPath;
 
             var tex2D = ObjectBinary.From<UTexture2D>(exportEntry);
             NumMips = tex2D.Mips.Count;
@@ -240,9 +250,9 @@ namespace LegendaryExplorerCore.Textures.Studio
             if (HasExternalReferences)
             {
                 ExternalStorageSize = tex2D.Mips.Where(x => !x.IsLocallyStored).Sum(x => x.CompressedSize);
-                foreach (var em in tex2D.Mips.Where(x => !x.IsLocallyStored))
+                foreach (var em in tex2D.Mips.Where(x => !x.IsLocallyStored && x.StorageType != StorageTypes.empty))
                 {
-                    CompressedMipInfos.Add(new MEMTextureMap.CompressedMipInfo() {Offset = em.DataOffset, CompressedSize = em.CompressedSize});
+                    CompressedMipInfos.Add(new MEMTextureMap.CompressedMipInfo() { Offset = em.DataOffset, CompressedSize = em.CompressedSize });
                 }
 
             }
@@ -317,9 +327,14 @@ namespace LegendaryExplorerCore.Textures.Studio
         public string RelativePackagePath { get; set; }
 
         /// <summary>
-        /// In-package UIndex
+        /// UIndex of the export for the package. This is only used in the vanilla precomputed map
         /// </summary>
         public int UIndex { get; set; }
+
+        /// <summary>
+        /// Instanced full path of the export
+        /// </summary>
+        public string ExportPath { get; set; }
 
         /// <summary>
         /// The number of mips
@@ -428,7 +443,14 @@ namespace LegendaryExplorerCore.Textures.Studio
             CancellationToken cts = default)
         {
 
+            var rootNodes = new List<TextureMapMemoryEntry>();
             MEGame game = MEGame.Unknown;
+
+            void addRootItem(TextureMapMemoryEntry entry)
+            {
+                rootNodes.Add(entry);
+                addRootElementDelegate?.Invoke(entry);
+            }
 
             // Mapping of full paths to their entries
             progressDelegate?.Invoke(@"Calculating texture map", -1, -1);
@@ -438,7 +460,6 @@ namespace LegendaryExplorerCore.Textures.Studio
             progressDelegate?.Invoke(@"Calculating texture map", 0, packageFiles.Count);
 
 
-            var allNodes = new List<TextureMapMemoryEntry>();
             // Pass 1: Find all unique memory texture paths
             int numDone = 0;
             Dictionary<uint, MEMTextureMap.TextureMapEntry> vanillaMap = null;
@@ -466,7 +487,7 @@ namespace LegendaryExplorerCore.Textures.Studio
                 foreach (var t in textures)
                 {
                     if (cts.IsCancellationRequested) break;
-                    TextureMapMemoryEntry.ParseTexture(t, rootDirectory, entries, crcCache, tfcs, nodeGeneratorDelegate, addRootElementDelegate);
+                    TextureMapMemoryEntry.ParseTexture(t, rootDirectory, entries, crcCache, tfcs, nodeGeneratorDelegate, addRootItem);
                 }
 
                 // Todo: Actually finish someday
@@ -480,7 +501,7 @@ namespace LegendaryExplorerCore.Textures.Studio
             }
 
             // Pass 2: Find any unique items among the unique paths (e.g. CRC not equal to other members of same entry)
-            var allTextures = allNodes.OfType<TextureMapMemoryEntry>().SelectMany(x => x.GetAllTextureEntries());
+            var allTextures = rootNodes.SelectMany(x => x.GetAllTextureEntries());
 
             // Pass 3: Find items that have matching CRCs across memory entries
             Dictionary<uint, List<TextureMapMemoryEntry>> crcMap = new Dictionary<uint, List<TextureMapMemoryEntry>>();
@@ -514,7 +535,7 @@ namespace LegendaryExplorerCore.Textures.Studio
             return new TextureMap()
             {
                 VanillaMap = vanillaMap,
-                CalculatedMap = allNodes,
+                CalculatedMap = rootNodes,
                 Game = game,
             };
 

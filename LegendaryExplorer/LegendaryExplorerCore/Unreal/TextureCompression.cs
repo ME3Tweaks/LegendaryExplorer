@@ -150,7 +150,7 @@ namespace LegendaryExplorerCore.Unreal
             uint maxBlockSize = type is StorageTypes.extOodle or StorageTypes.pccOodle ? maxBlockSizeOodle : maxBlockSizeOT;
             uint blockTag = stream.ReadUInt32();
             if (blockTag != textureTag)
-                throw new Exception("Texture tag wrong");
+                throw new Exception("Texture magic wrong");
             uint blockSize = stream.ReadUInt32();
             if (blockSize != maxBlockSize)
                 throw new Exception("Texture header broken");
