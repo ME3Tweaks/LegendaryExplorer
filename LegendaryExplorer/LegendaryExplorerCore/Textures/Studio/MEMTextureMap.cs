@@ -98,10 +98,10 @@ namespace LegendaryExplorerCore.Textures.Studio
                         var isSlaveTexture = texMap.ReadInt16();
                         if (isSlaveTexture != -1)
                         {
-                            matched.IsSlave = true; //This file has external mips that point to a master package file
+                            matched.ME1IsSlave = true; //This file has external mips that point to a master package file
                             matched.MasterPackageName = texMap.ReadStringLatin1Null();
                         }
-                        matched.TextureOffset = texMap.ReadUInt32();
+                        matched.ME1TextureOffset = texMap.ReadUInt32();
                     }
                     matched.NumEmptyMips = texMap.ReadByte();
                     matched.NumMips = texMap.ReadByte();
@@ -132,51 +132,63 @@ namespace LegendaryExplorerCore.Textures.Studio
             public string Name { get; set; }
         }
 
-        /// <summary>
-        /// Describes where a texture can be found
-        /// </summary>
-        public class TextureMapPackageEntry
+        ///// <summary>
+        ///// Describes where a texture can be found
+        ///// </summary>
+        //public class TextureMapPackageEntry
+        //{
+        //    /// <summary>
+        //    /// In-package UIndex
+        //    /// </summary>
+        //    public int UIndex { get; set; }
+        //    /// <summary>
+        //    /// The number of mips
+        //    /// </summary>
+        //    public int NumMips { get; set; }
+        //    /// <summary>
+        //    /// The number of empty mips
+        //    /// </summary>
+        //    public int NumEmptyMips { get; set; }
+
+        //    /// <summary>
+        //    /// Contains offset and size information about the compressed mips
+        //    /// </summary>
+        //    public List<CompressedMipInfo> CompressedMipInfos = new List<CompressedMipInfo>(7);
+
+        //    /// <summary>
+        //    /// If this entry is for TextureMovie
+        //    /// </summary>
+        //    public bool IsMovieTexture { get; set; }
+        //    /// <summary>
+        //    /// Relative path to the package
+        //    /// </summary>
+        //    public string RelativePackagePath { get; set; }
+        //    /// <summary>
+        //    /// The name of the package
+        //    /// </summary>
+        //    public string PackageName { get; set; }
+        //    /// <summary>
+        //    /// ME1 Only: If this package references a master package
+        //    /// </summary>
+        //    public bool IsSlave { get; set; }
+        //    /// <summary>
+        //    /// ME1 Only: The name of the Master Package that contains the higher mips
+        //    /// </summary>
+        //    public string MasterPackageName { get; set; }
+        //    /// <summary>
+        //    /// ME1 Only: The master package offset (?)
+        //    /// </summary>
+        //    public uint TextureOffset { get; set; }
+        //    /// <summary>
+        //    /// Instance-specific CRC of the top non-empty mip
+        //    /// </summary>
+        //    public uint CRC { get; set; }
+        //}
+
+        public class CompressedMipInfo
         {
-            /// <summary>
-            /// In-package UIndex
-            /// </summary>
-            public int UIndex { get; set; }
-            /// <summary>
-            /// The number of mips
-            /// </summary>
-            public int NumMips { get; set; }
-            /// <summary>
-            /// The number of empty mips
-            /// </summary>
-            public int NumEmptyMips { get; set; }
-            /// <summary>
-            /// If this entry is for TextureMovie
-            /// </summary>
-            public bool IsMovieTexture { get; set; }
-            /// <summary>
-            /// Relative path to the package
-            /// </summary>
-            public string RelativePackagePath { get; set; }
-            /// <summary>
-            /// The name of the package
-            /// </summary>
-            public string PackageName { get; set; }
-            /// <summary>
-            /// ME1 Only: If this package references a master package
-            /// </summary>
-            public bool IsSlave { get; set; }
-            /// <summary>
-            /// ME1 Only: The name of the Master Package that contains the higher mips
-            /// </summary>
-            public string MasterPackageName { get; set; }
-            /// <summary>
-            /// ME1 Only: The master package offset (?)
-            /// </summary>
-            public uint TextureOffset { get; set; }
-            /// <summary>
-            /// Instance-specific CRC of the top non-empty mip
-            /// </summary>
-            public uint CRC { get; set; }
+            public int CompressedSize { get; set; }
+            public int Offset { get; set; }
         }
     }
 }

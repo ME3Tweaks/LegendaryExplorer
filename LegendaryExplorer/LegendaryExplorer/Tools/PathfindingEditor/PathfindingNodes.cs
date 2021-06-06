@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Drawing.Drawing2D;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.Tools.SequenceObjects;
+using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 

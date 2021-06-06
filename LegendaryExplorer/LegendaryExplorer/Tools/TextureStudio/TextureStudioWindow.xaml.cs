@@ -642,7 +642,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
 
             //// Pass 1: Find all unique memory texture paths
 
-            TextureMapGenerator.GenerateMapForFolder(SelectedFolder, MEGame.Unknown, MemoryEntryGeneratorWPF, x => AllTreeViewNodes.Add(x), textureMapProgress);
+            TextureMapGenerator.GenerateMapForFolder(SelectedFolder, MemoryEntryGeneratorWPF, x => AllTreeViewNodes.Add(x), textureMapProgress);
 
             // Pass 4: Sort
             BusyText = "Sorting tree";
