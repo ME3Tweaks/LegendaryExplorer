@@ -21,6 +21,7 @@
 
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.Helpers;
 
@@ -245,8 +246,10 @@ namespace LegendaryExplorerCore.Textures
         {
             for (int i = 0; i < mipMaps.Count; i++)
             {
-                mipMaps[i] = new MipMap(convertRawToARGB(mipMaps[i].data, mipMaps[i].width, mipMaps[i].height, pixelFormat),
-                    mipMaps[i].width, mipMaps[i].height, PixelFormat.ARGB);
+                int width = mipMaps[i].width;
+                int height = mipMaps[i].height;
+                mipMaps[i] = new MipMap(convertRawToARGB(mipMaps[i].data, ref width, ref height, pixelFormat),
+                                        mipMaps[i].width, mipMaps[i].height, PixelFormat.ARGB);
             }
             pixelFormat = PixelFormat.ARGB;
 
@@ -404,29 +407,19 @@ namespace LegendaryExplorerCore.Textures
 
         public byte[] StoreImageToDDS()
         {
-            MemoryStream stream = new MemoryStream();
+            var stream = new MemoryStream();
             StoreImageToDDS(stream);
             return stream.ToArray();
         }
 
-        static private uint[] readBlock4X4BPP4(byte[] src, int srcW, int blockX, int blockY)
+        private static ReadOnlySpan<uint> readBlock4X4BPP4(byte[] src, int srcW, int blockX, int blockY)
         {
-            uint[] block = new uint[2];
-            int srcPtr = blockY * srcW * 2 + blockX * 2 * sizeof(uint);
-            block[0] = BitConverter.ToUInt32(src, srcPtr + 0);
-            block[1] = BitConverter.ToUInt32(src, srcPtr + 4);
-            return block;
+            return MemoryMarshal.Cast<byte, uint>(src.AsSpan(blockY * srcW * 2 + blockX * 2 * sizeof(uint), 2 * sizeof(uint)));
         }
 
-        static private uint[] readBlock4X4BPP8(byte[] src, int srcW, int blockX, int blockY)
+        private static ReadOnlySpan<uint> readBlock4X4BPP8(byte[] src, int srcW, int blockX, int blockY)
         {
-            uint[] block = new uint[4];
-            int srcPtr = blockY * srcW * 4 + blockX * 4 * sizeof(uint);
-            block[0] = BitConverter.ToUInt32(src, srcPtr + 0);
-            block[1] = BitConverter.ToUInt32(src, srcPtr + 4);
-            block[2] = BitConverter.ToUInt32(src, srcPtr + 8);
-            block[3] = BitConverter.ToUInt32(src, srcPtr + 12);
-            return block;
+            return MemoryMarshal.Cast<byte, uint>(src.AsSpan(blockY * srcW * 4 + blockX * 4 * sizeof(uint), 4 * sizeof(uint)));
         }
 
         static private void writeBlock4X4BPP4(uint[] block, byte[] dst, int dstW, int blockX, int blockY)
@@ -479,29 +472,21 @@ namespace LegendaryExplorerCore.Textures
             return blockARGB;
         }
 
-        static private void writeBlock4X4ARGB(byte[] blockARGB, byte[] dstARGB, int dstW, int blockX, int blockY)
+        static private void writeBlock4X4ARGB(Span<byte> blockARGB, Span<byte> dstARGB, int dstW, int blockX, int blockY)
         {
             int dstPitch = dstW * 4;
-            int blockPitch = 4 * 4;
+            const int blockPitch = 4 * 4;
             int dstARGBPtr = (blockY * 4) * dstPitch + blockX * 4 * 4;
 
             for (int y = 0; y < 4; y++)
             {
                 int blockPtr = y * blockPitch;
                 int dstARGBPtrY = dstARGBPtr + (y * dstPitch);
-                for (int x = 0; x < 4 * 4; x += 4)
-                {
-                    int dstPtr = dstARGBPtrY + x;
-                    dstARGB[dstPtr + 0] = blockARGB[blockPtr + 0];
-                    dstARGB[dstPtr + 1] = blockARGB[blockPtr + 1];
-                    dstARGB[dstPtr + 2] = blockARGB[blockPtr + 2];
-                    dstARGB[dstPtr + 3] = blockARGB[blockPtr + 3];
-                    blockPtr += 4;
-                }
+                blockARGB.Slice(blockPtr, blockPitch).CopyTo(dstARGB.Slice(dstARGBPtrY));
             }
         }
 
-        static private void readBlock4X4ATI2(byte[] src, int srcW, byte[] blockDstX, byte[] blockDstY, int blockX, int blockY)
+        private static void readBlock4X4ATI2(byte[] src, int srcW, byte[] blockDstX, byte[] blockDstY, int blockX, int blockY)
         {
             int srcPitch = srcW * 4;
             int srcPtr = (blockY * 4) * srcPitch + blockX * 4 * 4;
@@ -517,10 +502,10 @@ namespace LegendaryExplorerCore.Textures
             }
         }
 
-        static private void writeBlock4X4ARGBATI2(byte[] blockR, byte[] blockG, byte[] dstARGB, int srcW, int blockX, int blockY)
+        private static void writeBlock4X4ARGBATI2(Span<byte> blockR, Span<byte> blockG, byte[] dstARGB, int srcW, int blockX, int blockY)
         {
             int dstPitch = srcW * 4;
-            int blockPitch = 4;
+            const int blockPitch = 4;
             int dstARGBPtr = (blockY * 4) * dstPitch + blockX * 4 * 4;
 
             for (int y = 0; y < 4; y++)
@@ -538,7 +523,7 @@ namespace LegendaryExplorerCore.Textures
             }
         }
 
-        static private byte[] compressMipmap(PixelFormat dstFormat, byte[] src, int w, int h, bool useDXT1Alpha = false, byte DXT1Threshold = 128)
+        private static byte[] compressMipmap(PixelFormat dstFormat, byte[] src, int w, int h, bool useDXT1Alpha = false, byte DXT1Threshold = 128)
         {
             if (src.Length != w * h * 4)
                 throw new Exception("not ARGB buffer input");
@@ -633,43 +618,44 @@ namespace LegendaryExplorerCore.Textures
 
             Parallel.For(0, cores, p =>
             {
-                uint[] block;
-                byte[] blockDst;
+                Span<byte> blockDst = stackalloc byte[Codecs.Codecs.BLOCK_SIZE_4X4X4];
                 for (int y = range[p]; y < range[p + 1]; y++)
                 {
                     for (int x = 0; x < w / 4; x++)
                     {
                         if (srcFormat == PixelFormat.DXT1)
                         {
-                            block = readBlock4X4BPP4(src, w, x, y);
-                            blockDst = Codecs.Codecs.DecompressRGBBlock(block, true);
+                            ReadOnlySpan<uint> block = readBlock4X4BPP4(src, w, x, y);
+                            Codecs.Codecs.DecompressRGBBlock(block, blockDst, true);
                             writeBlock4X4ARGB(blockDst, dst, w, x, y);
                         }
                         else if (srcFormat == PixelFormat.DXT3)
                         {
-                            block = readBlock4X4BPP8(src, w, x, y);
-                            blockDst = Codecs.Codecs.DecompressRGBABlock_ExplicitAlpha(block);
+                            ReadOnlySpan<uint> block = readBlock4X4BPP8(src, w, x, y);
+                            Codecs.Codecs.DecompressRGBABlock_ExplicitAlpha(block, blockDst);
                             writeBlock4X4ARGB(blockDst, dst, w, x, y);
                         }
                         else if (srcFormat == PixelFormat.DXT5)
                         {
-                            block = readBlock4X4BPP8(src, w, x, y);
-                            blockDst = Codecs.Codecs.DecompressRGBABlock(block);
+                            ReadOnlySpan<uint> block = readBlock4X4BPP8(src, w, x, y);
+                            Codecs.Codecs.DecompressRGBABlock(block, blockDst);
                             writeBlock4X4ARGB(blockDst, dst, w, x, y);
                         }
                         else if (srcFormat is PixelFormat.ATI2 or PixelFormat.BC5)
                         {
-                            block = readBlock4X4BPP8(src, w, x, y);
-                            uint[] blockX = new uint[2];
-                            uint[] blockY = new uint[2];
-                            Array.Copy(block, 2, blockX, 0, 2);
-                            Array.Copy(block, 0, blockY, 0, 2);
-                            byte[] blockDstR = Codecs.Codecs.DecompressAlphaBlock(blockX);
-                            byte[] blockDstG = Codecs.Codecs.DecompressAlphaBlock(blockY);
+                            ReadOnlySpan<uint> block = readBlock4X4BPP8(src, w, x, y);
+                            var blockX = block.Slice(2, 2);
+                            var blockY = block.Slice(0, 2);
+                            var blockDstR = blockDst.Slice(0, Codecs.Codecs.BLOCK_SIZE_4X4BPP8);
+                            var blockDstG = blockDst.Slice(Codecs.Codecs.BLOCK_SIZE_4X4BPP8, Codecs.Codecs.BLOCK_SIZE_4X4BPP8);
+                            Codecs.Codecs.DecompressAlphaBlock(blockX, blockDstR);
+                            Codecs.Codecs.DecompressAlphaBlock(blockY, blockDstG);
                             writeBlock4X4ARGBATI2(blockDstR, blockDstG, dst, w, x, y);
                         }
                         else
+                        {
                             throw new Exception("not supported codec");
+                        }
                     }
                 }
             });

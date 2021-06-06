@@ -1,0 +1,102 @@
+﻿<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Xml" #>
+<#@ assembly name="System.Xml.Linq" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Xml.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".xaml" #>
+<Window x:Class="LegendaryExplorer.MainWindow.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LegendaryExplorer.MainWindow"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:settings="clr-namespace:LegendaryExplorer.Misc.AppSettings"
+        d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        mc:Ignorable="d"
+        Title="Legendary Explorer Settings" Height="450" Width="450">
+    <DockPanel>
+        <TextBlock DockPanel.Dock="Top"  Padding="5" Margin="0,0,0,3"  Background="LightGray" TextWrapping="Wrap" Text="Global settings for all tools. Settings will auto-update and auto-save on selection."/>
+
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="5">
+            <Button Padding="3" ToolTip="Saves all settings directly to settings file"
+                    Click="SaveFile_Click">Save to File</Button>
+        </StackPanel>
+        <TabControl>
+        <# // This code runs in the text template:
+    // Can't use named tuples it seems
+    var settingsByCategory = XDocument.Load(this.Host.ResolvePath(@"..\Misc\AppSettings\SettingsDefinitions.xml")).Root.Descendants("setting")
+    .Select(x => 
+    {
+        string name = x.Attribute("name").Value;
+        string type = x.Attribute("type").Value;
+        string defaultValue = x.Attribute("defaultvalue").Value;
+        string settingsBridgeName = x.Attribute("settingsbridgename")?.Value;
+        string category = x.Attribute("category")?.Value;
+        string friendlyName = x.Attribute("friendlyName")?.Value;
+        string isDirectorySelect = x.Attribute("isDirectorySelect")?.Value;
+        string fileSelectExtension = x.Attribute("fileSelectExtension")?.Value;
+        if (type == "string")
+        {
+            defaultValue = "\"" + defaultValue + "\"";
+        }
+        return new { name, type, defaultValue, settingsBridgeName, category, friendlyName, isDirectorySelect, fileSelectExtension }; // Return anonymous type
+    }).Where(s => !string.IsNullOrEmpty(s.category))
+    .GroupBy(set => set.category, 
+             set => set, 
+             (key, g) => new {categoryName = key, settings = g.ToList()}) 
+             // Group by category. {string categoryName, List<settingAnonymousType> settings}
+    .ToList();
+
+    foreach (var category in settingsByCategory){ 
+#> 
+            <TabItem Header="<#=category.categoryName#>">
+                <StackPanel>
+
+                <#  foreach (var setting in category.settings){ 
+                        switch(setting.type){
+                            case "bool":
+                        #><StackPanel Orientation="Horizontal" Margin="0,5">
+                            <CheckBox x:Name="<#=setting.name #>" Margin="5,0"
+                                      IsChecked="{Binding Path=(settings:Settings.<#=setting.name #>)}"/>
+                            <TextBlock><#=setting.friendlyName ?? setting.name #></TextBlock>
+                        </StackPanel>
+                        <#      break;
+                            case "string":
+                            if(setting.isDirectorySelect == "true" || !string.IsNullOrEmpty(setting.fileSelectExtension)){ // File/folder browse
+                            #><TextBlock Margin="5,5,0,0"><#=setting.friendlyName ?? setting.name #>:</TextBlock>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <TextBox Width="250" x:Name="<#=setting.name #>" Margin="5,0,0,0"
+                                       Text="{Binding Path=(settings:Settings.<#=setting.name #>)}"/>
+                            <Button Click="<#=(setting.isDirectorySelect == "true" ? "DirectoryBrowse_Click" : "FileBrowse_Click")#>" 
+                            Margin="5,0" Tag="<#=setting.fileSelectExtension ?? "" #>">Browse</Button>
+                        <#} else{ // Not a file/folder browse
+                      #><StackPanel Orientation="Horizontal" Margin="0,5">
+                            <TextBlock Margin="5,0"><#=setting.friendlyName ?? setting.name #></TextBlock>
+                            <TextBox Width="100" x:Name="<#=setting.name #>"
+                                       Text="{Binding Path=(settings:Settings.<#=setting.name #>)}"/>
+                            <#}#>
+                        </StackPanel>
+                        <#      break;
+                            case "int": #>
+                            <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <xctk:IntegerUpDown x:Name="<#=setting.name #>" Margin="5,0"
+							    Text="{Binding Path=(settings:Settings.<#=setting.name #>)}"/>
+                            <TextBlock><#=setting.friendlyName ?? setting.name #></TextBlock>
+                        </StackPanel>
+                        <#      break;
+                            default: break;
+                          }
+                    } 
+#>              </StackPanel>
+            </TabItem>
+
+<# } #>
+
+        </TabControl>
+    </DockPanel>
+</Window>

@@ -99,7 +99,7 @@ namespace LegendaryExplorer.MainWindow
 
         private void Settings_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            new SettingsWindow().Show();
         }
 
         private void Help_Click(object sender, RoutedEventArgs e)

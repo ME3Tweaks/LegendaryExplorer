@@ -1,0 +1,215 @@
+﻿<Window x:Class="LegendaryExplorer.MainWindow.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LegendaryExplorer.MainWindow"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:settings="clr-namespace:LegendaryExplorer.Misc.AppSettings"
+        d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        mc:Ignorable="d"
+        Title="Legendary Explorer Settings" Height="450" Width="450">
+    <DockPanel>
+        <TextBlock DockPanel.Dock="Top"  Padding="5" Margin="0,0,0,3"  Background="LightGray" TextWrapping="Wrap" Text="Global settings for all tools. Settings will auto-update and auto-save on selection."/>
+
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="5">
+            <Button Padding="3" ToolTip="Saves all settings directly to settings file"
+                    Click="SaveFile_Click">Save to File</Button>
+        </StackPanel>
+        <TabControl>
+         
+            <TabItem Header="General">
+                <StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <CheckBox x:Name="MainWindow_DisableTransparencyAndAnimations" Margin="5,0"
+                                      IsChecked="{Binding Path=(settings:Settings.MainWindow_DisableTransparencyAndAnimations)}"/>
+                            <TextBlock>Main Window: Disable Transparency and Animations (performance mode)</TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <CheckBox x:Name="Global_Analytics_Enabled" Margin="5,0"
+                                      IsChecked="{Binding Path=(settings:Settings.Global_Analytics_Enabled)}"/>
+                            <TextBlock>Enable Analytics</TextBlock>
+                        </StackPanel>
+                        <TextBlock Margin="5,5,0,0">Mass Effect 1 Directory:</TextBlock>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <TextBox Width="250" x:Name="Global_ME1Directory" Margin="5,0,0,0"
+                                       Text="{Binding Path=(settings:Settings.Global_ME1Directory)}"/>
+                            <Button Click="DirectoryBrowse_Click" 
+                            Margin="5,0" Tag="">Browse</Button>
+                                                </StackPanel>
+                        <TextBlock Margin="5,5,0,0">Mass Effect 2 Directory:</TextBlock>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <TextBox Width="250" x:Name="Global_ME2Directory" Margin="5,0,0,0"
+                                       Text="{Binding Path=(settings:Settings.Global_ME2Directory)}"/>
+                            <Button Click="DirectoryBrowse_Click" 
+                            Margin="5,0" Tag="">Browse</Button>
+                                                </StackPanel>
+                        <TextBlock Margin="5,5,0,0">Mass Effect 3 Directory:</TextBlock>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <TextBox Width="250" x:Name="Global_ME3Directory" Margin="5,0,0,0"
+                                       Text="{Binding Path=(settings:Settings.Global_ME3Directory)}"/>
+                            <Button Click="DirectoryBrowse_Click" 
+                            Margin="5,0" Tag="">Browse</Button>
+                                                </StackPanel>
+                        <TextBlock Margin="5,5,0,0">Mass Effect Legendary Edition Directory:</TextBlock>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <TextBox Width="250" x:Name="Global_LEDirectory" Margin="5,0,0,0"
+                                       Text="{Binding Path=(settings:Settings.Global_LEDirectory)}"/>
+                            <Button Click="DirectoryBrowse_Click" 
+                            Margin="5,0" Tag="">Browse</Button>
+                                                </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <TextBlock Margin="5,0">TLK Language</TextBlock>
+                            <TextBox Width="100" x:Name="Global_TLK_Language"
+                                       Text="{Binding Path=(settings:Settings.Global_TLK_Language)}"/>
+                                                    </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <CheckBox x:Name="Global_TLK_IsMale" Margin="5,0"
+                                      IsChecked="{Binding Path=(settings:Settings.Global_TLK_IsMale)}"/>
+                            <TextBlock>Default to Male TLK</TextBlock>
+                        </StackPanel>
+                                      </StackPanel>
+            </TabItem>
+
+ 
+            <TabItem Header="Package Editor">
+                <StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <CheckBox x:Name="PackageEditor_HideInterpreterHexBox" Margin="5,0"
+                                      IsChecked="{Binding Path=(settings:Settings.PackageEditor_HideInterpreterHexBox)}"/>
+                            <TextBlock>Hide Properties Hex Box</TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <CheckBox x:Name="PackageEditor_TouchComfyMode" Margin="5,0"
+                                      IsChecked="{Binding Path=(settings:Settings.PackageEditor_TouchComfyMode)}"/>
+                            <TextBlock>Touch Comfy Mode</TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <CheckBox x:Name="PackageEditor_ShowImpExpPrefix" Margin="5,0"
+                                      IsChecked="{Binding Path=(settings:Settings.PackageEditor_ShowImpExpPrefix)}"/>
+                            <TextBlock>Show imp/exp entry prefixes</TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <CheckBox x:Name="PackageEditor_ShowExportTypeIcons" Margin="5,0"
+                                      IsChecked="{Binding Path=(settings:Settings.PackageEditor_ShowExportTypeIcons)}"/>
+                            <TextBlock>Show export type icons</TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <CheckBox x:Name="PackageEditor_ShowTreeEntrySubText" Margin="5,0"
+                                      IsChecked="{Binding Path=(settings:Settings.PackageEditor_ShowTreeEntrySubText)}"/>
+                            <TextBlock>Show metadata in tree (if available)</TextBlock>
+                        </StackPanel>
+                                      </StackPanel>
+            </TabItem>
+
+ 
+            <TabItem Header="Sequence Editor">
+                <StackPanel>
+
+                                            <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <xctk:IntegerUpDown x:Name="SequenceEditor_MaxVarStringLength" Margin="5,0"
+							    Text="{Binding Path=(settings:Settings.SequenceEditor_MaxVarStringLength)}"/>
+                            <TextBlock>Maximum variable string length</TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <CheckBox x:Name="SequenceEditor_ShowParsedInfo" Margin="5,0"
+                                      IsChecked="{Binding Path=(settings:Settings.SequenceEditor_ShowParsedInfo)}"/>
+                            <TextBlock>Show parsed information in comments</TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <CheckBox x:Name="SequenceEditor_AutoSaveViewV2" Margin="5,0"
+                                      IsChecked="{Binding Path=(settings:Settings.SequenceEditor_AutoSaveViewV2)}"/>
+                            <TextBlock>Auto-save View</TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <CheckBox x:Name="SequenceEditor_ShowOutputNumbers" Margin="5,0"
+                                      IsChecked="{Binding Path=(settings:Settings.SequenceEditor_ShowOutputNumbers)}"/>
+                            <TextBlock>Show Output Numbers</TextBlock>
+                        </StackPanel>
+                                      </StackPanel>
+            </TabItem>
+
+ 
+            <TabItem Header="Audio">
+                <StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <CheckBox x:Name="Soundplorer_ReverseIDDisplayEndianness" Margin="5,0"
+                                      IsChecked="{Binding Path=(settings:Settings.Soundplorer_ReverseIDDisplayEndianness)}"/>
+                            <TextBlock>Soundplorer: Reverse ID Display Endianness</TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <CheckBox x:Name="Soundplorer_AutoplayEntriesOnSelection" Margin="5,0"
+                                      IsChecked="{Binding Path=(settings:Settings.Soundplorer_AutoplayEntriesOnSelection)}"/>
+                            <TextBlock>Soundplorer: Auto-play Entries on Selection</TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <CheckBox x:Name="WwiseGraphEditor_AutoSaveView" Margin="5,0"
+                                      IsChecked="{Binding Path=(settings:Settings.WwiseGraphEditor_AutoSaveView)}"/>
+                            <TextBlock>Wwise Graph Editor: Auto-save View</TextBlock>
+                        </StackPanel>
+                        <TextBlock Margin="5,5,0,0">WwiseCLI.exe v3773 Path:</TextBlock>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <TextBox Width="250" x:Name="Wwise_3773Path" Margin="5,0,0,0"
+                                       Text="{Binding Path=(settings:Settings.Wwise_3773Path)}"/>
+                            <Button Click="FileBrowse_Click" 
+                            Margin="5,0" Tag=".exe">Browse</Button>
+                                                </StackPanel>
+                        <TextBlock Margin="5,5,0,0">WwiseCLI.exe v7110 Path:</TextBlock>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <TextBox Width="250" x:Name="Wwise_7110Path" Margin="5,0,0,0"
+                                       Text="{Binding Path=(settings:Settings.Wwise_7110Path)}"/>
+                            <Button Click="FileBrowse_Click" 
+                            Margin="5,0" Tag=".exe">Browse</Button>
+                                                </StackPanel>
+                                      </StackPanel>
+            </TabItem>
+
+ 
+            <TabItem Header="Export Loaders">
+                <StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <CheckBox x:Name="BinaryInterpreter_SkipAutoParseSizeCheck" Margin="5,0"
+                                      IsChecked="{Binding Path=(settings:Settings.BinaryInterpreter_SkipAutoParseSizeCheck)}"/>
+                            <TextBlock>Binary Interpreter: Skip Auto-parse Size Check</TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <CheckBox x:Name="BinaryInterpreterWPFAutoScanAlways" Margin="5,0"
+                                      IsChecked="{Binding Path=(settings:Settings.BinaryInterpreterWPFAutoScanAlways)}"/>
+                            <TextBlock>Binary Interpreter: Always Auto-scan</TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <CheckBox x:Name="TextureViewer_AutoLoadMip" Margin="5,0"
+                                      IsChecked="{Binding Path=(settings:Settings.TextureViewer_AutoLoadMip)}"/>
+                            <TextBlock>Texture Viewer: Auto-load Mip</TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <CheckBox x:Name="Interpreter_LimitArrayPropertySize" Margin="5,0"
+                                      IsChecked="{Binding Path=(settings:Settings.Interpreter_LimitArrayPropertySize)}"/>
+                            <TextBlock>Properties: Limit Array Property Size</TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <CheckBox x:Name="Interpreter_AdvancedDisplay" Margin="5,0"
+                                      IsChecked="{Binding Path=(settings:Settings.Interpreter_AdvancedDisplay)}"/>
+                            <TextBlock>Properties: Advanced Display</TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <CheckBox x:Name="Interpreter_Colorize" Margin="5,0"
+                                      IsChecked="{Binding Path=(settings:Settings.Interpreter_Colorize)}"/>
+                            <TextBlock>Properties: Colorize</TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <CheckBox x:Name="Interpreter_ShowLinearColorWheel" Margin="5,0"
+                                      IsChecked="{Binding Path=(settings:Settings.Interpreter_ShowLinearColorWheel)}"/>
+                            <TextBlock>Properties: Show Linear Color Wheel</TextBlock>
+                        </StackPanel>
+                                      </StackPanel>
+            </TabItem>
+
+
+        </TabControl>
+    </DockPanel>
+</Window>
