@@ -788,6 +788,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 SetWwisePathDialog swpd = new ();
                 swpd.ShowDialog();
             }
+            else
+            {
+                // Ensure executables are correct version. We do this because the paths may have been changed some other way
+                SetWwisePathDialog.EnsureWwiseVersions(Settings.Wwise_7110Path, Settings.Wwise_7110Path);
+            }
         }
 
         public static bool isHexString(string s)
