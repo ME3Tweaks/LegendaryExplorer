@@ -123,17 +123,34 @@ namespace Be.Windows.Forms
         /// <param name="bytes"></param>
         public void ReplaceBytes(byte[] bytes)
         {
+            int oldLength = realLength;
             Bytes = bytes;
             realLength = bytes.Length;
             IsUsingReadOnlyArray = true;
-            OnLengthChanged();
+            if (oldLength == realLength)
+            {
+                OnChanged();
+            }
+            else
+            {
+                OnLengthChanged();
+            }
         }
 
         public void Clear()
         {
+            int oldLength = realLength;
             Bytes = Array.Empty<byte>();
             realLength = 0;
             OnLengthChanged();
+            if (oldLength == realLength)
+            {
+                OnChanged();
+            }
+            else
+            {
+                OnLengthChanged();
+            }
         }
 
         private void CopyToNewArray()

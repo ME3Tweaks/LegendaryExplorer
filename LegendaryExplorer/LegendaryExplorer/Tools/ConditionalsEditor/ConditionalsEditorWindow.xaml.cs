@@ -12,6 +12,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Be.Windows.Forms;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
@@ -30,7 +31,58 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
     /// </summary>
     public partial class ConditionalsEditorWindow : TrackingNotifyPropertyChangedWindowBase, IRecents
     {
+        #region DependencyProperties
+
+        public int HexBoxMinWidth
+        {
+            get => (int)GetValue(HexBoxMinWidthProperty);
+            set => SetValue(HexBoxMinWidthProperty, value);
+        }
+        public static readonly DependencyProperty HexBoxMinWidthProperty = DependencyProperty.Register(
+            nameof(HexBoxMinWidth), typeof(int), typeof(ConditionalsEditorWindow), new PropertyMetadata(default(int)));
+
+        public int HexBoxMaxWidth
+        {
+            get => (int)GetValue(HexBoxMaxWidthProperty);
+            set => SetValue(HexBoxMaxWidthProperty, value);
+        }
+        public static readonly DependencyProperty HexBoxMaxWidthProperty = DependencyProperty.Register(
+            nameof(HexBoxMaxWidth), typeof(int), typeof(ConditionalsEditorWindow), new PropertyMetadata(default(int)));
+
+        public bool HideHexBox
+        {
+            get => (bool)GetValue(HideHexBoxProperty);
+            set => SetValue(HideHexBoxProperty, value);
+        }
+        public static readonly DependencyProperty HideHexBoxProperty = DependencyProperty.Register(
+            nameof(HideHexBox), typeof(bool), typeof(ConditionalsEditorWindow), new PropertyMetadata(false, (obj, e) =>
+            {
+                var window = (ConditionalsEditorWindow)obj;
+                if ((bool)e.NewValue)
+                {
+                    window.hexboxContainer.Visibility = window.HexProps_GridSplitter.Visibility = Visibility.Collapsed;
+                    window.HexboxColumn_GridSplitter_ColumnDefinition.Width = new GridLength(0);
+                    window.HexboxColumnDefinition.MinWidth = 0;
+                    window.HexboxColumnDefinition.MaxWidth = 0;
+                    window.HexboxColumnDefinition.Width = new GridLength(0);
+                }
+                else
+                {
+                    window.hexboxContainer.Visibility = window.HexProps_GridSplitter.Visibility = Visibility.Visible;
+                    window.HexboxColumnDefinition.Width = new GridLength(window.HexBoxMinWidth);
+                    window.HexboxColumn_GridSplitter_ColumnDefinition.Width = new GridLength(1);
+                    window.HexboxColumnDefinition.bind(ColumnDefinition.MinWidthProperty, window, nameof(HexBoxMinWidth));
+                    window.HexboxColumnDefinition.bind(ColumnDefinition.MaxWidthProperty, window, nameof(HexBoxMaxWidth));
+
+                }
+            }));
+
+        #endregion
+
         public const string CNDFileFilter = "ME3/LE3 conditional file|*.cnd";
+
+        private HexBox hexBox;
+
         public ObservableCollectionExtended<CondListEntry> Conditionals { get; } = new();
 
         private CondListEntry _selectedCond;
@@ -41,7 +93,15 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
             {
                 if (SetProperty(ref _selectedCond, value))
                 {
-                    ConditionalTextBox.Text = _selectedCond is null ? "" : _selectedCond.Conditional.Decompile();
+                    if (_selectedCond is null)
+                    {
+                        ConditionalTextBox.Text = "";
+                        hexBox.ByteProvider = new ReadOptimizedByteProvider();
+                    }
+                    else
+                    {
+                        DisplayCondition();
+                    }
                     compilationMsgBox.Clear();
                 }
             }
@@ -58,10 +118,17 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
         {
             LoadCommands();
             InitializeComponent();
+            HideHexBox = true;
             RecentsController.InitRecentControl(Toolname, Recents_MenuItem, LoadFile);
         }
 
-        //TODO: implement search feature, like the old one had
+        private void ConditionalsEditorWindow_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            hexBox = (HexBox)hexbox_Host.Child;
+            hexBox.ByteProvider = new ReadOptimizedByteProvider();
+            this.bind(HexBoxMinWidthProperty, hexBox, nameof(hexBox.MinWidth));
+            this.bind(HexBoxMaxWidthProperty, hexBox, nameof(hexBox.MaxWidth));
+        }
 
         public ICommand OpenCommand { get; set; }
         public ICommand SaveCommand { get; set; }
@@ -70,16 +137,83 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
         public ICommand CloneCommand { get; set; }
         public ICommand ChangeIDCommand { get; set; }
         public ICommand DeleteCommand { get; set; }
+        public ICommand ToggleHexBoxCommand { get; set; }
+        public ICommand SaveHexChangesCommand { get; set; }
+        public ICommand SearchCommand { get; set; }
+        public ICommand SearchAgainCommand { get; set; }
 
         private void LoadCommands()
         {
             OpenCommand = new GenericCommand(OpenFile);
-            SaveCommand = new GenericCommand(() => SavePackage(), FileIsLoaded);
-            SaveAsCommand = new GenericCommand(SavePackageAs, FileIsLoaded);
+            SaveCommand = new GenericCommand(Save, FileIsLoaded);
+            SaveAsCommand = new GenericCommand(SaveAs, FileIsLoaded);
             CompileCommand = new GenericCommand(Compile, CanCompile);
             CloneCommand = new GenericCommand(CloneEntry, EntryIsSelected);
             ChangeIDCommand = new GenericCommand(ChangeID, EntryIsSelected);
             DeleteCommand = new GenericCommand(DeleteEntry, EntryIsSelected);
+            ToggleHexBoxCommand = new GenericCommand(ToggleHexBox, FileIsLoaded);
+            SaveHexChangesCommand = new GenericCommand(SaveHexChanges, EntryIsSelected);
+            SearchCommand = new GenericCommand(SearchPrompt, FileIsLoaded);
+            SearchAgainCommand = new GenericCommand(Search, CanSearchAgain);
+        }
+
+        private bool CanSearchAgain() => FileIsLoaded() && !string.IsNullOrEmpty(searchText);
+
+        private void Search()
+        {
+            foreach (CondListEntry entry in Conditionals.AfterThenBefore(SelectedCond))
+            {
+                try
+                {
+                    string text = entry.Conditional.Decompile();
+                    if (text.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+                    {
+                        SelectedCond = entry;
+                        ConditionalsListBox.ScrollIntoView(entry);
+                        return;
+                    }
+                }
+                catch
+                {
+                    //
+                }
+            }
+
+            MessageBox.Show($"'{searchText}' was not found!");
+        }
+
+        private string searchText = "";
+        private void SearchPrompt()
+        {
+            var s = PromptDialog.Prompt(this, "Input string to search for", "Search Input", searchText, true);
+            if (s is not null)
+            {
+                searchText = s;
+                if (searchText is not "")
+                {
+                    Search();
+                }
+            }
+        }
+
+        private void SaveHexChanges()
+        {
+            if (SelectedCond is not null)
+            {
+                var originalData = _selectedCond.Conditional.Data;
+                var newData = ((ReadOptimizedByteProvider)hexBox.ByteProvider).Span;
+                if (!newData.SequenceEqual(originalData))
+                {
+                    _selectedCond.Conditional.Data = newData.ToArray();
+                    _selectedCond.IsModified = true;
+                    DisplayCondition();
+                }
+            }
+        }
+
+        private void ToggleHexBox()
+        {
+            HideHexBox = !HideHexBox;
         }
 
         private void ChangeID()
@@ -129,17 +263,28 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
 
         private bool EntryIsSelected() => SelectedCond is not null;
 
-        private void SavePackageAs()
+        private void Save()
         {
-            var d = new SaveFileDialog { Filter = CNDFileFilter };
-            if (d.ShowDialog() == true)
+            if (Validate())
             {
-                SavePackage(d.FileName);
-                MessageBox.Show(this, "Done.");
+                SaveFile();
             }
         }
 
-        private void SavePackage(string filePath = null)
+        private void SaveAs()
+        {
+            if (Validate())
+            {
+                var d = new SaveFileDialog { Filter = CNDFileFilter };
+                if (d.ShowDialog() == true)
+                {
+                    SaveFile(d.FileName);
+                    MessageBox.Show(this, "Done.");
+                }
+            }
+        }
+
+        private void SaveFile(string filePath = null)
         {
             File.ConditionalEntries.Clear();
             File.ConditionalEntries.AddRange(Conditionals.Select(c => c.Conditional));
@@ -153,6 +298,25 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
                     listEntry.IsModified = false;
                 }
             }
+        }
+
+        private bool Validate()
+        {
+            int id = 0;
+            try
+            {
+                foreach (CondListEntry entry in Conditionals)
+                {
+                    id = entry.ID;
+                    entry.Conditional.Decompile();
+                }
+            }
+            catch
+            {
+                MessageBox.Show($"Cannot save this file: Conditional {id} is malformed!", "Broken Conditional!", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+            return true;
         }
 
         private bool FileIsLoaded() => File is not null;
@@ -178,6 +342,20 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
             if (SelectedCond is not null)
             {
                 compilationMsgBox.Text = SelectedCond?.Compile(ConditionalTextBox.Text);
+                DisplayCondition();
+            }
+        }
+
+        private void DisplayCondition()
+        {
+            try
+            {
+                hexBox.ByteProvider = new ReadOptimizedByteProvider(_selectedCond.Conditional.Data);
+                ConditionalTextBox.Text = _selectedCond.Conditional.Decompile();
+            }
+            catch (Exception e)
+            {
+                ConditionalTextBox.Text = $"ERROR! COULD NOT DECOMPILE!\n{e.FlattenException()}";
             }
         }
 
@@ -229,6 +407,7 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
             }
 
             RecentsController?.Dispose();
+            hexBox = null;
         }
 
         private void ConditionalTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
@@ -288,6 +467,26 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
                 }
 
                 return "Compiled!";
+            }
+        }
+
+        //TODO: fix the compiler so this reports all conditionals as recompiling correctly
+        private void RecompileAll_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (CondListEntry condListEntry in Conditionals)
+            {
+                condListEntry.Compile(condListEntry.Conditional.Decompile());
+            }
+
+            List<string> modified = Conditionals.Where(c => c.IsModified).Select(c => c.ID.ToString()).ToList();
+
+            if (modified.Any())
+            {
+                new ListDialog(modified, "Modified Conditionals", "These conditionals did not recompile properly!", this).Show();
+            }
+            else
+            {
+                MessageBox.Show("All conditionals recompiled identically!");
             }
         }
     }

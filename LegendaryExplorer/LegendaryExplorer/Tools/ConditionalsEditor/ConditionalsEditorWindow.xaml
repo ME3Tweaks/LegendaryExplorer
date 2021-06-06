@@ -9,8 +9,11 @@
         xmlns:sharedToolControls="clr-namespace:LegendaryExplorer.UserControls.SharedToolControls"
         xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
         xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
+        xmlns:global="clr-namespace:LegendaryExplorer"
+        xmlns:forms="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         mc:Ignorable="d"
+        Loaded="ConditionalsEditorWindow_OnLoaded"
         Closing="ConditionalsEditorWindow_OnClosing"
         Title="Conditionals Editor" Height="450" Width="800">
     <!-- UserControl Resources -->
@@ -33,6 +36,8 @@
         <KeyBinding Key="O" Modifiers="Control" Command="{Binding OpenCommand}"/>
         <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveCommand}"/>
         <KeyBinding Key="S" Modifiers="Control+Shift" Command="{Binding SaveAsCommand}"/>
+        <KeyBinding Key="F" Modifiers="Control" Command="{Binding SearchCommand}"/>
+        <KeyBinding Key="F3" Command="{Binding SearchAgainCommand}"/>
     </Window.InputBindings>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
@@ -40,13 +45,20 @@
                 <MenuItem Header="_Open" Command="{Binding OpenCommand}" InputGestureText="Ctrl+O"
                                 ToolTip="Open a package file" />
                 <MenuItem Header="_Save" Command="{Binding SaveCommand}" InputGestureText="Ctrl+S"
-                              ToolTip="Save package file in-place"
-                              IsEnabled="{Binding File, Converter={StaticResource NullEnabledConverter}}" />
+                              ToolTip="Save package file in-place"/>
                 <MenuItem Header="Save as" Command="{Binding SaveAsCommand}" InputGestureText="Ctrl+Shift+S"
-                                ToolTip="Save package file to another location"
-                                IsEnabled="{Binding File, Converter={StaticResource NullEnabledConverter}}" />
+                                ToolTip="Save package file to another location" />
                 <Separator />
                 <MenuItem Name="Recents_MenuItem" Header="Recent" IsEnabled="false" />
+            </MenuItem>
+            <MenuItem Header="Options" Padding="4">
+                <MenuItem Header="Toggle HexBox" Command="{Binding ToggleHexBoxCommand}" />
+                <MenuItem Header="DEBUG: Recompile All"
+                          Visibility="{x:Static global:App.IsDebugVisibility}" Click="RecompileAll_Click" />
+            </MenuItem>
+            <MenuItem Header="Search" Padding="4">
+                <MenuItem Header="Search For String" InputGestureText="Ctrl+F" Command="{Binding SearchCommand}"/>
+                <MenuItem Header="Search Again" InputGestureText="F3" Command="{Binding SearchAgainCommand}"/>
             </MenuItem>
         </Menu>
         <Grid>
@@ -105,7 +117,34 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <TextBox x:Name="ConditionalTextBox" TextWrapping="Wrap" TextChanged="ConditionalTextBox_OnTextChanged"></TextBox>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition MinWidth="{Binding HexBoxMinWidth}" MaxWidth="{Binding HexBoxMaxWidth}" Width="{Binding HexBoxMinWidth, Mode=OneWay}" Name="HexboxColumnDefinition" />
+                        <ColumnDefinition Width="1" Name="HexboxColumn_GridSplitter_ColumnDefinition"/>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0" Name="hexboxContainer">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="25" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Button Grid.Row="0" Content="Save Hex Changes" Command="{Binding SaveHexChangesCommand}"/>
+                        <WindowsFormsHost Grid.Row="1" Name="hexbox_Host" HorizontalAlignment="Stretch"
+                                          VerticalAlignment="Stretch">
+                            <forms:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True"
+                                          LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10"
+                                          StringViewVisible="True" VScrollBarVisible="True" />
+                        </WindowsFormsHost>
+                    </Grid>
+                    <GridSplitter 
+                        Name="HexProps_GridSplitter"
+                        Grid.Column="1" HorizontalAlignment="Stretch" 
+                        Margin="-5,0"
+                        BorderThickness="5,0"
+                        BorderBrush="Transparent"
+                        Panel.ZIndex="60"/>
+                    <TextBox Grid.Column="2" x:Name="ConditionalTextBox" TextWrapping="Wrap" TextChanged="ConditionalTextBox_OnTextChanged" />
+                </Grid>
                 <Button Grid.Row="1" Content="Compile and Replace" Command="{Binding CompileCommand}"/>
                 <TextBox Name="compilationMsgBox" Grid.Row="2" TextWrapping="Wrap" IsReadOnly="True"/>
             </Grid>

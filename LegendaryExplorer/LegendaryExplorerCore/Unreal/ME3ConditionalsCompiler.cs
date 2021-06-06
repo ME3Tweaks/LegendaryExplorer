@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using LegendaryExplorerCore.Helpers;
 
 namespace LegendaryExplorerCore.Unreal
 {
@@ -501,7 +502,6 @@ namespace LegendaryExplorerCore.Unreal
                 crbo = crbc = ccbo = ccbc = 0;
                 code = code.Replace("\n", "");
                 code = code.Replace("\r", "");
-                code = code.ToLower();
                 for (int i = 0; i < code.Length; i++)
                 {
                     switch (code[i])
@@ -850,9 +850,9 @@ namespace LegendaryExplorerCore.Unreal
                 Token temp4 = tokenlist[pos + 3];
                 Token temp5 = tokenlist[pos + 4];
                 Token temp6 = tokenlist[pos + 5];
-                if (temp1.Value.ToLower() == "plot" &&
+                if (string.Equals(temp1.Value, "plot", StringComparison.OrdinalIgnoreCase) &&
                     temp2.Value == "." &&
-                    temp3.Value.ToLower() == "bools" &&
+                    temp3.Value.CaseInsensitiveEquals("bools") &&
                     temp4.Value == "[" &&
                     temp5.type == 2 &&
                     temp6.Value == "]")
@@ -862,9 +862,9 @@ namespace LegendaryExplorerCore.Unreal
                     t1.Nodes.Add(t2);
                     node.Nodes.Add(t1);
                 }
-                if (temp1.Value.ToLower() == "plot" &&
+                if (temp1.Value.CaseInsensitiveEquals("plot") &&
                     temp2.Value == "." &&
-                    temp3.Value.ToLower() == "ints" &&
+                    temp3.Value.CaseInsensitiveEquals("ints") &&
                     temp4.Value == "[" &&
                     temp5.type == 2 &&
                     temp6.Value == "]")
@@ -874,9 +874,9 @@ namespace LegendaryExplorerCore.Unreal
                     t1.Nodes.Add(t2);
                     node.Nodes.Add(t1);
                 }
-                if (temp1.Value.ToLower() == "plot" &&
+                if (temp1.Value.CaseInsensitiveEquals("plot") &&
                     temp2.Value == "." &&
-                    temp3.Value.ToLower() == "floats" &&
+                    temp3.Value.CaseInsensitiveEquals("floats") &&
                     temp4.Value == "[" &&
                     temp5.type == 2 &&
                     temp6.Value == "]")
@@ -895,12 +895,12 @@ namespace LegendaryExplorerCore.Unreal
                 if (pos >= len - 1) return 0;
                 Token temp = tokenlist[pos];
                 Token temp2 = tokenlist[pos + 1];
-                if (temp.Value.ToLower() == "bool")
+                if (temp.Value.CaseInsensitiveEquals("bool"))
                 {
                     if (temp2.type == 1)
                     {
                         TreeNode t1 = new TreeNode("bool");
-                        TreeNode t2 = new TreeNode(temp2.Value.ToLower());
+                        TreeNode t2 = new TreeNode(temp2.Value);
                         t1.Nodes.Add(t2);
                         node.Nodes.Add(t1);
                         return 2;
@@ -939,22 +939,22 @@ namespace LegendaryExplorerCore.Unreal
                     {
                         case 0: return 0;
                         case 1:
-                            if (temp2.Value.ToLower() == "plot")
+                            if (temp2.Value.CaseInsensitiveEquals("plot"))
                             {
                                 int n = ReadPlot(currpos, node);
                                 currpos += n;
                             }
-                            if (temp2.Value.ToLower() == "bool")
+                            if (temp2.Value.CaseInsensitiveEquals("bool"))
                             {
                                 int n = ReadBool(currpos, node);
                                 currpos += n;
                             }
-                            if (temp2.Value.ToLower() == "function")
+                            if (temp2.Value.CaseInsensitiveEquals("function"))
                             {
                                 int n = ReadFunc(currpos, node);
                                 currpos += n;
                             }
-                            if (temp2.Value.ToLower() == "false")
+                            if (temp2.Value.CaseInsensitiveEquals("false"))
                             {
                                 TreeNode t = new TreeNode("false");
                                 node.Nodes.Add(t);
@@ -1034,12 +1034,12 @@ namespace LegendaryExplorerCore.Unreal
                 switch (temp.type)
                 {
                     case 1://Word
-                        if (temp.Value.ToLower() == "bool")
+                        if (temp.Value.CaseInsensitiveEquals("bool"))
                         {
                             ReadBool(pos, node);
                             return 2;
                         }
-                        if (temp.Value.ToLower() == "plot")
+                        if (temp.Value.CaseInsensitiveEquals("plot"))
                         {
                             ReadPlot(pos, node);
                             return 2;
@@ -1086,7 +1086,7 @@ namespace LegendaryExplorerCore.Unreal
                 if (node.Text == "value" || node.Text == "value_a")
                 {
                     int n = Convert.ToInt16(node.Nodes[0].Text);
-                    Cout = new byte[5];
+                    Cout = new byte[node.Text == "value_a" ? 9 : 5];
                     Cout[0] = 0x31;
                     byte[] buff = BitConverter.GetBytes(n);
                     Cout[1] = buff[0];

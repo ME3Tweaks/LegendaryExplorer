@@ -77,7 +77,7 @@ namespace LegendaryExplorerCore.Unreal
             stream.WriteUInt16((ushort)ConditionalEntries.Count);
 
             //This works, but is not the saving method bioware used.
-            //tO replicate that, we would need to sort by Data size and combine conditions with the same Data 
+            //to replicate that, we would need to sort by Data size and combine conditions with the same Data 
 
             int sumOffset = (int)(stream.Position) + ConditionalEntries.Count * 8;
             //DO NOT CONVERT TO FOREACH! breaks it for some unknown reason
