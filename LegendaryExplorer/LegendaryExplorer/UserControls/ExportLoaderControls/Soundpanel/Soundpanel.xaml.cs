@@ -791,7 +791,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             else
             {
                 // Ensure executables are correct version. We do this because the paths may have been changed some other way
-                SetWwisePathDialog.EnsureWwiseVersions(Settings.Wwise_7110Path, Settings.Wwise_7110Path);
+                SetWwisePathDialog.EnsureWwiseVersions(Settings.Wwise_7110Path, Settings.Wwise_3773Path);
             }
         }
 
