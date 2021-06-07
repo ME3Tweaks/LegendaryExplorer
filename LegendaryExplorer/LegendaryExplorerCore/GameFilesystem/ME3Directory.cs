@@ -113,6 +113,12 @@ namespace LegendaryExplorerCore.GameFilesystem
         
         // Is this useful?
         public static string TocFile => DefaultGamePath != null ? Path.Combine(DefaultGamePath, @"BIOGame\PCConsoleTOC.bin") : null;
+        
+        
+        /// <summary>
+        /// TFCs that reside in the basegame directory
+        /// </summary>
+        public static readonly string[] BasegameTFCs = { "CharTextures", "Movies", "Textures", "Lighting" };
 
 
 

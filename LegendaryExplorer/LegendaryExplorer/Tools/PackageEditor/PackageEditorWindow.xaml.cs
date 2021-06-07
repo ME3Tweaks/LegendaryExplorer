@@ -1722,12 +1722,12 @@ namespace LegendaryExplorer.Tools.PackageEditor
         {
 
             string searchstr = PromptDialog.Prompt(this, "Input text to be replaced:", "Search and Replace Names",
-                defaultValue: "search text", selectText: true, PromptDialog.InputType.Text);
+                defaultValue: "search text", selectText: true);
             if (string.IsNullOrEmpty(searchstr))
                 return;
 
             string replacestr = PromptDialog.Prompt(this, "Input new text:", "Search and Replace Names",
-                defaultValue: "replacement text", selectText: true, PromptDialog.InputType.Text);
+                defaultValue: "replacement text", selectText: true);
             if (string.IsNullOrEmpty(replacestr))
                 return;
 

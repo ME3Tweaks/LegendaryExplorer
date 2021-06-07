@@ -2261,7 +2261,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
                 string commentText = string.Join("\n", comments.Select(prop => prop.Value));
 
-                string resultText = PromptDialog.Prompt(this, "", "Edit Comment", commentText, true, PromptDialog.InputType.Multiline);
+                string resultText = PromptDialog.Prompt(this, "", "Edit Comment", commentText, true, inputType: PromptDialog.InputType.Multiline);
 
                 if (resultText == null)
                 {

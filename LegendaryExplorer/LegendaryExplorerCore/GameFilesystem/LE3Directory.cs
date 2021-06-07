@@ -183,5 +183,40 @@ namespace LegendaryExplorerCore.GameFilesystem
             "DLC_CON_DH1", //3300
             "DLC_METR_Patch01" //4000
         });
+
+        /// <summary>
+        /// TFCs that reside in the basegame directory
+        /// </summary>
+        public static readonly string[] BasegameTFCs =
+        {
+            "Textures",
+            "Textures0",
+            "Textures1",
+            "Textures2",
+            "Textures3",
+            "Textures4",
+            "Textures5",
+            "Textures6",
+            "Textures7",
+            "Lighting",
+            "Lighting0",
+            "Lighting1",
+            "Lighting2",
+            "Lighting3",
+            "Lighting4",
+            "Lighting5",
+            "Lighting6",
+            "Lighting7",
+            "CharTextures",
+            "CharTextures0",
+            "CharTextures1",
+            "CharTextures2",
+            "CharTextures3",
+            "CharTextures4",
+            "CharTextures5",
+            "CharTextures6",
+            "CharTextures7",
+            "Movies"
+        };
     }
 }

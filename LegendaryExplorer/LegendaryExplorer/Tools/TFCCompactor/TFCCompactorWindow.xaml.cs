@@ -44,27 +44,26 @@ namespace LegendaryExplorer.Tools.TFCCompactor
             LoadCommands();
             BusyProgressBarMax = 100;
             InitializeComponent();
-            IsBusyUI = true;
-            BusyText = "Verifying MEM";
-            BackgroundWorker bw = new();
-            bw.DoWork += EnsureCriticalFiles;
-            bw.RunWorkerCompleted += (a, b) =>
-            {
-                switch (b.Result)
-                {
-                    case string message:
-                        MessageBox.Show($"An error occured fetching MassEffectModder command line tools that are required for TFC Compactor. Please comes to the ME3Tweaks Discord for assistance.\n\n{message}", "Error fetching texture tools");
-                        CurrentOperationText = "Error downloading command line tools for textures";
-                        break;
-                    case null:
-                        ToolsDownloaded = true;
-                        CurrentOperationText = "Select DLC mod to compact textures for";
-                        break;
-                }
+            //IsBusyUI = true;
+            //BusyText = "Verifying MEM";
+            //BackgroundWorker bw = new();
+            //bw.DoWork += EnsureCriticalFiles;
+            //bw.RunWorkerCompleted += (a, b) =>
+            //{
+            //    switch (b.Result)
+            //    {
+            //        case string message:
+            //            MessageBox.Show($"An error occured fetching MassEffectModder command line tools that are required for TFC Compactor. Please comes to the ME3Tweaks Discord for assistance.\n\n{message}", "Error fetching texture tools");
+            //            CurrentOperationText = "Error downloading command line tools for textures";
+            //            break;
+            //        case null:
+            CurrentOperationText = "Select DLC mod to compact textures for";
+            //        break;
+            //}
 
-                IsBusyUI = false;
-            };
-            bw.RunWorkerAsync();
+            //IsBusyUI = false;
+            //};
+            //bw.RunWorkerAsync();
         }
         private bool movieScan;
         private int _progressBarMax = 100, _progressBarValue;
@@ -105,14 +104,6 @@ namespace LegendaryExplorer.Tools.TFCCompactor
         {
             get => _scanForGameCompleted;
             set => SetProperty(ref _scanForGameCompleted, value);
-        }
-
-        private bool _toolsDownloaded;
-
-        public bool ToolsDownloaded
-        {
-            get => _toolsDownloaded;
-            set => SetProperty(ref _toolsDownloaded, value);
         }
 
         private bool _isBusyUI;
@@ -163,26 +154,19 @@ namespace LegendaryExplorer.Tools.TFCCompactor
         public ICommand CompactTFCCommand { get; set; }
         public ICommand ScanCommand { get; set; }
         public ICommand ChangeStagingDirCommand { get; set; }
+        public ICommand BrowseCommand { get; set; }
 
         private void LoadCommands()
         {
-            if (ME2Directory.DLCPath != null)
-            {
-                GameList.Add(new GameWrapper(MEGame.ME2, "Mass Effect 2", ME2Directory.DefaultGamePath));
-            }
+            CompactTFCCommand = new GenericCommand(BeginTFCCompaction, () => ScanForGameCompleted && IsNotBusy && !string.IsNullOrEmpty(StagingDirectory) && Directory.Exists(StagingDirectory));
+            BrowseCommand = new GenericCommand(BrowseForFolder, () => IsNotBusy);
+            ScanCommand = new GenericCommand(BeginReferencedTFCScan, () => DLCModFolderIsSelected() && IsNotBusy);
+            ChangeStagingDirCommand = new GenericCommand(ChangeStagingDir, () => IsNotBusy);
+        }
 
-            if (ME3Directory.DLCPath != null)
-            {
-                GameList.Add(new GameWrapper(MEGame.ME3, "Mass Effect 3", ME3Directory.DefaultGamePath));
-                GameList.Add(new GameWrapper(MEGame.ME3, "Mass Effect 3 (Movies)", ME3Directory.DefaultGamePath));
-            }
+        private void BrowseForFolder()
+        {
 
-            GameList.Add(new GameWrapper(MEGame.Unknown, "Select game...", null) { IsBrowseForCustom = true, IsCustomPath = true });
-
-
-            CompactTFCCommand = new GenericCommand(BeginTFCCompaction, () => ScanForGameCompleted && IsNotBusy && ToolsDownloaded && !string.IsNullOrEmpty(StagingDirectory) && Directory.Exists(StagingDirectory));
-            ScanCommand = new GenericCommand(BeginReferencedTFCScan, () => DLCModFolderIsSelected() && IsNotBusy && ToolsDownloaded);
-            ChangeStagingDirCommand = new GenericCommand(ChangeStagingDir, () => IsNotBusy && ToolsDownloaded);
         }
 
         private void ChangeStagingDir()
@@ -194,6 +178,7 @@ namespace LegendaryExplorer.Tools.TFCCompactor
                 AllowNonFileSystemItems = false,
                 EnsurePathExists = true
             };
+
             if (openFolder.ShowDialog() != CommonFileDialogResult.Ok)
             {
                 return;
@@ -201,7 +186,7 @@ namespace LegendaryExplorer.Tools.TFCCompactor
             var dir = openFolder.FileName;
             if (!Directory.Exists(dir))
             {
-                MessageBox.Show("The backup destination directory does not exist: " + dir, "Directory does not exist");
+                MessageBox.Show("The selected destination directory does not exist: " + dir, "Directory does not exist");
                 return;
             }
 
@@ -267,8 +252,6 @@ namespace LegendaryExplorer.Tools.TFCCompactor
             }
         }
 
-        // TODO: Put this static array in LEC somewhere instead. I looked for a place and gave up :(
-        public static readonly string[] BasegameTFCs = { "CharTextures", "Movies", "Textures", "Lighting", "Movies" };
         private void BeginReferencedTFCScan()
         {
             backgroundWorker = new BackgroundWorker { WorkerReportsProgress = true };
@@ -342,15 +325,13 @@ namespace LegendaryExplorer.Tools.TFCCompactor
                                     //{
                                     //    Debug.WriteLine($"CustTextures0 TFC Reference: {texture.FullPath} {texture.UIndex} in {texture.FileRef.FilePath}");
                                     //}
-                                    if (!BasegameTFCs.Contains(tfcname))
+                                    if (!MEDirectories.BasegameTFCs(SelectedGame.Game).Contains(tfcname))
                                     {
                                         //Check that external mips are referenced.
                                         //some texture2d have a tfc but don't have any external mips for some reason
                                         Texture2D texture2d = new(texture);
                                         var topmip = texture2d.GetTopMip();
-                                        if (topmip.storageType == StorageTypes.extLZO ||
-                                            topmip.storageType == StorageTypes.extZlib ||
-                                            topmip.storageType == StorageTypes.extUnc)
+                                        if (topmip.storageType is StorageTypes.extLZO or StorageTypes.extZlib or StorageTypes.extOodle or StorageTypes.extUnc)
                                         {
                                             if (referencedTFCs.Add(new TFCSelector(tfcname, forSelecting)))
                                             {

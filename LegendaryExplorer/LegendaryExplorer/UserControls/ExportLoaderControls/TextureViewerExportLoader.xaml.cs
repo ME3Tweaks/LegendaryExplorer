@@ -138,13 +138,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private void ReplaceFromFile()
         {
             var selectedTFCName = (string)TextureCacheComboBox.SelectedItem;
-            // TODO: MOVE OUT OF TFC COMPACTOR
-            if (TFCCompactorWindow.BasegameTFCs.Contains(selectedTFCName) || MEDirectories.OfficialDLC(CurrentLoadedExport.Game).Any(x => $"Textures_{x}" == selectedTFCName))
-            {
-                MessageBox.Show("Cannot replace textures into a TFC provided by BioWare. Choose a different target TFC from the list.");
-                return;
-            }
-
+            
             OpenFileDialog selectDDS = new OpenFileDialog
             {
                 Title = "Select texture file",
@@ -209,11 +203,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         }
 
                     }
-                    PromptDialog p = new PromptDialog("Enter name for a new TFC. It must start with Textures_DLC_, and will be created in the local directory of this package file.", "Enter new name for TFC", defaultTfcName) { Owner = Window.GetWindow(this) };
+                    PromptDialog p = new PromptDialog("Enter name for a new TFC. It must start with Textures_DLC_MOD_, and will be created in the local directory of this package file.", "Enter new name for TFC", defaultTfcName, true, "Textures_DLC_MOD_".Length) { Owner = Window.GetWindow(this) };
                     var hasResult = p.ShowDialog();
                     if (hasResult.HasValue && hasResult.Value)
                     {
-                        if (p.ResponseText.StartsWith("Textures_DLC_") && p.ResponseText.Length > 14)
+                        if (p.ResponseText.StartsWith("Textures_DLC_MOD_") && p.ResponseText.Length > 14)
                         {
                             //Check TFC name isn't in list
                             CurrentLoadedExport.FileRef.FindNameOrAdd(p.ResponseText);

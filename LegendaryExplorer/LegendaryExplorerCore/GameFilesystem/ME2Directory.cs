@@ -205,5 +205,10 @@ namespace LegendaryExplorerCore.GameFilesystem
             "DLC_CON_Pack02", //380
             "DLC_EXP_Part02", //400
         });
+
+        /// <summary>
+        /// TFCs that reside in the basegame directory
+        /// </summary>
+        public static readonly string[] BasegameTFCs = { "Textures" };
     }
 }

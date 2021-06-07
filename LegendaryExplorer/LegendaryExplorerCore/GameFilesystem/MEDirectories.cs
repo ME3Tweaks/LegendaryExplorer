@@ -11,6 +11,20 @@ namespace LegendaryExplorerCore.GameFilesystem
 {
     public static class MEDirectories
     {
+        public static string[] BasegameTFCs(MEGame game)
+        {
+            return game switch
+            {
+                MEGame.ME2 => ME2Directory.BasegameTFCs,
+                MEGame.ME3 => ME3Directory.BasegameTFCs,
+                MEGame.LE1 => LE1Directory.BasegameTFCs,
+                MEGame.LE2 => LE2Directory.BasegameTFCs,
+                MEGame.LE3 => LE3Directory.BasegameTFCs,
+                _ => new string[] { }
+
+            };
+        }
+
         public static string GetCookedPath(MEGame game, string gamePathRoot = null)
         {
             return game switch
@@ -250,7 +264,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         public static void ReloadGamePaths(bool forceUseRegistry)
         {
             ME1Directory.ReloadDefaultGamePath(forceUseRegistry);
-            ME2Directory.ReloadDefaultGamePath(forceUseRegistry); 
+            ME2Directory.ReloadDefaultGamePath(forceUseRegistry);
             ME3Directory.ReloadDefaultGamePath(forceUseRegistry);
             LE1Directory.ReloadDefaultGamePath(forceUseRegistry);
             LE2Directory.ReloadDefaultGamePath(forceUseRegistry);

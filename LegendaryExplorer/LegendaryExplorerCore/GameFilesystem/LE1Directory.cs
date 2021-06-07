@@ -152,5 +152,32 @@ namespace LegendaryExplorerCore.GameFilesystem
         };
 
         public static readonly ReadOnlyCollection<string> OfficialDLC = Array.AsReadOnly(Array.Empty<string>());
+        
+        /// <summary>
+        /// TFCs that reside in the basegame directory
+        /// </summary>
+        public static readonly string[] BasegameTFCs =
+        {
+            "Textures",
+            "Textures0",
+            "Textures1",
+            "Textures2",
+            "Textures3",
+            "Textures4",
+            "Textures5",
+            "Textures6",
+            "Textures7",
+            "Lighting",
+            "Lighting0",
+            "Lighting1",
+            "Lighting2",
+            "Lighting3",
+            "CharTextures",
+            "CharTextures0",
+            "CharTextures1",
+            "CharTextures2",
+            "CharTextures3",
+        };
+
     }
 }

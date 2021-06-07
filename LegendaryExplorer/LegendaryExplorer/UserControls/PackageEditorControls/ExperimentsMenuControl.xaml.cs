@@ -992,7 +992,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                 {
                     string tfc = PromptDialog.Prompt(GetPEWindow(),
                         "Enter Name of Target Textures File Cache (tfc) without extension", "Level Conversion Tool",
-                        "Textures_DLC_MOD_", false, PromptDialog.InputType.Text);
+                        "Textures_DLC_MOD_", false, inputType: PromptDialog.InputType.Text);
 
                     if (tfc == null || tfc == "Textures_DLC_MOD_")
                         return;
