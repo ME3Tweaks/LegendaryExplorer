@@ -372,7 +372,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public static bool CanParseStatic(ExportEntry exportEntry)
         {
-            return ((exportEntry.FileRef.Game == MEGame.ME1 && exportEntry.ClassName == "SoundNodeWave") || (exportEntry.FileRef.Game == MEGame.ME2 || exportEntry.FileRef.Game == MEGame.ME3) && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream"));
+            return ((exportEntry.FileRef.Game.IsGame1() && exportEntry.ClassName == "SoundNodeWave") || (exportEntry.FileRef.Game.IsGame2() || exportEntry.FileRef.Game.IsGame3()) && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream"));
             //return !exportEntry.IsDefaultObject && (exportEntry.FileRef.Game == MEGame.ME2 || exportEntry.FileRef.Game == MEGame.ME3) && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream");
         }
 
@@ -919,7 +919,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                     if (conversionSettings == null)
                     {
-                        SoundReplaceOptionsDialog srod = new SoundReplaceOptionsDialog(Window.GetWindow(this));
+                        SoundReplaceOptionsDialog srod = new SoundReplaceOptionsDialog(Window.GetWindow(this), false);
                         if (srod.ShowDialog().Value)
                         {
                             conversionSettings = srod.ChosenSettings;
@@ -1004,7 +1004,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             if (conversionSettings == null)
             {
-                SoundReplaceOptionsDialog srod = new SoundReplaceOptionsDialog(Window.GetWindow(this));
+                SoundReplaceOptionsDialog srod = new SoundReplaceOptionsDialog(Window.GetWindow(this), Pcc.Game.IsOTGame());
                 if (srod.ShowDialog() == true)
                 {
                     conversionSettings = srod.ChosenSettings;
@@ -1022,9 +1022,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 HostingControl.IsBusy = true;
             }
 
-            var conversion = await Task.Run(async () => await WwiseCliHandler.RunWwiseConversion(Pcc.Game, sourceFile, conversionSettings));
+            await Task.Run(async () =>
+            {
+                var conversion = await WwiseCliHandler.RunWwiseConversion(Pcc.Game, sourceFile, conversionSettings);
+                ReplaceAudioFromWwiseOgg(conversion, forcedExport, conversionSettings?.UpdateReferencedEvents ?? false);
 
-            ReplaceAudioFromWwiseOgg(conversion, forcedExport, conversionSettings?.UpdateReferencedEvents ?? false); ;
+            }).ContinueWithOnUIThread((a) =>
+            {
+                if (HostingControl != null)
+                {
+                    HostingControl.IsBusy = false;
+                }
+            });
         }
 
         public static async Task<bool> TryDeleteDirectory(string directoryPath, int maxRetries = 10, int millisecondsDelay = 30)
@@ -1509,13 +1518,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         re.WriteProperty(durationProperty);
                     }
                 }
-
-                if (HostingControl != null)
-                {
-                    HostingControl.IsBusy = false;
-                }
-
-                MessageBox.Show("Done");
             }
         }
 
