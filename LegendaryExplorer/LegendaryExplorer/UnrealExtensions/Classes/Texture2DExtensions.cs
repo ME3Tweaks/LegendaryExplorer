@@ -28,19 +28,7 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
             PixelFormat pixelFormat = Image.getPixelFormatType(fmt);
             t2d.RemoveEmptyMipsFromMipList();
 
-            // Not sure what this does?
-            // Remove all but one mip?
-            //if (Export.Game == MEGame.ME1 && texture.mipMapsList.Count < 6)
-            //{
-            //    for (int i = texture.mipMapsList.Count - 1; i != 0; i--)
-            //        texture.mipMapsList.RemoveAt(i);
-            //}
             PixelFormat newPixelFormat = pixelFormat;
-
-            //Changing Texture Type. Not sure what this is, exactly.
-            //if (mod.markConvert)
-            //    newPixelFormat = changeTextureType(pixelFormat, image.pixelFormat, ref package, ref texture);
-
 
             // Generate mips if necessary
             if (!image.checkDDSHaveAllMipmaps() || t2d.Mips.Count > 1 && image.mipMaps.Count() <= 1 || image.pixelFormat != newPixelFormat)

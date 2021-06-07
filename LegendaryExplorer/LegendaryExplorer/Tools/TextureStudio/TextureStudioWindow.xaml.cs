@@ -2,16 +2,18 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
+using DocumentFormat.OpenXml.Drawing;
+using DocumentFormat.OpenXml.Wordprocessing;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Controls;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.Tools.PackageEditor;
+using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
@@ -24,6 +26,7 @@ using LegendaryExplorerCore.Unreal.Classes;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Image = LegendaryExplorerCore.Textures.Image;
+using Path = System.IO.Path;
 
 namespace LegendaryExplorer.Tools.TextureStudio
 {
@@ -80,9 +83,8 @@ namespace LegendaryExplorer.Tools.TextureStudio
             }
             else
             {
-                var package = MEPackageHandler.OpenMEPackage(Path.Combine(SelectedFolder, SelectedInstance.RelativePackagePath));
-                TextureViewer_ExportLoader.LoadExport(package.GetUExport(SelectedInstance.UIndex));
-                AddPackageToCache(package);
+                using var package = MEPackageHandler.OpenMEPackage(Path.Combine(SelectedFolder, SelectedInstance.RelativePackagePath));
+                TextureViewer_ExportLoader.LoadExport(package.FindExport(SelectedInstance.ExportPath));
             }
         }
 
@@ -145,22 +147,6 @@ namespace LegendaryExplorer.Tools.TextureStudio
         }
 
         private bool ScanCanceled;
-
-        private List<IMEPackage> CachedPackages = new List<IMEPackage>(10);
-
-        private void AddPackageToCache(IMEPackage package)
-        {
-            // Move to end of the list.
-            CachedPackages.Remove(package);
-            CachedPackages.Add(package);
-
-            if (CachedPackages.Count > 10)
-            {
-                var packageToRelease = CachedPackages[0];
-                CachedPackages.RemoveAt(0); //Remove the first item
-                packageToRelease.Dispose();
-            }
-        }
         #endregion
 
 
@@ -187,11 +173,13 @@ namespace LegendaryExplorer.Tools.TextureStudio
         public GenericCommand ChangeAllInstancesTextureCommand { get; set; }
         public GenericCommand OpenInstanceInPackageEditorCommand { get; set; }
         public GenericCommand CloseWorkspaceCommand { get; set; }
+        public GenericCommand LoadTextureMapCommand { get; set; }
 
         private void LoadCommands()
         {
+            LoadTextureMapCommand = new GenericCommand(LoadTextureMap);
             BusyCancelCommand = new GenericCommand(CancelScan, () => IsBusy);
-            ScanFolderCommand = new GenericCommand(ScanFolder, CanScanFolder);
+            ScanFolderCommand = new GenericCommand(() => ScanFolder(), CanScanFolder);
 
             RemoveAllEmptyMipsCommand = new GenericCommand(RemoveAllEmptyMips, CanRemoveEmptyMips);
             ME1UpdateMasterPointersCommand = new GenericCommand(ME1UpdateMasterPointers, CanUpdatePointers);
@@ -203,12 +191,16 @@ namespace LegendaryExplorer.Tools.TextureStudio
             CloseWorkspaceCommand = new GenericCommand(CloseWorkspace, () => SelectedFolder != null);
         }
 
+        private void LoadTextureMap()
+        {
+
+        }
+
         private void CloseWorkspace()
         {
             ResetUI();
             SelectedFolder = null;
         }
-
 
         private void OpenInstanceInPackEd()
         {
@@ -217,7 +209,6 @@ namespace LegendaryExplorer.Tools.TextureStudio
             p.LoadFile(Path.Combine(SelectedFolder, SelectedInstance.RelativePackagePath), SelectedInstance.UIndex);
             p.Activate(); //bring to front   
         }
-
 
         private bool CanChangeAllInstances() => SelectedItem != null && SelectedItem.Instances.Any();
 
@@ -239,7 +230,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
                 catch (TextureSizeNotPowerOf2Exception)
                 {
                     MessageBox.Show("The width and height of a texture must both be a power of 2\n" +
-                                    "(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096)", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    "(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192(LE only))", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
                 catch (Exception e)
@@ -250,7 +241,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
 
                 if (CurrentStudioGame == MEGame.ME1)
                 {
-                    // Oh boy.........
+                    // Oh boy...
 
                     // Ingest the texture
                     //uint crc = 0;
@@ -304,6 +295,49 @@ namespace LegendaryExplorer.Tools.TextureStudio
                 {
                     // Perform texture replacement on one instance.
                     // Copy the properties and binary to the others
+
+                    //uint crc = 0;
+                    var generateMips = SelectedItem.Instances.Any(x => x.NumMips > 1);
+                    if (generateMips)
+                    {
+                        // It has mips. Generate mips for our new texture
+                        //crc = (uint)~ParallelCRC.Compute(image.mipMaps[0].data); //crc will change on non argb... not sure how to deal with this
+                        image.correctMips(SelectedItem.Instances[0].PixelFormat);
+                    }
+
+                    PackageCache pc = new PackageCache();
+                    Texture2D firstInstance = null;
+                    UTexture2D fiBin = null;
+                    for (int i = 0; i < SelectedItem.Instances.Count; i++)
+                    {
+                        var instance = SelectedItem.Instances[i];
+                        var lPackage = pc.GetCachedPackage(Path.Combine(SelectedFolder, instance.RelativePackagePath));
+                        var textureExp = lPackage.FindExport(instance.ExportPath);
+                        if (i == 0)
+                        {
+                            // First instance
+                            firstInstance = new Texture2D(textureExp);
+                            firstInstance.Replace(image, textureExp.GetProperties(), selectDDS.FileName, $"Textures_{Path.GetFileName(SelectedFolder)}"); // This is placeholder name for TFC name
+                            fiBin = ObjectBinary.From<UTexture2D>(textureExp);
+                        }
+                        else
+                        {
+                            // others, just copy from first
+                            textureExp.WriteProperties(firstInstance.Export.GetProperties());
+                            textureExp.WriteBinary(fiBin);
+                        }
+                    }
+
+                    foreach (var p in pc.Cache.Values)
+                    {
+                        if (p.IsModified)
+                            p.Save();
+                    }
+
+                    TextureMapMemoryEntry tme = SelectedItem;
+                    while (tme.Parent != null)
+                        tme = tme.Parent;
+                    BeginScanInternal(new List<TextureMapMemoryEntry>(new[] { tme }));
                 }
             }
         }
@@ -452,34 +486,30 @@ namespace LegendaryExplorer.Tools.TextureStudio
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (sender, args) =>
             {
-                var allTextures = AllTreeViewNodes.OfType<TextureMapMemoryEntryWPF>().SelectMany(x => x.GetAllTextureEntries()).ToList();
-                var texturesWithEmptyMips = allTextures.Where(x => x.Instances.Any(x => x.NumEmptyMips > 0));
-
-                Dictionary<string, List<int>> exportMap = new Dictionary<string, List<int>>();
-                foreach (var t in texturesWithEmptyMips)
+                var allPackages = AllTreeViewNodes.OfType<TextureMapMemoryEntryWPF>().SelectMany(x => x.GetAllTextureEntries()).SelectMany(y => y.Instances.Select(z => z.RelativePackagePath)).Distinct().ToList();
+                BusyProgressValue = 0;
+                BusyProgressMaximum = allPackages.Count;
+                BusyProgressIndeterminate = false;
+                foreach (var mpMap in allPackages)
                 {
-                    foreach (var instance in t.Instances)
+                    var pPath = Path.Combine(SelectedFolder, mpMap);
+                    Debug.WriteLine($@"Removing empty mips in {pPath}");
+                    using var package = MEPackageHandler.OpenMEPackage(pPath, forceLoadFromDisk: true);
+                    foreach (var tex in package.Exports.Where(x => x.IsTexture()))
                     {
-                        if (instance.NumEmptyMips > 0)
-                        {
-                            // Add to list
-                            if (!exportMap.TryGetValue(instance.RelativePackagePath, out var uindexes))
-                            {
-                                uindexes = new List<int>();
-                                exportMap[instance.RelativePackagePath] = uindexes;
-                            }
+                        UTexture2D t2d = ObjectBinary.From<UTexture2D>(tex);
+                        var removedCount = t2d.Mips.RemoveAll(x => x.StorageType == StorageTypes.empty);
 
-                            uindexes.Add(instance.UIndex);
+                        if (removedCount > 0)
+                        {
+                            Debug.WriteLine($@"Removing empty mips from {pPath} {tex.InstancedFullPath}");
+                            tex.WriteBinary(t2d);
+                            tex.WriteProperty(new IntProperty(t2d.Mips.Count, "MipTailBaseIdx"));
+                            //package.Save();
                         }
                     }
-                }
 
-                foreach (var mpMap in exportMap)
-                {
-                    foreach (var item in mpMap.Value)
-                    {
-                        Debug.WriteLine($@"Removing empty mips in {mpMap.Key}, uindex {item}");
-                    }
+                    BusyProgressValue++;
                 }
             };
             bw.RunWorkerCompleted += (sender, args) =>
@@ -487,6 +517,9 @@ namespace LegendaryExplorer.Tools.TextureStudio
                 IsBusy = false;
                 ScanFolder();
             };
+            BusyProgressIndeterminate = true;
+            BusyHeader = "Removing empty mips";
+            IsBusy = true;
             bw.RunWorkerAsync();
         }
 
@@ -514,7 +547,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
                 IMEPackage lastOpenedSPackage = null;
                 foreach (var pInstance in refsToUpdate)
                 {
-                    var package = MEPackageHandler.OpenMEPackage(Path.Combine(SelectedFolder, pInstance.RelativePackagePath));
+                    using var package = MEPackageHandler.OpenMEPackage(Path.Combine(SelectedFolder, pInstance.RelativePackagePath));
                     if (lastOpenedSPackage != package)
                     {
                         lastOpenedSPackage?.Save();
@@ -578,16 +611,24 @@ namespace LegendaryExplorer.Tools.TextureStudio
         #endregion
 
         #region Scanning methods
-        private void ScanFolder()
+        private void ScanFolder(string path = null)
         {
-            var dlg = new CommonOpenFileDialog("Select a folder containing package files to work on")
+            if (path == null)
             {
-                IsFolderPicker = true
-            };
+                var dlg = new CommonOpenFileDialog("Select a folder containing package files to work on")
+                {
+                    IsFolderPicker = true
+                };
 
-            if (dlg.ShowDialog(this) == CommonFileDialogResult.Ok)
+                if (dlg.ShowDialog(this) == CommonFileDialogResult.Ok)
+                {
+                    SelectedFolder = dlg.FileName;
+                    BeginScan();
+                }
+            }
+            else
             {
-                SelectedFolder = dlg.FileName;
+                SelectedFolder = path;
                 BeginScan();
             }
         }
@@ -595,6 +636,11 @@ namespace LegendaryExplorer.Tools.TextureStudio
         private void BeginScan()
         {
             RecentsController.AddRecent(SelectedFolder, false, null);
+            BeginScanInternal();
+        }
+
+        private void BeginScanInternal(List<TextureMapMemoryEntry> entriesToReload = null)
+        {
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += ScanFolderThread;
             bw.RunWorkerCompleted += (sender, args) =>
@@ -603,17 +649,20 @@ namespace LegendaryExplorer.Tools.TextureStudio
                 IsBusy = false;
             };
             IsBusy = true;
-            ResetUI();
-            bw.RunWorkerAsync();
+            if (entriesToReload == null)
+            {
+                ResetUI();
+            }
+            else
+            {
+                AllTreeViewNodes.RemoveRange(entriesToReload);
+            }
+
+            bw.RunWorkerAsync(entriesToReload);
         }
 
         private void ResetUI()
         {
-            foreach (var v in CachedPackages)
-            {
-                v.Dispose();
-            }
-            CachedPackages.Clear();
             AllTreeViewNodes.ClearEx();
             CurrentStudioGame = MEGame.Unknown;
             VanillaTextureMap = null;
@@ -624,10 +673,6 @@ namespace LegendaryExplorer.Tools.TextureStudio
             return new TextureMapMemoryEntryWPF(entry);
         }
 
-        private void AddRootItem(TextureMapMemoryEntry entry)
-        {
-            AllTreeViewNodes.Add(entry);
-        }
 
         private void ScanFolderThread(object sender, DoWorkEventArgs e)
         {
@@ -641,8 +686,18 @@ namespace LegendaryExplorer.Tools.TextureStudio
             //BusyProgressMaximum = packageFiles.Count;
 
             //// Pass 1: Find all unique memory texture paths
+            BusyText = "Generating texture map";
 
-            TextureMapGenerator.GenerateMapForFolder(SelectedFolder, MemoryEntryGeneratorWPF, x => AllTreeViewNodes.Add(x), textureMapProgress);
+            if (e.Argument is List<TextureMapMemoryEntry> entriesToRefresh)
+            {
+                var entries = new Dictionary<string, TextureMapMemoryEntry>();
+                TextureMapGenerator.RegenerateEntries(SelectedFolder, entriesToRefresh, entries, new Dictionary<string, uint>(), new List<string>(), MemoryEntryGeneratorWPF, addTopLevelNode);
+            }
+            else
+            {
+                // Generate the whole thing
+                TextureMapGenerator.GenerateMapForFolder(SelectedFolder, MemoryEntryGeneratorWPF, addTopLevelNode, textureMapProgress);
+            }
 
             // Pass 4: Sort
             BusyText = "Sorting tree";
@@ -655,6 +710,11 @@ namespace LegendaryExplorer.Tools.TextureStudio
             Thread.Sleep(1000); //UI will take a few moments to update so we will stall this busy overlay
 
             BusyProgressIndeterminate = true;
+        }
+
+        private void addTopLevelNode(TextureMapMemoryEntry obj)
+        {
+            AllTreeViewNodes.Add(obj);
         }
 
         private void textureMapProgress(string text, int done, int total)

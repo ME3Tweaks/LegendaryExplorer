@@ -49,7 +49,7 @@ namespace LegendaryExplorerCore.Textures.Studio
             }
             else
             {
-                // Pasre it out
+                // Parse it out
                 memoryEntry.Instances.Add(new TextureMapPackageEntry(selectedFolder, exportEntry, additionalTFCs, crcCache));
             }
 
@@ -372,11 +372,6 @@ namespace LegendaryExplorerCore.Textures.Studio
         public PixelFormat PixelFormat { get; set; }
 
         /// <summary>
-        /// The full name of the texture instance
-        /// </summary>
-        public string FullName { get; set; }
-
-        /// <summary>
         /// If this entry is for TextureMovie
         /// </summary>
         public bool IsMovieTexture { get; set; }
@@ -539,6 +534,22 @@ namespace LegendaryExplorerCore.Textures.Studio
                 Game = game,
             };
 
+        }
+
+        public static void RegenerateEntries(string selectedFolder, List<TextureMapMemoryEntry> entriesToRefresh,
+            Dictionary<string, TextureMapMemoryEntry> textureMapMemoryEntries, Dictionary<string, uint> crcCache,
+            List<string> additionalTFCs, Func<IEntry, TextureMapMemoryEntry> generatorDelegate, Action<TextureMapMemoryEntry> addRootNodeDelegate)
+        {
+            PackageCache pc = new PackageCache();
+            foreach (var textureEntry in entriesToRefresh.SelectMany(x => x.GetAllTextureEntries()))
+            {
+                foreach (var instance in textureEntry.Instances)
+                {
+                    var fullPath = Path.Combine(selectedFolder, instance.RelativePackagePath);
+                    var package = pc.GetCachedPackage(fullPath);
+                    TextureMapMemoryEntry.ParseTexture(package.FindExport(instance.ExportPath), selectedFolder, textureMapMemoryEntries, crcCache, additionalTFCs, generatorDelegate, addRootNodeDelegate);
+                }
+            }
         }
     }
 }
