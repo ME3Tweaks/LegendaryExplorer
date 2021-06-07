@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using LegendaryExplorerCore.Helpers;
 
@@ -1066,7 +1067,7 @@ namespace LegendaryExplorerCore.Unreal
             #region ByteCodeGen
 
 
-            private byte[] CodeBool(TreeNode node)
+            private static byte[] CodeBool(TreeNode node)
             {
                 byte[] Cout = new byte[0];
                 if (node.Text == "bool")
@@ -1080,7 +1081,7 @@ namespace LegendaryExplorerCore.Unreal
                 return Cout;
             }
 
-            private byte[] CodeIntValue(TreeNode node)
+            private static byte[] CodeIntValue(TreeNode node)
             {
                 byte[] Cout = new byte[0];
                 if (node.Text == "value" || node.Text == "value_a")
@@ -1097,7 +1098,7 @@ namespace LegendaryExplorerCore.Unreal
                 return Cout;
             }
 
-            private byte[] CodeIntValue_i(TreeNode node)
+            private static byte[] CodeIntValue_i(TreeNode node)
             {
                 byte[] Cout = new byte[0];
                 if (node.Text == "value_i")
@@ -1114,7 +1115,7 @@ namespace LegendaryExplorerCore.Unreal
                 return Cout;
             }
 
-            private byte[] CodeIntValue_f(TreeNode node)
+            private static byte[] CodeIntValue_f(TreeNode node)
             {
                 byte[] Cout = new byte[0];
                 if (node.Text == "value_f")
@@ -1132,7 +1133,7 @@ namespace LegendaryExplorerCore.Unreal
             }
 
 
-            private byte[] CodePlotBool(TreeNode node)
+            private static byte[] CodePlotBool(TreeNode node)
             {
                 byte[] Cout = new byte[0];
                 if (node.Text == "plot bool")
@@ -1149,7 +1150,7 @@ namespace LegendaryExplorerCore.Unreal
                 return Cout;
             }
 
-            private byte[] CodePlotInt(TreeNode node)
+            private static byte[] CodePlotInt(TreeNode node)
             {
                 byte[] Cout = new byte[0];
                 if (node.Text == "plot int")
@@ -1166,7 +1167,7 @@ namespace LegendaryExplorerCore.Unreal
                 return Cout;
             }
 
-            private byte[] CodePlotFloat(TreeNode node)
+            private static byte[] CodePlotFloat(TreeNode node)
             {
                 byte[] Cout = new byte[0];
                 if (node.Text == "plot float")
@@ -1183,7 +1184,7 @@ namespace LegendaryExplorerCore.Unreal
                 return Cout;
             }
 
-            private byte[] CodeFunction(TreeNode node)
+            private static byte[] CodeFunction(TreeNode node)
             {
                 byte[] Cout = new byte[0];
                 if (node.Text == "Function")
@@ -1195,6 +1196,7 @@ namespace LegendaryExplorerCore.Unreal
                     byte[] buff = BitConverter.GetBytes(l);
                     Cout = new byte[9 + l];
                     Cout[0] = 0x30;
+                    BinaryPrimitives.WriteInt32LittleEndian(Cout.AsSpan(1 ,4), int.Parse(t2.Text));
                     Cout[5] = buff[0];
                     Cout[6] = buff[1];
                     for (int i = 0; i < l; i++)
@@ -1203,7 +1205,7 @@ namespace LegendaryExplorerCore.Unreal
                 return Cout;
             }
 
-            private byte GetExprType(TreeNode node)
+            private static byte GetExprType(TreeNode node)
             {
                 bool isFloat = false;
                 TreeNode operation = node.Nodes[1];
@@ -1349,6 +1351,9 @@ namespace LegendaryExplorerCore.Unreal
                     Cout[0] = (byte)(0x50 + GetExprType(node));
                     switch (compare)
                     {
+                        case "*":
+                            Cout[1] = 2;
+                            break;
                         case "&&":
                             Cout[1] = 4;
                             break;
