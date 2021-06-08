@@ -250,26 +250,26 @@ namespace LegendaryExplorer
                 category2 = "Utilities",
                 description = "Coalesced Compiler converts between XML and BIN formats for ME3's coalesced files. These are key game files that help control a large amount of content.",
             });
-//            set.Add(new Tool
-//            {
-//                name = "DLC Unpacker",
-//                type = typeof(DLCUnpacker.DLCUnpackerUI),
-//                icon = Application.Current.FindResource("iconDLCUnpacker") as ImageSource,
-//                open = () =>
-//                {
-//                    if (ME3Directory.DefaultGamePath != null)
-//                    {
-//                        new DLCUnpacker.DLCUnpackerUI().Show();
-//                    }
-//                    else
-//                    {
-//                        MessageBox.Show("DLC Unpacker only works with Mass Effect 3.");
-//                    }
-//                },
-//                tags = new List<string> { "utility", "dlc", "sfar", "unpack", "extract" },
-//                category = "Extractors + Repackers",
-//                description = "DLC Unpacker allows you to extract Mass Effect 3 DLC SFAR files, allowing you to access their contents for modding.\n\nThis unpacker is based on MEM code, which is very fast and is compatible with the ALOT texture mod.",
-//            });
+            set.Add(new Tool
+            {
+                name = "DLC Unpacker",
+                type = typeof(Tools.DLCUnpacker.DLCUnpackerWindow),
+                icon = Application.Current.FindResource("iconDLCUnpacker") as ImageSource,
+                open = () =>
+                {
+                    if (ME3Directory.DefaultGamePath != null)
+                    {
+                        new Tools.DLCUnpacker.DLCUnpackerWindow().Show();
+                    }
+                    else
+                    {
+                        MessageBox.Show("DLC Unpacker only works with Mass Effect 3.");
+                    }
+                },
+                tags = new List<string> { "utility", "dlc", "sfar", "unpack", "extract" },
+                category = "Extractors + Repackers",
+                description = "DLC Unpacker allows you to extract Mass Effect 3 OT DLC SFAR files, allowing you to access their contents for modding. This unpacker is based on MEM code, which is very fast and is compatible with the ALOT texture mod.",
+            });
             set.Add(new Tool
             {
                 name = "Hex Converter",
@@ -578,15 +578,12 @@ namespace LegendaryExplorer
         {
             try
             {
-                if (File.Exists(FavoritesPath))
+                var favorites = new HashSet<string>(Misc.AppSettings.Settings.MainWindow_Favorites.Split(';'));
+                foreach (var tool in items)
                 {
-                    var favorites = new HashSet<string>(Misc.AppSettings.Settings.MainWindow_Favorites.Split(';'));
-                    foreach (var tool in items)
+                    if (favorites.Contains(tool.name))
                     {
-                        if (favorites.Contains(tool.name))
-                        {
-                            tool.IsFavorited = true;
-                        }
+                        tool.IsFavorited = true;
                     }
                 }
             }
