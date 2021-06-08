@@ -19,23 +19,42 @@ namespace LegendaryExplorer.Dialogs
         {
             MEGame.ME3, MEGame.LE2, MEGame.LE3
         };
-        public WwiseConversionSettingsPackage ChosenSettings; 
 
-        public SoundReplaceOptionsDialog(bool showUpdateEvents = true) : base()
+        private bool _showUpdateEventsCheckbox;
+
+        public bool ShowUpdateEventsCheckbox
+        {
+            get => _showUpdateEventsCheckbox;
+            set => SetProperty(ref _showUpdateEventsCheckbox, value);
+        }
+
+        private MEGame _selectedGame;
+
+        public MEGame SelectedGame
+        {
+            get => _selectedGame;
+            set {
+                if (SupportedGames.Contains(value))
+                {
+                    SetProperty(ref _selectedGame, value);
+                }
+            }
+    }
+
+        public WwiseConversionSettingsPackage ChosenSettings;
+
+        public SoundReplaceOptionsDialog(bool showUpdateEvents = true, MEGame game = MEGame.ME3) : base()
         {
             DataContext = this;
             SampleRates.AddRange(AcceptedSampleRates);
             LoadCommands();
             InitializeComponent();
-            if (!showUpdateEvents)
-            {
-                UpdateEvents_Text.Visibility = Visibility.Collapsed;
-                UpdateEvents_CheckBox.Visibility = Visibility.Collapsed;
-            }
+            ShowUpdateEventsCheckbox = showUpdateEvents;
+            SelectedGame = game;
             SampleRate_Combobox.SelectedIndex = 0;
         }
 
-        public SoundReplaceOptionsDialog(Window w, bool showUpdateEvents = true) : this(showUpdateEvents)
+        public SoundReplaceOptionsDialog(Window w, bool showUpdateEvents = true, MEGame game = MEGame.ME3) : this(showUpdateEvents, game)
         {
             Owner = w;
         }
@@ -54,7 +73,7 @@ namespace LegendaryExplorer.Dialogs
             {
                 TargetSamplerate = (int)SampleRate_Combobox.SelectedItem,
                 UpdateReferencedEvents = (bool)UpdateEvents_CheckBox.IsChecked,
-                TargetGame = (MEGame)Game_Combobox.SelectedItem
+                TargetGame = SelectedGame
             };
             DialogResult = true;
             Close();

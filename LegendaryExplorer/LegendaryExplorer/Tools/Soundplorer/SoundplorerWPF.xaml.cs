@@ -519,7 +519,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
                         if (wemHeader == "RIFF" || wemHeader == "RIFX")
                         {
                             var wem = new EmbeddedWEMFile(wemData, wemName, spExport.Export); //will correct truncated stuff
-                            Stream waveStream = soundPanel.getPCMStream(forcedWemFile: wem);
+                            Stream waveStream = soundPanel.GetPCMStream(forcedWemFile: wem);
                             if (waveStream != null && waveStream.Length > 0)
                             {
                                 string outputname = wemName + ".wav";
@@ -811,7 +811,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
                     }
                     if (fromWave)
                     {
-                        soundPanel.ReplaceAudioFromWwiseOgg(forcedExport: clone);
+                        soundPanel.ReplaceAudioFromWwiseEncodedFile(forcedExport: clone);
                     }
                     else
                     {
@@ -826,7 +826,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
         {
             if (SoundExports_ListBox.SelectedItem is SoundplorerExport spExport)
             {
-                soundPanel.ReplaceAudioFromWwiseOgg(forcedExport: spExport.Export);
+                soundPanel.ReplaceAudioFromWwiseEncodedFile(forcedExport: spExport.Export);
             }
         }
 
@@ -853,7 +853,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
             WwiseCliHandler.DeleteTemplateProjectDirectory();
 
             // Shows wwise path dialog if no paths are set
-            Soundpanel.VerifyWwisePathsExist();
+            Soundpanel.CheckWwisePathForGame(Pcc?.Game ?? MEGame.ME3);
 
             var dlg = new CommonOpenFileDialog("Select folder containing .wav files") { IsFolderPicker = true };
             if (dlg.ShowDialog(this) != CommonFileDialogResult.Ok) { return; }

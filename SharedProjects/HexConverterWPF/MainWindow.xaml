@@ -62,12 +62,16 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
+
+                <!-- This element helps the textboxes not resize -->
+                <Grid Grid.Column="1" Name="gridWidth"/>
+
                 <TextBlock Text="Unreal" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
                 <TextBlock Text="Degrees" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
                 <TextBlock Text="Radians" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
-                <TextBox Name="UnrealRot_TextBox" Text="{Binding UnrealRotationText}" MaxLength="8" Grid.Row="0" Grid.Column="1" Height="20" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUpRotation"/>
-                <TextBox Name="DegreesRot_TextBox" Text="{Binding DegreesRotationText}" MaxLength="8" Grid.Row="1" Grid.Column="1" Height="20" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUpRotation"/>
-                <TextBox Name="RadiansRot_TextBox" Text="{Binding RadiansRotationText}" MaxLength="8" Grid.Row="2" Grid.Column="1" Height="20" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUpRotation"/>
+                <TextBox Name="UnrealRot_TextBox" Text="{Binding UnrealRotationText}" MaxLength="8" Grid.Row="0" Grid.Column="1" Height="20" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUpRotation" MaxWidth="{Binding ActualWidth, ElementName=gridWidth}"/>
+                <TextBox Name="DegreesRot_TextBox" Text="{Binding DegreesRotationText}" MaxLength="8" Grid.Row="1" Grid.Column="1" Height="20" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUpRotation" MaxWidth="{Binding ActualWidth, ElementName=gridWidth}"/>
+                <TextBox Name="RadiansRot_TextBox" Text="{Binding RadiansRotationText}" MaxLength="8" Grid.Row="2" Grid.Column="1" Height="20" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUpRotation" MaxWidth="{Binding ActualWidth, ElementName=gridWidth}"/>
             </Grid>
         </GroupBox>
         <CheckBox Content="Always on top" Grid.Row="2" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding AlwaysOnTop}"/>

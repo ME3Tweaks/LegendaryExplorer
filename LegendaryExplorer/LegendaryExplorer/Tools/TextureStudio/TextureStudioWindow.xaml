@@ -226,7 +226,8 @@
                     </ListBox>
                 </DockPanel>
                 <GridSplitter Grid.Row="0"  Grid.Column="3" Grid.RowSpan="2" Width="5" VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
-                <exportLoaderControls:TextureViewerExportLoader x:Name="TextureViewer_ExportLoader"  Grid.Column="4" Grid.Row="1"/>
+                <exportLoaderControls:TextureViewerExportLoader x:Name="TextureViewer_ExportLoader"  Grid.Column="4" Grid.Row="1"
+                                                                HostingControl="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
 
             </Grid>
             </Grid>

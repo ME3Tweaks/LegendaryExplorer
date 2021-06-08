@@ -450,7 +450,7 @@
                         <TabItem.Header>
                             <TextBlock Text="Texture" ToolTip="View texture"/>
                         </TabItem.Header>
-                        <exportLoaderControls:TextureViewerExportLoader x:Name="EmbeddedTextureViewerTab_EmbededTextureViewer"/>
+                        <exportLoaderControls:TextureViewerExportLoader x:Name="EmbeddedTextureViewerTab_EmbededTextureViewer" HostingControl="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
                     </TabItem>
                     <TabItem Name="BinaryInterpreter_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>

@@ -33,7 +33,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
     /// <summary>
     /// Interaction logic for TextureStudioWindow.xaml
     /// </summary>
-    public partial class TextureStudioWindow : NotifyPropertyChangedWindowBase, IRecents
+    public partial class TextureStudioWindow : NotifyPropertyChangedWindowBase, IRecents, IBusyUIHost
     {
         public ObservableCollectionExtendedWPF<TextureMapMemoryEntry> AllTreeViewNodes { get; } = new();
         public ObservableCollectionExtendedWPF<string> ME1MasterTexturePackages { get; } = new();

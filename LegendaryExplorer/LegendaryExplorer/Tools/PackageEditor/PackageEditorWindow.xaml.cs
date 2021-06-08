@@ -877,7 +877,9 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     {
                         MEGame.UDK => GameFileFilters.UDKFileFilter,
                         MEGame.ME1 => GameFileFilters.ME1SaveFileFilter,
-                        _ => GameFileFilters.ME3ME2SaveFileFilter
+                        MEGame.ME2 => GameFileFilters.ME3ME2SaveFileFilter,
+                        MEGame.ME3 => GameFileFilters.ME3ME2SaveFileFilter,
+                        _ => GameFileFilters.LESaveFileFilter
                     }
                 };
                 if (dlg.ShowDialog() == true)
@@ -3766,9 +3768,12 @@ namespace LegendaryExplorer.Tools.PackageEditor
         {
             Settings.PackageEditor_ShowTreeEntrySubText =
                 !Settings.PackageEditor_ShowTreeEntrySubText;
-            foreach (TreeViewEntry tv in AllTreeViewNodesX[0].FlattenTree())
+            if (AllTreeViewNodesX.Any)
             {
-                tv.RefreshSubText();
+                foreach (TreeViewEntry tv in AllTreeViewNodesX[0].FlattenTree())
+                {
+                    tv.RefreshSubText();
+                }
             }
         }
 

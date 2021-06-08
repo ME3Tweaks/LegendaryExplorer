@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -12,6 +13,7 @@ using System.Windows.Media.Imaging;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.SharedUI;
+using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorer.Tools.TFCCompactor;
 using LegendaryExplorerCore.GameFilesystem;
@@ -23,6 +25,7 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Classes;
 using Microsoft.Win32;
 using Image = LegendaryExplorerCore.Textures.Image;
+using LegendaryExplorerCore.Helpers;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -76,6 +79,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// </summary>
         public static readonly DependencyProperty ViewerModeOnlyProperty = DependencyProperty.Register(
             "ViewerModeOnly", typeof(bool), typeof(TextureViewerExportLoader), new PropertyMetadata(false, ViewerModeOnlyCallback));
+
+        public IBusyUIHost HostingControl
+        {
+            get => (IBusyUIHost)GetValue(HostingControlProperty);
+            set => SetValue(HostingControlProperty, value);
+        }
+
+        public static readonly DependencyProperty HostingControlProperty = DependencyProperty.Register(
+            nameof(HostingControl), typeof(IBusyUIHost), typeof(TextureViewerExportLoader));
 
         private const string CREATE_NEW_TFC_STRING = "Create new TFC";
         private const string STORE_EXTERNALLY_STRING = "Store externally in new TFC";
@@ -151,39 +163,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var result = selectDDS.ShowDialog();
             if (result.HasValue && result.Value)
             {
-                //Check aspect ratios
-                var props = CurrentLoadedExport.GetProperties();
-                var listedWidth = props.GetProp<IntProperty>("SizeX")?.Value ?? 0;
-                var listedHeight = props.GetProp<IntProperty>("SizeY")?.Value ?? 0;
-
-                Image image;
-                try
+                if (HostingControl != null)
                 {
-#if WINDOWS
-                    image = Image.LoadFromFile(selectDDS.FileName, LegendaryExplorerCore.Textures.PixelFormat.ARGB);
-#else
-                    image = new Image(selectDDS.FileName);
-#endif
-                }
-                catch (TextureSizeNotPowerOf2Exception)
-                {
-                    MessageBox.Show("The width and height of a texture must both be a power of 2\n" +
-                                    "(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192 (LE only))", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show($"Error: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
+                    HostingControl.IsBusy = true;
+                    HostingControl.BusyText = "Replacing textures";
                 }
 
-                if (image.mipMaps[0].origWidth / image.mipMaps[0].origHeight != listedWidth / listedHeight)
-                {
-                    MessageBox.Show("Cannot replace texture: Aspect ratios must be the same.");
-                    return;
-                }
-
-                string forcedTFCName = selectedTFCName;
                 if (selectedTFCName == CREATE_NEW_TFC_STRING || selectedTFCName == STORE_EXTERNALLY_STRING)
                 {
                     string defaultTfcName = "Textures_DLC_MOD_YourModFolderNameHere";
@@ -193,7 +178,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         //Check next level up.
                         containingFolderInfo = containingFolderInfo.Parent;
-                        if (containingFolderInfo != null && Path.GetFileName(containingFolderInfo.FullName).StartsWith("DLC_"))
+                        if (containingFolderInfo != null &&
+                            Path.GetFileName(containingFolderInfo.FullName).StartsWith("DLC_"))
                         {
                             var possibleDLCName = Path.GetFileName(containingFolderInfo.FullName);
                             if (!MEDirectories.OfficialDLC(CurrentLoadedExport.Game).Contains(possibleDLCName))
@@ -211,11 +197,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         {
                             //Check TFC name isn't in list
                             CurrentLoadedExport.FileRef.FindNameOrAdd(p.ResponseText);
-                            forcedTFCName = p.ResponseText;
+                            selectedTFCName = p.ResponseText;
                         }
                         else
                         {
-                            MessageBox.Show("Error: Name must start with Textures_DLC_, and must have at least one additional character.\nThe named should match your DLC's foldername.");
+                            MessageBox.Show(
+                                "Error: Name must start with Textures_DLC_, and must have at least one additional character.\nThe named should match your DLC's foldername.");
                             return;
                         }
                     }
@@ -224,14 +211,54 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         return;
                     }
                 }
-                if (forcedTFCName == PACKAGE_STORED_STRING) forcedTFCName = null;
-                replaceTextures(image, props, selectDDS.FileName, forcedTFCName);
 
-                // MER: Dump to disk
-                //var binName = Path.Combine(Directory.GetParent(selectDDS.FileName).FullName, Path.GetFileNameWithoutExtension(selectDDS.FileName) + ".bin");
-                //File.WriteAllBytes(binName, CurrentLoadedExport.GetBinaryData());
+                Task.Run(() =>
+                {
+                    //Check aspect ratios
+                    var props = CurrentLoadedExport.GetProperties();
+                    var listedWidth = props.GetProp<IntProperty>("SizeX")?.Value ?? 0;
+                    var listedHeight = props.GetProp<IntProperty>("SizeY")?.Value ?? 0;
+
+                    Image image;
+                    try
+                    {
+#if WINDOWS
+                        image = Image.LoadFromFile(selectDDS.FileName, LegendaryExplorerCore.Textures.PixelFormat.ARGB);
+#else
+                    image = new Image(selectDDS.FileName);
+#endif
+                    }
+                    catch (TextureSizeNotPowerOf2Exception)
+                    {
+                        MessageBox.Show("The width and height of a texture must both be a power of 2\n" +
+                                        "(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192 (LE only))", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+                    catch (Exception e)
+                    {
+                        MessageBox.Show($"Error: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+
+                    if (image.mipMaps[0].origWidth / image.mipMaps[0].origHeight != listedWidth / listedHeight)
+                    {
+                        MessageBox.Show("Cannot replace texture: Aspect ratios must be the same.");
+                        return;
+                    }
+
+                    if (selectedTFCName == PACKAGE_STORED_STRING) selectedTFCName = null;
+                    replaceTextures(image, props, selectDDS.FileName, selectedTFCName);
+
+                    // MER: Dump to disk
+                    //var binName = Path.Combine(Directory.GetParent(selectDDS.FileName).FullName, Path.GetFileNameWithoutExtension(selectDDS.FileName) + ".bin");
+                    //File.WriteAllBytes(binName, CurrentLoadedExport.GetBinaryData());
+                })
+                .ContinueWithOnUIThread((a) =>
+                {
+                    if (HostingControl != null) HostingControl.IsBusy = false;
+
+                });
             }
-
         }
 
         private void ExportToPNG()
