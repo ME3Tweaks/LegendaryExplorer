@@ -284,7 +284,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             try
             {
-                if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi && !string.IsNullOrWhiteSpace(tvi.ParsedValue))
+                if (Interpreter_TreeView?.SelectedItem is UPropertyTreeViewEntry tvi && !string.IsNullOrWhiteSpace(tvi.ParsedValue))
                 {
                     Clipboard.SetText(tvi.ParsedValue);
                 }
@@ -297,7 +297,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private bool CanCopyPropertyValue()
         {
-            if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi && !string.IsNullOrWhiteSpace(tvi.ParsedValue))
+            if (Interpreter_TreeView?.SelectedItem is UPropertyTreeViewEntry tvi && !string.IsNullOrWhiteSpace(tvi.ParsedValue))
             {
                 return true;
             }
