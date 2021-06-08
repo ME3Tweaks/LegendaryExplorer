@@ -485,7 +485,7 @@ namespace LegendaryExplorer
                 tags = new List<string> { "user", "developer", "pcc", "cloning", "import", "export", "sfm", "upk", ".u", "me2", "me1", "me3", "name" },
                 category = "Core Editors",
                 description = "Package Editor is Legendary Explorer's general purpose editing tool for Unreal package files in all games. " +
-                              "Edit trilogy game files in a single window with easy access to external tools such as Curve Editor and Soundplorer."
+                              "Edit files in a single window with easy access to external tools such as Curve Editor and Soundplorer."
             });
             set.Add(new Tool
             {

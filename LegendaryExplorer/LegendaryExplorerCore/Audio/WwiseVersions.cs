@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,5 +28,17 @@ namespace LegendaryExplorerCore.Audio
             MEGame.LE1 => null,
             _ => 7110
         };
+
+        public static bool IsCorrectWwiseVersion(MEGame game, string pathToWwiseExe)
+        {
+            if (File.Exists(pathToWwiseExe) && WwiseVersion(game) != null)
+            {
+                var versionInfo = FileVersionInfo.GetVersionInfo(pathToWwiseExe);
+                string version = versionInfo.ProductVersion;
+                return version == WwiseFullVersion(game);
+            }
+
+            return false;
+        }
     }
 }

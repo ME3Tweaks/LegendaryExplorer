@@ -3766,9 +3766,12 @@ namespace LegendaryExplorer.Tools.PackageEditor
         {
             Settings.PackageEditor_ShowTreeEntrySubText =
                 !Settings.PackageEditor_ShowTreeEntrySubText;
-            foreach (TreeViewEntry tv in AllTreeViewNodesX[0].FlattenTree())
+            if (AllTreeViewNodesX.Any)
             {
-                tv.RefreshSubText();
+                foreach (TreeViewEntry tv in AllTreeViewNodesX[0].FlattenTree())
+                {
+                    tv.RefreshSubText();
+                }
             }
         }
 

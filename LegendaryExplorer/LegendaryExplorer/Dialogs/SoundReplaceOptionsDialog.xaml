@@ -6,10 +6,15 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
     mc:Ignorable="d"
+    DataContext="{Binding RelativeSource={RelativeSource Self}}"
     WindowStartupLocation="CenterOwner"
     SizeToContent="WidthAndHeight"
     Title="Sound replacement options">
+    <Window.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </Window.Resources>
     <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -30,10 +35,14 @@
         <TextBlock Text="Sample Rate" Grid.Row="2" VerticalAlignment="Center"/>
         <xctk:WatermarkComboBox Name="SampleRate_Combobox" Watermark="Select target sample rate" Grid.Row="2" Grid.Column="1"  Grid.ColumnSpan="2" ItemsSource="{Binding SampleRates}"/>
         <TextBlock Text="Game" Grid.Row="3" VerticalAlignment="Center"/>
-        <xctk:WatermarkComboBox Name="Game_Combobox" Watermark="Select game you're converting for" Grid.Row="3" Grid.Column="1"  Grid.ColumnSpan="2" ItemsSource="{Binding SupportedGames}"/>
-        <TextBlock x:Name="UpdateEvents_Text" Text ="Update Event Lengths" Grid.Row="4" VerticalAlignment="Center" Margin="0 5 0 0"  />
-        <CheckBox x:Name="UpdateEvents_CheckBox"  Grid.Row="4" Grid.Column="1" IsChecked="False" Margin="0 5 0 0"  />
-        <Button Content="Replace audio" Command="{Binding ConvertAudioCommand}" Grid.Row="8" Grid.Column="2" IsDefault="True"/>
+        <xctk:WatermarkComboBox Name="Game_Combobox" Watermark="Select game you're converting for" Grid.Row="3" Grid.Column="1"  Grid.ColumnSpan="2" 
+                                ItemsSource="{Binding SupportedGames}" 
+                                SelectedItem="{Binding SelectedGame}"/>
+        <TextBlock x:Name="UpdateEvents_Text" Text ="Update Event Lengths" Grid.Row="4" VerticalAlignment="Center" 
+                  Margin="0 5 0 0" Visibility="{Binding ShowUpdateEventsCheckbox, Converter={StaticResource BoolToVisibilityConverter}}" />
+        <CheckBox x:Name="UpdateEvents_CheckBox"  Grid.Row="4" Grid.Column="1" IsChecked="False" 
+                  Margin="0 5 0 0" Visibility="{Binding ShowUpdateEventsCheckbox, Converter={StaticResource BoolToVisibilityConverter}}"  />
+        <Button Content="Replace Audio" Command="{Binding ConvertAudioCommand}" Grid.Row="8" Grid.Column="2" IsDefault="True"/>
         <Button Content="Cancel" Click="Cancel_Click"  Grid.Row="9" Grid.Column="1" Margin="8,0"/>
     </Grid>
 </misc:NotifyPropertyChangedWindowBase>
