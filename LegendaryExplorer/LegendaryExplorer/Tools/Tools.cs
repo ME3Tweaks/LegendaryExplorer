@@ -248,7 +248,7 @@ namespace LegendaryExplorer
                 tags = new List<string> { "utility", "coal", "ini", "bin" },
                 category = "Extractors + Repackers",
                 category2 = "Utilities",
-                description = "Coalesced Compiler converts between XML and BIN formats for ME3's coalesced files. These are key game files that help control a large amount of content.",
+                description = "Coalesced Compiler converts between XML and BIN formats for coalesced files. These are key game files that help control a large amount of content.",
             });
             set.Add(new Tool
             {

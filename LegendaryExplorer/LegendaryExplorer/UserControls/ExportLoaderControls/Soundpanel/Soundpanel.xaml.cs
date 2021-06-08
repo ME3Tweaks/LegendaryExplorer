@@ -28,6 +28,7 @@ using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Microsoft.Win32;
 using AudioStreamHelper = LegendaryExplorer.UnrealExtensions.AudioStreamHelper;
@@ -126,6 +127,37 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
         public static readonly DependencyProperty HexBoxMaxWidthProperty = DependencyProperty.Register(
             nameof(HexBoxMaxWidth), typeof(int), typeof(Soundpanel), new PropertyMetadata(default(int)));
+
+
+        public bool MiniPlayerMode
+        {
+            get => (bool)GetValue(MiniPlayerModeProperty);
+            set => SetValue(MiniPlayerModeProperty, value);
+        }
+        public static readonly DependencyProperty MiniPlayerModeProperty = DependencyProperty.Register(
+            nameof(MiniPlayerMode), typeof(bool), typeof(Soundpanel), new PropertyMetadata(default(bool), MiniPlayerModeChanged));
+
+        private static void MiniPlayerModeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is Soundpanel sp)
+            {
+                if ((bool)e.NewValue)
+                {
+                    // MiniPlayerMode enabled
+                    sp.ExportInfoListBox.Visibility = Visibility.Collapsed;
+                    foreach (var item in sp.SoundPanel_TabsControl.Items)
+                        (item as TabItem).Visibility = Visibility.Collapsed;
+                }   
+                else
+                {
+                    // MiniPlayerMode disabled
+                    sp.ExportInfoListBox.Visibility = Visibility.Visible;
+                    foreach (var item in sp.SoundPanel_TabsControl.Items)
+                        (item as TabItem).Visibility = Visibility.Visible;
+                }
+            }
+        }
+
         #endregion
 
         #region Constructor and On_Loaded
