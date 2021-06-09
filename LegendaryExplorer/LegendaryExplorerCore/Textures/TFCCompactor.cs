@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -49,6 +50,11 @@ namespace LegendaryExplorerCore.Textures
         /// If the TFC should use indexing. This is true for LE, false for OT
         /// </summary>
         public bool UseIndexing { get; set; }
+
+        /// <summary>
+        /// What game this compaction is building a TFC for
+        /// </summary>
+        public MEGame Game { get; set; }
 
         /// <summary>
         /// Maps CRC -> where it goes in new TFCs
@@ -162,16 +168,6 @@ namespace LegendaryExplorerCore.Textures
 
         public static void CompactTFC(TFCCompactorInfoPackage infoPackage, Action<string> errorCallback, Action<string, int, int> progressDelegate = null, CancellationToken cts = default)
         {
-            // TESTING
-            infoPackage = new TFCCompactorInfoPackage()
-            {
-                BaseCompactionPath = @"X:\m3modlibrary\ME3\Fanciful EDI Armor Variations - Movies TV and Games\DLC_MOD_FancifulEDIMovie",
-                DLCName = "DLC_MOD_FancifulEDIMovie",
-                StagingPath = @"X:\ML2",
-                TFCType = "Textures",
-                DependentDLC = new string[] { }
-            };
-
             TFCCompactor compactor = new TFCCompactor(infoPackage);
 
             var rootNodes = new List<TextureMapMemoryEntry>();
@@ -298,6 +294,31 @@ namespace LegendaryExplorerCore.Textures
                     }
                 }
             }
+
+            var dlcFolderDir = Directory.GetFileSystemEntries(infoPackage.BaseCompactionPath, infoPackage.DLCName, SearchOption.AllDirectories).FirstOrDefault();
+            if (dlcFolderDir == null && Path.GetFileName(infoPackage.BaseCompactionPath) == infoPackage.DLCName)
+                dlcFolderDir = infoPackage.BaseCompactionPath;
+            if (dlcFolderDir != null)
+            {
+                // Delete all existing TFCs
+                var tfcsToDelete = Directory.GetFileSystemEntries(dlcFolderDir, "*.tfc", SearchOption.AllDirectories);
+                foreach (var tfc in tfcsToDelete)
+                {
+                    File.Delete(tfc);
+                }
+
+                var destPath = Path.Combine(dlcFolderDir, infoPackage.Game.CookedDirName());
+                foreach (var tfc in compactor.GetAllTFCs())
+                {
+                    var tfcSource = Path.Combine(infoPackage.StagingPath, $"{tfc.TFCName}.tfc");
+                    File.Move(tfcSource, Path.Combine(destPath, Path.GetFileName(tfcSource)));
+                }
+            }
+        }
+
+        private IEnumerable<TFCInfo> GetAllTFCs()
+        {
+            return tfcSizes.Select(x => x.tfcInfo);
         }
     }
 }

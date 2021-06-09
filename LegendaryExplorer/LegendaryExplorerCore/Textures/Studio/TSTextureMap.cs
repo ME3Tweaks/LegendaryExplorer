@@ -20,6 +20,7 @@ namespace LegendaryExplorerCore.Textures.Studio
     /// Describes a memory-unique texture, e.g. a unique full path.
     /// </summary>
     [AddINotifyPropertyChangedInterface]
+    [DebuggerDisplay("TextureMapMemoryEntry {Children.Count} children, {Instances.Count} instances, TFC name {TFCName}")]
     public class TextureMapMemoryEntry
     {
         /// <summary>
