@@ -168,11 +168,6 @@ namespace LegendaryExplorer.Misc.AppSettings
             get => _binaryinterpreter_skipautoparsesizecheck; 
             set => SetProperty(ref _binaryinterpreter_skipautoparsesizecheck, value);
         }
-        private static bool _binaryinterpreterwpfautoscanalways = false; 
-        public static bool BinaryInterpreterWPFAutoScanAlways {
-            get => _binaryinterpreterwpfautoscanalways; 
-            set => SetProperty(ref _binaryinterpreterwpfautoscanalways, value);
-        }
         private static bool _textureviewer_autoloadmip = true; 
         public static bool TextureViewer_AutoLoadMip {
             get => _textureviewer_autoloadmip; 
@@ -308,7 +303,6 @@ namespace LegendaryExplorer.Misc.AppSettings
             CoalescedEditor_DestinationPath = TryGetSetting(settingsJson, "coalescededitor_destinationpath", "");
             WwiseGraphEditor_AutoSaveView = TryGetSetting(settingsJson, "wwisegrapheditor_autosaveview", false);
             BinaryInterpreter_SkipAutoParseSizeCheck = TryGetSetting(settingsJson, "binaryinterpreter_skipautoparsesizecheck", false);
-            BinaryInterpreterWPFAutoScanAlways = TryGetSetting(settingsJson, "binaryinterpreterwpfautoscanalways", false);
             TextureViewer_AutoLoadMip = TryGetSetting(settingsJson, "textureviewer_autoloadmip", true);
             Interpreter_LimitArrayPropertySize = TryGetSetting(settingsJson, "interpreter_limitarraypropertysize", true);
             Interpreter_AdvancedDisplay = TryGetSetting(settingsJson, "interpreter_advanceddisplay", true);
@@ -376,7 +370,6 @@ namespace LegendaryExplorer.Misc.AppSettings
             settingsJson["coalescededitor_destinationpath"] = CoalescedEditor_DestinationPath.ToString();
             settingsJson["wwisegrapheditor_autosaveview"] = WwiseGraphEditor_AutoSaveView.ToString();
             settingsJson["binaryinterpreter_skipautoparsesizecheck"] = BinaryInterpreter_SkipAutoParseSizeCheck.ToString();
-            settingsJson["binaryinterpreterwpfautoscanalways"] = BinaryInterpreterWPFAutoScanAlways.ToString();
             settingsJson["textureviewer_autoloadmip"] = TextureViewer_AutoLoadMip.ToString();
             settingsJson["interpreter_limitarraypropertysize"] = Interpreter_LimitArrayPropertySize.ToString();
             settingsJson["interpreter_advanceddisplay"] = Interpreter_AdvancedDisplay.ToString();

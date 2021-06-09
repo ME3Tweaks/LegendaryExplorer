@@ -360,7 +360,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             OnDemand_Panel.Visibility = Visibility.Visible;
             LoadedContent_Panel.Visibility = Visibility.Collapsed;
-            if (CurrentLoadedExport.DataSize < 20480 || Settings.BinaryInterpreterWPFAutoScanAlways || AlwaysLoadRegardlessOfSize)
+            if (CurrentLoadedExport.DataSize < 20480 || Settings.BinaryInterpreter_SkipAutoParseSizeCheck || AlwaysLoadRegardlessOfSize)
             {
                 StartBinaryScan();
             }
