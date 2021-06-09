@@ -134,6 +134,8 @@ namespace LegendaryExplorer.SharedUI
             Entry = entry;
             DisplayName = displayName;
             Sublinks = new ObservableCollectionExtended<TreeViewEntry>();
+            if (Entry != null)
+                Game = Entry.Game;
         }
 
         public void RefreshDisplayName()
@@ -421,6 +423,11 @@ namespace LegendaryExplorer.SharedUI
 
         private static SolidColorBrush ImportEntryBrush => SystemColors.GrayTextBrush;
         private static SolidColorBrush ExportEntryBrush => SystemColors.ControlTextBrush;
+
+        /// <summary>
+        /// Game this entry is for. This is mostly for the root node since it won't have an attached entry
+        /// </summary>
+        public MEGame Game { get; set; }
 
         public override string ToString()
         {
