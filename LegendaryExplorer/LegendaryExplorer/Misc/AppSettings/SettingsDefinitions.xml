@@ -69,20 +69,18 @@
 	
   <!-- Export Loader Control settings -->
   <setting name="BinaryInterpreter_SkipAutoParseSizeCheck" type="bool" defaultvalue="false" category="Export Loaders"
-           friendlyName="Binary Interpreter: Skip Auto-parse Size Check"/>
-  <setting name="BinaryInterpreterWPFAutoScanAlways" type="bool" defaultvalue="false" category="Export Loaders"
-           friendlyName="Binary Interpreter: Always Auto-scan"/>
+           friendlyName="Binary Interpreter: Skip Auto-parse size limit (20KB)"/>
   <setting name="TextureViewer_AutoLoadMip" type="bool" defaultvalue="true" category="Export Loaders"
-           friendlyName="Texture Viewer: Auto-load Mip"/>
+           friendlyName="Texture Viewer: Auto-load top mip"/>
 
   <setting name="Interpreter_LimitArrayPropertySize" type="bool" defaultvalue="true" category="Export Loaders"
-           friendlyName="Properties: Limit Array Property Size"/>
+           friendlyName="Properties: Limit array property size"/>
   <setting name="Interpreter_AdvancedDisplay" type="bool" defaultvalue="true" category="Export Loaders"
-           friendlyName="Properties: Advanced Display"/>
+           friendlyName="Properties: Display advanced info"/>
   <setting name="Interpreter_Colorize" type="bool" defaultvalue="true" category="Export Loaders"
-           friendlyName="Properties: Colorize"/>
+           friendlyName="Properties: Colorize properties"/>
   <setting name="Interpreter_ShowLinearColorWheel" type="bool" defaultvalue="false" category="Export Loaders"
-           friendlyName="Properties: Show Linear Color Wheel"/>
+           friendlyName="Properties: Show LinearColor picker"/>
   
   <setting name="Soundpanel_LoopAudio" type="bool" defaultvalue="false"/>
 
@@ -92,6 +90,8 @@
   <setting name="Wwise_7110Path" type="string" defaultvalue="" category="Audio"
            friendlyName="WwiseCLI.exe v7110 Path" fileSelectExtension=".exe"/>
 	
+  <!-- TFC Compactor -->
+  <setting name="TFCCompactor_LastStagingPath" type="string" defaultvalue=""/>
 
   <!-- Global settings-->
   <setting name="Global_PropertyParsing_ParseUnknownArrayTypeAsObject" type="bool" defaultvalue="false" settingsbridgename="ParseUnknownArrayTypesAsObject"/>

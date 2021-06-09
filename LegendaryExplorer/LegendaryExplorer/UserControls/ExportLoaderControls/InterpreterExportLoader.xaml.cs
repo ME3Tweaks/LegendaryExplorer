@@ -677,7 +677,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private bool CanRemoveProperty()
         {
-            if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi)
+            if (Interpreter_TreeView?.SelectedItem is UPropertyTreeViewEntry tvi)
             {
                 return tvi.Parent != null && !(tvi.Property is NoneProperty) &&
                        (tvi.Parent.Parent == null //items with a single parent (root nodes)
@@ -703,7 +703,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private bool CanAddPropertiesToStruct()
         {
-            if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi && tvi.Property is StructProperty sp && !sp.IsImmutable)
+            if (Interpreter_TreeView?.SelectedItem is UPropertyTreeViewEntry tvi && tvi.Property is StructProperty sp && !sp.IsImmutable)
             {
                 ClassInfo info = GlobalUnrealObjectInfo.GetClassOrStructInfo(Pcc.Game, sp.StructType);
                 var allPropNames = new List<string>();

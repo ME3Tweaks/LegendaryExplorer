@@ -126,7 +126,9 @@ HRESULT SaveTexture(const TextureBuffer* inputBuffer, const char* outputFilename
 	}
 	else if (strcasecmp(extension, EXTENSION_PNG) == 0) {
 		// PNG files can't store compressed formats, so decompress before saving if necessary
-		if (DirectX::IsCompressed(inputBuffer->Format)) {
+		if (DirectX::IsCompressed(inputBuffer->Format)
+			|| inputBuffer->Format == DXGI_FORMAT_R8_UNORM
+			|| inputBuffer->Format == DXGI_FORMAT_R8G8_SNORM) {
 			TextureBuffer decompressed = { };
 			decompressed.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
 			hr = ConvertTexture(inputBuffer, &decompressed);
@@ -141,7 +143,9 @@ HRESULT SaveTexture(const TextureBuffer* inputBuffer, const char* outputFilename
 	}
 	else if (strcasecmp(extension, EXTENSION_TGA) == 0) {
 		// TGA files can't store compressed formats, so decompress before saving if necessary
-		if (DirectX::IsCompressed(inputBuffer->Format)) {
+		if (DirectX::IsCompressed(inputBuffer->Format)
+			|| inputBuffer->Format == DXGI_FORMAT_R8_UNORM
+			|| inputBuffer->Format == DXGI_FORMAT_R8G8_SNORM) {
 			TextureBuffer decompressed = { };
 			decompressed.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
 			hr = ConvertTexture(inputBuffer, &decompressed);

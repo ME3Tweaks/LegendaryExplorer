@@ -168,11 +168,6 @@ namespace LegendaryExplorer.Misc.AppSettings
             get => _binaryinterpreter_skipautoparsesizecheck; 
             set => SetProperty(ref _binaryinterpreter_skipautoparsesizecheck, value);
         }
-        private static bool _binaryinterpreterwpfautoscanalways = false; 
-        public static bool BinaryInterpreterWPFAutoScanAlways {
-            get => _binaryinterpreterwpfautoscanalways; 
-            set => SetProperty(ref _binaryinterpreterwpfautoscanalways, value);
-        }
         private static bool _textureviewer_autoloadmip = true; 
         public static bool TextureViewer_AutoLoadMip {
             get => _textureviewer_autoloadmip; 
@@ -212,6 +207,11 @@ namespace LegendaryExplorer.Misc.AppSettings
         public static string Wwise_7110Path {
             get => _wwise_7110path; 
             set => SetProperty(ref _wwise_7110path, value);
+        }
+        private static string _tfccompactor_laststagingpath = ""; 
+        public static string TFCCompactor_LastStagingPath {
+            get => _tfccompactor_laststagingpath; 
+            set => SetProperty(ref _tfccompactor_laststagingpath, value);
         }
         private static bool _global_propertyparsing_parseunknownarraytypeasobject = false; 
         public static bool Global_PropertyParsing_ParseUnknownArrayTypeAsObject {
@@ -303,7 +303,6 @@ namespace LegendaryExplorer.Misc.AppSettings
             CoalescedEditor_DestinationPath = TryGetSetting(settingsJson, "coalescededitor_destinationpath", "");
             WwiseGraphEditor_AutoSaveView = TryGetSetting(settingsJson, "wwisegrapheditor_autosaveview", false);
             BinaryInterpreter_SkipAutoParseSizeCheck = TryGetSetting(settingsJson, "binaryinterpreter_skipautoparsesizecheck", false);
-            BinaryInterpreterWPFAutoScanAlways = TryGetSetting(settingsJson, "binaryinterpreterwpfautoscanalways", false);
             TextureViewer_AutoLoadMip = TryGetSetting(settingsJson, "textureviewer_autoloadmip", true);
             Interpreter_LimitArrayPropertySize = TryGetSetting(settingsJson, "interpreter_limitarraypropertysize", true);
             Interpreter_AdvancedDisplay = TryGetSetting(settingsJson, "interpreter_advanceddisplay", true);
@@ -312,6 +311,7 @@ namespace LegendaryExplorer.Misc.AppSettings
             Soundpanel_LoopAudio = TryGetSetting(settingsJson, "soundpanel_loopaudio", false);
             Wwise_3773Path = TryGetSetting(settingsJson, "wwise_3773path", "");
             Wwise_7110Path = TryGetSetting(settingsJson, "wwise_7110path", "");
+            TFCCompactor_LastStagingPath = TryGetSetting(settingsJson, "tfccompactor_laststagingpath", "");
             Global_PropertyParsing_ParseUnknownArrayTypeAsObject = TryGetSetting(settingsJson, "global_propertyparsing_parseunknownarraytypeasobject", false);
             Global_Analytics_Enabled = TryGetSetting(settingsJson, "global_analytics_enabled", true);
             Global_ME1Directory = TryGetSetting(settingsJson, "global_me1directory", "");
@@ -370,7 +370,6 @@ namespace LegendaryExplorer.Misc.AppSettings
             settingsJson["coalescededitor_destinationpath"] = CoalescedEditor_DestinationPath.ToString();
             settingsJson["wwisegrapheditor_autosaveview"] = WwiseGraphEditor_AutoSaveView.ToString();
             settingsJson["binaryinterpreter_skipautoparsesizecheck"] = BinaryInterpreter_SkipAutoParseSizeCheck.ToString();
-            settingsJson["binaryinterpreterwpfautoscanalways"] = BinaryInterpreterWPFAutoScanAlways.ToString();
             settingsJson["textureviewer_autoloadmip"] = TextureViewer_AutoLoadMip.ToString();
             settingsJson["interpreter_limitarraypropertysize"] = Interpreter_LimitArrayPropertySize.ToString();
             settingsJson["interpreter_advanceddisplay"] = Interpreter_AdvancedDisplay.ToString();
@@ -379,6 +378,7 @@ namespace LegendaryExplorer.Misc.AppSettings
             settingsJson["soundpanel_loopaudio"] = Soundpanel_LoopAudio.ToString();
             settingsJson["wwise_3773path"] = Wwise_3773Path.ToString();
             settingsJson["wwise_7110path"] = Wwise_7110Path.ToString();
+            settingsJson["tfccompactor_laststagingpath"] = TFCCompactor_LastStagingPath.ToString();
             settingsJson["global_propertyparsing_parseunknownarraytypeasobject"] = Global_PropertyParsing_ParseUnknownArrayTypeAsObject.ToString();
             settingsJson["global_analytics_enabled"] = Global_Analytics_Enabled.ToString();
             settingsJson["global_me1directory"] = Global_ME1Directory.ToString();
