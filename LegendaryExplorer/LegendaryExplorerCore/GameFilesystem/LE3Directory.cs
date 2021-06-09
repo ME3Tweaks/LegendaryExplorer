@@ -82,7 +82,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         });
 
         public static string BioWareDocumentsPath => LEDirectory.BioWareDocumentsPath;
-        //public static string LODConfigFile => Path.Combine(BioGamePath, @"Config", @"BIOEngine.ini"); //Where is it for LE3?
+        public static string LODConfigFile => Path.Combine(BioGamePath, @"Config", @"GamerSettings.ini");
         public static string CookedName => "CookedPCConsole";
 
 

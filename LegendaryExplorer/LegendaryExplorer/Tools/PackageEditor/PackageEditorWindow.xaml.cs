@@ -131,7 +131,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 }
             }
         }
-        
+
 
         private int QueuedGotoNumber;
         private bool IsLoadingFile;
@@ -2477,7 +2477,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             IReadOnlyList<ImportEntry> Imports = Pcc.Imports;
             IReadOnlyList<ExportEntry> Exports = Pcc.Exports;
 
-            var rootEntry = new TreeViewEntry(null, Path.GetFileName(Pcc.FilePath)) { IsExpanded = true };
+            var rootEntry = new TreeViewEntry(null, Path.GetFileName(Pcc.FilePath)) { IsExpanded = true, Game = Pcc.Game };
 
             var rootNodes = new List<TreeViewEntry> { rootEntry };
             rootNodes.AddRange(Exports.Select(t => new TreeViewEntry(t)));
@@ -3178,10 +3178,10 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 sourceItem.Parent != null)
             {
                 if (targetItem.Entry != null && sourceItem.Entry != null &&
-                    targetItem.Entry.Game.IsLEGame() != sourceItem.Entry.Game.IsLEGame())
+                    targetItem.Game.IsLEGame() != sourceItem.Entry.Game.IsLEGame())
                 {
                     MessageBox.Show(
-                        "Cannot port assets between Original Trilogy (OT) games ans Legendary Edition (LE) games.", "Cannot port asset", MessageBoxButton.OK, MessageBoxImage.Error);
+                        "Cannot port assets between Original Trilogy (OT) games and  Legendary Edition (LE) games at this time.", "Cannot port asset", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
@@ -3243,7 +3243,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     targetLinkEntry, true, out IEntry newEntry);
 
                 TryAddToPersistentLevel(Pcc.Exports.Skip(numExports));
-                
+
                 //sw.Stop();
                 //MessageBox.Show($"Took {sw.ElapsedMilliseconds}ms");
                 //MeasureProfiler.SaveData(); // End profiling
