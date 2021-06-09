@@ -35,9 +35,9 @@
     
   <!-- Soundplorer specific settings-->
   <setting name="Soundplorer_ReverseIDDisplayEndianness" type="bool" defaultvalue="false" category="Audio"
-           friendlyName="Soundplorer: Reverse ID Display Endianness"/>
+           friendlyName="Sound Explorer: Reverse ID Display Endianness"/>
   <setting name="Soundplorer_AutoplayEntriesOnSelection" type="bool" defaultvalue="false" category="Audio"
-           friendlyName="Soundplorer: Auto-play Entries on Selection"/>
+           friendlyName="Sound Explorer: Auto-play Entries on Selection"/>
 
   <!-- Meshplorer specific settings-->
   <setting name="Meshplorer_BackgroundColor" type="string" defaultvalue="#999999"/>

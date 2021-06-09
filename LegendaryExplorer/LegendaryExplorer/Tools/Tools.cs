@@ -304,16 +304,16 @@ namespace LegendaryExplorer
             });
             set.Add(new Tool
             {
-                name = "Meshplorer",
+                name = "Mesh Explorer",
                 type = typeof(MeshplorerWindow),
                 icon = Application.Current.FindResource("iconMeshplorer") as ImageSource,
                 open = () =>
                 {
                     (new MeshplorerWindow()).Show();
                 },
-                tags = new List<string> { "developer", "mesh" },
+                tags = new List<string> { "developer", "mesh", "meshplorer" },
                 category = "Meshes + Textures",
-                description = "Meshplorer loads and displays all meshes within a file. The tool skins most meshes with its associated texture. This tool works with all three games."
+                description = "Mesh Explorer loads and displays all meshes within a file. The tool skins most meshes with its associated texture. This tool works with all three games."
             });
             set.Add(new Tool
             {
@@ -485,7 +485,7 @@ namespace LegendaryExplorer
                 tags = new List<string> { "user", "developer", "pcc", "cloning", "import", "export", "sfm", "upk", ".u", "me2", "me1", "me3", "name" },
                 category = "Core Editors",
                 description = "Package Editor is Legendary Explorer's general purpose editing tool for Unreal package files in all games. " +
-                              "Edit files in a single window with easy access to external tools such as Curve Editor and Soundplorer."
+                              "Edit files in a single window with easy access to external tools such as Curve Editor and Sound Explorer."
             });
             set.Add(new Tool
             {
@@ -542,14 +542,14 @@ namespace LegendaryExplorer
             });
             set.Add(new Tool
             {
-                name = "Soundplorer",
+                name = "Sound Explorer",
                 type = typeof(SoundplorerWPF),
                 icon = Application.Current.FindResource("iconSoundplorer") as ImageSource,
                 open = () =>
                 {
                     (new SoundplorerWPF()).Show();
                 },
-                tags = new List<string> { "user", "developer", "audio", "dialogue", "music", "wav", "ogg", "sound", "afc", "wwise", "bank" },
+                tags = new List<string> { "user", "developer", "audio", "dialogue", "music", "wav", "ogg", "sound", "afc", "wwise", "bank", "soundplorer" },
                 category = "Audio Tools",
                 description = "Extract and play audio from all 3 games, and replace audio directly in Mass Effect 3 and Mass Effect 2 LE.",
             });

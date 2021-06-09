@@ -18,7 +18,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Icon="/LegendaryExplorer;component/Tools/icons/soundplorerwpf_256x256.ico"
-        Title="Soundplorer" Height="583" Width="900" Loaded="SoundplorerWPF_OnLoaded">
+        Title="Sound Explorer" Height="583" Width="900" Loaded="SoundplorerWPF_OnLoaded">
     <Window.Resources>
         <converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
         <converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
@@ -105,9 +105,9 @@
                 <StackPanel  
                     Margin="10"
                     Visibility="{Binding AudioFileLoaded,Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='Not'}">
-                    <TextBlock Margin="5" Text="Welcome to Soundplorer" FontWeight="Bold"/>
+                    <TextBlock Margin="5" Text="Welcome to Sound Explorer" FontWeight="Bold"/>
                     <TextBlock Margin="5">
-                            Soundplorer is an audio-focused editor that supports browsing and exporting
+                            Sound Explorer is an audio-focused editor that supports browsing and exporting
                             <LineBreak/>
                             audio from all three games.
                             <LineBreak/>

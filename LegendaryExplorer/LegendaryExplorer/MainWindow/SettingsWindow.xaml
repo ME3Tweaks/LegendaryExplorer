@@ -138,12 +138,12 @@
                 <StackPanel Orientation="Horizontal" Margin="0,5">
                             <CheckBox x:Name="Soundplorer_ReverseIDDisplayEndianness" Margin="5,0"
                                       IsChecked="{Binding Path=(settings:Settings.Soundplorer_ReverseIDDisplayEndianness)}"/>
-                            <TextBlock>Soundplorer: Reverse ID Display Endianness</TextBlock>
+                            <TextBlock>Sound Explorer: Reverse ID Display Endianness</TextBlock>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,5">
                             <CheckBox x:Name="Soundplorer_AutoplayEntriesOnSelection" Margin="5,0"
                                       IsChecked="{Binding Path=(settings:Settings.Soundplorer_AutoplayEntriesOnSelection)}"/>
-                            <TextBlock>Soundplorer: Auto-play Entries on Selection</TextBlock>
+                            <TextBlock>Sound Explorer: Auto-play Entries on Selection</TextBlock>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,5">
                             <CheckBox x:Name="WwiseGraphEditor_AutoSaveView" Margin="5,0"
@@ -209,6 +209,19 @@
                                       </StackPanel>
             </TabItem>
 
+            <TabItem Header="Files">
+                <StackPanel>
+                    <Button Margin="10" Click="AssociatePCCSFM_Click"
+                            ToolTip="Opens .PCC and .SFM files in Package Editor when double clicked in Windows Explorer"
+                        >Associate .PCC and .SFM Files</Button>
+                    <Button Margin="10" Click="AssociateUPKUDK_Click"
+                            ToolTip="Opens .UPK and .UDK files in Package Editor when double clicked in Windows Explorer"
+                    >Associate .UPK and .UDK Files</Button>
+                    <Button Margin="10" Click="AssociateOthers_Click"
+                            ToolTip="Makes appropriate tool open when double clicking on TLK/AFC/ISB/DLC/CND files in Windows Explorer"
+                    >Associate Other Filetypes (TLK/AFC/ISB/DLC/CND)</Button>
+                </StackPanel>
+            </TabItem>
 
         </TabControl>
     </DockPanel>

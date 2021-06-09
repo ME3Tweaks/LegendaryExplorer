@@ -79,5 +79,27 @@ namespace LegendaryExplorer.Misc
 
             return false;
         }
+
+        public static void AssociatePCCSFM()
+        {
+            EnsureAssociationsSet("pcc", "Mass Effect Series Package File");
+            EnsureAssociationsSet("sfm", "Mass Effect 1 Package File");
+        }
+
+        public static void AssociateUPKUDK()
+        {
+            EnsureAssociationsSet("upk", "Unreal Package File");
+            EnsureAssociationsSet("udk", "UDK Package File");
+            EnsureAssociationsSet("u", "Mass Effect 1 Package File");
+        }
+
+        public static void AssociateOthers()
+        {
+            EnsureAssociationsSet("tlk", "Talk Table File");
+            EnsureAssociationsSet("afc", "Audio File Cache File");
+            EnsureAssociationsSet("isb", "ISACT Bank File");
+            EnsureAssociationsSet("dlc", "Mass Effect DLC Mount File");
+            EnsureAssociationsSet("cnd", "Mass Effect Conditionals File");
+        }
     }
 }

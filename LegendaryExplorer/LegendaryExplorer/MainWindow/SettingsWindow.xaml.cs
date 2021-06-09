@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
@@ -62,6 +63,21 @@ namespace LegendaryExplorer.MainWindow
         private void SaveFile_Click(object sender, RoutedEventArgs e)
         {
             Settings.Save();
+        }
+
+        private void AssociatePCCSFM_Click(object sender, RoutedEventArgs e)
+        {
+            FileAssociations.AssociatePCCSFM();
+        }
+
+        private void AssociateUPKUDK_Click(object sender, RoutedEventArgs e)
+        {
+            FileAssociations.AssociateUPKUDK();
+        }
+
+        private void AssociateOthers_Click(object sender, RoutedEventArgs e)
+        {
+            FileAssociations.AssociateOthers();
         }
     }
 }

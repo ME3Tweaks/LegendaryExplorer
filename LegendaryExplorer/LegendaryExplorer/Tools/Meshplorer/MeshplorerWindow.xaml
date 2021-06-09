@@ -20,7 +20,7 @@
         Closing="MeshplorerWPF_Closing"
         Icon="/Tools/Icons/meshplorer_256x256.ico"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Title="Meshplorer" Height="550" Width="1200" Loaded="MeshplorerWPF_OnLoaded">
+        Title="Mesh Explorer" Height="550" Width="1200" Loaded="MeshplorerWPF_OnLoaded">
     <Window.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
@@ -87,9 +87,9 @@
                 <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
 
                 <StackPanel Grid.Column="2" Grid.ColumnSpan="3" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
-                    <TextBlock Margin="5" Text="Welcome to Meshplorer" FontWeight="Bold" TextWrapping="Wrap"/>
+                    <TextBlock Margin="5" Text="Welcome to Mesh Explorer" FontWeight="Bold" TextWrapping="Wrap"/>
                     <TextBlock Margin="5" TextWrapping="Wrap">
-                            Meshplorer is a mesh editing focused tool that only shows mesh exports in package files.
+                            Mesh Explorer is a mesh editing focused tool that only shows mesh exports in package files.
                                 <LineBreak/>
                                 This includes SkeletalMeshes, StaticMeshes, and Brushes currently. 
                                 <LineBreak/>
@@ -106,7 +106,7 @@
                             UModel export. Importing must be done from packages created with UDK 2015.
                              <LineBreak/>
                              <LineBreak/>
-                                If you have issues with Meshplorer, please report them to one of the following places:
+                                If you have issues with Mesh Explorer, please report them to one of the following places:
                                 <LineBreak/>
                             - <Hyperlink NavigateUri="{Binding Path=(misc:AppLinks.ME3TweaksDiscordInviteURL), Mode=OneTime}" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
                                 <Run Text="The ME3Tweaks Discord (Legendary_Explorer channel)"/>

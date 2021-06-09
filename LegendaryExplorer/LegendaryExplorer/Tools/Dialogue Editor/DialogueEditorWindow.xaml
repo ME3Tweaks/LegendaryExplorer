@@ -453,7 +453,7 @@
                                                FontWeight="Normal" FontSize="15" />
                                     <Button Name="OpenWWbnk_Button" Padding="3" DockPanel.Dock="Right"
                                             Command="{Binding OpenInCommand_Wwbank}" CommandParameter="SoundP_Bank"
-                                            ToolTip="Open in Soundplorer">
+                                            ToolTip="Open In Sound Explorer">
                                         <Button.Content>
                                             <fa:ImageAwesome Icon="Solid_VolumeUp" Width="16" Height="16"
                                                              Foreground="DarkBlue" />
@@ -946,7 +946,7 @@
                                                             DockPanel.Dock="Right"
                                                             Command="{Binding OpenInCommand_Wwbank}"
                                                             CommandParameter="SoundP_StreamM"
-                                                            ToolTip="Open in Soundplorer">
+                                                            ToolTip="Open In Sound Explorer">
                                                         <Button.Content>
                                                             <fa:ImageAwesome Icon="Solid_VolumeUp" Width="16"
                                                                              Height="16" Foreground="DarkBlue" />
@@ -1355,31 +1355,20 @@
                             </TabControl>
                         </TabItem>
                         <TabItem Header="Audio">
-                            <TabControl Name="soundPanelTabControl"
-                                        SelectionChanged="GenderTabControl_SelectionChanged">
-                                <TabControl.Resources>
-                                    <Style TargetType="{x:Type TabItem}">
-                                        <Setter Property="HeaderTemplate">
-                                            <Setter.Value>
-                                                <DataTemplate>
-                                                    <ContentPresenter Content="{TemplateBinding Content}">
-                                                        <ContentPresenter.LayoutTransform>
-                                                            <RotateTransform Angle="0" />
-                                                        </ContentPresenter.LayoutTransform>
-                                                    </ContentPresenter>
-                                                </DataTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                        <Setter Property="Padding" Value="3" />
-                                    </Style>
-                                </TabControl.Resources>
-                                <TabItem x:Name="SoundTab_F" Header="Female">
-                                    <exportLoaderControls:Soundpanel x:Name="SoundpanelWPF_F" />
-                                </TabItem>
-                                <TabItem x:Name="SoundTab_M" Header="Male">
-                                    <exportLoaderControls:Soundpanel x:Name="SoundpanelWPF_M" />
-                                </TabItem>
-                            </TabControl>
+                            <Grid Name="soundPanelTabControl">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <StackPanel Grid.Row="0" x:Name="SoundpanelFemaleControl" Margin="4,0">
+                                    <TextBlock>Female</TextBlock>
+                                    <exportLoaderControls:Soundpanel x:Name="SoundpanelWPF_F" MiniPlayerMode="True" />
+                                </StackPanel>
+                                <StackPanel Grid.Row="1" x:Name="SoundpanelMaleControl" Margin="4,0">
+                                    <TextBlock>Male</TextBlock>
+                                    <exportLoaderControls:Soundpanel x:Name="SoundpanelWPF_M" MiniPlayerMode="True" />
+                                </StackPanel>
+                            </Grid>
                         </TabItem>
                     </TabControl>
                 </Grid>

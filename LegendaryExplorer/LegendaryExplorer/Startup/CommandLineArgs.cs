@@ -55,6 +55,7 @@ namespace LegendaryExplorer.Startup
                     case "DialogueEditor":
                         OpenTool<DialogueEditorWindow>((s) => s.LoadFile(file.FullName));
                         break;
+                    case "SoundExplorer":
                     case "Soundplorer":
                         OpenTool<SoundplorerWPF>(s => s.LoadFile(file.FullName));
                         break;

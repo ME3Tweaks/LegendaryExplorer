@@ -1740,23 +1740,26 @@ namespace LegendaryExplorer.DialogueEditor
         {
             if (SelectedDialogueNode.WwiseStream_Female == null)
             {
+                SoundpanelFemaleControl.Visibility = Visibility.Hidden;
                 SoundpanelWPF_F.UnloadExport();
             }
             else
             {
+                SoundpanelFemaleControl.Visibility = Visibility.Visible;
                 SoundpanelWPF_F.LoadExport(SelectedDialogueNode.WwiseStream_Female);
             }
 
             if (SelectedDialogueNode.WwiseStream_Male == null)
             {
+                SoundpanelMaleControl.Visibility = Visibility.Hidden;
                 SoundpanelWPF_M.UnloadExport();
             }
             else
             {
+                SoundpanelMaleControl.Visibility = Visibility.Visible;
                 SoundpanelWPF_M.LoadExport(SelectedDialogueNode.WwiseStream_Male);
             }
 
-            soundPanelTabControl.SelectedIndex = faceFXEditorTabControl.SelectedIndex = SelectedDialogueNode.WwiseStream_Female == null ? 1 : 0;
             if (SelectedDialogueNode.SpeakerTag?.FaceFX_Female is ExportEntry faceFX_f)
             {
                 FaceFXAnimSetEditorControl_F.LoadExport(faceFX_f);
@@ -3077,7 +3080,6 @@ namespace LegendaryExplorer.DialogueEditor
         {
             if (e.Source is TabControl tabctrl)
             {
-                soundPanelTabControl.SelectedIndex = tabctrl.SelectedIndex;
                 faceFXEditorTabControl.SelectedIndex = tabctrl.SelectedIndex;
             }
         }
