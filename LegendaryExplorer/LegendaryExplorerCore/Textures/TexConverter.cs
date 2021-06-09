@@ -199,7 +199,7 @@ namespace LegendaryExplorerCore.Textures
                 case PixelFormat.RGB:
                     return DXGIFormat.UNKNOWN; // There is no hardware support for 24bit pixels. (see https://stackoverflow.com/a/27971434)
                 case PixelFormat.V8U8:
-                    return DXGIFormat.R8G8_UNORM; // TODO: Not quite sure if these are equivalent
+                    return DXGIFormat.R8G8_SNORM;
                 default:
                     return DXGIFormat.UNKNOWN;
             }
@@ -223,8 +223,8 @@ namespace LegendaryExplorerCore.Textures
                     return PixelFormat.DXT5;
                 case DXGIFormat.R8_UNORM:
                     return PixelFormat.G8;
-                case DXGIFormat.R8G8_UNORM:
-                    return PixelFormat.V8U8; // TODO: Not quite sure if these are equivalent
+                case DXGIFormat.R8G8_SNORM:
+                    return PixelFormat.V8U8;
                 default:
                     return PixelFormat.Unknown;
             }

@@ -23,7 +23,7 @@ namespace LegendaryExplorerCore.Unreal
         /// <returns></returns>
         public static IEnumerable<string> GetTocableFiles(string path)
         {
-            string[] Pattern = { "*.pcc", "*.afc", "*.bik", "*.bin", "*.tlk", "*.cnd", "*.upk", "*.tfc", "*.isb" };
+            string[] Pattern = { "*.pcc", "*.afc", "*.bik", "*.bin", "*.tlk", "*.cnd", "*.upk", "*.tfc", "*.isb", "*.usf" };
             var res = new List<string>();
             foreach (string s in Pattern)
                 res.AddRange(Directory.GetFiles(path, s));
@@ -156,10 +156,12 @@ namespace LegendaryExplorerCore.Unreal
         /// Creates the binary for a TOC file for a specified directory root
         /// </summary>
         /// <param name="directory">DLC_ directory, like DLC_CON_JAM, or the BIOGame directory of the game.</param>
+        /// <param name="game"></param>
         /// <returns>Memorystream of TOC created, null if there are no entries or input was invalid</returns>
         public static MemoryStream CreateTOCForDirectory(string directory, MEGame game)
         {
-            var files = GetFiles(directory, game is MEGame.LE2 or MEGame.LE3);
+            bool isLe2Le3 = game is MEGame.LE2 or MEGame.LE3;
+            var files = GetFiles(directory, isLe2Le3);
             var originalFilesList = files;
             if (files.Count > 0)
             {
@@ -176,6 +178,18 @@ namespace LegendaryExplorerCore.Unreal
                 {
                     // Basegame TOC
                     int biogameStrPos = file0fullpath.IndexOf("BIOGame", StringComparison.InvariantCultureIgnoreCase);
+                    if (game.IsLEGame())
+                    {
+                        files.AddRange(GetFiles(Path.Combine(directory.Substring(0, biogameStrPos), "Engine", "Shaders"), isLe2Le3));
+                        //TODO: is this required? It seems to include some DLC files in the TOC, but not all?
+                        //if (game is MEGame.LE3)
+                        //{
+
+                        //    var dlcFolders = new DirectoryInfo(Path.Combine(directory, "DLC")).GetDirectories();
+                        //    files.AddRange(dlcFolders.Where(f => f.Name.StartsWith("DLC_", StringComparison.OrdinalIgnoreCase)).Select(f => f.ToString())
+                        //                             .SelectMany(dlcDir => GetFiles(dlcDir, isLe2Le3)));
+                        //}
+                    }
                     if (biogameStrPos > 0)
                     {
                         files = files.Select(x => x.Substring(biogameStrPos)).ToList();
@@ -198,12 +212,12 @@ namespace LegendaryExplorerCore.Unreal
         {
             if (filesystemInfo.Count != 0)
             {
-                TOCBinFile tbf = new TOCBinFile();
+                var tbf = new TOCBinFile();
 
                 // Todo: Update this someday so it lines up with the actual correct implementation
                 var hashBucket = new TOCBinFile.TOCHashTableEntry();
                 tbf.HashBuckets.Add(hashBucket);
-                hashBucket.TOCEntries.AddRange(filesystemInfo.Select(x => new TOCBinFile.Entry()
+                hashBucket.TOCEntries.AddRange(filesystemInfo.Select(x => new TOCBinFile.Entry
                 {
                     flags = 0,
                     name = x.filename,
