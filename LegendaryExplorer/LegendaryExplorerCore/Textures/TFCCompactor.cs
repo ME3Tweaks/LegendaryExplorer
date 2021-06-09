@@ -32,11 +32,6 @@ namespace LegendaryExplorerCore.Textures
         public string GamePath { get; set; }
 
         /// <summary>
-        /// List of DLC foldernames that should not be pulled in, as they are considered 'dependent', and therefore will always be present in-game
-        /// </summary>
-        public string[] DependentDLC { get; set; }
-
-        /// <summary>
         /// Where data is staged during compaction
         /// </summary>
         public string StagingPath { get; set; }
@@ -57,6 +52,11 @@ namespace LegendaryExplorerCore.Textures
         public MEGame Game { get; set; }
 
         /// <summary>
+        /// List of TFC names to pull from. Should not include extension and should not include basegame or dependent-dlc textures.
+        /// </summary>
+        public List<string> TFCsToCompact { get; set; }
+
+        /// <summary>
         /// Maps CRC -> where it goes in new TFCs
         /// </summary>
         public Dictionary<uint, TFCInfo> OutputMapping = new();
@@ -65,6 +65,7 @@ namespace LegendaryExplorerCore.Textures
     /// <summary>
     /// Describes where to put TFC data for a specific texture
     /// </summary>
+    [DebuggerDisplay("TFCInfo {TFCName}, {MipOffsetMap.Count} mip offsets")]
     public class TFCInfo
     {
         public TFCInfo()
@@ -203,29 +204,32 @@ namespace LegendaryExplorerCore.Textures
                 var entries = v.GetAllTextureEntries().ToList();
                 foreach (var entry in entries)
                 {
-                    if (compactor.CRCMap.TryGetValue(entry.GetCRC(), out var portedInfo))
+                    if (compactor.infoPackage.TFCsToCompact.Contains(entry.Instances[0].TFCName))
                     {
-                        // Texture doesn't need ported into TFC
-                    }
-                    else
-                    {
-                        // texture has not been copied to TFC
-                        var texInfo = entry.Instances[0];
-                        var diskSize = entry.GetExternalDiskSize();
-                        var destTFCInfo = compactor.GetOutTFC(diskSize); // Get TFC to write to
-                        var destTFCPath = Path.Combine(infoPackage.StagingPath, $"{destTFCInfo.TFCName}.tfc");
-                        using var outStream = File.Open(destTFCPath, FileMode.Append, FileAccess.Write);
-                        using var inStream = File.OpenRead(gameFiles[$"{texInfo.TFCName}.tfc"]);
-                        for (int i = 0; i < texInfo.CompressedMipInfos.Count; i++)
+                        if (compactor.CRCMap.TryGetValue(entry.GetCRC(), out var portedInfo))
                         {
-                            var mipInfo = texInfo.CompressedMipInfos[i];
-                            destTFCInfo.MipOffsetMap[i] = (int)outStream.Position;
-                            inStream.Seek(mipInfo.Offset, SeekOrigin.Begin);
-                            inStream.CopyToEx(outStream, mipInfo.CompressedSize);
+                            // Texture doesn't need ported into TFC
                         }
+                        else
+                        {
+                            // texture has not been copied to TFC
+                            var texInfo = entry.Instances[0];
+                            var diskSize = entry.GetExternalDiskSize();
+                            var destTFCInfo = compactor.GetOutTFC(diskSize); // Get TFC to write to
+                            var destTFCPath = Path.Combine(infoPackage.StagingPath, $"{destTFCInfo.TFCName}.tfc");
+                            using var outStream = File.Open(destTFCPath, FileMode.Append, FileAccess.Write);
+                            using var inStream = File.OpenRead(gameFiles[$"{texInfo.TFCName}.tfc"]);
+                            for (int i = 0; i < texInfo.CompressedMipInfos.Count; i++)
+                            {
+                                var mipInfo = texInfo.CompressedMipInfos[i];
+                                destTFCInfo.MipOffsetMap[i] = (int)outStream.Position;
+                                inStream.Seek(mipInfo.Offset, SeekOrigin.Begin);
+                                inStream.CopyToEx(outStream, mipInfo.CompressedSize);
+                            }
 
-                        // Add to the map
-                        compactor.CRCMap[texInfo.CRC] = destTFCInfo;
+                            // Add to the map
+                            compactor.CRCMap[texInfo.CRC] = destTFCInfo;
+                        }
                     }
                 }
             }

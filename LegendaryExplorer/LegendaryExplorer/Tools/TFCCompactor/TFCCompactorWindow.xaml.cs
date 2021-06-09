@@ -8,6 +8,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using DocumentFormat.OpenXml.Wordprocessing;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc.ME3Tweaks;
@@ -26,6 +27,7 @@ using LegendaryExplorerCore.Unreal.Classes;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using SlavaGu.ConsoleAppLauncher;
+using Settings = LegendaryExplorer.Misc.AppSettings.Settings;
 
 namespace LegendaryExplorer.Tools.TFCCompactor
 {
@@ -108,7 +110,7 @@ namespace LegendaryExplorer.Tools.TFCCompactor
             set => SetProperty(ref _busyProgressBarValue, value);
         }
 
-        private string _stagingDirectory;
+        private string _stagingDirectory = Settings.TFCCompactor_LastStagingPath;
         public string StagingDirectory
         {
             get => _stagingDirectory;
@@ -378,6 +380,14 @@ namespace LegendaryExplorer.Tools.TFCCompactor
                 MessageBox.Show("DLC name must begin with DLC_MOD_. Mods not following this naming convention are not supported.", "Invalid DLC name", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+
+            var tfcsToPull = TextureCachesToPullFromList.Where(x => x.Selected).Select(x=>x.TFCName).ToList();
+            if (!tfcsToPull.Any())
+            {
+                MessageBox.Show("You must select at one or more referenced TFCs to pull into the new TFC.", "No TFCs selected", MessageBoxButton.OK, MessageBoxImage.Error);
+                return; 
+            }
+
             TFCCompactorInfoPackage pack = new()
             {
                 TFCType = "Textures",
@@ -385,7 +395,8 @@ namespace LegendaryExplorer.Tools.TFCCompactor
                 BaseCompactionPath = BaseFolder,
                 GamePath = MEDirectories.GetDefaultGamePath(LoadedTextureMap.Game),
                 UseIndexing = LoadedTextureMap.Game.IsLEGame(),
-                DLCName = DLCName
+                DLCName = DLCName,
+                TFCsToCompact = tfcsToPull
             };
 
             void errorCallback(string error)
@@ -814,6 +825,7 @@ namespace LegendaryExplorer.Tools.TFCCompactor
             //};
             backgroundWorker.RunWorkerCompleted += (a, b) =>
             {
+                Settings.TFCCompactor_LastStagingPath = StagingDirectory;
                 if (b.Result is ValueTuple<CompactionResult, string> result)
                 {
                     switch (result.Item1)
@@ -839,6 +851,8 @@ namespace LegendaryExplorer.Tools.TFCCompactor
                             break;
                     }
                 }
+
+                CurrentOperationText = "TFC Compaction Complete";
                 Debug.WriteLine("COMPACT DONE");
                 OnPropertyChanged(nameof(IsNotBusy));
                 CommandManager.InvalidateRequerySuggested();
