@@ -236,7 +236,7 @@ namespace LegendaryExplorerCore.Textures
 
             fixed (byte* inputDataPointer = pixelData)
             {
-                TextureBuffer inputBuffer = new TextureBuffer()
+                var inputBuffer = new TextureBuffer
                 {
                     PixelData = inputDataPointer,
                     PixelDataLength = (nuint)pixelData.Length,
@@ -244,7 +244,7 @@ namespace LegendaryExplorerCore.Textures
                     Height = height,
                     Format = GetDXGIFormatForPixelFormat(inputFormat)
                 };
-                TextureBuffer outputBuffer = new TextureBuffer()
+                var outputBuffer = new TextureBuffer
                 {
                     PixelData = null,
                     PixelDataLength = 0,
@@ -272,7 +272,7 @@ namespace LegendaryExplorerCore.Textures
 
             fixed (byte* pixelDataPointer = pixelData)
             {
-                TextureBuffer sourceBuffer = new TextureBuffer()
+                var sourceBuffer = new TextureBuffer
                 {
                     PixelData = pixelDataPointer,
                     PixelDataLength = (nuint)pixelData.LongLength,
@@ -289,8 +289,10 @@ namespace LegendaryExplorerCore.Textures
         {
             TexConverter.EnsureInitialized();
 
-            TextureBuffer outputBuffer = new TextureBuffer();
-            outputBuffer.Format = GetDXGIFormatForPixelFormat(pixelFormat);
+            var outputBuffer = new TextureBuffer
+            {
+                Format = GetDXGIFormatForPixelFormat(pixelFormat)
+            };
 
             int hr = TCLoadTexture(filename, &outputBuffer);
             Marshal.ThrowExceptionForHR(hr);

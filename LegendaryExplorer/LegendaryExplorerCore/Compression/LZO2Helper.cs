@@ -39,24 +39,25 @@ namespace LegendaryExplorerCore.Compression
     public static class LZO2
     {
         [DllImport(CompressionHelper.COMPRESSION_WRAPPER_NAME, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
-        private static extern int LZODecompress(in byte srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
+        private static extern unsafe int LZODecompress(byte* srcBuf, uint srcLen, byte* dstBuf, ref uint dstLen);
 
         [DllImport(CompressionHelper.COMPRESSION_WRAPPER_NAME, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
-        private static extern int LZOCompress([In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
+        private static extern unsafe int LZOCompress(byte* srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
 
         [DllImport(CompressionHelper.COMPRESSION_WRAPPER_NAME, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern int LZOCompress(in byte srcBuf, uint srcLen, in byte dstBuf, ref uint dstLen);
 
-        public static uint Decompress(ReadOnlySpan<byte> src, uint srcLen, byte[] dst, uint dstLen = 0)
+        public static uint Decompress(ReadOnlySpan<byte> src, Span<byte> dst)
         {
-            if (dstLen == 0)
-                dstLen = (uint)dst.Length;
+            uint srcLen = (uint)src.Length;
+            uint dstLen = (uint)dst.Length;
             int status;
             unsafe
             {
-                fixed (byte* ptr = &MemoryMarshal.GetReference(src))
+                fixed (byte* inPtr = &MemoryMarshal.GetReference(src))
+                fixed (byte* outPtr = &MemoryMarshal.GetReference(dst))
                 {
-                    status = LZODecompress(Unsafe.AsRef<byte>(ptr), srcLen, dst, ref dstLen);
+                    status = LZODecompress(inPtr, srcLen, outPtr, ref dstLen);
                 }
             }
             if (status != 0)
@@ -65,15 +66,20 @@ namespace LegendaryExplorerCore.Compression
             return dstLen;
         }
 
-        public static byte[] Compress(byte[] src)
+        public static byte[] Compress(ReadOnlySpan<byte> src)
         {
             var bufLen = GetCompressionBound(src.Length);
             byte[] tmpBuf = MemoryManager.GetByteArray(bufLen);
             uint dstLen = 0;
-
-            int status = LZOCompress(src, (uint)src.Length, tmpBuf, ref dstLen);
-            if (status != 0)
-                return new byte[0];
+            unsafe
+            {
+                fixed (byte* inPtr = &MemoryMarshal.GetReference(src))
+                {
+                    int status = LZOCompress(inPtr, (uint)src.Length, tmpBuf, ref dstLen);
+                    if (status != 0)
+                        return new byte[0];
+                }
+            }
 
             byte[] dst = new byte[dstLen];
             Array.Copy(tmpBuf, dst, dstLen);

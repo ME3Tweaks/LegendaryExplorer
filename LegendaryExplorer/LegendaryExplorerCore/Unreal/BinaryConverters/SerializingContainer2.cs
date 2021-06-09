@@ -200,7 +200,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref byte[] arr, SerializeDelegate<byte> serialize = null)
+        public static void Serialize(this SerializingContainer2 sc, ref byte[] arr)
         {
             int count = arr?.Length ?? 0;
             sc.Serialize(ref count);

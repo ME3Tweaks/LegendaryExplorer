@@ -182,7 +182,7 @@ namespace LegendaryExplorerCore.Packages
         [JsonIgnore]
         public string ClassName { get; set; }
 
-        public OrderedMultiValueDictionary<string, PropertyInfo> properties = new OrderedMultiValueDictionary<string, PropertyInfo>();
+        public OrderedMultiValueDictionary<string, PropertyInfo> properties = new();
         public string baseClass;
         //Relative to BIOGame
         public string pccPath;

@@ -524,7 +524,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref slm.ActiveBoneIndices, SCExt.Serialize);
             if (sc.Game != MEGame.UDK)
             {
-                sc.Serialize(ref slm.ShadowTriangleDoubleSided, SCExt.Serialize);
+                sc.Serialize(ref slm.ShadowTriangleDoubleSided);
             }
             sc.Serialize(ref slm.Chunks, Serialize);
             sc.Serialize(ref slm.Size);
@@ -537,7 +537,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 sc.Serialize(ref slm.Edges, Serialize);
             }
-            sc.Serialize(ref slm.RequiredBones, SCExt.Serialize);
+            sc.Serialize(ref slm.RequiredBones);
             if (sc.Game == MEGame.UDK)
             {
                 int[] UDKRawPointIndices = sc.IsSaving ? Array.ConvertAll(slm.RawPointIndices, u => (int)u) : Array.Empty<int>();

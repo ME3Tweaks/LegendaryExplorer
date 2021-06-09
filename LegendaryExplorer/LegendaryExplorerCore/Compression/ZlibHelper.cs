@@ -38,25 +38,26 @@ namespace LegendaryExplorerCore.Compression
     public static class Zlib
     {
         [DllImport(CompressionHelper.COMPRESSION_WRAPPER_NAME, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
-        private static extern int ZlibDecompress(in byte srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
+        private static extern unsafe int ZlibDecompress(byte* srcBuf, uint srcLen, byte* dstBuf, ref uint dstLen);
 
         [DllImport(CompressionHelper.COMPRESSION_WRAPPER_NAME, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
-        private static extern int ZlibCompress(int compressionLevel, [In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
+        private static extern unsafe int ZlibCompress(int compressionLevel, byte* srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
 
         [DllImport(CompressionHelper.COMPRESSION_WRAPPER_NAME, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern int ZlibCompress(int compressionLevel, in byte srcBuf, uint srcLen, in byte dstBuf, ref uint dstLen);
 
-        public static uint Decompress(ReadOnlySpan<byte> src, uint srcLen, byte[] dst, uint dstLen = 0)
+        public static uint Decompress(ReadOnlySpan<byte> src, Span<byte> dst)
         {
-            if (dstLen == 0)
-                dstLen = (uint)dst.Length;
+            uint srcLen = (uint)src.Length;
+            uint dstLen = (uint)dst.Length;
 
             int status;
             unsafe
             {
-                fixed (byte* ptr = &MemoryMarshal.GetReference(src))
+                fixed (byte* inPtr = &MemoryMarshal.GetReference(src))
+                fixed (byte* outPtr = &MemoryMarshal.GetReference(dst))
                 {
-                    status = ZlibDecompress(Unsafe.AsRef<byte>(ptr), srcLen, dst, ref dstLen);
+                    status = ZlibDecompress(inPtr, srcLen, outPtr, ref dstLen);
                 }
             }
             if (status != 0)
@@ -65,14 +66,20 @@ namespace LegendaryExplorerCore.Compression
             return dstLen;
         }
 
-        public static byte[] Compress(byte[] src, int compressionLevel = -1)
+        public static byte[] Compress(ReadOnlySpan<byte> src, int compressionLevel = -1)
         {
             byte[] tmpbuf = new byte[GetCompressionBound(src.Length)];
             uint dstLen = (uint)tmpbuf.Length;
 
-            int status = ZlibCompress(compressionLevel, src, (uint)src.Length, tmpbuf, ref dstLen);
-            if (status != 0)
-                return new byte[0];
+            unsafe
+            {
+                fixed (byte* ptr = &MemoryMarshal.GetReference(src))
+                {
+                    int status = ZlibCompress(compressionLevel, ptr, (uint)src.Length, tmpbuf, ref dstLen);
+                    if (status != 0)
+                        return new byte[0];
+                }
+            }
 
             byte[] dst = new byte[dstLen];
             Array.Copy(tmpbuf, dst, (int)dstLen);

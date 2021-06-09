@@ -430,15 +430,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 CannotShowTextureTextVisibility = Visibility.Collapsed;
                 var bitmap = Image.convertRawToBitmapARGB(imagebytes, mipToLoad.width, mipToLoad.height, Image.getPixelFormatType(CurrentLoadedFormat));
                 //var bitmap = DDSImage.ToBitmap(imagebytes, fmt, mipToLoad.width, mipToLoad.height, CurrentLoadedExport.FileRef.Platform.ToString());
-                var memory = new MemoryStream();
+                var memory = new MemoryStream(bitmap.Height * bitmap.Width * 4 + 54);
                 bitmap.Save(memory, ImageFormat.Bmp);
                 memory.Position = 0;
-                var bitmapImage = new BitmapImage();
-                bitmapImage.BeginInit();
-                bitmapImage.StreamSource = memory;
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.EndInit();
-                TextureImage.Source = bitmapImage; //image1 is your control            }
+                TextureImage.Source = (BitmapSource)new ImageSourceConverter().ConvertFrom(memory);
             }
             catch (Exception e)
             {

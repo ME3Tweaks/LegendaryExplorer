@@ -538,11 +538,11 @@ namespace LegendaryExplorerCore.Packages
                     switch (compressionType)
                     {
                         case UnrealPackageFile.CompressionType.LZO:
-                            if (LZO2.Decompress(datain, (uint)datain.Length, dataout) != btInfo.blockDecompressedSize)
+                            if (LZO2.Decompress(datain, dataout) != btInfo.blockDecompressedSize)
                                 throw new Exception("LZO decompression failed!");
                             break;
                         case UnrealPackageFile.CompressionType.Zlib:
-                            if (Zlib.Decompress(datain, (uint)datain.Length, dataout) != btInfo.blockDecompressedSize)
+                            if (Zlib.Decompress(datain, dataout) != btInfo.blockDecompressedSize)
                                 throw new Exception("Zlib decompression failed!");
                             break;
                         case UnrealPackageFile.CompressionType.LZMA:
@@ -558,7 +558,7 @@ namespace LegendaryExplorerCore.Packages
                                 throw new Exception("LZX decompression failed!");
                             break;
                         case UnrealPackageFile.CompressionType.OodleLeviathan:
-                            OodleHelper.Decompress(datain, datain.Length, btInfo.blockDecompressedSize, dataout);
+                            OodleHelper.Decompress(datain, dataout);
                             if (dataout.Length != btInfo.blockDecompressedSize)
                                 throw new Exception("Oodle-Leviathan decompression failed!");
                             break;
@@ -711,15 +711,15 @@ namespace LegendaryExplorerCore.Packages
                     switch (compressionType)
                     {
                         case UnrealPackageFile.CompressionType.LZO:
-                            if (LZO2.Decompress(datain, (uint)b.compressedsize, dataout, (uint)b.uncompressedsize) != b.uncompressedsize)
+                            if (LZO2.Decompress(datain, dataout.AsSpan(0, b.uncompressedsize)) != b.uncompressedsize)
                                 throw new Exception("LZO decompression failed!");
                             break;
                         case UnrealPackageFile.CompressionType.Zlib:
-                            if (Zlib.Decompress(datain, (uint)datain.Length, dataout, (uint)b.uncompressedsize) != b.uncompressedsize)
+                            if (Zlib.Decompress(datain, dataout.AsSpan(0, b.uncompressedsize)) != b.uncompressedsize)
                                 throw new Exception("Zlib decompression failed!");
                             break;
                         case UnrealPackageFile.CompressionType.LZMA:
-                            if (LZMA.Decompress(datain, (uint)datain.Length, dataout, (uint)b.uncompressedsize) != 0)
+                            if (LZMA.Decompress(datain, dataout.AsSpan(0, b.uncompressedsize)) != 0)
                                 throw new Exception("LZMA decompression failed!");
                             break;
                         case UnrealPackageFile.CompressionType.LZX:
@@ -728,7 +728,7 @@ namespace LegendaryExplorerCore.Packages
                             break;
                         case UnrealPackageFile.CompressionType.OodleLeviathan:
                             // Error decompressing exception is thrown in decompress method itself
-                            OodleHelper.Decompress(datain, datain.Length, b.uncompressedsize, dataout);
+                            OodleHelper.Decompress(datain, dataout.AsSpan(0, b.uncompressedsize));
                             break;
                         default:
                             throw new Exception("Unknown compression type for this package.");
@@ -1085,18 +1085,19 @@ namespace LegendaryExplorerCore.Packages
                 }
                 SegmentLength = b.uncompressedsize;
                 ReadOnlySpan<byte> datain = chunk.Compressed.Span.Slice(blockstart, b.compressedsize);
+                Span<byte> dataOut = Segment.AsSpan(0, b.uncompressedsize);
                 switch (CompressionType)
                 {
                     case UnrealPackageFile.CompressionType.LZO:
-                        if (LZO2.Decompress(datain, (uint)datain.Length, Segment, (uint)b.uncompressedsize) != b.uncompressedsize)
+                        if (LZO2.Decompress(datain, dataOut) != b.uncompressedsize)
                             throw new Exception("LZO decompression failed!");
                         break;
                     case UnrealPackageFile.CompressionType.Zlib:
-                        if (Zlib.Decompress(datain, (uint)datain.Length, Segment, (uint)b.uncompressedsize) != b.uncompressedsize)
+                        if (Zlib.Decompress(datain, dataOut) != b.uncompressedsize)
                             throw new Exception("Zlib decompression failed!");
                         break;
                     case UnrealPackageFile.CompressionType.LZMA:
-                        if (LZMA.Decompress(datain, (uint)datain.Length, Segment, (uint)b.uncompressedsize) != 0)
+                        if (LZMA.Decompress(datain, dataOut) != 0)
                             throw new Exception("LZMA decompression failed!");
                         break;
                     case UnrealPackageFile.CompressionType.LZX:
@@ -1105,7 +1106,7 @@ namespace LegendaryExplorerCore.Packages
                         break;
                     case UnrealPackageFile.CompressionType.OodleLeviathan:
                         // Error decompressing exception is thrown in decompress method itself
-                        OodleHelper.Decompress(datain, datain.Length, b.uncompressedsize, Segment);
+                        OodleHelper.Decompress(datain, dataOut);
                         break;
                     default:
                         throw new Exception("Unknown compression type for this package.");

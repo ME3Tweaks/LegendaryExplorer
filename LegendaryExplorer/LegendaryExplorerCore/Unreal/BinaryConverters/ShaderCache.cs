@@ -238,7 +238,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             byte platform = sc.Game.IsLEGame() ? (byte)5 : (byte)0;
             sc.Serialize(ref platform);
             sc.Serialize(ref shader.Frequency);
-            sc.Serialize(ref shader.ShaderByteCode, SCExt.Serialize);
+            sc.Serialize(ref shader.ShaderByteCode);
             sc.Serialize(ref shader.ParameterMapCRC);
             sc.Serialize(ref shader.Guid);//intentional duplicate
             sc.Serialize(ref shader.ShaderType);//intentional duplicate

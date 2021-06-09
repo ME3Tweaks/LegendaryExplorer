@@ -242,11 +242,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                     else
                     {
                         fullPath = AdditionalME1MasterTexturePackages.FirstOrDefault(x => Path.GetFileName(x).Equals(mipToLoad.TextureCacheName, StringComparison.InvariantCultureIgnoreCase));
-                        if (fullPath == null)
-                        {
-                            throw new FileNotFoundException(GetLocalizedCouldNotFindME1TexturePackageMessage(mipToLoad.TextureCacheName));
-                        }
-                        filename = fullPath;
+                        filename = fullPath ?? throw new FileNotFoundException(GetLocalizedCouldNotFindME1TexturePackageMessage(mipToLoad.TextureCacheName));
                     }
                 }
                 else

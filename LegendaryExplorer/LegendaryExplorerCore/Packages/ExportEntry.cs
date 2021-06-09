@@ -194,7 +194,7 @@ namespace LegendaryExplorerCore.Packages
         }
 
         //should only have to check the flag, but custom mod classes might not have set it properly
-        public bool IsDefaultObject => ObjectFlags.HasFlag(EObjectFlags.ClassDefaultObject) || ObjectName.Name.StartsWith("Default__");
+        public bool IsDefaultObject => ObjectFlags.HasFlag(EObjectFlags.ClassDefaultObject) || ObjectNameString.StartsWith("Default__", StringComparison.Ordinal);
 
         private byte[] _header;
 

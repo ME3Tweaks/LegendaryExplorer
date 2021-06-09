@@ -31,7 +31,7 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
             PixelFormat newPixelFormat = pixelFormat;
 
             // Generate mips if necessary
-            if (!image.checkDDSHaveAllMipmaps() || t2d.Mips.Count > 1 && image.mipMaps.Count() <= 1 || image.pixelFormat != newPixelFormat)
+            if (!image.checkDDSHaveAllMipmaps() || t2d.Mips.Count > 1 && image.mipMaps.Count <= 1 || image.pixelFormat != newPixelFormat)
             {
                 bool dxt1HasAlpha = false;
                 byte dxt1Threshold = 128;
@@ -58,7 +58,7 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
             {
                 // remove lower mipmaps from source image which not exist in game data
                 //Not sure what this does since we just generated most of these mips
-                for (int t = 0; t < image.mipMaps.Count(); t++)
+                for (int t = 0; t < image.mipMaps.Count; t++)
                 {
                     if (image.mipMaps[t].origWidth <= t2d.Mips[0].width &&
                         image.mipMaps[t].origHeight <= t2d.Mips[0].height &&
@@ -79,16 +79,16 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
                     {
                         if (!image.mipMaps.Exists(m => m.origWidth == t2d.Mips[t].width && m.origHeight == t2d.Mips[t].height))
                         {
-                            MipMap mipmap = new MipMap(t2d.Mips[t].width, t2d.Mips[t].height, pixelFormat);
+                            var mipmap = new MipMap(t2d.Mips[t].width, t2d.Mips[t].height, pixelFormat);
                             image.mipMaps.Add(mipmap);
                         }
                     }
                 }
             }
 
-            List<byte[]> compressedMips = new List<byte[]>();
+            var compressedMips = new List<byte[]>();
 
-            for (int m = 0; m < image.mipMaps.Count(); m++)
+            for (int m = 0; m < image.mipMaps.Count; m++)
             {
                 // Mips go big to small
 
@@ -113,15 +113,17 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
                 }
             }
 
-            List<Texture2DMipInfo> mipmaps = new List<Texture2DMipInfo>();
-            for (int m = 0; m < image.mipMaps.Count(); m++)
+            var mipmaps = new List<Texture2DMipInfo>();
+            for (int m = 0; m < image.mipMaps.Count; m++)
             {
 
-                Texture2DMipInfo mipmap = new Texture2DMipInfo();
-                mipmap.Export = t2d.Export;
-                mipmap.width = image.mipMaps[m].origWidth;
-                mipmap.height = image.mipMaps[m].origHeight;
-                mipmap.TextureCacheName = textureCache;
+                var mipmap = new Texture2DMipInfo
+                {
+                    Export = t2d.Export,
+                    width = image.mipMaps[m].origWidth,
+                    height = image.mipMaps[m].origHeight,
+                    TextureCacheName = textureCache
+                };
                 if (t2d.Mips.Exists(x => x.width == mipmap.width && x.height == mipmap.height))
                 {
                     var oldMip = t2d.Mips.First(x => x.width == mipmap.width && x.height == mipmap.height);
@@ -145,7 +147,7 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
                     //Leave here for future. WE might need this after dealing with double compression
                     //if (mipmap.storageType == StorageTypes.pccUnc && mipmap.width > 32) //ME3 Uncomp -> ZLib
                     //    mipmap.storageType = StorageTypes.pccZlib;
-                    if (mipmap.storageType == StorageTypes.pccUnc && m < image.mipMaps.Count() - 6 && textureCache != null) //Moving texture to store externally.
+                    if (mipmap.storageType == StorageTypes.pccUnc && m < image.mipMaps.Count - 6 && textureCache != null) //Moving texture to store externally.
                         mipmap.storageType = StorageTypes.extZlib;
                 }
                 else if (t2d.Export.Game == MEGame.ME2)
@@ -159,7 +161,7 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
                     //Leave here for future. We might neable this after dealing with double compression
                     //if (mipmap.storageType == StorageTypes.pccUnc && mipmap.width > 32) //ME2 Uncomp -> LZO
                     //    mipmap.storageType = StorageTypes.pccLZO;
-                    if (mipmap.storageType == StorageTypes.pccUnc && m < image.mipMaps.Count() - 6 && textureCache != null) //Moving texture to store externally. make sure bottom 6 are pcc stored
+                    if (mipmap.storageType == StorageTypes.pccUnc && m < image.mipMaps.Count - 6 && textureCache != null) //Moving texture to store externally. make sure bottom 6 are pcc stored
                         mipmap.storageType = StorageTypes.extLZO;
 
                     // TEXTURE WORK BRANCH TOOLING ONLY!!
@@ -169,7 +171,7 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
                 {
                     if (mipmap.storageType == StorageTypes.extUnc)
                         mipmap.storageType = StorageTypes.extOodle; // Compress external unc to Oodle
-                    if (mipmap.storageType == StorageTypes.pccUnc && m < image.mipMaps.Count() - 6 && textureCache != null) //Moving texture to store externally. make sure bottom 6 are pcc stored
+                    if (mipmap.storageType == StorageTypes.pccUnc && m < image.mipMaps.Count - 6 && textureCache != null) //Moving texture to store externally. make sure bottom 6 are pcc stored
                         mipmap.storageType = StorageTypes.extOodle;
                 }
 
@@ -186,7 +188,7 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
                 mipmap.width = image.mipMaps[m].width;
                 mipmap.height = image.mipMaps[m].height;
                 mipmaps.Add(mipmap);
-                if (t2d.Mips.Count() == 1)
+                if (t2d.Mips.Count == 1)
                     break;
             }
 
@@ -304,7 +306,7 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
 
             int allextmipssize = 0;
 
-            for (int m = 0; m < image.mipMaps.Count(); m++)
+            for (int m = 0; m < image.mipMaps.Count; m++)
             {
                 Texture2DMipInfo x = mipmaps[m];
                 var compsize = image.mipMaps[m].data.Length;
@@ -320,7 +322,7 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
 
             Guid tfcGuid = Guid.NewGuid(); //make new guid as storage
             bool locallyStored = mipmaps[0].storageType is StorageTypes.pccUnc or StorageTypes.pccZlib or StorageTypes.pccLZO or StorageTypes.pccOodle;
-            for (int m = 0; m < image.mipMaps.Count(); m++)
+            for (int m = 0; m < image.mipMaps.Count; m++)
             {
                 Texture2DMipInfo mipmap = mipmaps[m];
                 mipmap.uncompressedSize = image.mipMaps[m].data.Length;
@@ -346,7 +348,7 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
                     // ME2/ME3/LE
                     if (mipmap.storageType is StorageTypes.extZlib or StorageTypes.extLZO or StorageTypes.extOodle)
                     {
-                        if (compressedMips.Count != image.mipMaps.Count())
+                        if (compressedMips.Count != image.mipMaps.Count)
                             throw new Exception("Amount of compressed mips does not match number of mips of incoming image!");
                         mipmap.Mip = compressedMips[m];
                         mipmap.compressedSize = mipmap.Mip.Length;
@@ -377,7 +379,7 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
                             {
                                 try
                                 {
-                                    using FileStream fs = new FileStream(localDirectoryTFCPath, FileMode.Open, FileAccess.ReadWrite);
+                                    using var fs = new FileStream(localDirectoryTFCPath, FileMode.Open, FileAccess.ReadWrite);
                                     tfcGuid = fs.ReadGuid();
                                     fs.Seek(0, SeekOrigin.End);
                                     mipmap.externalOffset = (int)fs.Position;
@@ -396,7 +398,7 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
                             {
                                 try
                                 {
-                                    using FileStream fs = new FileStream(archiveFile, FileMode.Open, FileAccess.ReadWrite);
+                                    using var fs = new FileStream(archiveFile, FileMode.Open, FileAccess.ReadWrite);
                                     tfcGuid = fs.ReadGuid();
                                     fs.Seek(0, SeekOrigin.End);
                                     mipmap.externalOffset = (int)fs.Position;
@@ -413,7 +415,7 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
                             //Cache not found. Make new TFC
                             try
                             {
-                                using FileStream fs = new FileStream(localDirectoryTFCPath, FileMode.OpenOrCreate, FileAccess.Write);
+                                using var fs = new FileStream(localDirectoryTFCPath, FileMode.OpenOrCreate, FileAccess.Write);
                                 fs.WriteGuid(tfcGuid);
                                 mipmap.externalOffset = (int)fs.Position;
                                 fs.Write(mipmap.Mip, 0, mipmap.compressedSize);
@@ -427,7 +429,7 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
                     }
                 }
                 mipmaps[m] = mipmap;
-                if (t2d.Mips.Count() == 1)
+                if (t2d.Mips.Count == 1)
                     break;
             }
 
@@ -557,10 +559,10 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
 
         public static bool ExportToFile(this Texture2D t2d, string outputPath)
         {
-            if (String.IsNullOrEmpty(outputPath))
+            if (string.IsNullOrEmpty(outputPath))
                 throw new ArgumentException("Output path must be specified.", nameof(outputPath));
 
-            Texture2DMipInfo info = new Texture2DMipInfo();
+            var info = new Texture2DMipInfo();
             info = t2d.Mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
             if (info != null)
             {
@@ -599,7 +601,7 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
         {
             if (outputPath == null && outStream == null)
                 throw new Exception("ExportToPNG() requires at least one not-null parameter.");
-            Texture2DMipInfo info = new Texture2DMipInfo();
+            var info = new Texture2DMipInfo();
             info = t2d.Mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
             if (info != null)
             {
@@ -669,10 +671,7 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
 
 
             Debug.WriteLine($"Generating preview texture for Texture2D {info.Export.FullPath} of format {t2d.TextureFormat}");
-            if (imageBytes == null)
-            {
-                imageBytes = t2d.GetImageBytesForMip(info, t2d.Export.Game, true, usedMip: out info);
-            }
+            imageBytes ??= t2d.GetImageBytesForMip(info, t2d.Export.Game, true, usedMip: out info);
             int width = (int)info.width;
             int height = (int)info.height;
             var bmp = Image.convertRawToBitmapARGB(imageBytes, info.width, info.height, Image.getPixelFormatType(t2d.TextureFormat));
@@ -728,11 +727,11 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
 
             // Set up the texture data
             int stride = width * 4;
-            SharpDX.DataStream ds = new SharpDX.DataStream(height * stride, true, true);
+            var ds = new SharpDX.DataStream(height * stride, true, true);
             ds.Write(pixels, 0, height * stride);
             ds.Position = 0;
             // Create texture
-            SharpDX.Direct3D11.Texture2D tex = new SharpDX.Direct3D11.Texture2D(device, description, new SharpDX.DataRectangle(ds.DataPointer, stride));
+            var tex = new SharpDX.Direct3D11.Texture2D(device, description, new SharpDX.DataRectangle(ds.DataPointer, stride));
             ds.Dispose();
 
             return tex;

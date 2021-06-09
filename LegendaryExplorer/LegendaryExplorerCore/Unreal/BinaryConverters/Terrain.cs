@@ -28,7 +28,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             if (sc.Game != MEGame.ME1)
             {
                 sc.Serialize(ref CachedTerrainMaterials2, SCExt.Serialize);
-                sc.Serialize(ref CachedDisplacements, SCExt.Serialize);
+                sc.Serialize(ref CachedDisplacements);
                 sc.Serialize(ref MaxCollisionDisplacement);
             }
         }
@@ -121,7 +121,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 map = new AlphaMap();
             }
-            sc.Serialize(ref map.Data, SCExt.Serialize);
+            sc.Serialize(ref map.Data);
         }
         public static void Serialize(this SerializingContainer2 sc, ref TerrainMaterialMask mask)
         {

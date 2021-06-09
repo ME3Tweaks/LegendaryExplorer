@@ -638,7 +638,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 elementSize = 16;
                 sc.Serialize(ref elementSize);
                 sc.Serialize(ref data.Edges, Serialize);
-                sc.Serialize(ref data.ShadowTriangleDoubleSided, SCExt.Serialize);
+                sc.Serialize(ref data.ShadowTriangleDoubleSided);
             }
             else if (sc.IsLoading)
             {

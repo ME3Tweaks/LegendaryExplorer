@@ -67,7 +67,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             if (sc.Game >= MEGame.ME3)
             {
-                sc.Serialize(ref ApexMesh, SCExt.Serialize);
+                sc.Serialize(ref ApexMesh);
             }
             else if (sc.IsLoading)
             {
@@ -76,7 +76,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             int byteSize = 1;
             sc.Serialize(ref byteSize);
-            sc.Serialize(ref CachedPhysBSPData, SCExt.Serialize);
+            sc.Serialize(ref CachedPhysBSPData);
 
             sc.Serialize(ref CachedPhysSMDataMap, SCExt.Serialize, SCExt.Serialize);
             sc.Serialize(ref CachedPhysSMDataStore, SCExt.Serialize);
@@ -314,7 +314,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             int byteSize = 1;
             sc.Serialize(ref byteSize);
-            sc.Serialize(ref triData.CachedPerTriData, SCExt.Serialize);
+            sc.Serialize(ref triData.CachedPerTriData);
         }
     }
 }

@@ -106,7 +106,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref info.Bounds);
             if (sc.Game >= MEGame.ME3)
             {
-                sc.Serialize(ref info.Neighbours, SCExt.Serialize);
+                sc.Serialize(ref info.Neighbours);
                 sc.Serialize(ref info.bCanBeDestroyed);
                 sc.Serialize(ref info.bRootFragment);
                 sc.Serialize(ref info.bNeverSpawnPhysicsChunk);

@@ -615,7 +615,7 @@ namespace LegendaryExplorerCore.Textures
 #endif
 
             var i = SixLabors.ImageSharp.Image.LoadPixelData<Rgba32>(imageBytes, w, h);
-            BcEncoder encoder = new BcEncoder();
+            var encoder = new BcEncoder();
             encoder.OutputOptions.GenerateMipMaps = false;
             encoder.OutputOptions.Quality = CompressionQuality.Balanced;
             encoder.OutputOptions.Format = dstFormat == PixelFormat.BC5 ? CompressionFormat.Bc5 : CompressionFormat.Bc7;
