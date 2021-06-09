@@ -27,9 +27,9 @@ namespace LegendaryExplorer.Tools.AutoTOC
     /// </summary>
     public partial class AutoTOCWindow : TrackingNotifyPropertyChangedWindowBase
     {
-        private readonly object _myCollectionLock = new object();
+        private readonly object _myCollectionLock = new();
 
-        public ObservableCollectionExtended<ListBoxTask> TOCTasks { get; } = new ObservableCollectionExtended<ListBoxTask>();
+        public ObservableCollectionExtended<ListBoxTask> TOCTasks { get; } = new();
 
         public AutoTOCWindow() : base("AutoTOC", true)
         {
@@ -55,7 +55,7 @@ namespace LegendaryExplorer.Tools.AutoTOC
         private MEGame _selectedGame = MEGame.ME3;
         public MEGame SelectedGame { get => _selectedGame; set => SetProperty(ref _selectedGame, value); }
 
-        public ObservableCollectionExtended<MEGame> GameOptions { get; } = new ObservableCollectionExtended<MEGame>(new[] { MEGame.ME3, MEGame.LE1, MEGame.LE2, MEGame.LE3 });
+        public ObservableCollectionExtended<MEGame> GameOptions { get; } = new (){ MEGame.ME3, MEGame.LE1, MEGame.LE2, MEGame.LE3 };
 
         private void GenerateME1FileList()
         {
@@ -204,7 +204,7 @@ namespace LegendaryExplorer.Tools.AutoTOC
 
             //remove trailing slash
             string dlcCookedDir = Path.GetFullPath(CookedPath); //standardize  
-            ListBoxTask task = new ListBoxTask($"Generating file index for {dlcCookedDir}");
+            var task = new ListBoxTask($"Generating file index for {dlcCookedDir}");
             TOCTasks.Add(task);
             int rootLength = dlcCookedDir.Length + 1; //trailing slash path separator. This is used to strip off the absolute part of the path and leave only relative
 
@@ -239,7 +239,7 @@ namespace LegendaryExplorer.Tools.AutoTOC
 
         private void GenerateSingleDLCTOC()
         {
-            SaveFileDialog d = new SaveFileDialog
+            var d = new SaveFileDialog
             {
                 Filter = "PCConsoleTOC.bin|PCConsoleTOC.bin",
                 FileName = "PCConsoleTOC.bin"

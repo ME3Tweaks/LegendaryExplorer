@@ -13,7 +13,7 @@ namespace LegendaryExplorerCore.Unreal
     // Todo: Convert to EndianReader
     public class TOCBinFile
     {
-        public static int TOCMagicNumber = 0x3AB70C13;
+        public const int TOCMagicNumber = 0x3AB70C13;
 
         /// <summary>
         /// Single entry in TOC file, contained in a hash bucket
@@ -105,7 +105,7 @@ namespace LegendaryExplorerCore.Unreal
             }
         }
 
-        public List<TOCHashTableEntry> HashBuckets = new List<TOCHashTableEntry>();
+        public List<TOCHashTableEntry> HashBuckets = new();
 
         public TOCBinFile()
         {
@@ -148,12 +148,12 @@ namespace LegendaryExplorerCore.Unreal
         {
             internal int offset { get; set; }
             internal int entrycount { get; set; }
-            internal List<Entry> TOCEntries { get; } = new List<Entry>();
+            internal List<Entry> TOCEntries { get; } = new();
         }
 
         public void ReadFile(MemoryStream ms)
         {
-            EndianReader reader = new EndianReader(ms);
+            var reader = new EndianReader(ms);
             uint magic = (uint)reader.ReadInt32();
             if (magic != TOCMagicNumber)
             {
