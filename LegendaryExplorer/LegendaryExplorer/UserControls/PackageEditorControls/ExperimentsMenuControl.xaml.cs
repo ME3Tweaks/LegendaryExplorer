@@ -1042,6 +1042,10 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsK.RecookLevelToTestFromJSON(GetPEWindow(), GetPEWindow().GetEntryDoubleClickAction());
         }
 
+        private void CopyPackageName(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(Path.GetFileNameWithoutExtension(GetPEWindow().Pcc?.FilePath));
+        }
         #endregion
 
         // EXPERIMENTS: OTHER PEOPLE ------------------------------------------------------------
