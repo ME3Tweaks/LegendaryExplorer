@@ -90,7 +90,7 @@ namespace LegendaryExplorerCore.Packages
         public const ushort LE2UnrealVersion = 684;
         public const ushort LE2LicenseeVersion = 168;
 
-        public const ushort LE3UnrealVersion =685;
+        public const ushort LE3UnrealVersion = 685;
         public const ushort LE3LicenseeVersion = 205;
 
         /// <summary>
@@ -502,14 +502,14 @@ namespace LegendaryExplorerCore.Packages
 
             //determine if tables are in order.
             //The < 500 is just to check that the tables are all at the start of the file. (will never not be the case for unedited files, but for modded ones, all things are possible)
-            bool tablesInOrder =  NameOffset < 500 && NameOffset < ImportOffset && ImportOffset < ExportOffset;
+            bool tablesInOrder = NameOffset < 500 && NameOffset < ImportOffset && ImportOffset < ExportOffset;
 
             packageReader.Position = savedPos; //restore position to chunk table
             Stream inStream = fs;
             bool readExportDataInConstructor = true;
             if (IsCompressed && NumCompressedChunksAtLoad > 0)
             {
-                inStream = CompressionHelper.DecompressPackage(packageReader, compressionFlagPosition, game: Game, platform: Platform, 
+                inStream = CompressionHelper.DecompressPackage(packageReader, compressionFlagPosition, game: Game, platform: Platform,
                                                                canUseLazyDecompression: tablesInOrder && !platformNeedsResolved);
                 if (inStream is CompressionHelper.PackageDecompressionStream)
                 {
@@ -595,7 +595,7 @@ namespace LegendaryExplorerCore.Packages
                     export.Data = packageReader.ReadBytes(export.DataSize);
                 }
             }
-            
+
             packageReader.Dispose();
             if (Game.IsGame1() && Platform == GamePlatform.PC)
             {
@@ -664,9 +664,9 @@ namespace LegendaryExplorerCore.Packages
         private static void saveByReconstructing(MEPackage mePackage, string path, bool isSaveAs, bool compress, bool includeAdditionalPackagesToCook, bool includeDependencyTable, object diskIOSyncLockObject = null)
         {
             //var sw = Stopwatch.StartNew();
-            using var saveStream = compress 
-                ? saveCompressed(mePackage, isSaveAs, includeAdditionalPackagesToCook, includeDependencyTable) 
-                : saveUncompressed(mePackage, includeAdditionalPackagesToCook, includeDependencyTable);
+            using var saveStream = compress
+                ? saveCompressed(mePackage, isSaveAs, includeAdditionalPackagesToCook, includeDependencyTable)
+                : saveUncompressed(mePackage, isSaveAs, includeAdditionalPackagesToCook, includeDependencyTable);
 
             // Lock writing with the sync object (if not null) to prevent disk concurrency issues
             // (the good old 'This file is in use by another process' message)
@@ -705,7 +705,7 @@ namespace LegendaryExplorerCore.Packages
 
             //very rough estimate, better to err on the high side though. If the estimate is slightly too low, it will end up allocating an array almost twice as big as needed
             //TODO: scan through all files, per compression type, to come up with a better estimate
-            int compressedLengthEstimate = (int)(uncompressedStream.Length / 3.5);  
+            int compressedLengthEstimate = (int)(uncompressedStream.Length / 3.5);
             MemoryStream compressedStream = MemoryManager.GetMemoryStream(compressedLengthEstimate);
 
             var chunks = new List<CompressionHelper.Chunk>();
@@ -899,10 +899,11 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="includeAdditionalPackageToCook"></param>
         /// <param name="includeDependencyTable"></param>
         /// <returns></returns>
-        private static MemoryStream saveUncompressed(MEPackage mePackage, bool includeAdditionalPackageToCook = true, bool includeDependencyTable = true)
+        private static MemoryStream saveUncompressed(MEPackage mePackage, bool isSaveAs, bool includeAdditionalPackageToCook = true, bool includeDependencyTable = true)
         {
             if (mePackage.Platform != GamePlatform.PC) throw new Exception("Cannot save packages for platforms other than PC");
-            //if (mePackage.Game == MEGame.ME1 && compress) throw new Exception("Cannot save ME1 packages compressed due to texture linking issues");
+            var sourceIsCompressed = mePackage.IsCompressed;
+            mePackage.Flags &= ~EPackageFlags.Compressed;
 
             //calculate total size, to prevent MemoryStream re-sizing
             int nameTableSize = mePackage.names.Sum(name => name.Length);
@@ -1023,6 +1024,20 @@ namespace LegendaryExplorerCore.Packages
             ms.JumpTo(0);
             //re-write header with updated values
             mePackage.WriteHeader(ms, includeAdditionalPackageToCook: includeAdditionalPackageToCook);
+
+            //If we're doing save as, reset compressed flag to reflect file on disk as we still point to the original one
+            if (isSaveAs)
+            {
+                if (sourceIsCompressed)
+                {
+                    mePackage.Flags |= EPackageFlags.Compressed;
+                }
+                else
+                {
+                    mePackage.Flags &= ~EPackageFlags.Compressed;
+                }
+            }
+
             return ms;
         }
 
@@ -1033,7 +1048,7 @@ namespace LegendaryExplorerCore.Packages
             try
             {
                 package.Flags |= EPackageFlags.Compressed;
-            
+
                 int nameTableSize = package.names.Sum(name => name.Length);
                 switch (package.Game)
                 {
@@ -1064,9 +1079,9 @@ namespace LegendaryExplorerCore.Packages
                               + package.exports.Sum(exp => exp.DataSize);
 
                 //This will be enough to prevent resizing for 84% of LE files, and only 2% will have to resize twice
-                int compressedLengthEstimate = (int)(totalSize * 0.4); 
+                int compressedLengthEstimate = (int)(totalSize * 0.4);
                 var compressedStream = MemoryManager.GetMemoryStream(compressedLengthEstimate);
-                package.WriteHeader(compressedStream, includeAdditionalPackageToCook:includeAdditionalPackageToCook);
+                package.WriteHeader(compressedStream, includeAdditionalPackageToCook: includeAdditionalPackageToCook);
 
                 //calculate all offsets
                 package.NameOffset = (int)compressedStream.Position;
@@ -1140,7 +1155,7 @@ namespace LegendaryExplorerCore.Packages
 
                 var uncompressedData = MemoryManager.GetByteArray(actualMaxChunkSize);
                 int positionInChunkData;
-            
+
                 //write tables to first chunk
                 using (var ms = new MemoryStream(uncompressedData))
                 {
@@ -1349,7 +1364,7 @@ namespace LegendaryExplorerCore.Packages
         {
             return compress
                 ? saveCompressed(this, true, includeAdditionalPackagesToCook, includeDependencyTable)
-                : saveUncompressed(this, includeAdditionalPackagesToCook, includeDependencyTable);
+                : saveUncompressed(this, true, includeAdditionalPackagesToCook, includeDependencyTable);
         }
 
         //TODO: edit memory in-place somehow? This currently requires an allocation and a copy of the sizeable shadercache export, and must happen on save for nearly every LE file
