@@ -1057,6 +1057,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         string timelineEffectType = typeProp != null
                             ? $"{typeProp.Value} @ {timeIndex.Value}s"
                             : "Unknown effect";
+                        switch (typeProp.Value)
+                        {
+                            case "TLT_InputOn":
+                                timelineEffectType += $" {sp.Properties.GetProp<StrProperty>("InputAlias")?.Value} {sp.Properties.GetProp<DelegateProperty>("InputHandle")?.Value.FunctionName}";
+                                break;
+                            case "TLT_Function":
+                                timelineEffectType += $" {sp.Properties.GetProp<NameProperty>("Func")?.Value}()";
+                                break;
+                        }
                         parsedValue = $"({timelineEffectType})";
                     }
                     else if (sp.StructType == "BioStreamingState")
