@@ -387,7 +387,7 @@ namespace LegendaryExplorerCore.Packages
             Flags = (EPackageFlags)packageReader.ReadUInt32();
 
             //Xenon Demo ME3 doesn't read this. Xenon ME3 Retail does
-            if ((Game == MEGame.ME3 || Game == MEGame.LE3)
+            if (Game is MEGame.ME3 or MEGame.LE3
                 && (Flags.HasFlag(EPackageFlags.Cooked) || Platform != GamePlatform.PC) && licenseeVersion != ME3Xenon2011DemoLicenseeVersion)
             {
                 //Consoles are always cooked.
@@ -401,7 +401,7 @@ namespace LegendaryExplorerCore.Packages
             ImportCount = packageReader.ReadInt32();
             ImportOffset = packageReader.ReadInt32();
 
-            if (Game.IsLEGame() || (Game != MEGame.ME1 || Platform != GamePlatform.Xenon))
+            if (Game.IsLEGame() || Game != MEGame.ME1 || Platform != GamePlatform.Xenon)
             {
                 // Seems this doesn't exist on ME1 Xbox
                 DependencyTableOffset = packageReader.ReadInt32();
@@ -485,7 +485,7 @@ namespace LegendaryExplorerCore.Packages
             //with ME3Tweaks Mixins as old code did not remove this section
             //Also we should strive to ensure closeness to the original source files as possible
             //because debugging things is a huge PITA if you start to remove stuff
-            if (Game == MEGame.ME2 || Game == MEGame.ME3 || Game == MEGame.LE3 || Platform == GamePlatform.PS3)
+            if (Game is MEGame.ME2 or MEGame.ME3 || Game.IsLEGame() || Platform == GamePlatform.PS3)
             {
                 int additionalPackagesToCookCount = packageReader.ReadInt32();
                 for (int i = 0; i < additionalPackagesToCookCount; i++)
@@ -927,7 +927,7 @@ namespace LegendaryExplorerCore.Packages
 
             int importTableSize = mePackage.imports.Count * ImportEntry.headerSize;
             int exportTableSize = mePackage.exports.Sum(exp => exp.Header.Length);
-            int dependencyTableSize = (includeDependencyTable ? mePackage.ExportCount * 4 : 4);
+            int dependencyTableSize = includeDependencyTable ? mePackage.ExportCount * 4 : 4;
             int totalSize = 500 //fake header size. will mean allocating a few hundred extra bytes, but that's not a huge deal.
                           + nameTableSize
                           + importTableSize
@@ -1547,6 +1547,7 @@ namespace LegendaryExplorerCore.Packages
                 }
             }
 
+            // Write build and branch numbers
             switch (Game)
             {
                 case MEGame.ME1:
@@ -1610,12 +1611,12 @@ namespace LegendaryExplorerCore.Packages
 
             ms.WriteUInt32(packageSource);
 
-            if (Game == MEGame.ME2 || Game == MEGame.ME1)
+            if (Game is MEGame.ME2 or MEGame.ME1)
             {
                 ms.WriteInt32(0);
             }
 
-            if (Game == MEGame.ME2 || Game == MEGame.ME3 || Game == MEGame.LE3)
+            if (Game is MEGame.ME2 or MEGame.ME3 || Game.IsLEGame())
             {
                 // ME3Explorer should always save with this flag set to true.
                 // Only things that depend on legacy configuration (like Mixins) should
@@ -1625,9 +1626,9 @@ namespace LegendaryExplorerCore.Packages
                     ms.WriteInt32(AdditionalPackagesToCook.Count);
                     foreach (var pname in AdditionalPackagesToCook)
                     {
-                        if (Game == MEGame.ME2)
+                        if (Game is MEGame.ME2 or MEGame.LE1 or MEGame.LE2)
                         {
-                            //ME2 Uses ASCII
+                            // Uses ASCII
                             ms.WriteUnrealStringLatin1(pname);
                         }
                         else
