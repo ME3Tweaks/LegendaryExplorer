@@ -144,6 +144,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         }
                     }
 
+                    if (!RefShaderCacheReader.IsShaderOffsetsDictInitialized(Pcc.Game))
+                    {
+                        BusyText = "Calculating Shader offsets\n(May take ~15s)";
+                    }
                     MaterialShaderMap msmFromGlobalCache = RefShaderCacheReader.GetMaterialShaderMap(Pcc.Game, sps);
                     if (msmFromGlobalCache != null && CurrentLoadedExport is not null)
                     {
@@ -187,7 +191,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private string dissasembledShader;
         public string DissasembledShader
         {
-            get => dissasembledShader ??= RefShaderCacheReader.GetShaderDissasembly(Game, Id);
+            get
+            {
+                if (dissasembledShader is null)
+                {
+                    if (RefShaderCacheReader.GetShaderBytecode(Game, Id) is byte[] bytecode)
+                    {
+                        return dissasembledShader = ShaderBytecode.FromStream(new MemoryStream(bytecode)).Disassemble();
+                    }
+                    dissasembledShader = "";
+                }
+                return dissasembledShader;
+            }
             set => dissasembledShader = value;
         }
     }
