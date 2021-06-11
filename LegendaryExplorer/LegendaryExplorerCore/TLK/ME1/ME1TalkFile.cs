@@ -329,10 +329,13 @@ namespace LegendaryExplorerCore.TLK.ME1
         }
         #endregion
 
+        /// <summary>
+        /// Saves this TLK object to XML
+        /// </summary>
+        /// <param name="fileName"></param>
         public void saveToFile(string fileName)
         {
             using var xr = new XmlTextWriter(fileName, Encoding.UTF8);
-
             WriteXML(StringRefs, Name, xr);
         }
 

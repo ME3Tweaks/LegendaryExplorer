@@ -374,6 +374,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.FindEmptyMips(GetPEWindow());
         }
 
+        private void DumpLE1TLK_Clicked(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.DumpAllLE1TLK(GetPEWindow());
+        }
+
         private void StartPackageBytecodeScan_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.EnumerateAllFunctions(GetPEWindow());

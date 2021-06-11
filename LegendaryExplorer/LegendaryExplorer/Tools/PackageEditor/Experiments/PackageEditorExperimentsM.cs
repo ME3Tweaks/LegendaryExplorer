@@ -1518,7 +1518,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             PackageCache pc = new PackageCache();
             var safeFiles = EntryImporter.FilesSafeToImportFrom(pewPcc.Game).ToList();
-            safeFiles.AddRange(loadedFiles.Where(x=>x.Key.StartsWith("Startup") && (!pewPcc.Game.IsGame2() || x.Key.Contains("_INT"))).Select(x=>x.Key));
+            safeFiles.AddRange(loadedFiles.Where(x => x.Key.StartsWith("Startup") && (!pewPcc.Game.IsGame2() || x.Key.Contains("_INT"))).Select(x => x.Key));
 
             foreach (var f in safeFiles.Distinct())
             {
@@ -1529,6 +1529,40 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 using var p = MEPackageHandler.OpenMEPackage(f.Value);
                 CheckImports(p, pc);
+            }
+        }
+
+        public static void DumpAllLE1TLK(PackageEditorWindow pewpf)
+        {
+            var dlg = new CommonOpenFileDialog
+            {
+                IsFolderPicker = true,
+                EnsurePathExists = true,
+                Title = "Select output folder"
+            };
+            if (dlg.ShowDialog(pewpf) == CommonFileDialogResult.Ok)
+            {
+                Task.Run(() =>
+                {
+                    pewpf.BusyText = "Dumping TLKs...";
+                    pewpf.IsBusy = true;
+                    var allPackages = MELoadedFiles.GetFilesLoadedInGame(MEGame.LE1).ToList();
+                    int numDone = 0;
+                    foreach (var f in allPackages)
+                    {
+                        if (!f.Key.Contains("Startup"))
+                            continue;
+                        pewpf.BusyText = $"Dumping TLKs [{++numDone}/{allPackages.Count}]";
+                        using var package = MEPackageHandler.OpenMEPackage(f.Value);
+                        foreach (var v in package.LocalTalkFiles)
+                        {
+                            var outPath = Path.Combine(dlg.FileName,
+                                $"{Path.GetFileNameWithoutExtension(f.Key)}.{package.GetEntry(v.UIndex).InstancedFullPath}.xml");
+                            v.saveToFile(outPath);
+                        }
+
+                    }
+                }).ContinueWithOnUIThread(x => { pewpf.IsBusy = false; });
             }
         }
     }
