@@ -170,6 +170,13 @@ namespace LegendaryExplorerCore.UnrealScript
                     filePaths.AddRange(additionalFiles);
                     if (!filePaths.All(File.Exists))
                     {
+                        foreach (string filePath in filePaths)
+                        {
+                            if (!File.Exists(filePath))
+                            {
+                                log.LogError($"Could not find required base file: {filePath}");
+                            }
+                        }
                         return false;
                     }
                     using var files = MEPackageHandler.OpenMEPackages(filePaths);
@@ -178,6 +185,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
                 catch (Exception e) when(!LegendaryExplorerCoreLib.IsDebug)
                 {
+                    log.LogError($"Exception occured while compiling BaseLib:\n{e.FlattenException()}");
                     return false;
                 }
             }

@@ -24,7 +24,10 @@ namespace LegendaryExplorerCore.Tests
             string testDataDirectory = GlobalTest.GetTestDataDirectory();
             var testFiles = Directory.GetFiles(testDataDirectory, "*.*", SearchOption.AllDirectories)
                                      .Where(x => StringExtensions.RepresentsPackageFilePath(x)
-                                              && !x.Contains(@"Xenon", StringComparison.InvariantCultureIgnoreCase) && !x.Contains("PS3", StringComparison.InvariantCultureIgnoreCase) && !x.Contains("UDK", StringComparison.InvariantCultureIgnoreCase)).ToList();
+                                              && !x.Contains(@"Xenon", StringComparison.InvariantCultureIgnoreCase) 
+                                              && !x.Contains("PS3", StringComparison.InvariantCultureIgnoreCase)
+                                              && !x.Contains("WiiU", StringComparison.InvariantCultureIgnoreCase)
+                                              && !x.Contains("UDK", StringComparison.InvariantCultureIgnoreCase)).ToList();
 
             //var testFile = Path.Combine(GlobalTest.GetTestPackagesDirectory(), "PC", "ME1", "BIOA_NOR10_08_DSG.SFM");
             //var testFile = Path.Combine(GlobalTest.GetTestPackagesDirectory(), "PC", "ME2", "retail", "BioD_BlbGtl_205Evacuation.pcc");
@@ -38,7 +41,7 @@ namespace LegendaryExplorerCore.Tests
             }
         }
 
-        private void compileTest(string testFile, string shortName, bool usePackageCache)
+        private static void compileTest(string testFile, string shortName, bool usePackageCache)
         {
             // Ensure we don't not test with anything cached in this test case
             FileLib.FreeLibs();
