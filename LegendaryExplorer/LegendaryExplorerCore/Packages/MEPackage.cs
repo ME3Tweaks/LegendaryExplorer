@@ -1660,7 +1660,7 @@ namespace LegendaryExplorerCore.Packages
             }
 
             // Global TLK
-            foreach (var tlk in Exports.Where(x => x.ClassName == "BioTlkFile" && !exportsToLoad.Contains(x)))
+            foreach (var tlk in Exports.Where(x => x.ClassName == "BioTlkFile" && !x.IsDefaultObject && !exportsToLoad.Contains(x)))
             {
                 exportsToLoad.Add(tlk);
             }

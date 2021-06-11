@@ -124,7 +124,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
 
         //SirC "efficiency is next to godliness" way of Checking export is ME1/TLK
-        public override bool CanParse(ExportEntry exportEntry) => exportEntry.FileRef.Game is MEGame.ME1 or MEGame.LE1 && exportEntry.ClassName == "BioTlkFile";
+        public override bool CanParse(ExportEntry exportEntry) => exportEntry.FileRef.Game.IsGame1() && exportEntry.ClassName == "BioTlkFile" && !exportEntry.IsDefaultObject;
         public override void PoppedOut(MenuItem recentsMenuItem)
         {
             Recents_MenuItem = recentsMenuItem;
