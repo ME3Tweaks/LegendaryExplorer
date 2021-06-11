@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
@@ -36,23 +37,60 @@ namespace LegendaryExplorerCore.Shaders
             _ => null
         };
 
+        public static bool IsShaderOffsetsDictInitialized(MEGame game) => ShaderOffsets(game)?.Count > 0;
+
         private static int ME3MaterialShaderMapsOffset = 206341927;
         private static int ME2MaterialShaderMapsOffset = 132795914;
         private static int ME1MaterialShaderMapsOffset = 69550225;
 
-        private static int LE3MaterialShaderMapsOffset = 1232556095;
-        private static int LE2MaterialShaderMapsOffset = 918786420;
-        private static int LE1MaterialShaderMapsOffset = 711522522;
-        private static int MaterialShaderMapsOffset(MEGame game) => game switch
+        private static int LE3MaterialShaderMapsOffset = 1263553925;
+        private static int LE2MaterialShaderMapsOffset = 1014140890;
+        private static int LE1MaterialShaderMapsOffset = 720539980;
+
+        private static long LE3RefShaderCacheSize = 1296009525;
+        private static long LE2RefShaderCacheSize = 1035352391;
+        private static long LE1RefShaderCacheSize = 731880291;
+
+        private static int MaterialShaderMapsOffset(MEGame game)
         {
-            MEGame.ME3 => ME3MaterialShaderMapsOffset,
-            MEGame.ME2 => ME2MaterialShaderMapsOffset,
-            MEGame.ME1 => ME1MaterialShaderMapsOffset,
-            MEGame.LE3 => LE3MaterialShaderMapsOffset,
-            MEGame.LE2 => LE2MaterialShaderMapsOffset,
-            MEGame.LE1 => LE1MaterialShaderMapsOffset,
-            _ => 0
-        };
+            if (game.IsLEGame())
+            {
+                var expectedSize = game switch
+                {
+                    MEGame.LE3 => LE3RefShaderCacheSize,
+                    MEGame.LE2 => LE2RefShaderCacheSize,
+                    MEGame.LE1 => LE1RefShaderCacheSize,
+                    _ => 0
+                };
+                var actualsize = new FileInfo(shaderfilePath(game)).Length;
+                if (expectedSize != actualsize)
+                {
+                    GetMaterialShaderMap(game, null);
+                    switch (game)
+                    {
+                        case MEGame.LE3:
+                            LE3RefShaderCacheSize = actualsize;
+                            break;
+                        case MEGame.LE2:
+                            LE2RefShaderCacheSize = actualsize;
+                            break;
+                        case MEGame.LE1:
+                            LE1RefShaderCacheSize = actualsize;
+                            break;
+                    }
+                }
+            }
+            return game switch
+            {
+                MEGame.ME3 => ME3MaterialShaderMapsOffset,
+                MEGame.ME2 => ME2MaterialShaderMapsOffset,
+                MEGame.ME1 => ME1MaterialShaderMapsOffset,
+                MEGame.LE3 => LE3MaterialShaderMapsOffset,
+                MEGame.LE2 => LE2MaterialShaderMapsOffset,
+                MEGame.LE1 => LE1MaterialShaderMapsOffset,
+                _ => 0
+            };
+        }
 
         private static void populateOffsets(MEGame game, int offsetOfShaderCacheOffset)
         {
@@ -112,12 +150,15 @@ namespace LegendaryExplorerCore.Shaders
                         break;
                     case MEGame.LE3:
                         LE3MaterialShaderMapsOffset = (int)fs.Position;
+                        //Debug.WriteLine($"{nameof(LE3MaterialShaderMapsOffset)}: {LE3MaterialShaderMapsOffset}");
                         break;
                     case MEGame.LE2:
                         LE2MaterialShaderMapsOffset = (int)fs.Position;
+                        //Debug.WriteLine($"{nameof(LE2MaterialShaderMapsOffset)}: {LE2MaterialShaderMapsOffset}");
                         break;
                     case MEGame.LE1:
                         LE1MaterialShaderMapsOffset = (int)fs.Position;
+                        //Debug.WriteLine($"{nameof(LE1MaterialShaderMapsOffset)}: {LE1MaterialShaderMapsOffset}");
                         break;
                 }
             }
@@ -134,6 +175,11 @@ namespace LegendaryExplorerCore.Shaders
 
                 int offsetOfShaderCacheOffset = shaderCachePackage.ExportOffset + 36;
                 populateOffsets(game, offsetOfShaderCacheOffset);
+                if (staticParameterSet is null)
+                {
+                    return null;
+                }
+
                 var sc = new SerializingContainer2(fs, shaderCachePackage, true);
                 sc.ms.JumpTo(MaterialShaderMapsOffset(game));
 
@@ -175,6 +221,20 @@ namespace LegendaryExplorerCore.Shaders
             }
 
             return "";
+        }
+
+        public static byte[] GetShaderBytecode(MEGame game, Guid shaderGuid)
+        {
+            Dictionary<Guid, int> offsets = ShaderOffsets(game);
+            if (offsets != null && offsets.TryGetValue(shaderGuid, out int offset))
+            {
+                using FileStream fs = File.OpenRead(shaderfilePath(game));
+                fs.JumpTo(offset);
+                int size = fs.ReadInt32();
+                return fs.ReadToBuffer(size);
+            }
+
+            return null;
         }
 
         public static void RemoveStaticParameterSetsThatAreInTheGlobalCache(HashSet<StaticParameterSet> paramSets, MEGame game)
