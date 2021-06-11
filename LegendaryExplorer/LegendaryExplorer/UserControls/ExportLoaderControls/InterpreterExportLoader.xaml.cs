@@ -418,7 +418,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void PopoutInterpreterForObj()
         {
-            if (SelectedItem is UPropertyTreeViewEntry {Property: ObjectProperty op} && Pcc.IsUExport(op.Value))
+            if (SelectedItem is UPropertyTreeViewEntry { Property: ObjectProperty op } && Pcc.IsUExport(op.Value))
             {
                 ExportEntry export = Pcc.GetUExport(op.Value);
                 var elhw = new ExportLoaderHostedWindow(new InterpreterExportLoader(), export)
@@ -1024,9 +1024,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     break;
                 case StructProperty sp:
                     // CUSTOM UI TEMPLATES GO HERE
-                    if (sp.StructType == "Vector" || sp.StructType == "Rotator" || sp.StructType == "Cylinder")
+                    if (sp.StructType is "Vector" or "Rotator" or "Cylinder" or "PlotStreamingElement")
                     {
-                        string loc = string.Join(", ", sp.Properties.Where(x => !(x is NoneProperty)).Select(p =>
+                        string parsedText = string.Join(", ", sp.Properties.Where(x => !(x is NoneProperty)).Select(p =>
                          {
                              switch (p)
                              {
@@ -1034,11 +1034,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                      return $"{p.Name}={fp.Value}";
                                  case IntProperty ip:
                                      return $"{p.Name}={ip.Value}";
+                                 case NameProperty np:
+                                     return $"{p.Name}={np.Value}";
+                                 case BoolProperty bp:
+                                     return $"{p.Name}={bp.Value}";
                                  default:
                                      return "";
                              }
                          }));
-                        parsedValue = $"({loc})";
+                        parsedValue = $"({parsedText})";
                     }
                     else if (sp.StructType == "Guid")
                     {
@@ -1049,6 +1053,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         }
                         Guid g = new Guid(ms.ToArray());
                         parsedValue = g.ToString();
+                    }
+                    else if (sp.StructType == "PlotStreamingSet")
+                    {
+                        parsedValue = $"({sp.Properties.GetProp<NameProperty>("VirtualChunkName")?.Value})";
                     }
                     else if (sp.StructType == "TimelineEffect")
                     {
@@ -1219,7 +1227,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var uptvi = (UPropertyTreeViewEntry)sender;
             switch (e.PropertyName)
             {
-                case "ColorStructCode" when uptvi.Property is StructProperty {StructType: "Color"} colorStruct:
+                case "ColorStructCode" when uptvi.Property is StructProperty { StructType: "Color" } colorStruct:
                     uptvi.ChildrenProperties.ClearEx();
                     foreach (var subProp in colorStruct.Properties)
                     {
