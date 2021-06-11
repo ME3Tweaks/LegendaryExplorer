@@ -390,11 +390,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                     if (CurrentLoadedExport.Game.IsLEGame())
                     {
-                        shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformOT)bin.ReadByte()}") { Length = 1 });
+                        shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformLE)bin.ReadByte()}") { Length = 1 });
                     }
                     else
                     {
-                        shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformLE)bin.ReadByte()}") { Length = 1 });
+                        shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformOT)bin.ReadByte()}") { Length = 1 });
                     }
 
                     shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Frequency: {(EShaderFrequency)bin.ReadByte()}") { Length = 1 });
@@ -574,10 +574,35 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private BinInterpNode ReadShaderParameters(EndianReader bin, string shaderType)
         {
+            //most stuff in this method is speculative, research is ongoing
+
             var node = new BinInterpNode(bin.Position, "ShaderParameters") { IsExpanded = true };
 
             switch (shaderType)
             {
+                case "TDepthOnlySolidPixelShader":
+                case "TDepthOnlyScreenDoorPixelShader":
+                    node.Items.Add(FMaterialPixelShaderParameters("MaterialParameters"));
+                    break;
+                case "FModShadowMeshPixelShader":
+                    node.Items.Add(FMaterialPixelShaderParameters("MaterialParameters"));
+                    node.Items.Add(FShaderParameter("AttenAllowedParameter"));
+                    break;
+                case "FTextureDensityPixelShader":
+                    node.Items.Add(FMaterialPixelShaderParameters("MaterialParameters"));
+                    node.Items.Add(FShaderParameter("TextureDensityParameters"));
+                    node.Items.Add(FShaderParameter("TextureLookupInfo"));
+                    break;
+
+                case "FVelocityVertexShader":
+                    node.Items.Add(FVertexFactoryParameterRef());
+                    //this can cause errors if the VertexFactory is of a type that hasn't had its shaderparameters parsed yet
+                    //only uncomment when actively working on parsing 
+                    //node.Items.Add(FMaterialVertexShaderParameters("MaterialParameters"));
+                    //node.Items.Add(FShaderParameter("PrevViewProjectionMatrixParameter"));
+                    //node.Items.Add(FShaderParameter("PreviousLocalToWorldParameter"));
+                    //node.Items.Add(FShaderParameter("StretchTimeScaleParameter"));
+                    break;
                 case "FFogVolumeApplyVertexShader":
                 case "FHitMaskVertexShader":
                 case "FHitProxyVertexShader":
@@ -586,7 +611,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 case "FTextureDensityVertexShader":
                 case "TDepthOnlyVertexShader<0>":
                 case "TDepthOnlyVertexShader<1>":
-                case "FVelocityVertexShader":
                 case "TFogIntegralVertexShader<FConstantDensityPolicy>":
                 case "TFogIntegralVertexShader<FLinearHalfspaceDensityPolicy>":
                 case "TFogIntegralVertexShader<FSphereDensityPolicy>":
@@ -686,7 +710,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         MakeUInt16Node(bin, "BaseIndex"),
                         MakeUInt16Node(bin, "NumBytes"),
                         MakeUInt16Node(bin, "BufferIndex"),
-                    }
+                    },
+                    Length = 6
                 };
             }
 
@@ -699,22 +724,24 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         MakeUInt16Node(bin, "BaseIndex"),
                         MakeUInt16Node(bin, "NumResources"),
                         MakeUInt16Node(bin, "SamplerIndex"),
-                    }
+                    },
+                    Length = 6
                 };
             }
 
             BinInterpNode FVertexFactoryParameterRef()
             {
-                return new BinInterpNode(bin.Position, $"VertexFactoryParameters: FVertexFactoryParameterRef")
+                var vertexFactoryParameterRef = new BinInterpNode(bin.Position, $"VertexFactoryParameters: FVertexFactoryParameterRef")
                 {
                     Items =
                     {
-                        MakeNameNode(bin, "VertexFactoryType"),
+                        MakeNameNode(bin, "VertexFactoryType", out var vertexFactoryName),
                         MakeUInt32HexNode(bin, "File offset to end of FVertexFactoryParameterRef (may be inaccurate in modded files)")
-                        //more after...
                     },
                     IsExpanded = true
                 };
+                vertexFactoryParameterRef.Items.AddRange(FVertexFactoryShaderParameters(vertexFactoryName));
+                return vertexFactoryParameterRef;
             }
 
             BinInterpNode FSceneTextureShaderParameters(string name)
@@ -728,7 +755,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         FShaderParameter("SceneDepthCalcParameter"),
                         FShaderParameter("ScreenPositionScaleBiasParameter"),
                         FShaderResourceParameter("NvStereoFixTextureParameter"),
-                    }
+                    },
+                    Length = 30
                 };
             }
 
@@ -747,7 +775,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                 };
             }
-
+            //   float4 WrapLightingParameters;     // Offset:  224 Size:    16 [unused]
+            //   bool bEnableDistanceShadowFading;  // Offset:  240 Size:     4 [unused]
+            //   float2 DistanceFadeParameters;     // Offset:  244 Size:     8 [unused]
+            //   float4x4 PreviousLocalToWorld;     // Offset:  432 Size:    64 [unused]
+            //   float3 MeshOrigin;                 // Offset:  496 Size:    12
+            //   float3 MeshExtension;              // Offset:  512 Size:    12
             BinInterpNode FMaterialPixelShaderParameters(string name)
             {
                 var super = FMaterialShaderParameters(name, "FMaterialPixelShaderParameters");
@@ -778,9 +811,78 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 return super;
             }
 
+            BinInterpNode FMaterialVertexShaderParameters(string name)
+            {
+                var super = FMaterialShaderParameters(name, "FMaterialPixelShaderParameters");
+                super.Items.AddRange(new[]
+                {
+                    MakeArrayNode(bin, "UniformVertexScalarShaderParameters", i => TUniformParameter(FShaderParameter)),
+                    MakeArrayNode(bin, "UniformVertexVectorShaderParameters", i => TUniformParameter(FShaderParameter)),
+                });
+                return super;
+            }
+
             BinInterpNode TUniformParameter(Func<string, BinInterpNode> parameter)
             {
                 return parameter($"[{bin.ReadInt32()}]");
+            }
+
+            IEnumerable<ITreeItem> FVertexFactoryShaderParameters(string vertexFactor)
+            {
+                switch (vertexFactor)
+                {
+                    case "FGPUSkinVertexFactory":
+                        return new BinInterpNode[]
+                        {
+                            FShaderParameter("LocalToWorldParameter"),
+                            FShaderParameter("WorldToLocalParameter"),
+                            FShaderParameter("BoneMatricesParameter"),
+                            FShaderParameter("BoneIndexOffsetAndScaleParameter"),
+                            FShaderParameter("MeshOriginParameter"),
+                            FShaderParameter("MeshExtensionParameter"),
+                            FShaderResourceParameter("PreviousBoneMatricesParameter"),
+                            FShaderParameter("UsePerBoneMotionBlurParameter"),
+                        };
+                    case "FLocalVertexFactory":
+                        return new BinInterpNode[]
+                        {
+                            FShaderParameter("LocalToWorldParameter"),
+                            FShaderParameter("LocalToWorldRotDeterminantFlipParameter"),
+                            FShaderParameter("WorldToLocalParameter"),
+                        };
+                    case "FSplineMeshVertexFactory":
+                        return new BinInterpNode[]
+                        {
+                            FShaderParameter("LocalToWorldParameter"),
+                            FShaderParameter("LocalToWorldRotDeterminantFlipParameter"),
+                            FShaderParameter("WorldToLocalParameter"),
+                            FShaderParameter("SplineStartPosParam"),
+                            FShaderParameter("SplineStartTangentParam"),
+                            FShaderParameter("SplineStartRollParam"),
+                            FShaderParameter("SplineStartScaleParam"),
+                            FShaderParameter("SplineStartOffsetParam"),
+                            FShaderParameter("SplineEndPosParam"),
+                            FShaderParameter("SplineEndTangentParam"),
+                            FShaderParameter("SplineEndRollParam"),
+                            FShaderParameter("SplineEndScaleParam"),
+                            FShaderParameter("SplineEndOffsetParam"),
+                            FShaderParameter("SplineXDirParam"),
+                            FShaderParameter("SmoothInterpRollScaleParam"),
+                            FShaderParameter("MeshMinZParam"),
+                            FShaderParameter("MeshRangeZParam"),
+                        };
+                    case "FInstancedStaticMeshVertexFactory":
+                        return new BinInterpNode[]
+                        {
+                            FShaderParameter("LocalToWorldParameter"),
+                            FShaderParameter("LocalToWorldRotDeterminantFlipParameter"),
+                            FShaderParameter("WorldToLocalParameter"),
+                            FShaderParameter("InstancedViewTranslationParameter"),
+                            FShaderParameter("InstancingParameters"),
+                        };
+                }
+
+                return Array.Empty<BinInterpNode>();
             }
         }
         private BinInterpNode MakeStringNode(EndianReader bin, string nodeName)
@@ -6738,6 +6840,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private static BinInterpNode MakeByteNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadByte()}") { Length = 1 };
 
         private BinInterpNode MakeNameNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadNameReference(Pcc)}", NodeType.StructLeafName) { Length = 8 };
+
+        private BinInterpNode MakeNameNode(EndianReader bin, string name, out NameReference nameRef) =>
+            new BinInterpNode(bin.Position, $"{name}: {nameRef = bin.ReadNameReference(Pcc)}", NodeType.StructLeafName) { Length = 8 };
 
         private BinInterpNode MakeEntryNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {entryRefString(bin)}", NodeType.StructLeafObject) { Length = 4 };
 

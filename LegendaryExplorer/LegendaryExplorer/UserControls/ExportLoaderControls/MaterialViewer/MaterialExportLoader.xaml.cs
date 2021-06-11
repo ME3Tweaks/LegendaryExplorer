@@ -80,6 +80,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     if (shaderCache != null && shaderCache.Shaders.TryGetValue(shaderReference.Id, out Shader shader))
                     {
                         tvs.DissasembledShader = ShaderBytecode.FromStream(new MemoryStream(shader.ShaderByteCode)).Disassemble();
+                        tvs.Index = shaderCache.Shaders.IndexOf(new KeyValuePair<Guid, Shader>(shaderReference.Id, shader));
                     }
                     tvmsm.Shaders.Add(tvs);
                 }
@@ -187,7 +188,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
     {
         public MEGame Game;
         public Guid Id { get; set; }
+        public string Description => $"{ShaderType} ({Index})";
         public string ShaderType { get; set; }
+        public int Index { get; set; }
+
         private string dissasembledShader;
         public string DissasembledShader
         {
