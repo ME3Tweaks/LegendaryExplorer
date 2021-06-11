@@ -386,7 +386,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     }
                     else
                     {
-                        if (!crossPCCObjectMappingList.TryGetValue(sourceExport.Parent, out IEntry parent))
+                        IEntry parent = null;
+                        if (sourceExport.Parent != null && !crossPCCObjectMappingList.TryGetValue(sourceExport.Parent, out parent))
                         {
                             parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceExport.ParentFullPath, importingPCC, destinationPcc, true, crossPCCObjectMappingList);
                         }

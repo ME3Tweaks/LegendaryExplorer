@@ -57,6 +57,7 @@ namespace LegendaryExplorerCore.Tests
         public static string GetTestDataMiscDirectory() => Path.Combine(GetTestDataDirectory(), "misc");
         public static string GetTestCRCDirectory() => Path.Combine(GetTestDataMiscDirectory(), "crc");
         public static string GetTestTexturesDirectory() => Path.Combine(GetTestDataDirectory(), "textures");
+        public static string GetTestCoalescedDirectory() => Path.Combine(GetTestDataDirectory(), "coalesced");
 
 
         public static (MEGame expectedGame, MEPackage.GamePlatform expectedPlatform) GetExpectedTypes(string p)
