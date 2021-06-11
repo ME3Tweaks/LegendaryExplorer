@@ -239,6 +239,7 @@ namespace LegendaryExplorer.Tools.TFCCompactor
             };
             backgroundWorker.RunWorkerCompleted += (a, b) =>
             {
+                ProgressBarIndeterminate = false;
                 ScanForGameCompleted = true;
                 backgroundWorker = null;
                 CurrentOperationText = "Initial scan completed";
@@ -830,7 +831,10 @@ namespace LegendaryExplorer.Tools.TFCCompactor
             //};
             backgroundWorker.RunWorkerCompleted += (a, b) =>
             {
+                ProgressBarIndeterminate = false;
                 Settings.TFCCompactor_LastStagingPath = StagingDirectory;
+                
+                // These results will never be hit. We need to handle errors somehow. Like if mismatched CRCs are found.
                 if (b.Result is ValueTuple<CompactionResult, string> result)
                 {
                     switch (result.Item1)
