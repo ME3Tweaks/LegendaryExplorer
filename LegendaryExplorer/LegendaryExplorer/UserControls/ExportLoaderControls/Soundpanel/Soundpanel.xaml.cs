@@ -1299,7 +1299,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     return;
                 }
             }
-
+            StopPlaying();
             MemoryStream convertedStream = new MemoryStream();
             using (var fileStream = new FileStream(oggPath, FileMode.Open))
             {
@@ -1326,7 +1326,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             CurrentLoadedWwisebank.EmbeddedFiles.ReplaceAll(AllWems.Select(w => new KeyValuePair<uint, byte[]>(w.Id, w.HasBeenFixed ? w.OriginalWemData : w.WemData)));
             CurrentLoadedExport.WriteBinary(CurrentLoadedWwisebank);
             File.Delete(oggPath);
-            MessageBox.Show("Done");
+            UpdateAudioStream();
         }
 
         public async Task ReplaceAudioFromWave(string sourceFile = null, ExportEntry forcedExport = null, WwiseConversionSettingsPackage conversionSettings = null)
@@ -1386,6 +1386,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// <param name="updateReferencedEvents">If true will find all WwiseEvents referencing this export and update their Duration property</param>
         public void ReplaceAudioFromWwiseEncodedFile(string filePath = null, ExportEntry forcedExport = null, bool updateReferencedEvents = false)
         {
+            StopPlaying();
             ExportEntry exportToWorkOn = forcedExport ?? CurrentLoadedExport;
             if (exportToWorkOn != null && exportToWorkOn.ClassName == "WwiseStream")
             {
@@ -1406,6 +1407,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 w.ImportFromFile(filePath, w.GetPathToAFC());
                 exportToWorkOn.WriteBinary(w);
+                UpdateAudioStream();
 
                 if(updateReferencedEvents)
                 {
