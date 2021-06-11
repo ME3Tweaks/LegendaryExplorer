@@ -138,14 +138,14 @@ namespace LegendaryExplorerCore.Textures.Studio
 
         public TextureMapMemoryEntry(IEntry iEntry)
         {
-            IsPackage = iEntry.ClassName == @"Package";
+            IsTexture = iEntry.IsTexture();
             ObjectName = iEntry.ObjectName;
         }
 
         /// <summary>
-        /// If this entry represents a 'package' and is not actually a texture.
+        /// If this entry represents a 'texture' and is not actually something else, such as cubemap or package.
         /// </summary>
-        public bool IsPackage { get; set; }
+        public bool IsTexture { get; set; }
 
         /// <summary>
         /// The parent entry, most times a package.
@@ -194,7 +194,7 @@ namespace LegendaryExplorerCore.Textures.Studio
         /// <returns></returns>
         public IEnumerable<TextureMapMemoryEntry> GetAllTextureEntries()
         {
-            return Children.OfType<TextureMapMemoryEntry>().Where(x => x.IsPackage).SelectMany(x => x.GetAllTextureEntries()).Concat(Children.OfType<TextureMapMemoryEntry>().Where(x => !x.IsPackage));
+            return Children.OfType<TextureMapMemoryEntry>().Where(x => !x.IsTexture).SelectMany(x => x.GetAllTextureEntries()).Concat(Children.OfType<TextureMapMemoryEntry>().Where(x => x.IsTexture));
         }
 
         public int GetExternalDiskSize()
@@ -494,6 +494,7 @@ namespace LegendaryExplorerCore.Textures.Studio
                 //}
 
                 numDone++;
+                progressDelegate?.Invoke(null, numDone, packageFiles.Count);
             }
 
             // Pass 2: Find any unique items among the unique paths (e.g. CRC not equal to other members of same entry)

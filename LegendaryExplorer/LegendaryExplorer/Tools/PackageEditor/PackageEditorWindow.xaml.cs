@@ -62,7 +62,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
         public static readonly string[] ExportIconTypes =
         {
             "GFxMovieInfo", "BioSWF", "Texture2D", "WwiseStream", "BioTlkFile",
-            "World", "Package", "StaticMesh", "SkeletalMesh", "Sequence", "Material", "Function", "Class", "State"
+            "World", "Package", "StaticMesh", "SkeletalMesh", "Sequence", "Material", "Function", "Class", "State",
+            "TextureCube"
         };
 
         /// <summary>

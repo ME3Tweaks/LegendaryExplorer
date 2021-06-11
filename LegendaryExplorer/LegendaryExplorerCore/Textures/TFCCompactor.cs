@@ -167,12 +167,12 @@ namespace LegendaryExplorerCore.Textures
             }
         }
 
-        public static void CompactTFC(TFCCompactorInfoPackage infoPackage, Action<string> errorCallback, Action<string, int, int> progressDelegate = null, CancellationToken cts = default)
+        public static void CompactTFC(TFCCompactorInfoPackage infoPackage, Action<string> errorCallback, Action<string, int, int> progressDelegate = null, TextureMap textureMap = null, CancellationToken cts = default)
         {
             TFCCompactor compactor = new TFCCompactor(infoPackage);
 
             var rootNodes = new List<TextureMapMemoryEntry>();
-            var textureMap = TextureMapGenerator.GenerateMapForFolder(infoPackage.BaseCompactionPath, x => new TextureMapMemoryEntry(x), x => rootNodes.Add(x), progressDelegate, cts);
+            textureMap ??= TextureMapGenerator.GenerateMapForFolder(infoPackage.BaseCompactionPath, x => new TextureMapMemoryEntry(x), x => rootNodes.Add(x), progressDelegate, cts);
             Debug.WriteLine($@"Texture map count: {textureMap.CalculatedMap.Count}");
 
             // CRC Check
@@ -265,9 +265,14 @@ namespace LegendaryExplorerCore.Textures
                 // So we can't use a mapping of filenames. Hopefully files don't diverge far enough that this won't matter...
                 foreach (var namedPackage in packagePool.Where(x => Path.GetFileName(x).Equals(packageNamePair.Key, StringComparison.InvariantCultureIgnoreCase)))
                 {
+                    progressDelegate?.Invoke($"Updating package {packageNamePair.Key}", -1, -1);
                     using var package = MEPackageHandler.OpenMEPackage(namedPackage, forceLoadFromDisk: true);
                     foreach (var tu in packageNamePair.Value)
                     {
+                        if (string.IsNullOrWhiteSpace(tu.TFCName))
+                        {
+                            continue; // PCC Stored
+                        }
                         var exportToUpdate = package.FindExport(tu.ExportPath);
                         if (exportToUpdate == null)
                         {
@@ -277,19 +282,27 @@ namespace LegendaryExplorerCore.Textures
                         t2d.Mips.RemoveAll(x => x.StorageType == StorageTypes.empty); // Remove empty mips
 
                         // Update offset
-                        var updateInfo = compactor.CRCMap[tu.CRC];
-                        for (int i = 0; i < updateInfo.MipOffsetMap.Count; i++)
+                        if (compactor.CRCMap.TryGetValue(tu.CRC, out var updateInfo))
                         {
-                            t2d.Mips[i].DataOffset = updateInfo.MipOffsetMap[i];
+                            for (int i = 0; i < updateInfo.MipOffsetMap.Count; i++)
+                            {
+                                t2d.Mips[i].DataOffset = updateInfo.MipOffsetMap[i];
+                            }
+
+
+
+                            exportToUpdate.WriteBinary(t2d);
+
+                            // Update TFC properties
+                            var properties = exportToUpdate.GetProperties();
+                            properties.AddOrReplaceProp(new FGuid(updateInfo.TFCGuid).ToStructProperty("TFCFileGuid"));
+                            properties.AddOrReplaceProp(new NameProperty(updateInfo.TFCName, "TextureFileCacheName"));
+                            exportToUpdate.WriteProperties(properties);
                         }
-
-                        exportToUpdate.WriteBinary(t2d);
-
-                        // Update TFC properties
-                        var properties = exportToUpdate.GetProperties();
-                        properties.AddOrReplaceProp(new FGuid(updateInfo.TFCGuid).ToStructProperty("TFCFileGuid"));
-                        properties.AddOrReplaceProp(new NameProperty(updateInfo.TFCName, "TextureFileCacheName"));
-                        exportToUpdate.WriteProperties(properties);
+                        else if (infoPackage.TFCsToCompact.Contains(tu.TFCName))
+                        {
+                            Debug.WriteLine($"CRC not found in map 0x{tu.CRC:X8}, {tu.ExportPath} in {tu.TFCName}");
+                        }
                     }
 
                     if (package.IsModified)
