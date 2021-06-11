@@ -46,7 +46,7 @@
                             <DataTemplate DataType="{x:Type exportLoaderControls:TreeViewShader}">
                                 <StackPanel Orientation="Horizontal">
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding ShaderType}" />
+                                        <TextBlock Text="{Binding Description, Mode=OneTime}" />
                                     </StackPanel>
                                     <b:Interaction.Triggers>
                                         <b:EventTrigger EventName="PreviewMouseRightButtonDown">

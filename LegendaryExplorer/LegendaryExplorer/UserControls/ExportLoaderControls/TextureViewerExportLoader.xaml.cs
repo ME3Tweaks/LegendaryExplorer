@@ -129,7 +129,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             // I'm sure someday I will read this comment again and regret it
             // -Mgamerz
             var tex = ObjectBinary.From<UTexture2D>(CurrentLoadedExport);
-            tex.Mips.RemoveAt(0);
+            tex.Mips.RemoveAt(Mips_ListBox.SelectedIndex);
             props.GetProp<IntProperty>("SizeX").Value = tex.Mips[0].SizeX;
             props.GetProp<IntProperty>("SizeY").Value = tex.Mips[0].SizeY;
             props.GetProp<IntProperty>("MipTailBaseIdx").Value = tex.Mips.Count - 1; // 0 based
@@ -139,7 +139,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private bool CanDropTopMip()
         {
             // There must be at least 1 mip
-            return CanReplaceTexture() && MipList.Count > 1 && Mips_ListBox.SelectedIndex == 0;
+            return CanReplaceTexture() && MipList.Count > 1 /*&& Mips_ListBox.SelectedIndex == 0*/;
         }
 
         private bool CanReplaceTexture()

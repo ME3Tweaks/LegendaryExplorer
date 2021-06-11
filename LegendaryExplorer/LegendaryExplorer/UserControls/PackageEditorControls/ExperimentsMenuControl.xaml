@@ -30,7 +30,11 @@
         <MenuItem Header="Generate ME2/ME3 object info diff" Click="GenerateObjectInfoDiff_Click"/>
     </MenuItem>
     <MenuItem Header="Mgamerz's Programming Circus">
-        <MenuItem Header="Resolve all imports in game of opened package (see debug console)" Click="ResolveAllGameImports_Click"/>
+        <MenuItem Header="Save package...">
+            <MenuItem Header="Compressed" Click="SavePackageCompressed_Click"/>
+            <MenuItem Header="UnCompressed" Click="SavePackageUnCompressed_Click"/>
+</MenuItem>
+            <MenuItem Header="Resolve all imports in game of opened package (see debug console)" Click="ResolveAllGameImports_Click"/>
         <MenuItem Header="Bytecode scan all functions in package" Click="StartPackageBytecodeScan_Click"/>
         <MenuItem Header="Test LODBias stuff" Click="LODBiasTest_Clicked"/>
         <MenuItem Header="Find Empty Mips" Click="FindEmptyMips_Clicked"/>

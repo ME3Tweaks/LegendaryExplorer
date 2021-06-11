@@ -25,7 +25,8 @@ namespace LegendaryExplorer.Tools.TextureStudio
 
         public bool IsExpanded { get; set; }
 
-        public string IconSource => IsPackage ? @"/PackageEditor/EntryIcons/icon_package.png" : @"/PackageEditor/EntryIcons/icon_texture2d.png";
+        // Todo: Add cubemap icon
+        public string IconSource => IsTexture ? @"/PackageEditor/EntryIcons/icon_package.png" : @"/PackageEditor/EntryIcons/icon_texture2d.png";
 
         public void ExpandParents()
         {

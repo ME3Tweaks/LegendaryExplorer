@@ -239,6 +239,7 @@ namespace LegendaryExplorer.Tools.TFCCompactor
             };
             backgroundWorker.RunWorkerCompleted += (a, b) =>
             {
+                ProgressBarIndeterminate = false;
                 ScanForGameCompleted = true;
                 backgroundWorker = null;
                 CurrentOperationText = "Initial scan completed";
@@ -260,6 +261,10 @@ namespace LegendaryExplorer.Tools.TFCCompactor
                 ProgressBarIndeterminate = false;
                 ProgressBarValue = done;
                 ProgressBarMax = total;
+            }
+            else if (done == -1 && total == -1)
+            {
+                ProgressBarIndeterminate = true;
             }
         }
 
@@ -381,11 +386,11 @@ namespace LegendaryExplorer.Tools.TFCCompactor
                 return;
             }
 
-            var tfcsToPull = TextureCachesToPullFromList.Where(x => x.Selected).Select(x=>x.TFCName).ToList();
+            var tfcsToPull = TextureCachesToPullFromList.Where(x => x.Selected).Select(x => x.TFCName).ToList();
             if (!tfcsToPull.Any())
             {
                 MessageBox.Show("You must select at one or more referenced TFCs to pull into the new TFC.", "No TFCs selected", MessageBoxButton.OK, MessageBoxImage.Error);
-                return; 
+                return;
             }
 
             TFCCompactorInfoPackage pack = new()
@@ -406,7 +411,8 @@ namespace LegendaryExplorer.Tools.TFCCompactor
             backgroundWorker = new BackgroundWorker { WorkerReportsProgress = true };
             backgroundWorker.DoWork += (sender, args) =>
             {
-                LegendaryExplorerCore.Textures.TFCCompactor.CompactTFC(pack, errorCallback, scanProgress);
+                CurrentOperationText = "Compacting...";
+                LegendaryExplorerCore.Textures.TFCCompactor.CompactTFC(pack, errorCallback, scanProgress, LoadedTextureMap);
             };
 
 
@@ -825,7 +831,10 @@ namespace LegendaryExplorer.Tools.TFCCompactor
             //};
             backgroundWorker.RunWorkerCompleted += (a, b) =>
             {
+                ProgressBarIndeterminate = false;
                 Settings.TFCCompactor_LastStagingPath = StagingDirectory;
+                
+                // These results will never be hit. We need to handle errors somehow. Like if mismatched CRCs are found.
                 if (b.Result is ValueTuple<CompactionResult, string> result)
                 {
                     switch (result.Item1)

@@ -117,14 +117,14 @@
                                     <TextBlock DockPanel.Dock="Bottom" Text="{Binding Instances.BindableCount, StringFormat='{}{0} instances'}" 
                                                FontSize="10"
                                                TextWrapping="Wrap" VerticalAlignment="Center" 
-                                               Visibility="{Binding IsPackage, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='Not'}" />
+                                               Visibility="{Binding IsTexture, Converter={StaticResource BoolToVisibilityConverter}}" />
                                     <StackPanel Orientation="Horizontal">
                                         <Image Width="16" Height="16" Margin="0,0,3,0">
                                             <Image.Style>
                                                 <Style TargetType="{x:Type Image}">
                                                     <Setter Property="Source" Value="{StaticResource textureicon}" />
                                                     <Style.Triggers>
-                                                        <DataTrigger Value="True" Binding="{Binding IsPackage}">
+                                                        <DataTrigger Value="False" Binding="{Binding IsTexture}">
                                                             <Setter Property="Source" Value="{StaticResource packageicon}"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>

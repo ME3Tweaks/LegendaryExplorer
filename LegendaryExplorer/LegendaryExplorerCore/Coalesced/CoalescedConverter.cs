@@ -478,6 +478,7 @@ namespace LegendaryExplorerCore.Coalesced
 
             MemoryStream outputStream = new MemoryStream();
             coal.Serialize(outputStream);
+            outputStream.Position = 0;
             return outputStream;
         }
 

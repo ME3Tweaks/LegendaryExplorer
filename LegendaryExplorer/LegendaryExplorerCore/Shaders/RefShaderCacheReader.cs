@@ -210,7 +210,7 @@ namespace LegendaryExplorerCore.Shaders
 
         public static string GetShaderDissasembly(MEGame game, Guid shaderGuid)
         {
-            Dictionary<Guid, int> offsets = ShaderOffsets(game);
+            var offsets = ShaderOffsets(game);
             if (offsets != null && offsets.TryGetValue(shaderGuid, out int offset))
             {
                 using FileStream fs = File.OpenRead(shaderfilePath(game));
@@ -225,7 +225,7 @@ namespace LegendaryExplorerCore.Shaders
 
         public static byte[] GetShaderBytecode(MEGame game, Guid shaderGuid)
         {
-            Dictionary<Guid, int> offsets = ShaderOffsets(game);
+            var offsets = ShaderOffsets(game);
             if (offsets != null && offsets.TryGetValue(shaderGuid, out int offset))
             {
                 using FileStream fs = File.OpenRead(shaderfilePath(game));

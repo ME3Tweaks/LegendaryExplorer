@@ -114,6 +114,7 @@
     <None Remove="Tools\Icons\wwisegrapheditor_256x256.ico" />
     <None Remove="Tools\Meshplorer\udk.ico" />
     <None Remove="Tools\Meshplorer\umodel.ico" />
+    <None Remove="Tools\PackageEditor\ExportIcons\icon_texturecube.png" />
     <None Remove="UserControls\ExportLoaderControls\Soundpanel\WwiseTemplateProject.zip" />
     <None Remove="UserControls\SharedToolControls\Scene3D\StandardShader.hlsl" />
   </ItemGroup>
