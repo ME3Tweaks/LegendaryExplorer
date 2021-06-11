@@ -1190,7 +1190,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     items.Add($"0x{ms.Position - 4:X4} Always zero: {alwaysZero1}");
                 }
 
-                if (Pcc.Game is MEGame.ME2 or MEGame.ME3 or MEGame.LE3 || Pcc.Platform == MEPackage.GamePlatform.PS3)
+                if (Pcc.Game is MEGame.ME2 or MEGame.ME3 || Pcc.Game.IsLEGame() || Pcc.Platform == MEPackage.GamePlatform.PS3)
                 {
                     int additionalPackagesToCookCount = ms.ReadInt32();
                     items.Add(
@@ -1210,8 +1210,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
             }
 
-            new ListDialog(items, Path.GetFileName(Pcc.FilePath) + " header information",
-                "Below is information about this package from the header.", this).Show();
+            new ListDialog(items, Path.GetFileName(Pcc.FilePath) + " package summary",
+                "Below is information about this package from the package summary.", this).Show();
         }
 
         private void TrashEntryAndChildren()
