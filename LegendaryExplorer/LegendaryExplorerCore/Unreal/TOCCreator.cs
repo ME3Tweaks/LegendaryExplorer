@@ -23,7 +23,7 @@ namespace LegendaryExplorerCore.Unreal
         /// <returns></returns>
         public static IEnumerable<string> GetTocableFiles(string path)
         {
-            string[] Pattern = { "*.pcc", "*.afc", "*.bik", "*.bin", "*.tlk", "*.cnd", "*.upk", "*.tfc", "*.isb", "*.usf" };
+            string[] Pattern = { "*.pcc", "*.afc", "*.bik", "*.bin", "*.tlk", "*.cnd", "*.upk", "*.tfc", "*.isb", "*.usf", "*.ini", "*.txt", "*.dlc" };
             var res = new List<string>();
             foreach (string s in Pattern)
                 res.AddRange(Directory.GetFiles(path, s));
@@ -100,7 +100,7 @@ namespace LegendaryExplorerCore.Unreal
         /// <summary>
         /// Returns whether or not a folder should be TOCable
         /// </summary>
-        /// <param name="directory">Directory to checl</param>
+        /// <param name="directory">Directory to check</param>
         /// <returns></returns>
         /// TODO: Is there an easy way to make this not iterate over all files?
         public static bool IsTOCableFolder(string directory, bool isLE2LE3) => GetFiles(directory, isLE2LE3).Any();
