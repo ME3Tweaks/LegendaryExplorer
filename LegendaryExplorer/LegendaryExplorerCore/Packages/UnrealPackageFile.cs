@@ -31,7 +31,7 @@ namespace LegendaryExplorerCore.Packages
         public int DependencyTableOffset { get; protected set; }
         public Guid PackageGuid { get; set; }
 
-        public bool IsCompressed => Flags.HasFlag(UnrealFlags.EPackageFlags.Compressed);
+        public bool IsCompressed => Flags.Has(UnrealFlags.EPackageFlags.Compressed);
 
         /// <summary>
         /// A lookup table that maps the full instanced path of an entry to that entry, which makes looking up entries by name quick.

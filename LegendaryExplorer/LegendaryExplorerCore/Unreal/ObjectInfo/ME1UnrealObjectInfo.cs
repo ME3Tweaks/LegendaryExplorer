@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -15,13 +16,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 {
     public static class ME1UnrealObjectInfo
     {
-#if AZURE
-        /// <summary>
-        /// Full path to where mini files are stored (Core.u, Engine.pcc, for example) to enable dynamic lookup of property info like struct defaults
-        /// </summary>
-        public static string MiniGameFilesPath { get; set; }
-#endif
-
         public static Dictionary<string, ClassInfo> Classes = new();
         public static Dictionary<string, ClassInfo> Structs = new();
         public static Dictionary<string, List<NameReference>> Enums = new();
@@ -296,8 +290,13 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             return null;
         }
 
+        static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesME1 = new();
         public static PropertyCollection getDefaultStructValue(string structName, bool stripTransients, PackageCache packageCache)
         {
+            if (stripTransients && defaultStructValuesME1.TryGetValue(structName, out var cachedProps))
+            {
+                return cachedProps;
+            }
             bool isImmutable = GlobalUnrealObjectInfo.IsImmutable(structName, MEGame.ME1);
             if (Structs.TryGetValue(structName, out ClassInfo info))
             {
@@ -326,7 +325,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
                         Stream loadStream = null;
                         IMEPackage cachedPackage = null;
-                        if (packageCache != null && packageCache.TryGetCachedPackage(filepath, true, out cachedPackage))
+                        if (packageCache != null && packageCache.TryGetCachedPackage(filepath, true, out cachedPackage) || MEPackageHandler.TryGetPackageFromCache(filepath, out cachedPackage))
                         {
                             // Use this one
                             readDefaultProps(cachedPackage, props, packageCache: packageCache);
@@ -345,16 +344,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                         {
                             loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(filepath);
                         }
-#if AZURE
-                    else if (MiniGameFilesPath != null && File.Exists(Path.Combine(MiniGameFilesPath, info.pccPath)))
-                    {
-                        filepath = Path.Combine(MiniGameFilesPath, info.pccPath);
-
-                        // Load from test minigame folder. This is only really useful on azure where we don't have access to 
-                        // games
-                        loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(filepath);
-                    }
-#endif
                         if (cachedPackage == null && loadStream == null)
                         {
                             filepath = Path.Combine(ME1Directory.DefaultGamePath, info.pccPath); //for files from ME1 DLC
@@ -373,6 +362,10 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     }
                     props.Add(new NoneProperty());
 
+                    if (stripTransients)
+                    {
+                        defaultStructValuesME1.TryAdd(structName, props);
+                    }
                     return props;
                 }
                 catch
@@ -612,7 +605,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             if (!isStruct)
             {
                 UClass classBinary = ObjectBinary.From<UClass>(export);
-                info.isAbstract = classBinary.ClassFlags.HasFlag(UnrealFlags.EClassFlags.Abstract);
+                info.isAbstract = classBinary.ClassFlags.Has(UnrealFlags.EClassFlags.Abstract);
             }
             if (pcc.FilePath.Contains("BioGame"))
             {

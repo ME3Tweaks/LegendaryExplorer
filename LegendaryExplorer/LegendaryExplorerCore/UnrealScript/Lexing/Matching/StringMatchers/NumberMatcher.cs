@@ -14,8 +14,8 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
     public class NumberMatcher : TokenMatcherBase<string>
     {
         private readonly List<KeywordMatcher> Delimiters;
-        private readonly Regex digits = new Regex("[0-9]", RegexOptions.Compiled);
-        private readonly Regex hexDigits = new Regex("[0-9a-fA-F]", RegexOptions.Compiled);
+        private static readonly Regex digits = new ("[0-9]", RegexOptions.Compiled);
+        private static readonly Regex hexDigits = new ("[0-9a-fA-F]", RegexOptions.Compiled);
 
         public NumberMatcher(List<KeywordMatcher> delimiters)
         {
@@ -24,7 +24,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
 
         protected override Token<string> Match(TokenizableDataStream<string> data, ref SourcePosition streamPos, MessageLog log)
         {
-            SourcePosition start = new SourcePosition(streamPos);
+            var start = new SourcePosition(streamPos);
             TokenType type;
             string value;
 
@@ -98,7 +98,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
                 return null;
             }
             streamPos = streamPos.GetModifiedPosition(0, data.CurrentIndex - start.CharIndex, data.CurrentIndex - start.CharIndex);
-            SourcePosition end = new SourcePosition(streamPos);
+            var end = new SourcePosition(streamPos);
             return new Token<string>(type, value, start, end) {SyntaxType = EF.Number};
         }
 

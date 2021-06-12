@@ -14,6 +14,7 @@ using LegendaryExplorerCore.UnrealScript.Language.ByteCode;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Language.Util;
 using LegendaryExplorerCore.UnrealScript.Utilities;
+using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.UnrealScript.Compiling
 {
@@ -90,11 +91,11 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     switch (objBin)
                     {
                         case UProperty uProperty:
-                            if (uProperty.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.ReturnParm))
+                            if (uProperty.PropertyFlags.Has(EPropertyFlags.ReturnParm))
                             {
                                 returnValue = uProperty;
                             }
-                            else if (uProperty.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.Parm))
+                            else if (uProperty.PropertyFlags.Has(EPropertyFlags.Parm))
                             {
                                 parameters.Add(nextChild.ObjectName.Instanced, uProperty);
                             }
@@ -569,7 +570,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             Emit(AddConversion(lType, node.LeftOperand));
             inAssignTarget = false;
             SkipPlaceholder skip = null;
-            if (op.RightOperand.Flags.Has(UnrealFlags.EPropertyFlags.SkipParm))
+            if (op.RightOperand.Flags.Has(EPropertyFlags.SkipParm))
             {
                 WriteOpCode(OpCodes.Skip);
                 skip = WriteSkipPlaceholder();
@@ -683,7 +684,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 WriteOpCode(OpCodes.GlobalFunction);
                 WriteName(func.Name);
             }
-            else if (func.Flags.Has(FunctionFlags.Final) || node.Function.IsSuper)
+            else if (func.Flags.Has(EFunctionFlags.Final) || node.Function.IsSuper)
             {
                 WriteOpCode(OpCodes.FinalFunction);
                 WriteObjectRef(ResolveFunction(func));
@@ -852,7 +853,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     WriteName(func.Name);
                     if (Game >= MEGame.ME3)
                     {
-                        WriteObjectRef(func.Flags.Has(FunctionFlags.Delegate) ? ResolveFunction(func) : null);
+                        WriteObjectRef(func.Flags.Has(EFunctionFlags.Delegate) ? ResolveFunction(func) : null);
                     }
                     return true;
             }
@@ -869,7 +870,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
             if (varDecl.Outer is Function)
             {
-                if (varDecl.Flags.Has(UnrealFlags.EPropertyFlags.OutParm))
+                if (varDecl.Flags.Has(EPropertyFlags.OutParm))
                 {
                     WriteOpCode(OpCodes.LocalOutVariable);
                 }

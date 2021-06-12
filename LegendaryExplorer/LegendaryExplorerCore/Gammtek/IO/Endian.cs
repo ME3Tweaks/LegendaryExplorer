@@ -63,7 +63,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
 		/// <summary>
 		///     Retrieve the non-native Endian instance.
 		/// </summary>
-		public static Endian NonNative { get; private set; }
+		public static Endian NonNative { get; }
 
 		/// <summary>
 		///     Retrieves the other Endian instance from the current.

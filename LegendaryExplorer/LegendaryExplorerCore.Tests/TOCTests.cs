@@ -34,7 +34,7 @@ namespace LegendaryExplorerCore.Tests
             foreach (var tocF in Directory.GetFiles(GlobalTest.GetTestDataDirectory(), "*PCConsoleTOC.bin", SearchOption.AllDirectories))
             {
                 tocDiskBytes = File.ReadAllBytes(tocF);
-                TOCBinFile tbf = new TOCBinFile(new MemoryStream(tocDiskBytes));
+                var tbf = new TOCBinFile(new MemoryStream(tocDiskBytes));
                 var reserialized = tbf.Save();
 
                 var reserializedArray = reserialized.ToArray();

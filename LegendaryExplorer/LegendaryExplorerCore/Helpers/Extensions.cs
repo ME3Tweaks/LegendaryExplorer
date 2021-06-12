@@ -900,7 +900,7 @@ namespace LegendaryExplorerCore.Helpers
         }
         public static T[] MaskToList<T>(this T mask, bool ignoreDefault = true) where T : Enum
         {
-            var q = GetValues<T>().Where(t => mask.HasFlag(t));
+            var q = GetValues<T>().Where(t => mask.Has(t));
             if (ignoreDefault)
             {
                 q = q.Where(v => !v.Equals(default(T)));
@@ -908,6 +908,9 @@ namespace LegendaryExplorerCore.Helpers
             return q.ToArray();
         }
 
+        //The Enum.HasFlag method boxes both enumValue and flag!
+        //It is best to define a specific override of this method for each flagged Enum, with this implementation:
+        // (enumValue & flag) == flag
         public static bool Has<T>(this T enumValue, T flag) where T : Enum
         {
             return enumValue.HasFlag(flag);

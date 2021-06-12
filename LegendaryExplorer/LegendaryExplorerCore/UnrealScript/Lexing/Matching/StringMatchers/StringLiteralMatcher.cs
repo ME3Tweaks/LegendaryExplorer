@@ -11,7 +11,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
 
         protected override Token<string> Match(TokenizableDataStream<string> data, ref SourcePosition streamPos, MessageLog log)
         {
-            SourcePosition start = new SourcePosition(streamPos);
+            var start = new SourcePosition(streamPos);
             string value = null;
             if (data.CurrentItem == Delimiter)
             {
@@ -77,7 +77,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
             if (value != null)
             {
                 streamPos = streamPos.GetModifiedPosition(0, data.CurrentIndex - start.CharIndex, data.CurrentIndex - start.CharIndex);
-                SourcePosition end = new SourcePosition(streamPos);
+                var end = new SourcePosition(streamPos);
                 return new Token<string>(TokenType.StringLiteral, value, start, end) {SyntaxType = EF.String};
             }
             return null;

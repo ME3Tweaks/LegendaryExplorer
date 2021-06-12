@@ -8,7 +8,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
     {
         protected override Token<string> Match(TokenizableDataStream<string> data, ref SourcePosition streamPos, MessageLog log)
         {
-            SourcePosition start = new SourcePosition(streamPos);
+            var start = new SourcePosition(streamPos);
             bool whiteSpace = false;
             int newlines = 0;
             int column = streamPos.Column;
@@ -28,7 +28,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
             if (whiteSpace)
             {
                 streamPos = new SourcePosition(start.Line + newlines, column, data.CurrentIndex);
-                SourcePosition end = new SourcePosition(streamPos);
+                var end = new SourcePosition(streamPos);
                 return new Token<string>(TokenType.WhiteSpace, null, start, end);
             }
             return null;

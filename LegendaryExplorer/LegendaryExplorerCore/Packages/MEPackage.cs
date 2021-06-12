@@ -388,7 +388,7 @@ namespace LegendaryExplorerCore.Packages
 
             //Xenon Demo ME3 doesn't read this. Xenon ME3 Retail does
             if (Game is MEGame.ME3 or MEGame.LE3
-                && (Flags.HasFlag(EPackageFlags.Cooked) || Platform != GamePlatform.PC) && licenseeVersion != ME3Xenon2011DemoLicenseeVersion)
+                && (Flags.Has(EPackageFlags.Cooked) || Platform != GamePlatform.PC) && licenseeVersion != ME3Xenon2011DemoLicenseeVersion)
             {
                 //Consoles are always cooked.
                 PackageTypeId = packageReader.ReadInt32(); //0 = standard, 1 = patch ? Not entirely sure. patch_001 files with byte = 0 => game does not load
@@ -1478,7 +1478,7 @@ namespace LegendaryExplorerCore.Packages
 
             ms.WriteUInt32((uint)Flags);
 
-            if (Game.IsGame3() && Flags.HasFlag(EPackageFlags.Cooked))
+            if (Game.IsGame3() && Flags.Has(EPackageFlags.Cooked))
             {
                 ms.WriteInt32(PackageTypeId);
             }

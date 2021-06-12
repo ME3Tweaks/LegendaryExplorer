@@ -161,7 +161,7 @@ namespace LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode
                         {
                             UnrealFlags.EPropertyFlags ObjectFlagsMask = (UnrealFlags.EPropertyFlags)EndianReader.ToUInt64(export.DataReadOnly, 0x18, export.FileRef.Endian);
                             //UnrealFlags.EPropertyFlags ObjectFlagsMask = (UnrealFlags.EPropertyFlags)EndianReader.ToUInt64(export.DataReadOnly, 0x18, export.FileRef.Endian);
-                            if (ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.Parm) && !ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.ReturnParm))
+                            if (ObjectFlagsMask.Has(UnrealFlags.EPropertyFlags.Parm) && !ObjectFlagsMask.Has(UnrealFlags.EPropertyFlags.ReturnParm))
                             {
                                 if (paramCount > 0)
                                 {
@@ -186,7 +186,7 @@ namespace LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode
                                 result.Append(export.ObjectName.Instanced);
                                 paramCount++;
 
-                                if (ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.OptionalParm) && Statements.Count > 0)
+                                if (ObjectFlagsMask.Has(UnrealFlags.EPropertyFlags.OptionalParm) && Statements.Count > 0)
                                 {
                                     if (Statements[0].Token is NothingToken)
                                         Statements.RemoveRange(0, 1);
@@ -198,7 +198,7 @@ namespace LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode
                                 }
                             }
 
-                            if (ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.ReturnParm))
+                            if (ObjectFlagsMask.Has(UnrealFlags.EPropertyFlags.ReturnParm))
                             {
                                 break; //return param
                             }

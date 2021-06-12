@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
@@ -112,6 +113,12 @@ namespace LegendaryExplorerCore.UnrealScript.Utilities
             }
 
             return int.MaxValue;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Has(this ECast enumValue, ECast flag)
+        {
+            return (enumValue & flag) == flag;
         }
     }
 

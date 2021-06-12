@@ -10,6 +10,7 @@ using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Language.ByteCode;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Utilities;
+using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.UnrealScript.Decompiling
 {
@@ -92,7 +93,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
         public CodeBody Decompile()
         {
             // Skip native funcs
-            if (DataContainer is UFunction Func && Func.FunctionFlags.HasFlag(FunctionFlags.Native))
+            if (DataContainer is UFunction Func && Func.FunctionFlags.Has(EFunctionFlags.Native))
             {
                 var comment = new ExpressionOnlyStatement(new SymbolReference(null, "// Native function"));
                 return new CodeBody(new List<Statement> { comment });

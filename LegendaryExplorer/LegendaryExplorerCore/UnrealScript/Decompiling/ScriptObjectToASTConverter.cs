@@ -13,6 +13,7 @@ using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Parsing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
+using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.UnrealScript.Decompiling
 {
@@ -153,7 +154,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 var objBin = ObjectBinary.From(nextChild);
                 switch (objBin)
                 {
-                    case UFunction uFunction when uFunction.FunctionFlags.HasFlag(FunctionFlags.Defined):
+                    case UFunction uFunction when uFunction.FunctionFlags.Has(EFunctionFlags.Defined):
                         Funcs.Add(ConvertFunction(uFunction, containingClass, decompileBytecode));
                         nextItem = uFunction.Next;
                         break;
@@ -478,11 +479,11 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 switch (objBin)
                 {
                     case UProperty uProperty:
-                        if (uProperty.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.ReturnParm))
+                        if (uProperty.PropertyFlags.Has(EPropertyFlags.ReturnParm))
                         {
                             returnVal = ConvertVariable(uProperty);
                         }
-                        else if (uProperty.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.Parm))
+                        else if (uProperty.PropertyFlags.Has(EPropertyFlags.Parm))
                         {
                             var convert = ConvertVariable(uProperty);
                             parameters.Add(new FunctionParameter(convert.VarType, convert.Flags, convert.Name, convert.ArrayLength));

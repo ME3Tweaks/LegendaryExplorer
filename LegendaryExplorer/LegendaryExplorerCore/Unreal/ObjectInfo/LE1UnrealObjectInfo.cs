@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -15,14 +16,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 {
     public static class LE1UnrealObjectInfo
     {
-#if AZURE
-        /// <summary>
-        /// Full path to where mini files are stored (Core.u, Engine.pcc, for example) to enable dynamic lookup of property info like struct defaults
-        /// </summary>
-        public static string MiniGameFilesPath { get; set; }
-#endif
-
-
         public static Dictionary<string, ClassInfo> Classes = new();
         public static Dictionary<string, ClassInfo> Structs = new();
         public static Dictionary<string, SequenceObjectInfo> SequenceObjects = new();
@@ -283,8 +276,13 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             return null;
         }
 
+        static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesLE1 = new();
         public static PropertyCollection getDefaultStructValue(string structName, bool stripTransients, PackageCache packageCache)
         {
+            if (stripTransients && defaultStructValuesLE1.TryGetValue(structName, out var cachedProps))
+            {
+                return cachedProps;
+            }
             bool isImmutable = IsImmutableStruct(structName);
             if (Structs.TryGetValue(structName, out ClassInfo info))
             {
@@ -312,7 +310,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
                         Stream loadStream = null;
                         IMEPackage cachedPackage = null;
-                        if (packageCache != null && packageCache.TryGetCachedPackage(filepath, true, out cachedPackage))
+                        if (packageCache != null && packageCache.TryGetCachedPackage(filepath, true, out cachedPackage) || MEPackageHandler.TryGetPackageFromCache(filepath, out cachedPackage))
                         {
                             // Use this one
                             readDefaultProps(cachedPackage, props, packageCache: packageCache);
@@ -331,15 +329,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                         {
                             loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(filepath);
                         }
-#if AZURE
-                        else if (MiniGameFilesPath != null && File.Exists(Path.Combine(MiniGameFilesPath, info.pccPath)))
-                        {
-                            // Load from test minigame folder. This is only really useful on azure where we don't have access to 
-                            // games
-                            filepath = Path.Combine(MiniGameFilesPath, info.pccPath);
-                            loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(filepath);
-                        }
-#endif
                         if (cachedPackage == null && loadStream != null)
                         {
                             using IMEPackage importPCC = MEPackageHandler.OpenMEPackageFromStream(loadStream, filepath, useSharedPackageCache: true);
@@ -350,6 +339,10 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     }
                     props.Add(new NoneProperty());
 
+                    if (stripTransients)
+                    {
+                        defaultStructValuesLE1.TryAdd(structName, props);
+                    }
                     return props;
                 }
                 catch
@@ -603,7 +596,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             if (export.IsClass)
             {
                 UClass classBinary = ObjectBinary.From<UClass>(export);
-                info.isAbstract = classBinary.ClassFlags.HasFlag(UnrealFlags.EClassFlags.Abstract);
+                info.isAbstract = classBinary.ClassFlags.Has(UnrealFlags.EClassFlags.Abstract);
             }
             if (pcc.FilePath.Contains("BioGame"))
             {
@@ -749,7 +742,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     return null;
             }
 
-            bool transient = ((UnrealFlags.EPropertyFlags)EndianReader.ToUInt64(entry.DataReadOnly, 24, entry.FileRef.Endian)).HasFlag(UnrealFlags.EPropertyFlags.Transient);
+            bool transient = ((UnrealFlags.EPropertyFlags)EndianReader.ToUInt64(entry.DataReadOnly, 24, entry.FileRef.Endian)).Has(UnrealFlags.EPropertyFlags.Transient);
             return new PropertyInfo(type, reference, transient);
         }
         #endregion

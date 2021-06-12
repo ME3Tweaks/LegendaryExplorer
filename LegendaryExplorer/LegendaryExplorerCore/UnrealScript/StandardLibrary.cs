@@ -58,61 +58,37 @@ namespace LegendaryExplorerCore.UnrealScript
 
             public static BaseLib ME3BaseLib
             {
-                get
-                {
-                    _me3BaseLib ??= new(MEGame.ME3);
-                    return _me3BaseLib;
-                }
+                get => _me3BaseLib ??= new(MEGame.ME3);
                 private set => _me3BaseLib = value;
             }
 
             public static BaseLib ME2BaseLib
             {
-                get
-                {
-                    _me2BaseLib ??= new(MEGame.ME2);
-                    return _me2BaseLib;
-                }
+                get => _me2BaseLib ??= new(MEGame.ME2);
                 private set => _me2BaseLib = value;
             }
 
             public static BaseLib ME1BaseLib
             {
-                get
-                {
-                    _me1BaseLib ??= new(MEGame.ME1);
-                    return _me1BaseLib;
-                }
+                get => _me1BaseLib ??= new(MEGame.ME1);
                 private set => _me1BaseLib = value;
             }
 
             public static BaseLib LE3BaseLib
             {
-                get
-                {
-                    _le3BaseLib ??= new(MEGame.LE3);
-                    return _le3BaseLib;
-                }
+                get => _le3BaseLib ??= new(MEGame.LE3);
                 private set => _le3BaseLib = value;
             }
 
             public static BaseLib LE2BaseLib
             {
-                get
-                {
-                    _le2BaseLib ??= new(MEGame.LE2);
-                    return _le2BaseLib;
-                }
+                get => _le2BaseLib ??= new(MEGame.LE2);
                 private set => _le2BaseLib = value;
             }
 
             public static BaseLib LE1BaseLib
             {
-                get
-                {
-                    _le1BaseLib ??= new(MEGame.LE1);
-                    return _le1BaseLib;
-                }
+                get => _le1BaseLib ??= new(MEGame.LE1);
                 private set => _le1BaseLib = value;
             }
             #endregion

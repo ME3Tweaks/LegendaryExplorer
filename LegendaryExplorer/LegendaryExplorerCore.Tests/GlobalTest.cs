@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
@@ -21,34 +22,44 @@ namespace LegendaryExplorerCore.Tests
             var sc = new SynchronizationContext();
             SynchronizationContext.SetSynchronizationContext(sc);
             LegendaryExplorerCoreLib.InitLib(TaskScheduler.FromCurrentSynchronizationContext(), x => { });
-#if AZURE
-            ME1Directory.DefaultGamePath = ME1UnrealObjectInfo.MiniGameFilesPath = GetTestMiniGamePath(MEGame.ME1);
-            ME2Directory.DefaultGamePath = ME2UnrealObjectInfo.MiniGameFilesPath = GetTestMiniGamePath(MEGame.ME2);
-            ME3Directory.DefaultGamePath = ME3UnrealObjectInfo.MiniGameFilesPath = GetTestMiniGamePath(MEGame.ME3);
-            LE1Directory.DefaultGamePath = LE1UnrealObjectInfo.MiniGameFilesPath = GetTestMiniGamePath(MEGame.LE1);
-            LE2Directory.DefaultGamePath = LE2UnrealObjectInfo.MiniGameFilesPath = GetTestMiniGamePath(MEGame.LE2);
-            LE3Directory.DefaultGamePath = LE3UnrealObjectInfo.MiniGameFilesPath = GetTestMiniGamePath(MEGame.LE3);
-#endif
+
+            //Tests should always use the testing data, not the users local installs of the games
+            ME1Directory.DefaultGamePath = GetTestMiniGamePath(MEGame.ME1);
+            ME2Directory.DefaultGamePath = GetTestMiniGamePath(MEGame.ME2);
+            ME3Directory.DefaultGamePath = GetTestMiniGamePath(MEGame.ME3);
+            LE1Directory.DefaultGamePath = GetTestMiniGamePath(MEGame.LE1);
+            LE2Directory.DefaultGamePath = GetTestMiniGamePath(MEGame.LE2);
+            LE3Directory.DefaultGamePath = GetTestMiniGamePath(MEGame.LE3);
+
             initialized = true;
         }
+
+        private static string testDataDirectory;
         /// <summary>
         /// Looks in parent folders for folder containing a folder named "testdata" as Azure DevOps seems to build project differently than on a VS installation
         /// </summary>
         /// <returns></returns>
         public static string GetTestDataDirectory()
         {
+            if (testDataDirectory is not null)
+            {
+                return testDataDirectory;
+            }
             var dir = Directory.GetParent(Assembly.GetExecutingAssembly().Location);
             while (Directory.GetParent(dir.FullName) != null)
             {
                 dir = Directory.GetParent(dir.FullName);
                 var testDataPath = Path.Combine(dir.FullName, "Testing");
-                if (Directory.Exists(testDataPath)) return Path.Combine(testDataPath, "testdata");
+                if (Directory.Exists(testDataPath))
+                {
+                    return testDataDirectory = Path.Combine(testDataPath, "testdata");
+                }
             }
 
             throw new Exception("Could not find testdata directory!");
         }
 
-        public static string GetTestMiniGamePath(MEGame game) => Path.Combine(GetTestDataDirectory(), "dynamiclookupminigame", game.ToString());
+        public static string GetTestMiniGamePath(MEGame game) => Path.Combine(GetTestDataDirectory(), "packages", "PC", game.ToString());
 
         public static string GetTestPackagesDirectory() => Path.Combine(GetTestDataDirectory(), "packages");
         public static string GetTestSFARsDirectory() => Path.Combine(GetTestDataDirectory(), "sfars");
@@ -64,13 +75,13 @@ namespace LegendaryExplorerCore.Tests
         {
             MEPackage.GamePlatform expectedPlatform = MEPackage.GamePlatform.Unknown;
             MEGame expectedGame = MEGame.Unknown;
-
+            
             string parentname = Directory.GetParent(p).FullName;
             int level = 0;
             while (parentname != null)
             {
                 var dirname = Path.GetFileName(parentname);
-                if (dirname == "retail" || dirname == "demo")
+                if (dirname == "demo" || dirname.CaseInsensitiveEquals("BioGame") || dirname.Contains("CookedPC", StringComparison.OrdinalIgnoreCase))
                 {
                     parentname = Directory.GetParent(parentname).FullName;
                     continue;

@@ -171,7 +171,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 var flagset = Enum.GetValues<EME2MountFileFlag>();
                 foreach (var f in flagset)
                 {
-                    if (ME2Flag.HasFlag(f))
+                    if (ME2Flag.Has(f))
                         setFlags.Add(f.ToString());
                 }
             }
@@ -180,7 +180,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 var flagset = Enum.GetValues<EME3MountFileFlag>();
                 foreach (var f in flagset)
                 {
-                    if (ME3Flag.HasFlag(f))
+                    if (ME3Flag.Has(f))
                         setFlags.Add(f.ToString());
                 }
             }

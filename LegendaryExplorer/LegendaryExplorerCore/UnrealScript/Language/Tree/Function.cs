@@ -6,6 +6,7 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Language.Util;
 using LegendaryExplorerCore.UnrealScript.Utilities;
+using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
@@ -16,21 +17,21 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public List<VariableDeclaration> Locals { get; set; }
         public VariableDeclaration ReturnValueDeclaration;
         public VariableType ReturnType => ReturnValueDeclaration?.VarType;
-        public bool CoerceReturn => ReturnValueDeclaration?.Flags.Has(UnrealFlags.EPropertyFlags.CoerceParm) ?? false;
-        public FunctionFlags Flags;
+        public bool CoerceReturn => ReturnValueDeclaration?.Flags.Has(EPropertyFlags.CoerceParm) ?? false;
+        public EFunctionFlags Flags;
         public List<FunctionParameter> Parameters;
 
         public int NativeIndex;
 
         public DelegateType VarType;
 
-        public bool IsNative => Flags.Has(FunctionFlags.Native);
+        public bool IsNative => Flags.Has(EFunctionFlags.Native);
 
-        public bool IsDefined => Flags.Has(FunctionFlags.Defined);
+        public bool IsDefined => Flags.Has(EFunctionFlags.Defined);
 
-        public bool IsOperator => Flags.Has(FunctionFlags.Operator);
+        public bool IsOperator => Flags.Has(EFunctionFlags.Operator);
 
-        public bool HasOptionalParms => Flags.Has(FunctionFlags.HasOptionalParms) || Parameters.Any(parm => parm.IsOptional);
+        public bool HasOptionalParms => Flags.Has(EFunctionFlags.HasOptionalParms) || Parameters.Any(parm => parm.IsOptional);
 
         public bool RetValNeedsDestruction;
 
@@ -39,7 +40,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public Function SuperFunction;
 
-        public Function(string name, FunctionFlags flags,
+        public Function(string name, EFunctionFlags flags,
                         VariableDeclaration returnValueDeclaration, CodeBody body,
                         List<FunctionParameter> parameters = null,
                         SourcePosition start = null, SourcePosition end = null)

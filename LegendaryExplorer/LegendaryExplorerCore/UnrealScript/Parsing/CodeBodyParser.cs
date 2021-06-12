@@ -15,6 +15,7 @@ using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
+using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.UnrealScript.Parsing
 {
@@ -70,11 +71,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
             if (hasStructDefaults)
             {
-                func.Flags |= FunctionFlags.HasDefaults;
+                func.Flags |= EFunctionFlags.HasDefaults;
             }
             else
             {
-                func.Flags &= ~FunctionFlags.HasDefaults;
+                func.Flags &= ~EFunctionFlags.HasDefaults;
             }
 
             //remove redundant return;
@@ -720,7 +721,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             };
             if (fc != null)
             {
-                if (!(fc.Function.Node is Function func) || !func.Flags.Has(FunctionFlags.Iterator))
+                if (!(fc.Function.Node is Function func) || !func.Flags.Has(EFunctionFlags.Iterator))
                 {
                     TypeError($"Expected an iterator function call or dynamic array iterator after '{FOREACH}'!", iterator);
                 }
@@ -1670,7 +1671,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             if (isStatic)
             {
-                if (!(expr is SymbolReference {Node: Function fun}) || !fun.Flags.Has(FunctionFlags.Static))
+                if (!(expr is SymbolReference {Node: Function fun}) || !fun.Flags.Has(EFunctionFlags.Static))
                 {
                     TypeError("'static.' can only be used for calling a function with the 'static' modifier!", expr);
                 }
@@ -1810,7 +1811,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                             }
 
                             VariableType parmType = p.VarType;
-                            if (func.Flags.Has(FunctionFlags.Iterator) && arguments.Count > 0 && arguments[0]?.ResolveType() is ClassType cType &&
+                            if (func.Flags.Has(EFunctionFlags.Iterator) && arguments.Count > 0 && arguments[0]?.ResolveType() is ClassType cType &&
                                 parmType is Class baseClass && func.Parameters[0].VarType is ClassType originalClassType && baseClass.SameAsOrSubClassOf(originalClassType.ClassLimiter.Name))
                             {
                                 parmType = cType.ClassLimiter;
@@ -2015,7 +2016,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 if (Matches(SELF, EF.Keyword))
                 {
                     PrevToken.AssociatedNode = Self;
-                    if (Node is Function func && func.Flags.Has(FunctionFlags.Static))
+                    if (Node is Function func && func.Flags.Has(EFunctionFlags.Static))
                     {
                         TypeError($"'{SELF}' cannot be used in a static function!");
                     }
@@ -2412,12 +2413,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         private void CheckAccesibility(Function func)
         {
-            if (func.Flags.Has(FunctionFlags.Private) || func.Flags.Has(FunctionFlags.Protected))
+            if (func.Flags.Has(EFunctionFlags.Private) || func.Flags.Has(EFunctionFlags.Protected))
             {
                 Class symbolClass = NodeUtils.GetContainingClass(func);
                 if (symbolClass != Self)
                 {
-                    if (func.Flags.Has(FunctionFlags.Private))
+                    if (func.Flags.Has(EFunctionFlags.Private))
                     {
                         TypeError($"'{func.Name}' is a private function in '{symbolClass.Name}'! You cannot call it from another class.");
                     }

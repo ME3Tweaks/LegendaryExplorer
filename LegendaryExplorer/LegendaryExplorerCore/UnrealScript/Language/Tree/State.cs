@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
-using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Language.Util;
 using LegendaryExplorerCore.UnrealScript.Utilities;
+using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
     public class State : ASTNode, IContainsByteCode, IHasFileReference
     {
-        public StateFlags Flags;
+        public EStateFlags Flags;
         public string Name { get; }
         public CodeBody Body { get; set; }
         public State Parent;
@@ -16,7 +16,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public List<Function> Ignores;
         public List<Label> Labels;
 
-        public State(string name, CodeBody body, StateFlags flags,
+        public State(string name, CodeBody body, EStateFlags flags,
             State parent, List<Function> funcs, List<Function> ignores,
             List<Label> labels, SourcePosition start, SourcePosition end)
             : base(ASTNodeType.State, start, end)

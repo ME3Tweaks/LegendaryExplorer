@@ -14,6 +14,7 @@ using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Helpers;
 using static LegendaryExplorer.Tools.TlkManagerNS.TLKManagerWPF;
+using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -6254,7 +6255,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             yield return MakeInt32Node(bin, "State unknown 3");
             yield return MakeInt32Node(bin, "State unknown 4");
             yield return MakeInt16Node(bin, "Label Table Offset");
-            yield return new BinInterpNode(bin.Position, $"StateFlags: {getStateFlagsStr((StateFlags)bin.ReadUInt32())}") { Length = 4 };
+            yield return new BinInterpNode(bin.Position, $"StateFlags: {getStateFlagsStr((EStateFlags)bin.ReadUInt32())}") { Length = 4 };
             yield return MakeArrayNode(bin, "Local Functions", i =>
                                            new BinInterpNode(bin.Position, $"{bin.ReadNameReference(Pcc)}() = {Pcc.GetEntryString(bin.ReadInt32())}"));
         }
@@ -6331,18 +6332,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             return subnodes;
         }
 
-        public static string getStateFlagsStr(StateFlags stateFlags)
+        public static string getStateFlagsStr(EStateFlags stateFlags)
         {
             string str = null;
-            if (stateFlags.Has(StateFlags.Editable))
+            if (stateFlags.Has(EStateFlags.Editable))
             {
                 str += "Editable ";
             }
-            if (stateFlags.Has(StateFlags.Auto))
+            if (stateFlags.Has(EStateFlags.Auto))
             {
                 str += "Auto ";
             }
-            if (stateFlags.Has(StateFlags.Simulated))
+            if (stateFlags.Has(EStateFlags.Simulated))
             {
                 str += "Simulated ";
             }

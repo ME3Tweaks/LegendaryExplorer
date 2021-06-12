@@ -13,6 +13,7 @@ using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Classes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.Tests
 {
@@ -231,7 +232,7 @@ namespace LegendaryExplorerCore.Tests
                                 fpos += 0x2;
 
                                 var stateFlagsBytes = footerdata.Slice(fpos, 0x4);
-                                var stateFlags = (StateFlags)EndianReader.ToInt32(stateFlagsBytes, 0, export.FileRef.Endian);
+                                var stateFlags = (EStateFlags)EndianReader.ToInt32(stateFlagsBytes, 0, export.FileRef.Endian);
                                 var names = stateFlags.ToString().Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
                                 fpos += 0x4;
 

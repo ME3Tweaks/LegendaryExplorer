@@ -476,7 +476,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             ASTNode StubParser()
             {
                 var start = CurrentPosition;
-                ParseFunctionSpecifiers(out int nativeIndex, out FunctionFlags flags);
+                ParseFunctionSpecifiers(out int nativeIndex, out EFunctionFlags flags);
 
                 if (!Matches(FUNCTION, EF.Keyword))
                 {
@@ -533,12 +533,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                 if (Game >= MEGame.ME3 && hasOptionalParams)
                 {
-                    flags |= FunctionFlags.HasOptionalParms; //TODO: does this flag exist in ME1/ME2?
+                    flags |= EFunctionFlags.HasOptionalParms; //TODO: does this flag exist in ME1/ME2?
                 }
 
                 if (hasOutParms)
                 {
-                    flags |= FunctionFlags.HasOutParms;
+                    flags |= EFunctionFlags.HasOutParms;
                 }
                 if (Consume(TokenType.RightParenth) == null) throw ParseError("Expected ')'!", CurrentPosition);
 
@@ -554,7 +554,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     {
                         Tokens = new TokenStream<string>(() => Tokens.GetTokensInRange(bodyStart, bodyEnd).ToList())
                     };
-                    flags |= FunctionFlags.Defined;
+                    flags |= EFunctionFlags.Defined;
                 }
 
                 VariableDeclaration returnDeclaration = null;
@@ -580,16 +580,16 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return (State)Tokens.TryGetTree(StateSkeletonParser);
             ASTNode StateSkeletonParser()
             {
-                StateFlags flags = StateFlags.None;
+                EStateFlags flags = EStateFlags.None;
                 while (CurrentTokenType == TokenType.Word)
                 {
                     if (Matches("simulated"))
                     {
-                        flags |= StateFlags.Simulated;
+                        flags |= EStateFlags.Simulated;
                     }
                     else if (Matches("auto"))
                     {
-                        flags |= StateFlags.Auto;
+                        flags |= EStateFlags.Auto;
                     }
                     else
                     {
@@ -605,7 +605,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         throw ParseError("Expected ')' after '(' in state declaration!");
                     }
 
-                    flags |= StateFlags.Editable;
+                    flags |= EStateFlags.Editable;
                 }
 
                 var name = Consume(TokenType.Word);
@@ -623,7 +623,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         VariableIdentifier variable = TryParseVariable();
                         if (variable == null) throw ParseError("Malformed ignore statement!", CurrentPosition);
 
-                        ignores.Add(new Function(variable.Name, FunctionFlags.Public, null, null, null, variable.StartPos, variable.EndPos));
+                        ignores.Add(new Function(variable.Name, EFunctionFlags.Public, null, null, null, variable.StartPos, variable.EndPos));
                     } while (Consume(TokenType.Comma) != null);
 
                     if (Consume(TokenType.SemiColon) == null) throw ParseError("Expected semi-colon!", CurrentPosition);
@@ -944,7 +944,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
         }
 
-        private void ParseFunctionSpecifiers(out int nativeIndex, out FunctionFlags flags)
+        private void ParseFunctionSpecifiers(out int nativeIndex, out EFunctionFlags flags)
         {
             nativeIndex = 0;
             flags = default;
@@ -953,23 +953,23 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 if (Matches("event", EF.Keyword))
                 {
-                    flags |= FunctionFlags.Event;
+                    flags |= EFunctionFlags.Event;
                 }
                 else if (Matches("delegate", EF.Keyword))
                 {
-                    flags |= FunctionFlags.Delegate;
+                    flags |= EFunctionFlags.Delegate;
                 }
                 else if (Matches("operator", EF.Keyword))
                 {
-                    flags |= FunctionFlags.Operator;
+                    flags |= EFunctionFlags.Operator;
                 }
                 else if (Matches("preoperator", EF.Keyword))
                 {
-                    flags |= FunctionFlags.PreOperator | FunctionFlags.Operator;
+                    flags |= EFunctionFlags.PreOperator | EFunctionFlags.Operator;
                 }
                 else if (Matches("native", EF.Keyword))
                 {
-                    flags |= FunctionFlags.Native;
+                    flags |= EFunctionFlags.Native;
                     if (Consume(TokenType.LeftParenth) != null)
                     {
                         if (Consume(TokenType.IntegerNumber) == null)
@@ -991,43 +991,43 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
                 else if (Matches("static", EF.Keyword))
                 {
-                    flags |= FunctionFlags.Static;
+                    flags |= EFunctionFlags.Static;
                 }
                 else if (Matches("simulated", EF.Keyword))
                 {
-                    flags |= FunctionFlags.Simulated;
+                    flags |= EFunctionFlags.Simulated;
                 }
                 else if (Matches("iterator", EF.Keyword))
                 {
-                    flags |= FunctionFlags.Iterator;
+                    flags |= EFunctionFlags.Iterator;
                 }
                 else if (Matches("singular", EF.Keyword))
                 {
-                    flags |= FunctionFlags.Singular;
+                    flags |= EFunctionFlags.Singular;
                 }
                 else if (Matches("latent", EF.Keyword))
                 {
-                    flags |= FunctionFlags.Latent;
+                    flags |= EFunctionFlags.Latent;
                 }
                 else if (Matches("exec", EF.Keyword))
                 {
-                    flags |= FunctionFlags.Exec;
+                    flags |= EFunctionFlags.Exec;
                 }
                 else if (Matches("final", EF.Keyword))
                 {
-                    flags |= FunctionFlags.Final;
+                    flags |= EFunctionFlags.Final;
                 }
                 else if (Matches("server", EF.Keyword))
                 {
-                    flags |= FunctionFlags.NetServer | FunctionFlags.Net;
+                    flags |= EFunctionFlags.NetServer | EFunctionFlags.Net;
                 }
                 else if (Matches("client", EF.Keyword))
                 {
-                    flags |= FunctionFlags.NetClient | FunctionFlags.Net | FunctionFlags.Simulated;
+                    flags |= EFunctionFlags.NetClient | EFunctionFlags.Net | EFunctionFlags.Simulated;
                 }
                 else if (Matches("reliable", EF.Keyword))
                 {
-                    flags |= FunctionFlags.NetReliable;
+                    flags |= EFunctionFlags.NetReliable;
                 }
                 else if (Matches("unreliable", EF.Keyword))
                 {
@@ -1035,15 +1035,15 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
                 else if (Matches("private", EF.Keyword))
                 {
-                    flags |= FunctionFlags.Private | FunctionFlags.Final;
+                    flags |= EFunctionFlags.Private | EFunctionFlags.Final;
                 }
                 else if (Matches("protected", EF.Keyword))
                 {
-                    flags |= FunctionFlags.Protected;
+                    flags |= EFunctionFlags.Protected;
                 }
                 else if (Matches("public", EF.Keyword))
                 {
-                    flags |= FunctionFlags.Public;
+                    flags |= EFunctionFlags.Public;
                 }
                 else
                 {
@@ -1052,9 +1052,9 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
 
             //initial flag validation
-            if (flags.Has(FunctionFlags.Native))
+            if (flags.Has(EFunctionFlags.Native))
             {
-                if (nativeIndex > 0 && !flags.Has(FunctionFlags.Final))
+                if (nativeIndex > 0 && !flags.Has(EFunctionFlags.Final))
                 {
                     {
                         throw ParseError("Function with a native index must be final!", CurrentPosition);
@@ -1063,13 +1063,13 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
             else
             {
-                if (flags.Has(FunctionFlags.Latent))
+                if (flags.Has(EFunctionFlags.Latent))
                 {
                     {
                         throw ParseError("Only native functions may use 'latent'!", CurrentPosition);
                     }
                 }
-                if (flags.Has(FunctionFlags.Iterator))
+                if (flags.Has(EFunctionFlags.Iterator))
                 {
                     {
                         throw ParseError("Only native functions may use 'iterator'!", CurrentPosition);
@@ -1077,27 +1077,27 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
             }
 
-            if (flags.Has(FunctionFlags.Net))
+            if (flags.Has(EFunctionFlags.Net))
             {
-                if (flags.Has(FunctionFlags.Exec))
+                if (flags.Has(EFunctionFlags.Exec))
                 {
                     {
                         throw ParseError("Exec functions cannot be replicated!", CurrentPosition);
                     }
                 }
-                if (flags.Has(FunctionFlags.Static))
+                if (flags.Has(EFunctionFlags.Static))
                 {
                     {
                         throw ParseError("Static functions can't be replicated!", CurrentPosition);
                     }
                 }
-                if (!unreliable && !flags.Has(FunctionFlags.NetReliable))
+                if (!unreliable && !flags.Has(EFunctionFlags.NetReliable))
                 {
                     {
                         throw ParseError("Replicated functions require 'reliable' or 'unreliable'!", CurrentPosition);
                     }
                 }
-                if (unreliable && flags.Has(FunctionFlags.NetReliable))
+                if (unreliable && flags.Has(EFunctionFlags.NetReliable))
                 {
                     {
                         throw ParseError("'reliable' and 'unreliable' are mutually exclusive!", CurrentPosition);
@@ -1110,7 +1110,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     throw ParseError("'unreliable' specified without 'client' or 'server'!", CurrentPosition);
                 }
             }
-            else if (flags.Has(FunctionFlags.NetReliable))
+            else if (flags.Has(EFunctionFlags.NetReliable))
             {
                 {
                     throw ParseError("'reliable' specified without 'client' or 'server'!", CurrentPosition);

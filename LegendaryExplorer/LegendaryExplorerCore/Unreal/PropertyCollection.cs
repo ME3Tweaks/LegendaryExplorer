@@ -21,12 +21,6 @@ namespace LegendaryExplorerCore.Unreal
 {
     public class PropertyCollection : ObservableCollection<Property>
     {
-        static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesME3 = new();
-        static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesME2 = new();
-        static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesME1 = new();
-        static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesLE3 = new();
-        static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesLE2 = new();
-        static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesLE1 = new();
 
         public int endOffset;
         public bool IsImmutable;
@@ -174,11 +168,11 @@ namespace LegendaryExplorerCore.Unreal
                     string name = pcc.GetNameEntry(nameIdx);
                     if (name == "None")
                     {
-                        props.Add(new NoneProperty(stream) { StartOffset = propertyStartPosition, ValueOffset = propertyStartPosition });
+                        props.Items.Add(new NoneProperty(stream) { StartOffset = propertyStartPosition, ValueOffset = propertyStartPosition });
                         stream.Seek(4, SeekOrigin.Current);
                         break;
                     }
-                    NameReference nameRef = new NameReference(name, stream.ReadInt32());
+                    var nameRef = new NameReference(name, stream.ReadInt32());
                     int typeIdx = stream.ReadInt32();
                     stream.Seek(4, SeekOrigin.Current);
                     int size = stream.ReadInt32();
@@ -219,8 +213,7 @@ namespace LegendaryExplorerCore.Unreal
                             }
                             break;
                         case PropertyType.IntProperty:
-                            IntProperty ip = new IntProperty(stream, nameRef);
-                            prop = ip;
+                            prop = new IntProperty(stream, nameRef);
                             break;
                         case PropertyType.FloatProperty:
                             prop = new FloatProperty(stream, nameRef);
@@ -327,7 +320,7 @@ namespace LegendaryExplorerCore.Unreal
                     {
                         prop.StaticArrayIndex = staticArrayIndex;
                         prop.StartOffset = propertyStartPosition;
-                        props.Add(prop);
+                        props.Items.Add(prop);
                     }
                 }
             }
@@ -356,7 +349,7 @@ namespace LegendaryExplorerCore.Unreal
                 //remove None Property
                 if (props[^1].PropType == PropertyType.None && !includeNoneProperty)
                 {
-                    props.RemoveAt(props.Count - 1);
+                    props.Items.RemoveAt(props.Count - 1);
                 }
             }
             props.endOffset = (int)stream.Position;
@@ -369,38 +362,21 @@ namespace LegendaryExplorerCore.Unreal
             //strip transients unless this is a class definition
             bool stripTransients = !(parsingEntry != null && (parsingEntry.ClassName == "Class" || parsingEntry.ClassName == "ScriptStruct"));
 
-            PropertyCollection props = new PropertyCollection(export, structType);
-            PropertyCollection defaultProps;
-            ConcurrentDictionary<string, PropertyCollection> defaultStructDict;
-            Func<string, bool, PackageCache, PropertyCollection> getDefaultStructValueFunc;
+            MEGame structValueLookupGame = pcc.Game;
+            var props = new PropertyCollection(export, structType);
             switch (pcc.Game)
             {
                 case MEGame.ME1 when parsingEntry != null && parsingEntry.FileRef.Platform == MEPackage.GamePlatform.PS3 && ME3UnrealObjectInfo.Structs.ContainsKey(structType):
                 case MEGame.ME2 when parsingEntry != null && parsingEntry.FileRef.Platform == MEPackage.GamePlatform.PS3 && ME3UnrealObjectInfo.Structs.ContainsKey(structType):
+                    structValueLookupGame = MEGame.ME3;
+                    break;
                 case MEGame.ME3 when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
                 case MEGame.UDK when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
-                    defaultStructDict = defaultStructValuesME3;
-                    getDefaultStructValueFunc = ME3UnrealObjectInfo.getDefaultStructValue;
-                    break;
                 case MEGame.ME2 when ME2UnrealObjectInfo.Structs.ContainsKey(structType):
-                    defaultStructDict = defaultStructValuesME2;
-                    getDefaultStructValueFunc = ME2UnrealObjectInfo.getDefaultStructValue;
-                    break;
                 case MEGame.ME1 when ME1UnrealObjectInfo.Structs.ContainsKey(structType):
-                    defaultStructDict = defaultStructValuesME1;
-                    getDefaultStructValueFunc = ME1UnrealObjectInfo.getDefaultStructValue;
-                    break;
                 case MEGame.LE3 when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
-                    defaultStructDict = defaultStructValuesLE3;
-                    getDefaultStructValueFunc = LE3UnrealObjectInfo.getDefaultStructValue;
-                    break;
                 case MEGame.LE2 when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
-                    defaultStructDict = defaultStructValuesLE2;
-                    getDefaultStructValueFunc = LE2UnrealObjectInfo.getDefaultStructValue;
-                    break;
                 case MEGame.LE1 when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
-                    defaultStructDict = defaultStructValuesLE1;
-                    getDefaultStructValueFunc = LE1UnrealObjectInfo.getDefaultStructValue;
                     break;
                 default:
                     Debug.WriteLine("Unknown struct type: " + structType);
@@ -408,24 +384,12 @@ namespace LegendaryExplorerCore.Unreal
                     return props;
             }
 
-            //cache
-            if (defaultStructDict.ContainsKey(structType) && stripTransients)
+            PropertyCollection defaultProps = GlobalUnrealObjectInfo.getDefaultStructValue(structValueLookupGame, structType, stripTransients, packageCache);
+            if (defaultProps == null)
             {
-                defaultProps = defaultStructDict[structType];
-            }
-            else
-            {
-                defaultProps = getDefaultStructValueFunc(structType, stripTransients, packageCache);
-                if (defaultProps == null)
-                {
-                    long startPos = stream.Position;
-                    props.Add(new UnknownProperty(stream, size) { StartOffset = startPos });
-                    return props;
-                }
-                if (stripTransients)
-                {
-                    defaultStructDict.TryAdd(structType, defaultProps);
-                }
+                long startPos = stream.Position;
+                props.Items.Add(new UnknownProperty(stream, size) { StartOffset = startPos });
+                return props;
             }
 
             foreach (var prop in defaultProps)
@@ -443,7 +407,7 @@ namespace LegendaryExplorerCore.Unreal
 
                 if (property.PropType != PropertyType.None)
                 {
-                    props.Add(property);
+                    props.Items.Add(property);
                 }
             }
             return props;
@@ -1500,7 +1464,7 @@ namespace LegendaryExplorerCore.Unreal
             {
                 stream.WriteArrayProperty(pcc, Name, Values.Count, () =>
                 {
-                    EndianReader m = new EndianReader(MemoryManager.GetMemoryStream()) { Endian = pcc.Endian };
+                    var m = new EndianReader(MemoryManager.GetMemoryStream()) { Endian = pcc.Endian };
                     foreach (var prop in Values)
                     {
                         prop.WriteTo(m.Writer, pcc, true);

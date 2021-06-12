@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers.Binary;
 
 namespace LegendaryExplorerCore.Gammtek.Extensions
 {
@@ -31,11 +32,8 @@ namespace LegendaryExplorerCore.Gammtek.Extensions
 		}
 
 		public static float Swap(this float value)
-		{
-			var data = BitConverter.GetBytes(value);
-			var rawValue = BitConverter.ToInt32(data, 0).Swap();
-
-			return BitConverter.ToSingle(BitConverter.GetBytes(rawValue), 0);
+        {
+            return BitConverter.Int32BitsToSingle(BinaryPrimitives.ReverseEndianness(BitConverter.SingleToInt32Bits(value)));
 		}
 
 		public static float Invert(this float value)

@@ -27,6 +27,7 @@ using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 using SharpDX.Direct2D1;
+using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 {
@@ -645,7 +646,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 var fileLib = new FileLib(pcc);
                 if (await fileLib.Initialize())
                 {
-                    foreach (ExportEntry exp in pcc.Exports.Reverse().Where(exp => exp.ClassName == "Function" && exp.Parent.ClassName == "Class" && !exp.GetBinaryData<UFunction>().FunctionFlags.Has(FunctionFlags.Native)))
+                    foreach (ExportEntry exp in pcc.Exports.Reverse().Where(exp => exp.ClassName == "Function" && exp.Parent.ClassName == "Class" && !exp.GetBinaryData<UFunction>().FunctionFlags.Has(EFunctionFlags.Native)))
                     {
                         if (exp.Parent.ObjectName == "SFXSeqAct_ScreenShake")
                         {
@@ -1190,11 +1191,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             if (nativeIndex > 0)
                             {
                                 NativeType type = NativeType.Function;
-                                if (func.FunctionFlags.Has(FunctionFlags.PreOperator))
+                                if (func.FunctionFlags.Has(EFunctionFlags.PreOperator))
                                 {
                                     type = NativeType.PreOperator;
                                 }
-                                else if (func.FunctionFlags.Has(FunctionFlags.Operator))
+                                else if (func.FunctionFlags.Has(EFunctionFlags.Operator))
                                 {
                                     var nextItem = func.Children;
                                     int paramCount = 0;

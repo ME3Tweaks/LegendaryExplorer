@@ -11,6 +11,7 @@ using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing;
 using LegendaryExplorerCore.UnrealScript.Parsing;
+using static LegendaryExplorerCore.Unreal.UnrealFlags;
 using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
 
 namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
@@ -101,69 +102,69 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
 
 
-            UnrealFlags.EClassFlags flags = node.Flags;
-            if (flags.Has(UnrealFlags.EClassFlags.Native))
+            EClassFlags flags = node.Flags;
+            if (flags.Has(EClassFlags.Native))
             {
                 Write("native", EF.Specifier);
             }
-            if (flags.Has(UnrealFlags.EClassFlags.NativeOnly))
+            if (flags.Has(EClassFlags.NativeOnly))
             {
                 Write("nativeonly", EF.Specifier);
             }
-            if (flags.Has(UnrealFlags.EClassFlags.NoExport))
+            if (flags.Has(EClassFlags.NoExport))
             {
                 Write("noexport", EF.Specifier);
             }
-            if (flags.Has(UnrealFlags.EClassFlags.EditInlineNew))
+            if (flags.Has(EClassFlags.EditInlineNew))
             {
                 Write("editinlinenew", EF.Specifier);
             }
-            if (flags.Has(UnrealFlags.EClassFlags.Placeable))
+            if (flags.Has(EClassFlags.Placeable))
             {
                 Write("placeable", EF.Specifier);
             }
-            if (flags.Has(UnrealFlags.EClassFlags.HideDropDown))
+            if (flags.Has(EClassFlags.HideDropDown))
             {
                 Write("hidedropdown", EF.Specifier);
             }
-            if (flags.Has(UnrealFlags.EClassFlags.NativeReplication))
+            if (flags.Has(EClassFlags.NativeReplication))
             {
                 Write("nativereplication", EF.Specifier);
             }
-            if (flags.Has(UnrealFlags.EClassFlags.PerObjectConfig))
+            if (flags.Has(EClassFlags.PerObjectConfig))
             {
                 Write("perobjectconfig", EF.Specifier);
             }
-            if (flags.Has(UnrealFlags.EClassFlags.Localized))
+            if (flags.Has(EClassFlags.Localized))
             {
                 Write("localized", EF.Specifier);
             }
-            if (flags.Has(UnrealFlags.EClassFlags.Abstract))
+            if (flags.Has(EClassFlags.Abstract))
             {
                 Write("abstract", EF.Specifier);
             }
-            if (flags.Has(UnrealFlags.EClassFlags.Deprecated))
+            if (flags.Has(EClassFlags.Deprecated))
             {
                 Write("deprecated", EF.Specifier);
             }
-            if (flags.Has(UnrealFlags.EClassFlags.Transient))
+            if (flags.Has(EClassFlags.Transient))
             {
                 Write("transient", EF.Specifier);
             }
-            if (flags.Has(UnrealFlags.EClassFlags.Config))
+            if (flags.Has(EClassFlags.Config))
             {
                 Write("config", EF.Specifier);
                 Append($"({node.ConfigName})");
             }
-            if (flags.Has(UnrealFlags.EClassFlags.SafeReplace))
+            if (flags.Has(EClassFlags.SafeReplace))
             {
                 Write("safereplace", EF.Specifier);
             }
-            if (flags.Has(UnrealFlags.EClassFlags.Hidden))
+            if (flags.Has(EClassFlags.Hidden))
             {
                 Write("hidden", EF.Specifier);
             }
-            if (flags.Has(UnrealFlags.EClassFlags.CollapseCategories))
+            if (flags.Has(EClassFlags.CollapseCategories))
             {
                 Write("collapsecategories", EF.Specifier);
             }
@@ -433,77 +434,77 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             Write();
 
             var specs = new List<string>();
-            FunctionFlags flags = node.Flags;
+            EFunctionFlags flags = node.Flags;
 
-            if (flags.Has(FunctionFlags.Private))
+            if (flags.Has(EFunctionFlags.Private))
             {
                 specs.Add("private");
             }
-            if (flags.Has(FunctionFlags.Protected))
+            if (flags.Has(EFunctionFlags.Protected))
             {
                 specs.Add("protected");
             }
-            if (flags.Has(FunctionFlags.Public))
+            if (flags.Has(EFunctionFlags.Public))
             {
                 specs.Add("public");
             }
-            if (flags.Has(FunctionFlags.Static))
+            if (flags.Has(EFunctionFlags.Static))
             {
                 specs.Add("static");
             }
-            if (flags.Has(FunctionFlags.Final))
+            if (flags.Has(EFunctionFlags.Final))
             {
                 specs.Add("final");
             }
-            if (flags.Has(FunctionFlags.Delegate))
+            if (flags.Has(EFunctionFlags.Delegate))
             {
                 specs.Add("delegate");
             }
-            if (flags.Has(FunctionFlags.Event))
+            if (flags.Has(EFunctionFlags.Event))
             {
                 specs.Add("event");
             }
-            if (flags.Has(FunctionFlags.PreOperator))
+            if (flags.Has(EFunctionFlags.PreOperator))
             {
                 specs.Add("preoperator");
             }
-            else if (flags.Has(FunctionFlags.Operator))
+            else if (flags.Has(EFunctionFlags.Operator))
             {
                 specs.Add("operator");
             }
-            if (flags.Has(FunctionFlags.Iterator))
+            if (flags.Has(EFunctionFlags.Iterator))
             {
                 specs.Add("iterator");
             }
-            if (flags.Has(FunctionFlags.Singular))
+            if (flags.Has(EFunctionFlags.Singular))
             {
                 specs.Add("singular");
             }
-            if (flags.Has(FunctionFlags.Latent))
+            if (flags.Has(EFunctionFlags.Latent))
             {
                 specs.Add("latent");
             }
-            if (flags.Has(FunctionFlags.Exec))
+            if (flags.Has(EFunctionFlags.Exec))
             {
                 specs.Add("exec");
             }
-            if (flags.Has(FunctionFlags.NetReliable))
+            if (flags.Has(EFunctionFlags.NetReliable))
             {
                 specs.Add("reliable");
             }
-            else if (flags.Has(FunctionFlags.Net))
+            else if (flags.Has(EFunctionFlags.Net))
             {
                 specs.Add("unreliable");
             }
-            if (flags.Has(FunctionFlags.NetServer))
+            if (flags.Has(EFunctionFlags.NetServer))
             {
                 specs.Add("server");
             }
-            if (flags.Has(FunctionFlags.NetClient))
+            if (flags.Has(EFunctionFlags.NetClient))
             {
                 specs.Add("client");
             }
-            else if (flags.Has(FunctionFlags.Simulated))
+            else if (flags.Has(EFunctionFlags.Simulated))
             {
                 specs.Add("simulated");
             }
@@ -513,7 +514,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 Append(spec, EF.Specifier);
                 Space();
             }
-            if (flags.Has(FunctionFlags.Native))
+            if (flags.Has(EFunctionFlags.Native))
             {
                 Append("native", EF.Specifier);
                 if (node.NativeIndex > 0)
@@ -552,7 +553,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
             Append(")");
 
-            if (flags.Has(FunctionFlags.Defined) && node.Body.Statements != null)
+            if (flags.Has(EFunctionFlags.Defined) && node.Body.Statements != null)
             {
                 Write("{");
                 NestingLevel++;
@@ -605,13 +606,13 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             Write();
 
             var specs = new List<string>();
-            StateFlags flags = node.Flags;
+            EStateFlags flags = node.Flags;
 
-            if (flags.Has(StateFlags.Simulated))
+            if (flags.Has(EStateFlags.Simulated))
             {
                 specs.Add("simulated");
             }
-            if (flags.Has(StateFlags.Auto))
+            if (flags.Has(EStateFlags.Auto))
             {
                 specs.Add("auto");
             }
@@ -623,7 +624,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
 
             Append(STATE, EF.Keyword);
-            if (flags.Has(StateFlags.Editable))
+            if (flags.Has(EStateFlags.Editable))
             {
                 Append("()");
             }
@@ -1665,186 +1666,186 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return true;
         }
 
-        private void WritePropertyFlags(UnrealFlags.EPropertyFlags flags)
+        private void WritePropertyFlags(EPropertyFlags flags)
         {
             var specs = new List<string>();
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.OptionalParm))
+            if (flags.Has(EPropertyFlags.OptionalParm))
             {
                 specs.Add("optional");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.Const))
+            if (flags.Has(EPropertyFlags.Const))
             {
                 specs.Add("const");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.GlobalConfig))
+            if (flags.Has(EPropertyFlags.GlobalConfig))
             {
                 specs.Add("globalconfig");
             }
-            else if (flags.Has(UnrealFlags.EPropertyFlags.Config))
+            else if (flags.Has(EPropertyFlags.Config))
             {
                 specs.Add("config");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.Localized))
+            if (flags.Has(EPropertyFlags.Localized))
             {
                 specs.Add("localized");
             }
 
             //TODO: private, protected, and public are in ObjectFlags, not PropertyFlags 
-            if (flags.Has(UnrealFlags.EPropertyFlags.ProtectedWrite))
+            if (flags.Has(EPropertyFlags.ProtectedWrite))
             {
                 specs.Add("protectedwrite");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.PrivateWrite))
+            if (flags.Has(EPropertyFlags.PrivateWrite))
             {
                 specs.Add("privatewrite");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.EditConst))
+            if (flags.Has(EPropertyFlags.EditConst))
             {
                 specs.Add("editconst");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.EditHide))
+            if (flags.Has(EPropertyFlags.EditHide))
             {
                 specs.Add("edithide");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.EditTextBox))
+            if (flags.Has(EPropertyFlags.EditTextBox))
             {
                 specs.Add("edittextbox");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.Input))
+            if (flags.Has(EPropertyFlags.Input))
             {
                 specs.Add("input");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.Transient))
+            if (flags.Has(EPropertyFlags.Transient))
             {
                 specs.Add("transient");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.Native))
+            if (flags.Has(EPropertyFlags.Native))
             {
                 specs.Add("native");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.NoExport))
+            if (flags.Has(EPropertyFlags.NoExport))
             {
                 specs.Add("noexport");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.DuplicateTransient))
+            if (flags.Has(EPropertyFlags.DuplicateTransient))
             {
                 specs.Add("duplicatetransient");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.NoImport))
+            if (flags.Has(EPropertyFlags.NoImport))
             {
                 specs.Add("noimport");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.OutParm))
+            if (flags.Has(EPropertyFlags.OutParm))
             {
                 specs.Add("out");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.ExportObject))
+            if (flags.Has(EPropertyFlags.ExportObject))
             {
                 specs.Add("export");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.EditInlineUse))
+            if (flags.Has(EPropertyFlags.EditInlineUse))
             {
                 specs.Add("editinlineuse");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.NoClear))
+            if (flags.Has(EPropertyFlags.NoClear))
             {
                 specs.Add("noclear");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.EditFixedSize))
+            if (flags.Has(EPropertyFlags.EditFixedSize))
             {
                 specs.Add("editfixedsize");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.RepNotify))
+            if (flags.Has(EPropertyFlags.RepNotify))
             {
                 specs.Add("repnotify");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.RepRetry))
+            if (flags.Has(EPropertyFlags.RepRetry))
             {
                 specs.Add("repretry");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.Interp))
+            if (flags.Has(EPropertyFlags.Interp))
             {
                 specs.Add("interp");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.NonTransactional))
+            if (flags.Has(EPropertyFlags.NonTransactional))
             {
                 specs.Add("nontransactional");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.Deprecated))
+            if (flags.Has(EPropertyFlags.Deprecated))
             {
                 specs.Add("deprecated");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.SkipParm))
+            if (flags.Has(EPropertyFlags.SkipParm))
             {
                 specs.Add("skip");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.CoerceParm))
+            if (flags.Has(EPropertyFlags.CoerceParm))
             {
                 specs.Add("coerce");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.AlwaysInit))
+            if (flags.Has(EPropertyFlags.AlwaysInit))
             {
                 specs.Add("alwaysinit");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.DataBinding))
+            if (flags.Has(EPropertyFlags.DataBinding))
             {
                 specs.Add("databinding");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.EditorOnly))
+            if (flags.Has(EPropertyFlags.EditorOnly))
             {
                 specs.Add("editoronly");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.NotForConsole))
+            if (flags.Has(EPropertyFlags.NotForConsole))
             {
                 specs.Add("notforconsole");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.Archetype))
+            if (flags.Has(EPropertyFlags.Archetype))
             {
                 specs.Add("archetype");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.SerializeText))
+            if (flags.Has(EPropertyFlags.SerializeText))
             {
                 specs.Add("serializetext");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.CrossLevelActive))
+            if (flags.Has(EPropertyFlags.CrossLevelActive))
             {
                 specs.Add("crosslevelactive");
             }
 
-            if (flags.Has(UnrealFlags.EPropertyFlags.CrossLevelPassive))
+            if (flags.Has(EPropertyFlags.CrossLevelPassive))
             {
                 specs.Add("crosslevelpassive");
             }

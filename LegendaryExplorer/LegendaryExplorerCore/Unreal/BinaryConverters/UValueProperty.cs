@@ -27,7 +27,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref ArraySizeEnum);
             }
 
-            if (PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.Net))
+            if (PropertyFlags.Has(UnrealFlags.EPropertyFlags.Net))
             {
                 sc.Serialize(ref ReplicationOffset);
             }

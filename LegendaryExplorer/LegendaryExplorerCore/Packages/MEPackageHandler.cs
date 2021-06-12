@@ -18,8 +18,8 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         public static bool GlobalSharedCacheEnabled = true;
 
-        static readonly ConcurrentDictionary<string, IMEPackage> openPackages = new ConcurrentDictionary<string, IMEPackage>(StringComparer.OrdinalIgnoreCase);
-        public static ObservableCollection<IMEPackage> packagesInTools = new ObservableCollection<IMEPackage>();
+        static readonly ConcurrentDictionary<string, IMEPackage> openPackages = new(StringComparer.OrdinalIgnoreCase);
+        public static ObservableCollection<IMEPackage> packagesInTools = new();
 
         // Package loading for UDK 2014/2015
         static Func<string, bool, UDKPackage> UDKConstructorDelegate;
@@ -202,15 +202,15 @@ namespace LegendaryExplorerCore.Packages
                         MemoryStream ms;
                         lock (diskIOSyncLock)
                         {
-                            ms = ReadAllFileBytesIntoMemoryStream(pathToFile);
+                            ms = ReadAllFileBytesIntoMemoryStream(fpath);
                         }
-                        var p = LoadPackage(ms, pathToFile, true);
+                        var p = LoadPackage(ms, fpath, true);
                         ms.Dispose();
                         return p;
                     }
                     else
                     {
-                        return LoadPackage(ReadAllFileBytesIntoMemoryStream(pathToFile), pathToFile, true);
+                        return LoadPackage(ReadAllFileBytesIntoMemoryStream(fpath), fpath, true);
                     }
                 });
             }
@@ -253,7 +253,7 @@ namespace LegendaryExplorerCore.Packages
                 pathToFile = Path.GetFullPath(pathToFile); //STANDARDIZE INPUT IF FILE EXISTS (it might be a memory file!)
             }
 
-            using FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read);
+            using var fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read);
             return LoadPackage(fs, pathToFile, false, true);
         }
 
@@ -269,7 +269,7 @@ namespace LegendaryExplorerCore.Packages
             ushort licenseVersion = 0;
             bool fullyCompressed = false;
 
-            EndianReader er = new EndianReader(stream);
+            var er = new EndianReader(stream);
             if (stream.ReadUInt32() == UnrealPackageFile.packageTagBigEndian) er.Endian = Endian.Big;
 
             // This is stored as integer by cooker as it is flipped by size word in big endian
@@ -493,11 +493,16 @@ namespace LegendaryExplorerCore.Packages
             }
         }
 
+        /// <summary>
+        /// Does not register use!
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="package"></param>
+        /// <returns></returns>
+        public static bool TryGetPackageFromCache(string filePath, out IMEPackage package) => openPackages.TryGetValue(filePath, out package);
+
         //useful for scanning operations, where a common set of packages are going to be referenced repeatedly
-        public static DisposableCollection<IMEPackage> OpenMEPackages(IEnumerable<string> filePaths)
-        {
-            return new DisposableCollection<IMEPackage>(filePaths.Select(filePath => OpenMEPackage(filePath)));
-        }
+        public static DisposableCollection<IMEPackage> OpenMEPackages(IEnumerable<string> filePaths) => new(filePaths.Select(filePath => OpenMEPackage(filePath)));
     }
 
     public class DisposableCollection<T> : List<T>, IDisposable where T : IDisposable

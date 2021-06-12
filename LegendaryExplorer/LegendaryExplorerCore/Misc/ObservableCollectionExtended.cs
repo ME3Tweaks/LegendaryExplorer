@@ -40,7 +40,7 @@ namespace LegendaryExplorerCore.Misc
             lock (_syncLock)
             {
                 foreach (var i in collection) Items.Add(i);
-                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+                OnCollectionChanged(CachedResetCollectionChangedArgs);
             }
 
             if (oldcount != Count)
@@ -64,7 +64,7 @@ namespace LegendaryExplorerCore.Misc
             lock (_syncLock)
             {
                 foreach (var i in collection) Items.Remove(i);
-                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+                OnCollectionChanged(CachedResetCollectionChangedArgs);
             }
 
             if (oldcount != Count)
@@ -83,7 +83,7 @@ namespace LegendaryExplorerCore.Misc
             lock (_syncLock)
             {
                 Items.Clear();
-                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+                OnCollectionChanged(CachedResetCollectionChangedArgs);
             }
 
             if (oldcount != Count)
@@ -114,7 +114,7 @@ namespace LegendaryExplorerCore.Misc
             {
                 Items.Clear();
                 foreach (var i in collection) Items.Add(i);
-                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+                OnCollectionChanged(CachedResetCollectionChangedArgs);
             }
 
             if (oldcount != Count)
@@ -196,7 +196,7 @@ namespace LegendaryExplorerCore.Misc
 
         #endregion // Sorting
 
-        private object _syncLock = new object();
+        private readonly object _syncLock = new();
         /// <summary> 
         /// Initializes a new instance of the System.Collections.ObjectModel.ObservableCollection(Of T) class. 
         /// </summary> 
@@ -228,5 +228,7 @@ namespace LegendaryExplorerCore.Misc
                 OnPropertyChanged(nameof(Any));
             };
         }
+
+        private static readonly NotifyCollectionChangedEventArgs CachedResetCollectionChangedArgs = new(NotifyCollectionChangedAction.Reset);
     }
 }

@@ -144,7 +144,7 @@ namespace LegendaryExplorerCore.Packages
 
             Flags = (EPackageFlags)fs.ReadUInt32();
 
-            //if (Flags.HasFlag(EPackageFlags.Compressed))
+            //if (Flags.Has(EPackageFlags.Compressed))
             //{
             //    throw new FormatException("Cannot read compressed UDK packages!");
             //}
@@ -437,7 +437,7 @@ namespace LegendaryExplorerCore.Packages
                 for (int i = binData.ReadInt32(); i > 0 && binData.Position < binData.Length; i--)
                 {
                     var storageFlags = (StorageFlags)binData.ReadInt32();
-                    if (!storageFlags.HasFlag(StorageFlags.externalFile)) //pcc-stored
+                    if (!storageFlags.Has(StorageFlags.externalFile)) //pcc-stored
                     {
                         int uncompressedSize = binData.ReadInt32();
                         int compressedSize = binData.ReadInt32();

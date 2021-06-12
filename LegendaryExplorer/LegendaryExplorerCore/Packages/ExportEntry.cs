@@ -152,7 +152,7 @@ namespace LegendaryExplorerCore.Packages
             }
         }
 
-        public bool HasStack => ObjectFlags.HasFlag(EObjectFlags.HasStack);
+        public bool HasStack => ObjectFlags.Has(EObjectFlags.HasStack);
 
         public byte[] GetPrePropBinary()
         {
@@ -194,7 +194,7 @@ namespace LegendaryExplorerCore.Packages
         }
 
         //should only have to check the flag, but custom mod classes might not have set it properly
-        public bool IsDefaultObject => ObjectFlags.HasFlag(EObjectFlags.ClassDefaultObject) || ObjectNameString.StartsWith("Default__", StringComparison.Ordinal);
+        public bool IsDefaultObject => ObjectFlags.Has(EObjectFlags.ClassDefaultObject) || ObjectNameString.StartsWith("Default__", StringComparison.Ordinal);
 
         private byte[] _header;
 

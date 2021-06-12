@@ -534,7 +534,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 if (node.FriendlyName is not null //true in ME1, ME2, LE1, and LE2
                  && node.IsOperator)
                 {
-                    if (node.Flags.Has(FunctionFlags.PreOperator))
+                    if (node.Flags.Has(EFunctionFlags.PreOperator))
                     {
                         if (node.Parameters.Count != 1)
                         {
@@ -595,14 +595,14 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
                 if (superFunc is not null)
                 {
-                    if (superFunc.Flags.Has(FunctionFlags.Private))
+                    if (superFunc.Flags.Has(EFunctionFlags.Private))
                     {
                         superFunc = null;
                     }
                     else
                     {
                         // If there is a function with this name that we should override, validate the new functions declaration
-                        if (superFunc.Flags.Has(FunctionFlags.Final))
+                        if (superFunc.Flags.Has(EFunctionFlags.Final))
                             return Error($"{node.Name} overrides a function in a parent class, but the parent function is marked as final!", node.StartPos, node.EndPos);
                         if (!NodeUtils.TypeEqual(node.ReturnType, superFunc.ReturnType))
                             return Error($"{node.Name} overrides a function in a parent class, but the functions do not have the same return types!", node.StartPos, node.EndPos);
@@ -617,7 +617,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                         node.SuperFunction = superFunc;
                     }
                 }
-                else if (node.Outer is State && node.Flags.Has(FunctionFlags.Net))
+                else if (node.Outer is State && node.Flags.Has(EFunctionFlags.Net))
                 {
                     return Error("If a state function has the Net flag, it must override a class function", node.StartPos, node.EndPos);
                 }

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -15,7 +16,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public uint stateUnk3;
         public uint stateUnk4;
         public ushort LabelTableOffset;
-        public StateFlags StateFlags;
+        public EStateFlags StateFlags;
         public OrderedMultiValueDictionary<NameReference, UIndex> LocalFunctionMap;
         protected override void Serialize(SerializingContainer2 sc)
         {
@@ -45,15 +46,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
-    [Flags]
-    public enum StateFlags : uint
-    {
-        None = 0,
-        Editable = 1,
-        Auto = 2,
-        Simulated = 4,
-    }
-
     public struct LabelTableEntry
     {
         public NameReference NameRef;
@@ -62,11 +54,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
     public static partial class SCExt
     {
-        public static void Serialize(this SerializingContainer2 sc, ref StateFlags flags)
+        public static void Serialize(this SerializingContainer2 sc, ref EStateFlags flags)
         {
             if (sc.IsLoading)
             {
-                flags = (StateFlags)sc.ms.ReadUInt32();
+                flags = (EStateFlags)sc.ms.ReadUInt32();
             }
             else
             {

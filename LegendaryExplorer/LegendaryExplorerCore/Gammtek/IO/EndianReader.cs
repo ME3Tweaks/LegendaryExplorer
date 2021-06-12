@@ -23,6 +23,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Gammtek.IO.Converters;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
@@ -43,6 +44,25 @@ namespace LegendaryExplorerCore.Gammtek.IO
     {
         public readonly EndianWriter Writer;
         private bool NoConvert;
+        private Endian _endian;
+
+        /// <summary>
+        ///     The Endian setting of the stream.
+        /// </summary>
+        public Endian Endian
+        {
+            get => _endian;
+            set
+            {
+                _endian = value;
+                NoConvert = _endian == Endian.Native;
+                if (Writer != null)
+                {
+                    Writer.Endian = Endian;
+                }
+            }
+
+        }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="EndianReader" /> class.
@@ -55,8 +75,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
                 Writer = new EndianWriter(input);
             }
             Endian = BitConverter.IsLittleEndian ? Endian.Little : Endian.Big;
-            _endianConverter = Endian.To(Endian.Native);
-            NoConvert = _endianConverter.NoConvert;
+            NoConvert = Endian == Endian.Native;
         }
 
         /// <summary>
@@ -85,28 +104,6 @@ namespace LegendaryExplorerCore.Gammtek.IO
             {
                 Endian = endian;
             }
-        }
-
-        private Endian _endian;
-        private EndianConverter _endianConverter;
-
-        /// <summary>
-        ///     The Endian setting of the stream.
-        /// </summary>
-        public Endian Endian
-        {
-            get => _endian;
-            set
-            {
-                _endian = value;
-                _endianConverter = _endian.To(Endian.Native);
-                NoConvert = _endianConverter.NoConvert;
-                if (Writer != null)
-                {
-                    Writer.Endian = Endian;
-                }
-            }
-
         }
 
         /// <summary>
@@ -267,7 +264,8 @@ namespace LegendaryExplorerCore.Gammtek.IO
             {
                 return val;
             }
-            val = _endianConverter.Convert(val);
+
+            val = val.Swap();
 #if LITTLEENDIANSTREAM
             LittleEndianStream?.WriteDouble(val);
 #endif
@@ -287,7 +285,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
             {
                 return val;
             }
-            val = _endianConverter.Convert(val);
+            val = BinaryPrimitives.ReverseEndianness(val);
 #if LITTLEENDIANSTREAM
             LittleEndianStream?.WriteInt16(val);
 #endif
@@ -309,7 +307,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
             {
                 return val;
             }
-            val = _endianConverter.Convert(val);
+            val = BinaryPrimitives.ReverseEndianness(val);
 #if LITTLEENDIANSTREAM
             LittleEndianStream?.WriteInt32(val);
 #endif
@@ -329,7 +327,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
             {
                 return val;
             }
-            val = _endianConverter.Convert(val);
+            val = BinaryPrimitives.ReverseEndianness(val);
 #if LITTLEENDIANSTREAM
 
             LittleEndianStream?.WriteInt64(val);
@@ -366,7 +364,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
             {
                 return val;
             }
-            val = _endianConverter.Convert(val);
+            val = val.Swap();
 #if LITTLEENDIANSTREAM
             LittleEndianStream?.WriteFloat(val);
 #endif
@@ -389,7 +387,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
             {
                 return val;
             }
-            val = _endianConverter.Convert(val);
+            val = BinaryPrimitives.ReverseEndianness(val);
 #if LITTLEENDIANSTREAM
             LittleEndianStream?.WriteUInt16(val);
 #endif
@@ -409,7 +407,8 @@ namespace LegendaryExplorerCore.Gammtek.IO
             {
                 return val;
             }
-            val = _endianConverter.Convert(val);
+            
+            val = BinaryPrimitives.ReverseEndianness(val);
 #if LITTLEENDIANSTREAM
             LittleEndianStream?.WriteUInt32(val);
 #endif
@@ -429,7 +428,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
             {
                 return val;
             }
-            val = _endianConverter.Convert(val);
+            val = BinaryPrimitives.ReverseEndianness(val);
 #if LITTLEENDIANSTREAM
             LittleEndianStream?.WriteUInt64(val);
 #endif
@@ -584,7 +583,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
             }
             exp += (127 - 15);
             int i = (sign << 31) | (exp << 23) | (mant << 13);
-            return BitConverter.ToSingle(BitConverter.GetBytes(i), 0);
+            return BitConverter.Int32BitsToSingle(i);
         }
 
         /// <summary>
@@ -642,29 +641,25 @@ namespace LegendaryExplorerCore.Gammtek.IO
 
         public static float ToSingle(byte[] buffer, int offset, Endian endianness)
         {
-            var readMagic = BitConverter.ToSingle(buffer, offset);
             if (!endianness.IsNative)
             {
-                //swap
-                return Endian.Native.To(Endian.NonNative).Convert(readMagic);
+                return BitConverter.Int32BitsToSingle(BinaryPrimitives.ReverseEndianness(BitConverter.ToInt32(buffer, offset)));
             }
-            return readMagic;
+            return BitConverter.ToSingle(buffer, offset);
         }
 
         public static float ToSingle(ReadOnlySpan<byte> buffer, int offset, Endian endianness)
         {
-            var readMagic = MemoryMarshal.Read<float>(buffer.Slice(offset));
             if (!endianness.IsNative)
             {
-                //swap
-                return Endian.Native.To(Endian.NonNative).Convert(readMagic);
+                return BitConverter.Int32BitsToSingle(BinaryPrimitives.ReverseEndianness(BitConverter.ToInt32(buffer.Slice(offset))));
             }
-            return readMagic;
+            return BitConverter.ToSingle(buffer.Slice(offset));
         }
 
         public static ushort ToUInt16(ReadOnlySpan<byte> buffer, int offset, Endian endianness)
         {
-            var readMagic = MemoryMarshal.Read<ushort>(buffer.Slice(offset));
+            var readMagic = BitConverter.ToUInt16(buffer.Slice(offset));
             if (!endianness.IsNative)
             {
                 //swap
@@ -705,7 +700,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
         /// <returns></returns>
         public static int ToInt32(ReadOnlySpan<byte> buffer, int offset, Endian endianness)
         {
-            var readMagic = MemoryMarshal.Read<int>(buffer.Slice(offset));
+            var readMagic = BitConverter.ToInt32(buffer.Slice(offset));
             if (!endianness.IsNative)
             {
                 //swap
@@ -720,7 +715,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
         /// <returns></returns>
         public static int ToInt32(ReadOnlySpan<byte> buffer, Endian endianness)
         {
-            var readMagic = MemoryMarshal.Read<int>(buffer);
+            var readMagic = BitConverter.ToInt32(buffer);
             if (!endianness.IsNative)
             {
                 //swap
@@ -750,7 +745,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
         /// <returns></returns>
         public static short ToInt16(ReadOnlySpan<byte> buffer, int offset, Endian endianness)
         {
-            var readMagic = MemoryMarshal.Read<short>(buffer.Slice(offset));
+            var readMagic = BitConverter.ToInt16(buffer.Slice(offset));
             if (!endianness.IsNative)
             {
                 //swap
@@ -819,7 +814,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
         /// <returns></returns>
         public static ulong ToUInt64(ReadOnlySpan<byte> buffer, int offset, Endian endianness)
         {
-            var readMagic = MemoryMarshal.Read<ulong>(buffer.Slice(offset));
+            var readMagic = BitConverter.ToUInt64(buffer.Slice(offset));
             if (!endianness.IsNative)
             {
                 //swap

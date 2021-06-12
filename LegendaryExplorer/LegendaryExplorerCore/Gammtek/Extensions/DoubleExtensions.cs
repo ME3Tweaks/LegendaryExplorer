@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers.Binary;
 
 namespace LegendaryExplorerCore.Gammtek.Extensions
 {
@@ -31,6 +32,11 @@ namespace LegendaryExplorerCore.Gammtek.Extensions
 
 			return BitConverter.ToDouble(BitConverter.GetBytes(junk), 0);
 		}
+
+        public static double Swap(this double value)
+        {
+            return BitConverter.Int64BitsToDouble(BinaryPrimitives.ReverseEndianness(BitConverter.DoubleToInt64Bits(value)));
+        }
 
 		public static bool ToBoolean(this double value)
 		{

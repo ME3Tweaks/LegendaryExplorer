@@ -14,6 +14,7 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Classes;
+using static LegendaryExplorerCore.Unreal.UnrealFlags;
 using Token = LegendaryExplorerCore.Unreal.Token;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
@@ -249,14 +250,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
 
                     var stateFlagsBytes = footerdata.Slice(fpos, 0x4);
-                    var stateFlags = (StateFlags)EndianReader.ToInt32(stateFlagsBytes, 0, CurrentLoadedExport.FileRef.Endian);
+                    var stateFlags = (EStateFlags)EndianReader.ToInt32(stateFlagsBytes, 0, CurrentLoadedExport.FileRef.Endian);
                     var names = stateFlags.ToString().Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
                     ScriptFooterBlocks.Add(new ScriptHeaderItem("State flags", string.Join(" ", names), fpos + footerstartpos));
                     fpos += 0x4;
 
 
 
-                    //if ((stateFlags & StateFlags.Simulated) != 0)
+                    //if ((stateFlags & EStateFlags.Simulated) != 0)
                     //{
                     //    //Replication offset? Like in Function?
                     //    ScriptFooterBlocks.Add(new ScriptHeaderItem("RepOffset? ", EndianReader.ToInt16(footerdata, fpos, CurrentLoadedExport.FileRef.Endian), fpos));

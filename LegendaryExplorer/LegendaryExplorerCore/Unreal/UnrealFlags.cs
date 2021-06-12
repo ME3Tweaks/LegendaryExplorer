@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace LegendaryExplorerCore.Unreal
 {
@@ -53,6 +54,12 @@ namespace LegendaryExplorerCore.Unreal
 
             Inherit = Transient | Config | Localized | SafeReplace | PerObjectConfig | PerObjectLocalized | Placeable 
                     | HasComponents | Deprecated | Intrinsic | HasInstancedProps | HasCrossLevelRefs
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Has(this EClassFlags enumValue, EClassFlags flag)
+        {
+            return (enumValue & flag) == flag;
         }
 
         [Flags]
@@ -137,6 +144,12 @@ namespace LegendaryExplorerCore.Unreal
             Protected = 0x80000000U,
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Has(this EPackageFlags enumValue, EPackageFlags flag)
+        {
+            return (enumValue & flag) == flag;
+        }
+
         [Flags]
         public enum EPropertyFlags : ulong
         {
@@ -187,6 +200,12 @@ namespace LegendaryExplorerCore.Unreal
             CrossLevelPassive = 0x0000100000000000U,
             CrossLevelActive = 0x0000200000000000U,
             CrossLevel = CrossLevelPassive | CrossLevelActive,
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Has(this EPropertyFlags enumValue, EPropertyFlags flag)
+        {
+            return (enumValue & flag) == flag;
         }
 
         public static Dictionary<EPropertyFlags, string> propertyflagsdesc = new Dictionary<EPropertyFlags, string>
@@ -281,6 +300,12 @@ namespace LegendaryExplorerCore.Unreal
             DebugSerialize = 0x4000000000000000,   // For debugging Serialize calls.
             DebugDestroy = 0x8000000000000000,   // For debugging Destroy calls.
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Has(this EObjectFlags enumValue, EObjectFlags flag)
+        {
+            return (enumValue & flag) == flag;
+        }
 
         public static string[] flagdesc =
         {
@@ -326,7 +351,85 @@ namespace LegendaryExplorerCore.Unreal
             ForcedExport = 1,
             ScriptPatcherExport = 2,
             MemberFieldPatchPending = 4,
-            AllFlags = uint.MaxValue, 
+            AllFlags = uint.MaxValue,
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Has(this EExportFlags enumValue, EExportFlags flag)
+        {
+            return (enumValue & flag) == flag;
+        }
+
+        [Flags]
+        public enum EFunctionFlags : uint
+        {
+            Final = 0x00000001,
+            Defined = 0x00000002,
+            Iterator = 0x00000004,
+            Latent = 0x00000008,
+            PreOperator = 0x00000010,
+            Singular = 0x00000020,
+            Net = 0x00000040,
+            NetReliable = 0x00000080,
+            Simulated = 0x00000100,
+            Exec = 0x00000200,
+            Native = 0x00000400,
+            Event = 0x00000800,
+            Operator = 0x00001000,
+            Static = 0x00002000,
+            HasOptionalParms = 0x00004000, //unused in ME2/1
+            Const = 0x00008000, //Const is 0x00004000 in ME2/1
+
+            Public = 0x00020000,
+            Private = 0x00040000,
+            Protected = 0x00080000,
+            Delegate = 0x00100000,
+            NetServer = 0x00200000,
+            HasOutParms = 0x00400000,
+            HasDefaults = 0x00800000,
+            NetClient = 0x01000000,
+            DLLImport = 0x02000000,
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Has(this EFunctionFlags enumValue, EFunctionFlags flag)
+        {
+            return (enumValue & flag) == flag;
+        }
+
+        [Flags]
+        public enum ScriptStructFlags : uint
+        {
+            Native = 0x00000001,
+            Export = 0x00000002,
+            HasComponents = 0x00000004,
+            Transient = 0x00000008,
+            Atomic = 0x00000010,
+            Immutable = 0x00000020,
+            StrictConfig = 0x00000040,
+            ImmutableWhenCooked = 0x00000080,
+            AtomicWhenCooked = 0x00000100,
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Has(this ScriptStructFlags enumValue, ScriptStructFlags flag)
+        {
+            return (enumValue & flag) == flag;
+        }
+
+        [Flags]
+        public enum EStateFlags : uint
+        {
+            None = 0,
+            Editable = 1,
+            Auto = 2,
+            Simulated = 4,
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Has(this EStateFlags enumValue, EStateFlags flag)
+        {
+            return (enumValue & flag) == flag;
         }
     }
 }
