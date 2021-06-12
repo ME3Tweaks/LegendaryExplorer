@@ -399,7 +399,7 @@ namespace LegendaryExplorer.Tools.TFCCompactor
                 StagingPath = StagingDirectory,
                 BaseCompactionPath = BaseFolder,
                 GamePath = MEDirectories.GetDefaultGamePath(LoadedTextureMap.Game),
-                UseIndexing = LoadedTextureMap.Game.IsLEGame(),
+                UseIndexing = LoadedTextureMap.Game == MEGame.LE2, //.IsLEGame(),
                 DLCName = DLCName,
                 TFCsToCompact = tfcsToPull
             };

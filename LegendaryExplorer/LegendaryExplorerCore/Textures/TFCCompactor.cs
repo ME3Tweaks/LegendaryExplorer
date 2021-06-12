@@ -143,7 +143,7 @@ namespace LegendaryExplorerCore.Textures
         /// <returns></returns>
         private TFCInfo InitTFC()
         {
-            int? tfcIdx = infoPackage.UseIndexing ? -1 : null;
+            int? tfcIdx = infoPackage.UseIndexing ? 1 : null;
             while (true)
             {
                 if (infoPackage.UseIndexing)
@@ -151,6 +151,7 @@ namespace LegendaryExplorerCore.Textures
                     tfcIdx++;
                 }
 
+                //var tfcName = $"{infoPackage.TFCType}_{infoPackage.DLCName}{tfcIdx}";
                 var tfcName = $"{infoPackage.TFCType}{tfcIdx}_{infoPackage.DLCName}";
                 var testTFCPath = Path.Combine(infoPackage.StagingPath, $"{tfcName}.tfc");
                 if (File.Exists(testTFCPath))
@@ -329,6 +330,12 @@ namespace LegendaryExplorerCore.Textures
                 {
                     var tfcSource = Path.Combine(infoPackage.StagingPath, $"{tfc.TFCName}.tfc");
                     File.Move(tfcSource, Path.Combine(destPath, Path.GetFileName(tfcSource)));
+                }
+
+                if (compactor.infoPackage.UseIndexing)
+                {
+                    // Stub TFC
+                    File.WriteAllBytes(Path.Combine(destPath, $"Textures_{compactor.infoPackage.DLCName}.tfc"), Guid.NewGuid().ToByteArray());
                 }
             }
         }
