@@ -20,22 +20,33 @@ namespace LegendaryExplorerCore.Helpers
             }
             //Clean up file path so it can be navigated OK
             filePath = System.IO.Path.GetFullPath(filePath);
-            System.Diagnostics.Process.Start("explorer.exe", string.Format("/select,\"{0}\"", filePath));
+            System.Diagnostics.Process.Start("explorer.exe", $"/select,\"{filePath}\"");
             return true;
         }
 #endif
         public static string LoadStringFromCompressedResource(string resourceName, string assetName)
         {
-            var resource = LegendaryExplorerCoreUtilities.LoadEmbeddedFile(resourceName);
-            if (resource != null)
+            try
             {
-                var strdata = LoadFileFromZipStream(resource, assetName);
-                if (strdata != null)
+                if (InternalLoadEmbeddedFile(resourceName, out Stream resource))
                 {
-                    using StreamReader sr = new StreamReader(strdata);
-                    return sr.ReadToEnd();
+                    using var archive = new ZipArchive(resource, ZipArchiveMode.Read);
+                    var objectinfoEntry = archive.Entries.FirstOrDefault(x => x.FullName == assetName);
+                    if (objectinfoEntry != null)
+                    {
+                        using var zipStream = objectinfoEntry.Open();
+                        using var sr = new StreamReader(zipStream);
+                        return sr.ReadToEnd();
+                    }
+
+                    Debug.WriteLine($"Could not find {assetName} in zipstream!");
                 }
             }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"Error reading from zip archive: {e.Message}");
+            }
+            
 
             return null;
         }
@@ -53,21 +64,29 @@ namespace LegendaryExplorerCore.Helpers
 
         public static MemoryStream LoadEmbeddedFile(string embeddedFilename)
         {
+            if (InternalLoadEmbeddedFile(embeddedFilename, out Stream stream))
+            {
+                MemoryStream ms = MemoryManager.GetMemoryStream();
+                stream.CopyTo(ms);
+                ms.Position = 0;
+                return ms;
+            }
+            return null;
+        }
 
+        private static bool InternalLoadEmbeddedFile(string embeddedFilename, out Stream stream)
+        {
             var assembly = Assembly.GetExecutingAssembly();
-            var resources = assembly.GetManifestResourceNames();
+            //var resources = assembly.GetManifestResourceNames();
             //debug
             var assetName = $"LegendaryExplorerCore.Embedded.{embeddedFilename}";
-            var stream = assembly.GetManifestResourceStream(assetName);
+            stream = assembly.GetManifestResourceStream(assetName);
             if (stream == null)
             {
                 Debug.WriteLine($"{assetName} not found in embedded resources");
-                return null;
+                return false;
             }
-            MemoryStream ms = MemoryManager.GetMemoryStream();
-            stream.CopyTo(ms);
-            ms.Position = 0;
-            return ms;
+            return true;
         }
 
         public static MemoryStream LoadFileFromZipStream(Stream zipStream, string filename)
@@ -76,7 +95,7 @@ namespace LegendaryExplorerCore.Helpers
             {
                 if (zipStream != null)
                 {
-                    using ZipArchive archive = new ZipArchive(zipStream, ZipArchiveMode.Read);
+                    using var archive = new ZipArchive(zipStream, ZipArchiveMode.Read);
                     var objectinfoEntry = archive.Entries.FirstOrDefault(x => x.FullName == filename);
                     if (objectinfoEntry != null)
                     {

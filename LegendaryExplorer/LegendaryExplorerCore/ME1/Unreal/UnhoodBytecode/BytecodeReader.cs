@@ -1262,12 +1262,8 @@ namespace LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode
             if (ME1NativeInfoLoaded) return; //already loaded
             try
             {
-                var infosStream = LegendaryExplorerCoreUtilities.LoadEmbeddedFile("Infos.zip");
-                if (infosStream != null)
+                if (LegendaryExplorerCoreUtilities.LoadStringFromCompressedResource("Infos.zip", $"ME1NativeFunctionInfo.json") is string raw)
                 {
-                    using var decompressedStream = LegendaryExplorerCoreUtilities.LoadFileFromZipStream(infosStream, $"ME1NativeFunctionInfo.json");
-                    using StreamReader reader = new StreamReader(decompressedStream);
-                    var raw = reader.ReadToEnd();
                     var blob = JsonConvert.DeserializeAnonymousType(raw, new { NativeFunctionInfo });
                     NativeFunctionInfo = blob.NativeFunctionInfo;
                     ME1NativeInfoLoaded = true;

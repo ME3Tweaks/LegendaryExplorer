@@ -50,10 +50,8 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
         }
 
         public TLKHeader Header;
-        /// <summary>
-        /// Lookup table for strings. The result is a list - the first string is the main one, the second is the female one (if any).
-        /// </summary>
-        public Dictionary<int, List<TLKStringRef>> StringRefsTable;
+        private Dictionary<int, string> MaleStringRefsTable;
+        private Dictionary<int, string> FemaleStringRefsTable;
         public List<TLKStringRef> StringRefs;
         public string name;
         public string path;
@@ -152,11 +150,14 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
              */
             int strRefCount = Header.MaleEntryCount + Header.FemaleEntryCount;
             StringRefs = new List<TLKStringRef>(strRefCount);
-            StringRefsTable = new Dictionary<int, List<TLKStringRef>>();
+            MaleStringRefsTable = new Dictionary<int, string>(Header.MaleEntryCount);
+            FemaleStringRefsTable = new Dictionary<int, string>(Header.FemaleEntryCount);
             for (int i = 0; i < strRefCount; i++)
             {
-                var sref = new TLKStringRef(r, false);
-                sref.Index = i;
+                var sref = new TLKStringRef(r, false)
+                {
+                    Index = i
+                };
                 if (sref.BitOffset >= 0)
                 {
                     if (!rawStrings.ContainsKey(sref.BitOffset))
@@ -182,25 +183,27 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
                     }
                 }
                 StringRefs.Add(sref);
-                if (!StringRefsTable.TryGetValue(sref.StringID, out var srefList))
+                if (i < Header.MaleEntryCount)
                 {
-                    srefList = new List<TLKStringRef>();
-                    StringRefsTable[sref.StringID] = srefList;
+                    MaleStringRefsTable.Add(sref.StringID, sref.Data);
                 }
-                srefList.Add(sref);
+                else
+                {
+                    FemaleStringRefsTable[sref.StringID] = sref.Data;
+                }
             }
             r.Close();
         }
 
-        public string findDataById(int strRefID, bool withFileName = false, bool returnNullIfNotFound = false, bool noQuotes = false)
+        public string findDataById(int strRefID, bool withFileName = false, bool returnNullIfNotFound = false, bool noQuotes = false, bool male = true)
         {
-            if (StringRefsTable.TryGetValue(strRefID, out var data) && data.Any())
+            string data;
+            if (male && MaleStringRefsTable.TryGetValue(strRefID, out data) || !male && FemaleStringRefsTable.TryGetValue(strRefID, out data))
             {
-                var strref = data[0];
                 if (noQuotes)
-                    return strref.Data;
+                    return data;
 
-                var retdata = "\"" + strref.Data + "\"";
+                var retdata = "\"" + data + "\"";
                 if (withFileName)
                 {
                     retdata += " (" + name + ")";
@@ -353,12 +356,14 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
         /// <returns>True if the string was found, false otherwise.</returns>
         public bool ReplaceString(int stringID, string newText, bool addIfNotFound = false)
         {
-            if (StringRefsTable.TryGetValue(stringID, out var strRef))
+            if (MaleStringRefsTable.ContainsKey(stringID))
             {
                 IsModified = true;
-                foreach (var v in strRef)
+                MaleStringRefsTable[stringID] = newText;
+                FemaleStringRefsTable.Remove(stringID);
+                foreach (TLKStringRef stringRef in StringRefs.Where(strRef => strRef.StringID == stringID))
                 {
-                    v.Data = newText;
+                    stringRef.Data = newText;
                 }
             }
             else if (addIfNotFound)
@@ -390,12 +395,14 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
         public void AddString(TLKStringRef sref)
         {
             StringRefs.Add(sref);
-            if (!StringRefsTable.TryGetValue(sref.StringID, out var srefList))
+            if (MaleStringRefsTable.ContainsKey(sref.StringID))
             {
-                srefList = new List<TLKStringRef>();
-                StringRefsTable[sref.StringID] = srefList;
+                FemaleStringRefsTable[sref.StringID] = sref.Data;
             }
-            srefList.Add(sref);
+            else
+            {
+                MaleStringRefsTable.Add(sref.StringID, sref.Data);
+            }
 
             IsModified = true;
         }

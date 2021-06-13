@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.UnrealScript;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
@@ -21,13 +22,9 @@ namespace LegendaryExplorerCore.Tests
         {
             GlobalTest.Init();
 
-            string testDataDirectory = GlobalTest.GetTestDataDirectory();
+            string testDataDirectory = Path.Combine(GlobalTest.GetTestPackagesDirectory(), "PC");
             var testFiles = Directory.GetFiles(testDataDirectory, "*.*", SearchOption.AllDirectories)
-                                     .Where(x => StringExtensions.RepresentsPackageFilePath(x)
-                                              && !x.Contains(@"Xenon", StringComparison.InvariantCultureIgnoreCase) 
-                                              && !x.Contains("PS3", StringComparison.InvariantCultureIgnoreCase)
-                                              && !x.Contains("WiiU", StringComparison.InvariantCultureIgnoreCase)
-                                              && !x.Contains("UDK", StringComparison.InvariantCultureIgnoreCase)).ToList();
+                                     .Where(x => x.RepresentsPackageFilePath() && !x.Contains("UDK", StringComparison.InvariantCultureIgnoreCase)).ToList();
 
             //var testFile = Path.Combine(GlobalTest.GetTestPackagesDirectory(), "PC", "ME1", "BIOA_NOR10_08_DSG.SFM");
             //var testFile = Path.Combine(GlobalTest.GetTestPackagesDirectory(), "PC", "ME2", "retail", "BioD_BlbGtl_205Evacuation.pcc");
@@ -37,16 +34,18 @@ namespace LegendaryExplorerCore.Tests
             {
                 var shortName = Path.GetRelativePath(testDataDirectory, testFile);
                 compileTest(testFile, shortName, true);
+            }
+            FileLib.FreeLibs();
+            MemoryAnalyzer.ForceFullGC(true);
+            foreach (var testFile in testFiles)
+            {
+                var shortName = Path.GetRelativePath(testDataDirectory, testFile);
                 compileTest(testFile, shortName, false);
             }
         }
 
         private static void compileTest(string testFile, string shortName, bool usePackageCache)
         {
-            // Ensure we don't not test with anything cached in this test case
-            FileLib.FreeLibs();
-            GC.Collect();
-
             MEPackageHandler.GlobalSharedCacheEnabled = !usePackageCache;
 
             using var testPackage = MEPackageHandler.OpenMEPackage(testFile);

@@ -407,7 +407,7 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
         public static MemoryStream SaveToTlkStream(List<TLKStringRef> stringRefs)
         {
             MemoryStream memStream = MemoryManager.GetMemoryStream();
-            HuffmanCompression hc = new HuffmanCompression();
+            var hc = new HuffmanCompression();
             if (stringRefs != null)
             {
                 hc._inputData = stringRefs.OrderBy(x => x.CalculatedID).ToList();
@@ -418,9 +418,9 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
 
             /* preparing data and entries for writing to file
              * entries list consists of pairs <String ID, Offset> */
-            List<BitArray> binaryData = new List<BitArray>();
-            Dictionary<int, int> maleStrings = new Dictionary<int, int>();
-            Dictionary<int, int> femaleStrings = new Dictionary<int, int>();
+            var binaryData = new List<BitArray>();
+            var maleStrings = new Dictionary<int, int>();
+            var femaleStrings = new Dictionary<int, int>();
             int offset = 0;
 
             foreach (var entry in hc._inputData)
@@ -448,9 +448,9 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
             }
 
             /* preparing TLK Header */
-            int magic = 7040084; //Tlk\0
-            int ver = 3;
-            int min_ver = 2;
+            const int magic = 7040084; //Tlk\0
+            const int ver = 3;
+            const int min_ver = 2;
             int entry1Count = maleStrings.Count;
             int entry2Count = femaleStrings.Count;
             int treeNodeCount = treeBuffer.Count() / 2;

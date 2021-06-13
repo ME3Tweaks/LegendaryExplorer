@@ -155,12 +155,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                         }
                         else if (info.pccPath == Me3ExplorerCustomNativeAdditionsName)
                         {
-                            var resourcesZip = LegendaryExplorerCoreUtilities.LoadEmbeddedFile("GameResources.zip");
-                            if (resourcesZip != null)
-                            {
-                                var filename = LegendaryExplorerCoreLib.CustomResourceFileName(game);
-                                loadStream = LegendaryExplorerCoreUtilities.LoadFileFromZipStream(resourcesZip, filename);
-                            }
+                            loadStream = LegendaryExplorerCoreUtilities.GetCustomAppResourceStream(game);
                         }
                         else if (File.Exists(filepathTL))
                         {

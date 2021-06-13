@@ -14,15 +14,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         {
             try
             {
-                var infosStream = LegendaryExplorerCoreUtilities.LoadEmbeddedFile("Infos.zip");
-                if (infosStream != null)
-                {
-                    var decompressedStream = LegendaryExplorerCoreUtilities.LoadFileFromZipStream(infosStream, $"{game}ObjectInfo.json");
-                    using var reader = new StreamReader(decompressedStream);
-                    return reader.ReadToEnd();
-                }
-
-
+                return LegendaryExplorerCoreUtilities.LoadStringFromCompressedResource("Infos.zip", $"{game}ObjectInfo.json");
             }
             catch (Exception e)
             {
