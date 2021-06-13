@@ -12,7 +12,7 @@ namespace LegendaryExplorerCore.Textures
         #region Native Interop
         private const string TEXCONVERTER_DLL_FILENAME = "TexConverter.dll";
 
-        private enum DXGIFormat : uint
+        public enum DXGIFormat : uint
         {
             UNKNOWN = 0,
             R32G32B32A32_TYPELESS = 1,
@@ -176,7 +176,7 @@ namespace LegendaryExplorerCore.Textures
             }
         }
 
-        private static DXGIFormat GetDXGIFormatForPixelFormat(PixelFormat pixelFormat)
+        public static DXGIFormat GetDXGIFormatForPixelFormat(PixelFormat pixelFormat)
         {
             switch (pixelFormat)
             {
@@ -205,7 +205,7 @@ namespace LegendaryExplorerCore.Textures
             }
         }
 
-        private static PixelFormat GetPixelFormatForDXGIFormat(DXGIFormat format)
+        public static PixelFormat GetPixelFormatForDXGIFormat(DXGIFormat format)
         {
             switch (format)
             {
