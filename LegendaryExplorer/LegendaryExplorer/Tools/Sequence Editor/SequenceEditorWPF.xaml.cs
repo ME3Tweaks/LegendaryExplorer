@@ -1639,15 +1639,9 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
         static ExportEntry cloneObject(ExportEntry old, ExportEntry sequence, bool topLevel = true)
         {
-            IMEPackage pcc = sequence.FileRef;
-            ExportEntry exp = old.Clone();
-            //needs to have the same index to work properly
-            if (exp.ClassName == "SeqVar_External")
-            {
-                exp.indexValue = old.indexValue;
-            }
+            //SeqVar_External needs to have the same index to work properly
+            ExportEntry exp = EntryCloner.CloneEntry(old, incrementIndex: old.ClassName != "SeqVar_External");
 
-            pcc.AddExport(exp);
             KismetHelper.AddObjectToSequence(exp, sequence, topLevel);
             cloneSequence(exp, sequence);
             return exp;

@@ -27,6 +27,7 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Audio;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using AudioStreamHelper = LegendaryExplorer.UnrealExtensions.AudioStreamHelper;
 using WwiseStream = LegendaryExplorerCore.Unreal.BinaryConverters.WwiseStream;
 
@@ -797,10 +798,9 @@ namespace LegendaryExplorer.Tools.Soundplorer
                 SoundplorerExport spExport = (SoundplorerExport)SoundExports_ListBox.SelectedItem;
                 if (spExport != null && spExport.Export.ClassName == "WwiseStream")
                 {
-                    ExportEntry clone = spExport.Export.Clone();
+                    ExportEntry clone = EntryCloner.CloneEntry(spExport.Export, incrementIndex: true);
                     clone.ObjectName = result;
-                    spExport.Export.FileRef.AddExport(clone);
-                    SoundplorerExport newExport = new(clone);
+                    var newExport = new SoundplorerExport(clone);
                     BindedItemsList.Add(newExport);
                     var reloadList = new List<SoundplorerExport> { newExport };
                     SoundExports_ListBox.ScrollIntoView(newExport);

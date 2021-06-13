@@ -7,6 +7,7 @@ using System.Numerics;
 using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Newtonsoft.Json;
@@ -43,8 +44,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 //Debug.WriteLine("Num Exports: " + pcc.Exports.Count);
                 if (reachSpectoClone != null)
                 {
-                    ExportEntry outgoingSpec = reachSpectoClone.Clone();
-                    Pcc.AddExport(outgoingSpec);
+                    ExportEntry outgoingSpec = EntryCloner.CloneEntry(reachSpectoClone, incrementIndex: true);
 
                     IEntry reachSpecClassImp = GetEntryOrAddImport(Pcc, reachSpecClass); //new class type.
 
@@ -86,13 +86,11 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
                 if (reachSpectoClone != null)
                 {
-                    ExportEntry outgoingSpec = reachSpectoClone.Clone();
-                    Pcc.AddExport(outgoingSpec);
+                    ExportEntry outgoingSpec = EntryCloner.CloneEntry(reachSpectoClone, incrementIndex: true);
                     ExportEntry incomingSpec = null;
                     if (createTwoWay)
                     {
-                        incomingSpec = reachSpectoClone.Clone();
-                        Pcc.AddExport(incomingSpec);
+                        incomingSpec = EntryCloner.CloneEntry(reachSpectoClone, incrementIndex: true);
                     }
 
                     IEntry reachSpecClassImp = GetEntryOrAddImport(Pcc, reachSpecClass); //new class type.

@@ -176,24 +176,6 @@ namespace LegendaryExplorerCore.Packages
         }
 
         /// <summary>
-        /// Gets the next available index for a given name - this counts all names, not just the instanced full name
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public int GetNextIndexForName(string name)
-        {
-            int index = 0;
-            foreach (ExportEntry ent in exports)
-            {
-                if (name == ent.ObjectName && ent.ObjectName.Number > index)
-                {
-                    index = ent.ObjectName.Number;
-                }
-            }
-            return index + 1;
-        }
-
-        /// <summary>
         /// Gets the next available index for a name, checking for other objects incrementally with a same instanced full name until a free one is found that is higher than the original one
         /// </summary>
         /// <param name="entry"></param>
@@ -215,7 +197,17 @@ namespace LegendaryExplorerCore.Packages
         public NameReference GetNextIndexedName(string name)
         {
             name = name.Trim().Replace(' ', '_'); //no spaces 
-            return new NameReference(name, GetNextIndexForName(name));
+
+            int index = 0;
+            foreach (ExportEntry ent in exports)
+            {
+                if (name == ent.ObjectName && ent.ObjectName.Number > index)
+                {
+                    index = ent.ObjectName.Number;
+                }
+            }
+
+            return new NameReference(name, index + 1);
         }
 
         #endregion

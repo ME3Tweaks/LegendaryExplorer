@@ -1984,7 +1984,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 int lastClonedUIndex = 0;
                 for (int i = 0; i < numClones; i++)
                 {
-                    IEntry newEntry = EntryCloner.CloneEntry(entry);
+                    IEntry newEntry = EntryCloner.CloneEntry(entry, incrementIndex: true);
                     TryAddToPersistentLevel(newEntry);
                     lastClonedUIndex = newEntry.UIndex;
                 }

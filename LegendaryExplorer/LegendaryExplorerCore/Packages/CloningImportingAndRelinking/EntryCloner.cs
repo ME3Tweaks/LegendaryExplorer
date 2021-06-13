@@ -4,11 +4,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 {
     public static class EntryCloner
     {
-        public static T CloneTree<T>(T entry, bool incrementIndex = false) where T : IEntry
+        public static T CloneTree<T>(T entry, bool incrementIndex = true) where T : IEntry
         {
             var objectMap = new Dictionary<IEntry, IEntry>();
             T newRoot = CloneEntry(entry, objectMap, incrementIndex);
-            EntryTree tree = new EntryTree(entry.FileRef);
+            var tree = new EntryTree(entry.FileRef);
             cloneTreeRecursive(entry, newRoot);
             Relinker.RelinkAll(objectMap);
             return newRoot;

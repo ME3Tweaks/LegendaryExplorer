@@ -73,7 +73,7 @@ namespace LegendaryExplorer.GameInterop
             streamingLevels.Add(new ObjectProperty(lsk));
             bioWorldInfo.WriteProperty(streamingLevels);
 
-            ExportEntry bts = EntryCloner.CloneTree(pcc.Exports.First(exp => exp.ClassName == "BioTriggerStream"));
+            ExportEntry bts = EntryCloner.CloneTree(pcc.Exports.First(exp => exp.ClassName == "BioTriggerStream"), incrementIndex: true);
             var streamingStates = bts.GetProperty<ArrayProperty<StructProperty>>("StreamingStates");
             while (streamingStates.Count > 1)
             {

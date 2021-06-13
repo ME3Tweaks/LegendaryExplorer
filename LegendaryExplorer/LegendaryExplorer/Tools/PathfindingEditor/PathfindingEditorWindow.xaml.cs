@@ -2449,7 +2449,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             {
                 Class = splineComponentClass,
                 Parent = sourceActor,
-                ObjectName = new NameReference("SplineComponent", Pcc.GetNextIndexForName("SplineComponent"))
+                ObjectName = Pcc.GetNextIndexedName("SplineComponent")
             };
             Pcc.AddExport(splineComponent);
             connections.Add(new StructProperty("SplineConnection", new PropertyCollection
@@ -3280,7 +3280,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 ExportEntry newNodeEntry;
                 if (nodeEntry.IsA("SplineActor"))
                 {
-                    newNodeEntry = EntryCloner.CloneEntry(nodeEntry);
+                    newNodeEntry = EntryCloner.CloneEntry(nodeEntry, incrementIndex: true);
                     newNodeEntry.RemoveProperty("Connections");
                     newNodeEntry.RemoveProperty("LinksFrom");
                 }
@@ -3342,7 +3342,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                             var npdlg = MessageBox.Show("No alternative collections found. Creating new one.", "Clone Node", MessageBoxButton.OKCancel);
                             if (npdlg == MessageBoxResult.Cancel)
                                 return null;
-                            parent = nodeEntry.Parent.Clone() as ExportEntry;
+                            parent = EntryCloner.CloneEntry(nodeEntry.Parent, incrementIndex: true) as ExportEntry;
                             components = parent.GetProperty<ArrayProperty<ObjectProperty>>(sca.ComponentPropName);
                             components.Clear();
                             if (parent.IsA("StaticMeshCollectionActor"))

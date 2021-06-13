@@ -829,7 +829,6 @@ namespace LegendaryExplorerCore.Packages
                 _header = _header.TypedClone(),
                 HeaderOffset = 0,
                 Data = this.Data,
-                indexValue = FileRef.GetNextIndexForName(ObjectName),
                 DataOffset = 0
             };
         }

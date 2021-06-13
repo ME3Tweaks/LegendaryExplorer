@@ -277,18 +277,17 @@ namespace LegendaryExplorerCore.Packages
         string getObjectName(int index);
         string GetNameEntry(int index);
         /// <summary>
-        /// Gets the next available index for a given name - this counts all names, not just the instanced full name
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        int GetNextIndexForName(string name);
-        /// <summary>
         /// Gets the next available index for a name, checking for other objects incrementally with a same instanced full name until a free one is found that is higher than the original one
         /// </summary>
         /// <param name="entry"></param>
         /// <returns></returns>
         int GetNextIndexForInstancedName(IEntry entry);
 
+        /// <summary>
+        /// Gets an indexed name that is unique in the file
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         NameReference GetNextIndexedName(string name);
         //editing
         int FindNameOrAdd(string name);
