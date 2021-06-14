@@ -91,15 +91,6 @@ namespace LegendaryExplorerCore.TLK.ME1
             PrepareHuffmanCoding();
         }
 
-        public void serializeTLKStrListToExport(ExportEntry export, bool savePackage = false)
-        {
-            if (!export.FileRef.Game.IsGame1())
-            {
-                throw new Exception("Cannot save a ME1 TLK to a game that is not Mass Effect 1.");
-            }
-            serializeTalkfileToExport(export, savePackage);
-        }
-
         public void serializeTalkfileToExport(ExportEntry export, bool savePackage = false)
         {
             /* converts Huffmann Tree to binary form */
