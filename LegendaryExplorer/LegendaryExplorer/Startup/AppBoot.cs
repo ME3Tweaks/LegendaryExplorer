@@ -41,6 +41,9 @@ namespace LegendaryExplorer.Startup
     {
         public static DPIAwareSplashScreen LEXSplashScreen;
 
+        public static bool IsLoaded = false;
+        public static Queue<string[]> Arguments;
+
         /// <summary>
         /// Invoked during the splash screen sequence for the application
         /// </summary>
@@ -48,6 +51,8 @@ namespace LegendaryExplorer.Startup
         {
             LEXSplashScreen = new DPIAwareSplashScreen();
             LEXSplashScreen.Show();
+            Arguments = new Queue<string[]>();
+            Arguments.Enqueue(Environment.GetCommandLineArgs());
 
             //Peregrine's Dispatcher (for WPF Treeview selecting on virtualized lists)
             DispatcherHelper.Initialize();
@@ -111,8 +116,7 @@ namespace LegendaryExplorer.Startup
 #endif
             }).ContinueWithOnUIThread(x =>
             {
-                string[] commandLineArgs = Environment.GetCommandLineArgs();
-
+                IsLoaded = true;
                 var mainWindow = new LEXMainWindow();
                 app.MainWindow = mainWindow;
                 app.ShutdownMode = ShutdownMode.OnMainWindowClose;
@@ -120,8 +124,10 @@ namespace LegendaryExplorer.Startup
 
                 GameController.InitializeMessageHook(mainWindow);
 
-                // If you get any of the arguments "wrong", this command will not be invoked
-                cliHandler.InvokeAsync(commandLineArgs);
+                while (Arguments.Any())
+                {
+                    cliHandler.InvokeAsync(Arguments.Dequeue());
+                }
             });
         }
 
@@ -156,10 +162,17 @@ namespace LegendaryExplorer.Startup
         /// <param name="args"></param>
         public static void HandleDuplicateInstanceArgs(string[] args)
         {
-            Application.Current.Dispatcher.Invoke(() =>
+            if (IsLoaded)
             {
-                CommandLineArgs.CreateCLIHandler().InvokeAsync(args);
-            });
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    CommandLineArgs.CreateCLIHandler().InvokeAsync(args);
+                });
+            }
+            else
+            {
+                Arguments.Enqueue(args);
+            }
         }
     }
 }
