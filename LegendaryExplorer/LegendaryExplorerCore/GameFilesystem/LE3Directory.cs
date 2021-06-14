@@ -216,7 +216,18 @@ namespace LegendaryExplorerCore.GameFilesystem
             "CharTextures5",
             "CharTextures6",
             "CharTextures7",
-            "Movies"
+            "Movies",
+            "Textures_DLC_CON_APP01",
+            "Textures_DLC_CON_END",
+            "Textures_DLC_CON_GUN01",
+            "Textures_DLC_CON_GUN02",
+            "Textures_DLC_EXP_Pack001",
+            "Textures_DLC_EXP_Pack002",
+            "Textures_DLC_EXP_Pack003",
+            "Textures_DLC_EXP_Pack003_Base",
+            "Textures_DLC_HEN_PR",
+            "Textures_DLC_OnlinePassHidCE",
+            "Textures_DLC_METR_Patch01"
         };
     }
 }
