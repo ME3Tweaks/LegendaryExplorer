@@ -14,7 +14,7 @@
     <AssemblyVersion>6.0</AssemblyVersion>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='WinDebug'">
+	<PropertyGroup Condition="'$(Configuration)'=='WinDebug'">
     <DebugType>pdbonly</DebugType>
     <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
     <XamlDebuggingInformation>True</XamlDebuggingInformation>
@@ -142,6 +142,10 @@
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.1.1" />
     <PackageReference Include="BinaryPack" Version="1.0.1" />
+    <PackageReference Include="Clarius.TransformOnBuild" Version="1.22.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="ClosedXML" Version="0.95.3" />
     <PackageReference Include="ConsoleAppLauncher" Version="2.0.0" />
     <PackageReference Include="FontAwesome5" Version="2.1.0" />
@@ -207,6 +211,10 @@
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
+
+  <PropertyGroup>
+	  <TextTransformPath>$(DevEnvDir)\TextTransform.exe</TextTransformPath>
+  </PropertyGroup>
 
   <ItemGroup>
 	  <VlcWindowsX64IncludeFiles Include="plugins\d3d%2A\%2A" />
