@@ -174,37 +174,32 @@
                 <StackPanel Orientation="Horizontal" Margin="0,5">
                             <CheckBox x:Name="BinaryInterpreter_SkipAutoParseSizeCheck" Margin="5,0"
                                       IsChecked="{Binding Path=(settings:Settings.BinaryInterpreter_SkipAutoParseSizeCheck)}"/>
-                            <TextBlock>Binary Interpreter: Skip Auto-parse Size Check</TextBlock>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,5">
-                            <CheckBox x:Name="BinaryInterpreterWPFAutoScanAlways" Margin="5,0"
-                                      IsChecked="{Binding Path=(settings:Settings.BinaryInterpreterWPFAutoScanAlways)}"/>
-                            <TextBlock>Binary Interpreter: Always Auto-scan</TextBlock>
+                            <TextBlock>Binary Interpreter: Skip Auto-parse size limit (20KB)</TextBlock>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,5">
                             <CheckBox x:Name="TextureViewer_AutoLoadMip" Margin="5,0"
                                       IsChecked="{Binding Path=(settings:Settings.TextureViewer_AutoLoadMip)}"/>
-                            <TextBlock>Texture Viewer: Auto-load Mip</TextBlock>
+                            <TextBlock>Texture Viewer: Auto-load top mip</TextBlock>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,5">
                             <CheckBox x:Name="Interpreter_LimitArrayPropertySize" Margin="5,0"
                                       IsChecked="{Binding Path=(settings:Settings.Interpreter_LimitArrayPropertySize)}"/>
-                            <TextBlock>Properties: Limit Array Property Size</TextBlock>
+                            <TextBlock>Properties: Limit array property size</TextBlock>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,5">
                             <CheckBox x:Name="Interpreter_AdvancedDisplay" Margin="5,0"
                                       IsChecked="{Binding Path=(settings:Settings.Interpreter_AdvancedDisplay)}"/>
-                            <TextBlock>Properties: Advanced Display</TextBlock>
+                            <TextBlock>Properties: Display advanced info</TextBlock>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,5">
                             <CheckBox x:Name="Interpreter_Colorize" Margin="5,0"
                                       IsChecked="{Binding Path=(settings:Settings.Interpreter_Colorize)}"/>
-                            <TextBlock>Properties: Colorize</TextBlock>
+                            <TextBlock>Properties: Colorize properties</TextBlock>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,5">
                             <CheckBox x:Name="Interpreter_ShowLinearColorWheel" Margin="5,0"
                                       IsChecked="{Binding Path=(settings:Settings.Interpreter_ShowLinearColorWheel)}"/>
-                            <TextBlock>Properties: Show Linear Color Wheel</TextBlock>
+                            <TextBlock>Properties: Show LinearColor picker</TextBlock>
                         </StackPanel>
                                       </StackPanel>
             </TabItem>
