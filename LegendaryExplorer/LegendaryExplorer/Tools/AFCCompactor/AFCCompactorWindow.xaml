@@ -9,7 +9,6 @@
         xmlns:audio="clr-namespace:LegendaryExplorerCore.Audio;assembly=LegendaryExplorerCore"
         xmlns:afcCompactor="clr-namespace:LegendaryExplorer.Tools.AFCCompactorWindow"
         mc:Ignorable="d"
-        Icon="/LegendaryExplorer;component/Tools/Icons/afccompactor_256x256.ico"
         Title="Audio File Cache (AFC) Compactor" Height="550" Width="1000"
         ContentRendered="AFCCompactorWindow_OnContentRendered"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">

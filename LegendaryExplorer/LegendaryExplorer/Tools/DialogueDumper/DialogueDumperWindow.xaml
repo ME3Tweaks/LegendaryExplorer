@@ -7,7 +7,6 @@
        xmlns:local="clr-namespace:LegendaryExplorer.Tools.DialogueDumper"
        mc:Ignorable="d"
        Loaded="DialogueDumper_Loaded"
-       Icon="..\Icons\dialoguedumper_256x256.ico"
        ResizeMode="NoResize"
        SizeToContent="Height"
        AllowDrop="True"

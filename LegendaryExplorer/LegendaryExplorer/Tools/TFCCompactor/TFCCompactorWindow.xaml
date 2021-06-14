@@ -6,7 +6,6 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:bases="clr-namespace:LegendaryExplorer.SharedUI.Bases"
         mc:Ignorable="d"
-        Icon="/LegendaryExplorer;component/Tools/Icons/tfccompactor_256x256.ico"
         SizeToContent="Height"
         ResizeMode="NoResize"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"

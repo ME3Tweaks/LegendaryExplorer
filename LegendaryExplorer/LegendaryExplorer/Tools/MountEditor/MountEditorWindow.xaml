@@ -10,7 +10,6 @@
         DragOver="Window_DragOver"
         Drop="Window_Drop"
         AllowDrop="True"
-        Icon="\LegendaryExplorer;component\Tools\Icons\mounteditor_256x256.ico"
         Title="Mount Editor" Height="358" Width="500">
     <StackPanel>
         <TextBlock Text="Use this tool to create new or modify existing mount.dlc files." Background="LightGray" Padding="5,5,5,0"/>

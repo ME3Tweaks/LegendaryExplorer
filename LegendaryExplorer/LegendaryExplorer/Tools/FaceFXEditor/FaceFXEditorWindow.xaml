@@ -15,7 +15,7 @@
              mc:Ignorable="d"
              d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
              Closing="FaceFXEditorWindow_OnClosing"
-             Icon="/LegendaryExplorer;component/Tools/icons/facefxeditor_256x256.ico" Title="FaceFX Editor" Loaded="WPFBase_Loaded">
+             Title="FaceFX Editor" Loaded="WPFBase_Loaded">
     <Window.Resources>
         <converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
     </Window.Resources>

@@ -18,7 +18,6 @@
         Drop="Window_Drop"
         AllowDrop="True"
         Closing="MeshplorerWPF_Closing"
-        Icon="/Tools/Icons/meshplorer_256x256.ico"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Title="Mesh Explorer" Height="550" Width="1200" Loaded="MeshplorerWPF_OnLoaded">
     <Window.Resources>

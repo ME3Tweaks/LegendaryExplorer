@@ -11,7 +11,6 @@
         xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
         AllowDrop="True"
         mc:Ignorable="d"
-        Icon="\LegendaryExplorer;component\Tools\Icons\sfarexplorer_256x256.ico"
         Closing="SFARExplorerWindow_OnClosing"
         Title="SFAR Explorer" Height="450" Width="800">
     <Window.Resources>

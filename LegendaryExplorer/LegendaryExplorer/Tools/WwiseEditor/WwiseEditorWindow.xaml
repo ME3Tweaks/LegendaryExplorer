@@ -19,7 +19,7 @@
         Loaded="WwiseEditorWPF_OnLoaded"
         Closing="WwiseEditorWPF_OnClosing"
         d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Title="Wwise Editor" Height="750" Width="1300" MinWidth="900" MinHeight="200" Icon="/LegendaryExplorer;component/Tools/Icons/wwisegrapheditor_256x256.ico">
+        Title="Wwise Editor" Height="750" Width="1300" MinWidth="900" MinHeight="200">
     <Window.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
