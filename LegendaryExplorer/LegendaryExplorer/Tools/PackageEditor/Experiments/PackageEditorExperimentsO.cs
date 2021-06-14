@@ -308,7 +308,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                             HuffmanCompression huff = new HuffmanCompression();
                             huff.LoadInputData(LoadedStrings);
-                            huff.serializeTLKStrListToExport(exp);
+                            huff.serializeTalkfileToExport(exp);
                         }
                     }
                     o.Save();

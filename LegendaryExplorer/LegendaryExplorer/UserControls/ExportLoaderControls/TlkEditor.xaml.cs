@@ -101,7 +101,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             var huff = new HuffmanCompression();
             huff.LoadInputData(LoadedStrings);
-            huff.serializeTLKStrListToExport(CurrentLoadedExport);
+            huff.serializeTalkfileToExport(CurrentLoadedExport);
             FileModified = false;
         }
 
@@ -259,7 +259,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     var compressor = new HuffmanCompression();
                     compressor.LoadInputData(openFileDialog.FileName);
-                    compressor.serializeTLKStrListToExport(CurrentLoadedExport);
+                    compressor.serializeTalkfileToExport(CurrentLoadedExport);
                 }
                 else if (CurrentME2ME3TalkFile is not null)
                 {
