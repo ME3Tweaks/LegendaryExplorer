@@ -122,6 +122,23 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             Children = children.Any() ? children[0].UIndex : 0;
         }
+
+        /// <summary>
+        /// Rebuilds the LocalFunctions table with direct descendents of this node. Items of class 'Function' will participate.
+        /// </summary>
+        public void UpdateLocalFunctions()
+        {
+            var children = Export.FileRef.Exports.Where(x => x.idxLink == Export.UIndex).Reverse().ToList();
+            LocalFunctionMap.Clear();
+            for (int i = 0; i < children.Count; i++)
+            {
+                var c = children[i];
+                if (c.ClassName == "Function")
+                {
+                    LocalFunctionMap.Add(new KeyValuePair<NameReference, UIndex>(c.ObjectName, c.UIndex));
+                }
+            }
+        }
     }
 
     public static partial class SCExt
