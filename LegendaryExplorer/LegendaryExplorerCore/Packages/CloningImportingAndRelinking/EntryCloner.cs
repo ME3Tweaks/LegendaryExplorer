@@ -17,21 +17,16 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 foreach (IEntry node in tree.GetDirectChildrenOf(originalRootNode.UIndex))
                 {
-                    IEntry newEntry = CloneEntry(node, objectMap);
+                    IEntry newEntry = CloneEntry(node, objectMap, false);
                     newEntry.Parent = newRootNode;
                     cloneTreeRecursive(node, newEntry);
                 }
             }
         }
-
-        // incrementIndex should be removed or it'll screw up the name <-> entry map
-        public static T CloneEntry<T>(T entry, Dictionary<IEntry, IEntry> objectMap = null, bool incrementIndex = false) where T : IEntry
+        
+        public static T CloneEntry<T>(T entry, Dictionary<IEntry, IEntry> objectMap = null, bool incrementIndex = true) where T : IEntry
         {
-            IEntry newEntry = entry.Clone();
-            if (incrementIndex)
-            {
-                newEntry.indexValue = newEntry.FileRef.GetNextIndexForInstancedName(newEntry);
-            }
+            IEntry newEntry = entry.Clone(incrementIndex);
 
             switch (newEntry)
             {

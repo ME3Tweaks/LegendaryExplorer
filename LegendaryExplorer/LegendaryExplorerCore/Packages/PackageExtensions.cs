@@ -83,11 +83,9 @@ namespace LegendaryExplorerCore.Packages
 
             IEntry parent = pcc.getEntryOrAddImport(string.Join(".", pathParts.Take(pathParts.Length - 1)), "Package");
 
-            var import = new ImportEntry(pcc)
+            var import = new ImportEntry(pcc, parent, new NameReference(pathParts.Last(), objIdx ?? 0))
             {
-                idxLink = parent?.UIndex ?? 0,
                 ClassName = className,
-                ObjectName = new NameReference(pathParts.Last(), objIdx ?? 0),
                 PackageFile = packageFile
             };
             pcc.AddImport(import);

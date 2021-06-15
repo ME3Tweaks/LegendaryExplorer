@@ -728,13 +728,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                         }
                     }
 
-                    playerStart = new ExportEntry(tempPcc, properties: new PropertyCollection
+                    playerStart = new ExportEntry(tempPcc, levelExport, tempPcc.GetNextIndexedName("PlayerStart"), properties: new PropertyCollection
                     {
                         CommonStructs.Vector3Prop(x, y, z, "location")
                     })
                     {
-                        Parent = levelExport,
-                        ObjectName = "PlayerStart",
                         Class = tempPcc.getEntryOrAddImport("Engine.PlayerStart")
                     };
                     tempPcc.AddExport(playerStart);

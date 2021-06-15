@@ -103,7 +103,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                                                             forcedLink: sourcePackageTree.NumChildrenOf(sourceEntry) == 0 ? link : (int?)null, objectMapping: relinkMap);
                 }
 
-                newEntry.idxLink = link;
             }
 
 
@@ -182,10 +181,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     }
                     else
                     {
-                        entry = GetOrAddCrossImportOrPackage(node.InstancedFullPath, sourcePcc, destPcc, objectMapping: relinkMap);
+                        entry = GetOrAddCrossImportOrPackage(node.InstancedFullPath, sourcePcc, destPcc, objectMapping: relinkMap, forcedLink: newParent.UIndex);
                     }
 
-                    entry.Parent = newParent;
 
                     importChildrenOf(node, entry);
                 }
@@ -334,19 +332,22 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     archetype = destPackage.FindExport(sourceArchetypeExport.InstancedFullPath);
                     if (archetype is null && importExportDependencies)
                     {
-                        IEntry archetypeParent = GetOrAddCrossImportOrPackage(sourceArchetypeExport.ParentFullPath, sourceExport.FileRef, destPackage,
+                        IEntry archetypeParent = GetOrAddCrossImportOrPackage(sourceArchetypeExport.ParentInstancedFullPath, sourceExport.FileRef, destPackage,
                                                                               true, objectMapping);
                         archetype = ImportExport(destPackage, sourceArchetypeExport, archetypeParent?.UIndex ?? 0, true, objectMapping);
                     }
                     break;
             }
+            
+            //values we pass to the constructor for name and link will be overridden when we assign newheader
+            EndianBitConverter.WriteAsBytes(destPackage.FindNameOrAdd(sourceExport.ObjectName.Name), newHeader.AsSpan(ExportEntry.OFFSET_idxObjectName), destPackage.Endian);
+            EndianBitConverter.WriteAsBytes(sourceExport.ObjectName.Number, newHeader.AsSpan(ExportEntry.OFFSET_indexValue), destPackage.Endian);
+            EndianBitConverter.WriteAsBytes(link, newHeader.AsSpan(ExportEntry.OFFSET_idxLink), destPackage.Endian);
 
-            var newExport = new ExportEntry(destPackage, prePropBinary, props, binaryData, sourceExport.IsClass)
+            var newExport = new ExportEntry(destPackage, link, sourceExport.ObjectName, prePropBinary, props, binaryData, sourceExport.IsClass)
             {
                 Header = newHeader,
                 Class = classValue,
-                ObjectName = sourceExport.ObjectName,
-                idxLink = link,
                 SuperClass = superclass,
                 Archetype = archetype,
                 DataOffset = 0
@@ -443,11 +444,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             if (forcedLink is int link)
             {
                 ImportEntry importingImport = sourcePcc.FindImport(importFullNameInstanced); // this shouldn't be null
-                var newImport = new ImportEntry(destinationPCC)
+                var newImport = new ImportEntry(destinationPCC, link, importingImport.ObjectName)
                 {
-                    idxLink = link,
                     ClassName = importingImport.ClassName,
-                    ObjectName = importingImport.ObjectName,
                     PackageFile = importingImport.PackageFile
                 };
                 destinationPCC.AddImport(newImport);
@@ -480,11 +479,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 //}
                 //else
                 {
-                    var newImport = new ImportEntry(destinationPCC)
+                    var newImport = new ImportEntry(destinationPCC, parent, imp.ObjectName)
                     {
-                        idxLink = parent?.UIndex ?? 0,
                         ClassName = imp.ClassName,
-                        ObjectName = imp.ObjectName,
                         PackageFile = imp.PackageFile
                     };
                     destinationPCC.AddImport(newImport);
@@ -570,11 +567,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             ImportEntry matchingSourceImport = sourcePcc.FindImport(importFullNameInstanced);
             if (matchingSourceImport != null)
             {
-                var newImport = new ImportEntry(destinationPCC)
+                var newImport = new ImportEntry(destinationPCC, parent, matchingSourceImport.ObjectName)
                 {
-                    idxLink = parent?.UIndex ?? 0,
                     ClassName = matchingSourceImport.ClassName,
-                    ObjectName = matchingSourceImport.ObjectName,
                     PackageFile = matchingSourceImport.PackageFile
                 };
                 destinationPCC.AddImport(newImport);
@@ -591,11 +586,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 var foundImp = destinationPCC.FindImport(importFullNameInstanced);
                 if (foundImp != null) return foundImp;
-                var newImport = new ImportEntry(destinationPCC)
+                var newImport = new ImportEntry(destinationPCC, parent, matchingSourceExport.ObjectName)
                 {
-                    idxLink = parent?.UIndex ?? 0,
                     ClassName = matchingSourceExport.ClassName,
-                    ObjectName = matchingSourceExport.ObjectName,
                     PackageFile = "Core" //This should be the file that the Class of this object is in, but I don't think it actually matters
                 };
                 destinationPCC.AddImport(newImport);

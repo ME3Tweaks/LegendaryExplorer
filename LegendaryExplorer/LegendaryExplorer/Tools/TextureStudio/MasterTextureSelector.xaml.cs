@@ -308,7 +308,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
         /// <param name="incomingImage"></param>
         public static ExportEntry GenerateNewMasterTextureExport(IMEPackage package, int idxLink, string objectName, PixelFormat destFormat, string lodGroup, string sourceFilepath, Image incomingImage)
         {
-            PropertyCollection props = new PropertyCollection();
+            var props = new PropertyCollection();
 
             incomingImage.correctMips(destFormat);
 
@@ -324,10 +324,12 @@ namespace LegendaryExplorer.Tools.TextureStudio
                 props.AddOrReplaceProp(new StrProperty(new FileInfo(sourceFilepath).LastAccessTimeUtc.ToString("yyyy-mm-dd hh:mm:ss"), @"SourceFileTimeStamp"));
             }
 
-            UTexture2D binary = new UTexture2D();
-            binary.Mips = new List<UTexture2D.Texture2DMipMap>();
-            binary.Unk1 = 0xD; // This is value many other textures have
-            binary.TextureGuid = new Guid();
+            var binary = new UTexture2D
+            {
+                Mips = new List<UTexture2D.Texture2DMipMap>(),
+                Unk1 = 0xD, // This is value many other textures have
+                TextureGuid = new Guid()
+            };
 
             var index = 0;
             foreach (var mipData in incomingImage.mipMaps)
@@ -354,11 +356,9 @@ namespace LegendaryExplorer.Tools.TextureStudio
                 index++;
             }
 
-            var texport = new ExportEntry(package, properties: props, binary: binary)
+            var texport = new ExportEntry(package, idxLink, objectName, properties: props, binary: binary)
             {
                 Class = EntryImporter.GetOrAddCrossImportOrPackage("Engine.Texture2D", GetGlobalPackageForGame(package.Game), package),
-                ObjectName = objectName,
-                idxLink = idxLink,
             };
 
             package.AddExport(texport);

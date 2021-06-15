@@ -1114,7 +1114,7 @@ namespace LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode
             }
             else if (idx > 0)
             {
-                EntryReferences[pos] = new ExportEntry(_package) { Index = Math.Abs(idx) - 1 }; //Force UIndex
+                EntryReferences[pos] = new ExportEntry(_package, 0, _package.Names[0]) { Index = Math.Abs(idx) - 1 }; //Force UIndex
                 return _package.Exports.First(); //this is so rest of parser won't crash. It's a real hack...
             }
 

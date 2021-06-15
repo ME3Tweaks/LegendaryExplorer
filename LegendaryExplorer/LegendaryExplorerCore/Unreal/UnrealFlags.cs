@@ -208,7 +208,7 @@ namespace LegendaryExplorerCore.Unreal
             return (enumValue & flag) == flag;
         }
 
-        public static Dictionary<EPropertyFlags, string> propertyflagsdesc = new Dictionary<EPropertyFlags, string>
+        public static Dictionary<EPropertyFlags, string> propertyflagsdesc = new()
         {
             [EPropertyFlags.None] = "",
             [EPropertyFlags.Editable] = "",

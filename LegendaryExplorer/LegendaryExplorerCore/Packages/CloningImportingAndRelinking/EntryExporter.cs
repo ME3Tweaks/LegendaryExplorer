@@ -140,11 +140,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         // Port in package
                         if (importAsImport)
                         {
-                            var newImport = new ImportEntry(target)
+                            var newImport = new ImportEntry(target, parent, pEntry.ObjectName)
                             {
-                                idxLink = parent?.UIndex ?? 0,
                                 ClassName = "Package",
-                                ObjectName = pEntry.ObjectName,
                                 PackageFile = "Core"
                             };
                             target.AddImport(newImport);

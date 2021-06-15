@@ -64,7 +64,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 if (trashContainer == null)
                 {
-                    trashContainer = new ExportEntry(pcc);
+                    trashContainer = new ExportEntry(pcc, 0, UnrealPackageFile.TrashPackageName);
                     pcc.AddExport(trashContainer);
                     trashContainer = TrashEntry(trashContainer, null, packageClass);
                     trashContainer.indexValue = 0;

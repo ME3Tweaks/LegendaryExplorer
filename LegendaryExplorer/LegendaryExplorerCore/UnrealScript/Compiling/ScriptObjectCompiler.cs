@@ -377,14 +377,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 return trashExport;
             }
 
-            var exp = new ExportEntry(pcc, binary: binary, isClass: binary is UClass)
+            var exp = new ExportEntry(pcc, parent, name, binary: binary, isClass: binary is UClass)
             {
-                ObjectName = name,
                 Class = EntryImporter.EnsureClassIsInFile(pcc, className),
                 SuperClass = super
             };
             pcc.AddExport(exp);
-            exp.Parent = parent;
             return exp;
         }
 

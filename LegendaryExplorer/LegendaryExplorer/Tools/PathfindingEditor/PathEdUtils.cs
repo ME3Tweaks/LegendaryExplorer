@@ -44,7 +44,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 //Debug.WriteLine("Num Exports: " + pcc.Exports.Count);
                 if (reachSpectoClone != null)
                 {
-                    ExportEntry outgoingSpec = EntryCloner.CloneEntry(reachSpectoClone, incrementIndex: true);
+                    ExportEntry outgoingSpec = EntryCloner.CloneEntry(reachSpectoClone);
 
                     IEntry reachSpecClassImp = GetEntryOrAddImport(Pcc, reachSpecClass); //new class type.
 
@@ -86,11 +86,11 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
                 if (reachSpectoClone != null)
                 {
-                    ExportEntry outgoingSpec = EntryCloner.CloneEntry(reachSpectoClone, incrementIndex: true);
+                    ExportEntry outgoingSpec = EntryCloner.CloneEntry(reachSpectoClone);
                     ExportEntry incomingSpec = null;
                     if (createTwoWay)
                     {
-                        incomingSpec = EntryCloner.CloneEntry(reachSpectoClone, incrementIndex: true);
+                        incomingSpec = EntryCloner.CloneEntry(reachSpectoClone);
                     }
 
                     IEntry reachSpecClassImp = GetEntryOrAddImport(Pcc, reachSpecClass); //new class type.
@@ -303,11 +303,9 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 //    throw new Exception("No class was found for importing");
                 //}
 
-                mostdownstreamimport = new ImportEntry(Pcc)
+                mostdownstreamimport = new ImportEntry(Pcc, downstreamLinkIdx, downstreamName)
                 {
-                    idxLink = downstreamLinkIdx,
                     ClassName = downstreamClassName,
-                    ObjectName = downstreamName,
                     PackageFile = downstreamPackageName
                 };
                 Pcc.AddImport(mostdownstreamimport);

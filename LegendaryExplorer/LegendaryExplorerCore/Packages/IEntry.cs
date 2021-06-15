@@ -25,6 +25,6 @@ namespace LegendaryExplorerCore.Packages
         byte[] GetHeader(); //returns clone
         bool HasParent { get; }
         IEntry Parent { get; set; }
-        IEntry Clone();
+        IEntry Clone(bool incrementIndex);
     }
 }

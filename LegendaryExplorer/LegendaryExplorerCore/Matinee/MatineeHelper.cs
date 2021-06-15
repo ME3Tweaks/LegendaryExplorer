@@ -39,14 +39,12 @@ namespace LegendaryExplorerCore.Matinee
         private static ExportEntry CreateNewExport(string className, ExportEntry parent, PropertyCollection properties)
         {
             IMEPackage pcc = parent.FileRef;
-            var group = new ExportEntry(pcc, properties: properties)
+            var group = new ExportEntry(pcc, parent, pcc.GetNextIndexedName(className), properties: properties)
             {
-                ObjectName = pcc.GetNextIndexedName(className),
                 Class = EntryImporter.EnsureClassIsInFile(pcc, className)
             };
             group.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
             pcc.AddExport(group);
-            group.Parent = parent;
             return group;
         }
 

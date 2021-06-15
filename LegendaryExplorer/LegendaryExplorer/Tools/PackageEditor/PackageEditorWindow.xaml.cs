@@ -1986,7 +1986,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 int lastClonedUIndex = 0;
                 for (int i = 0; i < numClones; i++)
                 {
-                    IEntry newEntry = EntryCloner.CloneEntry(entry, incrementIndex: true);
+                    IEntry newEntry = EntryCloner.CloneEntry(entry);
                     TryAddToPersistentLevel(newEntry);
                     lastClonedUIndex = newEntry.UIndex;
                 }
@@ -3212,27 +3212,28 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 IEntry targetLinkEntry = targetItem.Entry;
 
 
-                if (portingOption != EntryImporter.PortingOption.ReplaceSingular && targetItem.Entry != null && targetItem.Entry.FileRef.FindEntry(sourceItem.Entry.InstancedFullPath) != null)
+                int originalIndex = -1;
+                bool hadChanges = false;
+                bool hadHeaderChanges = false;
+                if (portingOption != EntryImporter.PortingOption.ReplaceSingular && targetItem.Entry?.FileRef.FindEntry(sourceItem.Entry.InstancedFullPath) != null)
                 {
                     // It's a duplicate. Offer to index it, as this will break the lookup if it's identical on inbound
                     // (it will just install into an existing entry)
-                    var result = MessageBox.Show("The item being ported in has the same full path as an object in the target package. This will cause issues in the game as well as with the toolset if the imported object is not renamed beforehand or has its index changed.\n\nLegendary Explorer will automatically adjust the index for you. You may need to adjust it back after changing the name.", "Indexing issues", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
-                    if (result == MessageBoxResult.No)
+                    var result = MessageBox.Show("The item being ported in has the same full path as an object in the target package. " +
+                                                 "This will cause issues in the game as well as with the toolset if the imported object is not renamed beforehand or has its index changed.\n\n" +
+                                                 "Legendary Explorer will automatically adjust the index for you. You may need to adjust it back after changing the name.", "Indexing issues", 
+                                                 MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.Cancel);
+                    if (result == MessageBoxResult.Cancel)
                     {
                         return; // User canceled
                     }
 
-                    // Adjust numeral on inbound export so it doesn't port into existing item
-                    if (sourceEntry is ExportEntry sexp)
-                    {
-                        sourceEntry = new ExportEntry(sexp);
-                    }
-                    else if (sourceEntry is ImportEntry simp)
-                    {
-                        // Good variable names
-                        sourceEntry = new ImportEntry(simp);
-                    }
-                    sourceEntry.ObjectName = targetItem.Entry.FileRef.GetNextIndexedName(sourceEntry.ObjectName);
+                    // Adjust numeral on inbound export so it doesn't port into existing item.
+                    // save original value for restoration after porting operation is complete.
+                    originalIndex = sourceEntry.indexValue;
+                    hadChanges = sourceEntry.EntryHasPendingChanges;
+                    hadHeaderChanges = sourceEntry.HeaderChanged;
+                    sourceEntry.indexValue = targetItem.Entry.FileRef.GetNextIndexedName(sourceEntry.ObjectName).Number;
                 }
 
                 // To profile this, run dotTrace and attach to the process, make sure to choose option to profile via API
@@ -3245,6 +3246,14 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 var relinkResults = EntryImporter.ImportAndRelinkEntries(portingOption, sourceEntry, Pcc,
                     targetLinkEntry, true, out IEntry newEntry);
 
+                if (originalIndex >= 0)
+                {
+                    //index was temporarily adjusted for porting. restore state
+                    sourceEntry.indexValue = originalIndex;
+                    sourceEntry.HeaderChanged = hadHeaderChanges;
+                    sourceEntry.EntryHasPendingChanges = hadChanges;
+                }
+
                 TryAddToPersistentLevel(Pcc.Exports.Skip(numExports));
 
                 //sw.Stop();
@@ -3252,7 +3261,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 //MeasureProfiler.SaveData(); // End profiling
                 if ((relinkResults?.Count ?? 0) > 0)
                 {
-                    ListDialog ld = new ListDialog(relinkResults, "Relink report",
+                    var ld = new ListDialog(relinkResults, "Relink report",
                         "The following items failed to relink.", this);
                     ld.Show();
                 }

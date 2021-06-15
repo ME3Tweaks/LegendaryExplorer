@@ -233,7 +233,10 @@ namespace LegendaryExplorerCore.Packages
 
             ExportCount = exports.Count;
 
-            InvalidateLookupTable();
+            if (!lookupTableNeedsToBeRegenerated)
+            {
+                EntryLookupTable[exportEntry.InstancedFullPath] = exportEntry;
+            }
 
             //Debug.WriteLine($@" >> Added export {exportEntry.InstancedFullPath}");
 
@@ -311,7 +314,10 @@ namespace LegendaryExplorerCore.Packages
             importEntry.HeaderOffset = 1; //This will make it so when setting idxLink it knows the import has been attached to the tree, even though this doesn't do anything. Find by offset may be confused by this. Updates on save
             imports.Add(importEntry);
 
-            InvalidateLookupTable();
+            if (!lookupTableNeedsToBeRegenerated)
+            {
+                EntryLookupTable[importEntry.InstancedFullPath] = importEntry;
+            }
 
             importEntry.EntryHasPendingChanges = true;
             ImportCount = imports.Count;

@@ -798,7 +798,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
                 SoundplorerExport spExport = (SoundplorerExport)SoundExports_ListBox.SelectedItem;
                 if (spExport != null && spExport.Export.ClassName == "WwiseStream")
                 {
-                    ExportEntry clone = EntryCloner.CloneEntry(spExport.Export, incrementIndex: true);
+                    ExportEntry clone = EntryCloner.CloneEntry(spExport.Export);
                     clone.ObjectName = result;
                     var newExport = new SoundplorerExport(clone);
                     BindedItemsList.Add(newExport);

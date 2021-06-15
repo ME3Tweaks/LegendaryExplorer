@@ -211,9 +211,8 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
         public static ExportEntry CreateSequenceObject(IMEPackage pcc, string className, MEGame game)
         {
-            var seqObj = new ExportEntry(pcc, properties: GetSequenceObjectDefaults(pcc, className, game))
+            var seqObj = new ExportEntry(pcc, 0, pcc.GetNextIndexedName(className), properties: GetSequenceObjectDefaults(pcc, className, game))
             {
-                ObjectName = pcc.GetNextIndexedName(className),
                 Class = EntryImporter.EnsureClassIsInFile(pcc, className, RelinkResultsAvailable: EntryImporterExtended.ShowRelinkResults)
             };
             seqObj.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;

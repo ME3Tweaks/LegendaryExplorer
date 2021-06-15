@@ -267,10 +267,9 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 return;
             }
 
-            var newSeqObj = new ExportEntry(Pcc, properties: SequenceObjectCreator.GetSequenceObjectDefaults(Pcc, info))
+            var newSeqObj = new ExportEntry(Pcc, SelectedSequence, Pcc.GetNextIndexedName(info.ClassName), properties: SequenceObjectCreator.GetSequenceObjectDefaults(Pcc, info))
             {
                 Class = classEntry,
-                ObjectName = Pcc.GetNextIndexedName(info.ClassName)
             };
             newSeqObj.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
             Pcc.AddExport(newSeqObj);

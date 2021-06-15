@@ -402,12 +402,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     // attempt to find base class?
                     // use resolver code so just fake an import
-                    ImportEntry ie = new ImportEntry(classExp.FileRef)
+                    var ie = new ImportEntry(classExp.FileRef, classExp.idxLink, classExp.ObjectName)
                     {
                         ClassName = classExp.ClassName,
-                        ObjectName = classExp.ObjectName,
                         PackageFile = classExp.ParentName,
-                        idxLink = classExp.idxLink
                     };
                     Debug.WriteLine("Looking up patch source " + classExp.InstancedFullPath);
                     ExportEntry matchingExport = null;

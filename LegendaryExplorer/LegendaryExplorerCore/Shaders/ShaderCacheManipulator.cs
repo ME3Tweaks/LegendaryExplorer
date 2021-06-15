@@ -128,14 +128,14 @@ namespace LegendaryExplorerCore.Shaders
 
         public static void AddShadersToFile(IMEPackage destFile, ShaderCache shadersToAdd)
         {
-            var destCacheExport = destFile.FindExport("SeekFreeShaderCache");
+            const string seekfreeshadercache = "SeekFreeShaderCache";
+            var destCacheExport = destFile.FindExport(seekfreeshadercache);
 
             if (destCacheExport is null)
             {
-                destFile.AddExport(new ExportEntry(destFile, BitConverter.GetBytes(-1), binary: shadersToAdd)
+                destFile.AddExport(new ExportEntry(destFile, 0, seekfreeshadercache, BitConverter.GetBytes(-1), binary: shadersToAdd)
                 {
                     Class = EntryImporter.EnsureClassIsInFile(destFile, "ShaderCache"),
-                    ObjectName = "SeekFreeShaderCache",
                     ObjectFlags = EObjectFlags.LoadForClient | EObjectFlags.LoadForEdit | EObjectFlags.LoadForServer | EObjectFlags.Standalone
                 });
                 return;

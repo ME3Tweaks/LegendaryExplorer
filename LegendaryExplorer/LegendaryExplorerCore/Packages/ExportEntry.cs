@@ -29,30 +29,36 @@ namespace LegendaryExplorerCore.Packages
         public int UIndex => Index + 1;
 
         /// <summary>
-        /// Copy constructor. You should only use this if you know what you're doing. This is only used for duplicating objects in memory - do not attach to a package!
+        /// Constructor for generating a new export entry
         /// </summary>
-        /// <param name="exp"></param>
-        public ExportEntry(ExportEntry exp)
-        {
-            FileRef = exp.FileRef;
-            _header = exp.Header;
-            _data = exp.Data;
-            Index = exp.Index; // :S
-        }
+        /// <param name="file"></param>
+        /// <param name="parent"></param>
+        /// <param name="name"></param>
+        /// <param name="prePropBinary"></param>
+        /// <param name="properties"></param>
+        /// <param name="binary"></param>
+        /// <param name="isClass"></param>
+        public ExportEntry(IMEPackage file, IEntry parent, NameReference name, byte[] prePropBinary = null, PropertyCollection properties = null, ObjectBinary binary = null, bool isClass = false) :
+            this(file, parent?.UIndex ?? 0, name, prePropBinary, properties, binary, isClass) { }
 
         /// <summary>
         /// Constructor for generating a new export entry
         /// </summary>
         /// <param name="file"></param>
+        /// <param name="parentUIndex"></param>
+        /// <param name="name"></param>
         /// <param name="prePropBinary"></param>
         /// <param name="properties"></param>
         /// <param name="binary"></param>
         /// <param name="isClass"></param>
-        public ExportEntry(IMEPackage file, byte[] prePropBinary = null, PropertyCollection properties = null, ObjectBinary binary = null, bool isClass = false)
+        public ExportEntry(IMEPackage file, int parentUIndex, NameReference name, byte[] prePropBinary = null, PropertyCollection properties = null, ObjectBinary binary = null, bool isClass = false)
         {
             FileRef = file;
             OriginalDataSize = 0;
             _header = new byte[HasComponentMap ? 72 : 68];
+            EndianBitConverter.WriteAsBytes(parentUIndex, _header.AsSpan(OFFSET_idxLink), FileRef.Endian);
+            EndianBitConverter.WriteAsBytes(FileRef.FindNameOrAdd(name.Name), _header.AsSpan(OFFSET_idxObjectName), FileRef.Endian);
+            EndianBitConverter.WriteAsBytes(name.Number, _header.AsSpan(OFFSET_indexValue), FileRef.Endian);
             DataOffset = 0;
             ObjectFlags = EObjectFlags.LoadForClient | EObjectFlags.LoadForServer | EObjectFlags.LoadForEdit; //sensible defaults?
 
@@ -76,6 +82,7 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         /// <param name="file"></param>
         /// <param name="stream"></param>
+        /// <param name="readData">should export data be read from the stream</param>
         public ExportEntry(IMEPackage file, EndianReader stream, bool readData = true)
         {
             FileRef = file;
@@ -223,6 +230,16 @@ namespace LegendaryExplorerCore.Packages
             }
         }
 
+        public const int OFFSET_idxClass = 0;
+        public const int OFFSET_idxSuperClass = 4;
+        public const int OFFSET_idxLink = 8;
+        public const int OFFSET_idxObjectName = 12;
+        public const int OFFSET_indexValue = 16;
+        public const int OFFSET_idxArchetype = 20;
+        public const int OFFSET_ObjectFlags = 24;
+        public const int OFFSET_DataSize = 32;
+        public const int OFFSET_DataOffset = 36;
+
         /// <summary>
         /// Returns a clone of the header for modifying
         /// </summary>
@@ -287,17 +304,17 @@ namespace LegendaryExplorerCore.Packages
 
         public int idxClass
         {
-            get => EndianReader.ToInt32(_header, 0, FileRef.Endian);
+            get => EndianReader.ToInt32(_header, OFFSET_idxClass, FileRef.Endian);
             private set
             {
-                EndianBitConverter.WriteAsBytes(value, _header.AsSpan(0), FileRef.Endian);
+                EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_idxClass), FileRef.Endian);
                 HeaderChanged = true;
             }
         }
 
         public int idxSuperClass
         {
-            get => EndianReader.ToInt32(_header, 4, FileRef.Endian);
+            get => EndianReader.ToInt32(_header, OFFSET_idxSuperClass, FileRef.Endian);
             private set
             {
                 // 0 check for setup
@@ -305,14 +322,14 @@ namespace LegendaryExplorerCore.Packages
                 {
                     throw new Exception("Cannot set export superclass to itself, this will cause infinite recursion");
                 }
-                EndianBitConverter.WriteAsBytes(value, _header.AsSpan(4), FileRef.Endian);
+                EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_idxSuperClass), FileRef.Endian);
                 HeaderChanged = true;
             }
         }
 
         public int idxLink
         {
-            get => EndianReader.ToInt32(_header, 8, FileRef.Endian);
+            get => EndianReader.ToInt32(_header, OFFSET_idxLink, FileRef.Endian);
             set
             {
                 // HeaderOffset = 0 means this was instantiated and not read in from a stream
@@ -320,7 +337,7 @@ namespace LegendaryExplorerCore.Packages
                 {
                     throw new Exception("Cannot set import link to itself, this will cause infinite recursion");
                 }
-                EndianBitConverter.WriteAsBytes(value, _header.AsSpan(8), FileRef.Endian);
+                EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_idxLink), FileRef.Endian);
                 HeaderChanged = true;
                 FileRef.InvalidateLookupTable();
             }
@@ -328,10 +345,10 @@ namespace LegendaryExplorerCore.Packages
 
         private int idxObjectName
         {
-            get => EndianReader.ToInt32(_header, 12, FileRef.Endian);
+            get => EndianReader.ToInt32(_header, OFFSET_idxObjectName, FileRef.Endian);
             set
             {
-                EndianBitConverter.WriteAsBytes(value, _header.AsSpan(12), FileRef.Endian);
+                EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_idxObjectName), FileRef.Endian);
                 HeaderChanged = true;
                 FileRef.InvalidateLookupTable();
             }
@@ -339,12 +356,12 @@ namespace LegendaryExplorerCore.Packages
 
         public int indexValue
         {
-            get => EndianReader.ToInt32(_header, 16, FileRef.Endian);
+            get => EndianReader.ToInt32(_header, OFFSET_indexValue, FileRef.Endian);
             set
             {
                 if (indexValue != value)
                 {
-                    EndianBitConverter.WriteAsBytes(value, _header.AsSpan(16), FileRef.Endian);
+                    EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_indexValue), FileRef.Endian);
                     HeaderChanged = true;
                     FileRef.InvalidateLookupTable();
                 }
@@ -353,34 +370,34 @@ namespace LegendaryExplorerCore.Packages
 
         public int idxArchetype
         {
-            get => EndianReader.ToInt32(_header, 20, FileRef.Endian);
+            get => EndianReader.ToInt32(_header, OFFSET_idxArchetype, FileRef.Endian);
             private set
             {
-                EndianBitConverter.WriteAsBytes(value, _header.AsSpan(20), FileRef.Endian);
+                EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_idxArchetype), FileRef.Endian);
                 HeaderChanged = true;
             }
         }
 
         public EObjectFlags ObjectFlags
         {
-            get => (EObjectFlags)EndianReader.ToUInt64(_header, 24, FileRef.Endian);
+            get => (EObjectFlags)EndianReader.ToUInt64(_header, OFFSET_ObjectFlags, FileRef.Endian);
             set
             {
-                EndianBitConverter.WriteAsBytes((ulong)value, _header.AsSpan(24), FileRef.Endian);
+                EndianBitConverter.WriteAsBytes((ulong)value, _header.AsSpan(OFFSET_ObjectFlags), FileRef.Endian);
                 HeaderChanged = true;
             }
         }
 
         public int DataSize
         {
-            get => EndianReader.ToInt32(_header, 32, FileRef.Endian);
-            private set => EndianBitConverter.WriteAsBytes(value, _header.AsSpan(32), FileRef.Endian);
+            get => EndianReader.ToInt32(_header, OFFSET_DataSize, FileRef.Endian);
+            private set => EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_DataSize), FileRef.Endian);
         }
 
         public int DataOffset
         {
-            get => EndianReader.ToInt32(_header, 36, FileRef.Endian);
-            set => EndianBitConverter.WriteAsBytes(value, _header.AsSpan(36), FileRef.Endian);
+            get => EndianReader.ToInt32(_header, OFFSET_DataOffset, FileRef.Endian);
+            set => EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_DataOffset), FileRef.Endian);
         }
 
         public bool HasComponentMap => FileRef.Game <= MEGame.ME2 && FileRef.Platform != MEPackage.GamePlatform.PS3;
@@ -799,7 +816,6 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         /// <param name="props"></param>
         /// <param name="binary"></param>
-        /// <param name="setData">Set to false to not set this export's data - useful if we are copying data to another area and are just serializing data</param>
         public void WritePropertiesAndBinary(PropertyCollection props, ObjectBinary binary)
         {
             var m = new EndianReader { Endian = FileRef.Endian };
@@ -814,7 +830,6 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         /// <param name="preProps"></param>
         /// <param name="props"></param>
-        /// <param name="setData">Set to false to not set this export's data - useful if we are copying data to another area and are just serializing data</param>
         public void WritePrePropsAndPropertiesAndBinary(byte[] preProps, PropertyCollection props, ObjectBinary binary)
         {
             var m = new EndianReader { Endian = FileRef.Endian };
@@ -824,18 +839,38 @@ namespace LegendaryExplorerCore.Packages
             Data = m.ToArray();
         }
 
-        public ExportEntry Clone()
+
+        private ExportEntry(IMEPackage file)
         {
-            return new ExportEntry(FileRef)
+            FileRef = file;
+            OriginalDataSize = 0;
+        }
+        public ExportEntry Clone(int newIndex = -1)
+        {
+            var clone = new ExportEntry(FileRef)
             {
                 _header = _header.TypedClone(),
                 HeaderOffset = 0,
                 Data = this.Data,
                 DataOffset = 0
             };
+            if (newIndex >= 0)
+            {
+                EndianBitConverter.WriteAsBytes(newIndex, clone._header.AsSpan(OFFSET_indexValue), FileRef.Endian);
+            }
+            return clone;
         }
 
-        IEntry IEntry.Clone() => Clone();
+        IEntry IEntry.Clone(bool incrementIndex)
+        {
+            if (incrementIndex)
+            {
+                return Clone(FileRef.GetNextIndexForInstancedName(this));
+            }
+
+            return Clone();
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
@@ -846,7 +881,7 @@ namespace LegendaryExplorerCore.Packages
         {
             if (HasStack)
             {
-                return (UnrealFlags.EPropertyFlags)EndianReader.ToUInt64(_data, 0x18, FileRef.Endian);
+                return (EPropertyFlags)EndianReader.ToUInt64(_data, 0x18, FileRef.Endian);
             }
             return null;
         }

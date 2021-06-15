@@ -2445,11 +2445,9 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         {
             ArrayProperty<StructProperty> connections = sourceActor.GetProperty<ArrayProperty<StructProperty>>("Connections") ?? new ArrayProperty<StructProperty>("Connections");
             var splineComponentClass = EntryImporter.EnsureClassIsInFile(Pcc, "SplineComponent", RelinkResultsAvailable: EntryImporterExtended.ShowRelinkResults);
-            var splineComponent = new ExportEntry(Pcc, new byte[8])
+            var splineComponent = new ExportEntry(Pcc, sourceActor, Pcc.GetNextIndexedName("SplineComponent"), new byte[8])
             {
                 Class = splineComponentClass,
-                Parent = sourceActor,
-                ObjectName = Pcc.GetNextIndexedName("SplineComponent")
             };
             Pcc.AddExport(splineComponent);
             connections.Add(new StructProperty("SplineConnection", new PropertyCollection
@@ -3280,7 +3278,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 ExportEntry newNodeEntry;
                 if (nodeEntry.IsA("SplineActor"))
                 {
-                    newNodeEntry = EntryCloner.CloneEntry(nodeEntry, incrementIndex: true);
+                    newNodeEntry = EntryCloner.CloneEntry(nodeEntry);
                     newNodeEntry.RemoveProperty("Connections");
                     newNodeEntry.RemoveProperty("LinksFrom");
                 }
@@ -3342,7 +3340,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                             var npdlg = MessageBox.Show("No alternative collections found. Creating new one.", "Clone Node", MessageBoxButton.OKCancel);
                             if (npdlg == MessageBoxResult.Cancel)
                                 return null;
-                            parent = EntryCloner.CloneEntry(nodeEntry.Parent, incrementIndex: true) as ExportEntry;
+                            parent = EntryCloner.CloneEntry(nodeEntry.Parent) as ExportEntry;
                             components = parent.GetProperty<ArrayProperty<ObjectProperty>>(sca.ComponentPropName);
                             components.Clear();
                             if (parent.IsA("StaticMeshCollectionActor"))
