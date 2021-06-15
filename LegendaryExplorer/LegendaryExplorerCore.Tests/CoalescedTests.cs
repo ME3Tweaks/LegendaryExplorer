@@ -22,9 +22,9 @@ namespace LegendaryExplorerCore.Tests
             foreach (var coalBin in bins)
             {
                 using var fs = File.OpenRead(coalBin);
-                var decomp1 = CoalescedConverter.DecompileToMemory(fs);
+                var decomp1 = CoalescedConverter.DecompileGame3ToMemory(fs);
                 var recomp1 = CoalescedConverter.CompileFromMemory(decomp1);
-                var decomp2 = CoalescedConverter.DecompileToMemory(recomp1);
+                var decomp2 = CoalescedConverter.DecompileGame3ToMemory(recomp1);
 
                 // Compare
                 foreach (var pair1 in decomp1)
