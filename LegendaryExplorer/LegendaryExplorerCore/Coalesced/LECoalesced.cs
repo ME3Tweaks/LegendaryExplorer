@@ -62,7 +62,7 @@ namespace LegendaryExplorerCore.Coalesced
     internal class LECoalescedManifestInfo
     {
         public string DestinationFilename { get; } = null;
-        public List<(string, string)> RelativePaths { get; } = new();
+        public List<string> ParticipatingRelativeFilePaths { get; } = new();
 
         public LECoalescedManifestInfo(string manifestPath)
         {
@@ -71,20 +71,9 @@ namespace LegendaryExplorerCore.Coalesced
                 throw new Exceptions.CBundleException($"Failed to find a manifest at {manifestPath}");
             }
 
-            using var manifestReader = new StreamReader(manifestPath);
-            DestinationFilename = manifestReader.ReadLine();
-
-            var countLine = manifestReader.ReadLine().Trim("\r\n ".ToCharArray());
-            for (int i = 0; i < int.Parse(countLine); i++)
-            {
-                var lineChunks = manifestReader.ReadLine()?.Split(";;", 2, StringSplitOptions.RemoveEmptyEntries)
-                    ?? throw new Exceptions.CBundleException("Expected to read a full line, got null");
-                if (lineChunks.Length != 2)
-                {
-                    throw new Exceptions.CBundleException("Expected a manifest line to have 2 chunks");
-                }
-                RelativePaths.Add((lineChunks[0], lineChunks[1]));
-            }
+            var manifestReader = File.ReadAllLines(manifestPath);
+            DestinationFilename = manifestReader[0];
+            ParticipatingRelativeFilePaths.AddRange(manifestReader[1..]); // participating files are index 1 to end
         }
     }
 
@@ -155,10 +144,10 @@ namespace LegendaryExplorerCore.Coalesced
                 {
                     ini.Sections.Add(s);
                 }
-                s = new DuplicatingIni.Section() {Header = reader.ReadCoalescedString()};
+                s = new DuplicatingIni.Section() { Header = reader.ReadCoalescedString() };
 
                 var pairCount = reader.ReadInt32();
-                Debug.WriteLine($"Section {s.Header}, {pairCount} pairs");
+                //Debug.WriteLine($"Section {s.Header}, {pairCount} pairs");
                 for (int j = 0; j < pairCount; j++)
                 {
                     var key = reader.ReadCoalescedString();
@@ -188,9 +177,9 @@ namespace LegendaryExplorerCore.Coalesced
             LECoalescedBundle bundle = new(manifest.DestinationFilename);
 
             DuplicatingIni ini = null;
-            foreach (var relativePath in manifest.RelativePaths)
+            foreach (var relativePath in manifest.ParticipatingRelativeFilePaths)
             {
-                var filePath = Path.Combine(path, relativePath.Item1);
+                var filePath = Path.Combine(path, relativePath);
                 if (!File.Exists(filePath)) { throw new Exceptions.CBundleException("Failed to find a file according to manifest, either the file was removed or the manifest was changed"); }
                 StreamReader reader = new(filePath);
 
@@ -229,7 +218,7 @@ namespace LegendaryExplorerCore.Coalesced
                         if (currentSection.Entries.Count > 0 && currentSection.Entries[^1].Key == strippedKey)  // It's a second or further line in multiline value
                         {
                             var last = currentSection.Entries[^1];
-                            currentSection.Entries[^1] = new (last.Key, last.Value + "\r\n" + chunks[1]);
+                            currentSection.Entries[^1] = new(last.Key, last.Value + "\r\n" + chunks[1]);
                         }
                         else
                         {
@@ -247,7 +236,7 @@ namespace LegendaryExplorerCore.Coalesced
                 {
                     ini.Sections.Add(currentSection);
                 }
-                bundle.Files[Path.GetFileName(relativePath.Item1)] = ini;
+                bundle.Files[Path.GetFileName(relativePath)] = ini;
             }
 
             return bundle;
@@ -273,6 +262,7 @@ namespace LegendaryExplorerCore.Coalesced
                             continue;
                         }
 
+                        // multiline
                         foreach (var line in lines)
                         {
                             writerStream.WriteLine($"{pair.Key}||={line}");
@@ -285,7 +275,6 @@ namespace LegendaryExplorerCore.Coalesced
             var manifestPath = Path.Combine(destinationPath, "mele.extractedbin");
             using var manifestWriter = new StreamWriter(manifestPath);
             manifestWriter.WriteLine($"{Name}");
-            manifestWriter.WriteLine($"{Files.Count}");
             foreach (var file in Files)
             {
                 manifestWriter.WriteLine(file.Key);
