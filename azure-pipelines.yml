@@ -67,6 +67,13 @@ steps:
       $apikeysprivatefile = "namespace ME3Explorer`n{`n    public static partial class APIKeys`n    {`n        public static string Private_AppCenter {get;} = `"$(AppCenterKey)`";`n    }`n}"
       Set-Content -Path "$(Build.Repository.LocalPath)\ME3Explorer\APIKeysPrivate.cs" -Value $apikeysprivatefile
 
+# install mono t4 as it doesn't have any dependency
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'custom'
+    custom: 'tool'
+    arguments: 'install --global dotnet-t4 --version 2.2.1'
+
 - task: NuGetToolInstaller@1
 
 - task: NuGetCommand@2
