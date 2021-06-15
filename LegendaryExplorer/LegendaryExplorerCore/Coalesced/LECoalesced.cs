@@ -343,7 +343,7 @@ namespace LegendaryExplorerCore.Coalesced
 
         private string GetIniFullPath(string filename)
         {
-            var extension = Path.GetExtension(filename);
+            var extension = Path.GetExtension(filename).ToLower();
             switch (extension)
             {
                 case ".ini":
