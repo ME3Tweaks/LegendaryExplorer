@@ -9,6 +9,7 @@ using System.Xml;
 using System.Xml.Linq;
 using LegendaryExplorerCore.Coalesced.Xml;
 using LegendaryExplorerCore.Gammtek.IO;
+using LegendaryExplorerCore.Misc;
 
 namespace LegendaryExplorerCore.Coalesced
 {
@@ -54,7 +55,7 @@ namespace LegendaryExplorerCore.Coalesced
                 { "\n", "\\n" }
             };
 
-        public static Dictionary<string, string> DecompileToMemory(Stream ms)
+        public static Dictionary<string, string> DecompileGame3ToMemory(Stream ms)
         {
             Dictionary<string, string> fileMapping = new Dictionary<string, string>();
             var coal = new CoalescedFileXml();
@@ -580,6 +581,20 @@ namespace LegendaryExplorerCore.Coalesced
                 return (BitConverter.ToInt32(bytes, 0) == CoalescedMagicNumber);
             }
             return true;
+        }
+
+        public static Dictionary<string, DuplicatingIni> DecompileLE1LE2ToMemory(Stream fs, string name)
+        {
+            return LECoalescedConverter.UnpackToMemory(fs, name).Files;
+        }
+
+        public static MemoryStream CompileLE1LE2FromMemory(Dictionary<string, DuplicatingIni> sections)
+        {
+            LECoalescedBundle cb = new LECoalescedBundle("");
+
+            MemoryStream ms = new MemoryStream();
+            cb.WriteToStream(ms);
+            return ms;
         }
     }
 }

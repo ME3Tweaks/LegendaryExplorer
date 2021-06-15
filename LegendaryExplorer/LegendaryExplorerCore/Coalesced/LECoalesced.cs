@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Misc;
 
 // Tools to unpack/repack LE1 and LE2 coalesced files. 
 // Originally by d00t (https://github.com/d00telemental/LECoal)
@@ -86,65 +88,30 @@ namespace LegendaryExplorerCore.Coalesced
         }
     }
 
-    [DebuggerDisplay("LECoalescedSection \"{Name}\"")]
-    public class LECoalescedSection
-    {
-        public string Name { get; private set; }
-        public List<(string, string)> Pairs { get; private set; } = new();
+    //[DebuggerDisplay("LECoalescedSection \"{Name}\"")]
+    //public class LECoalescedSection
+    //{
+    //    public string Name { get; private set; }
+    //    public List<(string, string)> Pairs { get; private set; } = new();
 
-        public LECoalescedSection(string name)
-        {
-            Name = name;
-        }
+    //    public LECoalescedSection(string name)
+    //    {
+    //        Name = name;
+    //    }
 
-        public LECoalescedSection(BinaryReader reader)
-        {
-            Name = reader.ReadCoalescedString();
+    //    public LECoalescedSection(BinaryReader reader)
+    //    {
+    //        Name = reader.ReadCoalescedString();
 
-            var pairCount = reader.ReadInt32();
-            //Debug.WriteLine($"Section {Name}, {pairCount} pairs");
-            for (int i = 0; i < pairCount; i++)
-            {
-                var key = reader.ReadCoalescedString();
-                var val = reader.ReadCoalescedString();
 
-                Pairs.Add((key, val));
-            }
-        }
-    }
-
-    [DebuggerDisplay("LECoalescedFile \"{Name}\" with {Sections.Count} sections")]
-    public class LECoalescedFile
-    {
-        public string Name { get; private set; }
-        public List<LECoalescedSection> Sections { get; private set; } = new();
-
-        public LECoalescedFile(string name)
-        {
-            Name = name;
-        }
-
-        public LECoalescedFile(BinaryReader reader)
-        {
-            Name = reader.ReadCoalescedString();
-
-            var sectionCount = reader.ReadInt32();
-            //Debug.WriteLine($"File {Name}, {sectionCount} sections");
-            for (int i = 0; i < sectionCount; i++)
-            {
-                LECoalescedSection section = new(reader);
-                Sections.Add(section);
-            }
-        }
-
-        public static string EscapeName(string name) => name.Replace("\\", "_").Replace("..", "-");
-    }
+    //    }
+    //}
 
     [DebuggerDisplay("LECoalescedBundle \"{Name}\" with {Files.Count} files")]
     public class LECoalescedBundle
     {
         public string Name { get; private set; }
-        public List<LECoalescedFile> Files { get; private set; } = new();
+        public Dictionary<string, DuplicatingIni> Files { get; private set; } = new();
 
         public LECoalescedBundle(string name)
         {
@@ -153,7 +120,16 @@ namespace LegendaryExplorerCore.Coalesced
 
         public static LECoalescedBundle ReadFromFile(string name, string path)
         {
-            BinaryReader reader = new(new MemoryStream(File.ReadAllBytes(path)));
+            return ReadFromStream(new MemoryStream(File.ReadAllBytes(path)), name);
+        }
+
+        public static LECoalescedBundle ReadFromStream(Stream stream, string name)
+        {
+            return ReadFromBinaryReader(new BinaryReader(stream), name);
+        }
+
+        private static LECoalescedBundle ReadFromBinaryReader(BinaryReader reader, string name)
+        {
             LECoalescedBundle bundle = new(name);
 
             var fileCount = reader.ReadInt32();
@@ -161,11 +137,43 @@ namespace LegendaryExplorerCore.Coalesced
 
             for (int i = 0; i < fileCount; i++)
             {
-                LECoalescedFile file = new(reader);
-                bundle.Files.Add(file);
+                var iniFullName = reader.ReadCoalescedString();
+                var sectionCount = reader.ReadInt32();
+                bundle.Files[Path.GetFileName(iniFullName)] = ReadCoalescedIni(reader, sectionCount);
             }
 
             return bundle;
+        }
+
+        private static DuplicatingIni ReadCoalescedIni(BinaryReader reader, int sectionCount)
+        {
+            DuplicatingIni ini = new DuplicatingIni();
+            DuplicatingIni.Section s = null;
+            for (int i = 0; i < sectionCount; i++)
+            {
+                if (s != null)
+                {
+                    ini.Sections.Add(s);
+                }
+                s = new DuplicatingIni.Section() {Header = reader.ReadCoalescedString()};
+
+                var pairCount = reader.ReadInt32();
+                Debug.WriteLine($"Section {s.Header}, {pairCount} pairs");
+                for (int j = 0; j < pairCount; j++)
+                {
+                    var key = reader.ReadCoalescedString();
+                    var val = reader.ReadCoalescedString();
+
+                    s.Entries.Add(new DuplicatingIni.IniEntry(key, val));
+                }
+            }
+
+            if (s != null) // in case file has zero sections we must check if it is null.
+            {
+                ini.Sections.Add(s);
+            }
+
+            return ini;
         }
 
         public static LECoalescedBundle ReadFromDirectory(string name, string path)
@@ -178,17 +186,17 @@ namespace LegendaryExplorerCore.Coalesced
 
             LECoalescedManifestInfo manifest = new(manifestPath);
             LECoalescedBundle bundle = new(manifest.DestinationFilename);
-            LECoalescedFile currentFile = null;
 
+            DuplicatingIni ini = null;
             foreach (var relativePath in manifest.RelativePaths)
             {
                 var filePath = Path.Combine(path, relativePath.Item1);
                 if (!File.Exists(filePath)) { throw new Exceptions.CBundleException("Failed to find a file according to manifest, either the file was removed or the manifest was changed"); }
                 StreamReader reader = new(filePath);
 
-                currentFile = new LECoalescedFile(relativePath.Item2);
+                ini = new DuplicatingIni();
 
-                LECoalescedSection currentSection = null;
+                DuplicatingIni.Section currentSection = null;
                 string line = null;
                 while ((line = reader.ReadLine()) is not null)
                 {
@@ -203,9 +211,9 @@ namespace LegendaryExplorerCore.Coalesced
 
                         if (currentSection is not null)
                         {
-                            currentFile.Sections.Add(currentSection);
+                            ini.Sections.Add(currentSection);
                         }
-                        currentSection = new LECoalescedSection(header);
+                        currentSection = new DuplicatingIni.Section() { Header = header };
 
                         continue;
                     }
@@ -218,29 +226,28 @@ namespace LegendaryExplorerCore.Coalesced
                     {
                         var strippedKey = chunks[0].Substring(0, chunks[0].Length - 2);
 
-                        if (currentSection.Pairs.Count > 0 && currentSection.Pairs.Last().Item1 == strippedKey)  // It's a second or further line in multiline value
+                        if (currentSection.Entries.Count > 0 && currentSection.Entries[^1].Key == strippedKey)  // It's a second or further line in multiline value
                         {
-                            var last = currentSection.Pairs[currentSection.Pairs.Count() - 1];
-                            currentSection.Pairs[currentSection.Pairs.Count() - 1]
-                                = (last.Item1, last.Item2 + "\r\n" + chunks[1]);
+                            var last = currentSection.Entries[^1];
+                            currentSection.Entries[^1] = new (last.Key, last.Value + "\r\n" + chunks[1]);
                         }
                         else
                         {
-                            currentSection.Pairs.Add((strippedKey, chunks[1]));
+                            currentSection.Entries.Add(new DuplicatingIni.IniEntry(strippedKey, chunks[1]));
                         }
                     }
                     else
                     {
-                        currentSection.Pairs.Add((chunks[0], chunks[1]));
+                        currentSection.Entries.Add(new DuplicatingIni.IniEntry(chunks[0], chunks[1]));
                     }
 
                 }
 
                 if (currentSection is not null)
                 {
-                    currentFile.Sections.Add(currentSection);
+                    ini.Sections.Add(currentSection);
                 }
-                bundle.Files.Add(currentFile);
+                bundle.Files[Path.GetFileName(relativePath.Item1)] = ini;
             }
 
             return bundle;
@@ -252,23 +259,23 @@ namespace LegendaryExplorerCore.Coalesced
 
             foreach (var file in Files)
             {
-                var outPath = Path.Combine(destinationPath, LECoalescedFile.EscapeName(file.Name));
+                var outPath = Path.Combine(destinationPath, file.Key);
                 using var writerStream = new StreamWriter(outPath);
-                foreach (var section in file.Sections)
+                foreach (var section in file.Value.Sections)
                 {
-                    writerStream.WriteLine($"[{section.Name}]");
-                    foreach (var pair in section.Pairs)
+                    writerStream.WriteLine($"[{section.Header}]");
+                    foreach (var pair in section.Entries)
                     {
-                        var lines = splitValue(pair.Item2);
+                        var lines = splitValue(pair.Value);
                         if (lines is null || lines.Count() == 1)
                         {
-                            writerStream.WriteLine($"{pair.Item1}={pair.Item2}");
+                            writerStream.WriteLine($"{pair.Key}={pair.Value}");
                             continue;
                         }
 
                         foreach (var line in lines)
                         {
-                            writerStream.WriteLine($"{pair.Item1}||={line}");
+                            writerStream.WriteLine($"{pair.Key}||={line}");
                         }
                     }
                 }
@@ -281,39 +288,15 @@ namespace LegendaryExplorerCore.Coalesced
             manifestWriter.WriteLine($"{Files.Count}");
             foreach (var file in Files)
             {
-                manifestWriter.WriteLine($"{LECoalescedFile.EscapeName(file.Name)};;{file.Name}");
+                manifestWriter.WriteLine(file.Key);
             }
         }
 
         public void WriteToFile(string destinationPath)
         {
-            BinaryWriter writer = new(new MemoryStream());
-
-            writer.Write((Int32)Files.Count);
-            foreach (var file in Files)
-            {
-                writer.WriteCoalescedString(file.Name);
-                writer.Write((Int32)file.Sections.Count);
-
-                foreach (var section in file.Sections)
-                {
-                    if (section is null)
-                    {
-                        continue;
-                    }
-
-                    writer.WriteCoalescedString(section.Name);
-                    writer.Write((Int32)section.Pairs.Count);
-
-                    foreach (var pair in section.Pairs)
-                    {
-                        writer.WriteCoalescedString(pair.Item1);
-                        writer.WriteCoalescedString(pair.Item2);
-                    }
-                }
-            }
-
-            (writer.BaseStream as MemoryStream).WriteToFile(destinationPath);
+            var ms = new MemoryStream();
+            WriteToStream(ms);
+            ms.WriteToFile(destinationPath);
         }
 
         internal List<string> splitValue(string val)
@@ -339,6 +322,52 @@ namespace LegendaryExplorerCore.Coalesced
 
             return splitVal;
         }
+
+        public void WriteToStream(Stream ms)
+        {
+            var writer = new BinaryWriter(ms);
+
+            writer.Write(Files.Count);
+            foreach (var file in Files)
+            {
+                writer.WriteCoalescedString(GetIniFullPath(file.Key));
+                writer.Write(file.Value.Sections.Count);
+
+                foreach (var section in file.Value.Sections)
+                {
+                    if (section is null)
+                    {
+                        continue;
+                    }
+
+                    writer.WriteCoalescedString(section.Header);
+                    writer.Write(section.Entries.Count);
+
+                    foreach (var pair in section.Entries)
+                    {
+                        writer.WriteCoalescedString(pair.Key);
+                        writer.WriteCoalescedString(pair.Value);
+                    }
+                }
+            }
+        }
+
+        private string GetIniFullPath(string filename)
+        {
+            var extension = Path.GetExtension(filename);
+            switch (extension)
+            {
+                case ".ini":
+                    return $@"..\..\BIOGame\Config\{filename}";
+                case ".int":
+                case ".ita":
+                case ".deu":
+                case ".pol":
+                case ".fra":
+                    return $@"..\..\Localization\{extension.Substring(1).ToUpper()}\{filename}";
+            }
+            throw new Exception($"Filename '{filename}' has invalid file extension for LE1/LE2 Coalesced filename");
+        }
     }
 
     /// <summary>
@@ -355,6 +384,17 @@ namespace LegendaryExplorerCore.Coalesced
         {
             var bundle = LECoalescedBundle.ReadFromFile(Path.GetFileName(fromFile), fromFile);
             bundle.WriteToDirectory(toDir);
+        }
+
+        public static LECoalescedBundle UnpackToMemory(string fromFile)
+        {
+            using var fs = File.OpenRead(fromFile);
+            return UnpackToMemory(fs, fromFile);
+        }
+
+        public static LECoalescedBundle UnpackToMemory(Stream stream, string name)
+        {
+            return LECoalescedBundle.ReadFromStream(stream, name);
         }
 
         /// <summary>
