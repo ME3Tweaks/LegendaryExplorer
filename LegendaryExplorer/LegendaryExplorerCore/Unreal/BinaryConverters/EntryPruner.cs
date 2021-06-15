@@ -60,14 +60,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         private static ExportEntry TrashEntry(IEntry entry, ExportEntry trashContainer, IEntry packageClass)
         {
             IMEPackage pcc = entry.FileRef;
-            var entryLookupTable = ((UnrealPackageFile)pcc).EntryLookupTable;
             if (entry is ImportEntry imp)
             {
-                if (!entryLookupTable.Remove(imp.InstancedFullPath))
-                {
-                    //// Trashing an entry should always remove it from the lookup
-                    //Debugger.Break();
-                }
                 if (trashContainer == null)
                 {
                     trashContainer = new ExportEntry(pcc);
@@ -80,16 +74,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 imp.idxLink = trashContainer.UIndex;
                 imp.ObjectName = "Trash";
                 imp.indexValue = 0;
-                entryLookupTable[imp.InstancedFullPath] = imp;
             }
             else if (entry is ExportEntry exp)
             {
-
-                if (!entryLookupTable.Remove(exp.InstancedFullPath))
-                {
-                    //// Trashing an entry should always remove it from the lookup
-                    //Debugger.Break();
-                }
                 using MemoryStream trashData = MemoryManager.GetMemoryStream();
                 trashData.WriteInt32(-1);
                 trashData.WriteInt32(pcc.FindNameOrAdd("None"));
@@ -112,7 +99,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     }
                     exp.PackageGUID = UnrealPackageFile.TrashPackageGuid;
                     trashContainer = exp;
-                    entryLookupTable[UnrealPackageFile.TrashPackageName] = trashContainer;
                 }
                 else
                 {

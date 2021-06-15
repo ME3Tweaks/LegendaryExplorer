@@ -322,6 +322,7 @@ namespace LegendaryExplorerCore.Packages
                 }
                 EndianBitConverter.WriteAsBytes(value, _header.AsSpan(8), FileRef.Endian);
                 HeaderChanged = true;
+                FileRef.InvalidateLookupTable();
             }
         }
 
@@ -330,9 +331,9 @@ namespace LegendaryExplorerCore.Packages
             get => EndianReader.ToInt32(_header, 12, FileRef.Endian);
             set
             {
-                // TODO: Somehow rebuild the lookup table for the package. This could get really expensive
                 EndianBitConverter.WriteAsBytes(value, _header.AsSpan(12), FileRef.Endian);
                 HeaderChanged = true;
+                FileRef.InvalidateLookupTable();
             }
         }
 
@@ -345,6 +346,7 @@ namespace LegendaryExplorerCore.Packages
                 {
                     EndianBitConverter.WriteAsBytes(value, _header.AsSpan(16), FileRef.Endian);
                     HeaderChanged = true;
+                    FileRef.InvalidateLookupTable();
                 }
             }
         }

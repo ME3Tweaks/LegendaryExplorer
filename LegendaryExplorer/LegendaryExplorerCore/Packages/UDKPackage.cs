@@ -6,6 +6,7 @@ using System.Linq;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
+using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.TLK.ME1;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.Classes;
@@ -208,7 +209,7 @@ namespace LegendaryExplorerCore.Packages
             imports = new List<ImportEntry>(ImportCount);
             for (int i = 0; i < ImportCount; i++)
             {
-                ImportEntry imp = new ImportEntry(this, reader) { Index = i };
+                var imp = new ImportEntry(this, reader) { Index = i };
                 imp.PropertyChanged += importChanged;
                 imports.Add(imp);
             }
@@ -218,10 +219,13 @@ namespace LegendaryExplorerCore.Packages
             exports = new List<ExportEntry>(ExportCount);
             for (int i = 0; i < ExportCount; i++)
             {
-                ExportEntry e = new ExportEntry(this, reader) { Index = i };
+                var e = new ExportEntry(this, reader) { Index = i };
                 e.PropertyChanged += exportChanged;
                 exports.Add(e);
             }
+
+            EntryLookupTable = new CaseInsensitiveDictionary<IEntry>(ExportCount + ImportCount);
+            RebuildLookupTable();
         }
 
         private static void saveByReconstructing(UDKPackage udkPackage, string path, bool isSaveAs, object diskIOSyncLock = null)

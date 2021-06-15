@@ -8,6 +8,7 @@ using LegendaryExplorerCore.Compression;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
+using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.TLK.ME1;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -238,7 +239,7 @@ namespace LegendaryExplorerCore.Packages
             Game = game;
             //reasonable defaults?
             Flags = EPackageFlags.Cooked | EPackageFlags.AllowDownload | EPackageFlags.DisallowLazyLoading | EPackageFlags.RequireImportsAlreadyLoaded;
-            return;
+            EntryLookupTable = new CaseInsensitiveDictionary<IEntry>();
         }
 
         /// <summary>
@@ -400,6 +401,7 @@ namespace LegendaryExplorerCore.Packages
             ExportOffset = packageReader.ReadInt32();
             ImportCount = packageReader.ReadInt32();
             ImportOffset = packageReader.ReadInt32();
+
 
             if (Game.IsLEGame() || Game != MEGame.ME1 || Platform != GamePlatform.Xenon)
             {
@@ -641,6 +643,7 @@ namespace LegendaryExplorerCore.Packages
                 }
             }
 
+            EntryLookupTable = new CaseInsensitiveDictionary<IEntry>(ExportCount + ImportCount);
             RebuildLookupTable(); // Builds the export/import lookup tables.
 #if AZURE
             if (platformNeedsResolved)

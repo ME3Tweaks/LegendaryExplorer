@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using LegendaryExplorerCore.Unreal.BinaryConverters;
+using EntryTreeNode = LegendaryExplorerCore.Unreal.BinaryConverters.TreeNode<LegendaryExplorerCore.Packages.IEntry, int>;
 
 namespace LegendaryExplorerCore.Packages
 {
@@ -9,19 +9,29 @@ namespace LegendaryExplorerCore.Packages
     {
         public EntryTree(IMEPackage pcc)
         {
-            imports = pcc.Imports.Select(import => new TreeNode<IEntry, int>(import)).ToList();
-            exports = pcc.Exports.Select(export => new TreeNode<IEntry, int>(export)).ToList();
+            imports = pcc.Imports.Select(import => new EntryTreeNode(import)).ToList();
+            exports = pcc.Exports.Select(export => new EntryTreeNode(export)).ToList();
+            root = new List<EntryTreeNode>();
 
-            foreach (TreeNode<IEntry, int> node in exports.Concat(imports))
+            foreach (EntryTreeNode node in exports.Concat(imports))
             {
-                this[node.Data.idxLink]?.Children.Add(node.Data.UIndex);
+                int idxLink = node.Data.idxLink;
+                if (idxLink is 0)
+                {
+                    root.Add(node);
+                }
+                else
+                {
+                    this[idxLink]?.Children.Add(node.Data.UIndex);
+                }
             }
         }
 
-        private readonly List<TreeNode<IEntry, int>> imports;
-        private readonly List<TreeNode<IEntry, int>> exports;
+        private readonly List<EntryTreeNode> imports;
+        private readonly List<EntryTreeNode> exports;
+        private readonly List<EntryTreeNode> root;
 
-        private TreeNode<IEntry, int> this[int index]
+        public EntryTreeNode this[int index]
         {
             get
             {
@@ -39,6 +49,8 @@ namespace LegendaryExplorerCore.Packages
                 return null;
             }
         }
+
+        public IEnumerable<EntryTreeNode> Roots => root;
 
         public int NumChildrenOf(IEntry entry) => this[entry.UIndex]?.Children.Count ?? 0;
 
@@ -74,11 +86,11 @@ namespace LegendaryExplorerCore.Packages
 
         public IEnumerator<IEntry> GetEnumerator()
         {
-            foreach (TreeNode<IEntry, int> node in exports)
+            foreach (EntryTreeNode node in exports)
             {
                 yield return node.Data;
             }
-            foreach (TreeNode<IEntry, int> node in imports)
+            foreach (EntryTreeNode node in imports)
             {
                 yield return node.Data;
             }

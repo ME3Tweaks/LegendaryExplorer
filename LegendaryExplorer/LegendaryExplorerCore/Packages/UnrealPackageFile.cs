@@ -10,6 +10,7 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.TLK.ME1;
 using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
 
 namespace LegendaryExplorerCore.Packages
 {
@@ -36,9 +37,10 @@ namespace LegendaryExplorerCore.Packages
         /// <summary>
         /// A lookup table that maps the full instanced path of an entry to that entry, which makes looking up entries by name quick.
         /// ONLY WORKS properly if there are NO duplicate indexes (besides trash) in the package.
-        /// Is not used if the table is not populated, methods will perform a full search.
         /// </summary>
-        internal CaseInsensitiveDictionary<IEntry> EntryLookupTable;
+        protected CaseInsensitiveDictionary<IEntry> EntryLookupTable;
+        private bool lookupTableNeedsToBeRegenerated = true;
+        public void InvalidateLookupTable() => lookupTableNeedsToBeRegenerated = true;
 
         public enum CompressionType
         {
@@ -82,7 +84,7 @@ namespace LegendaryExplorerCore.Packages
 
         // Used to make name lookups quick when doing a contains operation as this method is called
         // quite often
-        protected CaseInsensitiveDictionary<int> nameLookupTable = new CaseInsensitiveDictionary<int>();
+        protected CaseInsensitiveDictionary<int> nameLookupTable = new();
 
         protected List<string> names;
         public IReadOnlyList<string> Names => names;
@@ -228,16 +230,10 @@ namespace LegendaryExplorerCore.Packages
             exportEntry.Index = exports.Count;
             exportEntry.PropertyChanged += exportChanged;
             exports.Add(exportEntry);
-            // For debugging
-            //if (EntryLookupTable.ContainsKey(exportEntry.InstancedFullPath))
-            //{
-            //    Debugger.Break();
-            //}
-
-            // We need a way to handle a clone that doesn't have a unique name! Or this system will not work
-            EntryLookupTable[exportEntry.InstancedFullPath] = exportEntry; // ADD TO LOOKUP CACHE
 
             ExportCount = exports.Count;
+
+            InvalidateLookupTable();
 
             //Debug.WriteLine($@" >> Added export {exportEntry.InstancedFullPath}");
 
@@ -248,47 +244,31 @@ namespace LegendaryExplorerCore.Packages
 
         public IEntry FindEntry(string instancedname)
         {
-            if (EntryLookupTable != null && EntryLookupTable.Any())
+            if (lookupTableNeedsToBeRegenerated)
             {
-                EntryLookupTable.TryGetValue(instancedname, out var matchingEntry);
-                return matchingEntry;
+                RebuildLookupTable();
             }
-            else
-            {
-                // Look at imports first
-                var entry = Imports.FirstOrDefault(x => x.InstancedFullPath == instancedname) as IEntry;
-                if (entry == null)
-                {
-                    // Look at exports
-                    entry = Exports.FirstOrDefault(x => x.InstancedFullPath == instancedname) as IEntry;
-                }
-                return entry;
-            }
+            EntryLookupTable.TryGetValue(instancedname, out var matchingEntry);
+            return matchingEntry;
         }
         public ImportEntry FindImport(string instancedname)
         {
-            if (EntryLookupTable != null && EntryLookupTable.Any())
+            if (lookupTableNeedsToBeRegenerated)
             {
-                EntryLookupTable.TryGetValue(instancedname, out var matchingEntry);
-                return matchingEntry as ImportEntry;
+                RebuildLookupTable();
             }
-            else
-            {
-                return Imports.FirstOrDefault(x => x.InstancedFullPath == instancedname);
-            }
+            EntryLookupTable.TryGetValue(instancedname, out var matchingEntry);
+            return matchingEntry as ImportEntry;
         }
 
         public ExportEntry FindExport(string instancedname)
         {
-            if (EntryLookupTable != null && EntryLookupTable.Any())
+            if (lookupTableNeedsToBeRegenerated)
             {
-                EntryLookupTable.TryGetValue(instancedname, out var matchingEntry);
-                return matchingEntry as ExportEntry;
+                RebuildLookupTable();
             }
-            else
-            {
-                return Exports.FirstOrDefault(x => x.InstancedFullPath == instancedname);
-            }
+            EntryLookupTable.TryGetValue(instancedname, out var matchingEntry);
+            return matchingEntry as ExportEntry;
         }
 
         public ExportEntry GetUExport(int uindex) => exports[uindex - 1];
@@ -330,7 +310,8 @@ namespace LegendaryExplorerCore.Packages
             importEntry.PropertyChanged += importChanged;
             importEntry.HeaderOffset = 1; //This will make it so when setting idxLink it knows the import has been attached to the tree, even though this doesn't do anything. Find by offset may be confused by this. Updates on save
             imports.Add(importEntry);
-            EntryLookupTable[importEntry.InstancedFullPath] = importEntry; // ADD TO LOOKUP CACHE
+
+            InvalidateLookupTable();
 
             importEntry.EntryHasPendingChanges = true;
             ImportCount = imports.Count;
@@ -345,21 +326,45 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         public void RebuildLookupTable()
         {
-            if (EntryLookupTable == null)
+            EntryLookupTable.Clear();
+
+            //pre-order traversal of entry tree
+            //this is superior to just looping through the export and import arrays and calculating the InstancedFullPath anew for each one
+            //as InstancedFullPath has to recurse up from leaf to root, performing multiple string concats per node.
+            var tree = new EntryTree((IMEPackage)this);
+            var stack = new Stack<(TreeNode<IEntry, int>, string, int)>(8); //max tree depth will rarely be more than 8
+            foreach (TreeNode<IEntry, int> root in tree.Roots)
             {
-                EntryLookupTable = new CaseInsensitiveDictionary<IEntry>(ImportCount + ExportCount);
-            }
-            else
-            {
-                EntryLookupTable.Clear();
-            }
-            foreach (var exportEntry in exports)
-            {
-                EntryLookupTable[exportEntry.InstancedFullPath] = exportEntry; // ADD TO LOOKUP CACHE
-            }
-            foreach (var importEntry in imports)
-            {
-                EntryLookupTable[importEntry.InstancedFullPath] = importEntry; // ADD TO LOOKUP CACHE
+                stack.Clear();
+                string objFullPath = root.Data.ObjectName.Instanced;
+                EntryLookupTable[objFullPath] = root.Data;
+                if (root.Children.Count is 0)
+                {
+                    continue;
+                }
+                stack.Push((root, objFullPath, 0));
+                while (true)
+                {
+                    if (stack.Count is 0)
+                    {
+                        break;
+                    }
+                    int i;
+                    TreeNode<IEntry, int> node;
+                    (node, objFullPath, i) = stack.Pop();
+                    if (i + 1 < node.Children.Count)
+                    {
+                        stack.Push((node, objFullPath, i + 1));
+                    }
+
+                    node = tree[node.Children[i]];
+                    objFullPath = $"{objFullPath}.{node.Data.ObjectName.Instanced}";
+                    EntryLookupTable[objFullPath] = node.Data;
+                    if (node.Children.Count > 0)
+                    {
+                        stack.Push((node, objFullPath, 0));
+                    }
+                }
             }
         }
 
@@ -451,7 +456,6 @@ namespace LegendaryExplorerCore.Packages
 
                     trashPackage = exp;
                     trashPackageUIndex = trashPackage.UIndex;
-                    EntryLookupTable[TrashPackageName] = trashPackage;
                     break;
                 }
             }
@@ -499,35 +503,24 @@ namespace LegendaryExplorerCore.Packages
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ExportCount)));
             }
             //if there are no more trashed imports or exports, and if the TrashPackage is the last export, remove it
-            List<IEntry> trashChildren = null;
             if (exports.LastOrDefault() is ExportEntry finalExport && finalExport == trashPackage)
             {
-                trashChildren = trashPackage.GetChildren();
+                List<IEntry> trashChildren = trashPackage.GetChildren();
                 if (trashChildren.IsEmpty())
                 {
                     trashPackage.PropertyChanged -= importChanged;
                     exports.Remove(trashPackage);
                     updateTools(PackageChange.ExportRemove, trashPackage.UIndex);
                     IsModified = true;
-                    EntryLookupTable.Remove(TrashPackageName); // Remove the lookup for the trash package
                 }
             }
 
             if (ExportCount != exports.Count)
             {
-                // Remove subtrash object if none in lookup table. Otherwise update the pointer.
-                if (trashChildren != null && trashChildren.Any())
-                {
-                    EntryLookupTable[$"{TrashPackageName}.Trash"] = trashChildren[0];
-                }
-                else
-                {
-                    EntryLookupTable.Remove($"{TrashPackageName}.Trash");
-                }
-
                 ExportCount = exports.Count;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ExportCount)));
             }
+            InvalidateLookupTable();
         }
 
         #endregion

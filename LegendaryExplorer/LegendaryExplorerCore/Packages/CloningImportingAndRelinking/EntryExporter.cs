@@ -211,7 +211,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 }
             }
 
-            sourcePackage.RebuildLookupTable();
+            sourcePackage.InvalidateLookupTable();
 
 
         }

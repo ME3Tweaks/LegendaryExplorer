@@ -20,4 +20,21 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
+    public class TreeNode<T> : IEnumerable<TreeNode<T>>
+    {
+        public readonly T Data;
+        public readonly List<TreeNode<T>> Children;
+
+        public TreeNode(T data)
+        {
+            Data = data;
+            Children = new List<TreeNode<T>>();
+        }
+
+        public void Add(TreeNode<T> item) => Children.Add(item);
+
+        public IEnumerator<TreeNode<T>> GetEnumerator() => Children.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    }
 }

@@ -129,7 +129,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
         private void LoadCommands()
         {
-            ForceReloadPackageCommand = new GenericCommand(ForceReloadPackageWithoutSharing, PackageIsLoaded);
+            ForceReloadPackageCommand = new GenericCommand(ForceReloadPackageWithoutSharing, CanForceReload);
             OpenCommand = new GenericCommand(OpenPackage);
             SaveCommand = new GenericCommand(SavePackage, PackageIsLoaded);
             SaveAsCommand = new GenericCommand(SavePackageAs, PackageIsLoaded);
@@ -141,6 +141,8 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             ScanFolderForLoopsCommand = new GenericCommand(ScanFolderPackagesForTightLoops);
             SearchCommand = new GenericCommand(SearchDialogue, () => CurrentObjects.Any);
         }
+
+        private bool CanForceReload() => App.IsDebug && PackageIsLoaded();
 
         private string searchtext = "";
         private void SearchDialogue()

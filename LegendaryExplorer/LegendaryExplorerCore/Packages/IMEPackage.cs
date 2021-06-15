@@ -355,8 +355,8 @@ namespace LegendaryExplorerCore.Packages
         /// <returns></returns>
         IEntry FindEntry(string instancedname);
         /// <summary>
-        /// Rebuilds the entry lookup table. Is an expensive operation, use sparingly.
+        /// Invalidates the entry lookup table, causing it to be rebuilt next time FindEntry, FindExport, or FindImport is called.
         /// </summary>
-        void RebuildLookupTable();
+        void InvalidateLookupTable();
     }
 }

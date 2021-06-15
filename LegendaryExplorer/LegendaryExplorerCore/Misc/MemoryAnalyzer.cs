@@ -17,7 +17,7 @@ namespace LegendaryExplorerCore.Misc
     {
         public static bool IsTrackingMemory { get; set; }
 
-        public static ObservableCollectionExtended<MemoryAnalyzerObject> TrackedMemoryObjects { get; } = new ObservableCollectionExtended<MemoryAnalyzerObject>();
+        public static ObservableCollectionExtended<MemoryAnalyzerObject> TrackedMemoryObjects { get; } = new();
 
         [Conditional("DEBUG")]
         public static void AddTrackedMemoryItem(string objectname, WeakReference reference)

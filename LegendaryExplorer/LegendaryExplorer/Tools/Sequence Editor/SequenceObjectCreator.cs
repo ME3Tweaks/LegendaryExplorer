@@ -69,7 +69,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         public static PropertyCollection GetSequenceObjectDefaults(IMEPackage pcc, ClassInfo info)
         {
             MEGame game = pcc.Game;
-            PropertyCollection defaults = new PropertyCollection();
+            PropertyCollection defaults = new();
             if (info.ClassName == "Sequence")
             {
                 defaults.Add(new ArrayProperty<ObjectProperty>("SequenceObjects"));

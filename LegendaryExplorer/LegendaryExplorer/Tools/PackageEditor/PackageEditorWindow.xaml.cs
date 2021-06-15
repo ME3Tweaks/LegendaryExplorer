@@ -222,7 +222,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private void LoadCommands()
         {
-            ForceReloadPackageCommand = new GenericCommand(ForceReloadPackageWithoutSharing, PackageIsLoaded);
+            ForceReloadPackageCommand = new GenericCommand(ForceReloadPackageWithoutSharing, CanForceReload);
             CompareToUnmoddedCommand = new GenericCommand(CompareUnmodded, CanCompareToUnmodded);
             ComparePackagesCommand = new GenericCommand(ComparePackages, PackageIsLoaded);
             ExportAllDataCommand = new GenericCommand(ExportAllData, ExportIsSelected);
@@ -283,6 +283,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
             OpenLEVersionCommand = new GenericCommand(() => OpenOtherVersion(true), IsLoadedPackageOT);
             OpenOTVersionCommand = new GenericCommand(() => OpenOtherVersion(false), IsLoadedPackageLE);
         }
+
+        private bool CanForceReload() => App.IsDebug && PackageIsLoaded();
 
         private bool IsLoadedPackageOT() => Pcc != null && Pcc.Game.IsOTGame();
         private bool IsLoadedPackageLE() => Pcc != null && Pcc.Game.IsLEGame();

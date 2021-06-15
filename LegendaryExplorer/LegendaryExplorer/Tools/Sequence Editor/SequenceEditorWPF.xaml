@@ -72,7 +72,7 @@
                 <MenuItem Header="File" Padding="4">
                     <MenuItem Header="_Open" Command="{Binding OpenCommand}" InputGestureText="Ctrl+O"
                                 ToolTip="Open a package file" />
-                    <MenuItem Header="Force reload package*" Command="{Binding ForceReloadPackageCommand}" InputGestureText="Ctrl+Shift+R" ToolTip="Forcibly reloads this package file, if it was loaded from disk.&#10;This operation will drop this package out of the package sharing system across tools, be careful as edits will not sync across tools!"/>
+                    <MenuItem Header="Force reload package*" Command="{Binding ForceReloadPackageCommand}" sharedUi:Bindings.VisibilityToEnabled="True" InputGestureText="Ctrl+Shift+R" ToolTip="Forcibly reloads this package file, if it was loaded from disk.&#10;This operation will drop this package out of the package sharing system across tools, be careful as edits will not sync across tools!"/>
                     <MenuItem Header="_Save" Command="{Binding SaveCommand}" InputGestureText="Ctrl+S"
                               ToolTip="Save package file in-place"
                               IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" />
