@@ -39,6 +39,10 @@
     <DefineConstants>WINDOWS;AZURE</DefineConstants>
   </PropertyGroup>
 
+  <PropertyGroup>
+	  <TextTransformPath>$(DevEnvDir)TextTransform.exe</TextTransformPath>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="Dialogs\Splash\splash.png" />
     <None Remove="Resources\Images\GameIcons\UDK_48.ico" />
@@ -211,10 +215,6 @@
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
-
-  <PropertyGroup>
-	  <TextTransformPath>$(DevEnvDir)\TextTransform.exe</TextTransformPath>
-  </PropertyGroup>
 
   <ItemGroup>
 	  <VlcWindowsX64IncludeFiles Include="plugins\d3d%2A\%2A" />
