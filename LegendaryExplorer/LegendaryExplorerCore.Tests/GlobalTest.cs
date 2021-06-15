@@ -70,12 +70,27 @@ namespace LegendaryExplorerCore.Tests
         public static string GetTestTexturesDirectory() => Path.Combine(GetTestDataDirectory(), "textures");
         public static string GetTestCoalescedDirectory() => Path.Combine(GetTestDataDirectory(), "coalesced");
 
+        /// <summary>
+        /// Gets the expected game for a file based on the name of the containing directory. It be an MEGame Enum.
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public static MEGame GetExpectedGame(string filePath)
+        {
+            var name = Directory.GetParent(filePath).Name;
+            if (Enum.TryParse<MEGame>(name, out var val))
+            {
+                return val;
+            }
+
+            return MEGame.Unknown;
+        }
 
         public static (MEGame expectedGame, MEPackage.GamePlatform expectedPlatform) GetExpectedTypes(string p)
         {
             MEPackage.GamePlatform expectedPlatform = MEPackage.GamePlatform.Unknown;
             MEGame expectedGame = MEGame.Unknown;
-            
+
             string parentname = Directory.GetParent(p).FullName;
             int level = 0;
             while (parentname != null)

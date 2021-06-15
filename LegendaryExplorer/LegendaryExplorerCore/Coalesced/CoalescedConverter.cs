@@ -8,6 +8,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using LegendaryExplorerCore.Coalesced.Xml;
+using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Misc;
 
@@ -588,12 +589,13 @@ namespace LegendaryExplorerCore.Coalesced
             return LECoalescedConverter.UnpackToMemory(fs, name).Files;
         }
 
-        public static MemoryStream CompileLE1LE2FromMemory(Dictionary<string, DuplicatingIni> sections)
+        public static MemoryStream CompileLE1LE2FromMemory(Dictionary<string, DuplicatingIni> iniFileMap)
         {
             LECoalescedBundle cb = new LECoalescedBundle("");
-
+            cb.Files.AddRange(iniFileMap);
             MemoryStream ms = new MemoryStream();
             cb.WriteToStream(ms);
+            ms.Position = 0;
             return ms;
         }
     }
