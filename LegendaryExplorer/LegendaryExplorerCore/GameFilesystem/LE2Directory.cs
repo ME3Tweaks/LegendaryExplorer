@@ -72,6 +72,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         public static readonly ReadOnlyCollection<string> ExecutableNames = Array.AsReadOnly(new[] { "MassEffect2.exe", });
         public static readonly ReadOnlyCollection<string> VanillaDlls = Array.AsReadOnly(new[]
         {
+            "bink2w64_original.dll", // We say this is vanilla since it will very commonly be present and should not be removed
             "amd_ags_x64.dll",
             "bink2w64_original.dll",
             "bink2w64.dll",

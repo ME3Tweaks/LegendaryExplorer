@@ -82,7 +82,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         {
             "atiags.dll",
             "binkw32.dll",
-            "binkw23.dll", //We put this here so this is not detected as non-vanilla since almost all modded games will have this
+            "binkw23.dll", // We say this is vanilla since it will very commonly be present and should not be removed
             "PhysXExtensions.dll"
         });
 
