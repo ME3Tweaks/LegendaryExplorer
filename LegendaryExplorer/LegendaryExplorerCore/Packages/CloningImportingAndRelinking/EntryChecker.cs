@@ -19,9 +19,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
     public class ReferenceCheckPackage
     {
         // The list of generated warnings, errors, and blocking errors
-        private List<EntryStringPair> BlockingErrors = new List<EntryStringPair>();
-        private List<EntryStringPair> SignificantIssues = new List<EntryStringPair>();
-        private List<EntryStringPair> InfoWarnings = new List<EntryStringPair>();
+        public List<EntryStringPair> BlockingErrors { get; } = new();
+        public List<EntryStringPair> SignificantIssues { get; } = new();
+        public List<EntryStringPair> InfoWarnings { get; } = new();
 
         private object syncLock = new object();
 
@@ -184,7 +184,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             return "OK";
         }
 
-        public delegate string GetLocalizedStringDelegate(string str, params string[] parms);
+        public delegate string GetLocalizedStringDelegate(string str, params object[] parms);
 
         /// <summary>
         /// Checks object and name references for invalid values and if values are of the incorrect typing. Returns localized messages, if you do not want localized messages, pass it the NonLocalizedStringConverter delegate from this class.
@@ -226,31 +226,31 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 //Debug.WriteLine($"Checking {exp.UIndex} {exp.InstancedFullPath} in {exp.FileRef.FilePath}");
                 if (exp.idxLink == exp.UIndex)
                 {
-                    item.AddBlockingError(ME3XL.GetString(ME3XL.string_interp_fatalExportCircularReference, relativePath ?? fName, exp.UIndex));
+                    item.AddBlockingError(localizationDelegate(ME3XL.string_interp_fatalExportCircularReference, relativePath ?? fName, exp.UIndex));
                     continue;
                 }
 
-                var prefix = ME3XL.GetString(ME3XL.string_interp_warningGenericExportPrefix, relativePath ?? fName, exp.UIndex, exp.ObjectName.Name, exp.ClassName);
+                var prefix = localizationDelegate(ME3XL.string_interp_warningGenericExportPrefix, relativePath ?? fName, exp.UIndex, exp.ObjectName.Name, exp.ClassName);
                 try
                 {
                     if (exp.idxArchetype != 0 && !package.IsEntry(exp.idxArchetype))
                     {
-                        item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningArchetypeOutsideTables, prefix, exp.idxArchetype), exp);
+                        item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningArchetypeOutsideTables, prefix, exp.idxArchetype), exp);
                     }
 
                     if (exp.idxSuperClass != 0 && !package.IsEntry(exp.idxSuperClass))
                     {
-                        item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningSuperclassOutsideTables, prefix, exp.idxSuperClass), exp);
+                        item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningSuperclassOutsideTables, prefix, exp.idxSuperClass), exp);
                     }
 
                     if (exp.idxClass != 0 && !package.IsEntry(exp.idxClass))
                     {
-                        item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningClassOutsideTables, prefix, exp.idxClass), exp);
+                        item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningClassOutsideTables, prefix, exp.idxClass), exp);
                     }
 
                     if (exp.idxLink != 0 && !package.IsEntry(exp.idxLink))
                     {
-                        item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningLinkOutsideTables, prefix, exp.idxLink), exp);
+                        item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningLinkOutsideTables, prefix, exp.idxLink), exp);
                     }
 
                     if (exp.HasComponentMap)
@@ -260,7 +260,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             if (c.Value != 0 && !package.IsEntry(c.Value))
                             {
                                 // Can components point to 0? I don't think so
-                                item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningComponentMapItemOutsideTables, prefix, c.Value), exp);
+                                item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningComponentMapItemOutsideTables, prefix, c.Value), exp);
                             }
                         }
                     }
@@ -272,12 +272,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         var stack2 = EndianReader.ToInt32(data, 4, exp.FileRef.Endian);
                         if (stack1 != 0 && !package.IsEntry(stack1))
                         {
-                            item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningExportStackElementOutsideTables, prefix, 0, stack1), exp);
+                            item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningExportStackElementOutsideTables, prefix, 0, stack1), exp);
                         }
 
                         if (stack2 != 0 && !package.IsEntry(stack2))
                         {
-                            item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningExportStackElementOutsideTables, prefix, 1, stack2), exp);
+                            item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningExportStackElementOutsideTables, prefix, 1, stack2), exp);
                         }
                     }
                     else if (exp.TemplateOwnerClassIdx is var toci && toci >= 0)
@@ -285,19 +285,19 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         var TemplateOwnerClassIdx = EndianReader.ToInt32(exp.DataReadOnly, toci, exp.FileRef.Endian);
                         if (TemplateOwnerClassIdx != 0 && !package.IsEntry(TemplateOwnerClassIdx))
                         {
-                            item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningTemplateOwnerClassOutsideTables, prefix, toci.ToString(@"X6"), TemplateOwnerClassIdx), exp);
+                            item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningTemplateOwnerClassOutsideTables, prefix, toci.ToString(@"X6"), TemplateOwnerClassIdx), exp);
                         }
                     }
 
                     var props = exp.GetProperties();
                     foreach (var p in props)
                     {
-                        recursiveCheckProperty(item, relativePath, exp.ClassName, exp, p);
+                        recursiveCheckProperty(item, localizationDelegate, relativePath, exp.ClassName, exp, p);
                     }
                 }
                 catch (Exception e)
                 {
-                    item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningExceptionParsingProperties, prefix, e.Message), exp);
+                    item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningExceptionParsingProperties, prefix, e.Message), exp);
                     continue;
                 }
 
@@ -311,15 +311,15 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         {
                             if (uIndex.value != 0 && !exp.FileRef.IsEntry(uIndex.value))
                             {
-                                item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningBinaryReferenceOutsideTables, prefix, uIndex.value), exp);
+                                item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningBinaryReferenceOutsideTables, prefix, uIndex.value), exp);
                             }
                             else if (exp.FileRef.GetEntry(uIndex.value)?.ObjectName.ToString() == @"Trash")
                             {
-                                item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningBinaryReferenceTrashed, prefix, uIndex.value), exp);
+                                item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningBinaryReferenceTrashed, prefix, uIndex.value), exp);
                             }
                             else if (exp.FileRef.GetEntry(uIndex.value)?.ObjectName.ToString() == @"ME3ExplorerTrashPackage")
                             {
-                                item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningBinaryReferenceTrashed, prefix, uIndex.value), exp);
+                                item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningBinaryReferenceTrashed, prefix, uIndex.value), exp);
                             }
                         }
 
@@ -328,14 +328,14 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         {
                             if (ni.Item1 == "")
                             {
-                                item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningBinaryNameReferenceOutsideNameTable, prefix), exp);
+                                item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningBinaryNameReferenceOutsideNameTable, prefix), exp);
                             }
                         }
                     }
                 }
                 catch (Exception e) /* when (!App.IsDebug)*/
                 {
-                    item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningUnableToParseBinary, prefix, e.Message), exp);
+                    item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningUnableToParseBinary, prefix, e.Message), exp);
                 }
             }
 
@@ -343,21 +343,21 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 if (imp.idxLink != 0 && !package.TryGetEntry(imp.idxLink, out _))
                 {
-                    item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningImportLinkOutideOfTables, relativePath ?? fName, imp.UIndex, imp.idxLink), imp);
+                    item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningImportLinkOutideOfTables, relativePath ?? fName, imp.UIndex, imp.idxLink), imp);
                 }
                 else if (imp.idxLink == imp.UIndex)
                 {
-                    item.AddBlockingError(ME3XL.GetString(ME3XL.string_interp_fatalImportCircularReference, relativePath ?? fName, imp.UIndex), imp);
+                    item.AddBlockingError(localizationDelegate(ME3XL.string_interp_fatalImportCircularReference, relativePath ?? fName, imp.UIndex), imp);
                 }
             }
         }
 
-        private static void recursiveCheckProperty(ReferenceCheckPackage item, string relativePath, string containingClassOrStructName, IEntry entry, Property property)
+        private static void recursiveCheckProperty(ReferenceCheckPackage item, GetLocalizedStringDelegate localizationDelegate, string relativePath, string containingClassOrStructName, IEntry entry, Property property)
         {
-            var prefix = ME3XL.GetString(ME3XL.string_interp_warningPropertyTypingWrongPrefix, relativePath, entry.UIndex, entry.ObjectName.Name, entry.ClassName, property.StartOffset.ToString(@"X6"));
+            var prefix = localizationDelegate(ME3XL.string_interp_warningPropertyTypingWrongPrefix, relativePath, entry.UIndex, entry.ObjectName.Name, entry.ClassName, property.StartOffset.ToString(@"X6"));
             if (property is UnknownProperty up)
             {
-                item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningFoundBrokenPropertyData, prefix), entry);
+                item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningFoundBrokenPropertyData, prefix), entry);
 
             }
             else if (property is ObjectProperty op)
@@ -368,12 +368,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     //bad
                     if (op.Name.Name != null)
                     {
-                        item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningReferenceNotInExportTable, prefix, op.Name.Name, op.Value), entry);
+                        item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningReferenceNotInExportTable, prefix, op.Name.Name, op.Value), entry);
                         validRef = false;
                     }
                     else
                     {
-                        item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_nested_warningReferenceNoInExportTable, prefix, op.Value), entry);
+                        item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_nested_warningReferenceNoInExportTable, prefix, op.Value), entry);
                         validRef = false;
                     }
                 }
@@ -382,20 +382,20 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     //bad
                     if (op.Name.Name != null)
                     {
-                        item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningReferenceNotInImportTable, prefix, op.Name.Name, op.Value), entry);
+                        item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningReferenceNotInImportTable, prefix, op.Name.Name, op.Value), entry);
                         validRef = false;
 
                     }
                     else
                     {
-                        item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_nested_warningReferenceNoInImportTable, prefix, op.Value), entry);
+                        item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_nested_warningReferenceNoInImportTable, prefix, op.Value), entry);
                         validRef = false;
 
                     }
                 }
                 else if (entry.FileRef.GetEntry(op.Value)?.ObjectName.ToString() == @"Trash" || entry.FileRef.GetEntry(op.Value)?.ObjectName.ToString() == UnrealPackageFile.TrashPackageName)
                 {
-                    item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_nested_warningTrashedExportReference, prefix, op.Value), entry);
+                    item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_nested_warningTrashedExportReference, prefix, op.Value), entry);
                     validRef = false;
                 }
 
@@ -450,14 +450,14 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                                 {
                                     if (op.Name.Name != null)
                                     {
-                                        item.AddSignificantIssue(ME3XL.GetString(
+                                        item.AddSignificantIssue(localizationDelegate(
                                             ME3XL.string_interp_warningWrongPropertyTypingWrongMessage, prefix,
                                             op.Name.Name, op.Value, op.ResolveToEntry(entry.FileRef).InstancedFullPath,
                                             propInfo.Reference, referencedEntry.ClassName), entry);
                                     }
                                     else
                                     {
-                                        item.AddSignificantIssue(ME3XL.GetString(
+                                        item.AddSignificantIssue(localizationDelegate(
                                             ME3XL
                                                 .string_interp_nested_warningWrongClassPropertyTypingWrongMessage,
                                             prefix, op.Value, op.ResolveToEntry(entry.FileRef).InstancedFullPath,
@@ -470,7 +470,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                                 // Is instance of
                                 if (op.Name.Name != null)
                                 {
-                                    item.AddSignificantIssue(ME3XL.GetString(
+                                    item.AddSignificantIssue(localizationDelegate(
                                         ME3XL.string_interp_warningWrongObjectPropertyTypingWrongMessage,
                                         prefix, op.Name.Name, op.Value,
                                         op.ResolveToEntry(entry.FileRef).InstancedFullPath, propInfo.Reference,
@@ -478,7 +478,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                                 }
                                 else
                                 {
-                                    item.AddSignificantIssue(ME3XL.GetString(
+                                    item.AddSignificantIssue(localizationDelegate(
                                         ME3XL.string_interp_nested_warningWrongObjectPropertyTypingWrongMessage,
                                         prefix, op.Value, op.ResolveToEntry(entry.FileRef).InstancedFullPath,
                                         propInfo.Reference, referencedEntry.ClassName), entry);
@@ -492,28 +492,28 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 foreach (var p in aop)
                 {
-                    recursiveCheckProperty(item, relativePath, aop.Name, entry, p);
+                    recursiveCheckProperty(item, localizationDelegate, relativePath, aop.Name, entry, p);
                 }
             }
             else if (property is StructProperty sp)
             {
                 foreach (var p in sp.Properties)
                 {
-                    recursiveCheckProperty(item, relativePath, sp.StructType, entry, p);
+                    recursiveCheckProperty(item, localizationDelegate, relativePath, sp.StructType, entry, p);
                 }
             }
             else if (property is ArrayProperty<StructProperty> asp)
             {
                 foreach (var p in asp)
                 {
-                    recursiveCheckProperty(item, relativePath, p.StructType, entry, p);
+                    recursiveCheckProperty(item, localizationDelegate, relativePath, p.StructType, entry, p);
                 }
             }
             else if (property is DelegateProperty dp)
             {
                 if (dp.Value.Object != 0 && !entry.FileRef.IsEntry(dp.Value.Object))
                 {
-                    item.AddSignificantIssue(ME3XL.GetString(ME3XL.string_interp_warningDelegatePropertyIsOutsideOfExportTable, prefix, dp.Name.Name), entry);
+                    item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningDelegatePropertyIsOutsideOfExportTable, prefix, dp.Name.Name), entry);
                 }
             }
         }
