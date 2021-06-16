@@ -364,7 +364,7 @@ namespace LegendaryExplorerCore.Packages
                     }
 
                     node = tree[node.Children[i]];
-                    objFullPath = $"{objFullPath}.{node.Data.ObjectName.Instanced}";
+                    objFullPath = node.Data.ObjectName.AddToPath(objFullPath);
                     EntryLookupTable[objFullPath] = node.Data;
                     if (node.Children.Count > 0)
                     {

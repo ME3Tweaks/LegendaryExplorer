@@ -9,6 +9,7 @@ using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
+using StructProperty = LegendaryExplorerCore.Unreal.StructProperty;
 
 namespace LegendaryExplorer.Tools.Sequence_Editor
 {
@@ -161,7 +162,19 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                             }
                         }
                         classes.TryGetValue(classInfo.baseClass, out classInfo);
+                        switch (classInfo.ClassName)
+                        {
+                            case "SequenceFrame":
+                            case "SequenceCondition":
+                            case "SequenceObject":
+                            case "SequenceReference":
+                            case "Sequence":
+                            case "SequenceVariable":
+                                goto loopend;
+
+                        }
                     }
+                    loopend: ;
                 }
                 catch
                 {

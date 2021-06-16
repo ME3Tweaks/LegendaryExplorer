@@ -50,7 +50,7 @@ namespace LegendaryExplorerCore.Packages
         }
 
         //if neccessary, will fill in parents as Package Imports (if the import you need has non-Package parents, don't use this method)
-        public static IEntry getEntryOrAddImport(this IMEPackage pcc, string instancedFullPath, string className = "Class", string packageFile = "Core", int? objIdx = null)
+        public static IEntry getEntryOrAddImport(this IMEPackage pcc, string instancedFullPath, string className = "Class", string packageFile = "Core")
         {
             if (string.IsNullOrEmpty(instancedFullPath))
             {
@@ -62,28 +62,11 @@ namespace LegendaryExplorerCore.Packages
             if (entry != null)
                 return entry;
 
-            /*foreach (ImportEntry imp in pcc.Imports)
-            {
-                if (imp.FullPath == instancedFullPath && (objIdx == null || objIdx == imp.ObjectName.Number))
-                {
-                    return imp;
-                }
-            }
-
-            //see if this is an export and exists locally
-            foreach (ExportEntry exp in pcc.Exports)
-            {
-                if (exp.FullPath == instancedFullPath && (objIdx == null || objIdx == exp.ObjectName.Number))
-                {
-                    return exp;
-                }
-            }*/
-
             string[] pathParts = instancedFullPath.Split('.');
 
             IEntry parent = pcc.getEntryOrAddImport(string.Join(".", pathParts.Take(pathParts.Length - 1)), "Package");
 
-            var import = new ImportEntry(pcc, parent, new NameReference(pathParts.Last(), objIdx ?? 0))
+            var import = new ImportEntry(pcc, parent, NameReference.FromInstancedString(pathParts.Last()))
             {
                 ClassName = className,
                 PackageFile = packageFile

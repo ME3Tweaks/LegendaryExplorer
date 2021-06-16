@@ -70,7 +70,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     }
                     catch (Exception e)
                     {
-                        Debug.WriteLine($"Error decompiling function {Export.FullPath}: {e.Message}");
+                        Debug.WriteLine($"Error decompiling function {Export.InstancedFullPath}: {e.Message}");
                     }
                 }
                 else
@@ -85,7 +85,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     }
                     catch (Exception e)
                     {
-                        Debug.WriteLine($"Error decompiling function {Export.FullPath}: {e.Message}");
+                        Debug.WriteLine($"Error decompiling function {Export.InstancedFullPath}: {e.Message}");
                     }
                 }
             }
@@ -114,7 +114,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     }
                     catch (Exception e)
                     {
-                        Debug.WriteLine($"Error decompiling function {Export.FullPath}: {e.Message}");
+                        Debug.WriteLine($"Error decompiling function {Export.InstancedFullPath}: {e.Message}");
                     }
                 }
                 else
@@ -128,7 +128,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     }
                     catch (Exception e)
                     {
-                        Debug.WriteLine($"Error decompiling function {Export.FullPath}: {e.Message}");
+                        Debug.WriteLine($"Error decompiling function {Export.InstancedFullPath}: {e.Message}");
                     }
                 }
             }
