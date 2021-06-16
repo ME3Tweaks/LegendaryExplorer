@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
@@ -23,8 +24,58 @@ namespace LegendaryExplorerCore.Unreal
         }
 
         //https://api.unrealengine.com/INT/API/Runtime/Core/UObject/FName/index.html
+        //heavily optimized version of this: Number > 0 ? $"{Name}_{Number - 1}" : Name;
         [JsonIgnore]
-        public string Instanced => Number > 0 ? $"{Name}_{Number - 1}" : Name;
+        public string Instanced
+        {
+            get
+            {
+                if (Number > 0)
+                {
+                    int n = Number - 1;
+                    return string.Create(Name.Length + 1 + n.NumDigits(), (Name, n), (span, nameRef) =>
+                    {
+                        ReadOnlySpan<char> nameSpan = nameRef.Name.AsSpan();
+                        nameSpan.CopyTo(span);
+                        int nameLength = nameSpan.Length;
+                        span[nameLength] = '_';
+                        nameRef.n.TryFormat(span.Slice(nameLength + 1), out _);
+                    });
+                }
+
+                return Name;
+            }
+        }
+
+        /// <summary>
+        /// Adds instanced name to end of <paramref name="parentPath"/>, after a '.'
+        /// </summary>
+        /// <param name="parentPath"></param>
+        /// <returns></returns>
+        public string AddToPath(string parentPath)
+        {
+            int n = Number - 1;
+            int numDigits = parentPath.Length + Name.Length + 1;
+            if (Number > 0)
+            {
+                numDigits += 1 + n.NumDigits();
+            }
+            return string.Create(numDigits, (parentPath, Name, n), (span, tuple) =>
+            {
+                ReadOnlySpan<char> parentSpan = tuple.parentPath.AsSpan();
+                int parentLength = parentSpan.Length;
+                parentSpan.CopyTo(span);
+                span[parentLength] = '.';
+                ReadOnlySpan<char> nameSpan = tuple.Name.AsSpan();
+                nameSpan.CopyTo(span.Slice(parentLength + 1));
+                int nameLength = parentLength + 1 + nameSpan.Length;
+                if (tuple.n >= 0)
+                {
+                    span[nameLength] = '_';
+                    tuple.n.TryFormat(span.Slice(nameLength + 1), out _);
+                }
+            });
+        }
 
         public static implicit operator NameReference(string s)
         {

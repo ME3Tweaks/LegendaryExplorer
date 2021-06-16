@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Gammtek;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Memory;
@@ -1004,9 +1005,10 @@ namespace LegendaryExplorerCore.Helpers
             return (word << (31 - index)) >> 31 == 1;
         }
 
-        public static int NumDigits(this int i)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int NumDigits(this int n)
         {
-            return i > 0 ? (int)Math.Log10(i) + 1 : 1;
+            return n < 100000 ? n < 100 ? n < 10 ? 1 : 2 : n < 1000 ? 3 : n < 10000 ? 4 : 5 : n < 10000000 ? n < 1000000 ? 6 : 7 : n < 100000000 ? 8 : n < 1000000000 ? 9 : 10;
         }
     }
 }

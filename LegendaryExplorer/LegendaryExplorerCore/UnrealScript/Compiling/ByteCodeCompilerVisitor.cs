@@ -1334,17 +1334,16 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         private IEntry ResolveProperty(VariableDeclaration decl)
         {
-            (string name, int number) = NameReference.FromInstancedString(decl.Name);
-            return Pcc.getEntryOrAddImport($"{ResolveSymbol(decl.Outer).FullPath}.{name}", PropertyTypeName(decl.VarType), objIdx: number);
+            return Pcc.getEntryOrAddImport($"{ResolveSymbol(decl.Outer).InstancedFullPath}.{decl.Name}", PropertyTypeName(decl.VarType));
         }
 
-        private IEntry ResolveStruct(Struct s) => Pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer).FullPath}.{s.Name}", "ScriptStruct");
+        private IEntry ResolveStruct(Struct s) => Pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer).InstancedFullPath}.{s.Name}", "ScriptStruct");
 
-        private IEntry ResolveFunction(Function f) => Pcc.getEntryOrAddImport($"{ResolveSymbol(f.Outer).FullPath}.{f.Name}", "Function");
+        private IEntry ResolveFunction(Function f) => Pcc.getEntryOrAddImport($"{ResolveSymbol(f.Outer).InstancedFullPath}.{f.Name}", "Function");
 
-        private IEntry ResolveReturnValue(Function f) => f.ReturnType is null ? null : Pcc.getEntryOrAddImport($"{ResolveFunction(f).FullPath}.ReturnValue", PropertyTypeName(f.ReturnType));
+        private IEntry ResolveReturnValue(Function f) => f.ReturnType is null ? null : Pcc.getEntryOrAddImport($"{ResolveFunction(f).InstancedFullPath}.ReturnValue", PropertyTypeName(f.ReturnType));
 
-        private IEntry ResolveState(State s) => Pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer).FullPath}.{s.Name}", "State");
+        private IEntry ResolveState(State s) => Pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer).InstancedFullPath}.{s.Name}", "State");
 
         private IEntry ResolveClass(Class c) =>
             EntryImporter.EnsureClassIsInFile(Pcc, c.Name, RelinkResultsAvailable: relinkResults =>

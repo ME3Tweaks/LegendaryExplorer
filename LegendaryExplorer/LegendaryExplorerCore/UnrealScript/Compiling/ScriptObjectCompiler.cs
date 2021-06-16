@@ -398,13 +398,13 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 _ => throw new ArgumentOutOfRangeException(nameof(node))
             };
 
-        private static IEntry ResolveEnum(Enumeration e, IMEPackage pcc) => pcc.getEntryOrAddImport($"{ResolveSymbol(e.Outer, pcc).FullPath}.{e.Name}", "Enum");
+        private static IEntry ResolveEnum(Enumeration e, IMEPackage pcc) => pcc.getEntryOrAddImport($"{ResolveSymbol(e.Outer, pcc).InstancedFullPath}.{e.Name}", "Enum");
 
-        private static IEntry ResolveStruct(Struct s, IMEPackage pcc) => pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer, pcc).FullPath}.{s.Name}", "ScriptStruct");
+        private static IEntry ResolveStruct(Struct s, IMEPackage pcc) => pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer, pcc).InstancedFullPath}.{s.Name}", "ScriptStruct");
 
-        private static IEntry ResolveFunction(Function f, IMEPackage pcc) => pcc.getEntryOrAddImport($"{ResolveSymbol(f.Outer, pcc).FullPath}.{f.Name}", "Function");
+        private static IEntry ResolveFunction(Function f, IMEPackage pcc) => pcc.getEntryOrAddImport($"{ResolveSymbol(f.Outer, pcc).InstancedFullPath}.{f.Name}", "Function");
 
-        private static IEntry ResolveState(State s, IMEPackage pcc) => pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer, pcc).FullPath}.{s.Name}", "State");
+        private static IEntry ResolveState(State s, IMEPackage pcc) => pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer, pcc).InstancedFullPath}.{s.Name}", "State");
 
         private static IEntry ResolveClass(Class c, IMEPackage pcc) =>
             EntryImporter.EnsureClassIsInFile(pcc, c.Name, RelinkResultsAvailable: relinkResults =>

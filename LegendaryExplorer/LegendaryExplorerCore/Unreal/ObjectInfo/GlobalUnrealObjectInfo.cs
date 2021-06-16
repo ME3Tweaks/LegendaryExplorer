@@ -68,7 +68,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         /// </summary>
         /// <param name="entry"></param>
         /// <returns></returns>
-        public static bool IsAKnownNativeClass(this IEntry entry) => IsAKnownNativeClass(entry.FullPath, entry.Game);
+        public static bool IsAKnownNativeClass(this IEntry entry) => IsAKnownNativeClass(entry.InstancedFullPath, entry.Game);
 
         /// <summary>
         /// Checks if the full path name is known to be defined in native only
