@@ -174,14 +174,14 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
     public class EntryChecker
     {
         /// <summary>
-        /// Non-localized text converter
+        /// Non-localized text converter. Use if you don't want to localize the output.
         /// </summary>
         /// <param name="key"></param>
         /// <param name="parms"></param>
         /// <returns></returns>
-        public static string NonLocalizedStringConveter(string key, params string[] parms)
+        public static string NonLocalizedStringConverter(string key, params object[] parms)
         {
-            return "OK";
+            return ME3XL.GetString(key, parms);
         }
 
         public delegate string GetLocalizedStringDelegate(string str, params object[] parms);

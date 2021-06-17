@@ -1766,7 +1766,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             }
 
             ReferenceCheckPackage rcp = new ReferenceCheckPackage();
-            EntryChecker.CheckReferences(rcp, Pcc, EntryChecker.NonLocalizedStringConveter);
+            EntryChecker.CheckReferences(rcp, Pcc, EntryChecker.NonLocalizedStringConverter);
 
             if (rcp.GetSignificantIssues().Any())
             {
