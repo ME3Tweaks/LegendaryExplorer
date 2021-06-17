@@ -154,7 +154,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             // Load the default position-texture shader
             DefaultEffect = new Effect<WorldConstants, WorldVertex>(Device, EmbeddedResources.StandardShader);
 
-            TextureCache = new PreviewTextureCache(Device);
+            TextureCache = new PreviewTextureCache(this);
         }
 
         public override void CreateSizeDependentResources(int width, int height, Texture2D newBackBuffer)
@@ -204,9 +204,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             DefaultTexture.Dispose();
             SampleState.Dispose();
             DefaultEffect.Dispose();
-            BackbufferView.Dispose();
-            DepthBufferView.Dispose();
-            DepthBuffer.Dispose();
             FillRasterizerState.Dispose();
             WireframeRasterizerState.Dispose();
             base.DisposeResources();

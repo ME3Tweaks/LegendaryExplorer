@@ -103,6 +103,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private bool HasLoaded;
         private WorldMesh STMCollisionMesh;
+        private Action ViewportLoadAction = null;
 
         private void SceneContext_RenderScene(object sender, EventArgs e)
         {
@@ -354,6 +355,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             SceneContext = new SceneRenderContext();
             SceneViewer.Context = SceneContext;
             SceneContext.BackgroundColor = color is not null ? new Color(color.Value.R, color.Value.G, color.Value.B) : Color.FromRgba(0x999999);
+            SceneViewer.Loaded += (sender, args) => 
+            { 
+                this.ViewportLoadAction?.Invoke(); 
+                this.ViewportLoadAction = null; 
+            };
 
             startingUp = false;
         }
@@ -432,7 +438,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public override void LoadExport(ExportEntry exportEntry)
         {
             UnloadExport();
-            SceneViewer.InitializeD3D();
             //SceneViewer.Context.BackgroundColor = new SharpDX.Color(128, 128, 128);
             alreadyLoadedImportMaterials.Clear();
             CurrentLoadedExport = exportEntry;
@@ -664,39 +669,52 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                     if (prevTask.Result is ModelPreview.PreloadedModelData pmd)
                     {
-                        switch (pmd.meshObject)
+                        Action loadPreviewAction = () =>
                         {
-                            case StaticMesh statM:
-                                STMCollisionMesh = GetMeshFromAggGeom(statM.GetCollisionMeshProperty(Pcc));
-                                Preview = new ModelPreview(SceneContext.Device, statM, CurrentLOD, SceneContext.TextureCache, assetCache, pmd);
-                                SceneContext.Camera.FocusDepth = statM.Bounds.SphereRadius * 1.2f;
-                                break;
-                            case SkeletalMesh skm:
-                                Preview = new ModelPreview(SceneContext.Device, skm, SceneContext.TextureCache, assetCache, pmd);
-                                SceneContext.Camera.FocusDepth = skm.Bounds.SphereRadius * 1.2f;
-                                break;
-                            case StructProperty structProp: //BrushComponent
-                                Preview = new ModelPreview(SceneContext.Device, GetMeshFromAggGeom(structProp), SceneContext.TextureCache, assetCache, pmd);
-                                SceneContext.Camera.FocusDepth = Preview.LODs[0].Mesh.AABBHalfSize.Length() * 1.2f;
-                                break;
-                            case ModelComponent mc:
-                                Preview = new ModelPreview(SceneContext.Device, GetMeshFromModelComponent(mc), SceneContext.TextureCache, assetCache, pmd);
-                                //SceneViewer.Context.Camera.FocusDepth = Preview.LODs[0].Mesh.AABBHalfSize.Length() * 1.2f;
-                                break;
-                            case Model m:
-                                var sections = new List<ModelPreviewSection>();
-                                WorldMesh mesh = GetMeshFromModelSubcomponents(m, sections);
-                                pmd.sections = sections;
-                                if (mesh.Vertices.Any())
-                                {
-                                    SceneContext.Camera.Position = mesh.Vertices[0].Position;
-                                }
+                            switch (pmd.meshObject)
+                            {
+                                case StaticMesh statM:
+                                    STMCollisionMesh = GetMeshFromAggGeom(statM.GetCollisionMeshProperty(Pcc));
+                                    Preview = new ModelPreview(SceneContext.Device, statM, CurrentLOD, SceneContext.TextureCache, assetCache, pmd);
+                                    SceneContext.Camera.FocusDepth = statM.Bounds.SphereRadius * 1.2f;
+                                    break;
+                                case SkeletalMesh skm:
+                                    Preview = new ModelPreview(SceneContext.Device, skm, SceneContext.TextureCache, assetCache, pmd);
+                                    SceneContext.Camera.FocusDepth = skm.Bounds.SphereRadius * 1.2f;
+                                    break;
+                                case StructProperty structProp: //BrushComponent
+                                    Preview = new ModelPreview(SceneContext.Device, GetMeshFromAggGeom(structProp), SceneContext.TextureCache, assetCache, pmd);
+                                    SceneContext.Camera.FocusDepth = Preview.LODs[0].Mesh.AABBHalfSize.Length() * 1.2f;
+                                    break;
+                                case ModelComponent mc:
+                                    Preview = new ModelPreview(SceneContext.Device, GetMeshFromModelComponent(mc), SceneContext.TextureCache, assetCache, pmd);
+                                    //SceneViewer.Context.Camera.FocusDepth = Preview.LODs[0].Mesh.AABBHalfSize.Length() * 1.2f;
+                                    break;
+                                case Model m:
+                                    var sections = new List<ModelPreviewSection>();
+                                    WorldMesh mesh = GetMeshFromModelSubcomponents(m, sections);
+                                    pmd.sections = sections;
+                                    if (mesh.Vertices.Any())
+                                    {
+                                        SceneContext.Camera.Position = mesh.Vertices[0].Position;
+                                    }
 
-                                Preview = new ModelPreview(SceneContext.Device, mesh, SceneContext.TextureCache, assetCache, pmd);
-                                //SceneViewer.Context.Camera.FocusDepth = Preview.LODs[0].Mesh.AABBHalfSize.Length() * 1.2f;
-                                break;
+                                    Preview = new ModelPreview(SceneContext.Device, mesh, SceneContext.TextureCache, assetCache, pmd);
+                                    //SceneViewer.Context.Camera.FocusDepth = Preview.LODs[0].Mesh.AABBHalfSize.Length() * 1.2f;
+                                    break;
+                            }
+                            assetCache.Dispose();
+                        };
+
+                        // We can't call graphics methods until the render control has been loaded by WPF - only then will it have initialized D3D.
+                        if (this.SceneContext.IsReady)
+                        {
+                            loadPreviewAction.Invoke();
                         }
-                        assetCache.Dispose();
+                        else
+                        {
+                            this.ViewportLoadAction = loadPreviewAction;
+                        }
 
                         CenterView();
                         LODPicker.ClearEx();

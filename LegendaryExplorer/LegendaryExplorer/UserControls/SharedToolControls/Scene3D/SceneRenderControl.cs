@@ -5,6 +5,7 @@ using System.Windows.Input;
 using SharpDX;
 using SharpDX.Direct3D11;
 using SharpDX.Direct3D;
+using LegendaryExplorerCore.Unreal;
 
 namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 {
@@ -21,7 +22,19 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         {
             fixed (byte* pixelDataPointer = pixelData)
             {
-                return new Texture2D(renderContext.Device, new Texture2DDescription { Width = (int)width, Height = (int)height, ArraySize = 1, BindFlags = BindFlags.ShaderResource, Usage = ResourceUsage.Immutable, CpuAccessFlags = CpuAccessFlags.None, Format = format, MipLevels = 1, OptionFlags = ResourceOptionFlags.None, SampleDescription = new SharpDX.DXGI.SampleDescription(1, 0) }, new DataRectangle((IntPtr)pixelDataPointer, (int)(width * SharpDX.DXGI.FormatHelper.SizeOfInBits(format) / 8)));
+                int pitch = (int)(SharpDX.DXGI.FormatHelper.SizeOfInBits(format) * width / 8);
+                if (SharpDX.DXGI.FormatHelper.IsCompressed(format))
+                {
+                    // Pitch calculation for compressed formats from https://docs.microsoft.com/en-us/windows/win32/direct3ddds/dx-graphics-dds-pguide
+                    int blockSize = 16;
+                    if (format == SharpDX.DXGI.Format.BC1_UNorm || format == SharpDX.DXGI.Format.BC1_UNorm_SRgb
+                        || format == SharpDX.DXGI.Format.BC4_SNorm || format == SharpDX.DXGI.Format.BC4_UNorm)
+                    {
+                        blockSize = 8;
+                    }
+                    pitch = (int)(Math.Max(1, ((width + 3) / 4)) * blockSize);
+                }
+                return new Texture2D(renderContext.Device, new Texture2DDescription { Width = (int)width, Height = (int)height, ArraySize = 1, BindFlags = BindFlags.ShaderResource, Usage = ResourceUsage.Immutable, CpuAccessFlags = CpuAccessFlags.None, Format = format, MipLevels = 1, OptionFlags = ResourceOptionFlags.None, SampleDescription = new SharpDX.DXGI.SampleDescription(1, 0) }, new DataRectangle((IntPtr)pixelDataPointer, pitch));
             }
         }
 
@@ -31,6 +44,25 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             byte[] pixelData = LegendaryExplorerCore.Textures.TexConverter.LoadTexture(filename, out uint width, out uint height, ref pixelFormat);
             SharpDX.DXGI.Format format = (SharpDX.DXGI.Format)LegendaryExplorerCore.Textures.TexConverter.GetDXGIFormatForPixelFormat(pixelFormat);
             return renderContext.LoadTexture(width, height, format, pixelData);
+        }
+
+        public static Texture2D LoadUnrealMip(this RenderContext renderContext, LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo mip, LegendaryExplorerCore.Textures.PixelFormat pixelFormat)
+        {
+            var imagebytes = LegendaryExplorerCore.Unreal.Classes.Texture2D.GetTextureData(mip, mip.Export.Game);
+            uint mipWidth = (uint)mip.width;
+            uint mipHeight = (uint)mip.height;
+            SharpDX.DXGI.Format mipFormat = (SharpDX.DXGI.Format)LegendaryExplorerCore.Textures.TexConverter.GetDXGIFormatForPixelFormat(pixelFormat);
+            if (SharpDX.DXGI.FormatHelper.IsCompressed(mipFormat))
+            {
+                mipWidth = (mipWidth < 4) ? 4 : mipWidth;
+                mipHeight = (mipHeight < 4) ? 4 : mipHeight;
+            }
+            return renderContext.LoadTexture(mipWidth, mipHeight, mipFormat, imagebytes);
+        }
+
+        public static Texture2D LoadUnrealTexture(this RenderContext renderContext, LegendaryExplorerCore.Unreal.Classes.Texture2D unrealTexture)
+        {
+            return renderContext.LoadUnrealMip(unrealTexture.GetTopMip(), LegendaryExplorerCore.Textures.Image.getPixelFormatType(unrealTexture.Export.GetProperties().GetProp<EnumProperty>("Format").Value.Name));
         }
     }
 
@@ -131,6 +163,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 
         public int RenderWidth => (int)RenderSize.Width;
         public int RenderHeight => (int)RenderSize.Height;
+        public bool CaptureNextFrame { get; set; }
 
         public SceneRenderControl()
         {
@@ -139,9 +172,20 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 
         private void InitializeComponent()
         {
+            if (System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
+                return;
+
+            this.Loaded += SceneRenderControl_Loaded;
+        }
+
+        private void SceneRenderControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (this.Context.Device != null)
+                return;
+
             D3DImage = new Microsoft.Wpf.Interop.DirectX.D3D11Image
             {
-                OnRender = this.D3DImage_OnRender
+                OnRender = this._shouldRender ? this.D3DImage_OnRender : null
             };
             Image = new Image
             {
@@ -149,7 +193,10 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 VerticalAlignment = System.Windows.VerticalAlignment.Stretch,
                 Source = D3DImage
             };
-            this.AddChild(Image);
+            this.Content = Image;
+
+            this.D3DImage.WindowOwner = (new System.Windows.Interop.WindowInteropHelper(System.Windows.Window.GetWindow(this))).Handle;
+            Context.CreateResources();
 
             CompositionTarget.Rendering += CompositionTarget_Rendering;
 
@@ -174,8 +221,17 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             this.Unloaded -= SceneRenderControlWPF_Unloaded;
             this.KeyUp -= OnKeyUp;
             this.KeyDown -= OnKeyDown;
-            this.Context.DisposeSizeDependentResources();
-            this.Context.DisposeResources();
+            
+            if (this.Context.Backbuffer != null)
+                this.Context.DisposeSizeDependentResources();
+
+            if (this.Context.Device != null)
+                this.Context.DisposeResources();
+
+            this.D3DImage.Dispose();
+            this.D3DImage = null;
+            this.Image = null;
+            this.Content = null;
         }
 
         /// <summary>
@@ -183,11 +239,11 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void InitializeD3D()
+        /*public void InitializeD3D()
         {
             D3DImage.WindowOwner = (new System.Windows.Interop.WindowInteropHelper(System.Windows.Window.GetWindow(this))).Handle;
             Context.CreateResources();
-        }
+        }*/
 
         private void SceneRenderControlWPF_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
         {
@@ -202,7 +258,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             }
         }
 
-        DateTime LastUpdatedTime = DateTime.Now;
         private void D3DImage_OnRender(IntPtr surface, bool isNewSurface)
         {
             if (isNewSurface)
@@ -224,19 +279,29 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             }
             Context.Update((float)Stopwatch.Elapsed.TotalSeconds);
             Stopwatch.Restart();
-            LastUpdatedTime = DateTime.Now;
+            bool capturing = false;
+            if (this.CaptureNextFrame && RenderDoc.IsRenderDocAttached())
+            {
+                this.CaptureNextFrame = false;
+                capturing = true;
+                RenderDoc.StartCapture(this.Context.Device.NativePointer, this.D3DImage.WindowOwner);
+            }
             Context.Render();
+            if (capturing)
+            {
+                RenderDoc.EndCapture(this.Context.Device.NativePointer, this.D3DImage.WindowOwner);
+            }
         }
 
         private bool _shouldRender = true;
 
         public void SetShouldRender(bool shouldRender)
         {
-            if (!_shouldRender && shouldRender) // Not rendering, but we should start
+            if (!_shouldRender && shouldRender && D3DImage != null) // Not rendering, but we should start
             {
                 D3DImage.OnRender = D3DImage_OnRender;
             }
-            else if (_shouldRender && !shouldRender) // Currently rendering, but we should stop
+            else if (_shouldRender && !shouldRender && D3DImage != null) // Currently rendering, but we should stop
             {
                 D3DImage.OnRender = null;
             }
@@ -288,7 +353,15 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 
         public void OnKeyDown(object sender, KeyEventArgs e)
         {
-            e.Handled = Context.KeyDown(e.Key);
+            if (e.Key == Key.F11 && RenderDoc.IsRenderDocAttached())
+            {
+                this.CaptureNextFrame = true;
+                e.Handled = true;
+            }
+            else
+            {
+                e.Handled = Context.KeyDown(e.Key);
+            }
         }
 
         public void OnKeyUp(object sender, KeyEventArgs e)

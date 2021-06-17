@@ -48,6 +48,7 @@
   <ItemGroup>
     <None Remove="Dialogs\Splash\splash.png" />
     <None Remove="Resources\Images\GameIcons\UDK_48.ico" />
+    <None Remove="Resources\TextureShader.hlsl" />
     <None Remove="Tools\Icons\afccompactor_256x256.ico" />
     <None Remove="Tools\Icons\animationexplorer_256x256.ico" />
     <None Remove="Tools\Icons\animationimporter_256x256.ico" />
@@ -205,6 +206,9 @@
 	<EmbeddedResource Remove="Resources\exec\**" />
 	<None Remove="Resources\exec\**" />
 	<Page Remove="Resources\exec\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\TextureShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\StandardShader.hlsl" />

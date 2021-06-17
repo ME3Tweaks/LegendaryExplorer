@@ -95,7 +95,7 @@
 
                     </StackPanel>
                 </Expander>
-                <scene3D:SceneRenderControl Canvas.ZIndex="0"  x:Name="SceneViewer"/>
+                <scene3D:SceneRenderControl Canvas.ZIndex="0" x:Name="SceneViewer"/>
             </Grid>
         </DockPanel>
     </xctk:BusyIndicator>
