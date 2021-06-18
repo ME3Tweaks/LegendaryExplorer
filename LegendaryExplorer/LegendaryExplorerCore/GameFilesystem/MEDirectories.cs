@@ -277,8 +277,8 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// <param name="BIOGames"></param>
         public static void SaveSettings(List<string> BIOGames)
         {
-            if (BIOGames.Count != 6)
-                throw new Exception("SaveSettings() requires 6 items in the parameter");
+            if (BIOGames.Count != 4)
+                throw new Exception("SaveSettings() requires 4 items in the parameter");
             try
             {
                 if (!string.IsNullOrEmpty(BIOGames[0]))

@@ -194,7 +194,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Dialogs\Splash\splash.png" />
     <Resource Include="Tools\Icons\*.ico" />
     <Resource Include="Resources\Images\**\*.ico" />
     <Resource Include="Resources\Images\*.gif" />

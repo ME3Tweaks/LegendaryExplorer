@@ -8,7 +8,7 @@
         /// <summary>
         /// Link to the github repository for this application
         /// </summary>
-        public static string RepositoryURL => "http://github.com/ME3Tweaks/ME3Explorer/";
+        public static string RepositoryURL => "http://github.com/ME3Tweaks/LegendaryExplorer/";
 
         /// <summary>
         /// Link to the place to report issues

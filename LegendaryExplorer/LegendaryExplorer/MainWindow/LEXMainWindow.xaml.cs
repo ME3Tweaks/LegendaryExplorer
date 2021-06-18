@@ -20,6 +20,8 @@ using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorer.UnrealExtensions;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
+using LegendaryExplorerCore;
+using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 
 namespace LegendaryExplorer.MainWindow
@@ -33,6 +35,14 @@ namespace LegendaryExplorer.MainWindow
         {
             InitializeComponent();
             DataContext = this;
+
+            //Check that at least one game path is set. If none are, show the initial dialog.
+            if (!Settings.MainWindow_CompletedInitialSetup || 
+                (ME1Directory.DefaultGamePath == null && ME2Directory.DefaultGamePath == null && 
+                 ME3Directory.DefaultGamePath == null && LegendaryExplorerCoreLibSettings.Instance.LEDirectory == null))
+            {
+                new InitialSetup().ShowDialog();
+            }
 
             if (ToolSet.Items.Any((t) => t.IsFavorited))
             {

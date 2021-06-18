@@ -24,7 +24,7 @@
                 <StackPanel Orientation="Horizontal" Margin="0,5">
                             <CheckBox x:Name="MainWindow_DisableTransparencyAndAnimations" Margin="5,0"
                                       IsChecked="{Binding Path=(settings:Settings.MainWindow_DisableTransparencyAndAnimations)}"/>
-                            <TextBlock>Main Window: Disable Transparency and Animations (performance mode)</TextBlock>
+                            <TextBlock>Main Window: Disable Transparency and Animations (requires restart)</TextBlock>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,5">
                             <CheckBox x:Name="Global_Analytics_Enabled" Margin="5,0"

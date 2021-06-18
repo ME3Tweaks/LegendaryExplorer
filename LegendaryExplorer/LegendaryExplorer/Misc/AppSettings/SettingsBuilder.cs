@@ -23,6 +23,11 @@ namespace LegendaryExplorer.Misc.AppSettings
             get => _mainwindow_favorites; 
             set => SetProperty(ref _mainwindow_favorites, value);
         }
+        private static bool _mainwindow_completedinitialsetup = false; 
+        public static bool MainWindow_CompletedInitialSetup {
+            get => _mainwindow_completedinitialsetup; 
+            set => SetProperty(ref _mainwindow_completedinitialsetup, value);
+        }
         private static bool _packageeditor_hideinterpreterhexbox = true; 
         public static bool PackageEditor_HideInterpreterHexBox {
             get => _packageeditor_hideinterpreterhexbox; 
@@ -274,6 +279,7 @@ namespace LegendaryExplorer.Misc.AppSettings
                 : new Dictionary<string, string>();
             MainWindow_DisableTransparencyAndAnimations = TryGetSetting(settingsJson, "mainwindow_disabletransparencyandanimations", false);
             MainWindow_Favorites = TryGetSetting(settingsJson, "mainwindow_favorites", "");
+            MainWindow_CompletedInitialSetup = TryGetSetting(settingsJson, "mainwindow_completedinitialsetup", false);
             PackageEditor_HideInterpreterHexBox = TryGetSetting(settingsJson, "packageeditor_hideinterpreterhexbox", true);
             PackageEditor_TouchComfyMode = TryGetSetting(settingsJson, "packageeditor_touchcomfymode", false);
             PackageEditor_ShowImpExpPrefix = TryGetSetting(settingsJson, "packageeditor_showimpexpprefix", true);
@@ -341,6 +347,7 @@ namespace LegendaryExplorer.Misc.AppSettings
             var settingsJson = new Dictionary<string,string>();
             settingsJson["mainwindow_disabletransparencyandanimations"] = MainWindow_DisableTransparencyAndAnimations.ToString();
             settingsJson["mainwindow_favorites"] = MainWindow_Favorites.ToString();
+            settingsJson["mainwindow_completedinitialsetup"] = MainWindow_CompletedInitialSetup.ToString();
             settingsJson["packageeditor_hideinterpreterhexbox"] = PackageEditor_HideInterpreterHexBox.ToString();
             settingsJson["packageeditor_touchcomfymode"] = PackageEditor_TouchComfyMode.ToString();
             settingsJson["packageeditor_showimpexpprefix"] = PackageEditor_ShowImpExpPrefix.ToString();

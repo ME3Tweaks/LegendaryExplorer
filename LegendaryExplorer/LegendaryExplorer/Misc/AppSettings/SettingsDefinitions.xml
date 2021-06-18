@@ -8,8 +8,9 @@
 
   <!-- Main Window Settings-->
   <setting name="MainWindow_DisableTransparencyAndAnimations" type="bool" defaultvalue="false" category="General"
-           friendlyName="Main Window: Disable Transparency and Animations (performance mode)"/>
+           friendlyName="Main Window: Disable Transparency and Animations (requires restart)"/>
   <setting name="MainWindow_Favorites" type="string" defaultvalue=""/>
+  <setting name="MainWindow_CompletedInitialSetup" type="bool" defaultvalue="false"/>
 
   <!-- Package Editor specific settings -->
   <setting name="PackageEditor_HideInterpreterHexBox" type="bool" defaultvalue="true" category="Package Editor"

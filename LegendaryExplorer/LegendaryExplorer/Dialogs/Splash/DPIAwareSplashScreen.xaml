@@ -13,7 +13,7 @@
             <RowDefinition Height="*"/>
             <!--<RowDefinition Height="38"/>-->
         </Grid.RowDefinitions>
-        <Image Grid.Row="0" Source="pack://application:,,,/Dialogs/Splash/splash.png"/>
+        <Image Grid.Row="0" Source="pack://application:,,,/Resources/Images/splash.png"/>
         <!--<TextBlock Text="{Binding SplashScreenText}" Margin="9,0" Grid.Row="1"/>-->
     </Grid>
 </bases:TrackingNotifyPropertyChangedWindowBase>
