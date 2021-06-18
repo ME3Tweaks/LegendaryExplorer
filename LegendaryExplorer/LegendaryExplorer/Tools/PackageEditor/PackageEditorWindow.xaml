@@ -82,6 +82,13 @@
                 <MenuItem Header="Complete export data"  Command="{Binding ImportAllDataCommand}" ToolTip="Import a .bin file and replace the contents of this export"/>
                 <MenuItem Header="Binary data only"  Command="{Binding ImportBinaryDataCommand}" ToolTip="Import a .bin file and replace only the binary section of this export"/>
             </MenuItem>
+            <Separator Visibility="{Binding ShowExperiments, Converter={StaticResource BoolToVisibilityConverter}}"/>
+            <MenuItem 
+                Header="Generate MD5 of export"
+                ToolTip="Generates an MD5 of this exports data. Use by external modding tools to verify target data before modification"
+                Command="{Binding CalculateExportMD5Command}"
+                Visibility="{Binding ShowExperiments, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
         </ContextMenu>
     </Window.Resources>
     <Window.InputBindings>

@@ -5,6 +5,8 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -219,9 +221,11 @@ namespace LegendaryExplorer.Tools.PackageEditor
         public ICommand PackageExportIsSelectedCommand { get; set; }
         public ICommand ReindexDuplicateIndexesCommand { get; set; }
         public ICommand ReplaceReferenceLinksCommand { get; set; }
+        public ICommand CalculateExportMD5Command { get; set; }
 
         private void LoadCommands()
         {
+            CalculateExportMD5Command = new GenericCommand(CalculateExportMD5, ExportIsSelected);
             ForceReloadPackageCommand = new GenericCommand(ForceReloadPackageWithoutSharing, CanForceReload);
             CompareToUnmoddedCommand = new GenericCommand(CompareUnmodded, CanCompareToUnmodded);
             ComparePackagesCommand = new GenericCommand(ComparePackages, PackageIsLoaded);
@@ -282,6 +286,18 @@ namespace LegendaryExplorer.Tools.PackageEditor
             RestoreExportCommand = new GenericCommand(RestoreExportData, ExportIsSelected);
             OpenLEVersionCommand = new GenericCommand(() => OpenOtherVersion(true), IsLoadedPackageOT);
             OpenOTVersionCommand = new GenericCommand(() => OpenOtherVersion(false), IsLoadedPackageLE);
+        }
+
+        private void CalculateExportMD5()
+        {
+            if (TryGetSelectedExport(out var ee))
+            {
+                var hash = MD5.Create().ComputeHash(ee.Data);
+                StringBuilder result = new StringBuilder(hash.Length * 2);
+                for (int i = 0; i < hash.Length; i++)
+                    result.Append(hash[i].ToString("x2"));
+                Clipboard.SetText(result.ToString());
+            }
         }
 
         private bool CanForceReload() => App.IsDebug && PackageIsLoaded();
@@ -3221,7 +3237,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     // (it will just install into an existing entry)
                     var result = MessageBox.Show("The item being ported in has the same full path as an object in the target package. " +
                                                  "This will cause issues in the game as well as with the toolset if the imported object is not renamed beforehand or has its index changed.\n\n" +
-                                                 "Legendary Explorer will automatically adjust the index for you. You may need to adjust it back after changing the name.", "Indexing issues", 
+                                                 "Legendary Explorer will automatically adjust the index for you. You may need to adjust it back after changing the name.", "Indexing issues",
                                                  MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.Cancel);
                     if (result == MessageBoxResult.Cancel)
                     {
