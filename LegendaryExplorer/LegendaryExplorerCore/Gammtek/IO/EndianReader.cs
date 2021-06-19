@@ -639,27 +639,18 @@ namespace LegendaryExplorerCore.Gammtek.IO
 
         #region BITCONVERTER STATIC METHODS
 
-        public static float ToSingle(byte[] buffer, int offset, Endian endianness)
-        {
-            if (!endianness.IsNative)
-            {
-                return BitConverter.Int32BitsToSingle(BinaryPrimitives.ReverseEndianness(BitConverter.ToInt32(buffer, offset)));
-            }
-            return BitConverter.ToSingle(buffer, offset);
-        }
-
         public static float ToSingle(ReadOnlySpan<byte> buffer, int offset, Endian endianness)
         {
             if (!endianness.IsNative)
             {
-                return BitConverter.Int32BitsToSingle(BinaryPrimitives.ReverseEndianness(BitConverter.ToInt32(buffer.Slice(offset))));
+                return BitConverter.Int32BitsToSingle(BinaryPrimitives.ReverseEndianness(MemoryMarshal.Read<int>(buffer.Slice(offset))));
             }
-            return BitConverter.ToSingle(buffer.Slice(offset));
+            return MemoryMarshal.Read<float>(buffer.Slice(offset));
         }
 
         public static ushort ToUInt16(ReadOnlySpan<byte> buffer, int offset, Endian endianness)
         {
-            var readMagic = BitConverter.ToUInt16(buffer.Slice(offset));
+            var readMagic = MemoryMarshal.Read<ushort>(buffer.Slice(offset));
             if (!endianness.IsNative)
             {
                 //swap
@@ -668,24 +659,9 @@ namespace LegendaryExplorerCore.Gammtek.IO
             return readMagic;
         }
 
-        public static ushort ToUInt16(byte[] buffer, int offset, Endian endianness)
+        public static ushort ToUInt16(ReadOnlySpan<byte> buffer, Endian endianness)
         {
-            var readMagic = BitConverter.ToUInt16(buffer, offset);
-            if (!endianness.IsNative)
-            {
-                //swap
-                return BinaryPrimitives.ReverseEndianness(readMagic);
-            }
-            return readMagic;
-        }
-
-        /// <summary>
-        /// Reads an int32 from the buffer at the specified position with the specified endianness.
-        /// </summary>
-        /// <returns></returns>
-        public static int ToInt32(byte[] buffer, int offset, Endian endianness)
-        {
-            var readMagic = BitConverter.ToInt32(buffer, offset);
+            var readMagic = MemoryMarshal.Read<ushort>(buffer);
             if (!endianness.IsNative)
             {
                 //swap
@@ -700,7 +676,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
         /// <returns></returns>
         public static int ToInt32(ReadOnlySpan<byte> buffer, int offset, Endian endianness)
         {
-            var readMagic = BitConverter.ToInt32(buffer.Slice(offset));
+            var readMagic = MemoryMarshal.Read<int>(buffer.Slice(offset));
             if (!endianness.IsNative)
             {
                 //swap
@@ -710,27 +686,12 @@ namespace LegendaryExplorerCore.Gammtek.IO
         }
 
         /// <summary>
-        /// Reads an int32 from the span.
+        /// Reads an int32 from the span with the specified endianness.
         /// </summary>
         /// <returns></returns>
         public static int ToInt32(ReadOnlySpan<byte> buffer, Endian endianness)
         {
-            var readMagic = BitConverter.ToInt32(buffer);
-            if (!endianness.IsNative)
-            {
-                //swap
-                return BinaryPrimitives.ReverseEndianness(readMagic);
-            }
-            return readMagic;
-        }
-
-        /// <summary>
-        /// Reads an int16 from the buffer at the specified position with the specified endianness.
-        /// </summary>
-        /// <returns></returns>
-        public static short ToInt16(byte[] buffer, int offset, Endian endianness)
-        {
-            var readMagic = BitConverter.ToInt16(buffer, offset);
+            var readMagic = MemoryMarshal.Read<int>(buffer);
             if (!endianness.IsNative)
             {
                 //swap
@@ -745,7 +706,23 @@ namespace LegendaryExplorerCore.Gammtek.IO
         /// <returns></returns>
         public static short ToInt16(ReadOnlySpan<byte> buffer, int offset, Endian endianness)
         {
-            var readMagic = BitConverter.ToInt16(buffer.Slice(offset));
+            var readMagic = MemoryMarshal.Read<short>(buffer.Slice(offset));
+            if (!endianness.IsNative)
+            {
+                //swap
+                return BinaryPrimitives.ReverseEndianness(readMagic);
+            }
+
+            return readMagic;
+        }
+
+        /// <summary>
+        /// Reads an int16 from the span with the specified endianness.
+        /// </summary>
+        /// <returns></returns>
+        public static short ToInt16(ReadOnlySpan<byte> buffer, Endian endianness)
+        {
+            var readMagic = MemoryMarshal.Read<short>(buffer);
             if (!endianness.IsNative)
             {
                 //swap
@@ -759,9 +736,9 @@ namespace LegendaryExplorerCore.Gammtek.IO
         /// Reads an uint32 from the buffer at the specified position with the specified endianness.
         /// </summary>
         /// <returns></returns>
-        public static uint ToUInt32(byte[] buffer, int offset, Endian endianness)
+        public static uint ToUInt32(ReadOnlySpan<byte> buffer, int offset, Endian endianness)
         {
-            var readMagic = BitConverter.ToUInt32(buffer, offset);
+            var readMagic = MemoryMarshal.Read<uint>(buffer.Slice(offset));
             if (!endianness.IsNative)
             {
                 //swap
@@ -771,12 +748,42 @@ namespace LegendaryExplorerCore.Gammtek.IO
         }
 
         /// <summary>
-        /// Reads an uint64 from the buffer at the specified position with the specified endianness.
+        /// Reads an uint32 from the span with the specified endianness.
         /// </summary>
         /// <returns></returns>
-        public static ulong ToUInt64(byte[] buffer, int offset, Endian endianness)
+        public static uint ToUInt32(ReadOnlySpan<byte> buffer, Endian endianness)
         {
-            var readMagic = BitConverter.ToUInt64(buffer, offset);
+            var readMagic = MemoryMarshal.Read<uint>(buffer);
+            if (!endianness.IsNative)
+            {
+                //swap
+                return BinaryPrimitives.ReverseEndianness(readMagic);
+            }
+            return readMagic;
+        }
+
+        /// <summary>
+        /// Reads a ulong from the buffer at the specified position with the specified endianness.
+        /// </summary>
+        /// <returns></returns>
+        public static ulong ToUInt64(ReadOnlySpan<byte> buffer, int offset, Endian endianness)
+        {
+            var readMagic = MemoryMarshal.Read<ulong>(buffer.Slice(offset));
+            if (!endianness.IsNative)
+            {
+                //swap
+                return BinaryPrimitives.ReverseEndianness(readMagic);
+            }
+            return readMagic;
+        }
+
+        /// <summary>
+        /// Reads a ulong from the span with the specified endianness.
+        /// </summary>
+        /// <returns></returns>
+        public static ulong ToUInt64(ReadOnlySpan<byte> buffer, Endian endianness)
+        {
+            var readMagic = MemoryMarshal.Read<ulong>(buffer);
             if (!endianness.IsNative)
             {
                 //swap
@@ -806,21 +813,6 @@ namespace LegendaryExplorerCore.Gammtek.IO
                     span[14],
                     span[15]);
             }
-        }
-
-        /// <summary>
-        /// Reads an ulong from the buffer at the specified position with the specified endianness.
-        /// </summary>
-        /// <returns></returns>
-        public static ulong ToUInt64(ReadOnlySpan<byte> buffer, int offset, Endian endianness)
-        {
-            var readMagic = BitConverter.ToUInt64(buffer.Slice(offset));
-            if (!endianness.IsNative)
-            {
-                //swap
-                return BinaryPrimitives.ReverseEndianness(readMagic);
-            }
-            return readMagic;
         }
 
         #endregion

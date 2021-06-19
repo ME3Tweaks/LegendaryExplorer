@@ -33,7 +33,8 @@ namespace LegendaryExplorerCore.Unreal
                 if (Number > 0)
                 {
                     int n = Number - 1;
-                    return string.Create(Name.Length + 1 + n.NumDigits(), (Name, n), (span, nameRef) =>
+                    int numDigits = Name.Length + 1 + (n < 100000 ? n < 100 ? n < 10 ? 1 : 2 : n < 1000 ? 3 : n < 10000 ? 4 : 5 : n < 10000000 ? n < 1000000 ? 6 : 7 : n < 100000000 ? 8 : n < 1000000000 ? 9 : 10);
+                    return string.Create(numDigits, (Name, n), (span, nameRef) =>
                     {
                         ReadOnlySpan<char> nameSpan = nameRef.Name.AsSpan();
                         nameSpan.CopyTo(span);
@@ -55,12 +56,12 @@ namespace LegendaryExplorerCore.Unreal
         public string AddToPath(string parentPath)
         {
             int n = Number - 1;
-            int numDigits = parentPath.Length + Name.Length + 1;
+            int length = parentPath.Length + Name.Length + 1;
             if (Number > 0)
             {
-                numDigits += 1 + n.NumDigits();
+                length += 1 + (n < 100000 ? n < 100 ? n < 10 ? 1 : 2 : n < 1000 ? 3 : n < 10000 ? 4 : 5 : n < 10000000 ? n < 1000000 ? 6 : 7 : n < 100000000 ? 8 : n < 1000000000 ? 9 : 10);
             }
-            return string.Create(numDigits, (parentPath, Name, n), (span, tuple) =>
+            return string.Create(length, (parentPath, Name, n), (span, tuple) =>
             {
                 ReadOnlySpan<char> parentSpan = tuple.parentPath.AsSpan();
                 int parentLength = parentSpan.Length;

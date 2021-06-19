@@ -304,7 +304,7 @@ namespace LegendaryExplorerCore.Packages
 
         public int idxClass
         {
-            get => EndianReader.ToInt32(_header, OFFSET_idxClass, FileRef.Endian);
+            get => EndianReader.ToInt32(_header.AsSpan(OFFSET_idxClass), FileRef.Endian);
             private set
             {
                 EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_idxClass), FileRef.Endian);
@@ -314,7 +314,7 @@ namespace LegendaryExplorerCore.Packages
 
         public int idxSuperClass
         {
-            get => EndianReader.ToInt32(_header, OFFSET_idxSuperClass, FileRef.Endian);
+            get => EndianReader.ToInt32(_header.AsSpan(OFFSET_idxSuperClass), FileRef.Endian);
             private set
             {
                 // 0 check for setup
@@ -329,7 +329,7 @@ namespace LegendaryExplorerCore.Packages
 
         public int idxLink
         {
-            get => EndianReader.ToInt32(_header, OFFSET_idxLink, FileRef.Endian);
+            get => EndianReader.ToInt32(_header.AsSpan(OFFSET_idxLink), FileRef.Endian);
             set
             {
                 // HeaderOffset = 0 means this was instantiated and not read in from a stream
@@ -345,7 +345,7 @@ namespace LegendaryExplorerCore.Packages
 
         private int idxObjectName
         {
-            get => EndianReader.ToInt32(_header, OFFSET_idxObjectName, FileRef.Endian);
+            get => EndianReader.ToInt32(_header.AsSpan(OFFSET_idxObjectName), FileRef.Endian);
             set
             {
                 EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_idxObjectName), FileRef.Endian);
@@ -356,7 +356,7 @@ namespace LegendaryExplorerCore.Packages
 
         public int indexValue
         {
-            get => EndianReader.ToInt32(_header, OFFSET_indexValue, FileRef.Endian);
+            get => EndianReader.ToInt32(_header.AsSpan(OFFSET_indexValue), FileRef.Endian);
             set
             {
                 if (indexValue != value)
@@ -370,7 +370,7 @@ namespace LegendaryExplorerCore.Packages
 
         public int idxArchetype
         {
-            get => EndianReader.ToInt32(_header, OFFSET_idxArchetype, FileRef.Endian);
+            get => EndianReader.ToInt32(_header.AsSpan(OFFSET_idxArchetype), FileRef.Endian);
             private set
             {
                 EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_idxArchetype), FileRef.Endian);
@@ -380,7 +380,7 @@ namespace LegendaryExplorerCore.Packages
 
         public EObjectFlags ObjectFlags
         {
-            get => (EObjectFlags)EndianReader.ToUInt64(_header, OFFSET_ObjectFlags, FileRef.Endian);
+            get => (EObjectFlags)EndianReader.ToUInt64(_header.AsSpan(OFFSET_ObjectFlags), FileRef.Endian);
             set
             {
                 EndianBitConverter.WriteAsBytes((ulong)value, _header.AsSpan(OFFSET_ObjectFlags), FileRef.Endian);
@@ -390,13 +390,13 @@ namespace LegendaryExplorerCore.Packages
 
         public int DataSize
         {
-            get => EndianReader.ToInt32(_header, OFFSET_DataSize, FileRef.Endian);
+            get => EndianReader.ToInt32(_header.AsSpan(OFFSET_DataSize), FileRef.Endian);
             private set => EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_DataSize), FileRef.Endian);
         }
 
         public int DataOffset
         {
-            get => EndianReader.ToInt32(_header, OFFSET_DataOffset, FileRef.Endian);
+            get => EndianReader.ToInt32(_header.AsSpan(OFFSET_DataOffset), FileRef.Endian);
             set => EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_DataOffset), FileRef.Endian);
         }
 
@@ -430,7 +430,7 @@ namespace LegendaryExplorerCore.Packages
 
         public EExportFlags ExportFlags
         {
-            get => (EExportFlags)EndianReader.ToUInt32(_header, ExportFlagsOffset, FileRef.Endian);
+            get => (EExportFlags)EndianReader.ToUInt32(_header.AsSpan(ExportFlagsOffset), FileRef.Endian);
             set
             {
                 EndianBitConverter.WriteAsBytes((uint)value, _header.AsSpan(ExportFlagsOffset), FileRef.Endian);
@@ -442,18 +442,18 @@ namespace LegendaryExplorerCore.Packages
         {
             get
             {
-                int count = EndianReader.ToInt32(_header, ExportFlagsOffset + 4, FileRef.Endian);
+                int count = EndianReader.ToInt32(_header.AsSpan(ExportFlagsOffset + 4), FileRef.Endian);
                 var result = new int[count];
                 for (int i = 0; i < count; i++)
                 {
-                    result[i] = EndianReader.ToInt32(_header, ExportFlagsOffset + 8 + i * 4, FileRef.Endian);
+                    result[i] = EndianReader.ToInt32(_header.AsSpan(ExportFlagsOffset + 8 + i * 4), FileRef.Endian);
                 }
                 return result;
             }
             set => RegenerateHeader(null, value);
         }
 
-        public int PackageGuidOffset => ExportFlagsOffset + 8 + EndianReader.ToInt32(_header, ExportFlagsOffset + 4, FileRef.Endian) * 4;
+        public int PackageGuidOffset => ExportFlagsOffset + 8 + EndianReader.ToInt32(_header.AsSpan(ExportFlagsOffset + 4), FileRef.Endian) * 4;
 
         public Guid PackageGUID
         {
@@ -467,7 +467,7 @@ namespace LegendaryExplorerCore.Packages
 
         public EPackageFlags PackageFlags
         {
-            get => (EPackageFlags)EndianReader.ToUInt32(_header, PackageGuidOffset + 16, FileRef.Endian);
+            get => (EPackageFlags)EndianReader.ToUInt32(_header.AsSpan(PackageGuidOffset + 16), FileRef.Endian);
             set
             {
                 EndianBitConverter.WriteAsBytes((uint)value, _header.AsSpan(PackageGuidOffset + 16), FileRef.Endian);

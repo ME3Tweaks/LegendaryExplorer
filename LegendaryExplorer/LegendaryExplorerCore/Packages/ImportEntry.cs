@@ -95,7 +95,7 @@ namespace LegendaryExplorerCore.Packages
 
         private int idxPackageFile
         {
-            get => EndianReader.ToInt32(_header, OFFSET_idxPackageFile, FileRef.Endian);
+            get => EndianReader.ToInt32(_header.AsSpan(OFFSET_idxPackageFile), FileRef.Endian);
             set
             {
                 EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_idxPackageFile), FileRef.Endian);
@@ -105,7 +105,7 @@ namespace LegendaryExplorerCore.Packages
         //int PackageNameNumber
         private int idxClassName
         {
-            get => EndianReader.ToInt32(_header, OFFSET_idxClassName, FileRef.Endian);
+            get => EndianReader.ToInt32(_header.AsSpan(OFFSET_idxClassName), FileRef.Endian);
             set
             {
                 EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_idxClassName), FileRef.Endian);
@@ -115,7 +115,7 @@ namespace LegendaryExplorerCore.Packages
         //int ClassNameNumber
         public int idxLink
         {
-            get => EndianReader.ToInt32(_header, OFFSET_idxLink, FileRef.Endian);
+            get => EndianReader.ToInt32(_header.AsSpan(OFFSET_idxLink), FileRef.Endian);
             set
             {
                 // HeaderOffset = 0 means this was instantiated and not read in from a stream
@@ -130,7 +130,7 @@ namespace LegendaryExplorerCore.Packages
         }
         private int idxObjectName
         {
-            get => EndianReader.ToInt32(_header, OFFSET_idxObjectName, FileRef.Endian);
+            get => EndianReader.ToInt32(_header.AsSpan(OFFSET_idxObjectName), FileRef.Endian);
             set
             {
                 EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_idxObjectName), FileRef.Endian);
@@ -140,7 +140,7 @@ namespace LegendaryExplorerCore.Packages
         }
         public int indexValue
         {
-            get => EndianReader.ToInt32(_header, OFFSET_indexValue, FileRef.Endian);
+            get => EndianReader.ToInt32(_header.AsSpan(OFFSET_indexValue), FileRef.Endian);
             set
             {
                 EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_indexValue), FileRef.Endian);

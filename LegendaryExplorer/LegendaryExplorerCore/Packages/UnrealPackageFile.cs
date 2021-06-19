@@ -372,6 +372,8 @@ namespace LegendaryExplorerCore.Packages
                     }
                 }
             }
+
+            lookupTableNeedsToBeRegenerated = false;
         }
 
         public ImportEntry GetImport(int uIndex) => imports[Math.Abs(uIndex) - 1];
