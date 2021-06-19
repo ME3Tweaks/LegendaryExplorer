@@ -15,8 +15,6 @@ namespace LegendaryExplorerCore.Unreal
         private const int Magic = 0x434F4E44;
         private const int Version = 1;
 
-        private short unk1; //TODO: figure out what this is
-
         public List<ConditionalEntry> ConditionalEntries;
 
         public string FilePath;
@@ -34,7 +32,9 @@ namespace LegendaryExplorerCore.Unreal
                 throw new Exception($"Wrong file version! Expected '{Version}', got '{version}'");
             }
 
-            unk1 = stream.ReadInt16();
+            //count of serialized conditional bodies. Conditionals with identical bytecode can share the same serialized bytecode,
+            //so this can be less than the entryCount. We don't need to know it for deserializing 
+            stream.SkipInt16(); 
 
             int entryCount = stream.ReadInt16();
 
@@ -73,7 +73,7 @@ namespace LegendaryExplorerCore.Unreal
         {
             stream.WriteInt32(Magic);
             stream.WriteInt32(Version);
-            stream.WriteInt16(unk1);
+            stream.WriteUInt16((ushort)ConditionalEntries.Count);
             stream.WriteUInt16((ushort)ConditionalEntries.Count);
 
             //This works, but is not the saving method bioware used.
