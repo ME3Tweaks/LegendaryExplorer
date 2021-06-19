@@ -73,7 +73,7 @@ namespace LegendaryExplorerCore.Unreal
         {
             stream.WriteInt32(Magic);
             stream.WriteInt32(Version);
-            stream.WriteUInt16((ushort)ConditionalEntries.Count);
+            stream.WriteUInt16((ushort)ConditionalEntries.Count); // Serialized count. We don't save like BW, so this will always be the same as the amount of conditionals.
             stream.WriteUInt16((ushort)ConditionalEntries.Count);
 
             //This works, but is not the saving method bioware used.
