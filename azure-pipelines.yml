@@ -22,6 +22,12 @@ variables:
   disable.coverage.autogenerate: 'true'
 
 steps:
+# DEBUG for Find Text Transform
+- task: BatchScript@1
+  inputs:
+    filename: 'tree "C:\Program Files"'
+    arguments: '/F /A'
+
 # Change artifact name when the version major/minor changes
 - task: PowerShell@2
   displayName: 'Prepare for pipeline build'
