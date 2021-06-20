@@ -23,9 +23,9 @@ variables:
 
 steps:
 # DEBUG for Find Text Transform
-- task: CmdLine@2
-  inputs:
-    script: 'tree "C:\Program Files (x86)\Microsoft Visual Studio" /F /A'
+#- task: CmdLine@2
+#  inputs:
+#    script: 'tree "C:\Program Files (x86)\Microsoft Visual Studio" /F /A'
 
 # Change artifact name when the version major/minor changes
 - task: PowerShell@2
@@ -144,7 +144,7 @@ steps:
 # Notify ME3Tweaks that a new beta build has been built
 - task: PowerShell@2
   displayName: 'Notify ME3Tweaks'
-  condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'Beta'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'net5'))
   inputs:
     targetType: 'inline'
     script: |
@@ -155,7 +155,7 @@ steps:
 # NOT PULL REQUEST DISCORD WEBHOOK
 - task: ado-discord-webhook@1
   displayName: 'Discord - New official nightly'
-  condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'Beta'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'net5'))
   inputs:
     channelId: '$(discord_channel_id)'
     webhookKey: '$(discord_webhook_key)'
