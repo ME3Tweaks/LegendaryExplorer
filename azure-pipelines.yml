@@ -23,10 +23,9 @@ variables:
 
 steps:
 # DEBUG for Find Text Transform
-- task: BatchScript@1
+- task: CmdLine@2
   inputs:
-    filename: 'tree "C:\Program Files"'
-    arguments: '/F /A'
+    script: 'tree "C:\Program Files" /F /A'
 
 # Change artifact name when the version major/minor changes
 - task: PowerShell@2
