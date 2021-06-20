@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
@@ -11,7 +10,7 @@
     <DebugSymbols>true</DebugSymbols>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
     <PreserveCompilationContext>false</PreserveCompilationContext>
-    <AssemblyVersion>6.0</AssemblyVersion>
+    <Version>6.0</Version>
   </PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='WinDebug'">
