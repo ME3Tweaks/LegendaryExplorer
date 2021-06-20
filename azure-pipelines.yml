@@ -51,7 +51,7 @@ steps:
       $xml.Save(".\LegendaryExplorer\LegendaryExplorerCore\LegendaryExplorerCore.csproj")
 
       # Set version (LEX)
-      $xml = [xml](Get-Content .\LegendaryExplorer\LegendaryExplorer\LegendaryExplorerC.csproj)
+      $xml = [xml](Get-Content .\LegendaryExplorer\LegendaryExplorer\LegendaryExplorer.csproj)
       $xml.Project.PropertyGroup[0].Version = $ver.ToString() #Hopefully nobody re-organizes the csproj!
       $xml.Save(".\LegendaryExplorer\LegendaryExplorer\LegendaryExplorerCore.csproj")
 
