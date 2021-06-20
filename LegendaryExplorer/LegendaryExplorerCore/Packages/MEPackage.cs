@@ -147,7 +147,6 @@ namespace LegendaryExplorerCore.Packages
         private uint packageSource;
         private int unknown4;
         private int unknown6;
-        private int unknown7;
         #endregion
 
         private static bool isLoaderRegistered;
@@ -444,7 +443,7 @@ namespace LegendaryExplorerCore.Packages
             }
 
             unknown6 = packageReader.ReadInt32(); // Build 
-            unknown7 = packageReader.ReadInt32(); // Branch - always -1 in ME1 and ME2, always 145358848 in ME3
+            packageReader.SkipInt32(); // Branch
 
             if (Game == MEGame.ME1 && Platform != GamePlatform.PS3)
             {
@@ -695,207 +694,6 @@ namespace LegendaryExplorerCore.Packages
         }
 
         /// <summary>
-        /// Compresses a package's uncompressed stream to a compressed stream and returns it.
-        /// Obsolete now. Delete in the future if saveCompressed doesn't have unforeseen problems.
-        /// </summary>
-        /// <param name="package"></param>
-        /// <param name="uncompressedStream"></param>
-        /// <returns></returns>
-        [Obsolete]
-        private static MemoryStream compressUncompressedPackageStream(MEPackage package, MemoryStream uncompressedStream, bool includeAdditionalPackageToCook = true)
-        {
-            uncompressedStream.Position = 0;
-
-            //very rough estimate, better to err on the high side though. If the estimate is slightly too low, it will end up allocating an array almost twice as big as needed
-            //TODO: scan through all files, per compression type, to come up with a better estimate
-            int compressedLengthEstimate = (int)(uncompressedStream.Length / 3.5);
-            MemoryStream compressedStream = MemoryManager.GetMemoryStream(compressedLengthEstimate);
-
-            var chunks = new List<CompressionHelper.Chunk>();
-            var compressionType = package.Game switch
-            {
-                MEGame.ME3 => CompressionType.Zlib,
-                MEGame.LE1 => CompressionType.OodleLeviathan,
-                MEGame.LE2 => CompressionType.OodleLeviathan,
-                MEGame.LE3 => CompressionType.OodleLeviathan,
-                _ => CompressionType.LZO
-            };
-
-            var maxBlockSize = package.Game.IsOTGame() ? CompressionHelper.MAX_BLOCK_SIZE_OT : CompressionHelper.MAX_BLOCK_SIZE_LE;
-
-            //Compression format:
-            //uint ChunkMetaDataTableCount (chunk table)
-
-            //CHUNK METADATA TABLE ENTRIES:
-            //uint UncompressedOffset
-            //uint UncompressedSize
-            //uint CompressedOffset
-            //uint CompressedSize
-            //
-            // After ChunkMetaDataTableCount * 16 bytes the chunk blocks begin
-            // Each chunk block has it's own block header specifying the uncompressed and compressed size of the block.
-            //
-
-            //Tables chunk
-            var chunk = new CompressionHelper.Chunk
-            {
-                uncompressedSize = package.FullHeaderSize - package.NameOffset,
-                uncompressedOffset = package.NameOffset
-            };
-
-            #region DEBUG STUFF
-            //string firstElement = "Tables";
-            //string lastElement = firstElement;
-
-            //MemoryStream m2 = new MemoryStream();
-            //long pos = uncompressedStream.Position;
-            //uncompressedStream.Position = NameOffset;
-            //m2.WriteFromStream(uncompressedStream, chunk.uncompressedSize);
-            //uncompressedStream.Position = pos;
-            #endregion
-
-            //Export data chunks
-            int chunkNum = 0;
-            //Debug.WriteLine($"Exports start at {Exports[0].DataOffset}");
-            foreach (ExportEntry e in package.Exports)
-            {
-                if (chunk.uncompressedSize + e.DataSize > CompressionHelper.MAX_CHUNK_SIZE)
-                {
-                    //Rollover to the next chunk as this chunk would be too big if we tried to put this export into the chunk
-                    chunks.Add(chunk);
-                    //Debug.WriteLine($"Chunk {chunkNum} ({chunk.uncompressedSize} bytes) contains {firstElement} to {lastElement} - 0x{chunk.uncompressedOffset:X6} to 0x{(chunk.uncompressedSize + chunk.uncompressedOffset):X6}");
-                    chunkNum++;
-                    chunk = new CompressionHelper.Chunk
-                    {
-                        uncompressedSize = e.DataSize,
-                        uncompressedOffset = e.DataOffset
-                    };
-                }
-                else
-                {
-                    chunk.uncompressedSize += e.DataSize; //This chunk can fit this export
-                }
-            }
-            //Debug.WriteLine($"Chunk {chunkNum} contains {firstElement} to {lastElement}");
-            chunks.Add(chunk);
-
-            //Rewrite header with chunk table information so we can position the data blocks after table
-            compressedStream.Position = 0;
-            package.WriteHeader(compressedStream, compressionType, chunks, includeAdditionalPackageToCook: includeAdditionalPackageToCook);
-            //MemoryStream m1 = new MemoryStream();
-            var compressionOutputSize = compressionType switch
-            {
-                CompressionType.Zlib => Zlib.GetCompressionBound(maxBlockSize),
-                CompressionType.LZO => LZO2.GetCompressionBound(maxBlockSize),
-                CompressionType.OodleLeviathan => OodleHelper.GetCompressionBound(maxBlockSize),
-                _ => throw new Exception("Internal error: Unsupported compression type for compressing blocks: " + compressionType)
-            };
-            var rentedOutputArrays = new List<byte[]>
-            {
-                MemoryManager.GetByteArray(compressionOutputSize),
-                MemoryManager.GetByteArray(compressionOutputSize),
-                MemoryManager.GetByteArray(compressionOutputSize),
-                MemoryManager.GetByteArray(compressionOutputSize),
-            };
-            var rentedInputArrays = new List<byte[]>
-            {
-                MemoryManager.GetByteArray(maxBlockSize),
-                MemoryManager.GetByteArray(maxBlockSize),
-                MemoryManager.GetByteArray(maxBlockSize),
-                MemoryManager.GetByteArray(maxBlockSize),
-            };
-            for (int c = 0; c < chunks.Count; c++)
-            {
-                chunk = chunks[c];
-                chunk.compressedOffset = (int)compressedStream.Position;
-                chunk.compressedSize = 0; // filled later
-
-                int dataSizeRemainingToCompress = chunk.uncompressedSize;
-                int numBlocksInChunk = (int)Math.Ceiling(chunk.uncompressedSize * 1.0 / maxBlockSize);
-                if (numBlocksInChunk > rentedOutputArrays.Count)
-                {
-                    for (int i = rentedOutputArrays.Count; i < numBlocksInChunk; i++)
-                    {
-                        rentedOutputArrays.Add(MemoryManager.GetByteArray(compressionOutputSize));
-                        rentedInputArrays.Add(MemoryManager.GetByteArray(maxBlockSize));
-                    }
-                }
-                // skip chunk header and blocks table - filled later
-                compressedStream.Seek(CompressionHelper.SIZE_OF_CHUNK_HEADER + CompressionHelper.SIZE_OF_CHUNK_BLOCK_HEADER * numBlocksInChunk, SeekOrigin.Current);
-
-                uncompressedStream.JumpTo(chunk.uncompressedOffset);
-
-                chunk.blocks = new List<CompressionHelper.Block>();
-
-                //Calculate blocks by splitting data into 128KB "block chunks".
-                for (int b = 0; b < numBlocksInChunk; b++)
-                {
-                    var block = new CompressionHelper.Block();
-                    block.uncompressedsize = Math.Min(maxBlockSize, dataSizeRemainingToCompress);
-                    dataSizeRemainingToCompress -= block.uncompressedsize;
-                    uncompressedStream.Read(rentedInputArrays[b].AsSpan(0, block.uncompressedsize));
-                    block.uncompressedData = rentedInputArrays[b].AsMemory(0, block.uncompressedsize);
-                    block.compressedData = rentedOutputArrays[b];
-                    chunk.blocks.Add(block);
-                }
-
-                if (chunk.blocks.Count != numBlocksInChunk) throw new Exception("Number of blocks does not match expected amount");
-
-                //Compress blocks
-                Parallel.ForEach(chunk.blocks, block =>
-                {
-                    block.compressedsize = compressionType switch
-                    {
-                        CompressionType.LZO => LZO2.Compress(block.uncompressedData.Span, block.compressedData),
-                        CompressionType.Zlib => Zlib.Compress(block.uncompressedData.Span, block.compressedData),
-                        CompressionType.OodleLeviathan => OodleHelper.Compress(block.uncompressedData.Span, block.compressedData),
-                        _ => throw new Exception("Internal error: Unsupported compression type for compressing blocks: " + compressionType)
-                    };
-                    if (block.compressedsize == 0)
-                        throw new Exception("Internal error: Block compression failed! Compressor returned no bytes");
-                });
-
-                //Write compressed data to stream 
-                for (int b = 0; b < numBlocksInChunk; b++)
-                {
-                    var block = chunk.blocks[b];
-                    compressedStream.Write(block.compressedData, 0, block.compressedsize);
-                    chunk.compressedSize += block.compressedsize;
-                }
-            }
-
-            foreach (byte[] rentedArray in rentedOutputArrays)
-            {
-                MemoryManager.ReturnByteArray(rentedArray);
-            }
-            foreach (byte[] rentedArray in rentedInputArrays)
-            {
-                MemoryManager.ReturnByteArray(rentedArray);
-            }
-            //Update each chunk header with new information
-            foreach (var c in chunks)
-            {
-                compressedStream.JumpTo(c.compressedOffset); // jump to blocks header
-                compressedStream.WriteUInt32(packageTagLittleEndian);
-                compressedStream.WriteInt32(maxBlockSize); // technically this is apparently a UINT
-                compressedStream.WriteInt32(c.compressedSize);
-                compressedStream.WriteInt32(c.uncompressedSize);
-
-                //write block header table
-                foreach (var block in c.blocks)
-                {
-                    compressedStream.WriteInt32(block.compressedsize);
-                    compressedStream.WriteInt32(block.uncompressedsize);
-                }
-            }
-
-            //Write final header
-            compressedStream.Position = 0;
-            package.WriteHeader(compressedStream, compressionType, chunks, includeAdditionalPackageToCook: includeAdditionalPackageToCook);
-            return compressedStream;
-        }
-
-        /// <summary>
         /// Saves the package to stream. If this saving operation is not going to be committed to disk in the same place as the package was loaded from, you should mark this as a 'save as'.
         /// </summary>
         /// <param name="mePackage"></param>
@@ -1022,6 +820,11 @@ namespace LegendaryExplorerCore.Packages
                 ms.WriteInt32(e.DataSize);
                 ms.WriteInt32(e.DataOffset);
                 ms.JumpTo(pos);
+            }
+
+            if (mePackage.Game.IsLEGame())
+            {
+                WriteLegendaryExplorerCoreTag(ms);
             }
 
             ms.JumpTo(0);
@@ -1282,6 +1085,11 @@ namespace LegendaryExplorerCore.Packages
                     MemoryManager.ReturnByteArray(rentedArray);
                 }
 
+                if (package.Game.IsLEGame())
+                {
+                    WriteLegendaryExplorerCoreTag(compressedStream);
+                }
+
                 //Update each chunk header with new information
                 foreach (var c in chunks)
                 {
@@ -1319,6 +1127,13 @@ namespace LegendaryExplorerCore.Packages
                     }
                 }
             }
+        }
+
+        private static void WriteLegendaryExplorerCoreTag(MemoryStream ms)
+        {
+            ms.WriteInt32(1); //version. for if we want to append more data in the future 
+            ms.WriteInt32(4); //size of preceding data. (just the version for now)
+            ms.WriteStringASCII("LECL");
         }
 
         //Must not change export's DataSize!
@@ -1565,12 +1380,17 @@ namespace LegendaryExplorerCore.Packages
                     ms.WriteInt32(unknown6);
                     ms.WriteInt32(145358848);
                     break;
-                //TODO: scan LE files to figure out if there's a pattern with these
                 case MEGame.LE1:
+                    ms.WriteInt32(1376256);
+                    ms.WriteInt32(1376256);
+                    break;
                 case MEGame.LE2:
+                    ms.WriteInt32(131268608);
+                    ms.WriteInt32(145752064);
+                    break;
                 case MEGame.LE3:
-                    ms.WriteInt32(unknown6);
-                    ms.WriteInt32(unknown7);
+                    ms.WriteInt32(372637696);
+                    ms.WriteInt32(145358848);
                     break;
             }
 

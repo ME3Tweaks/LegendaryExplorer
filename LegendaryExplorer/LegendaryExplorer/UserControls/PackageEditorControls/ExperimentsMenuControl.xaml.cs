@@ -940,6 +940,10 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsS.DumpShaderTypes(GetPEWindow());
         }
+        private void ScanHeaders_OnCLick(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsS.ScanPackageHeader(GetPEWindow());
+        }
         #endregion
 
         // EXPERIMENTS: KINKOJIRO ------------------------------------------------------------
