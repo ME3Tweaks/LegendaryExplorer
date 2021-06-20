@@ -43,15 +43,20 @@ steps:
       $author = git log -1 --pretty=format:'%an'
       Write-Host "##vso[task.setvariable variable=author]$author"
       Write-Host "Author: $($author)"
+      
+      # Set version (LEC)
+      $xml = [xml](Get-Content .\LegendaryExplorer\LegendaryExplorerCore\LegendaryExplorerCore.csproj)
+      $ver = New-Object System.Version($appMajor, $appMinor, $appPatch, [int]$(Build.BuildId))
+      $xml.Project.PropertyGroup[0].Version = $ver.ToString() #Hopefully nobody re-organizes the csproj!
+      $xml.Save(".\LegendaryExplorer\LegendaryExplorerCore\LegendaryExplorerCore.csproj")
+
       # Set version (LEX)
-      # This needs updated, it's totally wrong for .NET 5
-      #(Get-Content .\ME3Explorer\Properties\AssemblyInfo.cs).replace("0`"","$(Build.BuildId)`"") | out-file -FilePath .\ME3Explorer\Properties\AssemblyInfo.cs
-      # Set version (LegendaryExplorerCore)
-      $ver = "TESTING"
-      #$xml = [xml](Get-Content .\LegendaryExplorer\LegendaryExplorerCore\LegendaryExplorerCore.csproj)
-      #$ver = New-Object System.Version($appMajor, $appMinor, $appPatch, [int]$(Build.BuildId))
-      #$xml.Project.PropertyGroup[0].Version = $ver.ToString() #Hopefully nobody re-organizes the csproj!
-      #$xml.Save(".\LegendaryExplorer\LegendaryExplorerCore\LegendaryExplorerCore.csproj")
+      $xml = [xml](Get-Content .\LegendaryExplorer\LegendaryExplorer\LegendaryExplorer.csproj)
+      $xml.Project.PropertyGroup[0].Version = $ver.ToString() #Hopefully nobody re-organizes the csproj!
+      $xml.Save(".\LegendaryExplorer\LegendaryExplorer\LegendaryExplorerCore.csproj")
+
+      Write-Host "Version: $($ver)"
+      echo "##vso[task.setvariable variable=VER]$($ver)"
 
       # Get report generator
       dotnet tool install -g dotnet-reportgenerator-globaltool
@@ -64,8 +69,8 @@ steps:
     targetType: 'inline'
     script: |
       # API Keys for telemetry--------------------------
-      $apikeysprivatefile = "namespace ME3Explorer`n{`n    public static partial class APIKeys`n    {`n        public static string Private_AppCenter {get;} = `"$(AppCenterKey)`";`n    }`n}"
-      Set-Content -Path "$(Build.Repository.LocalPath)\ME3Explorer\APIKeysPrivate.cs" -Value $apikeysprivatefile
+      $apikeysprivatefile = "namespace LegendaryExplorer.Misc.Telemetry`n{`n    public static partial class APIKeys`n    {`n        public static string Private_AppCenter {get;} = `"$(AppCenterKey)`";`n    }`n}"
+      Set-Content -Path "$(Build.Repository.LocalPath)\LegendaryExplorer\LegendaryExplorer\Misc\Telemetry\APIKeysPrivate.cs" -Value $apikeysprivatefile
 
 # install mono t4 as it doesn't have any dependency
 - task: DotNetCoreCLI@2
@@ -139,7 +144,7 @@ steps:
     targetType: 'inline'
     script: |
       # Webrequest using powershell since invokerestapi doesn't work on anything but server jobs
-      Invoke-WebRequest -Uri $(me3explorerApiEndpoint)
+      Invoke-WebRequest -Uri $(legendaryExplorerApiEndpoint)
     errorActionPreference: 'continue'
 
 # NOT PULL REQUEST DISCORD WEBHOOK
@@ -177,6 +182,6 @@ steps:
           "name": "Version",
           "value": "$(appMajorMin).$(appPatch).$(Build.BuildId)"
         }],
-        "url": "https://dev.azure.com/ME3Tweaks/ME3Explorer/_build/results?buildId=$(Build.BuildId)&view=artifacts",
+        "url": "https://dev.azure.com/ME3Tweaks/LegendaryExplorer/_build/results?buildId=$(Build.BuildId)&view=artifacts",
         "timestamp": "$(time)"
       }]
