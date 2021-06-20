@@ -39,8 +39,21 @@ namespace LegendaryExplorerCore.Packages
         /// ONLY WORKS properly if there are NO duplicate indexes (besides trash) in the package.
         /// </summary>
         protected CaseInsensitiveDictionary<IEntry> EntryLookupTable;
+        private EntryTree tree;
         private bool lookupTableNeedsToBeRegenerated = true;
         public void InvalidateLookupTable() => lookupTableNeedsToBeRegenerated = true;
+
+        public EntryTree Tree
+        {
+            get
+            {
+                if (lookupTableNeedsToBeRegenerated)
+                {
+                    RebuildLookupTable();
+                }
+                return tree;
+            }
+        }
 
         public enum CompressionType
         {
@@ -236,6 +249,7 @@ namespace LegendaryExplorerCore.Packages
             if (!lookupTableNeedsToBeRegenerated)
             {
                 EntryLookupTable[exportEntry.InstancedFullPath] = exportEntry;
+                tree.Add(exportEntry);
             }
 
             //Debug.WriteLine($@" >> Added export {exportEntry.InstancedFullPath}");
@@ -317,6 +331,7 @@ namespace LegendaryExplorerCore.Packages
             if (!lookupTableNeedsToBeRegenerated)
             {
                 EntryLookupTable[importEntry.InstancedFullPath] = importEntry;
+                tree.Add(importEntry);
             }
 
             importEntry.EntryHasPendingChanges = true;
@@ -373,6 +388,7 @@ namespace LegendaryExplorerCore.Packages
                 }
             }
 
+            this.tree = tree;
             lookupTableNeedsToBeRegenerated = false;
         }
 
@@ -513,8 +529,7 @@ namespace LegendaryExplorerCore.Packages
             //if there are no more trashed imports or exports, and if the TrashPackage is the last export, remove it
             if (exports.LastOrDefault() is ExportEntry finalExport && finalExport == trashPackage)
             {
-                List<IEntry> trashChildren = trashPackage.GetChildren();
-                if (trashChildren.IsEmpty())
+                if (trashPackage.GetChildren().IsEmpty())
                 {
                     trashPackage.PropertyChanged -= importChanged;
                     exports.Remove(trashPackage);

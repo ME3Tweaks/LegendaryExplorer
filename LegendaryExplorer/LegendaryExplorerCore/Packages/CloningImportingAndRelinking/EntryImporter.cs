@@ -73,7 +73,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         {
             relinkMap ??= new Dictionary<IEntry, IEntry>();
             IMEPackage sourcePcc = sourceEntry.FileRef;
-            var sourcePackageTree = new EntryTree(sourcePcc);
 
             if (portingOption == PortingOption.ReplaceSingular)
             {
@@ -100,7 +99,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 else
                 {
                     newEntry = GetOrAddCrossImportOrPackage(sourceEntry.InstancedFullPath, sourcePcc, destPcc,
-                                                            forcedLink: sourcePackageTree.NumChildrenOf(sourceEntry) == 0 ? link : (int?)null, objectMapping: relinkMap);
+                                                            forcedLink: sourcePcc.Tree.NumChildrenOf(sourceEntry) == 0 ? link : (int?)null, objectMapping: relinkMap);
                 }
 
             }
@@ -108,7 +107,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
             //if this node has children
             if ((portingOption == PortingOption.CloneTreeAsChild || portingOption == PortingOption.MergeTreeChildren || portingOption == PortingOption.CloneAllDependencies)
-             && sourcePackageTree.NumChildrenOf(sourceEntry) > 0)
+             && sourcePcc.Tree.NumChildrenOf(sourceEntry) > 0)
             {
                 importChildrenOf(sourceEntry, newEntry);
             }
@@ -155,7 +154,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
             void importChildrenOf(IEntry sourceNode, IEntry newParent)
             {
-                foreach (IEntry node in sourcePackageTree.GetDirectChildrenOf(sourceNode))
+                foreach (IEntry node in sourceNode.GetChildren().ToList())
                 {
                     if (portingOption == PortingOption.MergeTreeChildren)
                     {

@@ -883,7 +883,7 @@ namespace LegendaryExplorerCore.Unreal
     public class FloatProperty : Property, IComparable, INotifyPropertyChanged
     {
         public override PropertyType PropType => PropertyType.FloatProperty;
-        private readonly byte[] _originalData; //This is used because -0 and 0 have different byte patterns, and to reserialize the same, we must write back the correct one.
+        private readonly int _originalData; //This is used because -0 and 0 have different byte patterns, and to reserialize the same, we must write back the correct one.
 
         float _value;
         public float Value
@@ -904,13 +904,13 @@ namespace LegendaryExplorerCore.Unreal
         public FloatProperty(EndianReader stream, NameReference? name = null) : base(name)
         {
             ValueOffset = stream.Position;
-            _originalData = stream.ReadToBuffer(4);
-            Value = EndianReader.ToSingle(_originalData, 0, stream.Endian);
+            _originalData = stream.ReadInt32();
+            Value = BitConverter.Int32BitsToSingle(_originalData);
         }
 
         public FloatProperty(float val, NameReference? name = null) : base(name)
         {
-            _originalData = BitConverter.GetBytes(val);
+            _originalData = BitConverter.SingleToInt32Bits(val);
             Value = val;
         }
 
@@ -924,8 +924,7 @@ namespace LegendaryExplorerCore.Unreal
             // or we will re-serialize this wrong. This check only
             // matters when the value has not changed from the original.
 
-            bool isNegativeZero = Value == 0 && BitConverter.ToSingle(_originalData, 0) == Value &&
-                                  _originalData.Any(x => x != 0x00);
+            bool isNegativeZero = Value == 0 && BitConverter.Int32BitsToSingle(_originalData) == Value && _originalData != 0;
             if (!valueOnly)
             {
                 if (isNegativeZero)

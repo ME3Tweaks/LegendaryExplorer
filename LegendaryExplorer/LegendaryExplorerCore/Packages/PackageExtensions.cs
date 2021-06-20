@@ -590,31 +590,23 @@ namespace LegendaryExplorerCore.Packages
         }
 
         /// <summary>
-        /// Gets direct children of <paramref name="entry"/>. O(n) over all IEntrys in the file,
-        /// so if you will be calling this multiple times, consider using an <see cref="EntryTree"/> instead.
+        /// Gets direct children of <paramref name="entry"/>. 
         /// </summary>
         /// <param name="entry"></param>
         /// <returns></returns>
-        public static List<IEntry> GetChildren(this IEntry entry)
+        public static IEnumerable<IEntry> GetChildren(this IEntry entry)
         {
-            var kids = new List<IEntry>();
-            kids.AddRange(entry.FileRef.Exports.Where(export => export.idxLink == entry.UIndex));
-            kids.AddRange(entry.FileRef.Imports.Where(import => import.idxLink == entry.UIndex));
-            return kids;
+            return entry.FileRef.Tree.GetDirectChildrenOf(entry);
         }
 
         /// <summary>
-        /// Gets all descendents of <paramref name="entry"/>. O(nk) where n is exports + imports, and k is average tree depth,
-        /// so consider using an <see cref="EntryTree"/> instead.
+        /// Gets all descendents of <paramref name="entry"/>.
         /// </summary>
         /// <param name="entry"></param>
         /// <returns></returns>
         public static List<IEntry> GetAllDescendants(this IEntry entry)
         {
-            var kids = new List<IEntry>();
-            kids.AddRange(entry.FileRef.Exports.Where(export => export.IsDescendantOf(entry)));
-            kids.AddRange(entry.FileRef.Imports.Where(import => import.IsDescendantOf(entry)));
-            return kids;
+            return entry.FileRef.Tree.FlattenTreeOf(entry);
         }
 
         public static Dictionary<IEntry, List<string>> GetEntriesThatReferenceThisOne(this IEntry baseEntry)

@@ -358,5 +358,7 @@ namespace LegendaryExplorerCore.Packages
         /// Invalidates the entry lookup table, causing it to be rebuilt next time FindEntry, FindExport, or FindImport is called.
         /// </summary>
         void InvalidateLookupTable();
+
+        public EntryTree Tree { get; }
     }
 }

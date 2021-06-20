@@ -26,7 +26,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
         private bool LibInitialized => FileLib?.IsInitialized ?? false;
         private SymbolTable ReadOnlySymbolTable => FileLib?.ReadonlySymbolTable;
 
-        private IMEPackage PCC => DataContainer.Export.FileRef;
+        private IMEPackage Pcc => DataContainer.Export.FileRef;
         private byte PopByte() { return ReadByte(); }
 
         private byte PeekByte => Position < Size ? _data[Position] : (byte)0;
@@ -70,11 +70,11 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 Position += 4;
             }
 
-            return PCC.GetEntry(index);
+            return Pcc.GetEntry(index);
         }
         public NameReference ReadNameReference()
         {
-            return new NameReference(PCC.GetNameEntry(ReadInt32()), ReadInt32());
+            return new NameReference(Pcc.GetNameEntry(ReadInt32()), ReadInt32());
         }
 
         public ByteCodeDecompiler(UStruct dataContainer, UClass containingClass, FileLib lib, List<FunctionParameter> parameters = null, VariableType returnType = null)

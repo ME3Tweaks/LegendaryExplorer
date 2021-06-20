@@ -118,7 +118,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public static void TrashIncompatibleEntries(MEPackage pcc, MEGame oldGame, MEGame newGame)
         {
-            var entries = new EntryTree(pcc);
+            var entries = pcc.Tree;
             var oldClasses = GlobalUnrealObjectInfo.GetClasses(oldGame);
             var newClasses = GlobalUnrealObjectInfo.GetClasses(newGame);
             var classesToRemove = oldClasses.Keys.Except(newClasses.Keys).ToHashSet();

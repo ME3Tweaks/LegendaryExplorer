@@ -341,7 +341,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         }
                     }
                 }
-                if (node is null && obj is ExportEntry exp && PCC.GetEntry(exp.GetBinaryData<UByteProperty>().Enum) is IEntry enumEntry)
+                if (node is null && obj is ExportEntry exp && Pcc.GetEntry(exp.GetBinaryData<UByteProperty>().Enum) is IEntry enumEntry)
                 {
                     if (enumEntry is ExportEntry enumExp)
                     {
@@ -710,7 +710,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     }
                     var funcOuterClass = classExp?.ObjectName.Instanced;
                     isSuper = true;
-                    if (currentClass == null || currentClass.SuperClass == 0 || currentClass.SuperClass.GetEntry(PCC).ObjectName.Instanced != funcOuterClass)
+                    if (currentClass == null || currentClass.SuperClass == 0 || currentClass.SuperClass.GetEntry(Pcc).ObjectName.Instanced != funcOuterClass)
                     {
                         superSpecifier = new VariableType(funcOuterClass);
                     }
@@ -777,7 +777,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             }
 
             //if it's in a parent context, it's a super call if there is a function with the same name in the current context
-            return IEntryExtensions.GetChildren(DataContainer.Export.Parent).Any(child => child.ObjectName.Instanced.CaseInsensitiveEquals(funcName));
+            return DataContainer.Export.Parent.GetChildren().Any(child => child.ObjectName.Instanced.CaseInsensitiveEquals(funcName));
         }
 
         public Expression DecompileNew()

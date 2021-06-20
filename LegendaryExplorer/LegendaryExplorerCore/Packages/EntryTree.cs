@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
 using EntryTreeNode = LegendaryExplorerCore.Unreal.BinaryConverters.TreeNode<LegendaryExplorerCore.Packages.IEntry, int>;
 
 namespace LegendaryExplorerCore.Packages
@@ -48,6 +49,20 @@ namespace LegendaryExplorerCore.Packages
 
                 return null;
             }
+        }
+
+        public void Add(ExportEntry exp)
+        {
+            var node = new EntryTreeNode(exp);
+            exports.Add(node);
+            this[exp.idxLink].Children.Add(exports.Count);
+        }
+
+        public void Add(ImportEntry imp)
+        {
+            var node = new EntryTreeNode(imp);
+            imports.Add(node);
+            this[imp.idxLink].Children.Add(-imports.Count);
         }
 
         public IEnumerable<EntryTreeNode> Roots => root;

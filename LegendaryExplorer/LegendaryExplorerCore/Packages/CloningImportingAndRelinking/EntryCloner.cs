@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 {
@@ -8,14 +9,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         {
             var objectMap = new Dictionary<IEntry, IEntry>();
             T newRoot = CloneEntry(entry, objectMap, incrementIndex);
-            var tree = new EntryTree(entry.FileRef);
             cloneTreeRecursive(entry, newRoot);
             Relinker.RelinkAll(objectMap);
             return newRoot;
 
             void cloneTreeRecursive(IEntry originalRootNode, IEntry newRootNode)
             {
-                foreach (IEntry node in tree.GetDirectChildrenOf(originalRootNode.UIndex))
+                foreach (IEntry node in originalRootNode.GetChildren().ToList())
                 {
                     IEntry newEntry = CloneEntry(node, objectMap, false);
                     newEntry.Parent = newRootNode;

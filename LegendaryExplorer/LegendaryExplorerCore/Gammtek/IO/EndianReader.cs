@@ -260,15 +260,15 @@ namespace LegendaryExplorerCore.Gammtek.IO
         public override double ReadDouble()
         {
             var val = base.ReadDouble();
-            if (NoConvert)
+            if (!NoConvert)
             {
-                return val;
-            }
-
-            val = val.Swap();
+                val = val.Swap();
 #if LITTLEENDIANSTREAM
             LittleEndianStream?.WriteDouble(val);
 #endif
+                return val;
+            }
+
             return val;
         }
 
@@ -281,14 +281,15 @@ namespace LegendaryExplorerCore.Gammtek.IO
         public override short ReadInt16()
         {
             var val = base.ReadInt16();
-            if (NoConvert)
+            if (!NoConvert)
             {
-                return val;
-            }
-            val = BinaryPrimitives.ReverseEndianness(val);
+                val = BinaryPrimitives.ReverseEndianness(val);
 #if LITTLEENDIANSTREAM
             LittleEndianStream?.WriteInt16(val);
 #endif
+                return val;
+            }
+
             return val;
         }
 
@@ -303,14 +304,15 @@ namespace LegendaryExplorerCore.Gammtek.IO
         public override int ReadInt32()
         {
             var val = base.ReadInt32();
-            if (NoConvert)
+            if (!NoConvert)
             {
+                val = BinaryPrimitives.ReverseEndianness(val);
+#if LITTLEENDIANSTREAM
+                LittleEndianStream?.WriteInt32(val);
+#endif
                 return val;
             }
-            val = BinaryPrimitives.ReverseEndianness(val);
-#if LITTLEENDIANSTREAM
-            LittleEndianStream?.WriteInt32(val);
-#endif
+
             return val;
         }
 
@@ -323,15 +325,15 @@ namespace LegendaryExplorerCore.Gammtek.IO
         public override long ReadInt64()
         {
             var val = base.ReadInt64();
-            if (NoConvert)
+            if (!NoConvert)
             {
-                return val;
-            }
-            val = BinaryPrimitives.ReverseEndianness(val);
+                val = BinaryPrimitives.ReverseEndianness(val);
 #if LITTLEENDIANSTREAM
-
             LittleEndianStream?.WriteInt64(val);
 #endif
+                return val;
+            }
+
             return val;
         }
 
@@ -360,14 +362,15 @@ namespace LegendaryExplorerCore.Gammtek.IO
         public override float ReadSingle()
         {
             var val = base.ReadSingle();
-            if (NoConvert)
+            if (!NoConvert)
             {
-                return val;
-            }
-            val = val.Swap();
+                val = val.Swap();
 #if LITTLEENDIANSTREAM
             LittleEndianStream?.WriteFloat(val);
 #endif
+                return val;
+            }
+
             return val;
         }
 
@@ -383,14 +386,15 @@ namespace LegendaryExplorerCore.Gammtek.IO
         public override ushort ReadUInt16()
         {
             var val = base.ReadUInt16();
-            if (NoConvert)
+            if (!NoConvert)
             {
-                return val;
-            }
-            val = BinaryPrimitives.ReverseEndianness(val);
+                val = BinaryPrimitives.ReverseEndianness(val);
 #if LITTLEENDIANSTREAM
             LittleEndianStream?.WriteUInt16(val);
 #endif
+                return val;
+            }
+
             return val;
         }
 
@@ -403,15 +407,15 @@ namespace LegendaryExplorerCore.Gammtek.IO
         public override uint ReadUInt32()
         {
             var val = base.ReadUInt32();
-            if (NoConvert)
+            if (!NoConvert)
             {
-                return val;
-            }
-            
-            val = BinaryPrimitives.ReverseEndianness(val);
+                val = BinaryPrimitives.ReverseEndianness(val);
 #if LITTLEENDIANSTREAM
             LittleEndianStream?.WriteUInt32(val);
 #endif
+                return val;
+            }
+
             return val;
         }
 
@@ -424,14 +428,15 @@ namespace LegendaryExplorerCore.Gammtek.IO
         public override ulong ReadUInt64()
         {
             var val = base.ReadUInt64();
-            if (NoConvert)
+            if (!NoConvert)
             {
-                return val;
-            }
-            val = BinaryPrimitives.ReverseEndianness(val);
+                val = BinaryPrimitives.ReverseEndianness(val);
 #if LITTLEENDIANSTREAM
             LittleEndianStream?.WriteUInt64(val);
 #endif
+                return val;
+            }
+
             return val;
         }
 
