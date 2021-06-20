@@ -2023,7 +2023,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             if (size != WemData.Length - 8)
             {
-                OriginalWemData = WemData.TypedClone(); //store copy of the original data in the event the user rewrites a WEM
+                OriginalWemData = WemData.ArrayClone(); //store copy of the original data in the event the user rewrites a WEM
 
                 //Some clips in ME3 are just the intro to the audio. The raw data is literally cutoff and the first ~.5 seconds are inserted into the soundbank.
                 //In order to attempt to even listen to these we have to fix the headers for size and subchunk2size.

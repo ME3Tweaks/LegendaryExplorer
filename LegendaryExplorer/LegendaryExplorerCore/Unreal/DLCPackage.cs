@@ -203,7 +203,7 @@ namespace LegendaryExplorerCore.Unreal
                 e = Files[i];
                 e.FileName = FILENAMES_FILENAME;
                 Files[i] = e;
-                if (Files[i].Hash.SequenceEqual(TOCHash))
+                if (Files[i].Hash.AsSpan().SequenceEqual(TOCHash))
                     f = i;
             }
             if (f == -1)
@@ -223,7 +223,7 @@ namespace LegendaryExplorerCore.Unreal
                     byte[] hash = ComputeHash(line);
                     f = -1;
                     for (int i = 0; i < Header.FileCount; i++)
-                        if (Files[i].Hash.SequenceEqual(hash))
+                        if (Files[i].Hash.AsSpan().SequenceEqual(hash))
                             f = i;
                     if (f != -1)
                     {
@@ -593,7 +593,7 @@ namespace LegendaryExplorerCore.Unreal
             int f = -1;
             for (int i = 0; i < Header.FileCount; i++)
             {
-                if (Files[i].Hash.SequenceEqual(TOCHash))
+                if (Files[i].Hash.AsSpan().SequenceEqual(TOCHash))
                     f = i;
             }
             return f;

@@ -574,8 +574,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                             TangentY = (PackedNormal)(new Vector4(Vector3.Cross((Vector3)vert.TangentZ, (Vector3)vert.TangentX), normal.W * tangent.W) * normal.W),
                             TangentZ = vert.TangentZ,
                             UV = new Vector2(vert.UV.X, vert.UV.Y),
-                            InfluenceBones = vert.InfluenceBones.TypedClone(),
-                            InfluenceWeights = vert.InfluenceWeights.TypedClone()
+                            InfluenceBones = vert.InfluenceBones.ArrayClone(),
+                            InfluenceWeights = vert.InfluenceWeights.ArrayClone()
                         };
                     }
                 }
@@ -603,8 +603,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                             TangentX = vert.TangentX,
                             TangentZ = vert.TangentZ,
                             UV = new Vector2DHalf(vert.UV.X, vert.UV.Y),
-                            InfluenceBones = vert.InfluenceBones.TypedClone(),
-                            InfluenceWeights = vert.InfluenceWeights.TypedClone()
+                            InfluenceBones = vert.InfluenceBones.ArrayClone(),
+                            InfluenceWeights = vert.InfluenceWeights.ArrayClone()
                         };
                     }
                 }

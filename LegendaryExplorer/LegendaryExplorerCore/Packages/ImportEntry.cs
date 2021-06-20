@@ -56,7 +56,7 @@ namespace LegendaryExplorerCore.Packages
             set
             {
                 bool isFirstLoad = _header == null;
-                if (_header != null && value != null && _header.SequenceEqual(value))
+                if (_header != null && value != null && _header.AsSpan().SequenceEqual(value))
                 {
                     return; //if the data is the same don't write it and trigger the side effects
                 }
@@ -82,7 +82,7 @@ namespace LegendaryExplorerCore.Packages
         /// <returns></returns>
         public byte[] GetHeader()
         {
-            return _header.TypedClone();
+            return _header.ArrayClone();
         }
 
         public bool HasParent => FileRef.IsEntry(idxLink);
@@ -204,7 +204,7 @@ namespace LegendaryExplorerCore.Packages
         public ImportEntry Clone(int newIndex = -1)
         {
             ImportEntry newImport = (ImportEntry)MemberwiseClone();
-            newImport.Header = Header.TypedClone();
+            newImport.Header = Header.ArrayClone();
             if (newIndex >= 0)
             {
                 EndianBitConverter.WriteAsBytes(newIndex, _header.AsSpan(OFFSET_indexValue), FileRef.Endian);

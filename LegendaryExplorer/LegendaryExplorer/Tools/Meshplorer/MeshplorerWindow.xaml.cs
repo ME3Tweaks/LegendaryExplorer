@@ -278,7 +278,7 @@ namespace LegendaryExplorer.Tools.Meshplorer
                             }
 
 
-                            newMesh.Materials = originalMesh.Materials.TypedClone();
+                            newMesh.Materials = originalMesh.Materials.ArrayClone();
 
                             var lods = CurrentExport.GetProperty<ArrayProperty<StructProperty>>("LODInfo");
                             if (!lodOnly)

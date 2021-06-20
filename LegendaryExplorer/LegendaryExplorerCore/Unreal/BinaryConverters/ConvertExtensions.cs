@@ -17,7 +17,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 BodySetup = new UIndex(0),
                 LODModels = new[] { new StaticMeshRenderData
                 {
-                    IndexBuffer = lodModel.IndexBuffer.TypedClone(),
+                    IndexBuffer = lodModel.IndexBuffer.ArrayClone(),
                     NumVertices = numVertices,
                     Edges = new MeshEdge[0],
                     RawTriangles = new StaticMeshTriangle[0],

@@ -170,33 +170,18 @@ namespace LegendaryExplorerCore.Helpers
             }
         }
 
-        public static byte[] Slice(this byte[] src, int start, int length)
-        {
-            var slice = new byte[length];
-            Buffer.BlockCopy(src, start, slice, 0, length);
-            return slice;
-        }
-
-        public static T[] Slice<T>(this ReadOnlyCollection<T> src, int start, int length)
-        {
-            var slice = new T[length];
-            for (int i = 0; i < length; i++)
-            {
-                slice[i] = src[i + start];
-            }
-            return slice;
-        }
-
         public static T[] Slice<T>(this T[] src, int start, int length)
         {
             var slice = new T[length];
-            Array.Copy(src, start, slice, 0, length);
+            src.AsSpan(start, length).CopyTo(slice);
             return slice;
         }
 
-        public static T[] TypedClone<T>(this T[] src)
+        public static T[] ArrayClone<T>(this T[] src)
         {
-            return (T[])src.Clone();
+            var copy = new T[src.Length];
+            src.AsSpan().CopyTo(copy);
+            return copy;
         }
 
         /// <summary>

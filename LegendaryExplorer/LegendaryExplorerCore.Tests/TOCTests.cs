@@ -38,7 +38,7 @@ namespace LegendaryExplorerCore.Tests
                 var reserialized = tbf.Save();
 
                 var reserializedArray = reserialized.ToArray();
-                Assert.IsTrue(tocDiskBytes.SequenceEqual(reserializedArray), $"Re-serialized TOC file is not the same as the original! File: {tocF}");
+                Assert.IsTrue(tocDiskBytes.AsSpan().SequenceEqual(reserializedArray), $"Re-serialized TOC file is not the same as the original! File: {tocF}");
             }
 
         }

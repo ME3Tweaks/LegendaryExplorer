@@ -244,7 +244,7 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
                 {
                     var newCond = new CondListEntry(new CNDFile.ConditionalEntry
                     {
-                        Data = SelectedCond.Conditional.Data.TypedClone(),
+                        Data = SelectedCond.Conditional.Data.ArrayClone(),
                         ID = newID
                     })
                     {

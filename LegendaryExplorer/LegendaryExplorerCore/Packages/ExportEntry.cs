@@ -214,7 +214,7 @@ namespace LegendaryExplorerCore.Packages
             get => _header;
             set
             {
-                if (_header != null && value != null && _header.SequenceEqual(value))
+                if (_header != null && value != null && _header.AsSpan().SequenceEqual(value))
                 {
                     return; //if the data is the same don't write it and trigger the side effects
                 }
@@ -246,7 +246,7 @@ namespace LegendaryExplorerCore.Packages
         /// <returns></returns>
         public byte[] GetHeader()
         {
-            return _header.TypedClone();
+            return _header.ArrayClone();
         }
 
         public byte[] GenerateHeader(MEGame game, bool clearComponentMap = false) => GenerateHeader(null, null, game == MEGame.ME1 || game == MEGame.ME2, clearComponentMap);
@@ -546,7 +546,7 @@ namespace LegendaryExplorerCore.Packages
         public byte[] Data
         {
             //TODO: remove get accessor, and replace with GetDataCopy() to make behavior more obvious
-            get => _data.TypedClone();
+            get => _data.ArrayClone();
 
             set
             {
@@ -849,7 +849,7 @@ namespace LegendaryExplorerCore.Packages
         {
             var clone = new ExportEntry(FileRef)
             {
-                _header = _header.TypedClone(),
+                _header = _header.ArrayClone(),
                 HeaderOffset = 0,
                 Data = this.Data,
                 DataOffset = 0

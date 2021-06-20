@@ -471,7 +471,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             public virtual HIRCObject Clone()
             {
                 HIRCObject clone = (HIRCObject)MemberwiseClone();
-                clone.unparsed = unparsed?.TypedClone();
+                clone.unparsed = unparsed?.ArrayClone();
                 return clone;
             }
         }

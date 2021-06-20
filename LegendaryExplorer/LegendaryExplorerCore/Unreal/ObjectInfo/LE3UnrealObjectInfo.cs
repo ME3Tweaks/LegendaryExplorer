@@ -200,7 +200,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
         public static PropertyInfo getPropertyInfo(string className, string propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null, bool reSearch = true, ExportEntry containingExport = null)
         {
-            if (className.StartsWith("Default__"))
+            if (className.StartsWith("Default__", StringComparison.OrdinalIgnoreCase))
             {
                 className = className.Substring(9);
             }

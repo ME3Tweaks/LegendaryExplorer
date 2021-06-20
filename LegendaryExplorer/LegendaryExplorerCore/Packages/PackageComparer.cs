@@ -74,8 +74,8 @@ namespace LegendaryExplorerCore.Packages
 
                         //make data offset and data size the same, as the exports could be the same even if it was appended later.
                         //The datasize being different is a data difference not a true header difference so we won't list it here.
-                        byte[] header1 = exp1.Header.TypedClone();
-                        byte[] header2 = exp2.Header.TypedClone();
+                        byte[] header1 = exp1.Header.ArrayClone();
+                        byte[] header2 = exp2.Header.ArrayClone();
                         Buffer.BlockCopy(BitConverter.GetBytes((long)0), 0, header1, 32, sizeof(long));
                         Buffer.BlockCopy(BitConverter.GetBytes((long)0), 0, header2, 32, sizeof(long));
 
@@ -121,7 +121,7 @@ namespace LegendaryExplorerCore.Packages
                     {
                         ImportEntry imp1 = Imports[i];
                         ImportEntry imp2 = compareFile.Imports[i];
-                        if (!imp1.Header.SequenceEqual(imp2.Header))
+                        if (!imp1.Header.AsSpan().SequenceEqual(imp2.Header))
                         {
                             changedImports.Add(new EntryStringPair(imp1,
                                 $"Import header has changed: {imp1.UIndex} {imp1.InstancedFullPath}"));

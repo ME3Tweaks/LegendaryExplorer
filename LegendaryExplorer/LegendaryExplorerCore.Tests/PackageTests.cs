@@ -154,7 +154,7 @@ namespace LegendaryExplorerCore.Tests
                             byte[] changed = export.Data;
                             Assert.AreEqual(original.Length, changed.Length,
                                 $"Reserialization of export {export.UIndex} {export.InstancedFullPath} produced a different sized byte array than the input. Original size: {original.Length}, reserialized: {changed.Length}, difference: 0x{(changed.Length - original.Length):X8} bytes. File: {p}");
-                            Assert.IsTrue(original.SequenceEqual(changed),
+                            Assert.IsTrue(original.AsSpan().SequenceEqual(changed),
                                 $"Reserialization of export {export.UIndex} {export.InstancedFullPath} produced a different byte array than the input. File: {p}");
 
                             bin.GetNames(game);
@@ -445,7 +445,7 @@ namespace LegendaryExplorerCore.Tests
                                 var texCache = v.TextureCacheName;
                                 var textureData = Texture2D.GetTextureData(v, v.Export.Game);
                                 var imageDataFromInternal = t2d.GetImageBytesForMip(v, v.Export.Game, false, out _);
-                                if (!textureData.SequenceEqual(imageDataFromInternal))
+                                if (!textureData.AsSpan().SequenceEqual(imageDataFromInternal))
                                 {
                                     Assert.Fail($"Texture data accessed using wrapper and internal method did not match! Export: {textureExp.InstancedFullPath} in {p}. Static size: {textureData.Length} Instance size: {imageDataFromInternal.Length}");
                                 }

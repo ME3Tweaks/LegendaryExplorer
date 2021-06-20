@@ -56,7 +56,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             HIRCDisplayObject clone = (HIRCDisplayObject)MemberwiseClone();
             clone.EventIDs = EventIDs?.Clone();
-            clone.Data = Data?.TypedClone();
+            clone.Data = Data?.ArrayClone();
             return clone;
         }
 
