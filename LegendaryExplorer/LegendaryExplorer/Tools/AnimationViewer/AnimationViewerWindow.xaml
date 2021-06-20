@@ -12,6 +12,7 @@
         xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
         mc:Ignorable="d"
         d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Icon="pack://application:,,,/Tools/Icons/16x16/AnimationViewer_Icon_16.ico"
         Title="Animation Viewer" SizeToContent="Width" Loaded="AnimationExplorerWPF_Loaded" Closing="AnimationExplorerWPF_OnClosing">
     <Window.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>

@@ -1424,23 +1424,26 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// <param name="streamLengthInMs">Value to update DurationMilliseconds to</param>
         public void UpdateReferencedWwiseEventLengths(ExportEntry wwiseStreamExport, float streamLengthInMs)
         {
-            // LE2 doesn't have the DurationSeconds property??
+            // LE2 has the DurationSeconds property but does not appear to be on any events, so we do nothing. I think.
 
             if (wwiseStreamExport.Game is MEGame.ME3)
             {
                 var durationProperty = new FloatProperty(streamLengthInMs, "DurationMilliseconds");
+
                 // Find referenced WwiseEvent exports and update the property
                 var referencedExports = wwiseStreamExport.GetEntriesThatReferenceThisOne();
-                foreach (ExportEntry re in referencedExports.Select(e => e.Key).Where(e => e.ClassName == "WwiseEvent"))
+                foreach (ExportEntry re in referencedExports.Select(e => e.Key)
+                                                            .Where(e => e.ClassName == "WwiseEvent"))
                 {
                     re.WriteProperty(durationProperty);
                 }
             }
+            // Finding all WwiseEvent references in LE games will return several WwiseExports, some incorrect
+            // so we have to look up the WwiseEvent by TLK ID
             else if (wwiseStreamExport.Game is MEGame.LE3)
             {
                 var durationProperty = new FloatProperty(streamLengthInMs/1000, "DurationSeconds");
-                // Finding all WwiseEvent references in LE games will return several WwiseExports, some incorrect
-                // so we have to look up the WwiseEvent by TLK ID
+                
                 var splits = wwiseStreamExport.ObjectName.Name.Split('_', ',');
                 int tlkId = 0;
                 bool specifyByGender = false;
@@ -1451,7 +1454,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     if (int.TryParse(splits[i], out var parsed))
                     {
                         tlkId = parsed;
-                        specifyByGender = wwiseStreamExport.ObjectName.Name.Contains("player_");
+                        specifyByGender = wwiseStreamExport.ObjectName.Name.Contains("player_", StringComparison.OrdinalIgnoreCase);
                         isFemaleStream = splits[i + 1] == "f";
                     }
                 }
@@ -1462,7 +1465,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     .Where(e => e.ClassName == "WwiseEvent")
                     .Where(e =>
                     {
-                        if (!e.ObjectName.Name.StartsWith("VO")) return false;
+                        if (!e.ObjectName.Name.StartsWith("VO", StringComparison.OrdinalIgnoreCase)) return false;
 
                         var splits = e.ObjectName.Name.Split("_");
                         if (specifyByGender)

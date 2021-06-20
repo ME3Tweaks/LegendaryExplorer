@@ -30,7 +30,7 @@
 
     <StackPanel Width="600">
         <StackPanel Orientation="Horizontal">
-            <Image Width="249" Height="109" Source="../Resources/Images/splash.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+            <Image Width="249" Height="109" Source="../Resources/Images/LEX_Splash.png" RenderOptions.BitmapScalingMode="HighQuality"/>
             <Grid Width="351" Height="109" Background="#FF30343E">
                 <TextBlock Text="Welcome to Legendary Explorer, the fan-made modding toolkit for the Mass Effect trilogy!" Margin="0" Foreground="#FFD8D8D8"
                            TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="18" FontFamily="{StaticResource Exo-SemiBold}" TextAlignment="Center"

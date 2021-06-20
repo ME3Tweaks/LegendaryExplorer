@@ -20,6 +20,7 @@
         xmlns:appsettings="clr-namespace:LegendaryExplorer.Misc.AppSettings"
         xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
         xmlns:scriptEditor="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor"
+        Icon="pack://application:,,,/Tools/Icons/16x16/PackageEditor_Icon_16.ico"
         Title="Package Editor" Height="720" Width="1100"
         DragOver="Window_DragOver"
         Drop="Window_Drop"

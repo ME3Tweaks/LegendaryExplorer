@@ -14,6 +14,7 @@
        DragDrop.Drop="DialogueDumper_FilesDropped"
        WindowStartupLocation="CenterOwner"
        Closing="DialogueDumper_Closing"
+       Icon="pack://application:,,,/Tools/Icons/16x16/DialogueDumper_Icon_16.ico"
        Title="Dialogue Dumper" Height="340" Width="500"
        DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <StackPanel >

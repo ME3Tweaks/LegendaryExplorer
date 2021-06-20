@@ -10,7 +10,7 @@
         Width="616" SizeToContent="Height">
     <StackPanel Width="608" Margin="0,0,0,10">
         <StackPanel Orientation="Horizontal">
-            <Image Width="249" Height="109" Source="../Resources/Images/splash.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+            <Image Width="249" Height="109" Source="../Resources/Images/LEX_Splash.png" RenderOptions.BitmapScalingMode="HighQuality"/>
             <Grid Width="362" Height="109" Background="#FF1F283C">
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                     <TextBlock Text="LegendaryExplorer" TextAlignment="Center" Foreground="#FFD8D8D8" FontSize="26" FontFamily="{StaticResource Exo-SemiBold}"/>

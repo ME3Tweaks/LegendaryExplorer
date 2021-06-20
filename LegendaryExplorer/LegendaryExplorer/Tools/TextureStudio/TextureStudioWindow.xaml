@@ -16,6 +16,7 @@
         mc:Ignorable="d"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Closing="TextureStudioWindow_OnClosing"
+        Icon="pack://application:,,,/Tools/Icons/16x16/TextureStudio_Icon_16.ico"
         Title="Texture Studio" MinHeight="800" MinWidth="1000" >
     <Window.Resources>
         <converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>

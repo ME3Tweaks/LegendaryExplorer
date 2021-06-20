@@ -11,6 +11,7 @@
         mc:Ignorable="d"
         Title="Audio File Cache (AFC) Compactor" Height="550" Width="1000"
         ContentRendered="AFCCompactorWindow_OnContentRendered"
+        Icon="pack://application:,,,/Tools/Icons/16x16/AFCCompactor_Icon_16.ico"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.Resources>
         <converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>

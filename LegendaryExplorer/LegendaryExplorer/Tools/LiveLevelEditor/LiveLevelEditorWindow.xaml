@@ -13,6 +13,7 @@
         xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
         xmlns:liveLevelEditor="clr-namespace:LegendaryExplorer.Tools.LiveLevelEditor"
         mc:Ignorable="d"
+        Icon="pack://application:,,,/Tools/Icons/16x16/LiveLevelEditor_Icon_16.ico"
         d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Title="LiveLevelEditor" SizeToContent="WidthAndHeight" Closing="LiveLevelEditor_OnClosing">
     <Window.Resources>

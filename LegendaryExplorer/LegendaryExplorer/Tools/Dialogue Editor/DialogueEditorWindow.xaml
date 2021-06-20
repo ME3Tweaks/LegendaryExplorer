@@ -15,6 +15,7 @@
         mc:Ignorable="d"
         Loaded="DialogueEditorWPF_Loaded"
         Closing="DialogueEditorWPF_Closing"
+        Icon="pack://application:,,,/Tools/Icons/16x16/DialogueEditor_Icon_16.ico"
         Title="Dialogue Editor" Height="750" Width="1300" MinWidth="900" MinHeight="300"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.Resources>

@@ -8,6 +8,7 @@
         xmlns:bases="clr-namespace:LegendaryExplorer.SharedUI.Bases"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
+        Icon="pack://application:,,,/Tools/Icons/16x16/DLCUnpacker_Icon_16.ico"
         Title="DLC Unpacker" Height="300" Width="489"
         Closing="DLCUnpacker_Closing"
         ResizeMode="CanMinimize"

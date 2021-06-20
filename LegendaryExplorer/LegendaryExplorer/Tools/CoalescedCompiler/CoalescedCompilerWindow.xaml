@@ -6,6 +6,7 @@
         xmlns:bases="clr-namespace:LegendaryExplorer.SharedUI.Bases"
         xmlns:local="clr-namespace:LegendaryExplorer.Tools.CoalescedCompiler"
 		mc:Ignorable="d"
+        Icon="pack://application:,,,/Tools/Icons/16x16/CoalescedCompiler_Icon_16.ico"
 		Title="Coalesced Compiler" MinHeight="290" Height="290" MinWidth="600" Width="600" d:DesignHeight="300" d:DesignWidth="600"
         DragOver="Window_DragOver"
         Drop="Window_Drop"

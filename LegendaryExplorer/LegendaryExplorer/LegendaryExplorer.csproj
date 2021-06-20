@@ -6,7 +6,7 @@
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
     <Platforms>x64</Platforms>
-    <ApplicationIcon>LEX_ico_test.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\Images\LEX_icon.ico</ApplicationIcon>
     <Configurations>WinDebug;WinRelease;WinAzureRelease;WinAzureTest</Configurations>
     <DebugSymbols>true</DebugSymbols>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
@@ -44,78 +44,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Dialogs\Splash\splash.png" />
-    <None Remove="Resources\Images\GameIcons\UDK_48.ico" />
-    <None Remove="Tools\Icons\afccompactor_256x256.ico" />
-    <None Remove="Tools\Icons\animationexplorer_256x256.ico" />
-    <None Remove="Tools\Icons\animationimporter_256x256.ico" />
-    <None Remove="Tools\Icons\animviewer_256x256.ico" />
-    <None Remove="Tools\Icons\asimanager_256x256.ico" />
-    <None Remove="Tools\Icons\AssetDatabase_256x256.ico" />
-    <None Remove="Tools\Icons\audiolocalizer_256x256.ico" />
-    <None Remove="Tools\Icons\autotoc_256x256.ico" />
-    <None Remove="Tools\Icons\bikextractor_256x256.ico" />
-    <None Remove="Tools\Icons\bug_icon.ico" />
-    <None Remove="Tools\Icons\close.ico" />
-    <None Remove="Tools\Icons\close_icon.ico" />
-    <None Remove="Tools\Icons\coalescedcompiler_256x256.ico" />
-    <None Remove="Tools\Icons\coalescededitor_256x256.ico" />
-    <None Remove="Tools\Icons\conditionalseditor_256x256.ico" />
-    <None Remove="Tools\Icons\create_mods_icon.ico" />
-    <None Remove="Tools\Icons\dialoguedumper_256x256.ico" />
-    <None Remove="Tools\Icons\dialogueeditor_256x256.ico" />
-    <None Remove="Tools\Icons\diskette_white.ico" />
-    <None Remove="Tools\Icons\dlc_unpacker_256x256.ico" />
-    <None Remove="Tools\Icons\elipsis_icon.ico" />
-    <None Remove="Tools\Icons\error_x.png" />
-    <None Remove="Tools\Icons\excel.gif" />
-    <None Remove="Tools\Icons\excel.png" />
-    <None Remove="Tools\Icons\eye_white.ico" />
-    <None Remove="Tools\Icons\facefxeditor_256x256.ico" />
-    <None Remove="Tools\Icons\filehexanalyzer_256x256.ico" />
-    <None Remove="Tools\Icons\folder.ico" />
-    <None Remove="Tools\Icons\hexconverter_256x256.ico" />
-    <None Remove="Tools\Icons\install_mods_icon.ico" />
-    <None Remove="Tools\Icons\interpeditor_256x256.ico" />
-    <None Remove="Tools\Icons\InterpViewer_256x256.ico" />
-    <None Remove="Tools\Icons\left_arrow.ico" />
-    <None Remove="Tools\Icons\liveleveleditor_256x256.ico" />
-    <None Remove="Tools\Icons\loadingspinner.png" />
-    <None Remove="Tools\Icons\ME1Game.ico" />
-    <None Remove="Tools\Icons\ME2Game.ico" />
-    <None Remove="Tools\Icons\me2me3tlkeditor_256x256.ico" />
-    <None Remove="Tools\Icons\me3exp_smallbanner_v1.png" />
-    <None Remove="Tools\Icons\ME3Game.ico" />
-    <None Remove="Tools\Icons\me3tweaks_fork.png" />
-    <None Remove="Tools\Icons\meexp_favicon.ico" />
-    <None Remove="Tools\Icons\memoryanalyzer_256x256.ico" />
-    <None Remove="Tools\Icons\meshplorer_256x256.ico" />
-    <None Remove="Tools\Icons\minilogo.png" />
-    <None Remove="Tools\Icons\minimize_icon.ico" />
-    <None Remove="Tools\Icons\mounteditor_256x256.ico" />
-    <None Remove="Tools\Icons\packagedumper_256x256.ico" />
-    <None Remove="Tools\Icons\packageeditorwpf_256x256.ico" />
-    <None Remove="Tools\Icons\pathfindingeditor_256x256.ico" />
-    <None Remove="Tools\Icons\placeholder_256x256.ico" />
-    <None Remove="Tools\Icons\plotdatabase_256x256.ico" />
-    <None Remove="Tools\Icons\ploteditor_256x256.ico" />
-    <None Remove="Tools\Icons\psaviewer_256x256.ico" />
-    <None Remove="Tools\Icons\resize_icon.ico" />
-    <None Remove="Tools\Icons\right_arrow.ico" />
-    <None Remove="Tools\Icons\scriptdatabase_256x256.ico" />
-    <None Remove="Tools\Icons\search.ico" />
-    <None Remove="Tools\Icons\sequenceeditor_256x256.ico" />
-    <None Remove="Tools\Icons\settings.ico" />
-    <None Remove="Tools\Icons\sfarexplorer_256x256.ico" />
-    <None Remove="Tools\Icons\soundplorerwpf_256x256.ico" />
-    <None Remove="Tools\Icons\taskbar.ico" />
-    <None Remove="Tools\Icons\texturestudio_256x256.ico" />
-    <None Remove="Tools\Icons\tfccompactor_256x256.ico" />
-    <None Remove="Tools\Icons\tlkeditor_256x256.ico" />
-    <None Remove="Tools\Icons\tlkmanager_256x256.ico" />
-    <None Remove="Tools\Icons\toolset_splash.png" />
-    <None Remove="Tools\Icons\wwisebankeditor_256x256.ico" />
-    <None Remove="Tools\Icons\wwisegrapheditor_256x256.ico" />
+	<None Remove="Resources\Images\GameIcons\UDK_48.ico" />
+    <None Remove="Tools\Icons\**\*.ico" />
     <None Remove="Tools\Meshplorer\udk.ico" />
     <None Remove="Tools\Meshplorer\umodel.ico" />
     <None Remove="Tools\PackageEditor\ExportIcons\icon_texturecube.png" />
@@ -194,7 +124,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Tools\Icons\*.ico" />
+    <Resource Include="Tools\Icons\**\*.ico" />
     <Resource Include="Resources\Images\**\*.ico" />
     <Resource Include="Resources\Images\*.gif" />
     <!-- Is there a fontawesome excel icon?-->

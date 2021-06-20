@@ -10,6 +10,7 @@
     xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
     mc:Ignorable="d"
 	DataContext="{Binding RelativeSource={RelativeSource Self}}"
+    Icon="pack://application:,,,/Tools/Icons/16x16/PlotEditor_Icon_16.ico"
     Height="600" 
     Width="800" 
     SizeToContent="Manual" 

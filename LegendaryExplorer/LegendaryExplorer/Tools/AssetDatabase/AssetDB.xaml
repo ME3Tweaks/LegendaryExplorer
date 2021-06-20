@@ -15,6 +15,7 @@
         Loaded="AssetDB_Loaded"
         Closing="AssetDB_Closing"
         AllowDrop="True"
+        Icon="pack://application:,,,/Tools/Icons/16x16/AssetDatabase_Icon_16.ico"
         Title="Asset Database" Height="700" Width="1200"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.Resources>

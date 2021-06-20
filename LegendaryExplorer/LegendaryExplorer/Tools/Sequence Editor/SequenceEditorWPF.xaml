@@ -22,6 +22,7 @@
         xmlns:controls="clr-namespace:LegendaryExplorer.SharedUI.Controls"
         mc:Ignorable="d"
         d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Icon="pack://application:,,,/Tools/Icons/16x16/SequenceEditor_Icon_16.ico"
         Loaded="SequenceEditorWPF_Loaded"
         Closing="SequenceEditorWPF_Closing"
         Title="Sequence Editor" Height="750" Width="1300" MinWidth="900" MinHeight="200">

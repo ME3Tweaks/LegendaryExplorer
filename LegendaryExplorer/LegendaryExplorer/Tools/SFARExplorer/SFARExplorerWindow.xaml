@@ -12,6 +12,7 @@
         AllowDrop="True"
         mc:Ignorable="d"
         Closing="SFARExplorerWindow_OnClosing"
+        Icon="pack://application:,,,/Tools/Icons/16x16/SFARExplorer_Icon_16.ico"
         Title="SFAR Explorer" Height="450" Width="800">
     <Window.Resources>
         <converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>

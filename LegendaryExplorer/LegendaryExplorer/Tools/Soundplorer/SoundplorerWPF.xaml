@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:fa="http://schemas.fontawesome.com/icons/"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
         xmlns:settings="clr-namespace:LegendaryExplorer.Misc.AppSettings"
         xmlns:soundplorer="clr-namespace:LegendaryExplorer.Tools.Soundplorer"
@@ -15,8 +16,8 @@
         Closing="Soundplorer_Closing"
         Drop="Window_Drop"
         AllowDrop="True"
-        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Icon="pack://application:,,,/Tools/Icons/16x16/SoundExplorer_Icon_16.ico"
         Title="Sound Explorer" Height="583" Width="900" Loaded="SoundplorerWPF_OnLoaded">
     <Window.Resources>
         <converters:NullEnabledConverter x:Key="NullEnabledConverter"/>

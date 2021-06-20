@@ -120,7 +120,5 @@ namespace LegendaryExplorerCore.Unreal
             public int Offset;
             public byte[] Data;
         }
-
-        
     }
 }

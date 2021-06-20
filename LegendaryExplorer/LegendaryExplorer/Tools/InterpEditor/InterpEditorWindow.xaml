@@ -9,6 +9,7 @@
         xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
+        Icon="pack://application:,,,/Tools/Icons/16x16/InterpEditor_Icon_16.ico"
         Title="Interp Editor" Height="750" Width="1300" MinWidth="900" MinHeight="200"
         DataContext="{Binding RelativeSource={RelativeSource Self}}" Closing="WPFBase_Closing">
     <Window.Resources>

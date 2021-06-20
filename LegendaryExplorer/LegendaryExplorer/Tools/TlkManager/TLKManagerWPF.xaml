@@ -7,6 +7,7 @@
         xmlns:local="clr-namespace:LegendaryExplorer.Tools.TlkManagerNS"
         xmlns:bases="clr-namespace:LegendaryExplorer.SharedUI.Bases"
         mc:Ignorable="d"
+        Icon="pack://application:,,,/Tools/Icons/16x16/TLKManager_Icon_16.ico"
         Title="TLK Manager" Height="450" Width="800"
         Closing="TLKManager_Closing"
         d:DataContext="{Binding RelativeSource={RelativeSource Self}}">

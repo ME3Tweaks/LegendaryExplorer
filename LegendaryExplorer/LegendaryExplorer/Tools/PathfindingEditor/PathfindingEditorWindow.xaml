@@ -22,6 +22,7 @@
         AllowDrop="True"
         Loaded="PathfindingEditorWPF_Loaded"
         Closing="PathfinderEditorWPF_Closing"
+        Icon="pack://application:,,,/Tools/Icons/16x16/PathfindingEditor_Icon_16.ico"
         Title="Pathfinding Editor" Height="750" Width="1300" MinWidth="900" MinHeight="200">
     <Window.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>

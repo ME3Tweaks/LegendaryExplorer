@@ -10,6 +10,7 @@
         DragOver="Window_DragOver"
         Drop="Window_Drop"
         AllowDrop="True"
+        Icon="pack://application:,,,/Tools/Icons/16x16/AudioLocalizer_Icon_16.ico"
         Title="Audio Localizer" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>

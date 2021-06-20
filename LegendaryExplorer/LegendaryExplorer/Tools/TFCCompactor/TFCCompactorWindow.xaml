@@ -9,6 +9,7 @@
         SizeToContent="Height"
         ResizeMode="NoResize"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Icon="pack://application:,,,/Tools/Icons/16x16/TFCCompactor_Icon_16.ico"
         Title="TFC Compactor" Width="600">
     <xctk:BusyIndicator IsBusy="{Binding IsBusyUI}" BusyContent="{Binding BusyText}" >
         <xctk:BusyIndicator.ProgressBarStyle>
