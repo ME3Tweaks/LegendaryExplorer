@@ -35,8 +35,10 @@
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding Key="O" Modifiers="Control" Command="{Binding OpenCommand}"/>
+        <KeyBinding Key="N" Modifiers="Control" Command="{Binding NewFileCommand}"/>
         <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveCommand}"/>
         <KeyBinding Key="S" Modifiers="Control+Shift" Command="{Binding SaveAsCommand}"/>
+        <KeyBinding Key="N" Modifiers="Control+Shift" Command="{Binding AddBlankCommand}"/>
         <KeyBinding Key="F" Modifiers="Control" Command="{Binding SearchCommand}"/>
         <KeyBinding Key="F3" Command="{Binding SearchAgainCommand}"/>
     </Window.InputBindings>
@@ -44,11 +46,16 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File" Padding="4">
                 <MenuItem Header="_Open" Command="{Binding OpenCommand}" InputGestureText="Ctrl+O"
-                                ToolTip="Open a package file" />
+                                ToolTip="Open a conditionals file" />
+                <MenuItem Header="_New" Command="{Binding NewFileCommand}" InputGestureText="Ctrl+N"
+                          ToolTip="Create a new conditionals file" />
                 <MenuItem Header="_Save" Command="{Binding SaveCommand}" InputGestureText="Ctrl+S"
-                              ToolTip="Save package file in-place"/>
+                              ToolTip="Save conditionals file in-place"/>
                 <MenuItem Header="Save as" Command="{Binding SaveAsCommand}" InputGestureText="Ctrl+Shift+S"
-                                ToolTip="Save package file to another location" />
+                                ToolTip="Save conditionals file to another location" />
+                <Separator />
+                <MenuItem Header="Add new conditional" Command="{Binding AddBlankCommand}" InputGestureText="Ctrl+Shift+N"
+                          ToolTip="Add a new, blank conditional to the file" />
                 <Separator />
                 <MenuItem Name="Recents_MenuItem" Header="Recent" IsEnabled="false" />
             </MenuItem>

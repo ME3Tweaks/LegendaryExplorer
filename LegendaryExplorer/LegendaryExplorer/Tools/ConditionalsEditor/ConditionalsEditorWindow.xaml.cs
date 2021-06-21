@@ -131,6 +131,7 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
         }
 
         public ICommand OpenCommand { get; set; }
+        public ICommand NewFileCommand { get; set; }
         public ICommand SaveCommand { get; set; }
         public ICommand SaveAsCommand { get; set; }
         public ICommand CompileCommand { get; set; }
@@ -141,10 +142,12 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
         public ICommand SaveHexChangesCommand { get; set; }
         public ICommand SearchCommand { get; set; }
         public ICommand SearchAgainCommand { get; set; }
+        public ICommand AddBlankCommand { get; set; }
 
         private void LoadCommands()
         {
             OpenCommand = new GenericCommand(OpenFile);
+            NewFileCommand = new GenericCommand(NewFile);
             SaveCommand = new GenericCommand(Save, FileIsLoaded);
             SaveAsCommand = new GenericCommand(SaveAs, FileIsLoaded);
             CompileCommand = new GenericCommand(Compile, CanCompile);
@@ -155,6 +158,7 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
             SaveHexChangesCommand = new GenericCommand(SaveHexChanges, EntryIsSelected);
             SearchCommand = new GenericCommand(SearchPrompt, FileIsLoaded);
             SearchAgainCommand = new GenericCommand(Search, CanSearchAgain);
+            AddBlankCommand = new GenericCommand(AddBlankConditional, FileIsLoaded);
         }
 
         private bool CanSearchAgain() => FileIsLoaded() && !string.IsNullOrEmpty(searchText);
@@ -267,6 +271,17 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
         {
             if (Validate())
             {
+                if (File.FilePath is null)
+                {
+                    // Unsaved new file
+                    var d = new SaveFileDialog { Filter = CNDFileFilter };
+                    if (d.ShowDialog() == false) return;
+                    File.FilePath = d.FileName;
+                    RecentsController.AddRecent(d.FileName, false, null); // Can we infer game this file is for?
+                    RecentsController.SaveRecentList(true);
+                    Title = $"Conditionals Editor - {Path.GetFileName(d.FileName)}";
+                }
+
                 SaveFile();
             }
         }
@@ -387,6 +402,43 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
             Conditionals.AddRange(File.ConditionalEntries.OrderBy(c => c.ID).Select(c => new CondListEntry(c)));
         }
 
+        private void NewFile()
+        {
+            if(FileIsLoaded()) Save();
+            File = new CNDFile
+            {
+                ConditionalEntries = new List<CNDFile.ConditionalEntry>()
+            };
+            Conditionals.Clear();
+            SelectedCond = null;
+            Save();
+        }
+
+        private void AddBlankConditional()
+        {
+            if (PromptDialog.Prompt(this, "Enter ID for new entry", selectText: true) is string txt)
+            {
+                if (int.TryParse(txt, out int newID) && newID > 0)
+                {
+                    var newCond = new CondListEntry(new CNDFile.ConditionalEntry
+                    {
+                        Data = ME3ConditionalsCompiler.Compile("Bool false"),
+                        ID = newID
+                    })
+                    {
+                        IsModified = true
+                    };
+                    Conditionals.Add(newCond);
+                    SelectedCond = newCond;
+                    ConditionalsListBox.ScrollIntoView(SelectedCond);
+                }
+                else
+                {
+                    MessageBox.Show($"'{txt}' is not a positive integer!");
+                }
+            }
+        }
+
         public void PropogateRecentsChange(IEnumerable<RecentsControl.RecentItem> newRecents)
         {
             RecentsController.PropogateRecentsChange(false, newRecents);
@@ -399,7 +451,7 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
             if (e.Cancel)
                 return;
             if (Conditionals.Any(c => c.IsModified) &&
-                MessageBoxResult.No == MessageBox.Show($"{Path.GetFileName(File.FilePath)} has unsaved changes. Do you really want to close Conditionals Editor?",
+                MessageBoxResult.No == MessageBox.Show($"{Path.GetFileName(File.FilePath) ?? "Untitled file"} has unsaved changes. Do you really want to close Conditionals Editor?",
                                                        "Unsaved changes", MessageBoxButton.YesNo))
             {
                 e.Cancel = true;
