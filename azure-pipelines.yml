@@ -19,6 +19,7 @@ variables:
   appMajor: '6'
   appMinor: '0'
   appPatch: '0'
+  netVersion: '5'
   disable.coverage.autogenerate: 'true'
 
 steps:
@@ -127,7 +128,7 @@ steps:
 - task: ArchiveFiles@2
   displayName: '7z LEX'
   inputs:
-    rootFolderOrFile: '$(Build.SourcesDirectory)/LegendaryExplorer/LegendaryExplorer/bin/x64/$(buildConfiguration)'
+    rootFolderOrFile: '$(Build.SourcesDirectory)/LegendaryExplorer/LegendaryExplorer/bin/x64/$(buildConfiguration)/net$(netVersion).0-windows'
     includeRootFolder: false
     archiveType: '7z'
     archiveFile: '$(Build.ArtifactStagingDirectory)/legendaryexplorer_nightly_cibuild_$(appMajorMin).$(appPatch).$(Build.BuildId).7z'
