@@ -258,18 +258,31 @@ namespace LegendaryExplorer.Tools.AFCCompactorWindow
             set
             {
                 SetProperty(ref _dlcInputFolder, value);
-                // TODO: Implement for LEX
                 if (!string.IsNullOrWhiteSpace(_dlcInputFolder))
                 {
+                    string cookedFolder = _dlcInputFolder;
                     string foldername = Path.GetFileName(DLCInputFolder);
-                    if (foldername.Equals("CookedPC") || Directory.Exists(Path.Combine(_dlcInputFolder, "CookedPC")))
+
+                    // Locate the CookedPC folder
+                    if (!foldername.StartsWith("CookedPC", StringComparison.OrdinalIgnoreCase))
                     {
-                        SelectedGame = MEGame.ME2;
+                        if (Directory.Exists(Path.Combine(_dlcInputFolder, "CookedPC")))
+                            cookedFolder = Path.Combine(_dlcInputFolder, "CookedPC");
+                        else if (Directory.Exists(Path.Combine(_dlcInputFolder, "CookedPCConsole")))
+                            cookedFolder = Path.Combine(_dlcInputFolder, "CookedPCConsole");
                     }
-                    if (foldername.Equals("CookedPCConsole") || Directory.Exists(Path.Combine(_dlcInputFolder, "CookedPCConsole")))
+
+                    // Determine game from mount file
+                    try
                     {
-                        SelectedGame = MEGame.ME3;
+                        var mount = new MountFile(Path.Combine(cookedFolder, "Mount.dlc"));
+                        SelectedGame = mount.Game;
                     }
+                    catch
+                    {
+                        SelectedGame = cookedFolder.Contains("CookedPCConsole", StringComparison.OrdinalIgnoreCase) ? MEGame.ME3 : MEGame.ME2;
+                    }
+
 
                     if (foldername.ToLower().StartsWith("cookedpc"))
                     {
