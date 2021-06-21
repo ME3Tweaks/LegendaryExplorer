@@ -12,15 +12,17 @@
     <PreserveCompilationContext>false</PreserveCompilationContext>
     <Version>6.0</Version>
   </PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)'=='WinDebug'">
+	
+  <PropertyGroup Condition="'$(Configuration)'=='WinDebug'">
     <DebugType>pdbonly</DebugType>
     <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
+	<TextTransformPath>$(DevEnvDir)TextTransform.exe</TextTransformPath>
     <XamlDebuggingInformation>True</XamlDebuggingInformation>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='WinRelease'">
     <DebugType>embedded</DebugType>
+	<TextTransformPath>$(DevEnvDir)TextTransform.exe</TextTransformPath>
     <DefineConstants>WINDOWS;RELEASE</DefineConstants>
   </PropertyGroup>
 
@@ -28,6 +30,7 @@
   <PropertyGroup Condition="'$(Configuration)'=='WinAzureRelease'">
     <DebugType>embedded</DebugType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	<TextTransformPath>C:\PROGRAM FILES (X86)\MICROSOFT VISUAL STUDIO\2019\Enterprise\Common7\IDE\TextTransform.exe</TextTransformPath>
     <DefineConstants>WINDOWS;NIGHTLY</DefineConstants>
   </PropertyGroup>
 
@@ -35,11 +38,8 @@
   <PropertyGroup Condition="'$(Configuration)'=='WinAzureTest'">
     <DebugType>embedded</DebugType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	<TextTransformPath>C:\PROGRAM FILES (X86)\MICROSOFT VISUAL STUDIO\2019\Enterprise\Common7\IDE\TextTransform.exe</TextTransformPath>
     <DefineConstants>WINDOWS;AZURE</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup>
-	  <TextTransformPath>$(DevEnvDir)TextTransform.exe</TextTransformPath>
   </PropertyGroup>
 
   <ItemGroup>
