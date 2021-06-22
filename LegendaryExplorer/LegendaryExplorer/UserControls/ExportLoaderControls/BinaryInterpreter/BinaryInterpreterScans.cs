@@ -2882,7 +2882,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             int PackageIdx = BitConverter.ToInt32(data, offset);  //Package name idx
                             nTransition.Items.Add(new BinInterpNode
                             {
-                                Header = $"0x{offset:X5} Package Name: {CurrentLoadedExport.FileRef.GetNameEntry(PackageName)}_{PackageIdx}",
+                                Header = $"0x{offset:X5} Package Name: {new NameReference(CurrentLoadedExport.FileRef.GetNameEntry(PackageName), PackageIdx).Instanced}",
                                 Name = "_" + offset,
                                 Tag = NodeType.StructLeafName
                             });
@@ -2893,7 +2893,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             int ClassIdx = BitConverter.ToInt32(data, offset);  //Class name idx
                             nTransition.Items.Add(new BinInterpNode
                             {
-                                Header = $"0x{offset:X5} Class Name: {CurrentLoadedExport.FileRef.GetNameEntry(ClassName)}_{ClassIdx}",
+                                Header = $"0x{offset:X5} Class Name: {new NameReference(CurrentLoadedExport.FileRef.GetNameEntry(ClassName), ClassIdx).Instanced}",
                                 Name = "_" + offset,
                                 Tag = NodeType.StructLeafName
                             });
@@ -2904,7 +2904,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             int FunctionIdx = BitConverter.ToInt32(data, offset);  //Function name idx
                             nTransition.Items.Add(new BinInterpNode
                             {
-                                Header = $"0x{offset:X5} Function Name: {CurrentLoadedExport.FileRef.GetNameEntry(FunctionName)}_{FunctionIdx}",
+                                Header = $"0x{offset:X5} Function Name: {new NameReference(CurrentLoadedExport.FileRef.GetNameEntry(FunctionName), FunctionIdx).Instanced}",
                                 Name = "_" + offset,
                                 Tag = NodeType.StructLeafName
                             });
@@ -3042,7 +3042,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             int FunctionIdx = BitConverter.ToInt32(data, offset);  //Function name
                             nTransition.Items.Add(new BinInterpNode
                             {
-                                Header = $"0x{offset:X5} Function Name: {CurrentLoadedExport.FileRef.GetNameEntry(FunctionName)}_{FunctionIdx}",
+                                Header = $"0x{offset:X5} Function Name: {new NameReference(CurrentLoadedExport.FileRef.GetNameEntry(FunctionName), FunctionIdx).Instanced}",
                                 Name = "_" + offset,
                                 Tag = NodeType.StructLeafName
                             });
@@ -3053,7 +3053,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             int TagIdx = BitConverter.ToInt32(data, offset);  //Object idx
                             nTransition.Items.Add(new BinInterpNode
                             {
-                                Header = $"0x{offset:X5} Object Name: {CurrentLoadedExport.FileRef.GetNameEntry(TagName)}_{TagIdx}",
+                                Header = $"0x{offset:X5} Object Name: {new NameReference(CurrentLoadedExport.FileRef.GetNameEntry(TagName), TagIdx).Instanced}",
                                 Name = "_" + offset,
                                 Tag = NodeType.StructLeafName
                             });
@@ -3409,7 +3409,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         offset -= 4;
                         nTaskIDs.Items.Add(new BinInterpNode
                         {
-                            Header = $"0x{offset:X5} Planet Name: {CurrentLoadedExport.FileRef.GetNameEntry(planetName)}_{planetIdx} ",
+                            Header = $"0x{offset:X5} Planet Name: {new NameReference(CurrentLoadedExport.FileRef.GetNameEntry(planetName), planetIdx).Instanced} ",
                             Name = "_" + offset,
                             Tag = NodeType.StructLeafName
                         });
@@ -6040,7 +6040,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 int count = EndianReader.ToInt32(data, binarypos, CurrentLoadedExport.FileRef.Endian);
                 subnodes.Add(new BinInterpNode
                 {
-                    Header = $"0x{binarypos:X4} Count: {count.ToString()}"
+                    Header = $"0x{binarypos:X4} Count: {count}"
                 });
                 binarypos += 4; //+ int
                 for (int i = 0; i < count; i++)
@@ -6050,7 +6050,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     int shouldBe1 = EndianReader.ToInt32(data, binarypos + 8, CurrentLoadedExport.FileRef.Endian);
 
                     var name = CurrentLoadedExport.FileRef.GetNameEntry(nameIndex);
-                    string nodeValue = $"{(name == "INVALID NAME VALUE " + nameIndex ? "" : name)}_{nameIndexNum}";
+                    string nodeValue = $"{new NameReference(name, nameIndexNum).Instanced}";
                     if (shouldBe1 != 1)
                     {
                         //ERROR
@@ -6061,13 +6061,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         Header = $"0x{binarypos:X4} Name: {nodeValue}",
                         Tag = NodeType.StructLeafName,
-                        Name = $"_{binarypos.ToString()}",
+                        Name = $"_{binarypos}",
                     });
                     subnodes.Add(new BinInterpNode
                     {
                         Header = $"0x{(binarypos + 8):X4} Unknown 1: {shouldBe1}",
                         Tag = NodeType.StructLeafInt,
-                        Name = $"_{(binarypos + 8).ToString()}",
+                        Name = $"_{(binarypos + 8)}",
                     });
                     binarypos += 12;
                 }
@@ -6146,9 +6146,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 num = BitConverter.ToInt32(data, pos + 4);
                                 BinInterpNode parentnode = new BinInterpNode
                                 {
-                                    Header = $"{(pos - binarystart):X4} Camera {i + 1}: {CurrentLoadedExport.FileRef.GetNameEntry(nameindex)}_{num}",
+                                    Header = $"{(pos - binarystart):X4} Camera {i + 1}: {new NameReference(CurrentLoadedExport.FileRef.GetNameEntry(nameindex), num).Instanced}",
                                     Tag = NodeType.StructLeafName,
-                                    Name = $"_{pos.ToString()}"
+                                    Name = $"_{pos}"
                                 };
                                 subnodes.Add(parentnode);
                                 pos += 8;
@@ -6445,7 +6445,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                         Tag = NodeType.StructLeafName
                     });
-                    //Debug.WriteLine($"{pos:X4} {CurrentLoadedExport.FileRef.getNameEntry(nameRef)}_{nameIdx}: {{{guid}}}");
+                    //Debug.WriteLine($"{pos:X4} {new NameReference(CurrentLoadedExport.FileRef.getNameEntry(nameRef), nameIdx).Instanced}: {{{guid}}}");
                     pos += 24;
                 }
             }
