@@ -121,10 +121,10 @@ namespace LegendaryExplorerCore.Unreal
 
             foreach (var dir in tocFolders)
             {
-                string sfar = Path.Combine(dir, "Default.sfar");
+                string sfar = Path.Combine(dir, game.CookedDirName(), "Default.sfar");
 
                 //This is a sfar - code ported from M3
-                if (dir.EndsWith(".sfar") || (File.Exists(sfar) && new FileInfo(sfar).Length != 32))
+                if (dir.EndsWith(".sfar") || (File.Exists(sfar) && new FileInfo(sfar).Length != 32)) //endswith .sfar is for TESTPATCH as it doesn't follow other naming system
                 {
                     var sfarToToc = dir;
                     if (File.Exists(sfar)) sfarToToc = sfar;
