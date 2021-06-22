@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Numerics;
+using System.Runtime.InteropServices;
+using System.Windows;
 using System.Windows.Threading;
 using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Helpers;
@@ -362,6 +365,18 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 File.WriteAllText(outFile, JsonConvert.SerializeObject(audioSizes));
 
             });
+        }
+
+        [DllImport(@"C:\Program Files (x86)\Audiokinetic\Wwise 2019.1.6.7110\SDK\x64_vc140\Release\bin\AkSoundEngineDLL.dll")]
+        public static extern uint GetIDFromString(string str);
+
+        public static void GenerateWwiseId(PackageEditorWindow pew)
+        {
+            if (pew.TryGetSelectedExport(out var exp) && File.Exists(Misc.AppSettings.Settings.Wwise_7110Path))
+            {
+                string name = exp.ObjectName.Name;
+                MessageBox.Show(GetIDFromString(name).ToString());
+            }
         }
     }
 }

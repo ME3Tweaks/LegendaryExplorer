@@ -1077,6 +1077,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsO.CreateAudioSizeInfo(GetPEWindow(), MEGame.LE3);
         }
+
+        private void GenerateWwiseId_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.GenerateWwiseId(GetPEWindow());
+        }
         #endregion
 
 

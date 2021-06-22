@@ -104,7 +104,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
         #region Properties and Bindings
         public static readonly string PathfindingEditorDataFolder = Path.Combine(AppDirectories.AppDataFolder, @"PathfindingEditor\");
-        //TODO Before LEX release: convert options to use Settings class 
         private bool IsCombatZonesSingleSelecting;
         private bool IsReadingLevel;
 

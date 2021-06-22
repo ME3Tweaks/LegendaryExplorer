@@ -40,7 +40,7 @@
             <Button Name="btnImportXML" Click="Evt_ImportXML" Content="Import" ToolTip="Import from XML"  Padding="5,0" VerticalAlignment="Stretch"/>
             <Button Name="btnViewXML" Click="Evt_ViewXML" Content="View XML" ToolTip="View as XML"  Padding="5,0" VerticalAlignment="Stretch"/>
         </ToolBar>
-        <DockPanel Name="LowerDock" DockPanel.Dock="Bottom" MinHeight="120">
+        <DockPanel Name="LowerDock" DockPanel.Dock="Bottom" MinHeight="120" MaxHeight="450">
             <Button Name="btnSaveEdit" Content="Save" DockPanel.Dock="Right" Width="50"  Command="{Binding SaveCommand}"/>
             <TextBlock Text="Press enter to save the string. Press Shift+Enter to enter a newline." DockPanel.Dock="Bottom" Background="LightGray"/>
             <TextBox Name="editBox" Text="No string selected" FontFamily="Courier New" FontSize="14" Focusable="True" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" IsEnabled="{Binding StringSelected, FallbackValue=False}" TextWrapping="Wrap" Visibility="Visible" AcceptsReturn="True" PreviewKeyDown="TlkStrField_PreviewKeyDown" />

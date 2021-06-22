@@ -385,7 +385,7 @@ namespace LegendaryExplorer
                 },
                 tags = new List<string> { "utility", "mesh", "material", "class", "animation" },
                 category = "Utilities",
-                description = "Scans games and creates a database of classes, animations, materials, textures, particles and meshes.\nIndividual assets can be opened directly from the interface with tools for editing."
+                description = "Scans games and creates a database of classes, animations, materials, textures, particles and meshes. Individual assets can be opened directly from the interface with tools for editing."
             });
             set.Add(new Tool
             {

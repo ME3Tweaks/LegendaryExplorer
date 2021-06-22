@@ -107,5 +107,6 @@
         <MenuItem Header="Build ME1 SuperTlk File" Click="BuildME1SuperTLK_Clicked"/>
         <MenuItem Header="Associate all file extensions" Click="AssociateAllExtensions_Clicked"/>
         <MenuItem Header="Generate audio file info JSON (check code for game)" Click="GenerateAudioFileInfo_Click"/>
+        <MenuItem Header="Generate Wwise ID from entry name" Click="GenerateWwiseId_Click"/>
     </MenuItem>
 </MenuItem>
