@@ -56,9 +56,9 @@ namespace LegendaryExplorerCore.Coalesced
                 { "\n", "\\n" }
             };
 
-        public static Dictionary<string, string> DecompileGame3ToMemory(Stream ms)
+        public static CaseInsensitiveDictionary<string> DecompileGame3ToMemory(Stream ms)
         {
-            Dictionary<string, string> fileMapping = new Dictionary<string, string>();
+            var fileMapping = new CaseInsensitiveDictionary<string>();
             var coal = new CoalescedFileXml();
             coal.Deserialize(ms);
 
