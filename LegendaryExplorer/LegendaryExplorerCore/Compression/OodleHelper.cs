@@ -34,6 +34,33 @@ namespace LegendaryExplorerCore.Compression
         private static extern unsafe int OodleLZ_Decompress(byte* buffer, long bufferSize, byte* outputBuffer, long outputBufferSize,
             uint a, uint b, ulong c, uint d, uint e, uint f, uint g, uint h, uint i, uint threadModule);
 
+
+        [DllImport("kernel32.dll")]
+        static extern bool LoadLibraryA(string hModule);
+
+        [DllImport("kernel32.dll")]
+        static extern bool GetModuleHandleExA(int dwFlags, string ModuleName, ref IntPtr phModule);
+        [DllImport("kernel32.dll")]
+        static extern bool FreeLibrary(IntPtr hModule);
+
+
+        private static bool dllLoaded;
+        /// <summary>
+        /// Loads the oodle dll into memory. It should not load out of game dir or it will lock the game directory in use, which
+        /// will prevent deletion of the directory.
+        /// </summary>
+        /// <param name="dllPath"></param>
+        public static void LoadOodleDll(string dllPath)
+        {
+            // This call is for this solution https://stackoverflow.com/a/8836934/800318 merged with native version https://stackoverflow.com/a/14967825/800318
+            // Not sure there is a point to unloading dll since it will likely need to be used again later
+            if (!dllLoaded)
+            {
+                LoadLibraryA(dllPath);
+                dllLoaded = true;
+            }
+        }
+
         public enum OodleCompressionLevel : ulong
         {
             None,
@@ -47,7 +74,7 @@ namespace LegendaryExplorerCore.Compression
             Optimal4,
             Optimal5
         }
-        
+
         public enum OodleFormat : uint
         {
             LZH,
@@ -66,7 +93,13 @@ namespace LegendaryExplorerCore.Compression
             Leviathan // 13 
         }
 
-        public static bool EnsureOodleDll()
+        /// <summary>
+        /// Ensures the oodle dll is available and loads the image into memory if it is found, so DllImports to oodle calls will work.
+        /// </summary>
+        /// <param name="gameRootPath"></param>
+        /// <param name="storagePath"></param>
+        /// <returns></returns>
+        public static bool EnsureOodleDll(string gameRootPath = null, string storagePath = null)
         {
             // Ported from M3
             // Required for single file .net 5
@@ -91,30 +124,66 @@ namespace LegendaryExplorerCore.Compression
             ZipFile.ExtractToDirectory(supportZip, @"C:\Users\Public", true);
             return true;
 #else
-            var t = AppContext.GetData("NATIVE_DLL_SEARCH_DIRECTORIES");
-            if (t is string str)
+            if (storagePath != null && Directory.Exists(storagePath))
             {
-                var paths = str.Split(';');
-                foreach (var path in paths)
+                var fullStoragePath = Path.Combine(storagePath, CompressionHelper.OODLE_DLL_NAME);
+                if (File.Exists(fullStoragePath) && new FileInfo(fullStoragePath).Length > 0)
                 {
-                    if (string.IsNullOrWhiteSpace(path)) continue;
-                    var tpath = Path.Combine(path, CompressionHelper.OODLE_DLL_NAME);
-                    if (File.Exists(tpath))
-                        return true;
+                    LoadOodleDll(fullStoragePath);
+                    return true; // OK
                 }
 
-
-                if (LE1Directory.ExecutableFolder != null)
+                string oodleGamePath = null;
+                if (gameRootPath != null)
                 {
-                    var oodPath = Path.Combine(LE1Directory.ExecutableFolder, CompressionHelper.OODLE_DLL_NAME);
-                    if (File.Exists(oodPath))
-                    {
+                    oodleGamePath = Path.Combine(gameRootPath, @"Binaries", @"Win64", CompressionHelper.OODLE_DLL_NAME);
+                    if (!File.Exists(oodleGamePath))
+                        oodleGamePath = null;
+                }
+                else if (oodleGamePath == null && LE1Directory.ExecutableFolder != null)
+                {
+                    oodleGamePath = Path.Combine(LE1Directory.ExecutableFolder, CompressionHelper.OODLE_DLL_NAME);
+                }
 
-                        // Todo: FIX: CANNOT RUN IN TEST MODE
-                        // Access denied to directory
-                        var destPath = Path.Combine(paths.First(), CompressionHelper.OODLE_DLL_NAME);
-                        File.Copy(oodPath, destPath, true);
-                        return true;
+                if (oodleGamePath != null && File.Exists(oodleGamePath))
+                {
+                    File.Copy(oodleGamePath, fullStoragePath, true);
+                    LoadOodleDll(fullStoragePath);
+                    return true;
+                }
+            }
+            else
+            {
+                // check native search directories
+                var t = AppContext.GetData("NATIVE_DLL_SEARCH_DIRECTORIES");
+                if (t is string str)
+                {
+                    var paths = str.Split(';');
+                    foreach (var path in paths)
+                    {
+                        if (string.IsNullOrWhiteSpace(path)) continue;
+                        var tpath = Path.Combine(path, CompressionHelper.OODLE_DLL_NAME);
+                        if (File.Exists(tpath))
+                        {
+                            LoadOodleDll(tpath);
+                            return true;
+                        }
+                    }
+
+
+                    if (LE1Directory.ExecutableFolder != null)
+                    {
+                        var oodPath = Path.Combine(LE1Directory.ExecutableFolder, CompressionHelper.OODLE_DLL_NAME);
+                        if (File.Exists(oodPath))
+                        {
+
+                            // Todo: FIX: CANNOT RUN IN TEST MODE
+                            // Access denied to directory
+                            var destPath = Path.Combine(paths.First(), CompressionHelper.OODLE_DLL_NAME);
+                            File.Copy(oodPath, destPath, true);
+                            LoadOodleDll(destPath);
+                            return true;
+                        }
                     }
                 }
             }
@@ -151,7 +220,7 @@ namespace LegendaryExplorerCore.Compression
                     compressedCount = OodleLZ_Compress(format, Unsafe.AsRef<byte>(ptr), buffer.Length, compressedBuffer, level, 0, 0, 0, 0, 0, 0);
                 }
             }
-            
+
 
             byte[] outputBuffer = new byte[compressedCount];
             Buffer.BlockCopy(compressedBuffer, 0, outputBuffer, 0, compressedCount);
