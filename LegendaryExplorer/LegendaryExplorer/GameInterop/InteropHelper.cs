@@ -90,7 +90,7 @@ namespace LegendaryExplorer.GameInterop
 
         public static void OpenASILoaderDownload()
         {
-            Process.Start("https://github.com/Erik-JS/masseffect-binkw32");
+            HyperlinkExtensions.OpenURL("https://github.com/Erik-JS/masseffect-binkw32");
         }
 
         public static bool IsGameInstalled(MEGame game) => MEDirectories.GetExecutablePath(game) is string exePath && File.Exists(exePath);

@@ -244,11 +244,21 @@ namespace LegendaryExplorer.Misc
 
         private static void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
-            using Process link = new Process();
-            link.StartInfo.FileName = e.Uri.AbsoluteUri;
-            link.StartInfo.UseShellExecute = true;
-            link.Start();
+            OpenURL(e.Uri.AbsoluteUri);
             e.Handled = true;
+        }
+
+        public static void OpenURL(string url)
+        {
+            using var link = new Process
+            {
+                StartInfo =
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                }
+            };
+            link.Start();
         }
     }
 

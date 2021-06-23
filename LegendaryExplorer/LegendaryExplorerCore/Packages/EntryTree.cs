@@ -55,14 +55,30 @@ namespace LegendaryExplorerCore.Packages
         {
             var node = new EntryTreeNode(exp);
             exports.Add(node);
-            this[exp.idxLink].Children.Add(exports.Count);
+            int link = exp.idxLink;
+            if (link == 0)
+            {
+                root.Add(node);
+            }
+            else
+            {
+                this[exp.idxLink].Children.Add(exports.Count);
+            }
         }
 
         public void Add(ImportEntry imp)
         {
             var node = new EntryTreeNode(imp);
             imports.Add(node);
-            this[imp.idxLink].Children.Add(-imports.Count);
+            int link = imp.idxLink;
+            if (link == 0)
+            {
+                root.Add(node);
+            }
+            else
+            {
+                this[link].Children.Add(-imports.Count);
+            }
         }
 
         public IEnumerable<EntryTreeNode> Roots => root;

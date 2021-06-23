@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Controls;
 using LegendaryExplorerCore.GameFilesystem;
@@ -1044,14 +1045,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var dlg = MessageBox.Show("Open the RAD Tools website?", "Warning", MessageBoxButton.YesNo);
             if (dlg == MessageBoxResult.No)
                 return;
-            Process.Start("http://www.radgametools.com/bnkdown.htm");
+            HyperlinkExtensions.OpenURL("http://www.radgametools.com/bnkdown.htm");
         }
         private void DownloadVLC_Click(object sender, RoutedEventArgs e)
         {
             var dlg = MessageBox.Show("Open the VideoLAN (VLC) website?", "Warning", MessageBoxButton.YesNo);
             if (dlg == MessageBoxResult.No)
                 return;
-            Process.Start("https://www.videolan.org/vlc/");
+            HyperlinkExtensions.OpenURL("https://www.videolan.org/vlc/");
         }
 
 
