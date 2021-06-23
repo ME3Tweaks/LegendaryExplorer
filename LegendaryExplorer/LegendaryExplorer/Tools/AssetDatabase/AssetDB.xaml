@@ -261,27 +261,27 @@
                                         <ContextMenu>
                                             <MenuItem Header="Open in Package Editor" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this file in Package Editor.">
                                                 <MenuItem.Icon>
-                                                    <Image Source="/Tools/Icons/packageeditorwpf_256x256.ico" Width="64"/>
+                                                    <Image Source="{StaticResource iconPackageEditor16}" Width="64"/>
                                                 </MenuItem.Icon>
                                             </MenuItem>
                                             <MenuItem Header="Open in Sequence Editor" Command="{Binding OpenUsagePkgCommand}" CommandParameter="SeqEd" ToolTip="Opens this file in Sequence Editor.">
                                                 <MenuItem.Icon>
-                                                    <Image Source="/Tools/Icons/sequenceeditor_256x256.ico" Width="64"/>
+                                                    <Image Source="{StaticResource iconSequenceEditor16}" Width="64"/>
                                                 </MenuItem.Icon>
                                             </MenuItem>
                                             <MenuItem Header="Open in Meshplorer" Command="{Binding OpenUsagePkgCommand}" CommandParameter="Meshplorer" ToolTip="Opens this file in Meshplorer Editor.">
                                                 <MenuItem.Icon>
-                                                    <Image Source="/Tools/Icons/meshplorer_256x256.ico" Width="64"/>
+                                                    <Image Source="{StaticResource iconMeshplorer16}" Width="64"/>
                                                 </MenuItem.Icon>
                                             </MenuItem>
                                             <MenuItem Header="Open in Pathfinding Editor" Command="{Binding OpenUsagePkgCommand}" CommandParameter="PathEd" ToolTip="Opens this file in Pathfinding Editor.">
                                                 <MenuItem.Icon>
-                                                    <Image Source="/Tools/Icons/pathfindingeditor_256x256.ico" Width="64"/>
+                                                    <Image Source="{StaticResource iconPathfindingEditor16}" Width="64"/>
                                                 </MenuItem.Icon>
                                             </MenuItem>
                                             <MenuItem Header="Open in Dialogue Editor" Command="{Binding OpenUsagePkgCommand}" CommandParameter="DlgEd" ToolTip="Opens this file in Dialogue Editor.">
                                                 <MenuItem.Icon>
-                                                    <Image Source="/Tools/Icons/dialogueeditor_256x256.ico" Width="64"/>
+                                                    <Image Source="{StaticResource iconDialogueEditor16}" Width="64"/>
                                                 </MenuItem.Icon>
                                             </MenuItem>
                                             <Separator/>

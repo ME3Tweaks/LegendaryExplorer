@@ -220,6 +220,43 @@
         <BitmapImage x:Key="iconAFCCompactor" UriSource="Tools/Icons/afccompactor_256x256.ico"/>
         <BitmapImage x:Key="iconCoalescedCompiler" UriSource="Tools/Icons/coalescedcompiler_256x256.ico"/>
 
+        <BitmapImage x:Key="iconBikExtractor16" UriSource="Tools/Icons/16x16/BinkMovieExtractor_Icon_16.ico"/>
+        <BitmapImage x:Key="iconHexConverter16" UriSource="Tools/Icons/16x16/HEXConverter_Icon_16.ico"/>
+        <BitmapImage x:Key="iconInterpEditor16" UriSource="Tools/Icons/16x16/InterpEditor_Icon_16.ico"/>
+        <BitmapImage x:Key="iconPlotDatabase16" UriSource="Tools/Icons/16x16/PlotDatabase_Icon_16.ico"/>
+        <BitmapImage x:Key="iconAssetDatabase16" UriSource="Tools/Icons/16x16/AssetDatabase_Icon_16.ico"/>
+        <BitmapImage x:Key="iconPSAViewer16" UriSource="Tools/Icons/16x16/PSAViewer_Icon_16.ico"/>
+        <BitmapImage x:Key="iconPathfindingEditor16" UriSource="Tools/Icons/16x16/PathfindingEditor_Icon_16.ico"/>
+        <BitmapImage x:Key="iconWwiseEditor16" UriSource="Tools/Icons/16x16/WwiseBankEditor_Icon_16.ico"/>
+        <BitmapImage x:Key="iconWwiseGraphEditor16" UriSource="Tools/Icons/16x16/WwiseGraphEditor_Icon_16.ico"/>
+        <BitmapImage x:Key="iconAutoTOC16" UriSource="Tools/Icons/16x16/AutoTOC_Icon_16.ico"/>
+        <BitmapImage x:Key="iconAnimationExplorer16" UriSource="Tools/Icons/16x16/AnimationExplorer_Icon_16.ico"/>
+        <BitmapImage x:Key="iconASIManager16" UriSource="Tools/Icons/16x16/ASIManager_Icon_16.ico"/>
+        <BitmapImage x:Key="iconDLCUnpacker16" UriSource="Tools/Icons/16x16/DLCUnpacker_Icon_16.ico"/>
+        <BitmapImage x:Key="iconConditionalsEditor16" UriSource="Tools/Icons/16x16/ConditionalEditor_Icon_16.ico"/>
+        <BitmapImage x:Key="iconDialogueEditor16" UriSource="Tools/Icons/16x16/DialogueEditor_Icon_16.ico"/>
+        <BitmapImage x:Key="iconFaceFXEditor16" UriSource="Tools/Icons/16x16/FaceFXEditor_Icon_16.ico"/>
+        <BitmapImage x:Key="iconMeshplorer16" UriSource="Tools/Icons/16x16/MeshExplorer_Icon_16.ico"/>
+        <BitmapImage x:Key="iconMountEditor16" UriSource="Tools/Icons/16x16/MountEditor_Icon_16.ico"/>
+        <BitmapImage x:Key="iconPackageEditor16" UriSource="Tools/Icons/16x16/PackageEditor_Icon_16.ico"/>
+        <BitmapImage x:Key="iconDialogueDumper16" UriSource="Tools/Icons/16x16/DialogueDumper_Icon_16.ico"/>
+        <BitmapImage x:Key="iconPackageDumper16" UriSource="Tools/Icons/16x16/PackageDumper_Icon_16.ico"/>
+        <BitmapImage x:Key="iconPlotEditor16" UriSource="Tools/Icons/16x16/PlotEditor_Icon_16.ico"/>
+        <BitmapImage x:Key="iconSequenceEditor16" UriSource="Tools/Icons/16x16/SequenceEditor_Icon_16.ico"/>
+        <BitmapImage x:Key="iconSFARExplorer16" UriSource="Tools/Icons/16x16/SFARExplorer_Icon_16.ico"/>
+        <BitmapImage x:Key="iconSoundplorer16" UriSource="Tools/Icons/16x16/SoundExplorer_Icon_16.ico"/>
+        <BitmapImage x:Key="iconTextureStudio16" UriSource="Tools/Icons/16x16/TextureStudio_Icon_16.ico"/>
+        <BitmapImage x:Key="iconTFCCompactor16" UriSource="Tools/Icons/16x16/TFCCompactor_Icon_16.ico"/>
+        <BitmapImage x:Key="iconTLKManager16" UriSource="Tools/Icons/16x16/TLKManager_Icon_16.ico"/>
+        <BitmapImage x:Key="iconTLKEditorME2316" UriSource="Tools/Icons/16x16/ME23TLKEditor_Icon_16.ico"/>
+        <BitmapImage x:Key="iconTLKEditor16" UriSource="Tools/Icons/16x16/TLKEditor_Icon_16.ico"/>
+        <BitmapImage x:Key="iconLiveLevelEditor16" UriSource="Tools/Icons/16x16/LiveLevelEditor_Icon_16.ico"/>
+        <BitmapImage x:Key="iconAnimationImporter16" UriSource="Tools/Icons/16x16/AnimationImporter_Icon_16.ico"/>
+        <BitmapImage x:Key="iconAnimViewer16" UriSource="Tools/Icons/16x16/AnimationViewer_Icon_16.ico"/>
+        <BitmapImage x:Key="iconAudioLocalizer16" UriSource="Tools/Icons/16x16/AudioLocalizer_Icon_16.ico"/>
+        <BitmapImage x:Key="iconAFCCompactor16" UriSource="Tools/Icons/16x16/AFCCompactor_Icon_16.ico"/>
+        <BitmapImage x:Key="iconCoalescedCompiler16" UriSource="Tools/Icons/16x16/CoalescedCompiler_Icon_16.ico"/>
+
 
         <BitmapImage x:Key="iconLoadingSpinner" UriSource="Resources/Images/loadingspinner.png"/>
 

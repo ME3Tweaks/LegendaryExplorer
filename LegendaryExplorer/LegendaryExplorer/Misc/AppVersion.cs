@@ -41,7 +41,7 @@ namespace LegendaryExplorer.Misc
             get
             {
                 Version ver = Assembly.GetExecutingAssembly().GetName().Version;
-                return "v" + ver.Major + "." + ver.Minor + "." + ver.Build + "." + ver.Revision;
+                return "v" + ver.ToString();
             }
         }
     }
