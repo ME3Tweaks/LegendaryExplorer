@@ -141,7 +141,7 @@ namespace LegendaryExplorerCore.Packages
         //}
 
         /// <summary>
-        /// Used to test if ME3 is running. Used by ME3Explorer GameController class
+        /// Used to test if ME3 is running. Used by LegendaryExplorer GameController class
         /// </summary>
         public static Func<bool> CheckME3Running { get; set; }
         /// <summary>
@@ -149,13 +149,12 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         public static Func<bool> NotifyRunningTOCUpdateRequired { get; set; }
 
-        public static Func<Texture2D, byte[]> GetPNGForThumbnail { get; set; }
-
         private static void MESave(MEPackage pcc, string savePath, bool compress = false, bool includeAdditionalPackagesToCook = true, bool includeDependencyTable = true, object diskIOSyncLock = null)
         {
             bool isSaveAs = savePath != null && savePath != pcc.FilePath;
             int originalLength = -1;
-            if (pcc.Game == MEGame.ME3 && CheckME3Running != null && !isSaveAs && ME3Directory.GetBioGamePath() != null && pcc.FilePath.StartsWith(ME3Directory.GetBioGamePath()) && CheckME3Running.Invoke())
+            if (pcc.Game == MEGame.ME3 && CheckME3Running is not null && NotifyRunningTOCUpdateRequired is not null && !isSaveAs 
+             && ME3Directory.GetBioGamePath() != null && pcc.FilePath.StartsWith(ME3Directory.GetBioGamePath()) && CheckME3Running.Invoke())
             {
                 try
                 {
@@ -189,10 +188,7 @@ namespace LegendaryExplorerCore.Packages
                 bin.WriteInt32(originalLength);
                 bin.WriteStringLatin1Null(relativePath);
                 File.WriteAllBytes(Path.Combine(ME3Directory.ExecutableFolder, "tocupdate"), bin.ToArray());
-                // oh boy...
                 NotifyRunningTOCUpdateRequired();
-                // replaced:
-                //GameController.SendTOCUpdateMessage();
             }
         }
 

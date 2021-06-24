@@ -316,7 +316,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                             break;
                         }
                     }
-                    pos = new Vector3(floats[0], floats[1], floats[3]);
+                    pos = new Vector3(floats[0], floats[1], floats[2]);
 
 
                 }

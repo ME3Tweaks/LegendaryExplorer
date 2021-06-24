@@ -326,9 +326,9 @@ namespace LegendaryExplorerCore.Packages
                     {
                         ClassName = export.ClassName,
                         PathName = export.InstancedFullPath,
-                        Width = PackageSaver.GetPNGForThumbnail != null ? mip.width : 64,
-                        Height = PackageSaver.GetPNGForThumbnail != null ? mip.height : 64,
-                        Data = PackageSaver.GetPNGForThumbnail?.Invoke(tex) ?? GetDefaultThumbnailBytes()
+                        Width = mip.width,
+                        Height = mip.height,
+                        Data = tex.GetPNG(tex.GetTopMip())
                     });
                 }
             }

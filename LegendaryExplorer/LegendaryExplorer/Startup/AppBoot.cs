@@ -152,8 +152,7 @@ namespace LegendaryExplorer.Startup
                 GameController.TryGetMEProcess(MEGame.ME3, out var me3Proc);
                 return me3Proc != null;
             };
-            //PackageSaver.NotifyRunningTOCUpdateRequired = GameController.SendME3TOCUpdateMessage;
-            PackageSaver.GetPNGForThumbnail = texture2D => texture2D.GetPNG(texture2D.GetTopMip()); // Used for UDK packages
+            PackageSaver.NotifyRunningTOCUpdateRequired = GameController.SendME3TOCUpdateMessage;
         }
 
         /// <summary>

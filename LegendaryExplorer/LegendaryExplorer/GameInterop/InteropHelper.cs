@@ -21,6 +21,17 @@ namespace LegendaryExplorer.GameInterop
             {
                 File.Delete(interopASIWritePath);
             }
+
+            //may need to delete pre-LEX asi
+            if (game is MEGame.ME2)
+            {
+                string oldASIName = Path.Combine(Path.GetDirectoryName(interopASIWritePath), "ME3ExplorerInteropME2.asi");
+                if (File.Exists(oldASIName))
+                {
+                    File.Delete(oldASIName);
+                }
+            }
+
             File.Copy(Path.Combine(AppDirectories.ExecFolder, GameController.InteropAsiName(game)), interopASIWritePath);
         }
 
@@ -60,7 +71,7 @@ namespace LegendaryExplorer.GameInterop
             const string me1binkw23MD5 = "d9e2a3b9303ca80560218af9f6eebaae";
             const string me1binkw32MD5 = "30660f25ab7f7435b9f3e1a08422411a";
 
-            // TODO: Implement for lex
+            // TODO: use a different method for LEbinkproxy detection, as that one may be getting updates (unlike the OT ASIs).
 
             return File.Exists(binkw23Path) && File.Exists(binkw32Path)
                 && game switch {

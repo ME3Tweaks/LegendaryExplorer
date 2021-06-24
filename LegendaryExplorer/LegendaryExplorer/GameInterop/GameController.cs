@@ -16,7 +16,7 @@ namespace LegendaryExplorer.GameInterop
     {
         public static string InteropAsiName(MEGame game) => game switch
         {
-            MEGame.ME2 => "ME3ExplorerInteropME2.asi",
+            MEGame.ME2 => "ZZZ_ME3ExplorerInteropME2.asi",
             MEGame.ME3 => "ME3ExplorerInterop.asi",
             _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
         };
