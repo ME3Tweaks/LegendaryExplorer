@@ -356,7 +356,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             var dragDropObject = new FaceFXAnimDragDropObject {
                                 anim = a,
                                 group = SelectedLine.NumKeys[animationListBox.SelectedIndex],
-                                fromDlg = SelectedLine.ID };
+                                fromDlg = SelectedLine.NameAsString };
                             DragDrop.DoDragDrop(linesListBox, new DataObject("FaceFXAnim", dragDropObject), DragDropEffects.Copy);
                         }
                     }
@@ -381,7 +381,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             Window.GetWindow(this).RestoreAndBringToFront();
             if (e.Data.GetDataPresent("FaceFXAnim") && e.Data.GetData("FaceFXAnim") is FaceFXAnimDragDropObject d)
             {
-                if (CurrentLoadedExport == null || SelectedLine == null || d.fromDlg == SelectedLine.ID) return;
+                if (CurrentLoadedExport == null || SelectedLine == null || d.fromDlg == SelectedLine.NameAsString) return;
 
                 Animations.Add(d.anim);
                 FaceFX.Names.FindOrAdd(d.anim.Name);
