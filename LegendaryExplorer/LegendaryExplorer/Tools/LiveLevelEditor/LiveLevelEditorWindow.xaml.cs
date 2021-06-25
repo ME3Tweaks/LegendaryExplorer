@@ -89,7 +89,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             set => SetProperty(ref _readyToInitialize, value);
         }
 
-        private readonly MEGame Game;
+        public MEGame Game { get; }
 
         public LiveLevelEditorWindow(MEGame game) : base("Live Level Editor", true)
         {
@@ -160,6 +160,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
 
         public Requirement.RequirementCommand GameInstalledRequirementCommand { get; set; }
         public Requirement.RequirementCommand ASILoaderInstalledRequirementCommand { get; set; }
+        public Requirement.RequirementCommand InteropASIInstalledRequirementCommand { get; set; }
+        public Requirement.RequirementCommand ConsoleASIInstalledRequirementCommand { get; set; }
         public Requirement.RequirementCommand SupportFilesInstalledRequirementCommand { get; set; }
         public ICommand LoadLiveEditorCommand { get; set; }
         public ICommand OpenPackageCommand { get; set; }
@@ -169,6 +171,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         {
             GameInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsGameInstalled(Game), () => InteropHelper.SelectGamePath(Game));
             ASILoaderInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsASILoaderInstalled(Game), InteropHelper.OpenASILoaderDownload);
+            InteropASIInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsInteropASIInstalled(Game), () => InteropHelper.OpenInteropASIDownload(Game));
+            ConsoleASIInstalledRequirementCommand = new Requirement.RequirementCommand(InteropHelper.IsME3ConsoleExtensionInstalled, InteropHelper.OpenConsoleExtensionDownload);
             SupportFilesInstalledRequirementCommand = new Requirement.RequirementCommand(AreSupportFilesInstalled, InstallSupportFiles);
             LoadLiveEditorCommand = new GenericCommand(LoadLiveEditor, CanLoadLiveEditor);
             OpenPackageCommand = new GenericCommand(OpenPackage, CanOpenPackage);
@@ -223,8 +227,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             }
         }
 
-        private bool CanLoadLiveEditor() => ReadyToInitialize && gameInstalledReq.IsFullfilled && asiLoaderInstalledReq.IsFullfilled && supportFilesInstalledReq.IsFullfilled && 
-                                            GameController.TryGetMEProcess(Game, out _);
+        private bool CanLoadLiveEditor() => ReadyToInitialize && gameInstalledReq.IsFullfilled && asiLoaderInstalledReq.IsFullfilled && supportFilesInstalledReq.IsFullfilled 
+                                         && interopASIInstalledReq.IsFullfilled && (Game is not MEGame.ME3 || consoleASIInstalledReq.IsFullfilled) && GameController.TryGetMEProcess(Game, out _);
 
         private void LoadLiveEditor()
         {
@@ -235,21 +239,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
 
         private bool AreSupportFilesInstalled()
         {
-            if (!InteropHelper.IsGameInstalled(Game))
-            {
-                return false;
-            }
-            string installedASIPath = InteropHelper.GetInteropAsiWritePath(Game);
-            if (!File.Exists(installedASIPath))
-            {
-                return false;
-            }
 
-            string newAsiPath = Path.Combine(AppDirectories.ExecFolder, GameController.InteropAsiName(Game));
-            string newAsiMD5 = InteropHelper.CalculateMD5(newAsiPath);
-            string installedAsiMD5 = InteropHelper.CalculateMD5(installedASIPath);
-
-            return newAsiMD5 == installedAsiMD5 && LiveEditHelper.IsModInstalledAndUpToDate(Game);
+            return LiveEditHelper.IsModInstalledAndUpToDate(Game);
         }
 
         private void InstallSupportFiles()
@@ -257,7 +248,6 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             SetBusy("Installing Support Files");
             Task.Run(() =>
             {
-                InteropHelper.InstallInteropASI(Game);
                 LiveEditHelper.InstallDLC_MOD_Interop(Game);
                 EndBusy();
                 CommandManager.InvalidateRequerySuggested();

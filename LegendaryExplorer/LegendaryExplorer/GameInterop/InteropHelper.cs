@@ -14,34 +14,46 @@ namespace LegendaryExplorer.GameInterop
 {
     public class InteropHelper
     {
-        public static void InstallInteropASI(MEGame game)
+        //Currently will not work, as ASIs are not included in LEX due to anti-virus software freaking out about them :(
+        /*public static void InstallInteropASI(MEGame game)
         {
             string interopASIWritePath = GetInteropAsiWritePath(game);
             if (File.Exists(interopASIWritePath))
             {
                 File.Delete(interopASIWritePath);
             }
+            
+            DeletePreLEXInteropASI(game);
 
-            //may need to delete pre-LEX asi
-            if (game is MEGame.ME2)
+            File.Copy(Path.Combine(AppDirectories.ExecFolder, GameController.InteropAsiName(game)), interopASIWritePath);
+        }*/
+
+        private static void DeletePreLEXInteropASI(MEGame game)
+        {
+            string asiDir = GetAsiDir(game);
+            if (game is MEGame.ME2 or MEGame.ME3)
             {
-                string oldASIName = Path.Combine(Path.GetDirectoryName(interopASIWritePath), "ME3ExplorerInteropME2.asi");
+                string oldASIName = Path.Combine(asiDir, GameController.OldInteropAsiName(game));
                 if (File.Exists(oldASIName))
                 {
                     File.Delete(oldASIName);
                 }
             }
-
-            File.Copy(Path.Combine(AppDirectories.ExecFolder, GameController.InteropAsiName(game)), interopASIWritePath);
         }
 
         public static string GetInteropAsiWritePath(MEGame game)
         {
+            string asiDir = GetAsiDir(game);
+            string interopASIWritePath = Path.Combine(asiDir, GameController.InteropAsiName(game));
+            return interopASIWritePath;
+        }
+
+        private static string GetAsiDir(MEGame game)
+        {
             string exeDirPath = MEDirectories.GetExecutableFolderPath(game);
             string asiDir = Path.Combine(exeDirPath, "ASI");
             Directory.CreateDirectory(asiDir);
-            string interopASIWritePath = Path.Combine(asiDir, GameController.InteropAsiName(game));
-            return interopASIWritePath;
+            return asiDir;
         }
 
         public static bool IsME3Closed() => !GameController.TryGetMEProcess(MEGame.ME3, out _);
@@ -90,6 +102,38 @@ namespace LegendaryExplorer.GameInterop
 
         }
 
+        public static bool IsME3ConsoleExtensionInstalled()
+        {
+            const MEGame game = MEGame.ME3;
+            if (!IsGameInstalled(game))
+            {
+                return false;
+            }
+            string asiDir = GetAsiDir(game);
+            string asiPath = Path.Combine(asiDir, "ConsoleExtension-v1.0.asi");
+            const string asiMD5 = "bce3183d90af020768bb98f9539467bd";
+            return File.Exists(asiPath) && asiMD5 == CalculateMD5(asiPath);
+        }
+
+        public static bool IsInteropASIInstalled(MEGame game)
+        {
+            if (!IsGameInstalled(game))
+            {
+                return false;
+            }
+
+            DeletePreLEXInteropASI(game);
+            string asiPath = GetInteropAsiWritePath(game);
+            const string me2MD5 = "a65d9325dd3b0ec5ea4184cc10e5e692";
+            const string me3MD5 = "7ac354e16e62434de656f7eea3259316";
+            return File.Exists(asiPath) && game switch
+            {
+                MEGame.ME2 => me2MD5,
+                MEGame.ME3 => me3MD5,
+                _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
+            } == CalculateMD5(asiPath);
+        }
+
         //https://stackoverflow.com/a/10520086
         public static string CalculateMD5(string filename)
         {
@@ -102,6 +146,24 @@ namespace LegendaryExplorer.GameInterop
         public static void OpenASILoaderDownload()
         {
             HyperlinkExtensions.OpenURL("https://github.com/Erik-JS/masseffect-binkw32");
+        }
+
+        public static void OpenConsoleExtensionDownload()
+        {
+            HyperlinkExtensions.OpenURL("https://github.com/ME3Tweaks/ME3-ASI-Plugins/releases/tag/v1.0-ConsoleExtension");
+        }
+
+        public static void OpenInteropASIDownload(MEGame game)
+        {
+            switch (game)
+            {
+                case MEGame.ME3:
+                    HyperlinkExtensions.OpenURL("https://github.com/ME3Tweaks/ME3-ASI-Plugins/releases/tag/v2.0-LegendaryExplorerInterop");
+                    break;
+                case MEGame.ME2:
+                    HyperlinkExtensions.OpenURL("https://github.com/ME3Tweaks/ME2-ASI-Plugins/releases/tag/v2.0-LegendaryExplorerInterop");
+                    break;
+            }
         }
 
         public static bool IsGameInstalled(MEGame game) => MEDirectories.GetExecutablePath(game) is string exePath && File.Exists(exePath);

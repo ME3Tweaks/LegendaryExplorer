@@ -16,9 +16,17 @@ namespace LegendaryExplorer.GameInterop
     {
         public static string InteropAsiName(MEGame game) => game switch
         {
-            MEGame.ME2 => "ZZZ_ME3ExplorerInteropME2.asi",
-            MEGame.ME3 => "ME3ExplorerInterop.asi",
+            MEGame.ME2 => "ZZZ_LEXInteropME2.asi",
+            MEGame.ME3 => "LEXInteropME3.asi",
             _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
+        };
+
+        //asis used by ME3Explorer. here so that they can be deleted if found in game's asi dir.
+        public static string OldInteropAsiName(MEGame game) => game switch
+        {
+            MEGame.ME2 => "ME3ExplorerInteropME2.asi",
+            MEGame.ME3 => "ME3ExplorerInterop.asi",
+            _ => null
         };
 
         public const string TempMapName = "AAAME3EXPDEBUGLOAD";

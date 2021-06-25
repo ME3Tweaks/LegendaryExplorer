@@ -300,6 +300,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
 
         public Requirement.RequirementCommand ME3InstalledRequirementCommand { get; set; }
         public Requirement.RequirementCommand ASILoaderInstalledRequirementCommand { get; set; }
+        public Requirement.RequirementCommand InteropASIInstalledRequirementCommand { get; set; }
         public Requirement.RequirementCommand ME3ClosedRequirementCommand { get; set; }
         public Requirement.RequirementCommand DatabaseLoadedRequirementCommand { get; set; }
         public ICommand StartME3Command { get; set; }
@@ -307,6 +308,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
         {
             ME3InstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsGameInstalled(MEGame.ME3), () => InteropHelper.SelectGamePath(MEGame.ME3));
             ASILoaderInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsASILoaderInstalled(MEGame.ME3), InteropHelper.OpenASILoaderDownload);
+            InteropASIInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsInteropASIInstalled(MEGame.ME3), () => InteropHelper.OpenInteropASIDownload(MEGame.ME3));
             ME3ClosedRequirementCommand = new Requirement.RequirementCommand(InteropHelper.IsME3Closed, () => InteropHelper.KillGame(MEGame.ME3));
             DatabaseLoadedRequirementCommand = new Requirement.RequirementCommand(IsDatabaseLoaded, TryLoadDatabase);
             StartME3Command = new GenericCommand(StartME3, AllRequirementsMet);
@@ -351,7 +353,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
 
         }
 
-        private bool AllRequirementsMet() => me3InstalledReq.IsFullfilled && asiLoaderInstalledReq.IsFullfilled && me3ClosedReq.IsFullfilled && dbLoadedReq.IsFullfilled;
+        private bool AllRequirementsMet() => me3InstalledReq.IsFullfilled && asiLoaderInstalledReq.IsFullfilled && me3ClosedReq.IsFullfilled && dbLoadedReq.IsFullfilled && interopASIInstalledReq.IsFullfilled;
 
         private void StartME3()
         {
@@ -362,9 +364,6 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             });
             Task.Run(() =>
             {
-                InteropHelper.InstallInteropASI(MEGame.ME3);
-
-
                 string animViewerBaseFilePath = Path.Combine(AppDirectories.ExecFolder, "ME3AnimViewer.pcc");
 
                 using IMEPackage animViewerBase = MEPackageHandler.OpenMEPackage(animViewerBaseFilePath);

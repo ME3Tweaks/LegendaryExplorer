@@ -22,7 +22,7 @@ namespace LegendaryExplorer.GameInterop
     public static class LiveEditHelper
     {
         //INCREMENT THIS WHEN CHANGES ARE MADE THAT WOULD REQUIRE REGENERATION OF DLC_MOD_Interop
-        public const int CURRENT_VERSION = 8;
+        public const int CURRENT_VERSION = 9;
 
         static string LiveEditorFileName(MEGame game) => game switch
         {
@@ -104,8 +104,6 @@ namespace LegendaryExplorer.GameInterop
         private const string camPathFileName = "ME3LiveEditorCamPath.pcc";
         public static string CamPathFilePath(MEGame game) => Path.Combine(ModInstallPath(game), game.CookedDirName(), camPathFileName);
 
-        private const string consoleExtASIName = "ConsoleExtension-v1.0.asi";
-
         public static void InstallDLC_MOD_Interop(MEGame game)
         {
             if (Directory.Exists(ModInstallPath(game)))
@@ -120,14 +118,6 @@ namespace LegendaryExplorer.GameInterop
             {
                 PadCamPathFile(game);
             }
-
-            InteropHelper.InstallInteropASI(game);
-            string consoleExtASIWritePath = Path.Combine(MEDirectories.GetExecutableFolderPath(game), "asi", consoleExtASIName);
-            if (File.Exists(consoleExtASIWritePath))
-            {
-                File.Delete(consoleExtASIWritePath);
-            }
-            File.Copy(Path.Combine(AppDirectories.ExecFolder, consoleExtASIName), consoleExtASIWritePath);
 
             const string bioPGlobalFileName = "BioP_Global.pcc";
             const string bioPGlobalNCFileName = "BioP_Global_NC.pcc";

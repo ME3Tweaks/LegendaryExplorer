@@ -39,6 +39,12 @@
                                                        UnFullfilledText="Binkw32 asi loader is not installed!"
                                                        ButtonText="Get dlls"
                                                        Command="{Binding ASILoaderInstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationViewerWindow}}}" />
+                                    <controls:Requirement x:Name="interopASIInstalledReq"
+                                                          FullfilledText="Interop asi is installed"
+                                                          Margin="0,5,0,5"
+                                                          UnFullfilledText="Interop asi is not installed!"
+                                                          ButtonText="Get Interop ASI"
+                                                          Command="{Binding InteropASIInstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationViewerWindow}}}" />
                                     <controls:Requirement x:Name="me3ClosedReq"
                                                        FullfilledText="Mass Effect 3 is not running" Margin="0,5,0,5"
                                                        UnFullfilledText="Mass Effect 3 must be quit!"

@@ -19,6 +19,7 @@
     <Window.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
+        <converters:GameToVisibilityConverter x:Key="GameToVisibilityConverter"/>
         <ContextMenu x:Key="packagesContextMenu">
             <MenuItem Header="Open In Package Editor" sharedUi:Bindings.VisibilityToEnabled="True"/>
         </ContextMenu>
@@ -50,11 +51,24 @@
                                     <TextBlock Text="For the Live Level Editor to work, it needs to install support files, specifically a mod, DLC_MOD_Interop, and 2 ASIs, ME3ExplorerInterop.asi and ConsoleExtension.asi. DLC_MOD_Interop mounts above all installed mods, uses modified copies of the highest mounted versions of BioP_Global.pcc and BioP_Global_NC.pcc (ME3 only), and should be deleted or regenerated whenever your mod setup changes. Unlike standard DLC mods, this CAN be safely installed after texture mods such as ALOT."
                                                Margin="15,5,15,5" TextWrapping="Wrap"/>
                                     <controls:Requirement x:Name="supportFilesInstalledReq"
-                                                                   FullfilledText="Support files are installed"
+                                                                   FullfilledText="DLC_MOD_Interop is installed"
                                                                    Margin="0,5,0,5"
-                                                                   UnFullfilledText="Support files are not installed or are out of date!"
-                                                                   ButtonText="Install support files"
+                                                                   UnFullfilledText="DLC_MOD_Interop is not installed or is out of date!"
+                                                                   ButtonText="Install DLC_MOD_Interop"
                                                                    Command="{Binding SupportFilesInstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type liveLevelEditor:LiveLevelEditorWindow}}}" />
+                                    <controls:Requirement x:Name="interopASIInstalledReq"
+                                                          FullfilledText="Interop ASI is installed"
+                                                          Margin="0,5,0,5"
+                                                          UnFullfilledText="Interop ASI is not installed or is out of date!"
+                                                          ButtonText="Get Interop ASI"
+                                                          Command="{Binding InteropASIInstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type liveLevelEditor:LiveLevelEditorWindow}}}" />
+                                    <controls:Requirement x:Name="consoleASIInstalledReq"
+                                                          FullfilledText="Console Extension ASI is installed"
+                                                          Margin="0,5,0,5"
+                                                          UnFullfilledText="Console Extension ASI is not installed or is out of date!"
+                                                          ButtonText="Get Console Extension ASI"
+                                                          Visibility="{Binding Game, Converter={StaticResource GameToVisibilityConverter}, ConverterParameter='ME3', Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type liveLevelEditor:LiveLevelEditorWindow}}}"
+                                                          Command="{Binding ConsoleASIInstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type liveLevelEditor:LiveLevelEditorWindow}}}" />
                                     <TextBlock Text="Once the above requirements are fulfilled, start the game, load into the level you want to edit, and press the button below."
                                                Margin="15,5,15,5" TextWrapping="Wrap"/>
                                 </StackPanel>
