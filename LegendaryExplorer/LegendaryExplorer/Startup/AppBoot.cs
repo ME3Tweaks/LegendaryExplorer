@@ -28,6 +28,7 @@ using LegendaryExplorer.Tools.Sequence_Editor;
 using LegendaryExplorer.Tools.Soundplorer;
 using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorerCore;
+using LegendaryExplorerCore.Compression;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
@@ -56,8 +57,8 @@ namespace LegendaryExplorer.Startup
 
             //Peregrine's Dispatcher (for WPF Treeview selecting on virtualized lists)
             DispatcherHelper.Initialize();
-            initCoreLib();
             Settings.LoadSettings();
+            initCoreLib();
 
             // AppCenter setup
 #if !DEBUG

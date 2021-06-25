@@ -101,6 +101,10 @@ namespace LegendaryExplorerCore.Compression
         /// <returns></returns>
         public static bool EnsureOodleDll(string gameRootPath = null, string storagePath = null)
         {
+            if (dllLoaded)
+            {
+                return true;
+            }
             // Ported from M3
             // Required for single file .net 5
 #if AZURE
@@ -170,16 +174,17 @@ namespace LegendaryExplorerCore.Compression
                         }
                     }
 
-
-                    if (LE1Directory.ExecutableFolder != null)
+                    //possible that someone might have deleted one or two of the LE games to save disk space
+                    string anLEExecutableFolder = LE1Directory.ExecutableFolder ?? LE2Directory.ExecutableFolder ?? LE3Directory.ExecutableFolder;
+                    if (anLEExecutableFolder is not null)
                     {
-                        var oodPath = Path.Combine(LE1Directory.ExecutableFolder, CompressionHelper.OODLE_DLL_NAME);
+                        string oodPath = Path.Combine(LE1Directory.ExecutableFolder, CompressionHelper.OODLE_DLL_NAME);
                         if (File.Exists(oodPath))
                         {
 
                             // Todo: FIX: CANNOT RUN IN TEST MODE
                             // Access denied to directory
-                            var destPath = Path.Combine(paths.First(), CompressionHelper.OODLE_DLL_NAME);
+                            string destPath = Path.Combine(paths.First(), CompressionHelper.OODLE_DLL_NAME);
                             File.Copy(oodPath, destPath, true);
                             LoadOodleDll(destPath);
                             return true;

@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorerCore;
+using LegendaryExplorerCore.Compression;
 
 namespace LegendaryExplorer.Misc
 {
@@ -48,6 +49,7 @@ namespace LegendaryExplorer.Misc
                     break;
                 case nameof(Settings.Global_LEDirectory):
                     LegendaryExplorerCoreLibSettings.Instance.LEDirectory = Settings.Global_LEDirectory;
+                    OodleHelper.EnsureOodleDll();
                     break;
             }
         }
@@ -76,6 +78,7 @@ namespace LegendaryExplorer.Misc
                     break;
                 case nameof(LegendaryExplorerCoreLibSettings.Instance.LEDirectory):
                     Settings.Global_LEDirectory = LegendaryExplorerCoreLibSettings.Instance.LEDirectory;
+                    OodleHelper.EnsureOodleDll();
                     break;
                 default:
                     return;

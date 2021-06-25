@@ -76,7 +76,6 @@ namespace LegendaryExplorerCore
                 LE3UnrealObjectInfo.loadfromJSON,
             };
             Parallel.ForEach(jsonLoaders, action => action(null));
-            LegendaryExplorerCoreLibSettings.Instance = new LegendaryExplorerCoreLibSettings();
             if (!OodleHelper.EnsureOodleDll())
             {
                 Debug.WriteLine("Oodle decompression library not available. Make sure game is installed!");

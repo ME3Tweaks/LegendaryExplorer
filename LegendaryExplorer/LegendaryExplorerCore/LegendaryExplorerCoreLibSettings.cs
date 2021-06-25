@@ -5,11 +5,11 @@ namespace LegendaryExplorerCore
     public class LegendaryExplorerCoreLibSettings : INotifyPropertyChanged
     {
         // In LegendaryExplorer (not this lib) the property changed event is listened to for changes and maps them into the settings system for LEX
-        public static LegendaryExplorerCoreLibSettings Instance { get; set; }
+        public static LegendaryExplorerCoreLibSettings Instance { get; }
 
-        public LegendaryExplorerCoreLibSettings()
+        static LegendaryExplorerCoreLibSettings()
         {
-            Instance = this;
+            Instance = new LegendaryExplorerCoreLibSettings();
             GameFilesystem.ME1Directory.ReloadDefaultGamePath();
             GameFilesystem.ME2Directory.ReloadDefaultGamePath();
             GameFilesystem.ME3Directory.ReloadDefaultGamePath();
