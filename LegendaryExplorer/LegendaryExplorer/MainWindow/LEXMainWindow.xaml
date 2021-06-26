@@ -67,7 +67,7 @@
                 
                 <!-- Version -->
                 <DockPanel HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="32">
-                            <Label Content="{Binding Source={x:Static misc:AppVersion.DisplayedVersion}}" FontFamily="{StaticResource Exo-Regular}" FontSize="18" 
+                            <Label Content="{Binding Source={x:Static misc:AppVersion.DisplayedVersion}}" FontFamily="{StaticResource Exo-Regular}" FontSize="17" 
                                    Foreground="{DynamicResource ForegroundBrush}"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
                 </DockPanel>
                 
@@ -266,19 +266,19 @@
                         Audio Tools
                     </RadioButton>
                     <RadioButton Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked"
-                                 Tag="Meshes + Textures">
+                                 Tag="Meshes + Textures" ToolTip="Texture and mesh modding tools">
                         Meshes &amp; Textures
                     </RadioButton>
                     <RadioButton Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked"
-                                 Tag="Extractors + Repackers">
+                                 Tag="Extractors + Repackers" ToolTip="Tools for extracting data from game files">
                         Extract &amp; Repack
                     </RadioButton>
                     <RadioButton Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked" 
-                                 Tag="Utilities">
+                                 Tag="Utilities" ToolTip="Assorted utilities to aid mod developers">
                         Utilities
                     </RadioButton>
                     <RadioButton x:Name="toolsetDevsButton" Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked" 
-                                 Tag="Toolset Devs" Visibility="Collapsed">
+                                 Tag="Toolset Devs" Visibility="Collapsed" ToolTip="Tools to aid in toolset development">
                         Toolset Devs Only
                     </RadioButton>
                 </StackPanel>
@@ -286,7 +286,7 @@
             <!--#endregion-->
             
             <!-- Tool info panel -->
-            <DockPanel x:Name="toolInfoPanel" DockPanel.Dock="Bottom" Height="80" Background="DarkSlateGray" Visibility="Collapsed">
+            <DockPanel x:Name="toolInfoPanel" DockPanel.Dock="Bottom" Height="80" Background="#FF304e75" Visibility="Collapsed">
                 <Border DockPanel.Dock="Left" BorderThickness="1" BorderBrush="{DynamicResource ForegroundBrush}" Margin="10,5" Height="60">
                       <Image x:Name="toolInfoIcon" VerticalAlignment="Center" Width="60" Height="60" Opacity="0.85" RenderOptions.BitmapScalingMode="HighQuality"/>
                  </Border>
