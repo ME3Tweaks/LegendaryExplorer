@@ -31,7 +31,7 @@ namespace LegendaryExplorerCore.UnrealScript
 
         private readonly BaseLib Base;
 
-        public async Task<bool> Initialize(PackageCache packageCache = null)
+        public async Task<bool> Initialize(PackageCache packageCache = null, string gameRootPath = null)
         {
             if (IsInitialized)
             {
@@ -49,7 +49,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     }
 
                     InitializationLog = new MessageLog();
-                    if (!Base.InitializeStandardLib(InitializationLog, packageCache).Result)
+                    if (!Base.InitializeStandardLib(InitializationLog, packageCache, gameRootPath).Result)
                     {
                         HadInitializationError = true;
                     }

@@ -294,7 +294,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                                 props.Add(uProp);
                             }
                         }
-                        string filepath = null;
+                        string filepath = info.pccPath;
                         if (LE2Directory.GetBioGamePath() != null)
                         {
                             filepath = Path.Combine(LE2Directory.GetBioGamePath(), info.pccPath);

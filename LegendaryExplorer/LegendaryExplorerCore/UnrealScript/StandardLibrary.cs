@@ -109,7 +109,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 Game = game;
             }
 
-            public async Task<bool> InitializeStandardLib(MessageLog log, PackageCache packageCache, params string[] additionalFiles)
+            public async Task<bool> InitializeStandardLib(MessageLog log, PackageCache packageCache, string gameRootPath = null)
             {
                 if (IsInitialized)
                 {
@@ -129,7 +129,7 @@ namespace LegendaryExplorerCore.UnrealScript
                         {
                             return true;
                         }
-                        success = InternalInitialize(additionalFiles, log, packageCache);
+                        success = InternalInitialize(log, packageCache, gameRootPath);
                         IsInitialized = success;
                         HadInitializationError = !success;
                     }
@@ -137,12 +137,11 @@ namespace LegendaryExplorerCore.UnrealScript
                 });
             }
 
-            private bool InternalInitialize(string[] additionalFiles, MessageLog log, PackageCache packageCache)
+            private bool InternalInitialize(MessageLog log, PackageCache packageCache, string gameRootPath = null)
             {
                 try
                 {
-                    List<string> filePaths = BaseFileNames(Game).Select(f => Path.Combine(MEDirectories.GetCookedPath(Game), f)).ToList();
-                    filePaths.AddRange(additionalFiles);
+                    List<string> filePaths = BaseFileNames(Game).Select(f => Path.Combine(MEDirectories.GetCookedPath(Game, gameRootPath), f)).ToList();
                     if (!filePaths.All(File.Exists))
                     {
                         foreach (string filePath in filePaths)
@@ -160,7 +159,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
                 catch (Exception e) when(!LegendaryExplorerCoreLib.IsDebug)
                 {
-                    log.LogError($"Exception occured while compiling BaseLib:\n{e.FlattenException()}");
+                    log.LogError($"Exception occurred while compiling BaseLib:\n{e.FlattenException()}");
                     return false;
                 }
             }
