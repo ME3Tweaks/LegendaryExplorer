@@ -421,6 +421,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
 
         private void TextChanged(object sender, EventArgs e)
         {
+            bool needsTokensReset = true;
             (ASTNode ast, MessageLog log, TokenStream<string> tokens) = UnrealScriptCompiler.CompileAST(ScriptText, CurrentLoadedExport.ClassName, Pcc.Game);
             try
             {
@@ -436,6 +437,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                         //(_, SyntaxInfo syntaxInfo) = codeBuilder.GetOutput();
 
                         _definitionLinkGenerator.SetTokens(tokens);
+                        needsTokensReset = false;
                         var syntaxInfo = new SyntaxInfo();
                         if (tokens.Any())
                         {
@@ -457,10 +459,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                                     currentLine = tokLine;
                                     currentPos = 0;
                                 }
+
                                 while (syntaxInfo.Count <= currentLine + 1)
                                 {
                                     syntaxInfo.Add(new List<SyntaxSpan>());
                                 }
+
                                 int tokStart = token.StartPos.Column;
                                 int tokEnd = token.EndPos.Column;
                                 if (tokStart > currentPos)
@@ -481,9 +485,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             {
                 log.LogError("Parse Failed!");
             }
-            catch (Exception exception) when(!LegendaryExplorerCoreLib.IsDebug)
+            catch (Exception exception) when (!LegendaryExplorerCoreLib.IsDebug)
             {
                 log.LogError($"Exception: {exception.Message}");
+            }
+            finally
+            {
+                if (needsTokensReset)
+                {
+                    _definitionLinkGenerator.Reset();
+                }
             }
 
             outputListBox.ItemsSource = log.Content;

@@ -34,7 +34,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
             Reset();
             foreach (Token<string> token in tokens)
             {
-                if (token.AssociatedNode is not null)
+                if (token.AssociatedNode is not null && token.EndPos.Line == token.StartPos.Line)
                 {
                     int startPosCharIndex = token.StartPos.CharIndex;
                     Spans[startPosCharIndex] = new DefinitionLinkSpan(token.AssociatedNode, token.EndPos.CharIndex - startPosCharIndex);
@@ -52,7 +52,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
         public override int GetFirstInterestedOffset(int startOffset)
         {
             //Debug.WriteLine($"Offset: {startOffset}");
-            int endOffset = CurrentContext.VisualLine.LastDocumentLine.EndOffset;
+            int endOffset = CurrentContext.VisualLine.FirstDocumentLine.EndOffset;
             foreach (int offset in Offsets)
             {
                 if (offset >= startOffset)
