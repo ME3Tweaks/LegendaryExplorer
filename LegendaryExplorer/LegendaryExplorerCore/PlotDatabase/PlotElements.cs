@@ -55,20 +55,20 @@ namespace LegendaryExplorerCore.PlotDatabase
         };
     }
 
-    [DebuggerDisplay("{TreeText} {Type} {Label}")]
+    [DebuggerDisplay("{Type} {PlotID}: {Path}")]
     public class PlotElement
     {
-        [JsonProperty("plotelementid")]
-        public int PlotElementId;
+        [JsonProperty("plotid")]
+        public int PlotID;
 
-        [JsonProperty("parentplotid")]
-        public int ParentPlotId;
+        [JsonProperty("elementid")]
+        public int ElementId;
+
+        [JsonProperty("parentelementid")]
+        public int ParentElementId;
 
         [JsonProperty("label")]
         public string Label;
-
-        [JsonProperty("action")] 
-        public string Action;
 
         [JsonProperty("sequence")] 
         public float Sequence;
@@ -82,15 +82,27 @@ namespace LegendaryExplorerCore.PlotDatabase
         [JsonIgnore]
         public List<PlotElement> Children = new List<PlotElement>();
 
-        [JsonIgnore] 
-        public string TreeText;
+        public string Path
+        {
+            get
+            {
+                var path = new StringBuilder();
+                PlotElement el = this;
+                path.Insert(0, el.Label);
+                while (el.Parent != null)
+                {
+                    el = el.Parent;
+                    path.Insert(0, ".");
+                    path.Insert(0, el.Label);
+                }
+                return path.ToString();
+            }
+        }
+
     }
 
     public class PlotBool : PlotElement
     {
-        [JsonProperty("boolid")]
-        public int ID;
-
         [JsonProperty("subtype")] 
         public PlotElementType? SubType;
 
@@ -104,33 +116,14 @@ namespace LegendaryExplorerCore.PlotDatabase
         public int? GalaxyAtWar;
     }
 
-    public class PlotInt : PlotElement
-    {
-        [JsonProperty("intid")] 
-        public int ID;
-
-    }
-
-    public class PlotFloat : PlotElement
-    {
-        [JsonProperty("floatid")] 
-        public int ID;
-    }
-
     public class PlotConditional : PlotElement
     {
-        [JsonProperty("conditionalid")] 
-        public int ID;
-
         [JsonProperty("code")] 
         public string Code;
     }
 
     public class PlotTransition : PlotElement
     {
-        [JsonProperty("transitionid")] 
-        public int ID;
-
         [JsonProperty("argument")] 
         public string Argument;
     }

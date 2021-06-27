@@ -41,9 +41,9 @@ namespace LegendaryExplorer.Tools.PlotManager
             LoadCommands();
             InitializeComponent();
 
-            //me1BWdb.LoadBiowarePlotsFromJSON(MEGame.ME1);
-            //me2BWdb.LoadBiowarePlotsFromJSON(MEGame.ME2);
-            BW_me3db.LoadPlotsFromJSON(MEGame.ME3);
+            //me1BWdb.LoadBiowarePlotsFromJSON(MEGame.LE1);
+            //me2BWdb.LoadBiowarePlotsFromJSON(MEGame.LE2);
+            BW_me3db.LoadPlotsFromJSON(MEGame.LE3);
             InitializeTreeView();
             Focus();
         }
