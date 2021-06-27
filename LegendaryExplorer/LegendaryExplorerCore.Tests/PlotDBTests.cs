@@ -20,14 +20,17 @@ namespace LegendaryExplorerCore.Tests
             var le1File =
                 new StreamReader(LegendaryExplorerCoreUtilities.LoadFileFromCompressedResource("PlotDatabases.zip", "le1.json")).ReadToEnd();
             var db1 = JsonConvert.DeserializeObject<PlotDatabaseTemp>(le1File);
+            db1.BuildTree();
 
             var le2File =
                 new StreamReader(LegendaryExplorerCoreUtilities.LoadFileFromCompressedResource("PlotDatabases.zip", "le2.json")).ReadToEnd();
             var db2 = JsonConvert.DeserializeObject<PlotDatabaseTemp>(le2File);
 
+            db2.BuildTree();
             var le3File =
                 new StreamReader(LegendaryExplorerCoreUtilities.LoadFileFromCompressedResource("PlotDatabases.zip", "le3.json")).ReadToEnd();
             var db3 = JsonConvert.DeserializeObject<PlotDatabaseTemp>(le3File);
+            db3.BuildTree();
         }
     }
 }

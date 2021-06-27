@@ -55,7 +55,7 @@ namespace LegendaryExplorerCore.PlotDatabase
         };
     }
 
-    [DebuggerDisplay("{Type} {PlotElementId}: {Label}")]
+    [DebuggerDisplay("{TreeText} {Type} {Label}")]
     public class PlotElement
     {
         [JsonProperty("plotelementid")]
@@ -67,20 +67,29 @@ namespace LegendaryExplorerCore.PlotDatabase
         [JsonProperty("label")]
         public string Label;
 
+        [JsonProperty("action")] 
+        public string Action;
+
         [JsonProperty("sequence")] 
         public float Sequence;
 
         [JsonProperty("type")]
         public PlotElementType Type;
+
+        [JsonIgnore]
+        public PlotElement Parent;
+
+        [JsonIgnore]
+        public List<PlotElement> Children = new List<PlotElement>();
+
+        [JsonIgnore] 
+        public string TreeText;
     }
 
     public class PlotBool : PlotElement
     {
         [JsonProperty("boolid")]
         public int ID;
-
-        [JsonProperty("action")] 
-        public string Action;
 
         [JsonProperty("subtype")] 
         public PlotElementType? SubType;
@@ -100,17 +109,12 @@ namespace LegendaryExplorerCore.PlotDatabase
         [JsonProperty("intid")] 
         public int ID;
 
-        [JsonProperty("action")] 
-        public string Action;
     }
 
     public class PlotFloat : PlotElement
     {
         [JsonProperty("floatid")] 
         public int ID;
-
-        [JsonProperty("action")] 
-        public string Action;
     }
 
     public class PlotConditional : PlotElement
@@ -126,9 +130,6 @@ namespace LegendaryExplorerCore.PlotDatabase
     {
         [JsonProperty("transitionid")] 
         public int ID;
-
-        [JsonProperty("action")] 
-        public string Action;
 
         [JsonProperty("argument")] 
         public string Argument;

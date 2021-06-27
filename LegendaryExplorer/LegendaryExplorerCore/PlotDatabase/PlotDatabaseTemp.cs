@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,5 +30,33 @@ namespace LegendaryExplorerCore.PlotDatabase
 
         [JsonProperty("organizational")] 
         public List<PlotElement> OrganizationalElements;
+
+        public void BuildTree()
+        {
+            Dictionary<int, PlotElement> table =
+                Bools.Concat<PlotElement>(Ints)
+                    .Concat(Floats).Concat(Conditionals)
+                    .Concat(Transitions).Concat(OrganizationalElements)
+                    .ToDictionary((e) => e.PlotElementId);
+
+            foreach (var element in table)
+            {
+                var plot = element.Value;
+                var parentId = plot.ParentPlotId;
+                if (parentId != 0)
+                {
+                    var parent = table[parentId];
+                    plot.Parent = parent;
+                    parent.Children.Add(plot);
+                    if (!String.IsNullOrEmpty(plot.Action))
+                    {
+                        var actionElements = plot.Action.Split(".");
+                        plot.TreeText = actionElements.Last();
+                    }
+                    
+                }
+            }
+
+        }
     }
 }
