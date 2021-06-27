@@ -516,6 +516,20 @@ namespace LegendaryExplorer
             });
             set.Add(new Tool
             {
+                name = "Plot Manager",
+                type = typeof(Tools.PlotManager.PlotManagerWindow),
+                icon = Application.Current.FindResource("iconPlotDatabase") as ImageSource,
+                open = () =>
+                {
+                    var plotMan = new Tools.PlotManager.PlotManagerWindow();
+                    plotMan.Show();
+                },
+                tags = new List<string> { "developer", "codex", "state transition", "quest", "plots" },
+                category = "Core Editors",
+                description = "Plot Manager is used to view databases of plots from all three games."
+            });
+            set.Add(new Tool
+            {
                 name = "Sequence Editor",
                 type = typeof(SequenceEditorWPF),
                 icon = Application.Current.FindResource("iconSequenceEditor") as ImageSource,

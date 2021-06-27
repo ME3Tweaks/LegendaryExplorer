@@ -83,6 +83,17 @@ namespace LegendaryExplorerCore
             initialized = true;
         }
 
+        public static string CustomPlotFileName(MEGame game) => game switch
+        {
+            MEGame.ME3 => "le3.json",
+            MEGame.ME2 => "le2.json",
+            MEGame.ME1 => "le1.json",
+            MEGame.LE3 => "le3.json",
+            MEGame.LE2 => "le2.json",
+            MEGame.LE1 => "le1.json",
+            _ => "le3.json"
+        };
+
 #if DEBUG
         public static bool IsDebug => true;
 #else

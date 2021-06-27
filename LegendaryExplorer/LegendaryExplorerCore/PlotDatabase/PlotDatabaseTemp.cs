@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Helpers;
 using Newtonsoft.Json;
 
 namespace LegendaryExplorerCore.PlotDatabase
@@ -31,7 +33,7 @@ namespace LegendaryExplorerCore.PlotDatabase
         [JsonProperty("organizational")] 
         public List<PlotElement> OrganizationalElements;
 
-        public void BuildTree()
+        public SortedDictionary<int, PlotElement> BuildTree()
         {
             Dictionary<int, PlotElement> table =
                 Bools.Concat<PlotElement>(Ints)
@@ -53,10 +55,51 @@ namespace LegendaryExplorerCore.PlotDatabase
                         var actionElements = plot.Action.Split(".");
                         plot.TreeText = actionElements.Last();
                     }
-                    
+
                 }
             }
 
+            return new SortedDictionary<int, PlotElement>(table);
+        }
+
+    }
+
+    public class PlotDatabase
+    {
+        public SortedDictionary<int, PlotElement> Elements { get; set; } = new SortedDictionary<int, PlotElement>();
+
+        public MEGame refGame { get; set; }
+
+        public bool IsBioware { get; set; }
+
+        public PlotDatabase(SortedDictionary<int, PlotElement> elements, MEGame refgame, bool isbioware)
+        {
+            this.Elements = elements;
+            this.refGame = refgame;
+            this.IsBioware = isbioware;
+        }
+
+        public PlotDatabase()
+        {
+
+        }
+
+        public void LoadPlotsFromJSON( MEGame game, bool loadBioware = true)
+        {
+            refGame = game;
+            IsBioware = loadBioware;
+            var pdb = new PlotDatabaseTemp();
+            string json;
+            if (loadBioware)
+            {
+                json = LegendaryExplorerCoreUtilities.LoadStringFromCompressedResource("PlotDatabases.zip", LegendaryExplorerCoreLib.CustomPlotFileName(game));
+            }
+            else
+            {
+                json = "{}"; //TO DO add load non-bioware modders asset
+            }
+            pdb = JsonConvert.DeserializeObject<PlotDatabaseTemp>(json);
+            Elements = pdb.BuildTree();
         }
     }
 }
