@@ -1294,9 +1294,17 @@
                         <ListBox.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Open in Package Editor" Command="{Binding OpenInCommand}"
-                                          CommandParameter="PackEdNode" />
+                                          CommandParameter="PackEdNode">
+                                    <MenuItem.Icon>
+                                        <Image Source="{StaticResource iconPackageEditor16}" Width="64"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
                                 <MenuItem Header="Open in Sequence Editor" Command="{Binding OpenInCommand}"
-                                          CommandParameter="SeqEdNode" />
+                                          CommandParameter="SeqEdNode">
+                                    <MenuItem.Icon>
+                                        <Image Source="{StaticResource iconSequenceEditor16}" Width="64"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
                             </ContextMenu>
                         </ListBox.ContextMenu>
                     </ListBox>
