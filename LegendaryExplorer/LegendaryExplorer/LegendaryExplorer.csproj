@@ -22,7 +22,7 @@
 
   <PropertyGroup Condition="'$(Configuration)'=='WinRelease'">
     <DebugType>embedded</DebugType>
-	<TextTransformPath>$(DevEnvDir)TextTransform.exe</TextTransformPath>
+	  <TextTransformPath>C:\PROGRAM FILES (X86)\MICROSOFT VISUAL STUDIO\2019\Community\Common7\IDE\TextTransform.exe</TextTransformPath>
     <DefineConstants>WINDOWS;RELEASE</DefineConstants>
   </PropertyGroup>
 
@@ -30,7 +30,7 @@
   <PropertyGroup Condition="'$(Configuration)'=='WinAzureRelease'">
     <DebugType>embedded</DebugType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	<TextTransformPath>C:\PROGRAM FILES (X86)\MICROSOFT VISUAL STUDIO\2019\Enterprise\Common7\IDE\TextTransform.exe</TextTransformPath>
+	  <TextTransformPath>C:\PROGRAM FILES (X86)\MICROSOFT VISUAL STUDIO\2019\Enterprise\Common7\IDE\TextTransform.exe</TextTransformPath>
     <DefineConstants>WINDOWS;NIGHTLY</DefineConstants>
   </PropertyGroup>
 
@@ -75,10 +75,6 @@
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.1.1" />
     <PackageReference Include="BinaryPack" Version="1.0.1" />
-    <PackageReference Include="Clarius.TransformOnBuild" Version="1.22.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="ClosedXML" Version="0.95.3" />
     <PackageReference Include="ConsoleAppLauncher" Version="2.0.0" />
     <PackageReference Include="FontAwesome5" Version="2.1.0" />
@@ -482,5 +478,9 @@
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy /f /e /y &quot;$(ProjectDir)Resources\exec&quot; &quot;$(ProjectDir)$(OutDir)\exec\&quot;&#xD;&#xA;xcopy /y &quot;$(SolutionDir)TexConverter\Bin\$(PlatformName)\$(ConfigurationName)\TexConverter.dll&quot; &quot;$(ProjectDir)$(OutDir)&quot;" />
+  </Target>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="powershell -ExecutionPolicy Bypass -File &quot;Build\UpdateTextTransforms.ps1&quot;" />
   </Target>
 </Project>
