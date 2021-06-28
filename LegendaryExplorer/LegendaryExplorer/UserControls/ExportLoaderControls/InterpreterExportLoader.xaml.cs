@@ -22,6 +22,7 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
+using LegendaryExplorerCore.PlotDatabase;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 
@@ -38,7 +39,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         //same type and are not distinguishable without changing to another export, wasting a lot of time.
         //values are the class of object value being parsed
         public static readonly string[] ExportToStringConverters = { "LevelStreamingKismet", "StaticMeshComponent", "ParticleSystemComponent", "DecalComponent", "LensFlareComponent" };
-        public static readonly string[] IntToStringConverters = { "WwiseEvent", "WwiseBank" };
+        public static readonly string[] IntToStringConverters = { "WwiseEvent", "WwiseBank", "BioSeqAct_PMExecuteTransition", "BioSeqAct_PMCheckState", "BioSeqAct_PMCheckConditional", "BioSeqVar_StoryManagerInt", 
+                                                                "BioSeqVar_StoryManagerFloat", "BioSeqVar_StoryManagerBool", "BioSeqVar_StoryManagerStateId" };
         public ObservableCollectionExtended<IndexedName> ParentNameList { get; private set; }
 
         public bool SubstituteImageForHexBox
@@ -1268,6 +1270,24 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             return $"(0x{value:X8})";
                     }
                     break;
+                case "BioSeqVar_StoryManagerStateId":
+                case "BioSeqVar_StoryManagerBool":
+                case "BioSeqAct_PMCheckState":
+                    if (name == "m_nIndex") return PlotDatabases.FindPlotBoolByID(value, export.Game).Path;
+                    break;
+                case "BioSeqVar_StoryManagerInt":
+                    if (name == "m_nIndex") return PlotDatabases.FindPlotIntByID(value, export.Game).Path;
+                    break;
+                case "BioSeqVar_StoryManagerFloat":
+                    if (name == "m_nIndex") return PlotDatabases.FindPlotFloatByID(value, export.Game).Path;
+                    break;
+                case "BioSeqAct_PMCheckConditional":
+                    if (name == "m_nIndex") return PlotDatabases.FindPlotConditionalByID(value, export.Game).Path;
+                    break;
+                case "BioSeqAct_PMExecuteTransition":
+                    if (name == "m_nIndex") return PlotDatabases.FindPlotTransitionByID(value, export.Game).Path;
+                    break;
+
             }
 
             if (name == "m_nStrRefID" || name == "nLineStrRef" || name == "nStrRefID" || name == "m_iStringRef" || name == "m_iDescriptionStringRef")
