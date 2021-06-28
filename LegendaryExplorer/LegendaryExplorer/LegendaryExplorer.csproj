@@ -477,7 +477,7 @@
   </Target>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /f /e /y &quot;$(ProjectDir)Resources\exec&quot; &quot;$(ProjectDir)$(OutDir)\exec\&quot;&#xD;&#xA;xcopy /y &quot;$(SolutionDir)TexConverter\Bin\$(PlatformName)\$(ConfigurationName)\TexConverter.dll&quot; &quot;$(ProjectDir)$(OutDir)&quot;" />
+    <Exec Command="xcopy /f /e /y &quot;$(ProjectDir)Resources\exec&quot; &quot;$(ProjectDir)$(OutDir)\exec\&quot;" />
   </Target>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">

@@ -214,3 +214,5 @@ Release_x64/
 /ME3Explorer/Deployment
 /LegendaryExplorer/LegendaryExplorer/BuildInfo.cs
 /LegendaryExplorer/Deployment
+/LegendaryExplorer/LegendaryExplorerCore/Libraries/Windows/TexConverter.exp
+/LegendaryExplorer/LegendaryExplorerCore/Libraries/Windows/TexConverter.lib
