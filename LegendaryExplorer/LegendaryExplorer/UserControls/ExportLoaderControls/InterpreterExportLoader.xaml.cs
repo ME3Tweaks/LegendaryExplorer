@@ -1273,19 +1273,19 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 case "BioSeqVar_StoryManagerStateId":
                 case "BioSeqVar_StoryManagerBool":
                 case "BioSeqAct_PMCheckState":
-                    if (name == "m_nIndex") return PlotDatabases.FindPlotBoolByID(value, export.Game).Path;
+                    if (name == "m_nIndex") return PlotDatabases.FindPlotBoolByID(value, export.Game)?.Path;
                     break;
                 case "BioSeqVar_StoryManagerInt":
-                    if (name == "m_nIndex") return PlotDatabases.FindPlotIntByID(value, export.Game).Path;
+                    if (name == "m_nIndex") return PlotDatabases.FindPlotIntByID(value, export.Game)?.Path;
                     break;
                 case "BioSeqVar_StoryManagerFloat":
-                    if (name == "m_nIndex") return PlotDatabases.FindPlotFloatByID(value, export.Game).Path;
+                    if (name == "m_nIndex") return PlotDatabases.FindPlotFloatByID(value, export.Game)?.Path;
                     break;
                 case "BioSeqAct_PMCheckConditional":
-                    if (name == "m_nIndex") return PlotDatabases.FindPlotConditionalByID(value, export.Game).Path;
+                    if (name == "m_nIndex") return PlotDatabases.FindPlotConditionalByID(value, export.Game)?.Path;
                     break;
                 case "BioSeqAct_PMExecuteTransition":
-                    if (name == "m_nIndex") return PlotDatabases.FindPlotTransitionByID(value, export.Game).Path;
+                    if (name == "m_nIndex") return PlotDatabases.FindPlotTransitionByID(value, export.Game)?.Path;
                     break;
 
             }

@@ -39,46 +39,67 @@ namespace LegendaryExplorerCore.PlotDatabase
         {
             EnsureDatabaseLoaded(game);
             var db = GetDatabaseForGame(game);
-            return db.Bools[id];
+
+            if (db.Bools.ContainsKey(id))
+            {
+                return db.Bools[id];
+            }
+            return null;
         }
 
         public static PlotElement FindPlotIntByID(int id, MEGame game)
         {
             EnsureDatabaseLoaded(game);
             var db = GetDatabaseForGame(game);
-            return db.Ints[id];
+            if (db.Ints.ContainsKey(id))
+            {
+                return db.Ints[id];
+            }
+            return null;
         }
 
         public static PlotElement FindPlotFloatByID(int id, MEGame game)
         {
             EnsureDatabaseLoaded(game);
             var db = GetDatabaseForGame(game);
-            return db.Floats[id];
+            if (db.Floats.ContainsKey(id))
+            {
+                return db.Floats[id];
+            }
+            return null;
         }
 
         public static PlotConditional FindPlotConditionalByID(int id, MEGame game)
         {
             EnsureDatabaseLoaded(game);
             var db = GetDatabaseForGame(game);
-            return db.Conditionals[id];
+            if (db.Conditionals.ContainsKey(id))
+            {
+                return db.Conditionals[id];
+            }
+            return null;
         }
 
         public static PlotTransition FindPlotTransitionByID(int id, MEGame game)
         {
             EnsureDatabaseLoaded(game);
             var db = GetDatabaseForGame(game);
-            return db.Transitions[id];
+            if (db.Transitions.ContainsKey(id))
+            {
+                return db.Transitions[id];
+            }
+            return null;
         }
 
         private static void EnsureDatabaseLoaded(MEGame game)
         {
             if (GetDatabaseForGame(game) == null)
             {
-                ReloadDatabase(game, isbioware: true);
+                LoadDatabase(game, isbioware: true);
             }
         }
 
-        public static void ReloadDatabase(MEGame game, bool isbioware)
+        public static void LoadDatabase(MEGame game, bool isbioware)
         {
             var db = new PlotDatabase(game, isbioware);
             db.LoadPlotsFromJSON(game, isbioware);
@@ -97,6 +118,18 @@ namespace LegendaryExplorerCore.PlotDatabase
                     Le3PlotDatabase = db;
                     break;
             }
+        }
+
+        public static void LoadAllPlotDatabases()
+        {
+            Le1PlotDatabase = new PlotDatabase(MEGame.LE1, true);
+            Le1PlotDatabase.LoadPlotsFromJSON(MEGame.LE1);
+
+            Le2PlotDatabase = new PlotDatabase(MEGame.LE2, true);
+            Le2PlotDatabase.LoadPlotsFromJSON(MEGame.LE2);
+
+            Le3PlotDatabase = new PlotDatabase(MEGame.LE3, true);
+            Le3PlotDatabase.LoadPlotsFromJSON(MEGame.LE3);
         }
     }
 }
