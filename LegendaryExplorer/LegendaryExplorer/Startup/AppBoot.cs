@@ -55,7 +55,7 @@ namespace LegendaryExplorer.Startup
             Arguments = new Queue<string[]>();
             Arguments.Enqueue(Environment.GetCommandLineArgs());
 
-            // Prevent working directory causing deletion if opened via file assoc
+            // Prevent working directory from being locked if opened via file assoc
             // We must do this this way for single file support as it will otherwise return dll instead
             Directory.SetCurrentDirectory(Directory.GetParent(Process.GetCurrentProcess().MainModule.FileName).FullName);
 
