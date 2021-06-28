@@ -24,7 +24,9 @@ namespace LegendaryExplorerCore.Dialogue
         public string Line { get; set; }
         public bool FiresConditional { get; set; }
         public int ConditionalOrBool { get; set; }
+        public string ConditionalPlotPath { get; set; }
         public int Transition { get; set; }
+        public string TransitionPlotPath { get; set; }
         /// <summary>
         /// Tag of speaker - generated.
         /// </summary>
@@ -121,6 +123,8 @@ namespace LegendaryExplorerCore.Dialogue
             Script = nodeExtended.Script;
             GUIStyle = nodeExtended.GUIStyle;
             ReplyType = nodeExtended.ReplyType;
+            ConditionalPlotPath = nodeExtended.ConditionalPlotPath;
+            TransitionPlotPath = nodeExtended.TransitionPlotPath;
         }
 
 #pragma warning disable

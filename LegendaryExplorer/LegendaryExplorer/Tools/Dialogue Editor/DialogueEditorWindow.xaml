@@ -747,6 +747,9 @@
                                                          KeyUp="EditBox_Node_KeyUp"
                                                          PreviewTextInput="NumberValidationEditBox" />
                                             </StackPanel>
+                                            <TextBlock Name="Node_Text_CndPath" Text="{Binding Path=SelectedDialogueNode.ConditionalPlotPath}"
+                                                       Visibility="{Binding Path=SelectedDialogueNode.ConditionalPlotPath, Converter={StaticResource NullVisibilityConverter}}"
+                                                       TextWrapping="Wrap"/>
                                             <Separator />
                                             <TextBlock Text="Plot transitions" />
                                             <StackPanel Orientation="Horizontal">
@@ -773,6 +776,9 @@
                                                          KeyUp="EditBox_Node_KeyUp"
                                                          PreviewTextInput="NumberValidationEditBox" />
                                             </StackPanel>
+                                            <TextBlock Name="Node_Text_TransPath" Text="{Binding Path=SelectedDialogueNode.TransitionPlotPath}"
+                                                       Visibility="{Binding Path=SelectedDialogueNode.TransitionPlotPath, Converter={StaticResource NullVisibilityConverter}}"
+                                                       TextWrapping="Wrap"/>
                                         </StackPanel>
                                     </TabItem>
                                     <TabItem Header="Matinee"

@@ -12,6 +12,7 @@ using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.PlotDatabase;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 
@@ -253,6 +254,13 @@ namespace LegendaryExplorer.SharedUI
                                                 _subtext = "Native";
                                             }
                                         }
+                                    }
+
+                                    if (Entry.ObjectName.Name.StartsWith("F") &&
+                                        Entry.ParentName.Equals("BioAutoConditionals", StringComparison.OrdinalIgnoreCase) && 
+                                        int.TryParse(Entry.ObjectName.Name.Substring(1), out int id))
+                                    {
+                                        _subtext = PlotDatabases.FindPlotConditionalByID(id, Entry.Game)?.Path;
                                     }
 
                                     break;

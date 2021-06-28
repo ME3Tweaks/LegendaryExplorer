@@ -69,23 +69,27 @@
                 <MenuItem Header="Search Again" InputGestureText="F3" Command="{Binding SearchAgainCommand}"/>
             </MenuItem>
         </Menu>
-        <Grid>
+        <Grid Margin="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="5"/>
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <sharedToolControls:RecentsControl x:Name="RecentsController" Grid.Column="0" Grid.ColumnSpan="2"
+            <sharedToolControls:RecentsControl x:Name="RecentsController" Grid.Column="0" Grid.ColumnSpan="3"
                                                Visibility="{Binding File, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}" />
-            <ListBox x:Name="ConditionalsListBox" Grid.Column="0" Grid.Row="0" Width="150" Visibility="{Binding File, Converter={StaticResource NullVisibilityConverter}}"
+            <ListBox x:Name="ConditionalsListBox" Grid.Column="0" Grid.Row="0" Visibility="{Binding File, Converter={StaticResource NullVisibilityConverter}}"
                      Style="{DynamicResource ListBoxStyle}"
+                     HorizontalContentAlignment="Stretch"
                      ItemsSource="{Binding Conditionals}"
                      SelectedItem="{Binding SelectedCond}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid>
-                            <TextBlock Text="{Binding ID}" Width="125">
-                                <TextBlock.ContextMenu>
+                            <StackPanel>
+                                <TextBlock Text="{Binding ID}" VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding PlotPath}" FontSize="10" Visibility="{Binding PlotPath, Converter={StaticResource NullVisibilityConverter}}"/>
+                                <StackPanel.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="Change Id"
                                                   Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ChangeIDCommand}" />
@@ -94,8 +98,8 @@
                                         <MenuItem Header="Delete"
                                                   Command="{Binding Source={StaticResource bindingProxy}, Path=Data.DeleteCommand}" />
                                     </ContextMenu>
-                                </TextBlock.ContextMenu>
-                            </TextBlock>
+                                </StackPanel.ContextMenu>
+                            </StackPanel>
                             <Grid.Style>
                                 <Style TargetType="{x:Type Grid}">
                                     <Style.Triggers>
@@ -119,7 +123,14 @@
                     </Style>
                 </ListBox.ItemContainerStyle>
             </ListBox>
-            <Grid Grid.Column="1" Visibility="{Binding File, Converter={StaticResource NullVisibilityConverter}}">
+
+            <GridSplitter Grid.Column="1"
+                          Margin="-3,0"
+                          BorderThickness="3,0"
+                          BorderBrush="Transparent"
+                          HorizontalAlignment="Stretch" />
+
+            <Grid Grid.Column="2" Visibility="{Binding File, Converter={StaticResource NullVisibilityConverter}}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
