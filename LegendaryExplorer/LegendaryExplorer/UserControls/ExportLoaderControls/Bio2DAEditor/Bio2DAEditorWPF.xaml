@@ -105,7 +105,7 @@
             <TextBlock FontWeight="Bold" Name="Bio2DAInfo_CellDataType_TextBlock" Grid.Row="2"  Grid.Column="0" Text="Selected cell data type: " VerticalAlignment="Top"/>
             <TextBlock FontWeight="Bold" Name="Bio2DAInfo_CellData_TextBlock" Grid.Row="3"  Grid.Column="0" Text="Selected cell data: " VerticalAlignment="Top"/>
 
-            <TextBlock FontWeight="Bold" Grid.Row="0"  Grid.Column="1" Text="Value as TLK reference:"/>
+            <TextBlock Name="Bio2DAInfo_CellDataAsStrType_TextBlock" FontWeight="Bold" Grid.Row="0"  Grid.Column="1" Text="Value as TLK reference:"/>
             <TextBlock Margin="5,0,0,0" Name="Bio2DAInfo_CellDataAsStrRef_TextBlock" Grid.Row="1"  Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="3" TextWrapping="Wrap" Text="Select a cell to preview TLK value"/>
         </Grid>
 

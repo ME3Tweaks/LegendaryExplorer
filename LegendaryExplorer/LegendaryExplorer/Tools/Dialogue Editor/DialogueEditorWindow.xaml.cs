@@ -44,6 +44,7 @@ using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
+using LegendaryExplorerCore.PlotDatabase;
 
 namespace LegendaryExplorer.DialogueEditor
 {
@@ -763,6 +764,16 @@ namespace LegendaryExplorer.DialogueEditor
                 {
                     node.InterpLength = lengthprop.Value;
                 }
+
+                if (node.FiresConditional)
+                {
+                    node.ConditionalPlotPath = PlotDatabases.FindPlotConditionalByID(node.ConditionalOrBool, Pcc.Game)?.Path;
+                }
+                else
+                {
+                    node.ConditionalPlotPath = PlotDatabases.FindPlotBoolByID(node.ConditionalOrBool, Pcc.Game)?.Path;
+                }
+                node.TransitionPlotPath = PlotDatabases.FindPlotTransitionByID(node.Transition, Pcc.Game)?.Path;
             }
             catch (Exception e)
             {

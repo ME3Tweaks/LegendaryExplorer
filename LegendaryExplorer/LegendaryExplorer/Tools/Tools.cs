@@ -514,6 +514,22 @@ namespace LegendaryExplorer
                 category = "Core Editors",
                 description = "Plot Editor is used to examine, edit, and search plot maps in all 3 games for quests, state events, and codex entries."
             });
+#if DEBUG
+            set.Add(new Tool
+            {
+                name = "Plot Manager",
+                type = typeof(Tools.PlotManager.PlotManagerWindow),
+                icon = Application.Current.FindResource("iconPlotDatabase") as ImageSource,
+                open = () =>
+                {
+                    var plotMan = new Tools.PlotManager.PlotManagerWindow();
+                    plotMan.Show();
+                },
+                tags = new List<string> { "developer", "codex", "state transition", "quest", "plots" },
+                category = "Core Editors",
+                description = "Plot Manager is used to view databases of plots from all three games."
+            });
+#endif
             set.Add(new Tool
             {
                 name = "Sequence Editor",

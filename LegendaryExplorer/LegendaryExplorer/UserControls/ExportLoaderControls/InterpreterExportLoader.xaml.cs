@@ -22,6 +22,7 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
+using LegendaryExplorerCore.PlotDatabase;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 
@@ -38,7 +39,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         //same type and are not distinguishable without changing to another export, wasting a lot of time.
         //values are the class of object value being parsed
         public static readonly string[] ExportToStringConverters = { "LevelStreamingKismet", "StaticMeshComponent", "ParticleSystemComponent", "DecalComponent", "LensFlareComponent" };
-        public static readonly string[] IntToStringConverters = { "WwiseEvent", "WwiseBank" };
+        public static readonly string[] IntToStringConverters = { "WwiseEvent", "WwiseBank", "BioSeqAct_PMExecuteTransition", "BioSeqAct_PMCheckState", "BioSeqAct_PMCheckConditional", "BioSeqVar_StoryManagerInt", 
+                                                                "BioSeqVar_StoryManagerFloat", "BioSeqVar_StoryManagerBool", "BioSeqVar_StoryManagerStateId", "SFXSceneShopNodePlotCheck", "BioWorldInfo" };
         public ObservableCollectionExtended<IndexedName> ParentNameList { get; private set; }
 
         public bool SubstituteImageForHexBox
@@ -984,7 +986,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             parsedValue = IntToString(prop.Name, ip.Value, parsingExport);
                         }
 
-                        if (parent.Property is StructProperty property && property.StructType == "Rotator")
+                        if (ip.Name == "VisibleConditional" || ip.Name == "UsableConditional" ||
+                            ip.Name == "PlanetLandCondition" || ip.Name == "PlanetPlotLabelCondition")
+                        {
+                            parsedValue = PlotDatabases.FindPlotConditionalByID(ip.Value, parsingExport.Game)?.Path;
+                        }
+
+                            if (parent.Property is StructProperty property && property.StructType == "Rotator")
                         {
                             parsedValue = $"({ip.Value.UnrealRotationUnitsToDegrees():0.0######} degrees)";
                         }
@@ -1267,7 +1275,52 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         case "Id":
                             return $"(0x{value:X8})";
                     }
+
                     break;
+                case "BioSeqVar_StoryManagerStateId":
+                case "BioSeqVar_StoryManagerBool":
+                case "BioSeqAct_PMCheckState":
+                    if (name == "m_nIndex") return PlotDatabases.FindPlotBoolByID(value, export.Game)?.Path;
+                    break;
+                case "BioSeqVar_StoryManagerInt":
+                    if (name == "m_nIndex") return PlotDatabases.FindPlotIntByID(value, export.Game)?.Path;
+                    break;
+                case "BioSeqVar_StoryManagerFloat":
+                    if (name == "m_nIndex") return PlotDatabases.FindPlotFloatByID(value, export.Game)?.Path;
+                    break;
+                case "BioSeqAct_PMCheckConditional":
+                    if (name == "m_nIndex") return PlotDatabases.FindPlotConditionalByID(value, export.Game)?.Path;
+                    break;
+                case "BioSeqAct_PMExecuteTransition":
+                    if (name == "m_nIndex") return PlotDatabases.FindPlotTransitionByID(value, export.Game)?.Path;
+                    break;
+                case "BioWorldInfo":
+                    if(name == "Conditional") return PlotDatabases.FindPlotConditionalByID(value, export.Game)?.Path;
+                    break;
+                case "SFXSceneShopNodePlotCheck":
+                    if (name == "m_nIndex")
+                    {
+                        Enum.TryParse(export.GetProperty<EnumProperty>("VarType").Value.Name, out ESFXSSPlotVarType type);
+                        switch (type)
+                        {
+                            case ESFXSSPlotVarType.PlotVar_Float:
+                                {
+                                    return PlotDatabases.FindPlotFloatByID(value, export.Game)?.Path;
+                                }
+                            case ESFXSSPlotVarType.PlotVar_State:
+                                {
+                                    return PlotDatabases.FindPlotBoolByID(value, export.Game)?.Path;
+                                }
+                            case ESFXSSPlotVarType.PlotVar_Int:
+                                {
+                                    return PlotDatabases.FindPlotIntByID(value, export.Game)?.Path;
+                                }
+                            default: return "";
+                        }
+                    }
+
+                    break;
+
             }
 
             if (name == "m_nStrRefID" || name == "nLineStrRef" || name == "nStrRefID" || name == "m_iStringRef" || name == "m_iDescriptionStringRef")

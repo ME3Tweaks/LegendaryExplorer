@@ -106,12 +106,20 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap
 			set { SetProperty(ref _elements, value); }
 		}
 
-		/// <summary>
+        /// <summary>
 		/// </summary>
 		public bool HasElements
 		{
 			get { return Elements.Any(); }
 		}
+
+        private string _plotPath;
+
+        public string PlotPath
+        {
+            get => _plotPath;
+            set => SetProperty(ref _plotPath, value);
+        }
 
         public override string ToString()
         {

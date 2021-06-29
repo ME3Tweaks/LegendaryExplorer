@@ -88,6 +88,7 @@
   <ItemGroup>
     <None Remove="Embedded\GameResources.zip" />
     <None Remove="Embedded\Infos.zip" />
+    <None Remove="Embedded\PlotDatabases.zip" />
     <None Remove="Embedded\udkdefaultthumb.png" />
     <None Remove="Embedded\Precomputed\TextureMap\vanillaME1Map.bin" />
     <None Remove="UnrealScript\Utilities\Keywords.tt" />

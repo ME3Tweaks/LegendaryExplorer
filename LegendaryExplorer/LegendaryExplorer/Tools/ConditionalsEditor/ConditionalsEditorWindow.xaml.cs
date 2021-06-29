@@ -21,6 +21,8 @@ using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.PlotDatabase;
 using LegendaryExplorerCore.Unreal;
 using Microsoft.Win32;
 
@@ -486,8 +488,17 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
                     {
                         IsModified = true;
                         Conditional.ID = value;
+                        PlotPath = PlotDatabases.FindPlotConditionalByID(value, MEGame.LE3)?.Path;
                     }
                 }
+            }
+
+            private string _plotPath;
+
+            public string PlotPath
+            {
+                get => _plotPath;
+                set => SetProperty(ref _plotPath, value);
             }
 
             public CNDFile.ConditionalEntry Conditional;
@@ -496,6 +507,7 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
             {
                 Conditional = conditional;
                 _iD = conditional.ID;
+                PlotPath = PlotDatabases.FindPlotConditionalByID(conditional.ID, MEGame.LE3)?.Path;
             }
 
             public string Compile(string text)

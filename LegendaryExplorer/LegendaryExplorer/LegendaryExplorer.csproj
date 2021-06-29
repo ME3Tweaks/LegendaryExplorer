@@ -382,6 +382,9 @@
     <Page Update="Tools\TextureStudio\TextureStudioWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Tools\TextureStudio\PlotManagerWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="UserControls\ExportLoaderControls\TLKEditor.xaml">
       <SubType>Designer</SubType>
     </Page>
