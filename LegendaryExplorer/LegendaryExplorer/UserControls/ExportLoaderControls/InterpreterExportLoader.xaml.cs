@@ -40,7 +40,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         //values are the class of object value being parsed
         public static readonly string[] ExportToStringConverters = { "LevelStreamingKismet", "StaticMeshComponent", "ParticleSystemComponent", "DecalComponent", "LensFlareComponent" };
         public static readonly string[] IntToStringConverters = { "WwiseEvent", "WwiseBank", "BioSeqAct_PMExecuteTransition", "BioSeqAct_PMCheckState", "BioSeqAct_PMCheckConditional", "BioSeqVar_StoryManagerInt", 
-                                                                "BioSeqVar_StoryManagerFloat", "BioSeqVar_StoryManagerBool", "BioSeqVar_StoryManagerStateId" };
+                                                                "BioSeqVar_StoryManagerFloat", "BioSeqVar_StoryManagerBool", "BioSeqVar_StoryManagerStateId", "SFXSceneShopNodePlotCheck", "BioWorldInfo" };
         public ObservableCollectionExtended<IndexedName> ParentNameList { get; private set; }
 
         public bool SubstituteImageForHexBox
@@ -986,7 +986,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             parsedValue = IntToString(prop.Name, ip.Value, parsingExport);
                         }
 
-                        if (parent.Property is StructProperty property && property.StructType == "Rotator")
+                        if (ip.Name == "VisibleConditional" || ip.Name == "UsableConditional" ||
+                            ip.Name == "PlanetLandCondition" || ip.Name == "PlanetPlotLabelCondition")
+                        {
+                            parsedValue = PlotDatabases.FindPlotConditionalByID(ip.Value, parsingExport.Game)?.Path;
+                        }
+
+                            if (parent.Property is StructProperty property && property.StructType == "Rotator")
                         {
                             parsedValue = $"({ip.Value.UnrealRotationUnitsToDegrees():0.0######} degrees)";
                         }
@@ -1269,6 +1275,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         case "Id":
                             return $"(0x{value:X8})";
                     }
+
                     break;
                 case "BioSeqVar_StoryManagerStateId":
                 case "BioSeqVar_StoryManagerBool":
@@ -1286,6 +1293,32 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     break;
                 case "BioSeqAct_PMExecuteTransition":
                     if (name == "m_nIndex") return PlotDatabases.FindPlotTransitionByID(value, export.Game)?.Path;
+                    break;
+                case "BioWorldInfo":
+                    if(name == "Conditional") return PlotDatabases.FindPlotConditionalByID(value, export.Game)?.Path;
+                    break;
+                case "SFXSceneShopNodePlotCheck":
+                    if (name == "m_nIndex")
+                    {
+                        Enum.TryParse(export.GetProperty<EnumProperty>("VarType").Value.Name, out ESFXSSPlotVarType type);
+                        switch (type)
+                        {
+                            case ESFXSSPlotVarType.PlotVar_Float:
+                                {
+                                    return PlotDatabases.FindPlotFloatByID(value, export.Game)?.Path;
+                                }
+                            case ESFXSSPlotVarType.PlotVar_State:
+                                {
+                                    return PlotDatabases.FindPlotBoolByID(value, export.Game)?.Path;
+                                }
+                            case ESFXSSPlotVarType.PlotVar_Int:
+                                {
+                                    return PlotDatabases.FindPlotIntByID(value, export.Game)?.Path;
+                                }
+                            default: return "";
+                        }
+                    }
+
                     break;
 
             }

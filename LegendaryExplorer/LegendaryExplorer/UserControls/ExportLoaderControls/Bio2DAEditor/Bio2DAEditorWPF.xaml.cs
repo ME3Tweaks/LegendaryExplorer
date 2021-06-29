@@ -6,6 +6,7 @@ using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.PlotDatabase;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -75,10 +76,36 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     Bio2DAInfo_CellDataOffset_TextBlock.Text = $"Selected cell data offset: 0x{item.Offset:X6}";
                     if (item.Type == Bio2DACell.Bio2DADataType.TYPE_INT)
                     {
-                        Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = TLKManagerWPF.GlobalFindStrRefbyID(item.IntValue, CurrentLoadedExport.FileRef.Game, CurrentLoadedExport.FileRef);
+                        var columnName = Table2DA.ColumnNames[columnIndex];
+                        switch (columnName)
+                        {
+                            case "PlotID":
+                                Bio2DAInfo_CellDataAsStrType_TextBlock.Text = "Value as Plot Int Path:";
+                                Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = PlotDatabases
+                                    .FindPlotIntByID(item.IntValue, CurrentLoadedExport.FileRef.Game)?.Path;
+                                break;
+                            case "c_transition":
+                                Bio2DAInfo_CellDataAsStrType_TextBlock.Text = "Value as Transition Path:";
+                                Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = PlotDatabases
+                                    .FindPlotTransitionByID(item.IntValue, CurrentLoadedExport.FileRef.Game)?.Path;
+                                break;
+                            case "VisibleFunction":
+                            case "UsableFunction":
+                            case "UsablePlanetFunction":
+                            case "c_shopcondition":
+                                Bio2DAInfo_CellDataAsStrType_TextBlock.Text = "Value as Conditional Path:";
+                                Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = PlotDatabases
+                                    .FindPlotConditionalByID(item.IntValue, CurrentLoadedExport.FileRef.Game)?.Path;
+                                break;
+                            default:
+                                Bio2DAInfo_CellDataAsStrType_TextBlock.Text = "Value as TLK Reference:";
+                                Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = TLKManagerWPF.GlobalFindStrRefbyID(item.IntValue, CurrentLoadedExport.FileRef.Game, CurrentLoadedExport.FileRef);
+                                break;
+                        }
                     }
                     else
                     {
+                        Bio2DAInfo_CellDataAsStrType_TextBlock.Text = "Value as TLK Reference:";
                         Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = "Select cell of TYPE_INT to see as TLK Str";
                     }
                 }
@@ -87,6 +114,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     Bio2DAInfo_CellDataType_TextBlock.Text = "Selected cell data type: NULL";
                     Bio2DAInfo_CellData_TextBlock.Text = "Selected cell data:";
                     Bio2DAInfo_CellDataOffset_TextBlock.Text = "Selected cell data offset: N/A";
+                    Bio2DAInfo_CellDataAsStrType_TextBlock.Text = "Value as TLK Reference:";
                     Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = "Select a cell to preview TLK value";
                 }
             }
