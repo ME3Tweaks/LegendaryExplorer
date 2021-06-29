@@ -484,7 +484,8 @@
     <Exec Command="Build\InsertIcons.exe  &quot;$(OutDir)\LegendaryExplorer.exe&quot; Build\iconlist.txt" />
     <!--Space required or it tries to escape the quote-->
     <!-- Not 100% working. Seems like sqlite has same post build in parallel somehow? -->
-    <Exec Command="powershell -ExecutionPolicy Bypass -File &quot;Build\PostBuildCleanup.ps1&quot; &quot;$(TargetDir) &quot;" />
+    <!-- Used for stable deployments script -->
+    <!--<Exec Command="powershell -ExecutionPolicy Bypass -File &quot;Build\PostBuildCleanup.ps1&quot; &quot;$(TargetDir) &quot;" />-->
   </Target>
 </Project>
 
