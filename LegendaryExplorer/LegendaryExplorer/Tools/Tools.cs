@@ -527,6 +527,7 @@ namespace LegendaryExplorer
                 category = "Core Editors",
                 description = "Sequence Editor is the toolset’s version of UDK’s UnrealKismet. With this cross-game tool, users can edit and create new sequences that control gameflow within and across levels.",
             });
+#if DEBUG
             set.Add(new Tool
             {
                 name = "Texture Studio",
@@ -540,6 +541,7 @@ namespace LegendaryExplorer
                 category = "Meshes + Textures",
                 description = "Texture Studio is a tool designed for texture editing files in a directory of files, such as a DLC mod. It is not the same as other tools such as Mass Effect Modder, which is a game wide replacement tool.",
             });
+#endif
             set.Add(new Tool
             {
                 name = "Sound Explorer",
