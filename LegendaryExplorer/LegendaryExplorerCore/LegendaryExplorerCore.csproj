@@ -91,6 +91,10 @@
     <None Remove="Embedded\PlotDatabases.zip" />
     <None Remove="Embedded\udkdefaultthumb.png" />
     <None Remove="Embedded\Precomputed\TextureMap\vanillaME1Map.bin" />
+    <None Remove="Libraries\Windows\TexConverter.exp" />
+    <None Remove="Libraries\Windows\TexConverter.ilk" />
+    <None Remove="Libraries\Windows\TexConverter.lib" />
+    <None Remove="Libraries\Windows\TexConverter.pdb" />
     <None Remove="UnrealScript\Utilities\Keywords.tt" />
   </ItemGroup>
 
