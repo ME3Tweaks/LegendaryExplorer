@@ -5,7 +5,6 @@
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
     <Platforms>x64</Platforms>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <ApplicationIcon>Resources\Images\LEX_icon.ico</ApplicationIcon>
     <Configurations>WinDebug;WinRelease;WinAzureRelease;WinAzureTest</Configurations>
     <DebugSymbols>true</DebugSymbols>
@@ -18,13 +17,11 @@
   <PropertyGroup Condition="'$(Configuration)'=='WinDebug'">
     <DebugType>pdbonly</DebugType>
     <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
-    <TextTransformPath>$(DevEnvDir)TextTransform.exe</TextTransformPath>
     <XamlDebuggingInformation>True</XamlDebuggingInformation>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='WinRelease'">
     <DebugType>embedded</DebugType>
-    <TextTransformPath>C:\PROGRAM FILES (X86)\MICROSOFT VISUAL STUDIO\2019\Community\Common7\IDE\TextTransform.exe</TextTransformPath>
     <DefineConstants>WINDOWS;RELEASE</DefineConstants>
   </PropertyGroup>
 
@@ -46,7 +43,11 @@
 
   <ItemGroup>
     <None Remove="Resources\Images\GameIcons\UDK_48.ico" />
+    <Compile Remove="Resources\exec\**" />
+    <EmbeddedResource Remove="Resources\exec\**" />
+    <None Remove="Resources\exec\**" />
     <None Remove="Tools\Icons\**\*.ico" />
+    <Page Remove="Resources\exec\**" />
     <None Remove="Tools\Meshplorer\udk.ico" />
     <None Remove="Tools\Meshplorer\umodel.ico" />
     <None Remove="Tools\PackageEditor\ExportIcons\icon_texturecube.png" />
@@ -127,11 +128,6 @@
     <!-- Is there a fontawesome excel icon?-->
     <Resource Include="Resources\Images\*.png" />
     <Resource Include="Tools\PackageEditor\ExportIcons\*" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Resources\exec\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\StandardShader.hlsl" />
@@ -483,9 +479,12 @@
     <Exec Command="powershell -ExecutionPolicy Bypass -File &quot;Build\UpdateTextTransforms.ps1&quot;" />
   </Target>
 
-  <Target Name="PostBuild" AfterTargets="build">
-    <Exec Command="xcopy /f /e /y &quot;Resources\exec&quot; &quot;$(OutDir)\exec\&quot;" />
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy /f /e /y &quot;Resources\exec&quot; &quot;$(OutDir)exec\&quot;" />
     <Exec Command="Build\InsertIcons.exe  &quot;$(OutDir)\LegendaryExplorer.exe&quot; Build\iconlist.txt" />
+    <!--Space required or it tries to escape the quote-->
+    <!-- Not 100% working. Seems like sqlite has same post build in parallel somehow? -->
+    <Exec Command="powershell -ExecutionPolicy Bypass -File &quot;Build\PostBuildCleanup.ps1&quot; &quot;$(TargetDir) &quot;" />
   </Target>
 </Project>
 
