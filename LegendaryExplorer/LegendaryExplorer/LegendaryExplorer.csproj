@@ -5,24 +5,26 @@
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
     <Platforms>x64</Platforms>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <ApplicationIcon>Resources\Images\LEX_icon.ico</ApplicationIcon>
     <Configurations>WinDebug;WinRelease;WinAzureRelease;WinAzureTest</Configurations>
     <DebugSymbols>true</DebugSymbols>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
     <PreserveCompilationContext>false</PreserveCompilationContext>
+    <ValidateExecutableReferencesMatchSelfContained>false</ValidateExecutableReferencesMatchSelfContained>
     <Version>6.0</Version>
   </PropertyGroup>
-	
+
   <PropertyGroup Condition="'$(Configuration)'=='WinDebug'">
     <DebugType>pdbonly</DebugType>
     <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
-	<TextTransformPath>$(DevEnvDir)TextTransform.exe</TextTransformPath>
+    <TextTransformPath>$(DevEnvDir)TextTransform.exe</TextTransformPath>
     <XamlDebuggingInformation>True</XamlDebuggingInformation>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='WinRelease'">
     <DebugType>embedded</DebugType>
-	  <TextTransformPath>C:\PROGRAM FILES (X86)\MICROSOFT VISUAL STUDIO\2019\Community\Common7\IDE\TextTransform.exe</TextTransformPath>
+    <TextTransformPath>C:\PROGRAM FILES (X86)\MICROSOFT VISUAL STUDIO\2019\Community\Common7\IDE\TextTransform.exe</TextTransformPath>
     <DefineConstants>WINDOWS;RELEASE</DefineConstants>
   </PropertyGroup>
 
@@ -30,7 +32,7 @@
   <PropertyGroup Condition="'$(Configuration)'=='WinAzureRelease'">
     <DebugType>embedded</DebugType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	  <TextTransformPath>C:\PROGRAM FILES (X86)\MICROSOFT VISUAL STUDIO\2019\Enterprise\Common7\IDE\TextTransform.exe</TextTransformPath>
+    <TextTransformPath>C:\PROGRAM FILES (X86)\MICROSOFT VISUAL STUDIO\2019\Enterprise\Common7\IDE\TextTransform.exe</TextTransformPath>
     <DefineConstants>WINDOWS;NIGHTLY</DefineConstants>
   </PropertyGroup>
 
@@ -38,12 +40,12 @@
   <PropertyGroup Condition="'$(Configuration)'=='WinAzureTest'">
     <DebugType>embedded</DebugType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	<TextTransformPath>C:\PROGRAM FILES (X86)\MICROSOFT VISUAL STUDIO\2019\Enterprise\Common7\IDE\TextTransform.exe</TextTransformPath>
+    <TextTransformPath>C:\PROGRAM FILES (X86)\MICROSOFT VISUAL STUDIO\2019\Enterprise\Common7\IDE\TextTransform.exe</TextTransformPath>
     <DefineConstants>WINDOWS;AZURE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
-	<None Remove="Resources\Images\GameIcons\UDK_48.ico" />
+    <None Remove="Resources\Images\GameIcons\UDK_48.ico" />
     <None Remove="Tools\Icons\**\*.ico" />
     <None Remove="Tools\Meshplorer\udk.ico" />
     <None Remove="Tools\Meshplorer\umodel.ico" />
@@ -81,11 +83,11 @@
     <PackageReference Include="gong-wpf-dragdrop" Version="2.3.2" />
     <PackageReference Include="Gu.Wpf.DataGrid2D" Version="0.2.4" />
     <PackageReference Include="HMBSbige.SingleInstance" Version="5.0.0" />
-    <PackageReference Include="JetBrains.Profiler.SelfApi" Version="2.1.1" />
-    <PackageReference Include="LibVLCSharp.WPF" Version="3.5.0" />
-    <PackageReference Include="Microsoft.AppCenter" Version="4.2.0" />
-    <PackageReference Include="Microsoft.AppCenter.Analytics" Version="4.2.0" />
-    <PackageReference Include="Microsoft.AppCenter.Crashes" Version="4.2.0" />
+    <PackageReference Include="JetBrains.Profiler.SelfApi" Version="2.1.2" />
+    <PackageReference Include="LibVLCSharp.WPF" Version="3.5.1" />
+    <PackageReference Include="Microsoft.AppCenter" Version="4.3.0" />
+    <PackageReference Include="Microsoft.AppCenter.Analytics" Version="4.3.0" />
+    <PackageReference Include="Microsoft.AppCenter.Crashes" Version="4.3.0" />
     <PackageReference Include="Microsoft.Wpf.Interop.DirectX-x64" Version="0.9.0-beta-22856" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
     <PackageReference Include="NAudio" Version="2.0.1" />
@@ -127,10 +129,9 @@
     <Resource Include="Tools\PackageEditor\ExportIcons\*" />
   </ItemGroup>
   <ItemGroup>
-	<Compile Remove="Resources\exec\**" />
-	<EmbeddedResource Remove="Resources\exec\**" />
-	<None Remove="Resources\exec\**" />
-	<Page Remove="Resources\exec\**" />
+    <Content Include="Resources\exec\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\StandardShader.hlsl" />
@@ -141,13 +142,14 @@
   </ItemGroup>
 
   <ItemGroup>
-	  <VlcWindowsX64IncludeFiles Include="plugins\d3d%2A\%2A" />
-	  <VlcWindowsX64IncludeFiles Include="libvlc.dll;libvlccore.dll;hrtfs\%2A%2A;" />
-	  <VlcWindowsX64IncludeFiles Include="locale\en_GB\%2A" />
-	  <VlcWindowsX64IncludeFiles Include="plugins\codec\libavcodec_plugin.dll" />
-	  <VlcWindowsX64IncludeFiles Include="plugins\access\libimem_plugin.dll" />
-	  <VlcWindowsX64IncludeFiles Include="plugins\audio%2A\%2A" />
-	  <VlcWindowsX64IncludeFiles Include="plugins\video_output\%2A" />
+    <VlcWindowsX64IncludeFiles Include="plugins\d3d%2A\%2A" />
+    <VlcWindowsX64IncludeFiles Include="libvlc.dll;libvlccore.dll;hrtfs\%2A%2A;" />
+    <VlcWindowsX64IncludeFiles Include="locale\en_GB\%2A" />
+    <VlcWindowsX64IncludeFiles Include="plugins\codec\libavcodec_plugin.dll" />
+    <VlcWindowsX64IncludeFiles Include="plugins\access\libimem_plugin.dll" />
+    <VlcWindowsX64IncludeFiles Include="plugins\audio%2A\%2A" />
+    <VlcWindowsX64IncludeFiles Include="plugins\video_output\%2A" />
+    <VlcWindowsX86IncludeFiles Include="locale\en_GB\%2A" />
   </ItemGroup>
 
   <ItemGroup>
@@ -294,7 +296,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>SettingsWindow.tt</DependentUpon>
     </Page>
-	  <Page Update="MainWindow\ToolPanel.xaml">
+    <Page Update="MainWindow\ToolPanel.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="SharedUI\Controls\InputComboBoxWPF.xaml">
@@ -465,7 +467,8 @@
   </ItemGroup>
 
   <ItemGroup>
-	  <Folder Include="Tools\PlotEditor\SFXGame\biodefine\" />
+    <Folder Include="Resources\FileAssocIcons\" />
+    <Folder Include="Tools\PlotEditor\SFXGame\biodefine\" />
     <Folder Include="UserControls\ExportLoaderControls\ScriptEditor\" />
   </ItemGroup>
 
@@ -476,11 +479,13 @@
     </ItemGroup>
   </Target>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /f /e /y &quot;$(ProjectDir)Resources\exec&quot; &quot;$(ProjectDir)$(OutDir)\exec\&quot;" />
-  </Target>
-
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
     <Exec Command="powershell -ExecutionPolicy Bypass -File &quot;Build\UpdateTextTransforms.ps1&quot;" />
   </Target>
+
+  <Target Name="PostBuild" AfterTargets="build">
+    <Exec Command="xcopy /f /e /y &quot;Resources\exec&quot; &quot;$(OutDir)\exec\&quot;" />
+    <Exec Command="Build\InsertIcons.exe  &quot;$(OutDir)\LegendaryExplorer.exe&quot; Build\iconlist.txt" />
+  </Target>
 </Project>
+

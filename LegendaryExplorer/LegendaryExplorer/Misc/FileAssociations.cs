@@ -10,6 +10,7 @@ namespace LegendaryExplorer.Misc
         public string ProgId { get; set; }
         public string FileTypeDescription { get; set; }
         public string ExecutableFilePath { get; set; }
+        public int IconIndex { get; set; } = -1;
     }
 
     public class FileAssociations
@@ -26,16 +27,17 @@ namespace LegendaryExplorer.Misc
         /// </summary>
         /// <param name="extension">File extension to set. Must not contain a .</param>
         /// <param name="filetypeDescription">Description to show in WE details for "Type"</param>
-        public static void EnsureAssociationsSet(string extension, string filetypeDescription)
+        public static void EnsureAssociationsSet(string extension, string filetypeDescription, int iconIndex = -1)
         {
             var filePath = Process.GetCurrentProcess().MainModule.FileName;
             EnsureAssociationsSet(
                 new FileAssociation
                 {
                     Extension = "." + extension,
-                    ProgId = "ME3ExplorerMTF." + extension,
+                    ProgId = "LegendaryExplorerMTF." + extension,
                     FileTypeDescription = filetypeDescription,
-                    ExecutableFilePath = filePath
+                    ExecutableFilePath = filePath,
+                    IconIndex = iconIndex
                 });
         }
 
@@ -48,7 +50,8 @@ namespace LegendaryExplorer.Misc
                     association.Extension,
                     association.ProgId,
                     association.FileTypeDescription,
-                    association.ExecutableFilePath);
+                    association.ExecutableFilePath,
+                    association.IconIndex);
             }
 
             if (madeChanges)
@@ -57,23 +60,35 @@ namespace LegendaryExplorer.Misc
             }
         }
 
-        public static bool SetAssociation(string extension, string progId, string fileTypeDescription, string applicationFilePath)
+        public static bool SetAssociation(string extension, string progId, string fileTypeDescription, string applicationFilePath, int iconIndex = -1)
         {
             bool madeChanges = false;
             madeChanges |= SetKeyDefaultValue(@"Software\Classes\" + extension, progId);
             madeChanges |= SetKeyDefaultValue(@"Software\Classes\" + progId, fileTypeDescription);
             madeChanges |= SetKeyDefaultValue($@"Software\Classes\{progId}\shell\open\command", "\"" + applicationFilePath + "\" -o \"%1\"");
+            if (iconIndex >= 0)
+            {
+                madeChanges |= SetKeyDefaultValue($@"Software\Classes\{progId}\DefaultIcon", $"{applicationFilePath},{iconIndex}");
+            }
             return madeChanges;
         }
 
-        private static bool SetKeyDefaultValue(string keyPath, string value)
+        private static bool SetKeyDefaultValue(string keyPath, string value, RegistryValueKind? kind = null)
         {
             using (var key = Registry.CurrentUser.CreateSubKey(keyPath))
             {
-                if (key.GetValue(null) as string != value)
+                if (kind != null)
                 {
-                    key.SetValue(null, value);
+                    key.SetValue(null, value, kind.Value);
                     return true;
+                }
+                else
+                {
+                    if (key.GetValue(null) as string != value)
+                    {
+                        key.SetValue(null, value);
+                        return true;
+                    }
                 }
             }
 
@@ -95,11 +110,13 @@ namespace LegendaryExplorer.Misc
 
         public static void AssociateOthers()
         {
-            EnsureAssociationsSet("tlk", "Talk Table File");
-            EnsureAssociationsSet("afc", "Audio File Cache File");
-            EnsureAssociationsSet("isb", "ISACT Bank File");
-            EnsureAssociationsSet("dlc", "Mass Effect DLC Mount File");
-            EnsureAssociationsSet("cnd", "Mass Effect Conditionals File");
+            // Icons start at 40001 in the exe - but are defined as 1 2 3 4... (0 being default icon) and are defined in iconlist.txt in the build folder.
+            // DO NOT CHANGE THE ORDER WITHOUT CHANGING THESE
+            EnsureAssociationsSet("tlk", "Talk Table File", 4);
+            EnsureAssociationsSet("afc", "Audio File Cache File", 2);
+            EnsureAssociationsSet("isb", "ISACT Bank File", 2);
+            EnsureAssociationsSet("dlc", "Mass Effect DLC Mount File", 1);
+            EnsureAssociationsSet("cnd", "Mass Effect Conditionals File", 4);
         }
     }
 }
