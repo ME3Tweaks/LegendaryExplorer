@@ -8,12 +8,15 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:plotEditor="clr-namespace:LegendaryExplorer.Tools.PlotEditor"
     xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
+    xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
     mc:Ignorable="d"
 	DataContext="{Binding RelativeSource={RelativeSource Self}}"
 	d:DesignHeight="600" d:DesignWidth="800">
 	<!-- UserControl Resources -->
 	<UserControl.Resources>
+        <converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
         <plotEditor:NameConverter x:Key="NameConverter" />
+        <plotEditor:PlotPathConverter x:Key="PlotPathConverter" />
         <Style TargetType="{x:Type ListBox}" x:Key="ListBoxStyle">
 			<Style.Triggers>
 				<Trigger Property="HasItems" Value="True">
@@ -29,7 +32,8 @@
 	<!-- Content -->
 	<Grid>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="150" />
+            <ColumnDefinition Width="5" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
@@ -38,21 +42,23 @@
 		</Grid.RowDefinitions>
 
 		<!-- State Event Map ListBox -->
-		<ListBox x:Name="StateEventMapListBox" Grid.Column="0" Grid.Row="0" Width="150" Style="{DynamicResource ListBoxStyle}"
+		<ListBox x:Name="StateEventMapListBox" Grid.Column="0" Grid.Row="0" Style="{DynamicResource ListBoxStyle}"
 			ItemsSource="{Binding StateEvents, NotifyOnTargetUpdated=True}" SelectedItem="{Binding SelectedStateEvent, Mode=TwoWay}">
 			<!-- Resources -->
             <ListBox.ItemTemplate>
                 <!--<DataTemplate DataType="{x:Type stateEventMap:BioStateEvent}">-->
                 <DataTemplate>
-                    <TextBlock Text="{Binding Key, StringFormat='State Event: \{0\}'}"  Width="125">
-                        <TextBlock.ContextMenu>
+                    <StackPanel HorizontalAlignment="Left">
+                        <TextBlock Text="{Binding Key, StringFormat='State Event: \{0\}'}" />
+                        <TextBlock Text="{Binding Value.PlotPath}" TextWrapping="Wrap" FontSize="10" Visibility="{Binding Value.TitleAsString, Converter={StaticResource NullVisibilityConverter}}"/>
+                        <StackPanel.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Change Id" Click="ChangeStateEventId_Click"/>
                                 <MenuItem Header="Copy" Click="CopyStateEvent_Click"/>
                                 <MenuItem Header="Remove" Click="RemoveStateEvent_Click"/>
                             </ContextMenu>
-                        </TextBlock.ContextMenu>
-                    </TextBlock>
+                        </StackPanel.ContextMenu>
+                    </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
@@ -74,9 +80,13 @@
 
 			<Button Grid.Column="2" Grid.Row="0" Content="Remove" Click="RemoveStateEvent_Click"/>
 		</Grid>
-
+        <GridSplitter Grid.Column="1"
+                      Margin="-3,0"
+                      BorderThickness="3,0"
+                      BorderBrush="Transparent"
+                      HorizontalAlignment="Stretch" />
 		<!-- State Event Map Entry Grid -->
-		<Grid x:Name="StateEventMapEntryGrid" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Margin="5,0,0,0">
+		<Grid x:Name="StateEventMapEntryGrid" Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" Margin="0,0,0,0">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="*" />
 			</Grid.ColumnDefinitions>
@@ -215,7 +225,8 @@
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -233,6 +244,15 @@
                                 <xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
 								Text="{Binding Path=GlobalBool, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 								HorizontalAlignment="Left" Margin="5,5" Minimum="0" VerticalAlignment="Center" Width="150" />
+
+                                <TextBlock Grid.Column="2" Grid.Row="0" TextAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Padding="3,0">
+                                    <TextBlock.Text>
+                                        <MultiBinding Converter="{StaticResource PlotPathConverter}" ConverterParameter="bool">
+                                            <Binding Path="DataContext.package.Game" ElementName="SelectedStateEventElementContent"/>
+                                            <Binding Path="GlobalBool"/>
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
 
                                 <!-- New State -->
                                 <Label Grid.Column="0" Grid.Row="1"
@@ -302,7 +322,8 @@
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -320,6 +341,15 @@
 								Text="{Binding Path=GlobalFloat, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 								Width="150" Margin="5,5" Minimum="0" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
+                                <TextBlock Grid.Column="2" Grid.Row="0" TextAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Padding="3,0">
+                                    <TextBlock.Text>
+                                        <MultiBinding Converter="{StaticResource PlotPathConverter}" ConverterParameter="float">
+                                            <Binding Path="DataContext.package.Game" ElementName="SelectedStateEventElementContent"/>
+                                            <Binding Path="GlobalFloat"/>
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                                
                                 <!---->
                                 <Label Grid.Column="0" Grid.Row="1"
 								Content="New Value" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
@@ -453,7 +483,8 @@
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -471,6 +502,15 @@
 								Text="{Binding Path=GlobalInt, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="5,5"
 								Minimum="0"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
+
+                                <TextBlock Grid.Column="2" Grid.Row="0" TextAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Padding="3,0">
+                                    <TextBlock.Text>
+                                        <MultiBinding Converter="{StaticResource PlotPathConverter}" ConverterParameter="int">
+                                            <Binding Path="DataContext.package.Game" ElementName="SelectedStateEventElementContent"/>
+                                            <Binding Path="GlobalInt"/>
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
 
                                 <!---->
                                 <Label Grid.Column="0" Grid.Row="1"
@@ -729,7 +769,8 @@
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -749,6 +790,15 @@
                                 <xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
 								Text="{Binding Path=GlobalBool, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 								Width="150" Margin="5,5" Minimum="0" HorizontalAlignment="Left" VerticalAlignment="Center" />
+
+                                <TextBlock Grid.Column="2" Grid.Row="0" TextAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Padding="3,0">
+                                    <TextBlock.Text>
+                                        <MultiBinding Converter="{StaticResource PlotPathConverter}" ConverterParameter="bool">
+                                            <Binding Path="DataContext.package.Game" ElementName="SelectedStateEventElementContent"/>
+                                            <Binding Path="GlobalBool"/>
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
 
                                 <!-- New State -->
                                 <Label Grid.Column="0" Grid.Row="1"

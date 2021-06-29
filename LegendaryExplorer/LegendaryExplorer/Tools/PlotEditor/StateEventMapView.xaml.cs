@@ -10,6 +10,7 @@ using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Gammtek;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorer.Tools.PlotEditor.Dialogs;
+using LegendaryExplorerCore.PlotDatabase;
 
 namespace LegendaryExplorer.Tools.PlotEditor
 {
@@ -115,6 +116,7 @@ namespace LegendaryExplorer.Tools.PlotEditor
                 stateEvent.Elements = InitCollection(stateEvent.Elements);
             }
 
+            stateEvent.PlotPath = PlotDatabases.FindPlotTransitionByID(id, package.Game)?.Path;
             var stateEventPair = new KeyValuePair<int, BioStateEvent>(id, stateEvent);
 
             StateEvents.Add(stateEventPair);
@@ -333,6 +335,10 @@ namespace LegendaryExplorer.Tools.PlotEditor
 
             var stateEventMap = BinaryBioStateEventMap.Load(export);
             StateEvents = InitCollection(stateEventMap.StateEvents.OrderBy(stateEvent => stateEvent.Key));
+            foreach (var stateEvent in StateEvents)
+            {
+                stateEvent.Value.PlotPath = PlotDatabases.FindPlotTransitionByID(stateEvent.Key, pcc.Game)?.Path;
+            }
             SetListsAsBindable();
             package = pcc;
         }
@@ -543,6 +549,39 @@ namespace LegendaryExplorer.Tools.PlotEditor
             {
                 return new LegendaryExplorerCore.Unreal.NameReference(pcc.GetNameEntry(index), instanceNum).Instanced;
 
+
+            }
+            return "";
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Gets a plot path
+    /// </summary>
+    public class PlotPathConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values[0] is MEGame game && values[1] is int index)
+            {
+                switch((string)parameter)
+                {
+                    case "bool":
+                        return PlotDatabases.FindPlotBoolByID(index, game)?.Path;
+                    case "int":
+                        return PlotDatabases.FindPlotIntByID(index, game)?.Path;
+                    case "float":
+                        return PlotDatabases.FindPlotFloatByID(index, game)?.Path;
+                    case "conditional":
+                        return PlotDatabases.FindPlotConditionalByID(index, game)?.Path;
+                    case "transition":
+                        return PlotDatabases.FindPlotTransitionByID(index, game)?.Path;
+                }
 
             }
             return "";
