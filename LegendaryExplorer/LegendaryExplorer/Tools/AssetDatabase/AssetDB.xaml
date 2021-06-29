@@ -80,17 +80,17 @@
                         </MenuItem>
                         <MenuItem Name="switchLE1_menu" Header="LE1 Database" Command="{Binding SwitchMECommand}" CommandParameter="LE1" InputGestureText="Ctrl+4" ToolTip="Switch to LE1 Database">
                             <MenuItem.Icon>
-                                <Image Source="\Resources\Images\GameIcons\LE1_48.ico" Width="64"/>
+                                <Image Source="{StaticResource le1gameicon}" Width="64"/>
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Name="switchLE2_menu" Header="LE2 Database" Command="{Binding SwitchMECommand}" CommandParameter="LE2" InputGestureText="Ctrl+5" ToolTip="Switch to LE2 Database">
                             <MenuItem.Icon>
-                                <Image Source="\Resources\Images\GameIcons\LE2_48.ico" Width="64"/>
+                                <Image Source="{StaticResource le2gameicon}" Width="64"/>
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Name="switchLE3_menu" Header="LE3 Database" Command="{Binding SwitchMECommand}" CommandParameter="LE3" InputGestureText="Ctrl+6" ToolTip="Switch to LE3 Database">
                             <MenuItem.Icon>
-                                <Image Source="\Resources\Images\GameIcons\LE3_48.ico" Width="64"/>
+                                <Image Source="{StaticResource le3gameicon}" Width="64"/>
                             </MenuItem.Icon>
                         </MenuItem>
                     </MenuItem>

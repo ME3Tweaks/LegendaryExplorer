@@ -172,9 +172,9 @@
         <BitmapImage x:Key="me1gameicon" UriSource="pack://application:,,,/Resources/Images/GameIcons/ME1_48.ico"/>
         <BitmapImage x:Key="me2gameicon" UriSource="pack://application:,,,/Resources/Images/GameIcons/ME2_48.ico"/>
         <BitmapImage x:Key="me3gameicon" UriSource="pack://application:,,,/Resources/Images/GameIcons/ME3_48.ico"/>
-        <BitmapImage x:Key="le1gameicon" UriSource="pack://application:,,,/Resources/Images/GameIcons/LE1_48.ico"/>
-        <BitmapImage x:Key="le2gameicon" UriSource="pack://application:,,,/Resources/Images/GameIcons/LE2_48.ico"/>
-        <BitmapImage x:Key="le3gameicon" UriSource="pack://application:,,,/Resources/Images/GameIcons/LE3_48.ico"/>
+        <BitmapImage x:Key="le1gameicon" UriSource="pack://application:,,,/Resources/Images/GameIcons/LE1_icon.ico"/>
+        <BitmapImage x:Key="le2gameicon" UriSource="pack://application:,,,/Resources/Images/GameIcons/LE2_icon.ico"/>
+        <BitmapImage x:Key="le3gameicon" UriSource="pack://application:,,,/Resources/Images/GameIcons/LE3_icon.ico"/>
         <BitmapImage x:Key="unknowngameicon" UriSource="pack://application:,,,/Resources/Images/GameIcons/Unknown_48.ico"/>
         <BitmapImage x:Key="udkgameicon" UriSource="pack://application:,,,/Resources/Images/GameIcons/UDK_48.ico"/>
 
