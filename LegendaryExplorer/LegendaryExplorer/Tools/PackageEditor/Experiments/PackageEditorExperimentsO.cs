@@ -15,10 +15,12 @@ using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.TLK.ME1;
+using LegendaryExplorerCore.TLK.ME2ME3;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
+using HuffmanCompression = LegendaryExplorerCore.TLK.ME1.HuffmanCompression;
 
 namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 {
@@ -369,6 +371,34 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 string name = exp.ObjectName.Name;
                 MessageBox.Show(GetIDFromString(name).ToString());
+            }
+        }
+
+        public static void CreateTestTLKWithStringIDs(PackageEditorWindow pew)
+        {
+            Microsoft.Win32.OpenFileDialog outputFileDialog = new () { 
+                Title = "Select .XML file to import", 
+                Filter = "*.xml|*.xml" };
+            bool? result = outputFileDialog.ShowDialog();
+            if (!result.HasValue || !result.Value)
+            {
+                Debug.WriteLine("No output file specified");
+                return;
+            }
+
+            string inputXmlFile = outputFileDialog.FileName;
+            string outputTlkFile = Path.ChangeExtension(inputXmlFile, "tlk");
+            try
+            {
+                LegendaryExplorerCore.TLK.ME2ME3.HuffmanCompression hc =
+                    new LegendaryExplorerCore.TLK.ME2ME3.HuffmanCompression();
+                hc.LoadInputData(inputXmlFile, true);
+                hc.SaveToFile(outputTlkFile);
+                MessageBox.Show("Done.");
+            }
+            catch
+            {
+                MessageBox.Show("Unable to create test TLK file.");
             }
         }
     }
