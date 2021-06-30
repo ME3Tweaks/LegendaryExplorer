@@ -485,7 +485,7 @@
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Message Importance="high" Text="PublishDir=$(PublishDir)"/>
     <Exec Command="xcopy /f /e /y &quot;Resources\exec&quot; &quot;$(OutDir)exec\&quot;" />
-    <Exec Command="Build\InsertIcons.exe  &quot;$(OutDir)\LegendaryExplorer.exe&quot; Build\iconlist.txt" />
+    <Exec Command="Build\InsertIcons.exe  &quot;$(OutDir)LegendaryExplorer.exe&quot; Build\iconlist.txt" />
     <!--Space required or it tries to escape the quote-->
     <!-- Not 100% working. Seems like sqlite has same post build in parallel somehow? -->
     <!-- Used for stable deployments script -->
