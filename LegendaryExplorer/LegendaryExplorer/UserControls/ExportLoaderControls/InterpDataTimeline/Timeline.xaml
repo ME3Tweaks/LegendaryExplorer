@@ -303,7 +303,7 @@
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
                                 <Canvas Grid.Column="0">
-                                    <TextBlock Text="{Binding GroupName}" Canvas.Left="25" Canvas.Top="3" />
+                                    <TextBlock Text="{Binding GroupName}" Canvas.Left="25" Canvas.Top="3" Foreground="Black"/>
                                     <Rectangle Width="10" Height="24" Canvas.Right="0">
                                         <Rectangle.Fill>
                                             <SolidColorBrush Color="{Binding GroupColor}" />
@@ -368,7 +368,7 @@
                                     </ItemsControl.ItemContainerStyle>
                                 </ItemsControl>
                                 <Canvas Grid.Column="0" Background="DarkGray">
-                                    <TextBlock Text="{Binding TrackTitle}" Canvas.Left="30" Canvas.Top="3" />
+                                    <TextBlock Text="{Binding TrackTitle}" Canvas.Left="30" Canvas.Top="3" Foreground="Black" />
                                 </Canvas>
                             </Grid>
                             <b:Interaction.Triggers>

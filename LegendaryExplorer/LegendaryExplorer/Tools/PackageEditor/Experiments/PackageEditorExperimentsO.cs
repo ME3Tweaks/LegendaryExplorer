@@ -330,16 +330,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void AssociateAllExtensions()
         {
-            FileAssociations.EnsureAssociationsSet("pcc", "Mass Effect Series Package File");
-            FileAssociations.EnsureAssociationsSet("sfm", "Mass Effect 1 Package File");
-            FileAssociations.EnsureAssociationsSet("u", "Mass Effect 1 Package File");
-            FileAssociations.EnsureAssociationsSet("upk", "Unreal Package File");
-            FileAssociations.EnsureAssociationsSet("udk", "UDK Package File");
-            FileAssociations.EnsureAssociationsSet("tlk", "Talk Table File");
-            FileAssociations.EnsureAssociationsSet("afc", "Audio File Cache File");
-            FileAssociations.EnsureAssociationsSet("isb", "ISACT Bank File");
-            FileAssociations.EnsureAssociationsSet("dlc", "Mass Effect DLC Mount File");
-            FileAssociations.EnsureAssociationsSet("cnd", "Mass Effect Conditionals File");
+            FileAssociations.AssociatePCCSFM();
+            FileAssociations.AssociateUPKUDK();
+            FileAssociations.AssociateOthers();
         }
 
         public static void CreateAudioSizeInfo(PackageEditorWindow pew, MEGame game = MEGame.ME3)
