@@ -650,6 +650,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 MEGame.LE1 => le1FilesSafeToImportFrom,
                 MEGame.LE2 => le2FilesSafeToImportFrom,
                 MEGame.LE3 => le3FilesSafeToImportFrom,
+                MEGame.UDK => Array.Empty<string>(),
                 _ => throw new Exception($"Cannot lookup safe files for {game}")
             };
 
