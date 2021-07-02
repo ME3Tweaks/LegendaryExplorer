@@ -29,16 +29,14 @@
   <PropertyGroup Condition="'$(Configuration)'=='WinAzureRelease'">
     <DebugType>embedded</DebugType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <TextTransformPath>C:\PROGRAM FILES (X86)\MICROSOFT VISUAL STUDIO\2019\Enterprise\Common7\IDE\TextTransform.exe</TextTransformPath>
-    <DefineConstants>WINDOWS;NIGHTLY</DefineConstants>
+	<DefineConstants>WINDOWS;NIGHTLY</DefineConstants>
   </PropertyGroup>
 
   <!-- Azure flags allow special code to make tests work on azure since game won't exist there. It should never be used locally -->
   <PropertyGroup Condition="'$(Configuration)'=='WinAzureTest'">
     <DebugType>embedded</DebugType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <TextTransformPath>C:\PROGRAM FILES (X86)\MICROSOFT VISUAL STUDIO\2019\Enterprise\Common7\IDE\TextTransform.exe</TextTransformPath>
-    <DefineConstants>WINDOWS;AZURE</DefineConstants>
+	<DefineConstants>WINDOWS;AZURE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -48,10 +46,7 @@
     <None Remove="Resources\exec\**" />
     <None Remove="Tools\Icons\**\*.ico" />
     <Page Remove="Resources\exec\**" />
-    <None Remove="Tools\Meshplorer\udk.ico" />
-    <None Remove="Tools\Meshplorer\umodel.ico" />
     <None Remove="Tools\PackageEditor\ExportIcons\icon_texturecube.png" />
-    <None Remove="UserControls\ExportLoaderControls\Soundpanel\WwiseTemplateProject.zip" />
     <None Remove="UserControls\SharedToolControls\Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <ItemGroup>

@@ -1082,6 +1082,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsO.GenerateWwiseId(GetPEWindow());
         }
+
+        private void CreateTestTLKWithStringIDs_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.CreateTestTLKWithStringIDs(GetPEWindow());
+        }
         #endregion
 
 
