@@ -23,6 +23,9 @@
            friendlyName="Show export type icons"/>
   <setting name="PackageEditor_ShowTreeEntrySubText" type="bool" defaultvalue="true" category="Package Editor"
            friendlyName="Show metadata in tree (if available)"/>
+  <setting name="PackageEditor_ShowExperiments" type="bool" defaultvalue="false" category="Package Editor"
+           friendlyName="Show experimental features"/>
+
 
   <!-- Sequence Editor specific settings -->
   <setting name="SequenceEditor_MaxVarStringLength" type="int" defaultvalue="40" category="Sequence Editor"

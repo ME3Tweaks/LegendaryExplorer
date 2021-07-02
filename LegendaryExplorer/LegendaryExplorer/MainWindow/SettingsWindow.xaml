@@ -101,6 +101,11 @@
                                       IsChecked="{Binding Path=(settings:Settings.PackageEditor_ShowTreeEntrySubText)}"/>
                             <TextBlock>Show metadata in tree (if available)</TextBlock>
                         </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <CheckBox x:Name="PackageEditor_ShowExperiments" Margin="5,0"
+                                      IsChecked="{Binding Path=(settings:Settings.PackageEditor_ShowExperiments)}"/>
+                            <TextBlock>Show experimental features</TextBlock>
+                        </StackPanel>
                                       </StackPanel>
             </TabItem>
 

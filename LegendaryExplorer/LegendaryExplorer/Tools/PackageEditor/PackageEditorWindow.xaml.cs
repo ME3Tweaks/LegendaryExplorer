@@ -157,11 +157,15 @@ namespace LegendaryExplorer.Tools.PackageEditor
             set => SetProperty(ref _gotoHintText, value);
         }
 
-        private bool _showExperiments = App.IsDebug;
+        private bool _showExperiments = App.IsDebug || Settings.PackageEditor_ShowExperiments;
         public bool ShowExperiments
         {
             get => _showExperiments;
-            set => SetProperty(ref _showExperiments, value);
+            set
+            {
+                SetProperty(ref _showExperiments, value);
+                Settings.PackageEditor_ShowExperiments = value;
+            }
         }
 
         #region Commands
@@ -300,7 +304,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             }
         }
 
-        private bool CanForceReload() => App.IsDebug && PackageIsLoaded();
+        private bool CanForceReload() => ShowExperiments && PackageIsLoaded();
 
         private bool IsLoadedPackageOT() => Pcc != null && Pcc.Game.IsOTGame();
         private bool IsLoadedPackageLE() => Pcc != null && Pcc.Game.IsLEGame();
