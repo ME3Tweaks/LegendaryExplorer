@@ -85,7 +85,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 try
                 {
                     ClassInfo classInfo = info;
-                    while (classInfo != null && (varLinksProp is null || outLinksProp is null || eventLinksProp is null || game == MEGame.ME1 && inLinksProp is null))
+                    while (classInfo != null && (varLinksProp is null || outLinksProp is null || eventLinksProp is null || inLinksProp is null))
                     {
                         string filepath = Path.Combine(MEDirectories.GetBioGamePath(game), classInfo.pccPath);
                         Stream loadStream = null;
@@ -164,12 +164,14 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                         classes.TryGetValue(classInfo.baseClass, out classInfo);
                         switch (classInfo.ClassName)
                         {
+                            case SequenceConditionName:
+                                classes.TryGetValue(classInfo.baseClass, out classInfo);
+                                break;
                             case "SequenceFrame":
-                            case "SequenceCondition":
                             case "SequenceObject":
                             case "SequenceReference":
                             case "Sequence":
-                            case "SequenceVariable":
+                            case SequenceVariableName:
                                 goto loopend;
 
                         }

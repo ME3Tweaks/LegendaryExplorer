@@ -140,12 +140,86 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         private AssignStatement ParseAssignment()
         {
+            //todo: type checking
             if (Consume(TokenType.Word) is Token<string> propName)
             {
-                
+                var target = ParsePropName(propName);
+                if (Matches(TokenType.Assign))
+                {
+                    if (CurrentIs(TokenType.LeftBracket))
+                    {
+                        //struct value
+                    }
+
+                    if (CurrentIs(TokenType.LeftParenth))
+                    {
+                        //array or struct
+                    }
+
+                    bool isNegative = Matches(TokenType.MinusSign);
+
+                    Expression literal = ParseLiteral();
+                    if (literal is not null)
+                    {
+                        if (isNegative)
+                        {
+                            switch (literal)
+                            {
+                                case FloatLiteral floatLiteral:
+                                    floatLiteral.Value *= -1;
+                                    break;
+                                case IntegerLiteral integerLiteral:
+                                    integerLiteral.Value *= -1;
+                                    break;
+                                default:
+                                    throw ParseError("Malformed constant value!", CurrentPosition);
+                            }
+                        }
+                    }
+                    else
+                    {
+
+                        if (isNegative)
+                        {
+                            throw ParseError("Unexpected '-' !", CurrentPosition);
+                        }
+
+                        if (Consume(TokenType.Word) is { } token)
+                        {
+                            if (Consume(TokenType.NameLiteral) is { } objName)
+                            {
+                                literal = ParseObjectLiteral(token, objName);
+                            }
+                            else
+                            {
+                                literal = ParseBasicRef(token);
+                            }
+                        }
+                        else
+                        {
+                            throw ParseError("Expected a value in assignment!", CurrentPosition);
+                        }
+                    }
+                    return new AssignStatement(target, literal, propName.StartPos, literal.EndPos);
+                }
+
+                throw ParseError("Expected '=' in assignment statement!", CurrentPosition);
             }
 
             throw ParseError("Expected name of property!", CurrentPosition);
+        }
+
+        private SymbolReference ParsePropName(Token<string> token)
+        {
+            string specificScope = ExpressionScopes.Peek();
+            if (!Symbols.TryGetSymbolInScopeStack(token.Value, out ASTNode symbol, specificScope))
+            {
+                //TODO: better error message
+                TypeError($"{specificScope} has no member named '{token.Value}'!", token);
+                symbol = new VariableType("ERROR");
+            }
+
+            return NewSymbolReference(symbol, token, false);
         }
 
         private SymbolReference ParseBasicRef(Token<string> token)
