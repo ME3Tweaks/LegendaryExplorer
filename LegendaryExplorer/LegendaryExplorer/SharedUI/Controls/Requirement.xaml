@@ -1,0 +1,33 @@
+﻿<misc:NotifyPropertyChangedControlBase x:Class="LegendaryExplorer.SharedUI.Controls.Requirement"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:SharedUI="clr-namespace:LegendaryExplorer.SharedUI"
+             xmlns:fa5="http://schemas.fontawesome.com/icons/"
+             xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
+             xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
+             xmlns:controls="clr-namespace:LegendaryExplorer.SharedUI.Controls"
+             mc:Ignorable="d"
+             d:DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <UserControl.Resources>
+        <converters:InverseVisibilityConverter x:Key="InverseVisibilityConverter"/>
+        <converters:EnabledBrushConverter x:Key="EnabledBrushConverter"/>
+        <converters:EnabledIconConverter x:Key="EnabledIconConverter"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="25"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <fa5:ImageAwesome Icon="{Binding IsEnabled, ElementName=fulfillButton, Converter={StaticResource EnabledIconConverter}}" 
+                          Foreground="{Binding IsEnabled, ElementName=fulfillButton, Converter={StaticResource EnabledBrushConverter}}"
+                          HorizontalAlignment="Left" VerticalAlignment="Center" Width="16"/>
+        <TextBlock Grid.Column="1" Text="{Binding FullfilledText}" VerticalAlignment="Center"
+                   Visibility="{Binding Visibility, ElementName=fulfillButton, Converter={StaticResource InverseVisibilityConverter}}"/>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Visibility="{Binding Visibility, ElementName=fulfillButton}">
+            <TextBlock Text="{Binding UnFullfilledText}" VerticalAlignment="Center" Margin="0 5 10 5"/>
+            <Button Name="fulfillButton" Content="{Binding ButtonText}" Command="{Binding Command}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+        </StackPanel>
+    </Grid>
+</misc:NotifyPropertyChangedControlBase>

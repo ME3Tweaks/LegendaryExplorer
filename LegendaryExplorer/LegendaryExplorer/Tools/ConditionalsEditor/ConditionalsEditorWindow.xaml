@@ -1,0 +1,172 @@
+﻿<bases:TrackingNotifyPropertyChangedWindowBase 
+        x:Class="LegendaryExplorer.Tools.ConditionalsEditor.ConditionalsEditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LegendaryExplorer.Tools.ConditionalsEditor"
+        xmlns:bases="clr-namespace:LegendaryExplorer.SharedUI.Bases"
+        xmlns:sharedToolControls="clr-namespace:LegendaryExplorer.UserControls.SharedToolControls"
+        xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
+        xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
+        xmlns:global="clr-namespace:LegendaryExplorer"
+        xmlns:forms="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        mc:Ignorable="d"
+        Loaded="ConditionalsEditorWindow_OnLoaded"
+        Closing="ConditionalsEditorWindow_OnClosing"
+        Icon="pack://application:,,,/Tools/Icons/16x16/ConditionalEditor_Icon_16.ico"
+        Title="Conditionals Editor" Height="450" Width="800">
+    <!-- UserControl Resources -->
+    <Window.Resources>
+        <converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
+        <converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
+        <sharedUi:BindingProxy x:Key="bindingProxy" Data="{Binding}"/>
+        <Style TargetType="{x:Type ListBox}" x:Key="ListBoxStyle">
+            <Style.Triggers>
+                <Trigger Property="HasItems" Value="True">
+                    <Setter Property="SelectedIndex" Value="0" />
+                </Trigger>
+                <Trigger Property="HasItems" Value="False">
+                    <Setter Property="SelectedIndex" Value="-1" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Key="O" Modifiers="Control" Command="{Binding OpenCommand}"/>
+        <KeyBinding Key="N" Modifiers="Control" Command="{Binding NewFileCommand}"/>
+        <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveCommand}"/>
+        <KeyBinding Key="S" Modifiers="Control+Shift" Command="{Binding SaveAsCommand}"/>
+        <KeyBinding Key="N" Modifiers="Control+Shift" Command="{Binding AddBlankCommand}"/>
+        <KeyBinding Key="F" Modifiers="Control" Command="{Binding SearchCommand}"/>
+        <KeyBinding Key="F3" Command="{Binding SearchAgainCommand}"/>
+    </Window.InputBindings>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="File" Padding="4">
+                <MenuItem Header="_Open" Command="{Binding OpenCommand}" InputGestureText="Ctrl+O"
+                                ToolTip="Open a conditionals file" />
+                <MenuItem Header="_New" Command="{Binding NewFileCommand}" InputGestureText="Ctrl+N"
+                          ToolTip="Create a new conditionals file" />
+                <MenuItem Header="_Save" Command="{Binding SaveCommand}" InputGestureText="Ctrl+S"
+                              ToolTip="Save conditionals file in-place"/>
+                <MenuItem Header="Save as" Command="{Binding SaveAsCommand}" InputGestureText="Ctrl+Shift+S"
+                                ToolTip="Save conditionals file to another location" />
+                <Separator />
+                <MenuItem Header="Add new conditional" Command="{Binding AddBlankCommand}" InputGestureText="Ctrl+Shift+N"
+                          ToolTip="Add a new, blank conditional to the file" />
+                <Separator />
+                <MenuItem Name="Recents_MenuItem" Header="Recent" IsEnabled="false" />
+            </MenuItem>
+            <MenuItem Header="Options" Padding="4">
+                <MenuItem Header="Toggle HexBox" Command="{Binding ToggleHexBoxCommand}" />
+                <MenuItem Header="DEBUG: Recompile All"
+                          Visibility="{x:Static global:App.IsDebugVisibility}" Click="RecompileAll_Click" />
+            </MenuItem>
+            <MenuItem Header="Search" Padding="4">
+                <MenuItem Header="Search For String" InputGestureText="Ctrl+F" Command="{Binding SearchCommand}"/>
+                <MenuItem Header="Search Again" InputGestureText="F3" Command="{Binding SearchAgainCommand}"/>
+            </MenuItem>
+        </Menu>
+        <Grid Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <sharedToolControls:RecentsControl x:Name="RecentsController" Grid.Column="0" Grid.ColumnSpan="3"
+                                               Visibility="{Binding File, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}" />
+            <ListBox x:Name="ConditionalsListBox" Grid.Column="0" Grid.Row="0" Visibility="{Binding File, Converter={StaticResource NullVisibilityConverter}}"
+                     Style="{DynamicResource ListBoxStyle}"
+                     HorizontalContentAlignment="Stretch"
+                     ItemsSource="{Binding Conditionals}"
+                     SelectedItem="{Binding SelectedCond}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <StackPanel>
+                                <TextBlock Text="{Binding ID}" VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding PlotPath}" FontSize="10" Visibility="{Binding PlotPath, Converter={StaticResource NullVisibilityConverter}}"/>
+                                <StackPanel.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Change Id"
+                                                  Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ChangeIDCommand}" />
+                                        <MenuItem Header="Clone"
+                                                  Command="{Binding Source={StaticResource bindingProxy}, Path=Data.CloneCommand}" />
+                                        <MenuItem Header="Delete"
+                                                  Command="{Binding Source={StaticResource bindingProxy}, Path=Data.DeleteCommand}" />
+                                    </ContextMenu>
+                                </StackPanel.ContextMenu>
+                            </StackPanel>
+                            <Grid.Style>
+                                <Style TargetType="{x:Type Grid}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=IsModified}" Value="true">
+                                            <Setter Property="Background" Value="Yellow" />
+                                            <Setter Property="ToolTip" Value="This conditional has been modified but the file has not yet been saved" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ItemContainerStyle>
+                    <Style>
+                        <Style.Triggers>
+                            <Trigger Property="Selector.IsSelected" Value="True">
+                                <Setter Property="TextElement.Foreground" Value="Black" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            </ListBox>
+
+            <GridSplitter Grid.Column="1"
+                          Margin="-3,0"
+                          BorderThickness="3,0"
+                          BorderBrush="Transparent"
+                          HorizontalAlignment="Stretch" />
+
+            <Grid Grid.Column="2" Visibility="{Binding File, Converter={StaticResource NullVisibilityConverter}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition MinWidth="{Binding HexBoxMinWidth}" MaxWidth="{Binding HexBoxMaxWidth}" Width="{Binding HexBoxMinWidth, Mode=OneWay}" Name="HexboxColumnDefinition" />
+                        <ColumnDefinition Width="1" Name="HexboxColumn_GridSplitter_ColumnDefinition"/>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0" Name="hexboxContainer">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="25" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Button Grid.Row="0" Content="Save Hex Changes" Command="{Binding SaveHexChangesCommand}"/>
+                        <WindowsFormsHost Grid.Row="1" Name="hexbox_Host" HorizontalAlignment="Stretch"
+                                          VerticalAlignment="Stretch">
+                            <forms:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True"
+                                          LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10"
+                                          StringViewVisible="True" VScrollBarVisible="True" />
+                        </WindowsFormsHost>
+                    </Grid>
+                    <GridSplitter 
+                        Name="HexProps_GridSplitter"
+                        Grid.Column="1" HorizontalAlignment="Stretch" 
+                        Margin="-5,0"
+                        BorderThickness="5,0"
+                        BorderBrush="Transparent"
+                        Panel.ZIndex="60"/>
+                    <TextBox Grid.Column="2" x:Name="ConditionalTextBox" TextWrapping="Wrap" TextChanged="ConditionalTextBox_OnTextChanged" />
+                </Grid>
+                <Button Grid.Row="1" Content="Compile and Replace" Command="{Binding CompileCommand}"/>
+                <TextBox Name="compilationMsgBox" Grid.Row="2" TextWrapping="Wrap" IsReadOnly="True"/>
+            </Grid>
+        </Grid>
+    </DockPanel>
+</bases:TrackingNotifyPropertyChangedWindowBase>

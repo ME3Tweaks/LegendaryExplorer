@@ -1,0 +1,22 @@
+﻿<misc:NotifyPropertyChangedWindowBase x:Class="LegendaryExplorer.Dialogs.ClassPickerDlg"
+                                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                                 xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
+                                 xmlns:controls="clr-namespace:LegendaryExplorer.SharedUI.Controls"
+                                 mc:Ignorable="d"
+                                 d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
+                                 Title="Choose Class to Add" Height="450" Width="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <controls:ToolBox x:Name="ClassToolBox" Grid.Row="0"/>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,10">
+            <Button Content="Add"  Width="40" Command="{Binding OKCommand}"/>
+            <Button Content="Cancel" Padding="5,3" Margin="5,0" Click="CancelButton_Click"/>
+        </StackPanel>
+    </Grid>
+</misc:NotifyPropertyChangedWindowBase>

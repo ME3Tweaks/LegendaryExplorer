@@ -143,6 +143,7 @@ publish/
 *.nupkg
 # The packages folder can be ignored because of Package Restore
 /packages/*
+*/packages/*
 # except build/, which is used as an MSBuild target.
 !**/packages/build/
 # Uncomment if necessary however generally it will be regenerated when needed
@@ -206,5 +207,12 @@ Be.Windows.Forms.HexBox/Be.Windows.Forms.HexBox.xml
 # C++ Generated Files
 Debug_x64/
 Release_x64/
-/ME3Explorer/APIKeysPrivate.cs
+
+
+*APIKeysPrivate.cs
 /ME3ExplorerCore.Tests/coverage.cobertura.xml
+/ME3Explorer/Deployment
+/LegendaryExplorer/LegendaryExplorer/BuildInfo.cs
+/LegendaryExplorer/Deployment
+/LegendaryExplorer/LegendaryExplorerCore/Libraries/Windows/TexConverter.exp
+/LegendaryExplorer/LegendaryExplorerCore/Libraries/Windows/TexConverter.lib

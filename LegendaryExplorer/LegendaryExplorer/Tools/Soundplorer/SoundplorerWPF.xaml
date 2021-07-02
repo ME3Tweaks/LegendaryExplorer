@@ -1,0 +1,207 @@
+﻿<bases:WPFBase x:Class="LegendaryExplorer.Tools.Soundplorer.SoundplorerWPF"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:fa="http://schemas.fontawesome.com/icons/"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        mc:Ignorable="d"
+        xmlns:settings="clr-namespace:LegendaryExplorer.Misc.AppSettings"
+        xmlns:soundplorer="clr-namespace:LegendaryExplorer.Tools.Soundplorer"
+        xmlns:sharedToolControls="clr-namespace:LegendaryExplorer.UserControls.SharedToolControls"
+        xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
+        xmlns:bases="clr-namespace:LegendaryExplorer.SharedUI.Bases"
+        xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
+        xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
+        Closing="Soundplorer_Closing"
+        Drop="Window_Drop"
+        AllowDrop="True"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Icon="pack://application:,,,/Tools/Icons/16x16/SoundExplorer_Icon_16.ico"
+        Title="Sound Explorer" Height="583" Width="900" Loaded="SoundplorerWPF_OnLoaded">
+    <Window.Resources>
+        <converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
+        <converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converters:WwiseMenuItemVisibilityConverter x:Key="WwiseMenuItemVisibilityConverter"/>
+        <ContextMenu x:Key="EntryContextMenu">
+            <MenuItem Header="Export ISACT entry as raw" ToolTip="Exports the binary data of this ISACT entry to disk" Click="ExtractISACTAsRaw_Clicked" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='ISACTFileEntry'}"/>
+            <MenuItem Header="Export ISACT entry as wave" ToolTip="Exports the ISACT entry data to playable wave file" Click="ExtractISACTAsWave_Clicked" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='ISACTFileEntry'}"/>
+
+            <MenuItem Header="Export bank to file" ToolTip="Exports the binary data of this export (embedded soundbank) to disk" Click="ExtractBank_Clicked" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseBank'}"/>
+            <MenuItem Header="Extract all bank audio to wave" Click="ExtractWEMAsWaveFromBank_Clicked" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseBank'}"/>
+            <MenuItem Header="Export to..." Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}">
+                <MenuItem Name="ExportAudioRaw_MenuItem" Header="Export RIFF" ToolTip="Exports the raw data as stored in game files.&#x0a;To play, you must put this through ww2ogg to ogg and oggdec to wav." Click="ExportRaw_Clicked"/>
+                <MenuItem Name="ExportAudioOgg_MenuItem" Header="Export to OGG (Wwise)" ToolTip="Exports this WwiseStream's raw data to a Wwise proprietary Ogg file.&#x0a;To play, you must use oggdec to convert to a wav." Click="ExportOgg_Clicked"/>
+                <MenuItem Name="ExportAudioPCM_MenuItem" Header="Export to WAV (PCM)" ToolTip="Exports this WwiseStream to a playable WAV file" Click="ExportWav_Clicked"/>
+            </MenuItem>
+            <MenuItem Header="Export to..." Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='AFCFileEntry'}">
+                <MenuItem Name="ExportAudioRawAFC_MenuItem" Header="Export RIFF" ToolTip="Exports the raw data as stored in game files.&#x0a;To play, you must put this through ww2ogg to ogg and oggdec to wav." Click="ExportRaw_Clicked"/>
+                <MenuItem Name="ExportAudioOggAFC_MenuItem" Header="Export to OGG (Wwise)" ToolTip="Exports this WwiseStream's raw data to a Wwise proprietary Ogg file.&#x0a;To play, you must use oggdec to convert to a wav." Click="ExportOgg_Clicked"/>
+                <MenuItem Name="ExportAudioPCMAFC_MenuItem" Header="Export to WAV (PCM)" ToolTip="Exports this WwiseStream to a playable WAV file" Click="ExportWav_Clicked"/>
+            </MenuItem>
+            <MenuItem Header="Replace audio..." Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}">
+                <MenuItem Name="ReplaceAudio_MenuItem" Click="ReplaceAudio_Clicked" Header="From Wwise encoded Ogg" ToolTip="Appends new audio data to an AFC and points this WwiseStream to that data" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}"/>
+                <MenuItem Name="ReplaceAudioFromWav_MenuItem" Click="ReplaceAudioFromWav_Clicked" Header="From PCM Wav" ToolTip="Appends new audio data to an AFC and points this WwiseStream to that data" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}"/>
+
+            </MenuItem>
+            <MenuItem Header="Clone and replace..." Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}">
+                <MenuItem Name="CloneAndReplace_MenuItem" Click="CloneAndReplace_Clicked" Header="Clone and replace audio (from Wwise Ogg)" ToolTip="Create a new WwiseStream export and point it at new audio data" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}"/>
+                <MenuItem Name="CloneAndReplaceFromWav_MenuItem" Click="CloneAndReplaceFromWav_Clicked" Header="Clone and replace audio (from Wave PCM)" ToolTip="Create a new WwiseStream export and point it at new audio data" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}"/>
+            </MenuItem>
+        </ContextMenu>
+        <Style x:Key="SoundExports_ListboxItemStyle" TargetType="{x:Type ListBoxItem}">
+            <Setter Property="ContextMenu" Value="{StaticResource EntryContextMenu}"/>
+            <Setter Property="Padding" Value="0"/>
+        </Style>
+    </Window.Resources>
+    <Window.CommandBindings>
+        <CommandBinding Command="Open" Executed="OpenCommandBinding_Executed"/>
+        <CommandBinding Command="Save" Executed="SaveCommandBinding_Executed"/>
+        <CommandBinding Command="SaveAs" Executed="SaveAsCommandBinding_Executed"/>
+    </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Key="O" Modifiers="Control" Command="Open"/>
+        <KeyBinding Key="S" Modifiers="Control" Command="Save"/>
+        <KeyBinding Key="S" Modifiers="Control+Shift" Command="SaveAs"/>
+        <KeyBinding Key="P" Modifiers="Ctrl" Command="{Binding PopoutCurrentViewCommand}"/>
+    </Window.InputBindings>
+    <xctk:BusyIndicator IsBusy="{Binding Path=IsBusy}" BusyContent="{Binding BusyText}">
+        <DockPanel>
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="_File"  Padding="4">
+                    <MenuItem Header="_Open" Command="Open" InputGestureText="Ctrl+O"/>
+                    <MenuItem Header="_Save" Command="Save" InputGestureText="Ctrl+S" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                    <MenuItem Header="_Save as" Command="SaveAs" InputGestureText="Ctrl+Shift+S" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+
+                    <Separator/>
+                    <MenuItem Name="Recents_MenuItem" Header="Recent" IsEnabled="false"/>
+                </MenuItem>
+                <MenuItem Header="_Wwise" Padding="4">
+                    <MenuItem Header="Set Wwise executable paths" Click="SetWwisePaths_Clicked"/>
+                    <MenuItem Header="Extract all audio from this file" Click="ExtractAllAudio_Clicked" IsEnabled="{Binding AudioFileLoaded, Converter={StaticResource NullEnabledConverter}}"/>
+                    <MenuItem Header="Compact a DLC mod AFC" Click="CompactAFC_Clicked"/>
+                    <MenuItem Header="Convert Wave files to Wwise Ogg" Click="ConvertFolderToWwise_Clicked"/>
+                </MenuItem>
+                <MenuItem Header="_Options" Padding="4">
+                    <MenuItem Name="ReverseEndianDisplayOfIDs_MenuItem" Header="Reverse endianness of displayed ID's" Click="ReverseEndiannessOfIDs_Clicked" IsChecked="{Binding Path=(settings:Settings.Soundplorer_ReverseIDDisplayEndianness), Mode=TwoWay}"/>
+                    <MenuItem Name="AutoplayEntryOnSelection_MenuItem" Header="Auto-play audio entries on selection" Click="AutoplayEntryOnSelection_MenuItem_Clicked" IsChecked="{Binding Path=(settings:Settings.Soundplorer_AutoplayEntriesOnSelection), Mode=TwoWay}" />
+                    <MenuItem Name="RebuildWwiseBankToFile_MenuItem" Header="Debugging: Rebuild wwisebank to file" Click="DebugWriteBankToFileRebuild_Clicked" />
+                    <MenuItem Header="Pop out current view into new window" ToolTip="Opens the panel on the right side in a new window" Command="{Binding PopoutCurrentViewCommand}" InputGestureText="CTRL + P"/>
+                </MenuItem>
+            </Menu>
+            <StatusBar Height="23" DockPanel.Dock="Bottom">
+                <sharedToolControls:StatusBarGameIDIndicator GameType="{Binding StatusBarIDText}" Margin="0,-4"/>
+                <fa:ImageAwesome Icon="Solid_Spinner" Foreground="Gray" Spin="True" SpinDuration="3" Visibility="{Binding Path=DataContext.IsBusyTaskbar, RelativeSource={RelativeSource AncestorType=Window},Converter={StaticResource BoolToVisibilityConverter}}"/>
+                <StatusBarItem Padding="0">
+                    <TextBlock Name="StatusBar_LeftMostText" Text="{Binding TaskbarText}"/>
+                </StatusBarItem>
+                <StatusBarItem HorizontalAlignment="Right">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Name="StatusBar_RightSide_LastSaved" Text="{Binding Pcc.LastSaved, StringFormat='Last saved at {0}'}" Foreground="Gray"/>
+                    </StackPanel>
+                </StatusBarItem>
+            </StatusBar>
+                <StackPanel  
+                    Margin="10"
+                    Visibility="{Binding AudioFileLoaded,Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='Not'}">
+                    <TextBlock Margin="5" Text="Welcome to Sound Explorer" FontWeight="Bold"/>
+                    <TextBlock Margin="5">
+                            Sound Explorer is an audio-focused editor that supports browsing and exporting
+                            <LineBreak/>
+                            audio from all three games.
+                            <LineBreak/>
+                            <LineBreak/>
+                            Audio replacement information:
+                            <Italic>
+                            <LineBreak/>
+                            ME1 and LE1: No authoring tools (ISACT) are available
+                            <LineBreak/>
+                            ME2: The correct version of Wwise is not available (ME2 predates public Wwise)
+                            <LineBreak/>
+                            ME3: Requires 
+                            <Hyperlink NavigateUri="https://1drv.ms/u/s!AorirBfl09VNrC9eh-_sOj_eqLIa?e=8lzC4j" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
+                                <Run Text="the 64 bit version of Wwise 2010.3.3 (Build 3773)"/>
+                            </Hyperlink>
+                            <LineBreak/>
+                            LE2 and LE3: Requires 
+                            <Hyperlink NavigateUri="https://www.audiokinetic.com/download/" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
+                                <Run Text="the 64 bit version of Wwise 2019.1.6 (Build 7110)"/>
+                            </Hyperlink>. You must create a Wwise account and install through the Wwise launcher.
+                            </Italic>
+                            <LineBreak/>
+                            <LineBreak/>
+                            You will need to set the path to each WwiseCLI.exe file from the dialog in the Wwise menu in order to replace audio
+                            <LineBreak/>
+                            <LineBreak/>
+
+                                If you have issues, please report them to one of the following places:
+                                <LineBreak/>
+                                 - <Hyperlink NavigateUri="{Binding Source={x:Static misc:AppLinks.ME3TweaksDiscordInviteURL}, Mode=OneTime}" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
+                                <Run Text="The ME3Tweaks Discord (Legendary_Explorer channel)"/>
+                            </Hyperlink>
+                                <LineBreak/>
+                                 - The issues list on GitHub at 
+                                <Hyperlink NavigateUri="{Binding Source={x:Static misc:AppLinks.BugReportURL}}" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
+                                    <Run Text="{Binding Source={x:Static misc:AppLinks.BugReportURL}, Mode=OneTime}"/>
+                                </Hyperlink>
+                    </TextBlock>
+                    <sharedToolControls:RecentsControl x:Name="RecentsController" HorizontalAlignment="Left"/>
+                </StackPanel>
+            <Grid Margin="5" 
+               Visibility="{Binding AudioFileLoaded, Converter={StaticResource BoolToVisibilityConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition MinWidth="200" Width="400"/>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="1*" MinWidth="200"/>
+                </Grid.ColumnDefinitions>
+                <ListBox Name="SoundExports_ListBox" Margin="0" Padding="0" Grid.Column="0" SelectionChanged="SoundExports_ListBox_SelectionChanged" ItemsSource="{Binding BindedItemsList}" 
+                         ItemContainerStyle="{StaticResource SoundExports_ListboxItemStyle}" PreviewKeyDown="SoundExportItem_KeyDown" MouseDoubleClick="SoundExports_ListBox_MouseDoubleClick" HorizontalContentAlignment="Stretch">
+                    <ListBox.Resources>
+                        <DataTemplate DataType="{x:Type soundplorer:SoundplorerExport}">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0" x:Name="ExportContainer">
+
+                                <fa:ImageAwesome Icon="{Binding Icon}" VerticalAlignment="Center" Spin="{Binding NeedsLoading}" SpinDuration="1.2" Width="18" Height="18" Margin="2,0,4,0"/>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding DisplayString}" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding TLKString}" TextWrapping="Wrap" FontSize="10" FontStyle="Italic"  Visibility="{Binding TLKString, Converter={StaticResource NullVisibilityConverter}}"/>
+                                    <TextBlock Text="{Binding SubText}" VerticalAlignment="Center" Foreground="Gray"/>
+                                </StackPanel>
+                            </StackPanel>
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding Path=Export.EntryHasPendingChanges}" Value="true">
+                                    <Setter Property="Background" Value="Yellow" TargetName="ExportContainer"/>
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type soundplorer:AFCFileEntry}">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0" x:Name="ExportContainer">
+                                <fa:ImageAwesome  Grid.Column="7" Icon="{Binding Icon}" Spin="{Binding NeedsLoading}" SpinDuration="1.2" Width="18" Height="18" Margin="2,0,4,0"/>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding DisplayString}" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding SubText}" VerticalAlignment="Center" Foreground="Gray"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type soundplorer:ISACTFileEntry}">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0">
+                                <fa:ImageAwesome  Grid.Column="7" Icon="{Binding Icon}" Spin="{Binding NeedsLoading}" SpinDuration="1.2" Width="18" Height="18" Margin="2,0,4,0"/>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding DisplayString}" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding Entry.TLKString}" TextWrapping="Wrap" FontSize="10" FontStyle="Italic"  Visibility="{Binding Entry.TLKString, Converter={StaticResource NullVisibilityConverter}}"/>
+                                    <TextBlock Text="{Binding SubText}" VerticalAlignment="Center" Foreground="Gray"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.Resources>
+                </ListBox>
+                <GridSplitter Grid.Column="1"
+                  Margin="-3,0"
+                  BorderThickness="3,0"
+                  BorderBrush="Transparent"
+                  HorizontalAlignment="Stretch" />
+                <exportLoaderControls:Soundpanel x:Name="soundPanel" Grid.Column="2" HostingControl="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
+            </Grid>
+        </DockPanel>
+    </xctk:BusyIndicator>
+</bases:WPFBase>

@@ -1,0 +1,448 @@
+﻿<Window x:Class="LegendaryExplorer.MainWindow.LEXMainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:fa5="http://schemas.fontawesome.com/icons/"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LegendaryExplorer"
+        xmlns:mainWindow="clr-namespace:LegendaryExplorer.MainWindow"
+        xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
+        mc:Ignorable="d"
+        d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        MaxWidth="790"
+        Title="Legendary Explorer" Height="670" Width="875" Opacity="0" SizeToContent="Width" 
+        WindowStyle="None" Foreground="{x:Null}" AllowsTransparency="True"
+        Background="#F015181D"  WindowStartupLocation="CenterScreen"  ResizeMode="CanMinimize"
+        BorderBrush="#15181D" BorderThickness="2">
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static SystemCommands.CloseWindowCommand}" CanExecute="SystemCommand_CanExecute" Executed="CloseCommand_Executed" />
+        <CommandBinding Command="{x:Static SystemCommands.MinimizeWindowCommand}" CanExecute="SystemCommand_CanExecute" Executed="MinimizeCommand_Executed" />
+    </Window.CommandBindings>
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="ForegroundBrush" Color="#7e8285"/>
+        <SolidColorBrush x:Key="ButtonBackground" Color="#FF30343E"/>
+        <SolidColorBrush x:Key="MouseOverBrush" Color="White"/>
+        <SolidColorBrush x:Key="CheckedBrush" Color="#E1E1E1"/>
+        <SolidColorBrush x:Key="UncheckedBrush" Color="#BFBFBF" />
+        <Style x:Key="MainWindowFocusVisualStyle">  
+            <Setter Property="Control.Template">  
+                <Setter.Value>  
+                    <ControlTemplate>  
+                        <Rectangle StrokeThickness="1"  
+                                   Stroke="White"  
+                                   StrokeDashArray="1 2"  
+                                   SnapsToDevicePixels="true"/>  
+                    </ControlTemplate>  
+                </Setter.Value>  
+            </Setter>  
+        </Style>
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource MainWindowFocusVisualStyle}"/>
+        </Style>
+        <Style TargetType="{x:Type RadioButton}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource MainWindowFocusVisualStyle}"/>
+        </Style>
+    </Window.Resources>
+
+
+    <Grid>
+        <Rectangle MouseDown="BackgroundMouseDown" Fill="#00000000"/>
+        <DockPanel>
+            
+            <!--#region Top Toolbar-->
+            <Grid DockPanel.Dock="Top">
+                
+                <!-- Minimize/Close buttons -->
+                <DockPanel HorizontalAlignment="Right" VerticalAlignment="Top" Height="30">
+                    <Button Command="{x:Static SystemCommands.MinimizeWindowCommand}" Width="30" Height="30" TabIndex="0"
+                            Style="{DynamicResource WindowManagementButton}" VerticalContentAlignment="Center">
+                        <Image Source="/Resources/Images/minimize_icon.ico" Height="15" Width="15" />
+                    </Button>
+                    <Button Command="{x:Static SystemCommands.CloseWindowCommand}" Width="30" Height="30" TabIndex="1"
+                            Style="{DynamicResource WindowManagementButton}" VerticalContentAlignment="Center">
+                        <Image Source="/Resources/Images/close_icon.ico" />
+                    </Button>
+                </DockPanel>
+                
+                <!-- Version -->
+                <DockPanel HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="32">
+                            <Label Content="{Binding Source={x:Static misc:AppVersion.DisplayedVersion}}" FontFamily="{StaticResource Exo-Regular}" FontSize="17" 
+                                   Foreground="{DynamicResource ForegroundBrush}"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                </DockPanel>
+                
+                <DockPanel Margin="5,5,5,0" LastChildFill="True">
+                    <!-- Logo -->
+                    <Image DockPanel.Dock="Left" Source="../Resources/Images/Legendary_Explorer_Graphic2.png" Height="110"
+                           RenderOptions.BitmapScalingMode="HighQuality" MouseDown="BackgroundMouseDown"/>
+
+                    <!-- Top bar settings buttons -->
+                    <StackPanel DockPanel.Dock="Right" VerticalAlignment="Center" Orientation="Horizontal">
+                            <StackPanel.Resources>
+                                <Style x:Key="TopBarButton" TargetType="{x:Type Button}"
+                                       BasedOn="{StaticResource BorderlessButton}">
+                                    <Setter Property="FocusVisualStyle"
+                                            Value="{StaticResource MainWindowFocusVisualStyle}" />
+                                    <Setter Property="ContentTemplate">
+                                        <Setter.Value>
+                                            <DataTemplate>
+                                                <Border BorderBrush="{DynamicResource ForegroundBrush}"
+                                                        BorderThickness="0"
+                                                        Margin="5, 0">
+                                                    <Rectangle x:Name="rect1" Fill="{DynamicResource ForegroundBrush}"
+                                                               Height="32"
+                                                               Width="32" Margin="4">
+                                                        <Rectangle.OpacityMask>
+                                                            <ImageBrush ImageSource="{Binding Source}" />
+                                                        </Rectangle.OpacityMask>
+                                                    </Rectangle>
+                                                </Border>
+                                                <DataTemplate.Triggers>
+                                                    <DataTrigger
+                                                        Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                                        Value="True">
+                                                        <Setter TargetName="rect1" Property="Fill"
+                                                                Value="{DynamicResource MouseOverBrush}" />
+                                                    </DataTrigger>
+                                                </DataTemplate.Triggers>
+                                            </DataTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </StackPanel.Resources>
+                            <Button Style="{StaticResource TopBarButton}" Click="Help_Click" ToolTip="Help Center">
+                                <Image Source="/Resources/Images/LEX_Toolbar_Qmark.ico" />
+                            </Button>
+
+                            <Button Style="{StaticResource TopBarButton}" Click="Settings_Click" ToolTip="Settings">
+                                <Image Source="/Resources/Images/LEX_Toolbar_Settings.ico" />
+                            </Button>
+
+                            <Button Style="{StaticResource TopBarButton}" Click="About_Click"
+                                    ToolTip="About LegendaryExplorer">
+                                <Image Source="/Resources/Images/LEX_Toolbar_About.ico" />
+                            </Button>
+                    </StackPanel>
+
+                    <!-- Search box -->
+                    <Border BorderBrush="{DynamicResource ForegroundBrush}" BorderThickness="2" Margin="10,0,5,0"
+                            VerticalAlignment="Center" Height="55" CornerRadius="8">
+                        <Grid>
+                            <Border x:Name="searchMask" Background="White" CornerRadius="7"></Border>
+                            <Grid Background="#FF30343E">
+                                <Grid.Resources>
+                                    <Style x:Key="WaterMark" TargetType="{x:Type FrameworkElement}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding IsFocused, ElementName=SearchBox}"
+                                                               Value="False" />
+                                                    <Condition Binding="{Binding Text, ElementName=SearchBox}" Value="" />
+                                                </MultiDataTrigger.Conditions>
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </MultiDataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Resources>
+                                <Grid.OpacityMask>
+                                    <VisualBrush Visual="{Binding ElementName=searchMask}"></VisualBrush>
+                                </Grid.OpacityMask>
+
+                                <TextBox x:Name="SearchBox" FontFamily="{StaticResource BioMass-Light}"
+                                         TabIndex="2"
+                                         FontSize="17"
+                                         Background="{x:Null}"
+                                         BorderBrush="{x:Null}" Foreground="#FFFBFBFB" VerticalContentAlignment="Center"
+                                         CaretBrush="#FFFBFBFB" Padding="10,0"
+                                         TextChanged="SearchBox_TextChanged" GotFocus="SearchBox_OnGotFocus" />
+                                <TextBlock IsHitTestVisible="False" Text="Search the Toolset..." VerticalAlignment="Center"
+                                           HorizontalAlignment="Left" Margin="10,0,0,0"
+                                           Foreground="#FFFBFBFB" FontFamily="{StaticResource BioMass-Light}"
+                                           FontSize="17" Style="{StaticResource WaterMark}" />
+                                <!--<Image Source="../Resources/Images/search.ico" Height="32" HorizontalAlignment="Right"
+                                       Margin="0,8,8,8" Style="{StaticResource WaterMark}" /> -->
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </DockPanel>
+            </Grid>
+            <!--#endregion-->
+
+            <!--#region Categories Bar-->
+            <Border BorderBrush="{DynamicResource ForegroundBrush}" BorderThickness="0,2,0,0"  DockPanel.Dock="Top" Margin="5,0">
+                <StackPanel x:Name="categoriesMenu" Orientation="Horizontal" Height="75">
+                    <StackPanel.Resources>
+                        <SolidColorBrush x:Key="SelectedButtonBackground" Color="#5C1A1C"/>
+                        <SolidColorBrush x:Key="HoverButtonBackground" Color="#FFC80000"/>
+                        
+                        <Style x:Key="CategoriesButton" TargetType="{x:Type RadioButton}"
+                               BasedOn="{StaticResource BorderedRadioButton}">
+                            <Setter Property="Height" Value="45" />
+                            <Setter Property="Width" Value="100" />
+                            <Setter Property="Margin" Value="10,0" />
+                            <Setter Property="FocusVisualStyle" Value="{StaticResource MainWindowFocusVisualStyle}"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type RadioButton}">
+                                        <Border Background="Transparent">
+                                            <Grid>
+                                                <Viewbox>
+                                                    <Path x:Name="categoryShape" Data="M 0 624.38 0 180.38 180.38 0 1332 0 1332 513.38 1227.94 617.44 0 624.38z" 
+                                                          Opacity="1" Fill="{StaticResource ButtonBackground}"
+                                                          Stroke="{DynamicResource ForegroundBrush}" StrokeThickness="30" />
+                                                </Viewbox>
+                                                <TextBlock VerticalAlignment="Center" Margin="4,0,4,2"
+                                                           TextAlignment="Center" FontFamily="{StaticResource BioMass-Bold}" FontSize="12"
+                                                           LineStackingStrategy="BlockLineHeight" LineHeight="15"
+                                                           TextWrapping="Wrap" FontWeight="Bold" Text="{TemplateBinding ContentPresenter.Content}">
+                                                </TextBlock>
+                                            </Grid>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="TextBlock.Foreground" Value="{DynamicResource MouseOverBrush}" />
+                                                <Setter TargetName="categoryShape" Property="Path.Fill" Value="{StaticResource HoverButtonBackground}" />
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="False">
+                                                <Setter Property="TextBlock.Foreground" Value="{DynamicResource UncheckedBrush}" />
+                                            </Trigger>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter Property="TextBlock.Foreground" Value="{DynamicResource CheckedBrush}" />
+                                                <Setter TargetName="categoryShape" Property="Path.Fill" Value="{StaticResource SelectedButtonBackground}" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </StackPanel.Resources>
+
+                    <!-- Favorites Button -->
+                    <RadioButton x:Name="favoritesButton" Click="Favorites_Clicked" Height="45" Width="45" Margin="10, 0"
+                                 ToolTip="Favorites - Shift-click on a tool to add to favorites">
+                        <RadioButton.Template>
+                            <ControlTemplate TargetType="{x:Type RadioButton}">
+                                <Border Background="Transparent">
+                                    <Grid>
+                                        <Viewbox>
+                                            <Polygon x:Name="favoritesBorder" Points="740 614.93 594.08 740 0 740 0 144.76 114.65 0 740 0 740 614.93"
+                                                  Opacity="1" Fill="{StaticResource ButtonBackground}"
+                                                  Stroke="{DynamicResource ForegroundBrush}" StrokeThickness="40" />
+                                        </Viewbox>
+                                        <fa5:ImageAwesome x:Name="FavStar" Icon="Regular_Star" Width="30" Height="30" Margin="0,0,1,2"/>
+                                    </Grid>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="FavStar" Property="fa5:ImageAwesome.Foreground" Value="{DynamicResource MouseOverBrush}" />
+                                        <Setter TargetName="favoritesBorder" Property="Polygon.Fill" Value="{StaticResource HoverButtonBackground}" />
+                                        <Setter TargetName="FavStar" Property="fa5:ImageAwesome.Icon" Value="Solid_Star" />
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="False">
+                                        <Setter TargetName="FavStar" Property="fa5:ImageAwesome.Foreground" Value="{DynamicResource UncheckedBrush}" />
+                                    </Trigger>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter TargetName="FavStar" Property="fa5:ImageAwesome.Foreground" Value="{DynamicResource CheckedBrush}" />
+                                        <Setter TargetName="favoritesBorder" Property="Polygon.Fill" Value="{StaticResource SelectedButtonBackground}" />
+                                        <Setter TargetName="FavStar" Property="fa5:ImageAwesome.Icon" Value="Solid_Star" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </RadioButton.Template>
+                    </RadioButton>
+
+                    <!-- Rest of the buttons - tag determines category name -->
+                    <RadioButton Name="coreEditorsButton" Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked" 
+                            Tag="Core Editors" ToolTip="Core package editing tools">
+                        Core Editors
+                    </RadioButton>
+                    <RadioButton Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked"
+                                 Tag="Cinematic Tools" ToolTip="Tools related to conversation and cutscene editing">
+                        Cinematic Tools
+                    </RadioButton>
+                    <RadioButton Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked" 
+                                 Tag="Audio Tools" ToolTip="Audio modification tools">
+                        Audio Tools
+                    </RadioButton>
+                    <RadioButton Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked"
+                                 Tag="Meshes + Textures" ToolTip="Texture and mesh modding tools">
+                        Meshes &amp; Textures
+                    </RadioButton>
+                    <RadioButton Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked"
+                                 Tag="Extractors + Repackers" ToolTip="Tools for extracting data from game files">
+                        Extract &amp; Repack
+                    </RadioButton>
+                    <RadioButton Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked" 
+                                 Tag="Utilities" ToolTip="Assorted utilities to aid mod developers">
+                        Utilities
+                    </RadioButton>
+                    <RadioButton x:Name="toolsetDevsButton" Style="{StaticResource CategoriesButton}" Click="CategoryButton_Clicked" 
+                                 Tag="Toolset Devs" Visibility="Collapsed" ToolTip="Tools to aid in toolset development">
+                        Toolset Devs Only
+                    </RadioButton>
+                </StackPanel>
+            </Border>
+            <!--#endregion-->
+            
+            <!-- Tool info panel -->
+            <DockPanel x:Name="toolInfoPanel" DockPanel.Dock="Bottom" Height="80" Background="#FF304e75" Visibility="Collapsed">
+                <Border DockPanel.Dock="Left" BorderThickness="1" BorderBrush="{DynamicResource ForegroundBrush}" Margin="10,5" Height="60">
+                      <Image x:Name="toolInfoIcon" VerticalAlignment="Center" Width="60" Height="60" Opacity="0.85" RenderOptions.BitmapScalingMode="HighQuality"/>
+                 </Border>
+                <TextBlock x:Name="toolInfoText" Foreground="{StaticResource UncheckedBrush}" Margin="0,0,10,0" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontSize="17" FontFamily="{StaticResource Exo-Regular}"
+                           TextWrapping="Wrap"/>
+            </DockPanel>
+            
+            <!--#region Tool Panel-->
+            <Grid>
+                <ScrollViewer Background="#1A4b5568" 
+                              HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+
+                    <mainWindow:ToolPanel x:Name="mainToolPanel"/>
+
+                    <!-- Fancy scrollbar -->
+                    <ScrollViewer.Resources>
+                        <Style x:Key="ScrollBarTrackThumb"
+                                TargetType="{x:Type Thumb}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type Thumb}">
+                                        <Grid x:Name="Grid">
+                                            <Rectangle HorizontalAlignment="Stretch"
+                                                        VerticalAlignment="Stretch"
+                                                        Width="Auto"
+                                                        Height="Auto"
+                                                        Fill="Transparent" />
+                                            <Border x:Name="CornerScrollBarRectangle"
+                                                    HorizontalAlignment="Stretch"
+                                                    VerticalAlignment="Stretch"
+                                                    Width="Auto"
+                                                    Height="Auto"
+                                                    Margin="0,1,0,1"
+                                                    Background="{TemplateBinding Background}" />
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="Tag"
+                                                        Value="Horizontal">
+                                                <Setter TargetName="CornerScrollBarRectangle"
+                                                        Property="Width"
+                                                        Value="Auto" />
+                                                <Setter TargetName="CornerScrollBarRectangle"
+                                                        Property="Height"
+                                                        Value="6" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                        <Style TargetType="{x:Type ScrollBar}">
+                            <Setter Property="Stylus.IsFlicksEnabled"
+                                    Value="false" />
+                            <Setter Property="Foreground"
+                                    Value="#A3FBFBFB" />
+                            <Setter Property="Background"
+                                    Value="Transparent" />
+                            <Setter Property="Width"
+                                    Value="7" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ScrollBar}">
+                                        <Grid x:Name="GridRoot"
+                                                Width="7"
+                                                Background="{TemplateBinding Background}">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="0.00001*" />
+                                            </Grid.RowDefinitions>
+                                            <Track x:Name="PART_Track"
+                                                    Grid.Row="0"
+                                                    IsDirectionReversed="true"
+                                                    Focusable="false">
+                                                <Track.Thumb>
+                                                    <Thumb x:Name="Thumb"
+                                                            Background="{TemplateBinding Foreground}"
+                                                            Style="{DynamicResource ScrollBarTrackThumb}" />
+                                                </Track.Thumb>
+                                                <Track.IncreaseRepeatButton>
+                                                    <RepeatButton x:Name="PageUp"
+                                                                    Command="ScrollBar.PageDownCommand"
+                                                                    Opacity="0"
+                                                                    Focusable="false" />
+                                                </Track.IncreaseRepeatButton>
+                                                <Track.DecreaseRepeatButton>
+                                                    <RepeatButton x:Name="PageDown"
+                                                                    Command="ScrollBar.PageUpCommand"
+                                                                    Opacity="0"
+                                                                    Focusable="false" />
+                                                </Track.DecreaseRepeatButton>
+                                            </Track>
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger SourceName="Thumb"
+                                                        Property="IsMouseOver"
+                                                        Value="true">
+                                                <Setter Value="{DynamicResource ButtonSelectBrush}"
+                                                        TargetName="Thumb"
+                                                        Property="Background" />
+                                            </Trigger>
+                                            <Trigger SourceName="Thumb"
+                                                        Property="IsDragging"
+                                                        Value="true">
+                                                <Setter Value="{DynamicResource DarkBrush}"
+                                                        TargetName="Thumb"
+                                                        Property="Background" />
+                                            </Trigger>
+
+                                            <Trigger Property="IsEnabled"
+                                                        Value="false">
+                                                <Setter TargetName="Thumb"
+                                                        Property="Visibility"
+                                                        Value="Collapsed" />
+                                            </Trigger>
+                                            <Trigger Property="Orientation"
+                                                        Value="Horizontal">
+                                                <Setter TargetName="GridRoot"
+                                                        Property="LayoutTransform">
+                                                    <Setter.Value>
+                                                        <RotateTransform Angle="-90" />
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter TargetName="PART_Track"
+                                                        Property="LayoutTransform">
+                                                    <Setter.Value>
+                                                        <RotateTransform Angle="-90" />
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter Property="Width"
+                                                        Value="Auto" />
+                                                <Setter Property="Height"
+                                                        Value="8" />
+                                                <Setter TargetName="Thumb"
+                                                        Property="Tag"
+                                                        Value="Horizontal" />
+                                                <Setter TargetName="PageDown"
+                                                        Property="Command"
+                                                        Value="ScrollBar.PageLeftCommand" />
+                                                <Setter TargetName="PageUp"
+                                                        Property="Command"
+                                                        Value="ScrollBar.PageRightCommand" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ScrollViewer.Resources>
+                </ScrollViewer> 
+                
+                <TextBlock x:Name="favoritesHint" HorizontalAlignment="Left" VerticalAlignment="Top" Visibility="Collapsed" Margin="15, 15"
+                           Foreground="{StaticResource ForegroundBrush}" FontSize="20" FontFamily="{StaticResource Exo-Regular}">
+                    You have no favorites set! Shift-click on a tool to save it as a favorite.
+                </TextBlock>
+
+            </Grid>
+            <!--#endregion-->
+        </DockPanel>
+    </Grid>
+</Window>

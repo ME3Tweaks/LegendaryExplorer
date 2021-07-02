@@ -1,0 +1,109 @@
+﻿<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Xml" #>
+<#@ assembly name="System.Xml.Linq" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Xml.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+using System.IO;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System;
+using System.Diagnostics;
+using LegendaryExplorerCore;
+
+namespace LegendaryExplorer.Misc.AppSettings
+{
+    /// <summary>
+    /// Auto-generated settings: DO NOT MANUALLY EDIT THIS .CS FILE, RUN SETTINGSBUILDER.TT, DEFINE IN SETTINGSDEFINTIIONS.XML!
+    /// </summary>
+    public static partial class Settings
+    {
+        private static readonly object settingsSyncObj = new();
+<# // This code runs in the text template:
+    // Can't use named tuples it seems
+    var settings = XDocument.Load(this.Host.ResolvePath("SettingsDefinitions.xml")).Root.Descendants("setting").Select(x => 
+    {
+        string name = x.Attribute("name").Value;
+        string type = x.Attribute("type").Value;
+        string defaultValue = x.Attribute("defaultvalue").Value;
+        string settingsBridgeName = x.Attribute("settingsbridgename")?.Value;
+        if (type == "string")
+        {
+            defaultValue = "\"" + defaultValue + "\"";
+        }
+        return Tuple.Create(name, type, defaultValue, settingsBridgeName);
+    }).ToList();
+
+    foreach (var setting in settings){ 
+#>        private static <#= setting.Item2 #> _<#= setting.Item1.ToLower() #> = <#= setting.Item3 #>; 
+        public static <#= setting.Item2 #> <#= setting.Item1 #> {
+            get => _<#= setting.Item1.ToLower() #>; 
+            set => SetProperty(ref _<#= setting.Item1.ToLower() #>, value);
+        }
+<# } #>
+
+        // Settings converters
+        public static int TryGetSetting(Dictionary<string, string> settings, string key, int defaultValue) => settings.TryGetValue(key, out var value) && int.TryParse(value, out var ivalue) ? ivalue : defaultValue;
+        public static bool TryGetSetting(Dictionary<string, string> settings, string key, bool defaultValue) => settings.TryGetValue(key, out var value) && bool.TryParse(value, out var bvalue) ? bvalue : defaultValue;
+        public static string TryGetSetting(Dictionary<string, string> settings, string key, string defaultValue) => settings.TryGetValue(key, out var value) ? value : defaultValue;
+
+
+        private static string AppSettingsFile => Path.Combine(AppDirectories.AppDataFolder, "appsettings.json");
+        /// <summary>
+        /// Loads settings from disk.
+        /// </summary>
+        public static void LoadSettings()
+        {
+            if (Loaded)
+                return;
+            
+            var settingsJson = File.Exists(AppSettingsFile)
+                ? JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(AppSettingsFile))
+                : new Dictionary<string, string>();
+<#          foreach (var setting in settings){#>
+            <#=setting.Item1#> = TryGetSetting(settingsJson, "<#=setting.Item1.ToLower()#>", <#= setting.Item3 #>);
+<#          }#>
+
+            // Settings Bridge Init
+<#          foreach (var setting in settings){
+                if (!string.IsNullOrEmpty(setting.Item4)){
+#>            LegendaryExplorerCoreLibSettings.Instance.<#=setting.Item4#> = <#=setting.Item1#>;
+<#                }#>
+<#          }#>
+
+            Loaded = true;
+        }
+
+        /// <summary>
+        /// Commits settings to disk.
+        /// </summary>
+        public static void Save()
+        {
+            var settingsJson = new Dictionary<string,string>();
+<#          foreach (var setting in settings){#>
+            settingsJson["<#=setting.Item1.ToLower()#>"] = <#=setting.Item1#>.ToString();
+<#          }#>
+
+            var settingsText = JsonConvert.SerializeObject(settingsJson, Formatting.Indented);
+            try
+            {
+                lock (settingsSyncObj) {
+                    File.WriteAllText(AppSettingsFile, settingsText);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"Could not save settings: {e.Message}");
+            }
+        }
+<#
+    
+
+
+#>
+    }
+}
