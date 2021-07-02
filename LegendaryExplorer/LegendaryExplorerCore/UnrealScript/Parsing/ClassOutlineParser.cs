@@ -268,35 +268,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
         }
 
-        public Expression ParseConstValue()
-        {
-            //minus sign is not parsed as part of a literal, so do it manually
-            bool isNegative = Matches(TokenType.MinusSign);
-
-            Expression literal = ParseLiteral();
-            if (literal is null)
-            {
-                throw ParseError("Expected a literal value for the constant!", CurrentPosition);
-            }
-
-            if (isNegative)
-            {
-                switch (literal)
-                {
-                    case FloatLiteral floatLiteral:
-                        floatLiteral.Value *= -1;
-                        break;
-                    case IntegerLiteral integerLiteral:
-                        integerLiteral.Value *= -1;
-                        break;
-                    default:
-                        throw ParseError("Malformed constant value!", CurrentPosition);
-                }
-            }
-
-            return literal;
-        }
-
         public VariableDeclaration TryParseVarDecl()
         {
             return (VariableDeclaration)Tokens.TryGetTree(DeclarationParser);
