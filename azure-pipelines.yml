@@ -132,9 +132,9 @@ steps:
 - task: PowerShell@2
   displayName: 'Cleanup build'
   inputs:
-    filePath: 'LegendaryExplorer\LegendaryExplorer\Build\PostBuildCleanup.ps1'
+    filePath: '$(Build.SourcesDirectory)/LegendaryExplorer/LegendaryExplorer/Build/PostBuildCleanup.ps1'
     arguments: '"$(Build.SourcesDirectory)/LegendaryExplorer/LegendaryExplorer/bin/x64/$(buildConfiguration)/net$(netVersion).0-windows"'
-    errorActionPreference: 'continue'
+    errorActionPreference: continue
 
 - task: ArchiveFiles@2
   displayName: '7z LEX'
