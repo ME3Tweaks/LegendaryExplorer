@@ -1244,7 +1244,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private async void ReplaceEmbeddedWEMFromWave(string sourceFile = null, WwiseConversionSettingsPackage conversionSettings = null)
         {
-            if (ExportInfoListBox.SelectedItem is EmbeddedWEMFile wemToReplace && CurrentLoadedExport.FileRef.Game == MEGame.ME3)
+            if (ExportInfoListBox.SelectedItem is EmbeddedWEMFile wemToReplace && CurrentLoadedExport.FileRef.Game.IsGame3() || CurrentLoadedExport.FileRef.Game == MEGame.LE2)
             {
                 if (sourceFile == null)
                 {
