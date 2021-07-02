@@ -1540,6 +1540,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             };
             if (dlg.ShowDialog(pewpf) == CommonFileDialogResult.Ok)
             {
+                var langFilter = PromptDialog.Prompt(pewpf,
+                    "Enter the language suffix to filter, or blank to dump INT. For example, PLPC, DE, FR.",
+                    "Enter language filter", "", true);
+
                 Task.Run(() =>
                 {
                     pewpf.BusyText = "Dumping TLKs...";
@@ -1548,12 +1552,16 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     int numDone = 0;
                     foreach (var f in allPackages)
                     {
-                        if (!f.Key.Contains("Startup"))
-                            continue;
+                        //if (!f.Key.Contains("Startup"))
+                        //    continue;
                         pewpf.BusyText = $"Dumping TLKs [{++numDone}/{allPackages.Count}]";
                         using var package = MEPackageHandler.OpenMEPackage(f.Value);
                         foreach (var v in package.LocalTalkFiles)
                         {
+                            if (!string.IsNullOrWhiteSpace(langFilter) && !v.Name.EndsWith($"_{langFilter}"))
+                            {
+                                continue;
+                            }
                             var outPath = Path.Combine(dlg.FileName,
                                 $"{Path.GetFileNameWithoutExtension(f.Key)}.{package.GetEntry(v.UIndex).InstancedFullPath}.xml");
                             v.saveToFile(outPath);
