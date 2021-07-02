@@ -6,6 +6,8 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
         xmlns:local="clr-namespace:LegendaryExplorer.Tools.PlotManager"
+        xmlns:plotDatabase="clr-namespace:LegendaryExplorerCore.PlotDatabase;assembly=LegendaryExplorerCore"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         mc:Ignorable="d"
         Title="Plot Manager" Height="900" Width="1500">
@@ -15,23 +17,69 @@
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="500"/>
+                        <ColumnDefinition Width="500"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="40"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <TreeView x:Name="ME3_Tree_BW"
+                    <TreeView x:Name="Tree_BW"
                               Grid.Column="0"
                               Grid.Row="1"
-                              ItemsSource="{Binding Path=BW_me3db.Elements}">
-                        <TreeView.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Label}"/>
-                            </DataTemplate>
-                        </TreeView.ItemTemplate>
-                        
+                              ItemsSource="{Binding Path=RootNodes}"
+                              VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
+                        <TreeView.Resources>
+                            <HierarchicalDataTemplate DataType="{x:Type plotDatabase:PlotElement}" ItemsSource="{Binding Children}">
+                                <StackPanel>
+                                        <TextBlock><Run Text="{Binding Path=Path, Mode=OneWay}"/> - <Run Text="{Binding Path=Type}"/> <Run Text="{Binding Path=RelevantId, Mode=OneWay}"/></TextBlock>
+                                </StackPanel>
+                            </HierarchicalDataTemplate>
+                        </TreeView.Resources>
                     </TreeView>
+                    <ContentControl Grid.Column="1" Grid.Row="1" Margin="5" BorderThickness="1"
+                                    Content="{Binding ElementName=Tree_BW, Path=SelectedItem}">
+                        <ContentControl.Resources>
+                            <DataTemplate DataType="{x:Type plotDatabase:PlotElement}">
+                                <StackPanel>
+                                    <TextBlock FontWeight="Bold"><Run Text="{Binding Type}"/> <Run Text="{Binding RelevantId, Mode=OneWay}"/>:</TextBlock>
+                                    <TextBlock Text="{Binding Path, Mode=OneWay}"/>
+                                    <TextBlock>Plot Element ID: <Run Text="{Binding ElementId}"/></TextBlock>
+                                    <TextBlock>Sequence: <Run Text="{Binding Sequence}"/></TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type plotDatabase:PlotBool}">
+                                <StackPanel>
+                                    <TextBlock FontWeight="Bold"><Run Text="{Binding Type}"/> <Run Text="{Binding PlotId}"/>:</TextBlock>
+                                    <TextBlock Text="{Binding Path, Mode=OneWay}"/>
+                                    <TextBlock>Plot Element ID: <Run Text="{Binding ElementId}"/></TextBlock>
+                                    <TextBlock>Sequence: <Run Text="{Binding Sequence}"/></TextBlock>
+                                    <TextBlock>Subtype: <Run Text="{Binding SubType}"/></TextBlock>
+                                    <TextBlock>Gamer Variable: <Run Text="{Binding GamerVariable}"/></TextBlock>
+                                    <TextBlock>Achievement ID: <Run Text="{Binding AchievementID}"/></TextBlock>
+                                    <TextBlock>Galaxy At War: <Run Text="{Binding GalaxyAtWar}"/></TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type plotDatabase:PlotConditional}">
+                                <StackPanel>
+                                    <TextBlock FontWeight="Bold"><Run Text="{Binding Type}"/> <Run Text="{Binding PlotId}"/>:</TextBlock>
+                                    <TextBlock Text="{Binding Path, Mode=OneWay}"/>
+                                    <TextBlock>Plot Element ID: <Run Text="{Binding ElementId}"/></TextBlock>
+                                    <TextBlock>Sequence: <Run Text="{Binding Sequence}"/></TextBlock>
+                                    <TextBlock>Code: <Run Text="{Binding Code}"/></TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type plotDatabase:PlotTransition}">
+                                <StackPanel>
+                                    <TextBlock FontWeight="Bold"><Run Text="{Binding Type}"/> <Run Text="{Binding PlotId}"/>:</TextBlock>
+                                    <TextBlock Text="{Binding Path, Mode=OneWay}"/>
+                                    <TextBlock>Plot Element ID: <Run Text="{Binding ElementId}"/></TextBlock>
+                                    <TextBlock>Sequence: <Run Text="{Binding Sequence}"/></TextBlock>
+                                    <TextBlock>Argument: <Run Text="{Binding Argument}"/></TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ContentControl.Resources>
+                    </ContentControl>
                 </Grid>
             </TabItem>
         </TabControl>

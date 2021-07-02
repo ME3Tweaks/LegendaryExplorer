@@ -31,9 +31,15 @@ namespace LegendaryExplorer.Tools.PlotManager
     public partial class PlotManagerWindow : NotifyPropertyChangedWindowBase
     {
 
-        public PlotDatabase BW_me3db { get; } = new();
+        public ObservableCollectionExtended<PlotElement> Elements { get; } = new();
+        public ObservableCollectionExtended<PlotElement> RootNodes { get; } = new();
 
-
+        private PlotElement _selectedNode;
+        public PlotElement SelectedNode
+        {
+            get => _selectedNode;
+            set => SetProperty(ref _selectedNode, value);
+        }
 
         public PlotManagerWindow()
         {
@@ -41,10 +47,9 @@ namespace LegendaryExplorer.Tools.PlotManager
             LoadCommands();
             InitializeComponent();
 
-            //me1BWdb.LoadBiowarePlotsFromJSON(MEGame.LE1);
-            //me2BWdb.LoadBiowarePlotsFromJSON(MEGame.LE2);
-            BW_me3db.LoadPlotsFromJSON(MEGame.LE3);
-            InitializeTreeView();
+            var dictionary = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE3);
+            RootNodes.Add(dictionary[1]);
+
             Focus();
         }
 
@@ -54,23 +59,6 @@ namespace LegendaryExplorer.Tools.PlotManager
 
         }
 
-
-
-
-        private void InitializeTreeView()
-        {
-            //Create Tree
-            var rootNode = new TreeViewItem();
-             
-
-        }
-
-        private TreeViewItem CreateChildTree(int childelementId)
-        {
-            var childItem = new TreeViewItem();
-
-            return childItem;
-        }
     }
 
   
