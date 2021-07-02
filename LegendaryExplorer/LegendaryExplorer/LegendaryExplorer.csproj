@@ -474,20 +474,20 @@
   </Target>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="powershell -ExecutionPolicy Bypass -File &quot;Build\UpdateTextTransforms.ps1&quot;" />
+    <Exec Command="powershell -ExecutionPolicy Bypass -File &quot;BuildTools\UpdateTextTransforms.ps1&quot;" />
   </Target>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Message Importance="high" Text="PublishDir=$(PublishDir)"/>
+    <Message Importance="high" Text="PublishDir=$(PublishDir)" />
     <Exec Command="xcopy /f /e /y &quot;Resources\exec&quot; &quot;$(OutDir)exec\&quot;" />
-    <Exec Command="Build\InsertIcons.exe  &quot;$(OutDir)LegendaryExplorer.exe&quot; Build\iconlist.txt" />
+    <Exec Command="&quot;$(ProjectDir)BuildTools\InsertIcons.exe&quot; &quot;$(OutDir)LegendaryExplorer.exe&quot; &quot;$(ProjectDir)BuildTools\iconlist.txt&quot;" />
     <!--Space required or it tries to escape the quote-->
     <!-- Not 100% working. Seems like sqlite has same post build in parallel somehow? -->
     <!-- Used for stable deployments script -->
     <!--<Exec Command="powershell -ExecutionPolicy Bypass -File &quot;Build\PostBuildCleanup.ps1&quot; &quot;$(TargetDir) &quot;" />-->
   </Target>
   <Target Name="PostPublish" AfterTargets="Publish">
-    <Message Importance="high" Text="Copying exec to publish directory $(PublishDir)exec"/>
+    <Message Importance="high" Text="Copying exec to publish directory $(PublishDir)exec" />
     <Exec Command="xcopy /f /e /y &quot;Resources\exec&quot; &quot;$(PublishDir)exec\&quot;" />
   </Target>
 </Project>
