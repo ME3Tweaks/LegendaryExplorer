@@ -143,7 +143,7 @@ namespace LegendaryExplorerCore.Textures
         /// <returns></returns>
         private TFCInfo InitTFC()
         {
-            int? tfcIdx = infoPackage.UseIndexing ? 1 : null;
+            int? tfcIdx = infoPackage.UseIndexing ? 0 : null; // 0 cause it gets ++'d before first use
             while (true)
             {
                 if (infoPackage.UseIndexing)
@@ -181,7 +181,7 @@ namespace LegendaryExplorerCore.Textures
             {
                 // ERROR: UNMATCHED CRCS
                 // Textures are not properly named and unique
-                errorCallback?.Invoke("There are unmatched CRCs in this directory. Textures with same full instanced paths must have the same textures.");
+                errorCallback?.Invoke("There are unmatched CRCs in this directory. Textures with same full instanced paths must have the same textures. Use Texture Studio to identify and fix these issues.");
                 return;
             }
 
