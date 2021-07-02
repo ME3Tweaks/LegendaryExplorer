@@ -39,6 +39,9 @@ namespace LegendaryExplorer.Tools.TextureStudio
         public ObservableCollectionExtendedWPF<string> ME1MasterTexturePackages { get; } = new();
         private Dictionary<uint, MEMTextureMap.TextureMapEntry> VanillaTextureMap { get; set; }
 
+        private string _tfcSuffix;
+        public string TFCSuffix { get => _tfcSuffix; set => SetProperty(ref _tfcSuffix, value); }
+
         #region Variables
 
         private MEGame _currentStudioGame;
@@ -317,7 +320,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
                         {
                             // First instance
                             firstInstance = new Texture2D(textureExp);
-                            firstInstance.Replace(image, textureExp.GetProperties(), selectDDS.FileName, $"Textures_{Path.GetFileName(SelectedFolder)}"); // This is placeholder name for TFC name
+                            firstInstance.Replace(image, textureExp.GetProperties(), selectDDS.FileName, $"Textures_{TFCSuffix}"); // This is placeholder name for TFC name
                             fiBin = ObjectBinary.From<UTexture2D>(textureExp);
                         }
                         else
@@ -707,6 +710,36 @@ namespace LegendaryExplorer.Tools.TextureStudio
                 t.IsExpanded = false;
             }
             SortNodes(AllTreeViewNodes);
+
+            // Attempt to determine TFC Suffix
+            foreach (var v in AllTreeViewNodes)
+            {
+                var textureInstances = v.GetAllTextureEntries();
+                foreach (var memoryInstance in textureInstances)
+                {
+                    foreach (var packageInstance in memoryInstance.Instances)
+                    {
+                        if (packageInstance.RelativePackagePath.Contains(@"DLC_MOD_"))
+                        {
+                            var dlcFolderName = packageInstance.RelativePackagePath.Substring(packageInstance.RelativePackagePath.IndexOf(@"DLC_MOD_"));
+                            dlcFolderName = dlcFolderName.Substring(0, dlcFolderName.IndexOf(@"\"));
+                            TFCSuffix = dlcFolderName;
+                            break;
+                        }
+                    }
+
+                    if (TFCSuffix != null)
+                    {
+                        break;
+                    }
+                }
+                if (TFCSuffix != null)
+                {
+                    break;
+                }
+            }
+
+
             Thread.Sleep(1000); //UI will take a few moments to update so we will stall this busy overlay
 
             BusyProgressIndeterminate = true;

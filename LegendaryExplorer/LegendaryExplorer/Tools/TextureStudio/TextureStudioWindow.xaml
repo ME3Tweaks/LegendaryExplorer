@@ -189,6 +189,9 @@
                             <StatusBarItem>
                                 <Button Content="Change all instances to new texture" Padding="5" Command="{Binding ChangeAllInstancesTextureCommand}"/>
                             </StatusBarItem>
+                            <StatusBarItem>
+                                <TextBox Text="{Binding TFCSuffix}" Padding="5"/>
+                            </StatusBarItem>
                         </StatusBar>
                     <ListBox ItemsSource="{Binding SelectedItem.Instances}" SelectedItem="{Binding SelectedInstance}">
                         <ListBox.Resources>
