@@ -110,6 +110,16 @@ steps:
     reportDirectory: 'CoverageReport'
     failIfCoverageEmpty: true
 
+# Build TexConverter in Release mode
+- task: MSBuild@1
+  inputs:
+    solution: 'LegendaryExplorer\TexConverter\TexConverter.vcxproj'
+    msbuildArchitecture: 'x64'
+    platform: 'x64'
+    configuration: 'WinRelease'
+    clean: true
+    createLogFile: true
+
 # Build Legendary Explorer UI Application
 - task: VSBuild@1
   displayName: 'Build LEX'
