@@ -621,7 +621,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         //TODO: make LE lists more exhaustive
         private static readonly string[] le1FilesSafeToImportFrom =
         {
-            "Core.pcc", "Engine.pcc", "GFxUI.pcc", "PlotManagerMap.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc"
+            "Core.pcc", "Engine.pcc", "GFxUI.pcc", "PlotManagerMap.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc", "Startup_INT.pcc", "BIOC_Materials.pcc"
         };
 
         private static readonly string[] le2FilesSafeToImportFrom =
