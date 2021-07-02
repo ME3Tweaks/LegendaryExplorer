@@ -42,7 +42,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private const int HEADER_OFFSET_IMP_IDXLINK = 0x10;
         private const int HEADER_OFFSET_IMP_IDXOBJECTNAME = 0x14;
         private const int HEADER_OFFSET_IMP_IDXPACKAGEFILE = 0x0;
-        private IEntry CurrentLoadedEntry;
+        private IEntry _currentLoadedEntry;
+        public IEntry CurrentLoadedEntry { get => _currentLoadedEntry; private set => SetProperty(ref _currentLoadedEntry, value); }
         private byte[] OriginalHeader;
 
         public ObservableCollectionExtended<object> AllEntriesList { get; } = new();
@@ -80,7 +81,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public string ObjectIndexOffsetText => CurrentLoadedEntry is ImportEntry ? "0x18 Object index:" : "0x10 Object index:";
 
-        public  EntryMetadataExportLoader() : base("Metadata Editor")
+        public EntryMetadataExportLoader() : base("Metadata Editor")
         {
             DataContext = this;
             LoadCommands();
@@ -245,7 +246,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 InfoTab_ExportGUID_TextBox.Text = exportEntry.PackageGUID.ToString();
                 if (exportEntry.FileRef.Platform == MEPackage.GamePlatform.PC)
                 {
-                  
+
                     InfoTab_PackageFlags_TextBlock.Text = $"0x{exportEntry.PackageGuidOffset + 16:X2} PackageFlags:";
                     InfoTab_PackageFlags_TextBox.Text = Enums.GetValues<EPackageFlags>().Distinct().ToList()
                         .Where(flag => exportEntry.PackageFlags.HasFlag(flag)).StringJoin(" ");

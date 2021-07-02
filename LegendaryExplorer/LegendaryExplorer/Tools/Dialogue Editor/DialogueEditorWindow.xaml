@@ -70,7 +70,8 @@
         <KeyBinding Key="F" Modifiers="Control" Command="{Binding SearchCommand}"/>
         <KeyBinding Key="F5" Command="{Binding ForceRefreshCommand}"/>
     </Window.InputBindings>
-    <xctk:BusyIndicator IsBusy="{Binding Path=IsBusy}" BusyContent="{Binding BusyText}">
+    <!-- This windows has a BusyIndicator, it's just tucked at the bottom, inside the Grid. It needs to be that way to not cause problems with the Piccolo control -->
+    <Grid>
         <DockPanel>
             <Menu DockPanel.Dock="Top" HorizontalAlignment="Stretch">
                 <Menu.ItemsPanel>
@@ -1393,5 +1394,6 @@
                 <GridSplitter Grid.Row="3" Height="5" HorizontalAlignment="Stretch" Grid.Column="0" Grid.ColumnSpan="3" />
             </Grid>
         </DockPanel>
-    </xctk:BusyIndicator>
+        <xctk:BusyIndicator IsBusy="{Binding Path=IsBusy}" BusyContent="{Binding BusyText}"/>
+    </Grid>
 </bases:WPFBase>

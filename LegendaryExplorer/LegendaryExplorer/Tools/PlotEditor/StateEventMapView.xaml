@@ -50,7 +50,7 @@
                 <DataTemplate>
                     <StackPanel HorizontalAlignment="Left">
                         <TextBlock Text="{Binding Key, StringFormat='State Event: \{0\}'}" />
-                        <TextBlock Text="{Binding Value.PlotPath}" TextWrapping="Wrap" FontSize="10" Visibility="{Binding Value.TitleAsString, Converter={StaticResource NullVisibilityConverter}}"/>
+                        <TextBlock Text="{Binding Value.PlotPath}" TextWrapping="Wrap" FontSize="10" Visibility="{Binding Value.PlotPath, Converter={StaticResource NullVisibilityConverter}}"/>
                         <StackPanel.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Change Id" Click="ChangeStateEventId_Click"/>

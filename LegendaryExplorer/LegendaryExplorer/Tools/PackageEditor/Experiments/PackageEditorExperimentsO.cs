@@ -15,10 +15,12 @@ using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.TLK.ME1;
+using LegendaryExplorerCore.TLK.ME2ME3;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
+using HuffmanCompression = LegendaryExplorerCore.TLK.ME1.HuffmanCompression;
 
 namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 {
@@ -330,16 +332,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void AssociateAllExtensions()
         {
-            FileAssociations.EnsureAssociationsSet("pcc", "Mass Effect Series Package File");
-            FileAssociations.EnsureAssociationsSet("sfm", "Mass Effect 1 Package File");
-            FileAssociations.EnsureAssociationsSet("u", "Mass Effect 1 Package File");
-            FileAssociations.EnsureAssociationsSet("upk", "Unreal Package File");
-            FileAssociations.EnsureAssociationsSet("udk", "UDK Package File");
-            FileAssociations.EnsureAssociationsSet("tlk", "Talk Table File");
-            FileAssociations.EnsureAssociationsSet("afc", "Audio File Cache File");
-            FileAssociations.EnsureAssociationsSet("isb", "ISACT Bank File");
-            FileAssociations.EnsureAssociationsSet("dlc", "Mass Effect DLC Mount File");
-            FileAssociations.EnsureAssociationsSet("cnd", "Mass Effect Conditionals File");
+            FileAssociations.AssociatePCCSFM();
+            FileAssociations.AssociateUPKUDK();
+            FileAssociations.AssociateOthers();
         }
 
         public static void CreateAudioSizeInfo(PackageEditorWindow pew, MEGame game = MEGame.ME3)
@@ -376,6 +371,34 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 string name = exp.ObjectName.Name;
                 MessageBox.Show(GetIDFromString(name).ToString());
+            }
+        }
+
+        public static void CreateTestTLKWithStringIDs(PackageEditorWindow pew)
+        {
+            Microsoft.Win32.OpenFileDialog outputFileDialog = new () { 
+                Title = "Select .XML file to import", 
+                Filter = "*.xml|*.xml" };
+            bool? result = outputFileDialog.ShowDialog();
+            if (!result.HasValue || !result.Value)
+            {
+                Debug.WriteLine("No output file specified");
+                return;
+            }
+
+            string inputXmlFile = outputFileDialog.FileName;
+            string outputTlkFile = Path.ChangeExtension(inputXmlFile, "tlk");
+            try
+            {
+                LegendaryExplorerCore.TLK.ME2ME3.HuffmanCompression hc =
+                    new LegendaryExplorerCore.TLK.ME2ME3.HuffmanCompression();
+                hc.LoadInputData(inputXmlFile, true);
+                hc.SaveToFile(outputTlkFile);
+                MessageBox.Show("Done.");
+            }
+            catch
+            {
+                MessageBox.Show("Unable to create test TLK file.");
             }
         }
     }

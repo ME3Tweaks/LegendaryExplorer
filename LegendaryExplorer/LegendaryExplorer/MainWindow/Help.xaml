@@ -26,23 +26,27 @@
         <StackPanel Margin="10,4,10,8">
                 <TextBlock Text="Basic tutorials" FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="15"/>
                 <TextBlock FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="16" Margin="7,0,0,0">
-                    • <Hyperlink NavigateUri="https://github.com/ME3Tweaks/ME3Explorer/wiki/Package-Editor-Basics" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
+                    • <Hyperlink NavigateUri="https://github.com/ME3Tweaks/LegendaryExplorer/wiki/Legendary-Edition-Modding:-Getting-Started" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
+                        Legendary Edition Modding: Getting Started
+                    </Hyperlink> by Mgamerz
+                    <LineBreak/>
+                    • <Hyperlink NavigateUri="https://github.com/ME3Tweaks/LegendaryExplorer/wiki/Package-Editor-Basics" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
                         Package Editor Basics (general purpose modding)
                     </Hyperlink> by Mgamerz
                     <LineBreak/>
-                    • <Hyperlink NavigateUri="https://github.com/ME3Tweaks/ME3Explorer/wiki/Textures-in-the-Mass-Effect-Trilogy" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
+                    • <Hyperlink NavigateUri="https://github.com/ME3Tweaks/LegendaryExplorer/wiki/Textures-in-the-Mass-Effect-Trilogy" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
                         Textures in the Mass Effect Trilogy
                     </Hyperlink> by Mgamerz
                     <LineBreak/>
-                    • <Hyperlink NavigateUri="https://github.com/ME3Tweaks/ME3Explorer/wiki/Overview-of-the-Dialogue-Editor" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
+                    • <Hyperlink NavigateUri="https://github.com/ME3Tweaks/LegendaryExplorer/wiki/Overview-of-the-Dialogue-Editor" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
                         Overview of the Dialogue Editor
                     </Hyperlink> by beccatoria
                     <LineBreak/>
-                    • <Hyperlink NavigateUri="https://github.com/ME3Tweaks/ME3Explorer/wiki/Finding-in-game-assets-quickly-%28Asset-Database%29" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
+                    • <Hyperlink NavigateUri="https://github.com/ME3Tweaks/LegendaryExplorer/wiki/Finding-in-game-assets-quickly-%28Asset-Database%29" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
                         Finding in-game assets quickly with Asset Database
                     </Hyperlink> by Kinkojiro
                     <LineBreak/>
-                    • <Hyperlink NavigateUri="https://github.com/ME3Tweaks/ME3Explorer/wiki/Introduction-to-Plot-Management" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
+                    • <Hyperlink NavigateUri="https://github.com/ME3Tweaks/LegendaryExplorer/wiki/Introduction-to-Plot-Management" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
                         Introduction to Plot Management
                     </Hyperlink> by 55tumbl
                 </TextBlock>

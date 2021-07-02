@@ -210,7 +210,9 @@ namespace LegendaryExplorer.Tools.Meshplorer
                     MEPackageHandler.CreateAndSavePackage(d.FileName, MEGame.UDK);
                     using (IMEPackage upk = MEPackageHandler.OpenUDKPackage(d.FileName))
                     {
-                        bool isAlreadyChanged = CurrentExport.DataChanged;
+                        bool cachedDataChanged = CurrentExport.DataChanged;
+                        bool cachedHeaderChanged = CurrentExport.HeaderChanged;
+                        bool pendingChangesBackup = CurrentExport.EntryHasPendingChanges;
                         byte[] dataBackup = CurrentExport.Data;
                         ObjectBinary objBin = ObjectBinary.From(CurrentExport);
                         foreach ((UIndex uIndex, _) in objBin.GetUIndexes(CurrentExport.Game))
@@ -222,9 +224,17 @@ namespace LegendaryExplorer.Tools.Meshplorer
                         EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, CurrentExport, upk, null, true,
                                                              out IEntry _);
                         CurrentExport.Data = dataBackup;
-                        if (!isAlreadyChanged)
+                        if (!cachedDataChanged)
                         {
                             CurrentExport.DataChanged = false;
+                        }
+                        if (!cachedHeaderChanged)
+                        {
+                            CurrentExport.HeaderChanged = false;
+                        }
+                        if (!pendingChangesBackup)
+                        {
+                            CurrentExport.EntryHasPendingChanges = false;
                         }
 
                         upk.Save();

@@ -232,6 +232,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public ICommand SaveFileListCommand { get; set; }
         public ICommand EditFileListCommand { get; set; }
         public ICommand CopyToClipboardCommand { get; set; }
+        public ICommand OpenInWindowsExplorerCommand { get; set; }
         private bool CanCancelDump(object obj)
         {
             return ProcessingQueue != null && ProcessingQueue.Completion.Status == TaskStatus.WaitingForActivation && !DumpCanceled;
@@ -316,6 +317,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             SaveFileListCommand = new GenericCommand(SaveCustomFileList);
             EditFileListCommand = new RelayCommand(EditCustomFileList);
             CopyToClipboardCommand = new RelayCommand(CopyStringToClipboard);
+            OpenInWindowsExplorerCommand = new GenericCommand(OpenFileInWindowsExplorer);
         }
 
         private void AssetDB_Loaded(object sender, RoutedEventArgs e)
@@ -929,6 +931,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     SeqEd.Show();
                     SeqEd.LoadFile(filePath);
                     break;
+                case "SoundExplorer":
+                    var soundplorer = new Soundplorer.SoundplorerWPF();
+                    soundplorer.Show();
+                    soundplorer.LoadFile(filePath);
+                    break;
                 default:
                     var packEditor = new PackageEditor.PackageEditorWindow();
                     packEditor.Show();
@@ -942,6 +949,39 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     }
                     break;
             }
+        }
+
+        private void OpenFileInWindowsExplorer()
+        {
+            string filename = null;
+            string contentdir = null;
+            if (lstbx_Files.SelectedIndex >= 0 && currentView == 0)
+            {
+                (filename, contentdir) = (FileDirPair) lstbx_Files.SelectedItem;
+            }
+            else return;
+            string filePath = null;
+            string rootPath = MEDirectories.GetDefaultGamePath(CurrentGame);
+
+            if (rootPath == null || !Directory.Exists(rootPath))
+            {
+                MessageBox.Show($"{CurrentGame} has not been found. Please check your Legendary Explorer settings");
+                return;
+            }
+
+            var supportedExtensions = new List<string> { ".pcc", ".u", ".upk", ".sfm" };
+            filename = $"{filename}.*";
+            filePath = Directory.EnumerateFiles(rootPath, filename, SearchOption.AllDirectories).FirstOrDefault(f => f.Contains(contentdir) && supportedExtensions.Contains(Path.GetExtension(f).ToLowerInvariant()));
+
+            if (filePath == null)
+            {
+                MessageBox.Show($"File {filename} not found in content directory {contentdir}.");
+                return;
+            }
+
+            string cmd = "explorer.exe";
+            string arg = "/select, " + filePath;
+            System.Diagnostics.Process.Start(cmd, arg);
         }
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e) //Fires if Tab moves away
         {
