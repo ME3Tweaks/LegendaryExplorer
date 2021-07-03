@@ -2210,27 +2210,31 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                         }
                     }
 
-                    string sortBy;
+                    string primarySort;
+                    string secondarySort;
                     switch (currentView)
                     {
                         case 0:
                             ICollectionView dataView = CollectionViewSource.GetDefaultView(lstbx_Files.ItemsSource);
-                            sortBy = "Item2";
+                            primarySort = "Directory";
+                            secondarySort = "FileName";
                             if (headerClicked.Column.Header.ToString().StartsWith("File"))
                             {
-                                sortBy = "Item1";
+                                primarySort = "FileName";
+                                secondarySort = "Directory";
                             }
 
                             dataView.SortDescriptions.Clear();
-                            dataView.SortDescriptions.Add(new SortDescription(sortBy, direction));
+                            dataView.SortDescriptions.Add(new SortDescription(primarySort, direction));
+                            dataView.SortDescriptions.Add(new SortDescription(secondarySort, direction));
                             dataView.Refresh();
                             lstbx_Files.ItemsSource = dataView;
                             break;
                         case 8:
                             ICollectionView linedataView = CollectionViewSource.GetDefaultView(lstbx_Lines.ItemsSource);
-                            sortBy = headerClicked.Column.Header.ToString();
+                            primarySort = headerClicked.Column.Header.ToString();
                             linedataView.SortDescriptions.Clear();
-                            linedataView.SortDescriptions.Add(new SortDescription(sortBy, direction));
+                            linedataView.SortDescriptions.Add(new SortDescription(primarySort, direction));
                             linedataView.Refresh();
                             lstbx_Lines.ItemsSource = linedataView;
                             break;

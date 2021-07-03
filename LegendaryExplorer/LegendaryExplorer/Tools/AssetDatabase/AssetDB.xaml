@@ -43,6 +43,18 @@
         <Style x:Key="FileLVHeader" TargetType="{x:Type GridViewColumnHeader}">
             <Setter Property="HorizontalContentAlignment" Value="Left" />
         </Style>
+        <DataTemplate x:Key="HeaderTemplateArrowUp">
+            <DockPanel LastChildFill="True" Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type GridViewColumnHeader}}}">
+                <Path x:Name="arrowUp" StrokeThickness="1" Fill="Gray" Data="M 5,10 L 15,10 L 10,5 L 5,10" DockPanel.Dock="Right" Width="20" HorizontalAlignment="Right" Margin="5,0,5,0" SnapsToDevicePixels="True"/>
+                <TextBlock Text="{Binding }" />
+            </DockPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="HeaderTemplateArrowDown">
+            <DockPanel LastChildFill="True" Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type GridViewColumnHeader}}}">
+                <Path x:Name="arrowDown" StrokeThickness="1" Fill="Gray"  Data="M 5,5 L 10,10 L 15,5 L 5,5" DockPanel.Dock="Right" Width="20" HorizontalAlignment="Right" Margin="5,0,5,0" SnapsToDevicePixels="True"/>
+                <TextBlock Text="{Binding }" />
+            </DockPanel>
+        </DataTemplate>
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding Key="G" Modifiers="Control"  Command="{Binding GenerateDBCommand}"/>
@@ -254,7 +266,7 @@
                                     <ListView.View>
                                         <GridView ColumnHeaderContainerStyle="{StaticResource FileLVHeader}">
                                             <GridViewColumn DisplayMemberBinding="{Binding FileName}" Width="260" Header="File"/>
-                                            <GridViewColumn DisplayMemberBinding="{Binding Directory}" Width="260" Header="Source (Basegame, DLC or Mod directory)" />
+                                            <GridViewColumn DisplayMemberBinding="{Binding Directory}" Width="360" Header="Source (Basegame, DLC or Mod directory)" />
                                         </GridView>
                                     </ListView.View>
                                     <ListView.ContextMenu>
