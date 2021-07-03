@@ -65,7 +65,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         {
             if (rootPathOverride == null) rootPathOverride = DefaultGamePath;
             if (rootPathOverride == null) return null; // There is no usable root path
-            return null; //Path.Combine(GetCookedPCPath(rootPathOverride), "testVolumeLight_VFX.upk"); //TODO: Implement texture markers in LEX??
+            return Path.Combine(GetCookedPCPath(rootPathOverride), "SFXTest.pcc");
         }
 
         public static string ISACTPath => GetISACTPath();

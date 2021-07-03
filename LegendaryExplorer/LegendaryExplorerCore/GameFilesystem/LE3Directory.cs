@@ -65,7 +65,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         {
             if (rootPathOverride == null) rootPathOverride = DefaultGamePath;
             if (rootPathOverride == null) return null; // There is no usable root path
-            return null; //Path.Combine(GetCookedPCPath(rootPathOverride), "adv_combat_tutorial_xbox_D_Int.afc");
+            return Path.Combine(GetCookedPCPath(rootPathOverride), "SFXTest.pcc");
         }
 
         public static readonly ReadOnlyCollection<string> ExecutableNames = Array.AsReadOnly(new [] { "MassEffect3.exe" });

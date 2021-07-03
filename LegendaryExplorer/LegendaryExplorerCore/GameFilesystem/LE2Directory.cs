@@ -65,8 +65,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         {
             if (rootPathOverride == null) rootPathOverride = DefaultGamePath;
             if (rootPathOverride == null) return null; // There is no usable root path
-            // Todo: Not 100% sure how texture modding will work
-            return null;//Path.Combine(GetCookedPCPath(rootPathOverride), "BIOC_Materials.pcc");
+            return Path.Combine(GetCookedPCPath(rootPathOverride), "SFXTest.pcc");
         }
 
         public static readonly ReadOnlyCollection<string> ExecutableNames = Array.AsReadOnly(new[] { "MassEffect2.exe", });
