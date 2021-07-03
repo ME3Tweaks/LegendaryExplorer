@@ -415,10 +415,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                     shaderNode.Items.Add(MakeInt32Node(bin, "Number of Instructions"));
 
-                    if (ReadShaderParameters(bin, shaderType) is BinInterpNode paramsNode)
-                    {
-                        shaderNode.Items.Add(paramsNode);
-                    }
+                    //DONT DELETE. Shader Parameter research is ongoing, but display is disabled when it's not actively being worked on, as it still has lots of bugs
+                    //if (ReadShaderParameters(bin, shaderType) is BinInterpNode paramsNode)
+                    //{
+                    //    shaderNode.Items.Add(paramsNode);
+                    //}
 
                     if (bin.Position != (shaderEndOffset - dataOffset))
                     {
