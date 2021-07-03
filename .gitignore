@@ -216,3 +216,6 @@ Release_x64/
 /LegendaryExplorer/Deployment
 /LegendaryExplorer/LegendaryExplorerCore/Libraries/Windows/TexConverter.exp
 /LegendaryExplorer/LegendaryExplorerCore/Libraries/Windows/TexConverter.lib
+
+# Ignore dll as it's auto built into this dir
+/LegendaryExplorer/LegendaryExplorerCore/Libraries/Windows/TexConverter.dll

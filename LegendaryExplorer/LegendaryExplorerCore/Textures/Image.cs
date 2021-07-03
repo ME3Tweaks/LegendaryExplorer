@@ -316,10 +316,13 @@ namespace LegendaryExplorerCore.Textures
         private static byte[] BC7ToARGB(byte[] src, int w, int h)
         {
             var decoder = new BcDecoder();
-            byte[] bytes = MemoryMarshal.AsBytes(decoder.DecodeRaw(src, w, h, CompressionFormat.Bc7).AsSpan()).ToArray();
+            var decoded = decoder.DecodeRaw(src, w, h, CompressionFormat.Bc7);
+            byte[] bytes = MemoryMarshal.AsBytes(decoded.AsSpan()).ToArray();
             // Swap red and blue channels. 
             // idk if there is faster way to do this
-            return SwapChannelsARGB(bytes, 0, 2);
+            SwapChannelsARGB(bytes, 0, 2); // decoded data is in ABGR in memory
+
+            return bytes;
         }
 
         /// <summary>
@@ -370,9 +373,9 @@ namespace LegendaryExplorerCore.Textures
             return ARGBtoRGB(convertRawToARGB(src, ref w, ref h, format), w, h);
         }
 
-        public static Bitmap convertRawToBitmapARGB(byte[] src, int w, int h, PixelFormat format)
+        public static Bitmap convertRawToBitmapARGB(byte[] src, int w, int h, PixelFormat format, bool clearAlpha = true)
         {
-            byte[] tmpData = convertRawToARGB(src, ref w, ref h, format, true);
+            byte[] tmpData = convertRawToARGB(src, ref w, ref h, format, clearAlpha);
             var bitmap = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             BitmapData bitmapData = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, w, h), ImageLockMode.ReadWrite, bitmap.PixelFormat);
             Marshal.Copy(tmpData, 0, bitmapData.Scan0, tmpData.Length);

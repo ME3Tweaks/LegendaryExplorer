@@ -336,7 +336,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     AvailableTFCNames.Add(CREATE_NEW_TFC_STRING);
                 }
 
-
                 List<Texture2DMipInfo> mips = Texture2D.GetTexture2DMipInfos(exportEntry, CurrentLoadedCacheName);
                 CurrentLoadedExport = exportEntry;
 
@@ -351,6 +350,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     if (cache == null && exportEntry.Game > MEGame.ME1)
                     {
                         AvailableTFCNames.Add(STORE_EXTERNALLY_STRING);
+                        TextureCacheComboBox.SelectedIndex = 0; // Set to Package Stored
                     }
 
 
@@ -428,10 +428,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 var imagebytes = Texture2D.GetTextureData(mipToLoad, mipToLoad.Export.Game);
                 CannotShowTextureTextVisibility = Visibility.Collapsed;
-                var bitmap = Image.convertRawToBitmapARGB(imagebytes, mipToLoad.width, mipToLoad.height, Image.getPixelFormatType(CurrentLoadedFormat));
+
+                // NOTE: Set 'ClearAlpha' to false to make image support transparency!
+                var bitmap = Image.convertRawToBitmapARGB(imagebytes, mipToLoad.width, mipToLoad.height, Image.getPixelFormatType(CurrentLoadedFormat), true);
                 //var bitmap = DDSImage.ToBitmap(imagebytes, fmt, mipToLoad.width, mipToLoad.height, CurrentLoadedExport.FileRef.Platform.ToString());
                 var memory = new MemoryStream(bitmap.Height * bitmap.Width * 4 + 54);
-                bitmap.Save(memory, ImageFormat.Bmp);
+                bitmap.Save(memory, ImageFormat.Png);
                 memory.Position = 0;
                 TextureImage.Source = (BitmapSource)new ImageSourceConverter().ConvertFrom(memory);
             }
