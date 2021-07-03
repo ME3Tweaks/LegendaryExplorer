@@ -122,6 +122,7 @@ namespace LegendaryExplorer.Startup
             }).ContinueWithOnUIThread(x =>
             {
                 IsLoaded = true;
+
                 var mainWindow = new LEXMainWindow();
                 app.MainWindow = mainWindow;
                 app.ShutdownMode = ShutdownMode.OnMainWindowClose;
