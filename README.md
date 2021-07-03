@@ -1,7 +1,7 @@
 [![Download latest release](https://user-images.githubusercontent.com/8151477/124207604-d99edb80-dab3-11eb-9411-f71b499b254a.png)](https://github.com/ME3Tweaks/LegendaryExplorer/releases/latest)
 
-[![Build Status](https://dev.azure.com/ME3Tweaks/ME3Explorer/_apis/build/status/ME3Tweaks.ME3Explorer?branchName=Beta)](https://dev.azure.com/ME3Tweaks/ME3Explorer/_build/latest?definitionId=2&branchName=Beta)
-[![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/ME3Tweaks/ME3Explorer/2)](https://dev.azure.com/ME3Tweaks/ME3Explorer/_build?definitionId=2)
+[![Build Status](https://dev.azure.com/ME3Tweaks/ME3Explorer/_apis/build/status/ME3Tweaks.LegendaryExplorer?branchName=Beta)](https://dev.azure.com/ME3Tweaks/LegendaryExplorer/_build/latest?definitionId=2&branchName=Beta)
+[![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/ME3Tweaks/LegendaryExplorer/2)](https://dev.azure.com/ME3Tweaks/LegendaryExplorer/_build?definitionId=2)
 
 Legendary Explorer is a fan-made modding toolkit for the _Mass Effect Legendary Edition_ and the original _Mass Effect Trilogy_ on PC. Legendary Explorer does not support modding Mass Effect games designed for other platforms.
 
