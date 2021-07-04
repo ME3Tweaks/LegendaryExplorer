@@ -26,7 +26,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         
         public static T CloneEntry<T>(T entry, Dictionary<IEntry, IEntry> objectMap = null, bool incrementIndex = true) where T : IEntry
         {
-            IEntry newEntry = entry.Clone(incrementIndex);
+            bool shouldIncrement = incrementIndex && entry is ExportEntry;
+            IEntry newEntry = entry.Clone(shouldIncrement);
 
             switch (newEntry)
             {
