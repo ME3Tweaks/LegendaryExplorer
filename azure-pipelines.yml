@@ -95,20 +95,20 @@ steps:
 #     publishTestResults: true
 
 # Find output file
-- task: PowerShell@2
-  displayName: 'Generate code coverage HTML'
-  inputs:
-    targetType: 'inline'
-    script: |
-      reportgenerator -reports:**/coverage.cobertura.xml -targetdir:CoverageReport -reporttypes:"HtmlInline_AzurePipelines;Cobertura" -classfilters:"-*Gammtek*;-*.SharpDX.*" -verbosity:Verbose
+# - task: PowerShell@2
+#   displayName: 'Generate code coverage HTML'
+#   inputs:
+#     targetType: 'inline'
+#     script: |
+#       reportgenerator -reports:**/coverage.cobertura.xml -targetdir:CoverageReport -reporttypes:"HtmlInline_AzurePipelines;Cobertura" -classfilters:"-*Gammtek*;-*.SharpDX.*" -verbosity:Verbose
 
-- task: PublishCodeCoverageResults@1
-  displayName: 'Publish code coverage'
-  inputs:
-    codeCoverageTool: 'Cobertura'
-    summaryFileLocation: '**/coverage.cobertura.xml'
-    reportDirectory: 'CoverageReport'
-    failIfCoverageEmpty: true
+# - task: PublishCodeCoverageResults@1
+#   displayName: 'Publish code coverage'
+#   inputs:
+#     codeCoverageTool: 'Cobertura'
+#     summaryFileLocation: '**/coverage.cobertura.xml'
+#     reportDirectory: 'CoverageReport'
+#     failIfCoverageEmpty: true
 
 # Build TexConverter in Release mode
 - task: MSBuild@1
