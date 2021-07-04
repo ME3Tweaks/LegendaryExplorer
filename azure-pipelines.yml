@@ -51,15 +51,15 @@ steps:
       Write-Host "Author: $($author)"
       
       # Set version (LEC)
-      $xml = [xml](Get-Content .\LegendaryExplorer\LegendaryExplorerCore\LegendaryExplorerCore.csproj)
+      #$xml = [xml](Get-Content .\LegendaryExplorer\LegendaryExplorerCore\LegendaryExplorerCore.csproj)
       $ver = New-Object System.Version($appMajor, $appMinor, $appPatch, [int]$(Build.BuildId))
-      $xml.Project.PropertyGroup[0].Version = $ver.ToString() #Hopefully nobody re-organizes the csproj!
-      $xml.Save(".\LegendaryExplorer\LegendaryExplorerCore\LegendaryExplorerCore.csproj")
+      #$xml.Project.PropertyGroup[0].Version = $ver.ToString() #Hopefully nobody re-organizes the csproj!
+      #$xml.Save(".\LegendaryExplorer\LegendaryExplorerCore\LegendaryExplorerCore.csproj")
 
       # Set version (LEX)
-      $xml = [xml](Get-Content .\LegendaryExplorer\LegendaryExplorer\LegendaryExplorer.csproj)
-      $xml.Project.PropertyGroup[0].Version = $ver.ToString() #Hopefully nobody re-organizes the csproj!
-      $xml.Save(".\LegendaryExplorer\LegendaryExplorer\LegendaryExplorerCore.csproj")
+      #$xml = [xml](Get-Content .\LegendaryExplorer\LegendaryExplorer\LegendaryExplorer.csproj)
+      #$xml.Project.PropertyGroup[0].Version = $ver.ToString() #Hopefully nobody re-organizes the csproj!
+      #$xml.Save(".\LegendaryExplorer\LegendaryExplorer\LegendaryExplorerCore.csproj")
 
       Write-Host "Version: $($ver)"
       echo "##vso[task.setvariable variable=VER]$($ver)"
@@ -86,13 +86,13 @@ steps:
     restoreSolution: '$(solution)'
 
 # Test LegendaryExplorerCore
-- task: DotNetCoreCLI@2
-  displayName: 'Test LEC'
-  inputs:
-    command: 'test'
-    projects: 'LegendaryExplorer/LegendaryExplorerCore.Tests/LegendaryExplorerCore.Tests.csproj'
-    arguments: '--configuration WinAzureTest /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:DebugType=pdbonly -v normal'
-    publishTestResults: true
+# - task: DotNetCoreCLI@2
+#   displayName: 'Test LEC'
+#   inputs:
+#     command: 'test'
+#     projects: 'LegendaryExplorer/LegendaryExplorerCore.Tests/LegendaryExplorerCore.Tests.csproj'
+#     arguments: '--configuration WinAzureTest /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:DebugType=pdbonly -v normal'
+#     publishTestResults: true
 
 # Find output file
 - task: PowerShell@2
@@ -125,6 +125,7 @@ steps:
   displayName: 'Build LEX'
   inputs:
     solution: '$(solution)'
+    msbuildArgs: '/p:Version=$(appMajor).$(appMinor).$(appPatch).$(Build.BuildId)'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
