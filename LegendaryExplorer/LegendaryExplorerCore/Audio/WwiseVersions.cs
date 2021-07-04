@@ -17,7 +17,9 @@ namespace LegendaryExplorerCore.Audio
             MEGame.ME2 => "2009.1.0.3143",
             MEGame.ME3 => "2010.3.3.3773",
             MEGame.LE1 => null,
-            _ => "2019.1.6.7110"
+            MEGame.LE2 => "2019.1.6.7110",
+            MEGame.LE3 => "2019.1.6.7110",
+            _ => null
         };
 
         public static int? WwiseVersion(MEGame game) => game switch
@@ -26,7 +28,9 @@ namespace LegendaryExplorerCore.Audio
             MEGame.ME2 => 3143,
             MEGame.ME3 => 3773,
             MEGame.LE1 => null,
-            _ => 7110
+            MEGame.LE2 => 7110,
+            MEGame.LE3 => 7110,
+            _ => null
         };
 
         public static bool IsCorrectWwiseVersion(MEGame game, string pathToWwiseExe)

@@ -30,12 +30,12 @@
 
         <Label Content="Path to WwiseCLI.exe v3773:" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" FontWeight="Bold"/>
         <TextBox x:Name="Wwise3773TextBox" Text="{Binding Path=Wwise3773Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="0"
-                 Grid.Row="3" Grid.ColumnSpan="2" ToolTip="Source XML or Binary Coalesced file." />
+                 Grid.Row="3" Grid.ColumnSpan="2" ToolTip="Location of WwiseCLI executable, which comes with the install of the Wwise Authoring Interface v2010.3.3.3773" />
         <Button x:Name="Wwise3773BrowseButton" Width="80" Content="Browse" Grid.Column="2" Grid.Row="3" Command="{Binding Select3773Command}"/>
 
         <Label Content="Path to WwiseCLI.exe v7110:" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" FontWeight="Bold"/>
         <TextBox x:Name="Wwise7110TextBox" Text="{Binding Path=Wwise7110Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 Grid.Column="0"  Grid.Row="5" Grid.ColumnSpan="2" ToolTip="Destination XML or Binary Coalesced file." />
+                 Grid.Column="0"  Grid.Row="5" Grid.ColumnSpan="2" ToolTip="Location of WwiseCLI executable, which comes with the install of the Wwise Authoring Interface v2019.1.6.7110" />
         <Button x:Name="Wwise7110BrowseButton" Width="80" Content="Browse" Grid.Column="2" Grid.Row="5" Command="{Binding Select7110Command}" />
 
         <Button Content="Set Paths" Click="SetPaths_OnClick"  Grid.Row="7" Grid.Column="2" IsDefault="True"/>
