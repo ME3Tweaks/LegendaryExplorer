@@ -161,7 +161,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 InterpGroups.AddRange(groupExports.Select(exp => new InterpGroup(exp)));
             }
 
-            int? strRef = InterpGroups.First(g => g.StrRefId != null).StrRefId;
+            int? strRef = InterpGroups.Select(g => g.StrRefId).FirstOrDefault(id => id != null);
             if (strRef != null)
             {
                 LineStrRef = TLKManagerWPF.GlobalFindStrRefbyID(strRef.GetValueOrDefault(), CurrentLoadedExport?.Game ?? MEGame.ME3);
