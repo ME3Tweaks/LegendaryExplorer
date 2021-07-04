@@ -13,6 +13,7 @@
                      DataContext="{Binding RelativeSource={RelativeSource Self}}" PreviewMouseWheel="OnScroll" SizeChanged="Timeline_OnSizeChanged">
     <UserControl.Resources>
         <converters:TimeToPositionConverter x:Key="TimeToPositionConverter"/>
+        <converters:NullOrEmptyStringVisibilityConverter x:Key="NullOrEmptyStringVisibilityConverter"/>
         <SolidColorBrush x:Key="KeyBrush" Color="#FF640000"/>
         <Color x:Key="SelectedBackgroundColor">#FFC5CBF9</Color>
         <Color x:Key="SelectedUnfocusedColor">#FFDDDDDD</Color>
@@ -258,10 +259,12 @@
                     </Setter>
                 </Style>
             </StackPanel.Resources>
-            <Button x:Name="btnConstant" Content="Add InterpGroup" Command="{Binding AddInterpGroupCmd}"
+            <Button x:Name="btnAddGroup" Content="Add InterpGroup" Command="{Binding AddInterpGroupCmd}"
                     sharedUi:Bindings.VisibilityToEnabled="True"/>
-            <Button x:Name="btnLinear" Content="Add InterpGroupDirector" Command="{Binding AddInterpGroupCmd}" 
+            <Button x:Name="btnAddDirector" Content="Add InterpGroupDirector" Command="{Binding AddInterpGroupCmd}" 
                     CommandParameter="Director" sharedUi:Bindings.VisibilityToEnabled="True"/>
+            <TextBlock x:Name="txtStrRef" Text="{Binding LineStrRef}" Foreground="#FFC9C9C9" Margin="7,3"
+                       Visibility="{Binding LineStrRef, Converter={StaticResource NullOrEmptyStringVisibilityConverter}}"/>
         </StackPanel>
         <Grid Background="#FF5C5C5C">
             <Grid.ColumnDefinitions>

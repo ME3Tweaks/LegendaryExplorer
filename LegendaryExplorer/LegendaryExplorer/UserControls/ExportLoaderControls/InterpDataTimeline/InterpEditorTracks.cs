@@ -127,6 +127,8 @@ namespace LegendaryExplorer.Tools.InterpEditor
             get => isExpanded;
             set => SetProperty(ref isExpanded, value);
         }
+
+        public int? StrRefId => Tracks.Select(t => t.Export.GetProperty<IntProperty>("m_nStrRefID")?.Value).FirstOrDefault(i => i != null);
     }
 
     public abstract class InterpTrack : NotifyPropertyChangedBase

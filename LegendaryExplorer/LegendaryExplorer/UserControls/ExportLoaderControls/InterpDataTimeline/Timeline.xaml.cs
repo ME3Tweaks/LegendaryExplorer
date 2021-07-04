@@ -8,6 +8,7 @@ using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.Tools.InterpEditor;
 using LegendaryExplorer.Tools.PackageEditor;
+using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorerCore.Matinee;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
@@ -52,6 +53,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             get => _offset;
             set => SetProperty(ref _offset, value);
+        }
+
+        private string _lineStrRef;
+        public string LineStrRef
+        {
+            get => _lineStrRef;
+            set => SetProperty(ref _lineStrRef, value);
         }
 
         public event Action<ExportEntry> SelectionChanged;
@@ -152,6 +160,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 var groupExports = groupsProp.Where(prop => Pcc.IsUExport(prop.Value)).Select(prop => Pcc.GetUExport(prop.Value));
                 InterpGroups.AddRange(groupExports.Select(exp => new InterpGroup(exp)));
             }
+
+            int? strRef = InterpGroups.First(g => g.StrRefId != null).StrRefId;
+            if (strRef != null)
+            {
+                LineStrRef = TLKManagerWPF.GlobalFindStrRefbyID(strRef.GetValueOrDefault(), CurrentLoadedExport?.Game ?? MEGame.ME3);
+            }
+            else LineStrRef = "";
         }
 
         public void RefreshInterpData(ExportEntry changedExport, PackageChange change)
@@ -173,6 +188,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         IsSelected = group.IsSelected
                     };
                     InterpGroups.Insert(idx, newGroup);
+                    if(group.StrRefId != null) LineStrRef = TLKManagerWPF.GlobalFindStrRefbyID(group.StrRefId.GetValueOrDefault(), CurrentLoadedExport.Game);
                 }
                 else
                 {
