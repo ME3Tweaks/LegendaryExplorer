@@ -32,8 +32,8 @@ namespace LegendaryExplorer.Tools.PlotManager
     {
 
         public PlotDatabase BW_me3db { get; } = new();
-
-
+        public Dictionary<int, PlotElement> BW_ME3_Plots { get; } = new();
+        
 
         public PlotManagerWindow()
         {
@@ -59,16 +59,41 @@ namespace LegendaryExplorer.Tools.PlotManager
 
         private void InitializeTreeView()
         {
+            var sortedPlots = BW_me3db.GetMasterDictionary();
+            PlotElement root = sortedPlots[1];
             //Create Tree
             var rootNode = new TreeViewItem();
-             
+            rootNode.Header = root.Label;
+
+            foreach(var e in root.Children)
+            {
+                var node = CreateChildTree(e);
+                rootNode.Items.Add(node);
+            }
+
+            ME3_Tree_BW.Items.Add(rootNode);
 
         }
 
-        private TreeViewItem CreateChildTree(int childelementId)
+        private TreeViewItem CreateChildTree(PlotElement childelement)
         {
             var childItem = new TreeViewItem();
 
+            switch (childelement.Type)
+            {
+                case PlotElementType.Plot:
+                case PlotElementType.Region:
+                    childItem.Header = childelement.Label;
+                    break;
+                default:
+                    childItem.Header = $"{childelement.Label} {childelement.Type} {childelement.PlotID}";
+                    break;
+            }
+            foreach (var e in childelement.Children)
+            {
+                var node = CreateChildTree(e);
+                childItem.Items.Add(node);
+            }
             return childItem;
         }
     }

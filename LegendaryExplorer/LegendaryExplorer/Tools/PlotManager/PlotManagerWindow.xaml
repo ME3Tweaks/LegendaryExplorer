@@ -23,8 +23,8 @@
                     </Grid.RowDefinitions>
                     <TreeView x:Name="ME3_Tree_BW"
                               Grid.Column="0"
-                              Grid.Row="1"
-                              ItemsSource="{Binding Path=BW_me3db.Elements}">
+                              Grid.Row="1">
+                        
                         <TreeView.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Label}"/>
