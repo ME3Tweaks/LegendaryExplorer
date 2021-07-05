@@ -12,7 +12,6 @@ The more information you provide, the easier it will be for us to work with.
 
 **Describe the bug**
 A clear and concise description of what the bug is.
-Note: Bugs against tools scheduled for removal, such as Package Editor Classic, Interpreter Classic, and more as noted in the latest release notes won't be fixed.
 
 **To Reproduce**
 Be specific. Reports must include tool names, filenames, export numbers and more so that we can reproduce the issue. **Do not use generic "use any file" or "any tool". Be specific. If specific reproducible steps are not included, we may simply close the issue as not reproducible.**
