@@ -361,9 +361,9 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private void RestoreExportData()
         {
-            if (Pcc.Game != MEGame.ME1 && Pcc.Game != MEGame.ME2 && Pcc.Game != MEGame.ME3)
+            if (!Pcc.Game.IsLEGame()&& !Pcc.Game.IsOTGame())
             {
-                MessageBox.Show(this, "Not a trilogy file!");
+                MessageBox.Show(this, "Not a supported file for restoring export data. Only LE/OT files are supported.");
                 return;
             }
 
