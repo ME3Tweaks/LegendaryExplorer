@@ -30,6 +30,7 @@ namespace LegendaryExplorer.Misc.ME3Tweaks
         /// <returns>Backup path if it exists (and is valid, if forcecmmvanilla exists). This checks for directory existence, biogame/binaries existence. Returns null if validation fails or path is not set.</returns>
         public static string GetGameBackupPath(MEGame game, bool forceCmmVanilla = true)
         {
+            // Mod Manager 7
             string path = GetRegistrySettingString(@"HKEY_CURRENT_USER\Software\ME3Tweaks", $"{game}VanillaBackupLocation"); // Do not change
             if (path == null || !Directory.Exists(path))
             {

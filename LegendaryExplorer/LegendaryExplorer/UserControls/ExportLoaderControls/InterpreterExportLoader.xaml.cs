@@ -1299,7 +1299,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     if(name == "Conditional") return PlotDatabases.FindPlotConditionalByID(value, export.Game)?.Path;
                     break;
                 case "SFXSceneShopNodePlotCheck":
-                    if (name == "m_nIndex")
+                    if (name == "m_nIndex" && !export.IsDefaultObject)
                     {
                         Enum.TryParse(export.GetProperty<EnumProperty>("VarType").Value.Name, out ESFXSSPlotVarType type);
                         switch (type)
