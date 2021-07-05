@@ -31,8 +31,10 @@ namespace LegendaryExplorer.Tools.PlotManager
     public partial class PlotManagerWindow : NotifyPropertyChangedWindowBase
     {
 
-        public ObservableCollectionExtended<PlotElement> Elements { get; } = new();
-        public ObservableCollectionExtended<PlotElement> RootNodes { get; } = new();
+        public ObservableCollectionExtended<PlotElement> Elements3 { get; } = new();
+        public ObservableCollectionExtended<PlotElement> RootNodes3 { get; } = new();
+        public ObservableCollectionExtended<PlotElement> RootNodes2 { get; } = new();
+        public ObservableCollectionExtended<PlotElement> RootNodes1 { get; } = new();
 
         private PlotElement _selectedNode;
         public PlotElement SelectedNode
@@ -47,9 +49,13 @@ namespace LegendaryExplorer.Tools.PlotManager
             LoadCommands();
             InitializeComponent();
 
-            var dictionary = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE3);
-            RootNodes.Add(dictionary[1]);
-
+            var dictionary3 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE3);
+            RootNodes3.Add(dictionary3[1]);
+            
+            var dictionary2 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE2);
+            RootNodes2.Add(dictionary2[1]);
+            var dictionary1 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE1);
+            RootNodes1.Add(dictionary1[1]);
             Focus();
         }
 
