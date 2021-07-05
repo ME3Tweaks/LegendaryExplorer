@@ -95,7 +95,15 @@ namespace LegendaryExplorerCore.GameFilesystem
         });
 
         public static string BioWareDocumentsPath => LEDirectory.BioWareDocumentsPath;
-        public static string LODConfigFile => Path.Combine(BioGamePath, @"Config", @"GamerSettings.ini");
+
+        public static string GetLODConfigFile(string gamePathRootOverride = null)
+        {
+            if (gamePathRootOverride != null)
+            {
+                return Path.Combine(gamePathRootOverride, @"BioGame", @"Config", @"GamerSettings.ini");
+            }
+            return Path.Combine(BioGamePath, @"Config", @"GamerSettings.ini");
+        }
         public static string CookedName => "CookedPCConsole";
 
 
@@ -153,7 +161,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         };
 
         public static readonly ReadOnlyCollection<string> OfficialDLC = Array.AsReadOnly(Array.Empty<string>());
-        
+
         /// <summary>
         /// TFCs that reside in the basegame directory
         /// </summary>

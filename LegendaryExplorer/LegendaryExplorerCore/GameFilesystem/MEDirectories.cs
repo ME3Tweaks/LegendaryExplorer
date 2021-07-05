@@ -159,16 +159,16 @@ namespace LegendaryExplorerCore.GameFilesystem
             };
         }
 
-        public static string GetLODConfigFile(MEGame game)
+        public static string GetLODConfigFile(MEGame game, string gamePathOverride = null)
         {
             return game switch
             {
                 MEGame.ME1 => ME1Directory.LODConfigFile,
                 MEGame.ME2 => ME2Directory.LODConfigFile,
                 MEGame.ME3 => ME3Directory.LODConfigFile,
-                MEGame.LE1 => LE1Directory.LODConfigFile,
-                MEGame.LE2 => LE2Directory.LODConfigFile,
-                MEGame.LE3 => LE3Directory.LODConfigFile,
+                MEGame.LE1 => LE1Directory.GetLODConfigFile(gamePathOverride),
+                MEGame.LE2 => LE2Directory.GetLODConfigFile(gamePathOverride),
+                MEGame.LE3 => LE3Directory.GetLODConfigFile(gamePathOverride),
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
             };
         }
