@@ -21,16 +21,21 @@ namespace LegendaryExplorerCore.GameFilesystem
 #if WINDOWS
             RegistryKey biowareKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\BioWare", false);
             RegistryKey leKey;
-            foreach (var key in biowareKey.GetSubKeyNames())
+            if (biowareKey != null)
             {
-                if (key.EndsWith("Legendary Edition"))
+                foreach (var key in biowareKey.GetSubKeyNames())
                 {
-                    leKey = biowareKey.OpenSubKey(key, false);
-                    string directory = (string)leKey.GetValue("Install Dir", null);
-                    if (directory != null)
+                    if (key.EndsWith("Legendary Edition", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        LegendaryExplorerCoreLibSettings.Instance.LEDirectory = directory;
-                        return true;
+                        leKey = biowareKey.OpenSubKey(key, false);
+                        if (leKey == null) break;
+
+                        string directory = (string)leKey.GetValue("Install Dir", null);
+                        if (directory != null)
+                        {
+                            LegendaryExplorerCoreLibSettings.Instance.LEDirectory = directory;
+                            return true;
+                        }
                     }
                 }
             }
