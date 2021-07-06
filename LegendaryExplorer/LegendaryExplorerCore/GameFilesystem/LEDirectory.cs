@@ -41,7 +41,7 @@ namespace LegendaryExplorerCore.GameFilesystem
             }
 
             // Steam lookup
-            RegistryKey steamKey = Registry.LocalMachine.OpenSubKey(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 17460", false);
+            RegistryKey steamKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 17460", false);
             if (steamKey != null)
             {
                 string directory = (string) steamKey.GetValue(@"InstallLocation");
