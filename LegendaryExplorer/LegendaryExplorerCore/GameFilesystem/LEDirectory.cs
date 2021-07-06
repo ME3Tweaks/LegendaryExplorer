@@ -19,21 +19,19 @@ namespace LegendaryExplorerCore.GameFilesystem
         public static bool LookupDefaultPath()
         {
 #if WINDOWS
-            string hkey64 = @"HKEY_LOCAL_MACHINE\SOFTWARE\BioWare\Mass Effectâ„¢ Legendary Edition"; // Yes all that weird garbage in this name is required... but not for everyone
-            string test = (string)Registry.GetValue(hkey64, "Install Dir", null);
-            if (test != null)
+            RegistryKey biowareKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\BioWare", false);
+            RegistryKey leKey;
+            foreach (var key in biowareKey.GetSubKeyNames())
             {
-                LegendaryExplorerCoreLibSettings.Instance.LEDirectory = test;
-                return true;
-            }
-            else
-            {
-                hkey64 = @"HKEY_LOCAL_MACHINE\SOFTWARE\BioWare\Mass Effect Legendary Edition"; //For those without weird garbage
-                test = (string)Registry.GetValue(hkey64, "Install Dir", null);
-                if (test != null)
+                if (key.EndsWith("Legendary Edition"))
                 {
-                    LegendaryExplorerCoreLibSettings.Instance.LEDirectory = test;
-                    return true;
+                    leKey = biowareKey.OpenSubKey(key, false);
+                    string directory = (string)leKey.GetValue("Install Dir", null);
+                    if (directory != null)
+                    {
+                        LegendaryExplorerCoreLibSettings.Instance.LEDirectory = directory;
+                        return true;
+                    }
                 }
             }
 
