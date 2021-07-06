@@ -259,7 +259,7 @@ namespace LegendaryExplorerCore.Unreal
                                         }
 
                                         //Use DB info or attempt lookup
-                                        enumType = new NameReference(enumname ?? GlobalUnrealObjectInfo.GetEnumType(pcc.Game, name, typeName, classInfo));
+                                        enumType = new NameReference(enumname ?? GlobalUnrealObjectInfo.GetEnumType(pcc.Game, name, typeName == @"ScriptStruct" ? entry.ObjectName : typeName, classInfo));
                                     }
                                     try
                                     {
