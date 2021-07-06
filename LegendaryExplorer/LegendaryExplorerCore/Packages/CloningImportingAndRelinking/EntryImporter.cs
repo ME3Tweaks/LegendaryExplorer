@@ -823,7 +823,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 return package.FindExport(entryClippedPath ?? entryFullPath);
             }
         }
-        public static List<string> fGetPossibleAssociatedFiles(IMEPackage package, string localization = "INT", bool includeNonBioPRelated = true)
+        public static List<string> GetPossibleAssociatedFiles(IMEPackage package, string localization = "INT", bool includeNonBioPRelated = true)
         {
             string filenameWithoutExtension = Path.GetFileNameWithoutExtension(package.FilePath).ToLower();
             var associatedFiles = new List<string>();
