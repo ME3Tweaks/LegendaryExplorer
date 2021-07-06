@@ -632,7 +632,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         private static readonly string[] le3FilesSafeToImportFrom =
         {
             //Class libary: These files contain ME3's standard library of classes, structs, enums... Also a few assets
-            "Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc",
+            "Core.pcc", "Engine.pcc", "Startup.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc",
         };
 
         public static bool IsSafeToImportFrom(string path, MEGame game)
@@ -823,7 +823,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 return package.FindExport(entryClippedPath ?? entryFullPath);
             }
         }
-        public static List<string> GetPossibleAssociatedFiles(IMEPackage package, string localization = "INT", bool includeNonBioPRelated = true)
+        public static List<string> fGetPossibleAssociatedFiles(IMEPackage package, string localization = "INT", bool includeNonBioPRelated = true)
         {
             string filenameWithoutExtension = Path.GetFileNameWithoutExtension(package.FilePath).ToLower();
             var associatedFiles = new List<string>();
