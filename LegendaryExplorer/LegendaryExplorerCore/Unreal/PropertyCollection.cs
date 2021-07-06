@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
@@ -179,6 +180,7 @@ namespace LegendaryExplorerCore.Unreal
                     if (!pcc.IsName(typeIdx) || size < 0 || size > stream.Length - stream.Position)
                     {
                         stream.Seek(-16, SeekOrigin.Current);
+                        LECLog.Warning($@"Found broken properties, could not resolve as name. Export: {export.InstancedFullPath}");
                         break;
                     }
                     int staticArrayIndex = stream.ReadInt32();
@@ -263,10 +265,11 @@ namespace LegendaryExplorerCore.Unreal
                                     {
                                         prop = new EnumProperty(stream, pcc, enumType, nameRef);
                                     }
-                                    catch (Exception)
+                                    catch (Exception ex)
                                     {
                                         //ERROR
                                         //Debugger.Break();
+                                        LECLog.Warning($"Error parsing ByteProperty: {ex.Message}");
                                         prop = new UnknownProperty(stream, 0, enumType, nameRef);
                                     }
                                 }
@@ -1724,6 +1727,7 @@ namespace LegendaryExplorerCore.Unreal
 #if AZURE
             Assert.Fail("Encountered an unknownproperty!");
 #endif
+            LECLog.Warning($@"Initializing an UnknownProperty object! Position: 0x{(stream.Position - size):X8}");
         }
 
         public override void WriteTo(EndianWriter stream, IMEPackage pcc, bool valueOnly = false)

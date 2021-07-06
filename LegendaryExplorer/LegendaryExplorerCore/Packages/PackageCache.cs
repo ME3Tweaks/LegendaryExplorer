@@ -88,7 +88,7 @@ namespace LegendaryExplorerCore.Packages
 
         /// <summary>
         /// Attempts to open or return the existing cached package. Returns true if a package was either in the cache or was loaded from disk,
-        /// false otherwise
+        /// false otherwise. Ignores null filepaths.
         /// </summary>
         /// <param name="filepath"></param>
         /// <param name="openIfNotInCache"></param>
@@ -103,6 +103,27 @@ namespace LegendaryExplorerCore.Packages
         public void Dispose()
         {
             ReleasePackages();
+        }
+
+        /// <summary>
+        /// Checks if the specified package path is held by a package in the cache.
+        /// </summary>
+        /// <param name="packagePath"></param>
+        /// <returns></returns>
+        public virtual bool CacheContains(string packagePath)
+        {
+            return Cache.ContainsKey(packagePath);
+        }
+
+        /// <summary>
+        /// Drops a package from the cache.
+        /// </summary>
+        /// <param name="packagePath"></param>
+        /// <returns></returns>
+        public virtual bool DropPackageFromCache(string packagePath)
+        {
+            Cache.Remove(packagePath, out var pack);
+            return pack != null;
         }
     }
 }

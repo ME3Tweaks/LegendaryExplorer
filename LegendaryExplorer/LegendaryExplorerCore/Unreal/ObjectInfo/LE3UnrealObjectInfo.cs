@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
@@ -36,6 +37,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         {
             if (!IsLoaded)
             {
+                LECLog.Information(@"Loading property db for LE3");
                 try
                 {
                     var infoText = jsonTextOverride ?? ObjectInfoLoader.LoadEmbeddedJSONText(MEGame.LE3);
@@ -58,8 +60,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                         IsLoaded = true;
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    LECLog.Error($@"Property database load failed for LE3: {ex.Message}");
                     return;
                 }
             }
@@ -303,9 +306,20 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
                         Stream loadStream = null;
                         IMEPackage cachedPackage = null;
-                        if (packageCache != null && packageCache.TryGetCachedPackage(filepath, true, out cachedPackage) || MEPackageHandler.TryGetPackageFromCache(filepath, out cachedPackage))
+                        if (packageCache != null)
                         {
-                            // Use this one
+                            packageCache.TryGetCachedPackage(filepath, true, out cachedPackage);
+                            if (cachedPackage == null)
+                                packageCache.TryGetCachedPackage(info.pccPath, true, out cachedPackage); // some cache types may have different behavior (such as relative package cache)
+
+                            if (cachedPackage != null)
+                            {
+                                // Use this one
+                                readDefaultProps(cachedPackage, props, packageCache: packageCache);
+                            }
+                        }
+                        else if (filepath != null && MEPackageHandler.TryGetPackageFromCache(filepath, out cachedPackage))
+                        {
                             readDefaultProps(cachedPackage, props, packageCache: packageCache);
                         }
                         else if (File.Exists(info.pccPath))
@@ -339,8 +353,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     }
                     return props;
                 }
-                catch
+                catch (Exception e)
                 {
+                    LECLog.Warning($@"Exception getting default LE3 struct property for {structName}: {e.Message}");
                     return null;
                 }
             }
@@ -741,7 +756,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         /// <summary>
         /// List of all known classes that are only defined in native code. These are not able to be handled for things like InheritsFrom as they are not in the property info database.
         /// </summary>
-        public static readonly string[] NativeClasses = 
+        public static readonly string[] NativeClasses =
         {
             @"Engine.CodecMovieBink"
         };

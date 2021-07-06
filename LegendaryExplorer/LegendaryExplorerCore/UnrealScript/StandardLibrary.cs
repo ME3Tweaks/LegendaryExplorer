@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
@@ -141,6 +142,7 @@ namespace LegendaryExplorerCore.UnrealScript
             {
                 try
                 {
+                    LECLog.Information($@"Game Root Path for FileLib Init: {gameRootPath}. Has package cache: {packageCache != null}");
                     List<string> filePaths = BaseFileNames(Game).Select(f => Path.Combine(MEDirectories.GetCookedPath(Game, gameRootPath), f)).ToList();
                     if (!filePaths.All(File.Exists))
                     {
@@ -157,7 +159,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     packageCache?.InsertIntoCache(files);
                     return files.All(pcc => ResolveAllClassesInPackage(pcc, ref _symbols, log, packageCache));
                 }
-                catch (Exception e) when(!LegendaryExplorerCoreLib.IsDebug)
+                catch (Exception e) when (!LegendaryExplorerCoreLib.IsDebug)
                 {
                     log.LogError($"Exception occurred while compiling BaseLib:\n{e.FlattenException()}");
                     return false;
@@ -171,7 +173,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 string dumpFolderPath = Path.Combine(MEDirectories.GetDefaultGamePath(pcc.Game), "ScriptDump", fileName);
                 Directory.CreateDirectory(dumpFolderPath);
 #endif
-                Debug.WriteLine($"{fileName}: Beginning Parse.");
+                LECLog.Debug($"{fileName}: Beginning Parse.");
                 var classes = new List<(Class ast, string scriptText)>();
                 foreach (ExportEntry export in pcc.Exports.Where(exp => exp.IsClass))
                 {
@@ -219,7 +221,7 @@ namespace LegendaryExplorerCore.UnrealScript
                         return false;
                     }
                 }
-                Debug.WriteLine($"{fileName}: Finished parse.");
+                LECLog.Debug($"{fileName}: Finished parse.");
                 foreach (var validationPass in Enums.GetValues<ValidationPass>())
                 {
                     foreach ((Class ast, string scriptText) in classes)
@@ -241,7 +243,7 @@ namespace LegendaryExplorerCore.UnrealScript
                             return false;
                         }
                     }
-                    Debug.WriteLine($"{fileName}: Finished validation pass {validationPass}.");
+                    LECLog.Debug($"{fileName}: Finished validation pass {validationPass}.");
                 }
 
                 switch (fileName)
@@ -277,7 +279,7 @@ namespace LegendaryExplorerCore.UnrealScript
 #endif
 
                 symbols.RevertToObjectStack();
-                
+
                 return true;
             }
 

@@ -3,8 +3,11 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.Compression;
+using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
+using Serilog;
+using Serilog.Core;
 
 namespace LegendaryExplorerCore
 {
@@ -51,13 +54,15 @@ namespace LegendaryExplorerCore
         /// <summary>
         /// Call this before using anything in this library. It registers things such as package loaders
         /// </summary>
-        public static void InitLib(TaskScheduler uiThreadScheduler, Action<string> packageSavingFailed = null)
+        public static void InitLib(TaskScheduler uiThreadScheduler, Action<string> packageSavingFailed = null, ILogger logger = null)
         {
             if (initialized) return;
+            LECLog.logger = logger;
             if (SYNCHRONIZATION_CONTEXT == null)
             {
                 SYNCHRONIZATION_CONTEXT = uiThreadScheduler;
             }
+            LECLog.Information(@"Initializing LegendaryExplorerCore library");
             MEPackageHandler.Initialize();
             PackageSaver.Initialize();
             PackageSaver.PackageSaveFailedCallback = packageSavingFailed;

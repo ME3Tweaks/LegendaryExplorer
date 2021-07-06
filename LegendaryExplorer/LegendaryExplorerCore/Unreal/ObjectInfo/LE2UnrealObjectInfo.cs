@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
@@ -35,6 +36,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         {
             if (!IsLoaded)
             {
+                LECLog.Information(@"Loading property db for LE2");
                 try
                 {
                     var infoText = jsonTextOverride ?? ObjectInfoLoader.LoadEmbeddedJSONText(MEGame.LE2);
@@ -57,8 +59,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                         IsLoaded = true;
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    LECLog.Error($@"Property database load failed for LE2: {ex.Message}");
                     return;
                 }
             }
@@ -302,9 +305,20 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
                         Stream loadStream = null;
                         IMEPackage cachedPackage = null;
-                        if (packageCache != null && packageCache.TryGetCachedPackage(filepath, true, out cachedPackage) || MEPackageHandler.TryGetPackageFromCache(filepath, out cachedPackage))
+                        if (packageCache != null)
                         {
-                            // Use this one
+                            packageCache.TryGetCachedPackage(filepath, true, out cachedPackage);
+                            if (cachedPackage == null)
+                                packageCache.TryGetCachedPackage(info.pccPath, true, out cachedPackage); // some cache types may have different behavior (such as relative package cache)
+
+                            if (cachedPackage != null)
+                            {
+                                // Use this one
+                                readDefaultProps(cachedPackage, props, packageCache: packageCache);
+                            }
+                        }
+                        else if (filepath != null && MEPackageHandler.TryGetPackageFromCache(filepath, out cachedPackage))
+                        {
                             readDefaultProps(cachedPackage, props, packageCache: packageCache);
                         }
                         else if (File.Exists(info.pccPath))

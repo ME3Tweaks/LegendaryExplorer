@@ -209,7 +209,16 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             VariableType parent = obj.SuperClass != 0
                 ? new VariableType(obj.SuperClass.GetEntry(pcc).ObjectName.Instanced) : null;
 
-            var defaults = new DefaultPropertiesBlock(ConvertProperties(RemoveDefaultValues(obj.Defaults, pcc.Game), obj.Export, packageCache));
+            DefaultPropertiesBlock defaults = null;
+            try
+            {
+                defaults = new DefaultPropertiesBlock(ConvertProperties(RemoveDefaultValues(obj.Defaults, pcc.Game),
+                    obj.Export, packageCache));
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Exception while removing default properties in export {obj.Export.InstancedFullPath} {obj.Export.FileRef.FilePath}", e);
+            }
 
             var node = new Struct(obj.Export.ObjectName.Instanced, parent, obj.StructFlags, Vars, Types, defaults)
             {
@@ -313,7 +322,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     case NoneProperty _:
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(prop));
+                        throw new ArgumentOutOfRangeException($"RemoveDefaultValue() invalid property type for {nameof(prop)}: {prop?.PropType}");
                 }
             }
 

@@ -10,7 +10,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     public class UScriptStruct : UStruct
     {
         public ScriptStructFlags StructFlags;
-        public PropertyCollection Defaults; //I'm assuming any ObjectProperties in here are set to 0, so relinking will be unnecesary
+        public PropertyCollection Defaults; //I'm assuming any ObjectProperties in here are set to 0, so relinking will be unnecessary
         public long DefaultsStartPosition = -1;
 
         protected override void Serialize(SerializingContainer2 sc)
