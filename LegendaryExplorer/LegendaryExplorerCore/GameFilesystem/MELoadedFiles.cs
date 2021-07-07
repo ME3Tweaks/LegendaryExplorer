@@ -90,6 +90,10 @@ namespace LegendaryExplorerCore.GameFilesystem
                     foreach (string filePath in GetCookedFiles(game, directory, includeTFCs, includeAFCs))
                     {
                         string fileName = Path.GetFileName(filePath);
+                        if (game == MEGame.LE3 && filePath.EndsWith($@"DLC_METR_Patch01{Path.DirectorySeparatorChar}CookedPCConsole{Path.DirectorySeparatorChar}Startup.pcc"))
+                        {
+                            continue; // This file is not used by game and will break lots of stuff if we don't filter it out. This is a bug in how LE3 was cooked
+                        }
                         if (fileName != null) loadedFiles[fileName] = filePath;
                     }
                 }

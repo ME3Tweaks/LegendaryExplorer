@@ -674,17 +674,18 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="entry">The import to resolve</param>
         /// <param name="localCache">Package cache if you wish to keep packages held open, for example if you're resolving many imports</param>
         /// <param name="localization">Three letter localization code, all upper case. Defaults to INT.</param>
+        /// <param name="clipRootLevelPackage">Add an additional attempt to resolve an import by not clipping the first part off of the package as a filename.</param>
         /// <returns></returns>
-        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache localCache = null, string localization = "INT")
+        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache localCache = null, string localization = "INT", bool clipRootLevelPackage = true)
         {
-            return ResolveImport(entry, null, localCache, localization);
+            return ResolveImport(entry, null, localCache, localization, clipRootLevelPackage);
         }
 
         /// <summary>
         /// Attempts to resolve the import by looking at associated files that are loaded before this one, and by looking at globally loaded files.
         /// </summary>
         /// <param name="entry">The import to resolve</param>
-        /// <param name="globalCache">PAckage cache that contains global files like SFXGame, Startup, etc. The cache will not be modified but can be used to reduce disk I/O.</param>
+        /// <param name="globalCache">Package cache that contains global files like SFXGame, Startup, etc. The cache will not be modified but can be used to reduce disk I/O.</param>
         /// <param name="lookupCache">Package cache if you wish to keep packages held open, for example if you're resolving many imports</param>
         /// <param name="localization">Three letter localization code, all upper case. Defaults to INT.</param>
         /// <returns></returns>
@@ -768,7 +769,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 if (gameFiles.TryGetValue(fileName, out var fullgamepath) && File.Exists(fullgamepath))
                 {
-                    var export = containsImportedExport(fullgamepath);
+                    var export = containsImportedExport(fullgamepath, !clipRootLevelPackage);
                     if (export != null)
                     {
                         return export;
@@ -816,7 +817,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     return package.Exports.FirstOrDefault(x => x.idxLink == 0); //this will be at top of the tree
                 }
 
-                if (tryWithoutClipping)
+                if (tryWithoutClipping && entryClippedPath != null)
                 {
                     return package.FindExport(entryClippedPath) ?? package.FindExport(entryFullPath);
                 }
