@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using DocumentFormat.OpenXml.Office2010.PowerPoint;
 using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorer.UnrealExtensions;
 using LegendaryExplorer.UnrealExtensions.Classes;
@@ -4901,7 +4900,43 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             unkListBitems.Add(MakeInt32Node(bin, "Unknown int"));
                             unkListBitems.Add(MakeInt32Node(bin, "Unknown int"));
                             break;
+                        case 3:
+                        {
+                            unkListBitems.Add(new BinInterpNode(bin.Position - 8, $"Version??: {firstVal}"));
+
+                            // After this there are three identical sections. I was gonna put them into a list but then I decided not to
+
+                            unkListBitems.Add(new BinInterpNode(bin.Position - 4, $"Table index: {bIdxVal} : {nameTable[bIdxVal]}"));
+                            int flagMaybe = bin.ReadInt32();
+                            unkListBitems.Add(new BinInterpNode(bin.Position - 4, $"another version?: {flagMaybe}") { Length = 4 });
+                            unkListBitems.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                            unkListBitems.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                            unkListBitems.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                            var unkStringLength = bin.ReadInt32();
+                            unkListBitems.Add(new BinInterpNode(bin.Position - 4, $"Unknown String: {bin.BaseStream.ReadStringLatin1(unkStringLength)}"));
+
+                            int tIndex2 = bin.ReadInt32();
+                            unkListBitems.Add(new BinInterpNode(bin.Position - 4, $"Table index 2: {tIndex2} : {nameTable[tIndex2]}") { Length = 4 });
+                            unkListBitems.Add(new BinInterpNode(bin.Position, $"another version?: {bin.ReadSingle()}") { Length = 4 });
+                            unkListBitems.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                            unkListBitems.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                            unkListBitems.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                            unkStringLength = bin.ReadInt32();
+                            unkListBitems.Add(new BinInterpNode(bin.Position - 4, $"Unknown String 2: {bin.BaseStream.ReadStringLatin1(unkStringLength)}"));
+
+                            int tIndex3 = bin.ReadInt32();
+                            unkListBitems.Add(new BinInterpNode(bin.Position - 4, $"Table index 3: {tIndex3} : {nameTable[tIndex3]}") { Length = 4 });
+                            unkListBitems.Add(new BinInterpNode(bin.Position, $"another version?: {bin.ReadSingle()}") { Length = 4 });
+                            unkListBitems.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                            unkListBitems.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                            unkListBitems.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                            unkStringLength = bin.ReadInt32();
+                            unkListBitems.Add(new BinInterpNode(bin.Position - 4, $"Unknown String 3: {bin.BaseStream.ReadStringLatin1(unkStringLength)}"));
+                            break;
+                        }
+
                         default:
+                        {
                             unkListBitems.Add(new BinInterpNode(bin.Position - 8, $"Version??: {firstVal}"));
                             unkListBitems.Add(new BinInterpNode(bin.Position - 4, $"Table index: {bIdxVal}"));
                             int flagMaybe = bin.ReadInt32();
@@ -4950,7 +4985,35 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                     unkListBitems.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
                                 }
                             }
+
+                            if (firstVal == 8)
+                            {
+                                int fxaInfoLength = bin.ReadInt32();
+                                var fxaInfo = new List<ITreeItem>(fxaInfoLength);
+                                unkListBitems.Add(new BinInterpNode(bin.Position - 4, $"FXA Info?: {fxaInfoLength} items")
+                                {
+                                    Items = fxaInfo
+                                });
+                                for (int fxaIndex = 0; fxaIndex < fxaInfoLength; fxaIndex++)
+                                {
+                                    int fxaIdxVal = bin.ReadInt32();
+                                    var fxaInfoItem = new List<ITreeItem>();
+                                    fxaInfo.Add(new BinInterpNode(bin.Position - 4, $"{nameTable[fxaIdxVal]} - {fxaIdxVal}")
+                                    {
+                                        Items = fxaInfoItem
+                                    });
+                                    fxaInfoItem.Add(new BinInterpNode(bin.Position - 4, $"Table index: {fxaIdxVal} : {nameTable[fxaIdxVal]}"));
+                                    fxaInfoItem.Add(new BinInterpNode(bin.Position - 4, $"another version?: {bin.ReadInt32()}") { Length = 4 });
+                                    fxaInfoItem.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                                    fxaInfoItem.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                                    fxaInfoItem.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                                    var unkStringLength = bin.ReadInt32();
+                                    fxaInfoItem.Add(new BinInterpNode(bin.Position - 4, $"Unknown String: {bin.BaseStream.ReadStringLatin1(unkStringLength)}"));
+                                }
+
+                            }
                             break;
+                        }
                     }
 
                     if (firstVal == 6)
