@@ -37,7 +37,8 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 "SeqAct_Gate",
                 "BioSeqAct_PMCheckState",
                 "BioSeqAct_PMExecuteTransition",
-                "SeqAct_FinishSequence"
+                "SeqAct_FinishSequence",
+                "SeqEvent_RemoteEvent"
             }.Select(className => GlobalUnrealObjectInfo.GetClassOrStructInfo(game, className)).NonNull().ToList();
         }
 

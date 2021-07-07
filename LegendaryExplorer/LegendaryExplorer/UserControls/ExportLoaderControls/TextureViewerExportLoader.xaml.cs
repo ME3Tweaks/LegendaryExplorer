@@ -208,6 +208,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                     else
                     {
+                        if (HostingControl != null)
+                        {
+                            HostingControl.IsBusy = false;
+                        }
                         return;
                     }
                 }
