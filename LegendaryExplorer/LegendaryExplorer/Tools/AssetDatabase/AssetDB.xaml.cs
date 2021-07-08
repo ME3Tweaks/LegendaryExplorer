@@ -1547,7 +1547,14 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 bool showthis = true;
                 if (!string.IsNullOrEmpty(FilterBox.Text))
                 {
-                    showthis = mr.MeshName.ToLower().Contains(FilterBox.Text.ToLower());
+                    if (mr.IsSkeleton && FilterBox.Text.ToLower().StartsWith("bones:") && FilterBox.Text.Length > 6 && int.TryParse(FilterBox.Text.Remove(0, 6).ToLower(), out int bonecount))
+                    {
+                        showthis = mr.BoneCount == bonecount;
+                    }
+                    else
+                    {
+                        showthis = mr.MeshName.ToLower().Contains(FilterBox.Text.ToLower());
+                    }
                 }
 
                 if (showthis && menu_fltrSkM.IsChecked && !mr.IsSkeleton)
