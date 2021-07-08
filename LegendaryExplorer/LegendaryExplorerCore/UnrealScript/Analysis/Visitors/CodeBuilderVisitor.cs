@@ -6,7 +6,6 @@ using System.Net;
 using System.Text;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Unreal;
-using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing;
@@ -682,7 +681,12 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public bool VisitNode(DefaultPropertiesBlock node)
         {
-            Write(node.Outer is Struct ? STRUCTDEFAULTPROPERTIES : DEFAULTPROPERTIES, EF.Keyword);
+            bool isStructDefaults = node.Outer is Struct;
+            if (!isStructDefaults)
+            { 
+                Write("//class default properties can be edited in the Properties tab for the class's Default__ object.", EF.Comment);
+            }
+            Write(isStructDefaults ? STRUCTDEFAULTPROPERTIES : DEFAULTPROPERTIES, EF.Keyword);
             Write("{");
             NestingLevel++;
             foreach (Statement s in node.Statements)

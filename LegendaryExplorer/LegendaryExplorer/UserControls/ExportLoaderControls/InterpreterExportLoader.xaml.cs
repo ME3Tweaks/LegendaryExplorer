@@ -789,7 +789,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             if (CurrentLoadedExport.ClassName == "Class")
             {
-                UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry
+                var topLevelTree = new UPropertyTreeViewEntry
                 {
                     DisplayName = $"Export {CurrentLoadedExport.UIndex }: { CurrentLoadedExport.ObjectName.Instanced} ({CurrentLoadedExport.ClassName})",
                     IsExpanded = true
@@ -797,7 +797,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 topLevelTree.ChildrenProperties.Add(new UPropertyTreeViewEntry
                 {
-                    DisplayName = "Class objects do not have properties",
+                    DisplayName = $"Class objects do not have properties.\nDefault properties for this class are located in the Default__{CurrentLoadedExport.ObjectName} object.",
                     Parent = topLevelTree,
                     AdvancedModeText = "" //blank the bottom line
                 });
@@ -807,7 +807,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             else
             {
 
-                UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry
+                var topLevelTree = new UPropertyTreeViewEntry
                 {
                     DisplayName = $"Export {CurrentLoadedExport.UIndex }: { CurrentLoadedExport.InstancedFullPath} ({CurrentLoadedExport.ClassName})",
                     IsExpanded = true
@@ -825,7 +825,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
                 catch (Exception ex)
                 {
-                    UPropertyTreeViewEntry errorNode = new UPropertyTreeViewEntry
+                    var errorNode = new UPropertyTreeViewEntry
                     {
                         DisplayName = $"PARSE ERROR: {ex.Message}"
                     };
