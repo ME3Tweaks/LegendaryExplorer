@@ -397,6 +397,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     return From<BioStateEventMap>(export, packageCache);
                 case "BioSoundNodeWaveStreamingData":
                     return From<BioSoundNodeWaveStreamingData>(export, packageCache);
+                case "FaceFXAsset" when export.Game != MEGame.ME2:
+                    return From<FaceFXAsset>(export, packageCache);
                 default:
                     return null;
             }

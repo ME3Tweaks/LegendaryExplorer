@@ -10,7 +10,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public class FaceFXAnimSet : ObjectBinary
     {
-        private HNode[] HNodes;
+        private FaceFXAsset.HNode[] HNodes;
         public List<string> Names;
         public List<FaceFXLine> Lines;
 
@@ -20,57 +20,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             int length = 0;
             sc.Serialize(ref length);
 
-            #region Header
-
+            #region  Header
             int int0 = 0;
             int int1 = 1;
             short short1 = 1;
 
-            uint FACE = 1162035526U;
-            sc.Serialize(ref FACE);
-            int version = sc.Game switch
-            {
-                MEGame.ME1 => 1710,
-                MEGame.ME2 => 1610,
-                _ => 1731
-            };
-            sc.Serialize(ref version);
-            if (sc.Game == MEGame.ME3 || sc.Game.IsLEGame())
-            {
-                sc.Serialize(ref int0);
-            }
-            else if (sc.Game == MEGame.ME2)
-            {
-                sc.Serialize(ref short1);
-            }
-
-            string licensee = "Unreal Engine 3 Licensee";
-            string project = "Unreal Engine 3 Project";
-            if (sc.IsSaving && (sc.Game == MEGame.ME3 || sc.Game.IsLEGame()))
-            {
-                licensee += '\0';
-                project += '\0';
-            }
-            sc.SerializeFaceFXString(ref licensee);
-            if (sc.Game == MEGame.ME2)
-            {
-                sc.Serialize(ref short1);
-            }
-            sc.SerializeFaceFXString(ref project);
-            int version2 = sc.Game switch
-            {
-                MEGame.ME1 => 1000,
-                _ => 1100
-            };
-            sc.Serialize(ref version2);
-            if (sc.Game == MEGame.ME2)
-            {
-                sc.Serialize(ref int0);
-            }
-            else
-            {
-                sc.Serialize(ref short1);
-            }
+            sc.SerializeFaceFXHeader();
 
             if (sc.Game != MEGame.ME2)
             {
@@ -147,24 +102,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public void FixNodeTable()
         {
-            HNodes = new[]
-            {
-                new HNode {unk1 = 0x1A, unk2 = 1, Name = "FxObject", unk3 = 0},
-                new HNode {unk1 = 0x48, unk2 = 1, Name = "FxAnim", unk3 = 6},
-                new HNode {unk1 = 0x54, unk2 = 1, Name = "FxAnimSet", unk3 = 0},
-                new HNode {unk1 = 0x5F, unk2 = 1, Name = "FxNamedObject", unk3 = 0},
-                new HNode {unk1 = 0x64, unk2 = 1, Name = "FxName", unk3 = 1},
-                new HNode {unk1 = 0x6D, unk2 = 1, Name = "FxAnimCurve", unk3 = 1},
-                new HNode {unk1 = 0x75, unk2 = 1, Name = "FxAnimGroup", unk3 = 0}
-            };
-        }
-
-        public class HNode
-        {
-            public int unk1;
-            public int unk2;
-            public string Name;
-            public ushort unk3;
+            HNodes = FaceFXAsset.HNode.GetFXANodeTable();
         }
     }
 
@@ -213,17 +151,61 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.ms.Writer.WriteStringLatin1(str);
             }
         }
-        public static void Serialize(this SerializingContainer2 sc, ref FaceFXAnimSet.HNode node)
+
+        public static void SerializeFaceFXHeader(this SerializingContainer2 sc)
         {
-            if (sc.IsLoading)
+            int int0 = 0;
+            int int1 = 1;
+            short short1 = 1;
+
+            uint FACE = 1162035526U;
+            sc.Serialize(ref FACE);
+            int version = sc.Game switch
             {
-                node = new FaceFXAnimSet.HNode();
+                MEGame.ME1 => 1710,
+                MEGame.ME2 => 1610,
+                _ => 1731
+            };
+            sc.Serialize(ref version);
+            if (sc.Game == MEGame.ME3 || sc.Game.IsLEGame())
+            {
+                sc.Serialize(ref int0);
             }
-            sc.Serialize(ref node.unk1);
-            sc.Serialize(ref node.unk2);
-            sc.SerializeFaceFXString(ref node.Name);
-            sc.Serialize(ref node.unk3);
+            else if (sc.Game == MEGame.ME2)
+            {
+                sc.Serialize(ref short1);
+            }
+
+            string licensee = "Unreal Engine 3 Licensee";
+            string project = "Unreal Engine 3 Project";
+            if (sc.IsSaving && (sc.Game == MEGame.ME3 || sc.Game.IsLEGame()))
+            {
+                licensee += '\0';
+                project += '\0';
+            }
+            sc.SerializeFaceFXString(ref licensee);
+            if (sc.Game == MEGame.ME2)
+            {
+                sc.Serialize(ref short1);
+            }
+            sc.SerializeFaceFXString(ref project);
+            int version2 = sc.Game switch
+            {
+                MEGame.ME1 => 1000,
+                _ => 1100
+            };
+            sc.Serialize(ref version2);
+            if (sc.Game == MEGame.ME2)
+            {
+                sc.Serialize(ref int0);
+            }
+            else
+            {
+                sc.Serialize(ref short1);
+            }
+
         }
+
         public static void Serialize(this SerializingContainer2 sc, ref FaceFXControlPoint point)
         {
             if (sc.IsLoading)
