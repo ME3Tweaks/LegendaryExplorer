@@ -936,7 +936,7 @@ namespace LegendaryExplorerCore.Unreal
             }
 
             //DEBUG TESTING!
-            if (tocNeedsUpdating || FileName.Contains(@"Patch_001"))
+            if (tocNeedsUpdating/* || FileName.Contains(@"Patch_001")*/)
             {
                 MemoryStream newTocStream = TOCCreator.CreateTOCForEntries(incomingNewEntries);
                 byte[] newmem = newTocStream.ToArray();

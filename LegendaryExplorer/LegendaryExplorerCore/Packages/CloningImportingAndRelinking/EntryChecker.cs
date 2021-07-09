@@ -19,9 +19,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
     public class ReferenceCheckPackage
     {
         // The list of generated warnings, errors, and blocking errors
-        public List<EntryStringPair> BlockingErrors { get; } = new();
-        public List<EntryStringPair> SignificantIssues { get; } = new();
-        public List<EntryStringPair> InfoWarnings { get; } = new();
+        private List<EntryStringPair> BlockingErrors { get; } = new();
+        private List<EntryStringPair> SignificantIssues { get; } = new();
+        private List<EntryStringPair> InfoWarnings { get; } = new();
 
         private object syncLock = new object();
 
@@ -51,6 +51,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 InfoWarnings.Add(new EntryStringPair(entry, message));
             }
+        }
+
+        public void ClearMessages()
+        {
+            BlockingErrors.Clear();
+            SignificantIssues.Clear();
+            InfoWarnings.Clear();
         }
     }
 
@@ -99,6 +106,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     return string.Format("{0}, import {1} has an invalid link value that is outside of the import/export table: {2}", parms);
                 case string_interp_fatalImportCircularReference:
                     return string.Format("{0}, import {1} has a circular self reference for its link. The game and the toolset will be unable to handle this condition", parms);
+                case string_interp_refCheckInvalidNameValue:
+                    return string.Format("{0}, invalid name reference found for {1} on {2}", parms);
                 case string_interp_warningPropertyTypingWrongPrefix:
                     return string.Format("{0}, entry {1} {2} ({3}), @ 0x{4}:", parms);
                 case string_interp_warningFoundBrokenPropertyData:
@@ -150,6 +159,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         internal const string string_interp_warningUnableToParseBinary = "string_interp_warningUnableToParseBinary";
         internal const string string_interp_warningImportLinkOutideOfTables = "string_interp_warningImportLinkOutideOfTables";
         internal const string string_interp_fatalImportCircularReference = "string_interp_fatalImportCircularReference";
+        internal const string string_interp_refCheckInvalidNameValue = "string_interp_refCheckInvalidNameValue";
         internal const string string_interp_warningPropertyTypingWrongPrefix = "string_interp_warningPropertyTypingWrongPrefix";
         internal const string string_interp_warningFoundBrokenPropertyData = "string_interp_warningFoundBrokenPropertyData";
         internal const string string_interp_warningReferenceNotInExportTable = "string_interp_warningReferenceNotInExportTable";
@@ -349,6 +359,25 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 {
                     item.AddBlockingError(localizationDelegate(ME3XL.string_interp_fatalImportCircularReference, relativePath ?? fName, imp.UIndex), imp);
                 }
+
+                // Values check
+                checkName(item, localizationDelegate, () => imp.PackageFile, "Package file", $"import {imp.UIndex}", relativePath, fName, imp);
+                checkName(item, localizationDelegate, () => imp.ClassName, "Class name", $"import {imp.UIndex}", relativePath, fName, imp);
+            }
+        }
+
+        private static void checkName(ReferenceCheckPackage item, GetLocalizedStringDelegate localizationDelegate,
+            Func<string> getName, string nameBeingChecked, string itemBeingChecked, string relativePath, string fName, IEntry entry)
+        {
+            try
+            {
+                // Can't access idx vars so we have to do this
+                var pf = getName();
+            }
+            catch (Exception e)
+            {
+
+                item.AddBlockingError(localizationDelegate(ME3XL.string_interp_refCheckInvalidNameValue, relativePath ?? fName, nameBeingChecked, itemBeingChecked), entry);
             }
         }
 
