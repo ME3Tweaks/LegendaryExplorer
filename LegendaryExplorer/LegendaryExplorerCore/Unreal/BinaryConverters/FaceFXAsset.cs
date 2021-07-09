@@ -18,7 +18,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         private int Name;
         public List<FaceFXLine> Lines;
         private List<FXATableDElement> TableD;
-        private List<int> LipSyncPhonemeNames;
+        public List<int> LipSyncPhonemeNames;
         private List<int> EndingInts;
 
         protected override void Serialize(SerializingContainer2 sc)

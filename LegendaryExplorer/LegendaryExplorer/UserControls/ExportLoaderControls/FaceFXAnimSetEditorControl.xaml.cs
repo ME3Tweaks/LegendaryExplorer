@@ -61,7 +61,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             DataContext = this;
         }
 
-        public FaceFXAnimSet FaceFX;
+        public IFaceFXBinary FaceFX;
 
         public ObservableCollectionExtended<FaceFXLineEntry> Lines { get; } = new();
 
@@ -108,7 +108,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         #region ExportLoaderControl
 
-        public override bool CanParse(ExportEntry exportEntry) => exportEntry.ClassName == "FaceFXAnimSet";
+        public override bool CanParse(ExportEntry exportEntry) => exportEntry.ClassName == "FaceFXAnimSet" || (exportEntry.ClassName == "FaceFXAsset" && exportEntry.Game != MEGame.ME2);
 
         public override void LoadExport(ExportEntry exportEntry)
         {
@@ -163,15 +163,23 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void LoadFaceFXAnimset()
         {
-            FaceFX = CurrentLoadedExport.GetBinaryData<FaceFXAnimSet>();
             Lines.Clear();
+            switch (CurrentLoadedExport.ClassName)
+            {
+                case "FaceFXAnimSet":
+                    FaceFX = new FaceFXAnimSetHandler(CurrentLoadedExport);
+                    break;
+                case "FaceFXAsset":
+                    FaceFX = new FaceFXAssetHandler(CurrentLoadedExport);
+                    break;
 
+            }
             foreach (var faceFXLine in FaceFX.Lines)
             {
                 var LineEntry = new FaceFXLineEntry(faceFXLine);
                 if (int.TryParse(LineEntry.Line.ID, out int tlkID))
                 {
-                     LineEntry.TLKString = TLKManagerWPF.GlobalFindStrRefbyID(tlkID, Pcc);
+                    LineEntry.TLKString = TLKManagerWPF.GlobalFindStrRefbyID(tlkID, Pcc);
                 }
                 Lines.Add(LineEntry);
             }
@@ -232,7 +240,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 SelectedLine.NumKeys = numKeys;
                 SelectedLineEntry.UpdateLength();
             }
-            CurrentLoadedExport?.WriteBinary(FaceFX);
+            CurrentLoadedExport?.WriteBinary(FaceFX.Binary);
         }
 
         public void SelectLineByName(string name)
@@ -310,7 +318,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 string[] sourceNames = d.sourceNames;
                 FaceFXLineEntry lineEntry = new FaceFXLineEntry(d.line);
                 lineEntry.Line.NameIndex = FaceFX.Names.FindOrAdd(sourceNames[lineEntry.Line.NameIndex]);
-                FaceFX.FixNodeTable();
+                if(FaceFX.Binary is FaceFXAnimSet animSet) animSet.FixNodeTable();
                 lineEntry.Line.AnimationNames = lineEntry.Line.AnimationNames.Select(idx => FaceFX.Names.FindOrAdd(sourceNames[idx])).ToList();
                 FaceFX.Lines.Add(lineEntry.Line);
 
@@ -538,7 +546,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             SaveChanges();
         }
 
-        static System.Windows.Forms.TreeNode[] DataToTree(FaceFXAnimSet animSet, FaceFXLine d) =>
+        static System.Windows.Forms.TreeNode[] DataToTree(IFaceFXBinary animSet, FaceFXLine d) =>
             new[]
             {
                 new System.Windows.Forms.TreeNode($"Name : 0x{d.NameIndex:X8} \"{animSet.Names[d.NameIndex].Trim()}\""),
@@ -546,7 +554,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 new System.Windows.Forms.TreeNode($"FadeOutTime : {d.FadeOutTime}"),
                 new System.Windows.Forms.TreeNode($"Path : {d.Path}"),
                 new System.Windows.Forms.TreeNode($"ID : {d.ID}"),
-                new System.Windows.Forms.TreeNode($"Index : 0x{d.Index:X8}")
+                new System.Windows.Forms.TreeNode($"Index : 0x{d.Index:X8}"),
+                new System.Windows.Forms.TreeNode($"Class : {(animSet.Binary is FaceFXAnimSet anim ? "FaceFXAnimSet" : "FaceFXAsset")}")
             };
 
         private void Graph_KeyDown(object sender, KeyEventArgs e)
@@ -605,7 +614,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 SelectedLine.NumKeys[i] = keptPoints;
             }
             SelectedLineEntry.Points = newPoints;
-            CurrentLoadedExport?.WriteBinary(FaceFX);
+            CurrentLoadedExport?.WriteBinary(FaceFX.Binary);
             UpdateAnimListBox();
         }
 
@@ -675,7 +684,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                 }
                 SelectedLineEntry.Points = newPoints;
-                CurrentLoadedExport?.WriteBinary(FaceFX);
+                CurrentLoadedExport?.WriteBinary(FaceFX.Binary);
                 UpdateAnimListBox();
             }
         }
@@ -747,7 +756,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     SelectedLine.Points[i] = tmp;
                 }
             }
-            CurrentLoadedExport?.WriteBinary(FaceFX);
+            CurrentLoadedExport?.WriteBinary(FaceFX.Binary);
             UpdateAnimListBox();
         }
 
@@ -790,6 +799,41 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     MessageBox.Show($"Save to {System.IO.Path.GetFileName(m.FileName)} failed.\nCheck the excel file is not open.");
                 }
+            }
+        }
+
+
+
+        public interface IFaceFXBinary
+        {
+            List<string> Names { get; }
+            List<FaceFXLine> Lines { get; }
+            ObjectBinary Binary { get; }
+        }
+
+        internal class FaceFXAssetHandler : IFaceFXBinary
+        {
+            private FaceFXAsset Asset;
+            public ObjectBinary Binary => Asset;
+            public List<string> Names => Asset.Names;
+            public List<FaceFXLine> Lines => Asset.Lines;
+
+            public FaceFXAssetHandler(ExportEntry export)
+            {
+                Asset = export.GetBinaryData<FaceFXAsset>();
+            }
+        }
+
+        internal class FaceFXAnimSetHandler : IFaceFXBinary
+        {
+            private FaceFXAnimSet AnimSet;
+            public ObjectBinary Binary => AnimSet;
+            public List<string> Names => AnimSet.Names;
+            public List<FaceFXLine> Lines => AnimSet.Lines;
+
+            public FaceFXAnimSetHandler(ExportEntry export)
+            {
+                AnimSet = export.GetBinaryData<FaceFXAnimSet>();
             }
         }
     }

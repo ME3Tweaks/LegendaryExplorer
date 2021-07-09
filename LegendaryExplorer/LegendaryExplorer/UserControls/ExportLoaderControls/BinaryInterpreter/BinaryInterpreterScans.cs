@@ -5042,12 +5042,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 subnodes.Add(new BinInterpNode(bin.Position, $"unknown: {bin.ReadInt32()}"));
 
                 subnodes.Add(new BinInterpNode(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") { Length = 4 });
+
                 int lineCount;
-                subnodes.Add(new BinInterpNode(bin.Position, $"line count: {lineCount = bin.ReadInt32()}") { Length = 4 });
+                var lines = new List<ITreeItem>();
+                subnodes.Add(new BinInterpNode(bin.Position, $"FaceFXLines: {lineCount = bin.ReadInt32()}")
+                {
+                    Items = lines
+                });
                 for (int i = 0; i < lineCount; i++)
                 {
                     var nodes = new List<ITreeItem>();
-                    subnodes.Add(new BinInterpNode(bin.Position, $"FaceFXLine {i}")
+                    lines.Add(new BinInterpNode(bin.Position, $"{i}")
                     {
                         Items = nodes
                     });
@@ -5072,39 +5077,34 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             animNodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                         }
                     }
-
-                    if (animationCount > 0)
+                    int pointsCount = bin.ReadInt32();
+                    nodes.Add(new BinInterpNode(bin.Position - 4, $"Points: {pointsCount} items")
                     {
-                        int pointsCount = bin.ReadInt32();
-                        nodes.Add(new BinInterpNode(bin.Position - 4, $"Points: {pointsCount} items")
+                        Items = ReadList(pointsCount, j => new BinInterpNode(bin.Position, $"{j}")
                         {
-                            Items = ReadList(pointsCount, j => new BinInterpNode(bin.Position, $"{j}")
+                            Items = new List<ITreeItem>
                             {
-                                Items = new List<ITreeItem>
-                                {
-                                    new BinInterpNode(bin.Position, $"Time: {bin.ReadFloat()}") {Length = 4},
-                                    new BinInterpNode(bin.Position, $"Weight: {bin.ReadFloat()}") {Length = 4},
-                                    new BinInterpNode(bin.Position, $"InTangent: {bin.ReadFloat()}") {Length = 4},
-                                    new BinInterpNode(bin.Position, $"LeaveTangent: {bin.ReadFloat()}") {Length = 4}
-                                }
-                            })
-                        });
-
-                        if (pointsCount > 0)
-                        {
-                            if (game == MEGame.ME2)
-                            {
-                                nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                                new BinInterpNode(bin.Position, $"Time: {bin.ReadFloat()}") {Length = 4},
+                                new BinInterpNode(bin.Position, $"Weight: {bin.ReadFloat()}") {Length = 4},
+                                new BinInterpNode(bin.Position, $"InTangent: {bin.ReadFloat()}") {Length = 4},
+                                new BinInterpNode(bin.Position, $"LeaveTangent: {bin.ReadFloat()}") {Length = 4}
                             }
-
-                            nodes.Add(new BinInterpNode(bin.Position, $"NumKeys: {bin.ReadInt32()} items")
-                            {
-                                Items = ReadList(bin.Skip(-4).ReadInt32(), j => new BinInterpNode(bin.Position, $"{bin.ReadInt32()} keys"))
-                            });
+                        })
+                    });
+                    if (pointsCount > 0)
+                    {
+                        if (game == MEGame.ME2)
+                        {
+                            nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                         }
+
+                        nodes.Add(new BinInterpNode(bin.Position, $"NumKeys: {bin.ReadInt32()} items")
+                        {
+                            Items = ReadList(bin.Skip(-4).ReadInt32(), j => new BinInterpNode(bin.Position, $"{bin.ReadInt32()} keys"))
+                        });
                     }
 
-                    nodes.Add(new BinInterpNode(bin.Position, $"Fade In Time: {bin.ReadFloat()}") { Length = 4 });
+                        nodes.Add(new BinInterpNode(bin.Position, $"Fade In Time: {bin.ReadFloat()}") { Length = 4 });
                     nodes.Add(new BinInterpNode(bin.Position, $"Fade Out Time: {bin.ReadFloat()}") { Length = 4 });
                     nodes.Add(MakeInt32Node(bin, "Unknown"));
                     if (game == MEGame.ME2)
@@ -5137,7 +5137,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }));
                 subnodes.Add(MakeArrayNode(bin, "Lip sync phoneme list:", i => new BinInterpNode(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") { Length = 4 }));
                 subnodes.Add(MakeInt32Node(bin, "Unknown"));
-                if (game != MEGame.ME1 || game != MEGame.ME2)
+                if (game != MEGame.ME1 && game != MEGame.ME2)
                 {
                     subnodes.Add(MakeArrayNode(bin, "Unknown Ints", i =>  new BinInterpNode(bin.Position, $"Unknown: {nameTable[bin.ReadInt32()]}") { Length = 4 }));
                 }

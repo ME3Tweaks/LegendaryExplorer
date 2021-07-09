@@ -23,6 +23,7 @@ namespace LegendaryExplorer.Tools.FaceFXEditor
     /// </summary>
     public partial class FaceFXEditorWindow : WPFBase, IRecents
     {
+
         public ObservableCollectionExtended<ExportEntry> AnimSets { get; } = new();
 
         public string CurrentFile => Pcc != null ? Path.GetFileName(Pcc.FilePath) : "Select a file to load";
@@ -143,7 +144,7 @@ namespace LegendaryExplorer.Tools.FaceFXEditor
         {
             ExportEntry item = SelectedExport;
             AnimSets.ClearEx();
-            AnimSets.AddRange(Pcc.Exports.Where(exp => exp.ClassName == "FaceFXAnimSet"));
+            AnimSets.AddRange(Pcc.Exports.Where(exp => exp.ClassName == "FaceFXAsset" || (exp.ClassName == "FaceFXAnimSet" && exp.Game != MEGame.ME2)));
             if (AnimSets.Contains(item))
             {
                 SelectedExport = item;
@@ -162,7 +163,7 @@ namespace LegendaryExplorer.Tools.FaceFXEditor
             {
                 int index = SelectedExport.UIndex;
                 //loaded FaceFXAnimset is no longer a FaceFXAnimset
-                if (SelectedExport.ClassName != "FaceFXAnimSet")
+                if (SelectedExport.ClassName != "FaceFXAnimSet" && SelectedExport.ClassName != "FaceFXAsset")
                 {
                     editorControl.UnloadExport();
                 }
@@ -178,7 +179,7 @@ namespace LegendaryExplorer.Tools.FaceFXEditor
             }
             else
             {
-                if (updatedExports.Any(uIdx => Pcc.GetEntry(uIdx)?.ClassName == "FaceFXAnimSet"))
+                if (updatedExports.Any(uIdx => Pcc.GetEntry(uIdx)?.ClassName == "FaceFXAsset" || (Pcc.GetEntry(uIdx)?.ClassName == "FaceFXAnimSet" && Pcc.Game != MEGame.ME2)))
                 {
                     RefreshComboBox();
                 }
