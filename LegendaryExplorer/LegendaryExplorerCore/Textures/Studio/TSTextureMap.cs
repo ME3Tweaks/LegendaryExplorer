@@ -253,7 +253,7 @@ namespace LegendaryExplorerCore.Textures.Studio
                 ExternalStorageSize = tex2D.Mips.Where(x => !x.IsLocallyStored).Sum(x => x.CompressedSize);
                 foreach (var em in tex2D.Mips.Where(x => !x.IsLocallyStored && x.StorageType != StorageTypes.empty))
                 {
-                    CompressedMipInfos.Add(new MEMTextureMap.CompressedMipInfo() { Offset = em.DataOffset, CompressedSize = em.CompressedSize });
+                    CompressedMipInfos.Add(new MEMTextureMap.CompressedMipInfo() { Offset = em.DataOffset, CompressedSize = em.CompressedSize, UncompressedSize = em.UncompressedSize, StorageType = em.StorageType });
                 }
 
             }

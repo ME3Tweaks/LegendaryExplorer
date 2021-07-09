@@ -191,7 +191,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                     PromptDialog p = new PromptDialog("Enter name for a new TFC. It must start with Textures_DLC_MOD_, and will be created in the local directory of this package file.", "Enter new name for TFC", defaultTfcName, true, "Textures_DLC_MOD_".Length) { Owner = Window.GetWindow(this) };
                     var hasResult = p.ShowDialog();
-                    if (hasResult.HasValue && hasResult.Value)
+                    if (hasResult.HasValue && hasResult.Value)  
                     {
                         if (p.ResponseText.StartsWith("Textures_DLC_MOD_") && p.ResponseText.Length > 14)
                         {

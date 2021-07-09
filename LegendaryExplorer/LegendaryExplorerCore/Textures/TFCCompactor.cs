@@ -11,6 +11,7 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Textures.Studio;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.Classes;
 
 namespace LegendaryExplorerCore.Textures
 {
@@ -96,6 +97,11 @@ namespace LegendaryExplorerCore.Textures
         /// Maps mip level -> offset in TFC
         /// </summary>
         public Dictionary<int, int> MipOffsetMap = new();
+
+        /// <summary>
+        /// Maps mip level -> compressed size in TFC
+        /// </summary>
+        public Dictionary<int, int> MipCompressedSizeMap = new();
     }
 
     public class TFCCompactor
@@ -225,7 +231,23 @@ namespace LegendaryExplorerCore.Textures
                                 var mipInfo = texInfo.CompressedMipInfos[i];
                                 destTFCInfo.MipOffsetMap[i] = (int)outStream.Position;
                                 inStream.Seek(mipInfo.Offset, SeekOrigin.Begin);
-                                inStream.CopyToEx(outStream, mipInfo.CompressedSize);
+
+                                if (NeedsCompressionConverted(mipInfo.StorageType, textureMap.Game))
+                                {
+                                    Debug.WriteLine($@"Converting external storage type from {mipInfo.StorageType} to {GetTargetExternalStorageType(textureMap.Game)}");
+                                    var decompressed = new byte[mipInfo.UncompressedSize];
+                                    TextureCompression.DecompressTexture(decompressed, inStream, mipInfo.StorageType, mipInfo.UncompressedSize, mipInfo.CompressedSize);
+
+                                    // Recompress texture
+                                    var compressed = TextureCompression.CompressTexture(decompressed, GetTargetExternalStorageType(textureMap.Game));
+                                    outStream.Write(compressed);
+                                    destTFCInfo.MipCompressedSizeMap[i] = compressed.Length;
+                                }
+                                else
+                                {
+                                    inStream.CopyToEx(outStream, mipInfo.CompressedSize);
+                                    destTFCInfo.MipCompressedSizeMap[i] = mipInfo.CompressedSize;
+                                }
                             }
 
                             // Add to the map
@@ -288,9 +310,11 @@ namespace LegendaryExplorerCore.Textures
                             for (int i = 0; i < updateInfo.MipOffsetMap.Count; i++)
                             {
                                 t2d.Mips[i].DataOffset = updateInfo.MipOffsetMap[i];
+
+                                // For conversions
+                                t2d.Mips[i].StorageType = GetTargetExternalStorageType(textureMap.Game); //tfc compactor changes external types so this should be OK?
+                                t2d.Mips[i].CompressedSize = updateInfo.MipCompressedSizeMap[i];
                             }
-
-
 
                             exportToUpdate.WriteBinary(t2d);
 
@@ -338,6 +362,22 @@ namespace LegendaryExplorerCore.Textures
                     File.WriteAllBytes(Path.Combine(destPath, $"Textures_{compactor.infoPackage.DLCName}.tfc"), Guid.NewGuid().ToByteArray());
                 }
             }
+        }
+
+        private static StorageTypes GetTargetExternalStorageType(MEGame textureMapGame)
+        {
+            if (textureMapGame is MEGame.ME1 or MEGame.ME2) return StorageTypes.extLZO;
+            if (textureMapGame is MEGame.ME3) return StorageTypes.extZlib;
+            if (textureMapGame.IsLEGame()) return StorageTypes.extOodle;
+            throw new ArgumentOutOfRangeException($"Invalid value {textureMapGame} for {nameof(textureMapGame)} as target type for texture");
+        }
+
+        private static bool NeedsCompressionConverted(StorageTypes mipInfoStorageType, MEGame textureMapGame)
+        {
+            if (textureMapGame is MEGame.ME1 or MEGame.ME2 && mipInfoStorageType != StorageTypes.pccLZO && mipInfoStorageType != StorageTypes.extLZO) return true;
+            if (textureMapGame is MEGame.ME3 && mipInfoStorageType != StorageTypes.pccZlib && mipInfoStorageType != StorageTypes.extZlib) return true;
+            if (textureMapGame.IsLEGame() && mipInfoStorageType != StorageTypes.pccOodle && mipInfoStorageType != StorageTypes.extOodle) return true;
+            return false;
         }
 
         private IEnumerable<TFCInfo> GetAllTFCs()

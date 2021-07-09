@@ -4,6 +4,7 @@ using System.IO;
 using LegendaryExplorerCore.Compression;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
 
 namespace LegendaryExplorerCore.Textures.Studio
 {
@@ -134,7 +135,9 @@ namespace LegendaryExplorerCore.Textures.Studio
 
         public class CompressedMipInfo
         {
+            public StorageTypes StorageType { get; set; }
             public int CompressedSize { get; set; }
+            public int UncompressedSize { get; set; }
             public int Offset { get; set; }
         }
     }
