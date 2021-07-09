@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Text;
 using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
@@ -33,14 +32,14 @@ namespace LegendaryExplorerCore.Unreal
                 if (Number > 0)
                 {
                     int n = Number - 1;
-                    int numDigits = Name.Length + 1 + (n < 100000 ? n < 100 ? n < 10 ? 1 : 2 : n < 1000 ? 3 : n < 10000 ? 4 : 5 : n < 10000000 ? n < 1000000 ? 6 : 7 : n < 100000000 ? 8 : n < 1000000000 ? 9 : 10);
-                    return string.Create(numDigits, (Name, n), (span, nameRef) =>
+                    int numChars = Name.Length + 1 + (n < 100000 ? n < 100 ? n < 10 ? 1 : 2 : n < 1000 ? 3 : n < 10000 ? 4 : 5 : n < 10000000 ? n < 1000000 ? 6 : 7 : n < 100000000 ? 8 : n < 1000000000 ? 9 : 10);
+                    return string.Create(numChars, this, (span, nameRef) =>
                     {
                         ReadOnlySpan<char> nameSpan = nameRef.Name.AsSpan();
                         nameSpan.CopyTo(span);
                         int nameLength = nameSpan.Length;
                         span[nameLength] = '_';
-                        nameRef.n.TryFormat(span.Slice(nameLength + 1), out _);
+                        ((uint)nameRef.Number - 1).ToStrInPlace(span.Slice(nameLength + 1));
                     });
                 }
 
@@ -73,7 +72,7 @@ namespace LegendaryExplorerCore.Unreal
                 if (tuple.n >= 0)
                 {
                     span[nameLength] = '_';
-                    tuple.n.TryFormat(span.Slice(nameLength + 1), out _);
+                    ((uint)tuple.n).ToStrInPlace(span.Slice(nameLength + 1));
                 }
             });
         }
@@ -205,7 +204,7 @@ namespace LegendaryExplorerCore.Unreal
 
         #endregion
 
-        public static ScriptDelegate Empty = new ScriptDelegate(0, "None");
+        public static readonly ScriptDelegate Empty = new(0, "None");
     }
 
     public enum PropertyType

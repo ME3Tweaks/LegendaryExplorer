@@ -28,6 +28,7 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Classes;
 using Microsoft.WindowsAPICodePack.Taskbar;
 using LegendaryExplorer.UserControls.ExportLoaderControls;
+using LegendaryExplorerCore.UnrealScript;
 
 namespace LegendaryExplorer.Tools.PackageDumper
 {
@@ -542,155 +543,133 @@ namespace LegendaryExplorer.Tools.PackageDumper
             //}
             //try
             {
-                using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(_packageToDump))
+                using IMEPackage pcc = MEPackageHandler.OpenMEPackage(_packageToDump);
+                CurrentFileProgressMaximum = pcc.ExportCount;
+                string outfolder = OutputFolder ?? Directory.GetParent(_packageToDump).ToString();
+                
+                var fileLib = new FileLib(pcc);
+                try
                 {
-                    var GameBeingDumped = pcc.Game;
-                    CurrentFileProgressMaximum = pcc.ExportCount;
-                    string outfolder = OutputFolder ?? Directory.GetParent(_packageToDump).ToString();
+                    fileLib.Initialize().Wait();
+                }
+                catch
+                {
+                    //we're not checking if it failed to initialize because we don't really care, since decompilation doesn't actually need an initialized filelib,
+                    //it just makes the output a bit nicer (at the time of this writing all it does is resolve some integer literals into enum values)
+                }
 
-                    //if (properties)
-                    //{
-                    //    UnrealObjectInfo.loadfromJSON();
-                    //}
-                    //dumps data.
-                    string savepath = Path.Combine(outfolder, OutputFolder == null ? ShortFileName : Path.GetFileNameWithoutExtension(_packageToDump) + ".txt");
-                    Directory.CreateDirectory(Path.GetDirectoryName(savepath));
+                //if (properties)
+                //{
+                //    UnrealObjectInfo.loadfromJSON();
+                //}
+                //dumps data.
+                string savepath = Path.Combine(outfolder, OutputFolder == null ? ShortFileName : Path.GetFileNameWithoutExtension(_packageToDump) + ".txt");
+                Directory.CreateDirectory(Path.GetDirectoryName(savepath));
 
-                    using (StreamWriter stringoutput = new(savepath))
-                    //using (StreamWriter stringoutput = new StreamWriter(new MemoryStream()))
+                using StreamWriter stringoutput = new(savepath);
+                //if (imports)
+                //{
+                //writeVerboseLine("Getting Imports");
+                stringoutput.WriteLine("--Imports");
+                for (int x = 0; x < pcc.Imports.Count; x++)
+                {
+                    ImportEntry imp = pcc.Imports[x];
+                    stringoutput.WriteLine($"#{(x + 1) * -1}: {imp.InstancedFullPath}(From: {imp.PackageFile}) (Offset: 0x {pcc.ImportOffset + (x * ImportEntry.headerSize):X4})");
+                }
+                stringoutput.WriteLine("--End of Imports");
+                //}
+
+                string datasets = "Exports Coalesced ";
+                //if (GameBeingDumped != MEGame.ME2)
+                //{
+                datasets += " Functions";
+                //}
+
+                stringoutput.WriteLine("--Start of " + datasets);
+                stringoutput.WriteLine("Exports starting with [C] can be overriden from the configuration file");
+
+                int numDone = 1;
+                //writeVerboseLine("Enumerating exports");
+                string swfoutfolder = outfolder + Path.GetFileNameWithoutExtension(_packageToDump) + "\\";
+                foreach (ExportEntry exp in pcc.Exports)
+                {
+                    if (DumpCanceled)
                     {
+                        return;
+                    }
+                    //writeVerboseLine("Parse export #" + index);
+                    CurrentFileProgressValue = exp.UIndex;
+                    //bool isCoalesced = coalesced && exp.likelyCoalescedVal;
+                    string className = exp.ClassName;
+                    bool isCoalesced = false;
+                    if (exp.HasStack)
+                    {
+                        var objectFlags = exp.GetPropertyFlags();
+                        isCoalesced = objectFlags != null && objectFlags.Value.HasFlag(UnrealFlags.EPropertyFlags.Config);
+                    }
+                    bool isScript = (className == "Function");
+                    //int progress = ((int)(((double)numDone / numTotal) * 100));
+                    //while (progress >= (lastProgress + 10))
+                    //{
+                    //    Console.Write("..." + (lastProgress + 10) + "%");
+                    //    //needsFlush = true;
+                    //    lastProgress += 10;
+                    //}
 
-                        //if (imports)
-                        //{
-                        //writeVerboseLine("Getting Imports");
-                        stringoutput.WriteLine("--Imports");
-                        for (int x = 0; x < pcc.Imports.Count; x++)
+                    stringoutput.WriteLine("=======================================================================");
+                    stringoutput.Write($"#{exp.UIndex} ");
+                    if (isCoalesced)
+                    {
+                        stringoutput.Write("[C] ");
+                    }
+
+                    stringoutput.Write($"{exp.InstancedFullPath}({exp.ClassName})");
+                    stringoutput.WriteLine($"(Superclass: {exp.SuperClassName}) (Data Offset: 0x {exp.DataOffset:X5})");
+
+                    if (isScript)
+                    {
+                        stringoutput.WriteLine("==============Function==============");
+
+                        (_, string functionText) = UnrealScriptCompiler.DecompileExport(exp, fileLib);
+
+                        stringoutput.WriteLine(functionText);
+                    }
+                    //TODO: Change to UProperty
+
+                    if (exp.ClassName != "Class" && exp.ClassName != "Function" && exp.ClassName != "ShaderCache")
+                    {
+                        try
                         {
-                            ImportEntry imp = pcc.Imports[x];
-                            stringoutput.WriteLine($"#{(x + 1) * -1}: {imp.InstancedFullPath}(From: {imp.PackageFile}) (Offset: 0x {pcc.ImportOffset + (x * ImportEntry.headerSize):X4})");
-                        }
-                        stringoutput.WriteLine("--End of Imports");
-                        //}
-
-                        string datasets = "Exports Coalesced ";
-                        //if (GameBeingDumped != MEGame.ME2)
-                        //{
-                        datasets += " Functions";
-                        //}
-
-                        stringoutput.WriteLine("--Start of " + datasets);
-                        stringoutput.WriteLine("Exports starting with [C] can be overriden from the configuration file");
-
-                        int numDone = 1;
-                        //writeVerboseLine("Enumerating exports");
-                        string swfoutfolder = outfolder + Path.GetFileNameWithoutExtension(_packageToDump) + "\\";
-                        foreach (ExportEntry exp in pcc.Exports)
-                        {
-                            if (DumpCanceled)
+                            var props = exp.GetProperties();
+                            if (props.Count > 0)
                             {
-                                return;
-                            }
-                            //writeVerboseLine("Parse export #" + index);
-                            CurrentFileProgressValue = exp.UIndex;
-                            //bool isCoalesced = coalesced && exp.likelyCoalescedVal;
-                            string className = exp.ClassName;
-                            bool isCoalesced = false;
-                            if (exp.HasStack)
-                            {
-                                var objectFlags = exp.GetPropertyFlags();
-                                isCoalesced = objectFlags != null && objectFlags.Value.HasFlag(UnrealFlags.EPropertyFlags.Config);
-                            }
-                            bool isScript = (className == "Function");
-                            //int progress = ((int)(((double)numDone / numTotal) * 100));
-                            //while (progress >= (lastProgress + 10))
-                            //{
-                            //    Console.Write("..." + (lastProgress + 10) + "%");
-                            //    //needsFlush = true;
-                            //    lastProgress += 10;
-                            //}
-
-                            stringoutput.WriteLine("=======================================================================");
-                            stringoutput.Write($"#{exp.UIndex} ");
-                            if (isCoalesced)
-                            {
-                                stringoutput.Write("[C] ");
-                            }
-
-                            stringoutput.Write($"{exp.InstancedFullPath}({exp.ClassName})");
-                            stringoutput.WriteLine($"(Superclass: {exp.SuperClassName}) (Data Offset: 0x {exp.DataOffset:X5})");
-
-                            if (isScript)
-                            {
-                                stringoutput.WriteLine("==============Function==============");
-                                if (GameBeingDumped.IsGame3())
+                                stringoutput.WriteLine("==============Properties==============");
+                                UPropertyTreeViewEntry topLevelTree = new(); //not used, just for holding and building data.
+                                foreach (Property prop in props)
                                 {
-                                    Function func3 = new(exp.Data, exp);
-                                    func3.ParseFunction();
-                                    stringoutput.WriteLine(func3.GetSignature());
-                                    foreach (var v in func3.ScriptBlocks)
-                                    {
-                                        stringoutput.WriteLine(v.text);
-                                    }
+                                    InterpreterExportLoader.GenerateUPropertyTreeForProperty(prop, topLevelTree, exp);
                                 }
-                                else
-                                {
-                                    var func = UE3FunctionReader.ReadFunction(exp);
-                                    func.Decompile(new TextBuilder(), false); //parse bytecode
-                                    bool defined = func.HasFlag("Defined");
-                                    if (defined)
-                                    {
-                                        stringoutput.WriteLine(func.FunctionSignature + " {");
-                                    }
-                                    else
-                                    {
-                                        stringoutput.WriteLine(func.FunctionSignature);
-                                    }
-
-                                    for (int i = 0; i < func.Statements.statements.Count; i++)
-                                    {
-                                        Statement s = func.Statements.statements[i];
-                                        stringoutput.WriteLine(s.OffsetDisplayableString);
-                                    }
-                                }
-                            }
-                            //TODO: Change to UProperty
-
-                            if (exp.ClassName != "Class" && exp.ClassName != "Function" && exp.ClassName != "ShaderCache")
-                            {
-                                try
-                                {
-                                    var props = exp.GetProperties();
-                                    if (props.Count > 0)
-                                    {
-                                        stringoutput.WriteLine("==============Properties==============");
-                                        UPropertyTreeViewEntry topLevelTree = new(); //not used, just for holding and building data.
-                                        foreach (Property prop in props)
-                                        {
-                                            InterpreterExportLoader.GenerateUPropertyTreeForProperty(prop, topLevelTree, exp);
-                                        }
-                                        topLevelTree.PrintPretty("", stringoutput, false, exp);
-                                        stringoutput.WriteLine();
-                                    }
-                                }
-                                catch
-                                {
-                                    Debug.WriteLine(exp.UIndex);
-                                }
+                                topLevelTree.PrintPretty("", stringoutput, false, exp);
+                                stringoutput.WriteLine();
                             }
                         }
-                        numDone++;
-                        stringoutput.WriteLine($"--End of {datasets}");
-
-
-                        // writeVerboseLine("Gathering names");
-                        stringoutput.WriteLine("--Start of Names");
-
-                        int count = 0;
-                        foreach (string s in pcc.Names)
-                            stringoutput.WriteLine((count++) + " : " + s);
-                        stringoutput.WriteLine("--End of Names");
+                        catch
+                        {
+                            Debug.WriteLine(exp.UIndex);
+                        }
                     }
                 }
+                numDone++;
+                stringoutput.WriteLine($"--End of {datasets}");
+
+
+                // writeVerboseLine("Gathering names");
+                stringoutput.WriteLine("--Start of Names");
+
+                int count = 0;
+                foreach (string s in pcc.Names)
+                    stringoutput.WriteLine((count++) + " : " + s);
+                stringoutput.WriteLine("--End of Names");
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace LegendaryExplorerCore.Gammtek.Extensions
 {
@@ -117,5 +118,31 @@ namespace LegendaryExplorerCore.Gammtek.Extensions
 		{
 			return Convert.ToUInt64(value);
 		}
+
+		/// <summary>
+		/// Ultra-fast ToString onto a char span. <paramref name="dest"/> MUST be the exact length of the number of digits!
+		/// </summary>
+		/// <param name="value"></param>
+		/// <param name="dest"></param>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ToStrInPlace(this uint value, Span<char> dest)
+        {
+            int p = dest.Length;
+            do
+            {
+                value = DivRem(value, 10, out uint remainder);
+                dest[--p] = (char)(remainder + '0');
+            }
+            while (p > 0);
+
+			//JIT should turn this into a single 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            static uint DivRem(uint a, uint b, out uint result)
+            {
+                uint div = a / b;
+                result = a - (div * b);
+                return div;
+            }
+        }
 	}
 }
