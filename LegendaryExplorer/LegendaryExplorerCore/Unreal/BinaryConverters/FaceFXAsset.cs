@@ -68,7 +68,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             length = (int)(sc.ms.Position - startPos - 4);
             sc.Serialize(ref int0);
-            if (sc.Game != MEGame.ME1)
+            if (sc.Game is MEGame.LE1 or MEGame.LE2)
             {
                 sc.Serialize(ref EndingInts, SCExt.Serialize);
             }

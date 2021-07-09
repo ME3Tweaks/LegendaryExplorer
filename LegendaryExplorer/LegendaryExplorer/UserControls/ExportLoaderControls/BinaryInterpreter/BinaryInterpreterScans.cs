@@ -5137,7 +5137,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }));
                 subnodes.Add(MakeArrayNode(bin, "Lip sync phoneme list:", i => new BinInterpNode(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") { Length = 4 }));
                 subnodes.Add(MakeInt32Node(bin, "Unknown"));
-                if (game != MEGame.ME1 && game != MEGame.ME2)
+                if (game is MEGame.LE1 or MEGame.LE2)
                 {
                     subnodes.Add(MakeArrayNode(bin, "Unknown Ints", i =>  new BinInterpNode(bin.Position, $"Unknown: {nameTable[bin.ReadInt32()]}") { Length = 4 }));
                 }
