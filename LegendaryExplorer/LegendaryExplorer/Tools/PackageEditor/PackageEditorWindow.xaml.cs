@@ -342,7 +342,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     var cache = new PackageCache();
                     foreach (var impTV in treeNodes)
                     {
-                        var resolvedExp = EntryImporter.ResolveImport(impTV.Entry as ImportEntry, null, cache);
+                        var resolvedExp = EntryImporter.ResolveImport(impTV.Entry as ImportEntry, null, cache, clipRootLevelPackage: false);
                         if (resolvedExp?.FileRef.FilePath != null)
                         {
                             var fname = Path.GetFileName(resolvedExp.FileRef.FilePath);
@@ -507,7 +507,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             {
                 BusyText = "Attempting to find source of import...";
                 IsBusy = true;
-                Task.Run(() => EntryImporter.ResolveImport(curImport)).ContinueWithOnUIThread(prevTask =>
+                Task.Run(() => EntryImporter.ResolveImport(curImport, clipRootLevelPackage: false)).ContinueWithOnUIThread(prevTask =>
                 {
                     IsBusy = false;
                     if (prevTask.Result is ExportEntry res)
