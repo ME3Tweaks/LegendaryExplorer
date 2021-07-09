@@ -573,6 +573,14 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             sequenceObjects["BioSeqAct_ShowMedals"] = new SequenceObjectInfo();
             */
 
+            classes["SFXSeqAct_CheckForNewGAWAssetsFixed"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 2, //in LE3Resources.pcc
+ 
+            };
+            sequenceObjects["SFXSeqAct_CheckForNewGAWAssetsFixed"] = new SequenceObjectInfo();
         }
 
         //call on the _Default object
