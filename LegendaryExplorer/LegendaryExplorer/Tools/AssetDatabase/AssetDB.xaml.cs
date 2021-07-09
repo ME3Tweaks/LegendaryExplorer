@@ -102,7 +102,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             }
         }
 
-        public record FileDirPair(string FileName, string Directory);
+        public record FileDirPair(string FileName, string Directory, int Mount);
         /// <summary>
         /// Dictionary that stores generated classes
         /// </summary>
@@ -733,10 +733,14 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     }
                     else
                     {
+                        var dlcs = MELoadedFiles.GetDLCNamesWithMounts(CurrentGame);
+                        dlcs.Add("BioGame", 0);
                         foreach ((string fileName, int directoryKey) in CurrentDataBase.FileList)
                         {
                             var cd = CurrentDataBase.ContentDir[directoryKey];
-                            FileListExtended.Add(new(fileName, cd));
+                            int mount = -1;
+                            dlcs.TryGetValue(cd, out mount);
+                            FileListExtended.Add(new(fileName, cd, mount));
                         }
 
                         ParseConvos = !CurrentDataBase.Lines.IsEmpty();
@@ -801,49 +805,50 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         {
             var tool = obj as string;
             string usagepkg = null;
+            int usagemount = 0;
             int usageUID = 0;
             string contentdir = null;
 
             if (lstbx_Usages.SelectedIndex >= 0 && currentView == 1)
             {
                 var c = (ClassUsage)lstbx_Usages.SelectedItem;
-                (usagepkg, contentdir) = FileListExtended[c.FileKey];
+                (usagepkg, contentdir, usagemount) = FileListExtended[c.FileKey];
                 usageUID = c.UIndex;
             }
             else if (lstbx_MatUsages.SelectedIndex >= 0 && currentView == 2)
             {
                 var m = (MatUsage)lstbx_MatUsages.SelectedItem;
-                (usagepkg, contentdir) = FileListExtended[m.FileKey];
+                (usagepkg, contentdir, usagemount) = FileListExtended[m.FileKey];
                 usageUID = m.UIndex;
             }
             else if (lstbx_MeshUsages.SelectedIndex >= 0 && currentView == 3)
             {
                 var s = (MeshUsage)lstbx_MeshUsages.SelectedItem;
-                (usagepkg, contentdir) = FileListExtended[s.FileKey];
+                (usagepkg, contentdir, usagemount) = FileListExtended[s.FileKey];
                 usageUID = s.UIndex;
             }
             else if (lstbx_TextureUsages.SelectedIndex >= 0 && currentView == 4)
             {
                 var t = (TextureUsage)lstbx_TextureUsages.SelectedItem;
-                (usagepkg, contentdir) = FileListExtended[t.FileKey];
+                (usagepkg, contentdir, usagemount) = FileListExtended[t.FileKey];
                 usageUID = t.UIndex;
             }
             else if (lstbx_AnimUsages.SelectedIndex >= 0 && currentView == 5)
             {
                 var a = (AnimUsage)lstbx_AnimUsages.SelectedItem;
-                (usagepkg, contentdir) = FileListExtended[a.FileKey];
+                (usagepkg, contentdir, usagemount) = FileListExtended[a.FileKey];
                 usageUID = a.UIndex;
             }
             else if (lstbx_PSUsages.SelectedIndex >= 0 && currentView == 6)
             {
                 var ps = (ParticleSysUsage)lstbx_PSUsages.SelectedItem;
-                (usagepkg, contentdir) = FileListExtended[ps.FileKey];
+                (usagepkg, contentdir, usagemount) = FileListExtended[ps.FileKey];
                 usageUID = ps.UIndex;
             }
             else if (lstbx_GUIUsages.SelectedIndex >= 0 && currentView == 7)
             {
                 var sf = (GUIUsage)lstbx_GUIUsages.SelectedItem;
-                (usagepkg, contentdir) = FileListExtended[sf.FileKey];
+                (usagepkg, contentdir, usagemount) = FileListExtended[sf.FileKey];
                 usageUID = sf.UIndex;
             }
             else if (lstbx_Lines.SelectedIndex >= 0 && currentView == 8)
@@ -854,7 +859,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             }
             else if (lstbx_Files.SelectedIndex >= 0 && currentView == 0)
             {
-                (usagepkg, contentdir) = (FileDirPair)lstbx_Files.SelectedItem;
+                (usagepkg, contentdir, usagemount) = (FileDirPair)lstbx_Files.SelectedItem;
             }
 
             if (usagepkg == null)
@@ -955,9 +960,10 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         {
             string filename = null;
             string contentdir = null;
+            int mount = 0;
             if (lstbx_Files.SelectedIndex >= 0 && currentView == 0)
             {
-                (filename, contentdir) = (FileDirPair) lstbx_Files.SelectedItem;
+                (filename, contentdir, mount) = (FileDirPair) lstbx_Files.SelectedItem;
             }
             else return;
             string filePath = null;
@@ -1387,7 +1393,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         }
         private string GetFilePath(int fileListIndex)
         {
-            (string filename, string contentdir) = FileListExtended[fileListIndex];
+            (string filename, string contentdir, int mount) = FileListExtended[fileListIndex];
             return Directory.GetFiles(MEDirectories.GetDefaultGamePath(CurrentGame), $"{filename}.*", SearchOption.AllDirectories).FirstOrDefault(f => f.Contains(contentdir));
         }
 
@@ -2225,10 +2231,17 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                             ICollectionView dataView = CollectionViewSource.GetDefaultView(lstbx_Files.ItemsSource);
                             primarySort = "Directory";
                             secondarySort = "FileName";
-                            if (headerClicked.Column.Header.ToString().StartsWith("File"))
+                            var header = headerClicked.Column.Header.ToString();
+                            switch(header)
                             {
-                                primarySort = "FileName";
-                                secondarySort = "Directory";
+                                case "FileName":
+                                    primarySort = "FileName";
+                                    secondarySort = "Directory";
+                                    break;
+                                case "Mount":
+                                    primarySort = "Mount";
+                                    secondarySort = "FileName";
+                                    break;
                             }
 
                             dataView.SortDescriptions.Clear();
@@ -2335,7 +2348,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     string[] parts = n.Split(' ');
                     if (parts.Length >= 2)
                     {
-                        var key = FileListExtended.IndexOf(new(parts[0], parts[1]));
+                        var key = FileListExtended.IndexOf(new(parts[0], parts[1], int.Parse(parts[2])));
                         if (key >= 0)
                         {
                             CustomFileList.Add(key, n);
@@ -2629,10 +2642,14 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             CurrentDataBase.Conversations.AddRange(pdb.Conversations);
             CurrentDataBase.Lines.AddRange(pdb.Lines);
 
+            var dlcs = MELoadedFiles.GetDLCNamesWithMounts(CurrentGame);
+            dlcs.Add("BioGame", 0);
             foreach ((string fileName, int directoryKey) in CurrentDataBase.FileList)
             {
                 var cd = CurrentDataBase.ContentDir[directoryKey];
-                FileListExtended.Add(new(fileName, cd));
+                int mount = -1;
+                dlcs.TryGetValue(cd, out mount);
+                FileListExtended.Add(new(fileName, cd, mount));
             }
 
             ClearGenerationDictionaries();
@@ -3111,7 +3128,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 return $"Error file name not found";
             }
             var export = (int)values[2];
-            (string fileName, string directory) = listofFiles[fileindex];
+            (string fileName, string directory, int mount) = listofFiles[fileindex];
             return $"{fileName}  # {export}   {directory} ";
         }
 
