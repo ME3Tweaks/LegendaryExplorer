@@ -60,7 +60,7 @@ namespace LegendaryExplorer.Startup
                         OpenTool<SoundplorerWPF>(s => s.LoadFile(file.FullName));
                         break;
                     default:
-                        switch(file.Extension)
+                        switch(file.Extension.ToLower())
                         {
                             case ".pcc":
                             case ".sfm":
