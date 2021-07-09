@@ -144,7 +144,7 @@ namespace LegendaryExplorer.Tools.FaceFXEditor
         {
             ExportEntry item = SelectedExport;
             AnimSets.ClearEx();
-            AnimSets.AddRange(Pcc.Exports.Where(exp => exp.ClassName == "FaceFXAsset" || (exp.ClassName == "FaceFXAnimSet" && exp.Game != MEGame.ME2)));
+            AnimSets.AddRange(Pcc.Exports.Where(exp => exp.ClassName == "FaceFXAnimSet" || (exp.ClassName == "FaceFXAsset" && exp.Game != MEGame.ME2)));
             if (AnimSets.Contains(item))
             {
                 SelectedExport = item;
@@ -179,7 +179,7 @@ namespace LegendaryExplorer.Tools.FaceFXEditor
             }
             else
             {
-                if (updatedExports.Any(uIdx => Pcc.GetEntry(uIdx)?.ClassName == "FaceFXAsset" || (Pcc.GetEntry(uIdx)?.ClassName == "FaceFXAnimSet" && Pcc.Game != MEGame.ME2)))
+                if (updatedExports.Any(uIdx => Pcc.GetEntry(uIdx)?.ClassName == "FaceFXAnimSet" || (Pcc.GetEntry(uIdx)?.ClassName == "FaceFXAsset" && Pcc.Game != MEGame.ME2)))
                 {
                     RefreshComboBox();
                 }
