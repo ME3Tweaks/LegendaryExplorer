@@ -828,26 +828,19 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             };
 
             //Native Classes: these classes are defined in C++ only
-
+            
+            AddIntrinsicClasses(classes, MEGame.ME3);
+            
             classes["LightMapTexture2D"] = new ClassInfo
             {
                 baseClass = "Texture2D",
-                exportIndex = 0,
-                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
-            };
-
-            classes["Package"] = new ClassInfo
-            {
-                baseClass = "Object",
-                exportIndex = 0,
-                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
+                pccPath = @"CookedPCConsole\Engine.pcc"
             };
 
             classes["StaticMesh"] = new ClassInfo
             {
                 baseClass = "Object",
-                exportIndex = 0,
-                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                pccPath = @"CookedPCConsole\Engine.pcc",
                 properties =
                 {
                     new KeyValuePair<string, PropertyInfo>("UseSimpleRigidBodyCollision", new PropertyInfo(PropertyType.BoolProperty)),
@@ -866,8 +859,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             classes["FracturedStaticMesh"] = new ClassInfo
             {
                 baseClass = "StaticMesh",
-                exportIndex = 0,
-                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                pccPath = @"CookedPCConsole\Engine.pcc",
                 properties =
                 {
                     new KeyValuePair<string, PropertyInfo>("LoseChunkOutsideMaterial", new PropertyInfo(PropertyType.ObjectProperty, "MaterialInterface")),
@@ -884,6 +876,84 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     new KeyValuePair<string, PropertyInfo>("ChunkLinHorizontalScale", new PropertyInfo(PropertyType.FloatProperty)),
                 }
             };
+        }
+
+        public static void AddIntrinsicClasses(Dictionary<string, ClassInfo> classes, MEGame game)
+        {
+            string corePath = game <= MEGame.ME2 ? @"CookedPC\Core.pcc" : @"CookedPCConsole\Core.pcc";
+            string enginePath = game <= MEGame.ME2 ? @"CookedPC\Engine.pcc" : @"CookedPCConsole\Engine.pcc";
+           
+            if (game >= MEGame.ME3)
+            {
+                AddCore("Package", "Object");
+            }
+
+            AddCore("Field", "Object");
+            AddCore("Struct", "Field");
+            AddCore("ScriptStruct", "Struct");
+            AddCore("State", "Struct");
+            AddCore("Function", "Struct");
+            AddCore("Enum", "Field");
+            AddCore("Const", "Field");
+            //AddCore("Class", "State"); Causes infinite loop
+
+            AddCore("Property", "Field");
+            AddCore("ByteProperty", "Property");
+            AddCore("IntProperty", "Property");
+            AddCore("BoolProperty", "Property");
+            AddCore("FloatProperty", "Property");
+            AddCore("ObjectProperty", "Property");
+            AddCore("ComponentProperty", "Property");
+            AddCore("ClassProperty", "Property");
+            AddCore("InterfaceProperty", "Property");
+            AddCore("NameProperty", "Property");
+            AddCore("StrProperty", "Property");
+            AddCore("ArrayProperty", "Property");
+            AddCore("MapProperty", "Property");
+            AddCore("StructProperty", "Property");
+            AddCore("DelegateProperty", "Property");
+            AddCore("StringRefProperty", "Property");
+
+
+            classes["LevelBase"] = new ClassInfo
+            {
+                baseClass = "Object",
+                pccPath = enginePath
+            };
+            classes["Level"] = new ClassInfo
+            {
+                baseClass = "LevelBase",
+                pccPath = enginePath
+            };
+            classes["PendingLevel"] = new ClassInfo
+            {
+                baseClass = "LevelBase",
+                pccPath = enginePath
+            };
+            classes["Model"] = new ClassInfo
+            {
+                baseClass = "Object",
+                pccPath = enginePath
+            };
+            classes["World"] = new ClassInfo
+            {
+                baseClass = "Object",
+                pccPath = enginePath
+            };
+            classes["Polys"] = new ClassInfo
+            {
+                baseClass = "Object",
+                pccPath = enginePath
+            };
+
+            void AddCore(string className, string baseClass)
+            {
+                classes[className] = new ClassInfo
+                {
+                    baseClass = baseClass,
+                    pccPath = corePath
+                };
+            }
         }
 
         //call on the _Default object

@@ -65,7 +65,6 @@ namespace LegendaryExplorerCore.Packages
                 {
                     FileRef.IsModified = true; // mark package as modified if the existing header is changing.
                     HeaderChanged = true;
-                    EntryHasPendingChanges = true;
                 }
             }
         }
@@ -183,7 +182,18 @@ namespace LegendaryExplorerCore.Packages
         public string ParentInstancedFullPath => FileRef.GetEntry(idxLink)?.InstancedFullPath ?? "";
         public string InstancedFullPath => FileRef.IsEntry(idxLink) ? ObjectName.AddToPath(ParentInstancedFullPath) : ObjectName.Instanced;
 
-        public bool HeaderChanged { get; set; }
+        bool headerChanged;
+        public bool HeaderChanged
+        {
+            get => headerChanged;
+
+            set
+            {
+                headerChanged = value;
+                EntryHasPendingChanges |= value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HeaderChanged)));
+            }
+        }
 
 
         private bool _entryHasPendingChanges;

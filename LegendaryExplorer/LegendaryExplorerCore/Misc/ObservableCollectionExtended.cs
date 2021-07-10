@@ -28,7 +28,7 @@ namespace LegendaryExplorerCore.Misc
         /// <summary>
         /// For UI binding 
         /// </summary>
-        public bool Any => this.Any();
+        public bool Any => Count > 0;
 
         /// <summary> 
         /// Adds the elements of the specified collection to the end of the ObservableCollection(Of T). 

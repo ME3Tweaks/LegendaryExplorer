@@ -581,6 +581,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             sequenceObjects["BioSeqAct_ShowMedals"] = new SequenceObjectInfo();
             */
 
+            ME3UnrealObjectInfo.AddIntrinsicClasses(classes, MEGame.LE1);
         }
 
         //call on the _Default object

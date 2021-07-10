@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -17,6 +18,7 @@ using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorer.Tools.TlkManagerNS;
+using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
@@ -547,7 +549,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
 
         private bool CanExpandOrCollapseChildren() => SelectedItem is UPropertyTreeViewEntry tvi && tvi.ChildrenProperties.Count > 0;
-        private bool CanSortChildren() => SelectedItem is UPropertyTreeViewEntry tvi && !tvi.HasTooManyChildrenToDisplay && tvi.ChildrenProperties.Count > 0;
+        private bool CanSortChildren() => SelectedItem is UPropertyTreeViewEntry {HasTooManyChildrenToDisplay: false} tvi && tvi.ChildrenProperties.Count > 0;
 
 
         private void CollapseChildren()
@@ -879,7 +881,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         if (arrayProp.Count > 1000 && Settings.Interpreter_LimitArrayPropertySize)
                         {
                             //Too big to load reliably, users won't edit huge things like this anyways.
-                            UPropertyTreeViewEntry wontshowholder = new UPropertyTreeViewEntry
+                            var wontshowholder = new UPropertyTreeViewEntry
                             {
                                 DisplayName = "Too many children to display",
                                 HasTooManyChildrenToDisplay = true,
@@ -915,17 +917,50 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public static UPropertyTreeViewEntry GenerateUPropertyTreeViewEntry(Property prop, UPropertyTreeViewEntry parent, ExportEntry parsingExport, string displayPrefix = "", PropertyChangedEventHandler PropertyChangedHandler = null)
         {
-            string displayName = displayPrefix;
+            string displayName;
 
-            if (!(parent.Property is ArrayPropertyBase))
+            if (parent.Property is ArrayPropertyBase)
             {
-                displayName += $" {prop.Name.Instanced}";
+                displayName = displayPrefix;
+            }
+            else
+            {
+                string propName = prop.Name.Instanced;
+                int strLength = propName.Length + 1;
+                if (displayPrefix.Length > 0)
+                {
+                    strLength += displayPrefix.Length + 1;
+                }
                 if (prop.StaticArrayIndex > 0)
                 {
-                    displayName += $"[{prop.StaticArrayIndex}]";
+                    strLength += prop.StaticArrayIndex.NumDigits() + 2;
                 }
-                displayName += ":";
+
+                displayName = string.Create(strLength, (displayPrefix, propName, prop.StaticArrayIndex), (span, tuple) =>
+                {
+                    int pos = 0;
+                    if (tuple.displayPrefix.Length > 0)
+                    {
+                        tuple.displayPrefix.AsSpan().CopyTo(span);
+                        pos = tuple.displayPrefix.Length;
+                        span[pos] = ' ';
+                        ++pos;
+                    }
+                    tuple.propName.AsSpan().CopyTo(span.Slice(pos));
+                    pos += tuple.propName.Length;
+                    if (tuple.StaticArrayIndex > 0)
+                    {
+                        span[pos] = '[';
+                        ++pos;
+                        ((uint)tuple.StaticArrayIndex).ToStrInPlace(span.Slice(pos, tuple.StaticArrayIndex.NumDigits()));
+                        span[pos] = ']';
+                        ++pos;
+                    }
+
+                    span[pos] = ':';
+                });
             }
+
             string editableValue = ""; //editable value
             string parsedValue = ""; //human formatted item. Will most times be blank
             switch (prop)
@@ -940,7 +975,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             parsedValue = entry.InstancedFullPath;
                             if (index > 0 && ExportToStringConverters.Contains(entry.ClassName))
                             {
-                                editableValue += $" {ExportToString(parsingExport.FileRef.GetUExport(index))}";
+                                editableValue = $"{index} {ExportToString(parsingExport.FileRef.GetUExport(index))}";
                             }
                         }
                         else if (index == 0)
@@ -992,7 +1027,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             parsedValue = PlotDatabases.FindPlotConditionalByID(ip.Value, parsingExport.Game)?.Path;
                         }
 
-                            if (parent.Property is StructProperty property && property.StructType == "Rotator")
+                        if (parent.Property is StructProperty {StructType: "Rotator"})
                         {
                             parsedValue = $"({ip.Value.UnrealRotationUnitsToDegrees():0.0######} degrees)";
                         }
@@ -1054,13 +1089,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                     else if (sp.StructType == "Guid")
                     {
-                        MemoryStream ms = new MemoryStream();
-                        foreach (IntProperty intProperty in sp.Properties)
+                        //may seem a strange place to put this kind of optimization, but the old way of using a MemoryStream
+                        //generated a surprisingly large amount of allocations during package dumping
+                        Span<byte> guidBytes = stackalloc byte[16];
+                        for (int i = 0; i < 4; i++)
                         {
-                            ms.WriteInt32(intProperty);
+                            IntProperty intProperty = (IntProperty)sp.Properties[i];
+                            int value = intProperty.Value;
+                            MemoryMarshal.Write(guidBytes.Slice(i * 4), ref value);
                         }
-                        Guid g = new Guid(ms.ToArray());
-                        parsedValue = g.ToString();
+
+                        parsedValue = new Guid(guidBytes).ToString();
                     }
                     else if (sp.StructType == "PlotStreamingSet")
                     {
@@ -1102,7 +1141,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                     else if (sp.StructType == "SeqVarLink")
                     {
-                        editableValue = "";
                         var linkName = sp.Properties.GetProp<StrProperty>("LinkDesc");
                         if (linkName != null)
                         {
@@ -1111,7 +1149,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                     else if (sp.StructType == "BaseSliders")
                     {
-                        editableValue = "";
                         var linkName = sp.Properties.GetProp<StrProperty>("m_sSliderName");
                         if (linkName != null)
                         {
@@ -1125,7 +1162,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                         if (parmName != null && parmValue != null && parmValue.Value != 0)
                         {
-                            parsedValue += $" {parmName}: {parsingExport.FileRef.GetEntry(parmValue.Value).ObjectName.Instanced}";
+                            parsedValue = $" {parmName}: {parsingExport.FileRef.GetEntry(parmValue.Value).ObjectName.Instanced}";
                         }
                     }
                     else if (sp.StructType == "TextureParameter")
@@ -1135,7 +1172,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                         if (parmName != null && parmValue != null && parmValue.Value != 0)
                         {
-                            parsedValue += $" {parmName}: {parsingExport.FileRef.GetEntry(parmValue.Value).ObjectName.Instanced}";
+                            parsedValue = $" {parmName}: {parsingExport.FileRef.GetEntry(parmValue.Value).ObjectName.Instanced}";
                         }
                     }
                     else if (sp.StructType == "ScalarParameterValue")
@@ -1144,7 +1181,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         var parmName = sp.GetProp<NameProperty>("ParameterName");
                         if (parmName != null && parmValue != null)
                         {
-                            parsedValue += $" {parmName}: {parmValue.Value}";
+                            parsedValue = $" {parmName}: {parmValue.Value}";
                         }
                     }
                     else if (sp.StructType == "ColorParameter")
@@ -1153,7 +1190,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         var parmName = sp.GetProp<NameProperty>("nName");
                         if (parmName != null)
                         {
-                            parsedValue += $" {parmName}";
+                            parsedValue = $" {parmName}";
                         }
                     }
                     else if (sp.StructType == "ScalarParameter")
@@ -1162,7 +1199,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         var parmName = sp.GetProp<NameProperty>("nName");
                         if (parmName != null && parmValue != null)
                         {
-                            parsedValue += $" {parmName}: {parmValue.Value}";
+                            parsedValue = $" {parmName}: {parmValue.Value}";
                         }
                     }
                     else if (sp.StructType == "VectorParameterValue")
@@ -1183,7 +1220,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                         return "";
                                 }
                             }));
-                            parsedValue += $" {parmName}: {structParam}";
+                            parsedValue = $" {parmName}: {structParam}";
                         }
                     }
                     else if (sp.StructType == "PowerLevelUp")
@@ -1191,7 +1228,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         var powerClass = sp.GetProp<ObjectProperty>("PowerClass");
                         var rank = sp.GetProp<FloatProperty>("Rank");
                         var evolvedPowerClass = sp.GetProp<ObjectProperty>("EvolvedPowerClass");
-                        parsedValue += $" {powerClass.ResolveToEntry(parsingExport.FileRef).ObjectName} Rank {rank.Value}";
+                        parsedValue = $" {powerClass.ResolveToEntry(parsingExport.FileRef).ObjectName} Rank {rank.Value}";
                         if (evolvedPowerClass.Value != 0)
                         {
                             parsedValue += $" => {evolvedPowerClass.ResolveToEntry(parsingExport.FileRef).ObjectName}";
@@ -1206,12 +1243,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     parsedValue = "End of properties";
                     break;
             }
-            UPropertyTreeViewEntry item = new UPropertyTreeViewEntry
+            var item = new UPropertyTreeViewEntry
             {
                 Property = prop,
                 EditableValue = editableValue,
                 ParsedValue = parsedValue,
-                DisplayName = displayName.Trim(),
+                DisplayName = displayName,
                 Parent = parent,
                 AttachedExport = parsingExport
             };
@@ -2320,8 +2357,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
     [DebuggerDisplay("UPropertyTreeViewEntry | {" + nameof(DisplayName) + "}")]
     public class UPropertyTreeViewEntry : NotifyPropertyChangedBase, ITreeItem
     {
-        static readonly string[] PropertyDumperSuppressedPropertyNames = { "CompressedTrackOffsets", "LookupTable" };
-
         public bool HasTooManyChildrenToDisplay { get; set; }
         public ExportEntry AttachedExport;
         private string _colorStructCode;
@@ -2367,8 +2402,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             set
             {
                 if (_colorStructCode != value
-                 && Property is StructProperty colorStruct
-                 && colorStruct.StructType == "Color"
+                 && Property is StructProperty {StructType: "Color"} colorStruct 
                  && ColorConverter.ConvertFromString(value) is Color newColor)
                 {
                     var a = colorStruct.GetProp<ByteProperty>("A");
@@ -2666,7 +2700,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     return;
                 }
 
-                if (PropertyDumperSuppressedPropertyNames.Any(x => x == Property.Name))
+                if (Property.Name.Name is "CompressedTrackOffsets" or "LookupTable")
                 {
                     str.Write(" - suppressed by data dumper.");
                     return;
@@ -2690,7 +2724,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     supressNewLine = false;
                 }
-                ChildrenProperties[i].PrintPretty(indent, str, i == ChildrenProperties.Count - 1 || (i == ChildrenProperties.Count - 2 && ChildrenProperties[ChildrenProperties.Count - 1].Property is NoneProperty), associatedExport);
+                ChildrenProperties[i].PrintPretty(indent, str, i == ChildrenProperties.Count - 1 || (i == ChildrenProperties.Count - 2 && ChildrenProperties[^1].Property is NoneProperty), associatedExport);
             }
         }
 

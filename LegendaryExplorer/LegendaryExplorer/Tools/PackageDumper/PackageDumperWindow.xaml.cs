@@ -546,17 +546,8 @@ namespace LegendaryExplorer.Tools.PackageDumper
                 using IMEPackage pcc = MEPackageHandler.OpenMEPackage(_packageToDump);
                 CurrentFileProgressMaximum = pcc.ExportCount;
                 string outfolder = OutputFolder ?? Directory.GetParent(_packageToDump).ToString();
-                
-                var fileLib = new FileLib(pcc);
-                try
-                {
-                    fileLib.Initialize().Wait();
-                }
-                catch
-                {
-                    //we're not checking if it failed to initialize because we don't really care, since decompilation doesn't actually need an initialized filelib,
-                    //it just makes the output a bit nicer (at the time of this writing all it does is resolve some integer literals into enum values)
-                }
+
+                FileLib fileLib = null;
 
                 //if (properties)
                 //{
@@ -574,7 +565,7 @@ namespace LegendaryExplorer.Tools.PackageDumper
                 for (int x = 0; x < pcc.Imports.Count; x++)
                 {
                     ImportEntry imp = pcc.Imports[x];
-                    stringoutput.WriteLine($"#{(x + 1) * -1}: {imp.InstancedFullPath}(From: {imp.PackageFile}) (Offset: 0x {pcc.ImportOffset + (x * ImportEntry.headerSize):X4})");
+                    stringoutput.WriteLine($"#{imp.UIndex}: {imp.InstancedFullPath}(From: {imp.PackageFile}) (Offset: 0x {pcc.ImportOffset + (x * ImportEntry.headerSize):X4})");
                 }
                 stringoutput.WriteLine("--End of Imports");
                 //}
@@ -590,7 +581,7 @@ namespace LegendaryExplorer.Tools.PackageDumper
 
                 int numDone = 1;
                 //writeVerboseLine("Enumerating exports");
-                string swfoutfolder = outfolder + Path.GetFileNameWithoutExtension(_packageToDump) + "\\";
+                //string swfoutfolder = outfolder + Path.GetFileNameWithoutExtension(_packageToDump) + "\\";
                 foreach (ExportEntry exp in pcc.Exports)
                 {
                     if (DumpCanceled)
@@ -628,6 +619,20 @@ namespace LegendaryExplorer.Tools.PackageDumper
 
                     if (isScript)
                     {
+                        //initing filelib is expensive, so we only want to do it for files that have script
+                        if (fileLib is null)
+                        {
+                            fileLib = new FileLib(pcc);
+                            try
+                            {
+                                fileLib.Initialize().Wait();
+                            }
+                            catch
+                            {
+                                //we're not checking if it failed to initialize because we don't really care, since decompilation doesn't actually need an initialized filelib,
+                                //it just makes the output a bit nicer (at the time of this writing all it does is resolve some integer literals into enum values)
+                            }
+                        }
                         stringoutput.WriteLine("==============Function==============");
 
                         (_, string functionText) = UnrealScriptCompiler.DecompileExport(exp, fileLib);
@@ -636,7 +641,7 @@ namespace LegendaryExplorer.Tools.PackageDumper
                     }
                     //TODO: Change to UProperty
 
-                    if (exp.ClassName != "Class" && exp.ClassName != "Function" && exp.ClassName != "ShaderCache")
+                    if (exp.ClassName != "Class" && !isScript && exp.ClassName != "ShaderCache")
                     {
                         try
                         {
@@ -644,7 +649,7 @@ namespace LegendaryExplorer.Tools.PackageDumper
                             if (props.Count > 0)
                             {
                                 stringoutput.WriteLine("==============Properties==============");
-                                UPropertyTreeViewEntry topLevelTree = new(); //not used, just for holding and building data.
+                                var topLevelTree = new UPropertyTreeViewEntry(); //not used, just for holding and building data.
                                 foreach (Property prop in props)
                                 {
                                     InterpreterExportLoader.GenerateUPropertyTreeForProperty(prop, topLevelTree, exp);

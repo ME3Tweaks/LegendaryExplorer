@@ -260,7 +260,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     uByteProperty.Enum = varType is Enumeration ? ResolveSymbol(varType, pcc).UIndex : 0;
                     break;
                 case UClassProperty uClassProperty:
-                    uClassProperty.ObjectRef = EntryImporter.EnsureClassIsInFile(pcc, "Class").UIndex;
+                    uClassProperty.ObjectRef = pcc.getEntryOrAddImport("Core.Class").UIndex;
                     uClassProperty.ClassRef = ResolveSymbol(((ClassType)varType).ClassLimiter, pcc).UIndex;
                     break;
                 case UDelegateProperty uDelegateProperty:
