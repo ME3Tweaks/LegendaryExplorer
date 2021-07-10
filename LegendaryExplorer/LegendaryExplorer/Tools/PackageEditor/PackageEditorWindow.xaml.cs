@@ -315,17 +315,43 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 ? Pcc.Game.ToLEVersion()
                 : Pcc.Game.ToOTVersion());
 
-            if (files.TryGetValue(Path.GetFileName(Pcc.FilePath), out var matchingVersion))
+
+            var otherVerNameBase = Path.GetFileNameWithoutExtension(Pcc.FilePath);
+            var otherVerName = $"{otherVerNameBase}.{(Pcc.Game == MEGame.LE1 ? "SFM" : "pcc")}";
+            if (files.TryGetValue(otherVerName, out var matchingVersion))
             {
                 TryGetSelectedEntry(out var entry);
                 PackageEditorWindow pe = new PackageEditorWindow();
                 pe.LoadFile(matchingVersion, goToEntry: entry?.InstancedFullPath);
                 pe.Show();
+                return;
             }
-            else
+            
+            
+            if (Pcc.Game == MEGame.LE1)
             {
-                MessageBox.Show($"Could not find {Path.GetFileName(Pcc.FilePath)} in the other version of this game.");
+                // try other extensions
+                otherVerName = $"{otherVerNameBase}.u";
+                if (files.TryGetValue(otherVerName, out var matchingVerMe1))
+                {
+                    TryGetSelectedEntry(out var entry);
+                    PackageEditorWindow pe = new PackageEditorWindow();
+                    pe.LoadFile(matchingVerMe1, goToEntry: entry?.InstancedFullPath);
+                    pe.Show();
+                    return;
+                }
+                otherVerName = $"{otherVerNameBase}.upk";
+                if (files.TryGetValue(otherVerName, out matchingVerMe1))
+                {
+                    TryGetSelectedEntry(out var entry);
+                    PackageEditorWindow pe = new PackageEditorWindow();
+                    pe.LoadFile(matchingVerMe1, goToEntry: entry?.InstancedFullPath);
+                    pe.Show();
+                    return;
+                }
             }
+
+            MessageBox.Show($"Could not find {Path.GetFileName(Pcc.FilePath)} in the other version of this game.");
         }
 
         private void ResolveImportsTreeView()
@@ -361,7 +387,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private void RestoreExportData()
         {
-            if (!Pcc.Game.IsLEGame()&& !Pcc.Game.IsOTGame())
+            if (!Pcc.Game.IsLEGame() && !Pcc.Game.IsOTGame())
             {
                 MessageBox.Show(this, "Not a supported file for restoring export data. Only LE/OT files are supported.");
                 return;
