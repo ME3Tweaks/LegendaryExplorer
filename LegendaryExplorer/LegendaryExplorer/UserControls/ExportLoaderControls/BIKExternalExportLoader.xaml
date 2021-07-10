@@ -74,11 +74,13 @@
                             <TextBlock Text="{Binding SizeY}" FontSize="12" Name="sizeY_txt" VerticalAlignment="Center"/>
                         </StackPanel>
                         <TextBlock Text="{Binding MovieCRC, StringFormat='CRC: 0x{0:X8}'}" HorizontalAlignment="Center" MouseDown="CRC_MouseDown" ToolTip="Double click to copy CRC"/>
+                        <TextBlock Text="{Binding BinkVersion, StringFormat='Bink Version: {0}', Mode=OneWay}" HorizontalAlignment="Center"/>
                     </StackPanel>
 
                 </Grid>
                 <TextBlock Name="Warning_text" Foreground="Red" Text="Error: Bik is not found or corrupted." Visibility="Collapsed" FontWeight="Bold" TextAlignment="Center" TextWrapping="Wrap" DockPanel.Dock="Top"/>
-                <TextBlock Name="Unsupported_Text" Foreground="Red" Text="Playing BIKs in window is not supported in LE" Visibility="Collapsed" FontWeight="Bold" TextAlignment="Center" TextWrapping="Wrap" DockPanel.Dock="Top"/>
+                <TextBlock Name="Unsupported_Text" Foreground="Red" Text="Playing BIKs in window is not supported for Bink2" Visibility="Collapsed" FontWeight="Bold" TextAlignment="Center" TextWrapping="Wrap" DockPanel.Dock="Top"/>
+                <TextBlock Name="Loading_text" Text="Loading Bik..." Visibility="Visible" FontWeight="Bold" TextAlignment="Center" TextWrapping="Wrap" DockPanel.Dock="Top"/>
                 <uc:VideoView x:Name="vlcVideoView" MinWidth="256" MinHeight="128" Background="Black" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" DockPanel.Dock="Top" />
             </DockPanel>
         </DockPanel>

@@ -53,7 +53,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (CurrentLoadedExport != null)
             {
-                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new CurveEditor(), CurrentLoadedExport)
+                var elhw = new ExportLoaderHostedWindow(new CurveEditor(), CurrentLoadedExport)
                 {
                     Title = $"Curve Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}"
                 };
@@ -253,7 +253,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
             }
 
-            CommonSaveFileDialog m = new CommonSaveFileDialog
+            var m = new CommonSaveFileDialog
             {
                 Title = "Select excel output",
                 DefaultFileName = $"{CurrentLoadedExport.ObjectNameString}_{CurrentLoadedExport.UIndex}.xlsx",
@@ -291,7 +291,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
             }
 
-            OpenFileDialog oDlg = new OpenFileDialog //Load Excel
+            var oDlg = new OpenFileDialog //Load Excel
             {
                 Filter = "Excel Files (*.xlsx)|*.xlsx",
                 Title = "Import Excel table"
@@ -375,7 +375,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             var outval = iWorksheet.Cell(xlrow, xlcolumn).Value.ToString();
                             if (outval != null && float.TryParse(time, out float t) && float.TryParse(outval, out float v))
                             {
-                                CurvePoint point = new CurvePoint(t, v, 0, 0, CurveMode.CIM_CurveAuto);
+                                var point = new CurvePoint(t, v, 0, 0, CurveMode.CIM_CurveAuto);
                                 curve.CurvePoints.AddLast(point);
                             }
                             else

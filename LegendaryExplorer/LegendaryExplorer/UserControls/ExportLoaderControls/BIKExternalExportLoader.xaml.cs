@@ -78,11 +78,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public int SizeY { get => _sizeY; set => SetProperty(ref _sizeY, value); }
         private bool _showInfo;
         public bool ShowInfo { get => _showInfo; set => SetProperty(ref _showInfo, value); }
-        public ObservableCollectionExtended<string> AvailableTFCNames { get; } = new ObservableCollectionExtended<string>();
+        public ObservableCollectionExtended<string> AvailableTFCNames { get; } = new();
         private string RADExecutableLocation;
         private bool IsExportable()
         {
-            return IsBink1() && !IsExternalFile;
+            return !IsExternalFile;
         }
         private bool CanSwitchFromLocalToExternal()
         {
@@ -90,15 +90,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
         private bool IsMoviePlaying()
         {
-            return IsBink1() && IsVLCPlaying;
+            return IsBink1 && IsVLCPlaying;
         }
         private bool IsMovieStopped()
         {
-            return IsBink1() && !IsVLCPlaying;
-        }
-        private bool IsBink1()
-        {
-            return Pcc?.Game.IsOTGame() ?? false;
+            return IsBink1 && !IsVLCPlaying;
         }
 
         public bool ViewerModeOnly
@@ -113,6 +109,22 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             get => _movieCRC;
             set => SetProperty(ref _movieCRC, value);
         }
+
+        private bool _isBink1;
+        public bool IsBink1
+        {
+            get => _isBink1;
+            set
+            {
+                if (SetProperty(ref _isBink1, value))
+                {
+                    OnPropertyChanged(nameof(BinkVersion));
+                }
+            }
+        }
+
+        public int BinkVersion => IsBink1 ? 1 : 2;
+
         /// <summary>
         /// Set to true to hide all of the editor controls
         /// </summary>
@@ -155,19 +167,19 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             mediaPlayer.EndReached += MediaEndReached;
         }
 
-        private void OnEncounteredError(object? sender, EventArgs e)
+        private void OnEncounteredError(object sender, EventArgs e)
         {
             Console.Error.Write("An error occurred");
             IsVLCPlaying = false;
         }
 
-        private void OnStopped(object? sender, EventArgs e)
+        private void OnStopped(object sender, EventArgs e)
         {
             IsVLCPlaying = false;
             Debug.WriteLine("BikMoviePlayer Stopped");
         }
 
-        private void OnPlaying(object? sender, EventArgs e)
+        private void OnPlaying(object sender, EventArgs e)
         {
             IsVLCPlaying = true;
             Debug.WriteLine("BikMoviePlayer Started");
@@ -228,22 +240,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public override void LoadExport(ExportEntry exportEntry)
         {
             MovieCRC = 0; //reset
-            if (exportEntry.Game.IsOTGame())
-            {
-                video_Panel.IsEnabled = true;
-                mediaPlayer.Stop();
-                var bik = mediaPlayer.Media;
-                if (bik != null)
-                {
-                    mediaPlayer.Media = null;
-                    bik.Dispose();
-                }
-            }
-            else
-            {
-                Unsupported_Text.Visibility = Visibility.Visible;
-                video_Panel.IsEnabled = false;
-            }
+            IsBink1 = false;
+            Loading_text.Visibility = Visibility.Visible;
+            Warning_text.Visibility = Visibility.Collapsed;
+            Unsupported_Text.Visibility = Visibility.Collapsed;
             CurrentLoadedExport = exportEntry;
             AvailableTFCNames.ClearEx();
             AvailableTFCNames.Add(STORE_LOCAL_STRING);
@@ -268,17 +268,42 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     if (movieBytes != null)
                     {
                         MovieCRC = ~ParallelCRC.Compute(movieBytes);
+                        IsBink1 = movieBytes[0] == 'B';
+                    }
+                    else
+                    {
+                        Warning_text.Visibility = Visibility.Visible;
                     }
                 }
                 catch
                 {
-                    // Do nothing
+                    //
+                }
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                Loading_text.Visibility = Visibility.Collapsed;
+                mediaPlayer.Stop();
+                var bik = mediaPlayer.Media;
+                if (bik != null)
+                {
+                    mediaPlayer.Media = null;
+                    bik.Dispose();
+                }
+                if (IsBink1)
+                {
+                    video_Panel.IsEnabled = true;
+                }
+                else
+                {
+                    Unsupported_Text.Visibility = Visibility.Visible;
+                    video_Panel.IsEnabled = false;
                 }
             });
         }
         public override void UnloadExport()
         {
             MovieCRC = 0;
+            IsBink1 = false;
             mediaPlayer.Stop();
             var bik = mediaPlayer.Media;
             if (bik != null)
@@ -639,7 +664,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 fs.CopyTo(bikMovie);
             }
             bikMovie.Seek(0, SeekOrigin.Begin);
-            bikMovie.Position += 20;
+            if (bikMovie.ReadStringASCII(3) is "KB2" && Pcc.Game.IsOTGame())
+            {
+
+                MessageBox.Show($"{Path.GetFileName(bikfile)} is a Bink2 file! {Pcc.Game} only supports Bink 1. Aborting.", "Warning", MessageBoxButton.OK);
+                bikcontrols_Panel.IsEnabled = true;
+                return false;
+            }
+            bikMovie.Position += 17;
             SizeX = bikMovie.ReadInt32();
             SizeY = bikMovie.ReadInt32();
             bikMovie.Seek(0, SeekOrigin.Begin);
@@ -825,7 +857,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         break;
                     }
 
-                    CurrentLoadedExport.RemoveProperty("TextureFileCacheName");
                     IsLocallyCached = true;
                     TfcName = STORE_LOCAL_STRING;
                     IsExternallyCached = false;
