@@ -125,9 +125,9 @@
                             </Hyperlink>
                             <LineBreak/>
                             LE2 and LE3: Requires 
-                            <Hyperlink NavigateUri="https://www.audiokinetic.com/download/" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
+                            <Hyperlink NavigateUri="https://mega.nz/file/4ZlgyCbI#2sNNZWAyApBJNomMAgRXSroAsinsuRmoJ1MRNSr9aCY" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
                                 <Run Text="the 64 bit version of Wwise 2019.1.6 (Build 7110)"/>
-                            </Hyperlink>. You must create a Wwise account and install through the Wwise launcher.
+                            </Hyperlink>
                             </Italic>
                             <LineBreak/>
                             <LineBreak/>
