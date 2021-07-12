@@ -103,7 +103,7 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
             if (ws.Export.FileRef.Game is MEGame.ME3)
             {
                 //Convert wwiseoggstream
-                AudioStreamHelper.ConvertWwiseOggToME3Ogg(wwiseOggStream);
+                convertedStream = AudioStreamHelper.ConvertWwiseOggToME3Ogg(wwiseOggStream);
             }
             else wwiseOggStream.CopyToEx(convertedStream, (int)wwiseOggStream.Length);
 
