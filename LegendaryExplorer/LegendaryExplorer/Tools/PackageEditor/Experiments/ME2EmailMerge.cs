@@ -51,75 +51,80 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             public int DescStrRef { get; set; }
         }
 
-        public static string ResourcesFile =
-            @"D:\Mass Effect Modding\Dumb Shit\ME2 Mail Merge\103Message_Templates.pcc";
-
-        public static string BaseFile =
-            @"D:\Mass Effect Modding\Dumb Shit\ME2 Mail Merge\BioD_Nor_103Messages.pcc";
-
         public static void BuildMessagesSequence(string outputPath)
         {
-            using IMEPackage resources = MEPackageHandler.OpenMEPackage(ResourcesFile);
+            // File to base modifications on
+            string BaseFile =
+                @"D:\Mass Effect Modding\Dumb Shit\ME2 Mail Merge\BioD_Nor_103Messages.pcc";
             using IMEPackage pcc = MEPackageHandler.OpenMEPackage(BaseFile);
+
+            // Path to Message templates file - different files for ME2/LE2
+            string ResourcesFilePath = pcc.Game == MEGame.LE2
+                ? @"D:\Mass Effect Modding\Dumb Shit\ME2 Mail Merge\103Message_Templates.pcc"
+                : "";
+            using IMEPackage resources = MEPackageHandler.OpenMEPackage(ResourcesFilePath);
             
-            int messageID = 95;
             var emailInfos = new List<ME2EmailMergeFile>();
 
             var json = @"D:\Mass Effect Modding\Dumb Shit\ME2 Mail Merge\test.json";
             emailInfos.Add(JsonConvert.DeserializeObject<ME2EmailMergeFile>(File.ReadAllText(json)));
 
-            // This only works for LE2 at the moment. ME2 is going to be painful unless we require all DLCs
+            // Sanity checks
+            if (!emailInfos.Any() || !emailInfos.SelectMany(e => e.Emails).Any())
+            {
+                return;
+            }
 
-            // Send message - On level load, all email conditionals are checked and emails are sent via transition if they are true
+            if(emailInfos.Any(e => e.Game != pcc.Game))
+            {
+                throw new Exception("ME2 email merge manifest targets incorrect game");
+            }
+
+            // Send message - All email conditionals are checked and emails transitions are triggered
             ExportEntry SendMessageContainer = pcc.FindExport(@"TheWorld.PersistentLevel.Main_Sequence.Send_Messages");
-            ExportEntry LastSendMessage = pcc.FindExport(pcc.Game == MEGame.LE2 ? @"TheWorld.PersistentLevel.Main_Sequence.Send_Messages.METR_Messages" : @"TheWorld.PersistentLevel.Main_Sequence.Send_Messages.DLC_UNC_Pack");
+            ExportEntry LastSendMessage = KismetHelper.GetSequenceObjects(SendMessageContainer).OfType<ExportEntry>()
+                .FirstOrDefault(e =>
+                {
+                    var outbound = KismetHelper.GetOutboundLinksOfNode(e);
+                    return outbound.Count == 1 && outbound[0].Count == 0;
+                });
             ExportEntry TemplateSendMessage = resources.FindExport(@"TheWorld.PersistentLevel.Main_Sequence.Send_MessageTemplate");
 
 
-            // Mark Read - email ints are set to read when the terminal is opened on unread
+            // Mark Read - email ints are set to read
+            // This is the only section that does not gracefully handle different DLC installations - DLC_CER is required atm
             ExportEntry MarkReadContainer = pcc.FindExport(@"TheWorld.PersistentLevel.Main_Sequence.Mark_Read");
             ExportEntry LastMarkRead = pcc.FindExport(@"TheWorld.PersistentLevel.Main_Sequence.Mark_Read.DLC_CER");
+            ExportEntry MarkReadOutLink = KismetHelper.GetOutboundLinksOfNode(LastMarkRead)[0][0].LinkedOp as ExportEntry;
             KismetHelper.RemoveOutputLinks(LastMarkRead);
 
-            ExportEntry MarkReadOutLink =
-                pcc.FindExport(@"TheWorld.PersistentLevel.Main_Sequence.Mark_Read.DLC_UNC_Pack_02");
             ExportEntry TemplateMarkRead = resources.FindExport(@"TheWorld.PersistentLevel.Main_Sequence.Mark_ReadTemplate");
             ExportEntry TemplateMarkReadTransition = resources.FindExport(@"TheWorld.PersistentLevel.Main_Sequence.Mark_Read_Transition");
 
 
-            // Display Messages - 
+            // Display Messages - Str refs are passed through to GUI
             ExportEntry DisplayMessageContainer =
                 pcc.FindExport(@"TheWorld.PersistentLevel.Main_Sequence.Display_Messages");
             ExportEntry DisplayMessageOutLink =
                 pcc.FindExport(@"TheWorld.PersistentLevel.Main_Sequence.Display_Messages.SeqCond_CompareBool_0");
-            IEntry lastDisplayMessageEntry = KismetHelper.GetSequenceObjects(DisplayMessageContainer).First((e) =>
-            {
-                if (e is ExportEntry seq)
-                {
-                    var outLinks = KismetHelper.GetOutboundLinksOfNode(seq);
-                    if (outLinks.Count > 0 && outLinks[0].Count > 0)
-                    {
-                        return outLinks[0][0].LinkedOp == DisplayMessageOutLink;
-                    }
-                }
-                return false;
-            });
-            ExportEntry LastDisplayMessage = lastDisplayMessageEntry as ExportEntry;
+            
+            ExportEntry LastDisplayMessage = SeqTools.FindOutboundConnectionsToNode(DisplayMessageOutLink, KismetHelper.GetSequenceObjects(DisplayMessageContainer).OfType<ExportEntry>())[0];
             KismetHelper.RemoveOutputLinks(LastDisplayMessage);
             var DisplayMessageVariableLinks = LastDisplayMessage.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
             ExportEntry TemplateDisplayMessage =
                 resources.FindExport(@"TheWorld.PersistentLevel.Main_Sequence.Display_MessageTemplate");
 
-            // Archive Messages - 
+            // Archive Messages - Message ints are set to 3
             ExportEntry ArchiveContainer = pcc.FindExport(@"TheWorld.PersistentLevel.Main_Sequence.Archive_Message");
             ExportEntry ArchiveSwitch = pcc.FindExport(@"TheWorld.PersistentLevel.Main_Sequence.Archive_Message.SeqAct_Switch_0");
             ExportEntry ArchiveOutLink =
                 pcc.FindExport(
                     @"TheWorld.PersistentLevel.Main_Sequence.Archive_Message.BioSeqAct_PMCheckConditional_1");
             ExportEntry ExampleSetInt = KismetHelper.GetOutboundLinksOfNode(ArchiveSwitch)[0][0].LinkedOp as ExportEntry;
-            ExportEntry ExamplePlotInt =
-                ExampleSetInt.GetProperty<ArrayProperty<StructProperty>>("VariableLinks").Values[0]
-                    .GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables")[0].ResolveToEntry(pcc) as ExportEntry;
+            ExportEntry ExamplePlotInt = SeqTools.GetVariableLinksOfNode(ExampleSetInt)[0].LinkedNodes[0] as ExportEntry;
+
+            int messageID = KismetHelper.GetOutboundLinksOfNode(ArchiveSwitch).Count + 1;
+            int currentSwCount = ArchiveSwitch.GetProperty<IntProperty>("LinkCount").Value;
             
             foreach (var emailMod in emailInfos)
             {
@@ -143,10 +148,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     // Set name, comment, add to sequence
                     newSend.ObjectName = new NameReference(emailName);
                     KismetHelper.AddObjectToSequence(newSend, SendMessageContainer);
-                    newSend.WriteProperty(new ArrayProperty<StrProperty>(new List<StrProperty>()
-                    {
-                        new StrProperty(emailName)
-                    }, "m_aObjComment"));
+                    KismetHelper.SetComment(newSend, emailName);
 
                     // Set Trigger Conditional
                     var pmCheckConditionalSM = newSend.GetChildren()
@@ -154,10 +156,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     if (pmCheckConditionalSM is ExportEntry conditional)
                     {
                         conditional.WriteProperty(new IntProperty(email.TriggerConditional, "m_nIndex"));
-                        conditional.WriteProperty(new ArrayProperty<StrProperty>(new List<StrProperty>()
-                        {
-                            new StrProperty("Time for "+email.EmailName+"?")
-                        }, "m_aObjComment"));
+                        KismetHelper.SetComment(conditional, "Time for "+email.EmailName+"?");
                     }
                     
                     // Set Send Transition
@@ -166,10 +165,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     if (pmExecuteTransitionSM is ExportEntry transition)
                     {
                         transition.WriteProperty(new IntProperty(email.SendTransition, "m_nIndex"));
-                        transition.WriteProperty(new ArrayProperty<StrProperty>(new List<StrProperty>()
-                        {
-                            new StrProperty("Send "+email.EmailName+" message.")
-                        }, "m_aObjComment"));
+                        KismetHelper.SetComment(transition, "Send "+email.EmailName+" message.");
                     }
 
                     // Hook up output links
@@ -188,10 +184,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     // Set name, comment, add to sequence
                     newMarkRead.ObjectName = new NameReference(emailName);
                     KismetHelper.AddObjectToSequence(newMarkRead, MarkReadContainer);
-                    newMarkRead.WriteProperty(new ArrayProperty<StrProperty>(new List<StrProperty>()
-                    {
-                        new StrProperty(emailName)
-                    }, "m_aObjComment"));
+                    KismetHelper.SetComment(newMarkRead, emailName);
 
                     // Set Plot Int
                     var storyManagerIntMR = newMarkRead.GetChildren()
@@ -199,10 +192,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     if (storyManagerIntMR is ExportEntry plotIntMR)
                     {
                         plotIntMR.WriteProperty(new IntProperty(email.StatusPlotInt, "m_nIndex"));
-                        plotIntMR.WriteProperty(new ArrayProperty<StrProperty>(new List<StrProperty>()
-                        {
-                            new StrProperty(email.EmailName)
-                        }, "m_aObjComment"));
+                        KismetHelper.SetComment(plotIntMR, email.EmailName);
                     }
 
                     // Hook up output links
@@ -222,10 +212,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     newDisplayMessage.ObjectName = new NameReference(emailName);
                     KismetHelper.AddObjectToSequence(newDisplayMessage, DisplayMessageContainer);
                     newDisplayMessage.WriteProperty(DisplayMessageVariableLinks);
-                    newDisplayMessage.WriteProperty(new ArrayProperty<StrProperty>(new List<StrProperty>()
-                    {
-                        new StrProperty(emailName)
-                    }, "m_aObjComment"));
+                    KismetHelper.SetComment(newDisplayMessage, emailName);
 
                     var displayChildren = newDisplayMessage.GetChildren();
 
@@ -243,7 +230,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     if (emailIdDE is ExportEntry EmailIDDE)
                     {
                         EmailIDDE.WriteProperty(new IntProperty(messageID, "IntValue"));
-                        messageID++;
                     }
 
                     // Set Title StrRef
@@ -269,23 +255,29 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     //
                     // Archive Email
                     //
+
                     var NewSetInt = EntryCloner.CloneEntry(ExampleSetInt);
                     KismetHelper.AddObjectToSequence(NewSetInt, ArchiveContainer);
-                    KismetHelper.CreateOutputLink(ArchiveSwitch, "Link "+messageID, NewSetInt);
+                    KismetHelper.CreateOutputLink(NewSetInt, "Out", ArchiveOutLink);
+
+                    KismetHelper.CreateNewOutputLink(ArchiveSwitch, "Link "+(messageID - 1), NewSetInt);
 
                     var NewPlotInt = EntryCloner.CloneEntry(ExamplePlotInt);
                     KismetHelper.AddObjectToSequence(NewPlotInt, ArchiveContainer);
                     NewPlotInt.WriteProperty(new IntProperty(email.StatusPlotInt, "m_nIndex"));
                     NewPlotInt.WriteProperty(new StrProperty(emailName, "m_sRefName"));
 
-                    NewSetInt.GetProperty<ArrayProperty<StructProperty>>("VariableLinks").Values[0]
-                        .GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables")[0] = new ObjectProperty(NewPlotInt);
+                    var linkedVars = SeqTools.GetVariableLinksOfNode(NewSetInt);
+                    linkedVars[0].LinkedNodes = new List<IEntry>() {NewPlotInt};
+                    SeqTools.WriteVariableLinksToNode(NewSetInt, linkedVars);
 
-                    KismetHelper.CreateOutputLink(NewSetInt, "Out", ArchiveOutLink);
+                    messageID++;
+                    currentSwCount++;
                 }
             }
             KismetHelper.CreateOutputLink(LastMarkRead, "Out", MarkReadOutLink);
             KismetHelper.CreateOutputLink(LastDisplayMessage, "Out", DisplayMessageOutLink);
+            ArchiveSwitch.WriteProperty(new IntProperty(currentSwCount, "LinkCount"));
 
             pcc.Save(outputPath);
         }

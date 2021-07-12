@@ -27,6 +27,39 @@ namespace LegendaryExplorerCore.Kismet
             }
         }
 
+        /// <summary>
+        /// Creates a NEW output link with the given description, does not overwrite any existing output link.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="outLinkDescription"></param>
+        /// <param name="destExport"></param>
+        /// <param name="inputIndex"></param>
+        public static void CreateNewOutputLink(ExportEntry source, string outLinkDescription, ExportEntry destExport,
+            int inputIndex = 0)
+        {
+            if (source.GetProperty<ArrayProperty<StructProperty>>("OutputLinks") is { } outLinksProp)
+            {
+                var inputLink = new StructProperty("SeqOpOutputInputLink", false, new ObjectProperty(destExport, "LinkedOp"),
+                    new IntProperty(inputIndex, "InputLinkIdx"));
+
+                var opOutputLinkProperties = new PropertyCollection
+                {
+                    new StrProperty(outLinkDescription, "LinkDesc"),
+                    new BoolProperty(false, "bHasImpulse"),
+                    new BoolProperty(false, "bDisabled"),
+                    new NameProperty("None", "LinkAction"),
+                    new ObjectProperty(0, "LinkedOp"),
+                    new FloatProperty(0, "ActivateDelay"),
+                    new ArrayProperty<StructProperty>(new List<StructProperty>() {inputLink}, "Links")
+                };
+
+                outLinksProp.Add(new StructProperty("SeqOpOutputLink", opOutputLinkProperties));
+
+
+                source.WriteProperty(outLinksProp);
+            }
+        }
+
         public static void CreateVariableLink(ExportEntry src, string linkDescription, ExportEntry dest)
         {
             if (src.GetProperty<ArrayProperty<StructProperty>>("VariableLinks") is { } varLinksProp)
@@ -220,5 +253,16 @@ namespace LegendaryExplorerCore.Kismet
             }
             return names;
         }
+
+        public static void SetComment(ExportEntry export, IEnumerable<string> comments)
+        {
+            export.WriteProperty(new ArrayProperty<StrProperty>(comments.Select(c => new StrProperty(c)), "m_aObjComment"));
+        }
+
+        public static void SetComment(ExportEntry export, string comment)
+        {
+            SetComment(export, new List<string>() {comment});
+        }
+
     }
 }
