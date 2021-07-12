@@ -433,8 +433,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
-        private bool ObjectPropertyExportIsSelected() => SelectedItem?.Property is ObjectProperty op && Pcc.IsUExport(op.Value);
-        private bool ObjectPropertyImportIsSelected() => SelectedItem?.Property is ObjectProperty op && Pcc.IsImport(op.Value);
+        private bool ObjectPropertyExportIsSelected() => Pcc is not null && SelectedItem?.Property is ObjectProperty op && Pcc.IsUExport(op.Value);
+        private bool ObjectPropertyImportIsSelected() => Pcc is not null && SelectedItem?.Property is ObjectProperty op && Pcc.IsImport(op.Value);
 
         private void SortParsedArrayAscending()
         {
