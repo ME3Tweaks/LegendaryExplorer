@@ -15,6 +15,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Numerics;
+using LegendaryExplorer.Dialogs;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Point = System.Windows.Point;
@@ -250,15 +251,27 @@ namespace LegendaryExplorer.Misc
 
         public static void OpenURL(string url)
         {
-            using var link = new Process
+            // This can throw exception if windows has no browser set
+            // Which seems like a weird issue but it definitely happens
+            // for some users.
+            try
             {
-                StartInfo =
+                using var link = new Process
                 {
-                    FileName = url,
-                    UseShellExecute = true
-                }
-            };
-            link.Start();
+                    StartInfo =
+                    {
+                        FileName = url,
+                        UseShellExecute = true
+                    }
+                };
+                link.Start();
+            }
+            catch (Exception e)
+            {
+                PromptDialog.Prompt(null,
+                    $"The URL could not be opened in your default web browser due to an error: {e.Message}. You can manually copy and paste the link below into your browser.",
+                    "Error opening link", url, true);
+            }
         }
     }
 
