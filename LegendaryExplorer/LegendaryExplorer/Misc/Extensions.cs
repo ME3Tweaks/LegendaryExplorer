@@ -268,6 +268,7 @@ namespace LegendaryExplorer.Misc
             }
             catch (Exception e)
             {
+                // kind of a hack but it works. Clipboard also suffers from this same issue so just let user handle it.
                 PromptDialog.Prompt(null,
                     $"The URL could not be opened in your default web browser due to an error: {e.Message}. You can manually copy and paste the link below into your browser.",
                     "Error opening link", url, true);
