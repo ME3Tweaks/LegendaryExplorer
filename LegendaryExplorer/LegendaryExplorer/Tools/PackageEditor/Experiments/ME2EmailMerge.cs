@@ -26,6 +26,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             [JsonProperty("modName")]
             public string ModName { get; set; }
 
+            [JsonProperty("inMemoryBool")]
+            public int? InMemoryBool { get; set; }
+
             [JsonProperty("emails")]
             public List<ME2EmailSingle> Emails { get; set; }
         }
@@ -49,6 +52,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             [JsonProperty("descStrRef")]
             public int DescStrRef { get; set; }
+
+            [JsonProperty("readTransition")]
+            public int? ReadTransition { get; set; }
         }
 
         public static void BuildMessagesSequence(string outputPath)
@@ -60,8 +66,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             // Path to Message templates file - different files for ME2/LE2
             string ResourcesFilePath = pcc.Game == MEGame.LE2
-                ? @"D:\Mass Effect Modding\Dumb Shit\ME2 Mail Merge\103Message_Templates.pcc"
-                : "";
+                ? @"D:\Mass Effect Modding\Dumb Shit\ME2 Mail Merge\103Message_Templates_LE2.pcc"
+                : @"D:\Mass Effect Modding\Dumb Shit\ME2 Mail Merge\103Message_Templates_ME2.pcc";
             using IMEPackage resources = MEPackageHandler.OpenMEPackage(ResourcesFilePath);
             
             var emailInfos = new List<ME2EmailMergeFile>();
@@ -89,6 +95,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     return outbound.Count == 1 && outbound[0].Count == 0;
                 });
             ExportEntry TemplateSendMessage = resources.FindExport(@"TheWorld.PersistentLevel.Main_Sequence.Send_MessageTemplate");
+            ExportEntry TemplateSendMessageBoolCheck = resources.FindExport(@"TheWorld.PersistentLevel.Main_Sequence.Send_MessageTemplate_BoolCheck");
 
 
             // Mark Read - email ints are set to read
@@ -139,8 +146,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     //
 
                     // Create seq object
+                    var SMTemp = emailMod.InMemoryBool.HasValue ? TemplateSendMessageBoolCheck : TemplateSendMessage;
                     EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneTreeAsChild,
-                        TemplateSendMessage,
+                        SMTemp,
                         pcc, SendMessageContainer, true, out var outSendEntry);
 
                     var newSend = outSendEntry as ExportEntry;
@@ -149,6 +157,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     newSend.ObjectName = new NameReference(emailName);
                     KismetHelper.AddObjectToSequence(newSend, SendMessageContainer);
                     KismetHelper.SetComment(newSend, emailName);
+                    if(pcc.Game == MEGame.ME2) newSend.WriteProperty(new StrProperty(emailName, "ObjName"));
 
                     // Set Trigger Conditional
                     var pmCheckConditionalSM = newSend.GetChildren()
@@ -168,6 +177,18 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         KismetHelper.SetComment(transition, "Send "+email.EmailName+" message.");
                     }
 
+                    // Set Send Transition
+                    if (emailMod.InMemoryBool.HasValue)
+                    {
+                        var pmCheckStateSM = newSend.GetChildren()
+                            .FirstOrDefault(e => e.ClassName == "BioSeqAct_PMCheckState" && e is ExportEntry);
+                        if (pmCheckStateSM is ExportEntry checkState)
+                        {
+                            checkState.WriteProperty(new IntProperty(emailMod.InMemoryBool.Value, "m_nIndex"));
+                            KismetHelper.SetComment(checkState, "Is "+emailMod.ModName+" installed?");
+                        }
+                    }
+
                     // Hook up output links
                     KismetHelper.CreateOutputLink(LastSendMessage, "Out", newSend);
                     LastSendMessage = newSend;
@@ -177,14 +198,16 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     //
 
                     // Create seq object
+                    var MRTemp = email.ReadTransition.HasValue ? TemplateMarkReadTransition : TemplateMarkRead;
                     EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneTreeAsChild,
-                        TemplateMarkRead, pcc, MarkReadContainer, true, out var outMarkReadEntry);
+                        MRTemp, pcc, MarkReadContainer, true, out var outMarkReadEntry);
                     var newMarkRead = outMarkReadEntry as ExportEntry;
 
                     // Set name, comment, add to sequence
                     newMarkRead.ObjectName = new NameReference(emailName);
                     KismetHelper.AddObjectToSequence(newMarkRead, MarkReadContainer);
                     KismetHelper.SetComment(newMarkRead, emailName);
+                    if(pcc.Game == MEGame.ME2) newMarkRead.WriteProperty(new StrProperty(emailName, "ObjName"));
 
                     // Set Plot Int
                     var storyManagerIntMR = newMarkRead.GetChildren()
@@ -193,6 +216,17 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     {
                         plotIntMR.WriteProperty(new IntProperty(email.StatusPlotInt, "m_nIndex"));
                         KismetHelper.SetComment(plotIntMR, email.EmailName);
+                    }
+
+                    if (email.ReadTransition.HasValue)
+                    {
+                        var pmExecuteTransitionMR = newMarkRead.GetChildren()
+                            .FirstOrDefault(e => e.ClassName == "BioSeqAct_PMExecuteTransition" && e is ExportEntry);
+                        if (pmExecuteTransitionMR is ExportEntry transitionMR)
+                        {
+                            transitionMR.WriteProperty(new IntProperty(email.ReadTransition.Value, "m_nIndex"));
+                            KismetHelper.SetComment(transitionMR, "Trigger "+email.EmailName+" read transition");
+                        }
                     }
 
                     // Hook up output links
@@ -213,6 +247,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     KismetHelper.AddObjectToSequence(newDisplayMessage, DisplayMessageContainer);
                     newDisplayMessage.WriteProperty(DisplayMessageVariableLinks);
                     KismetHelper.SetComment(newDisplayMessage, emailName);
+                    if(pcc.Game == MEGame.ME2) newDisplayMessage.WriteProperty(new StrProperty(emailName, "ObjName"));
 
                     var displayChildren = newDisplayMessage.GetChildren();
 
@@ -234,18 +269,18 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                     // Set Title StrRef
                     var titleStrRef = displayChildren.FirstOrDefault(e =>
-                        e.ClassName == "BioSeqVar_StrRef" && e is ExportEntry ee && ee.GetProperty<NameProperty>("VarName").Value == "Title StrRef");
+                        e.ClassName == "BioSeqVar_StrRefLiteral" && e is ExportEntry ee && ee.GetProperty<NameProperty>("VarName").Value == "Title StrRef");
                     if (titleStrRef is ExportEntry Title)
                     {
-                        Title.WriteProperty(new StringRefProperty(email.TitleStrRef, "m_srValue"));
+                        Title.WriteProperty(new StringRefProperty(email.TitleStrRef, "m_srStringID"));
                     }
 
                     // Set Description StrRef
                     var descStrRef = displayChildren.FirstOrDefault(e =>
-                        e.ClassName == "BioSeqVar_StrRef" && e is ExportEntry ee && ee.GetProperty<NameProperty>("VarName").Value == "Desc StrRef");
+                        e.ClassName == "BioSeqVar_StrRefLiteral" && e is ExportEntry ee && ee.GetProperty<NameProperty>("VarName").Value == "Desc StrRef");
                     if (descStrRef is ExportEntry Desc)
                     {
-                        Desc.WriteProperty(new StringRefProperty(email.DescStrRef, "m_srValue"));
+                        Desc.WriteProperty(new StringRefProperty(email.DescStrRef, "m_srStringID"));
                     }
 
                     // Hook up output links
