@@ -130,42 +130,46 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                     return -1;
                 }
                 ExportEntry brush = export.FileRef.GetUExport(brushComponent.Value);
-                List<PointF> graphVertices = new List<PointF>();
-                List<Vector3> brushVertices = new List<Vector3>();
                 PropertyCollection brushProps = brush.GetProperties();
                 var brushAggGeom = brushProps.GetProp<StructProperty>("BrushAggGeom");
                 if (brushAggGeom == null)
                 {
                     return -1;
                 }
-                var convexList = brushAggGeom.GetProp<ArrayProperty<StructProperty>>("ConvexElems");
-
-                //Vertices
-                var verticiesList = convexList[0].Properties.GetProp<ArrayProperty<StructProperty>>("VertexData");
-                foreach (StructProperty vertex in verticiesList)
-                {
-                    Vector3 point = new Vector3();
-                    point.Z = vertex.GetProp<FloatProperty>("Z") * zScalar;
-                    brushVertices.Add(point);
-                }
-
                 int minZ = int.MaxValue;
                 int maxZ = int.MinValue;
-                //FaceTris
-                var faceTriData = convexList[0].Properties.GetProp<ArrayProperty<IntProperty>>("FaceTriData");
-                foreach (IntProperty triPoint in faceTriData)
+                var convexList = brushAggGeom.GetProp<ArrayProperty<StructProperty>>("ConvexElems");
+                if (convexList.Count == 0)
                 {
-                    Vector3 vertex = brushVertices[triPoint];
-                    //if (vertex.X == prevX && vertex.Y == prevY)
-                    //{
-                    //    continue; //Z is on the difference
-                    //}
+                    return -1;
+                }
+                foreach (StructProperty convexElem in convexList)
+                {
+                    var brushVertices = new List<Vector3>();
+                    //Vertices
+                    var verticiesList = convexElem.GetProp<ArrayProperty<StructProperty>>("VertexData");
+                    foreach (StructProperty vertex in verticiesList)
+                    {
+                        var point = new Vector3 {Z = vertex.GetProp<FloatProperty>("Z") * zScalar};
+                        brushVertices.Add(point);
+                    }
 
-                    //float x = vertex.X;
-                    //float y = vertex.Y;
-                    float z = vertex.Z;
-                    minZ = Math.Min((int)z, minZ);
-                    maxZ = Math.Max((int)z, maxZ);
+                    //FaceTris
+                    var faceTriData = convexElem.GetProp<ArrayProperty<IntProperty>>("FaceTriData");
+                    foreach (IntProperty triPoint in faceTriData)
+                    {
+                        Vector3 vertex = brushVertices[triPoint];
+                        //if (vertex.X == prevX && vertex.Y == prevY)
+                        //{
+                        //    continue; //Z is on the difference
+                        //}
+
+                        //float x = vertex.X;
+                        //float y = vertex.Y;
+                        float z = vertex.Z;
+                        minZ = Math.Min((int)z, minZ);
+                        maxZ = Math.Max((int)z, maxZ);
+                    }
                 }
                 if (minZ != int.MaxValue && maxZ != int.MinValue)
                 {
@@ -218,7 +222,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 }
                 ExportEntry brush = export.FileRef.GetUExport(brushComponent.Value);
                 var graphVertices = new List<PointF>();
-                var brushVertices = new List<Vector3>();
                 PropertyCollection brushProps = brush.GetProperties();
                 var brushAggGeom = brushProps.GetProp<StructProperty>("BrushAggGeom");
                 if (brushAggGeom == null)
@@ -227,37 +230,41 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 }
                 var convexList = brushAggGeom.GetProp<ArrayProperty<StructProperty>>("ConvexElems");
 
-                //Vertices
-                var verticiesList = convexList[0].Properties.GetProp<ArrayProperty<StructProperty>>("VertexData");
-                foreach (StructProperty vertex in verticiesList)
+                foreach (StructProperty convexElem in convexList)
                 {
-                    brushVertices.Add(new Vector3
+                    var brushVertices = new List<Vector3>();
+                    //Vertices
+                    var verticiesList = convexElem.GetProp<ArrayProperty<StructProperty>>("VertexData");
+                    foreach (StructProperty vertex in verticiesList)
                     {
-                        X = vertex.GetProp<FloatProperty>("X") * xScalar,
-                        Y = vertex.GetProp<FloatProperty>("Y") * yScalar,
-                        Z = vertex.GetProp<FloatProperty>("Z")
-                    });
-                }
-
-                //FaceTris
-                var faceTriData = convexList[0].Properties.GetProp<ArrayProperty<IntProperty>>("FaceTriData");
-                float prevX = float.MinValue;
-                float prevY = float.MinValue;
-                foreach (IntProperty triPoint in faceTriData)
-                {
-                    Vector3 vertex = brushVertices[triPoint];
-                    if (vertex.X == prevX && vertex.Y == prevY)
-                    {
-                        continue; //Z is on the difference
+                        brushVertices.Add(new Vector3
+                        {
+                            X = vertex.GetProp<FloatProperty>("X") * xScalar,
+                            Y = vertex.GetProp<FloatProperty>("Y") * yScalar,
+                            Z = vertex.GetProp<FloatProperty>("Z")
+                        });
                     }
 
-                    float x = vertex.X;
-                    float y = vertex.Y;
+                    //FaceTris
+                    var faceTriData = convexElem.GetProp<ArrayProperty<IntProperty>>("FaceTriData");
+                    float prevX = float.MinValue;
+                    float prevY = float.MinValue;
+                    foreach (IntProperty triPoint in faceTriData)
+                    {
+                        Vector3 vertex = brushVertices[triPoint];
+                        if (vertex.X == prevX && vertex.Y == prevY)
+                        {
+                            continue; //Z is on the difference
+                        }
 
-                    prevX = x;
-                    prevY = y;
-                    PointF graphPoint = new PointF(x, y);
-                    graphVertices.Add(graphPoint);
+                        float x = vertex.X;
+                        float y = vertex.Y;
+
+                        prevX = x;
+                        prevY = y;
+                        var graphPoint = new PointF(x, y);
+                        graphVertices.Add(graphPoint);
+                    }
                 }
                 return graphVertices.ToArray();
             }
