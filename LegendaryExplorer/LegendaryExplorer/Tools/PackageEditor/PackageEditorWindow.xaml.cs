@@ -3227,6 +3227,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 sourceItem.Parent != null)
             {
                 if (targetItem.Entry != null && sourceItem.Entry != null &&
+                    ////!App.IsDebug &&
                     sourceItem.Entry.Game != MEGame.UDK && // allow UDK -> OT and LE
                     targetItem.Game.IsLEGame() != sourceItem.Entry.Game.IsLEGame())
                 {

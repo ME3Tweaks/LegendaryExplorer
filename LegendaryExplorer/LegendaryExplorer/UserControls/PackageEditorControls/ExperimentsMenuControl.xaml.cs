@@ -1059,6 +1059,16 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             Clipboard.SetText(Path.GetFileNameWithoutExtension(GetPEWindow().Pcc?.FilePath));
         }
+
+        private void SaveAsNewPackage(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsK.SaveAsNewPackage(GetPEWindow());
+        }
+
+        private void RunTrashCompactor(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsK.TrashCompactor(GetPEWindow(), GetPEWindow().Pcc);
+        }
         #endregion
 
         // EXPERIMENTS: OTHER PEOPLE ------------------------------------------------------------

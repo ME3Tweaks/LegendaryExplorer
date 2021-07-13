@@ -102,6 +102,8 @@
         <MenuItem Header="Enumerate Class NetIndexes" Click="AutoEnumerateClassNetIndex"/>
         <MenuItem Header="Set All WwiseEvent Durations" Click="SetAllWwiseEventDurations_Click"/>
         <MenuItem Header="Copy Package Name" Click="CopyPackageName"/>
+        <MenuItem Header="Save as New Package" Click="SaveAsNewPackage"/>
+        <MenuItem Header="Trash Compactor" Click="RunTrashCompactor"/>
     </MenuItem>
     <MenuItem Header="Other people's box of Legos">
         <MenuItem Header="Export level to T3D" Click="ExportLevelToT3D_Click"/>
