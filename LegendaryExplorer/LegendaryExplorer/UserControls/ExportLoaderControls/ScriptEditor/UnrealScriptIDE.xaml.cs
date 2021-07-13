@@ -379,7 +379,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 _definitionLinkGenerator.Reset();
                 Dispatcher.Invoke(() =>
                 {
-                    if (ast is Function && FullyInitialized && CurrentLoadedExport.Parent is ExportEntry parentExport)
+                    if (ast is Function && FullyInitialized && CurrentLoadedExport?.Parent is ExportEntry parentExport)
                     {
                         try
                         {

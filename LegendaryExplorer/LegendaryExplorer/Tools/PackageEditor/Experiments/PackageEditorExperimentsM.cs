@@ -39,6 +39,65 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         }
 
+        public static void UpdateTexturesMatsToGame(PackageEditorWindow pewpf)
+        {
+            Task.Run(() =>
+            {
+                pewpf.BusyText = "Updating objects...";
+                pewpf.IsBusy = true;
+                var packages = MELoadedFiles.GetFilesLoadedInGame(MEGame.LE3);
+
+                //var updatableObjects = pewpf.Pcc.Exports.Where(x => x.IsTexture());
+                //updatableObjects = updatableObjects.Concat(pewpf.Pcc.Exports.Where(x => x.ClassName == @"Material"));
+
+                var lookupPackages = new[] { @"BIOG_HMF_ARM_HVY_R.pcc", @"BIOG_HMF_ARM_CTH_R.pcc", @"Startup.pcc" };
+                foreach (var lookupPackage in lookupPackages)
+                {
+                    using var importPackage = MEPackageHandler.OpenMEPackage(packages[lookupPackage]);
+
+                    foreach (var sourceObj in importPackage.Exports)
+                    {
+                        var matchingObj = pewpf.Pcc.Exports.FirstOrDefault(x => x.InstancedFullPath == sourceObj.InstancedFullPath);
+                        if (matchingObj != null && !matchingObj.DataChanged)
+                        {
+                            if (!shouldUpdateObject(matchingObj))
+                                continue;
+
+                            var resultst = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular,
+                                sourceObj, matchingObj.FileRef, matchingObj, true, out _,
+                                errorOccuredCallback: x => throw new Exception(x),
+                                importExportDependencies: true);
+                            if (resultst.Any())
+                            {
+                                Debug.WriteLine("MERGE FAILED!");
+                            }
+
+                            if (matchingObj.DataChanged)
+                                Debug.WriteLine($@"Updated {matchingObj.InstancedFullPath}");
+                        }
+                        else
+                        {
+                            //Debug.WriteLine($@"Did not update {sourceObj.InstancedFullPath}");
+                        }
+                    }
+
+
+                }
+
+            }).ContinueWithOnUIThread(x =>
+            {
+                pewpf.IsBusy = false;
+            });
+        }
+
+        private static bool shouldUpdateObject(ExportEntry matchingObj)
+        {
+            if (matchingObj.ClassName == @"ObjectReferencer") return false;
+            if (matchingObj.ClassName == @"ObjectRedirector") return false;
+
+            return true;
+        }
+
         public static void EnumerateAllFunctions(PackageEditorWindow pewpf)
         {
 
@@ -51,9 +110,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 int numDone = 0;
                 foreach (string filePath in allFiles)
                 {
-                    //if (!filePath.EndsWith("Engine.pcc"))
-                    //    continue;
-                    using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
+            //if (!filePath.EndsWith("Engine.pcc"))
+            //    continue;
+            using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
                     foreach (var f in pcc.Exports.Where(x => x.ClassName is "Function" or "State"))
                     {
                         if (pcc.Game is MEGame.ME1 or MEGame.ME2)
@@ -191,11 +250,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 var restorePackage = MEPackageHandler.OpenMEPackage(choice, forceLoadFromDisk: true);
 
-                // Get classes
-                var differences = restorePackage.CompareToPackage(sourcePackage);
+        // Get classes
+        var differences = restorePackage.CompareToPackage(sourcePackage);
 
-                // Classes
-                var classNames = differences.Where(x => x.Entry != null).Select(x => x.Entry.ClassName).Distinct().OrderBy(x => x).ToList();
+        // Classes
+        var classNames = differences.Where(x => x.Entry != null).Select(x => x.Entry.ClassName).Distinct().OrderBy(x => x).ToList();
                 if (classNames.Any())
                 {
                     var allDiffs = "[ALL DIFFERENCES]";
@@ -259,8 +318,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                     if (matchingExport == null)
                     {
-                        //Debug.WriteLine($"Trash {export.FullPath}");
-                        entriesToTrash.Add(export);
+                //Debug.WriteLine($"Trash {export.FullPath}");
+                entriesToTrash.Add(export);
                     }
                 });
 
@@ -1173,7 +1232,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     continue; // Most of these are native-native
                 if (GlobalUnrealObjectInfo.IsAKnownNativeClass(import))
                     continue; // Native is always loaded iirc
-                //Debug.WriteLine($@"Resolving {import.FullPath}");
+                              //Debug.WriteLine($@"Resolving {import.FullPath}");
                 var export = EntryImporter.ResolveImport(import, globalCache, pc);
                 if (export != null)
                 {
@@ -1557,9 +1616,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     int numDone = 0;
                     foreach (var f in allPackages)
                     {
-                        //if (!f.Key.Contains("Startup"))
-                        //    continue;
-                        pewpf.BusyText = $"Dumping TLKs [{++numDone}/{allPackages.Count}]";
+                //if (!f.Key.Contains("Startup"))
+                //    continue;
+                pewpf.BusyText = $"Dumping TLKs [{++numDone}/{allPackages.Count}]";
                         using var package = MEPackageHandler.OpenMEPackage(f.Value);
                         foreach (var v in package.LocalTalkFiles)
                         {

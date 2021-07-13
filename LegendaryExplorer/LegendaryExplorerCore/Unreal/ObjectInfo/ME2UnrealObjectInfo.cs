@@ -673,6 +673,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 }
             };
             sequenceObjects["SeqAct_SetLocationAndRotation"] = new SequenceObjectInfo { ObjInstanceVersion = 0 };
+
+
+            ME3UnrealObjectInfo.AddIntrinsicClasses(classes, MEGame.ME2);
         }
 
         public static ClassInfo generateClassInfo(ExportEntry export, bool isStruct = false)

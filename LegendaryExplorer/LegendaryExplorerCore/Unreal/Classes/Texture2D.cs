@@ -370,7 +370,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             return (uint)~ParallelCRC.Compute(data);
         }
 
-        public string Replace(Image image, PropertyCollection props, string fileSourcePath = null, string forcedTFCName = null)
+        public string Replace(Image image, PropertyCollection props, string fileSourcePath = null, string forcedTFCName = null, string forcedTFCPath = null)
         {
             string errors = "";
             var textureCache = forcedTFCName ?? GetTopMip().TextureCacheName;
@@ -613,7 +613,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                         {
                             //Check local dir
                             string tfcarchive = mipmap.TextureCacheName + ".tfc";
-                            var localDirectoryTFCPath = Path.Combine(Path.GetDirectoryName(mipmap.Export.FileRef.FilePath), tfcarchive);
+                            var localDirectoryTFCPath = forcedTFCPath ?? Path.Combine(Path.GetDirectoryName(mipmap.Export.FileRef.FilePath), tfcarchive);
                             if (File.Exists(localDirectoryTFCPath))
                             {
                                 try
@@ -654,7 +654,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                             //Cache not found. Make new TFC
                             try
                             {
-                                using var fs = new FileStream(localDirectoryTFCPath, FileMode.OpenOrCreate, FileAccess.Write);
+                                using var fs = new FileStream(forcedTFCPath ?? localDirectoryTFCPath, FileMode.OpenOrCreate, FileAccess.Write);
                                 fs.WriteGuid(tfcGuid);
                                 mipmap.externalOffset = (int)fs.Position;
                                 fs.Write(mipmap.Mip, 0, mipmap.compressedSize);
@@ -679,26 +679,6 @@ namespace LegendaryExplorerCore.Unreal.Classes
 
             // The bottom 6 mips are apparently always pcc stored. If there is less than 6 mips, set neverstream to true, which tells game
             // and toolset to never look into archives for mips.
-            //if (Export.Game == MEGame.ME2 || Export.Game == MEGame.ME3)
-            //{
-            //    if (texture.properties.exists("TextureFileCacheName"))
-            //    {
-            //        if (texture.mipMapsList.Count < 6)
-            //        {
-            //            mipmap.storageType = StorageTypes.pccUnc;
-            //            texture.properties.setBoolValue("NeverStream", true);
-            //        }
-            //        else
-            //        {
-            //            if (Export.Game == MEGame.ME2)
-            //                mipmap.storageType = StorageTypes.extLZO;
-            //            else
-            //                mipmap.storageType = StorageTypes.extZlib;
-            //        }
-            //    }
-            //}
-
-            var hasNeverStream = props.GetProp<BoolProperty>("NeverStream") != null;
             if (locallyStored)
             {
                 // Rules for default neverstream
@@ -852,11 +832,49 @@ namespace LegendaryExplorerCore.Unreal.Classes
             return true;
         }
 
+
+        /// <summary>
+        /// Exports the top mip to raw ARGB bytes
+        /// </summary>
+        /// <param name="outStream">Stream to write to instead of to disk.</param>
+        /// <returns></returns>
+        public bool ExportToARGB(Stream outStream)
+        {
+            var info = Mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
+            if (info != null)
+            {
+                byte[] imageBytes = null;
+                try
+                {
+                    imageBytes = Texture2D.GetTextureData(info, Export.Game);
+                }
+                catch (FileNotFoundException e)
+                {
+                    Debug.WriteLine("External cache not found. Defaulting to internal mips.");
+                    //External archive not found - using built in mips (will be hideous, but better than nothing)
+                    info = Mips.FirstOrDefault(x => x.storageType == StorageTypes.pccUnc);
+                    if (info != null)
+                    {
+                        imageBytes = Texture2D.GetTextureData(info, Export.Game);
+                    }
+                }
+
+                if (imageBytes != null)
+                {
+                    PixelFormat format = Image.getPixelFormatType(TextureFormat);
+                    outStream.Write(Image.convertRawToARGB(imageBytes, ref info.width, ref info.height, format));
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// Exports the texture to PNG format. Writes to the specified stream, or the specified path if not defined.
         /// </summary>
         /// <param name="outputPath"></param>
-        /// <param name="outStream"></param>
+        /// <param name="outStream">Stream to write to instead of to disk.</param>
         /// <returns></returns>
         public bool ExportToPNG(string outputPath = null, Stream outStream = null)
         {

@@ -31,6 +31,7 @@
     </MenuItem>
     <MenuItem Header="Mgamerz's Programming Circus">
         <MenuItem Header="Dump LE1 TLK to XML" Click="DumpLE1TLK_Clicked"/>
+        <MenuItem Header="Update textures to game" Click="RepointTexturesToGame_Click" ToolTip="You're gonna break your file lol"/>
         <MenuItem Header="Save package...">
             <MenuItem Header="Compressed" Click="SavePackageCompressed_Click"/>
             <MenuItem Header="UnCompressed" Click="SavePackageUnCompressed_Click"/>
@@ -109,5 +110,6 @@
         <MenuItem Header="Generate audio file info JSON (check code for game)" Click="GenerateAudioFileInfo_Click"/>
         <MenuItem Header="Generate Wwise ID from entry name" Click="GenerateWwiseId_Click"/>
         <MenuItem Header="Create test TLK from XML with IDs in string" Click="CreateTestTLKWithStringIDs_Click"/>
+        <MenuItem Header="Test LE2 email merge" Click="TestLE2EmailMerge_Click"/>
     </MenuItem>
 </MenuItem>

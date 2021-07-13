@@ -360,6 +360,12 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
         // EXPERIMENTS: MGAMERZ---------------------------------------------------
         #region Mgamerz's Experiments
+
+        private async void RepointTexturesToGame_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.UpdateTexturesMatsToGame(GetPEWindow());
+        }
+
         private async void SavePackageUnCompressed_Click(object sender, RoutedEventArgs e)
         {
             await GetPEWindow().Pcc.SaveAsync(compress: false);
@@ -1086,6 +1092,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         private void CreateTestTLKWithStringIDs_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsO.CreateTestTLKWithStringIDs(GetPEWindow());
+        }
+
+        private void TestLE2EmailMerge_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.TestLE2EmailMerge(GetPEWindow());
         }
         #endregion
 

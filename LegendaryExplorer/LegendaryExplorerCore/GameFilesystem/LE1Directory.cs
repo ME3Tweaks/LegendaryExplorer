@@ -25,7 +25,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         {
             if (rootPathOverride == null) rootPathOverride = DefaultGamePath;
             if (rootPathOverride == null) return null; // There is no usable root path
-            return null; //Path.Combine(rootPathOverride, "DLC"); // TODO: Implement in LEX
+            return Path.Combine(GetBioGamePath(rootPathOverride), "DLC");
         }
 
         public static string CookedPCPath => GetCookedPCPath();

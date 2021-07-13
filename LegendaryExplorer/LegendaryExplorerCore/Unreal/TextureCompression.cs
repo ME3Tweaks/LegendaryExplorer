@@ -153,7 +153,7 @@ namespace LegendaryExplorerCore.Unreal
             return ouputStream.ToArray();
         }
 
-        public static void DecompressTexture(byte[] DecompressedBuffer, MemoryStream stream, StorageTypes type, int uncompressedSize, int compressedSize)
+        public static void DecompressTexture(byte[] DecompressedBuffer, Stream stream, StorageTypes type, int uncompressedSize, int compressedSize)
         {
             int maxBlockSize = type is StorageTypes.extOodle or StorageTypes.pccOodle ? maxBlockSizeOodle : maxBlockSizeOT;
             uint blockTag = stream.ReadUInt32();

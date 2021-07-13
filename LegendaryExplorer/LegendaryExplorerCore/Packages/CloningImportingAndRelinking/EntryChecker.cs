@@ -243,6 +243,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 var prefix = localizationDelegate(ME3XL.string_interp_warningGenericExportPrefix, relativePath ?? fName, exp.UIndex, exp.ObjectName.Name, exp.ClassName);
                 try
                 {
+                    checkName(item, localizationDelegate, () => exp.ObjectName, "Object Name", $"export {exp.UIndex}", relativePath, fName, exp);
+
                     if (exp.idxArchetype != 0 && !package.IsEntry(exp.idxArchetype))
                     {
                         item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningArchetypeOutsideTables, prefix, exp.idxArchetype), exp);
@@ -262,6 +264,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     {
                         item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningLinkOutsideTables, prefix, exp.idxLink), exp);
                     }
+
+
 
                     if (exp.HasComponentMap)
                     {

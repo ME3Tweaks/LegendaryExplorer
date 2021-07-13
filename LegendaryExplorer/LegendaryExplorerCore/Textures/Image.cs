@@ -168,6 +168,11 @@ namespace LegendaryExplorerCore.Textures
             LoadImage(new MemoryStream(image), DetectImageByExtension(extension));
         }
 
+        /// <summary>
+        /// Only use if you know what you're doing
+        /// </summary>
+        private Image() {}
+
         public Image(List<MipMap> mipmaps, PixelFormat pixelFmt)
         {
             mipMaps = mipmaps;
@@ -177,6 +182,16 @@ namespace LegendaryExplorerCore.Textures
         private static ImageFormat DetectImageByFilename(string fileName)
         {
             return DetectImageByExtension(Path.GetExtension(fileName));
+        }
+
+        public static Image LoadFromRaw(byte[] rawBytes, PixelFormat format, int width, int height)
+        {
+            Image image = new Image();
+            image.mipMaps = new List<MipMap>();
+            image.pixelFormat = format;
+            var mipmap = new MipMap(rawBytes, width, height, format);
+            image.mipMaps.Add(mipmap);
+            return image;
         }
 
         private static ImageFormat DetectImageByExtension(string extension)

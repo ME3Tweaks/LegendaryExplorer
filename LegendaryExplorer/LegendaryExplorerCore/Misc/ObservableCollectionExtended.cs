@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -8,9 +9,23 @@ using System.Runtime.CompilerServices;
 
 namespace LegendaryExplorerCore.Misc
 {
+
+    /// <summary>
+    /// This is total hackjob cause I don't want to have pass type argument to static method in ObservableCollectionExtended.
+    /// </summary>
+    public static class ObservableCollectionExtendedThreading
+    {
+        /// <summary>
+        /// Delegate that can be used to call 'BindingOperations.EnableCollectionSynchronization(collection, syncLock);' to allow cross thread updates to a collection. This class only exists in WPF
+        /// </summary>
+        public static Action<IEnumerable, object> EnableCrossThreadUpdatesDelegate;
+    }
+
+
     [Localizable(false)]
     public class ObservableCollectionExtended<T> : ObservableCollection<T>
     {
+
         //INotifyPropertyChanged inherited from ObservableCollection<T>
         #region INotifyPropertyChanged
 
@@ -28,7 +43,7 @@ namespace LegendaryExplorerCore.Misc
         /// <summary>
         /// For UI binding 
         /// </summary>
-        public bool Any => this.Any();
+        public bool Any => Count > 0;
 
         /// <summary> 
         /// Adds the elements of the specified collection to the end of the ObservableCollection(Of T). 
@@ -202,6 +217,7 @@ namespace LegendaryExplorerCore.Misc
         /// </summary> 
         public ObservableCollectionExtended() : base()
         {
+            ObservableCollectionExtendedThreading.EnableCrossThreadUpdatesDelegate?.Invoke(this, _syncLock);
             CollectionChanged += (a, b) =>
             {
                 BindableCount = Count;
@@ -222,6 +238,7 @@ namespace LegendaryExplorerCore.Misc
         /// <exception cref="System.ArgumentNullException">The collection parameter cannot be null.</exception> 
         public ObservableCollectionExtended(IEnumerable<T> collection) : base(collection)
         {
+            ObservableCollectionExtendedThreading.EnableCrossThreadUpdatesDelegate?.Invoke(this, _syncLock);
             CollectionChanged += (a, b) =>
             {
                 BindableCount = Count;

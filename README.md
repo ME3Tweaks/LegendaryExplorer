@@ -1,6 +1,6 @@
 [![Download latest release](https://user-images.githubusercontent.com/8151477/124207604-d99edb80-dab3-11eb-9411-f71b499b254a.png)](https://github.com/ME3Tweaks/LegendaryExplorer/releases/latest)
 
-[![Build Status](https://dev.azure.com/ME3Tweaks/ME3Explorer/_apis/build/status/ME3Tweaks.LegendaryExplorer?branchName=Beta)](https://dev.azure.com/ME3Tweaks/LegendaryExplorer/_build/latest?definitionId=2&branchName=Beta)
+[![Build Status](https://dev.azure.com/ME3Tweaks/ME3Explorer/_apis/build/status/ME3Tweaks.LegendaryExplorer?branchName=Beta)](https://dev.azure.com/ME3Tweaks/LegendaryExplorer/_build/latest?definitionId=6&branchName=Beta)
 [![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/ME3Tweaks/LegendaryExplorer/2)](https://dev.azure.com/ME3Tweaks/LegendaryExplorer/_build?definitionId=2)
 
 Legendary Explorer is a fan-made modding toolkit for the _Mass Effect Legendary Edition_ and the original _Mass Effect Trilogy_ on PC. Legendary Explorer does not support modding Mass Effect games designed for other platforms.
@@ -13,7 +13,7 @@ This application is developed and maintained by ME3Tweaks and contains bleeding 
 Need assistance? [Join the ME3Tweaks Discord](https://discord.gg/s8HA6dc).
 
 ## Features
-All stable releases starting with 3.0.7.0 on this fork are signed with the ME3Tweaks code signing certificate.
+All stable releases starting with 3.0.7.0 are signed with the ME3Tweaks code signing certificate.
 
 Some highlights of features that were developed on this fork:
  - An UnrealScript compiler and decompiler, allowing easy script editing.
@@ -26,7 +26,7 @@ Some highlights of features that were developed on this fork:
  - Integration of BioWare's plot databases, giving you extra info when working with plot data
  - Many more not listed here
   
-You can get these releases in ME3Tweaks Mod Manager's Tools menu, or you can download from the releases tab above. Come to the ME3Tweaks Discord to talk with the developers. You can download nightlies from within Mod Manager as well.
+You can get these releases in ME3Tweaks Mod Manager's Tools menu, or you can download from the releases tab above. Come to the [ME3Tweaks Discord](https://discord.gg/s8HA6dc) to talk with the developers. You can download nightlies from within Mod Manager as well.
 
 ## Enhanced by JetBrains
 JetBrains has kindly given us several open source licenses for their tools that allow us to create better modding tools for you. Thanks, JetBrains!

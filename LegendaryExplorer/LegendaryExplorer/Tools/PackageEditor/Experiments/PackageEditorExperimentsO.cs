@@ -401,5 +401,19 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 MessageBox.Show("Unable to create test TLK file.");
             }
         }
+
+        public static void TestLE2EmailMerge(PackageEditorWindow pew)
+        {
+            pew.IsBusy = true;
+            pew.BusyText = $"Testing email merge";
+            Task.Run(() =>
+            {
+                ME2EmailMerge.BuildMessagesSequence(@"D:\Mass Effect Modding\Dumb Shit\ME2 Mail Merge\Output\BioD_Nor_103Messages.pcc");
+
+            }).ContinueWithOnUIThread((prevTask) =>
+            {
+                pew.IsBusy = false;
+            });
+        }
     }
 }

@@ -267,6 +267,7 @@
                                         <GridView ColumnHeaderContainerStyle="{StaticResource FileLVHeader}">
                                             <GridViewColumn DisplayMemberBinding="{Binding FileName}" Width="260" Header="File"/>
                                             <GridViewColumn DisplayMemberBinding="{Binding Directory}" Width="360" Header="Source (Basegame, DLC or Mod directory)" />
+                                            <GridViewColumn DisplayMemberBinding="{Binding Mount}" Width="360" Header="Mount"/>
                                         </GridView>
                                     </ListView.View>
                                     <ListView.ContextMenu>

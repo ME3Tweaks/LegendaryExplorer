@@ -284,5 +284,21 @@ namespace LegendaryExplorerCore.GameFilesystem
         }
 
         public static string GetDLCNameFromDir(string dlcDirectory) => Path.GetFileName(dlcDirectory).Substring(4);
+
+        /// <summary>
+        /// Gets all the enabled DLC in a dictionary along with the mount value.
+        /// </summary>
+        /// <returns></returns>
+        public static Dictionary<string, int> GetDLCNamesWithMounts(MEGame game)
+        {
+            var dlcs = MELoadedFiles.GetEnabledDLCFolders(game);
+            var mountlist = new Dictionary<string, int>();
+            foreach (var d in dlcs)
+            {
+                var m = MELoadedFiles.GetMountPriority(d, game);
+                mountlist.Add(Path.GetFileName(d), m);
+            }
+            return mountlist;
+        }
     }
 }

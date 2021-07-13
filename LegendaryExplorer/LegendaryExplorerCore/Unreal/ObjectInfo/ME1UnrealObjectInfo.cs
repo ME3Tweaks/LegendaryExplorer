@@ -606,6 +606,8 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     new KeyValuePair<string, PropertyInfo>("SoundCue", new PropertyInfo(PropertyType.ObjectProperty, "SoundCue")),
                 }
             };
+
+            ME3UnrealObjectInfo.AddIntrinsicClasses(Classes, MEGame.ME1);
         }
 
         public static ClassInfo generateClassInfo(ExportEntry export, bool isStruct = false)
