@@ -1638,10 +1638,10 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             }
         }
 
-        static ExportEntry cloneObject(ExportEntry old, ExportEntry sequence, bool topLevel = true)
+        static ExportEntry cloneObject(ExportEntry old, ExportEntry sequence, bool topLevel = true, bool incrementIndex = true)
         {
             //SeqVar_External needs to have the same index to work properly
-            ExportEntry exp = EntryCloner.CloneEntry(old, incrementIndex: old.ClassName != "SeqVar_External");
+            ExportEntry exp = EntryCloner.CloneEntry(old, incrementIndex: incrementIndex && old.ClassName != "SeqVar_External");
 
             KismetHelper.AddObjectToSequence(exp, sequence, topLevel);
             cloneSequence(exp, sequence);
@@ -1669,7 +1669,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 //clone all children
                 foreach (var obj in oldObjects)
                 {
-                    cloneObject(pcc.GetUExport(obj), exp, false);
+                    cloneObject(pcc.GetUExport(obj), exp, false, false);
                 }
 
                 //re-point children's links to new objects
@@ -1777,12 +1777,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 exp.WriteProperty(oSeqRefProp);
 
                 //clone sequence
-                cloneObject(pcc.GetUExport(oldSeqIndex), parentSequence, false);
-
-                //remove cloned sequence from SeqRef's parent's sequenceobjects
-                var seqObjs = parentSequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-                seqObjs.RemoveAt(seqObjs.Count - 1);
-                parentSequence.WriteProperty(seqObjs);
+                cloneObject(pcc.GetUExport(oldSeqIndex), exp, false);
 
                 //set SequenceReference's linked name indices
                 var inputIndices = new List<int>();
@@ -1830,10 +1825,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 }
 
                 exp.WriteProperties(props);
-
-                //set new Sequence's link and ParentSequence prop to SeqRef
-                newSequence.WriteProperty(new ObjectProperty(exp.UIndex, "ParentSequence"));
-                newSequence.idxLink = exp.UIndex;
             }
         }
 

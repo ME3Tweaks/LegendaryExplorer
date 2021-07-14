@@ -163,9 +163,12 @@ namespace LegendaryExplorerCore.Kismet
 
         public static void AddObjectToSequence(ExportEntry newObject, ExportEntry sequenceExport, bool removeLinks = false)
         {
-            ArrayProperty<ObjectProperty> seqObjs = sequenceExport.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects") ?? new ArrayProperty<ObjectProperty>("SequenceObjects");
-            seqObjs.Add(new ObjectProperty(newObject));
-            sequenceExport.WriteProperty(seqObjs);
+            if (sequenceExport.ClassName is not "SequenceReference")
+            {
+                ArrayProperty<ObjectProperty> seqObjs = sequenceExport.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects") ?? new ArrayProperty<ObjectProperty>("SequenceObjects");
+                seqObjs.Add(new ObjectProperty(newObject));
+                sequenceExport.WriteProperty(seqObjs);
+            }
 
             PropertyCollection newObjectProps = newObject.GetProperties();
             newObjectProps.AddOrReplaceProp(new ObjectProperty(sequenceExport, "ParentSequence"));
