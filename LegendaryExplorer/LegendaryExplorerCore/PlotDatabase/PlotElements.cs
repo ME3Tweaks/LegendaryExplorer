@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -55,32 +56,31 @@ namespace LegendaryExplorerCore.PlotDatabase
         };
     }
 
-    [DebuggerDisplay("{Type} {PlotID}: {Path}")]
-    public class PlotElement
+    [DebuggerDisplay("{Type} {PlotId}: {Path}")]
+    public class PlotElement : INotifyPropertyChanged
     {
-        [JsonProperty("plotid")]
-        public int PlotID;
+        [JsonProperty("plotid")] 
+        public int PlotId { get; set; }
 
-        [JsonProperty("elementid")]
-        public int ElementId;
+        [JsonProperty("elementid")] 
+        public int ElementId { get; set; }
 
         [JsonProperty("parentelementid")]
-        public int ParentElementId;
+        public int ParentElementId { get; set; }
 
         [JsonProperty("label")]
-        public string Label;
+        public string Label { get; set; }
 
         [JsonProperty("sequence")] 
-        public float Sequence;
+        public float Sequence { get; set; }
 
         [JsonProperty("type")]
-        public PlotElementType Type;
+        public PlotElementType Type { get; set; }
 
         [JsonIgnore]
-        public PlotElement Parent;
+        public PlotElement Parent { get; set; }
 
-        [JsonIgnore]
-        public List<PlotElement> Children = new List<PlotElement>();
+        [JsonIgnore] public List<PlotElement> Children { get; } = new List<PlotElement>();
 
         public string Path
         {
@@ -99,32 +99,38 @@ namespace LegendaryExplorerCore.PlotDatabase
             }
         }
 
+        public int RelevantId => PlotId <= 0 ? ElementId : PlotId;
+
+#pragma warning disable
+        public event PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore
+
     }
 
     public class PlotBool : PlotElement
     {
         [JsonProperty("subtype")] 
-        public PlotElementType? SubType;
+        public PlotElementType? SubType { get; set; }
 
         [JsonProperty("gamervariable")]
-        public int? GamerVariable;
+        public int? GamerVariable { get; set; }
 
         [JsonProperty("achievementid")]
-        public int? AchievementID;
+        public int? AchievementID { get; set; }
 
         [JsonProperty("galaxyatwar")]
-        public int? GalaxyAtWar;
+        public int? GalaxyAtWar { get; set; }
     }
 
     public class PlotConditional : PlotElement
     {
         [JsonProperty("code")] 
-        public string Code;
+        public string Code { get; set; }
     }
 
     public class PlotTransition : PlotElement
     {
         [JsonProperty("argument")] 
-        public string Argument;
+        public string Argument { get; set; }
     }
 }
