@@ -63,6 +63,9 @@ namespace LegendaryExplorerCore.Packages
                 _header = value;
                 if (!isFirstLoad)
                 {
+                    //new header may have changed link or name
+                    FileRef.InvalidateLookupTable();
+
                     FileRef.IsModified = true; // mark package as modified if the existing header is changing.
                     HeaderChanged = true;
                 }
