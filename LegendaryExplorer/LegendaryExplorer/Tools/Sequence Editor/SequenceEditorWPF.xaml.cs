@@ -1644,15 +1644,18 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             ExportEntry exp = EntryCloner.CloneEntry(old, incrementIndex: incrementIndex && old.ClassName != "SeqVar_External");
 
             KismetHelper.AddObjectToSequence(exp, sequence, topLevel);
-            cloneSequence(exp, sequence);
+            cloneSequence(exp);
             return exp;
         }
 
-        static void cloneSequence(ExportEntry exp, ExportEntry parentSequence)
+        static void cloneSequence(ExportEntry exp)
         {
             IMEPackage pcc = exp.FileRef;
             if (exp.ClassName == "Sequence")
             {
+                //sequence names need to be unique I think?
+                exp.ObjectName = pcc.GetNextIndexedName(exp.ObjectName.Name);
+
                 var seqObjs = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
                 if (seqObjs == null || seqObjs.Count == 0)
                 {
@@ -1777,13 +1780,11 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 exp.WriteProperty(oSeqRefProp);
 
                 //clone sequence
-                cloneObject(pcc.GetUExport(oldSeqIndex), exp, false);
-
+                ExportEntry newSequence = cloneObject(pcc.GetUExport(oldSeqIndex), exp, false);
                 //set SequenceReference's linked name indices
                 var inputIndices = new List<int>();
                 var outputIndices = new List<int>();
-
-                ExportEntry newSequence = pcc.GetUExport(exp.UIndex + 1);
+                
                 var props = newSequence.GetProperties();
                 var inLinksProp = props.GetProp<ArrayProperty<StructProperty>>("InputLinks");
                 if (inLinksProp != null)
