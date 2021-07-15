@@ -595,6 +595,14 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 inputLinks = new List<string> { "Show", "Hide", "Toggle" }
             };
 
+            classes["SFXSeqCond_IsCombatMode"] = new ClassInfo
+            {
+                baseClass = "SequenceCondition",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 17, //in LE3Resources.pcc
+            };
+            sequenceObjects["SFXSeqCond_IsCombatMode"] = new SequenceObjectInfo();
+
 
             ME3UnrealObjectInfo.AddIntrinsicClasses(classes, MEGame.LE3);
 
