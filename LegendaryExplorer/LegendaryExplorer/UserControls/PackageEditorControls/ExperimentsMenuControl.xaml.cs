@@ -1104,9 +1104,9 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsO.CreateTestTLKWithStringIDs(GetPEWindow());
         }
 
-        private void TestLE2EmailMerge_Click(object sender, RoutedEventArgs e)
+        private void UpdateLocalFunctions_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsO.TestLE2EmailMerge(GetPEWindow());
+            PackageEditorExperimentsO.UpdateLocalFunctions(GetPEWindow());
         }
         #endregion
 

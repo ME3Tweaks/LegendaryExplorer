@@ -112,6 +112,6 @@
         <MenuItem Header="Generate audio file info JSON (check code for game)" Click="GenerateAudioFileInfo_Click"/>
         <MenuItem Header="Generate Wwise ID from entry name" Click="GenerateWwiseId_Click"/>
         <MenuItem Header="Create test TLK from XML with IDs in string" Click="CreateTestTLKWithStringIDs_Click"/>
-        <MenuItem Header="Test LE2 email merge" Click="TestLE2EmailMerge_Click"/>
+        <MenuItem Header="Update Local Functions and Relink" Click="UpdateLocalFunctions_Click"/>
     </MenuItem>
 </MenuItem>

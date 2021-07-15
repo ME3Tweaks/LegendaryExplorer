@@ -18,6 +18,7 @@ using LegendaryExplorerCore.TLK.ME1;
 using LegendaryExplorerCore.TLK.ME2ME3;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 using HuffmanCompression = LegendaryExplorerCore.TLK.ME1.HuffmanCompression;
@@ -402,18 +403,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
-        public static void TestLE2EmailMerge(PackageEditorWindow pew)
+        public static void UpdateLocalFunctions(PackageEditorWindow pew)
         {
-            pew.IsBusy = true;
-            pew.BusyText = $"Testing email merge";
-            Task.Run(() =>
+            if (pew.TryGetSelectedExport(out var export) && ObjectBinary.From(export) is UClass uClass)
             {
-                ME2EmailMerge.BuildMessagesSequence(@"D:\Mass Effect Modding\Dumb Shit\ME2 Mail Merge\Output\BioD_Nor_103Messages.pcc");
-
-            }).ContinueWithOnUIThread((prevTask) =>
-            {
-                pew.IsBusy = false;
-            });
+                uClass.UpdateChildrenChain();
+                uClass.UpdateLocalFunctions();
+                export.WriteBinary(uClass);
+            }
         }
     }
 }
