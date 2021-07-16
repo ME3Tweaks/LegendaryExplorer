@@ -102,11 +102,11 @@ namespace LegendaryExplorerCore.PlotDatabase
             pdb = JsonConvert.DeserializeObject<PlotDatabaseFile>(json);
             pdb.BuildTree();
 
-            Bools = pdb.Bools.ToDictionary((b) => b.PlotID);
-            Ints = pdb.Ints.ToDictionary((b) => b.PlotID);
-            Floats = pdb.Floats.ToDictionary((b) => b.PlotID);
-            Conditionals = pdb.Conditionals.ToDictionary((b) => b.PlotID);
-            Transitions = pdb.Transitions.ToDictionary((b) => b.PlotID);
+            Bools = pdb.Bools.ToDictionary((b) => b.PlotId);
+            Ints = pdb.Ints.ToDictionary((b) => b.PlotId);
+            Floats = pdb.Floats.ToDictionary((b) => b.PlotId);
+            Conditionals = pdb.Conditionals.ToDictionary((b) => b.PlotId);
+            Transitions = pdb.Transitions.ToDictionary((b) => b.PlotId);
             Organizational = pdb.Organizational.ToDictionary((b) => b.ElementId);
         }
 

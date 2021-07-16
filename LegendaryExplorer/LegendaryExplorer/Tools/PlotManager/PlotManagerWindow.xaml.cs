@@ -31,9 +31,17 @@ namespace LegendaryExplorer.Tools.PlotManager
     public partial class PlotManagerWindow : NotifyPropertyChangedWindowBase
     {
 
-        public PlotDatabase BW_me3db { get; } = new();
-        public Dictionary<int, PlotElement> BW_ME3_Plots { get; } = new();
-        
+        public ObservableCollectionExtended<PlotElement> Elements3 { get; } = new();
+        public ObservableCollectionExtended<PlotElement> RootNodes3 { get; } = new();
+        public ObservableCollectionExtended<PlotElement> RootNodes2 { get; } = new();
+        public ObservableCollectionExtended<PlotElement> RootNodes1 { get; } = new();
+
+        private PlotElement _selectedNode;
+        public PlotElement SelectedNode
+        {
+            get => _selectedNode;
+            set => SetProperty(ref _selectedNode, value);
+        }
 
         public PlotManagerWindow()
         {
@@ -41,10 +49,13 @@ namespace LegendaryExplorer.Tools.PlotManager
             LoadCommands();
             InitializeComponent();
 
-            //me1BWdb.LoadBiowarePlotsFromJSON(MEGame.LE1);
-            //me2BWdb.LoadBiowarePlotsFromJSON(MEGame.LE2);
-            BW_me3db.LoadPlotsFromJSON(MEGame.LE3);
-            InitializeTreeView();
+            var dictionary3 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE3);
+            RootNodes3.Add(dictionary3[1]);
+            
+            var dictionary2 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE2);
+            RootNodes2.Add(dictionary2[1]);
+            var dictionary1 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE1);
+            RootNodes1.Add(dictionary1[1]);
             Focus();
         }
 
@@ -54,48 +65,6 @@ namespace LegendaryExplorer.Tools.PlotManager
 
         }
 
-
-
-
-        private void InitializeTreeView()
-        {
-            var sortedPlots = BW_me3db.GetMasterDictionary();
-            PlotElement root = sortedPlots[1];
-            //Create Tree
-            var rootNode = new TreeViewItem();
-            rootNode.Header = root.Label;
-
-            foreach(var e in root.Children)
-            {
-                var node = CreateChildTree(e);
-                rootNode.Items.Add(node);
-            }
-
-            ME3_Tree_BW.Items.Add(rootNode);
-
-        }
-
-        private TreeViewItem CreateChildTree(PlotElement childelement)
-        {
-            var childItem = new TreeViewItem();
-
-            switch (childelement.Type)
-            {
-                case PlotElementType.Plot:
-                case PlotElementType.Region:
-                    childItem.Header = childelement.Label;
-                    break;
-                default:
-                    childItem.Header = $"{childelement.Label} {childelement.Type} {childelement.PlotID}";
-                    break;
-            }
-            foreach (var e in childelement.Children)
-            {
-                var node = CreateChildTree(e);
-                childItem.Items.Add(node);
-            }
-            return childItem;
-        }
     }
 
   

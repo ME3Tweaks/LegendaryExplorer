@@ -1575,7 +1575,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             PackageCache pc = new PackageCache();
             var safeFiles = EntryImporter.FilesSafeToImportFrom(pewPcc.Game).ToList();
-            safeFiles.AddRange(loadedFiles.Where(x => x.Key.StartsWith("Startup") && (!pewPcc.Game.IsGame2() || x.Key.Contains("_INT"))).Select(x => x.Key));
+            safeFiles.AddRange(loadedFiles.Where(x => x.Key.StartsWith("Startup_") && (!pewPcc.Game.IsGame2() || x.Key.Contains("_INT"))).Select(x => x.Key));
+            if (pewPcc.Game.IsGame3())
+            {
+                // SP ONLY
+                safeFiles.Add(@"BIO_COMMON.pcc");
+            }
 
             foreach (var f in safeFiles.Distinct())
             {

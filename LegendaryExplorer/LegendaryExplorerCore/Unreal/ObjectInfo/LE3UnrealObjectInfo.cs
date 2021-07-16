@@ -595,6 +595,14 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 inputLinks = new List<string> { "Show", "Hide", "Toggle" }
             };
 
+            classes["SFXSeqCond_IsCombatMode"] = new ClassInfo
+            {
+                baseClass = "SequenceCondition",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 17, //in LE3Resources.pcc
+            };
+            sequenceObjects["SFXSeqCond_IsCombatMode"] = new SequenceObjectInfo();
+
 
             ME3UnrealObjectInfo.AddIntrinsicClasses(classes, MEGame.LE3);
 
@@ -828,7 +836,15 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         /// </summary>
         public static readonly string[] NativeClasses =
         {
-            @"Engine.CodecMovieBink"
+            @"Engine.CodecMovieBink",
+            @"Engine.Level",
+            @"Engine.LightMapTexture2D",
+            @"Engine.Model",
+            @"Engine.Polys",
+            @"Engine.ShadowMap1D",
+            @"Engine.StaticMesh",
+            @"Engine.World",
+            @"Engine.ShaderCache",
         };
     }
 }

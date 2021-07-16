@@ -632,6 +632,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         private static readonly string[] le3FilesSafeToImportFrom =
         {
             //Class libary: These files contain ME3's standard library of classes, structs, enums... Also a few assets
+            // Note: You must use MELoadedFiles for Startup.pcc as it exists in METR Patch and is not used by game! (and is also wrong file)
             "Core.pcc", "Engine.pcc", "Startup.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc",
         };
 

@@ -102,6 +102,8 @@
         <MenuItem Header="Enumerate Class NetIndexes" Click="AutoEnumerateClassNetIndex"/>
         <MenuItem Header="Set All WwiseEvent Durations" Click="SetAllWwiseEventDurations_Click"/>
         <MenuItem Header="Copy Package Name" Click="CopyPackageName"/>
+        <MenuItem Header="Save as New Package" Click="SaveAsNewPackage"/>
+        <MenuItem Header="Trash Compactor" Click="RunTrashCompactor"/>
     </MenuItem>
     <MenuItem Header="Other people's box of Legos">
         <MenuItem Header="Export level to T3D" Click="ExportLevelToT3D_Click"/>
@@ -110,6 +112,6 @@
         <MenuItem Header="Generate audio file info JSON (check code for game)" Click="GenerateAudioFileInfo_Click"/>
         <MenuItem Header="Generate Wwise ID from entry name" Click="GenerateWwiseId_Click"/>
         <MenuItem Header="Create test TLK from XML with IDs in string" Click="CreateTestTLKWithStringIDs_Click"/>
-        <MenuItem Header="Test LE2 email merge" Click="TestLE2EmailMerge_Click"/>
+        <MenuItem Header="Update Local Functions and Relink" Click="UpdateLocalFunctions_Click"/>
     </MenuItem>
 </MenuItem>

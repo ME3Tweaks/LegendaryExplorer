@@ -223,6 +223,9 @@ namespace LegendaryExplorerCore.Packages
                 _header = value;
                 DataSize = dataSize; //should never be altered by Header overwrite
 
+                //new header may have changed link or name
+                FileRef.InvalidateLookupTable();
+
                 EntryHasPendingChanges = true;
                 HeaderChanged = true;
                 // This is a hack cause FileRef is IMEPackage

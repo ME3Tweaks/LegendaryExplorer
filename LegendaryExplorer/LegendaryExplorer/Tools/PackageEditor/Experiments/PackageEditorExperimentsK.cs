@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.GameFilesystem;
@@ -16,6 +17,7 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 
@@ -532,6 +534,243 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     dlg.Show();
                 });
             }
+        }
+
+        public static async void SaveAsNewPackage(PackageEditorWindow pewpf)
+        {
+            string fileFilter;
+            switch (pewpf.Pcc.Game)
+            {
+                case MEGame.ME1:
+                    fileFilter = GameFileFilters.ME1SaveFileFilter;
+                    break;
+                case MEGame.ME2:
+                case MEGame.ME3:
+                    fileFilter = GameFileFilters.ME3ME2SaveFileFilter;
+                    break;
+                default:
+                    string extension = Path.GetExtension(pewpf.Pcc.FilePath);
+                    fileFilter = $"*{extension}|*{extension}";
+                    break;
+            }
+
+            var d = new SaveFileDialog { Filter = fileFilter };
+            if (d.ShowDialog() == true)
+            {
+                string oldname = Path.GetFileNameWithoutExtension(pewpf.Pcc.FilePath).ToLower();
+                string newname = Path.GetFileNameWithoutExtension(d.FileName);
+                pewpf.Pcc.Save(d.FileName);
+                pewpf.Pcc.Dispose();
+                pewpf.Close();
+
+                var p = new PackageEditorWindow();
+                p.Show();
+                p.LoadFile(d.FileName);
+                p.Activate();
+                for (int i = 0; i < p.Pcc.Names.Count; i++)
+                {
+                    string name = p.Pcc.Names[i];
+                    if (name.ToLower() == oldname)
+                    {
+                        p.Pcc.replaceName(i, newname);
+                        break;
+                    }
+
+                }
+
+                Guid pkgguid = Guid.NewGuid();
+                var localpackage = p.Pcc.Exports.FirstOrDefault<ExportEntry>(x => x.ClassName == "Package" && x.ObjectNameString == newname);
+                if (localpackage != null)
+                {
+                    localpackage.PackageGUID = pkgguid;
+                }
+                p.Pcc.PackageGuid = pkgguid;
+
+                await p.Pcc.SaveAsync();
+                MessageBox.Show("New File Created and Loaded.");
+            }
+        }
+
+
+        public static async void TrashCompactor(PackageEditorWindow pewpf, IMEPackage pcc)
+        {
+            var chkdlg = MessageBox.Show($"WARNING: Confirm you wish to recook this file?\n" +
+                         $"\nThis will remove all references that current actors do not need.\nIt will then trash any entry that isn't being used.\n\n" +
+                         $"This is an experimental tool. Make backups.", "Experimental Tool Warning", MessageBoxButton.OKCancel);
+            if (chkdlg == MessageBoxResult.Cancel)
+                return;
+            pewpf.SetBusy("Finding unreferenced entries");
+            ////pewpf.AllowRefresh = false;
+            //Find all level references
+            if (pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry levelExport)
+            {
+                Level level = ObjectBinary.From<Level>(levelExport);
+                HashSet<int> norefsList = await Task.Run(() => pcc.GetReferencedEntries(false));
+                pewpf.BusyText = "Recooking the Persistant Level";
+                //Get all items in the persistent level not actors
+                var references = new List<int>();
+                foreach (var t in level.TextureToInstancesMap)
+                {
+                    references.Add(t.Key);
+                }
+                foreach (var txtref in references)
+                {
+                    if (norefsList.Contains(txtref))
+                    {
+                        level.TextureToInstancesMap.Remove(txtref);
+                    }
+                }
+                references.Clear();
+
+                //Clean up Cached PhysSM Data && Rebuild Data Store
+                var newPhysSMmap = new OrderedMultiValueDictionary<UIndex, CachedPhysSMData>();
+                var newPhysSMstore = new List<KCachedConvexData>();
+                foreach (var r in level.CachedPhysSMDataMap)
+                {
+                    references.Add(r.Key);
+                }
+                foreach (int reference in references)
+                {
+                    if (!norefsList.Contains(reference))
+                    {
+                        var map = level.CachedPhysSMDataMap[reference];
+                        var oldidx = map.CachedDataIndex;
+                        var kvp = level.CachedPhysSMDataStore[oldidx];
+                        map.CachedDataIndex = newPhysSMstore.Count;
+                        newPhysSMstore.Add(level.CachedPhysSMDataStore[oldidx]);
+                        newPhysSMmap.Add(new KeyValuePair<UIndex, CachedPhysSMData>(reference, map));
+                    }
+                }
+                level.CachedPhysSMDataMap = newPhysSMmap;
+                level.CachedPhysSMDataStore = newPhysSMstore;
+                references.Clear();
+
+                //Clean up Cached PhysPerTri Data
+                var newPhysPerTrimap = new OrderedMultiValueDictionary<UIndex, CachedPhysSMData>();
+                var newPhysPerTristore = new List<KCachedPerTriData>();
+                foreach (var s in level.CachedPhysPerTriSMDataMap)
+                {
+                    references.Add(s.Key);
+                }
+                foreach (int reference in references)
+                {
+                    if (!norefsList.Contains(reference))
+                    {
+                        var map = level.CachedPhysPerTriSMDataMap[reference];
+                        var oldidx = map.CachedDataIndex;
+                        var kvp = level.CachedPhysPerTriSMDataStore[oldidx];
+                        map.CachedDataIndex = newPhysPerTristore.Count;
+                        newPhysPerTristore.Add(level.CachedPhysPerTriSMDataStore[oldidx]);
+                        newPhysPerTrimap.Add(new KeyValuePair<UIndex, CachedPhysSMData>(reference, map));
+                    }
+                }
+                level.CachedPhysPerTriSMDataMap = newPhysPerTrimap;
+                level.CachedPhysPerTriSMDataStore = newPhysPerTristore;
+                references.Clear();
+
+                //Clean up NAV data - how to clean up Nav ints?
+                if (norefsList.Contains(level.NavListStart ?? 0))
+                {
+                    level.NavListStart = 0;
+                }
+                if (norefsList.Contains(level.NavListEnd ?? 0))
+                {
+                    level.NavListEnd = 0;
+                }
+                var newNavArray = new List<UIndex>();
+                newNavArray.AddRange(level.NavPoints);
+                foreach (var navref in level.NavPoints)
+                {
+                    var navpoint = navref?.value ?? -1;
+                    if (norefsList.Contains(navpoint) || navpoint == 0)
+                    {
+                        newNavArray.Remove(navref);
+                    }
+                }
+                level.NavPoints = newNavArray;
+
+                //Clean up Coverlink Lists => pare down guid2byte? table
+                if (norefsList.Contains(level.CoverListStart ?? 0))
+                {
+                    level.CoverListStart = 0;
+                }
+                if (norefsList.Contains(level.CoverListEnd ?? 0))
+                {
+                    level.CoverListEnd = 0;
+                }
+                var newCLArray = new List<UIndex>();
+                newCLArray.AddRange(level.CoverLinks);
+                foreach (var clref in level.CoverLinks)
+                {
+                    var coverlink = clref?.value ?? -1;
+                    if (norefsList.Contains(coverlink) || coverlink == 0)
+                    {
+                        newCLArray.Remove(clref);
+                    }
+                }
+                level.CoverLinks = newCLArray;
+
+
+                if (pcc.Game.IsGame3())
+                {
+                    //Clean up Pylon List
+                    if (norefsList.Contains(level.PylonListStart ?? 0))
+                    {
+                        level.PylonListStart = 0;
+                    }
+                    if (norefsList.Contains(level.PylonListEnd ?? 0))
+                    {
+                        level.PylonListEnd = 0;
+                    }
+                }
+
+                //Cross Level Actors
+                level.CoverLinks = newCLArray;
+                var newXLArray = new List<UIndex>();
+                newXLArray.AddRange(level.CrossLevelActors);
+                foreach (var cla in level.CrossLevelActors)
+                {
+                    var xlvlactor = cla?.value ?? -1;
+                    if (norefsList.Contains(xlvlactor) || xlvlactor == 0)
+                    {
+                        newXLArray.Remove(cla);
+                    }
+                }
+                level.CrossLevelActors = newXLArray;
+
+                //Clean up int lists if empty of NAV points
+                if (level.NavPoints.IsEmpty() && level.CoverLinks.IsEmpty() && level.CrossLevelActors.IsEmpty() && (!pcc.Game.IsGame3() || level.PylonListStart == 0))
+                {
+                    level.guidToIntMap.Clear();
+                    level.guidToIntMap2.Clear();
+                    level.intToByteMap.Clear();
+                    level.numbers.Clear();
+                }
+
+                levelExport.WriteBinary(level);
+
+                pewpf.BusyText = "Trashing unwanted items";
+                List<IEntry> itemsToTrash = new List<IEntry>();
+                foreach (var export in pcc.Exports)
+                {
+                    if (norefsList.Contains(export.UIndex))
+                    {
+                        itemsToTrash.Add(export);
+                    }
+                }
+                //foreach (var import in pcc.Imports)  //Don't trash imports until UnrealScript functions can be fully parsed.
+                //{
+                //    if (norefsList.Contains(import.UIndex))
+                //    {
+                //        itemsToTrash.Add(import);
+                //    }
+                //}
+
+                EntryPruner.TrashEntries(pcc, itemsToTrash);
+            }
+            //pewpf.AllowRefresh = true;
+            pewpf.EndBusy();
+            MessageBox.Show("Trash Compactor Done");
         }
     }
 }

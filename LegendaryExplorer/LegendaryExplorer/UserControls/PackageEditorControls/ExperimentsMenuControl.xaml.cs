@@ -1059,6 +1059,16 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             Clipboard.SetText(Path.GetFileNameWithoutExtension(GetPEWindow().Pcc?.FilePath));
         }
+
+        private void SaveAsNewPackage(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsK.SaveAsNewPackage(GetPEWindow());
+        }
+
+        private void RunTrashCompactor(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsK.TrashCompactor(GetPEWindow(), GetPEWindow().Pcc);
+        }
         #endregion
 
         // EXPERIMENTS: OTHER PEOPLE ------------------------------------------------------------
@@ -1094,9 +1104,9 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsO.CreateTestTLKWithStringIDs(GetPEWindow());
         }
 
-        private void TestLE2EmailMerge_Click(object sender, RoutedEventArgs e)
+        private void UpdateLocalFunctions_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsO.TestLE2EmailMerge(GetPEWindow());
+            PackageEditorExperimentsO.UpdateLocalFunctions(GetPEWindow());
         }
         #endregion
 
