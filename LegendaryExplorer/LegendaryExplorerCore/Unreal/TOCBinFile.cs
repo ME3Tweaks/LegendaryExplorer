@@ -148,59 +148,59 @@ namespace LegendaryExplorerCore.Unreal
         {
             internal int offset { get; set; }
             internal int entrycount { get; set; }
-            internal List<Entry> TOCEntries { get; } = new();
+            public List<Entry> TOCEntries { get; } = new();
         }
 
-        public void ReadFile(MemoryStream ms)
+public void ReadFile(MemoryStream ms)
+{
+    var reader = new EndianReader(ms);
+    uint magic = (uint)reader.ReadInt32();
+    if (magic != TOCMagicNumber)
+    {
+        throw new Exception("Not a TOC file, bad magic header");
+    }
+
+    var mediaTableCount = reader.ReadInt32(); // Should be 0
+    var hashTableCount = reader.ReadInt32();
+
+    long maxReadValue = 0;
+    for (int i = 0; i < hashTableCount; i++)
+    {
+        var pos = reader.Position;
+        var newEntry = new TOCHashTableEntry()
         {
-            var reader = new EndianReader(ms);
-            uint magic = (uint)reader.ReadInt32();
-            if (magic != TOCMagicNumber)
+            offset = reader.ReadInt32(),
+            entrycount = reader.ReadInt32(),
+        };
+        HashBuckets.Add(newEntry);
+
+        var resumePosition = reader.Position;
+        // Read Entries
+
+        reader.Position = newEntry.offset + pos;
+        for (int j = 0; j < newEntry.entrycount; j++)
+        {
+
+            Entry e = new()
             {
-                throw new Exception("Not a TOC file, bad magic header");
-            }
+                offset = (int)reader.Position,
+                entrydisksize = reader.ReadInt16(),
+                flags = reader.ReadInt16(),
+                size = reader.ReadInt32(),
+                sha1 = reader.ReadToBuffer(0x14), // 20
+                name = reader.ReadStringASCIINull()
+            };
 
-            var mediaTableCount = reader.ReadInt32(); // Should be 0
-            var hashTableCount = reader.ReadInt32();
+            reader.Seek(e.offset + e.entrydisksize, SeekOrigin.Begin);
 
-            long maxReadValue = 0;
-            for (int i = 0; i < hashTableCount; i++)
-            {
-                var pos = reader.Position;
-                var newEntry = new TOCHashTableEntry()
-                {
-                    offset = reader.ReadInt32(),
-                    entrycount = reader.ReadInt32(),
-                };
-                HashBuckets.Add(newEntry);
+            maxReadValue = Math.Max(maxReadValue, reader.Position);
 
-                var resumePosition = reader.Position;
-                // Read Entries
-
-                reader.Position = newEntry.offset + pos;
-                for (int j = 0; j < newEntry.entrycount; j++)
-                {
-
-                    Entry e = new()
-                    {
-                        offset = (int)reader.Position,
-                        entrydisksize = reader.ReadInt16(),
-                        flags = reader.ReadInt16(),
-                        size = reader.ReadInt32(),
-                        sha1 = reader.ReadToBuffer(0x14), // 20
-                        name = reader.ReadStringASCIINull()
-                    };
-
-                    reader.Seek(e.offset + e.entrydisksize, SeekOrigin.Begin);
-
-                    maxReadValue = Math.Max(maxReadValue, reader.Position);
-
-                    newEntry.TOCEntries.Add(e);
-                }
-
-                reader.Position = resumePosition;
-            }
+            newEntry.TOCEntries.Add(e);
         }
+
+        reader.Position = resumePosition;
+    }
+}
 
 
         public void UpdateEntry(int Index, int size)
