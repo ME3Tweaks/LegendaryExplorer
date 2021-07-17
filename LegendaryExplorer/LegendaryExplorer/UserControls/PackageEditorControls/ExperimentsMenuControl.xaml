@@ -113,5 +113,6 @@
         <MenuItem Header="Generate Wwise ID from entry name" Click="GenerateWwiseId_Click"/>
         <MenuItem Header="Create test TLK from XML with IDs in string" Click="CreateTestTLKWithStringIDs_Click"/>
         <MenuItem Header="Update Local Functions and Relink" Click="UpdateLocalFunctions_Click"/>
+        <MenuItem Header="Dump TOC file" Click="DumpTOC_Click"/>
     </MenuItem>
 </MenuItem>

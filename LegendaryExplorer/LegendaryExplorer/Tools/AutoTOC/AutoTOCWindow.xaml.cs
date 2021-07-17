@@ -315,7 +315,7 @@ namespace LegendaryExplorer.Tools.AutoTOC
             {
                 Path.Combine(MEDirectories.GetDefaultGamePath(game), "BIOGame")
             };
-            if (Directory.Exists(MEDirectories.GetDLCPath(game)))
+            if (game != MEGame.LE1 && File.Exists(MEDirectories.GetDLCPath(game)))
             {
                 folders.AddRange((new DirectoryInfo(MEDirectories.GetDLCPath(game)).GetDirectories()
                     .Select(d => d.FullName)));
