@@ -1118,6 +1118,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsO.UpdateLocalFunctions(GetPEWindow());
         }
+
+        private void DumpTOC_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.DumpTOC();
+        }
         #endregion
 
 

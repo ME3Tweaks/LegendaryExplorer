@@ -121,6 +121,28 @@ namespace LegendaryExplorerCore.Unreal
             ReadFile(new MemoryStream(File.ReadAllBytes(path).ToArray()));
         }
 
+        public void DumpTOCToTxtFile(string dumpToFile = "")
+        {
+            StreamWriter file = new StreamWriter(dumpToFile);
+
+            file.WriteLine($"TOC Hash Buckets: {HashBuckets.Count}");
+            for (int i = 0; i < HashBuckets.Count; i++)
+            {
+                var hb = HashBuckets[i];
+                file.WriteLine($"TOC Hash Bucket {i}, {hb.TOCEntries.Count} Entries");
+                for (int j = 0; j < hb.TOCEntries.Count; j++)
+                {
+                    var hte = hb.TOCEntries[j];
+                    file.WriteLine($"\tHash File Entry {j} @ {hte.offset:X6}");
+                    file.WriteLine($"\t\tNext Offset\t\t\t{hte.entrydisksize}");
+                    file.WriteLine($"\t\tFlags\t\t\t0x{hte.flags:X4}");
+                    file.WriteLine($"\t\tFilesize\t\t\t{hte.size} ({FileSize.FormatSize(hte.size)})");
+                    file.WriteLine($"\t\tSHA1\t\t\t{BitConverter.ToString(hte.sha1)}");
+                    file.WriteLine($"\t\tFilename\t\t\t{hte.name}");
+                }
+            }
+
+        }
 
 #if DEBUG
         public void DumpTOC()
@@ -141,6 +163,7 @@ namespace LegendaryExplorerCore.Unreal
                     Debug.WriteLine($"\t\tFilename\t\t\t{hte.name}");
                 }
             }
+
         }
 #endif
 

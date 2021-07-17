@@ -412,5 +412,23 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 export.WriteBinary(uClass);
             }
         }
+
+        public static void DumpTOC()
+        {
+            Microsoft.Win32.OpenFileDialog outputFileDialog = new () { 
+                Title = "Select TOC File", 
+                Filter = "*.bin|*.bin" };s
+            bool? result = outputFileDialog.ShowDialog();
+            if (!result.HasValue || !result.Value)
+            {
+                Debug.WriteLine("No output file specified");
+                return;
+            }
+            string inputFile = outputFileDialog.FileName;
+            string outputFile = Path.ChangeExtension(inputFile, "txt");
+
+            var toc = new TOCBinFile(inputFile);
+            toc.DumpTOCToTxtFile(outputFile);
+        }
     }
 }
