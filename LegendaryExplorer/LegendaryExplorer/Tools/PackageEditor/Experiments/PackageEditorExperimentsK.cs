@@ -772,5 +772,104 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             pewpf.EndBusy();
             MessageBox.Show("Trash Compactor Done");
         }
+
+        public static void NewSeekFreeFile(PackageEditorWindow pewpf)
+        {
+            string gameString = InputComboBoxDialog.GetValue(pewpf, "Choose game to create a seekfree file for:",
+                                                          "Create new level file", new[] { "LE3", "LE2", "ME3", "ME2" }, "LE3");
+            if (Enum.TryParse(gameString, out MEGame game) && game is MEGame.ME3 or MEGame.ME2 or MEGame.LE3 or MEGame.LE2)
+            {
+                var dlg = new SaveFileDialog
+                {
+                    Filter = GameFileFilters.ME3ME2SaveFileFilter,
+                    OverwritePrompt = true
+                };
+                if (game.IsLEGame())
+                {
+                    dlg.Filter = GameFileFilters.LESaveFileFilter;
+                }
+                if (dlg.ShowDialog() == true)
+                {
+                    if (File.Exists(dlg.FileName))
+                    {
+                        File.Delete(dlg.FileName);
+                    }
+                    string emptyLevelName = game switch
+                    {
+                        MEGame.LE2 => "LE2EmptySeekFree",
+                        MEGame.LE3 => "LE3EmptySeekFree",
+                        MEGame.ME2 => "ME2EmptySeekFree",
+                        _ => "ME3EmptySeekFree"
+                    };
+                    File.Copy(Path.Combine(AppDirectories.ExecFolder, $"{emptyLevelName}.pcc"), dlg.FileName);
+                    pewpf.LoadFile(dlg.FileName);
+                    for (int i = 0; i < pewpf.Pcc.Names.Count; i++)
+                    {
+                        string name = pewpf.Pcc.Names[i];
+                        if (name.Equals(emptyLevelName))
+                        {
+                            var newName = name.Replace(emptyLevelName, Path.GetFileNameWithoutExtension(dlg.FileName));
+                            pewpf.Pcc.replaceName(i, newName);
+                        }
+                    }
+
+                    var packguid = Guid.NewGuid();
+                    var package = pewpf.Pcc.GetUExport(game switch
+                    {
+                        MEGame.ME2 => 7,
+                        _ => 1
+                    });
+                    package.PackageGUID = packguid;
+                    pewpf.Pcc.PackageGuid = packguid;
+                    pewpf.Pcc.Save();
+                }
+            }
+        }
+
+        public static void AddAllAssetsToReferencer(PackageEditorWindow pewpf)
+        {
+            if (pewpf.SelectedItem.Entry.ClassName != "ObjectReferencer")
+            {
+                MessageBox.Show("ObjectReferencer not selected.", "Error");
+                return;
+            }
+
+            var oReferencer = pewpf.SelectedItem.Entry as ExportEntry;
+            var referenceProp = oReferencer.GetProperties()?.GetProp<ArrayProperty<ObjectProperty>>("ReferencedObjects");
+
+            var seekfreeClasses = new List<string>
+            {
+                "BioConversation",
+                "FaceFXAnimSet",
+                "Material",
+                "MaterialInstanceConstant",
+                "Sequence",
+                "SkeletalMesh",
+                "Texture2d",
+                "WwiseBank",
+                "WwiseStream",
+                "WwiseEvent"
+            };
+            var seekfreeAssets = new List<ObjectProperty>();
+            foreach (var x in pewpf.Pcc.Exports)
+            {
+                foreach (var cls in seekfreeClasses)
+                {
+                    if (x.ClassName == cls)
+                    {
+                        var obj = new ObjectProperty(x);
+                        seekfreeAssets.Add(obj);
+                        break;
+                    }
+                }
+            }
+
+            if (referenceProp != null)
+            {
+                referenceProp.Clear();
+                referenceProp.AddRange(seekfreeAssets);
+                oReferencer.WriteProperty(referenceProp);
+            }
+        }
     }
 }
