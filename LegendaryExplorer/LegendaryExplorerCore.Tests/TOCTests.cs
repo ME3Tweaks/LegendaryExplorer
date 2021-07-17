@@ -36,9 +36,10 @@ namespace LegendaryExplorerCore.Tests
                 tocDiskBytes = File.ReadAllBytes(tocF);
                 var tbf = new TOCBinFile(new MemoryStream(tocDiskBytes));
                 var reserialized = tbf.Save();
+                reserialized.Position = 0;
 
-                var reserializedArray = reserialized.ToArray();
-                Assert.IsTrue(tocDiskBytes.AsSpan().SequenceEqual(reserializedArray), $"Re-serialized TOC file is not the same as the original! File: {tocF}");
+                var tbf2 = new TOCBinFile(reserialized);
+                Assert.AreEqual(tbf.HashBuckets.Sum(x=>x.TOCEntries.Count), tbf2.HashBuckets.Sum(x => x.TOCEntries.Count), $"Re-serialized TOC file has different amount of files! File: {tocF}");
             }
 
         }

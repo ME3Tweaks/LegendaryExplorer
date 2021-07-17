@@ -157,8 +157,17 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 {
 
                     // This doesn't work on functions! Finding the children through the probe doesn't work
-                    List<(UIndex, string)> indices = objBin.GetUIndexes(relinkingExport.FileRef.Game);
 
+                    if (objBin.Export != null && objBin.Export.ClassName == "State")
+                    {
+                        // We can't relink labeltable as it depends on none
+                        // Use the source export instead
+                        objBin = ObjectBinary.From(sourceExport);
+                    }
+
+                    
+                    List<(UIndex, string)> indices = objBin.GetUIndexes(relinkingExport.FileRef.Game);
+                    
                     foreach ((UIndex uIndex, string propName) in indices)
                     {
                         var result = relinkUIndex(sourcePcc, relinkingExport, ref uIndex.value, $"(Binary Property: {propName})",
