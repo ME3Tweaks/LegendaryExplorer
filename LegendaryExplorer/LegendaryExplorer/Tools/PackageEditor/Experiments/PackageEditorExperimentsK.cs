@@ -845,7 +845,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 "MaterialInstanceConstant",
                 "Sequence",
                 "SkeletalMesh",
-                "Texture2d",
+                "Texture2D",
                 "WwiseBank",
                 "WwiseStream",
                 "WwiseEvent"

@@ -417,7 +417,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
             Microsoft.Win32.OpenFileDialog outputFileDialog = new () { 
                 Title = "Select TOC File", 
-                Filter = "*.bin|*.bin" };s
+                Filter = "*.bin|*.bin" };
             bool? result = outputFileDialog.ShowDialog();
             if (!result.HasValue || !result.Value)
             {
