@@ -13,6 +13,7 @@ using FontAwesome5;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Controls;
+using LegendaryExplorer.ToolsetDev.MemoryAnalyzer;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
@@ -313,9 +314,9 @@ namespace LegendaryExplorer.Tools.AutoTOC
         {
             var folders = new List<string>
             {
-                Path.Combine(MEDirectories.GetDefaultGamePath(game), "BIOGame")
+                MEDirectories.GetBioGamePath(game)
             };
-            if (game != MEGame.LE1 && File.Exists(MEDirectories.GetDLCPath(game)))
+            if (game != MEGame.LE1)
             {
                 folders.AddRange((new DirectoryInfo(MEDirectories.GetDLCPath(game)).GetDirectories()
                     .Select(d => d.FullName)));
@@ -342,7 +343,13 @@ namespace LegendaryExplorer.Tools.AutoTOC
                 try
                 {
                     var tocOutFile = Path.Combine(folderToToc, "PCConsoleTOC.bin");
-                    var toc = TOCCreator.CreateTOCForDirectory(folderToToc, game);
+                    MemoryStream toc = new MemoryStream();
+                    if (folderToToc == MEDirectories.GetBioGamePath(game))
+                    {
+                        toc = TOCCreator.CreateBasegameTOCForDirectory(folderToToc, game);
+                    }
+                    else toc = TOCCreator.CreateDLCTOCForDirectory(folderToToc, game);
+
                     File.WriteAllBytes(tocOutFile, toc.ToArray());
                     task?.Complete($"Created TOC for {folderToToc}");
                 }

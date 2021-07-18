@@ -136,14 +136,21 @@ namespace LegendaryExplorerCore.Unreal
                     if (tocResult is DLCPackage.DLCTOCUpdateResult.RESULT_ERROR_NO_ENTRIES)
                     {
                         var tocFileLocation = Path.Combine(dir, "PCConsoleTOC.bin");
-                        CreateTOCForDirectory(dir, game).WriteToFile(tocFileLocation);
+                        CreateDLCTOCForDirectory(dir, game).WriteToFile(tocFileLocation);
                     }
                 }
                 // This is an unpacked folder - either BioGame or a DLC Folder
                 else
                 {
                     var tocFileLocation = Path.Combine(dir, "PCConsoleTOC.bin");
-                    CreateTOCForDirectory(dir, game).WriteToFile(tocFileLocation);
+                    if (dir == MEDirectories.GetBioGamePath(game, gameRootOverride))
+                    {
+                        CreateBasegameTOCForDirectory(dir, game).WriteToFile(tocFileLocation);
+                    }
+                    else
+                    {
+                        CreateDLCTOCForDirectory(dir, game).WriteToFile(tocFileLocation);
+                    }
                     //Debug.WriteLine($"{tocFileLocation}-------------------------");
                     //TOCBinFile tbf = new TOCBinFile(tocFileLocation);
                     //tbf.DumpTOC();
@@ -157,50 +164,69 @@ namespace LegendaryExplorerCore.Unreal
         /// <summary>
         /// Creates the binary for a TOC file for a specified directory root
         /// </summary>
-        /// <param name="directory">DLC_ directory, like DLC_CON_JAM, or the BIOGame directory of the game.</param>
+        /// <param name="directory">The BIOGame directory of the game.</param>
         /// <param name="game"></param>
         /// <returns>Memorystream of TOC created, null if there are no entries or input was invalid</returns>
-        public static MemoryStream CreateTOCForDirectory(string directory, MEGame game)
+        public static MemoryStream CreateBasegameTOCForDirectory(string directory, MEGame game)
         {
             bool isLe2Le3 = game is MEGame.LE2 or MEGame.LE3;
             var files = GetFiles(directory, isLe2Le3);
-            var originalFilesList = files;
 
-            if (game == MEGame.LE1 && new FileInfo(directory).Name.Equals("BIOGame", StringComparison.InvariantCultureIgnoreCase))
+            if (game == MEGame.LE1)
             {
-                files = GetLE1Files(originalFilesList, directory);
+                files = GetLE1Files(files, directory);
             }
 
             if (files.Count > 0)
             {
-                //Strip the non-relative path information
+                // Basegame TOC
                 string file0fullpath = files[0];
-                // This is not a surefire way to determine if this is a DLC folder TOC, as LE games include DLC files in the basegame toc
-                int dlcFolderStartSubStrPos = file0fullpath.IndexOf("DLC_", StringComparison.InvariantCultureIgnoreCase);
-                if (dlcFolderStartSubStrPos > 0 && game != MEGame.LE1)
+                int biogameStrPos = file0fullpath.IndexOf("BIOGame", StringComparison.InvariantCultureIgnoreCase);
+                if (game.IsLEGame())
                 {
-                    // DLC TOC
-                    files = files.Select(x => x.Substring(dlcFolderStartSubStrPos)).ToList();
-                    files = files.Select(x => x.Substring(x.IndexOf(Path.DirectorySeparatorChar) + 1)).ToList(); //remove first slash
+                    files.AddRange(GetFiles(Path.Combine(directory.Substring(0, biogameStrPos), "Engine", "Shaders"), isLe2Le3));
                 }
-                else
-                {
-                    // Basegame TOC
-                    int biogameStrPos = file0fullpath.IndexOf("BIOGame", StringComparison.InvariantCultureIgnoreCase);
-                    if (game.IsLEGame())
-                    {
-                        files.AddRange(GetFiles(Path.Combine(directory.Substring(0, biogameStrPos), "Engine", "Shaders"), isLe2Le3));
-                    }
 
-                    if (biogameStrPos > 0)
-                    {
-                        files = files.Select(x => x.Substring(biogameStrPos)).ToList();
-                    }
+                var originalFilesList = files; // Original file paths, to use for getting filesizes after we shorten the paths
+
+                if (biogameStrPos > 0)
+                {
+                    files = files.Select(x => x.Substring(biogameStrPos)).ToList();
                 }
 
                 var entries = originalFilesList.Select((t, i) => (files[i], (int)new FileInfo(t).Length)).ToList();
 
                 return CreateTOCForEntries(entries);
+            }
+            throw new Exception("There are no TOCable files in the specified directory.");
+        }
+
+        /// <summary>
+        /// Creates the binary for a TOC file for a specified DLC directory root
+        /// </summary>
+        /// <param name="directory">A DLC folder, such as DLC_CON_JAM</param>
+        /// <param name="game"></param>
+        /// <returns>Memorystream of TOC created, null if there are no entries or input was invalid</returns>
+        public static MemoryStream CreateDLCTOCForDirectory(string directory, MEGame game)
+        {
+            bool isLe2Le3 = game is MEGame.LE2 or MEGame.LE3;
+            var files = GetFiles(directory, isLe2Le3);
+            var originalFilesList = files; // Original file paths, to use for getting filesizes after we shorten the paths
+
+            if (files.Count > 0)
+            {
+                string file0fullpath = files[0];
+                int dlcFolderStartSubStrPos = file0fullpath.IndexOf("DLC_", StringComparison.InvariantCultureIgnoreCase);
+                if (dlcFolderStartSubStrPos == -1 || game.IsGame1() || game is MEGame.ME2)
+                {
+                    throw new Exception("Not a TOCable DLC directory.");
+                }
+
+                files = files.Select(x => x.Substring(dlcFolderStartSubStrPos)).ToList();
+                files = files.Select(x => x.Substring(x.IndexOf(Path.DirectorySeparatorChar) + 1)).ToList(); //remove first slash
+                var entries = originalFilesList.Select((t, i) => (files[i], (int)new FileInfo(t).Length)).ToList();
+                return CreateTOCForEntries(entries);
+
             }
             throw new Exception("There are no TOCable files in the specified directory.");
         }
@@ -243,8 +269,9 @@ namespace LegendaryExplorerCore.Unreal
             // Add in basegame files
             foreach (var file in basegameFiles)
             {
-                var name = new FileInfo(file).Name;
+                var name = new FileInfo(file).Name.ToUpper();
                 if(!outFiles.ContainsKey(name)) outFiles.Add(name, file);
+                else Debugger.Break();
             }
 
             return outFiles.Values.ToList();
