@@ -271,7 +271,6 @@ namespace LegendaryExplorerCore.Unreal
             {
                 var name = new FileInfo(file).Name.ToUpper();
                 if(!outFiles.ContainsKey(name)) outFiles.Add(name, file);
-                else Debugger.Break();
             }
 
             return outFiles.Values.ToList();
