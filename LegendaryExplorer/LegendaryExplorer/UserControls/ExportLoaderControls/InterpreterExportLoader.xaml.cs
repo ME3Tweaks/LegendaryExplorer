@@ -1234,6 +1234,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             parsedValue += $" => {evolvedPowerClass.ResolveToEntry(parsingExport.FileRef).ObjectName}";
                         }
                     }
+                    else if (sp.StructType == "BioStageCamera")
+                    {
+                        var cameraTagProp = parsingExport.Game.IsGame3() ? "nmCameraTag" : "sCameraTag";
+                        var cameraTag = sp.GetProp<NameProperty>(cameraTagProp);
+                        parsedValue = cameraTag?.Value.Instanced ?? "";
+                    }
+                    else if (sp.StructType == "BioStageCameraCustom")
+                    {
+                        var cameraTag = sp.GetProp<StrProperty>("m_sCameraName");
+                        parsedValue = cameraTag?.Value ?? "";
+                    }
                     else
                     {
                         parsedValue = sp.StructType;
