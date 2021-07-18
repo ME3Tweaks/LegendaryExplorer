@@ -516,7 +516,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 throw ParseError("Cannot name a parameter 'ReturnValue'! It is a reserved word!", var.StartPos, var.EndPos);
             }
 
-            if (Symbols.SymbolExistsInCurrentScope(var.Name)) TypeError($"A variable named '{var.Name}' already exists in this scope!", var);
+            if (Symbols.SymbolExistsInCurrentScope(var.Name))
+            {
+                TypeError($"A variable named '{var.Name}' already exists in this scope!", var);
+                return null;
+            }
 
             VariableDeclaration varDecl = new VariableDeclaration(type, UnrealFlags.EPropertyFlags.None, var.Name, var.Size, null, startPos, var.EndPos);
             Symbols.AddSymbol(varDecl.Name, varDecl);
