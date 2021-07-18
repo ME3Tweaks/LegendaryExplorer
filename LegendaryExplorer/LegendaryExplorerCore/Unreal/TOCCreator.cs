@@ -240,6 +240,8 @@ namespace LegendaryExplorerCore.Unreal
         /// <returns>List of files for toc, including DLC supercedances</returns>
         public static List<string> GetLE1Files(List<string> basegameFiles, string biogameDirectory)
         {
+            if (!Directory.Exists(Path.Combine(biogameDirectory, "DLC"))) return basegameFiles;
+
             // Build dictionary of DLCs in mount priority
             Dictionary<int, string> dlcMounts = new Dictionary<int, string>();
             string[] dlcList = Directory.GetDirectories(Path.Combine(biogameDirectory, "DLC"), "*.*", SearchOption.TopDirectoryOnly);
