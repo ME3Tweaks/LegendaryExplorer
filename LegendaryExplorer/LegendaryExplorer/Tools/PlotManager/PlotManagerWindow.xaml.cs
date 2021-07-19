@@ -30,8 +30,8 @@ namespace LegendaryExplorer.Tools.PlotManager
     /// </summary>
     public partial class PlotManagerWindow : NotifyPropertyChangedWindowBase
     {
-
-        public ObservableCollectionExtended<PlotElement> Elements3 { get; } = new();
+        #region Declarations
+        public ObservableCollectionExtended<PlotElement> ElementsTable { get; } = new();
         public ObservableCollectionExtended<PlotElement> RootNodes3 { get; } = new();
         public ObservableCollectionExtended<PlotElement> RootNodes2 { get; } = new();
         public ObservableCollectionExtended<PlotElement> RootNodes1 { get; } = new();
@@ -51,8 +51,24 @@ namespace LegendaryExplorer.Tools.PlotManager
         private int previousView { get; set; }
         private int _currentView;
         public int currentView { get => _currentView; set { previousView = _currentView; SetProperty(ref _currentView, value); } }
+        private bool _ShowBoolStates = true;
+        public bool ShowBoolStates { get => _ShowBoolStates; set => SetProperty(ref _ShowBoolStates, value); }
+        private bool _ShowInts = true;
+        public bool ShowInts { get => _ShowInts; set => SetProperty(ref _ShowInts, value); }
+        private bool _ShowFloats = true;
+        public bool ShowFloats { get => _ShowFloats; set => SetProperty(ref _ShowFloats, value); }
+        private bool _ShowConditionals = true;
+        public bool ShowConditionals { get => _ShowConditionals; set => SetProperty(ref _ShowConditionals, value); }
+        private bool _ShowTransitions = true;
+        public bool ShowTransitions { get => _ShowTransitions; set => SetProperty(ref _ShowTransitions, value); }
+
+        public ICommand FilterCommand { get; set; }
+        
 
         private int tempTreeCount; //Temporary stop large table generation.
+        #endregion
+
+        #region PDBInitialization
         public PlotManagerWindow()
         {
 
@@ -74,16 +90,16 @@ namespace LegendaryExplorer.Tools.PlotManager
 
         private void LoadCommands()
         {
-
+            FilterCommand = new GenericCommand(Filter);
         }
 
 
         private void UpdateSelection()
         {
             tempTreeCount = 0;
-            Elements3.ClearEx();
+            ElementsTable.ClearEx();
             tempTreeCount++;
-            AddPlotsToList(SelectedNode, Elements3);
+            AddPlotsToList(SelectedNode, ElementsTable);
         }
 
         private void AddPlotsToList(PlotElement plotElement, ObservableCollectionExtended<PlotElement> elementList)
@@ -126,7 +142,59 @@ namespace LegendaryExplorer.Tools.PlotManager
         {
             SelectedNode = Tree_BW1.SelectedItem as PlotElement;
         }
+        #endregion
+
+        #region Filter
+        private void FilterBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            Filter();
+        }
+
+        private void Filter()
+        {
+            LV_Plots.Items.Filter = PlotFilter;
+        }
+
+        private bool PlotFilter(object p)
+        {
+            bool showthis = true;
+            var e = (PlotElement)p;
+            var t = FilterBox.Text;
+            if (!string.IsNullOrEmpty(t))
+            {
+                showthis = e.Path.ToLower().Contains(t.ToLower());
+                if (!showthis)
+                {
+                    showthis = e.PlotId.ToString().Contains(t);
+                }
+            }
+            if(showthis && !ShowBoolStates)
+            {
+                showthis = e.Type != PlotElementType.State && e.Type != PlotElementType.SubState;
+            }
+            if (showthis && !ShowInts)
+            {
+                showthis = e.Type != PlotElementType.Integer;
+            }
+            if (showthis && !ShowFloats)
+            {
+                showthis = e.Type != PlotElementType.Float;
+            }
+            if (showthis && !ShowConditionals)
+            {
+                showthis = e.Type != PlotElementType.Conditional;
+            }
+            if (showthis && !ShowTransitions)
+            {
+                showthis = e.Type != PlotElementType.Transition;
+            }
+            return showthis;
+        }
+
+        #endregion
+
+
     }
 
-  
+
 }

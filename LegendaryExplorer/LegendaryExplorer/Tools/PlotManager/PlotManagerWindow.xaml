@@ -23,9 +23,22 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="40"/>
+                <RowDefinition Height="30"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
+            <DockPanel  Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Background="LightGray" LastChildFill="True">
+                <xctk:WatermarkTextBox DockPanel.Dock="Right" Watermark="Search" Name="FilterBox" Width="500" Margin="5,3,20,2" KeyUp="FilterBox_KeyUp" ToolTip="Search" HorizontalAlignment="Right" HorizontalContentAlignment="Left" IsEnabled="True">
+                </xctk:WatermarkTextBox>
+                <Menu Name="TopDock" DockPanel.Dock="Left">
+                    <MenuItem Header="Show/Hide Elements" Padding="4">
+                        <MenuItem Header="Show Bool States" Command="{Binding FilterCommand}" IsCheckable="True" IsChecked="{Binding ShowBoolStates}"/>
+                        <MenuItem Header="Show Integers" Command="{Binding FilterCommand}" IsCheckable="True" IsChecked="{Binding ShowInts}"/>
+                        <MenuItem Header="Show Floats" Command="{Binding FilterCommand}" IsCheckable="True" IsChecked="{Binding ShowFloats}"/>
+                        <MenuItem Header="Show Conditionals" Command="{Binding FilterCommand}" IsCheckable="True" IsChecked="{Binding ShowConditionals}"/>
+                        <MenuItem Header="Show Transitions" Command="{Binding FilterCommand}" IsCheckable="True" IsChecked="{Binding ShowTransitions}"/>
+                    </MenuItem>
+                </Menu>
+            </DockPanel>
             <TabControl Grid.Column="0" Grid.Row="1">
                 <TabItem Header="LE3/ME3" TabIndex="{Binding currentView}">
                     <TreeView x:Name="Tree_BW3"
@@ -114,7 +127,7 @@
                         </DataTemplate>
                     </ContentControl.Resources>
                 </ContentControl>
-                <ListView Name="LV_Plots3" ItemsSource="{Binding Elements3}" >
+                <ListView Name="LV_Plots" ItemsSource="{Binding ElementsTable}" >
                     <ListView.View>
                         <GridView AllowsColumnReorder="True" ColumnHeaderContainerStyle="{StaticResource FileLVHeader}">
                             <GridViewColumn DisplayMemberBinding="{Binding PlotId}" Width="80" Header="Plot"/>
