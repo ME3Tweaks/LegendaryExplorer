@@ -10,9 +10,6 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using LegendaryExplorerCore;
 using LegendaryExplorerCore.PlotDatabase;
 using LegendaryExplorerCore.Packages;
@@ -21,7 +18,6 @@ using LegendaryExplorer.SharedUI;
 using LegendaryExplorerCore.Misc;
 using System.Threading;
 using Newtonsoft.Json;
-
 
 namespace LegendaryExplorer.Tools.PlotManager
 {
@@ -48,9 +44,15 @@ namespace LegendaryExplorer.Tools.PlotManager
                 }
             }
         }
+        
+        private string _currentOverallOperationText = "Plot Databases courtesy of Bioware.";
+        public string CurrentOverallOperationText { get => _currentOverallOperationText; set => SetProperty(ref _currentOverallOperationText, value); }
+
+        private MEGame _currentGame;
+        public MEGame CurrentGame { get => _currentGame; set => SetProperty(ref _currentGame, value); } 
         private int previousView { get; set; }
         private int _currentView;
-        public int currentView { get => _currentView; set { previousView = _currentView; SetProperty(ref _currentView, value); } }
+        public int CurrentView { get => _currentView; set { previousView = _currentView; SetProperty(ref _currentView, value); } }
         private bool _ShowBoolStates = true;
         public bool ShowBoolStates { get => _ShowBoolStates; set => SetProperty(ref _ShowBoolStates, value); }
         private bool _ShowInts = true;
@@ -63,9 +65,8 @@ namespace LegendaryExplorer.Tools.PlotManager
         public bool ShowTransitions { get => _ShowTransitions; set => SetProperty(ref _ShowTransitions, value); }
 
         public ICommand FilterCommand { get; set; }
-        
+        public ICommand CopyToClipboardCommand { get; set; }
 
-        private int tempTreeCount; //Temporary stop large table generation.
         #endregion
 
         #region PDBInitialization
@@ -84,25 +85,24 @@ namespace LegendaryExplorer.Tools.PlotManager
             RootNodes1.Add(dictionary1[1]);
             Focus();
            
-            
         }
 
 
         private void LoadCommands()
         {
             FilterCommand = new GenericCommand(Filter);
+            CopyToClipboardCommand = new GenericCommand(CopyToClipboard);
         }
-
 
         private void UpdateSelection()
         {
-            tempTreeCount = 0;
             ElementsTable.ClearEx();
-            tempTreeCount++;
-            AddPlotsToList(SelectedNode, ElementsTable);
+            var temptable = new List<PlotElement>();
+            AddPlotsToList(SelectedNode, temptable);
+            ElementsTable.AddRange(temptable);
         }
 
-        private void AddPlotsToList(PlotElement plotElement, ObservableCollectionExtended<PlotElement> elementList)
+        private void AddPlotsToList(PlotElement plotElement, List<PlotElement> elementList)
         {
             switch (plotElement.Type)
             {
@@ -113,17 +113,12 @@ namespace LegendaryExplorer.Tools.PlotManager
                     break;
                 default:
                     elementList.Add(plotElement);
-                    tempTreeCount++;
                     break;
             }
 
             foreach (var c in plotElement.Children)
             {
-                if(tempTreeCount < 100)
-                {
-                    AddPlotsToList(c, elementList);
-                }
-                
+                AddPlotsToList(c, elementList);
             }
         }
 
@@ -141,6 +136,22 @@ namespace LegendaryExplorer.Tools.PlotManager
         private void Tree_BW1_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             SelectedNode = Tree_BW1.SelectedItem as PlotElement;
+        }
+
+        private void NewTab_Selected(object sender, SelectionChangedEventArgs e)
+        {
+            switch(CurrentView)
+            {
+                case 1:
+                    CurrentGame = MEGame.LE2;
+                    break;
+                case 2:
+                    CurrentGame = MEGame.LE1;
+                    break;
+                default:
+                    CurrentGame = MEGame.LE3;
+                    break;
+            }
         }
         #endregion
 
@@ -193,6 +204,16 @@ namespace LegendaryExplorer.Tools.PlotManager
 
         #endregion
 
+        #region UserCommands
+        private void CopyToClipboard()
+        {
+            var elmnt = (PlotElement)LV_Plots.SelectedItem;
+            if(elmnt != null)
+            {
+                Clipboard.SetText(elmnt.PlotId.ToString());
+            }
+        }
+        #endregion
 
     }
 

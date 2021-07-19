@@ -6,6 +6,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
         xmlns:local="clr-namespace:LegendaryExplorer.Tools.PlotManager"
+        xmlns:sharedToolControls="clr-namespace:LegendaryExplorer.UserControls.SharedToolControls"
         xmlns:plotDatabase="clr-namespace:LegendaryExplorerCore.PlotDatabase;assembly=LegendaryExplorerCore"
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
@@ -25,8 +26,9 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="30"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="35"/>
             </Grid.RowDefinitions>
-            <DockPanel  Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Background="LightGray" LastChildFill="True">
+            <DockPanel  Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Background="WhiteSmoke" LastChildFill="True">
                 <xctk:WatermarkTextBox DockPanel.Dock="Right" Watermark="Search" Name="FilterBox" Width="500" Margin="5,3,20,2" KeyUp="FilterBox_KeyUp" ToolTip="Search" HorizontalAlignment="Right" HorizontalContentAlignment="Left" IsEnabled="True">
                 </xctk:WatermarkTextBox>
                 <Menu Name="TopDock" DockPanel.Dock="Left">
@@ -39,8 +41,8 @@
                     </MenuItem>
                 </Menu>
             </DockPanel>
-            <TabControl Grid.Column="0" Grid.Row="1">
-                <TabItem Header="LE3/ME3" TabIndex="{Binding currentView}">
+            <TabControl Name="GameTab" Grid.Column="0" Grid.Row="1" SelectedIndex="{Binding CurrentView, Mode=TwoWay}" SelectionChanged="NewTab_Selected">
+                <TabItem Header="LE3/ME3" TabIndex="3"  Width="80">
                     <TreeView x:Name="Tree_BW3"
                               ItemsSource="{Binding Path=RootNodes3}"
                               SelectedItemChanged="Tree_BW3_SelectedItemChanged"
@@ -54,7 +56,7 @@
                         </TreeView.Resources>
                     </TreeView>
                 </TabItem>
-                <TabItem Header="LE2/ME2" TabIndex="{Binding currentView}">
+                <TabItem Header="LE2/ME2" TabIndex="2" Width="80">
                        <TreeView x:Name="Tree_BW2"
                               ItemsSource="{Binding Path=RootNodes2}"
                               SelectedItemChanged="Tree_BW2_SelectedItemChanged"
@@ -68,7 +70,7 @@
                             </TreeView.Resources>
                         </TreeView>
                 </TabItem>
-                <TabItem Header="LE1/ME1" TabIndex="{Binding currentView}">
+                <TabItem Header="LE1/ME1" TabIndex="1" Width="80">
                     <TreeView x:Name="Tree_BW1"
                               ItemsSource="{Binding Path=RootNodes1}"
                               SelectedItemChanged="Tree_BW1_SelectedItemChanged"
@@ -132,14 +134,34 @@
                         <GridView AllowsColumnReorder="True" ColumnHeaderContainerStyle="{StaticResource FileLVHeader}">
                             <GridViewColumn DisplayMemberBinding="{Binding PlotId}" Width="80" Header="Plot"/>
                             <GridViewColumn DisplayMemberBinding="{Binding Type}" Width="100" Header="Type"/>
-                            <GridViewColumn DisplayMemberBinding="{Binding Label}" Width="150" Header="Label" />
+                            <GridViewColumn DisplayMemberBinding="{Binding Label}" Width="250" Header="Label" />
                             <GridViewColumn DisplayMemberBinding="{Binding Path}" Header="Path"/>
-                            <GridViewColumn DisplayMemberBinding="{Binding ElementId}" Width="100" Header="ElementId"/>
+                            <GridViewColumn DisplayMemberBinding="{Binding ElementId}" Width="60" Header="ElementId"/>
                             <!--<GridViewColumn DisplayMemberBinding="{Binding Code}" Width="100" Header="Code"/>-->
                         </GridView>
                     </ListView.View>
+                    <ListView.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Copy PlotId to Clipboard" Command="{Binding CopyToClipboardCommand}"/>
+                        </ContextMenu>
+                    </ListView.ContextMenu>
                 </ListView>
             </DockPanel>
+            <StatusBar Height="35" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+                <DockPanel>
+                    <sharedToolControls:StatusBarGameIDIndicator GameType="{Binding CurrentGame}" VerticalContentAlignment="Center" Visibility="Visible" Margin="3,-4,3,-4" DockPanel.Dock="Left" />
+                    <StatusBarItem>
+                        <TextBlock x:Name="StatusBar_RightMostText" Text="{Binding CurrentOverallOperationText}" />
+                    </StatusBarItem>
+                    <StatusBarItem DockPanel.Dock="Right">
+                        <TextBlock x:Name="bwLink" Width="Auto">
+                            <Hyperlink NavigateUri="https://github.com/electronicarts/MELE_ModdingSupport" misc:HyperlinkExtensions.IsExternal="True">
+                                github.com/MELE_ModdingSupport
+                            </Hyperlink>
+                        </TextBlock>
+                    </StatusBarItem>
+                </DockPanel>
+            </StatusBar>
         </Grid>
     </DockPanel>
 </misc:NotifyPropertyChangedWindowBase>
