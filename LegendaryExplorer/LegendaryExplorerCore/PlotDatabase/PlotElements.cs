@@ -82,6 +82,10 @@ namespace LegendaryExplorerCore.PlotDatabase
 
         [JsonIgnore] public List<PlotElement> Children { get; } = new List<PlotElement>();
 
+        [JsonIgnore] public bool IsSelected { get; set; }
+
+        [JsonIgnore] public bool IsExpanded { get; set; }
+
         public string Path
         {
             get
@@ -99,8 +103,44 @@ namespace LegendaryExplorerCore.PlotDatabase
             }
         }
 
+        public PlotElement()
+        { }
+
+        public PlotElement(int plotid, int elementid, string label, PlotElementType type, int parentelementId, List<PlotElement> children)
+        {
+            PlotId = plotid;
+            ElementId = elementid;
+            Label = label;
+            Type = type;
+            ParentElementId = parentelementId;
+            Children = children;
+        }
+
         public int RelevantId => PlotId <= 0 ? ElementId : PlotId;
 
+        public bool IsAGameState
+        {
+            get
+            {
+                switch(Type)
+                {
+                    case PlotElementType.Conditional:
+                    case PlotElementType.Consequence:
+                    case PlotElementType.Flag:
+                    case PlotElementType.Float:
+                    case PlotElementType.Integer:
+                    case PlotElementType.JournalGoal:
+                    case PlotElementType.JournalItem:
+                    case PlotElementType.JournalTask:
+                    case PlotElementType.State:
+                    case PlotElementType.SubState:
+                    case PlotElementType.Transition:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        }
 #pragma warning disable
         public event PropertyChangedEventHandler PropertyChanged;
 #pragma warning restore

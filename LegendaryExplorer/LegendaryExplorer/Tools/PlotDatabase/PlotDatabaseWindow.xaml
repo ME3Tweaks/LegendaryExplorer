@@ -7,15 +7,31 @@
         xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
         xmlns:local="clr-namespace:LegendaryExplorer.Tools.PlotManager"
         xmlns:sharedToolControls="clr-namespace:LegendaryExplorer.UserControls.SharedToolControls"
+        xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
         xmlns:plotDatabase="clr-namespace:LegendaryExplorerCore.PlotDatabase;assembly=LegendaryExplorerCore"
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         mc:Ignorable="d"
         Title="Plot Database" Height="900" Width="1500">
     <Window.Resources>
+        <local:PlotElementTypeConverter x:Key="PlotElementTypeConverter"/>
         <Style x:Key="FileLVHeader" TargetType="{x:Type GridViewColumnHeader}">
             <Setter Property="HorizontalContentAlignment" Value="Left" />
         </Style>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
+        <DataTemplate x:Key="HeaderTemplateArrowUp">
+            <DockPanel LastChildFill="True" Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type GridViewColumnHeader}}}">
+                <Path x:Name="arrowUp" StrokeThickness="1" Fill="Gray" Data="M 5,10 L 15,10 L 10,5 L 5,10" DockPanel.Dock="Right" Width="20" HorizontalAlignment="Right" Margin="5,0,5,0" SnapsToDevicePixels="True"/>
+                <TextBlock Text="{Binding }" />
+            </DockPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="HeaderTemplateArrowDown">
+            <DockPanel LastChildFill="True" Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type GridViewColumnHeader}}}">
+                <Path x:Name="arrowDown" StrokeThickness="1" Fill="Gray"  Data="M 5,5 L 10,10 L 15,5 L 5,5" DockPanel.Dock="Right" Width="20" HorizontalAlignment="Right" Margin="5,0,5,0" SnapsToDevicePixels="True"/>
+                <TextBlock Text="{Binding }" />
+            </DockPanel>
+        </DataTemplate>
     </Window.Resources>
     <DockPanel>
         <Grid>
@@ -49,8 +65,13 @@
                               VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
                         <TreeView.Resources>
                             <HierarchicalDataTemplate DataType="{x:Type plotDatabase:PlotElement}" ItemsSource="{Binding Children}">
-                                <StackPanel>
-                                    <TextBlock><Run Text="{Binding Path=Label, Mode=OneWay}"/> - <Run Text="{Binding Path=Type}"/> <Run Text="{Binding Path=RelevantId, Mode=OneWay}"/></TextBlock>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Width="12" Height="12" Margin="0,0,3,0" Source="{Binding Type, Converter={StaticResource PlotElementTypeConverter}}"/>
+                                    <TextBlock><Run Text="  "/><Run Text="{Binding Path=Label, Mode=OneWay}"/></TextBlock>
+                                    <TextBlock Visibility="{Binding IsAGameState, Converter={StaticResource BoolToVisibilityConverter}}"> - 
+                                    <Run Text="{Binding Path=Type}"/>
+                                    <Run Text="{Binding Path=RelevantId, Mode=OneWay}"/>
+                                    </TextBlock>
                                 </StackPanel>
                             </HierarchicalDataTemplate>
                         </TreeView.Resources>
@@ -61,14 +82,19 @@
                               ItemsSource="{Binding Path=RootNodes2}"
                               SelectedItemChanged="Tree_BW2_SelectedItemChanged"
                               VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
-                            <TreeView.Resources>
-                                <HierarchicalDataTemplate DataType="{x:Type plotDatabase:PlotElement}" ItemsSource="{Binding Children}">
-                                    <StackPanel>
-                                        <TextBlock><Run Text="{Binding Path=Path, Mode=OneWay}"/> - <Run Text="{Binding Path=Type}"/> <Run Text="{Binding Path=RelevantId, Mode=OneWay}"/></TextBlock>
-                                    </StackPanel>
-                                </HierarchicalDataTemplate>
-                            </TreeView.Resources>
-                        </TreeView>
+                        <TreeView.Resources>
+                            <HierarchicalDataTemplate DataType="{x:Type plotDatabase:PlotElement}" ItemsSource="{Binding Children}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Width="12" Height="12" Margin="0,0,3,0" Source="{Binding Type, Converter={StaticResource PlotElementTypeConverter}}"/>
+                                    <TextBlock><Run Text="  "/><Run Text="{Binding Path=Label, Mode=OneWay}"/></TextBlock>
+                                    <TextBlock Visibility="{Binding IsAGameState, Converter={StaticResource BoolToVisibilityConverter}}"> - 
+                                    <Run Text="{Binding Path=Type}"/>
+                                    <Run Text="{Binding Path=RelevantId, Mode=OneWay}"/>
+                                    </TextBlock>
+                                </StackPanel>
+                            </HierarchicalDataTemplate>
+                        </TreeView.Resources>
+                    </TreeView>
                 </TabItem>
                 <TabItem Header="LE1/ME1" TabIndex="1" Width="80">
                     <TreeView x:Name="Tree_BW1"
@@ -77,8 +103,13 @@
                               VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
                         <TreeView.Resources>
                             <HierarchicalDataTemplate DataType="{x:Type plotDatabase:PlotElement}" ItemsSource="{Binding Children}">
-                                <StackPanel>
-                                    <TextBlock><Run Text="{Binding Path=Path, Mode=OneWay}"/> - <Run Text="{Binding Path=Type}"/> <Run Text="{Binding Path=RelevantId, Mode=OneWay}"/></TextBlock>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Width="12" Height="12" Margin="0,0,3,0" Source="{Binding Type, Converter={StaticResource PlotElementTypeConverter}}"/>
+                                    <TextBlock><Run Text="  "/><Run Text="{Binding Path=Label, Mode=OneWay}"/></TextBlock>
+                                    <TextBlock Visibility="{Binding IsAGameState, Converter={StaticResource BoolToVisibilityConverter}}"> - 
+                                    <Run Text="{Binding Path=Type}"/>
+                                    <Run Text="{Binding Path=RelevantId, Mode=OneWay}"/>
+                                    </TextBlock>
                                 </StackPanel>
                             </HierarchicalDataTemplate>
                         </TreeView.Resources>
@@ -129,15 +160,21 @@
                         </DataTemplate>
                     </ContentControl.Resources>
                 </ContentControl>
-                <ListView Name="LV_Plots" ItemsSource="{Binding ElementsTable}" >
+                <ListView Name="LV_Plots" ItemsSource="{Binding ElementsTable}" GridViewColumnHeader.Click="list_ColumnHeader_Click">
                     <ListView.View>
                         <GridView AllowsColumnReorder="True" ColumnHeaderContainerStyle="{StaticResource FileLVHeader}">
+                            <GridViewColumn Header="#" Width="25">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Image Width="12" Height="12" Margin="0,0,0,0" Source="{Binding Path=Type, Converter={StaticResource PlotElementTypeConverter}}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
                             <GridViewColumn DisplayMemberBinding="{Binding PlotId}" Width="80" Header="Plot"/>
                             <GridViewColumn DisplayMemberBinding="{Binding Type}" Width="100" Header="Type"/>
                             <GridViewColumn DisplayMemberBinding="{Binding Label}" Width="250" Header="Label" />
                             <GridViewColumn DisplayMemberBinding="{Binding Path}" Header="Path"/>
                             <GridViewColumn DisplayMemberBinding="{Binding ElementId}" Width="60" Header="ElementId"/>
-                            <!--<GridViewColumn DisplayMemberBinding="{Binding Code}" Width="100" Header="Code"/>-->
                         </GridView>
                     </ListView.View>
                     <ListView.ContextMenu>
