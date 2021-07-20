@@ -81,21 +81,27 @@ namespace LegendaryExplorer.Tools.PlotManager
             LoadCommands();
             InitializeComponent();
 
-            var dictionary3 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE3);
             var rootlist3 = new List<PlotElement>();
+            var dictionary3 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE3);
             rootlist3.Add(dictionary3[1]);
+            var mods3 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE3, false);
+            rootlist3.Add(mods3[100000]);
             dictionary3.Add(0, new PlotElement(0, 0, "Legendary Edition - Mass Effect 3 Plots", PlotElementType.None, -1, rootlist3));
             RootNodes3.Add(dictionary3[0]);
 
-            var dictionary2 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE2);
             var rootlist2 = new List<PlotElement>();
+            var dictionary2 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE2);
             rootlist2.Add(dictionary2[1]);
+            var mods2 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE2, false);
+            rootlist2.Add(mods2[100000]);
             dictionary2.Add(0, new PlotElement(0, 0, "Legendary Edition - Mass Effect 2 Plots", PlotElementType.None, -1, rootlist2));
             RootNodes2.Add(dictionary2[0]);
 
-            var dictionary1 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE1);
             var rootlist1 = new List<PlotElement>();
+            var dictionary1 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE1);
             rootlist1.Add(dictionary1[1]);
+            var mods1 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE1, false);
+            rootlist1.Add(mods1[100000]);
             dictionary1.Add(0, new PlotElement(0, 0, "Legendary Edition - Mass Effect 1 Plots", PlotElementType.None, -1, rootlist1));
             RootNodes1.Add(dictionary1[0]);
             Focus();
