@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -136,37 +137,34 @@ namespace LegendaryExplorerCore.PlotDatabase
             }
         }
 
-        public static void LoadDatabase(MEGame game, bool isbioware)
+        public static bool LoadDatabase(MEGame game, bool isbioware, string appDataPath = null)
         {
             var db = new PlotDatabase(game, isbioware);
             if(!isbioware)
             {
-                if (!game.IsLEGame()) 
-                    return;
-                switch (game) //Temp create
+                if (!game.IsLEGame())
+                    return false;
+                string mdbPath = null;
+                if(appDataPath != null)
+                    mdbPath = Path.Combine(appDataPath, $"PlotDBMods{game}.json");
+                if(mdbPath != null && File.Exists(mdbPath))
                 {
-                    case MEGame.LE3:
-                        Le3ModDatabase = new PlotDatabase();
-                        Le3ModDatabase.refGame = MEGame.LE3;
-                        Le3ModDatabase.IsBioware = false;
-                        Le3ModDatabase.Organizational = new Dictionary<int, PlotElement>();
-                        Le3ModDatabase.Organizational.Add(100000, new PlotElement(0, 100000, "LE3/ME3 Mods", PlotElementType.Region, -1, new List<PlotElement>()));
-                        break;
-                    case MEGame.LE2:
-                        Le2ModDatabase = new PlotDatabase();
-                        Le2ModDatabase.refGame = MEGame.LE2;
-                        Le2ModDatabase.IsBioware = false;
-                        Le2ModDatabase.Organizational = new Dictionary<int, PlotElement>();
-                        Le2ModDatabase.Organizational.Add(100000, new PlotElement(0, 100000, "LE2/ME2 Mods", PlotElementType.Region, -1, new List<PlotElement>()));
-                        break;
-                    case MEGame.LE1:
-                        Le1ModDatabase = new PlotDatabase();
-                        Le1ModDatabase.refGame = MEGame.LE1;
-                        Le1ModDatabase.IsBioware = false;
-                        Le1ModDatabase.Organizational = new Dictionary<int, PlotElement>();
-                        Le1ModDatabase.Organizational.Add(100000, new PlotElement(0, 100000, "LE1/ME1 Mods", PlotElementType.Region, -1, new List<PlotElement>()));
-                        break;
+                    db.LoadPlotsFromJSON(game, isbioware, mdbPath);
+                    switch (game)
+                    {
+                        case MEGame.LE1:
+                            Le1ModDatabase = db;
+                            break;
+                        case MEGame.LE2:
+                            Le2ModDatabase = db;
+                            break;
+                        case MEGame.LE3:
+                            Le3ModDatabase = db;
+                            break;
+                    }
+                    return true;
                 }
+                CreateNewModDatabase(game);
             }
             else
             {
@@ -187,6 +185,7 @@ namespace LegendaryExplorerCore.PlotDatabase
                         break;
                 }
             }
+            return true;
         }
 
         public static void LoadAllPlotDatabases()
@@ -200,5 +199,25 @@ namespace LegendaryExplorerCore.PlotDatabase
             Le3PlotDatabase = new PlotDatabase(MEGame.LE3, true);
             Le3PlotDatabase.LoadPlotsFromJSON(MEGame.LE3);
         }
+
+        public static void CreateNewModDatabase(MEGame game)
+        {
+            switch (game)
+            {
+                case MEGame.LE3:
+                    Le3ModDatabase = new PlotDatabase(MEGame.LE3, false);
+                    Le3ModDatabase.Organizational.Add(100000, new PlotElement(0, 100000, "LE3/ME3 Mods", PlotElementType.Region, 0, new List<PlotElement>()));
+                    break;
+                case MEGame.LE2:
+                    Le2ModDatabase = new PlotDatabase(MEGame.LE2, false);
+                    Le2ModDatabase.Organizational.Add(100000, new PlotElement(0, 100000, "LE2/ME2 Mods", PlotElementType.Region, 0, new List<PlotElement>()));
+                    break;
+                case MEGame.LE1:
+                    Le1ModDatabase = new PlotDatabase(MEGame.LE1, false);
+                    Le1ModDatabase.Organizational.Add(100000, new PlotElement(0, 100000, "LE1/ME1 Mods", PlotElementType.Region, 0, new List<PlotElement>()));
+                    break;
+            }
+        }
+
     }
 }

@@ -71,7 +71,10 @@ namespace LegendaryExplorer.Tools.PlotManager
         private ListSortDirection _lastDirection = ListSortDirection.Ascending;
         public ICommand FilterCommand { get; set; }
         public ICommand CopyToClipboardCommand { get; set; }
-
+        public ICommand SaveLocalCommand { get; set; }
+        public ICommand AddNewModCommand { get; set; }
+        public ICommand ClickOkCommand { get; set; }
+        public ICommand ClickCancelCommand { get; set; }
         #endregion
 
         #region PDBInitialization
@@ -84,37 +87,53 @@ namespace LegendaryExplorer.Tools.PlotManager
             var rootlist3 = new List<PlotElement>();
             var dictionary3 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE3);
             rootlist3.Add(dictionary3[1]);
-            var mods3 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE3, false);
-            rootlist3.Add(mods3[100000]);
+            if (PlotDatabases.LoadDatabase(MEGame.LE3, false, AppDirectories.AppDataFolder))
+            {
+                var mods3 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE3, false);
+                rootlist3.Add(mods3[100000]);
+            }
             dictionary3.Add(0, new PlotElement(0, 0, "Legendary Edition - Mass Effect 3 Plots", PlotElementType.None, -1, rootlist3));
             RootNodes3.Add(dictionary3[0]);
 
+            RootNodes2.ClearEx();
             var rootlist2 = new List<PlotElement>();
             var dictionary2 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE2);
             rootlist2.Add(dictionary2[1]);
-            var mods2 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE2, false);
-            rootlist2.Add(mods2[100000]);
+            if (PlotDatabases.LoadDatabase(MEGame.LE2, false, AppDirectories.AppDataFolder))
+            {
+                var mods2 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE2, false);
+                rootlist2.Add(mods2[100000]);
+            }
             dictionary2.Add(0, new PlotElement(0, 0, "Legendary Edition - Mass Effect 2 Plots", PlotElementType.None, -1, rootlist2));
             RootNodes2.Add(dictionary2[0]);
 
+            RootNodes1.ClearEx();
             var rootlist1 = new List<PlotElement>();
             var dictionary1 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE1);
             rootlist1.Add(dictionary1[1]);
-            var mods1 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE1, false);
-            rootlist1.Add(mods1[100000]);
+            if (PlotDatabases.LoadDatabase(MEGame.LE1, false, AppDirectories.AppDataFolder))
+            {
+                var mods1 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE1, false);
+                rootlist1.Add(mods1[100000]);
+            }
             dictionary1.Add(0, new PlotElement(0, 0, "Legendary Edition - Mass Effect 1 Plots", PlotElementType.None, -1, rootlist1));
             RootNodes1.Add(dictionary1[0]);
             Focus();
             SelectedNode = dictionary3[1];
-            
         }
+
 
 
         private void LoadCommands()
         {
             FilterCommand = new GenericCommand(Filter);
             CopyToClipboardCommand = new GenericCommand(CopyToClipboard);
+            SaveLocalCommand = new GenericCommand(SaveModDB);
+            AddNewModCommand = new GenericCommand(AddNewModData);
+            ClickOkCommand = new RelayCommand(AddDataToMod);
+            ClickCancelCommand = new RelayCommand(CancelAddData);
         }
+
 
         private void UpdateSelection()
         {
@@ -125,23 +144,38 @@ namespace LegendaryExplorer.Tools.PlotManager
             Filter();
         }
 
+        private void RefreshTrees()
+        {
+            RootNodes3.ClearEx();
+            var rootlist3 = new List<PlotElement>();
+            var dictionary3 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE3);
+            rootlist3.Add(dictionary3[1]);
+            var mods3 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE3, false);
+            rootlist3.Add(mods3[100000]);
+            dictionary3.Add(0, new PlotElement(0, 0, "Legendary Edition - Mass Effect 3 Plots", PlotElementType.None, -1, rootlist3));
+            RootNodes3.Add(dictionary3[0]);
+        }
+
         private void AddPlotsToList(PlotElement plotElement, List<PlotElement> elementList)
         {
-            switch (plotElement.Type)
+            if(plotElement != null)
             {
-                case PlotElementType.Plot:
-                case PlotElementType.Region:
-                case PlotElementType.FlagGroup:
-                case PlotElementType.None:
-                    break;
-                default:
-                    elementList.Add(plotElement);
-                    break;
-            }
+                switch (plotElement.Type)
+                {
+                    case PlotElementType.Plot:
+                    case PlotElementType.Region:
+                    case PlotElementType.FlagGroup:
+                    case PlotElementType.None:
+                        break;
+                    default:
+                        elementList.Add(plotElement);
+                        break;
+                }
 
-            foreach (var c in plotElement.Children)
-            {
-                AddPlotsToList(c, elementList);
+                foreach (var c in plotElement.Children)
+                {
+                    AddPlotsToList(c, elementList);
+                }
             }
         }
 
@@ -176,6 +210,8 @@ namespace LegendaryExplorer.Tools.PlotManager
                     break;
             }
         }
+        
+        
         #endregion
 
         #region Filter
@@ -309,6 +345,105 @@ namespace LegendaryExplorer.Tools.PlotManager
                 }
             }
             e.Handled = true;
+        }
+
+        private async void SaveModDB()
+        {
+            bwLink.Visibility = Visibility.Collapsed;
+            var statustxt = CurrentOverallOperationText.ToString();
+            CurrentOverallOperationText = "Saving...";
+            switch (CurrentGame)
+            {
+                case MEGame.LE3:
+                    PlotDatabases.Le3ModDatabase.SaveDatabaseToFile(AppDirectories.AppDataFolder);
+                    CurrentOverallOperationText = "Saved LE3 Mod Database Locally...";
+                    break;
+                case MEGame.LE2:
+                    PlotDatabases.Le2ModDatabase.SaveDatabaseToFile(AppDirectories.AppDataFolder);
+                    CurrentOverallOperationText = "Saved LE2 Mod Database Locally...";
+                    break;
+                case MEGame.LE1:
+                    PlotDatabases.Le1ModDatabase.SaveDatabaseToFile(AppDirectories.AppDataFolder);
+                    CurrentOverallOperationText = "Saved LE1 Mod Database Locally...";
+                    break;
+            }
+            await Task.Delay(TimeSpan.FromSeconds(1.0));
+            CurrentOverallOperationText = statustxt;
+            bwLink.Visibility = Visibility.Visible;
+        }
+
+        private void AddNewModData()
+        {
+            TreeContent.Visibility = Visibility.Collapsed;
+            NewModForm.Visibility = Visibility.Visible;
+        }
+
+
+        private void CancelAddData(object obj)
+        {
+            var command = obj.ToString();
+            switch(command)
+            {
+                case "NewMod":
+                    NewModForm.Visibility = Visibility.Collapsed;
+                    TreeContent.Visibility = Visibility.Visible;
+                    nwMod_Name.Clear();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void AddDataToMod(object obj)
+        {
+            var command = obj.ToString();
+            var mdb = new PlotDatabase();
+            switch(CurrentGame)
+            {
+                case MEGame.LE1:
+                    mdb = PlotDatabases.Le1ModDatabase;
+                    break;
+                case MEGame.LE2:
+                    mdb = PlotDatabases.Le2ModDatabase;
+                    break;
+                default:
+                    mdb = PlotDatabases.Le3ModDatabase;
+                    break;
+            }
+            switch (command)
+            {
+                case "NewMod":
+                    var modname = nwMod_Name.Text;
+                    var dlg = MessageBox.Show($"Do you want to add mod {modname} to the database?", "Modding Plots Database", MessageBoxButton.OKCancel);
+                    if(dlg == MessageBoxResult.Cancel || modname == null)
+                    {
+                        CancelAddData(command);
+                        return;
+                    }
+                    int parentId = 100000;
+                    var mods = mdb.Organizational[parentId].Children.ToList();
+                    foreach(var mod in mods)
+                    {
+                        if(mod.Label == modname)
+                        {
+                            MessageBox.Show($"Mod {modname} already exists in the database.  Please use another name.");
+                            CancelAddData(command);
+                            return;
+                        }
+                    }
+                    int newElementId = mdb.GetNextElementId();
+                    var newModPE = new PlotElement(-1, newElementId, modname, PlotElementType.Region, parentId, new List<PlotElement>());
+                    mdb.Organizational.Add(newElementId, newModPE);
+                    mdb.Organizational[parentId].Children.Add(newModPE);
+                    NewModForm.Visibility = Visibility.Collapsed;
+                    nwMod_Name.Clear();
+                    TreeContent.Visibility = Visibility.Visible;
+                    break;
+                default:
+                    break;
+            }
+
+            RefreshTrees();
         }
         #endregion
 

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Helpers;
 using Newtonsoft.Json;
+using System.IO;
 
 namespace LegendaryExplorerCore.PlotDatabase
 {
@@ -84,7 +85,7 @@ namespace LegendaryExplorerCore.PlotDatabase
 
         }
 
-        public void LoadPlotsFromJSON(MEGame game, bool loadBioware = true)
+        public void LoadPlotsFromJSON(MEGame game, bool loadBioware = true, string dpPath = null)
         {
             refGame = game;
             IsBioware = loadBioware;
@@ -96,10 +97,12 @@ namespace LegendaryExplorerCore.PlotDatabase
             }
             else
             {
-                json = "{}"; //TO DO add load non-bioware modders asset
+                if (dpPath == null)
+                    return;
+                StreamReader sr = new StreamReader(dpPath);
+                json = sr.ReadToEnd();
             }
-
-            pdb = JsonConvert.DeserializeObject<PlotDatabaseFile>(json);
+            pdb = JsonConvert.DeserializeObject<PlotDatabaseFile>(json, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore});
             pdb.BuildTree();
 
             Bools = pdb.Bools.ToDictionary((b) => b.PlotId);
@@ -127,5 +130,74 @@ namespace LegendaryExplorerCore.PlotDatabase
             return new SortedDictionary<int, PlotElement>(elements);
         }
 
+        public bool CanSave() => !IsBioware;
+
+        public void SaveDatabaseToFile(string folder)
+        {
+            if (!CanSave() || !Directory.Exists(folder))
+                return;
+            var dbPath = Path.Combine(folder, $"PlotDBMods{refGame}.json");
+
+            var serializationObj = new PlotDatabaseFile();
+            serializationObj.Bools = Bools.Values.ToList();
+            serializationObj.Ints = Ints.Values.ToList();
+            serializationObj.Floats = Floats.Values.ToList();
+            serializationObj.Conditionals = Conditionals.Values.ToList();
+            serializationObj.Transitions = Transitions.Values.ToList();
+            serializationObj.Organizational = Organizational.Values.ToList();
+
+            var json = JsonConvert.SerializeObject(serializationObj);
+
+            File.WriteAllText(dbPath, json);
+        }
+
+        public int GetNextElementId()
+        {
+            var maxElement = 1;
+
+            foreach(var kvp in Bools)
+            {
+                if(kvp.Value.ElementId > maxElement)
+                {
+                    maxElement = kvp.Value.ElementId;
+                }
+            }
+            foreach (var kvp in Ints)
+            {
+                if (kvp.Value.ElementId > maxElement)
+                {
+                    maxElement = kvp.Value.ElementId;
+                }
+            }
+            foreach (var kvp in Floats)
+            {
+                if (kvp.Value.ElementId > maxElement)
+                {
+                    maxElement = kvp.Value.ElementId;
+                }
+            }
+            foreach (var kvp in Conditionals)
+            {
+                if (kvp.Value.ElementId > maxElement)
+                {
+                    maxElement = kvp.Value.ElementId;
+                }
+            }
+            foreach (var kvp in Transitions)
+            {
+                if (kvp.Value.ElementId > maxElement)
+                {
+                    maxElement = kvp.Value.ElementId;
+                }
+            }
+            foreach (var kvp in Organizational)
+            {
+                if (kvp.Value.ElementId > maxElement)
+                {
+                    maxElement = kvp.Value.ElementId;
+                }
+            }
+            return maxElement + 1;
+        }
     }
 }

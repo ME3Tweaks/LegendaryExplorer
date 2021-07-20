@@ -70,7 +70,17 @@
 
                 
                 <Menu Name="TopDock" DockPanel.Dock="Left">
-                    <MenuItem Header="Show/Hide Elements" Padding="4">
+                    <MenuItem Header="Mod Databases" Padding="4">
+                        <MenuItem Header="Add New Mod" Command="{Binding AddNewModCommand}" />
+                        <MenuItem Header="Add New Mod Category" Command="{Binding FilterCommand}" IsEnabled="False"/>
+                        <MenuItem Header="Add New Game State" Command="{Binding FilterCommand}" IsEnabled="False"/>
+                        <MenuItem Header="Delete Item" Command="{Binding FilterCommand}" IsEnabled="False" />
+                        <Separator/>
+                        <MenuItem Header="Save Database Locally" Command="{Binding SaveLocalCommand}"/>
+                        <MenuItem Header="Sync Database to ME3Tweaks" IsEnabled="False"/>
+                        <Separator/>
+                    </MenuItem>
+                    <MenuItem Header="Tools" Padding="4">
                         <MenuItem Header="Show Bool States" Command="{Binding FilterCommand}" IsCheckable="True" IsChecked="{Binding ShowBoolStates}"/>
                         <MenuItem Header="Show Integers" Command="{Binding FilterCommand}" IsCheckable="True" IsChecked="{Binding ShowInts}"/>
                         <MenuItem Header="Show Floats" Command="{Binding FilterCommand}" IsCheckable="True" IsChecked="{Binding ShowFloats}"/>
@@ -99,6 +109,14 @@
                                 </StackPanel>
                             </HierarchicalDataTemplate>
                         </TreeView.Resources>
+                        <TreeView.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Add New Mod" Command="{Binding AddNewModCommand}" />
+                                <MenuItem Header="Add New Mod Category" Command="{Binding FilterCommand}" IsEnabled="False"/>
+                                <MenuItem Header="Add New Game State" Command="{Binding FilterCommand}" IsEnabled="False"/>
+                                <MenuItem Header="Delete Item" Command="{Binding FilterCommand}" IsEnabled="False" />
+                            </ContextMenu>
+                        </TreeView.ContextMenu>
                     </TreeView>
                 </TabItem>
                 <TabItem Header="LE2/ME2" TabIndex="2" Width="80">
@@ -118,6 +136,14 @@
                                 </StackPanel>
                             </HierarchicalDataTemplate>
                         </TreeView.Resources>
+                        <TreeView.ContextMenu>
+                            <ContextMenu Padding="4">
+                                <MenuItem Header="Add New Mod" Command="{Binding AddNewModCommand}" />
+                                <MenuItem Header="Add New Mod Category" Command="{Binding FilterCommand}" IsEnabled="False"/>
+                                <MenuItem Header="Add New Game State" Command="{Binding FilterCommand}" IsEnabled="False"/>
+                                <MenuItem Header="Delete Item" Command="{Binding FilterCommand}" IsEnabled="False" />
+                            </ContextMenu>
+                        </TreeView.ContextMenu>
                     </TreeView>
                 </TabItem>
                 <TabItem Header="LE1/ME1" TabIndex="1" Width="80">
@@ -137,53 +163,78 @@
                                 </StackPanel>
                             </HierarchicalDataTemplate>
                         </TreeView.Resources>
+                        <TreeView.ContextMenu>
+                            <ContextMenu Padding="4">
+                                <MenuItem Header="Add New Mod" Command="{Binding AddNewModCommand}" />
+                                <MenuItem Header="Add New Mod Category" Command="{Binding FilterCommand}" IsEnabled="False"/>
+                                <MenuItem Header="Add New Game State" Command="{Binding FilterCommand}" IsEnabled="False"/>
+                                <MenuItem Header="Delete Item" Command="{Binding FilterCommand}" IsEnabled="False" />
+                            </ContextMenu>
+                        </TreeView.ContextMenu>
                     </TreeView>
                 </TabItem>
             </TabControl>
             <DockPanel Grid.Column="1" Grid.Row="1" LastChildFill="True">
-                <ContentControl Margin="5" BorderThickness="1"
-                                    Content="{Binding SelectedNode}" DockPanel.Dock="Top">
-                    <ContentControl.Resources>
-                        <DataTemplate DataType="{x:Type plotDatabase:PlotElement}">
-                            <StackPanel>
-                                <TextBlock FontWeight="Bold"><Run Text="{Binding Type}"/> <Run Text="{Binding RelevantId, Mode=OneWay}"/>:</TextBlock>
-                                <TextBlock Text="{Binding Path, Mode=OneWay}"/>
-                                <TextBlock>Plot Element ID: <Run Text="{Binding ElementId}"/></TextBlock>
-                                <TextBlock>Sequence: <Run Text="{Binding Sequence}"/></TextBlock>
-                            </StackPanel>
-                        </DataTemplate>
-                        <DataTemplate DataType="{x:Type plotDatabase:PlotBool}">
-                            <StackPanel>
-                                <TextBlock FontWeight="Bold"><Run Text="{Binding Type}"/> <Run Text="{Binding PlotId}"/>:</TextBlock>
-                                <TextBlock Text="{Binding Path, Mode=OneWay}"/>
-                                <TextBlock>Plot Element ID: <Run Text="{Binding ElementId}"/></TextBlock>
-                                <TextBlock>Sequence: <Run Text="{Binding Sequence}"/></TextBlock>
-                                <TextBlock>Subtype: <Run Text="{Binding SubType}"/></TextBlock>
-                                <TextBlock>Gamer Variable: <Run Text="{Binding GamerVariable}"/></TextBlock>
-                                <TextBlock>Achievement ID: <Run Text="{Binding AchievementID}"/></TextBlock>
-                                <TextBlock>Galaxy At War: <Run Text="{Binding GalaxyAtWar}"/></TextBlock>
-                            </StackPanel>
-                        </DataTemplate>
-                        <DataTemplate DataType="{x:Type plotDatabase:PlotConditional}">
-                            <StackPanel>
-                                <TextBlock FontWeight="Bold"><Run Text="{Binding Type}"/> <Run Text="{Binding PlotId}"/>:</TextBlock>
-                                <TextBlock Text="{Binding Path, Mode=OneWay}"/>
-                                <TextBlock>Plot Element ID: <Run Text="{Binding ElementId}"/></TextBlock>
-                                <TextBlock>Sequence: <Run Text="{Binding Sequence}"/></TextBlock>
-                                <TextBlock>Code: <Run Text="{Binding Code}"/></TextBlock>
-                            </StackPanel>
-                        </DataTemplate>
-                        <DataTemplate DataType="{x:Type plotDatabase:PlotTransition}">
-                            <StackPanel>
-                                <TextBlock FontWeight="Bold"><Run Text="{Binding Type}"/> <Run Text="{Binding PlotId}"/>:</TextBlock>
-                                <TextBlock Text="{Binding Path, Mode=OneWay}"/>
-                                <TextBlock>Plot Element ID: <Run Text="{Binding ElementId}"/></TextBlock>
-                                <TextBlock>Sequence: <Run Text="{Binding Sequence}"/></TextBlock>
-                                <TextBlock>Argument: <Run Text="{Binding Argument}"/></TextBlock>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ContentControl.Resources>
-                </ContentControl>
+                <StackPanel DockPanel.Dock="Top">
+                    <ContentControl x:Name="TreeContent" Margin="5" BorderThickness="1"
+                                    Content="{Binding SelectedNode}" >
+                        <ContentControl.Resources>
+                            <DataTemplate DataType="{x:Type plotDatabase:PlotElement}">
+                                <StackPanel>
+                                    <TextBlock FontWeight="Bold"><Run Text="{Binding Type}"/> <Run Text="{Binding RelevantId, Mode=OneWay}"/>:</TextBlock>
+                                    <TextBlock Text="{Binding Path, Mode=OneWay}"/>
+                                    <TextBlock>Plot Element ID: <Run Text="{Binding ElementId}"/></TextBlock>
+                                    <TextBlock>Sequence: <Run Text="{Binding Sequence}"/></TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type plotDatabase:PlotBool}">
+                                <StackPanel>
+                                    <TextBlock FontWeight="Bold"><Run Text="{Binding Type}"/> <Run Text="{Binding PlotId}"/>:</TextBlock>
+                                    <TextBlock Text="{Binding Path, Mode=OneWay}"/>
+                                    <TextBlock>Plot Element ID: <Run Text="{Binding ElementId}"/></TextBlock>
+                                    <TextBlock>Sequence: <Run Text="{Binding Sequence}"/></TextBlock>
+                                    <TextBlock>Subtype: <Run Text="{Binding SubType}"/></TextBlock>
+                                    <TextBlock>Gamer Variable: <Run Text="{Binding GamerVariable}"/></TextBlock>
+                                    <TextBlock>Achievement ID: <Run Text="{Binding AchievementID}"/></TextBlock>
+                                    <TextBlock>Galaxy At War: <Run Text="{Binding GalaxyAtWar}"/></TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type plotDatabase:PlotConditional}">
+                                <StackPanel>
+                                    <TextBlock FontWeight="Bold"><Run Text="{Binding Type}"/> <Run Text="{Binding PlotId}"/>:</TextBlock>
+                                    <TextBlock Text="{Binding Path, Mode=OneWay}"/>
+                                    <TextBlock>Plot Element ID: <Run Text="{Binding ElementId}"/></TextBlock>
+                                    <TextBlock>Sequence: <Run Text="{Binding Sequence}"/></TextBlock>
+                                    <TextBlock>Code: <Run Text="{Binding Code}"/></TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type plotDatabase:PlotTransition}">
+                                <StackPanel>
+                                    <TextBlock FontWeight="Bold"><Run Text="{Binding Type}"/> <Run Text="{Binding PlotId}"/>:</TextBlock>
+                                    <TextBlock Text="{Binding Path, Mode=OneWay}"/>
+                                    <TextBlock>Plot Element ID: <Run Text="{Binding ElementId}"/></TextBlock>
+                                    <TextBlock>Sequence: <Run Text="{Binding Sequence}"/></TextBlock>
+                                    <TextBlock>Argument: <Run Text="{Binding Argument}"/></TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ContentControl.Resources>
+                    </ContentControl>
+                    <StackPanel Name="NewModForm" Visibility="Collapsed" Background="AliceBlue" >
+                        <TextBlock Text="Add a new mod" FontWeight="DemiBold" Margin="5"/>
+                        <DockPanel >
+                            <TextBlock Text="Mod Name: " DockPanel.Dock="Left" Margin="3"/>
+                            <TextBox x:Name="nwMod_Name" Width="300" HorizontalAlignment="Left" Margin="3"/>
+                        </DockPanel>
+                        <DockPanel LastChildFill="True">
+                            <Button Width="50" DockPanel.Dock="Left" Margin="3" Name="nwMod_OK" Command="{Binding ClickOkCommand}" CommandParameter="NewMod">
+                                <TextBlock Text="OK"/>
+                            </Button>
+                            <Button Width="50" HorizontalAlignment="Left" Margin="3" Name="nwMod_Cancel"  Command="{Binding ClickCancelCommand}" CommandParameter="NewMod">
+                                <TextBlock Text="Cancel"/>
+                            </Button>
+                        </DockPanel>
+                    </StackPanel>
+                </StackPanel>
                 <ListView Name="LV_Plots" ItemsSource="{Binding ElementsTable}" GridViewColumnHeader.Click="list_ColumnHeader_Click">
                     <ListView.View>
                         <GridView AllowsColumnReorder="True" ColumnHeaderContainerStyle="{StaticResource FileLVHeader}">
@@ -215,7 +266,7 @@
                         <TextBlock x:Name="StatusBar_RightMostText" Text="{Binding CurrentOverallOperationText}" />
                     </StatusBarItem>
                     <StatusBarItem DockPanel.Dock="Right">
-                        <TextBlock x:Name="bwLink" Width="Auto">
+                        <TextBlock x:Name="bwLink" Width="Auto"  Visibility="Visible">
                             <Hyperlink NavigateUri="https://github.com/electronicarts/MELE_ModdingSupport" misc:HyperlinkExtensions.IsExternal="True">
                                 github.com/MELE_ModdingSupport
                             </Hyperlink>
