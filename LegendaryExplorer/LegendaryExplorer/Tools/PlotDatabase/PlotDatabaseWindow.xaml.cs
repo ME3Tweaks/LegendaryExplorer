@@ -65,6 +65,8 @@ namespace LegendaryExplorer.Tools.PlotManager
         public bool ShowConditionals { get => _ShowConditionals; set => SetProperty(ref _ShowConditionals, value); }
         private bool _ShowTransitions = true;
         public bool ShowTransitions { get => _ShowTransitions; set => SetProperty(ref _ShowTransitions, value); }
+        private bool _ShowJournal = true;
+        public bool ShowJournal { get => _ShowJournal; set => SetProperty(ref _ShowJournal, value); }
         private GridViewColumnHeader _lastHeaderClicked = null;
         private ListSortDirection _lastDirection = ListSortDirection.Ascending;
         public ICommand FilterCommand { get; set; }
@@ -196,7 +198,7 @@ namespace LegendaryExplorer.Tools.PlotManager
             }
             if (showthis && !ShowBoolStates)
             {
-                showthis = e.Type != PlotElementType.State && e.Type != PlotElementType.SubState;
+                showthis = e.Type != PlotElementType.State && e.Type != PlotElementType.SubState && e.Type != PlotElementType.Flag && e.Type != PlotElementType.Consequence;
             }
             if (showthis && !ShowInts)
             {
@@ -214,6 +216,11 @@ namespace LegendaryExplorer.Tools.PlotManager
             {
                 showthis = e.Type != PlotElementType.Transition;
             }
+            if (showthis && !ShowJournal)
+            {
+                showthis = e.Type != PlotElementType.JournalGoal && e.Type != PlotElementType.JournalItem && e.Type != PlotElementType.JournalTask;
+            }
+            
             return showthis;
         }
 

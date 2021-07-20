@@ -45,8 +45,30 @@
                 <RowDefinition Height="35"/>
             </Grid.RowDefinitions>
             <DockPanel  Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Background="WhiteSmoke" LastChildFill="True">
-                <xctk:WatermarkTextBox DockPanel.Dock="Right" Watermark="Search" Name="FilterBox" Width="500" Margin="5,3,20,2" KeyUp="FilterBox_KeyUp" ToolTip="Search" HorizontalAlignment="Right" HorizontalContentAlignment="Left" IsEnabled="True">
-                </xctk:WatermarkTextBox>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" DockPanel.Dock="Right" >
+                    <ToggleButton Command="{Binding FilterCommand}" IsChecked="{Binding ShowBoolStates}" Height="25" Width="25" Margin="5,0,5,0" ToolTip="Show Bool States">
+                        <Image Source="/Tools/PlotDatabase/PlotTypeIcons/icon_bool.png" Height="12" Width="12"/>
+                    </ToggleButton>
+                    <ToggleButton Command="{Binding FilterCommand}" IsChecked="{Binding ShowInts}" Height="25" Width="25" Margin="5,0,5,0" ToolTip="Show Integers">
+                        <Image Source="/Tools/PlotDatabase/PlotTypeIcons/icon_int.png" Height="12" Width="12"/>
+                    </ToggleButton>
+                    <ToggleButton Command="{Binding FilterCommand}" IsChecked="{Binding ShowFloats}" Height="25" Width="25" Margin="5,0,5,0" ToolTip="Show Floats">
+                        <Image Source="/Tools/PlotDatabase/PlotTypeIcons/icon_float.png" Height="12" Width="12"/>
+                    </ToggleButton>
+                    <ToggleButton Command="{Binding FilterCommand}" IsChecked="{Binding ShowConditionals}" Height="25" Width="25" Margin="5,0,5,0" ToolTip="Show Conditionals">
+                        <Image Source="/Tools/PlotDatabase/PlotTypeIcons/icon_cnd.png" Height="12" Width="12"/>
+                    </ToggleButton>
+                    <ToggleButton Command="{Binding FilterCommand}" IsChecked="{Binding ShowTransitions}" Height="25" Width="25" Margin="5,0,5,0" ToolTip="Show Transitions">
+                        <Image Source="/Tools/PackageEditor/ExportIcons/icon_function.png" Height="12" Width="12"/>
+                    </ToggleButton>
+                    <ToggleButton Command="{Binding FilterCommand}" IsChecked="{Binding ShowJournal}" Height="25" Width="25" Margin="5,0,5,0" ToolTip="Show Journal Items">
+                        <Image Source="/Tools/PackageEditor/ExportIcons/icon_world.png" Height="12" Width="12"/>
+                    </ToggleButton>
+                    <xctk:WatermarkTextBox Watermark="Search" Name="FilterBox" Width="500" Margin="5,3,20,2" KeyUp="FilterBox_KeyUp" ToolTip="Search" HorizontalAlignment="Right" HorizontalContentAlignment="Left" IsEnabled="True">
+                    </xctk:WatermarkTextBox>
+                </StackPanel>
+
+                
                 <Menu Name="TopDock" DockPanel.Dock="Left">
                     <MenuItem Header="Show/Hide Elements" Padding="4">
                         <MenuItem Header="Show Bool States" Command="{Binding FilterCommand}" IsCheckable="True" IsChecked="{Binding ShowBoolStates}"/>
@@ -54,8 +76,10 @@
                         <MenuItem Header="Show Floats" Command="{Binding FilterCommand}" IsCheckable="True" IsChecked="{Binding ShowFloats}"/>
                         <MenuItem Header="Show Conditionals" Command="{Binding FilterCommand}" IsCheckable="True" IsChecked="{Binding ShowConditionals}"/>
                         <MenuItem Header="Show Transitions" Command="{Binding FilterCommand}" IsCheckable="True" IsChecked="{Binding ShowTransitions}"/>
+                        <MenuItem Header="Show Journals" Command="{Binding FilterCommand}" IsCheckable="True" IsChecked="{Binding ShowJournal}"/>
                     </MenuItem>
                 </Menu>
+                
             </DockPanel>
             <TabControl Name="GameTab" Grid.Column="0" Grid.Row="1" SelectedIndex="{Binding CurrentView, Mode=TwoWay}" SelectionChanged="NewTab_Selected">
                 <TabItem Header="LE3/ME3" TabIndex="3"  Width="80">
