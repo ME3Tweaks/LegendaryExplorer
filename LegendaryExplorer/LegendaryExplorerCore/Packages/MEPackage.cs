@@ -855,24 +855,48 @@ namespace LegendaryExplorerCore.Packages
             {
                 package.Flags |= EPackageFlags.Compressed;
 
-                int nameTableSize = package.names.Sum(name => name.Length);
+                int nameTableSize = 0;
+
+                // Null or empty names do not use a terminator
+                // As such we have to account for them or saving a compressed package will yield a broken file.
+                int validNameTableSize = 0;
+                int invalidNameCount = 0;
+                int validNameCount = 0;
+                foreach (var v in package.names)
+                {
+                    if (v.Length > 0)
+                    {
+                        validNameTableSize += v.Length;
+                        validNameCount++;
+                    }
+                    else
+                    {
+                        invalidNameCount++;
+                    }
+                }
+
                 switch (package.Game)
                 {
                     case MEGame.ME1:
-                        nameTableSize += 13 * package.NameCount;
+                        nameTableSize += 13 * validNameCount;
+                        nameTableSize += 4 * invalidNameCount; // 4 bytes for size and nothing else. Null and empty strings are just the length of 0 // Is this right?
                         break;
                     case MEGame.ME2:
-                        nameTableSize += 9 * package.NameCount;
+                        nameTableSize += 9 * validNameCount;
+                        nameTableSize += 4 * invalidNameCount; // 4 bytes for size and nothing else. Null and empty strings are just the length of 0 // Is this right?
                         break;
                     case MEGame.ME3:
                     case MEGame.LE3:
-                        nameTableSize = nameTableSize * 2 + 6 * package.NameCount;
+                        nameTableSize = validNameTableSize * 2 + 6 * validNameCount;
+                        nameTableSize += 4 * invalidNameCount; // 4 bytes for size and nothing else. Null and empty strings are just the length of 0
                         break;
                     case MEGame.LE1:
                     case MEGame.LE2:
-                        nameTableSize += 5 * package.NameCount;
+                        nameTableSize += 5 * validNameCount;
+                        nameTableSize += 4 * invalidNameCount; // 4 bytes for size and nothing else. Null and empty strings are just the length of 0
                         break;
                 }
+
 
                 int importTableSize = package.imports.Count * ImportEntry.headerSize;
                 int exportTableSize = package.exports.Sum(exp => exp.Header.Length);
@@ -988,6 +1012,12 @@ namespace LegendaryExplorerCore.Packages
                                 break;
                         }
                     }
+
+                    // sanity check
+#if DEBUG
+                    if (ms.Position != nameTableSize)
+                        throw new Exception(@"INVALID NAME TABLE SIZE! Check that the serialized size and calculated size make sense (e.g. 0 length strings)");
+#endif
                     foreach (ImportEntry e in package.imports)
                     {
                         ms.WriteFromBuffer(e.Header);
@@ -999,6 +1029,8 @@ namespace LegendaryExplorerCore.Packages
                     Array.Clear(uncompressedData, (int)ms.Position, dependencyTableSize);
                     positionInChunkData = (int)ms.Position + dependencyTableSize;
                 }
+
+
 
                 var compressionOutputSize = compressionType switch
                 {
