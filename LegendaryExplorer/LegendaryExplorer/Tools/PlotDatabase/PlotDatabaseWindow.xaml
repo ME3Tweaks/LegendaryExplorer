@@ -11,6 +11,8 @@
         xmlns:plotDatabase="clr-namespace:LegendaryExplorerCore.PlotDatabase;assembly=LegendaryExplorerCore"
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Loaded="PlotDB_Loaded"
+        Closing="PlotDB_Closing"
         mc:Ignorable="d"
         Title="Plot Database" Height="900" Width="1500">
     <Window.Resources>
@@ -71,14 +73,22 @@
                 
                 <Menu Name="TopDock" DockPanel.Dock="Left">
                     <MenuItem Header="Mod Databases" Padding="4">
+                        <MenuItem Header="Refresh" Command="{Binding RefreshLocalCommand}"/>
+                        <MenuItem Header="Save Database Locally" Command="{Binding SaveLocalCommand}"/>
+                        <MenuItem Header="Sync Database to ME3Tweaks" IsEnabled="False"/>
+                        <Separator/>
                         <MenuItem Header="Add New Mod" Command="{Binding AddNewModCommand}" />
                         <MenuItem Header="Add New Mod Category" Command="{Binding FilterCommand}" IsEnabled="False"/>
                         <MenuItem Header="Add New Game State" Command="{Binding FilterCommand}" IsEnabled="False"/>
                         <MenuItem Header="Delete Item" Command="{Binding FilterCommand}" IsEnabled="False" />
                         <Separator/>
-                        <MenuItem Header="Save Database Locally" Command="{Binding SaveLocalCommand}"/>
-                        <MenuItem Header="Sync Database to ME3Tweaks" IsEnabled="False"/>
-                        <Separator/>
+                        <MenuItem Header="Import Mod States from Excel" Command="{Binding FilterCommand}" IsEnabled="False">
+                            <Image Source="\Resources\Images\excel.png"/>
+                        </MenuItem>
+                        <MenuItem Header="Export Mod States to Excel" Command="{Binding FilterCommand}" IsEnabled="False">
+                            <Image Source="\Resources\Images\excel.png"/>
+                        </MenuItem>
+                        <MenuItem Header="Exit" Command="{Binding ExitCommand}"/>
                     </MenuItem>
                     <MenuItem Header="Tools" Padding="4">
                         <MenuItem Header="Show Bool States" Command="{Binding FilterCommand}" IsCheckable="True" IsChecked="{Binding ShowBoolStates}"/>
@@ -111,10 +121,10 @@
                         </TreeView.Resources>
                         <TreeView.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Add New Mod" Command="{Binding AddNewModCommand}" />
-                                <MenuItem Header="Add New Mod Category" Command="{Binding FilterCommand}" IsEnabled="False"/>
-                                <MenuItem Header="Add New Game State" Command="{Binding FilterCommand}" IsEnabled="False"/>
-                                <MenuItem Header="Delete Item" Command="{Binding FilterCommand}" IsEnabled="False" />
+                                <MenuItem Header="Add New Mod" Command="{Binding AddNewModCommand}" CommandParameter="NewMod" />
+                                <MenuItem Header="Add New Mod Category" Command="{Binding AddModCategoryCommand}" CommandParameter="NewCategory" />
+                                <MenuItem Header="Add New Game State" Command="{Binding AddModItemCommand}" CommandParameter="NewItem"/>
+                                <MenuItem Header="Delete Item" Command="{Binding DeleteModItemCommand}"/>
                             </ContextMenu>
                         </TreeView.ContextMenu>
                     </TreeView>

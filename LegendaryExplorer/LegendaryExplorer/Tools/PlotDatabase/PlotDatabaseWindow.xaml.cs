@@ -55,6 +55,9 @@ namespace LegendaryExplorer.Tools.PlotManager
         private int previousView { get; set; }
         private int _currentView;
         public int CurrentView { get => _currentView; set { previousView = _currentView; SetProperty(ref _currentView, value); } }
+        private bool _needsSave;
+        public bool NeedsSave { get => _needsSave; set => SetProperty(ref _needsSave, value); }
+
         private bool _ShowBoolStates = true;
         public bool ShowBoolStates { get => _ShowBoolStates; set => SetProperty(ref _ShowBoolStates, value); }
         private bool _ShowInts = true;
@@ -71,10 +74,20 @@ namespace LegendaryExplorer.Tools.PlotManager
         private ListSortDirection _lastDirection = ListSortDirection.Ascending;
         public ICommand FilterCommand { get; set; }
         public ICommand CopyToClipboardCommand { get; set; }
+        public ICommand RefreshLocalCommand { get; set; }
         public ICommand SaveLocalCommand { get; set; }
+        public ICommand ExitCommand { get; set; }
         public ICommand AddNewModCommand { get; set; }
         public ICommand ClickOkCommand { get; set; }
         public ICommand ClickCancelCommand { get; set; }
+        public ICommand AddModCategoryCommand { get; set; }
+        public ICommand AddModItemCommand { get; set; }
+        public ICommand DeleteModItemCommand { get; set; }
+        public bool IsModRoot() => SelectedNode?.ElementId == 100000;
+        public bool IsMod() => SelectedNode?.Type == PlotElementType.Mod;
+        public bool CanAddCategory() => SelectedNode?.Type == PlotElementType.Mod || SelectedNode?.Type == PlotElementType.Category;
+        public bool CanDeleteItem() => SelectedNode?.ElementId > 100000 && SelectedNode.Children.IsEmpty();
+        public bool CanAddItem() => SelectedNode?.Type == PlotElementType.Category;
         #endregion
 
         #region PDBInitialization
@@ -122,18 +135,42 @@ namespace LegendaryExplorer.Tools.PlotManager
             SelectedNode = dictionary3[1];
         }
 
-
-
         private void LoadCommands()
         {
             FilterCommand = new GenericCommand(Filter);
             CopyToClipboardCommand = new GenericCommand(CopyToClipboard);
+            RefreshLocalCommand = new GenericCommand(RefreshTrees);
             SaveLocalCommand = new GenericCommand(SaveModDB);
-            AddNewModCommand = new GenericCommand(AddNewModData);
-            ClickOkCommand = new RelayCommand(AddDataToMod);
+            ExitCommand = new GenericCommand(Close);
+            ClickOkCommand = new RelayCommand(AddDataToModDatabase);
             ClickCancelCommand = new RelayCommand(CancelAddData);
+            AddNewModCommand = new GenericCommand(AddNewModData, IsModRoot);
+            AddModCategoryCommand = new GenericCommand(AddNewModData, CanAddCategory);                                                                                                   
+            AddModItemCommand = new GenericCommand(AddNewModData, CanAddItem);
+            DeleteModItemCommand = new GenericCommand(DeleteNewModData, CanDeleteItem);
+        }
+        private void PlotDB_Loaded(object sender, RoutedEventArgs e)
+        {
+
         }
 
+        private void PlotDB_Closing(object sender, CancelEventArgs e)
+        {
+            if(NeedsSave)
+            {
+                var dlg = MessageBox.Show("Changes have been made to the modding database. Save now?", "Plot Database", MessageBoxButton.YesNo);
+                if(dlg == MessageBoxResult.Yes)
+                {
+                    NeedsSave = false;
+                    CurrentGame = MEGame.LE3;
+                    SaveModDB();
+                    CurrentGame = MEGame.LE2;
+                    SaveModDB();
+                    CurrentGame = MEGame.LE1;
+                    SaveModDB();
+                }
+            }
+        }
 
         private void UpdateSelection()
         {
@@ -278,7 +315,6 @@ namespace LegendaryExplorer.Tools.PlotManager
             }
         }
 
-
         private void list_ColumnHeader_Click(object sender, RoutedEventArgs e)
         {
             if (e.OriginalSource is GridViewColumnHeader headerClicked)
@@ -367,9 +403,13 @@ namespace LegendaryExplorer.Tools.PlotManager
                     CurrentOverallOperationText = "Saved LE1 Mod Database Locally...";
                     break;
             }
-            await Task.Delay(TimeSpan.FromSeconds(1.0));
+            if(NeedsSave) //don't do this on exit
+            {
+                await Task.Delay(TimeSpan.FromSeconds(1.0));
+            }
             CurrentOverallOperationText = statustxt;
             bwLink.Visibility = Visibility.Visible;
+            NeedsSave = false;
         }
 
         private void AddNewModData()
@@ -377,7 +417,6 @@ namespace LegendaryExplorer.Tools.PlotManager
             TreeContent.Visibility = Visibility.Collapsed;
             NewModForm.Visibility = Visibility.Visible;
         }
-
 
         private void CancelAddData(object obj)
         {
@@ -394,7 +433,7 @@ namespace LegendaryExplorer.Tools.PlotManager
             }
         }
 
-        private void AddDataToMod(object obj)
+        private void AddDataToModDatabase(object obj)
         {
             var command = obj.ToString();
             var mdb = new PlotDatabase();
@@ -421,7 +460,8 @@ namespace LegendaryExplorer.Tools.PlotManager
                         return;
                     }
                     int parentId = 100000;
-                    var mods = mdb.Organizational[parentId].Children.ToList();
+                    var parent = mdb.Organizational[parentId];
+                    var mods = parent.Children.ToList();
                     foreach(var mod in mods)
                     {
                         if(mod.Label == modname)
@@ -432,12 +472,13 @@ namespace LegendaryExplorer.Tools.PlotManager
                         }
                     }
                     int newElementId = mdb.GetNextElementId();
-                    var newModPE = new PlotElement(-1, newElementId, modname, PlotElementType.Region, parentId, new List<PlotElement>());
+                    var newModPE = new PlotElement(-1, newElementId, modname, PlotElementType.Mod, parentId, new List<PlotElement>(), parent);
                     mdb.Organizational.Add(newElementId, newModPE);
-                    mdb.Organizational[parentId].Children.Add(newModPE);
+                    parent.Children.Add(newModPE);
                     NewModForm.Visibility = Visibility.Collapsed;
                     nwMod_Name.Clear();
                     TreeContent.Visibility = Visibility.Visible;
+                    NeedsSave = true;
                     break;
                 default:
                     break;
@@ -445,7 +486,64 @@ namespace LegendaryExplorer.Tools.PlotManager
 
             RefreshTrees();
         }
+
+        private void DeleteNewModData()
+        {
+            if (SelectedNode.ElementId <= 100000)
+            {
+                MessageBox.Show("Cannot Delete Bioware plot states.");
+                return;
+            }
+            if (!SelectedNode.Children.IsEmpty())
+            {
+                MessageBox.Show("This item has subitems.  Delete all the sub-items before deleting this.");
+                return;
+            }
+            var dlg = MessageBox.Show($"Are you sure you wish to delete this item?\nType: {SelectedNode.Type}\nPlotId: {SelectedNode.PlotId}\nPath: {SelectedNode.Path}", "Plot Database", MessageBoxButton.OKCancel);
+            if (dlg == MessageBoxResult.Cancel)
+                return;
+            var deleteId = SelectedNode.ElementId;
+            var mdb = new PlotDatabase();
+            switch (CurrentGame)
+            {
+                case MEGame.LE1:
+                    mdb = PlotDatabases.Le1ModDatabase;
+                    break;
+                case MEGame.LE2:
+                    mdb = PlotDatabases.Le2ModDatabase;
+                    break;
+                default:
+                    mdb = PlotDatabases.Le3ModDatabase;
+                    break;
+            }
+            mdb.RemoveFromParent(SelectedNode);
+            switch (SelectedNode.Type)
+            {
+                case PlotElementType.State:
+                case PlotElementType.SubState:
+                    mdb.Bools.Remove(SelectedNode.PlotId);
+                    break;
+                case PlotElementType.Integer:
+                    mdb.Ints.Remove(SelectedNode.PlotId);
+                    break;
+                case PlotElementType.Float:
+                    mdb.Floats.Remove(SelectedNode.PlotId);
+                    break;
+                case PlotElementType.Conditional:
+                    mdb.Conditionals.Remove(SelectedNode.PlotId);
+                    break;
+                case PlotElementType.Transition:
+                    mdb.Transitions.Remove(SelectedNode.PlotId);
+                    break;
+                default:
+                    mdb.Organizational.Remove(SelectedNode.ElementId);
+                    break;
+            }
+            NeedsSave = true;
+            RefreshTrees();
+        }
         #endregion
+
 
     }
 
@@ -477,9 +575,12 @@ namespace LegendaryExplorer.Tools.PlotManager
                     case PlotElementType.None:
                     case PlotElementType.Plot:
                     case PlotElementType.Region:
+                    case PlotElementType.Category:
                         return "/Tools/PackageEditor/ExportIcons/icon_package.png";
                     case PlotElementType.Transition:
                         return "/Tools/PackageEditor/ExportIcons/icon_function.png";
+                    case PlotElementType.Mod:
+                        return "/Tools/PackageEditor/ExportIcons/icon_package_fileroot.png";
                     default:
                         break;
                 }

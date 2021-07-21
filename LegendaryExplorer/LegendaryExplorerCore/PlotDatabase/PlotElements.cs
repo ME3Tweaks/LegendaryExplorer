@@ -29,7 +29,9 @@ namespace LegendaryExplorerCore.PlotDatabase
         JournalTask = 11,
         JournalItem = 12,
         Integer = 13,
-        Float = 14
+        Float = 14,
+        Mod = 15,
+        Category = 16
 
     }
 
@@ -52,6 +54,8 @@ namespace LegendaryExplorerCore.PlotDatabase
             PlotElementType.JournalItem => "A plot item",
             PlotElementType.Integer => "An integer",
             PlotElementType.Float => "A floating point number",
+            PlotElementType.Mod => "A category for items for a single mod or modder",
+            PlotElementType.Category => "A category of various states",
             _ => throw new ArgumentOutOfRangeException($"Unexpected plot type: ${plotType}")
         };
     }
@@ -114,6 +118,17 @@ namespace LegendaryExplorerCore.PlotDatabase
             Type = type;
             ParentElementId = parentelementId;
             Children = children;
+        }
+
+        public PlotElement(int plotid, int elementid, string label, PlotElementType type, int parentelementId, List<PlotElement> children, PlotElement parent)
+        {
+            PlotId = plotid;
+            ElementId = elementid;
+            Label = label;
+            Type = type;
+            ParentElementId = parentelementId;
+            Children = children;
+            Parent = parent;
         }
 
         public int RelevantId => PlotId <= 0 ? ElementId : PlotId;

@@ -132,6 +132,51 @@ namespace LegendaryExplorerCore.PlotDatabase
 
         public bool CanSave() => !IsBioware;
 
+        public PlotElement GetElementById(int elementId)
+        {
+            if (Organizational.ContainsKey(elementId))
+            {
+                return Organizational[elementId];
+            }
+            var boolkvp = Bools.FirstOrDefault(e => e.Value.ElementId == elementId);
+            if (boolkvp.Value != null)
+            {
+                return boolkvp.Value;
+            }
+            var intkvp = Ints.FirstOrDefault(e => e.Value.ElementId == elementId);
+            if (intkvp.Value != null)
+            {
+                return intkvp.Value;
+            }
+            var cndkvp = Conditionals.FirstOrDefault(e => e.Value.ElementId == elementId);
+            if (cndkvp.Value != null)
+            {
+                return cndkvp.Value;
+            }
+            var fltkvp = Floats.FirstOrDefault(e => e.Value.ElementId == elementId);
+            if (fltkvp.Value != null)
+            {
+                return fltkvp.Value;
+            }
+            var trnkvp = Transitions.FirstOrDefault(e => e.Value.ElementId == elementId);
+            if (trnkvp.Value != null)
+            {
+                return trnkvp.Value;
+            }
+            return null;
+        }
+
+        public bool RemoveFromParent(PlotElement child)
+        {
+            var parent = child.Parent;
+            if (parent != null)
+            {
+                parent.Children.Remove(child);
+                return true;
+            }
+            return false;
+        }
+
         public void SaveDatabaseToFile(string folder)
         {
             if (!CanSave() || !Directory.Exists(folder))
