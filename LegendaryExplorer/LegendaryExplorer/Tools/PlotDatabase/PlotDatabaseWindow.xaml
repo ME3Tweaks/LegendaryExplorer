@@ -148,10 +148,10 @@
                         </TreeView.Resources>
                         <TreeView.ContextMenu>
                             <ContextMenu Padding="4">
-                                <MenuItem Header="Add New Mod" Command="{Binding AddNewModCommand}" />
-                                <MenuItem Header="Add New Mod Category" Command="{Binding FilterCommand}" IsEnabled="False"/>
-                                <MenuItem Header="Add New Game State" Command="{Binding FilterCommand}" IsEnabled="False"/>
-                                <MenuItem Header="Delete Item" Command="{Binding FilterCommand}" IsEnabled="False" />
+                                <MenuItem Header="Add New Mod" Command="{Binding AddNewModCommand}" CommandParameter="NewMod" />
+                                <MenuItem Header="Add New Mod Category" Command="{Binding AddModCategoryCommand}" CommandParameter="NewCategory" />
+                                <MenuItem Header="Add New Game State" Command="{Binding AddModItemCommand}" CommandParameter="NewItem"/>
+                                <MenuItem Header="Delete Item" Command="{Binding DeleteModItemCommand}"/>
                             </ContextMenu>
                         </TreeView.ContextMenu>
                     </TreeView>
@@ -175,10 +175,10 @@
                         </TreeView.Resources>
                         <TreeView.ContextMenu>
                             <ContextMenu Padding="4">
-                                <MenuItem Header="Add New Mod" Command="{Binding AddNewModCommand}" />
-                                <MenuItem Header="Add New Mod Category" Command="{Binding FilterCommand}" IsEnabled="False"/>
-                                <MenuItem Header="Add New Game State" Command="{Binding FilterCommand}" IsEnabled="False"/>
-                                <MenuItem Header="Delete Item" Command="{Binding FilterCommand}" IsEnabled="False" />
+                                <MenuItem Header="Add New Mod" Command="{Binding AddNewModCommand}" CommandParameter="NewMod" />
+                                <MenuItem Header="Add New Mod Category" Command="{Binding AddModCategoryCommand}" CommandParameter="NewCategory" />
+                                <MenuItem Header="Add New Game State" Command="{Binding AddModItemCommand}" CommandParameter="NewItem"/>
+                                <MenuItem Header="Delete Item" Command="{Binding DeleteModItemCommand}"/>
                             </ContextMenu>
                         </TreeView.ContextMenu>
                     </TreeView>
@@ -245,7 +245,7 @@
                         </DockPanel>
                     </StackPanel>
                 </StackPanel>
-                <ListView Name="LV_Plots" ItemsSource="{Binding ElementsTable}" GridViewColumnHeader.Click="list_ColumnHeader_Click">
+                <ListView Name="LV_Plots" ItemsSource="{Binding ElementsTable}" GridViewColumnHeader.Click="list_ColumnHeader_Click" SelectionChanged="LV_Plots_SelectionChanged">
                     <ListView.View>
                         <GridView AllowsColumnReorder="True" ColumnHeaderContainerStyle="{StaticResource FileLVHeader}">
                             <GridViewColumn Header="#" Width="25">
