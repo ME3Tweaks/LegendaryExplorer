@@ -73,10 +73,20 @@ namespace LegendaryExplorer.Tools.PlotManager
         private GridViewColumnHeader _lastHeaderClicked = null;
         private ListSortDirection _lastDirection = ListSortDirection.Ascending;
 
-        public ObservableCollectionExtended<PlotElementType> newItemTypes = new ObservableCollectionExtended<PlotElementType>() { PlotElementType.State,
-            PlotElementType.SubState, PlotElementType.Integer, PlotElementType.Float, PlotElementType.Conditional, PlotElementType.Transition, PlotElementType.JournalGoal,
-            PlotElementType.JournalItem, PlotElementType.JournalTask, PlotElementType.Consequence, PlotElementType.Flag };
-
+        public ObservableCollectionExtended<PlotElementType> newItemTypes { get; } = new()
+        {
+            PlotElementType.State,
+            PlotElementType.SubState,
+            PlotElementType.Integer,
+            PlotElementType.Float,
+            PlotElementType.Conditional,
+            PlotElementType.Transition,
+            PlotElementType.JournalGoal,
+            PlotElementType.JournalItem,
+            PlotElementType.JournalTask,
+            PlotElementType.Consequence,
+            PlotElementType.Flag
+        };
         private bool updateTable = true;
         public ICommand FilterCommand { get; set; }
         public ICommand CopyToClipboardCommand { get; set; }
@@ -157,7 +167,14 @@ namespace LegendaryExplorer.Tools.PlotManager
         }
         private void PlotDB_Loaded(object sender, RoutedEventArgs e)
         {
-
+            //var modItemTypes = new List<PlotElementType>() { PlotElementType.State,
+            //PlotElementType.SubState, PlotElementType.Integer, PlotElementType.Float, PlotElementType.Conditional, PlotElementType.Transition, PlotElementType.JournalGoal,
+            //PlotElementType.JournalItem, PlotElementType.JournalTask, PlotElementType.Consequence, PlotElementType.Flag };
+            //foreach(var t in modItemTypes)
+            //{
+            //    var info = t.ToString() + " | " + t.GetDescription();
+            //    newItemTypes.Add(info);
+            //}
         }
 
         private void PlotDB_Closing(object sender, CancelEventArgs e)
@@ -454,43 +471,38 @@ namespace LegendaryExplorer.Tools.PlotManager
         private void AddNewModData()
         {
             GameTab.IsEnabled = false;
-            LV_Plots.IsEnabled = false;
-            //TreeContent.Visibility = Visibility.Collapsed;
             NewModForm.Visibility = Visibility.Visible;
-            NewModForm.Focus();
+            newMod_Name.Focus();
         }
         private void AddNewModCatData()
         {
-
-            NewModForm.Visibility = Visibility.Visible;
+            GameTab.IsEnabled = false;
+            NewCategoryForm.Visibility = Visibility.Visible;
+            newCat_Name.Focus();
         }
 
         private void AddNewModItemData()
         {
-            TreeContent.Visibility = Visibility.Collapsed;
-            NewModForm.Visibility = Visibility.Visible;
+            GameTab.IsEnabled = false;
+            NewItemForm.Visibility = Visibility.Visible;
+            newItem_Name.Focus();
         }
 
         private void RevertPanelsToDefault()
         {
             GameTab.IsEnabled = true;
-            LV_Plots.IsEnabled = true;
-            //TreeContent.Visibility = Visibility.Visible;
             NewModForm.Visibility = Visibility.Collapsed;
+            NewCategoryForm.Visibility = Visibility.Collapsed;
+            NewItemForm.Visibility = Visibility.Collapsed;
+            newMod_Name.Clear();
+            newCat_Name.Clear();
+            newItem_Name.Clear();
+            newItem_Plot.Clear();
+            newItem_Type.SelectedIndex = 0;
         }
         private void CancelAddData(object obj)
         {
-            var command = obj.ToString();
-            switch (command)
-            {
-                case "NewMod":
-                    NewModForm.Visibility = Visibility.Collapsed;
-                    TreeContent.Visibility = Visibility.Visible;
-                    nwMod_Name.Clear();
-                    break;
-                default:
-                    break;
-            }
+            RevertPanelsToDefault();
         }
 
         private void AddDataToModDatabase(object obj)
@@ -516,9 +528,14 @@ namespace LegendaryExplorer.Tools.PlotManager
                 switch (command)
                 {
                     case "NewMod":
-                        var modname = nwMod_Name.Text;
-                        var dlg = MessageBox.Show($"Do you want to add mod {modname} to the database?", "Modding Plots Database", MessageBoxButton.OKCancel);
-                        if (dlg == MessageBoxResult.Cancel || modname == null)
+                        var modname = newMod_Name.Text;
+                        if (modname == null || modname.Contains(" "))
+                        {
+                            MessageBox.Show($"Label is empty or contains a space.\nPlease add a valid label, using underscore '_' for spaces.", "Invalid Label");
+                            return;
+                        }
+                        var dlg = MessageBox.Show($"Do you want to add mod '{modname}' to the database?", "Modding Plots Database", MessageBoxButton.OKCancel);
+                        if (dlg == MessageBoxResult.Cancel)
                         {
                             CancelAddData(command);
                             return;
@@ -530,7 +547,7 @@ namespace LegendaryExplorer.Tools.PlotManager
                         {
                             if (mod.Label == modname)
                             {
-                                MessageBox.Show($"Mod {modname} already exists in the database.  Please use another name.");
+                                MessageBox.Show($"Mod '{modname}' already exists in the database.  Please use another name.", "Invalid Name");
                                 CancelAddData(command);
                                 return;
                             }
@@ -538,48 +555,88 @@ namespace LegendaryExplorer.Tools.PlotManager
                         var newModPE = new PlotElement(-1, newElementId, modname, PlotElementType.Mod, parentId, new List<PlotElement>(), parent);
                         mdb.Organizational.Add(newElementId, newModPE);
                         parent.Children.Add(newModPE);
-                        NewModForm.Visibility = Visibility.Collapsed;
-                        nwMod_Name.Clear();
-                        TreeContent.Visibility = Visibility.Visible;
                         NeedsSave = true;
                         break;
                     case "NewCategory":
-                        var parentCat = SelectedNode;
-                        var nameCat = ""; //Add name from input
-                        var newModCatPE = new PlotElement(-1, newElementId, nameCat, PlotElementType.Category, parentCat.ElementId, new List<PlotElement>(), parentCat);
-                        parentCat.Children.Add(newModCatPE);
+                        if (newCat_Name.Text == null || newCat_Name.Text.Contains(" "))
+                        {
+                            MessageBox.Show($"Label is empty or contains a space.\nPlease add a valid label, using underscore '_' for spaces.", "Invalid Label");
+                            return;
+                        }
+                        var newModCatPE = new PlotElement(-1, newElementId, newCat_Name.Text, PlotElementType.Category, parent.ElementId, new List<PlotElement>(), parent);
+                        parent.Children.Add(newModCatPE);
                         mdb.Organizational.Add(newElementId, newModCatPE);
                         NeedsSave = true;
                         break;
                     case "NewItem":
-                        var nameItem = ""; //Add name from input
-                        var type = PlotElementType.Conditional; //Add type from input.
-                        int newPlotId = 100101;  // input plot
+                        var nameItem = newItem_Name.Text;
+                        if (newItem_Type.SelectedIndex < 0)
+                        {
+                            MessageBox.Show($"A type needs to be selected.  Please review.", "Invalid Type");
+                            return;
+                        }
+                        var type = newItemTypes[newItem_Type.SelectedIndex];
+                        var newPlotId_txt = newItem_Plot.Text;
+                        if (nameItem == null || nameItem.Contains(" "))
+                        {
+                            MessageBox.Show($"Label is empty or contains a space.\nPlease add a valid label, using underscore '_' for spaces.", "Invalid Label");
+                            return;
+                        }
+                        if (!(int.TryParse(newPlotId_txt, out int newPlotId) && newPlotId > 0))
+                        {
+                            MessageBox.Show($"Plot Id needs to be a positive integer.  Please review.", "Invalid Plot Id");
+                            return;
+                        }
                         var newModItemPE = new PlotElement(newPlotId, newElementId, nameItem, type, parent.ElementId, new List<PlotElement>(), parent);
                         switch (type)
                         {
                             case PlotElementType.State:
                             case PlotElementType.SubState:
+                                if(PlotDatabases.FindPlotBoolByID(newPlotId, CurrentGame) != null)
+                                {
+                                    MessageBox.Show($"State '{newPlotId}' already exists in the database.  Please use another id.", "Invalid Id");
+                                    return;
+                                }
                                 var newModBool = new PlotBool(newPlotId, newElementId, nameItem, type, parent.ElementId, new List<PlotElement>(), parent);
                                 //subtype, gamervariable, achievementid, galaxyatwar
                                 mdb.Bools.Add(newPlotId, newModBool);
                                 parent.Children.Add(newModBool);
                                 break;
                             case PlotElementType.Integer:
+                                if (PlotDatabases.FindPlotIntByID(newPlotId, CurrentGame) != null)
+                                {
+                                    MessageBox.Show($"Integer '{newPlotId}' already exists in the database.  Please use another id.", "Invalid Id");
+                                    return;
+                                }
                                 mdb.Ints.Add(newPlotId, newModItemPE);
                                 parent.Children.Add(newModItemPE);
                                 break;
                             case PlotElementType.Float:
+                                if (PlotDatabases.FindPlotFloatByID(newPlotId, CurrentGame) != null)
+                                {
+                                    MessageBox.Show($"Float '{newPlotId}' already exists in the database.  Please use another id.", "Invalid Id");
+                                    return;
+                                }
                                 mdb.Floats.Add(newPlotId, newModItemPE);
                                 parent.Children.Add(newModItemPE);
                                 break;
                             case PlotElementType.Conditional:
+                                if (PlotDatabases.FindPlotConditionalByID(newPlotId, CurrentGame) != null)
+                                {
+                                    MessageBox.Show($"Conditional '{newPlotId}' already exists in the database.  Please use another id.", "Invalid Id");
+                                    return;
+                                }
                                 var newModCnd = new PlotConditional(newPlotId, newElementId, nameItem, type, parent.ElementId, new List<PlotElement>(), parent);
-                                //code
+                                newModCnd.Code = newItem_Code.Text;
                                 mdb.Conditionals.Add(newPlotId, newModCnd);
                                 parent.Children.Add(newModCnd);
                                 break;
                             case PlotElementType.Transition:
+                                if (PlotDatabases.FindPlotTransitionByID(newPlotId, CurrentGame) != null)
+                                {
+                                    MessageBox.Show($"Transition '{newPlotId}' already exists in the database.  Please use another id.", "Invalid Id");
+                                    return;
+                                }
                                 var newModTrans = new PlotTransition(newPlotId, newElementId, nameItem, type, parent.ElementId, new List<PlotElement>(), parent);
                                 //argument
                                 mdb.Transitions.Add(newPlotId, newModTrans);
@@ -590,9 +647,6 @@ namespace LegendaryExplorer.Tools.PlotManager
                                 parent.Children.Add(newModItemPE);
                                 break;
                         }
-
-
-
                         NeedsSave = true;
                         break;
                     default:
@@ -600,7 +654,7 @@ namespace LegendaryExplorer.Tools.PlotManager
                 }
             }
 
-
+            RevertPanelsToDefault();
             RefreshTrees();
         }
 
@@ -660,9 +714,79 @@ namespace LegendaryExplorer.Tools.PlotManager
             RefreshTrees();
         }
 
+        private void form_KeyUp(object sender, KeyEventArgs e)
+        {
+            var form = sender as TextBox;
+            if (form == null)
+                return;
+            if(e.Key == Key.Enter)
+            {
+                switch(form.Name)
+                {
+                    case "newMod_Name":
+                        AddDataToModDatabase("newMod");
+                        break;
+                    case "newCat_Name":
+                        AddDataToModDatabase("newCategory");
+                        break;
+                    case "newItem_Plot":
+                    case "newItem_Code":
+                        AddDataToModDatabase("newItem");
+                        break;
+                    default:
+                        break;
+                }
+                return;
+            }
+            if (e.Key == Key.Escape)
+            {
+                switch (form.Name)
+                {
+                    case "newMod_Name":
+                        CancelAddData("newMod");
+                        break;
+                    case "newCat_Name":
+                        CancelAddData("newCategory");
+                        break;
+                    case "newItem_Name":
+                        CancelAddData("newItem");
+                        break;
+                    case "newItem_Plot":
+                        CancelAddData("newItem");
+                        break;
+                    default:
+                        CancelAddData("generic");
+                        break;
+                }
+            }
+        }
+        private void newItem_Type_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var selection = e.AddedItems;
+            if(selection != null)
+            {
+                newItem_Plotlbl.Text = "Plot Id: ";
+                newItem_CndPnl.Visibility = Visibility.Hidden;
+                switch ((PlotElementType)newItem_Type.SelectedItem)
+                {
+                    case PlotElementType.State:
+                    case PlotElementType.SubState:
+
+
+                        break;
+                    case PlotElementType.Conditional:
+                        newItem_Plotlbl.Text = "Conditional: ";
+                        newItem_CndPnl.Visibility = Visibility.Visible;
+                        break;
+                    case PlotElementType.Transition:
+                        newItem_Plotlbl.Text = "Transition: ";
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
         #endregion
-
-
     }
 
     [ValueConversion(typeof(IEntry), typeof(string))]
@@ -672,36 +796,44 @@ namespace LegendaryExplorer.Tools.PlotManager
         {
             if (value is PlotElementType elementType)
             {
-                switch (elementType)
+                if(parameter == null)
                 {
-                    case PlotElementType.Conditional:
-                        return "/Tools/PlotDatabase/PlotTypeIcons/icon_cnd.png";
-                    case PlotElementType.Consequence:
-                    case PlotElementType.Flag:
-                    case PlotElementType.State:
-                    case PlotElementType.SubState:
-                        return "/Tools/PlotDatabase/PlotTypeIcons/icon_bool.png";
-                    case PlotElementType.Float:
-                        return "/Tools/PlotDatabase/PlotTypeIcons/icon_float.png";
-                    case PlotElementType.Integer:
-                        return "/Tools/PlotDatabase/PlotTypeIcons/icon_int.png";
-                    case PlotElementType.JournalGoal:
-                    case PlotElementType.JournalItem:
-                    case PlotElementType.JournalTask:
-                        return "/Tools/PackageEditor/ExportIcons/icon_world.png";
-                    case PlotElementType.FlagGroup:
-                    case PlotElementType.None:
-                    case PlotElementType.Plot:
-                    case PlotElementType.Region:
-                    case PlotElementType.Category:
-                        return "/Tools/PackageEditor/ExportIcons/icon_package.png";
-                    case PlotElementType.Transition:
-                        return "/Tools/PackageEditor/ExportIcons/icon_function.png";
-                    case PlotElementType.Mod:
-                        return "/Tools/PackageEditor/ExportIcons/icon_package_fileroot.png";
-                    default:
-                        break;
+                    switch (elementType)
+                    {
+                        case PlotElementType.Conditional:
+                            return "/Tools/PlotDatabase/PlotTypeIcons/icon_cnd.png";
+                        case PlotElementType.Consequence:
+                        case PlotElementType.Flag:
+                        case PlotElementType.State:
+                        case PlotElementType.SubState:
+                            return "/Tools/PlotDatabase/PlotTypeIcons/icon_bool.png";
+                        case PlotElementType.Float:
+                            return "/Tools/PlotDatabase/PlotTypeIcons/icon_float.png";
+                        case PlotElementType.Integer:
+                            return "/Tools/PlotDatabase/PlotTypeIcons/icon_int.png";
+                        case PlotElementType.JournalGoal:
+                        case PlotElementType.JournalItem:
+                        case PlotElementType.JournalTask:
+                            return "/Tools/PackageEditor/ExportIcons/icon_world.png";
+                        case PlotElementType.FlagGroup:
+                        case PlotElementType.None:
+                        case PlotElementType.Plot:
+                        case PlotElementType.Region:
+                        case PlotElementType.Category:
+                            return "/Tools/PackageEditor/ExportIcons/icon_package.png";
+                        case PlotElementType.Transition:
+                            return "/Tools/PackageEditor/ExportIcons/icon_function.png";
+                        case PlotElementType.Mod:
+                            return "/Tools/PackageEditor/ExportIcons/icon_package_fileroot.png";
+                        default:
+                            break;
+                    }
                 }
+                else if (parameter.ToString() == "Description")
+                {
+                    return PlotElementTypeExtensions.GetDescription(elementType);
+                }
+
             }
             return null;
         }
