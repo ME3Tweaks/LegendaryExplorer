@@ -11,9 +11,9 @@ namespace LegendaryExplorerCore.GameFilesystem
     public static class MELoadedFiles
     {
         private static readonly string[] ME1FilePatterns = { "*.u", "*.upk", "*.sfm" };
-        private const string ME23LEXFilePattern = "*.pcc";
+        private const string ME23LEFilePattern = "*.pcc";
 
-        private static readonly string[] ME23LEXFilePatternIncludeTFC = { "*.pcc", "*.tfc" };
+        private static readonly string[] ME23LEFilePatternIncludeTFC = { "*.pcc", "*.tfc" };
 
         public static void InvalidateCaches()
         {
@@ -250,7 +250,7 @@ namespace LegendaryExplorerCore.GameFilesystem
             {
                 return ME1Directory.OfficialDLC.Contains(dlcName) || File.Exists(Path.Combine(dir, "AutoLoad.ini"));
             }
-            else if (game == MEGame.LE1) return false; // TODO for LE1 DLC
+            else if (game == MEGame.LE1) return dlcName.StartsWith("DLC_MOD") && File.Exists(Path.Combine(dir, "AutoLoad.ini"));
             return dlcName.StartsWith("DLC_") && File.Exists(GetMountDLCFromDLCDir(dir, game));
         }
 
@@ -263,22 +263,20 @@ namespace LegendaryExplorerCore.GameFilesystem
 
         public static int GetMountPriority(string dlcDirectory, MEGame game)
         {
-            if (game == MEGame.ME1)
+            if (game.IsGame1())
             {
-                int idx = 1 + ME1Directory.OfficialDLC.IndexOf(Path.GetFileName(dlcDirectory));
-                if (idx > 0)
+                if (game is MEGame.ME1)
                 {
-                    return idx;
+                    int idx = 1 + ME1Directory.OfficialDLC.IndexOf(Path.GetFileName(dlcDirectory));
+                    if (idx > 0)
+                    {
+                        return idx;
+                    }
                 }
                 //is mod
                 string autoLoadPath = Path.Combine(dlcDirectory, "AutoLoad.ini");
                 var dlcAutoload = DuplicatingIni.LoadIni(autoLoadPath);
-                return Convert.ToInt32(dlcAutoload["ME1DLCMOUNT"]["ModMount"].Value); // Should we  try catch this to avoid hitting an exception on malformed mods? Like DLC_xMeow
-            }
-            else if (game == MEGame.LE1)
-            {
-                // TODO: Investigate DLC system for LE1
-                return -1;
+                return Convert.ToInt32(dlcAutoload["ME1DLCMOUNT"]["ModMount"].Value);
             }
             return MountFile.GetMountPriority(GetMountDLCFromDLCDir(dlcDirectory, game));
         }
