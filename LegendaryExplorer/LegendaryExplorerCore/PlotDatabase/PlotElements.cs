@@ -63,10 +63,10 @@ namespace LegendaryExplorerCore.PlotDatabase
     [DebuggerDisplay("{Type} {PlotId}: {Path}")]
     public class PlotElement : INotifyPropertyChanged
     {
-        [JsonProperty("plotid")] 
+        [JsonProperty("plotid")]
         public int PlotId { get; set; }
 
-        [JsonProperty("elementid")] 
+        [JsonProperty("elementid")]
         public int ElementId { get; set; }
 
         [JsonProperty("parentelementid")]
@@ -75,7 +75,7 @@ namespace LegendaryExplorerCore.PlotDatabase
         [JsonProperty("label")]
         public string Label { get; set; }
 
-        [JsonProperty("sequence")] 
+        [JsonProperty("sequence")]
         public float Sequence { get; set; }
 
         [JsonProperty("type")]
@@ -137,7 +137,7 @@ namespace LegendaryExplorerCore.PlotDatabase
         {
             get
             {
-                switch(Type)
+                switch (Type)
                 {
                     case PlotElementType.Conditional:
                     case PlotElementType.Consequence:
@@ -164,7 +164,7 @@ namespace LegendaryExplorerCore.PlotDatabase
 
     public class PlotBool : PlotElement
     {
-        [JsonProperty("subtype")] 
+        [JsonProperty("subtype")]
         public PlotElementType? SubType { get; set; }
 
         [JsonProperty("gamervariable")]
@@ -175,17 +175,65 @@ namespace LegendaryExplorerCore.PlotDatabase
 
         [JsonProperty("galaxyatwar")]
         public int? GalaxyAtWar { get; set; }
+
+        PlotBool()
+        {
+
+        }
+
+        public PlotBool(int plotid, int elementid, string label, PlotElementType type, int parentelementId, List<PlotElement> children, PlotElement parent)
+        {
+            PlotId = plotid;
+            ElementId = elementid;
+            Label = label;
+            Type = type;
+            ParentElementId = parentelementId;
+            Children.AddRange(children ?? new List<PlotElement>());
+            Parent = parent;
+        }
     }
 
     public class PlotConditional : PlotElement
     {
-        [JsonProperty("code")] 
+        [JsonProperty("code")]
         public string Code { get; set; }
+
+        PlotConditional()
+        {
+
+        }
+
+        public PlotConditional(int plotid, int elementid, string label, PlotElementType type, int parentelementId, List<PlotElement> children, PlotElement parent)
+        {
+            PlotId = plotid;
+            ElementId = elementid;
+            Label = label;
+            Type = type;
+            ParentElementId = parentelementId;
+            Children.AddRange(children ?? new List<PlotElement>());
+            Parent = parent;
+        }
     }
 
     public class PlotTransition : PlotElement
     {
-        [JsonProperty("argument")] 
+        [JsonProperty("argument")]
         public string Argument { get; set; }
+
+        PlotTransition()
+        {
+
+        }
+
+        public PlotTransition(int plotid, int elementid, string label, PlotElementType type, int parentelementId, List<PlotElement> children, PlotElement parent)
+        {
+            PlotId = plotid;
+            ElementId = elementid;
+            Label = label;
+            Type = type;
+            ParentElementId = parentelementId;
+            Children.AddRange(children ?? new List<PlotElement>());
+            Parent = parent;
+        }
     }
 }
