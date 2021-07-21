@@ -862,6 +862,7 @@ namespace LegendaryExplorerCore.Packages
                 int validNameTableSize = 0;
                 int invalidNameCount = 0;
                 int validNameCount = 0;
+
                 foreach (var v in package.names)
                 {
                     if (v.Length > 0)
@@ -875,24 +876,26 @@ namespace LegendaryExplorerCore.Packages
                     }
                 }
 
+
                 switch (package.Game)
                 {
                     case MEGame.ME1:
-                        nameTableSize += 13 * validNameCount;
-                        nameTableSize += 4 * invalidNameCount; // 4 bytes for size and nothing else. Null and empty strings are just the length of 0 // Is this right?
+                        nameTableSize = validNameTableSize /* ascii */ + 13 * validNameCount; // size (4) + null terminator (1) + 2 (4) unknowns (0, 458768)
+                        nameTableSize += 4 * invalidNameCount; // 4 bytes for size and nothing else. Null and empty strings are just the length of 0
                         break;
                     case MEGame.ME2:
-                        nameTableSize += 9 * validNameCount;
-                        nameTableSize += 4 * invalidNameCount; // 4 bytes for size and nothing else. Null and empty strings are just the length of 0 // Is this right?
+                        nameTableSize = validNameTableSize /* ascii */ + 9 * validNameCount; // size (4) + null terminator (1) + unknown (4) (as -14) 
+                        nameTableSize += 4 * invalidNameCount; // 4 bytes for size and nothing else. Null and empty strings are just the length of 0
                         break;
                     case MEGame.ME3:
                     case MEGame.LE3:
-                        nameTableSize = validNameTableSize * 2 + 6 * validNameCount;
+                        // UNICODE
+                        nameTableSize = validNameTableSize * 2 /* x2 for unicode */ + 6 * validNameCount; // size (4), null terminator (2 in unicode)
                         nameTableSize += 4 * invalidNameCount; // 4 bytes for size and nothing else. Null and empty strings are just the length of 0
                         break;
                     case MEGame.LE1:
                     case MEGame.LE2:
-                        nameTableSize += 5 * validNameCount;
+                        nameTableSize = validNameTableSize /* ascii */ + 5 * validNameCount;
                         nameTableSize += 4 * invalidNameCount; // 4 bytes for size and nothing else. Null and empty strings are just the length of 0
                         break;
                 }
