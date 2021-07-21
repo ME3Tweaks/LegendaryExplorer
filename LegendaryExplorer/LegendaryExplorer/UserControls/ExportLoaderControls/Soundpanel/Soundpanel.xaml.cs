@@ -691,58 +691,48 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// <returns></returns>
         public Stream GetPCMStream(ExportEntry forcedWwiseStreamExport = null, EmbeddedWEMFile forcedWemFile = null)
         {
-            if (CurrentLoadedExport?.ClassName == "SoundNodeWave" && CurrentLoadedExport?.Game == MEGame.ME1 && ExportInfoListBox.SelectedItem is ISBankEntry be)
-            {
-                return AudioStreamHelper.GetWaveStreamFromISBEntry(be);
-            }
             if (CurrentLoadedISACTEntry != null)
             {
                 return AudioStreamHelper.GetWaveStreamFromISBEntry(CurrentLoadedISACTEntry);
             }
-            else if (CurrentLoadedAFCFileEntry != null)
+
+            if (CurrentLoadedAFCFileEntry != null)
             {
                 return AudioStreamHelper.CreateWaveStreamFromRaw(CurrentLoadedAFCFileEntry.AFCPath, CurrentLoadedAFCFileEntry.Offset, CurrentLoadedAFCFileEntry.DataSize, CurrentLoadedAFCFileEntry.ME2);
             }
-            else
+
+            ExportEntry localCurrentExport = forcedWwiseStreamExport ?? CurrentLoadedExport;
+            if (localCurrentExport != null || forcedWemFile != null)
             {
-                ExportEntry localCurrentExport = forcedWwiseStreamExport ?? CurrentLoadedExport;
-                if (localCurrentExport != null || forcedWemFile != null)
+                if (localCurrentExport?.ClassName == "WwiseStream")
                 {
-                    if (localCurrentExport != null && localCurrentExport.ClassName == "WwiseStream")
-                    {
-                        wwiseStream = localCurrentExport.GetBinaryData<WwiseStream>();
+                    wwiseStream = localCurrentExport.GetBinaryData<WwiseStream>();
 
-                        if (wwiseStream.IsPCCStored || wwiseStream.GetPathToAFC() != "")
-                        {
-                            return wwiseStream.CreateWaveStream();
-                        }
+                    if (wwiseStream.IsPCCStored || wwiseStream.GetPathToAFC() != "")
+                    {
+                        return wwiseStream.CreateWaveStream();
                     }
-
-                    if (localCurrentExport != null && localCurrentExport.ClassName == "SoundNodeWave")
+                }
+                else if (localCurrentExport?.ClassName == "SoundNodeWave")
+                {
+                    if (ExportInfoListBox.SelectedItem is ISBankEntry bankEntry)
                     {
-                        object currentSelectedItem = ExportInfoListBox.SelectedItem;
-                        if (currentSelectedItem == null || !(currentSelectedItem is ISBankEntry bankEntry))
-                        {
-                            return null; //nothing selected, or current item is not playable
-                        }
-
                         return AudioStreamHelper.GetWaveStreamFromISBEntry(bankEntry);
                     }
-
-                    if (forcedWemFile != null || (localCurrentExport != null && localCurrentExport.ClassName == "WwiseBank"))
+                }
+                else if (forcedWemFile != null || (localCurrentExport?.ClassName == "WwiseBank"))
+                {
+                    object currentWEMItem = forcedWemFile ?? ExportInfoListBox.SelectedItem;
+                    if (currentWEMItem == null || currentWEMItem is string)
                     {
-                        object currentWEMItem = forcedWemFile ?? ExportInfoListBox.SelectedItem;
-                        if (currentWEMItem == null || currentWEMItem is string)
-                        {
-                            return null; //nothing selected, or current wem is not playable
-                        }
-
-                        var wemObject = (EmbeddedWEMFile)currentWEMItem;
-                        string basePath = $"{Path.GetTempPath()}ME3EXP_SOUND_{Guid.NewGuid()}";
-                        var outpath = basePath + ".wem";
-                        File.WriteAllBytes(outpath, wemObject.WemData);
-                        return AudioStreamHelper.ConvertRIFFToWaveVGMStream(outpath); //use vgmstream
+                        return null; //nothing selected, or current wem is not playable
                     }
+
+                    var wemObject = (EmbeddedWEMFile)currentWEMItem;
+                    string basePath = $"{Path.GetTempPath()}ME3EXP_SOUND_{Guid.NewGuid()}";
+                    var outpath = basePath + ".wem";
+                    File.WriteAllBytes(outpath, wemObject.WemData);
+                    return AudioStreamHelper.ConvertRIFFToWaveVGMStream(outpath); //use vgmstream
                 }
             }
 
@@ -1127,6 +1117,27 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         MessageBox.Show("Done.");
                     }
                 }
+
+                if (CurrentLoadedExport.ClassName == "SoundNodeWave" && ExportInfoListBox.SelectedItem is ISBankEntry bankEntry)
+                {
+                    SaveFileDialog d = new SaveFileDialog
+                    {
+                        Filter = "Wave PCM File|*.wav",
+                        FileName = CurrentLoadedExport.ObjectName.Instanced.GetPathWithoutInvalids() + ".wav"
+                    };
+                    if (d.ShowDialog() == true)
+                    {
+                        MemoryStream waveStream = AudioStreamHelper.GetWaveStreamFromISBEntry(bankEntry);
+                        waveStream.Seek(0, SeekOrigin.Begin);
+                        using (FileStream fs = new FileStream(d.FileName, FileMode.OpenOrCreate))
+                        {
+                            waveStream.CopyTo(fs);
+                            fs.Flush();
+                        }
+
+                        MessageBox.Show("Done.");
+                    }
+                }
             }
 
             if (CurrentLoadedISACTEntry != null)
@@ -1170,6 +1181,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     MessageBox.Show("Done.");
                 }
             }
+
         }
 
         private bool CanExportAudio(object p)
@@ -1185,6 +1197,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         return true;
                     case "WwiseBank":
                         return ExportInfoListBox.SelectedItem is EmbeddedWEMFile;
+                    case "SoundNodeWave":
+                        return ExportInfoListBox.SelectedItem is ISBankEntry {DataAsStored: not null};
                 }
             }
 

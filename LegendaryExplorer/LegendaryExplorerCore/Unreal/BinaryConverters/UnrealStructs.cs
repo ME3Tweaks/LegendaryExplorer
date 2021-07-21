@@ -59,6 +59,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
 
         #endregion
+
+#if DEBUG
+        /// <summary>
+        /// ToString() for debugger, when in a dictionary (which doesn't seem to use debugger display)
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString() => $"UIndex {value}";
+#endif
     }
 
     public readonly struct Vector2DHalf

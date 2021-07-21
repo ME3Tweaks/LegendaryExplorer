@@ -102,7 +102,7 @@ namespace LegendaryExplorer.SharedUI.Converters
                         return "/Tools/PackageEditor/ExportIcons/icon_texturecube.png";
                     case "Package":
                         string fname = Path.GetFileNameWithoutExtension(exp.FileRef.FilePath);
-                        return fname != null && fname.Equals(exp.ObjectName.Name, StringComparison.InvariantCultureIgnoreCase)
+                        return fname != null && fname.Equals(exp.ObjectName.Instanced, StringComparison.InvariantCultureIgnoreCase)
                             ? "/Tools/PackageEditor/ExportIcons/icon_package_fileroot.png"
                             : "/Tools/PackageEditor/ExportIcons/icon_package.png";
                     case "SkeletalMesh":

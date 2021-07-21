@@ -18,6 +18,7 @@ using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorer.Tools.TlkManagerNS;
+using LegendaryExplorerCore.Gammtek;
 using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
@@ -1234,6 +1235,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             parsedValue += $" => {evolvedPowerClass.ResolveToEntry(parsingExport.FileRef).ObjectName}";
                         }
                     }
+                    else if (sp.StructType == "BioStageCamera")
+                    {
+                        var cameraTagProp = parsingExport.Game.IsGame3() ? "nmCameraTag" : "sCameraTag";
+                        var cameraTag = sp.GetProp<NameProperty>(cameraTagProp);
+                        parsedValue = cameraTag?.Value.Instanced ?? "";
+                    }
+                    else if (sp.StructType == "BioStageCameraCustom")
+                    {
+                        var cameraTag = sp.GetProp<StrProperty>("m_sCameraName");
+                        parsedValue = cameraTag?.Value ?? "";
+                    }
                     else
                     {
                         parsedValue = sp.StructType;
@@ -1273,6 +1285,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             switch (e.PropertyName)
             {
                 case "ColorStructCode" when uptvi.Property is StructProperty { StructType: "Color" } colorStruct:
+                {
                     uptvi.ChildrenProperties.ClearEx();
                     foreach (var subProp in colorStruct.Properties)
                     {
@@ -1290,6 +1303,27 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     byteProvider.WriteByte(b.ValueOffset, b.Value);
                     Interpreter_Hexbox.Refresh();
                     break;
+                }
+                case "ColorStructCode" when uptvi.Property is StructProperty { StructType: "LinearColor" } linColStruct:
+                {
+                    uptvi.ChildrenProperties.ClearEx();
+                    foreach (var subProp in linColStruct.Properties)
+                    {
+                        GenerateUPropertyTreeForProperty(subProp, uptvi, uptvi.AttachedExport, PropertyChangedHandler: OnUPropertyTreeViewEntry_PropertyChanged);
+                    }
+                    var a = linColStruct.GetProp<FloatProperty>("A");
+                    var r = linColStruct.GetProp<FloatProperty>("R");
+                    var g = linColStruct.GetProp<FloatProperty>("G");
+                    var b = linColStruct.GetProp<FloatProperty>("B");
+
+                    var byteProvider = (ReadOptimizedByteProvider)Interpreter_Hexbox.ByteProvider;
+                    byteProvider.WriteBytes(a.ValueOffset, BitConverter.GetBytes(a.Value));
+                    byteProvider.WriteBytes(r.ValueOffset, BitConverter.GetBytes(r.Value));
+                    byteProvider.WriteBytes(g.ValueOffset, BitConverter.GetBytes(g.Value));
+                    byteProvider.WriteBytes(b.ValueOffset, BitConverter.GetBytes(b.Value));
+                    Interpreter_Hexbox.Refresh();
+                    break;
+                }
             }
         }
 
@@ -2378,8 +2412,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         var g = colorStruct.GetProp<ByteProperty>("G").Value;
                         var b = colorStruct.GetProp<ByteProperty>("B").Value;
 
-                        _colorStructCode = $"#{a:X2}{r:X2}{g:X2}{b:X2}";
-                        return _colorStructCode;
+                        return _colorStructCode = $"#{a:X2}{r:X2}{g:X2}{b:X2}";
                     }
                     if (colorStruct.StructType == "LinearColor")
                     {
@@ -2390,10 +2423,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         var g = colorStruct.GetProp<FloatProperty>("G").Value;
                         var b = colorStruct.GetProp<FloatProperty>("B").Value;
 
-                        float[] allcolors = { r, g, b };
-                        var highest = allcolors.Max();
+                        static int ToByteColor(float f) => ((int)(f * 255)).Clamp(0, 255);
 
-                        _colorStructCode = $"#FF{(int)(r * 255 / highest):X2}{(int)(g * 255 / highest):X2}{(int)(b * 255 / highest):X2}";
+                        return _colorStructCode = $"#{ToByteColor(a):X2}{ToByteColor(r):X2}{ToByteColor(g):X2}{ToByteColor(b):X2}";
+
                     }
                 }
 
@@ -2401,21 +2434,36 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
             set
             {
-                if (_colorStructCode != value
-                 && Property is StructProperty {StructType: "Color"} colorStruct 
-                 && ColorConverter.ConvertFromString(value) is Color newColor)
+                if (_colorStructCode != value && ColorConverter.ConvertFromString(value) is Color newColor)
                 {
-                    var a = colorStruct.GetProp<ByteProperty>("A");
-                    var r = colorStruct.GetProp<ByteProperty>("R");
-                    var g = colorStruct.GetProp<ByteProperty>("G");
-                    var b = colorStruct.GetProp<ByteProperty>("B");
-                    a.Value = newColor.A;
-                    r.Value = newColor.R;
-                    g.Value = newColor.G;
-                    b.Value = newColor.B;
+                    if (Property is StructProperty { StructType: "Color" } colorStruct)
+                    {
+                        var a = colorStruct.GetProp<ByteProperty>("A");
+                        var r = colorStruct.GetProp<ByteProperty>("R");
+                        var g = colorStruct.GetProp<ByteProperty>("G");
+                        var b = colorStruct.GetProp<ByteProperty>("B");
+                        a.Value = newColor.A;
+                        r.Value = newColor.R;
+                        g.Value = newColor.G;
+                        b.Value = newColor.B;
 
-                    _colorStructCode = value;
-                    OnPropertyChanged();
+                        _colorStructCode = value;
+                        OnPropertyChanged();
+                    }
+                    else if (Property is StructProperty { StructType: "LinearColor" } linColStruct)
+                    {
+                        var a = linColStruct.GetProp<FloatProperty>("A");
+                        var r = linColStruct.GetProp<FloatProperty>("R");
+                        var g = linColStruct.GetProp<FloatProperty>("G");
+                        var b = linColStruct.GetProp<FloatProperty>("B");
+                        a.Value = newColor.A / 255f;
+                        r.Value = newColor.R / 255f;
+                        g.Value = newColor.G / 255f;
+                        b.Value = newColor.B / 255f;
+
+                        _colorStructCode = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }

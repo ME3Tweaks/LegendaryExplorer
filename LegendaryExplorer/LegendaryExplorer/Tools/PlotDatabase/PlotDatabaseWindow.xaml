@@ -1,0 +1,279 @@
+﻿<misc:NotifyPropertyChangedWindowBase x:Class="LegendaryExplorer.Tools.PlotManager.PlotManagerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
+        xmlns:local="clr-namespace:LegendaryExplorer.Tools.PlotManager"
+        xmlns:sharedToolControls="clr-namespace:LegendaryExplorer.UserControls.SharedToolControls"
+        xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
+        xmlns:plotDatabase="clr-namespace:LegendaryExplorerCore.PlotDatabase;assembly=LegendaryExplorerCore"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        mc:Ignorable="d"
+        Title="Plot Database" Height="900" Width="1500">
+    <Window.Resources>
+        <local:PlotElementTypeConverter x:Key="PlotElementTypeConverter"/>
+        <Style x:Key="FileLVHeader" TargetType="{x:Type GridViewColumnHeader}">
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+        </Style>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
+        <DataTemplate x:Key="HeaderTemplateArrowUp">
+            <DockPanel LastChildFill="True" Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type GridViewColumnHeader}}}">
+                <Path x:Name="arrowUp" StrokeThickness="1" Fill="Gray" Data="M 5,10 L 15,10 L 10,5 L 5,10" DockPanel.Dock="Right" Width="20" HorizontalAlignment="Right" Margin="5,0,5,0" SnapsToDevicePixels="True"/>
+                <TextBlock Text="{Binding }" />
+            </DockPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="HeaderTemplateArrowDown">
+            <DockPanel LastChildFill="True" Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type GridViewColumnHeader}}}">
+                <Path x:Name="arrowDown" StrokeThickness="1" Fill="Gray"  Data="M 5,5 L 10,10 L 15,5 L 5,5" DockPanel.Dock="Right" Width="20" HorizontalAlignment="Right" Margin="5,0,5,0" SnapsToDevicePixels="True"/>
+                <TextBlock Text="{Binding }" />
+            </DockPanel>
+        </DataTemplate>
+    </Window.Resources>
+    <DockPanel>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="500"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="35"/>
+            </Grid.RowDefinitions>
+            <DockPanel  Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Background="WhiteSmoke" LastChildFill="True">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" DockPanel.Dock="Right" >
+                    <ToggleButton Command="{Binding FilterCommand}" IsChecked="{Binding ShowBoolStates}" Height="25" Width="25" Margin="5,0,5,0" ToolTip="Show Bool States">
+                        <Image Source="/Tools/PlotDatabase/PlotTypeIcons/icon_bool.png" Height="12" Width="12"/>
+                    </ToggleButton>
+                    <ToggleButton Command="{Binding FilterCommand}" IsChecked="{Binding ShowInts}" Height="25" Width="25" Margin="5,0,5,0" ToolTip="Show Integers">
+                        <Image Source="/Tools/PlotDatabase/PlotTypeIcons/icon_int.png" Height="12" Width="12"/>
+                    </ToggleButton>
+                    <ToggleButton Command="{Binding FilterCommand}" IsChecked="{Binding ShowFloats}" Height="25" Width="25" Margin="5,0,5,0" ToolTip="Show Floats">
+                        <Image Source="/Tools/PlotDatabase/PlotTypeIcons/icon_float.png" Height="12" Width="12"/>
+                    </ToggleButton>
+                    <ToggleButton Command="{Binding FilterCommand}" IsChecked="{Binding ShowConditionals}" Height="25" Width="25" Margin="5,0,5,0" ToolTip="Show Conditionals">
+                        <Image Source="/Tools/PlotDatabase/PlotTypeIcons/icon_cnd.png" Height="12" Width="12"/>
+                    </ToggleButton>
+                    <ToggleButton Command="{Binding FilterCommand}" IsChecked="{Binding ShowTransitions}" Height="25" Width="25" Margin="5,0,5,0" ToolTip="Show Transitions">
+                        <Image Source="/Tools/PackageEditor/ExportIcons/icon_function.png" Height="12" Width="12"/>
+                    </ToggleButton>
+                    <ToggleButton Command="{Binding FilterCommand}" IsChecked="{Binding ShowJournal}" Height="25" Width="25" Margin="5,0,5,0" ToolTip="Show Journal Items">
+                        <Image Source="/Tools/PackageEditor/ExportIcons/icon_world.png" Height="12" Width="12"/>
+                    </ToggleButton>
+                    <xctk:WatermarkTextBox Watermark="Search" Name="FilterBox" Width="500" Margin="5,3,20,2" KeyUp="FilterBox_KeyUp" ToolTip="Search" HorizontalAlignment="Right" HorizontalContentAlignment="Left" IsEnabled="True">
+                    </xctk:WatermarkTextBox>
+                </StackPanel>
+
+                
+                <Menu Name="TopDock" DockPanel.Dock="Left">
+                    <MenuItem Header="Mod Databases" Padding="4">
+                        <MenuItem Header="Add New Mod" Command="{Binding AddNewModCommand}" />
+                        <MenuItem Header="Add New Mod Category" Command="{Binding FilterCommand}" IsEnabled="False"/>
+                        <MenuItem Header="Add New Game State" Command="{Binding FilterCommand}" IsEnabled="False"/>
+                        <MenuItem Header="Delete Item" Command="{Binding FilterCommand}" IsEnabled="False" />
+                        <Separator/>
+                        <MenuItem Header="Save Database Locally" Command="{Binding SaveLocalCommand}"/>
+                        <MenuItem Header="Sync Database to ME3Tweaks" IsEnabled="False"/>
+                        <Separator/>
+                    </MenuItem>
+                    <MenuItem Header="Tools" Padding="4">
+                        <MenuItem Header="Show Bool States" Command="{Binding FilterCommand}" IsCheckable="True" IsChecked="{Binding ShowBoolStates}"/>
+                        <MenuItem Header="Show Integers" Command="{Binding FilterCommand}" IsCheckable="True" IsChecked="{Binding ShowInts}"/>
+                        <MenuItem Header="Show Floats" Command="{Binding FilterCommand}" IsCheckable="True" IsChecked="{Binding ShowFloats}"/>
+                        <MenuItem Header="Show Conditionals" Command="{Binding FilterCommand}" IsCheckable="True" IsChecked="{Binding ShowConditionals}"/>
+                        <MenuItem Header="Show Transitions" Command="{Binding FilterCommand}" IsCheckable="True" IsChecked="{Binding ShowTransitions}"/>
+                        <MenuItem Header="Show Journals" Command="{Binding FilterCommand}" IsCheckable="True" IsChecked="{Binding ShowJournal}"/>
+                    </MenuItem>
+                </Menu>
+                
+            </DockPanel>
+            <TabControl Name="GameTab" Grid.Column="0" Grid.Row="1" SelectedIndex="{Binding CurrentView, Mode=TwoWay}" SelectionChanged="NewTab_Selected">
+                <TabItem Header="LE3/ME3" TabIndex="3"  Width="80">
+                    <TreeView x:Name="Tree_BW3"
+                              ItemsSource="{Binding Path=RootNodes3}"
+                              SelectedItemChanged="Tree_BW3_SelectedItemChanged"
+                              VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
+                        <TreeView.Resources>
+                            <HierarchicalDataTemplate DataType="{x:Type plotDatabase:PlotElement}" ItemsSource="{Binding Children}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Width="12" Height="12" Margin="0,0,3,0" Source="{Binding Type, Converter={StaticResource PlotElementTypeConverter}}"/>
+                                    <TextBlock><Run Text="  "/><Run Text="{Binding Path=Label, Mode=OneWay}"/></TextBlock>
+                                    <TextBlock Visibility="{Binding IsAGameState, Converter={StaticResource BoolToVisibilityConverter}}"> - 
+                                    <Run Text="{Binding Path=Type}"/>
+                                    <Run Text="{Binding Path=RelevantId, Mode=OneWay}"/>
+                                    </TextBlock>
+                                </StackPanel>
+                            </HierarchicalDataTemplate>
+                        </TreeView.Resources>
+                        <TreeView.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Add New Mod" Command="{Binding AddNewModCommand}" />
+                                <MenuItem Header="Add New Mod Category" Command="{Binding FilterCommand}" IsEnabled="False"/>
+                                <MenuItem Header="Add New Game State" Command="{Binding FilterCommand}" IsEnabled="False"/>
+                                <MenuItem Header="Delete Item" Command="{Binding FilterCommand}" IsEnabled="False" />
+                            </ContextMenu>
+                        </TreeView.ContextMenu>
+                    </TreeView>
+                </TabItem>
+                <TabItem Header="LE2/ME2" TabIndex="2" Width="80">
+                       <TreeView x:Name="Tree_BW2"
+                              ItemsSource="{Binding Path=RootNodes2}"
+                              SelectedItemChanged="Tree_BW2_SelectedItemChanged"
+                              VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
+                        <TreeView.Resources>
+                            <HierarchicalDataTemplate DataType="{x:Type plotDatabase:PlotElement}" ItemsSource="{Binding Children}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Width="12" Height="12" Margin="0,0,3,0" Source="{Binding Type, Converter={StaticResource PlotElementTypeConverter}}"/>
+                                    <TextBlock><Run Text="  "/><Run Text="{Binding Path=Label, Mode=OneWay}"/></TextBlock>
+                                    <TextBlock Visibility="{Binding IsAGameState, Converter={StaticResource BoolToVisibilityConverter}}"> - 
+                                    <Run Text="{Binding Path=Type}"/>
+                                    <Run Text="{Binding Path=RelevantId, Mode=OneWay}"/>
+                                    </TextBlock>
+                                </StackPanel>
+                            </HierarchicalDataTemplate>
+                        </TreeView.Resources>
+                        <TreeView.ContextMenu>
+                            <ContextMenu Padding="4">
+                                <MenuItem Header="Add New Mod" Command="{Binding AddNewModCommand}" />
+                                <MenuItem Header="Add New Mod Category" Command="{Binding FilterCommand}" IsEnabled="False"/>
+                                <MenuItem Header="Add New Game State" Command="{Binding FilterCommand}" IsEnabled="False"/>
+                                <MenuItem Header="Delete Item" Command="{Binding FilterCommand}" IsEnabled="False" />
+                            </ContextMenu>
+                        </TreeView.ContextMenu>
+                    </TreeView>
+                </TabItem>
+                <TabItem Header="LE1/ME1" TabIndex="1" Width="80">
+                    <TreeView x:Name="Tree_BW1"
+                              ItemsSource="{Binding Path=RootNodes1}"
+                              SelectedItemChanged="Tree_BW1_SelectedItemChanged"
+                              VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
+                        <TreeView.Resources>
+                            <HierarchicalDataTemplate DataType="{x:Type plotDatabase:PlotElement}" ItemsSource="{Binding Children}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Width="12" Height="12" Margin="0,0,3,0" Source="{Binding Type, Converter={StaticResource PlotElementTypeConverter}}"/>
+                                    <TextBlock><Run Text="  "/><Run Text="{Binding Path=Label, Mode=OneWay}"/></TextBlock>
+                                    <TextBlock Visibility="{Binding IsAGameState, Converter={StaticResource BoolToVisibilityConverter}}"> - 
+                                    <Run Text="{Binding Path=Type}"/>
+                                    <Run Text="{Binding Path=RelevantId, Mode=OneWay}"/>
+                                    </TextBlock>
+                                </StackPanel>
+                            </HierarchicalDataTemplate>
+                        </TreeView.Resources>
+                        <TreeView.ContextMenu>
+                            <ContextMenu Padding="4">
+                                <MenuItem Header="Add New Mod" Command="{Binding AddNewModCommand}" />
+                                <MenuItem Header="Add New Mod Category" Command="{Binding FilterCommand}" IsEnabled="False"/>
+                                <MenuItem Header="Add New Game State" Command="{Binding FilterCommand}" IsEnabled="False"/>
+                                <MenuItem Header="Delete Item" Command="{Binding FilterCommand}" IsEnabled="False" />
+                            </ContextMenu>
+                        </TreeView.ContextMenu>
+                    </TreeView>
+                </TabItem>
+            </TabControl>
+            <DockPanel Grid.Column="1" Grid.Row="1" LastChildFill="True">
+                <StackPanel DockPanel.Dock="Top">
+                    <ContentControl x:Name="TreeContent" Margin="5" BorderThickness="1"
+                                    Content="{Binding SelectedNode}" >
+                        <ContentControl.Resources>
+                            <DataTemplate DataType="{x:Type plotDatabase:PlotElement}">
+                                <StackPanel>
+                                    <TextBlock FontWeight="Bold"><Run Text="{Binding Type}"/> <Run Text="{Binding RelevantId, Mode=OneWay}"/>:</TextBlock>
+                                    <TextBlock Text="{Binding Path, Mode=OneWay}"/>
+                                    <TextBlock>Plot Element ID: <Run Text="{Binding ElementId}"/></TextBlock>
+                                    <TextBlock>Sequence: <Run Text="{Binding Sequence}"/></TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type plotDatabase:PlotBool}">
+                                <StackPanel>
+                                    <TextBlock FontWeight="Bold"><Run Text="{Binding Type}"/> <Run Text="{Binding PlotId}"/>:</TextBlock>
+                                    <TextBlock Text="{Binding Path, Mode=OneWay}"/>
+                                    <TextBlock>Plot Element ID: <Run Text="{Binding ElementId}"/></TextBlock>
+                                    <TextBlock>Sequence: <Run Text="{Binding Sequence}"/></TextBlock>
+                                    <TextBlock>Subtype: <Run Text="{Binding SubType}"/></TextBlock>
+                                    <TextBlock>Gamer Variable: <Run Text="{Binding GamerVariable}"/></TextBlock>
+                                    <TextBlock>Achievement ID: <Run Text="{Binding AchievementID}"/></TextBlock>
+                                    <TextBlock>Galaxy At War: <Run Text="{Binding GalaxyAtWar}"/></TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type plotDatabase:PlotConditional}">
+                                <StackPanel>
+                                    <TextBlock FontWeight="Bold"><Run Text="{Binding Type}"/> <Run Text="{Binding PlotId}"/>:</TextBlock>
+                                    <TextBlock Text="{Binding Path, Mode=OneWay}"/>
+                                    <TextBlock>Plot Element ID: <Run Text="{Binding ElementId}"/></TextBlock>
+                                    <TextBlock>Sequence: <Run Text="{Binding Sequence}"/></TextBlock>
+                                    <TextBlock>Code: <Run Text="{Binding Code}"/></TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type plotDatabase:PlotTransition}">
+                                <StackPanel>
+                                    <TextBlock FontWeight="Bold"><Run Text="{Binding Type}"/> <Run Text="{Binding PlotId}"/>:</TextBlock>
+                                    <TextBlock Text="{Binding Path, Mode=OneWay}"/>
+                                    <TextBlock>Plot Element ID: <Run Text="{Binding ElementId}"/></TextBlock>
+                                    <TextBlock>Sequence: <Run Text="{Binding Sequence}"/></TextBlock>
+                                    <TextBlock>Argument: <Run Text="{Binding Argument}"/></TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ContentControl.Resources>
+                    </ContentControl>
+                    <StackPanel Name="NewModForm" Visibility="Collapsed" Background="AliceBlue" >
+                        <TextBlock Text="Add a new mod" FontWeight="DemiBold" Margin="5"/>
+                        <DockPanel >
+                            <TextBlock Text="Mod Name: " DockPanel.Dock="Left" Margin="3"/>
+                            <TextBox x:Name="nwMod_Name" Width="300" HorizontalAlignment="Left" Margin="3"/>
+                        </DockPanel>
+                        <DockPanel LastChildFill="True">
+                            <Button Width="50" DockPanel.Dock="Left" Margin="3" Name="nwMod_OK" Command="{Binding ClickOkCommand}" CommandParameter="NewMod">
+                                <TextBlock Text="OK"/>
+                            </Button>
+                            <Button Width="50" HorizontalAlignment="Left" Margin="3" Name="nwMod_Cancel"  Command="{Binding ClickCancelCommand}" CommandParameter="NewMod">
+                                <TextBlock Text="Cancel"/>
+                            </Button>
+                        </DockPanel>
+                    </StackPanel>
+                </StackPanel>
+                <ListView Name="LV_Plots" ItemsSource="{Binding ElementsTable}" GridViewColumnHeader.Click="list_ColumnHeader_Click">
+                    <ListView.View>
+                        <GridView AllowsColumnReorder="True" ColumnHeaderContainerStyle="{StaticResource FileLVHeader}">
+                            <GridViewColumn Header="#" Width="25">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Image Width="12" Height="12" Margin="0,0,0,0" Source="{Binding Path=Type, Converter={StaticResource PlotElementTypeConverter}}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn DisplayMemberBinding="{Binding PlotId}" Width="80" Header="Plot"/>
+                            <GridViewColumn DisplayMemberBinding="{Binding Type}" Width="100" Header="Type"/>
+                            <GridViewColumn DisplayMemberBinding="{Binding Label}" Width="250" Header="Label" />
+                            <GridViewColumn DisplayMemberBinding="{Binding Path}" Header="Path"/>
+                            <GridViewColumn DisplayMemberBinding="{Binding ElementId}" Width="60" Header="ElementId"/>
+                        </GridView>
+                    </ListView.View>
+                    <ListView.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Copy PlotId to Clipboard" Command="{Binding CopyToClipboardCommand}"/>
+                        </ContextMenu>
+                    </ListView.ContextMenu>
+                </ListView>
+            </DockPanel>
+            <StatusBar Height="35" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+                <DockPanel>
+                    <sharedToolControls:StatusBarGameIDIndicator GameType="{Binding CurrentGame}" VerticalContentAlignment="Center" Visibility="Visible" Margin="3,-4,3,-4" DockPanel.Dock="Left" />
+                    <StatusBarItem>
+                        <TextBlock x:Name="StatusBar_RightMostText" Text="{Binding CurrentOverallOperationText}" />
+                    </StatusBarItem>
+                    <StatusBarItem DockPanel.Dock="Right">
+                        <TextBlock x:Name="bwLink" Width="Auto"  Visibility="Visible">
+                            <Hyperlink NavigateUri="https://github.com/electronicarts/MELE_ModdingSupport" misc:HyperlinkExtensions.IsExternal="True">
+                                github.com/MELE_ModdingSupport
+                            </Hyperlink>
+                        </TextBlock>
+                    </StatusBarItem>
+                </DockPanel>
+            </StatusBar>
+        </Grid>
+    </DockPanel>
+</misc:NotifyPropertyChangedWindowBase>

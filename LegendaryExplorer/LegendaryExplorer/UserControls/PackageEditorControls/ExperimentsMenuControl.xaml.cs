@@ -1069,6 +1069,16 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsK.TrashCompactor(GetPEWindow(), GetPEWindow().Pcc);
         }
+
+        private void NewSeekFreeFile(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsK.NewSeekFreeFile(GetPEWindow());
+        }
+
+        private void AddAssetsToReferencer(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsK.AddAllAssetsToReferencer(GetPEWindow());
+        }
         #endregion
 
         // EXPERIMENTS: OTHER PEOPLE ------------------------------------------------------------
@@ -1107,6 +1117,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         private void UpdateLocalFunctions_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsO.UpdateLocalFunctions(GetPEWindow());
+        }
+
+        private void DumpTOC_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.DumpTOC();
         }
         #endregion
 

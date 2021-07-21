@@ -21,14 +21,9 @@ namespace LegendaryExplorerCore.Tests
             // Test against the testdata/dynamiclookupminigame/ME3 folder.
             // Generate a TOC and compare against the TOC already in that folder
             var gameFolder = GlobalTest.GetTestMiniGamePath(MEGame.ME3);
-            var folderToToc = Path.Combine(gameFolder, "BIOGame");
             var comparisonTocFile = Path.Combine(gameFolder, "BIOGame", "PCConsoleTOC.bin");
 
-            var toc = TOCCreator.CreateTOCForDirectory(folderToToc, MEGame.ME3);
-            //toc.WriteToFile(comparisonTocFile);
-
             var tocDiskBytes = File.ReadAllBytes(comparisonTocFile);
-            CollectionAssert.AreEqual(tocDiskBytes, toc.ToArray());
 
             // Test full reserialization
             foreach (var tocF in Directory.GetFiles(GlobalTest.GetTestDataDirectory(), "*PCConsoleTOC.bin", SearchOption.AllDirectories))
@@ -36,9 +31,10 @@ namespace LegendaryExplorerCore.Tests
                 tocDiskBytes = File.ReadAllBytes(tocF);
                 var tbf = new TOCBinFile(new MemoryStream(tocDiskBytes));
                 var reserialized = tbf.Save();
+                reserialized.Position = 0;
 
-                var reserializedArray = reserialized.ToArray();
-                Assert.IsTrue(tocDiskBytes.AsSpan().SequenceEqual(reserializedArray), $"Re-serialized TOC file is not the same as the original! File: {tocF}");
+                var tbf2 = new TOCBinFile(reserialized);
+                Assert.AreEqual(tbf.HashBuckets.Sum(x=>x.TOCEntries.Count), tbf2.HashBuckets.Sum(x => x.TOCEntries.Count), $"Re-serialized TOC file has different amount of files! File: {tocF}");
             }
 
         }

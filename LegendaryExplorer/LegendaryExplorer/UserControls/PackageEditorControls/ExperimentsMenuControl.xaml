@@ -103,6 +103,8 @@
         <MenuItem Header="Set All WwiseEvent Durations" Click="SetAllWwiseEventDurations_Click"/>
         <MenuItem Header="Copy Package Name" Click="CopyPackageName"/>
         <MenuItem Header="Save as New Package" Click="SaveAsNewPackage"/>
+        <MenuItem Header="Create New Seekfree Package" Click="NewSeekFreeFile"/>
+        <MenuItem Header="Add All Assets to Seekfree Referencer" Click="AddAssetsToReferencer"/>
         <MenuItem Header="Trash Compactor" Click="RunTrashCompactor"/>
     </MenuItem>
     <MenuItem Header="Other people's box of Legos">
@@ -113,5 +115,6 @@
         <MenuItem Header="Generate Wwise ID from entry name" Click="GenerateWwiseId_Click"/>
         <MenuItem Header="Create test TLK from XML with IDs in string" Click="CreateTestTLKWithStringIDs_Click"/>
         <MenuItem Header="Update Local Functions and Relink" Click="UpdateLocalFunctions_Click"/>
+        <MenuItem Header="Dump TOC file" Click="DumpTOC_Click"/>
     </MenuItem>
 </MenuItem>
