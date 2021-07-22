@@ -69,8 +69,8 @@
                             case "string":
                             if(setting.isDirectorySelect == "true" || !string.IsNullOrEmpty(setting.fileSelectExtension)){ // File/folder browse
                             #><TextBlock Margin="5,5,0,0"><#=setting.friendlyName ?? setting.name #>:</TextBlock>
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                            <TextBox Width="250" x:Name="<#=setting.name #>" Margin="5,0,0,0"
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5" Tag="<#=setting.name#>">
+                            <TextBox Width="250" x:Name="<#=setting.name #>" Margin="5,0,0,0" TextChanged="Setting_OnTextChanged"
                                        Text="{Binding Path=(settings:Settings.<#=setting.name #>)}"/>
                             <Button Click="<#=(setting.isDirectorySelect == "true" ? "DirectoryBrowse_Click" : "FileBrowse_Click")#>" 
                             Margin="5,0" Tag="<#=setting.fileSelectExtension ?? "" #>">Browse</Button>

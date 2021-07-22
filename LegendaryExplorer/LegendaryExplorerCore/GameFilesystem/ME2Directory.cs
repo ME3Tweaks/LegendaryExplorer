@@ -210,5 +210,10 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// TFCs that reside in the basegame directory
         /// </summary>
         public static readonly string[] BasegameTFCs = { "Textures" };
+
+        public static bool IsValidGameDir(string rootPath)
+        {
+            return File.Exists(Path.Combine(rootPath, "Binaries", "MassEffect2.exe"));
+        }
     }
 }
