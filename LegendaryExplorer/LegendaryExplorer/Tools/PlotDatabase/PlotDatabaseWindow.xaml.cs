@@ -208,38 +208,41 @@ namespace LegendaryExplorer.Tools.PlotManager
 
         private void RefreshTrees()
         {
-            RootNodes3.ClearEx();
-            var rootlist3 = new List<PlotElement>();
-            var dictionary3 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE3);
-            rootlist3.Add(dictionary3[1]);
-            var mods3 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE3, false);
-            rootlist3.Add(mods3[100000]);
-            dictionary3.Add(0, new PlotElement(0, 0, "Legendary Edition - Mass Effect 3 Plots", PlotElementType.None, -1, rootlist3));
-            RootNodes3.Add(dictionary3[0]);
-
-            RootNodes2.ClearEx();
-            var rootlist2 = new List<PlotElement>();
-            var dictionary2 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE2);
-            rootlist2.Add(dictionary2[1]);
-            if (PlotDatabases.LoadDatabase(MEGame.LE2, false, AppDirectories.AppDataFolder))
+            switch(CurrentGame)
             {
-                var mods2 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE2, false);
-                rootlist2.Add(mods2[100000]);
+                case MEGame.LE3:
+                    RootNodes3.ClearEx();
+                    var rootlist3 = new List<PlotElement>();
+                    var dictionary3 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE3);
+                    rootlist3.Add(dictionary3[1]);
+                    var mods3 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE3, false);
+                    rootlist3.Add(mods3[100000]);
+                    dictionary3.Add(0, new PlotElement(0, 0, "Legendary Edition - Mass Effect 3 Plots", PlotElementType.None, -1, rootlist3));
+                    RootNodes3.Add(dictionary3[0]);
+                    break;
+                case MEGame.LE2:
+                    RootNodes2.ClearEx();
+                    var rootlist2 = new List<PlotElement>();
+                    var dictionary2 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE2);
+                    rootlist2.Add(dictionary2[1]);
+                    var mods2 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE2, false);
+                    rootlist2.Add(mods2[100000]);
+                    dictionary2.Add(0, new PlotElement(0, 0, "Legendary Edition - Mass Effect 2 Plots", PlotElementType.None, -1, rootlist2));
+                    RootNodes2.Add(dictionary2[0]);
+                    break;
+                case MEGame.LE1:
+                    RootNodes1.ClearEx();
+                    var rootlist1 = new List<PlotElement>();
+                    var dictionary1 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE1);
+                    rootlist1.Add(dictionary1[1]);
+                    var mods1 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE1, false);
+                    rootlist1.Add(mods1[100000]);
+                    dictionary1.Add(0, new PlotElement(0, 0, "Legendary Edition - Mass Effect 1 Plots", PlotElementType.None, -1, rootlist1));
+                    RootNodes1.Add(dictionary1[0]);
+                    break;
+                default:
+                    break;
             }
-            dictionary2.Add(0, new PlotElement(0, 0, "Legendary Edition - Mass Effect 2 Plots", PlotElementType.None, -1, rootlist2));
-            RootNodes2.Add(dictionary2[0]);
-
-            RootNodes1.ClearEx();
-            var rootlist1 = new List<PlotElement>();
-            var dictionary1 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE1);
-            rootlist1.Add(dictionary1[1]);
-            if (PlotDatabases.LoadDatabase(MEGame.LE1, false, AppDirectories.AppDataFolder))
-            {
-                var mods1 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE1, false);
-                rootlist1.Add(mods1[100000]);
-            }
-            dictionary1.Add(0, new PlotElement(0, 0, "Legendary Edition - Mass Effect 1 Plots", PlotElementType.None, -1, rootlist1));
-            RootNodes1.Add(dictionary1[0]);
         }
 
         private void AddPlotsToList(PlotElement plotElement, List<PlotElement> elementList)
@@ -564,8 +567,6 @@ namespace LegendaryExplorer.Tools.PlotManager
             newItem_galaxyatwar.Clear();
             newItem_gamervariable.Clear();
             newItem_subtype.SelectedIndex = -1;
-            newItem_subtype.ItemsSource = null;
-
         }
         private void CancelAddData(object obj)
         {
@@ -817,7 +818,7 @@ namespace LegendaryExplorer.Tools.PlotManager
                                 {
                                     newModItemPE.Children.AddRange(SelectedNode.Children);
                                     parent.Children.Remove(SelectedNode);
-                                    mdb.Conditionals.Remove(SelectedNode.ElementId);
+                                    mdb.Organizational.Remove(SelectedNode.ElementId);
                                 }
                                 mdb.Organizational.Add(newElementId, newModItemPE);
                                 parent.Children.Add(newModItemPE);
@@ -905,6 +906,7 @@ namespace LegendaryExplorer.Tools.PlotManager
                     case "newCat_Name":
                         AddDataToModDatabase("NewCategory");
                         break;
+                    case "newItem_Name":
                     case "newItem_Plot":
                     case "newItem_Code":
                     case "newItem_Argument":

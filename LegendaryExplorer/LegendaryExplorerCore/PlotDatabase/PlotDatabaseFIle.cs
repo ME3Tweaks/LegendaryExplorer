@@ -119,15 +119,22 @@ namespace LegendaryExplorerCore.PlotDatabase
         /// <returns></returns>
         public SortedDictionary<int, PlotElement> GetMasterDictionary()
         {
-            var elements = Bools.Values.ToList()
-                .Concat(Ints.Values.ToList())
-                .Concat(Floats.Values.ToList())
-                .Concat(Conditionals.Values.ToList())
-                .Concat(Transitions.Values.ToList())
-                .Concat(Organizational.Values.ToList())
-                .ToDictionary(e => e.ElementId);
+            try
+            {
+                var elements = Bools.Values.ToList()
+                    .Concat(Ints.Values.ToList())
+                    .Concat(Floats.Values.ToList())
+                    .Concat(Conditionals.Values.ToList())
+                    .Concat(Transitions.Values.ToList())
+                    .Concat(Organizational.Values.ToList())
+                    .ToDictionary(e => e.ElementId);
 
-            return new SortedDictionary<int, PlotElement>(elements);
+                return new SortedDictionary<int, PlotElement>(elements);
+            }
+            catch //fallback in case saved dictionary has duplicate element ids
+            {
+                return new SortedDictionary<int, PlotElement>();
+            }
         }
 
         public bool CanSave() => !IsBioware;

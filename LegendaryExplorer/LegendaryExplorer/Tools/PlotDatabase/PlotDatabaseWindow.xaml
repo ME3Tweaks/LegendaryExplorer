@@ -72,8 +72,6 @@
                     <xctk:WatermarkTextBox Watermark="Search" Name="FilterBox" Width="500" Margin="5,3,20,2" KeyUp="FilterBox_KeyUp" ToolTip="Search" HorizontalAlignment="Right" HorizontalContentAlignment="Left" IsEnabled="True">
                     </xctk:WatermarkTextBox>
                 </StackPanel>
-
-
                 <Menu Name="TopDock" DockPanel.Dock="Left">
                     <MenuItem Header="Mod Databases" Padding="4">
                         <MenuItem Header="Refresh" Command="{Binding RefreshLocalCommand}"/>
