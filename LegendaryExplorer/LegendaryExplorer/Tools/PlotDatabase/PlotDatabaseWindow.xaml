@@ -360,15 +360,15 @@
                                 <TextBlock x:Name="newItem_Title"  Text="Add a New Game State to the Mod Database" FontWeight="DemiBold" Margin="5"/>
                                 <DockPanel Margin="3">
                                     <TextBlock Text="Path: " DockPanel.Dock="Left" Margin="3" Width="40"/>
-                                    <TextBlock Text="{Binding SelectedNode.Path}" Width="300" HorizontalAlignment="Left" Margin="3"/>
+                                    <TextBlock Text="{Binding SelectedNode.Path}" Width="230" HorizontalAlignment="Left" Margin="3"/>
                                 </DockPanel>
                                 <DockPanel Margin="3">
                                     <TextBlock Text="Label: " DockPanel.Dock="Left" Margin="3" Width="40"/>
-                                    <TextBox x:Name="newItem_Name" Width="240" HorizontalAlignment="Left" Margin="3" KeyUp="form_KeyUp" ToolTip="Add a new label for the database."/>
+                                    <TextBox x:Name="newItem_Name" Width="240" Height="22" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="3" Padding="1" KeyUp="form_KeyUp" ToolTip="Add a new label for the database."/>
                                 </DockPanel>
                                 <DockPanel Margin="3">
                                     <TextBlock Text="Type: " DockPanel.Dock="Left" Margin="3" Width="40"/>
-                                    <ComboBox x:Name="newItem_Type" ItemsSource="{Binding newItemTypes}" Width="240" HorizontalAlignment="Left" Margin="3" 
+                                    <ComboBox x:Name="newItem_Type" ItemsSource="{Binding newItemTypes}" Width="240" Height="22" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="3" Padding="5,1,1,1"
                                               SelectionChanged="newItem_Type_SelectionChanged"  ToolTip="Select a type.">
                                         <ComboBox.ItemTemplate>
                                             <DataTemplate>
@@ -383,7 +383,7 @@
                                 </DockPanel>
                                 <DockPanel Margin="3">
                                     <TextBlock x:Name="newItem_Plotlbl" Text="Plot Id: " DockPanel.Dock="Left" Margin="3" Width="40" ToolTip="This must be an integer > 0"/>
-                                    <TextBox x:Name="newItem_Plot" Width="240" HorizontalAlignment="Left" Margin="3"  KeyUp="form_KeyUp"/>
+                                    <TextBox x:Name="newItem_Plot" Width="240" Height="22" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="3" Padding="1" KeyUp="form_KeyUp"/>
                                 </DockPanel>
                                 <DockPanel x:Name="newItem_CndPnl" Margin="3" Visibility="Collapsed">
                                     <TextBlock Text="Code: " DockPanel.Dock="Left" Margin="3" Width="40"/>
@@ -396,7 +396,7 @@
                                 <StackPanel x:Name="newItem_BoolPnl" Margin="3" Visibility="Collapsed">
                                     <DockPanel>
                                         <TextBlock Text="Sub-Type: " DockPanel.Dock="Left" Margin="3" Width="60"/>
-                                        <ComboBox x:Name="newItem_subtype" Width="240" HorizontalAlignment="Left" Margin="3" >
+                                        <ComboBox x:Name="newItem_subtype" Width="220" Height="22" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="3" Padding="1" >
                                             <ComboBox.ItemTemplate>
                                                 <DataTemplate>
                                                     <StackPanel Orientation="Horizontal">
@@ -408,15 +408,15 @@
                                     </DockPanel>
                                     <DockPanel>
                                         <TextBlock Text="Achievement Id: " DockPanel.Dock="Left" Margin="3" Width="90"/>
-                                        <TextBox x:Name="newItem_achievementid" Width="190" HorizontalAlignment="Left" Margin="3" KeyUp="form_KeyUp" ToolTip="Add related Achievement Id."/>
+                                        <TextBox x:Name="newItem_achievementid" Width="190" Height="22" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="3" Padding="1" KeyUp="form_KeyUp" ToolTip="Add related Achievement Id."/>
                                     </DockPanel>
                                     <DockPanel>
                                         <TextBlock Text="Galaxy at War Id: " DockPanel.Dock="Left" Margin="3" Width="90"/>
-                                        <TextBox x:Name="newItem_galaxyatwar" Width="190" HorizontalAlignment="Left" Margin="3" KeyUp="form_KeyUp" ToolTip="Add related War Asset Id."/>
+                                        <TextBox x:Name="newItem_galaxyatwar" Width="190" Height="22" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="3" Padding="1" KeyUp="form_KeyUp" ToolTip="Add related War Asset Id."/>
                                     </DockPanel>
                                     <DockPanel>
                                         <TextBlock Text="Gamer Variable: " DockPanel.Dock="Left" Margin="3" Width="90"/>
-                                        <TextBox x:Name="newItem_gamervariable" Width="190" HorizontalAlignment="Left" Margin="3" KeyUp="form_KeyUp" ToolTip="Add id of a variable."/>
+                                        <TextBox x:Name="newItem_gamervariable" Width="190" Height="22" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="3" Padding="1" KeyUp="form_KeyUp" ToolTip="Add id of a variable."/>
                                     </DockPanel>
                                 </StackPanel>
                                 <DockPanel Margin="3">
