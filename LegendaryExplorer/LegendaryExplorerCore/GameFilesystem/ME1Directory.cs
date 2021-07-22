@@ -163,5 +163,10 @@ namespace LegendaryExplorerCore.GameFilesystem
             "DLC_UNC",
             "DLC_Vegas"
         });
+
+        public static bool IsValidGameDir(string rootPath)
+        {
+            return File.Exists(Path.Combine(rootPath, "Binaries", "MassEffect.exe"));
+        }
     }
 }

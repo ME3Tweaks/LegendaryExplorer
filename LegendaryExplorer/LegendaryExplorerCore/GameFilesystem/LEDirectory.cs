@@ -93,5 +93,10 @@ namespace LegendaryExplorerCore.GameFilesystem
         {
             "bink2w64.dll"
         });
+
+        public static bool IsValidGameDir(string rootPath)
+        {
+            return File.Exists(Path.Combine(rootPath, "Game", "Launcher", "MassEffectLauncher.exe"));
+        }
     }
 }

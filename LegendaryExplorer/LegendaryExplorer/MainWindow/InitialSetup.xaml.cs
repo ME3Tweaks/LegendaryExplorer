@@ -7,10 +7,12 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using LegendaryExplorer.SharedUI.Controls;
 using LegendaryExplorer.Misc.AppSettings;
+using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorerCore;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Packages;
 using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Shell.Interop;
 
 namespace LegendaryExplorer.MainWindow
 {
@@ -19,6 +21,11 @@ namespace LegendaryExplorer.MainWindow
     /// </summary>
     public partial class InitialSetup : Window
     {
+        private bool me1Okay = false;
+        private bool me2Okay = false;
+        private bool me3Okay = false;
+        private bool leOkay = false;
+
         public InitialSetup()
         {
             InitializeComponent();
@@ -32,7 +39,8 @@ namespace LegendaryExplorer.MainWindow
 
         private void me1PathBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (File.Exists(Path.Combine(me1PathBox.Text, "Binaries", "MassEffect.exe")))
+            me1Okay = ME1Directory.IsValidGameDir(me1PathBox.Text);
+            if (me1Okay)
             {
                 me1PathBox.BorderBrush = Brushes.Lime;
             }
@@ -44,7 +52,8 @@ namespace LegendaryExplorer.MainWindow
 
         private void me2PathBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (File.Exists(Path.Combine(me2PathBox.Text, "Binaries", "MassEffect2.exe")))
+            me2Okay = ME2Directory.IsValidGameDir(me2PathBox.Text);
+            if (me2Okay)
             {
                 me2PathBox.BorderBrush = Brushes.Lime;
             }
@@ -56,7 +65,8 @@ namespace LegendaryExplorer.MainWindow
 
         private void me3PathBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (File.Exists(Path.Combine(me3PathBox.Text, "Binaries", "Win32", "MassEffect3.exe")))
+            me3Okay = ME3Directory.IsValidGameDir(me3PathBox.Text);
+            if (me3Okay)
             {
                 me3PathBox.BorderBrush = Brushes.Lime;
             }
@@ -68,7 +78,8 @@ namespace LegendaryExplorer.MainWindow
 
         private void melePathBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (File.Exists(Path.Combine(melePathBox.Text, "Game", "Launcher", "MassEffectLauncher.exe")))
+            leOkay = LEDirectory.IsValidGameDir(melePathBox.Text);
+            if (leOkay)
             {
                 melePathBox.BorderBrush = Brushes.Lime;
             }
@@ -168,12 +179,19 @@ namespace LegendaryExplorer.MainWindow
 
         private void DoneButton_Click(object sender, RoutedEventArgs e)
         {
-            Settings.Global_ME1Directory = me1PathBox.Text;
-            Settings.Global_ME2Directory = me2PathBox.Text;
-            Settings.Global_ME3Directory = me3PathBox.Text;
-            Settings.Global_LEDirectory = melePathBox.Text;
+            if ((me1Okay || me2Okay || me3Okay || leOkay) == false)
+            {
+                MessageBox.Show("Must have at least one game path correctly set to save settings.");
+                return;
+            }
+
+            Settings.Global_ME1Directory = me1Okay ? me1PathBox.Text : "";
+            Settings.Global_ME2Directory = me2Okay ? me2PathBox.Text : "";
+            Settings.Global_ME3Directory = me3Okay ? me3PathBox.Text : "";
+            Settings.Global_LEDirectory = leOkay ? melePathBox.Text : "";
+
             Settings.MainWindow_CompletedInitialSetup = true;
-            MEDirectories.SaveSettings(new List<string> { me1PathBox.Text, me2PathBox.Text, me3PathBox.Text, melePathBox.Text });
+            MEDirectories.SaveSettings(new List<string> { Settings.Global_ME1Directory, Settings.Global_ME2Directory, Settings.Global_ME3Directory, Settings.Global_LEDirectory });
             Close();
         }
 

@@ -203,5 +203,10 @@ namespace LegendaryExplorerCore.GameFilesystem
             "DLC_EXP_Pack003",
             "DLC_CON_DH1"
         });
+
+        public static bool IsValidGameDir(string rootPath)
+        {
+            return File.Exists(Path.Combine(rootPath, "Binaries", "Win32", "MassEffect3.exe"));
+        }
     }
 }

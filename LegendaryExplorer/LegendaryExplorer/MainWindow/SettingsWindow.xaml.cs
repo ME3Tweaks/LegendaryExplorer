@@ -1,11 +1,16 @@
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using DocumentFormat.OpenXml.Drawing;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
+using LegendaryExplorerCore;
+using LegendaryExplorerCore.GameFilesystem;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using Path = System.IO.Path;
 
 namespace LegendaryExplorer.MainWindow
 {
@@ -60,6 +65,36 @@ namespace LegendaryExplorer.MainWindow
             }
         }
 
+        private void Setting_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            // Handle setting of game paths
+            var t = sender as TextBox;
+            if (t.Parent is StackPanel parentPanel && !string.IsNullOrEmpty(parentPanel.Tag.ToString()))
+            {
+                switch (parentPanel.Tag.ToString())
+                {
+                    case "Global_ME1Directory" when ME1Directory.IsValidGameDir(t.Text):
+                        LegendaryExplorerCoreLibSettings.Instance.ME1Directory = t.Text;
+                        ME1Directory.DefaultGamePath = t.Text;
+                        break;
+                    case "Global_ME2Directory" when ME2Directory.IsValidGameDir(t.Text):
+                        LegendaryExplorerCoreLibSettings.Instance.ME2Directory = t.Text;
+                        ME2Directory.DefaultGamePath = t.Text;
+                        break;
+                    case "Global_ME3Directory" when ME3Directory.IsValidGameDir(t.Text):
+                        LegendaryExplorerCoreLibSettings.Instance.ME3Directory = t.Text;
+                        ME3Directory.DefaultGamePath = t.Text;
+                        break;
+                    case "Global_LEDirectory" when LEDirectory.IsValidGameDir(t.Text):
+                        LegendaryExplorerCoreLibSettings.Instance.LEDirectory = t.Text;
+                        LE1Directory.ReloadDefaultGamePath();
+                        LE2Directory.ReloadDefaultGamePath();
+                        LE3Directory.ReloadDefaultGamePath();
+                        break;
+                }
+            }
+        }
+
         private void SaveFile_Click(object sender, RoutedEventArgs e)
         {
             Settings.Save();
@@ -79,5 +114,6 @@ namespace LegendaryExplorer.MainWindow
         {
             FileAssociations.AssociateOthers();
         }
+
     }
 }
