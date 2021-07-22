@@ -51,7 +51,7 @@ namespace LegendaryExplorer.UnrealExtensions
         /// <param name="fullSetup">Full setup flag - use for ME2</param>
         public static MemoryStream ConvertRiffToWav(string riffPath, bool fullSetup)
         {
-            Stream oggStream = ConvertRIFFToWwiseOGG(riffPath, fullSetup);
+            Stream oggStream = ConvertRIFFToWwiseOGG(riffPath, fullSetup, false);
             if (oggStream != null)// && File.Exists(outputOggPath))
             {
                 oggStream.Seek(0, SeekOrigin.Begin);
@@ -122,7 +122,7 @@ namespace LegendaryExplorer.UnrealExtensions
         /// </summary>
         /// <param name="riffPath">Path to RIFF RAW data</param>
         /// <param name="fullSetup">Full setup flag - use for ME2</param>
-        public static MemoryStream ConvertRIFFToWwiseOGG(string riffPath, bool fullSetup)
+        public static MemoryStream ConvertRIFFToWwiseOGG(string riffPath, bool fullSetup, bool useAlternateCodebook)
         {
             //convert RIFF to WwiseOGG
             // Is this useful?
@@ -133,14 +133,10 @@ namespace LegendaryExplorer.UnrealExtensions
             }
 
             ProcessStartInfo procStartInfo = null;
-            if (!fullSetup)
-            {
-                procStartInfo = new ProcessStartInfo(Path.Combine(AppDirectories.ExecFolder, "ww2ogg.exe"), "--stdout \"" + riffPath + "\"");
-            }
-            else
-            {
-                procStartInfo = new ProcessStartInfo(Path.Combine(AppDirectories.ExecFolder, "ww2ogg.exe"), "--stdout --full-setup \"" + riffPath + "\"");
-            }
+            var alternatePcbFile = Path.Combine(AppDirectories.ExecFolder, "packed_codebooks_aoTuV_603.bin");
+
+            procStartInfo = new ProcessStartInfo(Path.Combine(AppDirectories.ExecFolder, "ww2ogg.exe"), $@"{(useAlternateCodebook ? @$"--pcb {alternatePcbFile}" : "")} {(fullSetup ? "--full-setup" : "")} --stdout {riffPath}");
+
             procStartInfo.WorkingDirectory = AppDirectories.ExecFolder;
             procStartInfo.RedirectStandardOutput = true;
             procStartInfo.RedirectStandardError = true;
@@ -166,7 +162,7 @@ namespace LegendaryExplorer.UnrealExtensions
 
             proc.WaitForExit();
             proc.Close();
-            //File.WriteAllBytes(System.IO.Path.Combine(loc, "testingoggerr.txt"), outputErrorData.ToArray());
+            Debug.WriteLine(System.Text.Encoding.UTF8.GetString(outputErrorData.ToArray()));
 
             //Debug.WriteLine("Done");
             return outputData;

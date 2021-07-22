@@ -242,7 +242,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
 
                     fileStream.Seek(size - 10, SeekOrigin.Current);
 
-                    var entry = new AFCFileEntry(LoadedAFCFile, offset, size + 8, wwiseVersionMaybe == 0x28, reader.Endian);
+                    var entry = new AFCFileEntry(LoadedAFCFile, offset, size + 8, wwiseVersionMaybe, reader.Endian);
                     entries.Add(entry);
                 }
             }
@@ -727,7 +727,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
 
                     if (w.ExtractRawFromSourceToFile(riffOutputFile))
                     {
-                        MemoryStream oggStream = AudioStreamHelper.ConvertRIFFToWwiseOGG(riffOutputFile, spExport.Export.FileRef.Game == MEGame.ME2);
+                        MemoryStream oggStream = AudioStreamHelper.ConvertRIFFToWwiseOGG(riffOutputFile, spExport.Export.FileRef.Game == MEGame.ME2, spExport.Export.FileRef.Game > MEGame.ME3);
                         //string outputOggPath = 
                         if (oggStream != null)// && File.Exists(outputOggPath))
                         {
@@ -761,7 +761,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
 
                     if (AudioStreamHelper.ExtractRawFromSourceToFile(riffOutputFile, afE.AFCPath, afE.DataSize, afE.Offset))
                     {
-                        MemoryStream oggStream = AudioStreamHelper.ConvertRIFFToWwiseOGG(riffOutputFile, afE.ME2);
+                        MemoryStream oggStream = AudioStreamHelper.ConvertRIFFToWwiseOGG(riffOutputFile, afE.ME2, afE.IsLE());
                         //string outputOggPath = 
                         if (oggStream != null)// && File.Exists(outputOggPath))
                         {

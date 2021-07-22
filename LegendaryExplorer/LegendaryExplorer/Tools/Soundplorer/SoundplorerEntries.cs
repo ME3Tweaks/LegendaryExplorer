@@ -14,7 +14,8 @@ namespace LegendaryExplorer.Tools.Soundplorer
 {
     public class AFCFileEntry : NotifyPropertyChangedBase
     {
-        public bool ME2;
+        public short WwiseVersionMaybe;
+        public bool ME2 => WwiseVersionMaybe == 0x28;
 
         private string _afcpath;
         private readonly Endian Endian;
@@ -67,12 +68,12 @@ namespace LegendaryExplorer.Tools.Soundplorer
             set => SetProperty(ref _displayString, value);
         }
 
-        public AFCFileEntry(string afcpath, int offset, int size, bool ME2, Endian endian)
+        public AFCFileEntry(string afcpath, int offset, int size, short wwiseVersion, Endian endian)
         {
             Endian = endian;
             AFCPath = afcpath;
             DataSize = size;
-            this.ME2 = ME2;
+            WwiseVersionMaybe = wwiseVersion;
             Offset = offset;
             SubText = "Calculating length";
             Icon = EFontAwesomeIcon.Solid_Spinner;
@@ -163,6 +164,28 @@ namespace LegendaryExplorer.Tools.Soundplorer
             }*/
             NeedsLoading = false;
             Icon = EFontAwesomeIcon.Solid_VolumeUp;
+        }
+
+        public bool IsLE()
+        {
+            using FileStream _rawRiff = new FileStream(AFCPath, FileMode.Open);
+            EndianReader reader = new EndianReader(_rawRiff) { Endian = Endian };
+            reader.Position = Offset;
+            //Parse RIFF header a bit
+            var riffTag = reader.ReadStringASCII(4); //RIFF
+            reader.ReadInt32();//size
+            var wavetype = reader.ReadStringASCII(4);
+            reader.ReadInt32();//'fmt '/
+            var fmtsize = reader.ReadInt32(); //data should directly follow fmt
+            var fmtPos = reader.Position;
+            var riffFormat = reader.ReadUInt16();
+            var channels = reader.ReadInt16();
+            var sampleRate = reader.ReadInt32();
+            var averageBPS = reader.ReadInt32();
+            var blockAlign = reader.ReadInt16();
+            var bitsPerSample = reader.ReadInt16();
+            var extraSize = reader.ReadInt16(); //gonna need some testing on this cause there's a lot of header formats for wwise
+            return (reader.ReadInt16() == 0x00);
         }
     }
 
