@@ -49,7 +49,7 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="35"/>
             </Grid.RowDefinitions>
-            <DockPanel  Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Background="WhiteSmoke" LastChildFill="True">
+            <DockPanel Name="TopBar"  Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Background="WhiteSmoke" LastChildFill="True">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" DockPanel.Dock="Right" >
                     <ToggleButton Command="{Binding FilterCommand}" IsChecked="{Binding ShowBoolStates}" Height="25" Width="25" Margin="5,0,5,0" ToolTip="Show Bool States">
                         <Image Source="/Tools/PlotDatabase/PlotTypeIcons/icon_bool.png" Height="12" Width="12"/>
@@ -83,6 +83,7 @@
                         <MenuItem Header="Add New Mod" Command="{Binding AddNewModCommand}" CommandParameter="NewMod" />
                         <MenuItem Header="Add New Mod Category" Command="{Binding AddModCategoryCommand}" CommandParameter="NewCategory" />
                         <MenuItem Header="Add New Game State" Command="{Binding AddModItemCommand}" CommandParameter="NewItem"/>
+                        <MenuItem Header="Edit Item" Command="{Binding EditModItemCommand}"/>
                         <MenuItem Header="Delete Item" Command="{Binding DeleteModItemCommand}"/>
                         <Separator/>
                         <MenuItem Header="Import Mod States from Excel" Command="{Binding FilterCommand}" IsEnabled="False">
@@ -106,7 +107,6 @@
                         <MenuItem Header="Show Journals" Command="{Binding FilterCommand}" IsCheckable="True" IsChecked="{Binding ShowJournal}"/>
                     </MenuItem>
                 </Menu>
-
             </DockPanel>
             <TabControl Name="GameTab" Grid.Column="0" Grid.Row="1" SelectedIndex="{Binding CurrentView, Mode=TwoWay}" SelectionChanged="NewTab_Selected">
                 <TabItem Header="LE3/ME3" TabIndex="3"  Width="80">
@@ -131,6 +131,7 @@
                                 <MenuItem Header="Add New Mod" Command="{Binding AddNewModCommand}" CommandParameter="NewMod" />
                                 <MenuItem Header="Add New Mod Category" Command="{Binding AddModCategoryCommand}" CommandParameter="NewCategory" />
                                 <MenuItem Header="Add New Game State" Command="{Binding AddModItemCommand}" CommandParameter="NewItem"/>
+                                <MenuItem Header="Edit Item" Command="{Binding EditModItemCommand}"/>
                                 <MenuItem Header="Delete Item" Command="{Binding DeleteModItemCommand}"/>
                             </ContextMenu>
                         </TreeView.ContextMenu>
@@ -158,6 +159,7 @@
                                 <MenuItem Header="Add New Mod" Command="{Binding AddNewModCommand}" CommandParameter="NewMod" />
                                 <MenuItem Header="Add New Mod Category" Command="{Binding AddModCategoryCommand}" CommandParameter="NewCategory" />
                                 <MenuItem Header="Add New Game State" Command="{Binding AddModItemCommand}" CommandParameter="NewItem"/>
+                                <MenuItem Header="Edit Item" Command="{Binding EditModItemCommand}"/>
                                 <MenuItem Header="Delete Item" Command="{Binding DeleteModItemCommand}"/>
                             </ContextMenu>
                         </TreeView.ContextMenu>
@@ -185,6 +187,7 @@
                                 <MenuItem Header="Add New Mod" Command="{Binding AddNewModCommand}" CommandParameter="NewMod" />
                                 <MenuItem Header="Add New Mod Category" Command="{Binding AddModCategoryCommand}" CommandParameter="NewCategory" />
                                 <MenuItem Header="Add New Game State" Command="{Binding AddModItemCommand}" CommandParameter="NewItem"/>
+                                <MenuItem Header="Edit Item" Command="{Binding EditModItemCommand}"/>
                                 <MenuItem Header="Delete Item" Command="{Binding DeleteModItemCommand}"/>
                             </ContextMenu>
                         </TreeView.ContextMenu>
@@ -286,7 +289,7 @@
                         </Grid.Background>
                         <Border Grid.Row="1" Grid.Column="1" BorderBrush="Black" BorderThickness="3"  Padding="5" Background="AliceBlue">
                             <StackPanel Background="AliceBlue">
-                                <TextBlock Text="Add a new mod" FontWeight="DemiBold" Margin="5"/>
+                                <TextBlock x:Name="newMod_Title" Text="Add a New Mod" FontWeight="DemiBold" Margin="5"/>
                                 <DockPanel>
                                     <TextBlock Text="Mod Name: " DockPanel.Dock="Left" Margin="3"/>
                                     <TextBox x:Name="newMod_Name" Width="300" HorizontalAlignment="Left" Margin="3" KeyUp="form_KeyUp"/>
@@ -318,7 +321,7 @@
                         </Grid.Background>
                         <Border Grid.Row="1" Grid.Column="1" BorderBrush="Black" BorderThickness="3" Padding="5" Background="AliceBlue">
                             <StackPanel Background="AliceBlue">
-                                <TextBlock Text="Add a New Category to a Mod" FontWeight="DemiBold" Margin="5"/>
+                                <TextBlock x:Name="newCat_Title" Text="Add a New Category to a Mod" FontWeight="DemiBold" Margin="5"/>
                                 <DockPanel>
                                     <TextBlock Text="Path: " DockPanel.Dock="Left" Margin="3"/>
                                     <TextBlock Text="{Binding SelectedNode.Path}" Width="300" HorizontalAlignment="Left" Margin="3"/>
@@ -354,7 +357,7 @@
                         </Grid.Background>
                         <Border Grid.Row="1" Grid.Column="1" BorderBrush="Black" BorderThickness="3" Padding="5" Background="AliceBlue">
                             <StackPanel Background="AliceBlue">
-                                <TextBlock Text="Add a New Game State to the Mod Database" FontWeight="DemiBold" Margin="5"/>
+                                <TextBlock x:Name="newItem_Title"  Text="Add a New Game State to the Mod Database" FontWeight="DemiBold" Margin="5"/>
                                 <DockPanel Margin="3">
                                     <TextBlock Text="Path: " DockPanel.Dock="Left" Margin="3" Width="40"/>
                                     <TextBlock Text="{Binding SelectedNode.Path}" Width="300" HorizontalAlignment="Left" Margin="3"/>
@@ -386,6 +389,36 @@
                                     <TextBlock Text="Code: " DockPanel.Dock="Left" Margin="3" Width="40"/>
                                     <TextBox x:Name="newItem_Code" Width="240" Height ="100" TextWrapping="Wrap" MaxLength="210" HorizontalAlignment="Left" Margin="3" KeyUp="form_KeyUp" ToolTip="Add the conditional code."/>
                                 </DockPanel>
+                                <DockPanel x:Name="newItem_ArgPnl" Margin="3" Visibility="Collapsed">
+                                    <TextBlock Text="Argument: " DockPanel.Dock="Left" Margin="3" Width="60"/>
+                                    <TextBox x:Name="newItem_Argument" Width="220" Height ="50" TextWrapping="Wrap" MaxLength="80" HorizontalAlignment="Left" Margin="3" KeyUp="form_KeyUp" ToolTip="Add the transition code."/>
+                                </DockPanel>
+                                <StackPanel x:Name="newItem_BoolPnl" Margin="3" Visibility="Collapsed">
+                                    <DockPanel>
+                                        <TextBlock Text="Sub-Type: " DockPanel.Dock="Left" Margin="3" Width="60"/>
+                                        <ComboBox x:Name="newItem_subtype" Width="240" HorizontalAlignment="Left" Margin="3" >
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="{Binding BindsDirectlyToSource=True}" FontStretch="Condensed" />
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <TextBlock Text="Achievement Id: " DockPanel.Dock="Left" Margin="3" Width="90"/>
+                                        <TextBox x:Name="newItem_achievementid" Width="190" HorizontalAlignment="Left" Margin="3" KeyUp="form_KeyUp" ToolTip="Add related Achievement Id."/>
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <TextBlock Text="Galaxy at War Id: " DockPanel.Dock="Left" Margin="3" Width="90"/>
+                                        <TextBox x:Name="newItem_galaxyatwar" Width="190" HorizontalAlignment="Left" Margin="3" KeyUp="form_KeyUp" ToolTip="Add related War Asset Id."/>
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <TextBlock Text="Gamer Variable: " DockPanel.Dock="Left" Margin="3" Width="90"/>
+                                        <TextBox x:Name="newItem_gamervariable" Width="190" HorizontalAlignment="Left" Margin="3" KeyUp="form_KeyUp" ToolTip="Add id of a variable."/>
+                                    </DockPanel>
+                                </StackPanel>
                                 <DockPanel Margin="3">
                                     <Button Width="50" DockPanel.Dock="Left" Margin="3" Command="{Binding ClickOkCommand}" CommandParameter="NewItem">
                                         <TextBlock Text="OK"/>

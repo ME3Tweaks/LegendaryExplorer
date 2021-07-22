@@ -88,6 +88,7 @@ namespace LegendaryExplorer.Tools.PlotManager
             PlotElementType.Flag
         };
         private bool updateTable = true;
+        private bool isEditing;
         public ICommand FilterCommand { get; set; }
         public ICommand CopyToClipboardCommand { get; set; }
         public ICommand RefreshLocalCommand { get; set; }
@@ -98,10 +99,12 @@ namespace LegendaryExplorer.Tools.PlotManager
         public ICommand ClickCancelCommand { get; set; }
         public ICommand AddModCategoryCommand { get; set; }
         public ICommand AddModItemCommand { get; set; }
+        public ICommand EditModItemCommand { get; set; }
         public ICommand DeleteModItemCommand { get; set; }
         public bool IsModRoot() => SelectedNode?.ElementId == 100000;
         public bool IsMod() => SelectedNode?.Type == PlotElementType.Mod;
         public bool CanAddCategory() => SelectedNode?.Type == PlotElementType.Mod || SelectedNode?.Type == PlotElementType.Category;
+        public bool CanEditItem() => SelectedNode?.ElementId > 100000;
         public bool CanDeleteItem() => SelectedNode?.ElementId > 100000 && SelectedNode.Children.IsEmpty();
         public bool CanAddItem() => SelectedNode?.Type == PlotElementType.Category;
         #endregion
@@ -164,17 +167,13 @@ namespace LegendaryExplorer.Tools.PlotManager
             AddModCategoryCommand = new GenericCommand(AddNewModCatData, CanAddCategory);
             AddModItemCommand = new GenericCommand(AddNewModItemData, CanAddItem);
             DeleteModItemCommand = new GenericCommand(DeleteNewModData, CanDeleteItem);
+            EditModItemCommand = new GenericCommand(EditNewModData, CanEditItem);
         }
+
         private void PlotDB_Loaded(object sender, RoutedEventArgs e)
         {
-            //var modItemTypes = new List<PlotElementType>() { PlotElementType.State,
-            //PlotElementType.SubState, PlotElementType.Integer, PlotElementType.Float, PlotElementType.Conditional, PlotElementType.Transition, PlotElementType.JournalGoal,
-            //PlotElementType.JournalItem, PlotElementType.JournalTask, PlotElementType.Consequence, PlotElementType.Flag };
-            //foreach(var t in modItemTypes)
-            //{
-            //    var info = t.ToString() + " | " + t.GetDescription();
-            //    newItemTypes.Add(info);
-            //}
+            var plotenum = Enum.GetNames(typeof(PlotElementType)).ToList();
+            newItem_subtype.ItemsSource = plotenum;
         }
 
         private void PlotDB_Closing(object sender, CancelEventArgs e)
@@ -470,12 +469,14 @@ namespace LegendaryExplorer.Tools.PlotManager
 
         private void AddNewModData()
         {
+            newMod_Title.Text = "Add a New Mod to the Database";
             GameTab.IsEnabled = false;
             NewModForm.Visibility = Visibility.Visible;
             newMod_Name.Focus();
         }
         private void AddNewModCatData()
         {
+            newCat_Title.Text = "Add a New Category to a Mod";
             GameTab.IsEnabled = false;
             NewCategoryForm.Visibility = Visibility.Visible;
             newCat_Name.Focus();
@@ -483,13 +484,71 @@ namespace LegendaryExplorer.Tools.PlotManager
 
         private void AddNewModItemData()
         {
+            newItem_Title.Text = "Add a New Game State to the Mod Database";
             GameTab.IsEnabled = false;
             NewItemForm.Visibility = Visibility.Visible;
             newItem_Name.Focus();
         }
 
+        private void EditNewModData()
+        {
+            if(SelectedNode == null || SelectedNode.ElementId <= 100000)
+            {
+                MessageBox.Show("Cannot edit Bioware plots.", "Plot Database");
+                return;
+            }
+            GameTab.IsEnabled = false;
+            isEditing = true;
+            switch(SelectedNode.Type)
+            {
+                case PlotElementType.Mod:
+                    newMod_Title.Text = "Edit Mod Title";
+                    newMod_Name.Text = SelectedNode.Label;
+                    NewModForm.Visibility = Visibility.Visible;
+                    newMod_Name.Focus();
+                    break;
+                case PlotElementType.Category:
+                    newCat_Title.Text = "Edit Category Title";
+                    var label = SelectedNode.Label;
+                    var path = SelectedNode.Parent.Path; // how to fix this??
+                    newCat_Name.Text = label;
+                    NewCategoryForm.Visibility = Visibility.Visible;
+                    newCat_Name.Focus();
+                    break;
+                default:
+                    newItem_Title.Text = "Edit Game State";
+                    newItem_Name.Text = SelectedNode.Label;
+                    newItem_Plot.Text = SelectedNode.PlotId.ToString();
+                    newItem_Type.SelectedIndex = newItemTypes.IndexOf(SelectedNode.Type);
+                    switch (SelectedNode.Type)
+                    {
+                        case PlotElementType.State:
+                        case PlotElementType.SubState:
+                            var state = SelectedNode as PlotBool;
+                            newItem_subtype.SelectedItem = state.SubType;
+                            newItem_achievementid.Text = state.AchievementID.ToString();
+                            newItem_galaxyatwar.Text = state.GalaxyAtWar.ToString();
+                            newItem_gamervariable.Text = state.GamerVariable.ToString();
+                            break;
+                        case PlotElementType.Conditional:
+                            var cnd = SelectedNode as PlotConditional;
+                            newItem_Code.Text = cnd.Code;
+                            break;
+                        case PlotElementType.Transition:
+                            var trans = SelectedNode as PlotTransition;
+                            newItem_Argument.Text = trans.Argument;
+                            break;
+                    }
+                    NewItemForm.Visibility = Visibility.Visible;
+                    newItem_Name.Focus();
+                    break;
+            }
+
+        }
+
         private void RevertPanelsToDefault()
         {
+            isEditing = false;
             GameTab.IsEnabled = true;
             NewModForm.Visibility = Visibility.Collapsed;
             NewCategoryForm.Visibility = Visibility.Collapsed;
@@ -499,6 +558,14 @@ namespace LegendaryExplorer.Tools.PlotManager
             newItem_Name.Clear();
             newItem_Plot.Clear();
             newItem_Type.SelectedIndex = 0;
+            newItem_Code.Clear();
+            newItem_Argument.Clear();
+            newItem_achievementid.Clear();
+            newItem_galaxyatwar.Clear();
+            newItem_gamervariable.Clear();
+            newItem_subtype.SelectedIndex = -1;
+            newItem_subtype.ItemsSource = null;
+
         }
         private void CancelAddData(object obj)
         {
@@ -523,8 +590,16 @@ namespace LegendaryExplorer.Tools.PlotManager
                         mdb = PlotDatabases.Le3ModDatabase;
                         break;
                 }
-                int newElementId = mdb.GetNextElementId();
+                int newElementId = SelectedNode.ElementId;
+                if (!isEditing)
+                {
+                    newElementId = mdb.GetNextElementId();
+                }
                 var parent = SelectedNode;
+                if(isEditing)
+                {
+                    parent = SelectedNode.Parent;
+                }
                 switch (command)
                 {
                     case "NewMod":
@@ -534,27 +609,36 @@ namespace LegendaryExplorer.Tools.PlotManager
                             MessageBox.Show($"Label is empty or contains a space.\nPlease add a valid label, using underscore '_' for spaces.", "Invalid Label");
                             return;
                         }
-                        var dlg = MessageBox.Show($"Do you want to add mod '{modname}' to the database?", "Modding Plots Database", MessageBoxButton.OKCancel);
-                        if (dlg == MessageBoxResult.Cancel)
+
+                        if (!isEditing)
                         {
-                            CancelAddData(command);
-                            return;
-                        }
-                        int parentId = 100000;
-                        parent = mdb.Organizational[parentId];
-                        var mods = parent.Children.ToList();
-                        foreach (var mod in mods)
-                        {
-                            if (mod.Label == modname)
+                            var dlg = MessageBox.Show($"Do you want to add mod '{modname}' to the database?", "Modding Plots Database", MessageBoxButton.OKCancel);
+                            if (dlg == MessageBoxResult.Cancel)
                             {
-                                MessageBox.Show($"Mod '{modname}' already exists in the database.  Please use another name.", "Invalid Name");
                                 CancelAddData(command);
                                 return;
                             }
+                            int parentId = 100000;
+                            parent = mdb.Organizational[parentId];
+                            var mods = parent.Children.ToList();
+                            foreach (var mod in mods)
+                            {
+                                if (mod.Label == modname)
+                                {
+                                    MessageBox.Show($"Mod '{modname}' already exists in the database.  Please use another name.", "Invalid Name");
+                                    CancelAddData(command);
+                                    return;
+                                }
+                            }
+                            var newModPE = new PlotElement(-1, newElementId, modname, PlotElementType.Mod, parentId, new List<PlotElement>(), parent);
+                            mdb.Organizational.Add(newElementId, newModPE);
+                            parent.Children.Add(newModPE);
                         }
-                        var newModPE = new PlotElement(-1, newElementId, modname, PlotElementType.Mod, parentId, new List<PlotElement>(), parent);
-                        mdb.Organizational.Add(newElementId, newModPE);
-                        parent.Children.Add(newModPE);
+                        else
+                        {
+                            mdb.Organizational[SelectedNode.ElementId].Label = newMod_Name.Text;
+                        }
+
                         NeedsSave = true;
                         break;
                     case "NewCategory":
@@ -563,9 +647,16 @@ namespace LegendaryExplorer.Tools.PlotManager
                             MessageBox.Show($"Label is empty or contains a space.\nPlease add a valid label, using underscore '_' for spaces.", "Invalid Label");
                             return;
                         }
-                        var newModCatPE = new PlotElement(-1, newElementId, newCat_Name.Text, PlotElementType.Category, parent.ElementId, new List<PlotElement>(), parent);
-                        parent.Children.Add(newModCatPE);
-                        mdb.Organizational.Add(newElementId, newModCatPE);
+                        if(!isEditing)
+                        {
+                            var newModCatPE = new PlotElement(-1, newElementId, newCat_Name.Text, PlotElementType.Category, parent.ElementId, new List<PlotElement>(), parent);
+                            parent.Children.Add(newModCatPE);
+                            mdb.Organizational.Add(newElementId, newModCatPE);
+                        }
+                        else
+                        {
+                            mdb.Organizational[SelectedNode.ElementId].Label = newCat_Name.Text;
+                        }
                         NeedsSave = true;
                         break;
                     case "NewItem":
@@ -587,62 +678,147 @@ namespace LegendaryExplorer.Tools.PlotManager
                             MessageBox.Show($"Plot Id needs to be a positive integer.  Please review.", "Invalid Plot Id");
                             return;
                         }
-                        var newModItemPE = new PlotElement(newPlotId, newElementId, nameItem, type, parent.ElementId, new List<PlotElement>(), parent);
+                        var newchildren = new List<PlotElement>();
+                        var newModItemPE = new PlotElement(newPlotId, newElementId, nameItem, type, parent.ElementId, newchildren, parent);
                         switch (type)
                         {
                             case PlotElementType.State:
                             case PlotElementType.SubState:
-                                if(PlotDatabases.FindPlotBoolByID(newPlotId, CurrentGame) != null)
+                                if (!isEditing || SelectedNode.PlotId != newPlotId)
                                 {
-                                    MessageBox.Show($"State '{newPlotId}' already exists in the database.  Please use another id.", "Invalid Id");
-                                    return;
+                                    if (PlotDatabases.FindPlotBoolByID(newPlotId, CurrentGame) != null)
+                                    {
+                                        MessageBox.Show($"State '{newPlotId}' already exists in the database.  Please use another id.", "Invalid Id");
+                                        return;
+                                    }
                                 }
-                                var newModBool = new PlotBool(newPlotId, newElementId, nameItem, type, parent.ElementId, new List<PlotElement>(), parent);
+                                else
+                                {
+                                    newModItemPE.Children.AddRange(SelectedNode.Children);
+                                    parent.Children.Remove(SelectedNode);
+                                    mdb.Bools.Remove(SelectedNode.PlotId);
+                                }
+                                var newModBool = new PlotBool(newPlotId, newElementId, nameItem, type, parent.ElementId, newchildren, parent);
                                 //subtype, gamervariable, achievementid, galaxyatwar
+                                if(newItem_subtype.SelectedItem != null)
+                                    newModBool.SubType = (PlotElementType)newItem_subtype.SelectedItem;
+
+                                if (!newItem_achievementid.Text.IsEmpty())
+                                {
+                                    if (!int.TryParse(newItem_achievementid.Text, out int newAchID))
+                                    {
+                                        MessageBox.Show($"Achievement Id needs to be an integer.  Please review.", "Invalid Achievement Id");
+                                        return;
+                                    }
+                                    newModBool.AchievementID = newAchID;
+                                }
+
+                                if (!newItem_galaxyatwar.Text.IsEmpty())
+                                {
+                                    if (!(int.TryParse(newItem_galaxyatwar.Text, out int newGAWID) && newGAWID > 0))
+                                    {
+                                        MessageBox.Show($"Galaxy at War Id needs to be a positive integer.  Please review.", "Invalid War Asset Id");
+                                        return;
+                                    }
+                                    newModBool.GalaxyAtWar = newGAWID;
+                                }
+                                if (!newItem_galaxyatwar.Text.IsEmpty())
+                                {
+                                    if (!(int.TryParse(newItem_gamervariable.Text, out int newGVarID) && newGVarID > 0))
+                                    {
+                                        MessageBox.Show($"Gamer Variable Id needs to be a positive integer.  Please review.", "Invalid Gamer Variable Id");
+                                        return;
+                                    }
+                                    newModBool.GamerVariable = newGVarID;
+                                }
                                 mdb.Bools.Add(newPlotId, newModBool);
                                 parent.Children.Add(newModBool);
                                 break;
                             case PlotElementType.Integer:
-                                if (PlotDatabases.FindPlotIntByID(newPlotId, CurrentGame) != null)
+                                if (!isEditing || SelectedNode.PlotId != newPlotId)
                                 {
-                                    MessageBox.Show($"Integer '{newPlotId}' already exists in the database.  Please use another id.", "Invalid Id");
-                                    return;
+                                    if (PlotDatabases.FindPlotIntByID(newPlotId, CurrentGame) != null)
+                                    {
+                                        MessageBox.Show($"Integer '{newPlotId}' already exists in the database.  Please use another id.", "Invalid Id");
+                                        return;
+                                    }
+                                }
+                                if(isEditing)
+                                {
+                                    newModItemPE.Children.AddRange(SelectedNode.Children);
+                                    parent.Children.Remove(SelectedNode);
+                                    mdb.Ints.Remove(SelectedNode.PlotId);
                                 }
                                 mdb.Ints.Add(newPlotId, newModItemPE);
                                 parent.Children.Add(newModItemPE);
                                 break;
                             case PlotElementType.Float:
-                                if (PlotDatabases.FindPlotFloatByID(newPlotId, CurrentGame) != null)
+                                if (!isEditing || SelectedNode.PlotId != newPlotId)
                                 {
-                                    MessageBox.Show($"Float '{newPlotId}' already exists in the database.  Please use another id.", "Invalid Id");
-                                    return;
+                                    if (PlotDatabases.FindPlotFloatByID(newPlotId, CurrentGame) != null)
+                                    {
+                                        MessageBox.Show($"Float '{newPlotId}' already exists in the database.  Please use another id.", "Invalid Id");
+                                        return;
+                                    }
+                                }
+                                if(isEditing)
+                                {
+                                    newModItemPE.Children.AddRange(SelectedNode.Children);
+                                    parent.Children.Remove(SelectedNode);
+                                    mdb.Floats.Remove(SelectedNode.PlotId);
                                 }
                                 mdb.Floats.Add(newPlotId, newModItemPE);
                                 parent.Children.Add(newModItemPE);
                                 break;
                             case PlotElementType.Conditional:
-                                if (PlotDatabases.FindPlotConditionalByID(newPlotId, CurrentGame) != null)
+                                if (!isEditing || SelectedNode.PlotId != newPlotId)
                                 {
-                                    MessageBox.Show($"Conditional '{newPlotId}' already exists in the database.  Please use another id.", "Invalid Id");
-                                    return;
+                                    if (PlotDatabases.FindPlotConditionalByID(newPlotId, CurrentGame) != null)
+                                    {
+                                        MessageBox.Show($"Conditional '{newPlotId}' already exists in the database.  Please use another id.", "Invalid Id");
+                                        return;
+                                    }
                                 }
+                                if (isEditing)
+                                {
+                                    newModItemPE.Children.AddRange(SelectedNode.Children);
+                                    parent.Children.Remove(SelectedNode);
+                                    mdb.Conditionals.Remove(SelectedNode.PlotId);
+                                }
+
                                 var newModCnd = new PlotConditional(newPlotId, newElementId, nameItem, type, parent.ElementId, new List<PlotElement>(), parent);
                                 newModCnd.Code = newItem_Code.Text;
                                 mdb.Conditionals.Add(newPlotId, newModCnd);
                                 parent.Children.Add(newModCnd);
                                 break;
                             case PlotElementType.Transition:
-                                if (PlotDatabases.FindPlotTransitionByID(newPlotId, CurrentGame) != null)
+                                if (!isEditing || SelectedNode.PlotId != newPlotId)
                                 {
-                                    MessageBox.Show($"Transition '{newPlotId}' already exists in the database.  Please use another id.", "Invalid Id");
-                                    return;
+                                    if (PlotDatabases.FindPlotTransitionByID(newPlotId, CurrentGame) != null)
+                                    {
+                                        MessageBox.Show($"Transition '{newPlotId}' already exists in the database.  Please use another id.", "Invalid Id");
+                                        return;
+                                    }
                                 }
+                                if (isEditing)
+                                {
+                                    newModItemPE.Children.AddRange(SelectedNode.Children);
+                                    parent.Children.Remove(SelectedNode);
+                                    mdb.Transitions.Remove(SelectedNode.PlotId);
+                                }
+
                                 var newModTrans = new PlotTransition(newPlotId, newElementId, nameItem, type, parent.ElementId, new List<PlotElement>(), parent);
-                                //argument
+                                newModTrans.Argument = newItem_Argument.Text;
                                 mdb.Transitions.Add(newPlotId, newModTrans);
                                 parent.Children.Add(newModTrans);
                                 break;
                             default:   //PlotElementType.JournalGoal, PlotElementType.JournalItem, PlotElementType.JournalTask, PlotElementType.Consequence, PlotElementType.Flag
+                                if (isEditing)
+                                {
+                                    newModItemPE.Children.AddRange(SelectedNode.Children);
+                                    parent.Children.Remove(SelectedNode);
+                                    mdb.Conditionals.Remove(SelectedNode.ElementId);
+                                }
                                 mdb.Organizational.Add(newElementId, newModItemPE);
                                 parent.Children.Add(newModItemPE);
                                 break;
@@ -724,14 +900,20 @@ namespace LegendaryExplorer.Tools.PlotManager
                 switch(form.Name)
                 {
                     case "newMod_Name":
-                        AddDataToModDatabase("newMod");
+                        AddDataToModDatabase("NewMod");
                         break;
                     case "newCat_Name":
-                        AddDataToModDatabase("newCategory");
+                        AddDataToModDatabase("NewCategory");
                         break;
                     case "newItem_Plot":
                     case "newItem_Code":
-                        AddDataToModDatabase("newItem");
+                    case "newItem_Argument":
+                    case "newItem_achievementid":
+                    case "newItem_Type":
+                    case "newItem_subtype":
+                    case "newItem_galaxyatwar":
+                    case "newItem_gamervariable":
+                        AddDataToModDatabase("NewItem");
                         break;
                     default:
                         break;
@@ -742,18 +924,6 @@ namespace LegendaryExplorer.Tools.PlotManager
             {
                 switch (form.Name)
                 {
-                    case "newMod_Name":
-                        CancelAddData("newMod");
-                        break;
-                    case "newCat_Name":
-                        CancelAddData("newCategory");
-                        break;
-                    case "newItem_Name":
-                        CancelAddData("newItem");
-                        break;
-                    case "newItem_Plot":
-                        CancelAddData("newItem");
-                        break;
                     default:
                         CancelAddData("generic");
                         break;
@@ -766,20 +936,22 @@ namespace LegendaryExplorer.Tools.PlotManager
             if(selection != null)
             {
                 newItem_Plotlbl.Text = "Plot Id: ";
-                newItem_CndPnl.Visibility = Visibility.Hidden;
+                newItem_CndPnl.Visibility = Visibility.Collapsed;
+                newItem_ArgPnl.Visibility = Visibility.Collapsed;
+                newItem_BoolPnl.Visibility = Visibility.Collapsed;
                 switch ((PlotElementType)newItem_Type.SelectedItem)
                 {
                     case PlotElementType.State:
                     case PlotElementType.SubState:
-
-
+                        newItem_BoolPnl.Visibility = Visibility.Visible;
                         break;
                     case PlotElementType.Conditional:
-                        newItem_Plotlbl.Text = "Conditional: ";
+                        newItem_Plotlbl.Text = "Id: ";
                         newItem_CndPnl.Visibility = Visibility.Visible;
                         break;
                     case PlotElementType.Transition:
-                        newItem_Plotlbl.Text = "Transition: ";
+                        newItem_Plotlbl.Text = "Id: ";
+                        newItem_ArgPnl.Visibility = Visibility.Visible;
                         break;
                     default:
                         break;
