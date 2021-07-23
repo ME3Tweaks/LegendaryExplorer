@@ -675,6 +675,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
             Task.Run(() =>
             {
                 var tlkfiles = Directory.EnumerateFiles(LE1Directory.DefaultGamePath, "Startup_*", SearchOption.AllDirectories).ToList();
+                tlkfiles.AddRange(Directory.EnumerateFiles(LE1Directory.DLCPath, "*Tlk*", SearchOption.AllDirectories).ToList());
                 var tlks = new List<LoadedTLK>();
                 foreach (string tlk in tlkfiles)
                 {
