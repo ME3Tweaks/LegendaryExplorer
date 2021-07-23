@@ -206,6 +206,14 @@
                             </MultiDataTrigger>
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="EnumProperty" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Interpreter_Colorize)}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#390268"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#66A972ff"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding RawPropertyType}" Value="BioMask4Property" />
                                     <Condition Binding="{Binding Path=(appsettings:Settings.Interpreter_Colorize)}" Value="True" />
                                 </MultiDataTrigger.Conditions>

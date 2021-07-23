@@ -42,7 +42,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         //same type and are not distinguishable without changing to another export, wasting a lot of time.
         //values are the class of object value being parsed
         public static readonly string[] ExportToStringConverters = { "LevelStreamingKismet", "StaticMeshComponent", "ParticleSystemComponent", "DecalComponent", "LensFlareComponent" };
-        public static readonly string[] IntToStringConverters = { "WwiseEvent", "WwiseBank", "BioSeqAct_PMExecuteTransition", "BioSeqAct_PMExecuteConsequence", "BioSeqAct_PMCheckState", "BioSeqAct_PMCheckConditional", "BioSeqVar_StoryManagerInt", 
+        public static readonly string[] IntToStringConverters = { "WwiseEvent", "WwiseBank", "BioSeqAct_PMExecuteTransition", "BioSeqAct_PMExecuteConsequence", "BioSeqAct_PMCheckState", "BioSeqAct_PMCheckConditional", "BioSeqVar_StoryManagerInt",
                                                                 "BioSeqVar_StoryManagerFloat", "BioSeqVar_StoryManagerBool", "BioSeqVar_StoryManagerStateId", "SFXSceneShopNodePlotCheck", "BioWorldInfo" };
         public ObservableCollectionExtended<IndexedName> ParentNameList { get; private set; }
 
@@ -550,7 +550,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
 
         private bool CanExpandOrCollapseChildren() => SelectedItem is UPropertyTreeViewEntry tvi && tvi.ChildrenProperties.Count > 0;
-        private bool CanSortChildren() => SelectedItem is UPropertyTreeViewEntry {HasTooManyChildrenToDisplay: false} tvi && tvi.ChildrenProperties.Count > 0;
+        private bool CanSortChildren() => SelectedItem is UPropertyTreeViewEntry { HasTooManyChildrenToDisplay: false } tvi && tvi.ChildrenProperties.Count > 0;
 
 
         private void CollapseChildren()
@@ -1028,7 +1028,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             parsedValue = PlotDatabases.FindPlotConditionalByID(ip.Value, parsingExport.Game)?.Path;
                         }
 
-                        if (parent.Property is StructProperty {StructType: "Rotator"})
+                        if (parent.Property is StructProperty { StructType: "Rotator" })
                         {
                             parsedValue = $"({ip.Value.UnrealRotationUnitsToDegrees():0.0######} degrees)";
                         }
@@ -1285,45 +1285,45 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             switch (e.PropertyName)
             {
                 case "ColorStructCode" when uptvi.Property is StructProperty { StructType: "Color" } colorStruct:
-                {
-                    uptvi.ChildrenProperties.ClearEx();
-                    foreach (var subProp in colorStruct.Properties)
                     {
-                        GenerateUPropertyTreeForProperty(subProp, uptvi, uptvi.AttachedExport, PropertyChangedHandler: OnUPropertyTreeViewEntry_PropertyChanged);
-                    }
-                    var a = colorStruct.GetProp<ByteProperty>("A");
-                    var r = colorStruct.GetProp<ByteProperty>("R");
-                    var g = colorStruct.GetProp<ByteProperty>("G");
-                    var b = colorStruct.GetProp<ByteProperty>("B");
+                        uptvi.ChildrenProperties.ClearEx();
+                        foreach (var subProp in colorStruct.Properties)
+                        {
+                            GenerateUPropertyTreeForProperty(subProp, uptvi, uptvi.AttachedExport, PropertyChangedHandler: OnUPropertyTreeViewEntry_PropertyChanged);
+                        }
+                        var a = colorStruct.GetProp<ByteProperty>("A");
+                        var r = colorStruct.GetProp<ByteProperty>("R");
+                        var g = colorStruct.GetProp<ByteProperty>("G");
+                        var b = colorStruct.GetProp<ByteProperty>("B");
 
-                    var byteProvider = (ReadOptimizedByteProvider)Interpreter_Hexbox.ByteProvider;
-                    byteProvider.WriteByte(a.ValueOffset, a.Value);
-                    byteProvider.WriteByte(r.ValueOffset, r.Value);
-                    byteProvider.WriteByte(g.ValueOffset, g.Value);
-                    byteProvider.WriteByte(b.ValueOffset, b.Value);
-                    Interpreter_Hexbox.Refresh();
-                    break;
-                }
+                        var byteProvider = (ReadOptimizedByteProvider)Interpreter_Hexbox.ByteProvider;
+                        byteProvider.WriteByte(a.ValueOffset, a.Value);
+                        byteProvider.WriteByte(r.ValueOffset, r.Value);
+                        byteProvider.WriteByte(g.ValueOffset, g.Value);
+                        byteProvider.WriteByte(b.ValueOffset, b.Value);
+                        Interpreter_Hexbox.Refresh();
+                        break;
+                    }
                 case "ColorStructCode" when uptvi.Property is StructProperty { StructType: "LinearColor" } linColStruct:
-                {
-                    uptvi.ChildrenProperties.ClearEx();
-                    foreach (var subProp in linColStruct.Properties)
                     {
-                        GenerateUPropertyTreeForProperty(subProp, uptvi, uptvi.AttachedExport, PropertyChangedHandler: OnUPropertyTreeViewEntry_PropertyChanged);
-                    }
-                    var a = linColStruct.GetProp<FloatProperty>("A");
-                    var r = linColStruct.GetProp<FloatProperty>("R");
-                    var g = linColStruct.GetProp<FloatProperty>("G");
-                    var b = linColStruct.GetProp<FloatProperty>("B");
+                        uptvi.ChildrenProperties.ClearEx();
+                        foreach (var subProp in linColStruct.Properties)
+                        {
+                            GenerateUPropertyTreeForProperty(subProp, uptvi, uptvi.AttachedExport, PropertyChangedHandler: OnUPropertyTreeViewEntry_PropertyChanged);
+                        }
+                        var a = linColStruct.GetProp<FloatProperty>("A");
+                        var r = linColStruct.GetProp<FloatProperty>("R");
+                        var g = linColStruct.GetProp<FloatProperty>("G");
+                        var b = linColStruct.GetProp<FloatProperty>("B");
 
-                    var byteProvider = (ReadOptimizedByteProvider)Interpreter_Hexbox.ByteProvider;
-                    byteProvider.WriteBytes(a.ValueOffset, BitConverter.GetBytes(a.Value));
-                    byteProvider.WriteBytes(r.ValueOffset, BitConverter.GetBytes(r.Value));
-                    byteProvider.WriteBytes(g.ValueOffset, BitConverter.GetBytes(g.Value));
-                    byteProvider.WriteBytes(b.ValueOffset, BitConverter.GetBytes(b.Value));
-                    Interpreter_Hexbox.Refresh();
-                    break;
-                }
+                        var byteProvider = (ReadOptimizedByteProvider)Interpreter_Hexbox.ByteProvider;
+                        byteProvider.WriteBytes(a.ValueOffset, BitConverter.GetBytes(a.Value));
+                        byteProvider.WriteBytes(r.ValueOffset, BitConverter.GetBytes(r.Value));
+                        byteProvider.WriteBytes(g.ValueOffset, BitConverter.GetBytes(g.Value));
+                        byteProvider.WriteBytes(b.ValueOffset, BitConverter.GetBytes(b.Value));
+                        Interpreter_Hexbox.Refresh();
+                        break;
+                    }
             }
         }
 
@@ -1367,7 +1367,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     if (name == "m_nIndex") return PlotDatabases.FindPlotTransitionByID(value, export.Game)?.Path;
                     break;
                 case "BioWorldInfo":
-                    if(name == "Conditional") return PlotDatabases.FindPlotConditionalByID(value, export.Game)?.Path;
+                    if (name == "Conditional") return PlotDatabases.FindPlotConditionalByID(value, export.Game)?.Path;
                     break;
                 case "SFXSceneShopNodePlotCheck":
                     if (name == "m_nIndex" && !export.IsDefaultObject)
@@ -2619,7 +2619,25 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             set => SetProperty(ref _parsedValue, value);
         }
 
-        public string RawPropertyType => Property != null ? Property.PropType.ToString() : "Currently loaded export";
+
+        /// <summary>
+        /// For UI binding only (as it can return EnumProperty)
+        /// </summary>
+        public string RawPropertyType
+        {
+            get
+            {
+                if (Property is EnumProperty ep)
+                {
+                    return @"EnumProperty";
+                }
+                if (Property != null)
+                {
+                    return Property.PropType.ToString();
+                }
+                return "Currently loaded export";
+            }
+        }
 
         public string PropertyType
         {
@@ -2663,7 +2681,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             }
 
                         case EnumProperty ep:
-                            return $"ByteProperty(Enum): {ep.EnumType}";
+                            return $"EnumProperty ({ep.EnumType})";
                         default:
                             return Property.PropType.ToString();
                     }
