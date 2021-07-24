@@ -401,7 +401,11 @@ namespace LegendaryExplorer.Tools.PackageEditor
             }).ContinueWithOnUIThread(foundCandidates =>
             {
                 IsBusy = false;
-                if (!foundCandidates.Result.Any()) MessageBox.Show(this, "Cannot find any candidates for this file!");
+                if (!foundCandidates.Result.Any())
+                {
+                    MessageBox.Show(this, "Cannot find any candidates for this file!");
+                    return;
+                }
 
                 var choices = foundCandidates.Result.DiskFiles.ToList(); //make new list
                 choices.AddRange(foundCandidates.Result.SFARPackageStreams.Select(x => x.Key));
