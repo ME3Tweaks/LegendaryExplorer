@@ -35,6 +35,17 @@
                 <TextBlock Text="{Binding }" />
             </DockPanel>
         </DataTemplate>
+        <Style x:Key="LibraryTreeViewItemStyle"
+               TargetType="{x:Type TreeViewItem}">
+            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+            <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+            <Setter Property="FontWeight" Value="Normal" />
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="FontWeight" Value="Bold" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding Key="S" Modifiers="Control"  Command="{Binding SaveLocalCommand}"/>
@@ -111,6 +122,7 @@
                 <TabItem Header="LE3/ME3" TabIndex="3"  Width="80">
                     <TreeView x:Name="Tree_BW3"
                               ItemsSource="{Binding Path=RootNodes3}"
+                              ItemContainerStyle="{StaticResource LibraryTreeViewItemStyle}"
                               SelectedItemChanged="Tree_BW3_SelectedItemChanged"
                               VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
                         <TreeView.Resources>
@@ -139,6 +151,7 @@
                 <TabItem Header="LE2/ME2" TabIndex="2" Width="80">
                     <TreeView x:Name="Tree_BW2"
                               ItemsSource="{Binding Path=RootNodes2}"
+                              ItemContainerStyle="{StaticResource LibraryTreeViewItemStyle}"
                               SelectedItemChanged="Tree_BW2_SelectedItemChanged"
                               VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
                         <TreeView.Resources>
@@ -167,6 +180,7 @@
                 <TabItem Header="LE1/ME1" TabIndex="1" Width="80">
                     <TreeView x:Name="Tree_BW1"
                               ItemsSource="{Binding Path=RootNodes1}"
+                              ItemContainerStyle="{StaticResource LibraryTreeViewItemStyle}"
                               SelectedItemChanged="Tree_BW1_SelectedItemChanged"
                               VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
                         <TreeView.Resources>

@@ -124,7 +124,9 @@ namespace LegendaryExplorer.Tools.PlotManager
                 var mods3 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE3, false);
                 rootlist3.Add(mods3[100000]);
             }
-            dictionary3.Add(0, new PlotElement(0, 0, "Legendary Edition - Mass Effect 3 Plots", PlotElementType.None, -1, rootlist3));
+            dictionary3.Add(0, new PlotElement(0, 0, "Legendary Edition - Mass Effect 3 Plots", PlotElementType.None, -1, rootlist3, null));
+            dictionary3[0].Children[0].Parent = dictionary3[0];
+            dictionary3[0].Children[1].Parent = dictionary3[0];
             RootNodes3.Add(dictionary3[0]);
 
             RootNodes2.ClearEx();
@@ -136,7 +138,9 @@ namespace LegendaryExplorer.Tools.PlotManager
                 var mods2 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE2, false);
                 rootlist2.Add(mods2[100000]);
             }
-            dictionary2.Add(0, new PlotElement(0, 0, "Legendary Edition - Mass Effect 2 Plots", PlotElementType.None, -1, rootlist2));
+            dictionary2.Add(0, new PlotElement(0, 0, "Legendary Edition - Mass Effect 2 Plots", PlotElementType.None, 0, rootlist2, null));
+            dictionary2[0].Children[0].Parent = dictionary2[0];
+            dictionary2[0].Children[1].Parent = dictionary2[0];
             RootNodes2.Add(dictionary2[0]);
 
             RootNodes1.ClearEx();
@@ -148,10 +152,11 @@ namespace LegendaryExplorer.Tools.PlotManager
                 var mods1 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE1, false);
                 rootlist1.Add(mods1[100000]);
             }
-            dictionary1.Add(0, new PlotElement(0, 0, "Legendary Edition - Mass Effect 1 Plots", PlotElementType.None, -1, rootlist1));
+            dictionary1.Add(0, new PlotElement(0, 0, "Legendary Edition - Mass Effect 1 Plots", PlotElementType.None, -1, rootlist1, null));
+            dictionary3[0].Children[0].Parent = dictionary3[0];
+            dictionary3[0].Children[1].Parent = dictionary3[0];
             RootNodes1.Add(dictionary1[0]);
             Focus();
-            SelectedNode = dictionary3[1];
         }
 
         private void LoadCommands()
@@ -174,6 +179,8 @@ namespace LegendaryExplorer.Tools.PlotManager
         {
             var plotenum = Enum.GetNames(typeof(PlotElementType)).ToList();
             newItem_subtype.ItemsSource = plotenum;
+            SelectedNode = RootNodes3[0];
+            SetFocusByPlotElement(RootNodes3[0]);
         }
 
         private void PlotDB_Closing(object sender, CancelEventArgs e)
@@ -245,7 +252,7 @@ namespace LegendaryExplorer.Tools.PlotManager
             }
         }
 
-        private void AddPlotsToList(PlotElement plotElement, List<PlotElement> elementList)
+        private void AddPlotsToList(PlotElement plotElement, List<PlotElement> elementList, bool addFolders = false)
         {
             if (plotElement != null)
             {
@@ -255,6 +262,8 @@ namespace LegendaryExplorer.Tools.PlotManager
                     case PlotElementType.Region:
                     case PlotElementType.FlagGroup:
                     case PlotElementType.None:
+                        if(!addFolders)
+                            elementList.Add(plotElement);
                         break;
                     default:
                         elementList.Add(plotElement);
@@ -292,18 +301,100 @@ namespace LegendaryExplorer.Tools.PlotManager
         }
         private void NewTab_Selected(object sender, SelectionChangedEventArgs e)
         {
-            switch (CurrentView)
+            if(e.RemovedItems.Count != 0)
             {
-                case 1:
-                    CurrentGame = MEGame.LE2;
+                switch (CurrentView)
+                {
+                    case 1:
+                        CurrentGame = MEGame.LE2;
+                        if (Tree_BW2.SelectedItem == null)
+                        {
+                            SelectedNode = RootNodes2[0];
+                            //Tree_BW2.SelectItem(RootNodes2[0]);  //Not a treeviewItem
+                            SetFocusByPlotElement(RootNodes2[0]);
+                            //SetFocusByElementId(0); Won't work because scan is from zero element up
+                        }
+                        break;
+                    case 2:
+                        CurrentGame = MEGame.LE1;
+                        //if (Tree_BW1.SelectedItem == null)
+                            //SetFocusByPlotElement(RootNodes1[0]);
+                        break;
+                    default:
+                        CurrentGame = MEGame.LE3;
+                        //if (Tree_BW3.SelectedItem == null)
+                            //SetFocusByPlotElement(RootNodes3[0]);
+                        break;
+                }
+            }
+        }
+
+        #endregion
+
+        #region TreeView
+
+        private void SetFocusByPlotElement(PlotElement pe)
+        {
+            var tree = new TreeView();
+            switch (CurrentGame)
+            {
+                case MEGame.LE2:
+                    tree = Tree_BW2;
                     break;
-                case 2:
-                    CurrentGame = MEGame.LE1;
+                case MEGame.LE1:
+                    tree = Tree_BW1;
                     break;
                 default:
-                    CurrentGame = MEGame.LE3;
+                    tree = Tree_BW3;
                     break;
             }
+
+            var tvi = tree.ItemContainerGenerator.ContainerFromItemRecursive(pe); 
+
+            if (tvi != null && tvi is TreeViewItem)
+            {
+                tvi.IsSelected = true;
+                tvi.IsExpanded = true;
+            }
+            else //temp test
+            {
+                tvi = FindTviFromObjectRecursive(tree, pe); //This does the same as above but can look inside to debug
+                if (tvi != null && tvi is TreeViewItem)
+                {
+                    tvi.IsSelected = true;
+                    tvi.IsExpanded = true;
+                }
+            }
+        }
+
+        private static TreeViewItem FindTviFromObjectRecursive(ItemsControl ic, object o)
+        {
+
+            //Search for the object model in first level children (recursively)
+            TreeViewItem tvi = ic.ItemContainerGenerator.ContainerFromItem(o) as TreeViewItem;
+            if (tvi != null) return tvi;
+            //Loop through user object models
+            if (ic != null)
+            {
+                foreach (object i in ic.Items)
+                {
+                    //Get the TreeViewItem associated with the iterated object model
+                    TreeViewItem tvi2 = ic.ItemContainerGenerator.ContainerFromItem(i) as TreeViewItem;
+                    if (tvi2 == null)
+                    {
+                        var a = i;
+                        Console.WriteLine($"tvi not found. {a.ToString()}");
+                    }
+                    else
+                    {
+                        tvi = FindTviFromObjectRecursive(tvi2, o);
+
+                    }
+                    if (tvi != null) return tvi;
+                }
+            }
+
+            return null;
         }
 
 
