@@ -534,7 +534,7 @@ namespace LegendaryExplorer
 #if DEBUG
             set.Add(new Tool
             {
-                name = "Plot Manager",
+                name = "Plot Database",
                 type = typeof(Tools.PlotManager.PlotManagerWindow),
                 icon = Application.Current.FindResource("iconPlotDatabase") as ImageSource,
                 open = () =>
@@ -542,9 +542,9 @@ namespace LegendaryExplorer
                     var plotMan = new Tools.PlotManager.PlotManagerWindow();
                     plotMan.Show();
                 },
-                tags = new List<string> { "developer", "codex", "state transition", "quest", "plots" },
+                tags = new List<string> { "developer", "codex", "state transition", "quest", "plots", "database", "conditional" },
                 category = "Core Editors",
-                description = "Plot Manager is used to view databases of plots from all three games."
+                description = "Plot Database is used to view and create databases of plot elements from all three games. This tool is for reference only, and affects nothing in game."
             });
 #endif
             set.Add(new Tool

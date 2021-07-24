@@ -1,4 +1,8 @@
-﻿#if WINDOWS
+﻿using System;
+using System.Collections.ObjectModel;
+using System.IO;
+
+#if WINDOWS
 using Microsoft.Win32;
 using System;
 using System.Collections.ObjectModel;

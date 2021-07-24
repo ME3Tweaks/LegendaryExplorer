@@ -579,7 +579,7 @@ namespace LegendaryExplorerCore.Textures
                 case PixelFormat.DXT3:
                 case PixelFormat.DXT5:
                 case PixelFormat.ATI2:
-                    tempData = convertRawToARGB(src, w, h, srcFormat);
+                    tempData = convertRawToARGB(src, ref w, ref h, srcFormat);
                     if (dstFormat is PixelFormat.BC5)
                     {
                         // Swap R and G
@@ -599,17 +599,17 @@ namespace LegendaryExplorerCore.Textures
                         tempData = Image.compressMipmap(dstFormat, tempData, w, h, dxt1HasAlpha, dxt1Threshold);
                     break;
                 case PixelFormat.ARGB:
-                    tempData = convertRawToARGB(src, w, h, srcFormat);
+                    tempData = convertRawToARGB(src, ref w, ref h, srcFormat);
                     break;
                 case PixelFormat.RGB:
                     tempData = convertRawToRGB(src, w, h, srcFormat);
                     break;
                 case PixelFormat.V8U8:
-                    tempData = convertRawToARGB(src, w, h, srcFormat);
+                    tempData = convertRawToARGB(src, ref w, ref h, srcFormat);
                     tempData = ARGBtoV8U8(tempData, w, h);
                     break;
                 case PixelFormat.G8:
-                    tempData = convertRawToARGB(src, w, h, srcFormat);
+                    tempData = convertRawToARGB(src, ref w, ref h, srcFormat);
                     tempData = ARGBtoG8(tempData, w, h);
                     break;
                 case PixelFormat.BC5:
