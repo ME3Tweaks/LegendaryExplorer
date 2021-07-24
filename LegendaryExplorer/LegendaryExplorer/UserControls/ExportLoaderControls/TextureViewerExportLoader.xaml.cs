@@ -52,7 +52,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public bool SetAlphaToBlack
         {
             get => _setAlphaToBlack;
-            set => SetProperty(ref _setAlphaToBlack, value);
+            set
+            {
+                SetProperty(ref _setAlphaToBlack, value);
+                if (Mips_ListBox.SelectedIndex >= 0)
+                {
+                    LoadMip(MipList[Mips_ListBox.SelectedIndex]); // reload
+                }
+            }
         }
 
         private Visibility _cannotShowTextureTextVisibility;
