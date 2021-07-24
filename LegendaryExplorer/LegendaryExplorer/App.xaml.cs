@@ -65,8 +65,6 @@ namespace LegendaryExplorer
                 singleInstance.PassArgumentsToFirstInstance(e.Args);
                 Shutdown(0);
             }
-
-
         }
 
         /// <summary>

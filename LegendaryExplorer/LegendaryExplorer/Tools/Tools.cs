@@ -28,6 +28,7 @@ using Newtonsoft.Json;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Packages;
 using System.Text;
+using LegendaryExplorer.Tools.ClassViewer;
 
 namespace LegendaryExplorer
 {
@@ -156,6 +157,22 @@ namespace LegendaryExplorer
                 category2 = "Utilities",
                 description = "Animation Viewer allows you to preview any animation in Mass Effect 3"
             });
+
+#if DEBUG
+            set.Add(new Tool
+            {
+                name = "Class Heirarchy Viewer",
+                type = typeof(Tools.AnimationViewer.AnimationViewerWindow),
+                icon = Application.Current.FindResource("iconAnimViewer") as ImageSource,
+                open = () =>
+                {
+                    new ClassViewerWindow().Show();
+                },
+                tags = new List<string> { "utility", "class", "property" },
+                category = "Utilities",
+                description = "Class Heirarchy Viewer shows you how classes and properties inherit from each other, and where some override."
+            });
+#endif
             set.Add(new Tool
             {
                 name = "Live Level Editor",
@@ -196,19 +213,19 @@ namespace LegendaryExplorer
                 category2 = "Utilities",
                 description = "AFC Compactor can compact your ME2 or ME3 Audio File Cache (AFC) files by removing unreferenced chunks. It also can be used to reduce or remove AFC dependencies so users do not have to have DLC installed for certain audio to work.",
             });
-//            set.Add(new Tool
-//            {
-//                name = "ASI Manager",
-//                type = typeof(ASI.ASIManager),
-//                icon = Application.Current.FindResource("iconASIManager") as ImageSource,
-//                open = () =>
-//                {
-//                    (new ASI.ASIManager()).Show();
-//                },
-//                tags = new List<string> { "utility", "asi", "debug", "log" },
-//                category = "Debugging",
-//                description = "ASI Manager allows you to install and uninstall ASI mods for all three Mass Effect Trilogy games. ASI mods allow you to run native mods that allow you to do things such as kismet logging or function call monitoring."
-//            });
+            //            set.Add(new Tool
+            //            {
+            //                name = "ASI Manager",
+            //                type = typeof(ASI.ASIManager),
+            //                icon = Application.Current.FindResource("iconASIManager") as ImageSource,
+            //                open = () =>
+            //                {
+            //                    (new ASI.ASIManager()).Show();
+            //                },
+            //                tags = new List<string> { "utility", "asi", "debug", "log" },
+            //                category = "Debugging",
+            //                description = "ASI Manager allows you to install and uninstall ASI mods for all three Mass Effect Trilogy games. ASI mods allow you to run native mods that allow you to do things such as kismet logging or function call monitoring."
+            //            });
             set.Add(new Tool
             {
                 name = "Audio Localizer",
@@ -223,19 +240,19 @@ namespace LegendaryExplorer
                 category2 = "Utilities",
                 description = "Audio Localizer allows you to copy the afc offsets and filenames from localized files to your mods LOC_INT files."
             });
-//            set.Add(new Tool
-//            {
-//                name = "Bik Movie Extractor",
-//                type = typeof(BIKExtract),
-//                icon = Application.Current.FindResource("iconBikExtractor") as ImageSource,
-//                open = () =>
-//                {
-//                    (new BIKExtract()).Show();
-//                },
-//                tags = new List<string> { "utility", "bik", "movie", "bink", "video", "tfc" },
-//                category = "Extractors + Repackers",
-//                description = "BIK Movie Extractor is a utility for extracting BIK videos from the ME3 Movies.tfc. This file contains small resolution videos played during missions, such as footage of Miranda in Sanctuary.",
-//            });
+            //            set.Add(new Tool
+            //            {
+            //                name = "Bik Movie Extractor",
+            //                type = typeof(BIKExtract),
+            //                icon = Application.Current.FindResource("iconBikExtractor") as ImageSource,
+            //                open = () =>
+            //                {
+            //                    (new BIKExtract()).Show();
+            //                },
+            //                tags = new List<string> { "utility", "bik", "movie", "bink", "video", "tfc" },
+            //                category = "Extractors + Repackers",
+            //                description = "BIK Movie Extractor is a utility for extracting BIK videos from the ME3 Movies.tfc. This file contains small resolution videos played during missions, such as footage of Miranda in Sanctuary.",
+            //            });
             set.Add(new Tool
             {
                 name = "Coalesced Compiler",
@@ -627,7 +644,7 @@ namespace LegendaryExplorer
                             favorites.Append(tool.name + ";");
                         }
                     }
-                    if(favorites.Length > 0) favorites.Remove(favorites.Length - 1, 1);
+                    if (favorites.Length > 0) favorites.Remove(favorites.Length - 1, 1);
                     Misc.AppSettings.Settings.MainWindow_Favorites = favorites.ToString();
                 }
                 catch
