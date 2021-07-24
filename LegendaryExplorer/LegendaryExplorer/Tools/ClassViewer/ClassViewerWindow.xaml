@@ -1,0 +1,39 @@
+﻿<misc:NotifyPropertyChangedWindowBase x:Class="LegendaryExplorer.Tools.ClassViewer.ClassViewerWindow"
+                                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                                 xmlns:local="clr-namespace:LegendaryExplorer.Tools.ClassViewer"
+                                 xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
+                                 xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+                                 xmlns:peregrineTreeView="clr-namespace:LegendaryExplorer.SharedUI.PeregrineTreeView"
+                                 xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
+                                 mc:Ignorable="d"
+                                 DataContext="{Binding RelativeSource={RelativeSource Self}}"
+                                 Title="Window1" Height="450" Width="800">
+    <Window.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </Window.Resources>
+    <Grid>
+        <TreeView x:Name="LeftSide_TreeView" Grid.Column="0" Grid.Row="1" FontFamily="Consolas" ItemsSource="{Binding RootObjects}" FocusManager.IsFocusScope="True" VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
+            <TreeView.Resources>
+                <HierarchicalDataTemplate DataType="{x:Type local:ClassViewerWindow+ClassObject}" ItemsSource="{Binding Descendents}">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding ObjectClass}" Foreground="Gray" Visibility="{Binding IsProperty, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        <Image Source="/Tools/PackageEditor/ExportIcons/icon_class.png" Visibility="{Binding IsProperty, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='Not'}"/>
+                        <TextBlock Text="{Binding ObjectName}" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+            </TreeView.Resources>
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}" />
+                    <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
+                </Style>
+            </TreeView.ItemContainerStyle>
+            <b:Interaction.Behaviors>
+                <peregrineTreeView:NodeTreeSelectionBehavior SelectedItem="{Binding SelectedItem}" />
+            </b:Interaction.Behaviors>
+        </TreeView>
+    </Grid>
+</misc:NotifyPropertyChangedWindowBase>

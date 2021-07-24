@@ -370,6 +370,15 @@ namespace LegendaryExplorerCore.Unreal.Classes
             return (uint)~ParallelCRC.Compute(data);
         }
 
+        /// <summary>
+        /// Replaces the texture data for this Texture2D based on the incoming data from image.
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="props"></param>
+        /// <param name="fileSourcePath"></param>
+        /// <param name="forcedTFCName"></param>
+        /// <param name="forcedTFCPath"></param>
+        /// <returns></returns>
         public string Replace(Image image, PropertyCollection props, string fileSourcePath = null, string forcedTFCName = null, string forcedTFCPath = null)
         {
             string errors = "";

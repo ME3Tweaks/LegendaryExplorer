@@ -48,6 +48,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             set => SetProperty(ref _cannotShowTextureText, value);
         }
 
+        private bool _setAlphaToBlack = true;
+        public bool SetAlphaToBlack
+        {
+            get => _setAlphaToBlack;
+            set => SetProperty(ref _setAlphaToBlack, value);
+        }
+
         private Visibility _cannotShowTextureTextVisibility;
         public Visibility CannotShowTextureTextVisibility
         {
@@ -150,7 +157,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private void ReplaceFromFile()
         {
             var selectedTFCName = (string)TextureCacheComboBox.SelectedItem;
-            
+            if (MEDirectories.BasegameTFCs(CurrentLoadedExport.Game).Contains(selectedTFCName, StringComparer.InvariantCultureIgnoreCase) || MEDirectories.OfficialDLC(CurrentLoadedExport.Game).Any(x => $"Textures_{x}".Equals(selectedTFCName, StringComparison.InvariantCultureIgnoreCase)))
+            {
+                MessageBox.Show("Cannot replace textures into a TFC provided by BioWare. Choose a different target TFC from the list.");
+                return;
+            }
+
             OpenFileDialog selectDDS = new OpenFileDialog
             {
                 Title = "Select texture file",
@@ -191,7 +203,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                     PromptDialog p = new PromptDialog("Enter name for a new TFC. It must start with Textures_DLC_MOD_, and will be created in the local directory of this package file.", "Enter new name for TFC", defaultTfcName, true, "Textures_DLC_MOD_".Length) { Owner = Window.GetWindow(this) };
                     var hasResult = p.ShowDialog();
-                    if (hasResult.HasValue && hasResult.Value)  
+                    if (hasResult.HasValue && hasResult.Value)
                     {
                         if (p.ResponseText.StartsWith("Textures_DLC_MOD_") && p.ResponseText.Length > 14)
                         {
@@ -350,7 +362,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     // Some textures list a tfc but are stored locally still
                     // so the tfc is never actually used
                     AvailableTFCNames.Insert(0, PACKAGE_STORED_STRING);
-                    
+
                     if (cache == null && exportEntry.Game > MEGame.ME1)
                     {
                         AvailableTFCNames.Add(STORE_EXTERNALLY_STRING);
@@ -434,7 +446,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 CannotShowTextureTextVisibility = Visibility.Collapsed;
 
                 // NOTE: Set 'ClearAlpha' to false to make image support transparency!
-                var bitmap = Image.convertRawToBitmapARGB(imagebytes, mipToLoad.width, mipToLoad.height, Image.getPixelFormatType(CurrentLoadedFormat), true);
+                var bitmap = Image.convertRawToBitmapARGB(imagebytes, mipToLoad.width, mipToLoad.height, Image.getPixelFormatType(CurrentLoadedFormat), SetAlphaToBlack);
                 //var bitmap = DDSImage.ToBitmap(imagebytes, fmt, mipToLoad.width, mipToLoad.height, CurrentLoadedExport.FileRef.Platform.ToString());
                 var memory = new MemoryStream(bitmap.Height * bitmap.Width * 4 + 54);
                 bitmap.Save(memory, ImageFormat.Png);
