@@ -50,7 +50,7 @@ namespace LegendaryExplorerCore.PlotDatabase
 
             EnsureDatabaseLoaded(game, false);
             var mdb = GetDatabaseForGame(game, false);
-            if (mdb.Bools.ContainsKey(id))
+            if (mdb != null && mdb.Bools.ContainsKey(id))
             {
                 return mdb.Bools[id];
             }
@@ -68,7 +68,7 @@ namespace LegendaryExplorerCore.PlotDatabase
 
             EnsureDatabaseLoaded(game, false);
             var mdb = GetDatabaseForGame(game, false);
-            if (mdb.Ints.ContainsKey(id))
+            if (mdb != null && mdb.Ints.ContainsKey(id))
             {
                 return mdb.Ints[id];
             }
@@ -86,7 +86,7 @@ namespace LegendaryExplorerCore.PlotDatabase
 
             EnsureDatabaseLoaded(game, false);
             var mdb = GetDatabaseForGame(game, false);
-            if (mdb.Floats.ContainsKey(id))
+            if (mdb != null && mdb.Floats.ContainsKey(id))
             {
                 return mdb.Floats[id];
             }
@@ -104,7 +104,7 @@ namespace LegendaryExplorerCore.PlotDatabase
 
             EnsureDatabaseLoaded(game, false);
             var mdb = GetDatabaseForGame(game, false);
-            if (mdb.Floats.ContainsKey(id))
+            if (mdb != null && mdb.Conditionals.ContainsKey(id))
             {
                 return mdb.Conditionals[id];
             }
@@ -122,7 +122,7 @@ namespace LegendaryExplorerCore.PlotDatabase
 
             EnsureDatabaseLoaded(game, false);
             var mdb = GetDatabaseForGame(game, false);
-            if (mdb.Transitions.ContainsKey(id))
+            if (mdb != null && mdb.Transitions.ContainsKey(id))
             {
                 return mdb.Transitions[id];
             }
