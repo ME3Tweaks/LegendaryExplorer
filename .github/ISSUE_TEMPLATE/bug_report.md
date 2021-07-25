@@ -8,7 +8,7 @@ assignees: ''
 ---
 
 # Please fill out the following form *in its entirety*. 
-The more information you provide, the easier it will be for us to work with.
+The more information you provide, the easier it will be for us to reproduce the issue.
 
 **Describe the bug**
 A clear and concise description of what the bug is.
@@ -30,7 +30,7 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Version information:**
-Please include both the date and version number that is located on the left side of the main window. **This information is required**.
+Please include both the date and version number that is located on the top right side of the main window. **This information is required**.
 
 **Stack trace**
 If you see an error dialog with a details or copy button, please post the details here. 
