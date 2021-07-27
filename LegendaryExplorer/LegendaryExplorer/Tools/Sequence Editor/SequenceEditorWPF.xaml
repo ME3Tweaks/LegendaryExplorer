@@ -105,6 +105,7 @@
                                 CommandParameter="{x:Static packages:MEGame.ME2}" />
                     <!-- TODO: Uncomment when ME1 Kismet Logger is created -->
                     <!--<MenuItem Header="Open Kismet Log for ME1" Command="{Binding KismetLogCommand}" CommandParameter="{x:Static packages:MEGame.ME1}"/>-->
+                    <MenuItem Header="Open Kismet Log for LE1" Command="{Binding KismetLogCommand}" CommandParameter="{x:Static packages:MEGame.LE1}"/>
                 </MenuItem>
 
                 <MenuItem Header="View Options" Padding="4">
