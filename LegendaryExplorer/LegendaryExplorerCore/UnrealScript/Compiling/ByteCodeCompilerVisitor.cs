@@ -493,7 +493,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         public bool VisitNode(ExpressionOnlyStatement node)
         {
             
-            if (GetAffector(node.Value) is Function func && func.RetValNeedsDestruction)
+            if (GetAffector(node.Value) is {RetValNeedsDestruction: true} func)
             {
                 WriteOpCode(OpCodes.EatReturnValue);
                 WriteObjectRef(ResolveReturnValue(func));
@@ -1389,7 +1389,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 {
                     null => 0,
                     { PropertyType: EPropertyType.StringRef } => 0,
-                    _ => (byte)exprType.Size
+                    _ => (byte)exprType.Size(Game)
                 });
                 return;
             }

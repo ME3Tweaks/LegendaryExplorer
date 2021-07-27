@@ -16,7 +16,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
 
     public class SymbolTable
     {
-        public class OperatorDefinitions
+        private class OperatorDefinitions
         {
             public readonly CaseInsensitiveDictionary<List<PreOpDeclaration>> PrefixOperators = new();
             public readonly CaseInsensitiveDictionary<List<InOpDeclaration>> InfixOperators = new();
@@ -49,28 +49,32 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
         private readonly OperatorDefinitions Operators;
         public List<string> InFixOperatorSymbols => Operators.InFixOperatorSymbols;
 
-        private SymbolTable()
+        public readonly MEGame Game;
+
+        private SymbolTable(MEGame game)
         {
             Operators = new OperatorDefinitions();
             ScopeNames = new LinkedList<string>();
             Scopes = new LinkedList<ASTNodeDict>();
             Cache = new CaseInsensitiveDictionary<ASTNodeDict>();
             Types = new CaseInsensitiveDictionary<VariableType>();
+            Game = game;
         }
 
-        private SymbolTable(LinkedList<string> scopeNames, LinkedList<ASTNodeDict> scopes, CaseInsensitiveDictionary<ASTNodeDict> cache, CaseInsensitiveDictionary<VariableType> types, OperatorDefinitions ops)
+        private SymbolTable(LinkedList<string> scopeNames, LinkedList<ASTNodeDict> scopes, CaseInsensitiveDictionary<ASTNodeDict> cache, CaseInsensitiveDictionary<VariableType> types, OperatorDefinitions ops, MEGame game)
         {
             Operators = ops;
             ScopeNames = scopeNames;
             Scopes = scopes;
             Cache = cache;
             Types = types;
+            Game = game;
         }
 
         public static SymbolTable CreateIntrinsicTable(Class objectClass, MEGame game)
         {
             const EClassFlags intrinsicClassFlags = EClassFlags.Intrinsic;
-            var table = new SymbolTable();
+            var table = new SymbolTable(game);
 
             #region CORE
 
@@ -883,7 +887,8 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                        new LinkedList<ASTNodeDict>(Scopes.Select(dict => new ASTNodeDict(dict))), 
                        new CaseInsensitiveDictionary<ASTNodeDict>(Cache.ToDictionary(kvp => kvp.Key, kvp => new ASTNodeDict(kvp.Value))),
                        new CaseInsensitiveDictionary<VariableType>(Types),
-                       Operators);
+                       Operators,
+                       Game);
         }
     }
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Utilities;
@@ -41,7 +42,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             }
         }
 
-        public int GetSize() => VarType?.Size ?? 0;
+        public int GetSize(MEGame game) => VarType?.Size(game) ?? 0;
 
         public string FilePath { get; init; }
         public int UIndex { get; set; }

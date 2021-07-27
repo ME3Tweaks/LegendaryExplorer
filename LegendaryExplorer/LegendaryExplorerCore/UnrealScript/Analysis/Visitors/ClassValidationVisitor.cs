@@ -643,7 +643,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 if (node.ReturnValueDeclaration is not null)
                 {
                     //if the return type is > 64 bytes, it can't be allocated on the stack.
-                    node.RetValNeedsDestruction = node.ReturnValueDeclaration.Flags.Has(EPropertyFlags.NeedCtorLink) || node.ReturnType.Size > 64;
+                    node.RetValNeedsDestruction = node.ReturnValueDeclaration.Flags.Has(EPropertyFlags.NeedCtorLink) || node.ReturnType.Size(Symbols.Game) > 64;
                 }
             }
             return Success;

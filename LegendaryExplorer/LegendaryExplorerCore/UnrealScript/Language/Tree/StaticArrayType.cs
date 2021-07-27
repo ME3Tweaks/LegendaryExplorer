@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 
@@ -30,7 +31,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             }
         }
 
-        public override int Size => (ElementType?.Size ?? 0) * Length;
+        public override int Size(MEGame game) => (ElementType?.Size(game) ?? 0) * Length;
 
         public bool Equals(StaticArrayType other)
         {

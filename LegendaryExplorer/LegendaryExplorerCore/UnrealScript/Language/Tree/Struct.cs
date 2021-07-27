@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using LegendaryExplorerCore.Gammtek.Extensions;
+using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Utilities;
@@ -74,16 +75,13 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             return str;
         }
 
-        public override int Size
+        public override int Size(MEGame game)
         {
-            get
-            {
-                (int structSize, _) = GetSizeAndAlign();
-                return structSize;
-            }
+            (int structSize, _) = GetSizeAndAlign(game);
+            return structSize;
         }
 
-        private (int structSize, int structAlign) GetSizeAndAlign()
+        private (int structSize, int structAlign) GetSizeAndAlign(MEGame game)
         {
             int structSize = 0;
             int structAlign = 4;
@@ -92,7 +90,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             foreach (VariableDeclaration varDecl in VariableDeclarations)
             {
                 VariableType cur = varDecl.VarType;
-                int varSize = cur.Size;
+                int varSize = cur.Size(game);
                 int varAlign = 4;
                 if (cur is StaticArrayType staticArrayType)
                 {
@@ -121,16 +119,36 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
                 }
                 else if (cur.PropertyType == EPropertyType.String)
                 {
-                    varSize = 12 * varDecl.ArrayLength; //TODO: verify this
+                    if (game.IsLEGame())
+                    {
+                        varSize = 16 * varDecl.ArrayLength;
+                        varAlign = 8;
+                    }
+                    else
+                    {
+                        varSize = 12 * varDecl.ArrayLength; //TODO: verify this
+                    }
                 }
                 else if (cur is DynamicArrayType)
                 {
-                    varSize = 12; //TODO: verify this
+                    if (game.IsLEGame())
+                    {
+                        varSize = 16;
+                        varAlign = 8;
+                    }
+                    else
+                    {
+                        varSize = 12;
+                    }
                 }
                 else if (cur is Struct curStruct)
                 {
-                    (varSize, varAlign) = curStruct.GetSizeAndAlign();
+                    (varSize, varAlign) = curStruct.GetSizeAndAlign(game);
                     varSize *= varDecl.ArrayLength;
+                }
+                else if (cur.PropertyType is EPropertyType.Object or EPropertyType.Delegate && game.IsLEGame())
+                {
+                    varAlign = 8;
                 }
 
                 structSize = structSize.Align(varAlign) + varSize;

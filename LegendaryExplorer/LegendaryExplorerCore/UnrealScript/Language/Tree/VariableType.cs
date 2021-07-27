@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 
@@ -13,17 +14,17 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public EPropertyType PropertyType;
 
-        public virtual int Size => PropertyType switch
+        public virtual int Size(MEGame game) => PropertyType switch
         {
             EPropertyType.None => 0,
             EPropertyType.Byte => 1,
             EPropertyType.Int => 4,
             EPropertyType.Bool => 4,
             EPropertyType.Float => 4,
-            EPropertyType.Object => 4,
+            EPropertyType.Object => game.IsLEGame() ? 8 : 4,
             EPropertyType.Name => 8,
-            EPropertyType.Delegate => 12,
-            EPropertyType.Interface => 8,
+            EPropertyType.Delegate => game.IsLEGame() ? 16 : 12,
+            EPropertyType.Interface => game.IsLEGame() ? 16 : 8,
             EPropertyType.Struct => 0,
             EPropertyType.Vector => 12,
             EPropertyType.Rotator => 12,
