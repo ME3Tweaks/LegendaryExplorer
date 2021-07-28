@@ -40,7 +40,12 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         };
 
         public Action<string, int> ExportFound { get; set; }
+        public ObservableCollectionExtended<LoggerInfo> LogLines { get; } = new();
+        public string FilterPccFileName { get; set; }
 
+        private IMEPackage FilterPcc;
+        private MEGame Game;
+        private ExportEntry SequenceToFilterTo;
 
         public KismetLogParser()
         {
@@ -48,18 +53,11 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             DataContext = this;
         }
 
-        public ObservableCollectionExtended<LoggerInfo> LogLines { get; } = new();
-
-        private IMEPackage Pcc;
-        private MEGame Game;
-        private ExportEntry SequenceToFilterTo;
-
-
         public void LoadLog(MEGame game, IMEPackage pcc = null, ExportEntry filterToSequence = null)
         {
             Analytics.TrackEvent("Used feature", new Dictionary<string, string>() { { "Feature name", "Kismet Logger for " + game } });
-            Pcc = pcc;
-            PccFileName = Pcc == null ? null : Path.GetFileNameWithoutExtension(Pcc.FilePath);
+            FilterPcc = pcc;
+            FilterPccFileName = FilterPcc == null ? null : Path.GetFileNameWithoutExtension(FilterPcc.FilePath);
             SequenceToFilterTo = filterToSequence;
             Game = game;
             LogLines.ClearEx();
@@ -70,44 +68,36 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             }
         }
 
-        public string PccFileName { get; set; }
-
         private LoggerInfo ParseLoggerLine(string line)
         {
             string[] args = line.Split(' ');
-            if (args.Length == 4)
+            if (args.Length == 3)
             {
-                string[] path = args[3].Split('.');
+                string[] path = args[2].Split('.');
                 if (path.Length < 2) return null;
-                string nameAndIndex = path.Last();
-                string sequence = path[^2];
-                string packageName = args[1].Trim('(', ')');
-                if (Pcc == null || PccFileName.Equals(packageName, StringComparison.InvariantCultureIgnoreCase))
+                string packageName = path[0];
+                string fullInstancedPath = args[2].Substring(packageName.Length + 1);
+                if (FilterPcc == null || FilterPccFileName.Equals(packageName, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    if (int.TryParse(nameAndIndex.Substring(nameAndIndex.LastIndexOf('_') + 1), out int nameIndex))
+                    var newInfo = new LoggerInfo
                     {
-                        var newInfo = new LoggerInfo
-                        {
-                            fullLine = line,
-                            packageName = packageName,
-                            className = args[2],
-                            objectName = new NameReference(nameAndIndex.Substring(0, nameAndIndex.LastIndexOf('_')), nameIndex),
-                            sequenceName = sequence,
-                        };
+                        fullLine = line,
+                        packageName = packageName,
+                        className = args[1],
+                        fullInstancedPath = fullInstancedPath
+                    };
 
-                        if (Pcc != null && SequenceToFilterTo != null)
+                    if (FilterPcc != null && SequenceToFilterTo != null)
+                    {
+                        var referencedEntry = FilterPcc.FindExport(newInfo.fullInstancedPath);
+                        if (referencedEntry != null && referencedEntry.Parent.InstancedFullPath == SequenceToFilterTo.InstancedFullPath)
                         {
-                            // This is wildly inefficient
-                            var referencedEntry = Pcc.Exports.FirstOrDefault(exp => exp.ClassName == newInfo.className && exp.ObjectName == newInfo.objectName && exp.ParentName == sequence);
-                            if (referencedEntry != null && referencedEntry.Parent.InstancedFullPath == SequenceToFilterTo.InstancedFullPath)
-                            {
-                                return newInfo;
-                            }
-                            return null;
+                            return newInfo;
                         }
-
-                        return newInfo;
+                        return null;
                     }
+
+                    return newInfo;
                 }
             }
 
@@ -119,28 +109,36 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             public string fullLine { get; set; }
             public string packageName;
             public string className;
-            public NameReference objectName;
-            public string sequenceName;
+            public string fullInstancedPath;
         }
 
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.AddedItems.Count == 1 && e.AddedItems[0] is LoggerInfo info)
             {
-                foreach ((string fileName, string filePath) in MELoadedFiles.GetFilesLoadedInGame(Game))
+                var filesLoadedInGame = MELoadedFiles.GetFilesLoadedInGame(Game);
+                string filePath = null;
+                string packageWithExtension = Path.ChangeExtension(info.packageName, "pcc");
+                if (filesLoadedInGame.ContainsKey(packageWithExtension))
                 {
-                    if (Path.GetFileNameWithoutExtension(fileName).Equals(info.packageName, StringComparison.InvariantCultureIgnoreCase))
+                    filePath = filesLoadedInGame[packageWithExtension];
+                }
+                else
+                {
+                    var fileName = filesLoadedInGame.Keys.FirstOrDefault((t =>
+                        Path.GetFileNameWithoutExtension(t)
+                            .Equals(info.packageName, StringComparison.InvariantCultureIgnoreCase)));
+                    if(fileName is not null) filePath = filesLoadedInGame[fileName];
+                }
+
+                if(filePath != null)
+                {
+                    using var package = MEPackageHandler.OpenMEPackage(filePath);
+                    var export = package.FindExport(info.fullInstancedPath);
+                    if (export != null && export.ClassName == info.className)
                     {
-                        using var package = MEPackageHandler.OpenMEPackage(filePath);
-                        foreach (ExportEntry exp in package.Exports)
-                        {
-                            if (exp.ClassName == info.className && exp.ObjectName == info.objectName &&
-                                exp.ParentName == info.sequenceName)
-                            {
-                                ExportFound(filePath, exp.UIndex);
-                                return;
-                            }
-                        }
+                        ExportFound(filePath, export.UIndex);
+                        return;
                     }
                 }
                 MessageBox.Show("Could not find matching export!");
