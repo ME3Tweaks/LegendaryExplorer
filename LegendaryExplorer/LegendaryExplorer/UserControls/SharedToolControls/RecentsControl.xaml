@@ -1,0 +1,40 @@
+﻿<misc:NotifyPropertyChangedControlBase x:Class="LegendaryExplorer.UserControls.SharedToolControls.RecentsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:local="clr-namespace:LegendaryExplorer.UserControls.SharedToolControls"
+             xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
+             xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
+             mc:Ignorable="d"
+             Width="560"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <UserControl.Resources>
+        <converters:FilePathToFileNameConverter x:Key="FilePathToFileNameConverter"/>
+        <converters:GameToImageIconConverter x:Key="GameToImageIconConverter"/>
+    </UserControl.Resources>
+    <DockPanel>
+        <TextBlock Text="Recently opened items" DockPanel.Dock="Top" TextAlignment="Center" FontSize="20" FontWeight="Light" Margin="10"/>
+        <ItemsControl ItemsSource="{Binding RecentItems}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Button Width="252" Margin="3" Padding="3" ToolTip="{Binding Path}" 
+                            Command="{Binding RecentFileOpenCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:RecentsControl}}}" CommandParameter="{Binding Path}">
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Image Margin="0,0,5,0" RenderOptions.BitmapScalingMode="HighQuality" Source="{Binding Game, Converter={StaticResource GameToImageIconConverter}}" Height="16" VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding Path, Converter={StaticResource FilePathToFileNameConverter}}"/>
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </DockPanel>
+</misc:NotifyPropertyChangedControlBase>

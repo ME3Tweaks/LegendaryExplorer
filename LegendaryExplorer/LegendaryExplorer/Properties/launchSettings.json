@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "LegendaryExplorer": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    }
+  }
+}

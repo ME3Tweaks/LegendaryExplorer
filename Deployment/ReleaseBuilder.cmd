@@ -1,1 +1,0 @@
-powershell -File ReleaseBuilder.ps1 -ExecutionPolicy bypass
