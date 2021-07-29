@@ -27,7 +27,7 @@ namespace LegendaryExplorer.Misc
                 version += " NIGHTLY"; //ENSURE THIS IS CHANGED FOR MAJOR RELEASES AND RELEASE CANDIDATES
 #elif RELEASE
                 // UPDATE THIS FOR RELEASE
-                version += " PRERELEASE";
+                //version += " STABLERELEASE";
 #endif
                 return $"{version} {App.BuildDateTime.ToShortDateString()}";
             }
