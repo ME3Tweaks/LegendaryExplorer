@@ -51,7 +51,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public ICommand SaveCommand { get; set; }
         public ICommand CommitCommand { get; set; }
         public ICommand SetIDCommand { get; set; }
+        public ICommand ExportXmlCommand { get; set; }
+        public ICommand ImportXmlCommand { get; set; }
+        public ICommand ViewXmlCommand { get; set; }
         public ICommand DeleteStringCommand { get; set; }
+        public ICommand SearchCommand { get; set; }
+        public ICommand AddStringCommand { get; set; }
 
 
         private void LoadCommands()
@@ -60,6 +65,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             CommitCommand = new RelayCommand(CommitTLK, CanCommitTLK);
             SetIDCommand = new RelayCommand(SetStringID, StringIsSelected);
             DeleteStringCommand = new RelayCommand(DeleteString, StringIsSelected);
+
+            SearchCommand = new GenericCommand(TextSearch, HasTLKLoaded);
+            AddStringCommand = new GenericCommand(AddString, HasTLKLoaded);
+
+
+            ExportXmlCommand = new GenericCommand(ExportToXml, HasTLKLoaded);
+            ImportXmlCommand = new GenericCommand(ImportFromXml, HasTLKLoaded);
+            ViewXmlCommand = new GenericCommand(ViewAsXml, HasTLKLoaded);
+
         }
 
         private void DeleteString(object obj)
@@ -162,6 +176,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             FileModified = false;
         }
 
+        public bool HasTLKLoaded() => CurrentLoadedFile != null || CurrentLoadedExport != null;
+
         private void DisplayedString_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (DisplayedString_ListBox.SelectedItem is ME1TalkFile.TLKStringRef selectedItem)
@@ -206,7 +222,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             return newID;
         }
 
-        private void Evt_AddString(object sender, RoutedEventArgs e)
+        private void AddString()
         {
             var blankstringref = new ME1TalkFile.TLKStringRef(100, 1, "New Blank Line");
             LoadedStrings.Add(blankstringref);
@@ -217,7 +233,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             FileModified = true;
         }
 
-        private void Evt_ExportXML(object sender, RoutedEventArgs e)
+        private void ExportToXml()
         {
             var fnameBase = CurrentLoadedExport?.ObjectName.Name;
             if (fnameBase == null && CurrentLoadedFile != null) fnameBase = Path.GetFileNameWithoutExtension(CurrentLoadedFile);
@@ -246,7 +262,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         }
 
-        private void Evt_ImportXML(object sender, RoutedEventArgs e)
+        private void ImportFromXml()
         {
             var openFileDialog = new OpenFileDialog
             {
@@ -272,7 +288,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
-        private void Evt_ViewXML(object sender, RoutedEventArgs e)
+        private void ViewAsXml()
         {
             if (!xmlUp)
             {
@@ -311,7 +327,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (DisplayedString_ListBox.SelectedItem is ME1TalkFile.TLKStringRef selectedItem)
             {
-
                 var stringRefNewID = DlgStringID(selectedItem.StringID); //Run popout box to set tlkstring id
                 if (selectedItem.StringID != stringRefNewID)
                 {
@@ -327,11 +342,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 TextSearch();
             }
-        }
-
-        private void Evt_Search(object sender, RoutedEventArgs e)
-        {
-            TextSearch();
         }
 
         private void TextSearch()
@@ -511,6 +521,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 SaveString(null);
             }
+        }
+
+        private void CloseViewAsXml(object sender, RoutedEventArgs e)
+        {
+            Evt_CloseXML(sender, e);
         }
     }
 }
