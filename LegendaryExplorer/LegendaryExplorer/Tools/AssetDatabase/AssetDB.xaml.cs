@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
@@ -33,7 +34,9 @@ using SkeletalMesh = LegendaryExplorerCore.Unreal.BinaryConverters.SkeletalMesh;
 using LegendaryExplorerCore.TLK;
 using Microsoft.WindowsAPICodePack.Taskbar;
 using BinaryPack;
+using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Memory;
+using LegendaryExplorerCore.PlotDatabase;
 
 namespace LegendaryExplorer.Tools.AssetDatabase
 {
@@ -45,7 +48,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
     public partial class AssetDB : TrackingNotifyPropertyChangedWindowBase
     {
         #region Declarations
-        public const string dbCurrentBuild = "6.0"; //If changes are made that invalidate old databases edit this.
+        public const string dbCurrentBuild = "7.0"; //If changes are made that invalidate old databases edit this.
         private int previousView { get; set; }
         private int _currentView;
         public int currentView { get => _currentView; set { previousView = _currentView; SetProperty(ref _currentView, value); } }
@@ -102,6 +105,13 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             }
         }
 
+        private ICollection<PlotUsage> _selectedPlotUsages;
+        public ICollection<PlotUsage> SelectedPlotUsages
+        {
+            get => _selectedPlotUsages;
+            set => SetProperty(ref _selectedPlotUsages, value);
+        }
+
         public record FileDirPair(string FileName, string Directory, int Mount);
         /// <summary>
         /// Dictionary that stores generated classes
@@ -139,6 +149,14 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         /// Dictionary that stores generated lines
         /// </summary>
         public ConcurrentDictionary<string, ConvoLine> GeneratedLines = new();
+        /// <summary>
+        /// Dictionary that stores generated plot records
+        /// </summary>
+        public ConcurrentDictionary<int, PlotRecord> GeneratedBoolRecords = new();
+        public ConcurrentDictionary<int, PlotRecord> GeneratedIntRecords = new();
+        public ConcurrentDictionary<int, PlotRecord> GeneratedFloatRecords = new();
+        public ConcurrentDictionary<int, PlotRecord> GeneratedConditionalRecords = new();
+        public ConcurrentDictionary<int, PlotRecord> GeneratedTransitionRecords = new();
         /// <summary>
         /// Used to do per-class locking during generation
         /// </summary>
@@ -200,6 +218,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         private ListSortDirection _lastDirection = ListSortDirection.Ascending;
         private bool _parseConvos;
         public bool ParseConvos { get => _parseConvos; set => SetProperty(ref _parseConvos, value); }
+        private bool _parsePlotUsages;
+        public bool ParsePlotUsages { get => _parsePlotUsages; set => SetProperty(ref _parsePlotUsages, value); }
         private BlockingCollection<ConvoLine> _linequeue = new();
         private Tuple<string, string, int, string, bool> _currentConvo = new(null, null, -1, null, false); //ConvoName, FileName, export, contentdir, isAmbient
         public Tuple<string, string, int, string, bool> CurrentConvo { get => _currentConvo; set => SetProperty(ref _currentConvo, value); }
@@ -399,6 +419,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             database.GUIElements.AddRange(pdb.GUIElements);
             database.Conversations.AddRange(pdb.Conversations);
             database.Lines.AddRange(pdb.Lines);
+            database.PlotUsages.Add(pdb.PlotUsages);
         }
         public static async Task<PropsDataBase> ParseDBAsync(MEGame dbgame, string dbpath, string build, CancellationToken cancel)
         {
@@ -527,6 +548,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             CurrentDataBase.GUIElements.Clear();
             CurrentDataBase.Conversations.Clear();
             CurrentDataBase.Lines.Clear();
+            CurrentDataBase.PlotUsages.Clear();
             FileListExtended.ClearEx();
             CustomFileList.Clear();
             IsFilteredByFiles = false;
@@ -744,6 +766,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                         }
 
                         ParseConvos = !CurrentDataBase.Lines.IsEmpty();
+                        ParsePlotUsages = CurrentDataBase.PlotUsages.Any();
                         IsBusy = false;
                         CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} " +
                                                       $"Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count} " +
@@ -856,6 +879,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 usagepkg = CurrentConvo.Item2;
                 contentdir = CurrentConvo.Item4;
                 usageUID = CurrentConvo.Item3;
+            }
+            else if (lstbx_PlotUsages.SelectedIndex >= 0 && currentView == 9)
+            {
+                var pu = (PlotUsage) lstbx_PlotUsages.SelectedItem;
+                (usagepkg, contentdir, usagemount) = FileListExtended[pu.FileKey];
             }
             else if (lstbx_Files.SelectedIndex >= 0 && currentView == 0)
             {
@@ -1072,6 +1100,33 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             }
             CurrentConvo = new Tuple<string, string, int, string, bool>(null, null, 0, null, false);
 
+        }
+        private void lstbx_PlotElement_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (currentView == 9)
+            {
+                PlotRecord selectedRecord = null;
+                switch (tabCtrl_plotUsage.SelectedIndex)
+                {
+                    case 0:
+                        selectedRecord = (PlotRecord) lstbx_PlotBool.SelectedItem;
+                        break;
+                    case 1:
+                        //selectedRecord = (PlotRecord) lstbx_PlotBool.SelectedItem;
+                        break;
+                    case 2:
+                        //selectedRecord = (PlotRecord) lstbx_PlotBool.SelectedItem;
+                        break;
+                    case 3:
+                        //selectedRecord = (PlotRecord) lstbx_PlotBool.SelectedItem;
+                        break;
+                    case 4:
+                        //selectedRecord = (PlotRecord) lstbx_PlotBool.SelectedItem;
+                        break;
+                }
+
+                if (selectedRecord != null) SelectedPlotUsages = selectedRecord.ReadBy;
+            }
         }
         private void btn_TextRenderToggle_Click(object sender, RoutedEventArgs e)
         {
@@ -2567,7 +2622,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     BusyText = $"Scanned {OverallProgressValue}/{OverallProgressMaximum} files\n\nClasses: { GeneratedClasses.Count}\nAnimations: { GeneratedAnims.Count}\nMaterials: { GeneratedMats.Count}\nMeshes: { GeneratedMeshes.Count}\n" +
-                    $"Particles: { GeneratedPS.Count}\nTextures: { GeneratedText.Count}\nGUI Elements: { GeneratedGUI.Count}\nLines: {GeneratedLines.Count}";
+                    $"Particles: { GeneratedPS.Count}\nTextures: { GeneratedText.Count}\nGUI Elements: { GeneratedGUI.Count}\nLines: {GeneratedLines.Count}\n"+
+                    $"Plot Elements: {GeneratedBoolRecords.Count + GeneratedIntRecords.Count + GeneratedFloatRecords.Count + GeneratedConditionalRecords.Count + GeneratedTransitionRecords.Count}";
                     OverallProgressValue++; //Concurrency 
                     CurrentDumpingItems.Remove(x);
                 });
@@ -2577,7 +2633,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             CurrentDumpingItems.ClearEx();
             foreach (var fkey in fileKeys)
             {
-                var threadtask = new ClassScanSingleFileTask(fkey.Item2, fkey.Item1, scanCRC, ParseConvos);
+                var threadtask = new ClassScanSingleFileTask(fkey.Item2, fkey.Item1, scanCRC, ParseConvos, ParsePlotUsages);
                 AllDumpingItems.Add(threadtask); //For setting cancelation value
                 ProcessingQueue.Post(threadtask); // Post all items to the block
 
@@ -2641,6 +2697,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             CurrentDataBase.GUIElements.AddRange(pdb.GUIElements);
             CurrentDataBase.Conversations.AddRange(pdb.Conversations);
             CurrentDataBase.Lines.AddRange(pdb.Lines);
+            CurrentDataBase.PlotUsages.Add(pdb.PlotUsages);
 
             var dlcs = MELoadedFiles.GetDLCNamesWithMounts(CurrentGame);
             dlcs.Add("BioGame", 0);
@@ -2701,6 +2758,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             GeneratedGUI.Clear();
             GeneratedConvo.Clear();
             GeneratedLines.Clear();
+            GeneratedBoolRecords.Clear();
+            GeneratedIntRecords.Clear();
+            GeneratedFloatRecords.Clear();
+            GeneratedConditionalRecords.Clear();
+            GeneratedTransitionRecords.Clear();
         }
         private PropsDataBase CollateDataBase()
         {
@@ -2753,6 +2815,22 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             pdb.GUIElements.AddRange(guisSorted);
 
             pdb.Lines.AddRange(GeneratedLines.Values.OrderBy(x => x.StrRef).ToList());
+
+            var boolsSorted = GeneratedBoolRecords.Values.OrderBy(x => x.ElementID).ToList();
+            pdb.PlotUsages.Bools.AddRange(boolsSorted);
+
+            var intsSorted = GeneratedIntRecords.Values.OrderBy(x => x.ElementID).ToList();
+            pdb.PlotUsages.Ints.AddRange(intsSorted);
+
+            var floatsSorted = GeneratedFloatRecords.Values.OrderBy(x => x.ElementID).ToList();
+            pdb.PlotUsages.Floats.AddRange(floatsSorted);
+
+            var conditionalsSorted = GeneratedConditionalRecords.Values.OrderBy(x => x.ElementID).ToList();
+            pdb.PlotUsages.Conditionals.AddRange(conditionalsSorted);
+
+            var transitionsSorted = GeneratedTransitionRecords.Values.OrderBy(x => x.ElementID).ToList();
+            pdb.PlotUsages.Transitions.AddRange(transitionsSorted);
+
             return pdb;
         }
 
@@ -2796,6 +2874,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public List<Conversation> Conversations { get; set; } = new();
 
         public List<ConvoLine> Lines { get; set; } = new();
+
+        public PlotUsageDataBase PlotUsages { get; set; } = new();
+
         public PropsDataBase(MEGame meGame, string GenerationDate, string DataBaseversion, IEnumerable<FileNameDirKeyPair> FileList, IEnumerable<string> ContentDir)
         {
             this.meGame = meGame;
@@ -2811,6 +2892,41 @@ namespace LegendaryExplorer.Tools.AssetDatabase
     }
     public sealed record FileNameDirKeyPair(string FileName, int DirectoryKey) { public FileNameDirKeyPair() : this(default, default) { } }
 
+    public class PlotUsageDataBase
+    {
+        public List<PlotRecord> Bools { get; set; } = new();
+        public List<PlotRecord> Ints { get; set; } = new();
+        public List<PlotRecord> Floats { get; set; } = new();
+        public List<PlotRecord> Conditionals { get; set; } = new();
+        public List<PlotRecord> Transitions { get; set; } = new();
+        public PlotUsageDataBase()
+        {
+
+        }
+
+        public void Clear()
+        {
+            Bools.Clear();
+            Ints.Clear();
+            Floats.Clear();
+            Conditionals.Clear();
+            Transitions.Clear();
+        }
+
+        public void Add(PlotUsageDataBase fromDb)
+        {
+            Bools.AddRange(fromDb.Bools);
+            Ints.AddRange(fromDb.Ints);
+            Floats.AddRange(fromDb.Floats);
+            Conditionals.AddRange(fromDb.Conditionals);
+            Transitions.AddRange(fromDb.Transitions);
+        }
+
+        public bool Any()
+        {
+            return Bools.Any() || Ints.Any() || Floats.Any() || Conditionals.Any() || Transitions.Any();
+        }
+    }
 
     public class ClassRecord
     {
@@ -3117,6 +3233,53 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         { }
     }
 
+    public enum PlotRecordType
+    {
+        Bool,
+        Int,
+        Float,
+        Conditional,
+        Transition
+    }
+
+    public class PlotRecord
+    {
+        public PlotRecordType ElementType { get; set; }
+
+        public int ElementID { get; set; }
+
+        public List<PlotUsage> SetBy { get; set; } = new();
+        public List<PlotUsage> ReadBy { get; set; } = new();
+
+        public PlotRecord(PlotRecordType type, int id)
+        {
+            this.ElementType = type;
+            this.ElementID = id;
+        }
+
+        public PlotRecord()
+        { }
+    }
+
+    public class PlotUsage
+    {
+
+        public int FileKey { get; set; }
+
+        public int UIndex { get; set; }
+
+        public bool IsMod { get; set; }
+
+        public PlotUsage(int FileKey, int uIndex, bool IsMod)
+        {
+            this.FileKey = FileKey;
+            this.UIndex = uIndex;
+            this.IsMod = IsMod;
+        }
+        public PlotUsage()
+        { }
+    }
+
     public class FileIndexToNameConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
@@ -3146,13 +3309,14 @@ namespace LegendaryExplorer.Tools.AssetDatabase
     {
         public string ShortFileName { get; }
 
-        public ClassScanSingleFileTask(string file, int filekey, bool scanCRC, bool scanLines)
+        public ClassScanSingleFileTask(string file, int filekey, bool scanCRC, bool scanLines, bool scanPlotUsages)
         {
             File = file;
             ShortFileName = Path.GetFileNameWithoutExtension(file);
             FileKey = filekey;
             ScanCRC = scanCRC;
             ScanLines = scanLines;
+            ScanPlotUsages = scanPlotUsages;
         }
 
         public bool DumpCanceled;
@@ -3160,6 +3324,15 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         private readonly string File;
         private readonly bool ScanCRC;
         private readonly bool ScanLines;
+        private readonly bool ScanPlotUsages;
+
+        private readonly HashSet<string> classesWithPlotData = new()
+        {
+            "BioSeqAct_PMExecuteTransition", "BioSeqAct_PMExecuteConsequence", "BioSeqAct_PMCheckState",
+            "BioSeqAct_PMCheckConditional", "BioSeqVar_StoryManagerInt",
+            "BioSeqVar_StoryManagerFloat", "BioSeqVar_StoryManagerBool", "BioSeqVar_StoryManagerStateId",
+            "SFXSceneShopNodePlotCheck", "BioWorldInfo", "BioStateEventMap", "BioCodexMap", "BioQuestMap"
+        };
 
         /// <summary>
         /// Dumps Property data to concurrent dictionary
@@ -3781,6 +3954,89 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                                     dbScanner.GeneratedConvo.TryAdd(assetKey, NewConv);
                                 }
                             }
+                            else if (ScanPlotUsages && classesWithPlotData.Contains(className))
+                            {
+                                switch (className)
+                                {
+                                    case "BioSeqAct_PMExecuteTransition":
+                                    case "BioSeqAct_PMExecuteConsequence":
+                                    {
+                                        //var transition = export.GetProperty<IntProperty>("m_nIndex").Value;
+                                        //if (!dbScanner.GeneratedTransitionRecords.ContainsKey(transition))
+                                        //{
+                                        //    var newTransRecord = new PlotRecord(PlotRecordType.Transition, transition);
+                                        //    dbScanner.GeneratedBoolRecords[transition] = newTransRecord;
+                                        //}
+
+                                        //var transitionRecord = dbScanner.GeneratedTransitionRecords[transition];
+                                        //lock (transitionRecord)
+                                        //{   
+                                        //    transitionRecord.ReadBy.Add(new PlotUsage(FileKey, uindex, IsMod));
+                                        //}
+                                        break;
+                                    }
+                                    case "BioSeqAct_PMCheckState":
+                                    case "BioSeqVar_StoryManagerBool":
+                                    case "BioSeqVar_StoryManagerStateId":
+                                    {
+                                        var boolId = export.GetProperty<IntProperty>("m_nIndex")?.Value ?? -1;
+                                        if (boolId == -1) break;
+                                        if (dbScanner.GeneratedBoolRecords.ContainsKey(boolId))
+                                        {
+                                            var boolrecord = dbScanner.GeneratedBoolRecords[boolId];
+                                            lock (boolrecord)
+                                            {   
+                                                boolrecord.ReadBy.Add(new PlotUsage(FileKey, uindex, IsMod));
+                                            }
+                                        }
+                                        else
+                                        {
+                                            var newBoolRecord = new PlotRecord(PlotRecordType.Bool, boolId);
+                                            if (dbScanner.GeneratedBoolRecords.TryAdd(boolId, newBoolRecord))
+                                            {
+                                                var boolrecord = dbScanner.GeneratedBoolRecords[boolId];
+                                                lock (boolrecord)
+                                                {   
+                                                    boolrecord.ReadBy.Add(new PlotUsage(FileKey, uindex, IsMod));
+                                                }
+                                            }
+                                        }
+
+                                        break;
+                                    }
+                                    case "BioSeqVar_StoryManagerFloat":
+                                        var floatId = export.GetProperty<IntProperty>("m_nIndex").Value;
+                                        break;
+                                    case "BioSeqVar_StoryManagerInt":
+                                        var intId = export.GetProperty<IntProperty>("m_nIndex").Value;
+                                        break;
+                                    case "BioSeqAct_PMCheckConditional":
+                                        var condId = export.GetProperty<IntProperty>("m_nIndex").Value;
+                                        break;
+                                    case "BioWorldInfo":
+                                        var bioWorldCondId = export.GetProperty<IntProperty>("Conditional")?.Value;
+                                        break;
+                                    case "SFXSceneShopNodePlotCheck":
+                                        var mnId = export.GetProperty<IntProperty>("m_nIndex")?.Value;
+                                        Enum.TryParse(export.GetProperty<EnumProperty>("VarType")?.Value.Name, out ESFXSSPlotVarType type);
+                                        PlotRecordType varType = type switch
+                                        {
+                                            ESFXSSPlotVarType.PlotVar_Float => PlotRecordType.Float,
+                                            ESFXSSPlotVarType.PlotVar_State => PlotRecordType.Bool,
+                                            ESFXSSPlotVarType.PlotVar_Int => PlotRecordType.Int
+                                        };
+                                        break;
+                                    case "BioStateEventMap":
+                                        // Go to hell
+                                        break;
+                                    case "BioCodexMap":
+                                        // Slightly better hell
+                                        break;
+                                    case "BioQuestMap":
+                                        // Still hell
+                                        break;
+                                }
+                            }
                         }
                         else if (export is not null)
                         {
@@ -3810,6 +4066,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                                     newClassRecord.Usages.Add(classUsage);
                                     dbScanner.GeneratedClasses[objectNameInstanced] = newClassRecord;
                                 }
+                            }
+
+                            if (export.ObjectNameString == "BioAutoConditionals")
+                            {
+                                // Get absolutely fucked
                             }
                         }
                     }

@@ -12,7 +12,7 @@
         xmlns:sharedToolControls="clr-namespace:LegendaryExplorer.UserControls.SharedToolControls"
         xmlns:controls="clr-namespace:LegendaryExplorer.SharedUI.Controls"
         xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
-        Loaded="AssetDB_Loaded"
+       Loaded="AssetDB_Loaded"
         Closing="AssetDB_Closing"
         AllowDrop="True"
         Icon="pack://application:,,,/Tools/Icons/16x16/AssetDatabase_Icon_16.ico"
@@ -195,6 +195,7 @@
                         <Separator/>
                         <MenuItem Name="menu_checkCRC" Header="Compile Texture CRCs" Command="{Binding SetCRCCommand}" IsChecked="False" ToolTip="Add CRC generation during scan. Will significantly increase scan time."/>
                         <MenuItem Name="menu_checkConv" Header="Compile BioConversations" IsChecked="{Binding ParseConvos, Mode=TwoWay}" IsCheckable="True" StaysOpenOnClick="True" ToolTip="Add conversation and line parsing. Will significantly increase scan time, and database loading."/>
+                        <MenuItem Name="menu_checkPlotUsages" Header="Compile Plot Usages" IsChecked="{Binding ParsePlotUsages, Mode=TwoWay}" IsCheckable="True" StaysOpenOnClick="True" ToolTip="Includes plot variable usages in database. Will significantly increase scan time, and database loading."/>
                     </MenuItem>
                 </Menu>
             </DockPanel>
@@ -1038,6 +1039,72 @@
                                 <exportLoaderControls:Soundpanel x:Name="SoundpanelWPF_ADB" PlayBackOnlyMode="True" />
                             </DockPanel>
                         </Grid>
+                    </TabItem>
+                    <!-- Plot-->
+                    <TabItem Header="Plot" TabIndex="9" Visibility="{Binding Path=ParsePlotUsages, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <DockPanel>
+                            <TabControl x:Name="tabCtrl_plotUsage">
+                                <TabItem Header="Bools" TabIndex="1">
+                                    <controls:ListBoxScroll x:Name="lstbx_PlotBool" ItemsSource="{Binding CurrentDataBase.PlotUsages.Bools}" 
+                                                            MinWidth="300" SelectionChanged="lstbx_PlotElement_SelectionChanged">
+                                        <controls:ListBoxScroll.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock>Bool <Run Text="{Binding ElementID}"></Run></TextBlock>
+                                            </DataTemplate>
+                                        </controls:ListBoxScroll.ItemTemplate>
+                                    </controls:ListBoxScroll>
+                                </TabItem>
+                                <TabItem Header="Ints" TabIndex="2"></TabItem>
+                                <TabItem Header="Floats" TabIndex="3"></TabItem>
+                                <TabItem Header="Transitions" TabIndex="4"></TabItem>
+                                <TabItem Header="Conditionals" TabIndex="5"></TabItem>
+                            </TabControl>
+
+                            <Grid DockPanel.Dock="Right">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="24"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <StackPanel Orientation="Horizontal" Grid.Row="0" Background="AliceBlue">
+                                    <TextBlock Text="Usages"  HorizontalAlignment="Stretch" Padding="3"
+                                               ToolTip="Shows all the files that use this class, and the first export number&#x0a;Right click to open in Package Editor" />
+                                </StackPanel>
+                                <controls:ListBoxScroll x:Name="lstbx_PlotUsages" MinWidth="200" ItemsSource="{Binding SelectedPlotUsages}" Grid.Row="1" >
+                                    <controls:ListBoxScroll.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock>
+                                                <TextBlock.Text>
+                                                    <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
+                                                        <Binding Path="FileKey"/>
+                                                        <Binding Path="FileListExtended" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
+                                                        <Binding Path="UIndex"/>
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </controls:ListBoxScroll.ItemTemplate>
+                                    <controls:ListBoxScroll.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=IsDefault}" Value="True">
+                                                    <Setter Property="TextElement.FontWeight" Value="Bold"/>
+                                                    <Setter Property="TextElement.ToolTip" Value="Default value"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=IsMod}" Value="True">
+                                                    <Setter Property="TextElement.Foreground" Value="IndianRed"/>
+                                                    <Setter Property="TextElement.ToolTip" Value="Is Mod File"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </controls:ListBoxScroll.ItemContainerStyle>
+                                    <controls:ListBoxScroll.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor" />
+                                        </ContextMenu>
+                                    </controls:ListBoxScroll.ContextMenu>
+                                </controls:ListBoxScroll>
+                            </Grid>
+                        </DockPanel>    
                     </TabItem>
                 </TabControl>
             </DockPanel>
