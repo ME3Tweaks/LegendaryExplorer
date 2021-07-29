@@ -161,8 +161,8 @@ namespace LegendaryExplorer
 #if DEBUG
             set.Add(new Tool
             {
-                name = "Class Heirarchy Viewer",
-                type = typeof(Tools.AnimationViewer.AnimationViewerWindow),
+                name = "Class Hierarchy Viewer",
+                type = typeof(Tools.ClassViewer.ClassViewerWindow),
                 icon = Application.Current.FindResource("iconAnimViewer") as ImageSource,
                 open = () =>
                 {
@@ -170,7 +170,7 @@ namespace LegendaryExplorer
                 },
                 tags = new List<string> { "utility", "class", "property" },
                 category = "Utilities",
-                description = "Class Heirarchy Viewer shows you how classes and properties inherit from each other, and where some override."
+                description = "Class Hierarchy Viewer shows you how classes and properties inherit from each other, and where some override."
             });
 #endif
             set.Add(new Tool
@@ -394,11 +394,11 @@ namespace LegendaryExplorer
             set.Add(new Tool
             {
                 name = "Asset Database",
-                type = typeof(AssetDB),
+                type = typeof(AssetDatabaseWindow),
                 icon = Application.Current.FindResource("iconAssetDatabase") as ImageSource,
                 open = () =>
                 {
-                    (new AssetDB()).Show();
+                    (new AssetDatabaseWindow()).Show();
                 },
                 tags = new List<string> { "utility", "mesh", "material", "class", "animation" },
                 category = "Utilities",

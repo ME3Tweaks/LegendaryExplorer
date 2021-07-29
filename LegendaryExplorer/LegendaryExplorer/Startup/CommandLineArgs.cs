@@ -125,7 +125,7 @@ namespace LegendaryExplorer.Startup
                         OpenTool<FaceFXEditorWindow>();
                         break;
                     case "AssetDB":
-                        (new AssetDB()).Show();
+                        (new AssetDatabaseWindow()).Show();
                         break;
                 }
             }
