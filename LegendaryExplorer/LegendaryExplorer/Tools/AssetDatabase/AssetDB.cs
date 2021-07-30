@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.PlotDatabase;
 
 namespace LegendaryExplorer.Tools.AssetDatabase
 {
@@ -452,9 +453,33 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         Sequence,
         Dialogue,
         Conditional,
+        ConditionalGame3,
         Transition,
         Quest,
-        Codex
+        Codex,
+        TaskEval
+    }
+    public static class PlotRecordEnumExtensions
+    {
+        public static string ToTool(this PlotUsageContext puc) => puc switch
+        {
+            PlotUsageContext.Sequence => "SeqEd",
+            PlotUsageContext.Dialogue => "DlgEd",
+            PlotUsageContext.Package => "PackageEd",
+            PlotUsageContext.Conditional => "PackageEd",
+            PlotUsageContext.ConditionalGame3 => "CndEd",
+            _ => "PlotEd"
+        };
+
+        public static PlotElementType ToPlotElementType(this PlotRecordType prt) => prt switch
+        {
+            PlotRecordType.Bool => PlotElementType.State,
+            PlotRecordType.Int => PlotElementType.Integer,
+            PlotRecordType.Float => PlotElementType.Float,
+            PlotRecordType.Conditional => PlotElementType.Conditional,
+            PlotRecordType.Transition => PlotElementType.Transition,
+            _ => PlotElementType.None
+        };
     }
 
     public class PlotRecord
@@ -477,9 +502,34 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         { }
     }
 
-    public sealed record PlotUsage(int FileKey, int uIndex, bool IsMod,
-        PlotUsageContext context = PlotUsageContext.Package)
+    public class PlotUsage
     {
-        public PlotUsage() : this(default, default, default) { }
+        public int FileKey { get; set; }
+        public int UIndex { get; set; }
+        public bool IsMod { get; set; }
+        public PlotUsageContext Context { get; set; }
+        public PlotUsage(int filekey, int uindex, bool ismod, PlotUsageContext context = PlotUsageContext.Package)
+        {
+            FileKey = filekey;
+            UIndex = uindex;
+            IsMod = ismod;
+            Context = context;
+        }
+        public PlotUsage()
+        {
+
+        }
     }
+    /// <summary>
+    /// Plot usage that contains an extra ID int field, which can be used to locate a specific usage within an export based on the context
+    /// </summary>
+    public class PlotUsageWithID : PlotUsage
+    {
+        public int ContainerID { get; set; }
+        public PlotUsageWithID(int filekey, int uindex, bool ismod, int containerId, PlotUsageContext context = PlotUsageContext.Package) : base(filekey, uindex, ismod, context)
+        {
+            ContainerID = containerId;
+        }
+    }
+
 }

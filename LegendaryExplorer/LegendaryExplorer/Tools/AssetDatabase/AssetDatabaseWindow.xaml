@@ -1070,23 +1070,39 @@
                                                ToolTip="Shows all the files that use this class, and the first export number&#x0a;Right click to open in Package Editor" />
                                 </StackPanel>
                                 <controls:ListBoxScroll x:Name="lstbx_PlotUsages" MinWidth="200" ItemsSource="{Binding SelectedPlotUsages}" Grid.Row="1" >
-                                    <controls:ListBoxScroll.ItemTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Horizontal">
+                                    <controls:ListBoxScroll.Resources>
+                                        <DataTemplate DataType="{x:Type assetDatabase:PlotUsageWithID}">
+                                            <StackPanel Orientation="Vertical">
                                                 <TextBlock>
                                                     <TextBlock.Text>
                                                         <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
                                                             <Binding Path="FileKey"/>
                                                             <Binding Path="FileListExtended" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
-                                                            <Binding Path="uIndex"/>
+                                                            <Binding Path="UIndex"/>
                                                         </MultiBinding>
                                                     </TextBlock.Text>
                                                 </TextBlock>
-                                                <TextBlock Margin="5,0" Text="{Binding context}">
+                                                <TextBlock FontSize="9">
+                                                    <Run Text="{Binding Context}"/> <Run Text="{Binding ContainerID}"></Run>
                                                 </TextBlock>
                                             </StackPanel>
                                         </DataTemplate>
-                                    </controls:ListBoxScroll.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type assetDatabase:PlotUsage}">
+                                            <StackPanel Orientation="Vertical">
+                                                <TextBlock>
+                                                    <TextBlock.Text>
+                                                        <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
+                                                            <Binding Path="FileKey"/>
+                                                            <Binding Path="FileListExtended" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
+                                                            <Binding Path="UIndex"/>
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
+                                                <TextBlock FontSize="9" Text="{Binding Context}">
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </controls:ListBoxScroll.Resources>
                                     <controls:ListBoxScroll.ItemContainerStyle>
                                         <Style TargetType="ListBoxItem">
                                             <Style.Triggers>

@@ -93,29 +93,29 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
                     BioStateEventMap map = ObjectBinary.From<BioStateEventMap>(export);
                     foreach (var evt in map.StateEvents)
                     {
-                        AddBaseUsageToTransition(evt.ID, new PlotUsage(FileKey, export.UIndex, IsMod, PlotUsageContext.Transition));
+                        AddBaseUsageToTransition(evt.ID, new PlotUsageWithID(FileKey, export.UIndex, IsMod, evt.ID, PlotUsageContext.Transition));
                         foreach (var el in evt.Elements)
                         {
                             switch (el)
                             {
                                 case BioStateEventMap.BioStateEventElementBool b:
-                                    AddToBoolRecord(b.GlobalBool, new PlotUsage(FileKey, export.UIndex, IsMod, PlotUsageContext.Transition));
+                                    AddToBoolRecord(b.GlobalBool, new PlotUsageWithID(FileKey, export.UIndex, IsMod, evt.ID, PlotUsageContext.Transition));
                                     break;
                                 case BioStateEventMap.BioStateEventElementConsequence c:
-                                    AddToTransitionRecord(c.Consequence, new PlotUsage(FileKey, export.UIndex, IsMod, PlotUsageContext.Transition));
+                                    AddToTransitionRecord(c.Consequence, new PlotUsageWithID(FileKey, export.UIndex, IsMod, evt.ID, PlotUsageContext.Transition));
                                     break;
                                 case BioStateEventMap.BioStateEventElementFloat f:
-                                    AddToFloatRecord(f.GlobalFloat, new PlotUsage(FileKey, export.UIndex, IsMod, PlotUsageContext.Transition));
+                                    AddToFloatRecord(f.GlobalFloat, new PlotUsageWithID(FileKey, export.UIndex, IsMod, evt.ID, PlotUsageContext.Transition));
                                     break;
                                 case BioStateEventMap.BioStateEventElementInt i:
-                                    AddToIntRecord(i.GlobalInt, new PlotUsage(FileKey, export.UIndex, IsMod, PlotUsageContext.Transition));
+                                    AddToIntRecord(i.GlobalInt, new PlotUsageWithID(FileKey, export.UIndex, IsMod, evt.ID, PlotUsageContext.Transition));
                                     break;
                                 case BioStateEventMap.BioStateEventElementSubstate s:
-                                    AddToBoolRecord(s.GlobalBool, new PlotUsage(FileKey, export.UIndex, IsMod, PlotUsageContext.Transition));
-                                    if(s.ParentIndex >= 0) AddToBoolRecord(s.ParentIndex, new PlotUsage(FileKey, export.UIndex, IsMod, PlotUsageContext.Transition));
+                                    AddToBoolRecord(s.GlobalBool, new PlotUsageWithID(FileKey, export.UIndex, IsMod, evt.ID, PlotUsageContext.Transition));
+                                    if(s.ParentIndex >= 0) AddToBoolRecord(s.ParentIndex, new PlotUsageWithID(FileKey, export.UIndex, IsMod, evt.ID, PlotUsageContext.Transition));
                                     foreach (var sib in s.SiblingIndices)
                                     {
-                                        AddToBoolRecord(sib, new PlotUsage(FileKey, export.UIndex, IsMod, PlotUsageContext.Transition));
+                                        AddToBoolRecord(sib, new PlotUsageWithID(FileKey, export.UIndex, IsMod, evt.ID, PlotUsageContext.Transition));
                                     }
                                     break;
                             }
@@ -126,6 +126,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
                     break;
                 case "BioCodexMap":
                 {
+                    // The data in this codex map does not seem to be used in game. IDs are not in bool table
+                    if (export.ObjectName.Name == "DataManualMap") break;
+
                     BioCodexMap codexMap = ObjectBinary.From<BioCodexMap>(export);
                     foreach (var page in codexMap.Pages)
                     {
@@ -136,25 +139,29 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
                 case "BioQuestMap":
                 {
                     BioQuestMap questMap = ObjectBinary.From<BioQuestMap>(export);
-                    // Parse goals
-                    foreach (var goal in questMap.Quests.SelectMany(q => q.Goals))
+                    foreach (var quest in questMap.Quests)
                     {
-                        if(goal.Conditional >= 0) AddToConditionalRecord(goal.Conditional, new PlotUsage(FileKey, export.UIndex, IsMod, PlotUsageContext.Quest));
-                        if(goal.State >= 0) AddToBoolRecord(goal.State, new PlotUsage(FileKey, export.UIndex, IsMod, PlotUsageContext.Quest));
+                        // Parse goals
+                        foreach (var goal in quest.Goals)
+                        {
+                            if(goal.Conditional >= 0) AddToConditionalRecord(goal.Conditional, new PlotUsageWithID(FileKey, export.UIndex, IsMod, quest.ID, PlotUsageContext.Quest));
+                            if(goal.State >= 0) AddToBoolRecord(goal.State, new PlotUsageWithID(FileKey, export.UIndex, IsMod, quest.ID, PlotUsageContext.Quest));
+                        }
+
+                        // Parse plot items
+                        foreach (var plotItem in quest.PlotItems)
+                        {
+                            if(plotItem.Conditional >= 0) AddToConditionalRecord(plotItem.Conditional, new PlotUsageWithID(FileKey, export.UIndex, IsMod, quest.ID, PlotUsageContext.Quest));
+                            // This is not a bool, I don't think
+                            //if(plotItem.State >= 0) AddToBoolRecord(plotItem.State, new PlotUsageWithID(FileKey, export.UIndex, IsMod, quest.ID, PlotUsageContext.Quest));
+                        }
                     }
 
-                    // Parse plot items
-                    foreach (var plotItem in questMap.Quests.SelectMany(q => q.PlotItems))
-                    {
-                        if(plotItem.Conditional >= 0) AddToConditionalRecord(plotItem.Conditional, new PlotUsage(FileKey, export.UIndex, IsMod, PlotUsageContext.Quest));
-                        if(plotItem.State >= 0) AddToBoolRecord(plotItem.State, new PlotUsage(FileKey, export.UIndex, IsMod, PlotUsageContext.Quest));
-                    }
-                    
                     // Parse Task Evals
                     foreach (var task in questMap.TaskEvals.Concat(questMap.FloatTaskEvals).Concat(questMap.IntTaskEvals).SelectMany(t => t.TaskEvals))
                     {
-                        if(task.Conditional >= 0) AddToConditionalRecord(task.Conditional, new PlotUsage(FileKey, export.UIndex, IsMod, PlotUsageContext.Quest));
-                        if(task.State >= 0) AddToBoolRecord(task.State, new PlotUsage(FileKey, export.UIndex, IsMod, PlotUsageContext.Quest));
+                        if(task.Conditional >= 0) AddToConditionalRecord(task.Conditional, new PlotUsage(FileKey, export.UIndex, IsMod, PlotUsageContext.TaskEval));
+                        if(task.State >= 0) AddToBoolRecord(task.State, new PlotUsage(FileKey, export.UIndex, IsMod, PlotUsageContext.TaskEval));
                     }
 
                     break;

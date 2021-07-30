@@ -810,6 +810,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             {
                 var pu = (PlotUsage) lstbx_PlotUsages.SelectedItem;
                 (usagepkg, contentdir, usagemount) = FileListExtended[pu.FileKey];
+                usageUID = pu.UIndex;
+                tool = pu.Context.ToTool();
             }
             else if (lstbx_Files.SelectedIndex >= 0 && currentView == 0)
             {
@@ -888,7 +890,14 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 case "SeqEd":
                     var SeqEd = new Sequence_Editor.SequenceEditorWPF();
                     SeqEd.Show();
-                    SeqEd.LoadFile(filePath);
+                    if (uindex != 0)
+                    {
+                        SeqEd.LoadFile(filePath, uindex);
+                    }
+                    else
+                    {
+                        SeqEd.LoadFile(filePath);
+                    }
                     break;
                 case "SoundExplorer":
                     var soundplorer = new Soundplorer.SoundplorerWPF();
