@@ -1049,7 +1049,7 @@
                                                             MinWidth="300" SelectionChanged="lstbx_PlotElement_SelectionChanged">
                                         <controls:ListBoxScroll.ItemTemplate>
                                             <DataTemplate>
-                                                <TextBlock>Bool <Run Text="{Binding ElementID}"></Run></TextBlock>
+                                                <TextBlock>Bool <Run Text="{Binding ElementID}"/> - <Run Text="{Binding Path}"/></TextBlock>
                                             </DataTemplate>
                                         </controls:ListBoxScroll.ItemTemplate>
                                     </controls:ListBoxScroll>

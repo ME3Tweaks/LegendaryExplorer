@@ -21,7 +21,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
             "BioSeqAct_PMExecuteTransition", "BioSeqAct_PMExecuteConsequence", "BioSeqAct_PMCheckState",
             "BioSeqAct_PMCheckConditional", "BioSeqVar_StoryManagerInt",
             "BioSeqVar_StoryManagerFloat", "BioSeqVar_StoryManagerBool", "BioSeqVar_StoryManagerStateId",
-            "SFXSceneShopNodePlotCheck", "BioWorldInfo", "BioStateEventMap", "BioCodexMap", "BioQuestMap"
+            "SFXSceneShopNodePlotCheck", "BioWorldInfo", "BioStateEventMap", "BioCodexMap", "BioQuestMap", "BioConversation"
         };
 
         public override void ScanExport(ExportEntry export, int FileKey, bool IsMod)
@@ -164,6 +164,36 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
                         if(task.State >= 0) AddToBoolRecord(task.State, new PlotUsage(FileKey, export.UIndex, IsMod, PlotUsageContext.TaskEval));
                     }
 
+                    break;
+                }
+                case "BioConversation":
+                {
+                    var entries = export.GetProperty<ArrayProperty<StructProperty>>("m_EntryList") ?? new ArrayProperty<StructProperty>("m_EntryList");
+                    var replies = export.GetProperty<ArrayProperty<StructProperty>>("m_ReplyList") ?? new ArrayProperty<StructProperty>("m_ReplyList");
+                    foreach (var node in entries.Values.Concat(replies.Values))
+                    {
+                        var strRef = node.GetProp<StringRefProperty>("srText")?.Value ?? -1;
+                        var conditional = node.GetProp<IntProperty>("nConditionalFunc")?.Value ?? -1;
+                        var transition = node.GetProp<IntProperty>("nStateTransition")?.Value ?? -1;
+                        bool isCond = node.GetProp<BoolProperty>("bFireConditional")?.Value ?? true;
+
+                        if (conditional > 0)
+                        {
+                            if (isCond)
+                            {
+                                AddToConditionalRecord(conditional, new PlotUsageWithID(FileKey, export.UIndex, IsMod, strRef, PlotUsageContext.Dialogue));
+                            }
+                            else
+                            {
+                                AddToBoolRecord(conditional, new PlotUsageWithID(FileKey, export.UIndex, IsMod, strRef, PlotUsageContext.Dialogue));
+                            }
+                        }
+
+                        if (transition > 0)
+                        {
+                            AddToTransitionRecord(transition, new PlotUsageWithID(FileKey, export.UIndex, IsMod, strRef, PlotUsageContext.Dialogue));
+                        }
+                    }
                     break;
                 }
             }

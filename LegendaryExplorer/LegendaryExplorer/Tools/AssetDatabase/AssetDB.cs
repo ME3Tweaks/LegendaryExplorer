@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BinaryPack.Attributes;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.PlotDatabase;
 
@@ -130,6 +131,14 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public bool Any()
         {
             return Bools.Any() || Ints.Any() || Floats.Any() || Conditionals.Any() || Transitions.Any();
+        }
+
+        public void LoadPlotPaths(MEGame game)
+        {
+            foreach (var plot in Bools.Concat(Ints).Concat(Floats).Concat(Conditionals).Concat(Transitions))
+            {
+                plot.LoadPath(game);
+            }
         }
     }
 
@@ -492,6 +501,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         public PlotUsage BaseUsage { get; set; }
 
+        [IgnoredMember]
+        public string Path { get; set; }
+
         public PlotRecord(PlotRecordType type, int id)
         {
             this.ElementType = type;
@@ -500,6 +512,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         public PlotRecord()
         { }
+
+        public void LoadPath(MEGame game) =>
+            Path = PlotDatabases.FindPlotPathFromID(ElementID, ElementType.ToPlotElementType(), game);
     }
 
     public class PlotUsage

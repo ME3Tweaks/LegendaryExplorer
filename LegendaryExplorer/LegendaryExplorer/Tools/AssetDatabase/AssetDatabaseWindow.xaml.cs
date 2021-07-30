@@ -37,8 +37,6 @@ using LegendaryExplorerCore.PlotDatabase;
 
 namespace LegendaryExplorer.Tools.AssetDatabase
 {
-
-
     /// <summary>
     /// Interaction logic for AssetDB
     /// </summary>
@@ -357,6 +355,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             database.FileList.AddRange(pdb.FileList);
             database.ContentDir.AddRange(pdb.ContentDir);
             database.AddRecords(pdb);
+            database.PlotUsages.LoadPlotPaths(game);
         }
         public static async Task<AssetDB> ParseDBAsync(MEGame dbgame, string dbpath, string build, CancellationToken cancel)
         {
@@ -812,6 +811,12 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 (usagepkg, contentdir, usagemount) = FileListExtended[pu.FileKey];
                 usageUID = pu.UIndex;
                 tool = pu.Context.ToTool();
+                if (tool == "PlotEd")
+                {
+                    OpenInPlotEditor(GetFilePath(usagepkg, contentdir), pu);
+                    return;
+                }
+                
             }
             else if (lstbx_Files.SelectedIndex >= 0 && currentView == 0)
             {
@@ -824,7 +829,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 return;
             }
 
-            OpenInToolkit(tool, usagepkg, contentdir, usageUID);
+            OpenInToolkit(tool, GetFilePath(usagepkg, contentdir), usageUID);
         }
         private void OpenSourcePkg(object obj)
         {
@@ -841,9 +846,10 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             }
             var contentdir = FileListExtended[sourcedefaultUsage].Directory;
 
-            OpenInToolkit("PackageEditor", sourcepkg, contentdir, sourceexp);
+            OpenInToolkit("PackageEditor", GetFilePath(sourcepkg, contentdir), sourceexp);
         }
-        private void OpenInToolkit(string tool, string filename, string contentdir, int uindex = 0)
+
+        private string GetFilePath(string filename, string contentdir)
         {
             string filePath = null;
             string rootPath = MEDirectories.GetDefaultGamePath(CurrentGame);
@@ -851,7 +857,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             if (rootPath == null || !Directory.Exists(rootPath))
             {
                 MessageBox.Show($"{CurrentGame} has not been found. Please check your Legendary Explorer settings");
-                return;
+                return null;
             }
 
             var supportedExtensions = new List<string> { ".pcc", ".u", ".upk", ".sfm" };
@@ -861,9 +867,13 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             if (filePath == null)
             {
                 MessageBox.Show($"File {filename} not found in content directory {contentdir}.");
-                return;
+                return null;
             }
 
+            return filePath;
+        }
+        private void OpenInToolkit(string tool, string filePath, int uindex = 0)
+        {
             switch (tool)
             {
                 case "Meshplorer":
@@ -919,6 +929,36 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             }
         }
 
+        /// <summary>
+        /// Open in Toolkit with some extra logic to go directly to a transition/quest/codex
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="usage"></param>
+        private void OpenInPlotEditor(string filePath, PlotUsage usage)
+        {
+            var plotEditor = new PlotEditor.PlotEditorWindow();
+            plotEditor.Show();
+            plotEditor.LoadFile(filePath);
+            if (usage is PlotUsageWithID usageWithId)
+            {
+                switch (usageWithId.Context)
+                {
+                    case PlotUsageContext.Transition:
+                        plotEditor.GoToStateEvent(usageWithId.ContainerID);
+                        break;
+                    case PlotUsageContext.Codex:
+                        plotEditor.GoToCodex(usageWithId.ContainerID);
+                        break;
+                    case PlotUsageContext.Quest:
+                        plotEditor.GoToQuest(usageWithId.ContainerID);
+                        break;
+                    case PlotUsageContext.TaskEval:
+                        break;
+                    default: break;
+                }
+            }
+        }
+
         private void OpenFileInWindowsExplorer()
         {
             string filename = null;
@@ -929,24 +969,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 (filename, contentdir, mount) = (FileDirPair) lstbx_Files.SelectedItem;
             }
             else return;
-            string filePath = null;
-            string rootPath = MEDirectories.GetDefaultGamePath(CurrentGame);
 
-            if (rootPath == null || !Directory.Exists(rootPath))
-            {
-                MessageBox.Show($"{CurrentGame} has not been found. Please check your Legendary Explorer settings");
-                return;
-            }
-
-            var supportedExtensions = new List<string> { ".pcc", ".u", ".upk", ".sfm" };
-            filename = $"{filename}.*";
-            filePath = Directory.EnumerateFiles(rootPath, filename, SearchOption.AllDirectories).FirstOrDefault(f => f.Contains(contentdir) && supportedExtensions.Contains(Path.GetExtension(f).ToLowerInvariant()));
-
-            if (filePath == null)
-            {
-                MessageBox.Show($"File {filename} not found in content directory {contentdir}.");
-                return;
-            }
+            string filePath = GetFilePath(filename, contentdir);
 
             string cmd = "explorer.exe";
             string arg = "/select, " + filePath;
@@ -2406,6 +2430,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     {
                         FileKey = FileListExtended.FindIndex(f => f.FileName == CurrentConvo.Item2);
                     }
+                    else if (currentView == 9 && lstbx_PlotUsages.SelectedIndex >= 0)
+                    {
+                        var pu = (PlotUsage)lstbx_PlotUsages.SelectedItem;
+                        FileKey = pu.FileKey;
+                    }
                     else if (lstbx_Files.SelectedIndex >= 0 && currentView == 0)
                     {
                         foreach (var fr in lstbx_Files.SelectedItems)
@@ -2649,6 +2678,10 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             if (!CurrentGame.IsGame1() && ParseConvos)
             {
                 GetConvoLinesBackground();
+            }
+            if (ParsePlotUsages)
+            {
+                CurrentDataBase.PlotUsages.LoadPlotPaths(game);
             }
         }
 
