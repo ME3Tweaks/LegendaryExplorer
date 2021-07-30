@@ -470,7 +470,6 @@
 
   <ItemGroup>
     <Folder Include="Resources\FileAssocIcons\" />
-    <Folder Include="Tools\AssetDatabase\Scanners\" />
     <Folder Include="Tools\PlotEditor\SFXGame\biodefine\" />
     <Folder Include="UserControls\ExportLoaderControls\ScriptEditor\" />
   </ItemGroup>

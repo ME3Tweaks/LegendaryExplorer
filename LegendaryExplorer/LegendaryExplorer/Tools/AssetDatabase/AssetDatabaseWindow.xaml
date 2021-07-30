@@ -1072,15 +1072,19 @@
                                 <controls:ListBoxScroll x:Name="lstbx_PlotUsages" MinWidth="200" ItemsSource="{Binding SelectedPlotUsages}" Grid.Row="1" >
                                     <controls:ListBoxScroll.ItemTemplate>
                                         <DataTemplate>
-                                            <TextBlock>
-                                                <TextBlock.Text>
-                                                    <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
-                                                        <Binding Path="FileKey"/>
-                                                        <Binding Path="FileListExtended" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
-                                                        <Binding Path="UIndex"/>
-                                                    </MultiBinding>
-                                                </TextBlock.Text>
-                                            </TextBlock>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock>
+                                                    <TextBlock.Text>
+                                                        <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
+                                                            <Binding Path="FileKey"/>
+                                                            <Binding Path="FileListExtended" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
+                                                            <Binding Path="uIndex"/>
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
+                                                <TextBlock Margin="5,0" Text="{Binding context}">
+                                                </TextBlock>
+                                            </StackPanel>
                                         </DataTemplate>
                                     </controls:ListBoxScroll.ItemTemplate>
                                     <controls:ListBoxScroll.ItemContainerStyle>

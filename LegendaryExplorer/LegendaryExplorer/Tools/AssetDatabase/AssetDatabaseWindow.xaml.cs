@@ -1054,7 +1054,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 if (selectedRecord != null)
                 {
                     SelectedPlotUsages.Clear();
-                    SelectedPlotUsages.AddRange(selectedRecord.ReadBy);
+                    SelectedPlotUsages.AddRange(selectedRecord.Usages);
                 }
             }
         }

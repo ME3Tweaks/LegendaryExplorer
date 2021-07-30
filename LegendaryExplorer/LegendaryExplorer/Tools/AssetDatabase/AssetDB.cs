@@ -446,14 +446,26 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         Transition
     }
 
+    public enum PlotUsageContext
+    {
+        Package,
+        Sequence,
+        Dialogue,
+        Conditional,
+        Transition,
+        Quest,
+        Codex
+    }
+
     public class PlotRecord
     {
         public PlotRecordType ElementType { get; set; }
 
         public int ElementID { get; set; }
 
-        public List<PlotUsage> SetBy { get; set; } = new();
-        public List<PlotUsage> ReadBy { get; set; } = new();
+        public List<PlotUsage> Usages { get; set; } = new();
+
+        public PlotUsage BaseUsage { get; set; }
 
         public PlotRecord(PlotRecordType type, int id)
         {
@@ -465,22 +477,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         { }
     }
 
-    public class PlotUsage
+    public sealed record PlotUsage(int FileKey, int uIndex, bool IsMod,
+        PlotUsageContext context = PlotUsageContext.Package)
     {
-
-        public int FileKey { get; set; }
-
-        public int UIndex { get; set; }
-
-        public bool IsMod { get; set; }
-
-        public PlotUsage(int FileKey, int uIndex, bool IsMod)
-        {
-            this.FileKey = FileKey;
-            this.UIndex = uIndex;
-            this.IsMod = IsMod;
-        }
-        public PlotUsage()
-        { }
+        public PlotUsage() : this(default, default, default) { }
     }
 }

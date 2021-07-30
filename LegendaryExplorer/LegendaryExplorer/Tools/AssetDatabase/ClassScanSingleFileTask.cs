@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using LegendaryExplorer.Tools.AssetDatabase.Scanners;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.ME1;
@@ -37,19 +38,13 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         private readonly bool ScanLines;
         private readonly bool ScanPlotUsages;
 
-        private readonly HashSet<string> classesWithPlotData = new()
-        {
-            "BioSeqAct_PMExecuteTransition", "BioSeqAct_PMExecuteConsequence", "BioSeqAct_PMCheckState",
-            "BioSeqAct_PMCheckConditional", "BioSeqVar_StoryManagerInt",
-            "BioSeqVar_StoryManagerFloat", "BioSeqVar_StoryManagerBool", "BioSeqVar_StoryManagerStateId",
-            "SFXSceneShopNodePlotCheck", "BioWorldInfo", "BioStateEventMap", "BioCodexMap", "BioQuestMap"
-        };
-
         /// <summary>
         /// Dumps Property data to concurrent dictionary
         /// </summary>
         public void dumpPackageFile(MEGame GameBeingDumped, ConcurrentAssetDB dbScanner)
         {
+            PlotUsageScanner puScanner = new PlotUsageScanner(dbScanner);
+
             try
             {
                 using IMEPackage pcc = MEPackageHandler.OpenMEPackage(File);
@@ -665,88 +660,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                                     dbScanner.GeneratedConvo.TryAdd(assetKey, NewConv);
                                 }
                             }
-                            else if (ScanPlotUsages && classesWithPlotData.Contains(className))
+                            else if (ScanPlotUsages)
                             {
-                                switch (className)
-                                {
-                                    case "BioSeqAct_PMExecuteTransition":
-                                    case "BioSeqAct_PMExecuteConsequence":
-                                    {
-                                        //var transition = export.GetProperty<IntProperty>("m_nIndex").Value;
-                                        //if (!dbScanner.GeneratedTransitionRecords.ContainsKey(transition))
-                                        //{
-                                        //    var newTransRecord = new PlotRecord(PlotRecordType.Transition, transition);
-                                        //    dbScanner.GeneratedBoolRecords[transition] = newTransRecord;
-                                        //}
-
-                                        //var transitionRecord = dbScanner.GeneratedTransitionRecords[transition];
-                                        //lock (transitionRecord)
-                                        //{   
-                                        //    transitionRecord.ReadBy.Add(new PlotUsage(FileKey, uindex, IsMod));
-                                        //}
-                                        break;
-                                    }
-                                    case "BioSeqAct_PMCheckState":
-                                    case "BioSeqVar_StoryManagerBool":
-                                    case "BioSeqVar_StoryManagerStateId":
-                                    {
-                                        var boolId = export.GetProperty<IntProperty>("m_nIndex")?.Value ?? -1;
-                                        if (boolId == -1) break;
-                                        if (dbScanner.GeneratedBoolRecords.ContainsKey(boolId))
-                                        {
-                                            var boolrecord = dbScanner.GeneratedBoolRecords[boolId];
-                                            lock (boolrecord)
-                                            {   
-                                                boolrecord.ReadBy.Add(new PlotUsage(FileKey, uindex, IsMod));
-                                            }
-                                        }
-                                        else
-                                        {
-                                            var newBoolRecord = new PlotRecord(PlotRecordType.Bool, boolId);
-                                            if (dbScanner.GeneratedBoolRecords.TryAdd(boolId, newBoolRecord))
-                                            {
-                                                var boolrecord = dbScanner.GeneratedBoolRecords[boolId];
-                                                lock (boolrecord)
-                                                {   
-                                                    boolrecord.ReadBy.Add(new PlotUsage(FileKey, uindex, IsMod));
-                                                }
-                                            }
-                                        }
-
-                                        break;
-                                    }
-                                    case "BioSeqVar_StoryManagerFloat":
-                                        var floatId = export.GetProperty<IntProperty>("m_nIndex").Value;
-                                        break;
-                                    case "BioSeqVar_StoryManagerInt":
-                                        var intId = export.GetProperty<IntProperty>("m_nIndex").Value;
-                                        break;
-                                    case "BioSeqAct_PMCheckConditional":
-                                        var condId = export.GetProperty<IntProperty>("m_nIndex").Value;
-                                        break;
-                                    case "BioWorldInfo":
-                                        var bioWorldCondId = export.GetProperty<IntProperty>("Conditional")?.Value;
-                                        break;
-                                    case "SFXSceneShopNodePlotCheck":
-                                        var mnId = export.GetProperty<IntProperty>("m_nIndex")?.Value;
-                                        Enum.TryParse(export.GetProperty<EnumProperty>("VarType")?.Value.Name, out ESFXSSPlotVarType type);
-                                        PlotRecordType varType = type switch
-                                        {
-                                            ESFXSSPlotVarType.PlotVar_Float => PlotRecordType.Float,
-                                            ESFXSSPlotVarType.PlotVar_State => PlotRecordType.Bool,
-                                            ESFXSSPlotVarType.PlotVar_Int => PlotRecordType.Int
-                                        };
-                                        break;
-                                    case "BioStateEventMap":
-                                        // Go to hell
-                                        break;
-                                    case "BioCodexMap":
-                                        // Slightly better hell
-                                        break;
-                                    case "BioQuestMap":
-                                        // Still hell
-                                        break;
-                                }
+                                puScanner.ScanExport(export, FileKey, IsMod);
                             }
                         }
                         else if (export is not null)
