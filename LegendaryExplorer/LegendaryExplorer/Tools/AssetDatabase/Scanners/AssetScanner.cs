@@ -4,18 +4,32 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
 
 namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
 {
     internal abstract class AssetScanner
     {
-        public ConcurrentAssetDB db { get; set; }
 
-        protected AssetScanner(ConcurrentAssetDB assetDb)
+        protected AssetScanner()
         {
-            db = assetDb;
         }
 
-        public abstract void ScanExport(ExportEntry export, int FileKey, bool IsMod);
+        public abstract void ScanExport(ExportScanInfo e, ConcurrentAssetDB db, AssetDBScanOptions options);
+
+        protected static string GetTopParentPackage(IEntry entry)
+        {
+            while (true)
+            {
+                if (entry.HasParent)
+                {
+                    entry = entry.Parent;
+                }
+                else
+                {
+                    return entry.ObjectName;
+                }
+            }
+        }
     }
 }

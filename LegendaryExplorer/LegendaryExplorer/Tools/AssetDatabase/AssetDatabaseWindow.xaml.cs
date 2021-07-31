@@ -109,16 +109,16 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         /// <summary>
         /// Items show in the list that are currently being processed
         /// </summary>
-        public ObservableCollectionExtended<ClassScanSingleFileTask> CurrentDumpingItems { get; set; } = new();
+        public ObservableCollectionExtended<SingleFileScanner> CurrentDumpingItems { get; set; } = new();
 
         /// <summary>
         /// All items in the queue
         /// </summary>
-        private List<ClassScanSingleFileTask> AllDumpingItems;
+        private List<SingleFileScanner> AllDumpingItems;
 
         private static BackgroundWorker dbworker = new();
 
-        private ActionBlock<ClassScanSingleFileTask> ProcessingQueue;
+        private ActionBlock<SingleFileScanner> ProcessingQueue;
         /// <summary>
         /// Cancelation of dumping
         /// </summary>
@@ -2524,6 +2524,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             await dumpPackages(files, CurrentGame);
             MemoryManager.SetUsePooledMemory(false);
         }
+
         private async Task dumpPackages(List<string> files, MEGame game)
         {
             var beginTime = DateTime.Now;
@@ -2578,7 +2579,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
             IsBusy = true;
             BusyHeader = $"Generating database for {CurrentGame}";
-            ProcessingQueue = new ActionBlock<ClassScanSingleFileTask>(x =>
+            ProcessingQueue = new ActionBlock<SingleFileScanner>(x =>
             {
                 if (x.DumpCanceled)
                 {
@@ -2586,7 +2587,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     return;
                 }
                 Application.Current.Dispatcher.Invoke(() => CurrentDumpingItems.Add(x));
-                x.dumpPackageFile(game, GeneratedDB); // What to do on each item
+                x.DumpPackageFile(game, GeneratedDB); // What to do on each item
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     BusyText = $"Scanned {OverallProgressValue}/{OverallProgressMaximum} files\n\n{GeneratedDB.GetProgressString()}";
@@ -2595,11 +2596,12 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 });
             }, new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = Math.Clamp(Environment.ProcessorCount, 1, 4) });
 
-            AllDumpingItems = new List<ClassScanSingleFileTask>();
+            AllDumpingItems = new List<SingleFileScanner>();
             CurrentDumpingItems.ClearEx();
+            var scanOptions = new AssetDBScanOptions(scanCRC, ParseConvos, ParsePlotUsages);
             foreach (var fkey in fileKeys)
             {
-                var threadtask = new ClassScanSingleFileTask(fkey.Item2, fkey.Item1, scanCRC, ParseConvos, ParsePlotUsages);
+                var threadtask = new SingleFileScanner(fkey.Item2, fkey.Item1, scanOptions);
                 AllDumpingItems.Add(threadtask); //For setting cancelation value
                 ProcessingQueue.Post(threadtask); // Post all items to the block
 

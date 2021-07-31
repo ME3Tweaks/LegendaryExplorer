@@ -462,7 +462,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         Sequence,
         Dialogue,
         Conditional,
-        ConditionalGame3,
+        CndFile,
         Transition,
         Quest,
         Codex,
@@ -476,7 +476,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             PlotUsageContext.Dialogue => "DlgEd",
             PlotUsageContext.Package => "PackageEd",
             PlotUsageContext.Conditional => "PackageEd",
-            PlotUsageContext.ConditionalGame3 => "CndEd",
+            PlotUsageContext.CndFile => "CndEd",
             _ => "PlotEd"
         };
 
