@@ -946,14 +946,17 @@ namespace LegendaryExplorer.Tools.PackageEditor
         private void NewLevelFile()
         {
             string gameString = InputComboBoxDialog.GetValue(this, "Choose game to create a level file for:",
-                                                          "Create new level file", new[] { "ME3", "ME2" }, "ME3");
-            if (Enum.TryParse(gameString, out MEGame game) && game is MEGame.ME3 or MEGame.ME2)
+                                                          "Create new level file", new[] { "LE3", "ME3", "ME2" }, "ME3");
+            if (Enum.TryParse(gameString, out MEGame game) && game is MEGame.ME3 or MEGame.ME2 or MEGame.LE3)
             {
                 var dlg = new SaveFileDialog
                 {
+                    
                     Filter = GameFileFilters.ME3ME2SaveFileFilter,
                     OverwritePrompt = true
                 };
+                if (game.IsLEGame())
+                    dlg.Filter = GameFileFilters.LESaveFileFilter;
                 if (dlg.ShowDialog() == true)
                 {
                     if (File.Exists(dlg.FileName))
@@ -962,6 +965,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     }
                     string emptyLevelName = game switch
                     {
+                        MEGame.LE3 => "LE3EmptyLevel",
                         MEGame.ME2 => "ME2EmptyLevel",
                         _ => "ME3EmptyLevel"
                     };
@@ -980,6 +984,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     var packguid = Guid.NewGuid();
                     var package = Pcc.GetUExport(game switch
                     {
+                        MEGame.LE3 => 6,
                         MEGame.ME2 => 7,
                         _ => 1
                     });
