@@ -304,7 +304,7 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
         private void SaveFile(string filePath = null)
         {
             File.ConditionalEntries.Clear();
-            File.ConditionalEntries.AddRange(Conditionals.Select(c => c.Conditional));
+            File.ConditionalEntries.AddRange(Conditionals.Select(c => c.Conditional).OrderBy(c => c.ID));
             File.ToFile(filePath);
 
             //don't reset modified state on save as
