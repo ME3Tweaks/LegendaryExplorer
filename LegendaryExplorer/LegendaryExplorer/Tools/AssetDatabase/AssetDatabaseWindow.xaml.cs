@@ -623,6 +623,13 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             btn_LinePlaybackToggle.Content = "Toggle Line Playback";
             menu_fltrPerf.IsEnabled = false;
             btn_LinePlaybackToggle.IsEnabled = true;
+            tabCtrl_plotUsage.SelectedIndex = 0;
+            SelectedPlotUsages.ClearEx();
+            lstbx_PlotBool.SelectedIndex = -1;
+            lstbx_PlotInt.SelectedIndex = -1;
+            lstbx_PlotFloat.SelectedIndex = -1;
+            lstbx_PlotTrans.SelectedIndex = -1;
+            lstbx_PlotCond.SelectedIndex = -1;
             bool updateDefaultDB = CurrentGame != MEGame.Unknown;
             switch (p)
             {
@@ -787,6 +794,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             string usagepkg = null;
             int usagemount = 0;
             int usageUID = 0;
+            int strRef = 0;
             string contentdir = null;
 
             if (lstbx_Usages.SelectedIndex >= 0 && currentView == 1)
@@ -833,9 +841,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             }
             else if (lstbx_Lines.SelectedIndex >= 0 && currentView == 8)
             {
+                var lu = (ConvoLine) lstbx_Lines.SelectedItem;
                 usagepkg = CurrentConvo.Item2;
                 contentdir = CurrentConvo.Item4;
                 usageUID = CurrentConvo.Item3;
+                strRef = lu.StrRef;
             }
             else if (lstbx_PlotUsages.SelectedIndex >= 0 && currentView == 9)
             {
@@ -848,7 +858,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     OpenInPlotEditor(GetFilePath(usagepkg, contentdir), pu);
                     return;
                 }
-                
+                if (tool == "DlgEd" && pu.ContainerID.HasValue)
+                {
+                    strRef = pu.ContainerID.Value;
+                }
+
             }
             else if (lstbx_Files.SelectedIndex >= 0 && currentView == 0)
             {
@@ -861,7 +875,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 return;
             }
 
-            OpenInToolkit(tool, GetFilePath(usagepkg, contentdir), usageUID);
+            OpenInToolkit(tool, GetFilePath(usagepkg, contentdir), usageUID, strRef);
         }
         private void OpenSourcePkg(object obj)
         {
@@ -904,7 +918,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
             return filePath;
         }
-        private void OpenInToolkit(string tool, string filePath, int uindex = 0)
+        private void OpenInToolkit(string tool, string filePath, int uindex = 0, int strRef = 0)
         {
             switch (tool)
             {
@@ -927,7 +941,15 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 case "DlgEd":
                     var diagEd = new DialogueEditor.DialogueEditorWindow();
                     diagEd.Show();
-                    diagEd.LoadFile(filePath);
+                    if (uindex != 0)
+                    {
+                        diagEd.LoadFile(filePath, uindex);
+                        if(strRef != 0) diagEd.TrySelectStrRef(strRef);
+                    }
+                    else
+                    {
+                        diagEd.LoadFile(filePath);
+                    }
                     break;
                 case "SeqEd":
                     var SeqEd = new Sequence_Editor.SequenceEditorWPF();

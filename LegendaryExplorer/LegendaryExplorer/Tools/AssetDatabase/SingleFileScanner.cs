@@ -41,7 +41,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 AssetKey = export.InstancedFullPath.ToLower();
                 ObjectNameInstanced = export.ObjectName.Instanced;
                 ClassName = export.ClassName;
-                IsDefault = export.IsDefaultObject;
+                IsDefault = export?.IsDefaultObject == true;
             }
         }
 

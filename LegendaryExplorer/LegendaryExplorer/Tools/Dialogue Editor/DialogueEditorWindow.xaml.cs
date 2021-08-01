@@ -541,6 +541,16 @@ namespace LegendaryExplorer.DialogueEditor
             //System.Diagnostics.Debug.WriteLine("Package Is Loaded.");
             return Pcc != null;
         }
+
+        public void LoadFile(string fileName, int uIndex)
+        {
+            LoadFile(fileName);
+            var convo = Conversations.FirstOrDefault(c => c.ExportUID == uIndex);
+            if (convo != null)
+            {
+                Conversations_ListBox.SelectedItem = convo;
+            }
+        }
         public void LoadFile(string fileName)
         {
             try
@@ -3323,6 +3333,22 @@ namespace LegendaryExplorer.DialogueEditor
                         seqEditor.Show();
                     }
                     break;
+            }
+        }
+
+        public void TrySelectStrRef(int strRef)
+        {
+            var selectedObj = SelectedObjects.FirstOrDefault();
+            DiagNode tgt = CurrentObjects.AfterThenBefore(selectedObj).OfType<DiagNode>().FirstOrDefault(d => d.Node.LineStrRef == strRef);
+            if (tgt != null)
+            {
+                DialogueNode_Selected(tgt);
+                graphEditor.Camera.AnimateViewToCenterBounds(tgt.GlobalFullBounds, false, 100);
+                graphEditor.Refresh();
+            }
+            else
+            {
+                MessageBox.Show($"\"{searchtext}\" not found");
             }
         }
 

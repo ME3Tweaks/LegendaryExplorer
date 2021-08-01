@@ -19,6 +19,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
 
         public override void ScanExport(ExportScanInfo e, ConcurrentAssetDB db, AssetDBScanOptions options)
         {
+            if (e.IsDefault) return;
             var mSets = GetMaterialSettings(e, db);
             if (e.ClassName == "Material" || e.ClassName == "DecalMaterial")
             {

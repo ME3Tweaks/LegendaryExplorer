@@ -17,6 +17,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
 
         public override void ScanExport(ExportScanInfo e, ConcurrentAssetDB db, AssetDBScanOptions options)
         {
+            if (e.IsDefault) return;
             if (e.ClassName == "ParticleSystem" || e.ClassName == "RvrClientEffect" || e.ClassName == "BioVFXTemplate")
             {
                 var particleSysUsage = new ParticleSysUsage(e.FileKey, e.Export.UIndex, e.IsDlc, e.IsMod);

@@ -1100,7 +1100,7 @@
                                         <controls:ListBoxScroll.ContextMenu>
                                             <ContextMenu>
                                                 <MenuItem Header="Open in Plot Database" Command="{Binding OpenInPlotDBCommand}" ToolTip="Opens this plot element in the Plot Database" />
-                                                <MenuItem Header="Open Element Definition" Command="{Binding OpenPEDefinitionCommand}" ToolTip="Opens this element's definition in the toolset" />
+                                                <MenuItem Header="Open Transition" Command="{Binding OpenPEDefinitionCommand}" ToolTip="Opens this transition in Plot Editor" />
                                             </ContextMenu>
                                         </controls:ListBoxScroll.ContextMenu>
                                     </controls:ListBoxScroll>
@@ -1116,7 +1116,7 @@
                                         <controls:ListBoxScroll.ContextMenu>
                                             <ContextMenu>
                                                 <MenuItem Header="Open in Plot Database" Command="{Binding OpenInPlotDBCommand}" ToolTip="Opens this plot element in the Plot Database" />
-                                                <MenuItem Header="Open Element Definition" Command="{Binding OpenPEDefinitionCommand}" ToolTip="Opens this element's definition in the toolset" />
+                                                <MenuItem Header="Open Conditional" Command="{Binding OpenPEDefinitionCommand}" ToolTip="Opens this conditional in the toolset" />
                                             </ContextMenu>
                                         </controls:ListBoxScroll.ContextMenu>
                                     </controls:ListBoxScroll>
@@ -1167,7 +1167,7 @@
                                     </controls:ListBoxScroll.ItemContainerStyle>
                                     <controls:ListBoxScroll.ContextMenu>
                                         <ContextMenu>
-                                            <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor" />
+                                            <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in it's relevant tool" />
                                         </ContextMenu>
                                     </controls:ListBoxScroll.ContextMenu>
                                 </controls:ListBoxScroll>

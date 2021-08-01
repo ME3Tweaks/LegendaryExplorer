@@ -18,6 +18,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
 
         public override void ScanExport(ExportScanInfo e, ConcurrentAssetDB db, AssetDBScanOptions options)
         {
+            if (e.IsDefault) return;
             if (e.ClassName is "GFxMovieInfo" or "BioSWF")
             {
                 if (db.GeneratedGUI.ContainsKey(e.AssetKey))

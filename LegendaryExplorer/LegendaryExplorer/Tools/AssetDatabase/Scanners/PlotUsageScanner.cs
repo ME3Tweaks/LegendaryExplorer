@@ -134,7 +134,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
                     BioCodexMap codexMap = ObjectBinary.From<BioCodexMap>(e.Export);
                     foreach (var page in codexMap.Pages)
                     {
-                        AddToBoolRecord(page.ID, new PlotUsage(e.FileKey, e.Export.UIndex, e.IsMod, PlotUsageContext.Codex));
+                        AddToBoolRecord(page.ID, new PlotUsage(e.FileKey, e.Export.UIndex, e.IsMod, PlotUsageContext.Codex, page.ID));
                     }
                     break;
                 }

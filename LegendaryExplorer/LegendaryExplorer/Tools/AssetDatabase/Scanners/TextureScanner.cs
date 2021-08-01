@@ -21,6 +21,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
 
         public override void ScanExport(ExportScanInfo e, ConcurrentAssetDB db, AssetDBScanOptions options)
         {
+            if (e.IsDefault) return;
             if (e.ClassName == "Texture2D" || e.ClassName == "TextureCube" || e.ClassName == "TextureMovie")
             {
                 var objectNameInstanced = e.ObjectNameInstanced;
