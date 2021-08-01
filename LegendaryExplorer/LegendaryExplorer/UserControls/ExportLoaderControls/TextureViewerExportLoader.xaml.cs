@@ -505,5 +505,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             ImageStretchOption = Stretch.Uniform;
         }
+        private void CRC_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (TextureCRC != 0 && e.LeftButton == MouseButtonState.Pressed && e.ClickCount == 2)
+            {
+                Clipboard.SetText(TextureCRC.ToString("X8"));
+            }
+        }
     }
 }
