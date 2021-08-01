@@ -144,26 +144,31 @@ namespace LegendaryExplorerCore.PlotDatabase
             return null;
         }
 
-        public static string FindPlotPathFromID(int id, PlotElementType type, MEGame game)
+        public static PlotElement FindPlotElementFromID(int id, PlotElementType type, MEGame game)
         {
             switch (type)
             {
                 case PlotElementType.Flag:
                 case PlotElementType.State:
                 case PlotElementType.SubState:
-                    return FindPlotBoolByID(id, game)?.Path ?? "";
+                    return FindPlotBoolByID(id, game);
                 case PlotElementType.Integer:
-                    return FindPlotIntByID(id, game)?.Path ?? "";
+                    return FindPlotIntByID(id, game);
                 case PlotElementType.Float:
-                    return FindPlotFloatByID(id, game)?.Path ?? "";
+                    return FindPlotFloatByID(id, game);
                 case PlotElementType.Conditional:
-                    return FindPlotConditionalByID(id, game)?.Path ?? "";
+                    return FindPlotConditionalByID(id, game);
                 case PlotElementType.Transition:
                 case PlotElementType.Consequence:
-                    return FindPlotTransitionByID(id, game)?.Path ?? "";
+                    return FindPlotTransitionByID(id, game);
                 default:
-                    return "";
+                    return null;
             }
+        }
+
+        public static string FindPlotPathFromID(int id, PlotElementType type, MEGame game)
+        {
+            return FindPlotElementFromID(id, type, game)?.Path ?? "";
         }
 
         private static void EnsureDatabaseLoaded(MEGame game, bool isbioware)

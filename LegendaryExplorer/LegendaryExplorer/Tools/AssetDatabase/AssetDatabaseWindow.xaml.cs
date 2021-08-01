@@ -197,6 +197,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public ICommand EditFileListCommand { get; set; }
         public ICommand CopyToClipboardCommand { get; set; }
         public ICommand OpenInWindowsExplorerCommand { get; set; }
+        public ICommand OpenInPlotDBCommand { get; set; }
+        public ICommand OpenPEDefinitionCommand { get; set; }
         private bool CanCancelDump(object obj)
         {
             return ProcessingQueue != null && ProcessingQueue.Completion.Status == TaskStatus.WaitingForActivation && !DumpCanceled;
@@ -235,11 +237,17 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         {
             return currentView == 6;
         }
+        private bool IsViewingPlotElements(object obj)
+        {
+            return currentView == 9;
+        }
         private bool CanUseAnimViewer(object obj)
         {
             return currentView == 5 && CurrentGame == MEGame.ME3 && lstbx_Anims.SelectedIndex >= 0 && !((lstbx_Anims.SelectedItem as AnimationRecord)?.IsAmbPerf ?? true);
         }
         private bool IsAnimSequenceSelected() => currentView == 5 && lstbx_Anims.SelectedIndex >= 0 && !((lstbx_Anims.SelectedItem as AnimationRecord)?.IsAmbPerf ?? true);
+
+        private bool IsPlotElementSelected() => GetSelectedPlotRecord() != null;
 
         #endregion
 
@@ -282,6 +290,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             EditFileListCommand = new RelayCommand(EditCustomFileList);
             CopyToClipboardCommand = new RelayCommand(CopyStringToClipboard);
             OpenInWindowsExplorerCommand = new GenericCommand(OpenFileInWindowsExplorer);
+            OpenInPlotDBCommand = new GenericCommand(OpenInPlotDB, IsPlotElementSelected);
+            OpenPEDefinitionCommand = new GenericCommand(OpenPEDefinitionInToolset, IsPlotElementSelected);
         }
 
         private void AssetDB_Loaded(object sender, RoutedEventArgs e)
@@ -724,6 +734,28 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         {
             return Path.Combine(AppDirectories.AppDataFolder, $"AssetDB{game}.zip");
         }
+
+        private PlotRecord GetSelectedPlotRecord()
+        {
+            if (currentView == 9)
+            {
+                switch (tabCtrl_plotUsage.SelectedIndex)
+                {
+                    case 0 when lstbx_PlotBool.SelectedIndex >= 0:
+                        return (PlotRecord) lstbx_PlotBool.SelectedItem;
+                    case 1 when lstbx_PlotInt.SelectedIndex >= 0:
+                        return (PlotRecord) lstbx_PlotInt.SelectedItem;
+                    case 2 when lstbx_PlotFloat.SelectedIndex >= 0:
+                        return (PlotRecord) lstbx_PlotFloat.SelectedItem;
+                    case 3 when lstbx_PlotTrans.SelectedIndex >= 0:
+                        return (PlotRecord) lstbx_PlotTrans.SelectedItem;
+                    case 4 when lstbx_PlotCond.SelectedIndex >= 0:
+                        return (PlotRecord) lstbx_PlotCond.SelectedItem;
+                }
+            }
+
+            return null;
+        }
         private void GoToSuperClass(object obj)
         {
             var cr = (ClassRecord)lstbx_Classes.SelectedItem;
@@ -939,18 +971,18 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             var plotEditor = new PlotEditor.PlotEditorWindow();
             plotEditor.Show();
             plotEditor.LoadFile(filePath);
-            if (usage is PlotUsageWithID usageWithId)
+            if (usage.ContainerID.HasValue)
             {
-                switch (usageWithId.Context)
+                switch (usage.Context)
                 {
                     case PlotUsageContext.Transition:
-                        plotEditor.GoToStateEvent(usageWithId.ContainerID);
+                        plotEditor.GoToStateEvent(usage.ContainerID.Value);
                         break;
                     case PlotUsageContext.Codex:
-                        plotEditor.GoToCodex(usageWithId.ContainerID);
+                        plotEditor.GoToCodex(usage.ContainerID.Value);
                         break;
                     case PlotUsageContext.Quest:
-                        plotEditor.GoToQuest(usageWithId.ContainerID);
+                        plotEditor.GoToQuest(usage.ContainerID.Value);
                         break;
                     case PlotUsageContext.TaskEval:
                         break;
@@ -975,6 +1007,38 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             string cmd = "explorer.exe";
             string arg = "/select, " + filePath;
             System.Diagnostics.Process.Start(cmd, arg);
+        }
+        private void OpenInPlotDB()
+        {
+            var record = GetSelectedPlotRecord();
+            var plotElement = PlotDatabases.FindPlotElementFromID(record.ElementID, record.ElementType.ToPlotElementType(),
+                CurrentGame);
+            var plotDB = new PlotManager.PlotManagerWindow();
+            plotDB.Show();
+            plotDB.SelectPlotElement(plotElement, CurrentGame.ToLEVersion());
+        }
+
+        private void OpenPEDefinitionInToolset()
+        {
+            var record = GetSelectedPlotRecord();
+
+            if (record.ElementType is PlotRecordType.Conditional or PlotRecordType.Transition && record.BaseUsage != null)
+            {
+                (string usagepkg, string contentdir, int usagemount) = FileListExtended[record.BaseUsage.FileKey];
+                int usageUID = record.BaseUsage.UIndex;
+                if (record.BaseUsage.Context is PlotUsageContext.Conditional)
+                {
+                    OpenInToolkit("", GetFilePath(usagepkg, contentdir), usageUID);
+                }
+                else if (record.BaseUsage.Context is PlotUsageContext.Transition)
+                {
+                    OpenInPlotEditor(GetFilePath(usagepkg, contentdir), record.BaseUsage);
+                }
+                else if (record.BaseUsage.Context is PlotUsageContext.CndFile)
+                {
+                    // TODO
+                }
+            }
         }
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e) //Fires if Tab moves away
         {
@@ -1064,26 +1128,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         {
             if (currentView == 9)
             {
-                PlotRecord selectedRecord = null;
-                switch (tabCtrl_plotUsage.SelectedIndex)
-                {
-                    case 0:
-                        selectedRecord = (PlotRecord) lstbx_PlotBool.SelectedItem;
-                        break;
-                    case 1:
-                        //selectedRecord = (PlotRecord) lstbx_PlotBool.SelectedItem;
-                        break;
-                    case 2:
-                        //selectedRecord = (PlotRecord) lstbx_PlotBool.SelectedItem;
-                        break;
-                    case 3:
-                        //selectedRecord = (PlotRecord) lstbx_PlotBool.SelectedItem;
-                        break;
-                    case 4:
-                        //selectedRecord = (PlotRecord) lstbx_PlotBool.SelectedItem;
-                        break;
-                }
-
+                PlotRecord selectedRecord = GetSelectedPlotRecord();
                 if (selectedRecord != null)
                 {
                     SelectedPlotUsages.Clear();

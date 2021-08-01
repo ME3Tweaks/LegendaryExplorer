@@ -333,6 +333,25 @@ namespace LegendaryExplorer.Tools.PlotManager
 
         #region TreeView
 
+        public void SelectPlotElement(PlotElement pe, MEGame game)
+        {
+            CurrentGame = game.ToLEVersion();
+            switch (CurrentGame)
+            {
+                case MEGame.LE1:
+                    CurrentView = 2;
+                    break;
+                case MEGame.LE2:
+                    CurrentView = 1;
+                    break;
+                case MEGame.LE3:
+                    CurrentView = 0;
+                    break;
+            }
+            SelectedNode = pe;
+            SetFocusByPlotElement(pe);
+        }
+
         private void SetFocusByPlotElement(PlotElement pe)
         {
             var tree = new TreeView();

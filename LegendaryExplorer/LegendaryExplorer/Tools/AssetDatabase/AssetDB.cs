@@ -519,31 +519,22 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
     public class PlotUsage
     {
+        public int? ContainerID { get; set; }
         public int FileKey { get; set; }
         public int UIndex { get; set; }
         public bool IsMod { get; set; }
         public PlotUsageContext Context { get; set; }
-        public PlotUsage(int filekey, int uindex, bool ismod, PlotUsageContext context = PlotUsageContext.Package)
+        public PlotUsage(int filekey, int uindex, bool ismod, PlotUsageContext context = PlotUsageContext.Package, int? containerID = null)
         {
             FileKey = filekey;
             UIndex = uindex;
             IsMod = ismod;
             Context = context;
+            ContainerID = containerID;
         }
         public PlotUsage()
         {
 
-        }
-    }
-    /// <summary>
-    /// Plot usage that contains an extra ID int field, which can be used to locate a specific usage within an export based on the context
-    /// </summary>
-    public class PlotUsageWithID : PlotUsage
-    {
-        public int ContainerID { get; set; }
-        public PlotUsageWithID(int filekey, int uindex, bool ismod, int containerId, PlotUsageContext context = PlotUsageContext.Package) : base(filekey, uindex, ismod, context)
-        {
-            ContainerID = containerId;
         }
     }
 
