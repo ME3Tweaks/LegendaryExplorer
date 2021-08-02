@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.UnrealScript;
 
 namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
 { 
@@ -15,13 +16,24 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
         {
         }
 
-        private readonly HashSet<string> classesWithPlotData = new()
+        private static readonly HashSet<string> classesWithPlotData = new()
         {
             "BioSeqAct_PMExecuteTransition", "BioSeqAct_PMExecuteConsequence", "BioSeqAct_PMCheckState",
             "BioSeqAct_PMCheckConditional", "BioSeqVar_StoryManagerInt",
             "BioSeqVar_StoryManagerFloat", "BioSeqVar_StoryManagerBool", "BioSeqVar_StoryManagerStateId",
-            "SFXSceneShopNodePlotCheck", "BioWorldInfo", "BioStateEventMap", "BioCodexMap", "BioQuestMap", "BioConversation"
+            "SFXSceneShopNodePlotCheck", "BioWorldInfo", "BioStateEventMap", "BioCodexMap", "BioQuestMap", "BioConversation", 
+            "Function", "Bio2DANumberedRows"
         };
+
+        private static Dictionary<string, PlotRecordType> bio2DAColumnsWithPlotData = new()
+        {
+            {"PlotID", PlotRecordType.Int},
+            {"c_transition", PlotRecordType.Transition},
+            {"VisibleFunction", PlotRecordType.Conditional},
+            {"UsableFunction", PlotRecordType.Conditional},
+            {"UsablePlanetFunction", PlotRecordType.Conditional},
+            {"c_shopcondition", PlotRecordType.Conditional}
+        }
 
         private ConcurrentAssetDB db;
 
@@ -195,6 +207,44 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
                         {
                             AddToTransitionRecord(transition, new PlotUsage(e.FileKey, e.Export.UIndex, e.IsMod, PlotUsageContext.Dialogue, strRef));
                         }
+                    }
+                    break;
+                }
+                case "Function" when e.Export.ParentName == "BioAutoConditionals":
+                {
+                    if (int.TryParse(e.Export.ObjectName.Name[1..], out int cndId))
+                    {
+                        AddBaseUsageToConditional(cndId, new PlotUsage(e.FileKey, e.Export.UIndex, e.IsMod, PlotUsageContext.Conditional, cndId));
+
+                        // Cache FileLib between function exports
+                        if (e.FileLib is null) e.FileLib = new FileLib(e.Export.FileRef);
+
+                        var (node, text) = UnrealScriptCompiler.DecompileExport(e.Export, e.FileLib);
+                        var spltFunc = text.Split(' ', '.', '(', ')');
+                        for(int i = 0; i < spltFunc.Length; i++)
+                        {
+                            if (spltFunc[i].StartsWith("GetBool") && int.TryParse(spltFunc[i+1], out int boolId))
+                            {
+                                AddToBoolRecord(boolId, new PlotUsage(e.FileKey, e.Export.UIndex, e.IsMod, PlotUsageContext.Conditional, cndId));
+                            }
+                            else if (spltFunc[i].StartsWith("GetFloat") && int.TryParse(spltFunc[i+1], out int floatId))
+                            {
+                                AddToFloatRecord(floatId, new PlotUsage(e.FileKey, e.Export.UIndex, e.IsMod, PlotUsageContext.Conditional, cndId));
+                            }
+                            else if (spltFunc[i].StartsWith("GetInt") && int.TryParse(spltFunc[i+1], out int intId))
+                            {
+                                AddToIntRecord(intId, new PlotUsage(e.FileKey, e.Export.UIndex, e.IsMod, PlotUsageContext.Conditional, cndId));
+                            }
+                        }
+                    }
+                    break;
+                }
+                case "Bio2DANumberedRows":
+                {
+                    var table = ObjectBinary.From<Bio2DABinary>(e.Export);
+                    foreach (var c in table.ColumnNames)
+                    {
+
                     }
                     break;
                 }

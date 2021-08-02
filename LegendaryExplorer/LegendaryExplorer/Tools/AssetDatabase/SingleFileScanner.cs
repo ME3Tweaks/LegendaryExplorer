@@ -11,6 +11,7 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Classes;
+using LegendaryExplorerCore.UnrealScript;
 
 namespace LegendaryExplorer.Tools.AssetDatabase
 {
@@ -54,6 +55,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public string ObjectNameInstanced { get; private set; }
         public bool IsDefault { get; private set; }
         public string ClassName { get; private set; }
+        public FileLib FileLib { get; set; }
     }
 
     /// <summary>
