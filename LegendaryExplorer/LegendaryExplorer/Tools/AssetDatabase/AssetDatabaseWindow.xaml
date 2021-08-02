@@ -1043,13 +1043,13 @@
                     <!-- Plot-->
                     <TabItem Header="Plot Elements" TabIndex="9" Visibility="{Binding Path=ParsePlotUsages, Converter={StaticResource BoolToVisibilityConverter}}">
                         <DockPanel>
-                            <TabControl x:Name="tabCtrl_plotUsage">
+                            <TabControl x:Name="tabCtrl_plotUsage" SelectionChanged="PETabControl_SelectionChanged">
                                 <TabItem Header="Bools" TabIndex="1">
                                     <controls:ListBoxScroll x:Name="lstbx_PlotBool" ItemsSource="{Binding CurrentDataBase.PlotUsages.Bools}" 
                                                             MinWidth="300" MaxWidth="500"  SelectionChanged="lstbx_PlotElement_SelectionChanged">
                                         <controls:ListBoxScroll.ItemTemplate>
                                             <DataTemplate>
-                                                <TextBlock>Bool <Run Text="{Binding ElementID}"/> - <Run Text="{Binding Path}"/></TextBlock>
+                                                <TextBlock Text="{Binding DisplayText}"/>
                                             </DataTemplate>
                                         </controls:ListBoxScroll.ItemTemplate>
                                         <controls:ListBoxScroll.ContextMenu>
@@ -1064,7 +1064,7 @@
                                                             MinWidth="300" MaxWidth="500"  SelectionChanged="lstbx_PlotElement_SelectionChanged">
                                         <controls:ListBoxScroll.ItemTemplate>
                                             <DataTemplate>
-                                                <TextBlock>Int <Run Text="{Binding ElementID}"/> - <Run Text="{Binding Path}"/></TextBlock>
+                                                <TextBlock Text="{Binding DisplayText}"/>
                                             </DataTemplate>
                                         </controls:ListBoxScroll.ItemTemplate>
                                         <controls:ListBoxScroll.ContextMenu>
@@ -1079,7 +1079,7 @@
                                                             MinWidth="300" MaxWidth="500"  SelectionChanged="lstbx_PlotElement_SelectionChanged">
                                         <controls:ListBoxScroll.ItemTemplate>
                                             <DataTemplate>
-                                                <TextBlock>Float <Run Text="{Binding ElementID}"/> - <Run Text="{Binding Path}"/></TextBlock>
+                                                <TextBlock Text="{Binding DisplayText}"/>
                                             </DataTemplate>
                                         </controls:ListBoxScroll.ItemTemplate>
                                         <controls:ListBoxScroll.ContextMenu>
@@ -1094,7 +1094,7 @@
                                                             MinWidth="300" MaxWidth="500"  SelectionChanged="lstbx_PlotElement_SelectionChanged">
                                         <controls:ListBoxScroll.ItemTemplate>
                                             <DataTemplate>
-                                                <TextBlock>Transition <Run Text="{Binding ElementID}"/> - <Run Text="{Binding Path}"/></TextBlock>
+                                                <TextBlock Text="{Binding DisplayText}"/>
                                             </DataTemplate>
                                         </controls:ListBoxScroll.ItemTemplate>
                                         <controls:ListBoxScroll.ContextMenu>
@@ -1110,7 +1110,7 @@
                                                             MinWidth="300" MaxWidth="500"  SelectionChanged="lstbx_PlotElement_SelectionChanged">
                                         <controls:ListBoxScroll.ItemTemplate>
                                             <DataTemplate>
-                                                <TextBlock>Conditional <Run Text="{Binding ElementID}"/> - <Run Text="{Binding Path}"/></TextBlock>
+                                                <TextBlock Text="{Binding DisplayText}"/>
                                             </DataTemplate>
                                         </controls:ListBoxScroll.ItemTemplate>
                                         <controls:ListBoxScroll.ContextMenu>

@@ -466,7 +466,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         Transition,
         Quest,
         Codex,
-        TaskEval
+        TaskEval,
+        Bio2DA
     }
     public static class PlotRecordEnumExtensions
     {
@@ -477,6 +478,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             PlotUsageContext.Package => "PackageEd",
             PlotUsageContext.Conditional => "PackageEd",
             PlotUsageContext.CndFile => "CndEd",
+            PlotUsageContext.Bio2DA => "PackageEd",
             _ => "PlotEd"
         };
 
@@ -503,6 +505,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         [IgnoredMember]
         public string Path { get; set; }
+
+        [IgnoredMember]
+        public string DisplayText => $"{ElementType} {ElementID} - {Path}";
 
         public PlotRecord(PlotRecordType type, int id)
         {

@@ -31,6 +31,7 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.TLK;
 using Microsoft.WindowsAPICodePack.Taskbar;
 using BinaryPack;
+using LegendaryExplorer.SharedUI.Controls;
 using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.PlotDatabase;
@@ -742,27 +743,52 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             return Path.Combine(AppDirectories.AppDataFolder, $"AssetDB{game}.zip");
         }
 
-        private PlotRecord GetSelectedPlotRecord()
+        private ListBoxScroll GetSelectedPlotListBox()
         {
             if (currentView == 9)
             {
-                switch (tabCtrl_plotUsage.SelectedIndex)
+                return tabCtrl_plotUsage.SelectedIndex switch
                 {
-                    case 0 when lstbx_PlotBool.SelectedIndex >= 0:
-                        return (PlotRecord) lstbx_PlotBool.SelectedItem;
-                    case 1 when lstbx_PlotInt.SelectedIndex >= 0:
-                        return (PlotRecord) lstbx_PlotInt.SelectedItem;
-                    case 2 when lstbx_PlotFloat.SelectedIndex >= 0:
-                        return (PlotRecord) lstbx_PlotFloat.SelectedItem;
-                    case 3 when lstbx_PlotTrans.SelectedIndex >= 0:
-                        return (PlotRecord) lstbx_PlotTrans.SelectedItem;
-                    case 4 when lstbx_PlotCond.SelectedIndex >= 0:
-                        return (PlotRecord) lstbx_PlotCond.SelectedItem;
-                }
+                    0 => lstbx_PlotBool,
+                    1 => lstbx_PlotInt,
+                    2 => lstbx_PlotFloat,
+                    3 => lstbx_PlotTrans,
+                    4 => lstbx_PlotCond,
+                    _ => null
+                };
             }
 
             return null;
         }
+
+        private PlotRecord GetSelectedPlotRecord()
+        {
+            var lstbx = GetSelectedPlotListBox();
+            if (lstbx is {SelectedIndex: > -1})
+            {
+                return (PlotRecord) lstbx.SelectedItem;
+            }
+            return null;
+        }
+
+        private List<PlotRecord> GetSelectedPlotSource()
+        {
+            if (currentView == 9 && CurrentDataBase.PlotUsages != null)
+            {
+                return tabCtrl_plotUsage.SelectedIndex switch
+                {
+                    0 => CurrentDataBase.PlotUsages.Bools,
+                    1 => CurrentDataBase.PlotUsages.Ints,
+                    2 => CurrentDataBase.PlotUsages.Floats,
+                    3 => CurrentDataBase.PlotUsages.Transitions,
+                    4 => CurrentDataBase.PlotUsages.Conditionals,
+                    _ => null
+                };
+            }
+
+            return null;
+        }
+
         private void GoToSuperClass(object obj)
         {
             var cr = (ClassRecord)lstbx_Classes.SelectedItem;
@@ -1145,6 +1171,14 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             }
             CurrentConvo = new Tuple<string, string, int, string, bool>(null, null, 0, null, false);
 
+        }
+        private void PETabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (currentView == 9)
+            {
+                FilterBox.Clear();
+                Filter();
+            }
         }
         private void lstbx_PlotElement_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -1967,6 +2001,21 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             }
             return showthis;
         }
+
+        private bool PEFilter(object d)
+        {
+            if (d is PlotRecord pr)
+            {
+                bool showthis = true;
+                if (!string.IsNullOrEmpty(FilterBox.Text))
+                {
+                    showthis = pr.DisplayText.ToLower().Contains(FilterBox.Text.ToLower());
+                }
+                return showthis;
+            }
+
+            return false;
+        }
         private void Filter()
         {
             switch (currentView)
@@ -2010,6 +2059,14 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     ICollectionView viewL = CollectionViewSource.GetDefaultView(CurrentDataBase.Lines);
                     viewL.Filter = LineFilter;
                     lstbx_Lines.ItemsSource = viewL;
+                    break;
+                case 9: // PlotElements
+                    var lstbx = GetSelectedPlotListBox();
+                    var plotSource = GetSelectedPlotSource();
+                    if (plotSource is null || lstbx is null) break;
+                    ICollectionView viewPE = CollectionViewSource.GetDefaultView(plotSource);
+                    viewPE.Filter = PEFilter;
+                    lstbx.ItemsSource = viewPE;
                     break;
                 default: //Files
                     lstbx_Files.Items.Filter = FileFilter;
