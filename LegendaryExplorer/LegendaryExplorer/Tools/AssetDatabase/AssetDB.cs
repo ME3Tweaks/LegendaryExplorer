@@ -507,7 +507,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public string Path { get; set; }
 
         [IgnoredMember]
-        public string DisplayText => $"{ElementType} {ElementID} - {Path}";
+        public string DisplayText => $"{ElementType} {ElementID}{(string.IsNullOrEmpty(Path) ? "" : $" - {Path}")}";
 
         public PlotRecord(PlotRecordType type, int id)
         {

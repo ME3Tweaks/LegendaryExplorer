@@ -1174,6 +1174,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         }
         private void PETabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            e.Handled = true;
             if (currentView == 9)
             {
                 FilterBox.Clear();
@@ -1182,6 +1183,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         }
         private void lstbx_PlotElement_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            e.Handled = true;
             if (currentView == 9)
             {
                 PlotRecord selectedRecord = GetSelectedPlotRecord();
@@ -2010,6 +2012,10 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 if (!string.IsNullOrEmpty(FilterBox.Text))
                 {
                     showthis = pr.DisplayText.ToLower().Contains(FilterBox.Text.ToLower());
+                }
+                if (showthis && IsFilteredByFiles && !CustomFileList.IsEmpty() && !pr.Usages.Select(usage => usage.FileKey).Intersect(CustomFileList.Keys).Any())
+                {
+                    showthis = false;
                 }
                 return showthis;
             }

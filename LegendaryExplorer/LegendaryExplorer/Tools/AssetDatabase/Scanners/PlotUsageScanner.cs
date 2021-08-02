@@ -255,6 +255,19 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
             }
         }
 
+        public void ScanCndFile(string file, int fileKey, ConcurrentAssetDB db, AssetDBScanOptions options)
+        {
+            if (!options.ScanPlotUsages || !file.EndsWith(".cnd", StringComparison.InvariantCultureIgnoreCase)) return;
+            this.db = db;
+            var cndFile = CNDFile.FromFile(file);
+            bool isMod = file.Contains("DLC_MOD");
+            foreach (var cnd in cndFile.ConditionalEntries)
+            {
+                AddBaseUsageToConditional(cnd.ID, new PlotUsage(fileKey, cnd.ID, isMod, PlotUsageContext.CndFile, cnd.ID));
+                var cndText = cnd.Decompile();
+            }
+        }
+
         private void AddToBoolRecord(int id, PlotUsage usage)
         {
             if (db.GeneratedBoolRecords.ContainsKey(id))
