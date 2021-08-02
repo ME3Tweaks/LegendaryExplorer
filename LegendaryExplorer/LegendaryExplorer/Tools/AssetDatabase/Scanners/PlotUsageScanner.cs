@@ -33,7 +33,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
             {"UsableFunction", PlotRecordType.Conditional},
             {"UsablePlanetFunction", PlotRecordType.Conditional},
             {"c_shopcondition", PlotRecordType.Conditional}
-        }
+        };
 
         private ConcurrentAssetDB db;
 
@@ -241,11 +241,15 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
                 }
                 case "Bio2DANumberedRows":
                 {
-                    var table = ObjectBinary.From<Bio2DABinary>(e.Export);
-                    foreach (var c in table.ColumnNames)
-                    {
-
-                    }
+                    // :-(
+                    //var table = ObjectBinary.From<Bio2DABinary>(e.Export);
+                    //foreach (var c in table.ColumnNames)
+                    //{
+                    //    if (bio2DAColumnsWithPlotData.ContainsKey(c.Name))
+                    //    {
+                    //        // do something
+                    //    }
+                    //}
                     break;
                 }
             }
