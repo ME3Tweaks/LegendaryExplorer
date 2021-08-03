@@ -261,8 +261,10 @@ namespace LegendaryExplorer.Tools.PlotManager
                     case PlotElementType.Plot:
                     case PlotElementType.Region:
                     case PlotElementType.FlagGroup:
+                    case PlotElementType.Category:
+                    case PlotElementType.Mod:
                     case PlotElementType.None:
-                        if(!addFolders)
+                        if(addFolders)
                             elementList.Add(plotElement);
                         break;
                     default:
