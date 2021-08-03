@@ -179,6 +179,7 @@ namespace LegendaryExplorer.Tools.PlotManager
         {
             var plotenum = Enum.GetNames(typeof(PlotElementType)).ToList();
             newItem_subtype.ItemsSource = plotenum;
+            CurrentGame = MEGame.LE3;
             SelectedNode = RootNodes3[0];
             SetFocusByPlotElement(RootNodes3[0]);
         }
@@ -606,7 +607,6 @@ namespace LegendaryExplorer.Tools.PlotManager
                 case PlotElementType.Category:
                     newCat_Title.Text = "Edit Category Title";
                     var label = SelectedNode.Label;
-                    var path = SelectedNode.Parent.Path; // how to fix this??
                     newCat_Name.Text = label;
                     NewCategoryForm.Visibility = Visibility.Visible;
                     newCat_Name.Focus();
