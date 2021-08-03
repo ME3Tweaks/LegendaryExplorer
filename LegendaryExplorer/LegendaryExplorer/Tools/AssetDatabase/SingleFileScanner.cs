@@ -99,6 +99,12 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
             try
             {
+                if (File.EndsWith(".cnd", StringComparison.OrdinalIgnoreCase))
+                {
+                    new PlotUsageScanner().ScanCndFile(File, FileKey, dbScanner, Options);
+                    return;
+                }
+
                 using IMEPackage pcc = MEPackageHandler.OpenMEPackage(File);
                 if (pcc.Game != GameBeingDumped)
                 {

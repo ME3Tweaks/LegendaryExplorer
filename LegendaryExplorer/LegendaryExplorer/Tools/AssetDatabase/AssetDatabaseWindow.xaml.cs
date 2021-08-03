@@ -212,7 +212,17 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         {
             return (lstbx_Usages.SelectedIndex >= 0 && currentView == 1) || (lstbx_MatUsages.SelectedIndex >= 0 && currentView == 2) || (lstbx_AnimUsages.SelectedIndex >= 0 && currentView == 5)
                 || (lstbx_MeshUsages.SelectedIndex >= 0 && currentView == 3) || (lstbx_PSUsages.SelectedIndex >= 0 && currentView == 6) || (lstbx_TextureUsages.SelectedIndex >= 0 && currentView == 4)
-                || (lstbx_GUIUsages.SelectedIndex >= 0 && currentView == 7) || (lstbx_Lines.SelectedIndex >= 0 && currentView == 8) || (currentView == 9 && lstbx_PlotUsages.SelectedIndex >= 0) || currentView == 0;
+                || (lstbx_GUIUsages.SelectedIndex >= 0 && currentView == 7) || (lstbx_Lines.SelectedIndex >= 0 && currentView == 8) || (currentView == 9 && lstbx_PlotUsages.SelectedIndex >= 0) 
+                || (currentView == 0 && IsNotCND(lstbx_Files.SelectedItem));
+        }
+
+        private bool IsNotCND(object obj)
+        {
+            if (obj != null && obj is FileDirPair fdp)
+            {
+                return !fdp.FileName.EndsWith(".cnd", StringComparison.OrdinalIgnoreCase);
+            }
+            return true;
         }
         private bool IsViewingClass(object obj)
         {
@@ -932,9 +942,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 return null;
             }
 
-            var supportedExtensions = new List<string> { ".pcc", ".u", ".upk", ".sfm" };
-            filename = $"{filename}.*";
-            filePath = Directory.EnumerateFiles(rootPath, filename, SearchOption.AllDirectories).FirstOrDefault(f => f.Contains(contentdir) && supportedExtensions.Contains(Path.GetExtension(f).ToLowerInvariant()));
+            filePath = Directory.EnumerateFiles(rootPath, filename, SearchOption.AllDirectories).FirstOrDefault(f => f.Contains(contentdir));
 
             if (filePath == null)
             {
@@ -993,6 +1001,19 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     var soundplorer = new Soundplorer.SoundplorerWPF();
                     soundplorer.Show();
                     soundplorer.LoadFile(filePath);
+                    break;
+                case "CndEd":
+                    var cndEd = new ConditionalsEditor.ConditionalsEditorWindow();
+                    cndEd.Show();
+                    if (uindex != 0)
+                    {
+                        cndEd.LoadFile(filePath, uindex);
+                    }
+                    else
+                    {
+                        cndEd.LoadFile(filePath);
+                    }
+
                     break;
                 default:
                     var packEditor = new PackageEditor.PackageEditorWindow();
@@ -2645,7 +2666,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             }
 
             rootPath = Path.GetFullPath(rootPath);
-            var supportedExtensions = new List<string> { ".u", ".upk", ".sfm", ".pcc" };
+            var supportedExtensions = new List<string> { ".u", ".upk", ".sfm", ".pcc", ".cnd" };
             string ShaderCacheName = CurrentGame.IsLEGame() ? "RefShaderCache-PC-D3D-SM5.upk" : "RefShaderCache-PC-D3D-SM3.upk";
             List<string> files = Directory.GetFiles(rootPath, "*.*", SearchOption.AllDirectories)
                                           .Where(s => supportedExtensions.Contains(Path.GetExtension(s.ToLower())) && !s.EndsWith(ShaderCacheName)).ToList();
@@ -2691,7 +2712,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     CurrentDataBase.ContentDir.Add(contdir.Name);
                 }
                 var filekey = CurrentDataBase.FileList.Count;
-                CurrentDataBase.FileList.Add(new(Path.GetFileNameWithoutExtension(f), dirkey));
+                CurrentDataBase.FileList.Add(new(Path.GetFileName(f), dirkey));
                 fileKeys.Add((filekey, f));
             }
 

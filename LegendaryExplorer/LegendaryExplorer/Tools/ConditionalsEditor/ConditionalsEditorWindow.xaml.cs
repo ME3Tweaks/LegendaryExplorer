@@ -381,6 +381,13 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
             return SelectedCond is not null && !string.IsNullOrWhiteSpace(ConditionalTextBox.Text);
         }
 
+        public void LoadFile(string filePath, int cndId)
+        {
+            LoadFile(filePath);
+            SelectedCond = Conditionals.FirstOrDefault(c => c.ID == cndId);
+            ConditionalsListBox.ScrollIntoView(SelectedCond);
+        }
+
         public void LoadFile(string filePath)
         {
             Conditionals.ClearEx();

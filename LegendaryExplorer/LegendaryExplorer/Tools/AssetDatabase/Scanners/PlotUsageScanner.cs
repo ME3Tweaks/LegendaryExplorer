@@ -265,6 +265,22 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
             {
                 AddBaseUsageToConditional(cnd.ID, new PlotUsage(fileKey, cnd.ID, isMod, PlotUsageContext.CndFile, cnd.ID));
                 var cndText = cnd.Decompile();
+                var spltFunc = cndText.Split(' ', '.', '(', ')', '[', ']');
+                for(int i = 0; i < spltFunc.Length; i++)
+                {
+                    if (spltFunc[i].Equals("bools") && int.TryParse(spltFunc[i+1], out int boolId))
+                    {
+                        AddToBoolRecord(boolId, new PlotUsage(fileKey, cnd.ID, isMod, PlotUsageContext.CndFile, cnd.ID));
+                    }
+                    else if (spltFunc[i].Equals("floats") && int.TryParse(spltFunc[i+1], out int floatId))
+                    {
+                        AddToFloatRecord(floatId, new PlotUsage(fileKey, cnd.ID, isMod, PlotUsageContext.CndFile, cnd.ID));
+                    }
+                    else if (spltFunc[i].Equals("ints") && int.TryParse(spltFunc[i+1], out int intId))
+                    {
+                        AddToIntRecord(intId, new PlotUsage(fileKey, cnd.ID, isMod, PlotUsageContext.CndFile, cnd.ID));
+                    }
+                }
             }
         }
 
