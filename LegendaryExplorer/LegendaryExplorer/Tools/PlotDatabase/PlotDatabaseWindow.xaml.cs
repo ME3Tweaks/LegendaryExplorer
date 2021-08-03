@@ -20,6 +20,8 @@ using System.Threading;
 using Newtonsoft.Json;
 using System.Globalization;
 using System.ComponentModel;
+using Microsoft.Win32;
+using ClosedXML.Excel;
 
 namespace LegendaryExplorer.Tools.PlotManager
 {
@@ -101,12 +103,16 @@ namespace LegendaryExplorer.Tools.PlotManager
         public ICommand AddModItemCommand { get; set; }
         public ICommand EditModItemCommand { get; set; }
         public ICommand DeleteModItemCommand { get; set; }
+        public ICommand XLImportCommand { get; set; }
+        public ICommand XLExportCommand { get; set; }
+
         public bool IsModRoot() => SelectedNode?.ElementId == 100000;
         public bool IsMod() => SelectedNode?.Type == PlotElementType.Mod;
         public bool CanAddCategory() => SelectedNode?.Type == PlotElementType.Mod || SelectedNode?.Type == PlotElementType.Category;
         public bool CanEditItem() => SelectedNode?.ElementId > 100000;
         public bool CanDeleteItem() => SelectedNode?.ElementId > 100000 && SelectedNode.Children.IsEmpty();
         public bool CanAddItem() => SelectedNode?.Type == PlotElementType.Category;
+        public bool CanExportTable() => SelectedNode != null;
         #endregion
 
         #region PDBInitialization
@@ -173,6 +179,8 @@ namespace LegendaryExplorer.Tools.PlotManager
             AddModItemCommand = new GenericCommand(AddNewModItemData, CanAddItem);
             DeleteModItemCommand = new GenericCommand(DeleteNewModData, CanDeleteItem);
             EditModItemCommand = new GenericCommand(EditNewModData, CanEditItem);
+            XLImportCommand = new GenericCommand(ImportModDataFromExcel);
+            XLExportCommand = new GenericCommand(ExportDataToExcel, CanExportTable);
         }
 
         private void PlotDB_Loaded(object sender, RoutedEventArgs e)
@@ -1053,6 +1061,86 @@ namespace LegendaryExplorer.Tools.PlotManager
                 }
             }
         }
+
+        private void ImportModDataFromExcel()
+        {
+            //Not yet implemented
+        }
+
+        private void ExportDataToExcel()
+        {
+            SaveFileDialog d = new SaveFileDialog
+            {
+                Filter = "Excel spreadsheet|*.xlsx"
+            };
+            if (d.ShowDialog() == true)
+            {
+                var msg = MessageBox.Show($"Do you want to write the current branch to\n{d.FileName}?", "Plot Database", MessageBoxButton.OKCancel);
+                if (msg == MessageBoxResult.Cancel)
+                    return;
+
+                var workbook = new XLWorkbook();
+                var worksheet = workbook.Worksheets.Add($"Plots_{CurrentGame}");
+
+                //write labels
+                var headers = new List<string>()
+                {
+                    "#",
+                    "PlotId",
+                    "Type",
+                    "Label",
+                    "Path",
+                    "SubType",
+                    "Code",
+                    "Argument",
+                    "GamerVariable",
+                    "AchievementID",
+                    "GalaxyAtWar"
+                };
+                for (int colindex = 0; colindex < headers.Count; colindex++)
+                {
+                    worksheet.Cell(1, colindex + 1).Value = headers[colindex];
+                }
+
+                //Write rows
+                var plotlist = new List<PlotElement>();
+                AddPlotsToList(SelectedNode, plotlist);
+                for (int r = 0; r < plotlist.Count; r++)
+                {
+                    worksheet.Cell(r + 2, 1).Value = r.ToString();
+                    worksheet.Cell(r + 2, 2).Value = plotlist[r].PlotId.ToString();
+                    worksheet.Cell(r + 2, 3).Value = plotlist[r].Type.ToString();
+                    worksheet.Cell(r + 2, 4).Value = plotlist[r].Label;
+                    worksheet.Cell(r + 2, 5).Value = plotlist[r].Path;
+                    switch(plotlist[r].Type)
+                    {
+                        case PlotElementType.State:
+                        case PlotElementType.SubState:
+                            var plotBool = plotlist[r] as PlotBool;
+                            worksheet.Cell(r + 2, 6).Value = plotBool.SubType.ToString();
+                            worksheet.Cell(r + 2, 9).Value = plotBool.GamerVariable.ToString();
+                            worksheet.Cell(r + 2, 10).Value = plotBool.AchievementID.ToString();
+                            worksheet.Cell(r + 2, 11).Value = plotBool.GalaxyAtWar.ToString();
+                            break;
+                        case PlotElementType.Conditional:
+                            var plotCnd = plotlist[r] as PlotConditional;
+                            worksheet.Cell(r + 2, 7).Value = plotCnd.Code;
+                            break;
+                        case PlotElementType.Transition:
+                            var plotTrans = plotlist[r] as PlotTransition;
+                            worksheet.Cell(r + 2, 8).Value = plotTrans.Argument;
+                            break;
+                        default:
+                            break;
+                    }
+                    
+                }
+
+                workbook.SaveAs(d.FileName);
+                MessageBox.Show("Done");
+            }
+        }
+
         #endregion
     }
 

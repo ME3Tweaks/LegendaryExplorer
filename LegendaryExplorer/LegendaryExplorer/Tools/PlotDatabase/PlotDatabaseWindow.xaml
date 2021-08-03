@@ -96,12 +96,12 @@
                         <MenuItem Header="Edit Item" Command="{Binding EditModItemCommand}"/>
                         <MenuItem Header="Delete Item" Command="{Binding DeleteModItemCommand}"/>
                         <Separator/>
-                        <MenuItem Header="Import Mod States from Excel" Command="{Binding FilterCommand}" IsEnabled="False">
+                        <MenuItem Header="Import Mod States from Excel" Command="{Binding XLImportCommand}" IsEnabled="False">
                             <MenuItem.Icon>
                                 <Image Source="\Resources\Images\excel.png"/>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Export Mod States to Excel" Command="{Binding FilterCommand}" IsEnabled="False">
+                        <MenuItem Header="Export Selected States to Excel" Command="{Binding XLExportCommand}">
                             <MenuItem.Icon>
                                 <Image Source="\Resources\Images\excel.png"/>
                             </MenuItem.Icon>
