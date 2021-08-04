@@ -58,6 +58,10 @@ namespace LegendaryExplorer.Tools.InterpEditor
                     {
                         Tracks.Add(new BioEvtSysTrackSubtitles(trackExport));
                     }
+                    else if (trackExport.IsA("BioEvtSysTrackGesture"))
+                    {
+                        Tracks.Add(new BioEvtSysTrackGesture(trackExport));
+                    }
                     else if(trackExport.IsA("BioInterpTrack"))
                     {
                         Tracks.Add(new BioInterpTrack(trackExport));
@@ -342,7 +346,6 @@ namespace LegendaryExplorer.Tools.InterpEditor
                         }
 
                         var time = trackKey.GetProp<FloatProperty>("Time");
-                        Debug.WriteLine(time.Value);
                         Keys.Add(new Key(time, tooltip));
                         keyindex++;
                     }
@@ -465,6 +468,27 @@ namespace LegendaryExplorer.Tools.InterpEditor
                 {
                     int strRef = subtitleData?[keyindex]?.GetProp<IntProperty>("nStrRefID");
                     Keys.Add(new Key(trackKey.GetProp<FloatProperty>("fTime"), ME1TalkFiles.findDataById(strRef, Export.FileRef)));
+                }
+            }
+        }
+    }
+
+    public class BioEvtSysTrackGesture : InterpTrack
+    {
+        public BioEvtSysTrackGesture(ExportEntry export) : base(export)
+        {
+        }
+
+        public override void LoadTrack()
+        {
+            Keys.ClearEx();
+            var trackKeys = Export.GetProperty<ArrayProperty<StructProperty>>("m_aTrackKeys");
+            var gestureData = Export.GetProperty<ArrayProperty<StructProperty>>("m_aGestures");
+            if (trackKeys != null)
+            {
+                foreach (var trackKey in trackKeys)
+                {
+                    Keys.Add(new Key(trackKey.GetProp<FloatProperty>("fTime")));
                 }
             }
         }
