@@ -97,7 +97,7 @@ namespace LegendaryExplorerCore.PlotDatabase
                 var path = new StringBuilder();
                 PlotElement el = this;
                 path.Insert(0, el.Label);
-                while (el.Parent != null)
+                while (el.ParentElementId > 0)
                 {
                     el = el.Parent;
                     path.Insert(0, ".");

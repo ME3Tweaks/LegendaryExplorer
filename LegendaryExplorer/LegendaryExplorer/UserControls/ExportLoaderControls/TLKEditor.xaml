@@ -29,16 +29,16 @@
                 </Button.Style>
             </Button>
             <TextBox Name="boxSearch" Height="26" Width="160" TextWrapping="Wrap" HorizontalAlignment="Left" KeyUp="Evt_KeyUp" VerticalAlignment="Stretch"/>
-            <Button Name="btnSearch" Click="Evt_Search" Content="Search" ToolTip="Search strings" Padding="5,0" VerticalAlignment="Stretch"/>
+            <Button Name="btnSearch" Command="{Binding SearchCommand}" Content="Search" ToolTip="Search strings" Padding="5,0" VerticalAlignment="Stretch"/>
             <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
-            <Button Name="btnAddNew" Click="Evt_AddString" Content="Add String" ToolTip="Add a new string"  Padding="5,0" VerticalAlignment="Stretch"/>
+            <Button Name="btnAddNew" Command="{Binding AddStringCommand}" Content="Add String" ToolTip="Add a new string"  Padding="5,0" VerticalAlignment="Stretch"/>
             <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
             <Button Name="btnSetID" Command="{Binding SetIDCommand}" Content="Change ID" ToolTip="Set StringRef ID"  Padding="5,0" VerticalAlignment="Stretch"/>
             <Button Name="btnDelete" Command="{Binding DeleteStringCommand}" Content="Delete String" ToolTip="Delete selected string"  Padding="5,0" VerticalAlignment="Stretch"/>
             <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
-            <Button Name="btnExportXML" Click="Evt_ExportXML" Content="Export" ToolTip="Export to XML"  Padding="5,0" VerticalAlignment="Stretch"/>
-            <Button Name="btnImportXML" Click="Evt_ImportXML" Content="Import" ToolTip="Import from XML"  Padding="5,0" VerticalAlignment="Stretch"/>
-            <Button Name="btnViewXML" Click="Evt_ViewXML" Content="View XML" ToolTip="View as XML"  Padding="5,0" VerticalAlignment="Stretch"/>
+            <Button Name="btnExportXML" Command="{Binding ExportXmlCommand}" Content="Export" ToolTip="Export to XML"  Padding="5,0" VerticalAlignment="Stretch"/>
+            <Button Name="btnImportXML" Command="{Binding ImportXmlCommand}" Content="Import" ToolTip="Import from XML"  Padding="5,0" VerticalAlignment="Stretch"/>
+            <Button Name="btnViewXML" Command="{Binding ViewXmlCommand}" Content="View XML" ToolTip="View as XML"  Padding="5,0" VerticalAlignment="Stretch"/>
         </ToolBar>
         <DockPanel Name="LowerDock" DockPanel.Dock="Bottom" MinHeight="120" MaxHeight="450">
             <Button Name="btnSaveEdit" Content="Save" DockPanel.Dock="Right" Width="50"  Command="{Binding SaveCommand}"/>
@@ -47,7 +47,7 @@
         </DockPanel>
         <Popup Name="popupDlg" Placement="Center" VerticalOffset="15" Width="640" Height="800" Margin="0,12,0,0" Closed="Evt_CloseXML" StaysOpen="false">
             <Border BorderBrush = "Black" BorderThickness="2" Background="AliceBlue" >
-                <TextBox Name="popoutXmlBox" Text="No xml loaded" Margin="15,0,15,0" VerticalAlignment = "Center" FontFamily = "Courier New" FontSize = "14" Focusable = "True" ScrollViewer.CanContentScroll = "True" ScrollViewer.VerticalScrollBarVisibility = "Visible" IsReadOnly = "True" TextWrapping = "Wrap" LostFocus="Evt_ViewXML"/>
+                <TextBox Name="popoutXmlBox" Text="No xml loaded" Margin="15,0,15,0" VerticalAlignment = "Center" FontFamily = "Courier New" FontSize = "14" Focusable = "True" ScrollViewer.CanContentScroll = "True" ScrollViewer.VerticalScrollBarVisibility = "Visible" IsReadOnly = "True" TextWrapping = "Wrap" LostFocus="CloseViewAsXml"/>
             </Border>
         </Popup>
         <ListBox Name="DisplayedString_ListBox" ItemsSource="{Binding CleanedStrings}" HorizontalContentAlignment="Stretch" SelectionChanged="DisplayedString_ListBox_SelectionChanged" IsTextSearchEnabled="True" TextSearch.TextPath="StringID" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
