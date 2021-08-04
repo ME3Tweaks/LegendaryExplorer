@@ -482,6 +482,14 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             _ => "PlotEd"
         };
 
+        public static string ToDisplayString(this PlotUsageContext puc) => puc switch
+        {
+            PlotUsageContext.Dialogue => "Dialogue - StrRef",
+            PlotUsageContext.CndFile => "Conditional",
+            _ => puc.ToString()
+        };
+
+
         public static PlotElementType ToPlotElementType(this PlotRecordType prt) => prt switch
         {
             PlotRecordType.Bool => PlotElementType.State,
@@ -529,6 +537,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public int UIndex { get; set; }
         public bool IsMod { get; set; }
         public PlotUsageContext Context { get; set; }
+        [IgnoredMember] 
+        public string ContextDisplayString => Context.ToDisplayString();
+
         public PlotUsage(int filekey, int uindex, bool ismod, PlotUsageContext context = PlotUsageContext.Package, int? containerID = null)
         {
             FileKey = filekey;

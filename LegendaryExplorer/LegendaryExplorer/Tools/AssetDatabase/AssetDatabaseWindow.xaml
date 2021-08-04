@@ -1146,7 +1146,7 @@
                                                     </TextBlock.Text>
                                                 </TextBlock>
                                                 <TextBlock FontSize="9">
-                                                    <Run Text="{Binding Context}" /> <Run Text="{Binding ContainerID}"/>
+                                                    <Run Text="{Binding ContextDisplayString, Mode=OneWay}" /> <Run Text="{Binding ContainerID}"/>
                                                 </TextBlock>
                                             </StackPanel>
                                         </DataTemplate>
