@@ -22,6 +22,7 @@ using System.Globalization;
 using System.ComponentModel;
 using Microsoft.Win32;
 using ClosedXML.Excel;
+using LegendaryExplorer.Dialogs;
 
 namespace LegendaryExplorer.Tools.PlotManager
 {
@@ -52,6 +53,18 @@ namespace LegendaryExplorer.Tools.PlotManager
         private string _currentOverallOperationText = "Plot Databases courtesy of Bioware.";
         public string CurrentOverallOperationText { get => _currentOverallOperationText; set => SetProperty(ref _currentOverallOperationText, value); }
 
+        private bool _isBusy;
+        public bool IsBusy { get => _isBusy; set => SetProperty(ref _isBusy, value); }
+        private string _busyText;
+        public string BusyText { get => _busyText; set => SetProperty(ref _busyText, value); }
+        private string _busyHeader;
+        public string BusyHeader { get => _busyHeader; set => SetProperty(ref _busyHeader, value); }
+        private bool _BusyBarInd;
+        public bool BusyBarInd
+        {
+            get => _BusyBarInd; set => SetProperty(ref _BusyBarInd, value);
+        }
+
         private MEGame _currentGame;
         public MEGame CurrentGame { get => _currentGame; set => SetProperty(ref _currentGame, value); }
         private int previousView { get; set; }
@@ -59,7 +72,6 @@ namespace LegendaryExplorer.Tools.PlotManager
         public int CurrentView { get => _currentView; set { previousView = _currentView; SetProperty(ref _currentView, value); } }
         private bool _needsSave;
         public bool NeedsSave { get => _needsSave; set => SetProperty(ref _needsSave, value); }
-
         private bool _ShowBoolStates = true;
         public bool ShowBoolStates { get => _ShowBoolStates; set => SetProperty(ref _ShowBoolStates, value); }
         private bool _ShowInts = true;
@@ -74,7 +86,7 @@ namespace LegendaryExplorer.Tools.PlotManager
         public bool ShowJournal { get => _ShowJournal; set => SetProperty(ref _ShowJournal, value); }
         private GridViewColumnHeader _lastHeaderClicked = null;
         private ListSortDirection _lastDirection = ListSortDirection.Ascending;
-
+        public PlotDatabase modDB = new PlotDatabase();
         public ObservableCollectionExtended<PlotElementType> newItemTypes { get; } = new()
         {
             PlotElementType.State,
@@ -94,6 +106,7 @@ namespace LegendaryExplorer.Tools.PlotManager
         public ICommand FilterCommand { get; set; }
         public ICommand CopyToClipboardCommand { get; set; }
         public ICommand RefreshLocalCommand { get; set; }
+        public ICommand LoadLocalCommand { get; set; }
         public ICommand SaveLocalCommand { get; set; }
         public ICommand ExitCommand { get; set; }
         public ICommand AddNewModCommand { get; set; }
@@ -170,6 +183,7 @@ namespace LegendaryExplorer.Tools.PlotManager
             FilterCommand = new GenericCommand(Filter);
             CopyToClipboardCommand = new GenericCommand(CopyToClipboard);
             RefreshLocalCommand = new GenericCommand(RefreshTrees);
+            LoadLocalCommand = new GenericCommand(LoadModDB);
             SaveLocalCommand = new GenericCommand(SaveModDB);
             ExitCommand = new GenericCommand(Close);
             ClickOkCommand = new RelayCommand(AddDataToModDatabase);
@@ -188,6 +202,7 @@ namespace LegendaryExplorer.Tools.PlotManager
             var plotenum = Enum.GetNames(typeof(PlotElementType)).ToList();
             newItem_subtype.ItemsSource = plotenum;
             CurrentGame = MEGame.LE3;
+            modDB = PlotDatabases.Le3ModDatabase;
             SelectedNode = RootNodes3[0];
             SetFocusByPlotElement(RootNodes3[0]);
         }
@@ -318,6 +333,7 @@ namespace LegendaryExplorer.Tools.PlotManager
                 {
                     case 1:
                         CurrentGame = MEGame.LE2;
+                        modDB = PlotDatabases.Le2ModDatabase;
                         if (Tree_BW2.SelectedItem == null)
                         {
                             SelectedNode = RootNodes2[0];
@@ -328,13 +344,15 @@ namespace LegendaryExplorer.Tools.PlotManager
                         break;
                     case 2:
                         CurrentGame = MEGame.LE1;
+                        modDB = PlotDatabases.Le1ModDatabase;
                         //if (Tree_BW1.SelectedItem == null)
-                            //SetFocusByPlotElement(RootNodes1[0]);
+                        //SetFocusByPlotElement(RootNodes1[0]);
                         break;
                     default:
                         CurrentGame = MEGame.LE3;
+                        modDB = PlotDatabases.Le3ModDatabase;
                         //if (Tree_BW3.SelectedItem == null)
-                            //SetFocusByPlotElement(RootNodes3[0]);
+                        //SetFocusByPlotElement(RootNodes3[0]);
                         break;
                 }
             }
@@ -543,6 +561,20 @@ namespace LegendaryExplorer.Tools.PlotManager
             e.Handled = true;
         }
 
+        private void LoadModDB()
+        {
+            if(NeedsSave)
+            {
+                var w = MessageBox.Show("There are unsaved changes in modding databases. Please confirm you wish to discard changes and reload?", "Warning", MessageBoxButton.OKCancel);
+                if (w == MessageBoxResult.Cancel)
+                    return;
+                NeedsSave = false;
+            }
+
+            modDB.LoadPlotsFromJSON(CurrentGame, false);
+            RefreshTrees();
+        }
+
         private async void SaveModDB()
         {
             bwLink.Visibility = Visibility.Collapsed;
@@ -698,9 +730,13 @@ namespace LegendaryExplorer.Tools.PlotManager
                     newElementId = mdb.GetNextElementId();
                 }
                 var parent = SelectedNode;
-                if(isEditing)
+                var childlist = new List<PlotElement>();
+                PlotElement target = null;
+                if (isEditing)
                 {
                     parent = SelectedNode.Parent;
+                    childlist.AddRange(SelectedNode.Children);
+                    target = SelectedNode;
                 }
                 switch (command)
                 {
@@ -732,7 +768,7 @@ namespace LegendaryExplorer.Tools.PlotManager
                                     return;
                                 }
                             }
-                            var newModPE = new PlotElement(-1, newElementId, modname, PlotElementType.Mod, parentId, new List<PlotElement>(), parent);
+                            var newModPE = new PlotElement(-1, newElementId, modname, PlotElementType.Mod, parentId, childlist, parent);
                             mdb.Organizational.Add(newElementId, newModPE);
                             parent.Children.Add(newModPE);
                         }
@@ -794,47 +830,37 @@ namespace LegendaryExplorer.Tools.PlotManager
                                         return;
                                     }
                                 }
-                                else
-                                {
-                                    newModItemPE.Children.AddRange(SelectedNode.Children);
-                                    parent.Children.Remove(SelectedNode);
-                                    mdb.Bools.Remove(SelectedNode.PlotId);
-                                }
-                                var newModBool = new PlotBool(newPlotId, newElementId, nameItem, type, parent.ElementId, newchildren, parent);
-                                //subtype, gamervariable, achievementid, galaxyatwar
+                                var newST = PlotElementType.None;
                                 if(newItem_subtype.SelectedItem != null)
-                                    newModBool.SubType = (PlotElementType)newItem_subtype.SelectedItem;
-
+                                    newST = (PlotElementType)newItem_subtype.SelectedItem;
+                                int newAchID = -1;
                                 if (!newItem_achievementid.Text.IsEmpty())
                                 {
-                                    if (!int.TryParse(newItem_achievementid.Text, out int newAchID))
+                                    if (!int.TryParse(newItem_achievementid.Text, out newAchID))
                                     {
                                         MessageBox.Show($"Achievement Id needs to be an integer.  Please review.", "Invalid Achievement Id");
                                         return;
                                     }
-                                    newModBool.AchievementID = newAchID;
                                 }
-
+                                int newGAWID = -1;
                                 if (!newItem_galaxyatwar.Text.IsEmpty())
                                 {
-                                    if (!(int.TryParse(newItem_galaxyatwar.Text, out int newGAWID) && newGAWID > 0))
+                                    if (!(int.TryParse(newItem_galaxyatwar.Text, out newGAWID) && newGAWID > 0))
                                     {
                                         MessageBox.Show($"Galaxy at War Id needs to be a positive integer.  Please review.", "Invalid War Asset Id");
                                         return;
                                     }
-                                    newModBool.GalaxyAtWar = newGAWID;
                                 }
+                                int newGVarID = -1;
                                 if (!newItem_galaxyatwar.Text.IsEmpty())
                                 {
-                                    if (!(int.TryParse(newItem_gamervariable.Text, out int newGVarID) && newGVarID > 0))
+                                    if (!(int.TryParse(newItem_gamervariable.Text, out newGVarID) && newGVarID > 0))
                                     {
                                         MessageBox.Show($"Gamer Variable Id needs to be a positive integer.  Please review.", "Invalid Gamer Variable Id");
                                         return;
                                     }
-                                    newModBool.GamerVariable = newGVarID;
                                 }
-                                mdb.Bools.Add(newPlotId, newModBool);
-                                parent.Children.Add(newModBool);
+                                AddVerifiedPlotState(type, parent, newPlotId, newElementId, nameItem, childlist, isEditing, target, newST, newAchID, newGVarID, newGAWID);
                                 break;
                             case PlotElementType.Integer:
                                 if (!isEditing || SelectedNode.PlotId != newPlotId)
@@ -845,14 +871,7 @@ namespace LegendaryExplorer.Tools.PlotManager
                                         return;
                                     }
                                 }
-                                if(isEditing)
-                                {
-                                    newModItemPE.Children.AddRange(SelectedNode.Children);
-                                    parent.Children.Remove(SelectedNode);
-                                    mdb.Ints.Remove(SelectedNode.PlotId);
-                                }
-                                mdb.Ints.Add(newPlotId, newModItemPE);
-                                parent.Children.Add(newModItemPE);
+                                AddVerifiedPlotState(type, parent, newPlotId, newElementId, nameItem, childlist, isEditing, target);
                                 break;
                             case PlotElementType.Float:
                                 if (!isEditing || SelectedNode.PlotId != newPlotId)
@@ -863,14 +882,8 @@ namespace LegendaryExplorer.Tools.PlotManager
                                         return;
                                     }
                                 }
-                                if(isEditing)
-                                {
-                                    newModItemPE.Children.AddRange(SelectedNode.Children);
-                                    parent.Children.Remove(SelectedNode);
-                                    mdb.Floats.Remove(SelectedNode.PlotId);
-                                }
-                                mdb.Floats.Add(newPlotId, newModItemPE);
-                                parent.Children.Add(newModItemPE);
+
+                                AddVerifiedPlotState(type, parent, newPlotId, newElementId, nameItem, childlist, isEditing, target);
                                 break;
                             case PlotElementType.Conditional:
                                 if (!isEditing || SelectedNode.PlotId != newPlotId)
@@ -881,17 +894,8 @@ namespace LegendaryExplorer.Tools.PlotManager
                                         return;
                                     }
                                 }
-                                if (isEditing)
-                                {
-                                    newModItemPE.Children.AddRange(SelectedNode.Children);
-                                    parent.Children.Remove(SelectedNode);
-                                    mdb.Conditionals.Remove(SelectedNode.PlotId);
-                                }
 
-                                var newModCnd = new PlotConditional(newPlotId, newElementId, nameItem, type, parent.ElementId, new List<PlotElement>(), parent);
-                                newModCnd.Code = newItem_Code.Text;
-                                mdb.Conditionals.Add(newPlotId, newModCnd);
-                                parent.Children.Add(newModCnd);
+                                AddVerifiedPlotState(type, parent, newPlotId, newElementId, nameItem, childlist, isEditing, target, PlotElementType.None, -1, -1, -1, newItem_Code.Text);
                                 break;
                             case PlotElementType.Transition:
                                 if (!isEditing || SelectedNode.PlotId != newPlotId)
@@ -902,27 +906,12 @@ namespace LegendaryExplorer.Tools.PlotManager
                                         return;
                                     }
                                 }
-                                if (isEditing)
-                                {
-                                    newModItemPE.Children.AddRange(SelectedNode.Children);
-                                    parent.Children.Remove(SelectedNode);
-                                    mdb.Transitions.Remove(SelectedNode.PlotId);
-                                }
 
-                                var newModTrans = new PlotTransition(newPlotId, newElementId, nameItem, type, parent.ElementId, new List<PlotElement>(), parent);
-                                newModTrans.Argument = newItem_Argument.Text;
-                                mdb.Transitions.Add(newPlotId, newModTrans);
-                                parent.Children.Add(newModTrans);
+                                AddVerifiedPlotState(type, parent, newPlotId, newElementId, nameItem, childlist, isEditing, target, PlotElementType.None, -1, -1, -1, null, newItem_Argument.Text);
                                 break;
                             default:   //PlotElementType.JournalGoal, PlotElementType.JournalItem, PlotElementType.JournalTask, PlotElementType.Consequence, PlotElementType.Flag
-                                if (isEditing)
-                                {
-                                    newModItemPE.Children.AddRange(SelectedNode.Children);
-                                    parent.Children.Remove(SelectedNode);
-                                    mdb.Organizational.Remove(SelectedNode.ElementId);
-                                }
-                                mdb.Organizational.Add(newElementId, newModItemPE);
-                                parent.Children.Add(newModItemPE);
+
+                                AddVerifiedPlotState(type, parent, newPlotId, newElementId, nameItem, childlist, isEditing, target);
                                 break;
                         }
                         NeedsSave = true;
@@ -934,6 +923,107 @@ namespace LegendaryExplorer.Tools.PlotManager
 
             RevertPanelsToDefault();
             RefreshTrees();
+        }
+
+        private bool AddVerifiedPlotState(PlotElementType type, PlotElement parent, int newPlotId, int newElementId, string label, List<PlotElement> newchildren, bool update = false, 
+            PlotElement target = null, PlotElementType subtype = PlotElementType.None, int achievementId = -1, int gv = -1, int gaw = -1, string code = null, string argu = null)  //Game state must be verified
+        {
+            if (update && target == null)
+                return false;
+            var newModItemPE = new PlotElement(newPlotId, newElementId, label, type, parent.ElementId, newchildren, parent);
+            try
+            {
+                switch (type)
+                {
+                    case PlotElementType.State:
+                    case PlotElementType.SubState:
+                        if (update)
+                        {
+                            parent.Children.Remove(target);
+                            modDB.Bools.Remove(target.PlotId);
+                        }
+                        var newModBool = new PlotBool(newPlotId, newElementId, label, type, parent.ElementId, newchildren, parent);
+                        //subtype, gamervariable, achievementid, galaxyatwar
+                        if (subtype != PlotElementType.None)
+                            newModBool.SubType = subtype;
+                        if (achievementId >= 0)
+                        {
+                            newModBool.AchievementID = achievementId;
+                        }
+                        if (gaw >= 0)
+                        {
+                            newModBool.GalaxyAtWar = gaw;
+                        }
+                        if (gv >= 0)
+                        {
+                            newModBool.GamerVariable = gv;
+                        }
+                        modDB.Bools.Add(newPlotId, newModBool);
+                        parent.Children.Add(newModBool);
+                        break;
+                    case PlotElementType.Integer:
+                        if (update)
+                        {
+                            parent.Children.Remove(target);
+                            modDB.Ints.Remove(target.PlotId);
+                        }
+                        modDB.Ints.Add(newPlotId, newModItemPE);
+                        parent.Children.Add(newModItemPE);
+                        break;
+                    case PlotElementType.Float:
+                        if (update)
+                        {
+                            parent.Children.Remove(target);
+                            modDB.Floats.Remove(target.PlotId);
+                        }
+                        modDB.Floats.Add(newPlotId, newModItemPE);
+                        parent.Children.Add(newModItemPE);
+                        break;
+                    case PlotElementType.Conditional:
+                        if (update)
+                        {
+                            parent.Children.Remove(target);
+                            modDB.Conditionals.Remove(target.PlotId);
+                        }
+
+                        var newModCnd = new PlotConditional(newPlotId, newElementId, label, type, parent.ElementId, new List<PlotElement>(), parent);
+                        if(code != null)
+                        {
+                            newModCnd.Code = code;
+                        }
+                        modDB.Conditionals.Add(newPlotId, newModCnd);
+                        parent.Children.Add(newModCnd);
+                        break;
+                    case PlotElementType.Transition:
+                        if (update)
+                        {
+                            parent.Children.Remove(SelectedNode);
+                            modDB.Transitions.Remove(SelectedNode.PlotId);
+                        }
+                        var newModTrans = new PlotTransition(newPlotId, newElementId, label, type, parent.ElementId, new List<PlotElement>(), parent);
+                        if(argu != null)
+                        {
+                            newModTrans.Argument = argu;
+                        }
+                        modDB.Transitions.Add(newPlotId, newModTrans);
+                        parent.Children.Add(newModTrans);
+                        break;
+                    default:   //PlotElementType.JournalGoal, PlotElementType.JournalItem, PlotElementType.JournalTask, PlotElementType.Consequence, PlotElementType.Flag
+                        if (update)
+                        {
+                            parent.Children.Remove(target);
+                            modDB.Organizational.Remove(target.ElementId);
+                        }
+                        modDB.Organizational.Add(newElementId, newModItemPE);
+                        parent.Children.Add(newModItemPE);
+                        break;
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         private void DeleteNewModData()
@@ -1064,7 +1154,470 @@ namespace LegendaryExplorer.Tools.PlotManager
 
         private void ImportModDataFromExcel()
         {
-            //Not yet implemented
+            var w = MessageBox.Show($"Do you want to import mod plot data into {CurrentGame}?\nNote the import must be laid out exactly as in the sample file.", "Plot Database", MessageBoxButton.OKCancel);
+            if (w == MessageBoxResult.Cancel)
+                return;
+            BusyHeader = "Plot Database";
+            BusyText = "Importing from excel.";
+            IsBusy = true;
+
+            OpenFileDialog oDlg = new OpenFileDialog
+            {
+                Filter = "Excel Files (*.xlsx)|*.xlsx",
+                Title = "Import Excel table"
+            };
+
+            if (oDlg.ShowDialog() != true)
+                return;
+
+            var Workbook = new XLWorkbook();
+            try
+            {
+                Workbook = new XLWorkbook(oDlg.FileName);
+            }
+            catch
+            {
+                IsBusy = false;
+                MessageBox.Show("XLS is open in another application. Close before import.", "Plot Database", MessageBoxButton.OK);
+                return;
+            }
+            IXLWorksheet iWorksheet;
+            if (Workbook.Worksheets.Count() > 1)
+            {
+                try
+                {
+                    iWorksheet = Workbook.Worksheet("Import");
+                }
+                catch
+                {
+                    MessageBox.Show("Import Sheet not found");
+                    return;
+                }
+            }
+            else
+            {
+                iWorksheet = Workbook.Worksheet(1);
+            }
+
+            //STEP 1 Check Column Headers
+            var headers = new List<string>()
+                {
+                    "Action",
+                    "Mod",
+                    "Type",
+                    "ParentPath",
+                    "Label",
+                    "PlotID",
+                    "Code",
+                    "Argument",
+                    "SubType",
+                    "GamerVariable",
+                    "AchievementID",
+                    "GalaxyAtWar",
+                    "NewLabel"
+                };
+
+            for (int h = 0; h < headers.Count; h++)
+            {
+                string xlHead = iWorksheet.Cell(1, h + 1).Value.ToString();
+                if (xlHead != headers[h])
+                {
+                    MessageBox.Show("XLS has wrong header format.");
+                    IsBusy = false;
+                    return;
+                }
+            }
+
+            //STEP 2 Read and Validate rows into a list
+            var changes = new Queue<xlPlotImport>();
+            var faillist = new List<xlPlotImport>();
+            var modList = modDB.Organizational[100000].Children;
+            var validtypes = new List<PlotElementType> { PlotElementType.Category, PlotElementType.State, PlotElementType.SubState, PlotElementType.Integer, PlotElementType.Float, PlotElementType.Conditional,
+                PlotElementType.Transition, PlotElementType.JournalGoal, PlotElementType.JournalItem, PlotElementType.JournalTask};
+
+            var lastrow = iWorksheet.LastRowUsed().RowNumber();
+            for (int row = 2; row <= lastrow; row++)
+            {
+                var xlPlot = new xlPlotImport(row);
+                //Label
+                IXLCell cellE = iWorksheet.Cell(row, 5);
+                string contentsE = cellE.Value.ToString();
+                if (contentsE != null && !contentsE.Contains(" "))
+                {
+                    xlPlot.Label = contentsE;
+                }
+                else
+                {
+                    xlPlot.ErrorReason = "Label invalid.  It must not contain spaces.";
+                    faillist.Add(xlPlot);
+                    continue;
+                }
+
+                //Mod
+                IXLCell cellB = iWorksheet.Cell(row, 2);
+                string contentsB = cellB.Value.ToString();
+                var modPE = modList.FirstOrDefault(d => d.Label == contentsB);
+                if (contentsB != null && modPE != null)
+                {
+                    xlPlot.Mod = modPE;
+                }
+                else
+                {
+                    xlPlot.ErrorReason = "Mod not found in database.";
+                    faillist.Add(xlPlot);
+                    continue;
+                }
+
+                //Action
+                IXLCell cellA = iWorksheet.Cell(row, 1);
+                string contentsA = cellA.Value.ToString();
+                if(Enum.TryParse(contentsA, out xlImportAction action))
+                {
+                    xlPlot.Action = action;
+                }
+                else
+                {
+                    xlPlot.ErrorReason = "Invalid action";
+                    faillist.Add(xlPlot);
+                    continue;
+                }
+
+                //Type
+                IXLCell cellC = iWorksheet.Cell(row, 3);
+                string contentsC = cellC.Value.ToString();
+                if (Enum.TryParse(contentsC, out PlotElementType type) &&  validtypes.Contains(type))
+                {
+                    xlPlot.Type = type;
+                }
+                else
+                {
+                    xlPlot.ErrorReason = "Invalid Type";
+                    faillist.Add(xlPlot);
+                    continue;
+                }
+
+                //Path
+                IXLCell cellD = iWorksheet.Cell(row, 4);
+                string contentsD = cellD.Value.ToString();
+                var pathArray = contentsD.Split(".").ToList();
+                PlotElement parent = null;
+                if (pathArray != null && IsModPathValid(modPE, pathArray, out parent))
+                {
+                    xlPlot.ParentPath = contentsD;
+                    xlPlot.Parent = parent;
+                }
+                else
+                {
+                    xlPlot.ErrorReason = "Invalid ParentPath.  It must start with the mod and consist of categories that have either been previously created or are higher up on the sheet, seperated by periods.";
+                    faillist.Add(xlPlot);
+                    continue;
+                }
+                var target = parent.Children.FirstOrDefault(p => p.Label == xlPlot.Label);
+                if(target == null && xlPlot.Action != xlImportAction.Add)
+                {
+                    xlPlot.ErrorReason = "Target not found. Update and Deletion actions must point to an existing plot state.";
+                    faillist.Add(xlPlot);
+                    continue;
+                }
+
+                //PlotId
+                IXLCell cellF = iWorksheet.Cell(row, 6);
+                string contentsF = cellF.Value.ToString();
+                bool invalidPlot = true;
+                string ploterror = "Invalid Plot.";
+                if (contentsF != null && int.TryParse(contentsF, out int plotid))
+                {
+                    switch(xlPlot.Type)
+                    {
+                        case PlotElementType.State:
+                        case PlotElementType.SubState:
+                            var b = PlotDatabases.FindPlotBoolByID(plotid, CurrentGame);
+                            if (b != null && xlPlot.Action == xlImportAction.Add)
+                                ploterror = "State already exists. Cannot be duplicated";
+                            else
+                            {
+                                xlPlot.PlotID = plotid;
+                                invalidPlot = false;
+                            }
+                            break;
+                        case PlotElementType.Integer:
+                            var i = PlotDatabases.FindPlotIntByID(plotid, CurrentGame);
+                            if (i != null && xlPlot.Action == xlImportAction.Add)
+                                ploterror = "Integer already exists. Cannot be duplicated";
+                            else
+                            {
+                                xlPlot.PlotID = plotid;
+                                invalidPlot = false;
+                            }
+                            break;
+                        case PlotElementType.Float:
+                            var f = PlotDatabases.FindPlotFloatByID(plotid, CurrentGame);
+                            if (f != null && xlPlot.Action == xlImportAction.Add)
+                                ploterror = "Float already exists. Cannot be duplicated";
+                            else
+                            {
+                                xlPlot.PlotID = plotid;
+                                invalidPlot = false;
+                            }
+                            break;
+                        case PlotElementType.Conditional:
+                            var c = PlotDatabases.FindPlotConditionalByID(plotid, CurrentGame);
+                            if (c != null && xlPlot.Action == xlImportAction.Add)
+                                ploterror = "Conditional already exists. Cannot be duplicated";
+                            else
+                            {
+                                xlPlot.PlotID = plotid;
+                                invalidPlot = false;
+                            }
+                            break;
+                        case PlotElementType.Transition:
+                            var t = PlotDatabases.FindPlotConditionalByID(plotid, CurrentGame);
+                            if (t != null && xlPlot.Action == xlImportAction.Add)
+                                ploterror = "Transition already exists. Cannot be duplicated";
+                            else
+                            {
+                                xlPlot.PlotID = plotid;
+                                invalidPlot = false;
+                            }
+                            break;
+                        default: //ignore organisational always -1
+                            xlPlot.PlotID = -1;
+                            invalidPlot = false;
+                            break;
+                    }
+                }
+
+                if(invalidPlot)
+                {
+                    xlPlot.ErrorReason = ploterror;
+                    faillist.Add(xlPlot);
+                    continue;
+                }
+            
+                //Code
+                if(xlPlot.Type == PlotElementType.Conditional)
+                {
+                    IXLCell cellG = iWorksheet.Cell(row, 7);
+                    string contentsG = cellG.Value.ToString();
+                    if (contentsG != null && contentsG.Length > 350)
+                        contentsG.Substring(0, 350);
+                    xlPlot.Code = contentsG;
+                }
+
+                //Argument
+                if (xlPlot.Type == PlotElementType.Transition)
+                {
+                    IXLCell cellH = iWorksheet.Cell(row, 8);
+                    string contentsH = cellH.Value.ToString();
+                    if (contentsH != null)
+                    {
+                        xlPlot.Argument = contentsH;
+                    }
+                }
+
+                //Bool states
+                if (xlPlot.Type == PlotElementType.State || xlPlot.Type == PlotElementType.SubState)
+                {
+                    IXLCell cellI = iWorksheet.Cell(row, 9);
+                    string contentsI = cellI.Value.ToString();
+                    if (contentsI != null && Enum.TryParse(contentsI, out PlotElementType st))
+                    {
+                        xlPlot.SubType = st;
+                    }
+                    IXLCell cellJ = iWorksheet.Cell(row, 10);
+                    string contentsJ = cellJ.Value.ToString();
+                    if (contentsJ != null && int.TryParse(contentsJ, out int gv))
+                    {
+                        xlPlot.GamerVariable = gv;
+                    }
+                    IXLCell cellK = iWorksheet.Cell(row, 11);
+                    string contentsK = cellK.Value.ToString();
+                    if (contentsK != null && int.TryParse(contentsK, out int achid))
+                    {
+                        xlPlot.AchievementID = achid;
+                    }
+                    IXLCell cellL = iWorksheet.Cell(row, 12);
+                    string contentsL = cellL.Value.ToString();
+                    if (contentsL != null && int.TryParse(contentsL, out int gaw))
+                    {
+                        xlPlot.GalaxyAtWar = gaw;
+                    }
+                }
+
+                //STEP 3 - immediately action category changes and all deletions
+                //If add category then do immediately
+                if(xlPlot.Type == PlotElementType.Category && xlPlot.Action == xlImportAction.Add)
+                {
+                    if(parent.Children.FirstOrDefault(c => c.Label == xlPlot.Label) != null)
+                    {
+                        xlPlot.ErrorReason = "Update failed. Duplicate Category exists.";
+                        faillist.Add(xlPlot);
+                        continue;
+                    }
+                    var newModCatPE = new PlotElement(-1, modDB.GetNextElementId(), xlPlot.Label, PlotElementType.Category, parent.ElementId, new List<PlotElement>(), parent);
+                    parent.Children.Add(newModCatPE);
+                    modDB.Organizational.Add(newModCatPE.ElementId, newModCatPE);
+                    continue;
+                }
+
+                //Update category labels
+                if (xlPlot.Type == PlotElementType.Category && xlPlot.Action == xlImportAction.Update)
+                {
+                    IXLCell cellM = iWorksheet.Cell(row, 13);
+                    string contentsM = cellM.Value.ToString();
+                    if (contentsM != null)
+                    {
+                        modDB.Organizational[target.ElementId].Label = contentsM;
+                    }
+                    else
+                    {
+                        xlPlot.ErrorReason = "Update failed. NewLabel was empty";
+                        faillist.Add(xlPlot);
+                    }
+                    continue;
+                }
+
+                //check valid action - Delete must have matching Mod, Type, Path, Label and plotID
+                if (xlPlot.Action == xlImportAction.Delete)
+                {
+                    if(!target.Children.IsEmpty())
+                    {
+                        xlPlot.ErrorReason = "Deletion failed. Target has dependent plot states.";
+                        faillist.Add(xlPlot);
+                        continue;
+                    }
+                    if(target != null && target.Label == xlPlot.Label && parent.Path.Substring(13) == xlPlot.ParentPath && xlPlot.PlotID == target.PlotId)
+                    {
+                        parent.Children.Remove(target);
+                        switch (target.Type)
+                        {
+                            case PlotElementType.State:
+                            case PlotElementType.SubState:
+                                modDB.Bools.Remove(xlPlot.PlotID);
+                                break;
+                            case PlotElementType.Integer:
+                                modDB.Ints.Remove(xlPlot.PlotID);
+                                break;
+                            case PlotElementType.Float:
+                                modDB.Floats.Remove(xlPlot.PlotID);
+                                break;
+                            case PlotElementType.Conditional:
+                                modDB.Conditionals.Remove(xlPlot.PlotID);
+                                break;
+                            case PlotElementType.Transition:
+                                modDB.Transitions.Remove(xlPlot.PlotID);
+                                break;
+                            default:
+                                modDB.Organizational.Remove(target.ElementId);
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        xlPlot.ErrorReason = "Deletion failed. Could not find existing element to remove.";
+                        faillist.Add(xlPlot);
+                    }
+                    continue;
+                }
+
+                //If reached here then xlPlot is valid and should be queued up for when all deletions and category events have occured
+                changes.Enqueue(xlPlot);
+            }
+            //Step 4: In order update plots
+            while (!changes.IsEmpty())
+            {
+                var import = changes.Dequeue();
+                bool success = false;
+                switch (import.Action)
+                {
+                    case xlImportAction.Add:
+                        int newElementId = modDB.GetNextElementId();
+                        success = AddVerifiedPlotState(import.Type, import.Parent, import.PlotID, newElementId, import.Label, new List<PlotElement>(), false, null, import.SubType, import.AchievementID, import.GamerVariable,
+                            import.GalaxyAtWar, import.Code, import.Argument);
+                        break;
+                    case xlImportAction.Update:
+                        var target = import.Parent.Children.FirstOrDefault(p => p.Label == import.Label);
+                        success = AddVerifiedPlotState(import.Type, import.Parent, import.PlotID, target.ElementId, import.Label, new List<PlotElement>(), true, target, import.SubType, import.AchievementID, import.GamerVariable,
+                            import.GalaxyAtWar, import.Code, import.Argument);
+                        break;
+                    case xlImportAction.Delete: //should not happen as valid deletions should already have occurred.
+                        break;
+                }
+                if (!success)
+                {
+                    import.ErrorReason = "Failed during database addition.";
+                    faillist.Add(import);
+                }
+                else
+                {
+                    NeedsSave = true;
+                }
+            }
+
+            var errors = new List<string>();
+            foreach(var f in faillist)
+            {
+                string plt = null;
+                if (f.PlotID > 0)
+                    plt = " - " + f.PlotID.ToString() + " ";
+                string s = "Row: " + f.Row.ToString() + " - " + f.Label + " - " + f.Type.ToString() + plt + "\n" + f.ErrorReason;
+                errors.Add(s);
+            }
+            RefreshTrees();
+            IsBusy = false;
+            if (Enumerable.Any(errors))
+            {
+                ListDialog ld = new ListDialog(errors, "Plot import failures",
+                        "The following items failed to import:", this);
+                ld.Show();
+            }
+            else
+            {
+                MessageBox.Show("All plot states were successfully imported.", "Plot Database");
+            }
+        }
+
+        private bool IsModPathValid(PlotElement element, List<string> path, out PlotElement target)
+        {
+            target = null;
+            if (element.Label != path[0])
+                return false;
+            path.RemoveAt(0);
+            if (path.IsEmpty())
+            {
+                target = element;
+                return true;
+            }
+            var nextPE = element.Children.FirstOrDefault(c => c.Label == path[0]);
+            if (nextPE == null)
+                return false;
+            return IsModPathValid(nextPE, path, out target);
+        }
+
+        private class xlPlotImport
+        {
+            public int Row { get; set; }
+            public xlImportAction Action { get; set; }
+            public PlotElement Mod { get; set; }
+            public PlotElementType Type { get; set; }
+            public string? ParentPath { get; set; }
+            public string Label { get; set; }
+            public int PlotID { get; set; }
+            public string? Code { get; set; }
+            public string Argument { get; set; }
+            public PlotElementType SubType { get; set; } = PlotElementType.None;
+            public int GamerVariable { get; set; } = -1;
+            public int AchievementID { get; set; } = -1;
+            public int GalaxyAtWar { get; set; } = -1;
+            public string ErrorReason { get; set; }
+            public PlotElement Parent { get; set; }
+            public xlPlotImport(int row) { Row = row; }
+        }
+        public enum xlImportAction
+        {
+            Add = 0,
+            Update = 1,
+            Delete = 2
         }
 
         private void ExportDataToExcel()
