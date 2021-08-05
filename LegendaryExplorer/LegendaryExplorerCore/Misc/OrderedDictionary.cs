@@ -48,7 +48,7 @@ namespace LegendaryExplorerCore.Misc
         {
             foreach (var kvp in this)
             {
-                if (EqualityComparer<TKey>.Default.Equals(kvp.Key, key))
+                if (KeyComparer.Equals(kvp.Key, key))
                 {
                     value = kvp.Value;
                     return true;
@@ -78,7 +78,7 @@ namespace LegendaryExplorerCore.Misc
             {
                 foreach (var kvp in this)
                 {
-                    if (EqualityComparer<TKey>.Default.Equals(kvp.Key, key))
+                    if (KeyComparer.Equals(kvp.Key, key))
                     {
                         return kvp.Value;
                     }

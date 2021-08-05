@@ -135,7 +135,7 @@ namespace LegendaryExplorerCore.Shaders
             {
                 destFile.AddExport(new ExportEntry(destFile, 0, seekfreeshadercache, BitConverter.GetBytes(-1), binary: shadersToAdd)
                 {
-                    Class = EntryImporter.EnsureClassIsInFile(destFile, "ShaderCache"),
+                    Class = destFile.getEntryOrAddImport("Engine.ShaderCache"),
                     ObjectFlags = EObjectFlags.LoadForClient | EObjectFlags.LoadForEdit | EObjectFlags.LoadForServer | EObjectFlags.Standalone
                 });
                 return;

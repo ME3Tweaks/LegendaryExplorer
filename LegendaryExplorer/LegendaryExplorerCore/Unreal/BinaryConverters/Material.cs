@@ -248,29 +248,89 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
     public class StaticParameterSet : IEquatable<StaticParameterSet>
     {
-        public record StaticSwitchParameter
+        public class StaticSwitchParameter : IEquatable<StaticSwitchParameter>
         {
             public NameReference ParameterName;
             public bool Value;
-            public bool bOverride;
+            public bool bOverride; //ignored in equality checks
             public Guid ExpressionGUID;
+
+            public bool Equals(StaticSwitchParameter other)
+            {
+                if (ReferenceEquals(null, other)) return false;
+                if (ReferenceEquals(this, other)) return true;
+                return ParameterName.Equals(other.ParameterName) && Value == other.Value && ExpressionGUID.Equals(other.ExpressionGUID);
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (ReferenceEquals(null, obj)) return false;
+                if (ReferenceEquals(this, obj)) return true;
+                if (obj.GetType() != this.GetType()) return false;
+                return Equals((StaticSwitchParameter) obj);
+            }
+
+            public override int GetHashCode()
+            {
+                return HashCode.Combine(ParameterName, Value, ExpressionGUID);
+            }
         }
-        public record StaticComponentMaskParameter
+        public class StaticComponentMaskParameter : IEquatable<StaticComponentMaskParameter>
         {
             public NameReference ParameterName;
             public bool R;
             public bool G;
             public bool B;
             public bool A;
-            public bool bOverride;
+            public bool bOverride; //ignored in equality checks
             public Guid ExpressionGUID;
+
+            public bool Equals(StaticComponentMaskParameter other)
+            {
+                if (ReferenceEquals(null, other)) return false;
+                if (ReferenceEquals(this, other)) return true;
+                return ParameterName.Equals(other.ParameterName) && R == other.R && G == other.G && B == other.B && A == other.A && ExpressionGUID.Equals(other.ExpressionGUID);
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (ReferenceEquals(null, obj)) return false;
+                if (ReferenceEquals(this, obj)) return true;
+                if (obj.GetType() != this.GetType()) return false;
+                return Equals((StaticComponentMaskParameter) obj);
+            }
+
+            public override int GetHashCode()
+            {
+                return HashCode.Combine(ParameterName, R, G, B, A, ExpressionGUID);
+            }
         }
-        public record NormalParameter
+        public class NormalParameter : IEquatable<NormalParameter>
         {
             public NameReference ParameterName;
             public byte CompressionSettings;
-            public bool bOverride;
+            public bool bOverride; //ignored in equality checks
             public Guid ExpressionGUID;
+
+            public bool Equals(NormalParameter other)
+            {
+                if (ReferenceEquals(null, other)) return false;
+                if (ReferenceEquals(this, other)) return true;
+                return ParameterName.Equals(other.ParameterName) && CompressionSettings == other.CompressionSettings && bOverride == other.bOverride && ExpressionGUID.Equals(other.ExpressionGUID);
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (ReferenceEquals(null, obj)) return false;
+                if (ReferenceEquals(this, obj)) return true;
+                if (obj.GetType() != this.GetType()) return false;
+                return Equals((NormalParameter) obj);
+            }
+
+            public override int GetHashCode()
+            {
+                return HashCode.Combine(ParameterName, CompressionSettings, bOverride, ExpressionGUID);
+            }
         }
 
         public Guid BaseMaterialId;
