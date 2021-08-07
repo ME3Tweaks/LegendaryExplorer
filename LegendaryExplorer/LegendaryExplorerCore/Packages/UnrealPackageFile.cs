@@ -19,6 +19,7 @@ namespace LegendaryExplorerCore.Packages
         public const uint packageTagLittleEndian = 0x9E2A83C1; //Default, PC
         public const uint packageTagBigEndian = 0xC1832A9E;
         public string FilePath { get; }
+        public string FileNameNoExtension { get; }
         public bool IsModified { get; protected set; }
         public int FullHeaderSize { get; protected set; }
         public UnrealFlags.EPackageFlags Flags { get; protected set; }
@@ -800,6 +801,10 @@ namespace LegendaryExplorerCore.Packages
         protected UnrealPackageFile(string filePath)
         {
             FilePath = filePath;
+            if (filePath is not null)
+            {
+                FileNameNoExtension = Path.GetFileNameWithoutExtension(filePath);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

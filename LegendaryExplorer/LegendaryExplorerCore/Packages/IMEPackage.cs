@@ -217,6 +217,7 @@ namespace LegendaryExplorerCore.Packages
         Endian Endian { get; }
         MELocalization Localization { get; }
         string FilePath { get; }
+        public string FileNameNoExtension { get; }
         DateTime LastSaved { get; }
         long FileSize { get; }
 

@@ -421,19 +421,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 return foundEntry;
             }
 
-            // Todo: Improve this for root same-named packages
-            // This is a hackjob.
-            if (importFullNameInstanced.StartsWith("Engine."))
+            string[] importParts = importFullNameInstanced.Split('.');
+
+            //if importing something into eg. SFXGame.pcc, this will ensure links to SFXGame imports will link up to the proper exports in SFXGame
+            if (importParts.Length > 1 && importParts[0].CaseInsensitiveEquals(destinationPCC.FileNameNoExtension))
             {
-                foundEntry = destinationPCC.FindEntry(importFullNameInstanced.Substring(7));
-                if (foundEntry != null)
-                {
-                    return foundEntry;
-                }
-            }
-            else if (importFullNameInstanced.StartsWith("SFXGame."))
-            {
-                foundEntry = destinationPCC.FindEntry(importFullNameInstanced.Substring(8));
+                foundEntry = destinationPCC.FindEntry(string.Join('.', importParts[1..]));
                 if (foundEntry != null)
                 {
                     return foundEntry;
@@ -457,10 +450,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 return newImport;
             }
 
-            string[] importParts = importFullNameInstanced.Split('.');
 
             //recursively ensure parent exists. when importParts.Length == 1, this will return null
-            IEntry parent = GetOrAddCrossImportOrPackage(string.Join(".", importParts.Take(importParts.Length - 1)), sourcePcc, destinationPCC,
+            IEntry parent = GetOrAddCrossImportOrPackage(string.Join('.', importParts[..^1]), sourcePcc, destinationPCC,
                                                          importNonPackageExportsToo, objectMapping);
 
             var sourceEntry = sourcePcc.FindEntry(importFullNameInstanced); // should this search entries instead? What if an import has an export parent?

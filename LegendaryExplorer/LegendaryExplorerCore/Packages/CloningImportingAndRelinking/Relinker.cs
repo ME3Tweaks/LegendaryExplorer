@@ -158,7 +158,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                     // This doesn't work on functions! Finding the children through the probe doesn't work
 
-                    if (objBin.Export != null && objBin.Export.ClassName == "State")
+                    if (objBin.Export is {ClassName: "State"})
                     {
                         // We can't relink labeltable as it depends on none
                         // Use the source export instead
