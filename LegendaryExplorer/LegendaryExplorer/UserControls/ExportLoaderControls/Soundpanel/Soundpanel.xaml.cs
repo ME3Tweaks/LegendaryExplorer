@@ -1668,28 +1668,32 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 hircHexProvider.ReplaceBytes(OriginalHIRCHex);
                 SoundpanelHIRC_Hexbox.Refresh();
 
+                int start = 0x0;
                 HIRCNotableItems.Add(new HIRCNotableItem
                 {
-                    Offset = 0x0,
+                    Offset = start,
                     Header = $"Type: 0x{h.ObjType:X2}",
-                    Length = 1
+                    Length = (Pcc?.Game == MEGame.ME2 ? 4 : 1)
                 });
 
+                start += (Pcc?.Game == MEGame.ME2 ? 4 : 1);
                 HIRCNotableItems.Add(new HIRCNotableItem
                 {
-                    Offset = 0x1,
+                    Offset = start,
                     Header = $"Size: 0x{h.Data.Length - 5:X8}",
                     Length = 4
                 });
 
+                start += 4;
                 HIRCNotableItems.Add(new HIRCNotableItem
                 {
-                    Offset = 0x5,
+                    Offset = start,
                     Header = $"Object ID: 0x{h.ID:X8}",
                     Length = 4
                 });
 
-                int start = 0x9;
+                start += 4;
+
                 switch ((HIRCType)h.ObjType)
                 {
                     case HIRCType.SoundSXFSoundVoice:

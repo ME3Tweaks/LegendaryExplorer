@@ -5649,14 +5649,21 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     Length = len + 4 + (Pcc.Game == MEGame.ME2 ? 4 : 1)
                 };
                 bin.JumpTo(startPos);
-                node.Items.Add(MakeByteNode(bin, "Type"));
+                node.Items.Add(Pcc.Game == MEGame.ME2 ? MakeUInt32Node(bin, "Type") : MakeByteNode(bin, "Type"));
                 node.Items.Add(MakeInt32Node(bin, "Length"));
                 node.Items.Add(MakeUInt32HexNode(bin, "ID"));
                 var endPos = startPos + node.Length;
                 switch (hircType)
                 {
                     case HIRCType.Event:
-                        node.Items.Add((Pcc.Game.IsLEGame()) ? MakeArrayNodeByteCount(bin, "Event Actions", i => MakeUInt32HexNode(bin, $"{i}")) : MakeArrayNode(bin, "Event Actions", i => MakeUInt32HexNode(bin, $"{i}")));
+                        if (Pcc.Game.IsLEGame())
+                        {
+                            MakeArrayNodeByteCount(bin, "Event Actions", i => MakeUInt32HexNode(bin, $"{i}"));
+                        }
+                        else
+                        {
+                            MakeArrayNode(bin, "Event Actions", i => MakeUInt32HexNode(bin, $"{i}"));
+                        }
                         break;
                     case HIRCType.EventAction:
                         {
