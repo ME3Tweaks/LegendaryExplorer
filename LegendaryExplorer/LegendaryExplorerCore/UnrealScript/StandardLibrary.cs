@@ -59,37 +59,37 @@ namespace LegendaryExplorerCore.UnrealScript
 
             public static BaseLib ME3BaseLib
             {
-                get => _me3BaseLib ??= new(MEGame.ME3);
+                get => _me3BaseLib ??= new BaseLib(MEGame.ME3);
                 private set => _me3BaseLib = value;
             }
 
             public static BaseLib ME2BaseLib
             {
-                get => _me2BaseLib ??= new(MEGame.ME2);
+                get => _me2BaseLib ??= new BaseLib(MEGame.ME2);
                 private set => _me2BaseLib = value;
             }
 
             public static BaseLib ME1BaseLib
             {
-                get => _me1BaseLib ??= new(MEGame.ME1);
+                get => _me1BaseLib ??= new BaseLib(MEGame.ME1);
                 private set => _me1BaseLib = value;
             }
 
             public static BaseLib LE3BaseLib
             {
-                get => _le3BaseLib ??= new(MEGame.LE3);
+                get => _le3BaseLib ??= new BaseLib(MEGame.LE3);
                 private set => _le3BaseLib = value;
             }
 
             public static BaseLib LE2BaseLib
             {
-                get => _le2BaseLib ??= new(MEGame.LE2);
+                get => _le2BaseLib ??= new BaseLib(MEGame.LE2);
                 private set => _le2BaseLib = value;
             }
 
             public static BaseLib LE1BaseLib
             {
-                get => _le1BaseLib ??= new(MEGame.LE1);
+                get => _le1BaseLib ??= new BaseLib(MEGame.LE1);
                 private set => _le1BaseLib = value;
             }
             #endregion
@@ -97,42 +97,53 @@ namespace LegendaryExplorerCore.UnrealScript
             public readonly MEGame Game;
 
             private SymbolTable _symbols;
-            public SymbolTable GetSymbolTable() => IsInitialized ? _symbols?.Clone() : null;
+            public SymbolTable GetSymbolTable()
+            {
+                lock (_initializationLock)
+                {
+                    return _isInitialized ? _symbols?.Clone() : null;
+                }
+            }
 
-            private bool IsInitialized;
+            private bool _isInitialized;
 
-            public bool HadInitializationError { get; private set; }
-
-            private readonly object initializationLock = new();
+            private readonly object _initializationLock = new();
 
             private BaseLib(MEGame game)
             {
                 Game = game;
             }
 
+            public void Reset()
+            {
+                lock (_initializationLock)
+                {
+                    _isInitialized = false;
+                    _symbols = null;
+                }
+            }
+
             public async Task<bool> InitializeStandardLib(MessageLog log, PackageCache packageCache, string gameRootPath = null)
             {
-                if (IsInitialized)
+                lock (_initializationLock)
                 {
-                    return true;
+                    if (_isInitialized)
+                    {
+                        return true;
+                    }
                 }
 
                 return await Task.Run(() =>
                 {
                     bool success;
-                    if (IsInitialized)
+                    lock (_initializationLock)
                     {
-                        return true;
-                    }
-                    lock (initializationLock)
-                    {
-                        if (IsInitialized)
+                        if (_isInitialized)
                         {
                             return true;
                         }
                         success = InternalInitialize(log, packageCache, gameRootPath);
-                        IsInitialized = success;
-                        HadInitializationError = !success;
+                        _isInitialized = success;
                     }
                     return success;
                 });
@@ -285,7 +296,7 @@ namespace LegendaryExplorerCore.UnrealScript
 
 
             [Conditional("DEBUGSCRIPT")]
-            static void DisplayError(string scriptText, string logText)
+            private static void DisplayError(string scriptText, string logText)
             {
                 string scriptFile = Path.Combine("TEMPME3Script.txt");
                 string logFile = Path.Combine("TEMPME3Script.log");

@@ -126,13 +126,10 @@ namespace LegendaryExplorerCore.UnrealScript
 
         public IMEPackage Pcc { get; }
 
-        public readonly List<int> ScriptUIndexes = new();
-
         public FileLib(IMEPackage pcc)
         {
             Pcc = pcc;
             pcc.WeakUsers.Add(this);
-            ScriptUIndexes.AddRange(pcc.Exports.Where(IsScriptExport).Select(exp => exp.UIndex));
             Base = pcc.Game switch
             {
                 MEGame.ME3 => BaseLib.ME3BaseLib,
@@ -185,11 +182,14 @@ namespace LegendaryExplorerCore.UnrealScript
             }
             foreach (PackageUpdate update in updates.Where(u => u.Change.Has(PackageChange.Export)))
             {
-                if (ScriptUIndexes.Contains(update.Index)
-                 || Pcc.GetEntry(update.Index) is ExportEntry exp && (IsScriptExport(exp) || exp.ClassName == "Function"))
+                if (Pcc.GetEntry(update.Index) is ExportEntry exp && (IsScriptExport(exp) || exp.ClassName == "Function"))
                 {
                     lock (initializationLock)
                     {
+                        if (BaseFileNames(Base.Game).Contains(Path.GetFileName(Pcc.FilePath)))
+                        {
+                            Base.Reset();
+                        }
                         IsInitialized = false;
                         HadInitializationError = false;
                         _symbols = null;

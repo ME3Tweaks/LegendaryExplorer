@@ -56,7 +56,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
                 Log.LogError("Could not lex '" + Data.CurrentItem + "'",
                     StreamPosition, StreamPosition.GetModifiedPosition(0, 1, 1));
                 Data.Advance();
-                return new Token<string>(TokenType.INVALID) { SyntaxType = EF.ERROR };
+                return new Token<string>(TokenType.INVALID, Data.CurrentItem, StreamPosition, StreamPosition.GetModifiedPosition(0, 1, 1)) { SyntaxType = EF.ERROR };
             }
             return result;
         }

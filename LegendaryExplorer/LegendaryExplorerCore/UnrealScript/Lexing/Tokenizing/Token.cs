@@ -7,30 +7,19 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing
     public class Token<T> where T : class
     {
         #region Members
-        public virtual T Value { get; private set; }
+        public virtual T Value { get; }
 
-        public TokenType Type { get; private set; }
+        public TokenType Type { get; }
 
         public EF SyntaxType { get; set; } 
 
         public ASTNode AssociatedNode { get; set; }
 
-        public SourcePosition StartPos { get; private set; }
-        public SourcePosition EndPos { get; private set; }
+        public SourcePosition StartPos { get; }
+        public SourcePosition EndPos { get; }
         #endregion
 
         #region Methods
-        public Token(TokenType type)
-        {
-            Value = null;
-            Type = type;
-        }
-        public Token(TokenType type, T value)
-        {
-            Value = value;
-            Type = type;
-        }
-
         public Token(TokenType type, T value, SourcePosition start, SourcePosition end)
         {
             Value = value;
