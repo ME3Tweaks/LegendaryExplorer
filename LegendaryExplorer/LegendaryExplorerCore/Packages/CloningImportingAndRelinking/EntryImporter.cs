@@ -288,6 +288,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     classValue = GetOrAddCrossImportOrPackage(sourceClassImport.InstancedFullPath, sourceExport.FileRef, destPackage, objectMapping: objectMapping);
                     break;
                 case ExportEntry sourceClassExport:
+                    if (IsSafeToImportFrom(sourceExport.FileRef.FilePath, destPackage.Game))
+                    {
+                        classValue = GetOrAddCrossImportOrPackageFromGlobalFile(sourceClassExport.InstancedFullPath, sourceExport.FileRef, destPackage, objectMapping);
+                        break;
+                    }
                     classValue = destPackage.FindExport(sourceClassExport.InstancedFullPath);
                     if (classValue is null && importExportDependencies)
                     {
@@ -299,24 +304,26 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
             //Set superclass
             IEntry superclass = null;
-            if (!IsSafeToImportFrom(sourceExport.FileRef.FilePath, destPackage.Game))
+            switch (sourceExport.SuperClass)
             {
-                switch (sourceExport.SuperClass)
-                {
-                    case ImportEntry sourceSuperClassImport:
-                        //The class of the export we are importing is an import. We should attempt to relink this.
-                        superclass = GetOrAddCrossImportOrPackage(sourceSuperClassImport.InstancedFullPath, sourceExport.FileRef, destPackage, objectMapping: objectMapping);
+                case ImportEntry sourceSuperClassImport:
+                    //The class of the export we are importing is an import. We should attempt to relink this.
+                    superclass = GetOrAddCrossImportOrPackage(sourceSuperClassImport.InstancedFullPath, sourceExport.FileRef, destPackage, objectMapping: objectMapping);
+                    break;
+                case ExportEntry sourceSuperClassExport:
+                    if (IsSafeToImportFrom(sourceExport.FileRef.FilePath, destPackage.Game))
+                    {
+                        superclass = GetOrAddCrossImportOrPackageFromGlobalFile(sourceSuperClassExport.InstancedFullPath, sourceExport.FileRef, destPackage, objectMapping);
                         break;
-                    case ExportEntry sourceSuperClassExport:
-                        superclass = destPackage.FindExport(sourceSuperClassExport.InstancedFullPath);
-                        if (superclass is null && importExportDependencies)
-                        {
-                            IEntry superClassParent = GetOrAddCrossImportOrPackage(sourceSuperClassExport.ParentFullPath, sourceExport.FileRef, destPackage,
-                                                                                   true, objectMapping);
-                            superclass = ImportExport(destPackage, sourceSuperClassExport, superClassParent?.UIndex ?? 0, true, objectMapping);
-                        }
-                        break;
-                }
+                    }
+                    superclass = destPackage.FindExport(sourceSuperClassExport.InstancedFullPath);
+                    if (superclass is null && importExportDependencies)
+                    {
+                        IEntry superClassParent = GetOrAddCrossImportOrPackage(sourceSuperClassExport.ParentFullPath, sourceExport.FileRef, destPackage,
+                            true, objectMapping);
+                        superclass = ImportExport(destPackage, sourceSuperClassExport, superClassParent?.UIndex ?? 0, true, objectMapping);
+                    }
+                    break;
             }
 
             //Check archetype.
@@ -327,7 +334,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     archetype = GetOrAddCrossImportOrPackage(sourceArchetypeImport.InstancedFullPath, sourceExport.FileRef, destPackage, objectMapping: objectMapping);
                     break;
                 case ExportEntry sourceArchetypeExport:
-                    // Should the below line use instanced full path?
+                    if (IsSafeToImportFrom(sourceExport.FileRef.FilePath, destPackage.Game))
+                    {
+                        archetype = GetOrAddCrossImportOrPackageFromGlobalFile(sourceArchetypeExport.InstancedFullPath, sourceExport.FileRef, destPackage, objectMapping);
+                        break;
+                    }
                     archetype = destPackage.FindExport(sourceArchetypeExport.InstancedFullPath);
                     if (archetype is null && importExportDependencies)
                     {
@@ -509,7 +520,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         public static IEntry GetOrAddCrossImportOrPackageFromGlobalFile(string importFullNameInstanced, IMEPackage sourcePcc, IMEPackage destinationPCC, IDictionary<IEntry, IEntry> objectMapping = null,
             Action<EntryStringPair> doubleClickCallback = null)
         {
-            string packageName = Path.GetFileNameWithoutExtension(sourcePcc.FilePath);
+            string packageName = sourcePcc.FileNameNoExtension;
             if (string.IsNullOrEmpty(importFullNameInstanced))
             {
                 return destinationPCC.getEntryOrAddImport(packageName, "Package");
