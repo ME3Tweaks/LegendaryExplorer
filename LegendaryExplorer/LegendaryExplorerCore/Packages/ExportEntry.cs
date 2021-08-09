@@ -21,7 +21,7 @@ namespace LegendaryExplorerCore.Packages
     [DoNotNotify]//disable Fody/PropertyChanged for this class. Do notification manually
     public class ExportEntry : INotifyPropertyChanged, IEntry
     {
-        public IMEPackage FileRef { get; protected set; }
+        public IMEPackage FileRef { get; }
 
         public MEGame Game => FileRef.Game;
 
@@ -61,6 +61,37 @@ namespace LegendaryExplorerCore.Packages
             EndianBitConverter.WriteAsBytes(name.Number, _header.AsSpan(OFFSET_indexValue), FileRef.Endian);
             DataOffset = 0;
             ObjectFlags = EObjectFlags.LoadForClient | EObjectFlags.LoadForServer | EObjectFlags.LoadForEdit; //sensible defaults?
+
+            var ms = new EndianReader { Endian = file.Endian };
+            prePropBinary ??= new byte[4];
+            ms.Writer.WriteFromBuffer(prePropBinary);
+            if (!isClass)
+            {
+                properties ??= new PropertyCollection();
+                properties.WriteTo(ms.Writer, file);
+            }
+
+            binary?.WriteTo(ms.Writer, file);
+
+            _data = ms.ToArray();
+            DataSize = _data.Length;
+        }
+
+        /// <summary>
+        /// Constructor for generating a new export entry
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="header"></param>
+        /// <param name="prePropBinary"></param>
+        /// <param name="properties"></param>
+        /// <param name="binary"></param>
+        /// <param name="isClass"></param>
+        public ExportEntry(IMEPackage file, byte[] header, byte[] prePropBinary = null, PropertyCollection properties = null, ObjectBinary binary = null, bool isClass = false)
+        {
+            FileRef = file;
+            OriginalDataSize = 0;
+            _header = header;
+            DataOffset = 0;
 
             var ms = new EndianReader { Endian = file.Endian };
             prePropBinary ??= new byte[4];

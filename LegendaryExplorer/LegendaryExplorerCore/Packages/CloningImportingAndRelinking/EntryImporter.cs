@@ -349,18 +349,15 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     break;
             }
             
-            //values we pass to the constructor for name and link will be overridden when we assign newheader
             EndianBitConverter.WriteAsBytes(destPackage.FindNameOrAdd(sourceExport.ObjectName.Name), newHeader.AsSpan(ExportEntry.OFFSET_idxObjectName), destPackage.Endian);
             EndianBitConverter.WriteAsBytes(sourceExport.ObjectName.Number, newHeader.AsSpan(ExportEntry.OFFSET_indexValue), destPackage.Endian);
             EndianBitConverter.WriteAsBytes(link, newHeader.AsSpan(ExportEntry.OFFSET_idxLink), destPackage.Endian);
 
-            var newExport = new ExportEntry(destPackage, link, sourceExport.ObjectName, prePropBinary, props, binaryData, sourceExport.IsClass)
+            var newExport = new ExportEntry(destPackage, newHeader, prePropBinary, props, binaryData, sourceExport.IsClass)
             {
-                Header = newHeader,
                 Class = classValue,
                 SuperClass = superclass,
                 Archetype = archetype,
-                DataOffset = 0
             };
             destPackage.AddExport(newExport);
             if (objectMapping != null)
