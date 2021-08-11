@@ -171,11 +171,46 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
                         }
                     }
 
-                    // Parse Task Evals
-                    foreach (var task in questMap.TaskEvals.Concat(questMap.FloatTaskEvals).Concat(questMap.IntTaskEvals).SelectMany(t => t.TaskEvals))
+                    // Parse bool task evals
+                    foreach (var task in questMap.TaskEvals)
                     {
-                        if(task.Conditional >= 0) AddToConditionalRecord(task.Conditional, new PlotUsage(e.FileKey, e.Export.UIndex, e.IsMod, PlotUsageContext.TaskEval));
-                        if(task.State >= 0) AddToBoolRecord(task.State, new PlotUsage(e.FileKey, e.Export.UIndex, e.IsMod, PlotUsageContext.TaskEval));
+                        AddToBoolRecord(task.ID, new PlotUsage(e.FileKey, e.Export.UIndex, e.IsMod, PlotUsageContext.BoolTaskEval, task.ID));
+                        foreach (var eval in task.TaskEvals)
+                        {
+                            if (eval.Conditional >= 0)
+                            {
+                                AddToConditionalRecord(eval.Conditional,
+                                    new PlotUsage(e.FileKey, e.Export.UIndex, e.IsMod, PlotUsageContext.BoolTaskEval, task.ID));
+                            }
+                        }
+                    }
+
+                    // Parse int task evals
+                    foreach (var task in questMap.IntTaskEvals)
+                    {
+                        AddToIntRecord(task.ID, new PlotUsage(e.FileKey, e.Export.UIndex, e.IsMod, PlotUsageContext.IntTaskEval, task.ID));
+                        foreach (var eval in task.TaskEvals)
+                        {
+                            if (eval.Conditional >= 0)
+                            {
+                                AddToConditionalRecord(eval.Conditional,
+                                    new PlotUsage(e.FileKey, e.Export.UIndex, e.IsMod, PlotUsageContext.IntTaskEval, task.ID));
+                            }
+                        }
+                    }
+
+                    // Parse float task evals
+                    foreach (var task in questMap.FloatTaskEvals)
+                    {
+                        AddToFloatRecord(task.ID, new PlotUsage(e.FileKey, e.Export.UIndex, e.IsMod, PlotUsageContext.FloatTaskEval, task.ID));
+                        foreach (var eval in task.TaskEvals)
+                        {
+                            if (eval.Conditional >= 0)
+                            {
+                                AddToConditionalRecord(eval.Conditional,
+                                    new PlotUsage(e.FileKey, e.Export.UIndex, e.IsMod, PlotUsageContext.FloatTaskEval, task.ID));
+                            }
+                        }
                     }
 
                     break;

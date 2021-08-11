@@ -466,7 +466,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         Transition,
         Quest,
         Codex,
-        TaskEval,
+        BoolTaskEval,
+        IntTaskEval,
+        FloatTaskEval,
         Bio2DA
     }
     public static class PlotRecordEnumExtensions
@@ -485,6 +487,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public static string ToDisplayString(this PlotUsageContext puc) => puc switch
         {
             PlotUsageContext.Dialogue => "Dialogue - StrRef",
+            PlotUsageContext.BoolTaskEval => "Bool Task Eval",
+            PlotUsageContext.IntTaskEval => "Int Task Eval",
+            PlotUsageContext.FloatTaskEval => "Float Task Eval",
             PlotUsageContext.CndFile => "Conditional",
             _ => puc.ToString()
         };

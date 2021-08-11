@@ -1053,9 +1053,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     case PlotUsageContext.Quest:
                         plotEditor.GoToQuest(usage.ContainerID.Value);
                         break;
-                    case PlotUsageContext.TaskEval:
+                    case PlotUsageContext.BoolTaskEval:
+                    case PlotUsageContext.IntTaskEval:
+                    case PlotUsageContext.FloatTaskEval:
+                    default: 
                         break;
-                    default: break;
                 }
             }
         }
