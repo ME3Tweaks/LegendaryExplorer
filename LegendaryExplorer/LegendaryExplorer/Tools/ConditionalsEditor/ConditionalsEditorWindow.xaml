@@ -15,6 +15,9 @@
         mc:Ignorable="d"
         Loaded="ConditionalsEditorWindow_OnLoaded"
         Closing="ConditionalsEditorWindow_OnClosing"
+        DragOver="Window_DragOver"
+        Drop="Window_Drop"
+        AllowDrop="True"
         Icon="pack://application:,,,/Tools/Icons/16x16/ConditionalEditor_Icon_16.ico"
         Title="Conditionals Editor" Height="450" Width="800">
     <!-- UserControl Resources -->
