@@ -35,7 +35,7 @@
                 <TextBlock Grid.Column="1"  Text="{Binding Property}" />
             </Grid>
         </DataTemplate>
-        <CollectionViewSource x:Key="PropertyContentView" Source="{Binding SelectedItem.PropertyRecords, ElementName=lstbx_Classes}">
+        <CollectionViewSource x:Key="PropertyContentView" Source="{Binding SelectedItem.PropertyRecords.Values, ElementName=lstbx_Classes}">
             <CollectionViewSource.SortDescriptions>
                 <componentModel:SortDescription PropertyName="Property" Direction="Ascending"/>
             </CollectionViewSource.SortDescriptions>

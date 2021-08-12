@@ -37,13 +37,19 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
                     if (db.GeneratedClasses.TryGetValue(e.ClassName, out var oldVal))
                     {
                         oldVal.Usages.Add(classUsage);
-                        oldVal.PropertyRecords.AddRange(pList);
+                        foreach (var p in pList)
+                        {
+                            oldVal.PropertyRecords.TryAdd(p.Property, p);
+                        }
                     }
                     else
                     {
                         var newVal = new ClassRecord { Class = e.ClassName, IsModOnly = e.IsMod };
                         newVal.Usages.Add(classUsage);
-                        newVal.PropertyRecords.AddRange(pList);
+                        foreach (var p in pList)
+                        {
+                            newVal.PropertyRecords.TryAdd(p.Property, p);
+                        }
                         db.GeneratedClasses[e.ClassName] = newVal;
                     }
                 }

@@ -154,7 +154,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         public bool IsModOnly { get; set; }
 
-        public HashSet<PropertyRecord> PropertyRecords { get; set; } = new();
+        public Dictionary<string, PropertyRecord> PropertyRecords { get; set; } = new();
 
         public List<ClassUsage> Usages { get; set; } = new();
 
