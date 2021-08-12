@@ -12,7 +12,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public UIndex Children;
         private int Line; //ME1/ME2
         private int TextPos; //ME1/ME2
-        public int ScriptBytecodeSize; //ME3
+        public int ScriptBytecodeSize; //ME3, LE
         public int ScriptStorageSize;
         public byte[] ScriptBytes;
         protected override void Serialize(SerializingContainer2 sc)

@@ -57,10 +57,7 @@ namespace LegendaryExplorerCore.Unreal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool Has(this EClassFlags enumValue, EClassFlags flag)
-        {
-            return (enumValue & flag) == flag;
-        }
+        public static bool Has(this EClassFlags enumValue, EClassFlags flag) => (enumValue & flag) == flag;
 
         [Flags]
         //from https://github.com/EliotVU/Unreal-Library/blob/23da0b1d42d90ccf8bc7d64051ffd38a8088ec93/src/UnrealFlags.cs#L17
@@ -108,6 +105,7 @@ namespace LegendaryExplorerCore.Unreal
 
             /// <summary>
             /// Package has ME3Explorer appended name table. This is an unused flag by the engine and is present only due to ME3Explorer modified files
+            /// DEPRECATED! This will only be present in files saved with older versions of ME3Explorer
             /// </summary>
             ME3ExplorerAppendedNameTable = 0x00100000U,
 
@@ -145,10 +143,7 @@ namespace LegendaryExplorerCore.Unreal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool Has(this EPackageFlags enumValue, EPackageFlags flag)
-        {
-            return (enumValue & flag) == flag;
-        }
+        public static bool Has(this EPackageFlags enumValue, EPackageFlags flag) => (enumValue & flag) == flag;
 
         [Flags]
         public enum EPropertyFlags : ulong
@@ -203,10 +198,7 @@ namespace LegendaryExplorerCore.Unreal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool Has(this EPropertyFlags enumValue, EPropertyFlags flag)
-        {
-            return (enumValue & flag) == flag;
-        }
+        public static bool Has(this EPropertyFlags enumValue, EPropertyFlags flag) => (enumValue & flag) == flag;
 
         public static Dictionary<EPropertyFlags, string> propertyflagsdesc = new()
         {
@@ -302,10 +294,7 @@ namespace LegendaryExplorerCore.Unreal
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool Has(this EObjectFlags enumValue, EObjectFlags flag)
-        {
-            return (enumValue & flag) == flag;
-        }
+        public static bool Has(this EObjectFlags enumValue, EObjectFlags flag) => (enumValue & flag) == flag;
 
         public static string[] flagdesc =
         {
@@ -355,10 +344,7 @@ namespace LegendaryExplorerCore.Unreal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool Has(this EExportFlags enumValue, EExportFlags flag)
-        {
-            return (enumValue & flag) == flag;
-        }
+        public static bool Has(this EExportFlags enumValue, EExportFlags flag) => (enumValue & flag) == flag;
 
         [Flags]
         public enum EFunctionFlags : uint
@@ -392,10 +378,7 @@ namespace LegendaryExplorerCore.Unreal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool Has(this EFunctionFlags enumValue, EFunctionFlags flag)
-        {
-            return (enumValue & flag) == flag;
-        }
+        public static bool Has(this EFunctionFlags enumValue, EFunctionFlags flag) => (enumValue & flag) == flag;
 
         [Flags]
         public enum ScriptStructFlags : uint
@@ -412,10 +395,7 @@ namespace LegendaryExplorerCore.Unreal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool Has(this ScriptStructFlags enumValue, ScriptStructFlags flag)
-        {
-            return (enumValue & flag) == flag;
-        }
+        public static bool Has(this ScriptStructFlags enumValue, ScriptStructFlags flag) => (enumValue & flag) == flag;
 
         [Flags]
         public enum EStateFlags : uint
@@ -427,9 +407,78 @@ namespace LegendaryExplorerCore.Unreal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool Has(this EStateFlags enumValue, EStateFlags flag)
+        public static bool Has(this EStateFlags enumValue, EStateFlags flag) => (enumValue & flag) == flag;
+
+        [Flags]
+        public enum EProbeFunctions : ulong
         {
-            return (enumValue & flag) == flag;
+            Unk0 = 1ul << 0,
+            Unk1 = 1ul << 1,
+            Unk2 = 1ul << 2,
+            Unk3 = 1ul << 3,
+            Unk4 = 1ul << 4,
+            Unk5 = 1ul << 5,
+            Unk6 = 1ul << 6,
+            Unk7 = 1ul << 7,
+            Unk8 = 1ul << 8,
+            Unk9 = 1ul << 9,
+            Unk10 = 1ul << 10,
+            Unk11 = 1ul << 11,
+            Unk12 = 1ul << 12,
+            Unk13 = 1ul << 13,
+            Unk14 = 1ul << 14,
+            Unk15 = 1ul << 15,
+            Unk16 = 1ul << 16,
+            Unk17 = 1ul << 17,
+            Unk18 = 1ul << 18,
+            Unk19 = 1ul << 19,
+            Unk20 = 1ul << 20,
+            Unk21 = 1ul << 21,
+            Unk22 = 1ul << 22,
+            Unk23 = 1ul << 23,
+            Unk24 = 1ul << 24,
+            Unk25 = 1ul << 25,
+            Unk26 = 1ul << 26,
+            Unk27 = 1ul << 27,
+            Unk28 = 1ul << 28,
+            Unk29 = 1ul << 29,
+            Unk30 = 1ul << 30,
+            Unk31 = 1ul << 31,
+            Unk32 = 1ul << 32,
+            Unk33 = 1ul << 33,
+            Unk34 = 1ul << 34,
+            Unk35 = 1ul << 35,
+            Unk36 = 1ul << 36,
+            Unk37 = 1ul << 37,
+            Unk38 = 1ul << 38,
+            Unk39 = 1ul << 39,
+            Unk40 = 1ul << 40,
+            Unk41 = 1ul << 41,
+            Unk42 = 1ul << 42,
+            Unk43 = 1ul << 43,
+            Unk44 = 1ul << 44,
+            Unk45 = 1ul << 45,
+            Unk46 = 1ul << 46,
+            Unk47 = 1ul << 47,
+            Unk48 = 1ul << 48,
+            Unk49 = 1ul << 49,
+            Unk50 = 1ul << 50,
+            Unk51 = 1ul << 51,
+            Unk52 = 1ul << 52,
+            Unk53 = 1ul << 53,
+            Unk54 = 1ul << 54,
+            Unk55 = 1ul << 55,
+            Unk56 = 1ul << 56,
+            Unk57 = 1ul << 57,
+            Unk58 = 1ul << 58,
+            Unk59 = 1ul << 59,
+            Unk60 = 1ul << 60,
+            Unk61 = 1ul << 61,
+            Unk62 = 1ul << 62,
+            Unk63 = 1ul << 63,
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Has(this EProbeFunctions enumValue, EProbeFunctions flag) => (enumValue & flag) == flag;
     }
 }

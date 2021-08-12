@@ -17,8 +17,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public NameReference[] unkNameList1; //ME1, ME2
         public OrderedMultiValueDictionary<NameReference, UIndex> ComponentNameToDefaultObjectMap;
         public OrderedMultiValueDictionary<UIndex, UIndex> Interfaces;
-        public NameReference unkName2;//ME3
-        public uint unk2; //ME3
+        public NameReference unkName2;//ME3, LE
+        public uint unk2; //ME3, LE
         public uint le2ps3me2Unknown; //ME2, PS3 only and LE2
         public NameReference[] unkNameList2;//ME1/ME2
         public UIndex Defaults;

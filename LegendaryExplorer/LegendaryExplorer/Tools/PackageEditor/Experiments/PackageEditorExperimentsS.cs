@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using ClosedXML.Excel;
@@ -11,6 +12,7 @@ using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
@@ -34,7 +36,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
     /// <summary>
     /// Class for SirCxyrtyx experimental code
     /// </summary>
-    public class PackageEditorExperimentsS
+    public static class PackageEditorExperimentsS
     {
         public static IEnumerable<string> EnumerateOfficialFiles(params MEGame[] games)
         {
@@ -54,6 +56,88 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     yield return filePath;
                 }
             }
+        }
+
+        class ClassProbeInfo
+        {
+            public EProbeFunctions ProbeMask;
+            public HashSet<string> Functions;
+        }
+
+        public static void CalculateProbeNames(PackageEditorWindow pewpf)
+        {
+            var game = MEGame.LE3;
+            pewpf.IsBusy = true;
+            pewpf.BusyText = $"Calculating Probe functions for {game}";
+            Task.Run(() =>
+            {
+                var classDict = new CaseInsensitiveDictionary<ClassProbeInfo>();
+                foreach (string filePath in EnumerateOfficialFiles(game))
+                {
+                    using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
+                    foreach (ExportEntry export in pcc.Exports.Where(exp => exp.IsClass))
+                    {
+                        if (classDict.ContainsKey(export.ObjectName.Instanced))
+                        {
+                            continue;
+                        }
+                        var objBin = export.GetBinaryData<UClass>();
+                        var info = new ClassProbeInfo
+                        {
+                            ProbeMask = objBin.ProbeMask,
+                            Functions = new HashSet<string>(objBin.FullFunctionsList.Length)
+                        };
+                        foreach (UIndex uIndex in objBin.FullFunctionsList)
+                        {
+                            if (pcc.GetEntry(uIndex) is IEntry entry)
+                            {
+                                info.Functions.Add(entry.ObjectName);
+                            }
+                        }
+                        classDict.Add(export.ObjectName.Instanced, info);
+                    }
+                }
+
+                var sb = new StringBuilder();
+                foreach (EProbeFunctions probeFunc in Enums.GetValues<EProbeFunctions>())
+                {
+                    HashSet<string> funcSet = null;
+                    var exclusionSet = new HashSet<string>();
+                    foreach ((string className, ClassProbeInfo info) in classDict)
+                    {
+                        if (info.ProbeMask.Has(probeFunc))
+                        {
+                            if (funcSet == null)
+                            {
+                                funcSet = new HashSet<string>();
+                                funcSet.UnionWith(info.Functions);
+                            }
+                            else
+                            {
+                                funcSet.IntersectWith(info.Functions);
+                            }
+                        }
+                        else
+                        {
+                            exclusionSet.UnionWith(info.Functions);
+                        }
+                    }
+
+                    funcSet ??= new HashSet<string>();
+                    funcSet.ExceptWith(exclusionSet);
+                    sb.Append(probeFunc.ToString());
+                    sb.Append(": ");
+                    sb.AppendJoin(", ", funcSet);
+                    sb.AppendLine();
+                }
+                File.WriteAllText(@"D:\Exports\LE3ProbeFuncs.txt", sb.ToString());
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                //the base files will have been in memory for so long at this point that they take a looong time to clear out automatically, so force it.
+                MemoryAnalyzer.ForceFullGC(true);
+                pewpf.IsBusy = false;
+                MessageBox.Show("Done!");
+            });
         }
 
         public static void ReSerializeAllObjectBinary(PackageEditorWindow pewpf)

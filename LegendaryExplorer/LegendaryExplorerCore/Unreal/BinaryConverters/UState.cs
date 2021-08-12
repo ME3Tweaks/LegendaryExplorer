@@ -11,8 +11,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public class UState : UStruct
     {
-        public ulong ProbeMask; 
-        public ulong IgnoreMask;
+        public EProbeFunctions ProbeMask;
+        public EProbeFunctions IgnoreMask;
         public ushort LabelTableOffset;
         public EStateFlags StateFlags;
         public OrderedMultiValueDictionary<NameReference, UIndex> LocalFunctionMap;
@@ -59,6 +59,17 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             else
             {
                 sc.ms.Writer.WriteUInt32((uint)flags);
+            }
+        }
+        public static void Serialize(this SerializingContainer2 sc, ref EProbeFunctions flags)
+        {
+            if (sc.IsLoading)
+            {
+                flags = (EProbeFunctions)sc.ms.ReadUInt64();
+            }
+            else
+            {
+                sc.ms.Writer.WriteUInt64((ulong)flags);
             }
         }
     }

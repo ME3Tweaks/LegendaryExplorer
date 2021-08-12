@@ -670,6 +670,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
         // EXPERIMENTS: SIRCXYRTYX-----------------------------------------------------
         #region SirCxyrtyx's Experiments
+        private void CalculateProbeFuncs_OnClick(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsS.CalculateProbeNames(GetPEWindow());
+        }
+
         private void MakeME1TextureFileList(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsS.MakeME1TextureFileList(GetPEWindow());
@@ -1087,7 +1092,6 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsO.DumpPackageToT3D(GetPEWindow().Pcc);
         }
-
 
         private void BuildME1SuperTLK_Clicked(object sender, RoutedEventArgs e)
         {

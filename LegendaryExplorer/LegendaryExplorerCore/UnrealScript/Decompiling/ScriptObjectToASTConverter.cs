@@ -463,7 +463,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             if (containingClass is null)
             {
                 ExportEntry classExport = obj.Export.Parent as ExportEntry;
-                while (classExport != null && !classExport.IsClass)
+                while (classExport is {IsClass: false})
                 {
                     classExport = classExport.Parent as ExportEntry;
                 }
@@ -476,7 +476,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 containingClass = classExport.GetBinaryData<UClass>();
             }
             VariableDeclaration returnVal = null;
-            bool retValNeedsDestruction = false;
             var nextItem = obj.Children;
 
             var parameters = new List<FunctionParameter>();
