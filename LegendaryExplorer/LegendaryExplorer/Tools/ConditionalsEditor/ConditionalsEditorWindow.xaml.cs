@@ -358,8 +358,12 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
         {
             if (SelectedCond is not null)
             {
-                compilationMsgBox.Text = SelectedCond?.Compile(ConditionalTextBox.Text);
-                DisplayCondition();
+                bool error = true;
+                compilationMsgBox.Text = SelectedCond?.Compile(ConditionalTextBox.Text, out error);
+                if (!error)
+                {
+                    DisplayCondition();
+                }
             }
         }
 
@@ -510,7 +514,7 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
                 PlotPath = PlotDatabases.FindPlotConditionalByID(conditional.ID, MEGame.LE3)?.Path;
             }
 
-            public string Compile(string text)
+            public string Compile(string text, out bool error)
             {
                 var original = Conditional.Data;
                 try
@@ -523,6 +527,7 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
                 catch (Exception e)
                 {
                     Conditional.Data = original;
+                    error = true;
                     return $"Compilation Error!\n{e.GetType().Name}: {e.Message}";
                 }
                 if (!original.AsSpan().SequenceEqual(Conditional.Data))
@@ -530,19 +535,24 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
                     IsModified = true;
                 }
 
+                error = false;
                 return "Compiled!";
             }
         }
-
-        //TODO: fix the compiler so this reports all conditionals as recompiling correctly
+        
         private void RecompileAll_Click(object sender, RoutedEventArgs e)
         {
+            var modified = new List<string>();
             foreach (CondListEntry condListEntry in Conditionals)
             {
-                condListEntry.Compile(condListEntry.Conditional.Decompile());
+                condListEntry.Compile(condListEntry.Conditional.Decompile(), out bool error);
+                if (error)
+                {
+                    modified.Add(condListEntry.ID.ToString());
+                }
             }
 
-            List<string> modified = Conditionals.Where(c => c.IsModified).Select(c => c.ID.ToString()).ToList();
+            modified.AddRange(Conditionals.Where(c => c.IsModified).Select(c => c.ID.ToString()).ToList());
 
             if (modified.Any())
             {

@@ -616,7 +616,7 @@ namespace LegendaryExplorerCore.Unreal
                 for (int i = 0; i < tokenlist.Count; i++)
                 {
                     s += i + " Type:" + tokenlist[i].type + " Value:" + tokenlist[i].Value + "\n";
-                    if (i >= 7 && (tokenlist[i].Value == "true" || tokenlist[i].Value == "false"))
+                    if (i >= 7 && (tokenlist[i].Value is "true" or "false"))
                     {
                         if (!string.Equals(tokenlist[i - 1].Value, "bool", StringComparison.OrdinalIgnoreCase))
                         {
@@ -630,7 +630,7 @@ namespace LegendaryExplorerCore.Unreal
                 return tokenlist;
             }
 
-            private static bool isWhiteSpace(char c) => c > '\0' && c <= ' ';
+            private static bool isWhiteSpace(char c) => c is > '\0' and <= ' ';
 
             private static bool isQuote(char c) => c == '\"';
 
@@ -753,8 +753,10 @@ namespace LegendaryExplorerCore.Unreal
                             tokenlist.Add(temp);
                             return;
                         }
-                        tokenlist.Add(temp);
-                        return;
+                        else
+                        {
+                            throw new Exception($"Unexpected operator '=' at character {TokenPos}. Did you mean '=='?");
+                        }
                     case '!':
                         temp.Value += c;
                         TokenPos++;
@@ -777,8 +779,10 @@ namespace LegendaryExplorerCore.Unreal
                             tokenlist.Add(temp);
                             return;
                         }
-                        tokenlist.Add(temp);
-                        return;
+                        else
+                        {
+                            throw new Exception($"Unexpected operator '&' at character {TokenPos}. Did you mean '&&'?");
+                        }
                     case '|':
                         temp.Value += c;
                         TokenPos++;
@@ -789,12 +793,14 @@ namespace LegendaryExplorerCore.Unreal
                             tokenlist.Add(temp);
                             return;
                         }
-                        tokenlist.Add(temp);
-                        return;
+                        else
+                        {
+                            throw new Exception($"Unexpected operator '|' at character {TokenPos}. Did you mean '||'?");
+                        }
                     case '<':
                         temp.Value += c;
                         TokenPos++;
-                        if (c2 == '>' || c2 == '=')
+                        if (c2 is '>' or '=')
                         {
                             TokenPos++;
                             temp.Value += c2;
@@ -945,23 +951,23 @@ namespace LegendaryExplorerCore.Unreal
                                 int n = ReadPlot(currpos, node);
                                 currpos += n;
                             }
-                            if (temp2.Value.CaseInsensitiveEquals("bool"))
+                            else if (temp2.Value.CaseInsensitiveEquals("bool"))
                             {
                                 int n = ReadBool(currpos, node);
                                 currpos += n;
                             }
-                            if (temp2.Value.CaseInsensitiveEquals("function"))
+                            else if (temp2.Value.CaseInsensitiveEquals("function"))
                             {
                                 int n = ReadFunc(currpos, node);
                                 currpos += n;
                             }
-                            if (temp2.Value.CaseInsensitiveEquals("false"))
+                            else if (temp2.Value.CaseInsensitiveEquals("false"))
                             {
                                 TreeNode t = new TreeNode("false");
                                 node.Nodes.Add(t);
                                 currpos++;
                             }
-                            if (temp2.Value.Length > 1)
+                            else if (temp2.Value.Length > 1)
                             {
                                 if (temp2.Value[0] == 'a' && (isDigit(temp2.Value[1]) || temp2.Value[1] == '-'))
                                 {
@@ -971,7 +977,7 @@ namespace LegendaryExplorerCore.Unreal
                                     node.Nodes.Add(t);
                                     currpos++;
                                 }
-                                if (temp2.Value[0] == 'i' && (isDigit(temp2.Value[1]) || temp2.Value[1] == '-'))
+                                else if (temp2.Value[0] == 'i' && (isDigit(temp2.Value[1]) || temp2.Value[1] == '-'))
                                 {
                                     TreeNode t = new TreeNode("value_i");
                                     string v = temp2.Value.Substring(1, temp2.Value.Length - 1);
@@ -979,7 +985,7 @@ namespace LegendaryExplorerCore.Unreal
                                     node.Nodes.Add(t);
                                     currpos++;
                                 }
-                                if (temp2.Value[0] == 'f' && (isDigit(temp2.Value[1]) || temp2.Value[1] == '-'))
+                                else if (temp2.Value[0] == 'f' && (isDigit(temp2.Value[1]) || temp2.Value[1] == '-'))
                                 {
                                     TreeNode t = new TreeNode("value_f");
                                     string v = temp2.Value.Substring(1, temp2.Value.Length - 1);
@@ -1005,7 +1011,7 @@ namespace LegendaryExplorerCore.Unreal
                                 currpos += n;
                                 break;
                             }
-                            if (temp2.Value == "-")
+                            else if (temp2.Value == "-")
                             {
                                 Token t2 = tokenlist[currpos + 1];
                                 if (t2.type == 2)
@@ -1075,8 +1081,12 @@ namespace LegendaryExplorerCore.Unreal
                     Cout = new byte[2];
                     Cout[0] = 0;
                     TreeNode t1 = node.Nodes[0];
-                    if (t1.Text == "true")
-                        Cout[1] = 1;
+                    Cout[1] = t1.Text switch
+                    {
+                        "true" => 1,
+                        "false" => 0,
+                        _ => throw new Exception($"{t1.Text} is not a valid boolean value! Expected 'true' or 'false'")
+                    };
                 }
                 return Cout;
             }

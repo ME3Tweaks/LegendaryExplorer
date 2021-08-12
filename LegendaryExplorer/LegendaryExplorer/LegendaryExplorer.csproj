@@ -118,6 +118,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
     <None Include="Misc\AppSettings\SettingsBuilder.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
