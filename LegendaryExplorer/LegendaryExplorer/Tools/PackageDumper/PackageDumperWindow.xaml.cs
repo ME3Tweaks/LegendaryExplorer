@@ -92,6 +92,7 @@ namespace LegendaryExplorer.Tools.PackageDumper
             {
                 CommonOpenFileDialog outputDlg = new()
                 {
+                    InitialDirectory = Path.GetDirectoryName(dlg.FileNames.First()),
                     IsFolderPicker = true,
                     EnsurePathExists = true,
                     Title = "Select output folder"
@@ -197,6 +198,7 @@ namespace LegendaryExplorer.Tools.PackageDumper
         {
             CommonOpenFileDialog m = new()
             {
+                InitialDirectory = MEDirectories.GetCookedPath(game),
                 IsFolderPicker = true,
                 EnsurePathExists = true,
                 Title = "Select output folder"
