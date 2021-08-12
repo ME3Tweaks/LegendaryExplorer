@@ -603,6 +603,33 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             };
             sequenceObjects["SFXSeqCond_IsCombatMode"] = new SequenceObjectInfo();
 
+            //Kinkojiro - New Class - SFXSeqAct_SetFaceFX
+            classes["SFXSeqAct_SetFaceFX"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 22, //in LE3Resources.pcc
+                properties =
+                {
+                    new KeyValuePair<string, PropertyInfo>("m_aoTargets", new PropertyInfo(PropertyType.ArrayProperty, "Actor")),
+                    new KeyValuePair<string, PropertyInfo>("m_pDefaultFaceFXAsset", new PropertyInfo(PropertyType.ObjectProperty, "FaceFXAsset"))
+                }
+            };
+            sequenceObjects["SFXSeqAct_SetFaceFX"] = new SequenceObjectInfo();
+
+            //Kinkojiro - New Class - SFXSeqAct_SetAutoPlayerLookAt
+            classes["SFXSeqAct_SetAutoLookAtPlayer"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 32, //in LE3Resources.pcc
+                properties =
+                {
+                    new KeyValuePair<string, PropertyInfo>("m_aoTargets", new PropertyInfo(PropertyType.ArrayProperty, "Actor")),
+                    new KeyValuePair<string, PropertyInfo>("bAutoLookAtPlayer", new PropertyInfo(PropertyType.BoolProperty))
+                }
+            };
+            sequenceObjects["SFXSeqAct_SetAutoLookAtPlayer"] = new SequenceObjectInfo();
 
             ME3UnrealObjectInfo.AddIntrinsicClasses(classes, MEGame.LE3);
 
