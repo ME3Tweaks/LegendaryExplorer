@@ -609,31 +609,43 @@ namespace LegendaryExplorerCore.Packages
 
                 string localizationName = Path.GetFileNameWithoutExtension(filePath).ToUpper();
                 if (localizationName.Length > 8)
-                    localizationName = localizationName.Substring(localizationName.Length - 8, 8);
+                {
+                    var loc = localizationName.LastIndexOf("LOC_", StringComparison.OrdinalIgnoreCase);
+                    if (loc > 0)
+                    {
+                        localizationName = localizationName.Substring(loc);
+                    }
+                }
                 switch (localizationName)
                 {
-                    case "_LOC_DEU":
+                    case "LOC_DEU":
+                    case "LOC_DE":
                         Localization = MELocalization.DEU;
                         break;
-                    case "_LOC_ESN":
+                    case "LOC_ESN":
                         Localization = MELocalization.ESN;
                         break;
-                    case "_LOC_FRA":
+                    case "LOC_FRA":
+                    case "LOC_FR":
                         Localization = MELocalization.FRA;
                         break;
-                    case "_LOC_INT":
+                    case "LOC_INT":
                         Localization = MELocalization.INT;
                         break;
-                    case "_LOC_ITA":
+                    case "LOC_ITA":
+                    case "LOC_IT":
                         Localization = MELocalization.ITA;
                         break;
-                    case "_LOC_JPN":
+                    case "LOC_JPN":
                         Localization = MELocalization.JPN;
                         break;
-                    case "_LOC_POL":
+                    case "LOC_POL":
+                    case "LOC_PLPC":
+                    case "LOC_PL":
                         Localization = MELocalization.POL;
                         break;
-                    case "_LOC_RUS":
+                    case "LOC_RUS":
+                    case "LOC_RA":
                         Localization = MELocalization.RUS;
                         break;
                     default:

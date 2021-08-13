@@ -23,6 +23,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public MEGame meGame { get; set; }
         public string GenerationDate { get; set; }
         public string DataBaseversion { get; set; }
+        public MELocalization Localization { get; set; }
 
         public List<FileNameDirKeyPair> FileList { get; set; } = new();
         public List<string> ContentDir { get; set; } = new();

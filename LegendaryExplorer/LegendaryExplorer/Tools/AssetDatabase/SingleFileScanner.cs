@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -15,7 +16,7 @@ using LegendaryExplorerCore.UnrealScript;
 
 namespace LegendaryExplorer.Tools.AssetDatabase
 {
-    public sealed record AssetDBScanOptions (bool ScanCRC, bool ScanLines, bool ScanPlotUsages);
+    public sealed record AssetDBScanOptions (bool ScanCRC, bool ScanLines, bool ScanPlotUsages, MELocalization Localization = MELocalization.INT);
 
     /// <summary>
     /// Caches info about the export being scanned, containing expensive calls such as GetProperties, IsDefault, etc
@@ -79,36 +80,40 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             new PlotUsageScanner()
         };
 
-        private readonly int FileKey;
-        private readonly string File;
-        private readonly AssetDBScanOptions Options;
+        private readonly int _fileKey;
+        private readonly string _file;
+        private readonly AssetDBScanOptions _options;
 
         public SingleFileScanner(string file, int filekey, AssetDBScanOptions options)
         {
-            File = file;
             ShortFileName = Path.GetFileNameWithoutExtension(file);
-            FileKey = filekey;
-            Options = options;
+            _file = file;
+            _fileKey = filekey;
+            _options = options;
         }
 
         /// <summary>
         /// Dumps Property data to concurrent dictionary
         /// </summary>
-        public void DumpPackageFile(MEGame GameBeingDumped, ConcurrentAssetDB dbScanner)
+        public void DumpPackageFile(MEGame gameBeingDumped, ConcurrentAssetDB dbScanner)
         {
-
             try
             {
-                if (File.EndsWith(".cnd", StringComparison.OrdinalIgnoreCase))
+                if (_file.EndsWith(".cnd", StringComparison.OrdinalIgnoreCase))
                 {
-                    new PlotUsageScanner().ScanCndFile(File, FileKey, dbScanner, Options);
+                    new PlotUsageScanner().ScanCndFile(_file, _fileKey, dbScanner, _options);
                     return;
                 }
 
-                using IMEPackage pcc = MEPackageHandler.OpenMEPackage(File);
-                if (pcc.Game != GameBeingDumped)
+                using IMEPackage pcc = MEPackageHandler.OpenMEPackage(_file);
+                if (pcc.Game != gameBeingDumped)
                 {
                     return; //rogue file from other game or UDK
+                }
+
+                if (pcc.Localization != _options.Localization && pcc.Localization is not MELocalization.None)
+                {
+                    return;
                 }
 
                 bool IsDLC = pcc.IsInOfficialDLC();
@@ -118,12 +123,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 {
                     if (esi == null)
                     {
-                        esi = new ExportScanInfo(entry, File, FileKey, IsMod, IsDLC);
+                        esi = new ExportScanInfo(entry, _file, _fileKey, IsMod, IsDLC);
                     }
                     else esi.Export = entry;
-
-                    //TODO: NEED BETTER WAY TO HANDLE LANGUAGES
-                    if (DumpCanceled || pcc.FilePath.Contains("_LOC_") && !pcc.FilePath.Contains("INT"))
+                    
+                    if (DumpCanceled)
                     {
                         return;
                     }
@@ -134,7 +138,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                         {
                             foreach (var scanner in Scanners)
                             {
-                                scanner.ScanExport(esi, dbScanner, Options);
+                                scanner.ScanExport(esi, dbScanner, _options);
                             }
                         }
                     }
@@ -146,7 +150,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             }
             catch (Exception e) when (!App.IsDebug)
             {
-                throw new Exception($"Error dumping package file {File}. See the inner exception for details.", e);
+                throw new Exception($"Error dumping package file {_file}. See the inner exception for details.", e);
             }
         }
     }

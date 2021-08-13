@@ -64,6 +64,15 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             set => SetProperty(ref currentGame, value);
         }
 
+        private MELocalization _localization = MELocalization.INT;
+        public MELocalization Localization { get => _localization; set => SetProperty(ref _localization, value); }
+
+        public ObservableCollectionExtended<MELocalization> AvailableLocalizations { get; set; } = new()
+        {
+            MELocalization.INT, MELocalization.DEU, MELocalization.FRA, MELocalization.ITA, MELocalization.POL,
+            MELocalization.RUS
+        };
+
         private string CurrentDBPath { get; set; }
         public AssetDB CurrentDataBase { get; } = new();
         public ObservableCollectionExtended<FileDirPair> FileListExtended { get; } = new();
@@ -200,6 +209,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public ICommand OpenInWindowsExplorerCommand { get; set; }
         public ICommand OpenInPlotDBCommand { get; set; }
         public ICommand OpenPEDefinitionCommand { get; set; }
+        public ICommand ChangeLocalizationCommand { get; set; }
         private bool CanCancelDump(object obj)
         {
             return ProcessingQueue != null && ProcessingQueue.Completion.Status == TaskStatus.WaitingForActivation && !DumpCanceled;
@@ -303,6 +313,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             OpenInWindowsExplorerCommand = new GenericCommand(OpenFileInWindowsExplorer);
             OpenInPlotDBCommand = new GenericCommand(OpenInPlotDB, IsPlotElementSelected);
             OpenPEDefinitionCommand = new GenericCommand(OpenPEDefinitionInToolset, IsPlotElementSelected);
+            ChangeLocalizationCommand = new RelayCommand((e) => { Localization = (MELocalization)e; });
         }
 
         private void AssetDB_Loaded(object sender, RoutedEventArgs e)
@@ -373,6 +384,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             database.meGame = pdb.meGame;
             database.GenerationDate = pdb.GenerationDate;
             database.DataBaseversion = pdb.DataBaseversion;
+            database.Localization = pdb.Localization;
             database.FileList.AddRange(pdb.FileList);
             database.ContentDir.AddRange(pdb.ContentDir);
             database.AddRecords(pdb);
@@ -494,6 +506,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         {
             CurrentDataBase.Clear();
             CurrentDataBase.meGame = CurrentGame;
+            CurrentDataBase.Localization = Localization;
 
             FileListExtended.ClearEx();
             CustomFileList.Clear();
@@ -718,6 +731,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                             FileListExtended.Add(new(fileName, cd, mount));
                         }
 
+                        Localization = CurrentDataBase.Localization;
                         ParseConvos = !CurrentDataBase.Lines.IsEmpty();
                         ParsePlotUsages = CurrentDataBase.PlotUsages.Any();
                         IsBusy = false;
@@ -2751,7 +2765,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
             AllDumpingItems = new List<SingleFileScanner>();
             CurrentDumpingItems.ClearEx();
-            var scanOptions = new AssetDBScanOptions(scanCRC, ParseConvos, ParsePlotUsages);
+            var scanOptions = new AssetDBScanOptions(scanCRC, ParseConvos, ParsePlotUsages, CurrentDataBase.Localization);
             foreach (var fkey in fileKeys)
             {
                 var threadtask = new SingleFileScanner(fkey.Item2, fkey.Item1, scanOptions);
