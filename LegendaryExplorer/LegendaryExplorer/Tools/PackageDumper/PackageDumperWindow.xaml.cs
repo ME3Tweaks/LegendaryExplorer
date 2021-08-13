@@ -92,7 +92,6 @@ namespace LegendaryExplorer.Tools.PackageDumper
             {
                 CommonOpenFileDialog outputDlg = new()
                 {
-                    InitialDirectory = Path.GetDirectoryName(dlg.FileNames.First()),
                     IsFolderPicker = true,
                     EnsurePathExists = true,
                     Title = "Select output folder"
@@ -198,7 +197,6 @@ namespace LegendaryExplorer.Tools.PackageDumper
         {
             CommonOpenFileDialog m = new()
             {
-                InitialDirectory = MEDirectories.GetCookedPath(game),
                 IsFolderPicker = true,
                 EnsurePathExists = true,
                 Title = "Select output folder"
@@ -316,7 +314,7 @@ namespace LegendaryExplorer.Tools.PackageDumper
 
                     outputFilename += ".txt";
 
-                    string outfolder = outputfolder ?? GetRelativePath(Path.GetFullPath(item.Key), Directory.GetParent(item.Key).ToString());
+                    string outfolder = outputfolder ?? Directory.GetParent(packageF).ToString();
 
                     var threadtask = new PackageDumperSingleFileTask(packageF, outputFilename, outfolder);
                     AllDumpingItems.Add(threadtask); //For setting cancellation value
