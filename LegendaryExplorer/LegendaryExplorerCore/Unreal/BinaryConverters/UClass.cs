@@ -102,28 +102,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
 
         /// <summary>
-        /// Rebuilds the compiling chain of children for this class. Items with this entry as the parent will participate in the class.
-        /// </summary>
-        public void UpdateChildrenChain()
-        {
-            var children = Export.FileRef.Exports.Where(x => x.idxLink == Export.UIndex).Reverse().ToList();
-            for (int i = 0; i < children.Count; i++)
-            {
-                var c = children[i];
-                if (ObjectBinary.From(c) is UField uf)
-                {
-                    uf.Next = i == children.Count - 1 ? 0 : children[i + 1];
-                    c.WriteBinary(uf);
-                }
-                else
-                {
-                    Debug.WriteLine($"Can't link non UField {c.InstancedFullPath}");
-                }
-            }
-            Children = children.Any() ? children[0].UIndex : 0;
-        }
-
-        /// <summary>
         /// Rebuilds the LocalFunctions table with direct descendents of this node. Items of class 'Function' will participate.
         /// </summary>
         public void UpdateLocalFunctions()

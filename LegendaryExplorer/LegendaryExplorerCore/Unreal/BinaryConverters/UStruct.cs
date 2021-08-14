@@ -135,5 +135,33 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             return names;
         }
+        
+
+        /// <summary>
+        ///  Rebuilds the compiling chain of children for this struct. Items with this entry as the parent will participate in the class.
+        /// </summary>
+        /// <param name="relinkChildrenStructs">Recursively relink children for all structs that are decendants of this struct</param>
+        public void UpdateChildrenChain(bool relinkChildrenStructs = false)
+        {
+            var children = Export.FileRef.Exports.Where(x => x.idxLink == Export.UIndex).Reverse().ToList();
+            for (int i = 0; i < children.Count; i++)
+            {
+                var c = children[i];
+                if (ObjectBinary.From(c) is UField uf)
+                {
+                    uf.Next = i == children.Count - 1 ? 0 : children[i + 1];
+                    if (relinkChildrenStructs && uf is UStruct st)
+                    {
+                        st.UpdateChildrenChain(true);
+                    }
+                    c.WriteBinary(uf);
+                }
+                else
+                {
+                    Debug.WriteLine($"Can't link non UField {c.InstancedFullPath}");
+                }
+            }
+            Children = children.Any() ? children[0].UIndex : 0;
+        }
     }
 }

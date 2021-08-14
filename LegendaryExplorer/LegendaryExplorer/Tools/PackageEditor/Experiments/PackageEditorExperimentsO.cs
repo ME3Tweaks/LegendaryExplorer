@@ -405,11 +405,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void UpdateLocalFunctions(PackageEditorWindow pew)
         {
-            if (pew.TryGetSelectedExport(out var export) && ObjectBinary.From(export) is UClass uClass)
+            if (pew.TryGetSelectedExport(out var export) && ObjectBinary.From(export) is UStruct uStruct)
             {
-                uClass.UpdateChildrenChain();
-                uClass.UpdateLocalFunctions();
-                export.WriteBinary(uClass);
+                uStruct.UpdateChildrenChain(relinkChildrenStructs: true);
+                if (uStruct is UClass uClass)
+                {
+                    uClass.UpdateLocalFunctions();
+                }
+                export.WriteBinary(uStruct);
             }
         }
 
