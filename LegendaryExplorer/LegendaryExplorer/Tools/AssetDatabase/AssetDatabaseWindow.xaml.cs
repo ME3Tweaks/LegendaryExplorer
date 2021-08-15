@@ -1814,6 +1814,15 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     {
                         showthis = tr.ParentPackage.ToLower().Contains(FilterBox.Text.ToLower());
                     }
+
+                    if (!showthis && FilterBox.Text.ToLower().StartsWith("size: ") && FilterBox.Text.ToLower().Contains("x") && FilterBox.Text.Length > 6)
+                    {
+                        var sr = FilterBox.Text.Remove(0, 6).ToLower().Split("x");
+                        if (int.TryParse(sr[0], out int xVal) && int.TryParse(sr[1], out int yVal))
+                        {
+                            showthis = tr.SizeX == xVal && tr.SizeY == yVal;
+                        }
+                    }
                 }
 
                 if (showthis && menu_TCube.IsChecked && tr.CFormat != "TextureCube")
