@@ -407,7 +407,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
             if (pew.TryGetSelectedExport(out var export) && ObjectBinary.From(export) is UStruct uStruct)
             {
-                uStruct.UpdateChildrenChain(relinkChildrenStructs: true);
+                uStruct.UpdateChildrenChain(relinkChildrenStructs: false);
                 if (uStruct is UClass uClass)
                 {
                     uClass.UpdateLocalFunctions();

@@ -138,11 +138,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         
 
         /// <summary>
-        ///  Rebuilds the compiling chain of children for this struct. Items with this entry as the parent will participate in the class.
+        ///  Rebuilds the compiling chain of children for this struct. Items with this entry as the parent will participate in the class. Don't use this on functions.
         /// </summary>
         /// <param name="relinkChildrenStructs">Recursively relink children for all structs that are decendants of this struct</param>
         public void UpdateChildrenChain(bool relinkChildrenStructs = false)
         {
+            if (this is UFunction fn)
+            {
+                //UpdateChildrenChain not yet working for function exports, use function compilation instead
+                return;
+            }
             var children = Export.FileRef.Exports.Where(x => x.idxLink == Export.UIndex).Reverse().ToList();
             for (int i = 0; i < children.Count; i++)
             {
