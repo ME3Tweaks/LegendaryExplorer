@@ -1073,7 +1073,7 @@
                                         </controls:ListBoxScroll.ItemTemplate>
                                         <controls:ListBoxScroll.ContextMenu>
                                             <ContextMenu>
-                                                <MenuItem Header="Open in Plot Database" Command="{Binding OpenInPlotDBCommand}" ToolTip="Opens this plot element in the Plot Database" />
+                                                <!-- <MenuItem Header="Open in Plot Database" Command="{Binding OpenInPlotDBCommand}" ToolTip="Opens this plot element in the Plot Database" /> -->
                                             </ContextMenu>
                                         </controls:ListBoxScroll.ContextMenu>
                                     </controls:ListBoxScroll>
@@ -1088,7 +1088,7 @@
                                         </controls:ListBoxScroll.ItemTemplate>
                                         <controls:ListBoxScroll.ContextMenu>
                                             <ContextMenu>
-                                                <MenuItem Header="Open in Plot Database" Command="{Binding OpenInPlotDBCommand}" ToolTip="Opens this plot element in the Plot Database" />
+                                                <!-- <MenuItem Header="Open in Plot Database" Command="{Binding OpenInPlotDBCommand}" ToolTip="Opens this plot element in the Plot Database" /> -->
                                             </ContextMenu>
                                         </controls:ListBoxScroll.ContextMenu>
                                     </controls:ListBoxScroll>
@@ -1103,7 +1103,7 @@
                                         </controls:ListBoxScroll.ItemTemplate>
                                         <controls:ListBoxScroll.ContextMenu>
                                             <ContextMenu>
-                                                <MenuItem Header="Open in Plot Database" Command="{Binding OpenInPlotDBCommand}" ToolTip="Opens this plot element in the Plot Database" />
+                                                <!-- <MenuItem Header="Open in Plot Database" Command="{Binding OpenInPlotDBCommand}" ToolTip="Opens this plot element in the Plot Database" /> -->
                                             </ContextMenu>
                                         </controls:ListBoxScroll.ContextMenu>
                                     </controls:ListBoxScroll>
@@ -1118,7 +1118,7 @@
                                         </controls:ListBoxScroll.ItemTemplate>
                                         <controls:ListBoxScroll.ContextMenu>
                                             <ContextMenu>
-                                                <MenuItem Header="Open in Plot Database" Command="{Binding OpenInPlotDBCommand}" ToolTip="Opens this plot element in the Plot Database" />
+                                                <!-- <MenuItem Header="Open in Plot Database" Command="{Binding OpenInPlotDBCommand}" ToolTip="Opens this plot element in the Plot Database" /> -->
                                                 <MenuItem Header="Open Transition" Command="{Binding OpenPEDefinitionCommand}" ToolTip="Opens this transition in Plot Editor" />
                                             </ContextMenu>
                                         </controls:ListBoxScroll.ContextMenu>
@@ -1134,7 +1134,7 @@
                                         </controls:ListBoxScroll.ItemTemplate>
                                         <controls:ListBoxScroll.ContextMenu>
                                             <ContextMenu>
-                                                <MenuItem Header="Open in Plot Database" Command="{Binding OpenInPlotDBCommand}" ToolTip="Opens this plot element in the Plot Database" />
+                                                <!-- <MenuItem Header="Open in Plot Database" Command="{Binding OpenInPlotDBCommand}" ToolTip="Opens this plot element in the Plot Database" /> -->
                                                 <MenuItem Header="Open Conditional" Command="{Binding OpenPEDefinitionCommand}" ToolTip="Opens this conditional in the toolset" />
                                             </ContextMenu>
                                         </controls:ListBoxScroll.ContextMenu>
