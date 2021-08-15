@@ -73,7 +73,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             ME3OpenTimer.Tick += CheckIfME3Open;
         }
 
-        public AnimationViewerWindow(PropsDataBase db, AnimationRecord AnimToFocus) : this()
+        public AnimationViewerWindow(AssetDB db, AnimationRecord AnimToFocus) : this()
         {
             AnimQueuedForFocus = AnimToFocus;
             foreach ((string fileName, int dirIndex) in db.FileList)
@@ -88,7 +88,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
         {
             if (Animations.IsEmpty())
             {
-                string dbPath = AssetDB.GetDBPath(MEGame.ME3);
+                string dbPath = AssetDatabaseWindow.GetDBPath(MEGame.ME3);
                 if (File.Exists(dbPath))
                 {
                     LoadDatabase(dbPath);
@@ -318,7 +318,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
 
         private void TryLoadDatabase()
         {
-            string dbPath = AssetDB.GetDBPath(MEGame.ME3);
+            string dbPath = AssetDatabaseWindow.GetDBPath(MEGame.ME3);
             if (File.Exists(dbPath))
             {
                 LoadDatabase(dbPath);
@@ -332,10 +332,10 @@ namespace LegendaryExplorer.Tools.AnimationViewer
         private void LoadDatabase(string dbPath)
         {
             SetBusy("Loading Database...");
-            var db = new PropsDataBase();
-            AssetDB.LoadDatabase(dbPath, MEGame.ME3, db, CancellationToken.None).ContinueWithOnUIThread(prevTask =>
+            var db = new AssetDB();
+            AssetDatabaseWindow.LoadDatabase(dbPath, MEGame.ME3, db, CancellationToken.None).ContinueWithOnUIThread(prevTask =>
             {
-                if (db.DataBaseversion != AssetDB.dbCurrentBuild)
+                if (db.DataBaseversion != AssetDatabaseWindow.dbCurrentBuild)
                 {
                     MessageBox.Show(this, "ME3 Asset Database is out of date! Please regenerate it in the Asset Database tool. This could take about 10 minutes.");
                     EndBusy();

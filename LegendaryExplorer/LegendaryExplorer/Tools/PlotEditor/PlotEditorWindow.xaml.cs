@@ -229,6 +229,26 @@ namespace LegendaryExplorer.Tools.PlotEditor
             }
         }
 
+        public void GoToCodex(int id)
+        {
+            var targetCodex = CodexMapControl.CodexPages.FirstOrDefault(kvp => kvp.Key == id);
+            if (!targetCodex.Equals(default(KeyValuePair<int, BioCodexPage>)))
+            {
+                MainTabControl.SelectedValue = CodexMapControl;
+                CodexMapControl.GoToCodexPage(targetCodex);
+            }
+        }
+
+        public void GoToQuest(int id)
+        {
+            var targetQuest = QuestMapControl.Quests.FirstOrDefault(kvp => kvp.Key == id);
+            if (!targetQuest.Equals(default(KeyValuePair<int, BioQuest>)))
+            {
+                MainTabControl.SelectedValue = QuestMapControl;
+                QuestMapControl.GoToQuest(targetQuest);
+            }
+        }
+
         public void GoToStateEvent(int id)
         {
             var targetEvent = StateEventMapControl.StateEvents.FirstOrDefault(kvp => kvp.Key == id);

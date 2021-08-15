@@ -21,9 +21,9 @@ namespace LegendaryExplorerCore.PlotDatabase
         {
             var db = game switch
             {
-                MEGame.ME1 => isbioware ? Le1PlotDatabase : Le1ModDatabase,
-                MEGame.ME2 => isbioware ? Le2PlotDatabase : Le2ModDatabase,
-                MEGame.ME3 => isbioware ? Le3PlotDatabase : Le3ModDatabase,
+                MEGame.ME1 => Le1PlotDatabase,
+                MEGame.ME2 => Le2PlotDatabase,
+                MEGame.ME3 => Le3PlotDatabase,
                 MEGame.LE1 => isbioware ? Le1PlotDatabase : Le1ModDatabase,
                 MEGame.LE2 => isbioware ? Le2PlotDatabase : Le2ModDatabase,
                 MEGame.LE3 => isbioware ? Le3PlotDatabase : Le3ModDatabase,
@@ -48,11 +48,14 @@ namespace LegendaryExplorerCore.PlotDatabase
                 return db.Bools[id];
             }
 
-            EnsureDatabaseLoaded(game, false);
-            var mdb = GetDatabaseForGame(game, false);
-            if (mdb != null && mdb.Bools.ContainsKey(id))
+            if (game.IsLEGame())
             {
-                return mdb.Bools[id];
+                EnsureDatabaseLoaded(game, false);
+                var mdb = GetDatabaseForGame(game, false);
+                if (mdb.Bools.ContainsKey(id))
+                {
+                    return mdb.Bools[id];
+                }
             }
             return null;
         }
@@ -66,11 +69,14 @@ namespace LegendaryExplorerCore.PlotDatabase
                 return db.Ints[id];
             }
 
-            EnsureDatabaseLoaded(game, false);
-            var mdb = GetDatabaseForGame(game, false);
-            if (mdb != null && mdb.Ints.ContainsKey(id))
+            if (game.IsLEGame())
             {
-                return mdb.Ints[id];
+                EnsureDatabaseLoaded(game, false);
+                var mdb = GetDatabaseForGame(game, false);
+                if (mdb.Ints.ContainsKey(id))
+                {
+                    return mdb.Ints[id];
+                }
             }
             return null;
         }
@@ -84,11 +90,14 @@ namespace LegendaryExplorerCore.PlotDatabase
                 return db.Floats[id];
             }
 
-            EnsureDatabaseLoaded(game, false);
-            var mdb = GetDatabaseForGame(game, false);
-            if (mdb != null && mdb.Floats.ContainsKey(id))
+            if (game.IsLEGame())
             {
-                return mdb.Floats[id];
+                EnsureDatabaseLoaded(game, false);
+                var mdb = GetDatabaseForGame(game, false);
+                if (mdb.Floats.ContainsKey(id))
+                {
+                    return mdb.Floats[id];
+                }
             }
             return null;
         }
@@ -102,11 +111,14 @@ namespace LegendaryExplorerCore.PlotDatabase
                 return db.Conditionals[id];
             }
 
-            EnsureDatabaseLoaded(game, false);
-            var mdb = GetDatabaseForGame(game, false);
-            if (mdb != null && mdb.Conditionals.ContainsKey(id))
+            if (game.IsLEGame())
             {
-                return mdb.Conditionals[id];
+                EnsureDatabaseLoaded(game, false);
+                var mdb = GetDatabaseForGame(game, false);
+                if (mdb.Conditionals.ContainsKey(id))
+                {
+                    return mdb.Conditionals[id];
+                }
             }
             return null;
         }
@@ -120,13 +132,43 @@ namespace LegendaryExplorerCore.PlotDatabase
                 return db.Transitions[id];
             }
 
-            EnsureDatabaseLoaded(game, false);
-            var mdb = GetDatabaseForGame(game, false);
-            if (mdb != null && mdb.Transitions.ContainsKey(id))
+            if (game.IsLEGame())
             {
-                return mdb.Transitions[id];
+                EnsureDatabaseLoaded(game, false);
+                var mdb = GetDatabaseForGame(game, false);
+                if (mdb.Transitions.ContainsKey(id))
+                {
+                    return mdb.Transitions[id];
+                }
             }
             return null;
+        }
+
+        public static PlotElement FindPlotElementFromID(int id, PlotElementType type, MEGame game)
+        {
+            switch (type)
+            {
+                case PlotElementType.Flag:
+                case PlotElementType.State:
+                case PlotElementType.SubState:
+                    return FindPlotBoolByID(id, game);
+                case PlotElementType.Integer:
+                    return FindPlotIntByID(id, game);
+                case PlotElementType.Float:
+                    return FindPlotFloatByID(id, game);
+                case PlotElementType.Conditional:
+                    return FindPlotConditionalByID(id, game);
+                case PlotElementType.Transition:
+                case PlotElementType.Consequence:
+                    return FindPlotTransitionByID(id, game);
+                default:
+                    return null;
+            }
+        }
+
+        public static string FindPlotPathFromID(int id, PlotElementType type, MEGame game)
+        {
+            return FindPlotElementFromID(id, type, game)?.Path ?? "";
         }
 
         private static void EnsureDatabaseLoaded(MEGame game, bool isbioware)

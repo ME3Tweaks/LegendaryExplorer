@@ -182,8 +182,8 @@
     <Compile Update="Tools\AnimationImporterExporter\AnimationImporter.xaml.cs">
       <DependentUpon>AnimationImporter.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Tools\AssetDatabase\AssetDB.xaml.cs">
-      <DependentUpon>AssetDB.xaml</DependentUpon>
+    <Compile Update="Tools\AssetDatabase\AssetDatabaseWindow.xaml.cs">
+      <DependentUpon>AssetDatabaseWindow.xaml</DependentUpon>
     </Compile>
     <Compile Update="Tools\Dialogue Editor\ConvGraphEditor.cs">
       <SubType>Component</SubType>
@@ -317,7 +317,7 @@
     <Page Update="Tools\AnimationImporterExporter\AnimationImporterExporterWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Tools\AssetDatabase\AssetDB.xaml">
+    <Page Update="Tools\AssetDatabase\AssetDatabaseWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Tools\AudioLocalizer\AudioLocalizerWindow.xaml">

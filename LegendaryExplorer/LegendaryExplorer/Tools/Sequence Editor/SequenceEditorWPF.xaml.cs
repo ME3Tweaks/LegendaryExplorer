@@ -504,6 +504,12 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             }
         }
 
+        public void LoadFile(string fileName, int uIndex)
+        {
+            LoadFile(fileName);
+            GoToExport(uIndex);
+        }
+
         public void LoadFile(string fileName)
         {
             try
@@ -2054,6 +2060,18 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
                     Activate();
                 }));
+            }
+        }
+
+        private void GoToExport(int UIndex, bool selectSequences = true)
+        {
+            if (Pcc != null)
+            {
+                ExportEntry exp = Pcc.GetUExport(UIndex);
+                if (exp != null)
+                {
+                    GoToExport(exp, selectSequences);
+                }
             }
         }
 

@@ -91,6 +91,30 @@ namespace LegendaryExplorerCore.Packages
         LELauncher = 100, // Do not change this number. It's so we can add before this without messing up any existing items
     }
 
+    public static class MELocalizationExtensions
+    {
+        // This should only be used for "LOC_" filenames, there are more options for TLK localizations
+        public static string ToLocaleString(this MELocalization localization, MEGame game)
+        {
+            if (game.IsGame1())
+            {
+                return localization switch
+                {
+                    MELocalization.DEU => "DE",
+                    MELocalization.ESN => "ES",
+                    MELocalization.FRA => "FR",
+                    MELocalization.ITA => "IT",
+                    MELocalization.POL => "PLPC", // This does not correctly account for PL
+                    MELocalization.RUS => "RA",
+                    MELocalization.JPN => "JA",
+                    MELocalization.None => "",
+                    _ => localization.ToString()
+                };
+            }
+            return localization.ToString();
+        }
+    }
+
     // This does not work for ME1/LE1 as it uses two character non-int localizations
     public enum MELocalization
     {
