@@ -254,7 +254,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public bool VisitNode(ForEachLoop node)
         {
-            if (node.IteratorCall is DynArrayIterator || node.IteratorCall is CompositeSymbolRef c && c.InnerSymbol is DynArrayIterator)
+            if (node.IteratorCall is DynArrayIterator or CompositeSymbolRef {InnerSymbol: DynArrayIterator})
             {
                 WriteOpCode(OpCodes.DynArrayIterator);
             }
@@ -558,7 +558,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
             VariableType lType = node.Operator.LeftOperand.VarType;
             VariableType rType = node.Operator.RightOperand.VarType;
-            if (node.Operator.LeftOperand.VarType is Class c && c.IsInterface)
+            if (node.Operator.LeftOperand.VarType is Class {IsInterface: true} c)
             {
                 lType = rType = node.LeftOperand.ResolveType() ?? node.RightOperand.ResolveType() ?? c;
             }
@@ -770,15 +770,15 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 switch (node.OuterSymbol)
                 {
                     //struct is being accessed through an rvalue
-                    case FunctionCall _:
-                    case DelegateCall _:
-                    //case ArraySymbolRef _: doesn't seem to count as an rvalue for dynamic arrays. does it for static arrays?
+                    case FunctionCall:
+                    case DelegateCall:
+                    //case ArraySymbolRef: doesn't seem to count as an rvalue for dynamic arrays. does it for static arrays?
                     case CompositeSymbolRef csr when ContainsFunctionCall(csr):
-                    case VectorLiteral _:
-                    case RotatorLiteral _:
-                    case InOpReference _:
-                    case PreOpReference _:
-                    case PostOpReference _:
+                    case VectorLiteral:
+                    case RotatorLiteral:
+                    case InOpReference:
+                    case PreOpReference:
+                    case PostOpReference:
                         WriteByte(1);
                         break;
                     default:
@@ -787,7 +787,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 }
 
                 //this is being modified, and this is the base struct.
-                if (inAssignTarget && !(node.OuterSymbol is CompositeSymbolRef {IsStructMemberExpression: true}))
+                if (inAssignTarget && node.OuterSymbol is not CompositeSymbolRef { IsStructMemberExpression: true })
                 {
                     WriteByte(1);
                 }
@@ -806,7 +806,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 WriteOpCode(OpCodes.InterfaceContext);
             }
             Emit(node.OuterSymbol);
-            SkipPlaceholder skip = WriteSkipPlaceholder(); 
+            SkipPlaceholder skip = WriteSkipPlaceholder();
             EmitVariableSize(innerSymbol);
 
             skip.ResetStart();
@@ -825,11 +825,11 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 while (csr != null)
                 {
-                    if (csr.InnerSymbol is FunctionCall || csr.InnerSymbol is DelegateCall)
+                    if (csr.InnerSymbol is FunctionCall or DelegateCall)
                     {
                         return true;
                     }
-                    csr = csr.OuterSymbol as CompositeSymbolRef;;
+                    csr = csr.OuterSymbol as CompositeSymbolRef;
                 }
 
                 return false;
@@ -1161,28 +1161,27 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         public bool VisitNode(IntegerLiteral node)
         {
             int i = node.Value;
-            if (node.NumType != Keywords.INT && i >= 0 && i < 265)
+            if (node.NumType != Keywords.INT && i is >= 0 and < 265)
             {
                 WriteOpCode(OpCodes.ByteConst);
                 WriteByte((byte)i);
             }
-            else if (i == 0)
+            else switch (i)
             {
-                WriteOpCode(OpCodes.IntZero);
-            }
-            else if (i == 1)
-            {
-                WriteOpCode(OpCodes.IntOne);
-            }
-            else if (i >= 0 && i < 256)
-            {
-                WriteOpCode(OpCodes.IntConstByte);
-                WriteByte((byte)i);
-            }
-            else
-            {
-                WriteOpCode(OpCodes.IntConst);
-                WriteInt(i);
+                case 0:
+                    WriteOpCode(OpCodes.IntZero);
+                    break;
+                case 1:
+                    WriteOpCode(OpCodes.IntOne);
+                    break;
+                case >= 0 and < 256:
+                    WriteOpCode(OpCodes.IntConstByte);
+                    WriteByte((byte)i);
+                    break;
+                default:
+                    WriteOpCode(OpCodes.IntConst);
+                    WriteInt(i);
+                    break;
             }
 
             return true;
@@ -1326,7 +1325,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 State state => ResolveState(state),
                 Function func => ResolveFunction(func),
                 FunctionParameter param => parameters[param.Name].Export,
-                VariableDeclaration local when local.Outer is Function => locals[local.Name].Export,
+                VariableDeclaration {Outer: Function} local => locals[local.Name].Export,
                 VariableDeclaration field => ResolveProperty(field),
                 SymbolReference symRef => ResolveSymbol(symRef.Node),
                 _ => throw new ArgumentOutOfRangeException(nameof(node))

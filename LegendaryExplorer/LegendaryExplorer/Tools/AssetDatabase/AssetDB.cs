@@ -147,7 +147,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
     {
         public string Class { get; set; }
 
-        public string Definition_package { get; set; }
+        public int DefinitionFile { get; set; }
 
         public int Definition_UID { get; set; }
 
@@ -159,16 +159,18 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         public List<ClassUsage> Usages { get; set; } = new();
 
-        public ClassRecord(string Class, string Definition_package, int Definition_UID, string SuperClass)
+        public ClassRecord(string Class, int definitionFile, int Definition_UID, string SuperClass)
         {
             this.Class = Class;
-            this.Definition_package = Definition_package;
+            this.DefinitionFile = definitionFile;
             this.Definition_UID = Definition_UID;
             this.SuperClass = SuperClass;
         }
 
         public ClassRecord()
-        { }
+        {
+            DefinitionFile = -1;
+        }
     }
     public sealed record PropertyRecord(string Property, string Type) { public PropertyRecord() : this(default, default) { } }
 

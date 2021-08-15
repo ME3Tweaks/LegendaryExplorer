@@ -292,7 +292,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             if (Matches(TokenType.IntegerNumber))
             {
                 int val = int.Parse(token.Value, CultureInfo.InvariantCulture);
-                return new IntegerLiteral(val, token.StartPos, token.EndPos) { NumType = val >= 0 && val <= byte.MaxValue ? BYTE : INT };
+                return new IntegerLiteral(val, token.StartPos, token.EndPos) { NumType = INT };
             }
 
             if (Matches(TokenType.FloatingNumber))

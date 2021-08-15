@@ -44,7 +44,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
     public partial class AssetDatabaseWindow : TrackingNotifyPropertyChangedWindowBase
     {
         #region Declarations
-        public const string dbCurrentBuild = "7.0"; //If changes are made that invalidate old databases edit this.
+        public const string dbCurrentBuild = "7.1"; //If changes are made that invalidate old databases edit this.
         private int previousView { get; set; }
         private int _currentView;
         public int currentView { get => _currentView; set { previousView = _currentView; SetProperty(ref _currentView, value); } }
@@ -930,19 +930,17 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         private void OpenSourcePkg(object obj)
         {
             var cr = (ClassRecord)lstbx_Classes.SelectedItem;
-            var sourcepkg = cr.Definition_package;
+            var sourcepkg = cr.DefinitionFile;
             var sourceexp = cr.Definition_UID;
 
-            int sourcedefaultUsage = cr.Usages.FirstOrDefault(u => u.IsDefault)?.FileKey ?? 0;
-
-            if (sourcepkg == null || sourcedefaultUsage == 0)
+            if (sourcepkg < 0)
             {
                 MessageBox.Show("Definition file unknown.");
                 return;
             }
-            var contentdir = FileListExtended[sourcedefaultUsage].Directory;
+            (string filename, string dir, _) = FileListExtended[sourcepkg];
 
-            OpenInToolkit("PackageEditor", GetFilePath(sourcepkg, contentdir), sourceexp);
+            OpenInToolkit("PackageEditor", GetFilePath(filename, dir), sourceexp);
         }
 
         private string GetFilePath(string filename, string contentdir)

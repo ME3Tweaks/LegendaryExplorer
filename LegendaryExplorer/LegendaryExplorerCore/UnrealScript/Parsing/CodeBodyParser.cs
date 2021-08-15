@@ -1290,6 +1290,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                                 return;
                             case ECast.IntToByte:
                                 intLit.NumType = BYTE;
+                                intLit.Value &= 0xFF;
                                 return;
                             case ECast.IntToFloat:
                                 expr = new FloatLiteral(intLit.Value, intLit.StartPos, intLit.EndPos);
@@ -1381,7 +1382,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         //}
                     }
 
-                    if (!(lhsType is ClassType) && !isStatic && !CompositeTypes.Contains(lhsType?.NodeType ?? ASTNodeType.INVALID))
+                    if (lhsType is not ClassType && !isStatic && !CompositeTypes.Contains(lhsType?.NodeType ?? ASTNodeType.INVALID))
                     {
                         TypeError("Left side symbol is not of a composite type!", PrevToken.StartPos); //TODO: write a better error message
                     }
@@ -1428,7 +1429,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                     if (isConst)
                     {
-                        if (!(rhs is SymbolReference {Node: Const}))
+                        if (rhs is not SymbolReference {Node: Const})
                         {
                             TypeError("Expected property after 'const.' to be a Const!", rhs);
                         }
@@ -1439,7 +1440,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         fc.IsCalledOnInterface = true;
                     }
 
-                    bool isClassContext = isStatic || rhs is DefaultReference;
+                    bool isClassContext = lhsType is ClassType && (isStatic || rhs is DefaultReference);
 
                     switch (rhs)
                     {
