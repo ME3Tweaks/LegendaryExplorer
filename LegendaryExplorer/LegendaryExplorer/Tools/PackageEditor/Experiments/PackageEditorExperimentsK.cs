@@ -615,7 +615,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
                 foreach (var txtref in references)
                 {
-                    if (norefsList.Contains(txtref))
+                    if (norefsList.Contains(txtref) && txtref > 0)
                     {
                         level.TextureToInstancesMap.Remove(txtref);
                     }
@@ -631,7 +631,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
                 foreach (int reference in references)
                 {
-                    if (!norefsList.Contains(reference))
+                    if (!norefsList.Contains(reference) || reference < 0)
                     {
                         var map = level.CachedPhysSMDataMap[reference];
                         var oldidx = map.CachedDataIndex;
@@ -654,7 +654,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
                 foreach (int reference in references)
                 {
-                    if (!norefsList.Contains(reference))
+                    if (!norefsList.Contains(reference) || reference < 0)
                     {
                         var map = level.CachedPhysPerTriSMDataMap[reference];
                         var oldidx = map.CachedDataIndex;
