@@ -1203,7 +1203,7 @@ namespace LegendaryExplorer.DialogueEditor
                 }
 
 
-                if (Pcc.Game.IsGame3() && (e.PropertyName == "bIsDefaultAction" || e.PropertyName == "bIsMajorDecision"))
+                if (Pcc.Game.IsGame3() && (e.PropertyName == "IsDefaultAction" || e.PropertyName == "IsMajorDecision"))
                 {
                     var bIsDefaultAction = new BoolProperty(node.IsDefaultAction, "bIsDefaultAction");
                     prop.Properties.AddOrReplaceProp(bIsDefaultAction);
