@@ -106,14 +106,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         /// </summary>
         public void UpdateLocalFunctions()
         {
-            var children = Export.FileRef.Exports.Where(x => x.idxLink == Export.UIndex).Reverse().ToList();
             LocalFunctionMap.Clear();
-            for (int i = 0; i < children.Count; i++)
+            foreach (ExportEntry c in Export.GetChildren<ExportEntry>().Reverse())
             {
-                var c = children[i];
                 if (c.ClassName == "Function")
                 {
-                    LocalFunctionMap.Add(new KeyValuePair<NameReference, UIndex>(c.ObjectName, c.UIndex));
+                    LocalFunctionMap.Add(c.ObjectName, c.UIndex);
                 }
             }
         }

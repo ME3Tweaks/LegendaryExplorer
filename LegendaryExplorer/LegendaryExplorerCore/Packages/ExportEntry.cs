@@ -567,7 +567,7 @@ namespace LegendaryExplorerCore.Packages
         }
 
         //NEVER DIRECTLY SET THIS OUTSIDE OF CONSTRUCTOR!
-        protected byte[] _data;
+        private byte[] _data;
 
         /// <summary>
         /// Returns a ReadOnlySpan of Data. This is a much more efficient than cloning with Data.

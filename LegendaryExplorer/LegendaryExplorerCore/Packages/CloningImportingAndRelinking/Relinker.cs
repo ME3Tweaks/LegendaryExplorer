@@ -82,7 +82,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 OrderedMultiValueDictionary<NameReference, int> newComponentMap = new OrderedMultiValueDictionary<NameReference, int>();
                 foreach (var cmk in sourceExport.ComponentMap)
                 {
-                    // This code makes a lot of assupmtions, like how components are always directly below the current export
+                    // This code makes a lot of assumptions, like how components are always directly below the current export
                     var nameIndex = relinkingExport.FileRef.FindNameOrAdd(cmk.Key.Name);
                     EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport.FileRef.GetUExport(cmk.Value + 1), relinkingExport.FileRef, relinkingExport, true, out var newComponent);
 
@@ -124,8 +124,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 }
             }
             //Relink Component's TemplateOwnerClass
-            // Do you relink if it's 0? Should this be > 0? -Mgamerz Feb 21 2020
-            else if (relinkingExport.TemplateOwnerClassIdx is var toci && toci >= 0)
+            else if (relinkingExport.TemplateOwnerClassIdx is var toci and >= 0)
             {
 
                 int uIndex = BitConverter.ToInt32(prePropBinary, toci);
@@ -145,11 +144,20 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             // NOTES: this used to be relinkingExport, not source, Changed near end of jan 2021 - Mgamerz - Due to ported items possibly not having way to reference original items
             PropertyCollection props = sourceExport.GetProperties();
             relinkPropertiesRecursive(sourcePcc, relinkingExport, props, crossPCCObjectMappingList, "", relinkReport, importExportDependencies);
+            bool removedProperties = false;
+            if (sourcePcc.Game != relinkingExport.Game && props.Count > 0)
+            {
+                props = EntryPruner.RemoveIncompatibleProperties(sourcePcc, props, sourceExport.ClassName, relinkingExport.Game, ref removedProperties);
+                if (removedProperties)
+                {
+                    relinkReport.Add(new EntryStringPair(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.InstancedFullPath}: Some properties were removed from this object because they do not exist in {relinkingExport.Game}!"));
+                }
+            }
 
             //Relink Binary
             try
             {
-                if (relinkingExport.Game != sourcePcc.Game && (relinkingExport.IsClass || relinkingExport.ClassName == "State" || relinkingExport.ClassName == "Function"))
+                if (relinkingExport.Game != sourcePcc.Game && (relinkingExport.IsClass || relinkingExport.ClassName is "State" or "Function"))
                 {
                     relinkReport.Add(new EntryStringPair(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.InstancedFullPath} binary relinking failed. Cannot port {relinkingExport.ClassName} between games!"));
                 }
@@ -223,7 +231,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 relinkReport.Add(new EntryStringPair(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.InstancedFullPath} binary relinking failed due to exception: {e.Message}"));
             }
 
-            relinkingExport.WritePrePropsAndProperties(prePropBinary, props, sourceExport.propsEnd());
+            relinkingExport.WritePrePropsAndProperties(prePropBinary, props, removedProperties ? relinkingExport.propsEnd() : sourceExport.propsEnd());
         }
 
         private static void relinkPropertiesRecursive(IMEPackage importingPCC, ExportEntry relinkingExport, PropertyCollection transplantProps,

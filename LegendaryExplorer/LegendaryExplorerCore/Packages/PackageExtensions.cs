@@ -546,35 +546,37 @@ namespace LegendaryExplorerCore.Packages
         }
 
         public static bool IsTexture(this IEntry entry) =>
-            entry.ClassName == "Texture2D" ||
-            entry.ClassName == "LightMapTexture2D" ||
-            entry.ClassName == "ShadowMapTexture2D" ||
-            entry.ClassName == "TerrainWeightMapTexture" ||
-            entry.ClassName == "TextureFlipBook";
+            entry.ClassName 
+                is "Texture2D" 
+                or "LightMapTexture2D" 
+                or "ShadowMapTexture2D"
+                or "TerrainWeightMapTexture" 
+                or "TextureFlipBook";
 
         public static bool IsPartOfClassDefinition(this ExportEntry entry) =>
-            entry.ClassName == "Class" ||
-            entry.ClassName == "Function" ||
-            entry.ClassName == "State" ||
-            entry.ClassName == "Const" ||
-            entry.ClassName == "Enum" ||
-            entry.ClassName == "ScriptStruct" ||
-            entry.ClassName == "IntProperty" ||
-            entry.ClassName == "BoolProperty" ||
-            entry.ClassName == "FloatProperty" ||
-            entry.ClassName == "NameProperty" ||
-            entry.ClassName == "StrProperty" ||
-            entry.ClassName == "StringRefProperty" ||
-            entry.ClassName == "ByteProperty" ||
-            entry.ClassName == "ObjectProperty" ||
-            entry.ClassName == "ComponentProperty" ||
-            entry.ClassName == "InterfaceProperty" ||
-            entry.ClassName == "ArrayProperty" ||
-            entry.ClassName == "StructProperty" ||
-            entry.ClassName == "BioMask4Property" ||
-            entry.ClassName == "MapProperty" ||
-            entry.ClassName == "ClassProperty" ||
-            entry.ClassName == "DelegateProperty";
+            entry.ClassName 
+                is "Class"
+                or "Function"
+                or "State"
+                or "Const"
+                or "Enum"
+                or "ScriptStruct"
+                or "IntProperty"
+                or "BoolProperty"
+                or "FloatProperty"
+                or "NameProperty"
+                or "StrProperty"
+                or "StringRefProperty"
+                or "ByteProperty"
+                or "ObjectProperty"
+                or "ComponentProperty"
+                or "InterfaceProperty"
+                or "ArrayProperty"
+                or "StructProperty"
+                or "BioMask4Property"
+                or "MapProperty"
+                or "ClassProperty"
+                or "DelegateProperty";
 
         public static bool IsDescendantOf(this IEntry entry, IEntry ancestor)
         {
@@ -597,6 +599,22 @@ namespace LegendaryExplorerCore.Packages
         public static IEnumerable<IEntry> GetChildren(this IEntry entry)
         {
             return entry.FileRef.Tree.GetDirectChildrenOf(entry);
+        }
+
+        /// <summary>
+        /// Gets direct children of <paramref name="entry"/> that are <typeparamref name="T"/>. 
+        /// </summary>
+        /// <param name="entry"></param>
+        /// <returns></returns>
+        public static IEnumerable<T> GetChildren<T>(this IEntry entry) where T : IEntry
+        {
+            foreach (IEntry ent in entry.FileRef.Tree.GetDirectChildrenOf(entry))
+            {
+                if (ent is T tmp)
+                {
+                    yield return tmp;
+                }
+            }
         }
 
         /// <summary>

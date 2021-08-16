@@ -132,7 +132,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
-        public static PropertyCollection RemoveIncompatibleProperties(IMEPackage sourcePcc, PropertyCollection props, string typeName, MEGame newGame)
+        public static PropertyCollection RemoveIncompatibleProperties(IMEPackage sourcePcc, PropertyCollection props, string typeName, MEGame newGame, ref bool removedProperties)
         {
             var infoProps = GlobalUnrealObjectInfo.GetAllProperties(newGame, typeName);
             infoProps.KeyComparer = StringComparer.OrdinalIgnoreCase;
@@ -143,9 +143,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 {
                     switch (prop)
                     {
-                        case ArrayProperty<DelegateProperty> adp:
-                            //don't think these exist? if they do, delete them
-                            break;
                         case ArrayProperty<EnumProperty> aep:
                             if (GlobalUnrealObjectInfo.GetEnumValues(newGame, aep.Reference) is List<NameReference> enumValues)
                             {
@@ -157,6 +154,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                                     }
                                 }
                                 newProps.Add(aep);
+                            }
+                            else
+                            {
+                                removedProperties = true;
                             }
                             break;
                         case ArrayProperty<ObjectProperty> asp:
@@ -177,14 +178,19 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                                 if (HasIncompatibleImmutabilities(asp.Reference, out bool newImmutability)) break;
                                 foreach (StructProperty structProperty in asp)
                                 {
-                                    structProperty.Properties = RemoveIncompatibleProperties(sourcePcc, structProperty.Properties, structProperty.StructType, newGame);
+                                    structProperty.Properties = RemoveIncompatibleProperties(sourcePcc, structProperty.Properties, structProperty.StructType, newGame, ref removedProperties);
                                     structProperty.IsImmutable = newImmutability;
                                 }
                                 newProps.Add(asp);
                             }
+                            else
+                            {
+                                removedProperties = true;
+                            }
                             break;
                         case DelegateProperty delegateProperty:
                             //script related, so just delete it.
+                            removedProperties = true;
                             break;
                         case EnumProperty enumProperty:
                             if (GlobalUnrealObjectInfo.GetEnumValues(newGame, enumProperty.EnumType) is List<NameReference> values)
@@ -195,29 +201,43 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                                 }
                                 newProps.Add(enumProperty);
                             }
+                            else
+                            {
+                                removedProperties = true;
+                            }
                             break;
                         case ObjectProperty objectProperty:
+                            if (objectProperty.Value == 0 || sourcePcc.GetEntry(objectProperty.Value) is IEntry ent && !ent.FullPath.StartsWith(UnrealPackageFile.TrashPackageName))
                             {
-                                if (objectProperty.Value == 0 || sourcePcc.GetEntry(objectProperty.Value) is IEntry entry && !entry.FullPath.StartsWith(UnrealPackageFile.TrashPackageName))
-                                {
-                                    newProps.Add(objectProperty);
-                                }
-                                break;
+                                newProps.Add(objectProperty);
                             }
+                            else
+                            {
+                                removedProperties = true;
+                            }
+                            break;
                         case StructProperty structProperty:
                             string structType = structProperty.StructType;
                             if (GlobalUnrealObjectInfo.GetStructs(newGame).ContainsKey(structType))
                             {
                                 if (HasIncompatibleImmutabilities(structType, out bool newImmutability)) break;
-                                structProperty.Properties = RemoveIncompatibleProperties(sourcePcc, structProperty.Properties, structType, newGame);
+                                structProperty.Properties = RemoveIncompatibleProperties(sourcePcc, structProperty.Properties, structType, newGame, ref removedProperties);
                                 structProperty.IsImmutable = newImmutability;
                                 newProps.Add(structProperty);
+                            }
+                            else
+                            {
+                                removedProperties = true;
                             }
                             break;
                         default:
                             newProps.Add(prop);
                             break;
                     }
+                }
+                else
+                {
+                    removedProperties = true;
                 }
             }
 

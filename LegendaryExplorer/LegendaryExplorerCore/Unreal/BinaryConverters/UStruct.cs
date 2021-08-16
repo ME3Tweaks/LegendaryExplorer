@@ -148,13 +148,13 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 //UpdateChildrenChain not yet working for function exports, use function compilation instead
                 return;
             }
-            var children = Export.FileRef.Exports.Where(x => x.idxLink == Export.UIndex).Reverse().ToList();
-            for (int i = 0; i < children.Count; i++)
+            var children = Export.GetChildren<ExportEntry>().ToList();
+            for (int i = children.Count - 1; i >= 0; --i)
             {
                 var c = children[i];
                 if (ObjectBinary.From(c) is UField uf)
                 {
-                    uf.Next = i == children.Count - 1 ? 0 : children[i + 1];
+                    uf.Next = i == 0 ? 0 : children[i - 1];
                     if (relinkChildrenStructs && uf is UStruct st)
                     {
                         st.UpdateChildrenChain(true);
@@ -166,7 +166,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     Debug.WriteLine($"Can't link non UField {c.InstancedFullPath}");
                 }
             }
-            Children = children.Any() ? children[0].UIndex : 0;
+            Children = children.Any() ? children[^1].UIndex : 0;
         }
     }
 }

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
@@ -220,31 +221,27 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         public static ExportEntry ImportExport(IMEPackage destPackage, ExportEntry sourceExport, int link, bool importExportDependencies = false,
             IDictionary<IEntry, IEntry> objectMapping = null, Action<string> errorOccuredCallback = null)
         {
-            //var exportData = sourceExport.GetExportDatasForPorting(destPackage);
-            var exportData = sourceExport.GetProperties();
             byte[] prePropBinary;
             if (sourceExport.HasStack)
             {
-                using var ms = MemoryManager.GetMemoryStream();
-                ms.WriteFromBuffer(sourceExport.DataReadOnly.Slice(0, 8));
-                ms.WriteFromBuffer(GetStackDummy(destPackage.Game));
-                prePropBinary = ms.ToArray(); // kind of poor performance-wise but not sure how to do when we have .DataReadOnly and everything takes byte[]
+                byte[] dummy = GetStackDummy(destPackage.Game);
+                prePropBinary = new byte[8 + dummy.Length];
+                sourceExport.DataReadOnly[..8].CopyTo(prePropBinary);
+                dummy.CopyTo(prePropBinary, 8);
             }
             else
             {
                 int start = sourceExport.GetPropertyStart();
                 if (start == 16)
                 {
-                    var ms = new MemoryStream(sourceExport.DataReadOnly.Slice(0, 16).ToArray(), 0, 16, true, true);
-                    ms.JumpTo(4);
-                    int newNameIdx = destPackage.FindNameOrAdd(sourceExport.FileRef.GetNameEntry(ms.ReadInt32()));
-                    ms.JumpTo(4);
-                    ms.WriteInt32(newNameIdx);
-                    prePropBinary = ms.GetBuffer();
+                    var sourceSpan = sourceExport.DataReadOnly[..16];
+                    int newNameIdx = destPackage.FindNameOrAdd(sourceExport.FileRef.GetNameEntry(MemoryMarshal.Read<int>(sourceSpan[4..])));
+                    prePropBinary = sourceSpan.ToArray();
+                    MemoryMarshal.Write(prePropBinary.AsSpan(4), ref newNameIdx);
                 }
                 else
                 {
-                    prePropBinary = sourceExport.DataReadOnly.Slice(0, start).ToArray();
+                    prePropBinary = sourceExport.DataReadOnly[..start].ToArray();
                 }
             }
 
@@ -258,7 +255,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 {
                     if (sourceExport.Game != destPackage.Game)
                     {
-                        props = EntryPruner.RemoveIncompatibleProperties(sourceExport.FileRef, props, sourceExport.ClassName, destPackage.Game);
+                        bool removedProperties = false;
+                        props = EntryPruner.RemoveIncompatibleProperties(sourceExport.FileRef, props, sourceExport.ClassName, destPackage.Game, ref removedProperties);
                     }
                 }
                 catch (Exception exception) when (!LegendaryExplorerCoreLib.IsDebug)
