@@ -974,10 +974,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 CameraPitch = SceneViewer.Context.Camera.Pitch.RadiansToUnrealRotationUnits();
                 CameraYaw = SceneViewer.Context.Camera.Yaw.RadiansToUnrealRotationUnits();
             }
-
+            
             CameraX = eyePosition.X;
-            CameraY = eyePosition.X;
-            CameraZ = eyePosition.Z;
+            CameraY = eyePosition.Z; // Z and Y are switched to put the UI coordinates into Unreal Z-up coords
+            CameraZ = eyePosition.Y;
 
             CameraFOV = MathUtil.RadiansToDegrees(SceneViewer.Context.Camera.FOV);
             CameraZNear = SceneViewer.Context.Camera.ZNear;
