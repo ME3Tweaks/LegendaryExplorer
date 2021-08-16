@@ -81,8 +81,9 @@ namespace LegendaryExplorerCore.Packages
 
                         if (!header1.AsSpan().SequenceEqual(header2))
                         {
+                            string oldclass = (exp1.ClassName != exp2.ClassName) ? $"[{exp2.ClassName}]" : "";
                             changedExports.Add(new EntryStringPair(exp1,
-                                $"Export header has changed: {exp1.UIndex} {exp1.InstancedFullPath} ({exp1.ClassName})"));
+                                $"Export header has changed: {exp1.UIndex} {exp1.InstancedFullPath} ({exp1.ClassName}) {oldclass}"));
                         }
 
                         if (!exp1.DataReadOnly.SequenceEqual(exp2.DataReadOnly))
