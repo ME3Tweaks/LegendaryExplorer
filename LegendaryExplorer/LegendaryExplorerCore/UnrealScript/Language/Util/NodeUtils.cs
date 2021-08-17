@@ -154,7 +154,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Util
                 || a is null && b is ClassType || a is ClassType && b is null
                 || a is null && b is DelegateType || a is DelegateType && b is null 
                 || a is Enumeration && b == SymbolTable.ByteType || a == SymbolTable.ByteType && b is Enumeration
-                || (a?.PropertyType == EPropertyType.Vector || a?.PropertyType == EPropertyType.Rotator) && a.PropertyType == b.PropertyType;
+                || (a?.PropertyType is EPropertyType.Vector or EPropertyType.Rotator) && a.PropertyType == b.PropertyType;
         }
     }
 }

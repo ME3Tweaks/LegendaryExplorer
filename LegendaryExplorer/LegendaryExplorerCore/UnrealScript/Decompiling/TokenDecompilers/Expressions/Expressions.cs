@@ -316,9 +316,16 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 return new SymbolReference(null, "ERRORNULL"); // ERROR
 
             StartPositions.Pop();
-            ASTNode node = null;
 
             //attempt to resolve Enum references so that byte constants can be converted to enum values
+            ASTNode node = ResolveEnumReference(obj);
+
+            return new SymbolReference(node, obj.ObjectName.Instanced);
+        }
+
+        private ASTNode ResolveEnumReference(IEntry obj)
+        {
+            ASTNode node = null;
             if (obj.ClassName == "ByteProperty")
             {
                 if (LibInitialized)
@@ -335,26 +342,29 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     {
                         scope = scope is null ? cls.GetScope() : $"{cls.GetScope()}.{scope}";
                         if (ReadOnlySymbolTable.TryGetSymbolFromSpecificScope(obj.ObjectName, out ASTNode astNode, scope)
-                         && astNode is VariableDeclaration {VarType: Enumeration enumeration})
+                            && astNode is VariableDeclaration {VarType: Enumeration enumeration})
                         {
                             node = enumeration;
                         }
                     }
                 }
-                if (node is null && obj is ExportEntry exp && Pcc.GetEntry(exp.GetBinaryData<UByteProperty>().Enum) is IEntry enumEntry)
+
+                if (node is null && obj is ExportEntry exp &&
+                    Pcc.GetEntry(exp.GetBinaryData<UByteProperty>().Enum) is IEntry enumEntry)
                 {
                     if (enumEntry is ExportEntry enumExp)
                     {
                         node = ScriptObjectToASTConverter.ConvertEnum(enumExp.GetBinaryData<UEnum>());
                     }
-                    else if (LibInitialized && ReadOnlySymbolTable.TryGetType(enumEntry.ObjectName, out Enumeration enumeration))
+                    else if (LibInitialized &&
+                             ReadOnlySymbolTable.TryGetType(enumEntry.ObjectName, out Enumeration enumeration))
                     {
                         node = enumeration;
                     }
                 }
             }
 
-            return new SymbolReference(node, obj.ObjectName.Instanced);
+            return node;
         }
 
         public Expression DecompileDefaultReference()
@@ -364,7 +374,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 return null; // ERROR
 
             StartPositions.Pop();
-            return new DefaultReference(null, obj.ObjectName.Instanced);
+            return new DefaultReference(ResolveEnumReference(obj), obj.ObjectName.Instanced);
         }
 
         public Expression DecompileContext(bool isClass = false)

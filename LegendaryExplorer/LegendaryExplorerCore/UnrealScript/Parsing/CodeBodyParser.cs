@@ -893,7 +893,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 caseLit.NumType = INT;
             }
-            if (!NodeUtils.TypeEqual(switchType, value.ResolveType()))
+            if (!(switchType is Enumeration && value is IntegerLiteral) && !NodeUtils.TypeEqual(switchType, value.ResolveType()))
             {
                 TypeError("Case expression must evaluate to the same type as the switch expression!", value);
             }
@@ -1800,7 +1800,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                             }
                             throw ParseError($"Expected an argument of type '{p.VarType.Name}'!", paramStartPos);
                         }
-                        if (!NodeUtils.TypeCompatible(p.VarType, currentArg.ResolveType(), p.Flags.Has(UnrealFlags.EPropertyFlags.CoerceParm)))
+                        if (!NodeUtils.TypeCompatible(p.VarType, currentArg.ResolveType(), p.Flags.Has(EPropertyFlags.CoerceParm)))
                         {
                             var cbv = new CodeBuilderVisitor();
                             cbv.AppendTypeName(p.VarType);
@@ -1810,7 +1810,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         AddConversion(p.VarType, ref currentArg);
                         if (p.IsOut)
                         {
-                            if (!(currentArg is SymbolReference) && !(currentArg is ConditionalExpression {TrueExpression: SymbolReference, FalseExpression: SymbolReference}))
+                            if (currentArg is not SymbolReference && currentArg is not ConditionalExpression {TrueExpression: SymbolReference, FalseExpression: SymbolReference})
                             {
                                 TypeError("Argument given to an out parameter must be an lvalue!", currentArg);
                             }
@@ -1821,7 +1821,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                             {
                                 parmType = cType.ClassLimiter;
                             }
-                            if (!NodeUtils.TypeEqual(parmType, currentArg.ResolveType()))
+                            if (!(parmType is Enumeration && currentArg is IntegerLiteral) && !NodeUtils.TypeEqual(parmType, currentArg.ResolveType()))
                             {
                                 TypeError($"Expected an argument of type '{p.VarType.Name}'! Arguments given to an out parameter must be the exact same type.", currentArg);
                             }
