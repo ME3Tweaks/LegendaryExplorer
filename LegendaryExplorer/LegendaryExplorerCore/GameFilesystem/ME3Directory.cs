@@ -97,7 +97,13 @@ namespace LegendaryExplorerCore.GameFilesystem
             get
             {
                 if (string.IsNullOrEmpty(_DefaultGamePath))
-                    return null;
+                {
+                    if (string.IsNullOrEmpty(LegendaryExplorerCoreLibSettings.Instance?.ME3Directory))
+                    {
+                        return null;
+                    }
+                    _DefaultGamePath = LegendaryExplorerCoreLibSettings.Instance.ME3Directory;
+                }
                 return Path.GetFullPath(_DefaultGamePath); //normalize
             }
             set
