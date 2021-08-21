@@ -143,7 +143,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             //Relink Properties
             // NOTES: this used to be relinkingExport, not source, Changed near end of jan 2021 - Mgamerz - Due to ported items possibly not having way to reference original items
             PropertyCollection props = sourceExport.GetProperties();
-            relinkPropertiesRecursive(sourcePcc, relinkingExport, props, crossPCCObjectMappingList, "", relinkReport, importExportDependencies);
             bool removedProperties = false;
             if (sourcePcc.Game != relinkingExport.Game && props.Count > 0)
             {
@@ -153,6 +152,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     relinkReport.Add(new EntryStringPair(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.InstancedFullPath}: Some properties were removed from this object because they do not exist in {relinkingExport.Game}!"));
                 }
             }
+            relinkPropertiesRecursive(sourcePcc, relinkingExport, props, crossPCCObjectMappingList, "", relinkReport, importExportDependencies);
 
             //Relink Binary
             try

@@ -3176,6 +3176,16 @@ namespace Be.Windows.Forms
             Point res = new Point(column, row);
             return res;
         }
+
+        private static float ScalingFactor
+        {
+            get
+            {
+                using Graphics g = Graphics.FromHwnd(IntPtr.Zero);
+                return g.DpiX / 96;
+            }
+        }
+
         #endregion
 
         #region Overridden properties
@@ -3238,14 +3248,14 @@ namespace Be.Windows.Forms
         private int _minWidth;
         public int MinWidth
         {
-            get => _minWidth;
+            get => (int)Math.Ceiling(_minWidth / ScalingFactor);
             set => SetProperty(ref _minWidth, value);
         }
 
         private int _maxWidth;
         public int MaxWidth
         {
-            get => _maxWidth;
+            get => (int)Math.Ceiling(_maxWidth / ScalingFactor);
             set => SetProperty(ref _maxWidth, value);
         }
         /// <summary>
