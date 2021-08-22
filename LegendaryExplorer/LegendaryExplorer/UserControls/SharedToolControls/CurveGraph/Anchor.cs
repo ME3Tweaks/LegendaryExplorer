@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -9,10 +11,10 @@ using LegendaryExplorerCore.Helpers;
 
 namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
 {
-    class Anchor : Thumb
+    internal sealed class Anchor : Thumb, INotifyPropertyChanged
     {
-        public CurveGraph graph;
-        public LinkedListNode<CurvePoint> point;
+        public readonly CurveGraph graph;
+        public readonly LinkedListNode<CurvePoint> point;
 
         public Handle leftHandle;
         public Handle rightHandle;
@@ -20,53 +22,44 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
         public BezierSegment leftBez;
         public BezierSegment rightBez;
 
+        private double _y;
         public double Y
         {
-            get => (double)GetValue(YProperty);
-            set => SetValue(YProperty, value);
-        }
-
-        // Using a DependencyProperty as the backing store for Y.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty YProperty =
-            DependencyProperty.Register(nameof(Y), typeof(double), typeof(Anchor), new PropertyMetadata(0.0, OnYChanged));
-
-        private static void OnYChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (sender is Anchor a && a.graph != null)
+            get => _y;
+            set
             {
-                a.point.Value.OutVal = Convert.ToSingle(a.graph.toUnrealY((double)e.NewValue));
-                if (a.IsSelected)
+                if (SetProperty(ref _y, value) && graph != null)
                 {
-                    string val = a.point.Value.OutVal.ToString("0.###");
-                    if (!a.graph.yTextBox.Text.isNumericallyEqual(val))
+                    point.Value.OutVal = Convert.ToSingle(graph.toUnrealY(_y));
+                    if (IsSelected)
                     {
-                        a.graph.yTextBox.Text = val;
-                    } 
+                        string val = point.Value.OutVal.ToString("0.###");
+                        if (!graph.yTextBox.Text.isNumericallyEqual(val))
+                        {
+                            graph.yTextBox.Text = val;
+                        }
+                    }
                 }
             }
         }
 
+        private double _x;
+
         public double X
         {
-            get => (double)GetValue(XProperty);
-            set => SetValue(XProperty, value);
-        }
-
-        // Using a DependencyProperty as the backing store for X.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty XProperty =
-            DependencyProperty.Register(nameof(X), typeof(double), typeof(Anchor), new PropertyMetadata(0.0, OnXChanged));
-
-        private static void OnXChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (sender is Anchor a && a.graph != null)
+            get => _x;
+            set
             {
-                a.point.Value.InVal = Convert.ToSingle(a.graph.toUnrealX((double)e.NewValue));
-                if (a.IsSelected)
+                if (SetProperty(ref _x, value) && graph != null)
                 {
-                    string val = a.point.Value.InVal.ToString("0.###");
-                    if (!a.graph.xTextBox.Text.isNumericallyEqual(val))
+                    point.Value.InVal = Convert.ToSingle(graph.toUnrealX(_x));
+                    if (IsSelected)
                     {
-                        a.graph.xTextBox.Text = val;
+                        string val = point.Value.InVal.ToString("0.###");
+                        if (!graph.xTextBox.Text.isNumericallyEqual(val))
+                        {
+                            graph.xTextBox.Text = val;
+                        }
                     }
                 }
             }
@@ -89,6 +82,18 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
                 //selected
                 if ((bool)e.NewValue)
                 {
+                    if (a.leftHandle is null)
+                    {
+                        a.leftHandle = new Handle(a, true);
+                        a.graph.graph.Children.Add(a.leftHandle);
+                    }
+
+                    if (a.rightHandle is null)
+                    {
+                        a.rightHandle = new Handle(a, false);
+                        a.graph.graph.Children.Add(a.rightHandle);
+                    }
+
                     string val = a.point.Value.InVal.ToString("0.###");
                     if (!a.graph.xTextBox.Text.isNumericallyEqual(val))
                     {
@@ -149,7 +154,18 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
                 //unselected
                 else
                 {
-                    a.leftHandle.Visibility = a.rightHandle.Visibility = Visibility.Hidden;
+                    if (a.rightHandle is not null)
+                    {
+                        a.graph.graph.Children.Remove(a.rightHandle);
+                        a.rightHandle.Dispose();
+                        a.rightHandle = null;
+                    }
+                    if (a.leftHandle is not null)
+                    {
+                        a.graph.graph.Children.Remove(a.leftHandle);
+                        a.leftHandle.Dispose();
+                        a.leftHandle = null;
+                    }
                 }
             }
         }
@@ -168,11 +184,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
             this.DragStarted += OnDragStarted;
             this.MouseDown += Anchor_MouseDown;
 
-            leftHandle = new Handle(this, true);
-            graph.graph.Children.Add(leftHandle);
-            rightHandle = new Handle(this, false);
-            graph.graph.Children.Add(rightHandle);
-
             leftBez = null;
             rightBez = null;
         }
@@ -181,11 +192,11 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
         {
             if (e.ChangedButton == MouseButton.Right)
             {
-                ContextMenu cm = new ContextMenu();
-                MenuItem setTime = new MenuItem {Header = "Set Time"};
+                var cm = new ContextMenu();
+                var setTime = new MenuItem {Header = "Set Time"};
                 setTime.Click += SetTime_Click;
                 cm.Items.Add(setTime);
-                MenuItem setValue = new MenuItem {Header = "Set Value"};
+                var setValue = new MenuItem {Header = "Set Value"};
                 setValue.Click += SetValue_Click;
                 cm.Items.Add(setValue);
                 switch (point.Value.InterpMode)
@@ -193,13 +204,13 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
                     case CurveMode.CIM_CurveAuto:
                     case CurveMode.CIM_CurveUser:
                     case CurveMode.CIM_CurveAutoClamped:
-                        MenuItem breakTangents = new MenuItem();
+                        var breakTangents = new MenuItem();
                         breakTangents.Header = "Break Tangents";
                         breakTangents.Click += BreakTangents_Click;
                         cm.Items.Add(breakTangents);
                         break;
                     case CurveMode.CIM_CurveBreak:
-                        MenuItem flattenTangents = new MenuItem();
+                        var flattenTangents = new MenuItem();
                         flattenTangents.Header = "Flatten Tangents";
                         flattenTangents.Click += FlattenTangents_Click;
                         cm.Items.Add(flattenTangents);
@@ -207,7 +218,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
                     default:
                         break;
                 }
-                MenuItem deleteKey = new MenuItem {Header = "Delete Key"};
+                var deleteKey = new MenuItem {Header = "Delete Key"};
                 deleteKey.Click += DeleteKey_Click;
                 cm.Items.Add(deleteKey);
                 cm.PlacementTarget = sender as Anchor;
@@ -234,7 +245,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
             float prev = point.Previous?.Value.InVal ?? float.MinValue;
             float next = point.Next?.Value.InVal ?? float.MaxValue;
             string res = PromptDialog.Prompt(this, $"Enter time between {prev} and {next}", "Set Time", point.Value.InVal.ToString());
-            if (float.TryParse(res, out var result) && result > prev && result < next)
+            if (float.TryParse(res, out float result) && result > prev && result < next)
             {
                 X = graph.toLocalX(result);
                 graph.Paint(true);
@@ -244,7 +255,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
         private void SetValue_Click(object sender, RoutedEventArgs e)
         {
             string res = PromptDialog.Prompt(this, "Enter new value", "Set Value", point.Value.OutVal.ToString());
-            if (float.TryParse(res, out var result))
+            if (float.TryParse(res, out float result))
             {
                 Y = graph.toLocalY(result);
                 graph.Paint(true);
@@ -273,7 +284,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
 
         private void OnDragDelta(object sender, DragDeltaEventArgs e)
         {
-            if(Keyboard.Modifiers == ModifierKeys.Shift || Keyboard.Modifiers == ModifierKeys.Control)
+            if(Keyboard.Modifiers is ModifierKeys.Shift or ModifierKeys.Control)
             {
                 double prev = graph.toLocalX(point.Previous?.Value.InVal ?? float.MinValue);
                 double next = graph.toLocalX(point.Next?.Value.InVal ?? float.MaxValue);
@@ -281,16 +292,48 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
                 if ((X + change) <= prev || (X + change) >= next) change = 0f;
 
                 X += change;
-                leftHandle.X += change;
-                rightHandle.X += change;
+                if (leftHandle != null) leftHandle.X += change;
+                if (rightHandle != null) rightHandle.X += change;
             }
 
             if (Keyboard.Modifiers != ModifierKeys.Shift)
             {
                 Y -= e.VerticalChange;
-                leftHandle.Y -= e.VerticalChange;
-                rightHandle.Y -= e.VerticalChange;
+                if (leftHandle != null) leftHandle.Y -= e.VerticalChange;
+                if (rightHandle != null) rightHandle.Y -= e.VerticalChange;
             }
         }
+
+        #region INotifyPropertyChanged
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Notifies listeners when given property is updated.
+        /// </summary>
+        /// <param name="propertyname">Name of property to give notification for. If called in property, argument can be ignored as it will be default.</param>
+        private void OnPropertyChanged([CallerMemberName] string propertyname = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
+        }
+
+        /// <summary>
+        /// Sets given property and notifies listeners of its change. IGNORES setting the property to same value.
+        /// Should be called in property setters.
+        /// </summary>
+        /// <typeparam name="T">Type of given property.</typeparam>
+        /// <param name="field">Backing field to update.</param>
+        /// <param name="value">New value of property.</param>
+        /// <param name="propertyName">Name of property.</param>
+        /// <returns>True if success, false if backing field and new value aren't compatible.</returns>
+        private bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
+
+        #endregion
     }
 }

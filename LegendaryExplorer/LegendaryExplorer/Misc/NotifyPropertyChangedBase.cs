@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 
 namespace LegendaryExplorer.Misc
@@ -70,6 +71,15 @@ namespace LegendaryExplorer.Misc
             OnPropertyChanged(propertyName);
             return true;
         }
+
+
+        //Disable Automation of this window. The only thing this "feature" ever does is cause memory leaks.
+        protected override AutomationPeer OnCreateAutomationPeer() => new FakeWindowPeer(this);
+        private class FakeWindowPeer : WindowAutomationPeer
+        {
+            public FakeWindowPeer(Window window) : base(window) { }
+            protected override List<AutomationPeer> GetChildrenCore() => null;
+        }
     }
 
     public abstract class NotifyPropertyChangedControlBase : UserControl, INotifyPropertyChanged
@@ -104,6 +114,15 @@ namespace LegendaryExplorer.Misc
             field = value;
             OnPropertyChanged(propertyName);
             return true;
+        }
+
+
+        //Disable Automation of this control. The only thing this "feature" ever does is cause memory leaks.
+        protected override AutomationPeer OnCreateAutomationPeer() => new FakeControlPeer(this);
+        private class FakeControlPeer : UserControlAutomationPeer
+        {
+            public FakeControlPeer(UserControl control) : base(control) { }
+            protected override List<AutomationPeer> GetChildrenCore() => null;
         }
     }
 }

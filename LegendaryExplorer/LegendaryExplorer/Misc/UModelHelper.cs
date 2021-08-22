@@ -8,7 +8,7 @@ using SlavaGu.ConsoleAppLauncher;
 
 namespace LegendaryExplorer.Misc
 {
-    public class UModelHelper
+    public static class UModelHelper
     {
         public const int SupportedUModelBuildNum = 1555;
         public static int GetLocalUModelVersion()
@@ -44,7 +44,7 @@ namespace LegendaryExplorer.Misc
                     umodelProc.Run();
                     umodelProc.WaitForExit();
                 }
-                catch (Exception e)
+                catch
                 {
                     // ?
                     // This can happen if image has issues like incomplete exe 

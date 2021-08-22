@@ -179,11 +179,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            Commit();
-        }
-
         private void Commit()
         {
             if (!CurveGraph.TrackLoading)
@@ -399,18 +394,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         }
 
-        private void Save_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = InterpCurveTracks.Count > 0;
-        }
-
-        private void Save_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            Commit();
-            //pcc.save();
-            //MessageBox.Show("Done");
-        }
-
         public override void UnloadExport()
         {
             graph.Clear();
@@ -446,6 +429,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                 }
             }
+            graph.Clear();
+            graph.Dispose();
         }
 
         private void ImportFromExcel_Click(object sender, RoutedEventArgs e)

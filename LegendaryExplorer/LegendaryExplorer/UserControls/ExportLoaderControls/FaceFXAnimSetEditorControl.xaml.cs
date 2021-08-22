@@ -59,6 +59,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             InitializeComponent();
             DataContext = this;
+            if (treeView_WinFormsHost is {Child: { }})
+            {
+                treeView_WinFormsHost.Child.MouseDoubleClick += treeView_MouseDoubleClick;
+            }
         }
 
         public IFaceFXBinary FaceFX;
@@ -152,10 +156,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     treeView_WinFormsHost.Child.MouseDoubleClick -= treeView_MouseDoubleClick;
                     treeView_WinFormsHost.Child.Dispose();
                     treeView_WinFormsHost.Child = null;
+                    treeView = null;
                 }
                 treeView_WinFormsHost.Dispose();
                 treeView_WinFormsHost = null;
             }
+            graph.Dispose();
         }
 
         #endregion

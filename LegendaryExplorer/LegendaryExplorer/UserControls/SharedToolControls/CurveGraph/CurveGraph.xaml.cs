@@ -18,7 +18,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
     /// <summary>
     /// Interaction logic for CurveGraph.xaml
     /// </summary>
-    public partial class CurveGraph : NotifyPropertyChangedControlBase
+    public partial class CurveGraph : NotifyPropertyChangedControlBase, IDisposable
     {
 
         private const int LINE_SPACING = 50;
@@ -74,14 +74,11 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
         {
             if (sender is CurveGraph c)
             {
-                foreach (var o in c.graph.Children)
+                foreach (Anchor a in c.Anchors)
                 {
-                    if (o is Anchor a)
+                    if (a.point.Value != e.NewValue as CurvePoint)
                     {
-                        if (a.point.Value != e.NewValue as CurvePoint)
-                        {
-                            a.IsSelected = false;
-                        }
+                        a.IsSelected = false;
                     }
                 }
                 c.SelectedPointChanged?.Invoke(c, new RoutedPropertyChangedEventArgs<CurvePoint>(e.OldValue as CurvePoint, e.NewValue as CurvePoint));
@@ -176,6 +173,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
         {
             TrackLoading = true;
             graph.Children.Clear();
+            Anchors.Clear();
 
             LinkedList<CurvePoint> points = SelectedCurve.CurvePoints;
 
@@ -286,11 +284,11 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
             graph.Children.Add(label);
         }
 
+        private readonly List<Anchor> Anchors = new ();
         private void RenderCurve(LinkedList<CurvePoint> points, bool interactable = true)
         {
-            Line line;
             Anchor lastAnchor = null;
-            Style comparisonCurveStyle = FindResource("CompareCurve") as Style; // Applied to line when not interactable
+            var comparisonCurveStyle = FindResource("CompareCurve") as Style; // Applied to line when not interactable
 
             for (LinkedListNode<CurvePoint> node = points.First; node != null; node = node.Next)
             {
@@ -310,13 +308,17 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
                         break;
                 }
 
-                Anchor a = new Anchor(this, node);
+                var a = new Anchor(this, node);
                 if (node.Value == SelectedPoint)
                 {
                     a.IsSelected = true;
                 }
 
-                if(!interactable)
+                if (interactable)
+                {
+                    Anchors.Add(a);
+                }
+                else
                 {
                     // Hide anchors
                     a.Visibility = Visibility.Hidden;
@@ -324,27 +326,28 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
 
                 graph.Children.Add(a);
 
+                Line line;
                 if (node.Previous == null)
                 {
                     line = new Line { X1 = -10 };
-                    line.bind(Line.Y1Property, a, nameof(Anchor.Y), new CurveEdSubtractionConverter(), ActualHeight);
+                    line.bind(Line.Y1Property, a, nameof(Anchor.Y), CurveEdSubtractionConverter.Instance, ActualHeight);
                     line.bind(Line.X2Property, a, nameof(Anchor.X));
-                    line.bind(Line.Y2Property, a, nameof(Anchor.Y), new CurveEdSubtractionConverter(), ActualHeight);
+                    line.bind(Line.Y2Property, a, nameof(Anchor.Y), CurveEdSubtractionConverter.Instance, ActualHeight);
                     if (!interactable) line.Style = comparisonCurveStyle;
                     graph.Children.Add(line);
                 }
                 else
                 {
-                    PathBetween(lastAnchor, a, node.Previous.Value.InterpMode, (interactable ? null : comparisonCurveStyle));
+                    PathBetween(lastAnchor, a, node.Previous.Value.InterpMode, interactable ? null : comparisonCurveStyle);
                 }
 
                 if (node.Next == null)
                 {
                     line = new Line();
                     line.bind(Line.X1Property, a, nameof(Anchor.X));
-                    line.bind(Line.Y1Property, a, nameof(Anchor.Y), new CurveEdSubtractionConverter(), ActualHeight);
+                    line.bind(Line.Y1Property, a, nameof(Anchor.Y), CurveEdSubtractionConverter.Instance, ActualHeight);
                     line.X2 = ActualWidth + 10;
-                    line.bind(Line.Y2Property, a, nameof(Anchor.Y), new CurveEdSubtractionConverter(), ActualHeight);
+                    line.bind(Line.Y2Property, a, nameof(Anchor.Y), CurveEdSubtractionConverter.Instance, ActualHeight);
                     if (!interactable) line.Style = comparisonCurveStyle;
                     graph.Children.Add(line);
                 }
@@ -360,25 +363,25 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
                 case CurveMode.CIM_Linear:
                     line = new Line();
                     line.bind(Line.X1Property, a1, nameof(Anchor.X));
-                    line.bind(Line.Y1Property, a1, nameof(Anchor.Y), new CurveEdSubtractionConverter(), ActualHeight);
+                    line.bind(Line.Y1Property, a1, nameof(Anchor.Y), CurveEdSubtractionConverter.Instance, ActualHeight);
                     line.bind(Line.X2Property, a2, nameof(Anchor.X));
-                    line.bind(Line.Y2Property, a2, nameof(Anchor.Y), new CurveEdSubtractionConverter(), ActualHeight);
+                    line.bind(Line.Y2Property, a2, nameof(Anchor.Y), CurveEdSubtractionConverter.Instance, ActualHeight);
                     if (styleOverride != null) line.Style = styleOverride;
                     graph.Children.Add(line);
                     break;
                 case CurveMode.CIM_Constant:
                     line = new Line();
                     line.bind(Line.X1Property, a1, nameof(Anchor.X));
-                    line.bind(Line.Y1Property, a1, nameof(Anchor.Y), new CurveEdSubtractionConverter(), ActualHeight);
+                    line.bind(Line.Y1Property, a1, nameof(Anchor.Y), CurveEdSubtractionConverter.Instance, ActualHeight);
                     line.bind(Line.X2Property, a2, nameof(Anchor.X));
-                    line.bind(Line.Y2Property, a1, nameof(Anchor.Y), new CurveEdSubtractionConverter(), ActualHeight);
+                    line.bind(Line.Y2Property, a1, nameof(Anchor.Y), CurveEdSubtractionConverter.Instance, ActualHeight);
                     if (styleOverride != null) line.Style = styleOverride;
                     graph.Children.Add(line);
                     line = new Line();
                     line.bind(Line.X1Property, a2, nameof(Anchor.X));
-                    line.bind(Line.Y1Property, a1, nameof(Anchor.Y), new CurveEdSubtractionConverter(), ActualHeight);
+                    line.bind(Line.Y1Property, a1, nameof(Anchor.Y), CurveEdSubtractionConverter.Instance, ActualHeight);
                     line.bind(Line.X2Property, a2, nameof(Anchor.X));
-                    line.bind(Line.Y2Property, a2, nameof(Anchor.Y), new CurveEdSubtractionConverter(), ActualHeight);
+                    line.bind(Line.Y2Property, a2, nameof(Anchor.Y), CurveEdSubtractionConverter.Instance, ActualHeight);
                     if (styleOverride != null) line.Style = styleOverride;
                     graph.Children.Add(line);
                     break;
@@ -423,7 +426,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
                 if (UseFixedTimeSpan)
                 {
                     FixedStartTime *= 1 + ((float)e.Delta / 8000);
-                    FixedEndTime *= (1 + ((float)e.Delta / 8000));
+                    FixedEndTime *= 1 + ((float)e.Delta / 8000);
                     UpdateScalingFromFixedTimeSpan();
                 }
                 else
@@ -604,7 +607,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
         {
             TextBox b = (TextBox)sender;
             //SirCxyrtyx: doing a stack trace to resolve a circular calling situation is horrible, I know. I'm so sorry about this.
-            if (double.TryParse(b.Text, out var d) && b.IsFocused && b.IsKeyboardFocused && !FindInStack(nameof(Anchor)))
+            if (double.TryParse(b.Text, out double d) && b.IsFocused && b.IsKeyboardFocused && !FindInStack(nameof(Anchor)))
             {
                 Anchor a = graph.Children.OfType<Anchor>().FirstOrDefault(x => x.IsSelected);
                 if (a != null && b.Name == nameof(xTextBox))
@@ -737,6 +740,10 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
             }
         }
 
-
+        public void Dispose()
+        {
+            graph?.Children.Clear();
+            Anchors.Clear();
+        }
     }
 }

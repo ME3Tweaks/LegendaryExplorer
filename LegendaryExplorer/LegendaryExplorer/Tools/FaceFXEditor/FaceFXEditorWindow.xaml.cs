@@ -124,6 +124,8 @@ namespace LegendaryExplorer.Tools.FaceFXEditor
         {
             try
             {
+                SelectedExport = null;
+                AnimSets.ClearEx();
                 LoadMEPackage(fileName);
                 editorControl.UnloadExport();
                 RefreshComboBox();
@@ -227,6 +229,9 @@ namespace LegendaryExplorer.Tools.FaceFXEditor
                 return;
 
             RecentsController?.Dispose();
+            SelectedExport = null;
+            AnimSets.ClearEx();
+            UnLoadMEPackage();
         }
 
         private void Window_DragOver(object sender, DragEventArgs e)
