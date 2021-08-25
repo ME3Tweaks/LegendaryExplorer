@@ -8,6 +8,7 @@ using System.Windows.Input;
 using ClosedXML.Excel;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.UserControls.SharedToolControls.Curves;
 using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorerCore.Helpers;
@@ -63,6 +64,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 treeView_WinFormsHost.Child.MouseDoubleClick += treeView_MouseDoubleClick;
             }
+
+            AddKeyWithZeroWeightCommand = new GenericCommand(() => graph.AddKeyAtZero_MousePosition());
         }
 
         public IFaceFXBinary FaceFX;
@@ -109,7 +112,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 graph.Paint();
             }
         }
-
+        
+        public ICommand AddKeyWithZeroWeightCommand { get; set; }
         #region ExportLoaderControl
 
         public override bool CanParse(ExportEntry exportEntry) => exportEntry.ClassName == "FaceFXAnimSet" || (exportEntry.ClassName == "FaceFXAsset" && exportEntry.Game != MEGame.ME2);

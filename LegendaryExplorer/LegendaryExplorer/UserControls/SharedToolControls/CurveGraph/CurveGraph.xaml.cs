@@ -527,6 +527,14 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
             AddKey((float)inVal, 0);
         }
 
+        public void AddKeyAtZero_MousePosition()
+        {
+            Point pos = Mouse.GetPosition(this);
+            if (pos.X < 0 || pos.X > ActualWidth || pos.Y < 0 || pos.Y > ActualHeight) return;
+            double inVal = toUnrealX(pos.X);
+            AddKey((float)inVal, 0);
+        }
+
         private void AddKey(float time, float y)
         {
             LinkedListNode<CurvePoint> node;

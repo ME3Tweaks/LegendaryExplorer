@@ -13,6 +13,9 @@
     <exportLoaderControls:ExportLoaderControl.Resources>
         <Converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
     </exportLoaderControls:ExportLoaderControl.Resources>
+    <exportLoaderControls:ExportLoaderControl.InputBindings>
+        <KeyBinding Command="{Binding AddKeyWithZeroWeightCommand}" Key="G" />
+    </exportLoaderControls:ExportLoaderControl.InputBindings>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Name="linesColumnDef" Width="310"/>
