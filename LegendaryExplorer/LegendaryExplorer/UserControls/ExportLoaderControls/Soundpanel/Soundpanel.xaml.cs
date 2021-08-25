@@ -2087,6 +2087,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     this.DisplayString += $" ({ audioLen.Value.ToString(@"mm\:ss\:fff")})";
                 }
+                
+                if(App.IsDebug)
+                {
+                    var audioData = GetAudioInfo(WemData);
+                    this.DisplayString += $" (Size { audioData.AudioDataSize.ToString()})";
+                    this.DisplayString += $" (BitsPerSample { audioData.BitsPerSample.ToString()})";
+                    this.DisplayString += $" (Channels { audioData.Channels.ToString()})";
+                    this.DisplayString += $" (CodecID { audioData.CodecID.ToString()})";
+                    this.DisplayString += $" (Codec { audioData.CodecName.ToString()})";
+                    this.DisplayString += $" (SampleCount { audioData.SampleCount.ToString()})";
+                    this.DisplayString += $" (SampleRate { audioData.SampleRate.ToString()})";
+                }
             }
         }
 
