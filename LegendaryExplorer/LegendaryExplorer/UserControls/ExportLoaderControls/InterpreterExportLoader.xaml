@@ -296,7 +296,6 @@
                         <MenuItem Header="Expand children" ToolTip="Expands all children of this property" Command="{Binding ExpandChildrenCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                         <MenuItem Header="Collapse children" ToolTip="Collapses all children of this property" Command="{Binding CollapseChildrenCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
 
-                        <MenuItem Header="Remove property" ToolTip="Remove this property from this export" Command="{Binding RemovePropertyCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                         <MenuItem Header="Add missing properties" ToolTip="Add all properties that this struct can have" Command="{Binding AddPropertiesToStructCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                         <MenuItem Header="Generate new GUID" ToolTip="Generate a new GUID" Command="{Binding GenerateGUIDCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                         <MenuItem Header="Copy property name" ToolTip="Copies the name of the property to the clipboard" Command="{Binding CopyPropNameCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
@@ -305,6 +304,7 @@
 
 
                         </MenuItem>-->
+                        <MenuItem Header="Remove property" ToolTip="Remove this property from this export" Command="{Binding RemovePropertyCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                     </ContextMenu>
                 </controls:StretchingTreeView.ContextMenu>
                 <b:Interaction.Behaviors>
