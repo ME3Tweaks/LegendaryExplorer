@@ -225,7 +225,7 @@ namespace LegendaryExplorerCore.Unreal
                         case PropertyType.ComponentProperty:
                             prop = new ObjectProperty(stream, nameRef)
                             {
-                                internalPropType = type
+                                InternalPropType = type
                             };
                             break;
                         case PropertyType.NameProperty:
@@ -435,7 +435,7 @@ namespace LegendaryExplorerCore.Unreal
                 case PropertyType.ObjectProperty:
                 case PropertyType.InterfaceProperty:
                 case PropertyType.ComponentProperty:
-                    return new ObjectProperty(stream, template.Name) { StartOffset = startPos, internalPropType = template.PropType };
+                    return new ObjectProperty(stream, template.Name) { StartOffset = startPos, InternalPropType = template.PropType };
                 case PropertyType.StringRefProperty:
                     return new StringRefProperty(stream, template.Name) { StartOffset = startPos };
                 case PropertyType.NameProperty:
@@ -988,13 +988,12 @@ namespace LegendaryExplorerCore.Unreal
         /// </summary>
         /// <param name="package"></param>
         /// <returns></returns>
-        public IEntry ResolveToEntry(IMEPackage package)
-        {
-            return package.IsEntry(Value) ? package.GetEntry(Value) : null;
-        }
+        public IEntry ResolveToEntry(IMEPackage package) => package.GetEntry(Value);
+
         public override PropertyType PropType => PropertyType.ObjectProperty;
 
-        public PropertyType internalPropType = PropertyType.ObjectProperty;
+        //We use ObjectProperty to represent InterfaceProperty and ComponentProperty too. This stores the "real" type.
+        public PropertyType InternalPropType = PropertyType.ObjectProperty;
 
         public int Value { get; set; }
 
@@ -1020,7 +1019,7 @@ namespace LegendaryExplorerCore.Unreal
         {
             if (!valueOnly)
             {
-                stream.WriteObjectProperty(pcc, Name, Value, StaticArrayIndex, internalPropType);
+                stream.WriteObjectProperty(pcc, Name, Value, StaticArrayIndex, InternalPropType);
             }
             else
             {

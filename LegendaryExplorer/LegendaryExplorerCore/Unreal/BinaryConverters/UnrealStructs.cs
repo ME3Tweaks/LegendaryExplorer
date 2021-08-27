@@ -24,6 +24,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public static implicit operator UIndex(Packages.ImportEntry imp) => new UIndex(imp.UIndex);
 
+        /// <summary>
+        ///     gets Export or Import entry. Returns null for invalid UIndexes
+        /// </summary>
         public IEntry GetEntry(IMEPackage pcc) => pcc.GetEntry(value);
 
         #region IEquatable

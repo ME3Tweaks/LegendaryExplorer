@@ -256,7 +256,7 @@ namespace LegendaryExplorerCore.Packages
         bool IsImport(int uindex);
         bool IsEntry(int uindex);
         /// <summary>
-        ///     gets Export or Import entry, from unreal index. Can return null if index is 0
+        ///     gets Export or Import entry, from unreal index. Returns null for invalid UIndexes
         /// </summary>
         /// <param name="index">unreal index</param>
         IEntry GetEntry(int index);

@@ -250,6 +250,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public ICommand RemoveArrayElementCommand { get; set; }
         public ICommand ClearArrayCommand { get; set; }
         public ICommand CopyValueCommand { get; set; }
+        public ICommand CopyPropNameCommand { get; set; }
         public ICommand GenerateGUIDCommand { get; set; }
         public ICommand OpenInPackageEditorCommand { get; set; }
         public ICommand OpenInMeshplorerCommand { get; set; }
@@ -283,6 +284,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             AttemptOpenImportDefinitionCommand = new GenericCommand(AttemptOpenImport, ObjectPropertyImportIsSelected);
 
             CopyValueCommand = new GenericCommand(CopyPropertyValue, CanCopyPropertyValue);
+            CopyPropNameCommand = new GenericCommand(CopyPropertyName, CanCopyPropertyName);
         }
 
         private void CopyPropertyValue()
@@ -309,6 +311,23 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             return false;
         }
+
+        private void CopyPropertyName()
+        {
+            try
+            {
+                if (Interpreter_TreeView?.SelectedItem is UPropertyTreeViewEntry tvi)
+                {
+                    Clipboard.SetText(tvi.Property.Name.Instanced);
+                }
+            }
+            catch
+            {
+                // sometimes errors occur on copy when clipboard is locked. Dont do anything
+            }
+        }
+
+        private bool CanCopyPropertyName() => Interpreter_TreeView?.SelectedItem is UPropertyTreeViewEntry;
 
         private void AttemptOpenImport()
         {

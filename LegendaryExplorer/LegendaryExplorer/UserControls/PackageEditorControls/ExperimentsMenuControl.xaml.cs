@@ -955,6 +955,10 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsS.ScanPackageHeader(GetPEWindow());
         }
+        private void PortShadowMaps_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsS.PortShadowMaps(GetPEWindow());
+        }
         #endregion
 
         // EXPERIMENTS: KINKOJIRO ------------------------------------------------------------

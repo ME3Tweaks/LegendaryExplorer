@@ -85,7 +85,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 }
             }
 
-            if (portingOption == PortingOption.MergeTreeChildren || portingOption == PortingOption.ReplaceSingular)
+            if (portingOption is PortingOption.MergeTreeChildren or PortingOption.ReplaceSingular)
             {
                 newEntry = targetLinkEntry; //Root item is the one we just dropped. Use that as the root.
             }

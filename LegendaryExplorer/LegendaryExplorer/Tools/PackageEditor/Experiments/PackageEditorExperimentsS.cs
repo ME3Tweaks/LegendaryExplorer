@@ -58,6 +58,121 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
+        public static void PortShadowMaps(PackageEditorWindow pewpf)
+        {
+            var pcc = pewpf.Pcc;
+
+            pewpf.IsBusy = true;
+            pewpf.BusyText = $"Porting Shadow Maps from OT file.";
+            if (pcc is null || !pcc.FileNameNoExtension.CaseInsensitiveEquals("BioA_CitSam_800Finalroom") || pcc.Game is not MEGame.LE3)
+            {
+                MessageBox.Show("This is only designed to work on LE3's BioA_CitSam_800Finalroom.pcc!");
+                return;
+            }
+
+            if (!MELoadedFiles.GetFilesLoadedInGame(MEGame.ME3).TryGetValue("BioA_CitSam_800Finalroom.pcc", out string otFilePath))
+            {
+                MessageBox.Show("Could not find ME3 version of BioA_CitSam_800Finalroom.pcc!");
+                return;
+            }
+            Task.Run(() =>
+            {
+                EntryPruner.TrashEntryAndDescendants(pcc.FindExport("ShadowMapTexture2D_69"));
+                var levelExport = pcc.FindExport("TheWorld.PersistentLevel");
+                var levelBin = levelExport.GetBinaryData<Level>();
+
+                using IMEPackage otPcc = MEPackageHandler.OpenME3Package(otFilePath);
+                var relinkMap = new Dictionary<IEntry, IEntry>();
+                foreach (UIndex uIndex in levelBin.Actors)
+                {
+                    if (uIndex.GetEntry(pcc) is ExportEntry actor)
+                    {
+                        if (actor.ClassName.CaseInsensitiveEquals("StaticMeshActor") && actor.GetProperty<ObjectProperty>("StaticMeshComponent") is ObjectProperty smcProp && smcProp.ResolveToEntry(pcc) is ExportEntry smcExp)
+                        {
+                            var otsmcExp = otPcc.FindExport(smcExp.InstancedFullPath);
+
+                            PortShadowMap(otsmcExp, smcExp);
+                        }
+                        else if (actor.ClassName.CaseInsensitiveEquals("StaticMeshCollectionActor") && actor.GetProperty<ArrayProperty<ObjectProperty>>("StaticMeshComponents") is {} smcArray)
+                        {
+                            foreach (ObjectProperty objProp in smcArray)
+                            {
+                                if (objProp.ResolveToEntry(pcc) is ExportEntry {ObjectName: {Instanced: var smcName}} smcExport && otPcc.Exports.FirstOrDefault(exp => exp.ObjectName.Instanced.CaseInsensitiveEquals(smcName)) is ExportEntry otsmcExport)
+                                {
+                                    PortShadowMap(otsmcExport, smcExport);
+                                }
+                            }
+                        }
+                    }
+                }
+                levelBin.TextureToInstancesMap.RemoveAt(66);
+
+                var otLevelExport = otPcc.FindExport("TheWorld.PersistentLevel");
+                var otLevelTexToInst = otLevelExport.GetBinaryData<Level>().TextureToInstancesMap;
+                foreach ((UIndex key, StreamableTextureInstanceList value) in otLevelTexToInst)
+                {
+                    if (key.GetEntry(otPcc) is ExportEntry exp && exp.ClassName.CaseInsensitiveEquals("ShadowMapTexture2D"))
+                    {
+                        levelBin.TextureToInstancesMap.Add(pcc.FindExport(exp.InstancedFullPath).UIndex, value);
+                    }
+                }
+
+                levelExport.WriteBinary(levelBin);
+                levelExport.WriteProperty(otLevelExport.GetProperty<FloatProperty>("ShadowmapTotalSize"));
+
+
+                void PortShadowMap(ExportEntry otsmcExp, ExportEntry smcExp)
+                {
+                    if (otsmcExp.GetProperty<ArrayProperty<StructProperty>>("IrrelevantLights") is {} irrelevantLightsProp)
+                    {
+                        smcExp.WriteProperty(irrelevantLightsProp);
+                    }
+
+                    var otLodData = otsmcExp.GetBinaryData<StaticMeshComponent>().LODData;
+                    if (otLodData.IsEmpty())
+                    {
+                        return;
+                    }
+                    var otShadowMaps = otLodData[0].ShadowMaps;
+                    if (otShadowMaps.IsEmpty())
+                    {
+                        return;
+                    }
+
+                    var smcBin = smcExp.GetBinaryData<StaticMeshComponent>();
+                    if (smcBin.LODData.Length != 1)
+                    {
+                        Debugger.Break();
+                    }
+
+                    var shadowMaps = smcBin.LODData[0].ShadowMaps;
+                    if (shadowMaps.Length > 1)
+                    {
+                        Debugger.Break();
+                    }
+
+                    if (shadowMaps.Length == 1)
+                    {
+                        EntryPruner.TrashEntryAndDescendants(shadowMaps[0].GetEntry(pcc));
+                    }
+
+                    var results = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies,
+                        otShadowMaps[0].GetEntry(otPcc), pcc, smcExp, true, out IEntry leShadowMap, relinkMap);
+                    if (results?.Count > 0)
+                    {
+                        Debugger.Break();
+                    }
+
+                    smcBin.LODData[0].ShadowMaps = new UIndex[] {leShadowMap.UIndex};
+                    smcExp.WriteBinary(smcBin);
+                }
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                pewpf.IsBusy = false;
+                MessageBox.Show("Done!");
+            });
+        }
+
         class ClassProbeInfo
         {
             public EProbeFunctions ProbeMask;
