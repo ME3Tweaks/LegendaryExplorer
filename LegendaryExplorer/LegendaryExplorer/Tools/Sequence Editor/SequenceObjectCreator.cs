@@ -45,6 +45,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         public static List<ClassInfo> GetSequenceVariables(MEGame game)
         {
             List<ClassInfo> classes = GlobalUnrealObjectInfo.GetNonAbstractDerivedClassesOf(SequenceVariableName, game);
+            classes.RemoveAll(info => info.ClassName is "SeqVar_Byte" or "SeqVar_Group" or "SeqVar_Character" or "SeqVar_Union" or "SeqVar_UniqueNetId");
             return classes;
         }
 
@@ -76,7 +77,85 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             {
                 defaults.Add(new ArrayProperty<ObjectProperty>("SequenceObjects"));
             }
-            else if (!info.IsA(SequenceVariableName, game))
+            else if (info.IsA(SequenceVariableName, game))
+            {
+                switch (info.ClassName)
+                {
+                    case "SeqVar_Bool":
+                        defaults.Add(new IntProperty(0, "bValue"));
+                        break;
+                    case "SeqVar_External":
+                        defaults.Add(new StrProperty("", "VariableLabel"));
+                        defaults.Add(new ObjectProperty(0, "ExpectedType"));
+                        break;
+                    case "SeqVar_Float":
+                        defaults.Add(new FloatProperty(0, "FloatValue"));
+                        break;
+                    case "SeqVar_Int":
+                        defaults.Add(new IntProperty(0, "IntValue"));
+                        break;
+                    case "SeqVar_Name":
+                        defaults.Add(new NameProperty("None", "NameValue"));
+                        break;
+                    case "SeqVar_Named":
+                    case "SeqVar_ScopedNamed":
+                        defaults.Add(new NameProperty("None", "FindVarName"));
+                        defaults.Add(new ObjectProperty(0, "ExpectedType"));
+                        break;
+                    case "SeqVar_Object":
+                    case "SeqVar_ObjectVolume":
+                        defaults.Add(new ObjectProperty(0, "ObjValue"));
+                        break;
+                    case "SeqVar_RandomFloat":
+                        defaults.Add(new FloatProperty(0, "Min"));
+                        defaults.Add(new FloatProperty(1, "Max"));
+                        break;
+                    case "SeqVar_RandomInt":
+                        defaults.Add(new IntProperty(0, "Min"));
+                        defaults.Add(new IntProperty(100, "Max"));
+                        break;
+                    case "SeqVar_String":
+                        defaults.Add(new StrProperty("", "StrValue"));
+                        break;
+                    case "SeqVar_Vector":
+                        defaults.Add(CommonStructs.Vector3Prop(0, 0, 0, "VectValue"));
+                        break;
+                    case "SFXSeqVar_Rotator":
+                        defaults.Add(CommonStructs.RotatorProp(0, 0, 0, "m_Rotator"));
+                        break;
+                    case "SFXSeqVar_ToolTip":
+                        defaults.Add(new EnumProperty("TargetTipText_Use", "ETargetTipText", pcc.Game, "TipText"));
+                        break;
+                    case "BioSeqVar_ObjectFindByTag" when pcc.Game.IsGame3():
+                        defaults.Add(new NameProperty("None", "m_sObjectTagToFind"));
+                        break;
+                    case "BioSeqVar_ObjectFindByTag":
+                    case "BioSeqVar_ObjectListFindByTag":
+                        defaults.Add(new StrProperty("", "m_sObjectTagToFind"));
+                        break;
+                    case "BioSeqVar_StoryManagerBool":
+                    case "BioSeqVar_StoryManagerFloat":
+                    case "BioSeqVar_StoryManagerInt":
+                    case "BioSeqVar_StoryManagerStateId":
+                        defaults.Add(new IntProperty(-1, "m_nIndex"));
+                        break;
+                    case "BioSeqVar_StrRef":
+                        defaults.Add(new StringRefProperty(0, "m_srValue"));
+                        break;
+                    case "BioSeqVar_StrRefLiteral":
+                        defaults.Add(new IntProperty(0, "m_srStringID"));
+                        break;
+                    default:
+                    case "SeqVar_ObjectList":
+                    case "SeqVar_Player":
+                    case "SFXSeqVar_Hench":
+                    case "SFXSeqVar_SavedBool":
+                    case "BioSeqVar_ChoiceGUIData":
+                    case "BioSeqVar_SFXArray":
+                        break;
+                }
+            }
+            else
             {
                 ArrayProperty<StructProperty> varLinksProp = null;
                 ArrayProperty<StructProperty> outLinksProp = null;
@@ -158,7 +237,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                                 //if (game == MEGame.ME1 && inLinksProp is null && prop.Name == "InputLinks" && prop is ArrayProperty<StructProperty> ilp)
                                 if (inLinksProp is null && prop.Name == "InputLinks" && prop is ArrayProperty<StructProperty> ilp)
                                 {
-                                        inLinksProp = ilp;
+                                    inLinksProp = ilp;
                                 }
                             }
                         }
