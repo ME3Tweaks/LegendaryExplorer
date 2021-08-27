@@ -441,6 +441,12 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
                     {
                         IsModified = true
                     };
+                    if (Conditionals.Any(c => c.ID == newCond.ID))
+                    {
+                        var wdlg = MessageBox.Show("This conditional ID already exists in this file. Continue?", "Warning", MessageBoxButton.OKCancel);
+                        if (wdlg == MessageBoxResult.Cancel)
+                            return;
+                    }
                     Conditionals.Add(newCond);
                     SelectedCond = newCond;
                     ConditionalsListBox.ScrollIntoView(SelectedCond);
