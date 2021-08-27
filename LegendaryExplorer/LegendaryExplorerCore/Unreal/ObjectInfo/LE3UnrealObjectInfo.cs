@@ -657,7 +657,10 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 exportIndex = 17, //in LE3Resources.pcc
             };
-            sequenceObjects["SFXSeqCond_IsCombatMode"] = new SequenceObjectInfo();
+            sequenceObjects["SFXSeqCond_IsCombatMode"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
 
             //Kinkojiro - New Class - SFXSeqAct_SetFaceFX
             classes["SFXSeqAct_SetFaceFX"] = new ClassInfo
@@ -685,7 +688,26 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     new KeyValuePair<string, PropertyInfo>("bAutoLookAtPlayer", new PropertyInfo(PropertyType.BoolProperty))
                 }
             };
-            sequenceObjects["SFXSeqAct_SetAutoLookAtPlayer"] = new SequenceObjectInfo();
+            sequenceObjects["SFXSeqAct_SetAutoLookAtPlayer"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+
+            //Kinkojiro - New Class - this returns whether player is using Gamepad or KBM
+            classes["SFXSeqAct_GetControllerType"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 101, //in LE3Resources.pcc
+                properties =
+                {
+                    new KeyValuePair<string, PropertyInfo>("PlayerObject", new PropertyInfo(PropertyType.ObjectProperty, "Player"))
+                }
+            };
+            sequenceObjects["SFXSeqAct_GetControllerType"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
 
             ME3UnrealObjectInfo.AddIntrinsicClasses(classes, MEGame.LE3);
 
