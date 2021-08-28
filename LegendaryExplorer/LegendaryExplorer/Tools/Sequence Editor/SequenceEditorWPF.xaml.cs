@@ -340,7 +340,12 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             graphImageSub.Source = graphImage.ToBitmapImage();
             graphImageSub.Width = graphGrid.ActualWidth;
             graphImageSub.Height = graphGrid.ActualHeight;
-            expanderImageSub.Source = toolBoxExpander.DrawToBitmapSource();
+            if (toolBoxExpander.ActualHeight > 0 && toolBoxExpander.ActualWidth > 0)
+            {
+                // Do not draw if area == 0
+                expanderImageSub.Source = toolBoxExpander.DrawToBitmapSource();
+            }
+
             expanderImageSub.Width = toolBoxExpander.ActualWidth;
             expanderImageSub.Height = toolBoxExpander.ActualHeight;
             expanderImageSub.Visibility = Visibility.Visible;
