@@ -106,7 +106,18 @@
                     <Label Content="{Binding Name}"/>
                 </HierarchicalDataTemplate>
                 <DataTemplate DataType="{x:Type curves:Curve}">
-                    <Label Content="{Binding Name}"/>
+                    <Label Content="{Binding Name}">
+                        <Label.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Set As Reference Curve" Click="SetReferenceCurve"/>
+                                <MenuItem Header="Export Curve to Excel" Click="ExportSingleCurveToExcel_Click">
+                                    <MenuItem.Icon>
+                                        <Image Source="/Resources/Images/excel.png" Width="16" Height="16" Margin="0,0,2,0"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </ContextMenu>
+                        </Label.ContextMenu>
+                    </Label>
                 </DataTemplate>
                 <Style TargetType="{x:Type TreeViewItem}">
                     <Setter Property="Template" >

@@ -243,11 +243,37 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
                 RenderYGridLine(FirstVerticalLine + (lineYSpacing * i));
             }
 
-            // Render curve
             if (ShowReferenceCurve && ComparisonCurve != null && ComparisonCurve.CurvePoints.Count > 0)
             {
-                LinkedList<CurvePoint> comparePoints = ComparisonCurve.CurvePoints;
-                RenderCurve(comparePoints, interactable: false);
+                var comparisonCurvePoints = ComparisonCurve.CurvePoints;
+                var compareCurveStyle = FindResource("CompareCurve") as Style;
+                var firstPoint = comparisonCurvePoints.First.Value;
+                double y = ActualHeight - toLocalY(firstPoint.OutVal);
+                var line = new Line
+                {
+                    X1 = -10,
+                    Y1 = y,
+                    X2 = toLocalX(firstPoint.InVal),
+                    Y2 = y,
+                    Style = compareCurveStyle
+                };
+                graph.Children.Add(line);
+                var comparisonBezier = new StaticCurve(this, comparisonCurvePoints)
+                {
+                    Style = compareCurveStyle
+                };
+                graph.Children.Add(comparisonBezier);
+                var lastPoint = comparisonCurvePoints.Last.Value;
+                y = ActualHeight - toLocalY(lastPoint.OutVal);
+                line = new Line
+                {
+                    X1 = toLocalX(lastPoint.InVal),
+                    Y1 = y,
+                    X2 = ActualWidth + 10,
+                    Y2 = y,
+                    Style = compareCurveStyle
+                };
+                graph.Children.Add(line);
             }
 
             RenderCurve(points);
@@ -285,10 +311,9 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
         }
 
         private readonly List<Anchor> Anchors = new ();
-        private void RenderCurve(LinkedList<CurvePoint> points, bool interactable = true)
+        private void RenderCurve(LinkedList<CurvePoint> points)
         {
             Anchor lastAnchor = null;
-            var comparisonCurveStyle = FindResource("CompareCurve") as Style; // Applied to line when not interactable
 
             for (LinkedListNode<CurvePoint> node = points.First; node != null; node = node.Next)
             {
@@ -314,16 +339,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
                     a.IsSelected = true;
                 }
 
-                if (interactable)
-                {
-                    Anchors.Add(a);
-                }
-                else
-                {
-                    // Hide anchors
-                    a.Visibility = Visibility.Hidden;
-                }
-
+                Anchors.Add(a);
                 graph.Children.Add(a);
 
                 Line line;
@@ -333,12 +349,11 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
                     line.bind(Line.Y1Property, a, nameof(Anchor.Y), CurveEdSubtractionConverter.Instance, ActualHeight);
                     line.bind(Line.X2Property, a, nameof(Anchor.X));
                     line.bind(Line.Y2Property, a, nameof(Anchor.Y), CurveEdSubtractionConverter.Instance, ActualHeight);
-                    if (!interactable) line.Style = comparisonCurveStyle;
                     graph.Children.Add(line);
                 }
                 else
                 {
-                    PathBetween(lastAnchor, a, node.Previous.Value.InterpMode, interactable ? null : comparisonCurveStyle);
+                    PathBetween(lastAnchor, a, node.Previous.Value.InterpMode);
                 }
 
                 if (node.Next == null)
@@ -348,14 +363,13 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
                     line.bind(Line.Y1Property, a, nameof(Anchor.Y), CurveEdSubtractionConverter.Instance, ActualHeight);
                     line.X2 = ActualWidth + 10;
                     line.bind(Line.Y2Property, a, nameof(Anchor.Y), CurveEdSubtractionConverter.Instance, ActualHeight);
-                    if (!interactable) line.Style = comparisonCurveStyle;
                     graph.Children.Add(line);
                 }
                 lastAnchor = a;
             }
         }
 
-        private void PathBetween(Anchor a1, Anchor a2, CurveMode interpMode = CurveMode.CIM_Linear, Style styleOverride = null)
+        private void PathBetween(Anchor a1, Anchor a2, CurveMode interpMode = CurveMode.CIM_Linear)
         {
             Line line;
             switch (interpMode)
@@ -366,7 +380,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
                     line.bind(Line.Y1Property, a1, nameof(Anchor.Y), CurveEdSubtractionConverter.Instance, ActualHeight);
                     line.bind(Line.X2Property, a2, nameof(Anchor.X));
                     line.bind(Line.Y2Property, a2, nameof(Anchor.Y), CurveEdSubtractionConverter.Instance, ActualHeight);
-                    if (styleOverride != null) line.Style = styleOverride;
                     graph.Children.Add(line);
                     break;
                 case CurveMode.CIM_Constant:
@@ -375,14 +388,12 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
                     line.bind(Line.Y1Property, a1, nameof(Anchor.Y), CurveEdSubtractionConverter.Instance, ActualHeight);
                     line.bind(Line.X2Property, a2, nameof(Anchor.X));
                     line.bind(Line.Y2Property, a1, nameof(Anchor.Y), CurveEdSubtractionConverter.Instance, ActualHeight);
-                    if (styleOverride != null) line.Style = styleOverride;
                     graph.Children.Add(line);
                     line = new Line();
                     line.bind(Line.X1Property, a2, nameof(Anchor.X));
                     line.bind(Line.Y1Property, a1, nameof(Anchor.Y), CurveEdSubtractionConverter.Instance, ActualHeight);
                     line.bind(Line.X2Property, a2, nameof(Anchor.X));
                     line.bind(Line.Y2Property, a2, nameof(Anchor.Y), CurveEdSubtractionConverter.Instance, ActualHeight);
-                    if (styleOverride != null) line.Style = styleOverride;
                     graph.Children.Add(line);
                     break;
                 case CurveMode.CIM_CurveAuto:
@@ -398,7 +409,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
                     bez.bind(BezierSegment.Y1Property, a1, nameof(Anchor.Y));
                     bez.bind(BezierSegment.X2Property, a2, nameof(Anchor.X));
                     bez.bind(BezierSegment.Y2Property, a2, nameof(Anchor.Y));
-                    if(styleOverride != null) bez.Style = styleOverride;
                     graph.Children.Add(bez);
                     a1.rightBez = bez;
                     a2.leftBez = bez;
@@ -454,9 +464,9 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
             }
             else if (ReferenceEquals(e.OriginalSource, graph) && e.ChangedButton == MouseButton.Right)
             {
-                ContextMenu cm = new ContextMenu();
+                var cm = new ContextMenu();
 
-                MenuItem addKey = new MenuItem
+                var addKey = new MenuItem
                 {
                     Header = "Add Key",
                     Tag = e.GetPosition(graph)
@@ -464,7 +474,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
                 addKey.Click += AddKey_Click;
                 cm.Items.Add(addKey);
 
-                MenuItem addKeyZero = new MenuItem
+                var addKeyZero = new MenuItem
                 {
                     Header = "Add Key with 0 Weight",
                     Tag = e.GetPosition(graph)
@@ -472,7 +482,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
                 addKeyZero.Click += AddKeyAtZero_Click;
                 cm.Items.Add(addKeyZero);
 
-                MenuItem offsetKeys = new MenuItem
+                var offsetKeys = new MenuItem
                 {
                     Header = "Offset All Keys After This Point",
                     Tag = e.GetPosition(graph)
@@ -515,14 +525,14 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
 
         private void AddKey_Click(object sender, RoutedEventArgs e)
         {
-            Point pos = (Point)(sender as MenuItem).Tag;
+            var pos = (Point)((MenuItem)sender).Tag;
             double inVal = toUnrealX(pos.X);
             AddKey((float)inVal, (float)toUnrealY(ActualHeight - pos.Y));
         }
 
         private void AddKeyAtZero_Click(object sender, RoutedEventArgs e)
         {
-            Point pos = (Point)(sender as MenuItem).Tag;
+            var pos = (Point)((MenuItem)sender).Tag;
             double inVal = toUnrealX(pos.X);
             AddKey((float)inVal, 0);
         }
@@ -587,14 +597,9 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
             }
         }
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            Anchor a = ((sender as MenuItem).Parent as ContextMenu).Tag as Anchor;
-        }
-
         private void FloatTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            TextBox b = sender as TextBox;
+            var b = (TextBox)sender;
             string result;
             if (b.IsSelectionActive)
             {
@@ -613,7 +618,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
 
         private void PointTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            TextBox b = (TextBox)sender;
+            var b = (TextBox)sender;
             //SirCxyrtyx: doing a stack trace to resolve a circular calling situation is horrible, I know. I'm so sorry about this.
             if (double.TryParse(b.Text, out double d) && b.IsFocused && b.IsKeyboardFocused && !FindInStack(nameof(Anchor)))
             {
@@ -643,7 +648,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
         /// <returns>True if FrameName is found in stack.</returns>
         private static bool FindInStack(string FrameName)
         {
-            StackTrace st = new StackTrace();
+            var st = new StackTrace();
             for (int i = 0; i < st.FrameCount; i++)
             {
                 string name = st.GetFrame(i).GetMethod().ReflectedType.FullName;
@@ -752,6 +757,20 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
         {
             graph?.Children.Clear();
             Anchors.Clear();
+        }
+    }
+
+    public static class CurveBrushes
+    {
+        public static readonly SolidColorBrush Primary;
+        public static readonly SolidColorBrush Border;
+
+        static CurveBrushes()
+        {
+            Primary = new SolidColorBrush(Color.FromRgb(0xFF, 0xC6, 0x03));
+            Primary.Freeze();
+            Border = new SolidColorBrush(Color.FromRgb(0xCC, 0x98, 0x00));
+            Border.Freeze();
         }
     }
 }

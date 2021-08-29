@@ -85,8 +85,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
         /// </summary>
         public override void Write(float value)
         {
-            // We use bitconverter here to do -0 values (yes, -0)
-            base.Write(BitConverter.GetBytes(NoConvert ? value : value.Swap()));
+            base.Write(NoConvert ? value : value.Swap());
         }
 
         /// <summary>

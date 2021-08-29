@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Runtime.CompilerServices;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using LegendaryExplorer.Misc;
@@ -7,7 +8,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
 {
     internal class BezierSegment : Shape
     {
-        public CurveGraph graph;
+        private readonly CurveGraph graph;
 
         public BezierSegment()
         {
@@ -75,7 +76,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
         
         private static void OnChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            BezierSegment bez = d as BezierSegment;
+            var bez = d as BezierSegment;
             if (bez?.graph != null)
             {
                 bez.InvalidateVisual();
@@ -86,27 +87,31 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
         {
             get
             {
-                StreamGeometry geom = new StreamGeometry();
-                using (StreamGeometryContext ctxt = geom.Open())
+                if (graph != null)
                 {
-                    if (graph != null)
-                    {
-                        double handleLength = (graph.toUnrealX(X2) - graph.toUnrealX(X1)) / 3;
-                        double h1x = handleLength;// / Math.Sqrt(Math.Pow(Slope1, 2) + 1);
-                        double h1y = Slope1 * h1x;
-                        h1x = graph.HorizontalScale * h1x + X1;
-                        h1y = graph.ActualHeight - (graph.VerticalScale * h1y + Y1);
-                        double h2x = -handleLength;// / Math.Sqrt(Math.Pow(Slope2, 2) + 1);
-                        double h2y = Slope2 * h2x;
-                        h2x = graph.HorizontalScale * h2x + X2;
-                        h2y = graph.ActualHeight - (graph.VerticalScale * h2y + Y2);
-
-                        ctxt.BeginFigure(new Point(X1, graph.ActualHeight - Y1), false, false);
-                        ctxt.BezierTo(new Point(h1x, h1y), new Point(h2x, h2y), new Point(X2, graph.ActualHeight - Y2), true, true);  
-                    }
+                    var geom = new StreamGeometry();
+                    using StreamGeometryContext ctxt = geom.Open();
+                    ctxt.BeginFigure(new Point(X1, graph.ActualHeight - Y1), false, false);
+                    BezierTo(graph, ctxt, X1, Y1, Slope1, X2, Y2, Slope2);
+                    return geom;
                 }
-                return geom;
+                return Geometry.Empty;
             }
+        }
+
+        public static void BezierTo(CurveGraph graph, StreamGeometryContext ctxt, double X1, double Y1, double Slope1, double X2, double Y2, double Slope2)
+        {
+            double handleLength = (graph.toUnrealX(X2) - graph.toUnrealX(X1)) / 3;
+            double h1x = handleLength;// / Math.Sqrt(Math.Pow(Slope1, 2) + 1);
+            double h1y = Slope1 * h1x;
+            h1x = graph.HorizontalScale * h1x + X1;
+            h1y = graph.ActualHeight - (graph.VerticalScale * h1y + Y1);
+            double h2x = -handleLength;// / Math.Sqrt(Math.Pow(Slope2, 2) + 1);
+            double h2y = Slope2 * h2x;
+            h2x = graph.HorizontalScale * h2x + X2;
+            h2y = graph.ActualHeight - (graph.VerticalScale * h2y + Y2);
+
+            ctxt.BezierTo(new Point(h1x, h1y), new Point(h2x, h2y), new Point(X2, graph.ActualHeight - Y2), true, true);
         }
     }
 }

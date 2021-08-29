@@ -35,34 +35,29 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
             set => SetProperty(ref _x, value);
         }
 
+        private double _slope;
         public double Slope
         {
-            get => (double)GetValue(SlopeProperty);
-            set => SetValue(SlopeProperty, value);
-        }
-
-        // Using a DependencyProperty as the backing store for Slope.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty SlopeProperty =
-            DependencyProperty.Register(nameof(Slope), typeof(double), typeof(Handle), new PropertyMetadata(0.0, OnSlopeChanged));
-
-        private static void OnSlopeChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (sender is Handle h)
+            get => _slope;
+            set
             {
-                if (h.Left)
+                if (SetProperty(ref _slope, value))
                 {
-                    h.anchor.point.Value.ArriveTangent = Convert.ToSingle((double)e.NewValue);
-                    if (h.anchor.leftBez != null)
+                    if (Left)
                     {
-                        h.anchor.leftBez.Slope2 = (double)e.NewValue;
+                        anchor.point.Value.ArriveTangent = Convert.ToSingle(value);
+                        if (anchor.leftBez != null)
+                        {
+                            anchor.leftBez.Slope2 = value;
+                        }
                     }
-                }
-                else
-                {
-                    h.anchor.point.Value.LeaveTangent = Convert.ToSingle((double)e.NewValue);
-                    if (h.anchor.rightBez != null)
+                    else
                     {
-                        h.anchor.rightBez.Slope1 = (double)e.NewValue;
+                        anchor.point.Value.LeaveTangent = Convert.ToSingle(value);
+                        if (anchor.rightBez != null)
+                        {
+                            anchor.rightBez.Slope1 = value;
+                        }
                     }
                 }
             }
@@ -72,7 +67,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
         {
             anchor = a;
             Left = left;
-            Slope = Left ? a.point.Value.ArriveTangent : a.point.Value.LeaveTangent;
+            _slope = Left ? a.point.Value.ArriveTangent : a.point.Value.LeaveTangent;
             line = new Line();
             line.bind(Line.X1Property, a, nameof(X));
             line.bind(Line.Y1Property, a, nameof(Y), CurveEdSubtractionConverter.Instance, a.graph.ActualHeight);
@@ -85,9 +80,9 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
 
             double hScale = a.graph.HorizontalScale;
             double vScale = a.graph.VerticalScale;
-            double xLength = (HANDLE_LENGTH * (Left ? -1 : 1)) / Math.Sqrt(Math.Pow(hScale, 2) + Math.Pow(Slope, 2) * Math.Pow(vScale, 2));
+            double xLength = (HANDLE_LENGTH * (Left ? -1 : 1)) / Math.Sqrt(Math.Pow(hScale, 2) + Math.Pow(_slope, 2) * Math.Pow(vScale, 2));
             X = xLength * hScale + a.X;
-            Y = Slope * xLength * vScale + a.Y;
+            Y = _slope * xLength * vScale + a.Y;
         }
 
         private void OnDragDelta(object sender, DragDeltaEventArgs e)

@@ -87,7 +87,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
         public bool IsSelected { get => isSelected; set => SetProperty(ref isSelected, value); }
         public string Name { get; }
 
-        public LinkedList<CurvePoint> CurvePoints;
+        public readonly LinkedList<CurvePoint> CurvePoints;
 
         public event EventHandler SharedValueChanged;
 
@@ -107,7 +107,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
 
         private void Point_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(CurvePoint.InVal) || e.PropertyName == nameof(CurvePoint.InterpMode))
+            if (e.PropertyName is nameof(CurvePoint.InVal) or nameof(CurvePoint.InterpMode))
             {
                 SharedValueChanged?.Invoke(this, e);
             }

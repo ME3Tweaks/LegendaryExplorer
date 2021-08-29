@@ -7,37 +7,37 @@
              xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
              xmlns:generic="clr-namespace:System.Collections.Generic;assembly=mscorlib"
              xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
+             xmlns:sharedToolControls="clr-namespace:LegendaryExplorer.UserControls.SharedToolControls"
              mc:Ignorable="d" 
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
              d:DesignHeight="300" d:DesignWidth="444.472" SizeChanged="UserControl_SizeChanged" ClipToBounds="True" MouseWheel="UserControl_MouseWheel">
     <UserControl.Resources>
         <converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
-        <SolidColorBrush x:Key="CurveStrokeBrush" Color="#FFFFC603"/>
-        <SolidColorBrush x:Key="CompareCurveStrokeBrush" Color="SlateGray"/>
+        <x:Static x:Key="CurveStrokeBrush" Member="sharedToolControls:CurveBrushes.Primary" />
+        <x:Static x:Key="AnchorBorderBrush" Member="sharedToolControls:CurveBrushes.Border" />
+        <x:Static x:Key="CompareCurveStrokeBrush" Member="Brushes.SlateGray" />
         <Style TargetType="{x:Type curves:BezierSegment}">
             <Setter Property="StrokeThickness" Value="1"/>
-            <Setter Property="Stroke" Value="{DynamicResource CurveStrokeBrush}"/>
+            <Setter Property="Stroke" Value="{StaticResource CurveStrokeBrush}"/>
         </Style>
         <Style TargetType="{x:Type Line}">
             <Setter Property="StrokeThickness" Value="1"/>
-            <Setter Property="Stroke" Value="{DynamicResource CurveStrokeBrush}"/>
+            <Setter Property="Stroke" Value="{StaticResource CurveStrokeBrush}"/>
         </Style>
-        <Style x:Key="CompareCurve">
-            <Setter Property="Line.Stroke" Value="{DynamicResource CompareCurveStrokeBrush}"/>
-            <Setter Property="curves:BezierSegment.Stroke" Value="{DynamicResource CompareCurveStrokeBrush}"/>
+        <Style x:Key="CompareCurve" TargetType="{x:Type Shape}">
+            <Setter Property="StrokeThickness" Value="1"/>
+            <Setter Property="Stroke" Value="{StaticResource CompareCurveStrokeBrush}"/>
         </Style>
         <Style x:Key="HandleLine" TargetType="{x:Type Line}">
             <Setter Property="StrokeThickness" Value="1"/>
             <Setter Property="Stroke" Value="White"/>
-            <Setter Property="Panel.ZIndex" Value="1"/>
+            <Setter Property="Panel.ZIndex" Value="3"/>
         </Style>
         <Style x:Key="BaseLine" TargetType="{x:Type Line}">
             <Setter Property="StrokeThickness" Value="1"/>
             <Setter Property="Stroke" Value="#FF9C9C9C"/>
         </Style>
-        <SolidColorBrush x:Key="ZeroGridLineStroke">
-            White
-        </SolidColorBrush>
+        <x:Static x:Key="ZeroGridLineStroke" Member="Brushes.White" />
         <Style x:Key="HorizontalLine" TargetType="{x:Type Line}" BasedOn="{StaticResource BaseLine}">
             <Setter Property="X2" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType=Canvas}}"/>
         </Style>
@@ -54,8 +54,8 @@
             <Setter Property="Canvas.Left" Value="{Binding Path=X, RelativeSource={RelativeSource Self}}"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Panel.ZIndex" Value="2"/>
-            <Setter Property="Background" Value="{DynamicResource CurveStrokeBrush}"/>
-            <Setter Property="BorderBrush" Value="#FFCC9800"/>
+            <Setter Property="Background" Value="{StaticResource CurveStrokeBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AnchorBorderBrush}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate>
@@ -75,6 +75,7 @@
                 <Trigger Property="IsSelected" Value="True">
                     <Setter Property="Background" Value="White"/>
                     <Setter Property="BorderBrush" Value="LightGray"/>
+                    <Setter Property="Panel.ZIndex" Value="4"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -82,7 +83,7 @@
             <Setter Property="Canvas.Bottom" Value="{Binding Path=Y, RelativeSource={RelativeSource Self}}"/>
             <Setter Property="Canvas.Left" Value="{Binding Path=X, RelativeSource={RelativeSource Self}}"/>
             <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Panel.ZIndex" Value="3"/>
+            <Setter Property="Panel.ZIndex" Value="4"/>
             <Setter Property="Background" Value="White"/>
             <Setter Property="Visibility" Value="Hidden"/>
             <Setter Property="Template">
