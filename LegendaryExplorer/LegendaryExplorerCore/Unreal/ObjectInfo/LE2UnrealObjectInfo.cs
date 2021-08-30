@@ -554,21 +554,25 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             //Custom additions are tweaks and additional classes either not automatically able to be determined
             //or new classes designed in the modding scene that must be present in order for parsing to work properly
 
-
-            // The following is left only as examples if you are building new ones
-            /*classes["BioSeqAct_ShowMedals"] = new ClassInfo
+            classes["SFXSeqAct_SetPawnMeshes"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
                 pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                exportIndex = 22, //in ME3Resources.pcc
+                exportIndex = 2, //in LE2Resources.pcc
                 properties =
                 {
-                    new KeyValuePair<string, PropertyInfo>("bFromMainMenu", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<string, PropertyInfo>("m_oGuiReferenced", new PropertyInfo(PropertyType.ObjectProperty, "GFxMovieInfo"))
+                    new KeyValuePair<string, PropertyInfo>("NewBodyMesh", new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
+                    new KeyValuePair<string, PropertyInfo>("NewHeadMesh", new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
+                    new KeyValuePair<string, PropertyInfo>("NewHairMesh", new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
+                    new KeyValuePair<string, PropertyInfo>("NewGearMesh", new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
+                    new KeyValuePair<string, PropertyInfo>("bPreserveAnimation", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<string, PropertyInfo>("aNewBodyMaterials", new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
+                    new KeyValuePair<string, PropertyInfo>("aNewHeadMaterials", new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
+                    new KeyValuePair<string, PropertyInfo>("aNewHairMaterials", new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
+                    new KeyValuePair<string, PropertyInfo>("aNewGearMaterials", new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
                 }
             };
-            sequenceObjects["BioSeqAct_ShowMedals"] = new SequenceObjectInfo();
-            */
+            sequenceObjects["SFXSeqAct_SetPawnMeshes"] = new SequenceObjectInfo { ObjInstanceVersion = 1 };
 
             ME3UnrealObjectInfo.AddIntrinsicClasses(classes, MEGame.LE2);
         }

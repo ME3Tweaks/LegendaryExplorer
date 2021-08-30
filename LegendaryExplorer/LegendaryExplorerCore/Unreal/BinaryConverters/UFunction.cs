@@ -33,6 +33,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 sc.Serialize(ref FriendlyName);
             }
+            else if (sc.IsLoading)
+            {
+                FriendlyName = "None";
+            }
         }
 
         public override List<(NameReference, string)> GetNames(MEGame game)

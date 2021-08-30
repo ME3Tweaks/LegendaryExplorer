@@ -236,6 +236,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     "StrProperty" => new UStrProperty(),
                     "MapProperty" => new UMapProperty(),
                     "StringRefProperty" => new UStringRefProperty(),
+                    "ArrayProperty" => new UArrayProperty(),
                     _ => throw new ArgumentOutOfRangeException(nameof(className), className, "")
                 };
                 tmp.Category = "None";
@@ -284,9 +285,9 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     break;
                 case UArrayProperty uArrayProperty:
                     UProperty child = null;
-                    DynamicArrayType dynArrType = (DynamicArrayType)varType;
+                    var dynArrType = (DynamicArrayType)varType;
                     VariableType elementType = dynArrType.ElementType;
-                    if (pcc.TryGetUExport(uArrayProperty.ElementType ?? 0, out var childExp))
+                    if (pcc.TryGetUExport(uArrayProperty.ElementType ?? 0, out ExportEntry childExp))
                     {
                         if (childExp.ClassName == ByteCodeCompilerVisitor.PropertyTypeName(elementType))
                         {
