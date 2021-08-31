@@ -360,6 +360,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             audioPcc = null;
             meshPcc = null;
             textPcc = null;
+            
+            dbworker.DoWork -= GetLineStrings;
+            dbworker.RunWorkerCompleted -= dbworker_LineWorkCompleted;
 
             ClearDataBase();
         }
