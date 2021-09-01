@@ -4419,7 +4419,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                     }
 
                 }
-                else
+                else if (actor.HasStack)
                 {
                     var locationprop = actor.GetProperty<StructProperty>("location");
                     if (locationprop != null && locationprop.IsImmutable)
@@ -4437,6 +4437,19 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                         locationprop.Properties.AddOrReplaceProp(new FloatProperty(newz, "Z"));
                         actor.WriteProperty(locationprop);
                     }
+                }
+                else //is component without entire SMAC
+                {
+                    if(actor.HasParent && actor.Parent.ClassName.Contains("CollectionActor") && actor.Parent is ExportEntry actorCollection)
+                    {
+                        var collectionitems = PathEdUtils.GetCollectionItems(actorCollection);
+                        var location = PathEdUtils.GetLocation(actor);
+                        float x = ((float)location.X) + shifts.X;
+                        float y = ((float)location.Y) + shifts.Y;
+                        float z = ((float)location.Z) + shifts.Z;
+                        PathEdUtils.SetCollectionActorLocation(actor, x, y, z, collectionitems, actorCollection);
+                    }
+
                 }
             }
         }
@@ -4498,7 +4511,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                     }
 
                 }
-                else
+                else if ( actor.HasStack )
                 {
                     float oldx = 0;
                     float oldy = 0;
