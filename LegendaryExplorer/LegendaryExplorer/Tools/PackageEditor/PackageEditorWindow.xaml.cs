@@ -230,7 +230,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
         private void LoadCommands()
         {
             CalculateExportMD5Command = new GenericCommand(CalculateExportMD5, ExportIsSelected);
-            ForceReloadPackageCommand = new GenericCommand(ForceReloadPackageWithoutSharing, CanForceReload);
             CompareToUnmoddedCommand = new GenericCommand(CompareUnmodded, CanCompareToUnmodded);
             ComparePackagesCommand = new GenericCommand(ComparePackages, PackageIsLoaded);
             ExportAllDataCommand = new GenericCommand(ExportAllData, ExportIsSelected);
@@ -290,6 +289,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
             RestoreExportCommand = new GenericCommand(RestoreExportData, ExportIsSelected);
             OpenLEVersionCommand = new GenericCommand(() => OpenOtherVersion(true), IsLoadedPackageOT);
             OpenOTVersionCommand = new GenericCommand(() => OpenOtherVersion(false), IsLoadedPackageLE);
+
+            ForceReloadPackageCommand = new GenericCommand(()=> ExperimentsMenu.ForceReloadPackageWithoutSharing(), ()=> ShowExperiments && ExperimentsMenu.CanForceReload());
         }
 
         private void CalculateExportMD5()
@@ -304,7 +305,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
             }
         }
 
-        private bool CanForceReload() => ShowExperiments && PackageIsLoaded();
 
         private bool IsLoadedPackageOT() => Pcc != null && Pcc.Game.IsOTGame();
         private bool IsLoadedPackageLE() => Pcc != null && Pcc.Game.IsLEGame();
@@ -2502,27 +2502,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
             }
         }
 
-        /// <summary>
-        /// Forcibly reloads the package from disk. The package loaded in this instance will no longer be shared.
-        /// </summary>
-        private void ForceReloadPackageWithoutSharing()
-        {
-            var fileOnDisk = Pcc.FilePath;
-            if (fileOnDisk != null && File.Exists(fileOnDisk))
-            {
-                if (Pcc.IsModified)
-                {
-                    var warningResult = MessageBox.Show(this, "The current package is modified. Reloading the package will cause you to lose all changes to this package.\n\nReload anyways?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                    if (warningResult != MessageBoxResult.Yes)
-                        return; // Do not continue!
-                }
-
-                var currentSelectedIndex = GetSelected(out var selectedIndex);
-                using var fStream = File.OpenRead(fileOnDisk);
-                LoadFileFromStream(fStream, fileOnDisk, selectedIndex);
-            }
-        }
-
         private ObservableCollectionExtended<TreeViewEntry> InitializeTreeViewBackground()
         {
             if (Thread.CurrentThread.Name == null)
@@ -2684,7 +2663,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         /// </summary>
         /// <param name="n">int that will be updated to point to the selected entry index. Will return 0 if nothing was selected (check the return value for false).</param>
         /// <returns>True if an item was selected, false if nothing was selected.</returns>
-        private bool GetSelected(out int n)
+        public bool GetSelected(out int n)
         {
             switch (CurrentView)
             {

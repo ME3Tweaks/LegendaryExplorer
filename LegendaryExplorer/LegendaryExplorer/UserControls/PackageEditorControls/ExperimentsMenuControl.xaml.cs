@@ -6,9 +6,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Threading;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
+using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorer.Tools.PackageEditor.Experiments;
 using LegendaryExplorerCore.GameFilesystem;
@@ -35,8 +37,53 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
     {
         public ExperimentsMenuControl()
         {
+            LoadCommands();
             InitializeComponent();
         }
+
+        public ICommand ForceReloadPackageCommand { get; set; }
+
+
+        private void LoadCommands()
+        {
+            ForceReloadPackageCommand = new GenericCommand(ForceReloadPackageWithoutSharing, CanForceReload);
+        }
+
+        private static bool warnedOfReload = false;
+
+        /// <summary>
+        /// Forcibly reloads the package from disk. The package loaded in this instance will no longer be shared.
+        /// </summary>
+        internal void ForceReloadPackageWithoutSharing()
+        {
+            var peWindow = GetPEWindow();
+            var fileOnDisk = peWindow.Pcc.FilePath;
+            if (fileOnDisk != null && File.Exists(fileOnDisk))
+            {
+                if (peWindow.Pcc.IsModified)
+                {
+                    var warningResult = MessageBox.Show(GetPEWindow(), "The current package is modified. Reloading the package will cause you to lose all changes to this package.\n\nReload anyways?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                    if (warningResult != MessageBoxResult.Yes)
+                        return; // Do not continue!
+                }
+
+                if (!warnedOfReload)
+                {
+                    var warningResult = MessageBox.Show(GetPEWindow(), "Forcibly reloading a package will drop it out of tool sharing - making changes to this package in other will not be reflected in this window, and changes to this window will not be reflected in other windows. THIS MEANS SAVING WILL OVERWRITE CHANGES FROM OTHER WINDOWS. Only continue if you know what you are doing.\n\nReload anyways?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Error);
+                    if (warningResult != MessageBoxResult.Yes)
+                        return; // Do not continue!
+                    warnedOfReload = true;
+                }
+
+                peWindow.GetSelected(out var selectedIndex);
+                using var fStream = File.OpenRead(fileOnDisk);
+                peWindow.LoadFileFromStream(fStream, fileOnDisk, selectedIndex);
+                peWindow.Title += " (NOT SHARED WITH OTHER WINDOWS)";
+            }
+        }
+
+        internal bool CanForceReload() => GetPEWindow()?.Pcc != null;
+
 
         public PackageEditorWindow GetPEWindow()
         {

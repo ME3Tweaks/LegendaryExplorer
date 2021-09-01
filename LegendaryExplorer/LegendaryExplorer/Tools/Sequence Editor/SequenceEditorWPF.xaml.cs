@@ -815,6 +815,8 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             }
         }
 
+        private static bool warnedOfReload = false;
+
         /// <summary>
         /// Forcibly reloads the package from disk. The package loaded in this instance will no longer be shared.
         /// </summary>
@@ -826,12 +828,22 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 if (Pcc.IsModified)
                 {
                     var warningResult = MessageBox.Show(this, "The current package is modified. Reloading the package will cause you to lose all changes to this package.\n\nReload anyways?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                    if (warningResult != MessageBoxResult.Yes)
+                    if (warningResult != MessageBoxResult.Yes) 
                         return; // Do not continue!
                 }
+
+                if (!warnedOfReload)
+                {
+                    var warningResult = MessageBox.Show(this, "Forcibly reloading a package will drop it out of tool sharing - making changes to this package in other will not be reflected in this window, and changes to this window will not be reflected in other windows. THIS MEANS SAVING WILL OVERWRITE CHANGES FROM OTHER WINDOWS. Only continue if you know what you are doing.\n\nReload anyways?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Error);
+                    if (warningResult != MessageBoxResult.Yes)
+                        return; // Do not continue!
+                    warnedOfReload = true;
+                }
+
                 var selectedIndex = (CurrentObjects_ListBox.SelectedItem as SObj)?.Export.UIndex ?? 0;
                 using var fStream = File.OpenRead(fileOnDisk);
                 LoadFileFromStream(fStream, fileOnDisk, selectedIndex);
+                Title += " (NOT SHARED WITH OTHER WINDOWS)";
             }
         }
 
