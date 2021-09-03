@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using LegendaryExplorerCore.Helpers;
 
 namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
 {
@@ -13,24 +14,33 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
     {
         protected override Geometry DefiningGeometry { get; }
      
-        public StaticCurve(CurveGraph graph, LinkedList<CurvePoint> curvePoints)
+        public StaticCurve(CurveGraph graph, IEnumerable<CurvePoint> curvePoints, bool extendLeft = false, bool extendRight = false)
         {
-            if (curvePoints.Count == 0)
+            using IEnumerator<CurvePoint> enumerator = curvePoints.GetEnumerator();
+            if (!enumerator.MoveNext())
             {
                 DefiningGeometry = Geometry.Empty;
                 return;
             }
 
-            var firstPoint = curvePoints.First.Value;
+            var firstPoint = enumerator.Current;
             double x1 = graph.toLocalX(firstPoint.InVal);
             double y1 = graph.toLocalY(firstPoint.OutVal);
             double slope1 = firstPoint.LeaveTangent;
             var interpMode = firstPoint.InterpMode;
             var geom = new StreamGeometry();
             using StreamGeometryContext ctxt = geom.Open();
-            ctxt.BeginFigure(new Point(x1, graph.ActualHeight - y1), false, false);
+            if (extendLeft)
+            {
+                ctxt.BeginFigure(new Point(-10, graph.ActualHeight - y1), false, false);
+                ctxt.LineTo(new Point(x1, graph.ActualHeight - y1), true, true);
+            }
+            else
+            {
+                ctxt.BeginFigure(new Point(x1, graph.ActualHeight - y1), false, false);
+            }
 
-            foreach (CurvePoint curvePoint in curvePoints.Skip(1))
+            foreach (CurvePoint curvePoint in enumerator.GetEnumerable())
             {
                 double x2 = graph.toLocalX(curvePoint.InVal);
                 double y2 = graph.toLocalY(curvePoint.OutVal);
@@ -57,6 +67,11 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
                 y1 = y2;
                 slope1 = curvePoint.LeaveTangent;
                 interpMode = curvePoint.InterpMode;
+            }
+
+            if (extendRight)
+            {
+                ctxt.LineTo(new Point(graph.ActualWidth + 10, graph.ActualHeight - y1), true, true);
             }
 
             DefiningGeometry = geom;

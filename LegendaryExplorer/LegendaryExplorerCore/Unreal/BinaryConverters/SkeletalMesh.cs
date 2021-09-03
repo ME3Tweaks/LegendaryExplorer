@@ -644,8 +644,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref slm.DataTypeSize);
                 int elementSize = 2;
                 sc.Serialize(ref elementSize);
-                ushort[] secondIndexBuffer = new ushort[0];
-                sc.Serialize(ref secondIndexBuffer, SCExt.Serialize);
+                if (elementSize == 4)
+                {
+                    var secondIndexBuffer = new uint[0];
+                    sc.Serialize(ref secondIndexBuffer, SCExt.Serialize);
+                }
+                else
+                {
+                    var secondIndexBuffer = new ushort[0];
+                    sc.Serialize(ref secondIndexBuffer, SCExt.Serialize);
+                }
             }
         }
         public static void Serialize(this SerializingContainer2 sc, ref PerPolyBoneCollisionData bcd)

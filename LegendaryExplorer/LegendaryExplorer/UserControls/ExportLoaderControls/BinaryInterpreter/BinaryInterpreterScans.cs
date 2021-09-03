@@ -7558,13 +7558,20 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 MakeInt32Node(bin, "Unknown")
                             })
                         }));
-                        node.Items.Add(ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.UDK, () => new ITreeItem[]
+                        if (Pcc.Game is MEGame.UDK)
                         {
-                            MakeBoolIntNode(bin, "NeedsCPUAccess"),
-                            MakeByteNode(bin, "Datatype size"),
-                            MakeInt32Node(bin, "ushort size"),
-                            MakeArrayNode(bin, "Second IndexBuffer?", j => MakeUInt16Node(bin, $"{j}")),
-                        }));
+                            node.Items.Add(MakeBoolIntNode(bin, "NeedsCPUAccess"));
+                            node.Items.Add(MakeByteNode(bin, "Datatype size"));
+                            node.Items.Add(MakeInt32Node(bin, "index size", out int indexSize));
+                            if (indexSize == 4)
+                            {
+                                node.Items.Add(MakeArrayNode(bin, "Second IndexBuffer?", j => MakeUInt32Node(bin, $"{j}")));
+                            }
+                            else
+                            {
+                                node.Items.Add(MakeArrayNode(bin, "Second IndexBuffer?", j => MakeUInt16Node(bin, $"{j}")));
+                            }
+                        }
                     }
                     catch (Exception e)
                     {

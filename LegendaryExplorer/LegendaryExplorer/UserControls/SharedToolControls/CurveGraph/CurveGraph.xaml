@@ -24,6 +24,10 @@
             <Setter Property="StrokeThickness" Value="1"/>
             <Setter Property="Stroke" Value="{StaticResource CurveStrokeBrush}"/>
         </Style>
+        <Style TargetType="{x:Type curves:StaticCurve}">
+            <Setter Property="StrokeThickness" Value="1"/>
+            <Setter Property="Stroke" Value="{StaticResource CurveStrokeBrush}"/>
+        </Style>
         <Style x:Key="CompareCurve" TargetType="{x:Type Shape}">
             <Setter Property="StrokeThickness" Value="1"/>
             <Setter Property="Stroke" Value="{StaticResource CompareCurveStrokeBrush}"/>

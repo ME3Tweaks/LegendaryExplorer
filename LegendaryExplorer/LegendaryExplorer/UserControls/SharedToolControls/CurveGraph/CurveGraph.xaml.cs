@@ -245,35 +245,10 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
 
             if (ShowReferenceCurve && ComparisonCurve != null && ComparisonCurve.CurvePoints.Count > 0)
             {
-                var comparisonCurvePoints = ComparisonCurve.CurvePoints;
-                var compareCurveStyle = FindResource("CompareCurve") as Style;
-                var firstPoint = comparisonCurvePoints.First.Value;
-                double y = ActualHeight - toLocalY(firstPoint.OutVal);
-                var line = new Line
+                graph.Children.Add(new StaticCurve(this, ComparisonCurve.CurvePoints, true, true)
                 {
-                    X1 = -10,
-                    Y1 = y,
-                    X2 = toLocalX(firstPoint.InVal),
-                    Y2 = y,
-                    Style = compareCurveStyle
-                };
-                graph.Children.Add(line);
-                var comparisonBezier = new StaticCurve(this, comparisonCurvePoints)
-                {
-                    Style = compareCurveStyle
-                };
-                graph.Children.Add(comparisonBezier);
-                var lastPoint = comparisonCurvePoints.Last.Value;
-                y = ActualHeight - toLocalY(lastPoint.OutVal);
-                line = new Line
-                {
-                    X1 = toLocalX(lastPoint.InVal),
-                    Y1 = y,
-                    X2 = ActualWidth + 10,
-                    Y2 = y,
-                    Style = compareCurveStyle
-                };
-                graph.Children.Add(line);
+                    Style = FindResource("CompareCurve") as Style
+                });
             }
 
             RenderCurve(points);
@@ -310,7 +285,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
             graph.Children.Add(label);
         }
 
-        private readonly List<Anchor> Anchors = new ();
+        private readonly List<Anchor> Anchors = new();
         private void RenderCurve(LinkedList<CurvePoint> points)
         {
             Anchor lastAnchor = null;
@@ -459,8 +434,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
             {
                 dragging = true;
                 dragPos = e.GetPosition(graph);
-                if (Keyboard.Modifiers == ModifierKeys.Shift) Cursor = Cursors.ScrollWE;
-                else Cursor = Cursors.ScrollNS;
+                Cursor = Keyboard.Modifiers == ModifierKeys.Shift ? Cursors.ScrollWE : Cursors.ScrollNS;
             }
             else if (ReferenceEquals(e.OriginalSource, graph) && e.ChangedButton == MouseButton.Right)
             {
