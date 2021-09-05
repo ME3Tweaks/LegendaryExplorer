@@ -315,24 +315,7 @@ namespace LegendaryExplorerCore.Helpers
         public static void Add<T>(this Stack<T> stack, T item) => stack.Push(item);
 
         //This allows a partially enumerated IEnumerator to be further enumerated in a foreach
-        public static IEnumerable<T> GetEnumerable<T>(this IEnumerator<T> enumerator)
-        {
-            return new EnumeratorEnumerable<T>(enumerator);
-        }
-
-        private readonly struct EnumeratorEnumerable<T> : IEnumerable<T>
-        {
-            private readonly IEnumerator<T> _enumerator;
-
-            public EnumeratorEnumerable(IEnumerator<T> enumerator)
-            {
-                _enumerator = enumerator;
-            }
-
-            public IEnumerator<T> GetEnumerator() => _enumerator;
-
-            IEnumerator IEnumerable.GetEnumerator() => _enumerator;
-        }
+        public static IEnumerator<T> GetEnumerator<T>(this IEnumerator<T> enumerator) => enumerator;
     }
 
     public static class DictionaryExtensions

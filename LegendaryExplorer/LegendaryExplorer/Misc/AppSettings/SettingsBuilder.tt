@@ -64,6 +64,10 @@ namespace LegendaryExplorer.Misc.AppSettings
             var settingsJson = File.Exists(AppSettingsFile)
                 ? JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(AppSettingsFile))
                 : new Dictionary<string, string>();
+
+            //if the settings file has been corrupted somehow, the JSON deserializer will return null.
+            settingsJson ??= new();
+
 <#          foreach (var setting in settings){#>
             <#=setting.Item1#> = TryGetSetting(settingsJson, "<#=setting.Item1.ToLower()#>", <#= setting.Item3 #>);
 <#          }#>

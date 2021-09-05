@@ -282,6 +282,10 @@ namespace LegendaryExplorer.Misc.AppSettings
             var settingsJson = File.Exists(AppSettingsFile)
                 ? JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(AppSettingsFile))
                 : new Dictionary<string, string>();
+
+            //if the settings file has been corrupted somehow, the JSON deserializer will return null.
+            settingsJson ??= new();
+
             MainWindow_DisableTransparencyAndAnimations = TryGetSetting(settingsJson, "mainwindow_disabletransparencyandanimations", false);
             MainWindow_Favorites = TryGetSetting(settingsJson, "mainwindow_favorites", "");
             MainWindow_CompletedInitialSetup = TryGetSetting(settingsJson, "mainwindow_completedinitialsetup", false);

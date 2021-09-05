@@ -40,7 +40,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
                 ctxt.BeginFigure(new Point(x1, graph.ActualHeight - y1), false, false);
             }
 
-            foreach (CurvePoint curvePoint in enumerator.GetEnumerable())
+            foreach (CurvePoint curvePoint in enumerator)
             {
                 double x2 = graph.toLocalX(curvePoint.InVal);
                 double y2 = graph.toLocalY(curvePoint.OutVal);
