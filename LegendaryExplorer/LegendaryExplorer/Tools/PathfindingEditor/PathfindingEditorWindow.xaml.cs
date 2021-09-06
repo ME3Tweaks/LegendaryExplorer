@@ -4113,22 +4113,8 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         private void AddAllActorsToGroup()
         {
             ActorGroup.ClearEx();
-            if (Pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry levelExport)
-            {
-                Level level = ObjectBinary.From<Level>(levelExport);
-                var actorlist = level.Actors.Where(a => a.value > 0).Select(a => a.value);
-                foreach (var actoridx in actorlist)
-                {
-                    var actor = Pcc.GetUExport(actoridx);
-                    if (actor.IsA("WorldInfo"))
-                        continue;
-                    ActorGroup.Add(actor);
-                    if (actor.ClassName.Contains("CollectionActor"))
-                    {
-                        ActorGroup.AddRange(PathEdUtils.GetCollectionItems(actor));
-                    }
-                }
-            }
+            //Add all shown actors
+            ActorGroup.AddRange(ActiveNodes);
         }
         private void EditLevelLighting()
         {

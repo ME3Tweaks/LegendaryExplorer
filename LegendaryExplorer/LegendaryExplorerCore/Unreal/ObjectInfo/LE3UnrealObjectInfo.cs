@@ -709,6 +709,34 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 ObjInstanceVersion = 1
             };
 
+            //Kinkojiro - New Class - only used in EGM
+            classes["SFXSeqAct_TerminalGUI_EGM"] = new ClassInfo
+            {
+                baseClass = "BioSequenceLatentAction",
+                //pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                //exportIndex = 0, not in LE3Resources.pcc
+                properties =
+                {
+                    new KeyValuePair<string, PropertyInfo>("ExitRequestPin", new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<string, PropertyInfo>("m_TerminalGUIResouce", new PropertyInfo(PropertyType.ObjectProperty, "GFxMovieInfo" )),
+                    new KeyValuePair<string, PropertyInfo>("TerminalDataClass", new PropertyInfo(PropertyType.ObjectProperty, "Class" )),
+                    new KeyValuePair<string, PropertyInfo>("TerminalName", new PropertyInfo(PropertyType.NameProperty))
+                }
+            };
+
+            //Kinkojiro - New Class - only used in EGM
+            classes["BioSeqAct_ShowMedals"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                //pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                //exportIndex = 0, not in LE3Resources.pcc
+                properties =
+                {
+                    new KeyValuePair<string, PropertyInfo>("bFromMainMenu", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<string, PropertyInfo>("m_oGuiReferenced", new PropertyInfo(PropertyType.ObjectProperty, "GFxMovieInfo" ))
+                }
+            };
+
             ME3UnrealObjectInfo.AddIntrinsicClasses(classes, MEGame.LE3);
 
             classes["LightMapTexture2D"] = new ClassInfo
