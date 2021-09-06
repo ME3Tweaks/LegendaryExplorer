@@ -378,11 +378,13 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// <param name="fileSourcePath"></param>
         /// <param name="forcedTFCName"></param>
         /// <param name="forcedTFCPath"></param>
+        /// <param name="isPackageStored"></param>
         /// <returns></returns>
-        public string Replace(Image image, PropertyCollection props, string fileSourcePath = null, string forcedTFCName = null, string forcedTFCPath = null)
+        public string Replace(Image image, PropertyCollection props, string fileSourcePath = null, string forcedTFCName = null, string forcedTFCPath = null, bool isPackageStored = false)
         {
             string errors = "";
             var textureCache = forcedTFCName ?? GetTopMip().TextureCacheName;
+            if (isPackageStored) textureCache = null;
             string fmt = TextureFormat;
             PixelFormat pixelFormat = Image.getPixelFormatType(fmt);
             RemoveEmptyMipsFromMipList();
@@ -460,15 +462,15 @@ namespace LegendaryExplorerCore.Unreal.Classes
 
                 if (Export.Game.IsOTGame() && Export.Game < MEGame.ME3)
                 {
-                    compressedMips.Add(TextureCompression.CompressTexture(image.mipMaps[m].data, StorageTypes.extLZO)); //LZO 
+                    compressedMips.Add(TextureCompression.CompressTexture(image.mipMaps[m].data, isPackageStored ? StorageTypes.pccLZO : StorageTypes.extLZO)); //LZO 
                 }
                 else if (Export.Game == MEGame.ME3)
                 {
-                    compressedMips.Add(TextureCompression.CompressTexture(image.mipMaps[m].data, StorageTypes.extZlib)); //ZLib
+                    compressedMips.Add(TextureCompression.CompressTexture(image.mipMaps[m].data, isPackageStored ? StorageTypes.pccZlib : StorageTypes.extZlib)); //ZLib
                 }
                 else if (Export.Game.IsLEGame())
                 {
-                    compressedMips.Add(TextureCompression.CompressTexture(image.mipMaps[m].data, StorageTypes.extOodle)); //Oodle
+                    compressedMips.Add(TextureCompression.CompressTexture(image.mipMaps[m].data, isPackageStored ? StorageTypes.pccOodle : StorageTypes.extOodle)); //Oodle
                 }
             }
 
@@ -483,56 +485,17 @@ namespace LegendaryExplorerCore.Unreal.Classes
                     height = image.mipMaps[m].origHeight,
                     TextureCacheName = textureCache
                 };
+                bool mipShouldBePackageStored = isPackageStored || m >= image.mipMaps.Count - 6 || textureCache == null;
+                
                 if (Mips.Exists(x => x.width == mipmap.width && x.height == mipmap.height))
                 {
                     var oldMip = Mips.First(x => x.width == mipmap.width && x.height == mipmap.height);
-                    mipmap.storageType = oldMip.storageType;
+                    mipmap.storageType = CalculateStorageType(oldMip.storageType, Export.Game, mipShouldBePackageStored);
                 }
                 else
                 {
                     // New mipmaps
-                    mipmap.storageType = Mips[0].storageType;
-                }
-
-                //ME2,ME3: Force compression type (not implemented yet)
-                if (Export.Game == MEGame.ME3)
-                {
-                    if (mipmap.storageType == StorageTypes.extLZO) //ME3 LZO -> ZLIB
-                        mipmap.storageType = StorageTypes.extZlib;
-                    if (mipmap.storageType == StorageTypes.pccLZO) //ME3 PCC LZO -> PCCZLIB
-                        mipmap.storageType = StorageTypes.pccZlib;
-                    if (mipmap.storageType == StorageTypes.extUnc) //ME3 Uncomp -> ZLib
-                        mipmap.storageType = StorageTypes.extZlib;
-                    //Leave here for future. WE might need this after dealing with double compression
-                    //if (mipmap.storageType == StorageTypes.pccUnc && mipmap.width > 32) //ME3 Uncomp -> ZLib
-                    //    mipmap.storageType = StorageTypes.pccZlib;
-                    if (mipmap.storageType == StorageTypes.pccUnc && m < image.mipMaps.Count - 6 && textureCache != null) //Moving texture to store externally.
-                        mipmap.storageType = StorageTypes.extZlib;
-                }
-                else if (Export.Game == MEGame.ME2)
-                {
-                    if (mipmap.storageType == StorageTypes.extZlib) //ME2 ZLib -> LZO
-                        mipmap.storageType = StorageTypes.extLZO;
-                    if (mipmap.storageType == StorageTypes.pccZlib) //ME2 PCC ZLib -> LZO
-                        mipmap.storageType = StorageTypes.pccLZO;
-                    if (mipmap.storageType == StorageTypes.extUnc) //ME2 Uncomp -> LZO
-                        mipmap.storageType = StorageTypes.extLZO;
-                    //Leave here for future. We might neable this after dealing with double compression
-                    //if (mipmap.storageType == StorageTypes.pccUnc && mipmap.width > 32) //ME2 Uncomp -> LZO
-                    //    mipmap.storageType = StorageTypes.pccLZO;
-                    if (mipmap.storageType == StorageTypes.pccUnc && m < image.mipMaps.Count - 6 && textureCache != null) //Moving texture to store externally. make sure bottom 6 are pcc stored
-                        mipmap.storageType = StorageTypes.extLZO;
-
-                    // TEXTURE WORK BRANCH TOOLING ONLY!!
-                    //if (mipmap.storageType == StorageTypes.extLZO)
-                    //    mipmap.storageType = StorageTypes.pccLZO;
-                }
-                else if (Export.Game.IsLEGame())
-                {
-                    if (mipmap.storageType == StorageTypes.extUnc)
-                        mipmap.storageType = StorageTypes.extOodle; // Compress external unc to Oodle
-                    if (mipmap.storageType == StorageTypes.pccUnc && m < image.mipMaps.Count - 6 && textureCache != null) //Moving texture to store externally. make sure bottom 6 are pcc stored
-                        mipmap.storageType = StorageTypes.extOodle;
+                    mipmap.storageType = CalculateStorageType(Mips[0].storageType, Export.Game, mipShouldBePackageStored);
                 }
 
 
@@ -702,7 +665,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 }
             }
 
-            if (mipmaps.Count < 6)
+            if (mipmaps.Count < 6 || !locallyStored)
             {
                 props.RemoveNamedProperty("NeverStream");
             }
@@ -805,6 +768,73 @@ namespace LegendaryExplorerCore.Unreal.Classes
 
 
             return errors;
+        }
+        
+        /// <summary>
+        /// Returns the appropriate storage type for a mip based on the previous storage type of that mip and other parameters
+        /// </summary>
+        /// <param name="prevType">Existing storage type for this mip</param>
+        /// <param name="game">The game this texture belongs to</param>
+        /// <param name="isPackageStored">Is mip package stored? Should be true if in bottom six mips</param>
+        /// <returns></returns>
+        private static StorageTypes CalculateStorageType(StorageTypes prevType, MEGame game, bool isPackageStored)
+        {
+            StorageTypes type = prevType;
+            //ME2,ME3: Force compression type (not implemented yet)
+            if (game is MEGame.ME3)
+            {
+                if (type is StorageTypes.extLZO) //ME3 LZO -> ZLIB
+                    type = StorageTypes.extZlib;
+                if (type is StorageTypes.pccLZO) //ME3 PCC LZO -> PCCZLIB
+                    type = StorageTypes.pccZlib;
+                if (type is StorageTypes.extUnc) //ME3 Uncomp -> ZLib
+                    type = StorageTypes.extZlib;
+                //Leave here for future. WE might need this after dealing with double compression
+                //if (type == StorageTypes.pccUnc && mipmap.width > 32) //ME3 Uncomp -> ZLib
+                //    type = StorageTypes.pccZlib;
+                if (type is StorageTypes.pccUnc or StorageTypes.pccZlib && !isPackageStored) //Moving texture to store externally.
+                    type = StorageTypes.extZlib;
+            }
+            else if (game is MEGame.ME2)
+            {
+                if (type is StorageTypes.extZlib) //ME2 ZLib -> LZO
+                    type = StorageTypes.extLZO;
+                if (type is StorageTypes.pccZlib) //ME2 PCC ZLib -> LZO
+                    type = StorageTypes.pccLZO;
+                if (type is StorageTypes.extUnc) //ME2 Uncomp -> LZO
+                    type = StorageTypes.extLZO;
+                //Leave here for future. We might neable this after dealing with double compression
+                //if (type == StorageTypes.pccUnc && mipmap.width > 32) //ME2 Uncomp -> LZO
+                //    type = StorageTypes.pccLZO;
+                if (type is StorageTypes.pccUnc or StorageTypes.pccLZO && !isPackageStored) //Moving texture to store externally. make sure bottom 6 are pcc stored
+                    type = StorageTypes.extLZO;
+
+                // TEXTURE WORK BRANCH TOOLING ONLY!!
+                //if (type == StorageTypes.extLZO)
+                //    type = StorageTypes.pccLZO;
+            }
+            else if (game.IsLEGame())
+            {
+                if (type is StorageTypes.extUnc)
+                    type = StorageTypes.extOodle; // Compress external unc to Oodle
+                if (type is StorageTypes.pccUnc or StorageTypes.pccOodle && !isPackageStored) //Moving texture to store externally. make sure bottom 6 are pcc stored
+                    type = StorageTypes.extOodle;
+            }
+
+            // User has selected package stored, or this is bottom six mip
+            if (isPackageStored)
+            {
+                if (type is StorageTypes.extOodle)
+                    type = StorageTypes.pccOodle;
+                else if (type is StorageTypes.extLZO)
+                    type = StorageTypes.pccLZO;
+                else if (type is StorageTypes.extUnc)
+                    type = StorageTypes.pccUnc;
+                else if (type is StorageTypes.extZlib)
+                    type = StorageTypes.pccZlib;
+            }
+
+            return type;
         }
 
         public bool ExportToFile(string outputPath)

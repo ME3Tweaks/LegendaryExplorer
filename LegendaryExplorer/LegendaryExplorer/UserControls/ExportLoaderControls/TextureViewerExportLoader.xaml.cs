@@ -269,8 +269,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         return;
                     }
 
-                    if (selectedTFCName == PACKAGE_STORED_STRING) selectedTFCName = null;
-                    replaceTextures(image, props, selectDDS.FileName, selectedTFCName);
+                    bool isPackageStored = selectedTFCName == PACKAGE_STORED_STRING;
+                    if (isPackageStored) selectedTFCName = null;
+                    ReplaceTextures(image, props, selectDDS.FileName, selectedTFCName, isPackageStored);
 
                     // MER: Dump to disk
                     //var binName = Path.Combine(Directory.GetParent(selectDDS.FileName).FullName, Path.GetFileNameWithoutExtension(selectDDS.FileName) + ".bin");
@@ -369,6 +370,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     // Some textures list a tfc but are stored locally still
                     // so the tfc is never actually used
                     AvailableTFCNames.Insert(0, PACKAGE_STORED_STRING);
+
+                    if (topmip is { storageType: StorageTypes.pccLZO or StorageTypes.pccZlib or StorageTypes.pccOodle or StorageTypes.pccUnc })
+                    {
+                        TextureCacheComboBox.SelectedIndex = 0; // Set to Package Stored
+                    }
 
                     if (cache == null && exportEntry.Game > MEGame.ME1)
                     {
@@ -485,10 +491,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
-        public string replaceTextures(Image image, PropertyCollection props, string fileSourcePath = null, string forcedTFCName = null)
+        public string ReplaceTextures(Image image, PropertyCollection props, string fileSourcePath = null, string forcedTFCName = null, bool isPackageStored = false)
         {
             var texture = new Texture2D(CurrentLoadedExport);
-            return texture.Replace(image, props, fileSourcePath, forcedTFCName);
+            return texture.Replace(image, props, fileSourcePath, forcedTFCName, isPackageStored: isPackageStored);
         }
 
         public override void Dispose()
