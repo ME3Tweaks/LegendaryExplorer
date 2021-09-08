@@ -396,7 +396,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             {
                 bool dxt1HasAlpha = false;
                 byte dxt1Threshold = 128;
-                if (pixelFormat == PixelFormat.DXT1 && props.GetProp<EnumProperty>("CompressionSettings") is EnumProperty compressionSettings && compressionSettings.Value.Name == "TC_OneBitAlpha")
+                if (pixelFormat == PixelFormat.DXT1 && props.GetProp<EnumProperty>("CompressionSettings") is { Value: { Name: "TC_OneBitAlpha" } })
                 {
                     dxt1HasAlpha = true;
                     if (image.pixelFormat is PixelFormat.ARGB or PixelFormat.DXT3 or PixelFormat.DXT5)
@@ -515,16 +515,16 @@ namespace LegendaryExplorerCore.Unreal.Classes
                     break;
             }
 
-            int allextmipssize = 0;
+            int allExtMipsSize = 0;
 
             for (int m = 0; m < image.mipMaps.Count; m++)
             {
                 Texture2DMipInfo x = mipmaps[m];
-                var compsize = image.mipMaps[m].data.Length;
+                var compSize = image.mipMaps[m].data.Length;
 
                 if (x.storageType is StorageTypes.extZlib or StorageTypes.extLZO or StorageTypes.extUnc or StorageTypes.extOodle)
                 {
-                    allextmipssize += compsize; //compsize on Unc textures is same as LZO/ZLib
+                    allExtMipsSize += compSize; //compSize on Unc textures is same as LZO/ZLib
                 }
             }
 
@@ -777,7 +777,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// <param name="game">The game this texture belongs to</param>
         /// <param name="isPackageStored">Is mip package stored? Should be true if in bottom six mips</param>
         /// <returns></returns>
-        private static StorageTypes CalculateStorageType(StorageTypes prevType, MEGame game, bool isPackageStored)
+        public static StorageTypes CalculateStorageType(StorageTypes prevType, MEGame game, bool isPackageStored)
         {
             StorageTypes type = prevType;
             //ME2,ME3: Force compression type (not implemented yet)
@@ -792,7 +792,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 //Leave here for future. WE might need this after dealing with double compression
                 //if (type == StorageTypes.pccUnc && mipmap.width > 32) //ME3 Uncomp -> ZLib
                 //    type = StorageTypes.pccZlib;
-                if (type is StorageTypes.pccUnc or StorageTypes.pccZlib && !isPackageStored) //Moving texture to store externally.
+                if (type is StorageTypes.pccUnc && !isPackageStored) //Moving texture to store externally.
                     type = StorageTypes.extZlib;
             }
             else if (game is MEGame.ME2)
@@ -806,7 +806,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 //Leave here for future. We might neable this after dealing with double compression
                 //if (type == StorageTypes.pccUnc && mipmap.width > 32) //ME2 Uncomp -> LZO
                 //    type = StorageTypes.pccLZO;
-                if (type is StorageTypes.pccUnc or StorageTypes.pccLZO && !isPackageStored) //Moving texture to store externally. make sure bottom 6 are pcc stored
+                if (type is StorageTypes.pccUnc && !isPackageStored) //Moving texture to store externally. make sure bottom 6 are pcc stored
                     type = StorageTypes.extLZO;
 
                 // TEXTURE WORK BRANCH TOOLING ONLY!!
@@ -817,21 +817,32 @@ namespace LegendaryExplorerCore.Unreal.Classes
             {
                 if (type is StorageTypes.extUnc)
                     type = StorageTypes.extOodle; // Compress external unc to Oodle
-                if (type is StorageTypes.pccUnc or StorageTypes.pccOodle && !isPackageStored) //Moving texture to store externally. make sure bottom 6 are pcc stored
+                if (type is StorageTypes.pccUnc && !isPackageStored) //Moving texture to store externally. make sure bottom 6 are pcc stored
                     type = StorageTypes.extOodle;
             }
 
-            // User has selected package stored, or this is bottom six mip
+            // Force storage type to either ext or pcc. Does not handle LZMA or empty
             if (isPackageStored)
             {
-                if (type is StorageTypes.extOodle)
-                    type = StorageTypes.pccOodle;
-                else if (type is StorageTypes.extLZO)
-                    type = StorageTypes.pccLZO;
-                else if (type is StorageTypes.extUnc)
-                    type = StorageTypes.pccUnc;
-                else if (type is StorageTypes.extZlib)
-                    type = StorageTypes.pccZlib;
+                type = type switch
+                {
+                    StorageTypes.extOodle => StorageTypes.pccOodle,
+                    StorageTypes.extLZO => StorageTypes.pccLZO,
+                    StorageTypes.extUnc => StorageTypes.pccUnc,
+                    StorageTypes.extZlib => StorageTypes.pccZlib,
+                    _ => type
+                };
+            }
+            else
+            {
+                type = type switch
+                {
+                    StorageTypes.pccOodle => StorageTypes.extOodle,
+                    StorageTypes.pccLZO => StorageTypes.extLZO,
+                    StorageTypes.pccUnc => StorageTypes.extUnc,
+                    StorageTypes.pccZlib => StorageTypes.extZlib,
+                    _ => type
+                };
             }
 
             return type;
