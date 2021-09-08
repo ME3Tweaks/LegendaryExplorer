@@ -737,6 +737,30 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 }
             };
 
+            //Kinkojiro - New Class - only used in EGM
+            classes["SFXSeqAct_SetGalaxyMapOptions"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                //pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                //exportIndex = 0, not in LE3Resources.pcc
+                properties =
+                {
+                    new KeyValuePair<string, PropertyInfo>("m_aoGalaxyObjects", new PropertyInfo(PropertyType.ArrayProperty, "SFXGalaxyMapObject")),
+                    new KeyValuePair<string, PropertyInfo>("m_fFuelEfficiency", new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<string, PropertyInfo>("m_fFuelTank", new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<string, PropertyInfo>("m_fClusterSpeed", new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<string, PropertyInfo>("m_fSystemSpeed", new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<string, PropertyInfo>("m_fAcceleration", new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<string, PropertyInfo>("m_fDeceleration ", new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<string, PropertyInfo>("m_fClusterAcceleration", new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<string, PropertyInfo>("m_fClusterDeceleration", new PropertyInfo(PropertyType.FloatProperty))
+                }
+            };
+            sequenceObjects["SFXSeqAct_SetGalaxyMapOptions"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+
             ME3UnrealObjectInfo.AddIntrinsicClasses(classes, MEGame.LE3);
 
             classes["LightMapTexture2D"] = new ClassInfo

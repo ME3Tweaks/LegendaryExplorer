@@ -1799,7 +1799,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 MessageBoxButton.OKCancel);
             if (wdlg == MessageBoxResult.Cancel)
                 return;
-
+            int count = 0;
             for (int i = 0; i < Pcc.Names.Count; i++)
             {
                 string name = Pcc.Names[i];
@@ -1807,12 +1807,13 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 {
                     var newName = name.Replace(searchstr, replacestr);
                     Pcc.replaceName(i, newName);
+                    count++;
                 }
             }
 
             RefreshNames();
             RefreshView();
-            MessageBox.Show("Done", "Search and Replace Names", MessageBoxButton.OK);
+            MessageBox.Show($"{count} names were amended.", "Search and Replace Names", MessageBoxButton.OK);
         }
 
         private void CheckForBadObjectPropertyReferences()

@@ -873,5 +873,40 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 oReferencer.WriteProperty(referenceProp);
             }
         }
+
+        public static void ChangeClassesGlobally(PackageEditorWindow pewpf)
+        {
+
+            if (pewpf.SelectedItem.Entry.ClassName != "Class")
+            {
+                MessageBox.Show("Class that is being replaced not selected.", "Error");
+                return;
+            }
+
+            var replacement = EntrySelector.GetEntry<IEntry>(pewpf, pewpf.Pcc, "Select replacement Class reference");
+            if (replacement == null || replacement.ClassName != "Class")
+            {
+                MessageBox.Show("Invalid replacement.", "Error");
+                return;
+            }
+
+            int r = 0;
+            foreach (var exp in pewpf.Pcc.Exports)
+            {
+                if (exp.Class == pewpf.SelectedItem.Entry && !exp.IsDefaultObject)
+                {
+                    exp.Class = replacement;
+                    r++;
+                    if(exp.ObjectName.Name == pewpf.SelectedItem.Entry.ObjectName.Name)
+                    {
+                        int idx = exp.indexValue;
+                        exp.ObjectName = replacement.ObjectName.Name;
+                        exp.indexValue = idx;
+                    }
+                }
+            }
+
+            MessageBox.Show($"{r} exports had classes replaced.", "Replace Classes");
+        }
     }
 }

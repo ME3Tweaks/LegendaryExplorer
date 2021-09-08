@@ -105,6 +105,7 @@
         <MenuItem Header="Recook to a singular test level (from JSON)" Click="RecookLevelToTestFromJSON"/>
         <MenuItem Header="Convert to ME3 (retain instances)" Click="ConvertFileToME3"/>
         <MenuItem Header="Enumerate Class NetIndexes" Click="AutoEnumerateClassNetIndex"/>
+        <MenuItem Header="Replace all objects of Selected Class" Click="ClassUpgrade"/>
         <MenuItem Header="Set All WwiseEvent Durations" Click="SetAllWwiseEventDurations_Click"/>
         <MenuItem Header="Copy Package Name" Click="CopyPackageName"/>
         <MenuItem Header="Save as New Package" Click="SaveAsNewPackage"/>

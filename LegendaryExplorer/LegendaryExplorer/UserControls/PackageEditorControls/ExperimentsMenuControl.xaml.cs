@@ -1135,6 +1135,13 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsK.AddAllAssetsToReferencer(GetPEWindow());
         }
+
+        private void ClassUpgrade(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsK.ChangeClassesGlobally(GetPEWindow());
+        }
+
+
         #endregion
 
         // EXPERIMENTS: OTHER PEOPLE ------------------------------------------------------------
