@@ -6333,8 +6333,22 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 yield return node;
             }
 
-            yield return MakeUInt64Node(bin, "ProbeMask");
-            yield return MakeInt64Node(bin, "IgnoreMask");
+            long classFlagsPos = bin.Position;
+            var probeFuncs = (EProbeFunctions)bin.ReadUInt64();
+
+            var probeMaskNode = new BinInterpNode(classFlagsPos, $"ProbeMask: {(ulong)probeFuncs:X16}") { Length = 8 };
+            foreach (EProbeFunctions flag in probeFuncs.MaskToList())
+            {
+                probeMaskNode.Items.Add(new BinInterpNode
+                {
+                    Header = $"{(ulong)flag:X16} {flag}",
+                    Name = $"_{classFlagsPos}",
+                    Length = 8
+                });
+            }
+            yield return probeMaskNode;
+
+            yield return new BinInterpNode(bin.Position, $"IgnoreMask: {bin.ReadUInt64():X16}") { Length = 8 };
             yield return MakeInt16Node(bin, "Label Table Offset");
             yield return new BinInterpNode(bin.Position, $"StateFlags: {getStateFlagsStr((EStateFlags)bin.ReadUInt32())}") { Length = 4 };
             yield return MakeArrayNode(bin, "Local Functions", i =>
@@ -6351,14 +6365,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 subnodes.AddRange(MakeUStateNodes(bin));
 
                 long classFlagsPos = bin.Position;
-                UnrealFlags.EClassFlags ClassFlags = (UnrealFlags.EClassFlags)bin.ReadUInt32();
+                var ClassFlags = (EClassFlags)bin.ReadUInt32();
 
                 var classFlagsNode = new BinInterpNode(classFlagsPos, $"ClassFlags: {(int)ClassFlags:X8}", NodeType.StructLeafInt);
                 subnodes.Add(classFlagsNode);
 
-                foreach (UnrealFlags.EClassFlags flag in ClassFlags.MaskToList())
+                foreach (EClassFlags flag in ClassFlags.MaskToList())
                 {
-                    if (flag != UnrealFlags.EClassFlags.Inherit)
+                    if (flag != EClassFlags.Inherit)
                     {
                         classFlagsNode.Items.Add(new BinInterpNode
                         {
