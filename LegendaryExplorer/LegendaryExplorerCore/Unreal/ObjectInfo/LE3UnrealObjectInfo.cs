@@ -761,6 +761,26 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 ObjInstanceVersion = 1
             };
 
+            //Kinkojiro - New Class - only used in EGM
+            classes["SFXSeqAct_SetReaperAggression"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                //pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                //exportIndex = 0, not in LE3Resources.pcc
+                properties =
+                {
+                    new KeyValuePair<string, PropertyInfo>("m_aoGalaxyObjects", new PropertyInfo(PropertyType.ArrayProperty, "SFXGalaxyMapObject")),
+                    new KeyValuePair<string, PropertyInfo>("ScanParticleSystemRadius", new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<string, PropertyInfo>("MaxSpeed", new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<string, PropertyInfo>("Acceleration", new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<string, PropertyInfo>("m_fScanDetectionRange", new PropertyInfo(PropertyType.FloatProperty))
+                }
+            };
+            sequenceObjects["SFXSeqAct_SetReaperAggression"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+
             ME3UnrealObjectInfo.AddIntrinsicClasses(classes, MEGame.LE3);
 
             classes["LightMapTexture2D"] = new ClassInfo

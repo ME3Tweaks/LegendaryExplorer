@@ -1038,7 +1038,10 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                     }
                     else if (childbin is UProperty propbin)
                     {
-
+                        if(childbin is UArrayProperty arraybin)
+                        {
+                            EnumerateChildNetIndexes(arraybin.ElementType);
+                        }
                         EnumerateChildNetIndexes(propbin.Next);
                     }
                 }

@@ -744,7 +744,7 @@ namespace LegendaryExplorer.Tools.PlotManager
                         break;
                 }
                 int newElementId = SelectedNode.ElementId;
-                if (!isEditing)
+                if (!isEditing || SelectedNode.Type != newItemTypes[newItem_Type.SelectedIndex])
                 {
                     newElementId = mdb.GetNextElementId();
                 }
