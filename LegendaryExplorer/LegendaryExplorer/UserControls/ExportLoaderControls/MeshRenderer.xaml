@@ -8,6 +8,7 @@
              xmlns:scene3D="clr-namespace:LegendaryExplorer.UserControls.SharedToolControls.Scene3D"
              xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
              xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
+             xmlns:legendaryExplorer="clr-namespace:LegendaryExplorer"
              mc:Ignorable="d" 
              Loaded="MeshRenderer_Loaded"
              d:DesignHeight="450" d:DesignWidth="800"
@@ -36,6 +37,11 @@
                     <CheckBox Name="Rotating_Checkbox" IsChecked="{Binding Rotating}"  Content="Rotating"  VerticalAlignment="Center" Margin="2,0"/>
                     <CheckBox Name="CollisionMesh_Checkbox" IsChecked="{Binding ShowCollisionMesh}" Content="Collision Mesh" 
                           Visibility="{Binding IsStaticMesh, Converter={StaticResource BoolToVisibilityConverter}}"  VerticalAlignment="Center" Margin="2,0"/>
+                    <CheckBox Name="ShowMemory_Checkbox" 
+                              IsChecked="{Binding ShowMemoryUsage}" 
+                              Content="Show memory usage" 
+                              Visibility="{Binding Path=(legendaryExplorer:App.IsDebug), Converter={StaticResource BoolToVisibilityConverter}}"  
+                              VerticalAlignment="Center" Margin="2,0"/>
                     <ComboBox Name="LODPicker_ComboBox" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="11" Width="55" ItemsSource="{Binding LODPicker}" 
                               SelectedIndex="{Binding CurrentLOD, Mode=TwoWay}" ToolTip="Change the visible LOD" Margin="2,0" FontStretch="UltraCondensed"/>
                     <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="2,0"/>
@@ -95,6 +101,16 @@
 
                     </StackPanel>
                 </Expander>
+                <StackPanel Orientation="Vertical" Canvas.ZIndex="4" VerticalAlignment="Top" HorizontalAlignment="Right" Background="#99AAAAAA" Visibility="{Binding ShowMemoryUsage, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <TextBlock Text="Memory Information" FontWeight="Bold"/>
+                    <ItemsControl ItemsSource="{Binding SceneViewerProperty}">
+                        <ItemsControl.Resources>
+                            <DataTemplate DataType="{x:Type scene3D:PreviewTextureCache+PreviewTextureEntry}">
+                                    <TextBlock Text="{Binding InstanceFullPath}"/>
+                            </DataTemplate>
+                        </ItemsControl.Resources>
+                    </ItemsControl>
+                </StackPanel>
                 <scene3D:SceneRenderControl Canvas.ZIndex="0"  x:Name="SceneViewer" Render="SceneViewer_Render" />
             </Grid>
         </DockPanel>

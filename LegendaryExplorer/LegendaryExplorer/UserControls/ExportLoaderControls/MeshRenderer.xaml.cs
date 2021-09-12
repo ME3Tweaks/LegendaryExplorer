@@ -213,7 +213,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             get => _busyProgressBarValue;
             set => SetProperty(ref _busyProgressBarValue, value);
         }
+
+
         #endregion
+
+        private bool _showMemoryUsage = false;
+        public bool ShowMemoryUsage
+        {
+            get => _showMemoryUsage;
+            set => SetProperty(ref _showMemoryUsage, value);
+        }
 
         #region Bindings
         private bool _isStaticMesh;
@@ -355,6 +364,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
 
         public ICommand UModelExportCommand { get; set; }
+        
         private void LoadCommands()
         {
             UModelExportCommand = new GenericCommand(EnsureUModel, CanExportViaUModel);
@@ -393,8 +403,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
 
                     var umodelProcess = new ConsoleApp(umodel, arguments);
-                    //BACKGROUND_MEM_PROCESS_ERRORS = new List<string>();
-                    //BACKGROUND_MEM_PROCESS_PARSED_ERRORS = new List<string>();
                     IsBusy = true;
                     BusyText = "Exporting via UModel\nThis may take a few minutes";
                     BusyProgressIndeterminate = true;
@@ -425,10 +433,19 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private readonly List<string> alreadyLoadedImportMaterials = new();
 
+        /// <summary>
+        /// Used for debugging by listing the used instances
+        /// </summary>
+        public ObservableCollectionExtended<PreviewTextureCache.PreviewTextureEntry> SceneViewerProperty => SceneViewer?.Context?.TextureCache?.AssetCache;
+
         public override void LoadExport(ExportEntry exportEntry)
         {
             UnloadExport();
+            // Get rid of old objects.
+            SceneViewer?.Context?.TextureCache?.ExpungeStaleCacheItems();
             SceneViewer.InitializeD3D();
+            OnPropertyChanged(nameof(SceneViewerProperty));
+
             //SceneViewer.Context.BackgroundColor = new SharpDX.Color(128, 128, 128);
             alreadyLoadedImportMaterials.Clear();
             CurrentLoadedExport = exportEntry;
@@ -701,6 +718,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             LODPicker.Add($"LOD{l}");
                         }
                     }
+
                 });
 
             }

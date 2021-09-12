@@ -418,39 +418,40 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             //This section exists for Meshplorer Winforms. WPF version preloads this in a background thread to improve performance
             if (sections == null)
             {
-                sections = new List<ModelPreviewSection>();
-                foreach (var section in lodModel.Elements)
-                {
-                    if (section.Material.value > 0)
-                    {
-                        // TODO: pick what material class best fits based on what properties the 
-                        // MaterialInstanceConstant mat has.
-                        // For now, just use the default material.
-                        ExportEntry entry = m.Export.FileRef.GetUExport(section.Material.value);
-                        ModelPreviewMaterial material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(entry), assetCache);
-                        AddMaterial(material.Properties["Name"], material);
-                    }
-                    else if (section.Material.value < 0)
-                    {
-                        var extMaterialExport = FindExternalAsset(m.Export.FileRef.GetImport(section.Material.value), texcache.cache.Select(x => x.TextureExport).ToList(), assetLookupPackagesToDispose);
-                        if (extMaterialExport != null)
-                        {
-                            // TODO: pick what material class best fits based on what properties the 
-                            // MaterialInstanceConstant mat has.
-                            // For now, just use the default material.
-                            ModelPreviewMaterial material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(extMaterialExport), assetCache);
-                            AddMaterial(material.Properties["Name"], material);
-                        }
-                        else
-                        {
+                throw new Exception("Sections was null, comment indicated this code should not have been reachable");
+                //sections = new List<ModelPreviewSection>();
+                //foreach (var section in lodModel.Elements)
+                //{
+                //    if (section.Material.value > 0)
+                //    {
+                //        // TODO: pick what material class best fits based on what properties the 
+                //        // MaterialInstanceConstant mat has.
+                //        // For now, just use the default material.
+                //        ExportEntry entry = m.Export.FileRef.GetUExport(section.Material.value);
+                //        ModelPreviewMaterial material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(entry), assetCache);
+                //        AddMaterial(material.Properties["Name"], material);
+                //    }
+                //    else if (section.Material.value < 0)
+                //    {
+                //        var extMaterialExport = FindExternalAsset(m.Export.FileRef.GetImport(section.Material.value), texcache.AssetCache.Select(x => x.TextureExport).ToList(), assetLookupPackagesToDispose);
+                //        if (extMaterialExport != null)
+                //        {
+                //            // TODO: pick what material class best fits based on what properties the 
+                //            // MaterialInstanceConstant mat has.
+                //            // For now, just use the default material.
+                //            ModelPreviewMaterial material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(extMaterialExport), assetCache);
+                //            AddMaterial(material.Properties["Name"], material);
+                //        }
+                //        else
+                //        {
 
-                            Debug.WriteLine("Could not find import material from section.");
-                            Debug.WriteLine("Import material: " + m.Export.FileRef.GetEntryString(section.Material.value));
-                        }
-                    }
+                //            Debug.WriteLine("Could not find import material from section.");
+                //            Debug.WriteLine("Import material: " + m.Export.FileRef.GetEntryString(section.Material.value));
+                //        }
+                //    }
 
-                    sections.Add(new ModelPreviewSection(m.Export.FileRef.getObjectName(section.Material.value), section.FirstIndex, section.NumTriangles));
-                }
+                //    sections.Add(new ModelPreviewSection(m.Export.FileRef.getObjectName(section.Material.value), section.FirstIndex, section.NumTriangles));
+                //}
             }
             else
             {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
@@ -22,25 +23,30 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             /// <summary>
             /// Texture export for this cache entry
             /// </summary>
-            public ExportEntry TextureExport;
-
+            //public ExportEntry TextureExport { get; set; }
+            public string InstanceFullPath { get; set; }
             /// <summary>
             /// The Direct3D ShaderResourceView for binding to shaders.
             /// </summary>
             public ShaderResourceView TextureView;
 
             /// <summary>
-            /// The Direct3D texture for SHaderResourceView creation.
+            /// The Direct3D texture for ShaderResourceView creation.
             /// </summary>
             public Texture2D Texture;
+
+            /// <summary>
+            /// The time this object was last accessed.
+            /// </summary>
+            public DateTime LastUsageTime = DateTime.Now;
 
             /// <summary>
             /// Creates a new cache entry for the given texture.
             /// </summary>
             public PreviewTextureEntry(ExportEntry export)
             {
-                MemoryAnalyzer.AddTrackedMemoryItem($"PreviewTexture {export.ObjectName}",new WeakReference(this));
-                TextureExport = export;
+                MemoryAnalyzer.AddTrackedMemoryItem($"PreviewTexture {export.ObjectName}", new WeakReference(this));
+                InstanceFullPath = export.InstancedFullPath;
             }
 
             /// <summary>
@@ -68,21 +74,38 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         }
 
         /// <summary>
+        /// Removes items from the cache that are over 1 minute old
+        /// </summary>
+        public void ExpungeStaleCacheItems()
+        {
+            for (int i = AssetCache.Count - 1; i > 0; i--)
+            {
+                if (DateTime.Now - AssetCache[i].LastUsageTime > TimeSpan.FromMinutes(1))
+                {
+                    Debug.WriteLine($"Expunging PreviewTextureCache stale item: {AssetCache[i].InstanceFullPath}");
+                    AssetCache[i].Dispose();
+                    AssetCache.RemoveAt(i);
+                }
+            }
+        }
+
+
+        /// <summary>
         /// Disposes all the textures and resource views.
         /// </summary>
         public void Dispose()
         {
-            foreach (PreviewTextureEntry e in cache)
+            foreach (PreviewTextureEntry e in AssetCache)
             {
                 e.Dispose();
             }
-            cache.Clear();
+            AssetCache.Clear();
         }
 
         /// <summary>
         /// Stores loaded textures by their full name.
         /// </summary>
-        public readonly List<PreviewTextureEntry> cache = new();
+        public ObservableCollectionExtended<PreviewTextureEntry> AssetCache { get; } = new();
 
         /// <summary>
         /// Queues a texture for eventual loading.
@@ -120,15 +143,15 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         /// </summary>
         public PreviewTextureEntry LoadTexture(ExportEntry export, Texture2DMipInfo preloadedMipInfo = null, byte[] decompressedTextureData = null)
         {
-            foreach (PreviewTextureEntry e in cache)
+            foreach (PreviewTextureEntry e in AssetCache)
             {
-                if (e.TextureExport.FileRef.FilePath == export.FileRef.FilePath && e.TextureExport.UIndex == export.UIndex)
+                // Same full paths are assumed to be identical. Leaving this here in case this needs changing for some reason.
+                if (/*e.TextureExport.FileRef.FilePath == export.FileRef.FilePath && */e.InstanceFullPath == export.InstancedFullPath)
                 {
+                    e.LastUsageTime = DateTime.Now;
                     return e;
                 }
             }
-            //using (var texpcc = MEPackageHandler.OpenMEPackage(pcc))
-            //{
             var entry = new PreviewTextureEntry(export);
             var metex = new LegendaryExplorerCore.Unreal.Classes.Texture2D(export);
             try
@@ -136,14 +159,13 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 if (preloadedMipInfo != null && metex.Export != preloadedMipInfo.Export) throw new Exception();
                 entry.Texture = metex.generatePreviewTexture(Device, out Texture2DDescription _, preloadedMipInfo, decompressedTextureData);
                 entry.TextureView = new ShaderResourceView(Device, entry.Texture);
-                cache.Add(entry);
+                AssetCache.Add(entry);
                 return entry;
             }
             catch
             {
                 return null;
             }
-            //}
         }
     }
 }
