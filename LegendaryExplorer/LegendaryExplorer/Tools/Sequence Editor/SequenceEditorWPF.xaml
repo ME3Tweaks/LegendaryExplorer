@@ -98,13 +98,18 @@
                     <MenuItem Header="Open Kismet Log (restricted to current sequence)"
                               Command="{Binding KismetLogCommand}"
                               CommandParameter="CurrentSequence"/>
-                    <MenuItem Header="Open Kismet Log for ME3" Command="{Binding KismetLogCommand}"
-                                CommandParameter="{x:Static packages:MEGame.ME3}" />
-                    <MenuItem Header="Open Kismet Log for ME2" Command="{Binding KismetLogCommand}"
-                                CommandParameter="{x:Static packages:MEGame.ME2}" />
+
+                    <Separator/>
                     <!-- TODO: Uncomment when ME1 Kismet Logger is created -->
                     <!--<MenuItem Header="Open Kismet Log for ME1" Command="{Binding KismetLogCommand}" CommandParameter="{x:Static packages:MEGame.ME1}"/>-->
+                    <MenuItem Header="Open Kismet Log for ME2" Command="{Binding KismetLogCommand}"
+                              CommandParameter="{x:Static packages:MEGame.ME2}" />
+                    <MenuItem Header="Open Kismet Log for ME3" Command="{Binding KismetLogCommand}"
+                              CommandParameter="{x:Static packages:MEGame.ME3}" />
+                    <Separator/>
                     <MenuItem Header="Open Kismet Log for LE1" Command="{Binding KismetLogCommand}" CommandParameter="{x:Static packages:MEGame.LE1}"/>
+                    <MenuItem Header="Open Kismet Log for LE2" Command="{Binding KismetLogCommand}" CommandParameter="{x:Static packages:MEGame.LE2}"/>
+                    <MenuItem Header="Open Kismet Log for LE3" Command="{Binding KismetLogCommand}" CommandParameter="{x:Static packages:MEGame.LE3}"/>
                 </MenuItem>
 
                 <MenuItem Header="View Options" Padding="4">
