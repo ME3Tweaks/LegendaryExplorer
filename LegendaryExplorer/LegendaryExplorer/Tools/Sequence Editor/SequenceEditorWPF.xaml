@@ -106,7 +106,7 @@
                               CommandParameter="{x:Static packages:MEGame.ME2}" />
                     <MenuItem Header="Open Kismet Log for ME3" Command="{Binding KismetLogCommand}"
                               CommandParameter="{x:Static packages:MEGame.ME3}" />
-                    <Separator/>
+                    <Separator/> 
                     <MenuItem Header="Open Kismet Log for LE1" Command="{Binding KismetLogCommand}" CommandParameter="{x:Static packages:MEGame.LE1}"/>
                     <MenuItem Header="Open Kismet Log for LE2" Command="{Binding KismetLogCommand}" CommandParameter="{x:Static packages:MEGame.LE2}"/>
                     <MenuItem Header="Open Kismet Log for LE3" Command="{Binding KismetLogCommand}" CommandParameter="{x:Static packages:MEGame.LE3}"/>
