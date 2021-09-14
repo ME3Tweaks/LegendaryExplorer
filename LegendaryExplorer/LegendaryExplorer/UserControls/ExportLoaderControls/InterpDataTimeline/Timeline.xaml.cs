@@ -164,7 +164,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             int? strRef = InterpGroups.Select(g => g.StrRefId).FirstOrDefault(id => id != null);
             if (strRef != null)
             {
-                LineStrRef = TLKManagerWPF.GlobalFindStrRefbyID(strRef.GetValueOrDefault(), CurrentLoadedExport?.Game ?? MEGame.ME3);
+                var me1PackageOrNull = CurrentLoadedExport?.Game.IsGame1() ?? false ? CurrentLoadedExport?.FileRef : null;
+                LineStrRef = TLKManagerWPF.GlobalFindStrRefbyID(strRef.GetValueOrDefault(), CurrentLoadedExport?.Game ?? MEGame.ME3, me1PackageOrNull);
             }
             else LineStrRef = "";
         }

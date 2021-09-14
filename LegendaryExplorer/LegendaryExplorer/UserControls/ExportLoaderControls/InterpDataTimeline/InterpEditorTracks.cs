@@ -102,13 +102,17 @@ namespace LegendaryExplorer.Tools.InterpEditor
                     {
                         Tracks.Add(new InterpTrackDirector(trackExport));
                     }
-                    else  if (trackExport.IsA("InterpTrackFloatBase"))
+                    else if (trackExport.IsA("InterpTrackFloatBase"))
                     {
                         Tracks.Add(new InterpTrackFloatBase(trackExport));
                     }
                     else if (trackExport.IsA("InterpTrackVectorBase"))
                     {
                         Tracks.Add(new InterpTrackVectorBase(trackExport));
+                    }
+                    else if (trackExport.IsA("BioEvtSysTrackVOElements") && trackExport.Game == MEGame.ME1)
+                    {
+                        Tracks.Add(new BioInterpTrack(trackExport));
                     }
                     else
                     {
