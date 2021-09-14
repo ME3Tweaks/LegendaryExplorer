@@ -397,11 +397,11 @@
                                     <RowDefinition Height="24"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
-                                <StackPanel Orientation="Horizontal" Grid.Row="0" Background="AliceBlue">
+                                <StackPanel Orientation="Horizontal" Grid.Row="0" Background="AliceBlue" VerticalAlignment="Center">
                                     <TextBlock Text="Usages (Bold is default class settings)"  HorizontalAlignment="Stretch" Padding="3"
                                                ToolTip="Shows all the files that use this class, and the first export number&#x0a;Right click to open in Package Editor" />
                                     <CheckBox x:Name="allClassInstancesCheckBox" Content="Show multiple per file" IsChecked="{Binding ShowAllClassUsages}" 
-                                              Margin="5, 2, 0, 0" VerticalContentAlignment="Top"/>
+                                              Margin="5, 2, 0, 0" VerticalContentAlignment="Center"/>
                                 </StackPanel>
                                 <controls:ListBoxScroll x:Name="lstbx_Usages" MinWidth="200" ItemsSource="{Binding SelectedClassUsages}" Grid.Row="1" >
                                     <controls:ListBoxScroll.ItemTemplate>
@@ -491,7 +491,10 @@
                                     </DataTemplate>
                                 </controls:ListBoxScroll.ItemTemplate>
                             </controls:ListBoxScroll>
-                            <TextBlock Text="Usages" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="All the files that use the material (grey is official DLC w shadercache)&#x0a;Right click to open in Package Editor" Grid.Row="0" Grid.Column="2"/>
+                            <TextBlock Text="Usages" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="All the files that use the material (grey is official DLC with shadercache)&#x0a;Right click to open in Package Editor" Grid.Row="0" Grid.Column="2"/>
+                            <Button ToolTip="Copies the list of usages to the clipboard as text" Name="CopyUsagesMaterials_Button" Click="CopyUsages_Click" VerticalAlignment="Center" Padding="3" HorizontalAlignment="Right" Width="26" Grid.Row="0" Grid.Column="2">
+                                <fa:ImageAwesome Icon="Solid_Copy" Foreground="CornflowerBlue"/>
+                            </Button>
                             <controls:ListBoxScroll x:Name="lstbx_MatUsages" DockPanel.Dock="Right" MinWidth="200" ItemsSource="{Binding SelectedItem.Usages, ElementName=lstbx_Materials}" Grid.Row="1" Grid.Column="2">
                                 <controls:ListBoxScroll.ItemTemplate>
                                     <DataTemplate>
@@ -570,9 +573,12 @@
                                 </DockPanel>
                             </Border>
                             <TextBlock Text="Usages" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Every file that uses this Mesh&#x0a;Right click to open in Package Editor" Grid.Row="0" Grid.Column="2"/>
-                            <controls:ListBoxScroll x:Name="lstbx_MeshUsages" DockPanel.Dock="Right" MinWidth="250" ItemsSource="{Binding SelectedItem.Usages, ElementName=lstbx_Meshes }" Grid.Row="2" Grid.Column="2" >
+                            <Button ToolTip="Copies the list of usages to the clipboard as text" Name="CopyUsagesMeshes_Button" Click="CopyUsages_Click" VerticalAlignment="Center" Padding="3" HorizontalAlignment="Right" Width="26" Grid.Row="0" Grid.Column="2">
+                                <fa:ImageAwesome Icon="Solid_Copy" Foreground="CornflowerBlue"/>
+                            </Button>
+                            <controls:ListBoxScroll x:Name="lstbx_MeshUsages" DockPanel.Dock="Right" MinWidth="250" ItemsSource="{Binding SelectedItem.Usages, ElementName=lstbx_Meshes }" Grid.Row="1" Grid.Column="2">
                                 <controls:ListBoxScroll.ItemTemplate>
-                                    <DataTemplate>
+                                    <DataTemplate DataType="assetDatabase:MeshRecord">
                                         <TextBlock>
                                             <TextBlock.Text>
                                                 <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
@@ -667,6 +673,9 @@
                                 </DockPanel>
                             </Border>
                             <TextBlock Text="Usages" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Every file that uses this texture&#x0a;Right click to open in Package Editor" Grid.Row="0" Grid.Column="2"/>
+                            <Button ToolTip="Copies the list of usages to the clipboard as text" Name="CopyUsagesTextures_Button" Click="CopyUsages_Click" VerticalAlignment="Center" Padding="3" HorizontalAlignment="Right" Width="26" Grid.Row="0" Grid.Column="2">
+                                <fa:ImageAwesome Icon="Solid_Copy" Foreground="CornflowerBlue"/>
+                            </Button>
                             <controls:ListBoxScroll x:Name="lstbx_TextureUsages"  MinWidth="250" ItemsSource="{Binding SelectedItem.Usages, ElementName=lstbx_Textures }" Grid.Row="1" Grid.Column="2">
                                 <controls:ListBoxScroll.ItemTemplate>
                                     <DataTemplate>
@@ -772,6 +781,9 @@
                                 </StackPanel>
                             </Border>
                             <TextBlock Text="Usages" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Every file that uses this animsequence&#x0a;Right click to open in Package Editor" Grid.Row="0" Grid.Column="2"/>
+                            <Button ToolTip="Copies the list of usages to the clipboard as text" Name="CopyUsagesAnimations_Button" Click="CopyUsages_Click" VerticalAlignment="Center" Padding="3" HorizontalAlignment="Right" Width="26" Grid.Row="0" Grid.Column="2">
+                                <fa:ImageAwesome Icon="Solid_Copy" Foreground="CornflowerBlue"/>
+                            </Button>
                             <controls:ListBoxScroll x:Name="lstbx_AnimUsages" MinWidth="200" ItemsSource="{Binding SelectedItem.Usages, ElementName=lstbx_Anims }" Grid.Row="1" Grid.Column="2">
                                 <controls:ListBoxScroll.ItemTemplate>
                                     <DataTemplate>
@@ -786,7 +798,7 @@
                                         </TextBlock>
                                     </DataTemplate>
                                 </controls:ListBoxScroll.ItemTemplate>
-                                
+
                                 <controls:ListBoxScroll.ItemContainerStyle>
                                     <Style TargetType="ListBoxItem">
                                         <Style.Triggers>
@@ -865,6 +877,9 @@
                                 </StackPanel>
                             </Border>
                             <TextBlock Text="Usages" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Every file that uses this effect&#x0a;Right click to open in Package Editor" Grid.Row="0" Grid.Column="2"/>
+                            <Button ToolTip="Copies the list of usages to the clipboard as text" Name="CopyUsagesVFX_Button" Click="CopyUsages_Click" VerticalAlignment="Center" Padding="3" HorizontalAlignment="Right" Width="26" Grid.Row="0" Grid.Column="2">
+                                <fa:ImageAwesome Icon="Solid_Copy" Foreground="CornflowerBlue"/>
+                            </Button>
                             <controls:ListBoxScroll x:Name="lstbx_PSUsages" DockPanel.Dock="Right" MinWidth="200" ItemsSource="{Binding SelectedItem.Usages, ElementName=lstbx_Particles }" Grid.Row="1" Grid.Column="2">
                                 <controls:ListBoxScroll.ItemTemplate>
                                     <DataTemplate>
@@ -942,6 +957,9 @@
                                 </StackPanel>
                             </Border>
                             <TextBlock Text="Usages" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Every file that uses this effect&#x0a;Right click to open in Package Editor" Grid.Row="0" Grid.Column="2"/>
+                            <Button ToolTip="Copies the list of usages to the clipboard as text" Name="CopyUsagesGUI_Button" Click="CopyUsages_Click" VerticalAlignment="Center" Padding="3" HorizontalAlignment="Right" Width="26" Grid.Row="0" Grid.Column="2">
+                                <fa:ImageAwesome Icon="Solid_Copy" Foreground="CornflowerBlue"/>
+                            </Button>
                             <controls:ListBoxScroll x:Name="lstbx_GUIUsages" DockPanel.Dock="Right" MinWidth="200" ItemsSource="{Binding SelectedItem.Usages, ElementName=lstbx_Scaleform }" Grid.Row="1" Grid.Column="2">
                                 <controls:ListBoxScroll.ItemTemplate>
                                     <DataTemplate>
@@ -1191,7 +1209,7 @@
                                     </controls:ListBoxScroll.ContextMenu>
                                 </controls:ListBoxScroll>
                             </Grid>
-                        </DockPanel>    
+                        </DockPanel>
                     </TabItem>
                 </TabControl>
             </DockPanel>

@@ -69,7 +69,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         public ObservableCollectionExtended<MELocalization> AvailableLocalizations { get; set; } = new()
         {
-            MELocalization.INT, MELocalization.DEU, MELocalization.FRA, MELocalization.ITA, MELocalization.POL,
+            MELocalization.INT,
+            MELocalization.DEU,
+            MELocalization.FRA,
+            MELocalization.ITA,
+            MELocalization.POL,
             MELocalization.RUS
         };
 
@@ -222,7 +226,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         {
             return (lstbx_Usages.SelectedIndex >= 0 && currentView == 1) || (lstbx_MatUsages.SelectedIndex >= 0 && currentView == 2) || (lstbx_AnimUsages.SelectedIndex >= 0 && currentView == 5)
                 || (lstbx_MeshUsages.SelectedIndex >= 0 && currentView == 3) || (lstbx_PSUsages.SelectedIndex >= 0 && currentView == 6) || (lstbx_TextureUsages.SelectedIndex >= 0 && currentView == 4)
-                || (lstbx_GUIUsages.SelectedIndex >= 0 && currentView == 7) || (lstbx_Lines.SelectedIndex >= 0 && currentView == 8) || (currentView == 9 && lstbx_PlotUsages.SelectedIndex >= 0) 
+                || (lstbx_GUIUsages.SelectedIndex >= 0 && currentView == 7) || (lstbx_Lines.SelectedIndex >= 0 && currentView == 8) || (currentView == 9 && lstbx_PlotUsages.SelectedIndex >= 0)
                 || (currentView == 0 && IsNotCND(lstbx_Files.SelectedItem));
         }
 
@@ -360,7 +364,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             audioPcc = null;
             meshPcc = null;
             textPcc = null;
-            
+
             dbworker.DoWork -= GetLineStrings;
             dbworker.RunWorkerCompleted -= dbworker_LineWorkCompleted;
 
@@ -791,9 +795,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         private PlotRecord GetSelectedPlotRecord()
         {
             var lstbx = GetSelectedPlotListBox();
-            if (lstbx is {SelectedIndex: > -1})
+            if (lstbx is { SelectedIndex: > -1 })
             {
-                return (PlotRecord) lstbx.SelectedItem;
+                return (PlotRecord)lstbx.SelectedItem;
             }
             return null;
         }
@@ -894,7 +898,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             }
             else if (lstbx_Lines.SelectedIndex >= 0 && currentView == 8)
             {
-                var lu = (ConvoLine) lstbx_Lines.SelectedItem;
+                var lu = (ConvoLine)lstbx_Lines.SelectedItem;
                 usagepkg = CurrentConvo.Item2;
                 contentdir = CurrentConvo.Item4;
                 usageUID = CurrentConvo.Item3;
@@ -902,7 +906,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             }
             else if (lstbx_PlotUsages.SelectedIndex >= 0 && currentView == 9)
             {
-                var pu = (PlotUsage) lstbx_PlotUsages.SelectedItem;
+                var pu = (PlotUsage)lstbx_PlotUsages.SelectedItem;
                 (usagepkg, contentdir, usagemount) = FileListExtended[pu.FileKey];
                 usageUID = pu.UIndex;
                 tool = pu.Context.ToTool();
@@ -993,7 +997,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     if (uindex != 0)
                     {
                         diagEd.LoadFile(filePath, uindex);
-                        if(strRef != 0) diagEd.TrySelectStrRef(strRef);
+                        if (strRef != 0) diagEd.TrySelectStrRef(strRef);
                     }
                     else
                     {
@@ -1071,7 +1075,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     case PlotUsageContext.BoolTaskEval:
                     case PlotUsageContext.IntTaskEval:
                     case PlotUsageContext.FloatTaskEval:
-                    default: 
+                    default:
                         break;
                 }
             }
@@ -1084,7 +1088,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             int mount = 0;
             if (lstbx_Files.SelectedIndex >= 0 && currentView == 0)
             {
-                (filename, contentdir, mount) = (FileDirPair) lstbx_Files.SelectedItem;
+                (filename, contentdir, mount) = (FileDirPair)lstbx_Files.SelectedItem;
             }
             else return;
 
@@ -2427,7 +2431,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                             primarySort = "Directory";
                             secondarySort = "FileName";
                             var header = headerClicked.Column.Header.ToString();
-                            switch(header)
+                            switch (header)
                             {
                                 case "FileName":
                                     primarySort = "FileName";
@@ -2870,6 +2874,53 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             AllDumpingItems?.ForEach(x => x.DumpCanceled = true);
             CommandManager.InvalidateRequerySuggested(); //Refresh commands
         }
+
+        private void CopyUsages_Click(object sender, RoutedEventArgs e)
+        {
+            string text = null;
+
+            if (FileListExtended == null || !FileListExtended.Any())
+                return; // Can't copy anything
+
+            if (sender == CopyUsagesMaterials_Button && lstbx_Materials.SelectedItem is MaterialRecord matR)
+            {
+                text = string.Join("\n", matR.Usages.Select(x => FileListExtended[x.FileKey]?.FileName).Distinct());
+            }
+            else if (sender == CopyUsagesTextures_Button && lstbx_Textures.SelectedItem is TextureRecord tr)
+            {
+                text = string.Join("\n", tr.Usages.Select(x => FileListExtended[x.FileKey]?.FileName).Distinct());
+            }
+            else if (sender == CopyUsagesMeshes_Button && lstbx_Meshes.SelectedItem is MeshRecord mr)
+            {
+                text = string.Join("\n", mr.Usages.Select(x => FileListExtended[x.FileKey]?.FileName).Distinct());
+            }
+            else if (sender == CopyUsagesAnimations_Button && lstbx_Anims.SelectedItem is AnimationRecord animR)
+            {
+                text = string.Join("\n", animR.Usages.Select(x => FileListExtended[x.FileKey]?.FileName).Distinct());
+            }
+            else if (sender == CopyUsagesVFX_Button && lstbx_Particles.SelectedItem is ParticleSysRecord psysR)
+            {
+                text = string.Join("\n", psysR.Usages.Select(x => FileListExtended[x.FileKey]?.FileName).Distinct());
+            }
+            else if (sender == CopyUsagesGUI_Button && lstbx_Scaleform.SelectedItem is GUIElement ge)
+            {
+                text = string.Join("\n", ge.Usages.Select(x => FileListExtended[x.FileKey]?.FileName).Distinct());
+            }
+            
+            if (text != null)
+            {
+                try
+                {
+                    Clipboard.SetText(text);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error copying to clipboard", MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                }
+            }
+        }
+
         private DirectoryInfo GetContentPath(DirectoryInfo directory)
         {
             if (directory == null)
@@ -2899,7 +2950,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             var listofFiles = values[1] as ObservableCollectionExtended<AssetDatabaseWindow.FileDirPair>;
             if (listofFiles == null || fileindex < 0 || fileindex >= listofFiles.Count || listofFiles.Count == 0)
             {
-                return $"Error file name not found";
+                return "Error: file name not found";
             }
             var export = (int)values[2];
             (string fileName, string directory, int mount) = listofFiles[fileindex];
