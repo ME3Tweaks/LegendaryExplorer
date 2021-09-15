@@ -148,7 +148,7 @@ namespace LegendaryExplorer.Tools.InterpEditor
             RecentsController.SaveRecentList(true);
             InterpDataExports.AddRange(Pcc.Exports.Where(exp => exp.ClassName == "InterpData"));
             Animations.AddRange(Pcc.Exports.Where(exp => exp.ClassName == "AnimSequence").Select(a => a.ObjectNameString));
-            Title = $"Interp Viewer - {Pcc.FilePath}";
+            Title = $"Interp Editor - {Pcc.FilePath}";
             StatusText = Path.GetFileName(Pcc.FilePath);
             timelineControl.UnloadExport();
         }
@@ -213,5 +213,33 @@ namespace LegendaryExplorer.Tools.InterpEditor
         }
 
         public string Toolname => "InterpEditor";
+
+        private void Window_DragOver(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                // Note that you can have more than one file.
+                var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                string ext = Path.GetExtension(files[0]).ToLower();
+                if (ext != ".u" && ext != ".upk" && ext != ".pcc" && ext != ".sfm" && ext != ".xxx" && ext != ".udk")
+                {
+                    e.Effects = DragDropEffects.None;
+                    e.Handled = true;
+                }
+            }
+        }
+
+        private void Window_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                // Note that you can have more than one file.
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                // Assuming you have one file that you care about, pass it off to whatever
+                // handling code you have defined.
+                LoadFile(files[0]);
+            }
+        }
     }
 }

@@ -11,7 +11,11 @@
         mc:Ignorable="d"
         Icon="pack://application:,,,/Tools/Icons/16x16/InterpEditor_Icon_16.ico"
         Title="Interp Editor" Height="750" Width="1300" MinWidth="900" MinHeight="200"
-        DataContext="{Binding RelativeSource={RelativeSource Self}}" Closing="WPFBase_Closing">
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        DragOver="Window_DragOver"
+        Drop="Window_Drop"
+        AllowDrop="True"
+        Closing="WPFBase_Closing">
     <Window.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
