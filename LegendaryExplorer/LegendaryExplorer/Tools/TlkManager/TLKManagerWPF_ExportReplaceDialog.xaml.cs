@@ -64,7 +64,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
             if (TLKList.SelectedItem is LoadedTLK { embedded: true } tlk)
             {
                 //TODO: Need to find a way for the export loader to register usage of the pcc.
-                IMEPackage pcc = MEPackageHandler.OpenME1Package(tlk.tlkPath);
+                IMEPackage pcc = MEPackageHandler.OpenMEPackage(tlk.tlkPath);
                 var export = pcc.GetUExport(tlk.exportNumber);
                 var elhw = new ExportLoaderHostedWindow(new TLKEditor(), export)
                 {

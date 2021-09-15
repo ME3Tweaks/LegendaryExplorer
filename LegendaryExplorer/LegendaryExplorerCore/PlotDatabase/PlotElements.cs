@@ -90,6 +90,7 @@ namespace LegendaryExplorerCore.PlotDatabase
 
         [JsonIgnore] public bool IsExpanded { get; set; }
 
+        [JsonIgnore]
         public string Path
         {
             get
@@ -131,8 +132,10 @@ namespace LegendaryExplorerCore.PlotDatabase
             Parent = parent;
         }
 
+        [JsonIgnore]
         public int RelevantId => PlotId <= 0 ? ElementId : PlotId;
 
+        [JsonIgnore]
         public bool IsAGameState
         {
             get
