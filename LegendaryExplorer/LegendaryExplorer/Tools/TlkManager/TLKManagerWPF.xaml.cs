@@ -693,12 +693,19 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
                 return tlks;
             }).ContinueWithOnUIThread(prevTask =>
             {
-                LE1TLKItems.ReplaceAll(prevTask.Result);
-                SelectLoadedTLKsLE1();
-                IsBusy = false;
-                if (prevTask.Result.Count > 0 && LE1TLKItems.Any(x => x.selectedForLoad))
+                if (prevTask.Exception != null)
                 {
-                    PromptForReload(MEGame.LE1);
+                    MessageBox.Show($@"Error occurred finding TLKs: {prevTask.Exception.FlattenException()}");
+                }
+                else
+                {
+                    LE1TLKItems.ReplaceAll(prevTask.Result);
+                    SelectLoadedTLKsLE1();
+                    IsBusy = false;
+                    if (prevTask.Result.Count > 0 && LE1TLKItems.Any(x => x.selectedForLoad))
+                    {
+                        PromptForReload(MEGame.LE1);
+                    }
                 }
             });
             bSaveNeededLE1 = true;
