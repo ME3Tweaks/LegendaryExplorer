@@ -581,6 +581,22 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             sequenceObjects["BioSeqAct_ShowMedals"] = new SequenceObjectInfo();
             */
 
+            // HenBagle - New Class - used to fix a bug in LE1 CP
+            classes["SFXSeqAct_GetGameOption"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 2, //in LE1Resources.pcc
+                properties =
+                {
+                    new KeyValuePair<string, PropertyInfo>("OptionType", new PropertyInfo(PropertyType.IntProperty)),
+                }
+            };
+            sequenceObjects["SFXSeqAct_GetGameOption"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+
             ME3UnrealObjectInfo.AddIntrinsicClasses(classes, MEGame.LE1);
         }
 
