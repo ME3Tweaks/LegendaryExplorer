@@ -36,7 +36,7 @@ namespace LegendaryExplorerCore.PlotDatabase
         {
         }
 
-        internal void ImportPlots(PlotDatabaseFile pdb)
+        internal void ImportPlots(SerializedPlotDatabase pdb)
         {
             if (pdb == null) throw new Exception("Plot Database was null.");
 
@@ -85,11 +85,6 @@ namespace LegendaryExplorerCore.PlotDatabase
             return null;
         }
 
-        public bool RemoveFromParent(PlotElement child)
-        {
-            return child.RemoveFromParent();
-        }
-
         public int GetNextElementId()
         {
             var maxElement = GetMasterDictionary().Keys.Max();
@@ -97,29 +92,40 @@ namespace LegendaryExplorerCore.PlotDatabase
         }
     }
 
-    class BasegamePlotDatabase : PlotDatabase
+    public class BasegamePlotDatabase : PlotDatabase
     {
         public override bool IsBioware => true;
 
-        public void LoadPlotsFromJSON(MEGame game)
+        public void LoadPlotsFromLEC(MEGame game)
         {
             Game = game;
-            var pdb = new PlotDatabaseFile();
+            var pdb = new SerializedPlotDatabase();
 
             string json = LegendaryExplorerCoreUtilities.LoadStringFromCompressedResource("PlotDatabases.zip",
                     LegendaryExplorerCoreLib.CustomPlotFileName(game));
 
-            pdb = JsonConvert.DeserializeObject<PlotDatabaseFile>(json, _jsonSerializerSettings);
+            pdb = JsonConvert.DeserializeObject<SerializedPlotDatabase>(json, _jsonSerializerSettings);
             pdb.BuildTree();
             ImportPlots(pdb);
+
+            Root = Organizational[1];
+        }
+
+        public static BasegamePlotDatabase CreateBasegamePlotDatabase(MEGame game)
+        {
+            var db = new BasegamePlotDatabase();
+            db.LoadPlotsFromLEC(game);
+            return db;
         }
     }
 
     public class ModPlotDatabase : PlotDatabase
     {
+        public static int StartingModId = 100000;
+
         public override bool IsBioware => false;
 
-        public void LoadPlotsFromJSONFile(MEGame game, string dbPath)
+        public void LoadPlotsFromFile(MEGame game, string dbPath)
         {
             if (dbPath == null || !File.Exists(dbPath))
                 throw new ArgumentException("Database file was null or doesn't exist");
@@ -131,9 +137,14 @@ namespace LegendaryExplorerCore.PlotDatabase
 
         public void ImportPlotsFromJSON(string json)
         {
-            var pdb = JsonConvert.DeserializeObject<PlotDatabaseFile>(json, _jsonSerializerSettings);
+            var pdb = JsonConvert.DeserializeObject<SerializedPlotDatabase>(json, _jsonSerializerSettings);
             pdb.BuildTree();
             ImportPlots(pdb);
+
+            if (Organizational.TryGetValue(StartingModId, out var root))
+            {
+                Root = root;
+            };
         }
 
         public void SaveDatabaseToFile(string folder)
@@ -141,11 +152,26 @@ namespace LegendaryExplorerCore.PlotDatabase
             if (!CanSave() || !Directory.Exists(folder))
                 return;
 
-            var serializationObj = new PlotDatabaseFile(this);
+            var serializationObj = new SerializedPlotDatabase(this);
             var json = JsonConvert.SerializeObject(serializationObj);
 
             var dbPath = Path.Combine(folder, $"PlotDBMods{Game}.json");
             File.WriteAllText(dbPath, json);
+        }
+
+        public static ModPlotDatabase CreateModPlotDatabase(MEGame game)
+        {
+            if (!game.IsLEGame()) throw new ArgumentException("Cannot create mod database for non-LE game");
+            var modDb = new ModPlotDatabase()
+            {
+                Game = game
+            };
+            var modsRoot = new PlotElement(0, StartingModId, $"{game.ToLEVersion()}/{game.ToOTVersion()} Mods", PlotElementType.Region, 0,
+                new List<PlotElement>());
+            modDb.Organizational.Add(StartingModId, modsRoot);
+            modDb.Root = modsRoot;
+
+            return modDb;
         }
     }
 }

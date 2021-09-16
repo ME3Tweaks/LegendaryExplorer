@@ -10,39 +10,53 @@ namespace LegendaryExplorerCore.PlotDatabase
 {
     public static class PlotDatabases
     {
-        public static PlotDatabase Le1PlotDatabase;
-        public static PlotDatabase Le2PlotDatabase;
-        public static PlotDatabase Le3PlotDatabase;
-        public static PlotDatabase Le1ModDatabase;
-        public static PlotDatabase Le2ModDatabase;
-        public static PlotDatabase Le3ModDatabase;
+        public static BasegamePlotDatabase Le1PlotDatabase => LazyLe1PlotDatabase.Value;
+        private static readonly Lazy<BasegamePlotDatabase> LazyLe1PlotDatabase = new(() => BasegamePlotDatabase.CreateBasegamePlotDatabase(MEGame.LE1));
 
-        public static PlotDatabase GetDatabaseForGame(MEGame game, bool isbioware)
+        public static BasegamePlotDatabase Le2PlotDatabase => LazyLe2PlotDatabase.Value;
+        private static readonly Lazy<BasegamePlotDatabase> LazyLe2PlotDatabase = new(() => BasegamePlotDatabase.CreateBasegamePlotDatabase(MEGame.LE2));
+
+        public static BasegamePlotDatabase Le3PlotDatabase => LazyLe3PlotDatabase.Value;
+        private static readonly Lazy<BasegamePlotDatabase> LazyLe3PlotDatabase = new(() => BasegamePlotDatabase.CreateBasegamePlotDatabase(MEGame.LE3));
+
+        public static ModPlotDatabase Le1ModDatabase;
+        public static ModPlotDatabase Le2ModDatabase;
+        public static ModPlotDatabase Le3ModDatabase;
+
+        public static PlotDatabase GetDatabaseForGame(MEGame game, bool isBioware)
         {
-            var db = game switch
-            {
-                MEGame.ME1 => Le1PlotDatabase,
-                MEGame.ME2 => Le2PlotDatabase,
-                MEGame.ME3 => Le3PlotDatabase,
-                MEGame.LE1 => isbioware ? Le1PlotDatabase : Le1ModDatabase,
-                MEGame.LE2 => isbioware ? Le2PlotDatabase : Le2ModDatabase,
-                MEGame.LE3 => isbioware ? Le3PlotDatabase : Le3ModDatabase,
-                _ => throw new ArgumentOutOfRangeException($"Game {game} has no plot database")
-            };
-            return db;
+            return (isBioware ? GetBasegamePlotDatabaseForGame(game) : GetModPlotDatabaseForGame(game));
         }
 
-        public static SortedDictionary<int, PlotElement> GetMasterDictionaryForGame(MEGame game, bool isbioware = true)
+        public static BasegamePlotDatabase GetBasegamePlotDatabaseForGame(MEGame game)
         {
-            EnsureDatabaseLoaded(game, isbioware);
-            var db = GetDatabaseForGame(game, isbioware);
+            if (game.IsGame1()) return Le1PlotDatabase;
+            else if (game.IsGame2()) return Le2PlotDatabase;
+            else if (game.IsGame3()) return Le3PlotDatabase;
+            throw new ArgumentOutOfRangeException($"Game {game} has no plot database");
+        }
+
+        public static ModPlotDatabase GetModPlotDatabaseForGame(MEGame game)
+        {
+            return game switch
+            {
+                MEGame.LE1 => Le1ModDatabase,
+                MEGame.LE2 => Le2ModDatabase,
+                MEGame.LE3 => Le3ModDatabase,
+                _ => throw new ArgumentOutOfRangeException($"Game {game} has no mod plot database")
+            };
+        }
+
+        public static SortedDictionary<int, PlotElement> GetMasterDictionaryForGame(MEGame game, bool isBioware = true)
+        {
+            EnsureDatabaseLoaded(game, isBioware);
+            var db = GetDatabaseForGame(game, isBioware);
             return db.GetMasterDictionary();
         }
 
         public static PlotBool FindPlotBoolByID(int id, MEGame game)
         {
-            EnsureDatabaseLoaded(game, true);
-            var db = GetDatabaseForGame(game, true);
+            var db = GetBasegamePlotDatabaseForGame(game);
             if (db.Bools.ContainsKey(id))
             {
                 return db.Bools[id];
@@ -51,7 +65,7 @@ namespace LegendaryExplorerCore.PlotDatabase
             if (game.IsLEGame())
             {
                 EnsureDatabaseLoaded(game, false);
-                var mdb = GetDatabaseForGame(game, false);
+                var mdb = GetModPlotDatabaseForGame(game);
                 if (mdb.Bools.ContainsKey(id))
                 {
                     return mdb.Bools[id];
@@ -62,8 +76,7 @@ namespace LegendaryExplorerCore.PlotDatabase
 
         public static PlotElement FindPlotIntByID(int id, MEGame game)
         {
-            EnsureDatabaseLoaded(game, true);
-            var db = GetDatabaseForGame(game, true);
+            var db = GetBasegamePlotDatabaseForGame(game);
             if (db.Ints.ContainsKey(id))
             {
                 return db.Ints[id];
@@ -72,7 +85,7 @@ namespace LegendaryExplorerCore.PlotDatabase
             if (game.IsLEGame())
             {
                 EnsureDatabaseLoaded(game, false);
-                var mdb = GetDatabaseForGame(game, false);
+                var mdb = GetModPlotDatabaseForGame(game);
                 if (mdb.Ints.ContainsKey(id))
                 {
                     return mdb.Ints[id];
@@ -83,8 +96,7 @@ namespace LegendaryExplorerCore.PlotDatabase
 
         public static PlotElement FindPlotFloatByID(int id, MEGame game)
         {
-            EnsureDatabaseLoaded(game, true);
-            var db = GetDatabaseForGame(game, true);
+            var db = GetBasegamePlotDatabaseForGame(game);
             if (db.Floats.ContainsKey(id))
             {
                 return db.Floats[id];
@@ -93,7 +105,7 @@ namespace LegendaryExplorerCore.PlotDatabase
             if (game.IsLEGame())
             {
                 EnsureDatabaseLoaded(game, false);
-                var mdb = GetDatabaseForGame(game, false);
+                var mdb = GetModPlotDatabaseForGame(game);
                 if (mdb.Floats.ContainsKey(id))
                 {
                     return mdb.Floats[id];
@@ -104,8 +116,7 @@ namespace LegendaryExplorerCore.PlotDatabase
 
         public static PlotConditional FindPlotConditionalByID(int id, MEGame game)
         {
-            EnsureDatabaseLoaded(game, true);
-            var db = GetDatabaseForGame(game, true);
+            var db = GetBasegamePlotDatabaseForGame(game);
             if (db.Conditionals.ContainsKey(id))
             {
                 return db.Conditionals[id];
@@ -114,7 +125,7 @@ namespace LegendaryExplorerCore.PlotDatabase
             if (game.IsLEGame())
             {
                 EnsureDatabaseLoaded(game, false);
-                var mdb = GetDatabaseForGame(game, false);
+                var mdb = GetModPlotDatabaseForGame(game);
                 if (mdb.Conditionals.ContainsKey(id))
                 {
                     return mdb.Conditionals[id];
@@ -125,8 +136,7 @@ namespace LegendaryExplorerCore.PlotDatabase
 
         public static PlotTransition FindPlotTransitionByID(int id, MEGame game)
         {
-            EnsureDatabaseLoaded(game, true);
-            var db = GetDatabaseForGame(game, true);
+            var db = GetBasegamePlotDatabaseForGame(game);
             if (db.Transitions.ContainsKey(id))
             {
                 return db.Transitions[id];
@@ -135,7 +145,7 @@ namespace LegendaryExplorerCore.PlotDatabase
             if (game.IsLEGame())
             {
                 EnsureDatabaseLoaded(game, false);
-                var mdb = GetDatabaseForGame(game, false);
+                var mdb = GetModPlotDatabaseForGame(game);
                 if (mdb.Transitions.ContainsKey(id))
                 {
                     return mdb.Transitions[id];
@@ -191,7 +201,7 @@ namespace LegendaryExplorerCore.PlotDatabase
                     mdbPath = Path.Combine(appDataPath, $"PlotDBMods{game}.json");
                 if(mdbPath != null && File.Exists(mdbPath))
                 {
-                    db.LoadPlotsFromJSONFile(game, mdbPath);
+                    db.LoadPlotsFromFile(game, mdbPath);
                     switch (game)
                     {
                         case MEGame.LE1:
@@ -208,54 +218,12 @@ namespace LegendaryExplorerCore.PlotDatabase
                 }
                 CreateNewModDatabase(game);
             }
-            else
-            {
-                var db = new BasegamePlotDatabase();
-                db.LoadPlotsFromJSON(game);
-                switch (game)
-                {
-                    case MEGame.ME1:
-                    case MEGame.LE1:
-                        Le1PlotDatabase = db;
-                        break;
-                    case MEGame.ME2:
-                    case MEGame.LE2:
-                        Le2PlotDatabase = db;
-                        break;
-                    case MEGame.ME3:
-                    case MEGame.LE3:
-                        Le3PlotDatabase = db;
-                        break;
-                }
-            }
             return true;
-        }
-
-        public static void LoadAllPlotDatabases()
-        {
-            var le1 = new BasegamePlotDatabase();
-            le1.LoadPlotsFromJSON(MEGame.LE1);
-            Le1PlotDatabase = le1;
-
-            var le2 = new BasegamePlotDatabase();
-            le2.LoadPlotsFromJSON(MEGame.LE2);
-            Le1PlotDatabase = le2;
-
-            var le3 = new BasegamePlotDatabase();
-            le3.LoadPlotsFromJSON(MEGame.LE3);
-            Le3PlotDatabase = le3;
         }
 
         public static void CreateNewModDatabase(MEGame game)
         {
-            if (!game.IsLEGame()) throw new ArgumentException("Cannot create mod database for non-LE game");
-            var modDb = new ModPlotDatabase()
-            {
-                Game = game
-            };
-            modDb.Organizational.Add(10000,
-                new PlotElement(0, 10000, $"{game}/{game.ToOTVersion()} Mods", PlotElementType.Region, 0,
-                    new List<PlotElement>()));
+            var modDb = ModPlotDatabase.CreateModPlotDatabase(game);
             switch (game)
             {
                 case MEGame.LE3:
@@ -270,5 +238,43 @@ namespace LegendaryExplorerCore.PlotDatabase
             }
         }
 
+        public static PlotElement BridgeBasegameAndModDatabases(MEGame game, string modJsonFileDir)
+        {
+            var roots = new List<PlotElement> { GetBasegamePlotDatabaseForGame(game).Root };
+            if (LoadDatabase(game, false, modJsonFileDir))
+            {
+                roots.Add(GetModPlotDatabaseForGame(game).Root);
+            }
+
+            // Do we already have a bridge? (no - we just loaded a new mod database from file)
+            if (roots.Count > 0 && roots.TrueForAll(r => r.Parent != null && r.Parent == roots[0].Parent))
+            {
+                return roots[0].Parent;
+            }
+            else
+            {
+                var gameRootPlot = GetNewRootPlotElement(game, roots, true);
+                return gameRootPlot;
+            }
+        }
+
+        public static PlotElement GetNewRootPlotElement(MEGame game, List<PlotElement> children, bool assignParents = false)
+        {
+            var gameNumber = game switch
+            {
+                MEGame.LE3 => 3,
+                MEGame.LE2 => 2,
+                MEGame.LE1 => 1
+            };
+            var plotParent = new PlotElement(0, 0, $"Legendary Edition - Mass Effect {gameNumber} Plots",
+                PlotElementType.None, null, children);
+
+            if (assignParents)
+            {
+                foreach (var el in children) el.AssignParent(plotParent);
+            }
+
+            return plotParent;
+        }
     }
 }

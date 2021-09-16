@@ -11,7 +11,7 @@ namespace LegendaryExplorerCore.PlotDatabase
     /// <summary>
     /// A class representing the JSON serialized plot database file
     /// </summary>
-    public class PlotDatabaseFile
+    public class SerializedPlotDatabase
     {
         // TODO: Change the JSON serialization to dictionary
         [JsonProperty("bools")] public List<PlotBool> Bools = new();
@@ -26,11 +26,11 @@ namespace LegendaryExplorerCore.PlotDatabase
 
         [JsonProperty("organizational")] public List<PlotElement> Organizational = new();
 
-        public PlotDatabaseFile()
+        public SerializedPlotDatabase()
         {
         }
 
-        public PlotDatabaseFile(PlotDatabase plotDatabase)
+        public SerializedPlotDatabase(PlotDatabase plotDatabase)
         {
             Bools = plotDatabase.Bools.Values.ToList();
             Ints = plotDatabase.Ints.Values.ToList();
@@ -56,11 +56,9 @@ namespace LegendaryExplorerCore.PlotDatabase
             {
                 var plot = element.Value;
                 var parentId = plot.ParentElementId;
-                if (parentId != 0)
+                if (parentId > 0)
                 {
-                    var parent = table[parentId];
-                    plot.Parent = parent;
-                    parent.Children.Add(plot);
+                    plot.AssignParent(table[parentId]);
                 }
             }
         }

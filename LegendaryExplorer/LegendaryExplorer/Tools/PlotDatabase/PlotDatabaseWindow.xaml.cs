@@ -23,13 +23,14 @@ using System.ComponentModel;
 using Microsoft.Win32;
 using ClosedXML.Excel;
 using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.SharedUI.Bases;
 
 namespace LegendaryExplorer.Tools.PlotManager
 {
     /// <summary>
     /// Interaction logic for PlotManagerWindow.xaml
     /// </summary>
-    public partial class PlotManagerWindow : NotifyPropertyChangedWindowBase
+    public partial class PlotManagerWindow : TrackingNotifyPropertyChangedWindowBase
     {
         #region Declarations
         public ObservableCollectionExtended<PlotElement> ElementsTable { get; } = new();
@@ -86,7 +87,7 @@ namespace LegendaryExplorer.Tools.PlotManager
         public bool ShowJournal { get => _ShowJournal; set => SetProperty(ref _ShowJournal, value); }
         private GridViewColumnHeader _lastHeaderClicked = null;
         private ListSortDirection _lastDirection = ListSortDirection.Ascending;
-        public PlotDatabase modDB = new ModPlotDatabase();
+        public ModPlotDatabase modDB = new ModPlotDatabase();
         public ObservableCollectionExtended<PlotElementType> newItemTypes { get; } = new()
         {
             PlotElementType.State,
@@ -129,52 +130,20 @@ namespace LegendaryExplorer.Tools.PlotManager
         #endregion
 
         #region PDBInitialization
-        public PlotManagerWindow()
+        public PlotManagerWindow() : base("Plot Database", true)
         {
 
             LoadCommands();
             InitializeComponent();
 
-            var rootlist3 = new List<PlotElement>();
-            var dictionary3 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE3);
-            rootlist3.Add(dictionary3[1]);
-            if (PlotDatabases.LoadDatabase(MEGame.LE3, false, AppDirectories.AppDataFolder))
-            {
-                var mods3 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE3, false);
-                rootlist3.Add(mods3[100000]);
-            }
-            dictionary3.Add(0, new PlotElement(0, 0, "Legendary Edition - Mass Effect 3 Plots", PlotElementType.None, -1, rootlist3, null));
-            dictionary3[0].Children[0].Parent = dictionary3[0];
-            dictionary3[0].Children[1].Parent = dictionary3[0];
-            RootNodes3.Add(dictionary3[0]);
+            RootNodes3.ClearEx();
+            RootNodes3.Add(PlotDatabases.BridgeBasegameAndModDatabases(MEGame.LE3, AppDirectories.AppDataFolder));
 
             RootNodes2.ClearEx();
-            var rootlist2 = new List<PlotElement>();
-            var dictionary2 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE2);
-            rootlist2.Add(dictionary2[1]);
-            if (PlotDatabases.LoadDatabase(MEGame.LE2, false, AppDirectories.AppDataFolder))
-            {
-                var mods2 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE2, false);
-                rootlist2.Add(mods2[100000]);
-            }
-            dictionary2.Add(0, new PlotElement(0, 0, "Legendary Edition - Mass Effect 2 Plots", PlotElementType.None, 0, rootlist2, null));
-            dictionary2[0].Children[0].Parent = dictionary2[0];
-            dictionary2[0].Children[1].Parent = dictionary2[0];
-            RootNodes2.Add(dictionary2[0]);
+            RootNodes2.Add(PlotDatabases.BridgeBasegameAndModDatabases(MEGame.LE2, AppDirectories.AppDataFolder));
 
             RootNodes1.ClearEx();
-            var rootlist1 = new List<PlotElement>();
-            var dictionary1 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE1);
-            rootlist1.Add(dictionary1[1]);
-            if (PlotDatabases.LoadDatabase(MEGame.LE1, false, AppDirectories.AppDataFolder))
-            {
-                var mods1 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE1, false);
-                rootlist1.Add(mods1[100000]);
-            }
-            dictionary1.Add(0, new PlotElement(0, 0, "Legendary Edition - Mass Effect 1 Plots", PlotElementType.None, -1, rootlist1, null));
-            dictionary3[0].Children[0].Parent = dictionary3[0];
-            dictionary3[0].Children[1].Parent = dictionary3[0];
-            RootNodes1.Add(dictionary1[0]);
+            RootNodes1.Add(PlotDatabases.BridgeBasegameAndModDatabases(MEGame.LE1, AppDirectories.AppDataFolder));
             Focus();
         }
 
@@ -239,41 +208,22 @@ namespace LegendaryExplorer.Tools.PlotManager
 
         private void RefreshTrees()
         {
-            switch(CurrentGame)
+            var rootNodes = CurrentGame switch
             {
-                case MEGame.LE3:
-                    RootNodes3.ClearEx();
-                    var rootlist3 = new List<PlotElement>();
-                    var dictionary3 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE3);
-                    rootlist3.Add(dictionary3[1]);
-                    var mods3 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE3, false);
-                    rootlist3.Add(mods3[100000]);
-                    dictionary3.Add(0, new PlotElement(0, 0, "Legendary Edition - Mass Effect 3 Plots", PlotElementType.None, -1, rootlist3));
-                    RootNodes3.Add(dictionary3[0]);
-                    break;
-                case MEGame.LE2:
-                    RootNodes2.ClearEx();
-                    var rootlist2 = new List<PlotElement>();
-                    var dictionary2 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE2);
-                    rootlist2.Add(dictionary2[1]);
-                    var mods2 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE2, false);
-                    rootlist2.Add(mods2[100000]);
-                    dictionary2.Add(0, new PlotElement(0, 0, "Legendary Edition - Mass Effect 2 Plots", PlotElementType.None, -1, rootlist2));
-                    RootNodes2.Add(dictionary2[0]);
-                    break;
-                case MEGame.LE1:
-                    RootNodes1.ClearEx();
-                    var rootlist1 = new List<PlotElement>();
-                    var dictionary1 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE1);
-                    rootlist1.Add(dictionary1[1]);
-                    var mods1 = PlotDatabases.GetMasterDictionaryForGame(MEGame.LE1, false);
-                    rootlist1.Add(mods1[100000]);
-                    dictionary1.Add(0, new PlotElement(0, 0, "Legendary Edition - Mass Effect 1 Plots", PlotElementType.None, -1, rootlist1));
-                    RootNodes1.Add(dictionary1[0]);
-                    break;
-                default:
-                    break;
-            }
+                MEGame.LE3 => RootNodes3,
+                MEGame.LE2 => RootNodes2,
+                MEGame.LE1 => RootNodes1,
+                _ => throw new Exception($"Cannot refresh tree for game {CurrentGame}")
+            };
+
+            // Create parent object for both basegame and mod
+            var rootList = new List<PlotElement>();
+            rootList.Add(PlotDatabases.GetBasegamePlotDatabaseForGame(CurrentGame).Root);
+            rootList.Add(PlotDatabases.GetModPlotDatabaseForGame(CurrentGame).Root);
+
+            var plotParent = PlotDatabases.GetNewRootPlotElement(CurrentGame, rootList);
+            rootNodes.ClearEx();
+            rootNodes.Add(plotParent);
         }
 
         private void AddPlotsToList(PlotElement plotElement, List<PlotElement> elementList, bool addFolders = false)
@@ -590,7 +540,7 @@ namespace LegendaryExplorer.Tools.PlotManager
                 NeedsSave = false;
             }
 
-            ((ModPlotDatabase)modDB).LoadPlotsFromJSONFile(CurrentGame, null);
+            modDB.LoadPlotsFromFile(CurrentGame, null);
             RefreshTrees();
         }
 
@@ -599,7 +549,7 @@ namespace LegendaryExplorer.Tools.PlotManager
             bwLink.Visibility = Visibility.Collapsed;
             var statustxt = CurrentOverallOperationText.ToString();
             CurrentOverallOperationText = "Saving...";
-            ModPlotDatabase mdb = (ModPlotDatabase)PlotDatabases.GetDatabaseForGame(CurrentGame, false);
+            ModPlotDatabase mdb = PlotDatabases.GetModPlotDatabaseForGame(CurrentGame);
             mdb.SaveDatabaseToFile(AppDirectories.AppDataFolder);
             CurrentOverallOperationText = $"Saved {CurrentGame} Mod Database Locally...";
 
@@ -719,19 +669,7 @@ namespace LegendaryExplorer.Tools.PlotManager
             if (SelectedNode != null)
             {
                 var command = obj.ToString();
-                var mdb = new ModPlotDatabase();
-                switch (CurrentGame)
-                {
-                    case MEGame.LE1:
-                        mdb = (ModPlotDatabase)PlotDatabases.Le1ModDatabase;
-                        break;
-                    case MEGame.LE2:
-                        mdb = (ModPlotDatabase)PlotDatabases.Le2ModDatabase;
-                        break;
-                    default:
-                        mdb = (ModPlotDatabase)PlotDatabases.Le3ModDatabase;
-                        break;
-                }
+                var mdb = PlotDatabases.GetModPlotDatabaseForGame(CurrentGame);
                 int newElementId = SelectedNode.ElementId;
                 if (!isEditing || SelectedNode.Type != newItemTypes[newItem_Type.SelectedIndex])
                 {
@@ -764,8 +702,7 @@ namespace LegendaryExplorer.Tools.PlotManager
                                 CancelAddData(command);
                                 return;
                             }
-                            int parentId = 100000;
-                            parent = mdb.Organizational[parentId];
+                            parent = mdb.Root;
                             var mods = parent.Children.ToList();
                             foreach (var mod in mods)
                             {
@@ -776,9 +713,8 @@ namespace LegendaryExplorer.Tools.PlotManager
                                     return;
                                 }
                             }
-                            var newModPE = new PlotElement(-1, newElementId, modname, PlotElementType.Mod, parentId, childlist, parent);
+                            var newModPE = new PlotElement(-1, newElementId, modname, PlotElementType.Mod, parent, childlist);
                             mdb.Organizational.Add(newElementId, newModPE);
-                            parent.Children.Add(newModPE);
                         }
                         else
                         {
@@ -795,8 +731,7 @@ namespace LegendaryExplorer.Tools.PlotManager
                         }
                         if(!isEditing)
                         {
-                            var newModCatPE = new PlotElement(-1, newElementId, newCat_Name.Text, PlotElementType.Category, parent.ElementId, new List<PlotElement>(), parent);
-                            parent.Children.Add(newModCatPE);
+                            var newModCatPE = new PlotElement(-1, newElementId, newCat_Name.Text, PlotElementType.Category, parent, new List<PlotElement>());
                             mdb.Organizational.Add(newElementId, newModCatPE);
                         }
                         else
@@ -825,7 +760,6 @@ namespace LegendaryExplorer.Tools.PlotManager
                             return;
                         }
                         var newchildren = new List<PlotElement>();
-                        var newModItemPE = new PlotElement(newPlotId, newElementId, nameItem, type, parent.ElementId, newchildren, parent);
                         switch (type)
                         {
                             case PlotElementType.State:
@@ -938,7 +872,6 @@ namespace LegendaryExplorer.Tools.PlotManager
         {
             if (update && target == null)
                 return false;
-            var newModItemPE = new PlotElement(newPlotId, newElementId, label, type, parent.ElementId, newchildren, parent);
             try
             {
                 switch (type)
@@ -947,10 +880,10 @@ namespace LegendaryExplorer.Tools.PlotManager
                     case PlotElementType.SubState:
                         if (update)
                         {
-                            parent.Children.Remove(target);
+                            target.RemoveFromParent();
                             modDB.Bools.Remove(target.PlotId);
                         }
-                        var newModBool = new PlotBool(newPlotId, newElementId, label, type, parent.ElementId, newchildren, parent);
+                        var newModBool = new PlotBool(newPlotId, newElementId, label, type, parent, newchildren);
                         //subtype, gamervariable, achievementid, galaxyatwar
                         if (subtype != PlotElementType.None)
                             newModBool.SubType = subtype;
@@ -967,63 +900,60 @@ namespace LegendaryExplorer.Tools.PlotManager
                             newModBool.GamerVariable = gv;
                         }
                         modDB.Bools.Add(newPlotId, newModBool);
-                        parent.Children.Add(newModBool);
                         break;
                     case PlotElementType.Integer:
                         if (update)
                         {
-                            parent.Children.Remove(target);
+                            target.RemoveFromParent();
                             modDB.Ints.Remove(target.PlotId);
                         }
-                        modDB.Ints.Add(newPlotId, newModItemPE);
-                        parent.Children.Add(newModItemPE);
+                        var newModInt = new PlotElement(newPlotId, newElementId, label, type, parent, newchildren);
+                        modDB.Ints.Add(newPlotId, newModInt);
                         break;
                     case PlotElementType.Float:
                         if (update)
                         {
-                            parent.Children.Remove(target);
+                            target.RemoveFromParent();
                             modDB.Floats.Remove(target.PlotId);
                         }
-                        modDB.Floats.Add(newPlotId, newModItemPE);
-                        parent.Children.Add(newModItemPE);
+                        var newModFloat = new PlotElement(newPlotId, newElementId, label, type, parent, newchildren);
+                        modDB.Floats.Add(newPlotId, newModFloat);
                         break;
                     case PlotElementType.Conditional:
                         if (update)
                         {
-                            parent.Children.Remove(target);
+                            target.RemoveFromParent();
                             modDB.Conditionals.Remove(target.PlotId);
                         }
 
-                        var newModCnd = new PlotConditional(newPlotId, newElementId, label, type, parent.ElementId, new List<PlotElement>(), parent);
+                        var newModCnd = new PlotConditional(newPlotId, newElementId, label, type, parent, new List<PlotElement>());
                         if(code != null)
                         {
                             newModCnd.Code = code;
                         }
                         modDB.Conditionals.Add(newPlotId, newModCnd);
-                        parent.Children.Add(newModCnd);
                         break;
                     case PlotElementType.Transition:
                         if (update)
                         {
-                            parent.Children.Remove(SelectedNode);
+                            target.RemoveFromParent();
                             modDB.Transitions.Remove(SelectedNode.PlotId);
                         }
-                        var newModTrans = new PlotTransition(newPlotId, newElementId, label, type, parent.ElementId, new List<PlotElement>(), parent);
+                        var newModTrans = new PlotTransition(newPlotId, newElementId, label, type, parent, new List<PlotElement>());
                         if(argu != null)
                         {
                             newModTrans.Argument = argu;
                         }
                         modDB.Transitions.Add(newPlotId, newModTrans);
-                        parent.Children.Add(newModTrans);
                         break;
                     default:   //PlotElementType.JournalGoal, PlotElementType.JournalItem, PlotElementType.JournalTask, PlotElementType.Consequence, PlotElementType.Flag
                         if (update)
                         {
-                            parent.Children.Remove(target);
+                            target.RemoveFromParent();
                             modDB.Organizational.Remove(target.ElementId);
                         }
+                        var newModItemPE = new PlotElement(newPlotId, newElementId, label, type, parent, newchildren);
                         modDB.Organizational.Add(newElementId, newModItemPE);
-                        parent.Children.Add(newModItemPE);
                         break;
                 }
                 return true;
@@ -1050,20 +980,8 @@ namespace LegendaryExplorer.Tools.PlotManager
             if (dlg == MessageBoxResult.Cancel)
                 return;
             var deleteId = SelectedNode.ElementId;
-            var mdb = new ModPlotDatabase();
-            switch (CurrentGame)
-            {
-                case MEGame.LE1:
-                    mdb = (ModPlotDatabase)PlotDatabases.Le1ModDatabase;
-                    break;
-                case MEGame.LE2:
-                    mdb = (ModPlotDatabase)PlotDatabases.Le2ModDatabase;
-                    break;
-                default:
-                    mdb = (ModPlotDatabase)PlotDatabases.Le3ModDatabase;
-                    break;
-            }
-            mdb.RemoveFromParent(SelectedNode);
+            var mdb = PlotDatabases.GetModPlotDatabaseForGame(CurrentGame);
+            SelectedNode.RemoveFromParent();
             switch (SelectedNode.Type)
             {
                 case PlotElementType.State:
@@ -1239,7 +1157,7 @@ namespace LegendaryExplorer.Tools.PlotManager
             //STEP 2 Read and Validate rows into a list
             var changes = new Queue<xlPlotImport>();
             var faillist = new List<xlPlotImport>();
-            var modList = modDB.Organizational[100000].Children;
+            var modList = modDB.Root.Children;
             var validtypes = new List<PlotElementType> { PlotElementType.Category, PlotElementType.State, PlotElementType.SubState, PlotElementType.Integer, PlotElementType.Float, PlotElementType.Conditional,
                 PlotElementType.Transition, PlotElementType.JournalGoal, PlotElementType.JournalItem, PlotElementType.JournalTask};
 
@@ -1462,8 +1380,7 @@ namespace LegendaryExplorer.Tools.PlotManager
                         faillist.Add(xlPlot);
                         continue;
                     }
-                    var newModCatPE = new PlotElement(-1, modDB.GetNextElementId(), xlPlot.Label, PlotElementType.Category, parent.ElementId, new List<PlotElement>(), parent);
-                    parent.Children.Add(newModCatPE);
+                    var newModCatPE = new PlotElement(-1, modDB.GetNextElementId(), xlPlot.Label, PlotElementType.Category, parent, new List<PlotElement>());
                     modDB.Organizational.Add(newModCatPE.ElementId, newModCatPE);
                     continue;
                 }
@@ -1496,7 +1413,7 @@ namespace LegendaryExplorer.Tools.PlotManager
                     }
                     if(target != null && target.Label == xlPlot.Label && parent.Path.Substring(13) == xlPlot.ParentPath && xlPlot.PlotID == target.PlotId)
                     {
-                        parent.Children.Remove(target);
+                        target.RemoveFromParent();
                         switch (target.Type)
                         {
                             case PlotElementType.State:
