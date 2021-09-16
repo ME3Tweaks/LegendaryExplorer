@@ -213,7 +213,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public bool VisitNode(VariableDeclaration node)
         {
-            if (node.Outer.Type == ASTNodeType.Class || node.Outer.Type == ASTNodeType.Struct)
+            if (node.Outer.Type is ASTNodeType.Class or ASTNodeType.Struct)
             {
                 Write(VAR, EF.Keyword);
                 if (!string.IsNullOrEmpty(node.Category) && !node.Category.CaseInsensitiveEquals("None"))
@@ -419,7 +419,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             Space();
             Append(node.Name);
             Space();
-            Append("=");
+            Append("=", EF.Operator);
             Space();
             Append(node.Value);
             Append(";");
@@ -591,7 +591,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             if (node.DefaultParameter != null)
             {
                 Space();
-                Append("=");
+                Append("=", EF.Operator);
                 Space();
                 node.DefaultParameter.AcceptVisitor(this);
             }
@@ -632,7 +632,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             Space();
             if (node.Parent != null)
             {
-                Append(EXTENDS);
+                Append(EXTENDS, EF.Keyword);
                 Space();
                 Append(node.Parent.Name, EF.State);
                 Space();
@@ -649,9 +649,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 Write(";");
             }
 
+            Write("// State Functions", EF.Comment);
             foreach (Function func in node.Functions)
                 func.AcceptVisitor(this);
-
 
             if (node.Body.Statements.Count != 0)
             {
@@ -706,11 +706,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             Append("Object", EF.Keyword);
             Space();
             Append("Class", EF.Keyword);
-            Append("=");
+            Append("=", EF.Operator);
             Append(node.Class.Name, EF.TypeName);
             Space();
             Append(NAME, EF.Keyword);
-            Append("=");
+            Append("=", EF.Operator);
             Append(node.Name.Name);
 
             NestingLevel++;

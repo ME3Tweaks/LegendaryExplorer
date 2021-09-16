@@ -112,9 +112,9 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             var virtFuncLookup = new CaseInsensitiveDictionary<ushort>();
             if (pcc.Game.IsGame3())
             {
-                for (ushort i = 0; i < uClass.FullFunctionsList.Length; i++)
+                for (ushort i = 0; i < uClass.VirtualFunctionTable.Length; i++)
                 {
-                    virtFuncLookup.Add(uClass.FullFunctionsList[i].GetEntry(pcc)?.ObjectName, i);
+                    virtFuncLookup.Add(uClass.VirtualFunctionTable[i].GetEntry(pcc)?.ObjectName, i);
                 }
             }
             AST.VirtualFunctionLookup = virtFuncLookup;
@@ -127,7 +127,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             if (containingClass is null)
             {
                 ExportEntry classExport = obj.Export.Parent as ExportEntry;
-                while (classExport != null && !classExport.IsClass)
+                while (classExport is {IsClass: false})
                 {
                     classExport = classExport.Parent as ExportEntry;
                 }
@@ -142,9 +142,12 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             // TODO: labels
 
             State parent = null;
-            //if the parent is not from the same class, then it's overriden, not extended
-            if (obj.SuperClass != 0 && obj.SuperClass.GetEntry(obj.Export.FileRef).Parent == obj.Export.Parent)
-                parent = new State(obj.SuperClass.GetEntry(obj.Export.FileRef).ObjectName.Instanced, null, default, null, null, null, null, null, null);
+            //if the parent has the same name, then it's overriden, not extended
+            if (obj.SuperClass != 0 && obj.SuperClass.GetEntry(obj.Export.FileRef) is IEntry parentState &&
+                !parentState.ObjectName.Instanced.CaseInsensitiveEquals(obj.Export.ObjectName.Instanced))
+            {
+                parent = new State(parentState.ObjectName.Instanced, null, default, null, null, null, null, null, null);
+            }
 
             var Funcs = new List<Function>();
             var Ignores = new List<Function>();

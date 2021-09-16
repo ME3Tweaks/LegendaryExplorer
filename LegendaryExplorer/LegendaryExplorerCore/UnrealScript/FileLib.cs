@@ -15,11 +15,36 @@ namespace LegendaryExplorerCore.UnrealScript
     public partial class FileLib : IPackageUser, IDisposable
     {
         private SymbolTable _symbols;
-        public SymbolTable GetSymbolTable() => IsInitialized ? _symbols?.Clone() : null;
+        public SymbolTable GetSymbolTable()
+        {
+            lock (_initializationLock)
+            {
+                return _isInitialized ? _symbols?.Clone() : null;
+            }
+        }
 
-        public SymbolTable ReadonlySymbolTable => IsInitialized ? _symbols : null;
+        public SymbolTable ReadonlySymbolTable
+        {
+            get 
+            {
+                lock (_initializationLock)
+                {
+                    return _isInitialized ? _symbols : null;
+                }
+            }
+        }
 
-        public bool IsInitialized { get; private set; }
+        private bool _isInitialized;
+        public bool IsInitialized
+        {
+            get 
+            {
+                lock (_initializationLock)
+                {
+                    return _isInitialized;
+                }
+            }
+        }
 
         public bool HadInitializationError { get; private set; }
 
@@ -27,7 +52,7 @@ namespace LegendaryExplorerCore.UnrealScript
 
         public event Action<bool> InitializationStatusChange;
 
-        private readonly object initializationLock = new();
+        private readonly object _initializationLock = new();
 
         private readonly BaseLib Base;
 
@@ -41,9 +66,9 @@ namespace LegendaryExplorerCore.UnrealScript
             return await Task.Run(() =>
             {
                 bool success = false;
-                lock (initializationLock)
+                lock (_initializationLock)
                 {
-                    if (IsInitialized)
+                    if (_isInitialized)
                     {
                         return true;
                     }
@@ -57,15 +82,15 @@ namespace LegendaryExplorerCore.UnrealScript
                     {
                         _symbols = Base.GetSymbolTable();
                         HadInitializationError = false;
-                        IsInitialized = true;
+                        _isInitialized = true;
 
                         success = true;
                     }
 
-                    if (!IsInitialized && !HadInitializationError)
+                    if (!_isInitialized && !HadInitializationError)
                     {
                         success = InternalInitialize(packageCache);
-                        IsInitialized = success;
+                        _isInitialized = success;
                         HadInitializationError = !success;
                     }
                 }
@@ -184,13 +209,13 @@ namespace LegendaryExplorerCore.UnrealScript
             {
                 if (Pcc.GetEntry(update.Index) is ExportEntry exp && (IsScriptExport(exp) || exp.ClassName == "Function"))
                 {
-                    lock (initializationLock)
+                    lock (_initializationLock)
                     {
                         if (BaseFileNames(Base.Game).Contains(Path.GetFileName(Pcc.FilePath)))
                         {
                             Base.Reset();
                         }
-                        IsInitialized = false;
+                        _isInitialized = false;
                         HadInitializationError = false;
                         _symbols = null;
                     }

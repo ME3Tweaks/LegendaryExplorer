@@ -78,6 +78,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             ContainingClass = containingClass;
         }
 
+        public static void Compile(Function func, UFunction target)
+        {
+            var bytecodeCompiler = new ByteCodeCompilerVisitor(target);
+            bytecodeCompiler.Compile(func);
+        }
+
         public void Compile(Function func)
         {
             if (Target is UFunction uFunction)
@@ -162,6 +168,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
         }
 
+
+        public static void Compile(State state, UState target)
+        {
+            var bytecodeCompiler = new ByteCodeCompilerVisitor(target);
+            bytecodeCompiler.Compile(state);
+        }
 
         public void Compile(State state)
         {

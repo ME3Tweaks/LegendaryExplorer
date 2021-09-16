@@ -13,7 +13,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref Next);
         }
         public override List<(UIndex, string)> GetUIndexes(MEGame game) =>
-            new List<(UIndex, string)>
+            new()
             {
                 (SuperClass, "SuperClass"),
                 (Next, "NextItemInCompilingChain"),

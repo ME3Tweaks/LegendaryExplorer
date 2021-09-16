@@ -481,7 +481,7 @@
                     </TabItem>
                     <TabItem Name="Script_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
-                            <TextBlock Text="Script Viewer" ToolTip="View decompiled UnrealScript"/>
+                            <TextBlock Text="Script Editor" ToolTip="Edit decompiled UnrealScript"/>
                         </TabItem.Header>
                         <scriptEditor:UnrealScriptIDE x:Name="ScriptTab_UnrealScriptIDE"/>
                     </TabItem>

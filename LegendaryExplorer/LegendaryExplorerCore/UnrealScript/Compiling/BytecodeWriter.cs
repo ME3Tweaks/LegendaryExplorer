@@ -119,7 +119,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             private readonly int placeHolderIdx;
             private readonly BytecodeWriter Writer;
 
-            public JumpType Type;
+            public readonly JumpType Type;
 
             public JumpPlaceholder(BytecodeWriter writer, JumpType type)
             {

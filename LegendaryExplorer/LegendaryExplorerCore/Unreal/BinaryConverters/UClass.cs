@@ -22,7 +22,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public uint le2ps3me2Unknown; //ME2, PS3 only and LE2
         public NameReference[] unkNameList2;//ME1/ME2
         public UIndex Defaults;
-        public UIndex[] FullFunctionsList;//ME3
+        public UIndex[] VirtualFunctionTable;//ME3
 
         protected override void Serialize(SerializingContainer2 sc)
         {
@@ -58,7 +58,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref Defaults);
             if (sc.Game is MEGame.ME3 or MEGame.UDK or MEGame.LE3)
             {
-                sc.Serialize(ref FullFunctionsList, SCExt.Serialize);
+                sc.Serialize(ref VirtualFunctionTable, SCExt.Serialize);
             }
         }
 
@@ -73,7 +73,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             uIndices.Add((Defaults, "Defaults"));
             if (game is MEGame.UDK or MEGame.ME3 or MEGame.LE3)
             {
-                uIndices.AddRange(FullFunctionsList.Select((u, i) => (u, $"FullFunctionsList[{i}]")));
+                uIndices.AddRange(VirtualFunctionTable.Select((u, i) => (u, $"FullFunctionsList[{i}]")));
             }
 
             return uIndices;
