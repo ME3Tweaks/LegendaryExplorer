@@ -24,7 +24,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         public TokenStream(Func<List<Token<T>>> provider) : base(provider)
         {
             Cache = new Dictionary<int, ASTCacheEntry>();
-            var endPos = Data.Count > 0 ? Data[Data.Count - 1].EndPos : new SourcePosition(0, 0, 0);
+            var endPos = Data.Count > 0 ? Data[^1].EndPos : new SourcePosition(0, 0, 0);
             EndToken = new Token<T>(TokenType.EOF, default, endPos, endPos);
         }
 

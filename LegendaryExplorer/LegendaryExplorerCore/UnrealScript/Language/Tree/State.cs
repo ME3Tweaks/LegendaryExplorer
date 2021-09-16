@@ -6,13 +6,13 @@ using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
-    public class State : ASTNode, IContainsByteCode, IHasFileReference
+    public class State : ASTNode, IContainsByteCode, IHasFileReference, IContainsFunctions
     {
         public EStateFlags Flags;
         public string Name { get; }
         public CodeBody Body { get; set; }
         public State Parent;
-        public List<Function> Functions;
+        public List<Function> Functions { get; }
         public List<Function> Ignores;
         public List<Label> Labels;
 

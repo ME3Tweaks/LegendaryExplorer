@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
@@ -20,7 +21,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             switch (node)
             {
                 case Class classAST:
-                    if (existingObject is null || existingObject is UClass)
+                    if (existingObject is null or UClass)
                     {
                         UClass uClass = (UClass)existingObject;
                         Compile(classAST, parent, ref uClass);
@@ -31,7 +32,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                         throw new ArgumentException($"Expected {nameof(existingObject)} to be of type {nameof(UClass)}!");
                     }
                 case Const constAST:
-                    if (existingObject is null || existingObject is UConst)
+                    if (existingObject is null or UConst)
                     {
                         UConst uConst = (UConst)existingObject;
                         Compile(constAST, parent, ref uConst);
@@ -45,7 +46,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     Compile(defaultPropertiesBlockAST, parent, ref defaultPropExportEntry);
                     return;
                 case Enumeration enumAST:
-                    if (existingObject is null || existingObject is UEnum)
+                    if (existingObject is null or UEnum)
                     {
                         UEnum uEnum = (UEnum)existingObject;
                         Compile(enumAST, parent, ref uEnum);
@@ -56,7 +57,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                         throw new ArgumentException($"Expected {nameof(existingObject)} to be of type {nameof(UEnum)}!");
                     }
                 case Function funcAST:
-                    if (existingObject is null || existingObject is UFunction)
+                    if (existingObject is null or UFunction)
                     {
                         UFunction uFunction = (UFunction)existingObject;
                         Compile(funcAST, parent, ref uFunction);
@@ -67,7 +68,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                         throw new ArgumentException($"Expected {nameof(existingObject)} to be of type {nameof(UFunction)}!");
                     }
                 case State stateAST:
-                    if (existingObject is null || existingObject is UState)
+                    if (existingObject is null or UState)
                     {
                         UState uState = (UState)existingObject;
                         Compile(stateAST, parent, ref uState);
@@ -78,7 +79,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                         throw new ArgumentException($"Expected {nameof(existingObject)} to be of type {nameof(UState)}!");
                     }
                 case Struct structAST:
-                    if (existingObject is null || existingObject is UScriptStruct)
+                    if (existingObject is null or UScriptStruct)
                     {
                         UScriptStruct uScriptStruct = (UScriptStruct)existingObject;
                         Compile(structAST, parent, ref uScriptStruct);
@@ -89,7 +90,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                         throw new ArgumentException($"Expected {nameof(existingObject)} to be of type {nameof(UScriptStruct)}!");
                     }
                 case VariableDeclaration varDeclAST:
-                    if (existingObject is null || existingObject is UProperty)
+                    if (existingObject is null or UProperty)
                     {
                         UProperty uProp = (UProperty)existingObject;
                         Compile(varDeclAST, parent, ref uProp);
@@ -110,7 +111,84 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public static void Compile(State stateAST, IEntry parent, ref UState stateObj)
         {
-            throw new NotImplementedException();
+            IEntry super = null;
+            if (stateAST.Parent is not null)
+            {
+                super = ResolveState(stateAST.Parent, parent.FileRef);
+            }
+
+            var stateName = NameReference.FromInstancedString(stateAST.Name);
+            ExportEntry stateExport;
+            if (stateObj is null)
+            {
+                stateExport = CreateNewExport(stateName, "State", parent, new UState { ScriptBytes = Array.Empty<byte>(), LocalFunctionMap = new()}, super);
+                stateObj = stateExport.GetBinaryData<UState>();
+            }
+            else
+            {
+                stateExport = stateObj.Export;
+                if (stateExport.SuperClass != super)
+                {
+                    stateExport.SuperClass = super;
+                }
+                if (stateExport.ObjectName != stateName)
+                {
+                    stateExport.ObjectName = stateName;
+                }
+            }
+
+            stateObj.StateFlags = stateAST.Flags;
+            stateObj.ProbeMask = EProbeFunctions.BeginState | EProbeFunctions.EndState | EProbeFunctions.PoppedState | EProbeFunctions.PushedState;
+            stateObj.IgnoreMask = (EProbeFunctions)ulong.MaxValue;
+            stateObj.SuperClass = super?.UIndex ?? 0;
+
+
+            //calculate probemask
+            State curState = stateAST;
+            while (curState is not null)
+            {
+                foreach (Function stateFunc in curState.Functions)
+                {
+                    if (/*stateFunc.IsDefined && */Enum.TryParse(stateFunc.Name, true, out EProbeFunctions enumVal))
+                    {
+                        stateObj.ProbeMask |= enumVal;
+                    }
+                }
+                curState = curState.Parent;
+            }
+
+            stateObj.LocalFunctionMap.Clear();
+
+            UFunction prevFunc = null;
+            var existingFuncs = GetMembers<UFunction>(stateObj).ToDictionary(uFunc => uFunc.Export.ObjectName.Instanced);
+            foreach (Function member in stateAST.Functions)
+            {
+                existingFuncs.Remove(member.Name, out UFunction childFunc);
+                Compile(member, stateExport, ref childFunc);
+                if (prevFunc is null)
+                {
+                    stateObj.Children = childFunc.Export;
+                }
+                else
+                {
+                    prevFunc.Next = childFunc.Export;
+                    prevFunc.Export.WriteBinary(prevFunc);
+                }
+                stateObj.LocalFunctionMap.Add(childFunc.Export.ObjectName, childFunc.Export.UIndex);
+                prevFunc = childFunc;
+            }
+            foreach (UFunction removedFunc in existingFuncs.Values)
+            {
+                EntryPruner.TrashEntryAndDescendants(removedFunc.Export);
+            }
+
+            if (prevFunc is not null)
+            {
+                prevFunc.Next = 0;
+                prevFunc.Export.WriteBinary(prevFunc);
+            }
+
+            ByteCodeCompilerVisitor.Compile(stateAST, stateObj);
         }
 
         public static void Compile(Function funcAST, IEntry parent, ref UFunction funcObj)
@@ -121,11 +199,11 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 super = ResolveFunction(funcAST.SuperFunction, parent.FileRef);
             }
 
-            NameReference functionName = NameReference.FromInstancedString(funcAST.Name);
+            var functionName = NameReference.FromInstancedString(funcAST.Name);
             ExportEntry funcExport;
             if (funcObj is null)
             {
-                funcExport = CreateNewExport(functionName, "Function", parent, new UFunction {ScriptBytes = new byte[0]}, super);
+                funcExport = CreateNewExport(functionName, "Function", parent, new UFunction { ScriptBytes = Array.Empty<byte>() }, super);
                 funcObj = funcExport.GetBinaryData<UFunction>();
             }
             else
@@ -156,7 +234,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             newMembers.AddRange(funcAST.Locals);
 
             UProperty prevProp = null;
-            using (List<UField>.Enumerator existingEnumerator = GetMembers(funcObj).GetEnumerator())
+            using (var existingEnumerator = GetMembers<UField>(funcObj).GetEnumerator())
             {
                 funcObj.Children = 0;
                 foreach (VariableDeclaration member in newMembers)
@@ -196,8 +274,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 prevProp.Export.WriteBinary(prevProp);
             }
 
-            var bytecodeCompiler = new ByteCodeCompilerVisitor(funcObj);
-            bytecodeCompiler.Compile(funcAST);
+            ByteCodeCompilerVisitor.Compile(funcAST, funcObj);
         }
 
         public static void Compile(Struct structAST, IEntry parent, ref UScriptStruct structObj)
@@ -338,11 +415,11 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             throw new NotImplementedException();
         }
 
-        public static List<UField> GetMembers(UStruct obj)
+        public static List<T> GetMembers<T>(UStruct obj) where T : UField
         {
             IMEPackage pcc = obj.Export.FileRef;
 
-            var members = new List<UField>();
+            var members = new List<T>();
 
             var nextItem = obj.Children;
 
@@ -351,7 +428,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 var objBin = ObjectBinary.From(nextChild);
                 switch (objBin)
                 {
-                    case UField field:
+                    case T field:
                         nextItem = field.Next;
                         members.Add(field);
                         break;

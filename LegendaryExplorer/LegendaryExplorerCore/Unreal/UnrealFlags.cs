@@ -457,7 +457,7 @@ namespace LegendaryExplorerCore.Unreal
             HearNoise = 1ul << 42,
             UpdateEyeHeight = 1ul << 43,
             SeeMonster = 1ul << 44,
-            MISSINGPROBE = 1ul << 45,
+            __MISSINGPROBE = 1ul << 45,
             SpecialHandling = 1ul << 46,
             BotDesireability = 1ul << 47,
             NotifyBump = 1ul << 48,

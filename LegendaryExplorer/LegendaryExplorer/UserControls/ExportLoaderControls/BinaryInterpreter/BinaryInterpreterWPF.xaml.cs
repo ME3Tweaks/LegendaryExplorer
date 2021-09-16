@@ -106,8 +106,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             get => _genericEditorSetVisibility;
             set => SetProperty(ref _genericEditorSetVisibility, value);
         }
-        private readonly List<FrameworkElement> EditorSetElements = new List<FrameworkElement>();
-        public ObservableCollectionExtended<BinInterpNode> TreeViewItems { get; } = new ObservableCollectionExtended<BinInterpNode>();
+        private readonly List<FrameworkElement> EditorSetElements = new();
+        public ObservableCollectionExtended<BinInterpNode> TreeViewItems { get; } = new();
         public ObservableCollectionExtended<IndexedName> ParentNameList { get; private set; }
         public enum InterpreterMode
         {
@@ -222,7 +222,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
         #endregion
 
-        public static readonly HashSet<string> ParsableBinaryClasses = new HashSet<string>
+        public static readonly HashSet<string> ParsableBinaryClasses = new()
         {
             "AnimSequence",
             "ArrayProperty",
@@ -264,6 +264,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             "ForceFeedbackWaveform",
             "FracturedStaticMesh",
             "FracturedStaticMeshComponent",
+            "Function",
             "GuidCache",
             "InteractiveFoliageComponent",
             "InterfaceProperty",
@@ -571,6 +572,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         break;
                     case "Const":
                         subNodes.AddRange(StartConstScan(data, ref binarystart));
+                        break;
+                    case "Function":
+                        subNodes.AddRange(StartFunctionScan(data, ref binarystart));
                         break;
                     case "GuidCache":
                         subNodes.AddRange(StartGuidCacheScan(data, ref binarystart));

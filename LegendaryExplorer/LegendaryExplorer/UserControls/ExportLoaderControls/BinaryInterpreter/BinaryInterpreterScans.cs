@@ -6290,7 +6290,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             long pos = bin.Position;
             int count = bin.ReadInt32();
-            var scriptNode = new BinInterpNode(pos, $"Script ({count} bytes)");
+            var scriptNode = new BinInterpNode(pos, $"Script ({count} bytes)") { Length = 4 + count };
 
             byte[] scriptBytes = bin.ReadBytes(count);
 
@@ -6336,7 +6336,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             long classFlagsPos = bin.Position;
             var probeFuncs = (EProbeFunctions)bin.ReadUInt64();
 
-            var probeMaskNode = new BinInterpNode(classFlagsPos, $"ProbeMask: {(ulong)probeFuncs:X16}") { Length = 8 };
+            var probeMaskNode = new BinInterpNode(classFlagsPos, $"ProbeMask: {(ulong)probeFuncs:X16}")
+            {
+                Length = 8, 
+                IsExpanded = true
+            };
             foreach (EProbeFunctions flag in probeFuncs.MaskToList())
             {
                 probeMaskNode.Items.Add(new BinInterpNode
@@ -6416,7 +6420,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 subnodes.Add(MakeEntryNode(bin, "Defaults"));
                 if (Pcc.Game is MEGame.ME3 or MEGame.UDK or MEGame.LE3)
                 {
-                    subnodes.Add(MakeArrayNode(bin, "Full Function List", i => MakeEntryNode(bin, $"{i}: ")));
+                    subnodes.Add(MakeArrayNode(bin, "Virtual Function Table", i => MakeEntryNode(bin, $"{i}: ")));
                 }
             }
             catch (Exception ex)
@@ -6498,6 +6502,55 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.Skip(binaryStart);
                 subnodes.AddRange(MakeUStateNodes(bin));
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
+            }
+            return subnodes;
+        }
+
+        private List<ITreeItem> StartFunctionScan(byte[] data, ref int binaryStart)
+        {
+            var subnodes = new List<ITreeItem>();
+
+            try
+            {
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+                bin.Skip(binaryStart);
+                subnodes.AddRange(MakeUStructNodes(bin));
+                subnodes.Add(MakeUInt16Node(bin, "NativeIndex"));
+                if (Pcc.Game.IsGame1() || Pcc.Game.IsGame2())
+                {
+                    subnodes.Add(MakeByteNode(bin, "OperatorPrecedence"));
+                }
+
+                long funcFlagsPos = bin.Position;
+                var funcFlags = (EFunctionFlags)bin.ReadUInt32();
+                var probeMaskNode = new BinInterpNode(funcFlagsPos, $"Function Flags: {(ulong)funcFlags:X8}")
+                {
+                    Length = 4,
+                    IsExpanded = true
+                };
+                foreach (EFunctionFlags flag in funcFlags.MaskToList())
+                {
+                    probeMaskNode.Items.Add(new BinInterpNode
+                    {
+                        Header = $"{(ulong)flag:X8} {flag}",
+                        Name = $"_{funcFlagsPos}",
+                        Length = 4
+                    });
+                }
+                subnodes.Add(probeMaskNode);
+
+                if (Pcc.Game is MEGame.ME1 or MEGame.ME2 && Pcc.Platform != MEPackage.GamePlatform.PS3 && funcFlags.Has(EFunctionFlags.Net))
+                {
+                    subnodes.Add(MakeUInt16Node(bin, "ReplicationOffset"));
+                }
+                if ((Pcc.Game.IsGame1() || Pcc.Game.IsGame2()) && Pcc.Platform != MEPackage.GamePlatform.PS3)
+                {
+                    subnodes.Add(MakeNameNode(bin, "FriendlyName"));
+                }
             }
             catch (Exception ex)
             {
@@ -6939,10 +6992,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private static BinInterpNode MakeByteNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadByte()}") { Length = 1 };
 
-        private BinInterpNode MakeNameNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadNameReference(Pcc)}", NodeType.StructLeafName) { Length = 8 };
+        private BinInterpNode MakeNameNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadNameReference(Pcc).Instanced}", NodeType.StructLeafName) { Length = 8 };
 
         private BinInterpNode MakeNameNode(EndianReader bin, string name, out NameReference nameRef) =>
-            new BinInterpNode(bin.Position, $"{name}: {nameRef = bin.ReadNameReference(Pcc)}", NodeType.StructLeafName) { Length = 8 };
+            new BinInterpNode(bin.Position, $"{name}: {nameRef = bin.ReadNameReference(Pcc).Instanced}", NodeType.StructLeafName) { Length = 8 };
 
         private BinInterpNode MakeEntryNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {entryRefString(bin)}", NodeType.StructLeafObject) { Length = 4 };
 

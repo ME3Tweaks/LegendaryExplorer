@@ -2,11 +2,12 @@
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
+using LegendaryExplorerCore.UnrealScript.Language.Util;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
-    public sealed class Class : VariableType, IObjectType
+    public sealed class Class : VariableType, IObjectType, IContainsFunctions
     {
         public string Package;
         public VariableType Parent;

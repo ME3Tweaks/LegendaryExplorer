@@ -519,6 +519,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             ScopeNames.RemoveLast();
         }
 
+        public bool TryGetSymbol(string symbol, out ASTNode node)
+        {
+            return TryGetSymbolInternal(symbol, out node, Scopes);
+        }
+
         public bool TryGetSymbol(string symbol, out ASTNode node, string outerScope)
         {
             return TryGetSymbolInternal(symbol, out node, Scopes) ||
@@ -645,15 +650,52 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             LinkedListNode<ASTNodeDict> it;
             for (it = stack.Last; it != null; it = it.Previous)
             {
-                if (it.Value.SecondaryScope != null && Cache.TryGetValue(it.Value.SecondaryScope, out ASTNodeDict parentScope) && parentScope.TryGetValue(symbol, out ASTNode tempNode) && tempNode is T)
+                ASTNodeDict nodeDict = it.Value;
+                if (nodeDict.TryGetValue(symbol, out ASTNode tempNode) && tempNode is T)
                 {
                     outNode = (T)tempNode;
                     return true;
                 }
-                if (it.Value.TryGetValue(symbol, out tempNode) && tempNode is T)
+
+                /*
+                SecondaryScope is an alternate chain of parents that needs to be fully searched before the standard parent chain. 
+                SecondaryScope is used for State inheritance and Struct inheritance. 
+                For Example, given: 
+
+                class A extends Object;
                 {
-                    outNode = (T)tempNode;
-                    return true;
+                    function F();
+                     
+                    state X
+                    {
+                      function F();
+                    }
+                }
+
+                class B extends A;
+                {
+                    function F();
+
+                    state X
+                    {
+                    }
+
+                    state Y extends X
+                    {
+                    }
+                }
+
+
+                B.Y's parent scope chain is B.Y -> B -> A -> Object , but its SecondaryScope chain is B.Y -> B.X -> A.X
+                The SecondaryScope must be searched first becuase if F() is called from within B.Y, it must resolve to A.X.F, not B.F 
+                */
+                while (nodeDict.SecondaryScope != null && Cache.TryGetValue(nodeDict.SecondaryScope, out nodeDict))
+                {
+                    if (nodeDict.TryGetValue(symbol, out tempNode) && tempNode is T)
+                    {
+                        outNode = (T)tempNode;
+                        return true;
+                    }
                 }
             }
             outNode = null;
@@ -687,18 +729,29 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             Scopes.Last()[symbol] = node;
             if (clearAssociatedScope)
             {
-                PushScope(symbol);
-
-                string scopeName = CurrentScopeName;
-                Cache.Remove(scopeName);
-                scopeName += '.';
-                foreach (string s in Cache.Keys.Where(k => k.StartsWith(scopeName, StringComparison.OrdinalIgnoreCase)).ToList())
-                {
-                    Cache.Remove(s);
-                }
-
-                PopScope();
+                ClearScope(symbol);
             }
+        }
+
+        private void ClearScope(string symbol)
+        {
+            PushScope(symbol);
+
+            string scopeName = CurrentScopeName;
+            Cache.Remove(scopeName);
+            scopeName += '.';
+            foreach (string s in Cache.Keys.Where(k => k.StartsWith(scopeName, StringComparison.OrdinalIgnoreCase)).ToList())
+            {
+                Cache.Remove(s);
+            }
+
+            PopScope();
+        }
+
+        public void RemoveSymbol(string symbol)
+        {
+            ClearScope(symbol);
+            Scopes.Last().Remove(symbol);
         }
 
         public bool AddType(VariableType node)

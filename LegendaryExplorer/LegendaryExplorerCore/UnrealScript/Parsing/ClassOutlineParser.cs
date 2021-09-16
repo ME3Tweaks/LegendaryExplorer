@@ -51,6 +51,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                 var name = Consume(TokenType.Word);
                 if (name == null) throw ParseError("Expected class name!");
+                name.SyntaxType = EF.TypeName;
 
                 var parentClass = TryParseParent() ?? new VariableType("Object");
 
@@ -62,55 +63,55 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 string configName = "None";
                 while (CurrentTokenType == TokenType.Word)
                 {
-                    if (Matches("native"))
+                    if (Matches("native", EF.Specifier))
                     {
                         flags |= EClassFlags.Native;
                     }
-                    else if (Matches("nativeonly"))
+                    else if (Matches("nativeonly", EF.Specifier))
                     {
                         flags |= EClassFlags.NativeOnly;
                     }
-                    else if (Matches("noexport"))
+                    else if (Matches("noexport", EF.Specifier))
                     {
                         flags |= EClassFlags.NoExport;
                     }
-                    else if (Matches("editinlinenew"))
+                    else if (Matches("editinlinenew", EF.Specifier))
                     {
                         flags |= EClassFlags.EditInlineNew;
                     }
-                    else if (Matches("placeable"))
+                    else if (Matches("placeable", EF.Specifier))
                     {
                         flags |= EClassFlags.Placeable;
                     }
-                    else if (Matches("hidedropdown"))
+                    else if (Matches("hidedropdown", EF.Specifier))
                     {
                         flags |= EClassFlags.HideDropDown;
                     }
-                    else if (Matches("nativereplication"))
+                    else if (Matches("nativereplication", EF.Specifier))
                     {
                         flags |= EClassFlags.NativeReplication;
                     }
-                    else if (Matches("perobjectconfig"))
+                    else if (Matches("perobjectconfig", EF.Specifier))
                     {
                         flags |= EClassFlags.PerObjectConfig;
                     }
-                    else if (Matches("localized"))
+                    else if (Matches("localized", EF.Specifier))
                     {
                         flags |= EClassFlags.Localized;
                     }
-                    else if (Matches("abstract"))
+                    else if (Matches("abstract", EF.Specifier))
                     {
                         flags |= EClassFlags.Abstract;
                     }
-                    else if (Matches("deprecated"))
+                    else if (Matches("deprecated", EF.Specifier))
                     {
                         flags |= EClassFlags.Deprecated;
                     }
-                    else if (Matches("transient"))
+                    else if (Matches("transient", EF.Specifier))
                     {
                         flags |= EClassFlags.Transient;
                     }
-                    else if (Matches("config"))
+                    else if (Matches("config", EF.Specifier))
                     {
                         flags |= EClassFlags.Config;
                         if (Consume(TokenType.LeftParenth) is null || Consume(TokenType.Word) is null)
@@ -124,19 +125,19 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                             throw ParseError("Expected ')' after config file name!", CurrentPosition);
                         }
                     }
-                    else if (Matches("safereplace"))
+                    else if (Matches("safereplace", EF.Specifier))
                     {
                         flags |= EClassFlags.SafeReplace;
                     }
-                    else if (Matches("hidden"))
+                    else if (Matches("hidden", EF.Specifier))
                     {
                         flags |= EClassFlags.Hidden;
                     }
-                    else if (Matches("collapsecategories"))
+                    else if (Matches("collapsecategories", EF.Specifier))
                     {
                         flags |= EClassFlags.CollapseCategories;
                     }
-                    else if (Matches("implements"))
+                    else if (Matches("implements", EF.Keyword))
                     {
                         if (Consume(TokenType.LeftParenth) is null)
                         {
@@ -145,6 +146,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                         while (Consume(TokenType.Word) is Token<string> interfaceName)
                         {
+                            interfaceName.SyntaxType = EF.TypeName;
                             interfaces.Add(new VariableType(interfaceName.Value, interfaceName.StartPos, interfaceName.EndPos));
                             if (Consume(TokenType.Comma) is null)
                             {
@@ -231,10 +233,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             ASTNode ConstantParser()
             {
                 var startPos = CurrentPosition;
-                if (!Matches(CONST)) return null;
+                if (!Matches(CONST, EF.Keyword)) return null;
                 if (Consume(TokenType.Word) is Token<string> constName)
                 {
-                    if (Consume(TokenType.Assign) == null)
+                    if (!Matches(TokenType.Assign, EF.Operator))
                     {
                         throw ParseError("Expected '=' after constant name!", CurrentPosition);
                     }
@@ -274,7 +276,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             ASTNode DeclarationParser()
             {
                 var startPos = CurrentPosition;
-                if (!Matches(VAR)) return null;
+                if (!Matches(VAR, EF.Keyword)) return null;
                 string category = null;
                 if (CurrentTokenType == TokenType.LeftParenth)
                 {
@@ -323,36 +325,36 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return (Struct)Tokens.TryGetTree(StructParser);
             ASTNode StructParser()
             {
-                if (!Matches(STRUCT)) return null;
+                if (!Matches(STRUCT, EF.Keyword)) return null;
 
                 ScriptStructFlags flags = 0;
                 while (CurrentTokenType == TokenType.Word)
                 {
-                    if (Matches("native"))
+                    if (Matches("native", EF.Specifier))
                     {
                         flags |= ScriptStructFlags.Native;
                     }
-                    else if (Matches("export"))
+                    else if (Matches("export", EF.Specifier))
                     {
                         flags |= ScriptStructFlags.Export;
                     }
-                    else if (Matches("transient"))
+                    else if (Matches("transient", EF.Specifier))
                     {
                         flags |= ScriptStructFlags.Transient;
                     }
-                    else if (Matches("atomic"))
+                    else if (Matches("atomic", EF.Specifier))
                     {
                         flags |= ScriptStructFlags.Atomic;
                     }
-                    else if (Matches("immutable"))
+                    else if (Matches("immutable", EF.Specifier))
                     {
                         flags |= ScriptStructFlags.Immutable | ScriptStructFlags.Atomic;
                     }
-                    else if (Matches("immutablewhencooked"))
+                    else if (Matches("immutablewhencooked", EF.Specifier))
                     {
                         flags |= ScriptStructFlags.ImmutableWhenCooked | ScriptStructFlags.AtomicWhenCooked;
                     }
-                    else if (Matches("strictconfig"))
+                    else if (Matches("strictconfig", EF.Specifier))
                     {
                         flags |= ScriptStructFlags.StrictConfig;
                     }
@@ -364,6 +366,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                 var name = Consume(TokenType.Word);
                 if (name == null) throw ParseError("Expected struct name!", CurrentPosition);
+                name.SyntaxType = EF.TypeName;
 
                 var parent = TryParseParent();
 
@@ -388,7 +391,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
 
                 DefaultPropertiesBlock defaults = null;
-                if (Matches(STRUCTDEFAULTPROPERTIES))
+                if (Matches(STRUCTDEFAULTPROPERTIES, EF.Keyword))
                 {
                     if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, false, out SourcePosition bodyStart, out SourcePosition bodyEnd))
                     {
@@ -411,10 +414,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return (Enumeration)Tokens.TryGetTree(EnumParser);
             ASTNode EnumParser()
             {
-                if (!Matches(ENUM)) return null;
+                if (!Matches(ENUM, EF.Keyword)) return null;
 
                 var name = Consume(TokenType.Word);
                 if (name == null) throw ParseError("Expected enumeration name!", CurrentPosition);
+                name.SyntaxType = EF.Enum;
 
                 if (Consume(TokenType.LeftBracket) == null) throw ParseError("Expected '{'!", CurrentPosition);
 
@@ -504,7 +508,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                 if (Game >= MEGame.ME3 && hasOptionalParams)
                 {
-                    flags |= EFunctionFlags.HasOptionalParms; //TODO: does this flag exist in ME1/ME2?
+                    flags |= EFunctionFlags.HasOptionalParms; //TODO: does this flag exist in LE1/LE2?
                 }
 
                 if (hasOutParms)
@@ -513,7 +517,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
                 if (Consume(TokenType.RightParenth) == null) throw ParseError("Expected ')'!", CurrentPosition);
 
-                CodeBody body = new CodeBody(null, CurrentPosition, CurrentPosition);
+                var body = new CodeBody(null, CurrentPosition, CurrentPosition);
                 if (Consume(TokenType.SemiColon) is null)
                 {
                     if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, false, out SourcePosition bodyStart, out SourcePosition bodyEnd))
@@ -551,14 +555,14 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return (State)Tokens.TryGetTree(StateSkeletonParser);
             ASTNode StateSkeletonParser()
             {
-                EStateFlags flags = EStateFlags.None;
+                var flags = EStateFlags.None;
                 while (CurrentTokenType == TokenType.Word)
                 {
-                    if (Matches("simulated"))
+                    if (Matches("simulated", EF.Specifier))
                     {
                         flags |= EStateFlags.Simulated;
                     }
-                    else if (Matches("auto"))
+                    else if (Matches("auto", EF.Specifier))
                     {
                         flags |= EStateFlags.Auto;
                     }
@@ -568,7 +572,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     }
                 }
 
-                if (!Matches(STATE)) return null;
+                if (!Matches(STATE, EF.Keyword)) return null;
                 if (Consume(TokenType.LeftParenth) != null)
                 {
                     if (Consume(TokenType.RightParenth) is null)
@@ -581,13 +585,14 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                 var name = Consume(TokenType.Word);
                 if (name == null) throw ParseError("Expected state name!", CurrentPosition);
+                name.SyntaxType = EF.State;
 
-                var parent = TryParseParent();
+                var parent = TryParseParent(true);
 
                 if (Consume(TokenType.LeftBracket) == null) throw ParseError("Expected '{'!", CurrentPosition);
 
                 var ignores = new List<Function>();
-                if (Matches(IGNORES))
+                if (Matches(IGNORES, EF.Keyword))
                 {
                     do
                     {
@@ -631,7 +636,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             ASTNode DefaultPropertiesParser()
             {
 
-                if (!Matches(DEFAULTPROPERTIES)) return null;
+                if (!Matches(DEFAULTPROPERTIES, EF.Keyword)) return null;
 
                 if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, false, out SourcePosition bodyStart, out SourcePosition bodyEnd))
                 {
@@ -670,7 +675,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                 var funcParam = new FunctionParameter(type, flags, variable.Name, variable.Size, variable.StartPos, variable.EndPos);
 
-                if (Consume(TokenType.Assign) != null)
+                if (Matches(TokenType.Assign, EF.Operator))
                 {
                     if (!funcParam.IsOptional)
                     {
@@ -686,7 +691,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     int parenNest = 0;
                     while (CurrentTokenType != TokenType.EOF)
                     {
-                        if (parenNest == 0 && (CurrentTokenType == TokenType.RightParenth || CurrentTokenType == TokenType.Comma))
+                        if (parenNest == 0 && (CurrentTokenType is TokenType.RightParenth or TokenType.Comma))
                         {
                             break;
                         }
@@ -720,18 +725,20 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
         }
 
-        public VariableType TryParseParent()
+        public VariableType TryParseParent(bool state = false)
         {
             return (VariableType)Tokens.TryGetTree(ParentParser);
             ASTNode ParentParser()
             {
-                if (!Matches(EXTENDS)) return null;
+                if (!Matches(EXTENDS, EF.Keyword)) return null;
                 var parentName = Consume(TokenType.Word);
                 if (parentName == null)
                 {
                     Log.LogError("Expected parent name!", CurrentPosition);
                     return null;
                 }
+
+                parentName.SyntaxType = state ? EF.State : EF.TypeName;
 
                 return new VariableType(parentName.Value, parentName.StartPos, parentName.EndPos);
             }
@@ -750,6 +757,8 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     return null;
                 }
 
+                outerName.SyntaxType = EF.TypeName;
+
                 return new VariableType(outerName.Value, outerName.StartPos, outerName.EndPos);
             }
         }
@@ -763,148 +772,148 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             flags = EPropertyFlags.None;
             while (CurrentTokenType == TokenType.Word)
             {
-                if (Matches("const", EF.Keyword))
+                if (Matches("const", EF.Specifier))
                 {
                     flags |= EPropertyFlags.Const;
                 }
-                else if (Matches("config", EF.Keyword))
+                else if (Matches("config", EF.Specifier))
                 {
                     flags |= EPropertyFlags.Config;
                 }
-                else if (Matches("globalconfig", EF.Keyword))
+                else if (Matches("globalconfig", EF.Specifier))
                 {
                     flags |= EPropertyFlags.GlobalConfig | EPropertyFlags.Config;
                 }
-                else if (Matches("localized", EF.Keyword))
+                else if (Matches("localized", EF.Specifier))
                 {
                     flags |= EPropertyFlags.Localized | EPropertyFlags.Const;
                 }
                 //TODO: private, protected, and public are in ObjectFlags, not PropertyFlags 
-                else if (Matches("privatewrite", EF.Keyword))
+                else if (Matches("privatewrite", EF.Specifier))
                 {
                     flags |= EPropertyFlags.PrivateWrite;
                 }
-                else if (Matches("protectedwrite", EF.Keyword))
+                else if (Matches("protectedwrite", EF.Specifier))
                 {
                     flags |= EPropertyFlags.ProtectedWrite;
                 }
-                else if (Matches("editconst", EF.Keyword))
+                else if (Matches("editconst", EF.Specifier))
                 {
                     flags |= EPropertyFlags.EditConst;
                 }
-                else if (Matches("edithide", EF.Keyword))
+                else if (Matches("edithide", EF.Specifier))
                 {
                     flags |= EPropertyFlags.EditHide;
                 }
-                else if (Matches("edittextbox", EF.Keyword))
+                else if (Matches("edittextbox", EF.Specifier))
                 {
                     flags |= EPropertyFlags.EditTextBox;
                 }
-                else if (Matches("input", EF.Keyword))
+                else if (Matches("input", EF.Specifier))
                 {
                     flags |= EPropertyFlags.Input;
                 }
-                else if (Matches("transient", EF.Keyword))
+                else if (Matches("transient", EF.Specifier))
                 {
                     flags |= EPropertyFlags.Transient;
                 }
-                else if (Matches("native", EF.Keyword))
+                else if (Matches("native", EF.Specifier))
                 {
                     flags |= EPropertyFlags.Native;
                 }
-                else if (Matches("noexport", EF.Keyword))
+                else if (Matches("noexport", EF.Specifier))
                 {
                     flags |= EPropertyFlags.NoExport;
                 }
-                else if (Matches("duplicatetransient", EF.Keyword))
+                else if (Matches("duplicatetransient", EF.Specifier))
                 {
                     flags |= EPropertyFlags.DuplicateTransient;
                 }
-                else if (Matches("noimport", EF.Keyword))
+                else if (Matches("noimport", EF.Specifier))
                 {
                     flags |= EPropertyFlags.NoImport;
                 }
-                else if (Matches("out", EF.Keyword))
+                else if (Matches("out", EF.Specifier))
                 {
                     flags |= EPropertyFlags.OutParm;
                 }
-                else if (Matches("export", EF.Keyword))
+                else if (Matches("export", EF.Specifier))
                 {
                     flags |= EPropertyFlags.ExportObject;
                 }
-                else if (Matches("editinlineuse", EF.Keyword))
+                else if (Matches("editinlineuse", EF.Specifier))
                 {
                     flags |= EPropertyFlags.EditInlineUse;
                 }
-                else if (Matches("noclear", EF.Keyword))
+                else if (Matches("noclear", EF.Specifier))
                 {
                     flags |= EPropertyFlags.NoClear;
                 }
-                else if (Matches("editfixedsize", EF.Keyword))
+                else if (Matches("editfixedsize", EF.Specifier))
                 {
                     flags |= EPropertyFlags.EditFixedSize;
                 }
-                else if (Matches("repnotify", EF.Keyword))
+                else if (Matches("repnotify", EF.Specifier))
                 {
                     flags |= EPropertyFlags.RepNotify;
                 }
-                else if (Matches("repretry", EF.Keyword))
+                else if (Matches("repretry", EF.Specifier))
                 {
                     flags |= EPropertyFlags.RepRetry;
                 }
-                else if (Matches("interp", EF.Keyword))
+                else if (Matches("interp", EF.Specifier))
                 {
                     flags |= EPropertyFlags.Interp | EPropertyFlags.Editable;
                 }
-                else if (Matches("nontransactional", EF.Keyword))
+                else if (Matches("nontransactional", EF.Specifier))
                 {
                     flags |= EPropertyFlags.NonTransactional;
                 }
-                else if (Matches("deprecated", EF.Keyword))
+                else if (Matches("deprecated", EF.Specifier))
                 {
                     flags |= EPropertyFlags.Deprecated;
                 }
-                else if (Matches("skip", EF.Keyword))
+                else if (Matches("skip", EF.Specifier))
                 {
                     flags |= EPropertyFlags.SkipParm;
                 }
-                else if (Matches("coerce", EF.Keyword))
+                else if (Matches("coerce", EF.Specifier))
                 {
                     flags |= EPropertyFlags.CoerceParm;
                 }
-                else if (Matches("optional", EF.Keyword))
+                else if (Matches("optional", EF.Specifier))
                 {
                     flags |= EPropertyFlags.OptionalParm;
                 }
-                else if (Matches("alwaysinit", EF.Keyword))
+                else if (Matches("alwaysinit", EF.Specifier))
                 {
                     flags |= EPropertyFlags.AlwaysInit;
                 }
-                else if (Matches("databinding", EF.Keyword))
+                else if (Matches("databinding", EF.Specifier))
                 {
                     flags |= EPropertyFlags.DataBinding;
                 }
-                else if (Matches("editoronly", EF.Keyword))
+                else if (Matches("editoronly", EF.Specifier))
                 {
                     flags |= EPropertyFlags.EditorOnly;
                 }
-                else if (Matches("notforconsole", EF.Keyword))
+                else if (Matches("notforconsole", EF.Specifier))
                 {
                     flags |= EPropertyFlags.NotForConsole;
                 }
-                else if (Matches("archetype", EF.Keyword))
+                else if (Matches("archetype", EF.Specifier))
                 {
                     flags |= EPropertyFlags.Archetype;
                 }
-                else if (Matches("serializetext", EF.Keyword))
+                else if (Matches("serializetext", EF.Specifier))
                 {
                     flags |= EPropertyFlags.SerializeText;
                 }
-                else if (Matches("crosslevelactive", EF.Keyword))
+                else if (Matches("crosslevelactive", EF.Specifier))
                 {
                     flags |= EPropertyFlags.CrossLevelActive;
                 }
-                else if (Matches("crosslevelpassive", EF.Keyword))
+                else if (Matches("crosslevelpassive", EF.Specifier))
                 {
                     flags |= EPropertyFlags.CrossLevelPassive;
                 }

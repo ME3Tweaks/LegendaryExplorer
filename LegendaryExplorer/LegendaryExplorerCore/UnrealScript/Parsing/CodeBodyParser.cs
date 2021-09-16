@@ -47,11 +47,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         //these have to be checked against labels after the whole body is parsed
         private readonly List<Statement> gotoStatements = new();
 
-        public static TokenStream<string> ParseFunction(Function func, MEGame game, string source, SymbolTable symbols, MessageLog log)
+        public static void ParseFunction(Function func, MEGame game, SymbolTable symbols, MessageLog log)
         {
             symbols.PushScope(func.Name);
 
-            var tokenStream = func.Body.Tokens ?? new TokenStream<string>(new StringLexer(source, log), func.Body.StartPos, func.Body.EndPos);
+            var tokenStream = func.Body.Tokens;
+
             var bodyParser = new CodeBodyParser(tokenStream, game, func.Body, symbols, func, log);
 
             var body = bodyParser.ParseBody();
@@ -95,7 +96,8 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         continue;
                     }
 
-                    var paramTokenStream = unparsedBody.Tokens ?? new TokenStream<string>(new StringLexer(source, log), unparsedBody.StartPos, unparsedBody.EndPos);
+                    var paramTokenStream = unparsedBody.Tokens;
+
                     var paramParser = new CodeBodyParser(paramTokenStream, game, unparsedBody, symbols, func, log);
                     var parsed = paramParser.ParseExpression();
                     if (parsed is null)
@@ -116,21 +118,19 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             func.Body = body;
 
             symbols.PopScope();
-            
-            return tokenStream;
         }
 
-        public static void ParseState(State state, MEGame game, string source, SymbolTable symbols, MessageLog log = null)
+        public static void ParseState(State state, MEGame game, SymbolTable symbols, MessageLog log = null)
         {
             symbols.PushScope(state.Name);
 
-            var tokenStream = state.Body.Tokens ?? new TokenStream<string>(new StringLexer(source, log), state.Body.StartPos, state.Body.EndPos);
+            var tokenStream = state.Body.Tokens;
             var bodyParser = new CodeBodyParser(tokenStream, game, state.Body, symbols, state, log);
 
             var body = bodyParser.ParseBody();
 
             //remove redundant stop;
-            if (body.Statements.Count > 0 && body.Statements.Last() is StopStatement stop)
+            if (body.Statements.Count > 0 && body.Statements.Last() is StopStatement)
             {
                 body.Statements.RemoveAt(body.Statements.Count - 1);
             }
@@ -138,6 +138,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             state.Labels = bodyParser.LabelNests.Pop();
 
             state.Body = body;
+
+            foreach (Function stateFunction in state.Functions)
+            {
+                ParseFunction(stateFunction, game, symbols, log);
+            }
 
             symbols.PopScope();
         }
@@ -454,6 +459,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             if (Consume(TokenType.Assign) is { } assign)
             {
+                assign.SyntaxType = EF.Operator;
                 if (!IsLValue(expr))
                 {
                     ParseError("Assignments require a variable on the left! (LValue expected).", expr);
@@ -472,9 +478,9 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 return new AssignStatement(expr, value, expr.StartPos, value.EndPos);
             }
 
-            if (expr is FunctionCall || expr is DelegateCall || expr is CompositeSymbolRef csr && (csr.InnerSymbol is FunctionCall || csr.InnerSymbol is DelegateCall) 
-             || expr is PostOpReference || expr is PreOpReference preOp && preOp.Operator.HasOutParams || expr is InOpReference inOp && inOp.Operator.HasOutParams 
-             || expr is DynArrayOperation && !(expr is DynArrayLength))
+            if (expr is FunctionCall or DelegateCall or PostOpReference or CompositeSymbolRef {InnerSymbol: FunctionCall or DelegateCall} 
+                || expr is PreOpReference preOp && preOp.Operator.HasOutParams || expr is InOpReference inOp && inOp.Operator.HasOutParams 
+                || expr is DynArrayOperation and not DynArrayLength)
             {
             }
             else
@@ -1018,10 +1024,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
             while (IsOperator(out bool isRightShift))
             {
+                CurrentToken.SyntaxType = EF.Operator;
                 string opKeyword = isRightShift ? ">>" : CurrentToken.Value;
                 Expression lhs = expr;
 
-                if (lhs is DynArrayLength && (opKeyword == "+=" || opKeyword == "-=" || opKeyword == "*=" || opKeyword == "/="))
+                if (lhs is DynArrayLength && (opKeyword is "+=" or "-=" or "*=" or "/="))
                 {
                     ParseError($"The {LENGTH} property of a dynamic array can only be changed by direct assignment!", lhs);
                 }
@@ -1042,6 +1049,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 Token<string> opToken = Consume(CurrentTokenType);
                 if (isRightShift)
                 {
+                    CurrentToken.SyntaxType = EF.Operator;
                     Consume(TokenType.RightArrow);
                 }
                 Expression rhs = BinaryExpression(precedence);
@@ -1163,6 +1171,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             Expression expr;
             if (Consume(TokenType.Increment, TokenType.Decrement) is { } preFixToken)
             {
+                preFixToken.SyntaxType = EF.Operator;
                 expr = CompositeRef();
                 if (expr is DynArrayLength)
                 {
@@ -1180,7 +1189,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 PreOpDeclaration opDeclaration = Symbols.GetPreOp(preFixToken.Value, exprType);
                 return new PreOpReference(opDeclaration, expr, preFixToken.StartPos, expr.EndPos);
             }
-            if (Matches(TokenType.ExclamationMark))
+            if (Matches(TokenType.ExclamationMark, EF.Operator))
             {
                 expr = Unary();
                 VariableType exprType = expr.ResolveType();
@@ -1193,7 +1202,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 return new PreOpReference(opDeclaration, expr, start, expr.EndPos);
 
             }
-            if (Matches(TokenType.MinusSign))
+            if (Matches(TokenType.MinusSign, EF.Operator))
             {
                 expr = Unary();
                 VariableType exprType = expr.ResolveType();
@@ -1219,7 +1228,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                 return new PreOpReference(Symbols.GetPreOp("-", exprType), expr, start, expr.EndPos);
             }
-            if (Matches(TokenType.Complement))
+            if (Matches(TokenType.Complement, EF.Operator))
             {
                 expr = Unary();
                 if (expr is IntegerLiteral intLit)
@@ -1241,6 +1250,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             if (Consume(TokenType.Increment, TokenType.Decrement) is {} postFixToken)
             {
+                postFixToken.SyntaxType = EF.Operator;
                 if (expr is DynArrayLength)
                 {
                     TypeError($"The {LENGTH} property of a dynamic array can only be changed by direct assignment!", expr);
@@ -1264,7 +1274,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         static void AddConversion(VariableType destType, ref Expression expr)
         {
-
             if (expr is NoneLiteral noneLit)
             {
                 if (destType.PropertyType == EPropertyType.Delegate)
@@ -2175,7 +2184,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         throw ParseError($"No class named '{className.Value}' found!", className);
                     }
 
-                    if (!(vartype is Class super))
+                    if (vartype is not Class super)
                     {
                         throw ParseError($"'{vartype.Name}' is not a class!", className);
                     }
@@ -2216,7 +2225,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
             }
 
-            superToken.AssociatedNode = superClass;
             if (!Matches(TokenType.Dot) || !Matches(TokenType.Word))
             {
                 throw ParseError($"Expected function name after '{SUPER}'!", CurrentPosition);
@@ -2239,6 +2247,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 if (Symbols.TryGetSymbolInScopeStack(functionName.Value, out ASTNode funcNode, specificScope) && funcNode is Function)
                 {
                     functionName.AssociatedNode = funcNode;
+                    superToken.AssociatedNode = funcNode.Outer;
                     return new SymbolReference(funcNode, functionName.Value, functionName.StartPos, functionName.EndPos)
                     {
                         IsSuper = true
@@ -2264,6 +2273,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
 
             functionName.AssociatedNode = symbol;
+            superToken.AssociatedNode = symbol.Outer;
             return new SymbolReference(symbol, functionName.Value, functionName.StartPos, functionName.EndPos)
             {
                 IsSuper = true,

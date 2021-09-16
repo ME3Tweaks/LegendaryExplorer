@@ -179,6 +179,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             public HashSet<string> Functions;
         }
 
+        //Does not work!
         public static void CalculateProbeNames(PackageEditorWindow pewpf)
         {
             var game = MEGame.LE3;
@@ -200,9 +201,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         var info = new ClassProbeInfo
                         {
                             ProbeMask = objBin.ProbeMask,
-                            Functions = new HashSet<string>(objBin.FullFunctionsList.Length)
+                            Functions = new HashSet<string>(objBin.VirtualFunctionTable.Length)
                         };
-                        foreach (UIndex uIndex in objBin.FullFunctionsList)
+                        foreach (UIndex uIndex in objBin.VirtualFunctionTable)
                         {
                             if (pcc.GetEntry(uIndex) is IEntry entry)
                             {

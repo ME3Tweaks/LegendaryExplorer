@@ -209,7 +209,13 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     {
                         Success &= func.AcceptVisitor(this);
                     }
-                    
+
+                    //third pass over states to check function overrides 
+                    foreach (State state in node.States)
+                    {
+                        Success &= state.AcceptVisitor(this);
+                    }
+
                     //second pass to resolve EPropertyFlags.NeedCtorLink for Struct Properties
                     foreach (VariableDeclaration decl in node.VariableDeclarations)
                     {
@@ -606,18 +612,33 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                             return Error($"{node.Name} overrides a function in a parent class, but the parent function is marked as final!", node.StartPos, node.EndPos);
                         if (!NodeUtils.TypeEqual(node.ReturnType, superFunc.ReturnType))
                             return Error($"{node.Name} overrides a function in a parent class, but the functions do not have the same return types!", node.StartPos, node.EndPos);
+
                         if (node.Parameters.Count != superFunc.Parameters.Count)
-                            return Error($"{node.Name} overrides a function in a parent class, but the functions do not have the same number of parameters!", node.StartPos, node.EndPos);
-                        for (int n = 0; n < node.Parameters.Count; n++)
                         {
-                            if (node.Parameters[n].Type != superFunc.Parameters[n].Type)
-                                return Error($"{node.Name} overrides a function in a parent class, but the functions do not have the same parameter types!", node.StartPos, node.EndPos);
+                            if (node.Outer is State)
+                            {
+                                //Contrary to what the unrealscript docs say, states can apparently have functions with the same name as a class function, but with different number of params.
+                                superFunc = null; 
+                            }
+                            else
+                            {
+                                return Error($"{node.Name} overrides a function in a parent class, but the functions do not have the same number of parameters!", node.StartPos, node.EndPos);
+                            }
+                        }
+                        else
+                        {
+                            for (int n = 0; n < node.Parameters.Count; n++)
+                            {
+                                if (node.Parameters[n].Type != superFunc.Parameters[n].Type)
+                                    return Error($"{node.Name} overrides a function in a parent class, but the functions do not have the same parameter types!", node.StartPos, node.EndPos);
+                            }
                         }
 
                         node.SuperFunction = superFunc;
                     }
                 }
-                else if (node.Outer is State && node.Flags.Has(EFunctionFlags.Net))
+                
+                if (superFunc is null && node.Outer is State && node.Flags.Has(EFunctionFlags.Net))
                 {
                     return Error("If a state function has the Net flag, it must override a class function", node.StartPos, node.EndPos);
                 }
@@ -633,12 +654,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     param.Outer = node;
                     Success &= param.AcceptVisitor(this);
                 }
-
-                //foreach (VariableDeclaration local in node.Locals)
-                //{
-                //    local.Outer = node;
-                //    Success &= local.AcceptVisitor(this);
-                //}
 
                 if (node.ReturnValueDeclaration is not null)
                 {
@@ -674,10 +689,14 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 else
                 {
                     if (overrides)
-                        return Error("A state is not allowed to both override a parent class's state and extend another state at the same time!", node.StartPos, node.EndPos);
+                        Error("A state is not allowed to both override a parent class's state and extend another state at the same time!", node.StartPos, node.EndPos);
 
-                    if (!Symbols.TryGetSymbolFromCurrentScope(node.Parent.Name, out ASTNode parent))
+                    if (!Symbols.TryGetSymbol(node.Parent.Name, out ASTNode parent))
+                    {
                         Error($"No parent state named '{node.Parent.Name}' found in the current class!", node.Parent.StartPos, node.Parent.EndPos);
+                        node.Parent = null;
+                    }
+
                     if (parent != null)
                     {
                         if (parent.Type != ASTNodeType.State)
@@ -688,18 +707,22 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 }
 
                 int numFuncs = node.Functions.Count;
-                string parentScope = node.Parent is not null ? $"{NodeUtils.GetContainingClass(node.Parent).GetInheritanceString()}.{node.Parent.Name}" : null;
+                string parentScope = node.Parent is not null ? $"{NodeUtils.GetContainingClass(node.Parent)?.GetInheritanceString()}.{node.Parent.Name}" : null;
                 Symbols.PushScope(node.Name, parentScope);
                 foreach (Function ignore in node.Ignores)
                 {
-                    if (Symbols.TryGetSymbol(ignore.Name, out ASTNode original, "") && original.Type == ASTNodeType.Function)
+                    if (Symbols.TryGetSymbol(ignore.Name, out ASTNode original) && original.Type == ASTNodeType.Function)
                     {
-                        Function header = (Function)original;
-                        Function emptyOverride = new Function(header.Name, header.Flags, header.ReturnValueDeclaration?.Clone(), new CodeBody(), header.Parameters, ignore.StartPos, ignore.EndPos);
+                        var header = (Function)original;
+                        var emptyOverride = new Function(header.Name, header.Flags, header.ReturnValueDeclaration?.Clone(), new CodeBody(), header.Parameters, ignore.StartPos, ignore.EndPos)
+                        {
+                            Outer = node
+                        };
                         node.Functions.Add(emptyOverride);
                     }
                     else //TODO: really ought to throw error, but PlayerController.PlayerWaiting.Jump is like this. Find alternate way of handling this?
                     {
+                        ignore.Outer = node;
                         node.Functions.Add(ignore);
                     }
                 }
@@ -711,7 +734,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     Success = Success && func.AcceptVisitor(this);
                 }
                 //TODO: check functions overrides:
-                //if the state overrides another state, we should be in that scope as well whenh we check overrides maybe?
+                //if the state overrides another state, we should be in that scope as well when we check overrides maybe?
                 //if the state has a parent state, we should be in that scope
                 //this is a royal mess, check that ignores also look-up from parent/overriding states as we are not sure if symbols are in the scope
 
@@ -724,6 +747,16 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 Symbols.PopScope();
                 return Success;
             }
+
+            if (Pass == ValidationPass.BodyPass)
+            {
+                //check overriding rules
+                foreach (Function func in node.Functions)
+                {
+                    Success &= func.AcceptVisitor(this);
+                }
+            }
+
             return Success;
         }
 
