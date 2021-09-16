@@ -86,7 +86,7 @@ namespace LegendaryExplorer.Tools.PlotManager
         public bool ShowJournal { get => _ShowJournal; set => SetProperty(ref _ShowJournal, value); }
         private GridViewColumnHeader _lastHeaderClicked = null;
         private ListSortDirection _lastDirection = ListSortDirection.Ascending;
-        public PlotDatabase modDB = new PlotDatabase();
+        public PlotDatabase modDB = new ModPlotDatabase();
         public ObservableCollectionExtended<PlotElementType> newItemTypes { get; } = new()
         {
             PlotElementType.State,
@@ -590,7 +590,7 @@ namespace LegendaryExplorer.Tools.PlotManager
                 NeedsSave = false;
             }
 
-            modDB.LoadPlotsFromJSON(CurrentGame, false);
+            ((ModPlotDatabase)modDB).LoadPlotsFromJSONFile(CurrentGame, null);
             RefreshTrees();
         }
 
@@ -599,21 +599,10 @@ namespace LegendaryExplorer.Tools.PlotManager
             bwLink.Visibility = Visibility.Collapsed;
             var statustxt = CurrentOverallOperationText.ToString();
             CurrentOverallOperationText = "Saving...";
-            switch (CurrentGame)
-            {
-                case MEGame.LE3:
-                    PlotDatabases.Le3ModDatabase.SaveDatabaseToFile(AppDirectories.AppDataFolder);
-                    CurrentOverallOperationText = "Saved LE3 Mod Database Locally...";
-                    break;
-                case MEGame.LE2:
-                    PlotDatabases.Le2ModDatabase.SaveDatabaseToFile(AppDirectories.AppDataFolder);
-                    CurrentOverallOperationText = "Saved LE2 Mod Database Locally...";
-                    break;
-                case MEGame.LE1:
-                    PlotDatabases.Le1ModDatabase.SaveDatabaseToFile(AppDirectories.AppDataFolder);
-                    CurrentOverallOperationText = "Saved LE1 Mod Database Locally...";
-                    break;
-            }
+            ModPlotDatabase mdb = (ModPlotDatabase)PlotDatabases.GetDatabaseForGame(CurrentGame, false);
+            mdb.SaveDatabaseToFile(AppDirectories.AppDataFolder);
+            CurrentOverallOperationText = $"Saved {CurrentGame} Mod Database Locally...";
+
             if (NeedsSave) //don't do this on exit
             {
                 await Task.Delay(TimeSpan.FromSeconds(1.0));
@@ -730,17 +719,17 @@ namespace LegendaryExplorer.Tools.PlotManager
             if (SelectedNode != null)
             {
                 var command = obj.ToString();
-                var mdb = new PlotDatabase();
+                var mdb = new ModPlotDatabase();
                 switch (CurrentGame)
                 {
                     case MEGame.LE1:
-                        mdb = PlotDatabases.Le1ModDatabase;
+                        mdb = (ModPlotDatabase)PlotDatabases.Le1ModDatabase;
                         break;
                     case MEGame.LE2:
-                        mdb = PlotDatabases.Le2ModDatabase;
+                        mdb = (ModPlotDatabase)PlotDatabases.Le2ModDatabase;
                         break;
                     default:
-                        mdb = PlotDatabases.Le3ModDatabase;
+                        mdb = (ModPlotDatabase)PlotDatabases.Le3ModDatabase;
                         break;
                 }
                 int newElementId = SelectedNode.ElementId;
@@ -1061,17 +1050,17 @@ namespace LegendaryExplorer.Tools.PlotManager
             if (dlg == MessageBoxResult.Cancel)
                 return;
             var deleteId = SelectedNode.ElementId;
-            var mdb = new PlotDatabase();
+            var mdb = new ModPlotDatabase();
             switch (CurrentGame)
             {
                 case MEGame.LE1:
-                    mdb = PlotDatabases.Le1ModDatabase;
+                    mdb = (ModPlotDatabase)PlotDatabases.Le1ModDatabase;
                     break;
                 case MEGame.LE2:
-                    mdb = PlotDatabases.Le2ModDatabase;
+                    mdb = (ModPlotDatabase)PlotDatabases.Le2ModDatabase;
                     break;
                 default:
-                    mdb = PlotDatabases.Le3ModDatabase;
+                    mdb = (ModPlotDatabase)PlotDatabases.Le3ModDatabase;
                     break;
             }
             mdb.RemoveFromParent(SelectedNode);

@@ -32,7 +32,6 @@ namespace LegendaryExplorerCore.PlotDatabase
         Float = 14,
         Mod = 15,
         Category = 16
-
     }
 
     public static class PlotElementTypeExtensions
@@ -98,7 +97,7 @@ namespace LegendaryExplorerCore.PlotDatabase
                 var path = new StringBuilder();
                 PlotElement el = this;
                 path.Insert(0, el.Label);
-                while (el.ParentElementId > 0)
+                while (el.ParentElementId > 0 && el.Parent != null)
                 {
                     el = el.Parent;
                     path.Insert(0, ".");
@@ -106,30 +105,6 @@ namespace LegendaryExplorerCore.PlotDatabase
                 }
                 return path.ToString();
             }
-        }
-
-        public PlotElement()
-        { }
-
-        public PlotElement(int plotid, int elementid, string label, PlotElementType type, int parentelementId, List<PlotElement> children)
-        {
-            PlotId = plotid;
-            ElementId = elementid;
-            Label = label;
-            Type = type;
-            ParentElementId = parentelementId;
-            Children = children;
-        }
-
-        public PlotElement(int plotid, int elementid, string label, PlotElementType type, int parentelementId, List<PlotElement> children, PlotElement parent)
-        {
-            PlotId = plotid;
-            ElementId = elementid;
-            Label = label;
-            Type = type;
-            ParentElementId = parentelementId;
-            Children = children;
-            Parent = parent;
         }
 
         [JsonIgnore]
@@ -159,6 +134,44 @@ namespace LegendaryExplorerCore.PlotDatabase
                 }
             }
         }
+
+        public PlotElement()
+        { }
+
+        public PlotElement(int plotid, int elementid, string label, PlotElementType type, int parentelementId, List<PlotElement> children)
+        {
+            PlotId = plotid;
+            ElementId = elementid;
+            Label = label;
+            Type = type;
+            ParentElementId = parentelementId;
+            Children = children;
+        }
+
+        public PlotElement(int plotid, int elementid, string label, PlotElementType type, int parentelementId, List<PlotElement> children, PlotElement parent)
+        {
+            PlotId = plotid;
+            ElementId = elementid;
+            Label = label;
+            Type = type;
+            ParentElementId = parentelementId;
+            Children = children;
+            Parent = parent;
+        }
+
+        public bool RemoveFromParent()
+        {
+            if (Parent != null)
+            {
+                Parent.Children.Remove(this);
+                Parent = null;
+                ParentElementId = -1;
+                return true;
+            }
+
+            return false;
+        }
+
 #pragma warning disable
         public event PropertyChangedEventHandler PropertyChanged;
 #pragma warning restore

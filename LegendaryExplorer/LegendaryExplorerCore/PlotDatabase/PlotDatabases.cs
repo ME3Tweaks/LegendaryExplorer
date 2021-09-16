@@ -181,17 +181,17 @@ namespace LegendaryExplorerCore.PlotDatabase
 
         public static bool LoadDatabase(MEGame game, bool isbioware, string appDataPath = null)
         {
-            var db = new PlotDatabase(game, isbioware);
             if(!isbioware)
             {
                 if (!game.IsLEGame())
                     return false;
                 string mdbPath = null;
+                var db = new ModPlotDatabase();
                 if(appDataPath != null)
                     mdbPath = Path.Combine(appDataPath, $"PlotDBMods{game}.json");
                 if(mdbPath != null && File.Exists(mdbPath))
                 {
-                    db.LoadPlotsFromJSON(game, isbioware, mdbPath);
+                    db.LoadPlotsFromJSONFile(game, mdbPath);
                     switch (game)
                     {
                         case MEGame.LE1:
@@ -210,7 +210,8 @@ namespace LegendaryExplorerCore.PlotDatabase
             }
             else
             {
-                db.LoadPlotsFromJSON(game, isbioware);
+                var db = new BasegamePlotDatabase();
+                db.LoadPlotsFromJSON(game);
                 switch (game)
                 {
                     case MEGame.ME1:
@@ -232,31 +233,39 @@ namespace LegendaryExplorerCore.PlotDatabase
 
         public static void LoadAllPlotDatabases()
         {
-            Le1PlotDatabase = new PlotDatabase(MEGame.LE1, true);
-            Le1PlotDatabase.LoadPlotsFromJSON(MEGame.LE1);
+            var le1 = new BasegamePlotDatabase();
+            le1.LoadPlotsFromJSON(MEGame.LE1);
+            Le1PlotDatabase = le1;
 
-            Le2PlotDatabase = new PlotDatabase(MEGame.LE2, true);
-            Le2PlotDatabase.LoadPlotsFromJSON(MEGame.LE2);
+            var le2 = new BasegamePlotDatabase();
+            le2.LoadPlotsFromJSON(MEGame.LE2);
+            Le1PlotDatabase = le2;
 
-            Le3PlotDatabase = new PlotDatabase(MEGame.LE3, true);
-            Le3PlotDatabase.LoadPlotsFromJSON(MEGame.LE3);
+            var le3 = new BasegamePlotDatabase();
+            le3.LoadPlotsFromJSON(MEGame.LE3);
+            Le3PlotDatabase = le3;
         }
 
         public static void CreateNewModDatabase(MEGame game)
         {
+            if (!game.IsLEGame()) throw new ArgumentException("Cannot create mod database for non-LE game");
+            var modDb = new ModPlotDatabase()
+            {
+                Game = game
+            };
+            modDb.Organizational.Add(10000,
+                new PlotElement(0, 10000, $"{game}/{game.ToOTVersion()} Mods", PlotElementType.Region, 0,
+                    new List<PlotElement>()));
             switch (game)
             {
                 case MEGame.LE3:
-                    Le3ModDatabase = new PlotDatabase(MEGame.LE3, false);
-                    Le3ModDatabase.Organizational.Add(100000, new PlotElement(0, 100000, "LE3/ME3 Mods", PlotElementType.Region, 0, new List<PlotElement>()));
+                    Le3ModDatabase = modDb;
                     break;
                 case MEGame.LE2:
-                    Le2ModDatabase = new PlotDatabase(MEGame.LE2, false);
-                    Le2ModDatabase.Organizational.Add(100000, new PlotElement(0, 100000, "LE2/ME2 Mods", PlotElementType.Region, 0, new List<PlotElement>()));
+                    Le2ModDatabase = modDb;
                     break;
                 case MEGame.LE1:
-                    Le1ModDatabase = new PlotDatabase(MEGame.LE1, false);
-                    Le1ModDatabase.Organizational.Add(100000, new PlotElement(0, 100000, "LE1/ME1 Mods", PlotElementType.Region, 0, new List<PlotElement>()));
+                    Le1ModDatabase = modDb;
                     break;
             }
         }
