@@ -111,6 +111,8 @@
         <MenuItem Header="Save as New Package" Click="SaveAsNewPackage"/>
         <MenuItem Header="Create New Seekfree Package" Click="NewSeekFreeFile"/>
         <MenuItem Header="Add All Assets to Seekfree Referencer" Click="AddAssetsToReferencer"/>
+        <MenuItem Header="Add All Groups to InterpData" Click="AddGrpsToInterpData"/>
+        <MenuItem Header="Destroyer" Click="BlowMeUp"/>
         <MenuItem Header="Trash Compactor" Click="RunTrashCompactor"/>
     </MenuItem>
     <MenuItem Header="Other people's box of Legos">

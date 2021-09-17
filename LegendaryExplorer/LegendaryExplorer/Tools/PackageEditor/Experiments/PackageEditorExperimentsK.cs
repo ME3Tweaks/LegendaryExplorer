@@ -908,5 +908,76 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             MessageBox.Show($"{r} exports had classes replaced.", "Replace Classes");
         }
+
+        public static void ShaderDestroyer(PackageEditorWindow pewpf)
+        {
+            var dlg = MessageBox.Show("Destroy this file?", "Warning", MessageBoxButton.OKCancel);
+            if (dlg == MessageBoxResult.Cancel)
+                return;
+
+            if (pewpf.Pcc.Game != MEGame.LE3)
+                return;
+            var targetxp = pewpf.Pcc.Exports.FirstOrDefault(x => x.ClassName == "ShaderCache");
+            if(targetxp == null)
+                return;
+
+            var tgtshader = targetxp.GetBinaryData<ShaderCache>();
+            if (tgtshader == null)
+                return;
+
+            var maincachefilepath = (Path.Combine(LE3Directory.CookedPCPath, "RefShaderCache-PC-D3D-SM5.upk"));
+            IMEPackage maincachefile = MEPackageHandler.OpenMEPackage(maincachefilepath);
+            if (maincachefile == null)
+                return;
+
+            var mainshaderpcc = maincachefile.Exports.FirstOrDefault(x => x.ClassName == "ShaderCache");
+            var mainshader = mainshaderpcc.GetBinaryData<ShaderCache>();
+
+            var newTypeCRC = new OrderedMultiValueDictionary<NameReference, uint>();
+            var newVertexFact = new OrderedMultiValueDictionary<NameReference, uint>();
+
+            foreach (var kvp in tgtshader.VertexFactoryTypeCRCMap)
+            {
+                newVertexFact.Add(kvp.Key, mainshader.VertexFactoryTypeCRCMap[kvp.Key]);
+            }
+
+            foreach (var crctype in tgtshader.ShaderTypeCRCMap)
+            {
+                newTypeCRC.Add(crctype.Key, mainshader.ShaderTypeCRCMap[crctype.Key]);
+            }
+            tgtshader.ShaderTypeCRCMap.Clear();
+            tgtshader.ShaderTypeCRCMap.AddRange(newTypeCRC);
+            tgtshader.VertexFactoryTypeCRCMap.Clear();
+            tgtshader.VertexFactoryTypeCRCMap.AddRange(newVertexFact);
+            targetxp.WriteBinary(tgtshader);
+        }
+
+        public static void AddNewInterpGroups(PackageEditorWindow pewpf)
+        {
+            if(pewpf.SelectedItem.Entry.ClassName != "InterpData")
+            {
+                MessageBox.Show("InterpData not selected.", "Warning", MessageBoxButton.OK);
+                return;
+            }
+
+            if (pewpf.SelectedItem.Entry is not ExportEntry interp)
+                return;
+
+            var grpsProp = interp.GetProperty<ArrayProperty<ObjectProperty>>("InterpGroups");
+            if (grpsProp == null)
+                grpsProp = new ArrayProperty<ObjectProperty>("InterpGroups");
+
+            var childrenGrps = pewpf.Pcc.Exports.Where(x => x.idxLink == interp.UIndex);
+            foreach(var o in childrenGrps)
+            {
+                var objProp = new ObjectProperty(o);
+                if (grpsProp.Contains(objProp))
+                    continue;
+                if (o.ClassName != "InterpGroup" && o.ClassName != "InterpDirector")
+                    continue;
+                grpsProp.Add(objProp);
+            }
+            interp.WriteProperty(grpsProp);
+        }
     }
 }

@@ -1143,8 +1143,16 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsK.ChangeClassesGlobally(GetPEWindow());
         }
+        
+        private void BlowMeUp(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsK.ShaderDestroyer(GetPEWindow());
+        }
 
-
+        private void AddGrpsToInterpData(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsK.AddNewInterpGroups(GetPEWindow());
+        }
         #endregion
 
         // EXPERIMENTS: OTHER PEOPLE ------------------------------------------------------------
