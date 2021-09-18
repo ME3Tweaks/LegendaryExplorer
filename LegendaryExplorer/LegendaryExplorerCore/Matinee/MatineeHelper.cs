@@ -17,6 +17,10 @@ namespace LegendaryExplorerCore.Matinee
 
         public static ExportEntry AddNewGroupDirectorToInterpData(ExportEntry interpData) => InternalAddGroup("InterpGroupDirector", interpData, null);
 
+        public static ExportEntry AddPresetDirectorGroup(ExportEntry interpData) => InternalAddPresetGroup("Director", interpData);
+
+        public static ExportEntry AddPresetCameraGroup(ExportEntry interpData, string camName) => InternalAddPresetGroup("Camera", interpData, camName);
+
         private static ExportEntry InternalAddGroup(string className, ExportEntry interpData, string groupName)
         {
             var properties = new PropertyCollection{new ArrayProperty<ObjectProperty>("InterpTracks")};
@@ -34,6 +38,76 @@ namespace LegendaryExplorerCore.Matinee
             interpData.WriteProperties(props);
 
             return group;
+        }
+
+        private static ExportEntry InternalAddPresetGroup(string preset, ExportEntry interpData, string? camName = null)
+        {
+            var group = PresetCreateNewExport(preset, interpData, camName);
+            PresetAddTracks(preset, group);
+
+            return group;
+        }
+
+        private static ExportEntry PresetCreateNewExport(string preset, ExportEntry interpData, string? camName = null)
+        {
+            string className = "InterpGroup";
+            var properties = new PropertyCollection { new ArrayProperty<ObjectProperty>("InterpTracks") };
+
+            switch (preset)
+            {
+                case "Camera":
+                    if (!string.IsNullOrEmpty(camName))
+                    {
+                        properties.Add(new NameProperty(camName, "m_nmSFXFindActor"));
+                        properties.Add(new NameProperty(camName, "GroupName"));
+                    }
+                    properties.Add(CommonStructs.ColorProp(Color.Green, "GroupColor"));
+                    break;
+
+                case "Director":
+                    className = "InterpGroupDirector";
+                    properties.Add(CommonStructs.ColorProp(Color.Purple, "GroupColor"));
+                    break;
+
+                default:
+                    properties.Add(CommonStructs.ColorProp(Color.Green, "GroupColor"));
+                    break;
+            }
+
+            ExportEntry group = CreateNewExport(className, interpData, properties);
+
+            var props = interpData.GetProperties();
+            var groupsProp = props.GetProp<ArrayProperty<ObjectProperty>>("InterpGroups") ?? new ArrayProperty<ObjectProperty>("InterpGroups");
+            groupsProp.Add(new ObjectProperty(group));
+            props.AddOrReplaceProp(groupsProp);
+            interpData.WriteProperties(props);
+
+            return group;
+        }
+
+        private static void PresetAddTracks(string preset, ExportEntry group)
+        {
+            switch (preset)
+            {
+                case "Camera":
+                    var move = AddNewTrackToGroup(group, "InterpTrackMove");
+                    AddDefaultPropertiesToTrack(move);
+
+                    var fov = AddNewTrackToGroup(group, "InterpTrackFloatProp");
+                    fov.WriteProperty(new InterpCurveFloat().ToStructProperty(fov.Game, "FloatTrack"));
+                    fov.WriteProperty(new StrProperty("FOVAngle", "TrackTitle"));
+                    fov.WriteProperty(new NameProperty("FOVAngle", "PropertyName"));
+                    break;
+
+                case "Director":
+                    var dir = AddNewTrackToGroup(group, "InterpTrackDirector");
+                    AddDefaultPropertiesToTrack(dir);
+
+                    var dof = AddNewTrackToGroup(group, "BioEvtSysTrackDOF");
+                    AddDefaultPropertiesToTrack(dof);
+                    break;
+            }
+            return;
         }
 
         private static ExportEntry CreateNewExport(string className, ExportEntry parent, PropertyCollection properties)
