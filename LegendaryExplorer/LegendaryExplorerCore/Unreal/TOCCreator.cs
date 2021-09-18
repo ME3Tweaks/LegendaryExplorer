@@ -4,9 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using LegendaryExplorerCore.GameFilesystem;
-using LegendaryExplorerCore.Gammtek.Extensions.IO;
 using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 
@@ -15,18 +13,19 @@ namespace LegendaryExplorerCore.Unreal
     /// <summary>
     /// Class for generating TOC files
     /// </summary>
-    public class TOCCreator
+    public static class TOCCreator
     {
+        public static readonly string[] TOCableFilePatterns = { "*.pcc", "*.afc", "*.bik", "*.bin", "*.tlk", "*.cnd", "*.upk", "*.tfc", "*.isb", "*.usf", "*.ini", "*.txt", "*.dlc" };
+
         /// <summary>
         /// Returns the files in a given directory that match the pattern of a TOCable file
         /// </summary>
-        /// <param name="path"></param>
+        /// <param name="path">Path to search for files in</param>
         /// <returns></returns>
         public static IEnumerable<string> GetTocableFiles(string path)
         {
-            string[] Pattern = { "*.pcc", "*.afc", "*.bik", "*.bin", "*.tlk", "*.cnd", "*.upk", "*.tfc", "*.isb", "*.usf", "*.ini", "*.txt", "*.dlc" };
             var res = new List<string>();
-            foreach (string s in Pattern)
+            foreach (string s in TOCableFilePatterns)
                 res.AddRange(Directory.GetFiles(path, s));
             return res;
         }
@@ -34,15 +33,16 @@ namespace LegendaryExplorerCore.Unreal
         /// <summary>
         /// Recursively finds all TOCable files in a directory and it's subfolders
         /// </summary>
-        /// <param name="basefolder"></param>
+        /// <param name="baseFolder">Folder path to search for files in</param>
+        /// <param name="isLE2LE3">Is this game LE2 or LE3?</param>
         /// <returns></returns>
-        private static List<string> GetFiles(string basefolder, bool isLE2LE3)
+        private static List<string> GetFiles(string baseFolder, bool isLE2LE3)
         {
             var res = new List<string>();
-            string directoryName = Path.GetFileName(basefolder);
+            string directoryName = Path.GetFileName(baseFolder);
             // Do not include the directory's existing PCConsoleTOC.bin
-            res.AddRange(GetTocableFiles(basefolder).Except(new[] { Path.Combine(basefolder, "PCConsoleTOC.bin") }, StringComparer.InvariantCultureIgnoreCase));
-            DirectoryInfo folder = new DirectoryInfo(basefolder);
+            res.AddRange(GetTocableFiles(baseFolder).Except(new[] { Path.Combine(baseFolder, "PCConsoleTOC.bin") }, StringComparer.InvariantCultureIgnoreCase));
+            DirectoryInfo folder = new DirectoryInfo(baseFolder);
             var folders = folder.GetDirectories();
             if (folders.Length != 0)
             {
@@ -50,7 +50,7 @@ namespace LegendaryExplorerCore.Unreal
                 {
                     //treat as dlc and include all folders.
                     foreach (DirectoryInfo f in folders)
-                        res.AddRange(GetFiles(Path.Combine(basefolder, f.Name), isLE2LE3));
+                        res.AddRange(GetFiles(Path.Combine(baseFolder, f.Name), isLE2LE3));
                 }
                 else
                 {
@@ -58,13 +58,13 @@ namespace LegendaryExplorerCore.Unreal
                     foreach (DirectoryInfo f in folders)
                     {
                         if (f.Name == "CookedPCConsole" || f.Name == "Movies")
-                            res.AddRange(GetFiles(Path.Combine(basefolder, f.Name), isLE2LE3));
+                            res.AddRange(GetFiles(Path.Combine(baseFolder, f.Name), isLE2LE3));
                         // LE2 and LE3 have the DLC folders included in TOC
                         else if (isLE2LE3 && f.Name == "DLC")
-                            res.AddRange(GetFiles(Path.Combine(basefolder, f.Name), isLE2LE3));
+                            res.AddRange(GetFiles(Path.Combine(baseFolder, f.Name), isLE2LE3));
                         // LE1 has the Content/Packages/ISACT folder included in TOC
                         else if (f.Name == "Content")
-                            res.AddRange(GetFiles(Path.Combine(basefolder, f.Name, "Packages", "ISACT"), isLE2LE3));
+                            res.AddRange(GetFiles(Path.Combine(baseFolder, f.Name, "Packages", "ISACT"), isLE2LE3));
                     }
                 }
             }   
@@ -76,6 +76,7 @@ namespace LegendaryExplorerCore.Unreal
         /// Finds directories that need TOC files created. Includes BioGame, all DLC folders
         /// </summary>
         /// <param name="game">Game to search installation directory for</param>
+        /// <param name="gamePathRoot">Optional: Game root path folder override</param>
         /// <returns></returns>
         private static List<string> GetTOCableFoldersForGame(MEGame game, string gamePathRoot = null)
         {
@@ -103,6 +104,7 @@ namespace LegendaryExplorerCore.Unreal
         /// Returns whether or not a folder should be TOCable
         /// </summary>
         /// <param name="directory">Directory to check</param>
+        /// <param name="isLE2LE3">Is this game LE2 or LE3?</param>
         /// <returns></returns>
         /// TODO: Is there an easy way to make this not iterate over all files?
         public static bool IsTOCableFolder(string directory, bool isLE2LE3) => GetFiles(directory, isLE2LE3).Any();
@@ -112,11 +114,12 @@ namespace LegendaryExplorerCore.Unreal
         /// </summary>
         /// <param name="game">Game to create TOCs for, cannot be ME1 or ME2</param>
         /// <param name="percentDoneCallback">Invoked after every TOC file with the percent completed</param>
+        /// <param name="gameRootOverride">Optional: Specify game root folder</param>
         public static void CreateTOCForGame(MEGame game, Action<int> percentDoneCallback = null, string gameRootOverride = null)
         {
             if (game is MEGame.ME1 or MEGame.ME2)
             {
-                throw new ArgumentOutOfRangeException("TOC files cannot be created for ME1 or ME2");
+                throw new ArgumentOutOfRangeException(nameof(game), "TOC files cannot be created for ME1 or ME2");
             }
 
             var tocFolders = GetTOCableFoldersForGame(game, gameRootOverride);
@@ -166,7 +169,7 @@ namespace LegendaryExplorerCore.Unreal
         /// </summary>
         /// <param name="directory">The BIOGame directory of the game.</param>
         /// <param name="game"></param>
-        /// <returns>Memorystream of TOC created, null if there are no entries or input was invalid</returns>
+        /// <returns>MemoryStream of TOC created, null if there are no entries or input was invalid</returns>
         public static MemoryStream CreateBasegameTOCForDirectory(string directory, MEGame game)
         {
             bool isLe2Le3 = game is MEGame.LE2 or MEGame.LE3;
@@ -180,8 +183,8 @@ namespace LegendaryExplorerCore.Unreal
             if (files.Count > 0)
             {
                 // Basegame TOC
-                string file0fullpath = files[0];
-                int biogameStrPos = file0fullpath.IndexOf("BIOGame", StringComparison.InvariantCultureIgnoreCase);
+                string file0Fullpath = files[0];
+                int biogameStrPos = file0Fullpath.IndexOf("BIOGame", StringComparison.InvariantCultureIgnoreCase);
                 if (game.IsLEGame())
                 {
                     files.AddRange(GetFiles(Path.Combine(directory.Substring(0, biogameStrPos), "Engine", "Shaders"), isLe2Le3));
@@ -206,7 +209,7 @@ namespace LegendaryExplorerCore.Unreal
         /// </summary>
         /// <param name="directory">A DLC folder, such as DLC_CON_JAM</param>
         /// <param name="game"></param>
-        /// <returns>Memorystream of TOC created, null if there are no entries or input was invalid</returns>
+        /// <returns>MemoryStream of TOC created, null if there are no entries or input was invalid</returns>
         public static MemoryStream CreateDLCTOCForDirectory(string directory, MEGame game)
         {
             bool isLe2Le3 = game is MEGame.LE2 or MEGame.LE3;
@@ -247,6 +250,9 @@ namespace LegendaryExplorerCore.Unreal
             string[] dlcList = Directory.GetDirectories(Path.Combine(biogameDirectory, "DLC"), "*.*", SearchOption.TopDirectoryOnly);
             foreach (var dlcFolder in dlcList)
             {
+                if (!(new DirectoryInfo(dlcFolder).Name).StartsWith("DLC_", StringComparison.OrdinalIgnoreCase))
+                    continue;
+
                 string autoLoadPath = Path.Combine(dlcFolder, "autoload.ini");  //CHECK IF FILE EXISTS?
                 if (File.Exists(autoLoadPath))
                 {
