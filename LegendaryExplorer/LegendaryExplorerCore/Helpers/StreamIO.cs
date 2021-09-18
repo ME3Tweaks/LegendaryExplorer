@@ -203,6 +203,23 @@ namespace LegendaryExplorerCore.Helpers
             return stream.ReadStringUnicode(count).Trim('\0');
         }
 
+        public static string ReadStringUnicodeNull(this Stream stream)
+        {
+            long startPos = stream.Position;
+            while (stream.Position < stream.Length)
+            {
+                if (stream.ReadInt16() == 0)
+                {
+                    // Found double null terminator
+                    var len = (int)(stream.Position - startPos);
+                    stream.Position = startPos;
+                    return ReadStringUnicodeNull(stream, len);
+                }
+            }
+
+            return null; // never found
+        }
+
         public static void WriteStringLatin1(this Stream stream, string str)
         {
             stream.Write(Encoding.Latin1.GetBytes(str), 0, Encoding.Latin1.GetByteCount(str));
