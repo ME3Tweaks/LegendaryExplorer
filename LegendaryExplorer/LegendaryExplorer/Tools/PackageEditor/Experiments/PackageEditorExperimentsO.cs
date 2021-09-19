@@ -438,34 +438,37 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void AddPresetGroup(string preset, PackageEditorWindow pew)
         {
-            if (pew.SelectedItem.Entry.ClassName != "InterpData")
+            if (pew.SelectedItem != null && pew.SelectedItem.Entry != null)
             {
-                MessageBox.Show("InterpData not selected.", "Warning", MessageBoxButton.OK);
-                return;
-            }
 
-            if (pew.SelectedItem.Entry is not ExportEntry interp)
-                return;
+                if (pew.SelectedItem.Entry.ClassName != "InterpData")
+                {
+                    MessageBox.Show("InterpData not selected.", "Warning", MessageBoxButton.OK);
+                    return;
+                }
 
-            switch (preset)
-            {
-                case "Director":
-                    MatineeHelper.AddPresetDirectorGroup(interp);
-                    break;
+                if (pew.SelectedItem.Entry is not ExportEntry interp)
+                    return;
 
-                case "Camera":
-                    if (PromptDialog.Prompt(null, "Name of camera actor:") is string camName)
-                    {
-                        if (string.IsNullOrEmpty(camName))
+                switch (preset)
+                {
+                    case "Director":
+                        MatineeHelper.AddPresetDirectorGroup(interp);
+                        break;
+
+                    case "Camera":
+                        if (PromptDialog.Prompt(null, "Name of camera actor:") is string camName)
                         {
-                            MessageBox.Show("Not a valid camera actor name.", "Warning", MessageBoxButton.OK);
-                            return;
+                            if (string.IsNullOrEmpty(camName))
+                            {
+                                MessageBox.Show("Not a valid camera actor name.", "Warning", MessageBoxButton.OK);
+                                return;
+                            }
+                            MatineeHelper.AddPresetCameraGroup(interp, camName);
                         }
-                        MatineeHelper.AddPresetCameraGroup(interp, camName);
-                    }
-                    break;
+                        break;
+                }
             }
-
             return;
         }
     }
