@@ -972,7 +972,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         span[pos] = '[';
                         ++pos;
-                        ((uint)tuple.StaticArrayIndex).ToStrInPlace(span.Slice(pos, tuple.StaticArrayIndex.NumDigits()));
+                        int numDigits = tuple.StaticArrayIndex.NumDigits();
+                        ((uint)tuple.StaticArrayIndex).ToStrInPlace(span.Slice(pos, numDigits));
+                        pos += numDigits;
                         span[pos] = ']';
                         ++pos;
                     }
