@@ -19,7 +19,9 @@ namespace LegendaryExplorerCore.Matinee
 
         public static ExportEntry AddPresetDirectorGroup(ExportEntry interpData) => InternalAddPresetGroup("Director", interpData);
 
-        public static ExportEntry AddPresetCameraGroup(ExportEntry interpData, string camName) => InternalAddPresetGroup("Camera", interpData, camName);
+        public static ExportEntry AddPresetCameraGroup(ExportEntry interpData, string param1) => InternalAddPresetGroup("Camera", interpData, param1);
+
+        public static ExportEntry AddPresetGestureTrack(ExportEntry interpGroup, string param1) => InternalAddPresetTrack("Gesture", interpGroup, param1);
 
         private static ExportEntry InternalAddGroup(string className, ExportEntry interpData, string groupName)
         {
@@ -40,15 +42,21 @@ namespace LegendaryExplorerCore.Matinee
             return group;
         }
 
-        private static ExportEntry InternalAddPresetGroup(string preset, ExportEntry interpData, string? camName = null)
+        private static ExportEntry InternalAddPresetGroup(string preset, ExportEntry interpData, string? param1 = null)
         {
-            var group = PresetCreateNewExport(preset, interpData, camName);
-            PresetAddTracks(preset, group);
+            var group = PresetCreateNewExport(preset, interpData, param1);
+            PresetAddTracks(preset, group, param1);
 
             return group;
         }
 
-        private static ExportEntry PresetCreateNewExport(string preset, ExportEntry interpData, string? camName = null)
+        private static ExportEntry InternalAddPresetTrack(string preset, ExportEntry interpGroup, string? param1 = null)
+        {
+            PresetAddTracks(preset, interpGroup, param1);
+            return interpGroup;
+        }
+
+        private static ExportEntry PresetCreateNewExport(string preset, ExportEntry interpData, string param1)
         {
             string className = "InterpGroup";
             var properties = new PropertyCollection { new ArrayProperty<ObjectProperty>("InterpTracks") };
@@ -56,10 +64,10 @@ namespace LegendaryExplorerCore.Matinee
             switch (preset)
             {
                 case "Camera":
-                    if (!string.IsNullOrEmpty(camName))
+                    if (!string.IsNullOrEmpty(param1))
                     {
-                        properties.Add(new NameProperty(camName, "m_nmSFXFindActor"));
-                        properties.Add(new NameProperty(camName, "GroupName"));
+                        properties.Add(new NameProperty(param1, "m_nmSFXFindActor"));
+                        properties.Add(new NameProperty(param1, "GroupName"));
                     }
                     properties.Add(CommonStructs.ColorProp(Color.Green, "GroupColor"));
                     break;
@@ -85,7 +93,7 @@ namespace LegendaryExplorerCore.Matinee
             return group;
         }
 
-        private static void PresetAddTracks(string preset, ExportEntry group)
+        private static void PresetAddTracks(string preset, ExportEntry group, string? param1 = null)
         {
             switch (preset)
             {
@@ -105,6 +113,20 @@ namespace LegendaryExplorerCore.Matinee
 
                     var dof = AddNewTrackToGroup(group, "BioEvtSysTrackDOF");
                     AddDefaultPropertiesToTrack(dof);
+                    break;
+
+                case "Gesture":
+                    var ges = AddNewTrackToGroup(group, "BioEvtSysTrackGesture");
+                    ges.WriteProperty(new ArrayProperty<StructProperty>("m_aGestures"));
+                    ges.WriteProperty(new ArrayProperty<StructProperty>("m_aTrackKeys"));
+                    ges.WriteProperty(new NameProperty("None", "nmStartingPoseSet"));
+                    ges.WriteProperty(new NameProperty("None", "nmStartingPoseAnim"));
+                    ges.WriteProperty(new FloatProperty(0, "m_fStartPoseOffset"));
+                    ges.WriteProperty(new EnumProperty("None", "EBioTrackAllPoseGroups", MEGame.LE3, "ePoseFilter"));
+                    ges.WriteProperty(new EnumProperty("None", "EBioGestureAllPoses", MEGame.LE3, "eStartingPose"));
+                    ges.WriteProperty(new BoolProperty(true, "m_bUseDynamicAnimSets"));
+                    ges.WriteProperty(new NameProperty(param1, "m_nmFindActor"));
+                    ges.WriteProperty(new StrProperty("Gesture -- " + param1, "TrackTitle"));
                     break;
             }
             return;

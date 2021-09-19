@@ -471,5 +471,36 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
             return;
         }
+
+        public static void AddPresetTrack(string preset, PackageEditorWindow pew)
+        {
+            if (pew.SelectedItem != null && pew.SelectedItem.Entry != null)
+            {
+                if (pew.SelectedItem.Entry.ClassName != "InterpGroup")
+                {
+                    MessageBox.Show("InterpGroup not selected.", "Warning", MessageBoxButton.OK);
+                    return;
+                }
+
+                if (pew.SelectedItem.Entry is not ExportEntry interp)
+                    return;
+
+                switch (preset)
+                {
+                    case "Gesture":
+                        if (PromptDialog.Prompt(null, "Name of gesture actor:") is string actor)
+                        {
+                            if (string.IsNullOrEmpty(actor))
+                            {
+                                MessageBox.Show("Not a valid gesture actor name.", "Warning", MessageBoxButton.OK);
+                                return;
+                            }
+                            MatineeHelper.AddPresetGestureTrack(interp, actor);
+                        }
+                        break;
+                }
+            }
+            return;
+        }
     }
 }
