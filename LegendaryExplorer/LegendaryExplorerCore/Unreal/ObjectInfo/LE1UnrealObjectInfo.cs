@@ -598,6 +598,14 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             };
 
             ME3UnrealObjectInfo.AddIntrinsicClasses(classes, MEGame.LE1);
+
+            // Native classes 
+            Classes["LightMapTexture2D"] = new ClassInfo
+            {
+                baseClass = "Texture2D",
+                exportIndex = 0,
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
+            };
         }
 
         //call on the _Default object
