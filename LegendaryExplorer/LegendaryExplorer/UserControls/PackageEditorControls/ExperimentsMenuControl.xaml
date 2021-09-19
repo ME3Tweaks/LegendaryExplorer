@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:LegendaryExplorer.UserControls.PackageEditorControls"
              xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
              xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
+             xmlns:global="clr-namespace:LegendaryExplorer"
              mc:Ignorable="d" 
               Header="Experiments" Padding="4"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
@@ -33,6 +34,7 @@
         <MenuItem Header="Generate ME2/ME3 object info diff" Click="GenerateObjectInfoDiff_Click"/>
     </MenuItem>
     <MenuItem Header="Mgamerz's Programming Circus">
+        <MenuItem Header="VTest" Click="VTest_Click" Visibility="{x:Static global:App.IsDebugVisibility}"/>
         <MenuItem Header="Dump LE1 TLK to XML" Click="DumpLE1TLK_Clicked"/>
         <MenuItem Header="Update textures to game" Click="RepointTexturesToGame_Click" ToolTip="You're gonna break your file lol"/>
         <MenuItem Header="Save package...">
@@ -124,5 +126,13 @@
         <MenuItem Header="Create test TLK from XML with IDs in string" Click="CreateTestTLKWithStringIDs_Click"/>
         <MenuItem Header="Relink Children Tree and Update Local Functions" ToolTip="Must have UStruct selected (Class, State, Function, Struct, ScriptStruct)" Click="UpdateLocalFunctions_Click"/>
         <MenuItem Header="Dump TOC file" Click="DumpTOC_Click"/>
+    </MenuItem>
+    <MenuItem Header="Object Database">
+        <MenuItem Header="Build ME1 Object Database" Click="ChonkyDB_BuildME1GameDB"/>
+        <MenuItem Header="Build LE1 Object Database" Click="ChonkyDB_BuildLE1GameDB"/>
+        <MenuItem Header="Build ME2 Object Database" Click="ChonkyDB_BuildME1GameDB" IsEnabled="False"/>
+        <MenuItem Header="Build LE2 Object Database" Click="ChonkyDB_BuildME1GameDB" IsEnabled="False"/>
+        <MenuItem Header="Build ME3 Object Database" Click="ChonkyDB_BuildME1GameDB" IsEnabled="False"/>
+        <MenuItem Header="Build LE3 Object Database" Click="ChonkyDB_BuildME1GameDB" IsEnabled="False"/>
     </MenuItem>
 </MenuItem>

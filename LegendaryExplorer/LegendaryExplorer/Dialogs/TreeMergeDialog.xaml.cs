@@ -42,15 +42,15 @@ namespace LegendaryExplorer.Dialogs
             LoadCommands();
             InitializeComponent();
 
-            if (sourceEntry.Game != targetGame
-#if DEBUG
-                && (sourceEntry.Game != MEGame.ME3 || !targetGame.IsLEGame())
-#endif
-            )
-            {
-                cloneAllRefsButton.IsEnabled = false;
-                cloneAllRefsText.Text = "Cannot do this when cross-game porting";
-            }
+//            if (sourceEntry.Game != targetGame
+//#if DEBUG
+//                && (sourceEntry.Game != MEGame.ME3 || !targetGame.IsLEGame())
+//#endif
+//            )
+//            {
+//                cloneAllRefsButton.IsEnabled = false;
+//                cloneAllRefsText.Text = "Cannot do this when cross-game porting";
+//            }
         }
 
         private void LoadCommands()

@@ -408,6 +408,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         // EXPERIMENTS: MGAMERZ---------------------------------------------------
         #region Mgamerz's Experiments
 
+        private async void VTest_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.VTest(GetPEWindow());
+        }
+
         private async void RepointTexturesToGame_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.UpdateTexturesMatsToGame(GetPEWindow());
@@ -1197,6 +1202,18 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsO.DumpTOC();
         }
         #endregion
+
+        // EXPERIMENTS: CHONKY DB---------------------------------------------------------
+        // This is for cross-game porting
+        private void ChonkyDB_BuildLE1GameDB(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.BuildAllObjectsGameDB(MEGame.LE1, GetPEWindow());
+        }
+
+        private void ChonkyDB_BuildME1GameDB(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.BuildAllObjectsGameDB(MEGame.ME1, GetPEWindow());
+        }
 
 
         // PLEASE MOVE YOUR EXPERIMENT HANDLER INTO YOUR SECTION ABOVE

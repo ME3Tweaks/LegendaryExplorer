@@ -231,7 +231,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 relinkReport.Add(new EntryStringPair(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.InstancedFullPath} binary relinking failed due to exception: {e.Message}"));
             }
 
-            relinkingExport.WritePrePropsAndProperties(prePropBinary, props, removedProperties ? relinkingExport.propsEnd() : sourceExport.propsEnd());
+            relinkingExport.WritePrePropsAndProperties(prePropBinary, props, removedProperties || sourceExport.Game != relinkingExport.Game ? relinkingExport.propsEnd() : sourceExport.propsEnd());
         }
 
         private static void relinkPropertiesRecursive(IMEPackage importingPCC, ExportEntry relinkingExport, PropertyCollection transplantProps,

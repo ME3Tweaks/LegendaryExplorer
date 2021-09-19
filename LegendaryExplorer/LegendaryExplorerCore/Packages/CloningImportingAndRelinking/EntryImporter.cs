@@ -70,7 +70,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <returns></returns>
         public static List<EntryStringPair> ImportAndRelinkEntries(PortingOption portingOption, IEntry sourceEntry, IMEPackage destPcc, IEntry targetLinkEntry, bool shouldRelink,
                                                                         out IEntry newEntry, Dictionary<IEntry, IEntry> relinkMap = null
-                                                                        , Action<string> errorOccuredCallback = null, bool importExportDependencies = false)
+                                                                        , Action<string> errorOccuredCallback = null, bool importExportDependencies = false, ObjectInstanceDB targetGameObjectDB = null)
         {
             relinkMap ??= new Dictionary<IEntry, IEntry>();
             IMEPackage sourcePcc = sourceEntry.FileRef;
@@ -95,12 +95,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 if (sourceEntry is ExportEntry sourceExport)
                 {
                     //importing an export (check if it exists first, if it does, just link to it)
-                    newEntry = destPcc.FindExport(sourceEntry.InstancedFullPath) ?? ImportExport(destPcc, sourceExport, link, portingOption == PortingOption.CloneAllDependencies, relinkMap, errorOccuredCallback);
+                    newEntry = destPcc.FindExport(sourceEntry.InstancedFullPath) ?? ImportExport(destPcc, sourceExport, link, portingOption == PortingOption.CloneAllDependencies, relinkMap, errorOccuredCallback, targetGameObjectDB);
                 }
                 else
                 {
-                    newEntry = GetOrAddCrossImportOrPackage(sourceEntry.InstancedFullPath, sourcePcc, destPcc,
-                                                            forcedLink: sourcePcc.Tree.NumChildrenOf(sourceEntry) == 0 ? link : (int?)null, objectMapping: relinkMap);
+                    newEntry = GetOrAddCrossImportOrPackage(sourceEntry.InstancedFullPath, sourcePcc, destPcc, forcedLink: sourcePcc.Tree.NumChildrenOf(sourceEntry) == 0 ? link : (int?)null, objectMapping: relinkMap);
                 }
 
             }
@@ -177,7 +176,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     IEntry entry;
                     if (node is ExportEntry exportNode)
                     {
-                        entry = ImportExport(destPcc, exportNode, newParent.UIndex, portingOption == PortingOption.CloneAllDependencies, relinkMap, errorOccuredCallback);
+                        entry = ImportExport(destPcc, exportNode, newParent.UIndex, portingOption == PortingOption.CloneAllDependencies, relinkMap, errorOccuredCallback, targetGameObjectDB);
                     }
                     else
                     {
@@ -219,8 +218,31 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="objectMapping"></param>
         /// <returns></returns>
         public static ExportEntry ImportExport(IMEPackage destPackage, ExportEntry sourceExport, int link, bool importExportDependencies = false,
-            IDictionary<IEntry, IEntry> objectMapping = null, Action<string> errorOccuredCallback = null)
+            IDictionary<IEntry, IEntry> objectMapping = null, Action<string> errorOccuredCallback = null, ObjectInstanceDB targetGameDB = null)
         {
+#if DEBUG
+            // BIG HACKJOB
+            if (targetGameDB != null)
+            {
+                // Port in donor instead
+                var ifp = sourceExport.InstancedFullPath;
+                var donorFiles = targetGameDB.GetFilesContainingObject(ifp);
+                if ((donorFiles == null || !donorFiles.Any()) && ifp.EndsWith("_dup", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    ifp = ifp.Substring(0, ifp.Length - 4);
+                    donorFiles = targetGameDB.GetFilesContainingObject(ifp);
+                }
+
+                if (donorFiles != null && donorFiles.Any())
+                {
+                    // 'Using' here will mark as no longer used. But export will still be accesed. not sure how to handle this outside
+                    using var donorPackage = MEPackageHandler.OpenMEPackage(Path.Combine(MEDirectories.GetDefaultGamePath(destPackage.Game), donorFiles[0]));
+                    sourceExport = donorPackage.FindExport(sourceExport.InstancedFullPath);
+                }
+            }
+#endif
+
+
             byte[] prePropBinary;
             if (sourceExport.HasStack)
             {
@@ -346,7 +368,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     }
                     break;
             }
-            
+
             EndianBitConverter.WriteAsBytes(destPackage.FindNameOrAdd(sourceExport.ObjectName.Name), newHeader.AsSpan(ExportEntry.OFFSET_idxObjectName), destPackage.Endian);
             EndianBitConverter.WriteAsBytes(sourceExport.ObjectName.Number, newHeader.AsSpan(ExportEntry.OFFSET_indexValue), destPackage.Endian);
             EndianBitConverter.WriteAsBytes(link, newHeader.AsSpan(ExportEntry.OFFSET_idxLink), destPackage.Endian);
