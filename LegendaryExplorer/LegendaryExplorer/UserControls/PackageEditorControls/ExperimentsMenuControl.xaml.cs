@@ -1196,6 +1196,21 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsO.DumpTOC();
         }
+
+        private void AddPresetDirectorGroup_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.AddPresetGroup("Director", GetPEWindow());
+        }
+
+        private void AddPresetCameraGroup_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.AddPresetGroup("Camera", GetPEWindow());
+        }
+
+        private void AddPresetGestureTrack_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.AddPresetTrack("Gesture", GetPEWindow());
+        }
         #endregion
 
 
