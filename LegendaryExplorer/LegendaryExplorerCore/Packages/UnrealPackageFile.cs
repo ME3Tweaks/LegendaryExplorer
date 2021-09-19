@@ -155,6 +155,7 @@ namespace LegendaryExplorerCore.Packages
                 nameLookupTable[newName] = idx;
                 IsModified = true; // Package has become modified
                 updateTools(PackageChange.NameEdit, idx);
+                InvalidateLookupTable(); //If name of object was changed this could change all instanced paths
             }
         }
 
