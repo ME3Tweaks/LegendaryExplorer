@@ -34,6 +34,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// </summary>
         private CaseInsensitiveDictionary<int> nametableMap = new CaseInsensitiveDictionary<int>();
 
+        public PackageCache HACK_CACHE = new PackageCache();
 
         public int GetNameTableIndex(string name)
         {

@@ -19,7 +19,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <summary>
         /// Attempts to relink unreal property data and object pointers in binary when cross porting an export
         /// </summary>
-        public static List<EntryStringPair> RelinkAll(IDictionary<IEntry, IEntry> crossPccObjectMap, bool importExportDependencies = false)
+        public static List<EntryStringPair> RelinkAll(IDictionary<IEntry, IEntry> crossPccObjectMap, bool importExportDependencies = false, ObjectInstanceDB targetGameDonorDB = null)
         {
             var relinkReport = new List<EntryStringPair>();
             //relink each modified export
@@ -54,7 +54,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 var entryMap = mappingList[i];
                 if (entryMap.Key is ExportEntry sourceExport && entryMap.Value is ExportEntry relinkingExport)
                 {
-                    Relink(sourceExport, relinkingExport, crossPackageMap, relinkReport, importExportDependencies);
+                    Relink(sourceExport, relinkingExport, crossPackageMap, relinkReport, importExportDependencies, targetGameDonorDB);
                 }
                 i++;
 
@@ -72,7 +72,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         }
 
         public static void Relink(ExportEntry sourceExport, ExportEntry relinkingExport, IDictionary<IEntry, IEntry> crossPCCObjectMappingList,
-            List<EntryStringPair> relinkReport, bool importExportDependencies = false)
+            List<EntryStringPair> relinkReport, bool importExportDependencies = false, ObjectInstanceDB targetGameDonorDB = null)
         {
             IMEPackage sourcePcc = sourceExport.FileRef;
 
@@ -84,11 +84,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 {
                     // This code makes a lot of assumptions, like how components are always directly below the current export
                     var nameIndex = relinkingExport.FileRef.FindNameOrAdd(cmk.Key.Name);
-                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport.FileRef.GetUExport(cmk.Value + 1), relinkingExport.FileRef, relinkingExport, true, out var newComponent);
+                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport.FileRef.GetUExport(cmk.Value + 1), relinkingExport.FileRef, relinkingExport, true, out var newComponent, targetGameDonorDB: targetGameDonorDB);
 
                     newComponentMap.Add(new KeyValuePair<NameReference, int>(cmk.Key, newComponent.UIndex - 1)); // TODO: Relink the 
                 }
-
                 relinkingExport.ComponentMap = newComponentMap;
             }
 
@@ -152,7 +151,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     relinkReport.Add(new EntryStringPair(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.InstancedFullPath}: Some properties were removed from this object because they do not exist in {relinkingExport.Game}!"));
                 }
             }
-            relinkPropertiesRecursive(sourcePcc, relinkingExport, props, crossPCCObjectMappingList, "", relinkReport, importExportDependencies);
+            relinkPropertiesRecursive(sourcePcc, relinkingExport, props, crossPCCObjectMappingList, "", relinkReport, importExportDependencies, targetGameDonorDB);
 
             //Relink Binary
             try
@@ -166,20 +165,20 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                     // This doesn't work on functions! Finding the children through the probe doesn't work
 
-                    if (objBin.Export is {ClassName: "State"})
+                    if (objBin.Export is { ClassName: "State" })
                     {
                         // We can't relink labeltable as it depends on none
                         // Use the source export instead
                         objBin = ObjectBinary.From(sourceExport);
                     }
 
-                    
+
                     List<(UIndex, string)> indices = objBin.GetUIndexes(relinkingExport.FileRef.Game);
-                    
+
                     foreach ((UIndex uIndex, string propName) in indices)
                     {
                         var result = relinkUIndex(sourcePcc, relinkingExport, ref uIndex.value, $"(Binary Property: {propName})",
-                            crossPCCObjectMappingList, "", importExportDependencies);
+                            crossPCCObjectMappingList, "", importExportDependencies, targetGameDonorDB);
                         if (result != null)
                         {
                             relinkReport.Add(result);
@@ -195,7 +194,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             foreach (Token token in tokens)
                             {
                                 RelinkToken(token, uStructBinary.ScriptBytes, sourceExport, relinkingExport,
-                                    crossPCCObjectMappingList, relinkReport, importExportDependencies);
+                                    crossPCCObjectMappingList, relinkReport, importExportDependencies, targetGameDonorDB);
                             }
                         }
                         else
@@ -217,7 +216,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                                 if (position < uStructBinary.ScriptBytes.Length)
                                 {
                                     RelinkUnhoodEntryReference(entry, position, uStructBinary.ScriptBytes, sourceExport, relinkingExport,
-                                         crossPCCObjectMappingList, relinkReport, importExportDependencies);
+                                         crossPCCObjectMappingList, relinkReport, importExportDependencies, targetGameDonorDB);
                                 }
                             }
                         }
@@ -236,7 +235,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
         private static void relinkPropertiesRecursive(IMEPackage importingPCC, ExportEntry relinkingExport, PropertyCollection transplantProps,
                                                               IDictionary<IEntry, IEntry> crossPCCObjectMappingList, string prefix, List<EntryStringPair> relinkResults,
-                                                              bool importExportDependencies = false)
+                                                              bool importExportDependencies = false, ObjectInstanceDB targetGameDonorDB = null)
         {
             foreach (Property prop in transplantProps)
             {
@@ -244,7 +243,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 if (prop is StructProperty structProperty)
                 {
                     relinkPropertiesRecursive(importingPCC, relinkingExport, structProperty.Properties, crossPCCObjectMappingList,
-                        $"{prefix}{structProperty.Name}.", relinkResults, importExportDependencies);
+                        $"{prefix}{structProperty.Name}.", relinkResults, importExportDependencies, targetGameDonorDB);
                 }
                 else if (prop is ArrayProperty<StructProperty> structArrayProp)
                 {
@@ -252,7 +251,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     {
                         StructProperty arrayStructProperty = structArrayProp[i];
                         relinkPropertiesRecursive(importingPCC, relinkingExport, arrayStructProperty.Properties, crossPCCObjectMappingList,
-                                                                         $"{prefix}{arrayStructProperty.Name}[{i}].", relinkResults, importExportDependencies);
+                                                                         $"{prefix}{arrayStructProperty.Name}[{i}].", relinkResults, importExportDependencies, targetGameDonorDB);
                     }
                 }
                 else if (prop is ArrayProperty<ObjectProperty> objArrayProp)
@@ -260,7 +259,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     foreach (ObjectProperty objProperty in objArrayProp)
                     {
                         int uIndex = objProperty.Value;
-                        var result = relinkUIndex(importingPCC, relinkingExport, ref uIndex, objProperty.Name, crossPCCObjectMappingList, prefix, importExportDependencies);
+                        var result = relinkUIndex(importingPCC, relinkingExport, ref uIndex, objProperty.Name, crossPCCObjectMappingList, prefix, importExportDependencies, targetGameDonorDB);
                         objProperty.Value = uIndex;
                         if (result != null)
                         {
@@ -271,7 +270,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 else if (prop is ObjectProperty objectProperty)
                 {
                     int uIndex = objectProperty.Value;
-                    var result = relinkUIndex(importingPCC, relinkingExport, ref uIndex, objectProperty.Name, crossPCCObjectMappingList, prefix, importExportDependencies);
+                    var result = relinkUIndex(importingPCC, relinkingExport, ref uIndex, objectProperty.Name, crossPCCObjectMappingList, prefix, importExportDependencies, targetGameDonorDB);
                     objectProperty.Value = uIndex;
                     if (result != null)
                     {
@@ -281,7 +280,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 else if (prop is DelegateProperty delegateProp)
                 {
                     int uIndex = delegateProp.Value.Object;
-                    var result = relinkUIndex(importingPCC, relinkingExport, ref uIndex, delegateProp.Name, crossPCCObjectMappingList, prefix, importExportDependencies);
+                    var result = relinkUIndex(importingPCC, relinkingExport, ref uIndex, delegateProp.Name, crossPCCObjectMappingList, prefix, importExportDependencies, targetGameDonorDB);
                     delegateProp.Value = new ScriptDelegate(uIndex, delegateProp.Value.FunctionName);
                     if (result != null)
                     {
@@ -292,7 +291,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         }
 
         private static EntryStringPair relinkUIndex(IMEPackage importingPCC, ExportEntry relinkingExport, ref int uIndex, string propertyName,
-                                           IDictionary<IEntry, IEntry> crossPCCObjectMappingList, string prefix, bool importExportDependencies = false)
+                                           IDictionary<IEntry, IEntry> crossPCCObjectMappingList, string prefix, bool importExportDependencies = false, ObjectInstanceDB targetGameDonorDB = null)
         {
             if (uIndex == 0)
             {
@@ -304,9 +303,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 return null; //do not relink same-pcc imports.
             }
+
+            // Leave the following 4 lines for debugging
             int sourceObjReference = uIndex;
-            //if (sourceObjReference == -1009)
-            //    Debugger.Break();
+            if (sourceObjReference == 287)
+                Debugger.Break();
             //Debug.WriteLine($"{prefix} Relinking:{propertyName}");
             if (crossPCCObjectMappingList.TryGetValue(importingPCC.GetEntry(uIndex), out IEntry targetEntry))
             {
@@ -393,7 +394,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 #endif
                     //Debug.WriteLine($"Relink hit [EXPERIMENTAL]: Existing entry in file was found, linking to it:  {uIndex} {sourceExport.InstancedFullPath} -> {existingEntry.InstancedFullPath}");
                     uIndex = existingEntry.UIndex;
-
                 }
                 else if (importExportDependencies)
                 {
@@ -406,9 +406,22 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         IEntry parent = null;
                         if (sourceExport.Parent != null && !crossPCCObjectMappingList.TryGetValue(sourceExport.Parent, out parent))
                         {
-                            parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceExport.ParentFullPath, importingPCC, destinationPcc, true, crossPCCObjectMappingList);
+                            if (sourceExport.Parent is ExportEntry parExp)
+                            {
+                                // Parent is export
+                                // How to find parent UIndex from here if it might not yet exist?
+
+                                // Note: This doesn't work if it's nested deeper than one link we can find. Might be best to put this in a loop to ensure parent creation?
+                                var parParLink = parExp.Parent != null ? destinationPcc.FindEntry(parExp.ParentInstancedFullPath) : null; // This is pretty weak...
+                                parent = destinationPcc.FindEntry(parExp.InstancedFullPath) ?? EntryImporter.ImportExport(destinationPcc, parExp, parParLink?.UIndex ?? 0, true, crossPCCObjectMappingList, targetGameDB: targetGameDonorDB);
+                            }
+                            else
+                            {
+                                //Parent is import
+                                parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceExport.ParentFullPath, importingPCC, destinationPcc, true, crossPCCObjectMappingList);
+                            }
                         }
-                        ExportEntry importedExport = EntryImporter.ImportExport(destinationPcc, sourceExport, parent?.UIndex ?? 0, true, crossPCCObjectMappingList);
+                        ExportEntry importedExport = EntryImporter.ImportExport(destinationPcc, sourceExport, parent?.UIndex ?? 0, true, crossPCCObjectMappingList, targetGameDB: targetGameDonorDB);
                         uIndex = importedExport.UIndex;
                     }
                 }
@@ -419,19 +432,18 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     return new EntryStringPair(relinkingExport, $"Relink failed: {prefix}{propertyName} {uIndex} in export {relinkingExport.InstancedFullPath}({relinkingExport.UIndex})");
                 }
             }
-
             return null;
         }
 
 
         private static void RelinkUnhoodEntryReference(IEntry entry, long position, byte[] script, ExportEntry sourceExport, ExportEntry destinationExport,
-                                            IDictionary<IEntry, IEntry> crossFileRefObjectMap, List<EntryStringPair> relinkFailedReport, bool importExportDependencies = false)
+                                            IDictionary<IEntry, IEntry> crossFileRefObjectMap, List<EntryStringPair> relinkFailedReport, bool importExportDependencies = false, ObjectInstanceDB targetGameDonorDB = null)
         {
             //Debug.WriteLine($"Attempting function relink on token entry reference {entry.FullPath} at position {position}");
 
             int uIndex = entry.UIndex;
             var relinkResult = relinkUIndex(sourceExport.FileRef, destinationExport, ref uIndex, $"Entry {entry.InstancedFullPath} at 0x{position:X8}",
-                crossFileRefObjectMap, "", importExportDependencies);
+                crossFileRefObjectMap, "", importExportDependencies, targetGameDonorDB);
             if (relinkResult is null)
             {
                 script.OverwriteRange((int)position, BitConverter.GetBytes(uIndex));
@@ -444,7 +456,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
         private static void RelinkToken(Token t, byte[] script, ExportEntry sourceExport, ExportEntry destinationExport,
                                                 IDictionary<IEntry, IEntry> crossFileRefObjectMap, List<EntryStringPair> relinkFailedReport,
-        bool importExportDependencies = false)
+        bool importExportDependencies = false, ObjectInstanceDB targetGameDonorDB = null)
         {
             //Debug.WriteLine($"Attempting function relink on token at position {t.pos}. Number of listed relinkable items {t.inPackageReferences.Count}");
 
@@ -458,15 +470,15 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         script.OverwriteRange(pos, BitConverter.GetBytes(newValue));
                         break;
                     case Token.INPACKAGEREFTYPE_ENTRY:
-                        relinkAtPosition(pos, value, $"(Script at @ 0x{t.pos + pos:X6}: {t.text})");
+                        relinkAtPosition(pos, value, $"(Script at @ 0x{t.pos + pos:X6}: {t.text})", targetGameDonorDB);
                         break;
                 }
             }
 
-            void relinkAtPosition(int binaryPosition, int uIndex, string propertyName)
+            void relinkAtPosition(int binaryPosition, int uIndex, string propertyName, ObjectInstanceDB donorDB)
             {
                 var relinkResult = relinkUIndex(sourceExport.FileRef, destinationExport, ref uIndex, propertyName,
-                                                   crossFileRefObjectMap, "", importExportDependencies);
+                                                   crossFileRefObjectMap, "", importExportDependencies, donorDB);
                 if (relinkResult is null)
                 {
                     script.OverwriteRange(binaryPosition, BitConverter.GetBytes(uIndex));

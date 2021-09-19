@@ -70,7 +70,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <returns></returns>
         public static List<EntryStringPair> ImportAndRelinkEntries(PortingOption portingOption, IEntry sourceEntry, IMEPackage destPcc, IEntry targetLinkEntry, bool shouldRelink,
                                                                         out IEntry newEntry, Dictionary<IEntry, IEntry> relinkMap = null
-                                                                        , Action<string> errorOccuredCallback = null, bool importExportDependencies = false, ObjectInstanceDB targetGameObjectDB = null)
+                                                                        , Action<string> errorOccuredCallback = null, bool importExportDependencies = false, ObjectInstanceDB targetGameDonorDB = null)
         {
             relinkMap ??= new Dictionary<IEntry, IEntry>();
             IMEPackage sourcePcc = sourceEntry.FileRef;
@@ -95,7 +95,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 if (sourceEntry is ExportEntry sourceExport)
                 {
                     //importing an export (check if it exists first, if it does, just link to it)
-                    newEntry = destPcc.FindExport(sourceEntry.InstancedFullPath) ?? ImportExport(destPcc, sourceExport, link, portingOption == PortingOption.CloneAllDependencies, relinkMap, errorOccuredCallback, targetGameObjectDB);
+                    newEntry = destPcc.FindExport(sourceEntry.InstancedFullPath) ?? ImportExport(destPcc, sourceExport, link, portingOption == PortingOption.CloneAllDependencies, relinkMap, errorOccuredCallback, targetGameDonorDB);
                 }
                 else
                 {
@@ -118,7 +118,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             List<EntryStringPair> relinkResults = null;
             if (shouldRelink)
             {
-                relinkResults = Relinker.RelinkAll(relinkMap, importExportDependencies || portingOption == PortingOption.CloneAllDependencies);
+                relinkResults = Relinker.RelinkAll(relinkMap, importExportDependencies || portingOption == PortingOption.CloneAllDependencies, targetGameDonorDB);
             }
 
             //Port Shaders
@@ -176,7 +176,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     IEntry entry;
                     if (node is ExportEntry exportNode)
                     {
-                        entry = ImportExport(destPcc, exportNode, newParent.UIndex, portingOption == PortingOption.CloneAllDependencies, relinkMap, errorOccuredCallback, targetGameObjectDB);
+                        entry = ImportExport(destPcc, exportNode, newParent.UIndex, portingOption == PortingOption.CloneAllDependencies, relinkMap, errorOccuredCallback, targetGameDonorDB);
                     }
                     else
                     {
@@ -208,6 +208,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
         }
 
+        public static List<IMEPackage> HACK_PACKAGESTOCLOSE = new List<IMEPackage>();
+
         /// <summary>
         /// Imports an export from another package file. Does not perform a relink, if you want to relink, use ImportAndRelinkEntries().
         /// </summary>
@@ -222,22 +224,44 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         {
 #if DEBUG
             // BIG HACKJOB
-            if (targetGameDB != null)
+            if (sourceExport.ClassName != "Package" && targetGameDB != null)
             {
                 // Port in donor instead
                 var ifp = sourceExport.InstancedFullPath;
+                Debug.WriteLine($@"Porting {ifp}");
+                //if (ifp.Contains("sam08"))
+                //    Debugger.Break();
                 var donorFiles = targetGameDB.GetFilesContainingObject(ifp);
-                if ((donorFiles == null || !donorFiles.Any()) && ifp.EndsWith("_dup", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    ifp = ifp.Substring(0, ifp.Length - 4);
-                    donorFiles = targetGameDB.GetFilesContainingObject(ifp);
-                }
+                //if ((donorFiles == null || !donorFiles.Any()) && ifp.EndsWith("_dup", StringComparison.InvariantCultureIgnoreCase))
+                //{
+                //    ifp = ifp.Substring(0, ifp.Length - 4);
+                //    donorFiles = targetGameDB.GetFilesContainingObject(ifp);
+                //}
 
                 if (donorFiles != null && donorFiles.Any())
                 {
-                    // 'Using' here will mark as no longer used. But export will still be accesed. not sure how to handle this outside
-                    using var donorPackage = MEPackageHandler.OpenMEPackage(Path.Combine(MEDirectories.GetDefaultGamePath(destPackage.Game), donorFiles[0]));
-                    sourceExport = donorPackage.FindExport(sourceExport.InstancedFullPath);
+                    // See if any packages are open in our cache that already contain this asset
+                    IMEPackage donorPackage = null;
+                    bool isCached = false;
+                    foreach (var df in donorFiles)
+                    {
+                        var dfp = Path.Combine(MEDirectories.GetDefaultGamePath(destPackage.Game), df);
+                        if (targetGameDB.HACK_CACHE.TryGetCachedPackage(dfp, false, out donorPackage))
+                        {
+                            sourceExport = donorPackage.FindExport(sourceExport.InstancedFullPath);
+                            isCached = true;
+                            break;
+                        }
+                    }
+
+                    if (!isCached)
+                    {
+                        var dfp = Path.Combine(MEDirectories.GetDefaultGamePath(destPackage.Game), donorFiles[0]);
+                        if (targetGameDB.HACK_CACHE.TryGetCachedPackage(dfp, true, out donorPackage))
+                        {
+                            sourceExport = donorPackage.FindExport(sourceExport.InstancedFullPath);
+                        }
+                    }
                 }
             }
 #endif
@@ -317,7 +341,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     if (classValue is null && importExportDependencies)
                     {
                         IEntry classParent = GetOrAddCrossImportOrPackage(sourceClassExport.ParentFullPath, sourceExport.FileRef, destPackage, true, objectMapping);
-                        classValue = ImportExport(destPackage, sourceClassExport, classParent?.UIndex ?? 0, true, objectMapping);
+                        classValue = ImportExport(destPackage, sourceClassExport, classParent?.UIndex ?? 0, true, objectMapping, targetGameDB: targetGameDB);
                     }
                     break;
             }
@@ -341,7 +365,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     {
                         IEntry superClassParent = GetOrAddCrossImportOrPackage(sourceSuperClassExport.ParentFullPath, sourceExport.FileRef, destPackage,
                             true, objectMapping);
-                        superclass = ImportExport(destPackage, sourceSuperClassExport, superClassParent?.UIndex ?? 0, true, objectMapping);
+                        superclass = ImportExport(destPackage, sourceSuperClassExport, superClassParent?.UIndex ?? 0, true, objectMapping, targetGameDB: targetGameDB);
                     }
                     break;
             }
@@ -364,7 +388,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     {
                         IEntry archetypeParent = GetOrAddCrossImportOrPackage(sourceArchetypeExport.ParentInstancedFullPath, sourceExport.FileRef, destPackage,
                                                                               true, objectMapping);
-                        archetype = ImportExport(destPackage, sourceArchetypeExport, archetypeParent?.UIndex ?? 0, true, objectMapping);
+                        archetype = ImportExport(destPackage, sourceArchetypeExport, archetypeParent?.UIndex ?? 0, true, objectMapping, targetGameDB: targetGameDB);
                     }
                     break;
             }
@@ -452,6 +476,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             string[] importParts = importFullNameInstanced.Split('.');
 
             //if importing something into eg. SFXGame.pcc, this will ensure links to SFXGame imports will link up to the proper exports in SFXGame
+            if (sourcePcc.Game == MEGame.ME1 && destinationPCC.Game == MEGame.LE1 && importParts[0] == "BIOC_Base")
+            {
+                importParts[0] = "SFXGame"; // BIOC_Base was renamed to SFXGame in ME2
+            }
+
             if (importParts.Length > 1 && importParts[0].CaseInsensitiveEquals(destinationPCC.FileNameNoExtension))
             {
                 foundEntry = destinationPCC.FindEntry(string.Join('.', importParts[1..]));
@@ -480,8 +509,18 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
 
             //recursively ensure parent exists. when importParts.Length == 1, this will return null
-            IEntry parent = GetOrAddCrossImportOrPackage(string.Join('.', importParts[..^1]), sourcePcc, destinationPCC,
-                                                         importNonPackageExportsToo, objectMapping);
+
+            // DEBUG---
+            IEntry parent = null;
+            //if (importParts[0] == "SFXGame")
+            //{
+            //    // Pull from global instead
+            //    parent = GetOrAddCrossImportOrPackageFromGlobalFile(string.Join('.', importParts[..^1]), sourcePcc, destinationPCC, objectMapping);
+            //}
+            // ENDDEBUG
+
+
+            parent ??= GetOrAddCrossImportOrPackage(string.Join('.', importParts[..^1]), sourcePcc, destinationPCC, importNonPackageExportsToo, objectMapping);
 
             var sourceEntry = sourcePcc.FindEntry(importFullNameInstanced); // should this search entries instead? What if an import has an export parent?
             if (sourceEntry is ImportEntry imp) // import not found

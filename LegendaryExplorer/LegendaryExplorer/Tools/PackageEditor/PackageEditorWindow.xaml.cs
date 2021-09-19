@@ -3217,15 +3217,15 @@ namespace LegendaryExplorer.Tools.PackageEditor
             if (dropInfo.TargetItem is TreeViewEntry targetItem && dropInfo.Data is TreeViewEntry sourceItem &&
                 sourceItem.Parent != null)
             {
-                if (targetItem.Entry != null && sourceItem.Entry != null &&
-                    ////!App.IsDebug &&
-                    sourceItem.Entry.Game != MEGame.UDK && // allow UDK -> OT and LE
-                    targetItem.Game.IsLEGame() != sourceItem.Entry.Game.IsLEGame())
-                {
-                    MessageBox.Show(
-                        "Cannot port assets between Original Trilogy (OT) games and  Legendary Edition (LE) games at this time.", "Cannot port asset", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
+                //if (targetItem.Entry != null && sourceItem.Entry != null &&
+                //    ////!App.IsDebug &&
+                //    sourceItem.Entry.Game != MEGame.UDK && // allow UDK -> OT and LE
+                //    targetItem.Game.IsLEGame() != sourceItem.Entry.Game.IsLEGame())
+                //{
+                //    MessageBox.Show(
+                //        "Cannot port assets between Original Trilogy (OT) games and  Legendary Edition (LE) games at this time.", "Cannot port asset", MessageBoxButton.OK, MessageBoxImage.Error);
+                //    return;
+                //}
 
                 //Check if the path of the target and the source is the same. If so, offer to merge instead
                 if (sourceItem == targetItem || (targetItem.Entry != null && sourceItem.Entry.FileRef == targetItem.Entry.FileRef))
@@ -3287,7 +3287,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 int numExports = Pcc.ExportCount;
                 //Import!
                 var relinkResults = EntryImporter.ImportAndRelinkEntries(portingOption, sourceEntry, Pcc,
-                    targetLinkEntry, true, out IEntry newEntry, targetGameObjectDB: objectDB);
+                    targetLinkEntry, true, out IEntry newEntry, targetGameDonorDB: objectDB);
 
                 if (originalIndex >= 0)
                 {

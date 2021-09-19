@@ -1700,7 +1700,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static async void VTest(PackageEditorWindow pe)
         {
-            Task.Run(() =>
+            await Task.Run(() =>
             {
 
                 string dbPath = AssetDatabaseWindow.GetDBPath(MEGame.LE1);
@@ -1850,6 +1850,35 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 File.WriteAllText(AppDirectories.GetObjectDatabasePath(game), objectDB.Serialize());
 
             }).ContinueWithOnUIThread(result => { pe.EndBusy(); });
+        }
+
+        public static void SearchObjectInfos(PackageEditorWindow pe)
+        {
+            var searchTerm = PromptDialog.Prompt(pe, "Enter key value to search", "ObjectInfos Search");
+            if (searchTerm != null)
+            {
+                string searchResult = "";
+                MEGame[] games = new[] {MEGame.ME1, MEGame.ME2, MEGame.ME3, MEGame.LE1, MEGame.LE2, MEGame.LE3};
+
+                foreach (var game in games)
+                {
+                    if (GlobalUnrealObjectInfo.GetClasses(game).TryGetValue(searchTerm, out _)) searchResult += $"Key found in {game} Classes\n";
+                    if (GlobalUnrealObjectInfo.GetStructs(game).TryGetValue(searchTerm, out _)) searchResult += $"Key found in {game} Classes\n";
+                    if (GlobalUnrealObjectInfo.GetEnums(game).TryGetValue(searchTerm, out _)) searchResult += $"Key found in {game} Classes\n";
+                }
+
+                if (searchResult == "")
+                {
+                    searchResult = "Key " + searchTerm +
+                                   " not found in any ObjectInfo Structs/Classes/Enums dictionaries for any games";
+                }
+                else
+                {
+                    searchResult = "Key " + searchTerm + " found in the following:\n" + searchResult;
+                }
+
+                MessageBox.Show(searchResult);
+            }
         }
     }
 }
