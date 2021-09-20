@@ -224,13 +224,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         {
 #if DEBUG
             // BIG HACKJOB
-            if (sourceExport.ClassName != "Package" && targetGameDB != null)
+            if (targetGameDB != null && sourceExport.ClassName != "Package") // Actors cannot be donors
             {
                 // Port in donor instead
                 var ifp = sourceExport.InstancedFullPath;
                 //Debug.WriteLine($@"Porting {ifp}");
-                //if (ifp.Contains("MaxMedigel"))
-                //     Debugger.Break();
+                //if (ifp == "Brush")
+                //    Debugger.Break();
                 var donorFiles = targetGameDB.GetFilesContainingObject(ifp);
                 //if ((donorFiles == null || !donorFiles.Any()) && ifp.EndsWith("_dup", StringComparison.InvariantCultureIgnoreCase))
                 //{
@@ -248,10 +248,14 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         var dfp = Path.Combine(MEDirectories.GetDefaultGamePath(destPackage.Game), df);
                         if (targetGameDB.HACK_CACHE.TryGetCachedPackage(dfp, false, out donorPackage))
                         {
-                            sourceExport = donorPackage.FindExport(sourceExport.InstancedFullPath);
-                            isCached = true;
-                            usingDonor = true;
-                            break;
+                            var testExp = donorPackage.FindExport(sourceExport.InstancedFullPath);
+                            if (testExp.ClassName == sourceExport.ClassName)
+                            {
+                                sourceExport = testExp;
+                                isCached = true;
+                                usingDonor = true;
+                                break;
+                            }
                         }
                     }
 
@@ -260,8 +264,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         var dfp = Path.Combine(MEDirectories.GetDefaultGamePath(destPackage.Game), donorFiles[0]);
                         if (targetGameDB.HACK_CACHE.TryGetCachedPackage(dfp, true, out donorPackage))
                         {
-                            sourceExport = donorPackage.FindExport(sourceExport.InstancedFullPath);
-                            usingDonor = true;
+                            var testExp = donorPackage.FindExport(sourceExport.InstancedFullPath);
+                            if (testExp.ClassName == sourceExport.ClassName)
+                            {
+                                sourceExport = testExp;
+                                usingDonor = true;
+                            }
                         }
                     }
                 }

@@ -1743,6 +1743,27 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
+        private static void CorrectNeverStream(IMEPackage package)
+        {
+            foreach (var exp in package.Exports.Where(x => x.IsTexture()))
+            {
+                var props = exp.GetProperties();
+                var texinfo = ObjectBinary.From<UTexture2D>(exp);
+                var numMips = texinfo.Mips.Count;
+                var ns = props.GetProp<BoolProperty>("NeverStream");
+                int lowMipCount = 0;
+                for (int i = numMips - 1; i > 0; i--)
+                {
+                    if (lowMipCount > 6 && (ns == null || ns.Value == false) && texinfo.Mips[i].IsLocallyStored && texinfo.Mips[i].StorageType != StorageTypes.empty)
+                    {
+                        exp.WriteProperty(new BoolProperty(true, "NeverStream"));
+                        break;
+                    }
+                    lowMipCount++;
+                }
+            }
+        }
+
         public static void CheckNeverstream(PackageEditorWindow pe)
         {
             List<ExportEntry> badNST = new List<ExportEntry>();
@@ -1926,6 +1947,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         me1File.FindExport(@"TheWorld.PersistentLevel.BioDoor_0"),
                     };
                     VTestFilePorting(le1File, itemsToPort, db, pe);
+                    RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
+                    CorrectNeverStream(le1File);
+                    le1File.Save();
                 }
 
                 // BIOA_PRC2AA_00_DSG
@@ -1956,6 +1980,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     var dest = le1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence");
                     EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, me1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence"), le1File, dest, true, out _, importExportDependencies: true, targetGameDonorDB: db);
                     RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
+                    CorrectNeverStream(le1File);
                     le1File.Save(); // Save again
                 }
 
@@ -1987,6 +2012,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     var dest = le1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence");
                     EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, me1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence"), le1File, dest, true, out _, importExportDependencies: true, targetGameDonorDB: db);
                     RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
+                    CorrectNeverStream(le1File);
                     le1File.Save(); // Save again
                 }
 
