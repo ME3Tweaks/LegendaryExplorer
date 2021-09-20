@@ -2058,6 +2058,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             ExportEntry[] actorsToAdd = pl.FileRef.Exports.Where(exp => exp.Parent == pl && exp.IsA("Actor")).ToArray();
             Level level = ObjectBinary.From<Level>(pl);
             level.Actors.ReplaceAll(actorsToAdd.Select(x => new UIndex(x.UIndex)));
+
+            if (level.Actors.Count > 1)
+            {
+                level.Actors.Insert(1, new UIndex(0)); // This is stupid
+            }
+
             pl.WriteBinary(level);
         }
 
