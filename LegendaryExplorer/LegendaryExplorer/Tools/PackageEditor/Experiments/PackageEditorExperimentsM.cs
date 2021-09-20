@@ -1884,6 +1884,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 pe.BusyText = "Loading packages";
 
+
+
                 // BIOA_PRC22
                 {
                     var sourceName = "BIOA_PRC2AA";
@@ -1961,6 +1963,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     VTestFilePorting(le1File, itemsToPort, db, pe);
                     RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
                     CorrectNeverStream(le1File);
+
+                    // Correct terrain
+                    var terrainExp = le1File.FindExport(@"TheWorld.PersistentLevel.Terrain_0");
+                    var terrain = ObjectBinary.From<Terrain>(terrainExp);
+                    terrain.CachedDisplacements = new byte[terrain.Heights.Length];
+                    terrainExp.WriteBinary(terrain);
                     le1File.Save();
                 }
 
@@ -2057,7 +2065,27 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
             ExportEntry[] actorsToAdd = pl.FileRef.Exports.Where(exp => exp.Parent == pl && exp.IsA("Actor")).ToArray();
             Level level = ObjectBinary.From<Level>(pl);
-            level.Actors.ReplaceAll(actorsToAdd.Select(x => new UIndex(x.UIndex)));
+            level.Actors.Clear();
+            foreach (var actor in actorsToAdd)
+            {
+                // Don't add things that are in collection actors
+
+                var lc = actor.GetProperty<ObjectProperty>("LightComponent");
+                if (lc != null && pl.FileRef.TryGetUExport(lc.Value, out var lightComp))
+                {
+                    if (lightComp.Parent != null && lightComp.Parent.ClassName == "StaticLightCollectionActor")
+                        continue; // don't add this one
+                }
+
+                //var mc = actor.GetProperty<ObjectProperty>("MeshComponent");
+                //if (mc != null && pl.FileRef.TryGetUExport(mc.Value, out var meshComp))
+                //{
+                //    if (meshComp.Parent != null && meshComp.Parent.ClassName == "StaticMeshCollectionActor")
+                //        continue; // don't add this one
+                //}
+
+                level.Actors.Add(new UIndex(actor.UIndex));
+            }
 
             if (level.Actors.Count > 1)
             {
