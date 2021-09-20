@@ -44,6 +44,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
     public partial class AssetDatabaseWindow : TrackingNotifyPropertyChangedWindowBase
     {
         #region Declarations
+        // Why is this a string?
         public const string dbCurrentBuild = "7.1"; //If changes are made that invalidate old databases edit this.
         private int previousView { get; set; }
         private int _currentView;

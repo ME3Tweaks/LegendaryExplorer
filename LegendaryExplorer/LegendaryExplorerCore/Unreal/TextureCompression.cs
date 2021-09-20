@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using LegendaryExplorerCore.Compression;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
+using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorerCore.Unreal
 {
@@ -42,6 +43,14 @@ namespace LegendaryExplorerCore.Unreal
         extLZMA = StorageFlags.externalFile | StorageFlags.compressedLZMA, // ME3 (non-DLC TFC archive)
         extOodle = StorageFlags.externalFile | StorageFlags.compressedOodle, // LE TFC
         empty = StorageFlags.externalFile | StorageFlags.unused,           // ME1, ME2, ME3
+    }
+
+    public static class StorageTypeExtensions
+    {
+        public static bool IsExternal(this StorageTypes type)
+        {
+            return type is StorageTypes.extUnc or StorageTypes.extLZMA or StorageTypes.extLZO or StorageTypes.extZlib; // Could probably bitmask this
+        }
     }
 
     /// <summary>
@@ -220,6 +229,46 @@ namespace LegendaryExplorerCore.Unreal
                 if (dstLen != block.uncomprSize)
                     throw new Exception("Decompressed data size not expected!");
             });
+        }
+
+        public static byte[] ConvertTextureCompression(byte[] textureCompressed, int decompressedSize, ref StorageTypes storageType, MEGame newGame, bool forceInternal)
+        {
+            // Unsure if when calling convert on compression types, unc should be changed
+            //if (storageType == StorageTypes.pccUnc || storageType == StorageTypes.extUnc)
+            //    return textureCompressed;
+
+            // todo: optimize this
+            byte[] decompressed = new byte[decompressedSize];
+            TextureCompression.DecompressTexture(decompressed, new MemoryStream(textureCompressed), storageType, decompressedSize, textureCompressed.Length);
+
+            bool external = !forceInternal && storageType.IsExternal(); // Should this be stored externally?
+            storageType = TextureCompression.GetStorageTypeForGame(newGame, external);
+
+            if (storageType != StorageTypes.pccUnc)
+            {
+                textureCompressed = TextureCompression.CompressTexture(decompressed, storageType);
+            }
+            else
+            {
+                textureCompressed = decompressed;
+            }
+
+            return textureCompressed;
+
+        }
+
+        public static StorageTypes GetStorageTypeForGame(MEGame game, bool isExternal)
+        {
+            switch (game)
+            {
+                case MEGame.ME1 or MEGame.ME2 when isExternal: return StorageTypes.extLZO;
+                case MEGame.ME1 or MEGame.ME2: return StorageTypes.pccLZO;
+                case MEGame.ME3 when isExternal: return StorageTypes.extZlib;
+                case MEGame.ME3: return StorageTypes.pccZlib;
+                case MEGame.LE1 or MEGame.LE2 or MEGame.LE3 when isExternal: return StorageTypes.extOodle;
+                case MEGame.LE1 or MEGame.LE2 or MEGame.LE3: return StorageTypes.pccUnc; // LE game packages are always compressed. Do not compress pcc stored textures
+                default: throw new Exception($"{game} is not a supported game for getting texture storage types");
+            }
         }
     }
 }

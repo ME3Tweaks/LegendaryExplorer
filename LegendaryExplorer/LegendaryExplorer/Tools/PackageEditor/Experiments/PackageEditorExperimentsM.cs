@@ -9,9 +9,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Numerics;
+using System.Windows.Input;
 using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.Misc;
+using LegendaryExplorer.Tools.AssetDatabase;
 using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode;
@@ -24,6 +28,7 @@ using LegendaryExplorerCore.Unreal.ObjectInfo;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
+using LegendaryExplorerCore.Misc;
 
 //using ImageMagick;
 
@@ -32,7 +37,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
     /// <summary>
     /// Class where Mgamerz can put debug/dev/experimental code
     /// </summary>
-    class PackageEditorExperimentsM
+    public class PackageEditorExperimentsM
     {
         public static void CompareISB()
         {
@@ -102,13 +107,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                     foreach (var sourceObj in importPackage.Exports)
                     {
-                        var matchingObj = pewpf.Pcc.Exports.FirstOrDefault(x => x.InstancedFullPath == sourceObj.InstancedFullPath);
+                        var matchingObj =
+                            pewpf.Pcc.Exports.FirstOrDefault(x => x.InstancedFullPath == sourceObj.InstancedFullPath);
                         if (matchingObj != null && !matchingObj.DataChanged)
                         {
                             if (!shouldUpdateObject(matchingObj))
                                 continue;
 
-                            var resultst = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular,
+                            var resultst = EntryImporter.ImportAndRelinkEntries(
+                                EntryImporter.PortingOption.ReplaceSingular,
                                 sourceObj, matchingObj.FileRef, matchingObj, true, out _,
                                 errorOccuredCallback: x => throw new Exception(x),
                                 importExportDependencies: true);
@@ -129,10 +136,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 }
 
-            }).ContinueWithOnUIThread(x =>
-            {
-                pewpf.IsBusy = false;
-            });
+            }).ContinueWithOnUIThread(x => { pewpf.IsBusy = false; });
         }
 
         private static bool shouldUpdateObject(ExportEntry matchingObj)
@@ -150,7 +154,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 pewpf.BusyText = "Enumerating functions...";
                 pewpf.IsBusy = true;
-                var allFiles = MELoadedFiles.GetOfficialFiles(MEGame.LE3).Where(x => Path.GetExtension(x) == ".pcc").ToList();
+                var allFiles = MELoadedFiles.GetOfficialFiles(MEGame.LE3).Where(x => Path.GetExtension(x) == ".pcc")
+                    .ToList();
                 int totalFiles = allFiles.Count;
                 int numDone = 0;
                 foreach (string filePath in allFiles)
@@ -162,7 +167,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     {
                         if (pcc.Game is MEGame.ME1 or MEGame.ME2)
                         {
-                            var func = f.ClassName == "State" ? UE3FunctionReader.ReadState(f, f.Data) : UE3FunctionReader.ReadFunction(f, f.Data);
+                            var func = f.ClassName == "State"
+                                ? UE3FunctionReader.ReadState(f, f.Data)
+                                : UE3FunctionReader.ReadFunction(f, f.Data);
                             func.Decompile(new TextBuilder(), false, true); //parse bytecode
                         }
                         else
@@ -181,6 +188,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         public static void ShaderCacheResearch(PackageEditorWindow pewpf)
         {
             Dictionary<string, int> mapCount = new Dictionary<string, int>();
+
             bool ScanForNames(byte[] bytes, IMEPackage package)
             {
                 bool result = false;
@@ -201,9 +209,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     {
                         count++;
                     }
+
                     mapCount[name] = count;
                     result = name.StartsWith("F");
                 }
+
                 pos++;
                 //}
 
@@ -237,6 +247,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 {
                                     count++;
                                 }
+
                                 typeCount[shaderPair.Value.ShaderType] = count;
                             }
                         }
@@ -255,16 +266,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     Debug.WriteLine($"{kp.Key}: {kp.Value}");
                 }
+
                 return true;
-            }).ContinueWithOnUIThread(foundCandidates =>
-            {
-                pewpf.IsBusy = false;
-            });
+            }).ContinueWithOnUIThread(foundCandidates => { pewpf.IsBusy = false; });
         }
 
         public static void ResetTexturesInFile(IMEPackage sourcePackage, PackageEditorWindow pewpf)
         {
-            if (sourcePackage.Game != MEGame.ME1 && sourcePackage.Game != MEGame.ME2 && sourcePackage.Game != MEGame.ME3)
+            if (sourcePackage.Game != MEGame.ME1 && sourcePackage.Game != MEGame.ME2 &&
+                sourcePackage.Game != MEGame.ME3)
             {
                 MessageBox.Show(pewpf, "Not a trilogy file!");
                 return;
@@ -287,7 +297,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 var choices = foundCandidates.Result.DiskFiles.ToList(); //make new list
                 choices.AddRange(foundCandidates.Result.SFARPackageStreams.Select(x => x.Key));
 
-                var choice = InputComboBoxDialog.GetValue(pewpf, "Choose file to reset to:", "Texture reset", choices, choices.Last());
+                var choice = InputComboBoxDialog.GetValue(pewpf, "Choose file to reset to:", "Texture reset", choices,
+                    choices.Last());
                 if (string.IsNullOrEmpty(choice))
                 {
                     return;
@@ -304,13 +315,16 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     var allDiffs = "[ALL DIFFERENCES]";
                     classNames.Insert(0, allDiffs);
-                    var restoreClass = InputComboBoxDialog.GetValue(pewpf, "Select class type to restore instances of:", "Data reset", classNames, classNames.FirstOrDefault());
+                    var restoreClass = InputComboBoxDialog.GetValue(pewpf, "Select class type to restore instances of:",
+                        "Data reset", classNames, classNames.FirstOrDefault());
                     if (string.IsNullOrEmpty(restoreClass))
                     {
                         return;
                     }
 
-                    foreach (var exp in restorePackage.Exports.Where(x => x.ClassName != "BioMaterialInstanceConstant" || restoreClass == allDiffs || x.ClassName == restoreClass))
+                    foreach (var exp in restorePackage.Exports.Where(x =>
+                        x.ClassName != "BioMaterialInstanceConstant" || restoreClass == allDiffs ||
+                        x.ClassName == restoreClass))
                     {
                         var origExp = restorePackage.GetUExport(exp.UIndex);
                         sourcePackage.GetUExport(exp.UIndex).Data = origExp.Data;
@@ -350,7 +364,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 using var compactedAlready = MEPackageHandler.OpenMEPackage(d.FileName);
                 var fname = Path.GetFileNameWithoutExtension(sourcePackage.FilePath);
                 var exportsToKeep = sourcePackage.Exports
-                    .Where(x => x.FullPath == fname || x.FullPath == @"SeekFreeShaderCache" || x.FullPath.StartsWith("ME3ExplorerTrashPackage")).ToList();
+                    .Where(x => x.FullPath == fname || x.FullPath == @"SeekFreeShaderCache" ||
+                                x.FullPath.StartsWith("ME3ExplorerTrashPackage")).ToList();
 
                 var entriesToTrash = new ConcurrentBag<ExportEntry>();
                 Parallel.ForEach(sourcePackage.Exports, export =>
@@ -387,7 +402,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             ME3Directory.DefaultGamePath = @"Z:\Mass Effect 3";
             var patchedOutDir = Directory.CreateDirectory(@"C:\users\mgamerz\desktop\patchcomp\patch").FullName;
             var origOutDir = Directory.CreateDirectory(@"C:\users\mgamerz\desktop\patchcomp\orig").FullName;
-            var patchFiles = Directory.GetFiles(@"C:\Users\Mgamerz\Desktop\ME3CMM\data\Patch_001_Extracted\BIOGame\DLC\DLC_TestPatch\CookedPCConsole", "Patch_*.pcc");
+            var patchFiles =
+                Directory.GetFiles(
+                    @"C:\Users\Mgamerz\Desktop\ME3CMM\data\Patch_001_Extracted\BIOGame\DLC\DLC_TestPatch\CookedPCConsole",
+                    "Patch_*.pcc");
 
             // End variables
 
@@ -396,9 +414,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             using var package2 = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "Engine.pcc"));
             using var package3 = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "Core.pcc"));
             using var package4 = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "Startup.pcc"));
-            using var package5 = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "GameFramework.pcc"));
+            using var package5 =
+                MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "GameFramework.pcc"));
             using var package6 = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "GFxUI.pcc"));
-            using var package7 = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "BIOP_MP_COMMON.pcc"));
+            using var package7 =
+                MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "BIOP_MP_COMMON.pcc"));
 
             // These paths can't be easily determined so just manually build list
             // Some are empty paths cause they could be determined with code updates 
@@ -406,94 +426,103 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             Dictionary<string, string> extraMappings = new Dictionary<string, string>()
             {
                 {"SFXGameContent.SFXAICmd_Base_GethPrimeShieldDrone", "SFXPawn_GethPrime"},
-{"SFXGameMPContent.SFXGameEffect_MatchConsumable_AmmoPower_ArmorPiercing", "SFXGE_MatchConsumables"},
-{"SFXGameMPContent.SFXGameEffect_MatchConsumable_AmmoPower_Disruptor", "SFXGE_MatchConsumables"},
-{"SFXGameMPContent.SFXObjective_Retrieve_PickupObject", "SFXEngagement_Retrieve"},
-{"SFXGameContentDLC_CON_MP2.SFXObjective_Retrieve_PickupObject_DLC", "SFXEngagement_RetrieveDLC"},
-{"SFXGameContentDLC_CON_MP2.SFXObjective_Retrieve_DropOffLocation_DLC", "SFXEngagement_RetrieveDLC"},
-{"SFXGameContent.SFXPowerCustomAction_GethPrimeTurret", "SFXPawn_GethPrime"},
-{"SFXGameContent.SFXPowerCustomAction_ConcussiveShot", ""},
-{"SFXGameContent.SFXPowerCustomAction_BioticCharge", ""},
-{"SFXGameContentDLC_CON_MP1.SFXProjectile_BatarianSniperRound", "SFXWeapon_SniperRifle_BatarianDLC"},
-{"SFXGameContentDLC_CON_MP1.SFXPowerCustomActionMP_BioticCharge_Krogan", "SFXPower_KroganBioticCharge"},
-{"SFXGameMPContent.SFXPowerCustomActionMP_FemQuarianPassive", "SFXPowerMP_FemQuarPassive"},
-{"SFXGameContentDLC_CON_MP1.SFXPowerCustomActionMP_KroganPassive_Vanguard", "SFXPower_KroganVanguardPassive"},
-{"SFXGameContentDLC_CON_MP2.SFXPowerCustomActionMP_MaleQuarianPassive", "SFXPower_MQPassive"},
-{"SFXGameMPContent.SFXPowerCustomActionMP_AsariPassive", ""},
-{"SFXGameMPContent.SFXPowerCustomActionMP_DrellPassive", ""},
-{"SFXGameMPContent.SFXPowerCustomActionMP_HumanPassive", ""},
-{"SFXGameMPContent.SFXPowerCustomActionMP_KroganPassive", ""},
-{"SFXGameMPContent.SFXPowerCustomActionMP_PassiveBase", ""},
-{"SFXGameMPContent.SFXPowerCustomActionMP_SalarianPassive", ""},
-{"SFXGameMPContent.SFXPowerCustomActionMP_TurianPassive", ""},
-{"SFXGameContentDLC_CON_MP2.SFXPowerCustomActionMP_VorchaPassive", "SFXPower_VorchaPassive"},
-{"SFXGameContentDLC_CON_MP2.SFXPowerCustomActionMP_WhipManPassive", "SFXPower_WhipManPassive"},
-{"SFXGameContent.SFXAICmd_Banshee_Aggressive", "SFXpawn_Banshee"},
-{"SFXGameContent.SFXAI_GethPrimeShieldDrone", "SFXPawn_GethPrime"},
-{"SFXGameContent.SFXAI_ProtectorDrone", "SFXPower_ProtectorDrone"},
-{"SFXGameContent.SFXAmmoContainer", "Biod_MPTowr"},
-{"SFXGameContentDLC_CON_MP3.SFXCustomAction_N7TeleportPunchBase", "N7_Vanguard_MP"},
-{"SFXGameContentDLC_CON_MP3.SFXCustomAction_N7VanguardEvadeBase", "N7_Vanguard_MP"},
-{"SFXGameContent.SFXCustomAction_SimpleMoveBase", "SFXPawn_GethPyro"},
-{"SFXGameContent.SFXCustomAction_BansheeDeath", "SFXPawn_Banshee"},
-{"SFXGameContent.SFXCustomAction_BansheePhase", "SFXPawn_Banshee"},
-{"SFXGameContent.SFXCustomAction_DeployTurret", "SFXPawn_Gunner"},
-{"SFXGameMPContent.SFXCustomAction_KroganRoar", "Krogan_Soldier_MP"},
-{"SFXGameContent.SFXCustomAction_Revive", "SFXCharacterClass_Infiltrator"},
-{"SFXGameContent.SFXDroppedGrenade", "Biod_MPTowr"},
-{"SFXGameContentDLC_CON_MP2_Retrieve.SFXEngagement_Retrieve_DLC", "Startup_DLC_CON_MP2_INT"},
-{"SFXGameContent.SFXGameEffect_WeaponMod_PenetrationDamageBonus", "SFXWeaponMods_AssaultRifles"},
-{"SFXGameContent.SFXGameEffect_WeaponMod_WeightBonus", "SFXWeaponMods_SMGs"},
-{"SFXGameContentDLC_CON_MP1.SFXGameEffect_BatarianBladeDamageOverTime", "Batarian_Soldier_MP"},
-{"SFXGameContent.SFXGrenadeContainer", "Biod_MPTowr"},
-{"SFXGameMPContent.SFXObjective_Retrieve_DropOffLocation", "SFXEngagement_Retrieve"},
-{"SFXGameMPContent.SFXObjective_Annex_DefendZone", "SFXEngagement_Annex_Upload"},
-{"SFXGameMPContent.SFXObjective_Disarm_Base", "SFXEngagement_Disarm_Disable"},
-{"SFXGameContentDLC_CON_MP3.SFXObjective_MobileAnnex", "SFXMobileAnnex"},
-{"SFXOnlineFoundation.SFXOnlineComponentAchievementPC", ""}, //totes new
-{"SFXGameContentDLC_CON_MP2.SFXPawn_PlayerMP_Sentinel_Vorcha", "Vorcha_Sentinel_MP"},
-{"SFXGameContentDLC_CON_MP2.SFXPawn_PlayerMP_Soldier_Vorcha", "Vorcha_Soldier_MP"},
-{"SFXGameContent.SFXPawn_GethPrimeShieldDrone", "SFXPawn_gethPrime"},
-{"SFXGameContent.SFXPawn_GethPrimeTurret", "SFXPawn_GethPrime"},
-{"SFXGameContent.SFXPawn_GunnerTurret", "SFXPawn_Gunner"},
-{"SFXGameMPContent.SFXPawn_Krogan_MP", "Krogan_Soldier_MP"},
-{"SFXGameContentDLC_CON_MP3.SFXPawn_PlayerMP_Sentinel_N7", "N7_Sentinel_MP"},
-{"SFXGameContent.SFXPawn_Swarmer", "SFXPawn_Ravager"},
-{"SFXGameContentDLC_CON_MP2.SFXPowerCustomActionMP_Damping", ""},
-{"SFXGameContent.SFXPowerCustomAction_AIHacking", ""},
-{"SFXGameContentDLC_CON_MP2.SFXPowerCustomActionMP_Flamer", ""},
-{"SFXGameMPContent.SFXPowerCustomActionMP_Reave", ""},
-{"SFXGameContentDLC_CON_MP3.SFXPowerCustomActionMP_Slash", ""},
-{"SFXGameContent.SFXPowerCustomAction_Carnage", "SFXPower_Carnage"},
-{"SFXGameContent.SFXPowerCustomAction_Marksman", "SFXPower_Marksman"},
-{"SFXGameContent.SFXPowerCustomAction_Reave", "SFXPower_Reave"},
-{"SFXGameContent.SFXPowerCustomAction_Stasis", "SFXPower_Stasis"},
-{"SFXGameContent.SFXProjectile_BansheePhase", "SFXPawn_Banshee"},
-{"SFXGameContentDLC_CON_MP1.SFXPawn_PlayerMP_Sentinel_Batarian", "Batarian_Sentinel_MP"},
-{"SFXGameContentDLC_CON_MP1.SFXPawn_PlayerMP_Soldier_Batarian", "Batarian_Soldier_MP"},
-{"SFXGameContent.SFXPowerCustomAction_AdrenalineRush", "SFXPower_AdrenalineRush"},
-{"SFXGameContent.SFXPowerCustomAction_DefensiveShield", ""},
-{"SFXGameContent.SFXPowerCustomAction_Fortification", ""},
-{"SFXGameContentDLC_CON_MP1.SFXPowerCustomActionMP_AsariCommandoPassive", "SFXPower_AsariCommandoPassive"},
-{"SFXGameContentDLC_CON_MP1.SFXPowerCustomActionMP_BatarianAttack", "SFXPower_BatarianAttack"},
-{"SFXGameMPContent.SFXPowerCustomActionMP_BioticCharge", ""},
-{"SFXGameMPContent.SFXPowerCustomActionMP_ConcussiveShot", ""},
-{"SFXGameMPContent.SFXPowerCustomActionMP_Marksman", ""},
-{"SFXGameContentDLC_CON_MP3.SFXPowerCustomActionMP_ShadowStrike", ""},
-{"SFXGameMPContent.SFXPowerCustomActionMP_Singularity", ""},
-{"SFXGameContentDLC_CON_MP1.SFXPowerCustomActionMP_BatarianPassive", "SFXPower_BatarianPassive"},
-{"SFXGameContentDLC_CON_MP1.SFXPowerCustomActionMP_GethPassive", "SFXPower_GethPassive"},
-{"SFXGameContent.SFXPowerCustomAction_Singularity", "SFXPower_Singularity"},
-{"SFXGameContent.SFXPowerCustomAction_Incinerate", "SFXPower_Incinerate"},
-{"SFXGameContent.SFXSeqAct_OpenWeaponSelection", "BioP_Cat002"},
-{"SFXGameContent.SFXSeqAct_ClearParticlePools", "BioD_KroGar_500Gate"},
-{"SFXGameContentLiveKismet.SFXSeqAct_SetAreaMap", "BioD_Cithub_Dock"},
-{"SFXGameContent.SFXShield_EVA", "Biod_promar_710chase"},
-{"SFXGameContent.SFXShield_Phantom", "SFXPawn_Phantom"},
-{"SFXGameContentDLC_CON_MP2.SFXWeapon_Shotgun_Quarian", "SFXWeapon_Shotgun_QuarianDLC"},
-{"SFXGameContentDLC_CON_MP2.SFXWeapon_SniperRifle_Turian", "SFXWeapon_SniperRifle_TurianDLC"},
-{"SFXGameContentDLC_CON_GUN01.SFXWeapon_SniperRifle_Turian_GUN01", "SFXWeapon_SniperRifle_Turian_GUN01"},
-{"SFXGameContentDLC_CON_MP1.SFXWeapon_Heavy_FlameThrower_GethTurret", "SFXPower_GethSentryTurret"}
+                {"SFXGameMPContent.SFXGameEffect_MatchConsumable_AmmoPower_ArmorPiercing", "SFXGE_MatchConsumables"},
+                {"SFXGameMPContent.SFXGameEffect_MatchConsumable_AmmoPower_Disruptor", "SFXGE_MatchConsumables"},
+                {"SFXGameMPContent.SFXObjective_Retrieve_PickupObject", "SFXEngagement_Retrieve"},
+                {"SFXGameContentDLC_CON_MP2.SFXObjective_Retrieve_PickupObject_DLC", "SFXEngagement_RetrieveDLC"},
+                {"SFXGameContentDLC_CON_MP2.SFXObjective_Retrieve_DropOffLocation_DLC", "SFXEngagement_RetrieveDLC"},
+                {"SFXGameContent.SFXPowerCustomAction_GethPrimeTurret", "SFXPawn_GethPrime"},
+                {"SFXGameContent.SFXPowerCustomAction_ConcussiveShot", ""},
+                {"SFXGameContent.SFXPowerCustomAction_BioticCharge", ""},
+                {"SFXGameContentDLC_CON_MP1.SFXProjectile_BatarianSniperRound", "SFXWeapon_SniperRifle_BatarianDLC"},
+                {"SFXGameContentDLC_CON_MP1.SFXPowerCustomActionMP_BioticCharge_Krogan", "SFXPower_KroganBioticCharge"},
+                {"SFXGameMPContent.SFXPowerCustomActionMP_FemQuarianPassive", "SFXPowerMP_FemQuarPassive"},
+                {
+                    "SFXGameContentDLC_CON_MP1.SFXPowerCustomActionMP_KroganPassive_Vanguard",
+                    "SFXPower_KroganVanguardPassive"
+                },
+                {"SFXGameContentDLC_CON_MP2.SFXPowerCustomActionMP_MaleQuarianPassive", "SFXPower_MQPassive"},
+                {"SFXGameMPContent.SFXPowerCustomActionMP_AsariPassive", ""},
+                {"SFXGameMPContent.SFXPowerCustomActionMP_DrellPassive", ""},
+                {"SFXGameMPContent.SFXPowerCustomActionMP_HumanPassive", ""},
+                {"SFXGameMPContent.SFXPowerCustomActionMP_KroganPassive", ""},
+                {"SFXGameMPContent.SFXPowerCustomActionMP_PassiveBase", ""},
+                {"SFXGameMPContent.SFXPowerCustomActionMP_SalarianPassive", ""},
+                {"SFXGameMPContent.SFXPowerCustomActionMP_TurianPassive", ""},
+                {"SFXGameContentDLC_CON_MP2.SFXPowerCustomActionMP_VorchaPassive", "SFXPower_VorchaPassive"},
+                {"SFXGameContentDLC_CON_MP2.SFXPowerCustomActionMP_WhipManPassive", "SFXPower_WhipManPassive"},
+                {"SFXGameContent.SFXAICmd_Banshee_Aggressive", "SFXpawn_Banshee"},
+                {"SFXGameContent.SFXAI_GethPrimeShieldDrone", "SFXPawn_GethPrime"},
+                {"SFXGameContent.SFXAI_ProtectorDrone", "SFXPower_ProtectorDrone"},
+                {"SFXGameContent.SFXAmmoContainer", "Biod_MPTowr"},
+                {"SFXGameContentDLC_CON_MP3.SFXCustomAction_N7TeleportPunchBase", "N7_Vanguard_MP"},
+                {"SFXGameContentDLC_CON_MP3.SFXCustomAction_N7VanguardEvadeBase", "N7_Vanguard_MP"},
+                {"SFXGameContent.SFXCustomAction_SimpleMoveBase", "SFXPawn_GethPyro"},
+                {"SFXGameContent.SFXCustomAction_BansheeDeath", "SFXPawn_Banshee"},
+                {"SFXGameContent.SFXCustomAction_BansheePhase", "SFXPawn_Banshee"},
+                {"SFXGameContent.SFXCustomAction_DeployTurret", "SFXPawn_Gunner"},
+                {"SFXGameMPContent.SFXCustomAction_KroganRoar", "Krogan_Soldier_MP"},
+                {"SFXGameContent.SFXCustomAction_Revive", "SFXCharacterClass_Infiltrator"},
+                {"SFXGameContent.SFXDroppedGrenade", "Biod_MPTowr"},
+                {"SFXGameContentDLC_CON_MP2_Retrieve.SFXEngagement_Retrieve_DLC", "Startup_DLC_CON_MP2_INT"},
+                {"SFXGameContent.SFXGameEffect_WeaponMod_PenetrationDamageBonus", "SFXWeaponMods_AssaultRifles"},
+                {"SFXGameContent.SFXGameEffect_WeaponMod_WeightBonus", "SFXWeaponMods_SMGs"},
+                {"SFXGameContentDLC_CON_MP1.SFXGameEffect_BatarianBladeDamageOverTime", "Batarian_Soldier_MP"},
+                {"SFXGameContent.SFXGrenadeContainer", "Biod_MPTowr"},
+                {"SFXGameMPContent.SFXObjective_Retrieve_DropOffLocation", "SFXEngagement_Retrieve"},
+                {"SFXGameMPContent.SFXObjective_Annex_DefendZone", "SFXEngagement_Annex_Upload"},
+                {"SFXGameMPContent.SFXObjective_Disarm_Base", "SFXEngagement_Disarm_Disable"},
+                {"SFXGameContentDLC_CON_MP3.SFXObjective_MobileAnnex", "SFXMobileAnnex"},
+                {"SFXOnlineFoundation.SFXOnlineComponentAchievementPC", ""}, //totes new
+                {"SFXGameContentDLC_CON_MP2.SFXPawn_PlayerMP_Sentinel_Vorcha", "Vorcha_Sentinel_MP"},
+                {"SFXGameContentDLC_CON_MP2.SFXPawn_PlayerMP_Soldier_Vorcha", "Vorcha_Soldier_MP"},
+                {"SFXGameContent.SFXPawn_GethPrimeShieldDrone", "SFXPawn_gethPrime"},
+                {"SFXGameContent.SFXPawn_GethPrimeTurret", "SFXPawn_GethPrime"},
+                {"SFXGameContent.SFXPawn_GunnerTurret", "SFXPawn_Gunner"},
+                {"SFXGameMPContent.SFXPawn_Krogan_MP", "Krogan_Soldier_MP"},
+                {"SFXGameContentDLC_CON_MP3.SFXPawn_PlayerMP_Sentinel_N7", "N7_Sentinel_MP"},
+                {"SFXGameContent.SFXPawn_Swarmer", "SFXPawn_Ravager"},
+                {"SFXGameContentDLC_CON_MP2.SFXPowerCustomActionMP_Damping", ""},
+                {"SFXGameContent.SFXPowerCustomAction_AIHacking", ""},
+                {"SFXGameContentDLC_CON_MP2.SFXPowerCustomActionMP_Flamer", ""},
+                {"SFXGameMPContent.SFXPowerCustomActionMP_Reave", ""},
+                {"SFXGameContentDLC_CON_MP3.SFXPowerCustomActionMP_Slash", ""},
+                {"SFXGameContent.SFXPowerCustomAction_Carnage", "SFXPower_Carnage"},
+                {"SFXGameContent.SFXPowerCustomAction_Marksman", "SFXPower_Marksman"},
+                {"SFXGameContent.SFXPowerCustomAction_Reave", "SFXPower_Reave"},
+                {"SFXGameContent.SFXPowerCustomAction_Stasis", "SFXPower_Stasis"},
+                {"SFXGameContent.SFXProjectile_BansheePhase", "SFXPawn_Banshee"},
+                {"SFXGameContentDLC_CON_MP1.SFXPawn_PlayerMP_Sentinel_Batarian", "Batarian_Sentinel_MP"},
+                {"SFXGameContentDLC_CON_MP1.SFXPawn_PlayerMP_Soldier_Batarian", "Batarian_Soldier_MP"},
+                {"SFXGameContent.SFXPowerCustomAction_AdrenalineRush", "SFXPower_AdrenalineRush"},
+                {"SFXGameContent.SFXPowerCustomAction_DefensiveShield", ""},
+                {"SFXGameContent.SFXPowerCustomAction_Fortification", ""},
+                {
+                    "SFXGameContentDLC_CON_MP1.SFXPowerCustomActionMP_AsariCommandoPassive",
+                    "SFXPower_AsariCommandoPassive"
+                },
+                {"SFXGameContentDLC_CON_MP1.SFXPowerCustomActionMP_BatarianAttack", "SFXPower_BatarianAttack"},
+                {"SFXGameMPContent.SFXPowerCustomActionMP_BioticCharge", ""},
+                {"SFXGameMPContent.SFXPowerCustomActionMP_ConcussiveShot", ""},
+                {"SFXGameMPContent.SFXPowerCustomActionMP_Marksman", ""},
+                {"SFXGameContentDLC_CON_MP3.SFXPowerCustomActionMP_ShadowStrike", ""},
+                {"SFXGameMPContent.SFXPowerCustomActionMP_Singularity", ""},
+                {"SFXGameContentDLC_CON_MP1.SFXPowerCustomActionMP_BatarianPassive", "SFXPower_BatarianPassive"},
+                {"SFXGameContentDLC_CON_MP1.SFXPowerCustomActionMP_GethPassive", "SFXPower_GethPassive"},
+                {"SFXGameContent.SFXPowerCustomAction_Singularity", "SFXPower_Singularity"},
+                {"SFXGameContent.SFXPowerCustomAction_Incinerate", "SFXPower_Incinerate"},
+                {"SFXGameContent.SFXSeqAct_OpenWeaponSelection", "BioP_Cat002"},
+                {"SFXGameContent.SFXSeqAct_ClearParticlePools", "BioD_KroGar_500Gate"},
+                {"SFXGameContentLiveKismet.SFXSeqAct_SetAreaMap", "BioD_Cithub_Dock"},
+                {"SFXGameContent.SFXShield_EVA", "Biod_promar_710chase"},
+                {"SFXGameContent.SFXShield_Phantom", "SFXPawn_Phantom"},
+                {"SFXGameContentDLC_CON_MP2.SFXWeapon_Shotgun_Quarian", "SFXWeapon_Shotgun_QuarianDLC"},
+                {"SFXGameContentDLC_CON_MP2.SFXWeapon_SniperRifle_Turian", "SFXWeapon_SniperRifle_TurianDLC"},
+                {
+                    "SFXGameContentDLC_CON_GUN01.SFXWeapon_SniperRifle_Turian_GUN01",
+                    "SFXWeapon_SniperRifle_Turian_GUN01"
+                },
+                {"SFXGameContentDLC_CON_MP1.SFXWeapon_Heavy_FlameThrower_GethTurret", "SFXPower_GethSentryTurret"}
             };
             var gameFiles = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME3);
             List<string> outs = new List<string>();
@@ -513,7 +542,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     };
                     Debug.WriteLine("Looking up patch source " + classExp.InstancedFullPath);
                     ExportEntry matchingExport = null;
-                    if (extraMappings.TryGetValue(classExp.FullPath, out var lookAtFname) && gameFiles.TryGetValue(lookAtFname + ".pcc", out var fullpath))
+                    if (extraMappings.TryGetValue(classExp.FullPath, out var lookAtFname) &&
+                        gameFiles.TryGetValue(lookAtFname + ".pcc", out var fullpath))
                     {
                         using var newP = MEPackageHandler.OpenMEPackage(fullpath);
                         var lookupCE = newP.Exports.FirstOrDefault(x => x.FullPath == classExp.FullPath);
@@ -522,7 +552,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             matchingExport = lookupCE;
                         }
                     }
-                    else if (gameFiles.TryGetValue(classExp.ObjectName.Name.Replace("SFXPowerCustomAction", "SFXPower") + ".pcc", out var fullpath2))
+                    else if (gameFiles.TryGetValue(
+                        classExp.ObjectName.Name.Replace("SFXPowerCustomAction", "SFXPower") + ".pcc",
+                        out var fullpath2))
                     {
                         using var newP = MEPackageHandler.OpenMEPackage(fullpath2);
                         // sfxgame.sfxgame is special case
@@ -543,7 +575,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             }
                         }
                     }
-                    else if (gameFiles.TryGetValue(classExp.ObjectName.Name.Replace("SFXPowerCustomActionMP", "SFXPower") + ".pcc", out var fullpath3))
+                    else if (gameFiles.TryGetValue(
+                        classExp.ObjectName.Name.Replace("SFXPowerCustomActionMP", "SFXPower") + ".pcc",
+                        out var fullpath3))
                     {
                         using var newP = MEPackageHandler.OpenMEPackage(fullpath3);
                         var lookupCE = newP.Exports.FirstOrDefault(x => x.FullPath == classExp.FullPath);
@@ -601,7 +635,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 if (newFunc != originalFunc)
                                 {
                                     // put into files for winmerge to look at.
-                                    var outname = $"{localFunc.FullPath} {Path.GetFileName(pf)}_{localFunc.UIndex}__{Path.GetFileName(v.FileRef.FilePath)}_{v.UIndex}.txt";
+                                    var outname =
+                                        $"{localFunc.FullPath} {Path.GetFileName(pf)}_{localFunc.UIndex}__{Path.GetFileName(v.FileRef.FilePath)}_{v.UIndex}.txt";
                                     File.WriteAllText(Path.Combine(origOutDir, outname), originalFunc);
                                     File.WriteAllText(Path.Combine(patchedOutDir, outname), newFunc);
                                     Debug.WriteLine("   ============= DIFFERENCE " + localFunc.FullPath);
@@ -622,6 +657,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 Debug.WriteLine(o);
             }
+
             //Restore path.
             ME3Directory.DefaultGamePath = oldPath;
         }
@@ -761,7 +797,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         Debug.WriteLine(" >> Reading " + f.FileName);
                         var packageStream = dlc.DecompressEntry(f);
                         packageStream.Position = 0;
-                        var package = MEPackageHandler.OpenMEPackageFromStream(packageStream, Path.GetFileName(f.FileName));
+                        var package =
+                            MEPackageHandler.OpenMEPackageFromStream(packageStream, Path.GetFileName(f.FileName));
                         foreach (var exp in package.Exports.Where(x => x.ClassName == "Function"))
                         {
                             Function func = new Function(exp.Data, exp);
@@ -774,6 +811,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 {
                                     sw.WriteLine($"(MemPos 0x{v.memPosStr}) {v.text}");
                                 }
+
                                 exportNameSignatureMapping[exp.FullPath] = sw.ToString();
                             }
                         }
@@ -797,13 +835,17 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         {
                             sw.WriteLine($"(MemPos 0x{v.memPosStr}) {v.text}");
                         }
+
                         exportNameSignatureMapping[exp.FullPath] = sw.ToString();
                     }
                 }
             }
 
-            var lines = exportNameSignatureMapping.Select(x => $"{x.Key}============================================================\n{x.Value}");
-            File.WriteAllLines(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "fullfunctionsignatures.txt"), lines);
+            var lines = exportNameSignatureMapping.Select(x =>
+                $"{x.Key}============================================================\n{x.Value}");
+            File.WriteAllLines(
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                    "fullfunctionsignatures.txt"), lines);
         }
 
 
@@ -861,6 +903,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     itemsMissingFromWorldNPC.Add(nlS);
                 }
+
                 var nnP = nlS.GetProperty<ObjectProperty>("nextNavigationPoint");
                 navList.Add(nlS);
                 Debug.WriteLine($"{nlS.UIndex} {nlS.InstancedFullPath}");
@@ -872,6 +915,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     {
                         itemsMissingFromWorldNPC.Add(nextNavigationPoint);
                     }
+
                     navList.Add(nextNavigationPoint);
                     nnP = nextNavigationPoint.GetProperty<ObjectProperty>("nextNavigationPoint");
                 }
@@ -953,7 +997,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     }
 
                     var function = new UnFunction(export, export.ObjectName,
-                        new FlagValues(functionFlags, UE3FunctionReader._flagSet), bytecode, nativeIndex, 1); // USES PRESET 1 DO NOT TRUST
+                        new FlagValues(functionFlags, UE3FunctionReader._flagSet), bytecode, nativeIndex,
+                        1); // USES PRESET 1 DO NOT TRUST
 
                     if (nativeIndex != 0 /*&& CachedNativeFunctionInfo.GetNativeFunction(nativeIndex) == null*/)
                     {
@@ -1076,7 +1121,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         }
                     }
                 }
-                Debug.WriteLine(JsonConvert.SerializeObject(new { NativeFunctionInfo = newCachedInfo }, Formatting.Indented));
+
+                Debug.WriteLine(JsonConvert.SerializeObject(new { NativeFunctionInfo = newCachedInfo },
+                    Formatting.Indented));
 
                 //File.WriteAllText(Path.Combine(App.ExecFolder, "ME1NativeFunctionInfo.json"),
                 //    JsonConvert.SerializeObject(new { NativeFunctionInfo = newCachedInfo }, Formatting.Indented));
@@ -1089,7 +1136,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             if (ME1Directory.DefaultGamePath != null)
             {
                 var newCachedInfo = new SortedDictionary<int, CachedNativeFunctionInfo>();
-                var dir = new DirectoryInfo(Path.Combine(ME1Directory.DefaultGamePath /*, "BioGame", "CookedPC", "Maps"*/));
+                var dir = new DirectoryInfo(
+                    Path.Combine(ME1Directory.DefaultGamePath /*, "BioGame", "CookedPC", "Maps"*/));
                 var filesToSearch = dir.GetFiles("*.sfm", SearchOption.AllDirectories)
                     .Union(dir.GetFiles("*.u", SearchOption.AllDirectories))
                     .Union(dir.GetFiles("*.upk", SearchOption.AllDirectories)).ToArray();
@@ -1217,7 +1265,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// <param name="packageEditorWpf"></param>
         public static void FindNamedObject(PackageEditorWindow packageEditorWpf)
         {
-            var namedObjToFind = PromptDialog.Prompt(packageEditorWpf, "Enter the name of the object you want to search for in files", "Object finder");
+            var namedObjToFind = PromptDialog.Prompt(packageEditorWpf,
+                "Enter the name of the object you want to search for in files", "Object finder");
             if (!string.IsNullOrWhiteSpace(namedObjToFind))
             {
                 var dlg = new CommonOpenFileDialog("Pick a folder to scan (includes subdirectories)")
@@ -1230,10 +1279,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     packageEditorWpf.IsBusy = true;
                     Task.Run(() =>
                     {
-                        ConcurrentDictionary<string, string> threadSafeList = new ConcurrentDictionary<string, string>();
+                        ConcurrentDictionary<string, string>
+                            threadSafeList = new ConcurrentDictionary<string, string>();
                         packageEditorWpf.BusyText = "Getting list of all package files";
                         int numPackageFiles = 0;
-                        var files = Directory.GetFiles(dlg.FileName, "*.pcc", SearchOption.AllDirectories).Where(x => x.RepresentsPackageFilePath()).ToList();
+                        var files = Directory.GetFiles(dlg.FileName, "*.pcc", SearchOption.AllDirectories)
+                            .Where(x => x.RepresentsPackageFilePath()).ToList();
                         var totalfiles = files.Count;
                         long filesDone = 0;
                         Parallel.ForEach(files, pf =>
@@ -1241,7 +1292,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             try
                             {
                                 using var package = MEPackageHandler.OpenMEPackage(pf);
-                                var hasObject = package.Exports.Any(x => x.ObjectName.Name.Equals(namedObjToFind, StringComparison.InvariantCultureIgnoreCase));
+                                var hasObject = package.Exports.Any(x =>
+                                    x.ObjectName.Name.Equals(namedObjToFind,
+                                        StringComparison.InvariantCultureIgnoreCase));
                                 if (hasObject)
                                 {
                                     threadSafeList.TryAdd(pf, pf);
@@ -1259,7 +1312,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     }).ContinueWithOnUIThread(filesWithObjName =>
                     {
                         packageEditorWpf.IsBusy = false;
-                        ListDialog ld = new ListDialog(filesWithObjName.Result.Select(x => x.Value), "Object name scan", "Here is the list of files that have this objects of this name within them.", packageEditorWpf);
+                        ListDialog ld = new ListDialog(filesWithObjName.Result.Select(x => x.Value), "Object name scan",
+                            "Here is the list of files that have this objects of this name within them.",
+                            packageEditorWpf);
                         ld.Show();
                     });
                 }
@@ -1277,7 +1332,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     continue; // Most of these are native-native
                 if (GlobalUnrealObjectInfo.IsAKnownNativeClass(import))
                     continue; // Native is always loaded iirc
-                              //Debug.WriteLine($@"Resolving {import.FullPath}");
+                //Debug.WriteLine($@"Resolving {import.FullPath}");
                 var export = EntryImporter.ResolveImport(import, globalCache, pc);
                 if (export != null)
                 {
@@ -1288,6 +1343,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     Debug.WriteLine($@" >>> UNRESOLVABLE IMPORT: {import.FullPath}!");
                 }
             }
+
             pc.ReleasePackages();
         }
 
@@ -1310,7 +1366,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void ResetPackageVanillaPart(IMEPackage sourcePackage, PackageEditorWindow pewpf)
         {
-            if (sourcePackage.Game != MEGame.ME1 && sourcePackage.Game != MEGame.ME2 && sourcePackage.Game != MEGame.ME3)
+            if (sourcePackage.Game != MEGame.ME1 && sourcePackage.Game != MEGame.ME2 &&
+                sourcePackage.Game != MEGame.ME3)
             {
                 MessageBox.Show(pewpf, "Not a trilogy file!");
                 return;
@@ -1329,7 +1386,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 var choices = foundCandidates.Result.DiskFiles.ToList(); //make new list
                 choices.AddRange(foundCandidates.Result.SFARPackageStreams.Select(x => x.Key));
 
-                var choice = InputComboBoxDialog.GetValue(pewpf, "Choose file to reset to:", "Package reset", choices, choices.Last());
+                var choice = InputComboBoxDialog.GetValue(pewpf, "Choose file to reset to:", "Package reset", choices,
+                    choices.Last());
                 if (string.IsNullOrEmpty(choice))
                 {
                     return;
@@ -1376,6 +1434,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     tex.WriteProperty(new IntProperty(-5, "InternalFormatLODBias"));
                 }
+
                 p.Save();
             }
         }
@@ -1620,7 +1679,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             PackageCache pc = new PackageCache();
             var safeFiles = EntryImporter.FilesSafeToImportFrom(pewPcc.Game).ToList();
-            safeFiles.AddRange(loadedFiles.Where(x => x.Key.StartsWith("Startup_") && (!pewPcc.Game.IsGame2() || x.Key.Contains("_INT"))).Select(x => x.Key));
+            safeFiles.AddRange(loadedFiles
+                .Where(x => x.Key.StartsWith("Startup_") && (!pewPcc.Game.IsGame2() || x.Key.Contains("_INT")))
+                .Select(x => x.Key));
             if (pewPcc.Game.IsGame3())
             {
                 // SP ONLY
@@ -1671,6 +1732,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             {
                                 continue;
                             }
+
                             var outPath = Path.Combine(dlg.FileName,
                                 $"{Path.GetFileNameWithoutExtension(f.Key)}.{package.GetEntry(v.UIndex).InstancedFullPath}.xml");
                             v.saveToFile(outPath);
@@ -1678,6 +1740,387 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                     }
                 }).ContinueWithOnUIThread(x => { pewpf.IsBusy = false; });
+            }
+        }
+
+        public static void CheckNeverstream(PackageEditorWindow pe)
+        {
+            List<ExportEntry> badNST = new List<ExportEntry>();
+            foreach (var exp in pe.Pcc.Exports.Where(x => x.IsTexture()))
+            {
+                var props = exp.GetProperties();
+                var texinfo = ObjectBinary.From<UTexture2D>(exp);
+                var numMips = texinfo.Mips.Count;
+                var ns = props.GetProp<BoolProperty>("NeverStream");
+                int lowMipCount = 0;
+                for (int i = numMips - 1; i > 0; i--)
+                {
+                    if (lowMipCount > 6 && (ns == null || ns.Value == false) && texinfo.Mips[i].IsLocallyStored && texinfo.Mips[i].StorageType != StorageTypes.empty)
+                    {
+                        exp.WriteProperty(new BoolProperty(true, "NeverStream"));
+                        badNST.Add(exp);
+                        break;
+                    }
+                    lowMipCount++;
+                }
+            }
+
+            var ld = new ListDialog(badNST.Select(x => new EntryStringPair(x, $"{x.InstancedFullPath} has incorrect neverstream")),
+                "Bad NeverStream settings", "The following textures have incorrect NeverStream values:", pe)
+            {
+                DoubleClickEntryHandler = pe.GetEntryDoubleClickAction()
+            };
+            ld.Show();
+        }
+
+        public static void ShowTextureFormats(PackageEditorWindow pe)
+        {
+            List<string> texFormats = new List<string>();
+            //foreach (var exp in pe.Pcc.Exports.Where(x => x.IsTexture()))
+            //{
+            //    var props = exp.GetProperties();
+            //    var format = props.GetProp<EnumProperty>("Format");
+            //    badNST.Add(new EntryStringPair(exp, $"{format.Value} | {exp.InstancedFullPath}"));
+            //}
+            Task.Run(() =>
+            {
+                pe.SetBusy("Checking textures");
+
+                if (pe.Pcc == null)
+                {
+                    var allPackages = MELoadedFiles.GetFilesLoadedInGame(MEGame.LE1).ToList();
+                    int numDone = 0;
+                    foreach (var f in allPackages)
+                    {
+                        pe.BusyText = $"Indexing file [{++numDone}/{allPackages.Count}]";
+                        using var package = MEPackageHandler.OpenMEPackage(f.Value);
+
+                        // Index objects
+                        foreach (var exp in package.Exports.Where(x => x.IsTexture()))
+                        {
+                            var format = exp.GetProperty<EnumProperty>("Format");
+                            if (format != null && !texFormats.Contains(format.Value))
+                            {
+                                texFormats.Add(format.Value);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var exp in pe.Pcc.Exports.Where(x => x.IsTexture()))
+                    {
+                        var format = exp.GetProperty<EnumProperty>("Format");
+                        if (format != null && !texFormats.Contains(format.Value))
+                        {
+                            texFormats.Add(format.Value);
+                        }
+                    }
+                }
+
+                return texFormats;
+            }).ContinueWithOnUIThread(list =>
+            {
+                pe.EndBusy();
+                var ld = new ListDialog(list.Result, "Texture formats", "The game uses the following texture formats:", pe);
+                ld.Show();
+            });
+        }
+
+        public static async void VTest(PackageEditorWindow pe)
+        {
+            pe.SetBusy("Performing VTest");
+            await Task.Run(() =>
+            {
+                ObjectInstanceDB db = null;
+                string dbPath = AppDirectories.GetObjectDatabasePath(MEGame.LE1);
+                if (File.Exists(dbPath))
+                {
+                    pe.BusyText = "Loading database";
+                    db = ObjectInstanceDB.DeserializeDB(File.ReadAllText(dbPath));
+                }
+                else
+                {
+                    return;
+                }
+
+                //bool shouldIgnore(ExportEntry export)
+                //{
+                //    if (export.ClassName.StartsWith("MaterialExpression"))
+                //        return true;
+                //    if (export.ClassName.StartsWith("DistributionFloat"))
+                //        return true;
+                //    if (export.ClassName.StartsWith("DistributionVector"))
+                //        return true;
+                //    if (export.ClassName.StartsWith("ParticleModule"))
+                //        return true;
+                //    if (export.ClassName.StartsWith("InterpCurveEdSetup"))
+                //        return true;
+                //    if (export.ClassName.StartsWith("RB_BodySetup"))
+                //        return true;
+                //    if (export.ClassName.StartsWith("ParticleLODLevel"))
+                //        return true;
+                //    return false;
+                //}
+
+                //pe.SetBusy("Loading LE1 Database");
+
+                //var objectDB =
+                //    ObjectInstanceDB.DeserializeDB(File.ReadAllText(@"C:\users\public\chonkydbLE1.json"));
+                //objectDB.BuildLookupTable();
+                ////var db = new AssetDB();
+                ////await AssetDatabaseWindow.LoadDatabase(dbPath, MEGame.LE1, db, CancellationToken.None);
+                ////if (db.DataBaseversion != AssetDatabaseWindow.dbCurrentBuild)
+                ////{
+                ////    MessageBox.Show(pe,
+                ////        "LE1 Asset Database is out of date! Please regenerate it in the Asset Database tool. This could take about 10 minutes.");
+                ////    pe.EndBusy();
+                ////    return;
+                ////}
+
+                pe.BusyText = "Loading packages";
+
+
+                // BIOA_PRC2AA_00_LAY
+                {
+                    var sourceFile = "BIOA_PRC2AA_00_LAY";
+                    var layFile = $@"Y:\ModLibrary\LE1\V Test\DLC_MOD_Vegas\CookedPCConsole\{sourceFile}.pcc";
+                    CreateEmptyLevel(layFile, MEGame.LE1);
+
+                    using var le1File = MEPackageHandler.OpenMEPackage(layFile);
+                    using var me1File = MEPackageHandler.OpenMEPackage($@"Y:\ModLibrary\LE1\V Test\ModdedSource\{sourceFile}.SFM");
+
+                    var itemsToPort = new ExportEntry[]
+                    {
+                        me1File.FindExport(@"TheWorld.PersistentLevel.StaticLightCollectionActor_16"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.StaticMeshCollectionActor_45"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.Terrain_0"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_0"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_2"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_3"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_4"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_5"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_0"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_1"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_10"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_11"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_12"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_13"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_14"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_2"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_3"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_35"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_36"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_37"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_4"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_5"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_6"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_7"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_8"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_9"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.PostProcessVolume_0"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.SkeletalMeshActor_0"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.SkeletalMeshActor_1"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.SkeletalMeshActor_2"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.SkeletalMeshActor_9"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BioDoor_0"),
+                    };
+                    VTestFilePorting(le1File, itemsToPort, db, pe);
+                }
+
+                // BIOA_PRC2AA_00_DSG
+                {
+                    var sourceFile = "BIOA_PRC2AA_00_DSG";
+                    var layFile = $@"Y:\ModLibrary\LE1\V Test\DLC_MOD_Vegas\CookedPCConsole\{sourceFile}.pcc";
+                    CreateEmptyLevel(layFile, MEGame.LE1);
+
+                    using var le1File = MEPackageHandler.OpenMEPackage(layFile);
+                    using var me1File = MEPackageHandler.OpenMEPackage($@"Y:\ModLibrary\LE1\V Test\ModdedSource\{sourceFile}.SFM");
+
+                    var itemsToPort = new ExportEntry[]
+                    {
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BioDoor_1"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BioInert_0"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BioInert_3"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BioInert_4"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BioInert_5"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.InterpActor_33"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.InterpActor_34"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.InterpActor_35"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.InterpActor_36"),
+                    };
+                    VTestFilePorting(le1File, itemsToPort, db, pe);
+
+                    // Port sequence in
+                    pe.BusyText = "Porting sequencing...";
+                    var dest = le1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence");
+                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, me1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence"), le1File, dest, true, out _, importExportDependencies: true, targetGameDonorDB: db);
+                    RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
+                    le1File.Save(); // Save again
+                }
+
+
+            }).ContinueWithOnUIThread(result =>
+            {
+                if (result.Exception != null)
+                    Debugger.Break();
+                pe.EndBusy();
+            });
+        }
+
+        private static void VTestFilePorting(IMEPackage destPackage, ExportEntry[] itemsToPort, ObjectInstanceDB db, PackageEditorWindow pe)
+        {
+
+            var le1PL = destPackage.FindExport("TheWorld.PersistentLevel");
+            foreach (var e in itemsToPort)
+            {
+                pe.BusyText = $"Porting {e.ObjectName}";
+                var report = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, e, destPackage,
+                    le1PL, true, out _, targetGameDonorDB: db);
+            }
+
+            RebuildPersistentLevelChildren(le1PL);
+            pe.BusyText = "Saving package";
+            destPackage.Save();
+        }
+
+        private static void RebuildPersistentLevelChildren(ExportEntry pl)
+        {
+            ExportEntry[] actorsToAdd = pl.FileRef.Exports.Where(exp => exp.Parent == pl && exp.IsA("Actor")).ToArray();
+            Level level = ObjectBinary.From<Level>(pl);
+            level.Actors.ReplaceAll(actorsToAdd.Select(x => new UIndex(x.UIndex)));
+            pl.WriteBinary(level);
+        }
+
+        private static void CreateEmptyLevel(string outpath, MEGame game)
+        {
+            var emptyLevelName = $"{game}EmptyLevel";
+            File.Copy(Path.Combine(AppDirectories.ExecFolder, $"{emptyLevelName}.pcc"), outpath, true);
+            using var Pcc = MEPackageHandler.OpenMEPackage(outpath);
+            for (int i = 0; i < Pcc.Names.Count; i++)
+            {
+                string name = Pcc.Names[i];
+                if (name.Equals(emptyLevelName))
+                {
+                    var newName = name.Replace(emptyLevelName, Path.GetFileNameWithoutExtension(outpath));
+                    Pcc.replaceName(i, newName);
+                }
+            }
+
+            var packguid = Guid.NewGuid();
+            var package = Pcc.GetUExport(game switch
+            {
+                MEGame.LE1 => 4,
+                MEGame.LE3 => 6,
+                MEGame.ME2 => 7,
+                _ => 1
+            });
+            package.PackageGUID = packguid;
+            Pcc.PackageGuid = packguid;
+            Pcc.Save();
+        }
+
+        private static void FindTexture2D(AssetDB db, ExportEntry exp)
+        {
+            var dbName = TexToDbName(exp);
+            var found = db.Textures.FirstOrDefault(x => dbName == x.TextureName);
+            if (found == null)
+            {
+                if (dbName.EndsWith("_dup", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    dbName = dbName.Substring(0, dbName.Length - 4);
+                }
+
+                found = db.Textures.FirstOrDefault(x => dbName == x.TextureName);
+                if (found == null)
+                {
+                    Debug.WriteLine($@"Didn't find {exp.InstancedFullPath} ({dbName})");
+                }
+            }
+        }
+
+        private static string TexToDbName(ExportEntry exp)
+        {
+            IEntry currentItem = exp;
+            Stack<IEntry> entries = new Stack<IEntry>();
+
+            while (true)
+            {
+                if (currentItem != null && currentItem.ClassName != "Package")
+                {
+                    entries.Push(currentItem);
+                    currentItem = currentItem.Parent;
+                }
+                else
+                    break;
+            }
+
+            return string.Join("_", entries.Select(x => x.ObjectName.Name));
+        }
+
+        public static void BuildAllObjectsGameDB(MEGame game, PackageEditorWindow pe)
+        {
+            var objectDB = new ObjectInstanceDB();
+            Task.Run(() =>
+            {
+                pe.SetBusy("Building chonky DB");
+                var allPackages = MELoadedFiles.GetFilesLoadedInGame(game).ToList();
+                int numDone = 0;
+                foreach (var f in allPackages)
+                {
+                    var packageNameIndex = objectDB.GetNameTableIndex(f.Value.Substring(MEDirectories.GetDefaultGamePath(game).Length + 1));
+                    pe.BusyText = $"Indexing file [{++numDone}/{allPackages.Count}]";
+                    using var package = MEPackageHandler.OpenMEPackage(f.Value);
+
+                    // Index objects
+                    foreach (var exp in package.Exports)
+                    {
+                        var ifp = exp.InstancedFullPath;
+
+                        // Things to ignore
+                        if (ifp.StartsWith(@"TheWorld"))
+                            continue;
+                        if (ifp.StartsWith(@"ObjectReferencer"))
+                            continue;
+
+                        // Index it
+                        objectDB.AddRecord(ifp, packageNameIndex);
+                    }
+                }
+
+                // Compile the database
+                pe.BusyText = "Compiling database";
+                File.WriteAllText(AppDirectories.GetObjectDatabasePath(game), objectDB.Serialize());
+
+            }).ContinueWithOnUIThread(result => { pe.EndBusy(); });
+        }
+
+        public static void SearchObjectInfos(PackageEditorWindow pe)
+        {
+            var searchTerm = PromptDialog.Prompt(pe, "Enter key value to search", "ObjectInfos Search");
+            if (searchTerm != null)
+            {
+                string searchResult = "";
+                MEGame[] games = new[] { MEGame.ME1, MEGame.ME2, MEGame.ME3, MEGame.LE1, MEGame.LE2, MEGame.LE3 };
+
+                foreach (var game in games)
+                {
+                    if (GlobalUnrealObjectInfo.GetClasses(game).TryGetValue(searchTerm, out _)) searchResult += $"Key found in {game} Classes\n";
+                    if (GlobalUnrealObjectInfo.GetStructs(game).TryGetValue(searchTerm, out _)) searchResult += $"Key found in {game} Classes\n";
+                    if (GlobalUnrealObjectInfo.GetEnums(game).TryGetValue(searchTerm, out _)) searchResult += $"Key found in {game} Classes\n";
+                }
+
+                if (searchResult == "")
+                {
+                    searchResult = "Key " + searchTerm +
+                                   " not found in any ObjectInfo Structs/Classes/Enums dictionaries for any games";
+                }
+                else
+                {
+                    searchResult = "Key " + searchTerm + " found in the following:\n" + searchResult;
+                }
+
+                MessageBox.Show(searchResult);
             }
         }
     }

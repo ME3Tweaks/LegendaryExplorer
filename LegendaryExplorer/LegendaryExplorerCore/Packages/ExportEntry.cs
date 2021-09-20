@@ -720,6 +720,7 @@ namespace LegendaryExplorerCore.Packages
 
         public void WritePrePropsAndProperties(byte[] prePropBytes, PropertyCollection props, int binStart = -1)
         {
+            // This does not properly work when porting assets across games
             var m = new EndianReader { Endian = FileRef.Endian };
             m.Writer.WriteBytes(prePropBytes);
             props.WriteTo(m.Writer, FileRef);

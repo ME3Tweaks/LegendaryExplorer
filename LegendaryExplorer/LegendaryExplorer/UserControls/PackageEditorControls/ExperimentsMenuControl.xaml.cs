@@ -248,71 +248,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         }
         private void ObjectInfosSearch_Click(object sender, RoutedEventArgs e)
         {
-            var searchTerm = PromptDialog.Prompt(GetPEWindow(), "Enter key value to search", "ObjectInfos Search");
-            if (searchTerm != null)
-            {
-                string searchResult = "";
-
-                //ME1
-                if (ME1UnrealObjectInfo.Classes.TryGetValue(searchTerm, out ClassInfo _))
-                {
-                    searchResult += "Key found in ME1 Classes\n";
-                }
-
-                if (ME1UnrealObjectInfo.Structs.TryGetValue(searchTerm, out ClassInfo _))
-                {
-                    searchResult += "Key found in ME1 Structs\n";
-                }
-
-                if (ME1UnrealObjectInfo.Enums.TryGetValue(searchTerm, out _))
-                {
-                    searchResult += "Key found in ME1 Enums\n";
-                }
-
-                //ME2
-                if (ME2UnrealObjectInfo.Classes.TryGetValue(searchTerm, out ClassInfo _))
-                {
-                    searchResult += "Key found in ME2 Classes\n";
-                }
-
-                if (ME2UnrealObjectInfo.Structs.TryGetValue(searchTerm, out ClassInfo _))
-                {
-                    searchResult += "Key found in ME2 Structs\n";
-                }
-
-                if (ME2UnrealObjectInfo.Enums.TryGetValue(searchTerm, out _))
-                {
-                    searchResult += "Key found in ME2 Enums\n";
-                }
-
-                //ME3
-                if (ME3UnrealObjectInfo.Classes.TryGetValue(searchTerm, out ClassInfo _))
-                {
-                    searchResult += "Key found in ME3 Classes\n";
-                }
-
-                if (ME3UnrealObjectInfo.Structs.TryGetValue(searchTerm, out ClassInfo _))
-                {
-                    searchResult += "Key found in ME3 Structs\n";
-                }
-
-                if (ME3UnrealObjectInfo.Enums.TryGetValue(searchTerm, out _))
-                {
-                    searchResult += "Key found in ME3 Enums\n";
-                }
-
-                if (searchResult == "")
-                {
-                    searchResult = "Key " + searchTerm +
-                                   " not found in any ObjectInfo Structs/Classes/Enums dictionaries";
-                }
-                else
-                {
-                    searchResult = "Key " + searchTerm + " found in the following:\n" + searchResult;
-                }
-
-                MessageBox.Show(searchResult);
-            }
+            PackageEditorExperimentsM.SearchObjectInfos(GetPEWindow());
         }
 
 
@@ -407,6 +343,21 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
         // EXPERIMENTS: MGAMERZ---------------------------------------------------
         #region Mgamerz's Experiments
+
+        private async void VTest_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.VTest(GetPEWindow());
+        }
+
+        private async void CheckNeverStream_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.CheckNeverstream(GetPEWindow());
+        }
+
+        private async void PrintTextureFormats_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.ShowTextureFormats(GetPEWindow());
+        }
 
         private async void RepointTexturesToGame_Click(object sender, RoutedEventArgs e)
         {
@@ -1218,6 +1169,18 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsO.AddPresetTrack("Gesture", GetPEWindow());
         }
         #endregion
+
+        // EXPERIMENTS: CHONKY DB---------------------------------------------------------
+        // This is for cross-game porting
+        private void ChonkyDB_BuildLE1GameDB(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.BuildAllObjectsGameDB(MEGame.LE1, GetPEWindow());
+        }
+
+        private void ChonkyDB_BuildME1GameDB(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.BuildAllObjectsGameDB(MEGame.ME1, GetPEWindow());
+        }
 
 
         // PLEASE MOVE YOUR EXPERIMENT HANDLER INTO YOUR SECTION ABOVE

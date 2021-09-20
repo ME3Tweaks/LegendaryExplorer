@@ -131,7 +131,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 }
             }
         }
-
+        /// <summary>
+        /// Removes properties that are not compatible with the export. Basic types are not pruned (such as Int, Float, Name)
+        /// </summary>
+        /// <param name="sourcePcc"></param>
+        /// <param name="props"></param>
+        /// <param name="typeName"></param>
+        /// <param name="newGame"></param>
+        /// <param name="removedProperties"></param>
+        /// <returns></returns>
         public static PropertyCollection RemoveIncompatibleProperties(IMEPackage sourcePcc, PropertyCollection props, string typeName, MEGame newGame, ref bool removedProperties)
         {
             var infoProps = GlobalUnrealObjectInfo.GetAllProperties(newGame, typeName);
@@ -157,6 +165,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                             }
                             else
                             {
+                                Debug.WriteLine($"Trimmed property {prop.Name} from {typeName}");
                                 removedProperties = true;
                             }
                             break;
@@ -185,12 +194,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                             }
                             else
                             {
+                                Debug.WriteLine($"Trimmed property {prop.Name} from {typeName}");
                                 removedProperties = true;
                             }
                             break;
                         case DelegateProperty delegateProperty:
                             //script related, so just delete it.
-                            removedProperties = true;
+                            // ?? Could this be automatically converted these days?
+                            removedProperties = true; 
+                            Debug.WriteLine($"Trimmed property {prop.Name} from {typeName}");
                             break;
                         case EnumProperty enumProperty:
                             if (GlobalUnrealObjectInfo.GetEnumValues(newGame, enumProperty.EnumType) is List<NameReference> values)
@@ -203,6 +215,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                             }
                             else
                             {
+                                Debug.WriteLine($"Trimmed property {prop.Name} from {typeName}");
                                 removedProperties = true;
                             }
                             break;
@@ -213,6 +226,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                             }
                             else
                             {
+                                Debug.WriteLine($"Trimmed property {prop.Name} from {typeName}");
                                 removedProperties = true;
                             }
                             break;
@@ -227,6 +241,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                             }
                             else
                             {
+                                Debug.WriteLine($"Trimmed property {prop.Name} from {typeName}");
                                 removedProperties = true;
                             }
                             break;

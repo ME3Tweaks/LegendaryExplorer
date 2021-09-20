@@ -864,7 +864,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         }
 
 
-        private async void SaveFileAs()
+        internal async void SaveFileAs()
         {
             string fileFilter;
             switch (Pcc.Game)
@@ -3217,19 +3217,18 @@ namespace LegendaryExplorer.Tools.PackageEditor
             if (dropInfo.TargetItem is TreeViewEntry targetItem && dropInfo.Data is TreeViewEntry sourceItem &&
                 sourceItem.Parent != null)
             {
-                if (targetItem.Entry != null && sourceItem.Entry != null &&
-                    ////!App.IsDebug &&
-                    sourceItem.Entry.Game != MEGame.UDK && // allow UDK -> OT and LE
-                    targetItem.Game.IsLEGame() != sourceItem.Entry.Game.IsLEGame())
-                {
-                    MessageBox.Show(
-                        "Cannot port assets between Original Trilogy (OT) games and  Legendary Edition (LE) games at this time.", "Cannot port asset", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
+                //if (targetItem.Entry != null && sourceItem.Entry != null &&
+                //    ////!App.IsDebug &&
+                //    sourceItem.Entry.Game != MEGame.UDK && // allow UDK -> OT and LE
+                //    targetItem.Game.IsLEGame() != sourceItem.Entry.Game.IsLEGame())
+                //{
+                //    MessageBox.Show(
+                //        "Cannot port assets between Original Trilogy (OT) games and  Legendary Edition (LE) games at this time.", "Cannot port asset", MessageBoxButton.OK, MessageBoxImage.Error);
+                //    return;
+                //}
 
                 //Check if the path of the target and the source is the same. If so, offer to merge instead
-                if (sourceItem == targetItem ||
-                    (targetItem.Entry != null && sourceItem.Entry.FileRef == targetItem.Entry.FileRef))
+                if (sourceItem == targetItem || (targetItem.Entry != null && sourceItem.Entry.FileRef == targetItem.Entry.FileRef))
                 {
                     return; //ignore
                 }
@@ -3249,6 +3248,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
                 IEntry sourceEntry = sourceItem.Entry;
                 IEntry targetLinkEntry = targetItem.Entry;
+
 
 
                 int originalIndex = -1;
@@ -3275,15 +3275,19 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     sourceEntry.indexValue = targetItem.Entry.FileRef.GetNextIndexedName(sourceEntry.ObjectName).Number;
                 }
 
+                // Load the object DB if games are different
+                ObjectInstanceDB objectDB = sourceEntry.Game != targetItem.Game && sourceEntry.Game != MEGame.UDK ? ObjectInstanceDB.DeserializeDB(File.ReadAllText(AppDirectories.GetObjectDatabasePath(targetItem.Game))) : null;
+                objectDB?.BuildLookupTable();
                 // To profile this, run dotTrace and attach to the process, make sure to choose option to profile via API
                 //MeasureProfiler.StartCollectingData(); // Start profiling
                 //var sw = new Stopwatch();
                 //sw.Start();
 
+
                 int numExports = Pcc.ExportCount;
                 //Import!
                 var relinkResults = EntryImporter.ImportAndRelinkEntries(portingOption, sourceEntry, Pcc,
-                    targetLinkEntry, true, out IEntry newEntry);
+                    targetLinkEntry, true, out IEntry newEntry, targetGameDonorDB: objectDB);
 
                 if (originalIndex >= 0)
                 {
