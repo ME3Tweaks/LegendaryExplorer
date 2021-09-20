@@ -228,16 +228,16 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 // Port in donor instead
                 var ifp = sourceExport.InstancedFullPath;
-                Debug.WriteLine($@"Porting {ifp}");
-                if (ifp.Contains("MaxMedigel"))
-                    Debugger.Break();
+                //Debug.WriteLine($@"Porting {ifp}");
+                //if (ifp.Contains("MaxMedigel"))
+                //     Debugger.Break();
                 var donorFiles = targetGameDB.GetFilesContainingObject(ifp);
                 //if ((donorFiles == null || !donorFiles.Any()) && ifp.EndsWith("_dup", StringComparison.InvariantCultureIgnoreCase))
                 //{
                 //    ifp = ifp.Substring(0, ifp.Length - 4);
                 //    donorFiles = targetGameDB.GetFilesContainingObject(ifp);
                 //}
-
+                bool usingDonor = false;
                 if (donorFiles != null && donorFiles.Any())
                 {
                     // See if any packages are open in our cache that already contain this asset
@@ -250,6 +250,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         {
                             sourceExport = donorPackage.FindExport(sourceExport.InstancedFullPath);
                             isCached = true;
+                            usingDonor = true;
                             break;
                         }
                     }
@@ -260,8 +261,19 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         if (targetGameDB.HACK_CACHE.TryGetCachedPackage(dfp, true, out donorPackage))
                         {
                             sourceExport = donorPackage.FindExport(sourceExport.InstancedFullPath);
+                            usingDonor = true;
                         }
                     }
+                }
+
+                if (!usingDonor && !ifp.StartsWith(@"TheWorld"))
+                {
+                    Debug.WriteLine($@"Not ported using donor: {sourceExport.InstancedFullPath} ({sourceExport.ClassName})");
+                }
+
+                if (usingDonor && ifp.StartsWith(@"ShadowMap"))
+                {
+                    Debug.WriteLine($@"PORTED SHADOWMAP: {sourceExport.InstancedFullPath} ({sourceExport.ClassName})");
                 }
             }
 #endif

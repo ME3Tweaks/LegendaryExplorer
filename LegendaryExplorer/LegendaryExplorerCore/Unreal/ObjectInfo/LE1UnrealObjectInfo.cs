@@ -592,74 +592,48 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     new KeyValuePair<string, PropertyInfo>("OptionType", new PropertyInfo(PropertyType.IntProperty)),
                 }
             };
+
             sequenceObjects["SFXSeqAct_GetGameOption"] = new SequenceObjectInfo
             {
                 ObjInstanceVersion = 1
             };
 
-            // Game Interop Classes
-                        //CUSTOM ADDITIONS
-            classes["SeqAct_SendMessageToLEX"] = new ClassInfo
+            // Mgamerz - Classes for VTest
+            classes["SeqAct_GetPlayerMaxGrenades"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
-                exportIndex = 23,
-                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
-            };
-            sequenceObjects["SeqAct_SendMessageToLEX"] = new SequenceObjectInfo { ObjInstanceVersion = 2 };
-
-            classes["SeqAct_LEXDumpActors"] = new ClassInfo
-            {
-                baseClass = "SequenceAction",
-                exportIndex = 29,
-                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
-            };
-            sequenceObjects["SeqAct_LEXDumpActors"] = new SequenceObjectInfo { ObjInstanceVersion = 2 };
-
-            classes["SeqAct_LEXAccessDumpedActorsList"] = new ClassInfo
-            {
-                baseClass = "SequenceAction",
-                exportIndex = 31,
-                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
-            };
-            sequenceObjects["SeqAct_LEXAccessDumpedActorsList"] = new SequenceObjectInfo { ObjInstanceVersion = 2 };
-
-            classes["SeqAct_LEXGetPlayerCamPOV"] = new ClassInfo
-            {
-                baseClass = "SequenceAction",
-                exportIndex = 33,
-                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
-            };
-            sequenceObjects["SeqAct_LEXGetPlayerCamPOV"] = new SequenceObjectInfo { ObjInstanceVersion = 2 };
-
-            classes["SeqAct_LEXGetLocationAndRotation"] = new ClassInfo
-            {
-                baseClass = "SequenceAction",
-                exportIndex = 55,
                 pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 11, //in LE1Resources.pcc
                 properties =
                 {
-                    new KeyValuePair<string, PropertyInfo>("m_oTarget", new PropertyInfo(PropertyType.ObjectProperty, "Actor")),
-                    new KeyValuePair<string, PropertyInfo>("Location", new PropertyInfo(PropertyType.StructProperty, "Vector")),
-                    new KeyValuePair<string, PropertyInfo>("RotationVector", new PropertyInfo(PropertyType.StructProperty, "Vector"))
+                    new KeyValuePair<string, PropertyInfo>("NumGrenades", new PropertyInfo(PropertyType.IntProperty)),
                 }
             };
-            sequenceObjects["SeqAct_LEXGetLocationAndRotation"] = new SequenceObjectInfo { ObjInstanceVersion = 0 };
 
-            classes["SeqAct_SetLocationAndRotation"] = new ClassInfo
+            sequenceObjects["SeqAct_GetPlayerMaxGrenades"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+
+            classes["SeqAct_GetPlayerMaxMedigel"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
-                exportIndex = 43,
                 pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 18, //in LE1Resources.pcc
                 properties =
                 {
-                    new KeyValuePair<string, PropertyInfo>("bSetRotation", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<string, PropertyInfo>("bSetLocation", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<string, PropertyInfo>("m_oTarget", new PropertyInfo(PropertyType.ObjectProperty, "Actor")),
-                    new KeyValuePair<string, PropertyInfo>("Location", new PropertyInfo(PropertyType.StructProperty, "Vector")),
-                    new KeyValuePair<string, PropertyInfo>("RotationVector", new PropertyInfo(PropertyType.StructProperty, "Vector")),
+                    new KeyValuePair<string, PropertyInfo>("NumMedigel", new PropertyInfo(PropertyType.FloatProperty)),
                 }
             };
-            sequenceObjects["SeqAct_SetLocationAndRotation"] = new SequenceObjectInfo { ObjInstanceVersion = 0 };
+
+            sequenceObjects["SeqAct_GetPlayerMaxMedigel"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+
+            // END CUSTOM CLASSES
+
+
 
             ME3UnrealObjectInfo.AddIntrinsicClasses(classes, MEGame.LE1);
 

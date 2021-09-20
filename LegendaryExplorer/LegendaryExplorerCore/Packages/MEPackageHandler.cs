@@ -138,7 +138,7 @@ namespace LegendaryExplorerCore.Packages
         /// <returns></returns>
         public static IMEPackage OpenMEPackage(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false, bool quickLoad = false, object diskIOSyncLock = null)
         {
-            Debug.WriteLine($"Opening package {pathToFile}");
+            //Debug.WriteLine($"Opening package {pathToFile}");
             if (File.Exists(pathToFile))
             {
                 pathToFile = Path.GetFullPath(pathToFile); //STANDARDIZE INPUT IF FILE EXISTS (it might be a memory file!)
@@ -371,7 +371,7 @@ namespace LegendaryExplorerCore.Packages
             {
                 if (openPackages.TryRemove(packagePath, out IMEPackage _))
                 {
-                    Debug.WriteLine($"Released from package cache: {packagePath}");
+                    //Debug.WriteLine($"Released from package cache: {packagePath}");
                 }
                 else
                 {
