@@ -1844,89 +1844,89 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     return;
                 }
 
-                    //bool shouldIgnore(ExportEntry export)
-                    //{
-                    //    if (export.ClassName.StartsWith("MaterialExpression"))
-                    //        return true;
-                    //    if (export.ClassName.StartsWith("DistributionFloat"))
-                    //        return true;
-                    //    if (export.ClassName.StartsWith("DistributionVector"))
-                    //        return true;
-                    //    if (export.ClassName.StartsWith("ParticleModule"))
-                    //        return true;
-                    //    if (export.ClassName.StartsWith("InterpCurveEdSetup"))
-                    //        return true;
-                    //    if (export.ClassName.StartsWith("RB_BodySetup"))
-                    //        return true;
-                    //    if (export.ClassName.StartsWith("ParticleLODLevel"))
-                    //        return true;
-                    //    return false;
-                    //}
+                //bool shouldIgnore(ExportEntry export)
+                //{
+                //    if (export.ClassName.StartsWith("MaterialExpression"))
+                //        return true;
+                //    if (export.ClassName.StartsWith("DistributionFloat"))
+                //        return true;
+                //    if (export.ClassName.StartsWith("DistributionVector"))
+                //        return true;
+                //    if (export.ClassName.StartsWith("ParticleModule"))
+                //        return true;
+                //    if (export.ClassName.StartsWith("InterpCurveEdSetup"))
+                //        return true;
+                //    if (export.ClassName.StartsWith("RB_BodySetup"))
+                //        return true;
+                //    if (export.ClassName.StartsWith("ParticleLODLevel"))
+                //        return true;
+                //    return false;
+                //}
 
-                    //pe.SetBusy("Loading LE1 Database");
+                //pe.SetBusy("Loading LE1 Database");
 
-                    //var objectDB =
-                    //    ObjectInstanceDB.DeserializeDB(File.ReadAllText(@"C:\users\public\chonkydbLE1.json"));
-                    //objectDB.BuildLookupTable();
-                    ////var db = new AssetDB();
-                    ////await AssetDatabaseWindow.LoadDatabase(dbPath, MEGame.LE1, db, CancellationToken.None);
-                    ////if (db.DataBaseversion != AssetDatabaseWindow.dbCurrentBuild)
-                    ////{
-                    ////    MessageBox.Show(pe,
-                    ////        "LE1 Asset Database is out of date! Please regenerate it in the Asset Database tool. This could take about 10 minutes.");
-                    ////    pe.EndBusy();
-                    ////    return;
-                    ////}
+                //var objectDB =
+                //    ObjectInstanceDB.DeserializeDB(File.ReadAllText(@"C:\users\public\chonkydbLE1.json"));
+                //objectDB.BuildLookupTable();
+                ////var db = new AssetDB();
+                ////await AssetDatabaseWindow.LoadDatabase(dbPath, MEGame.LE1, db, CancellationToken.None);
+                ////if (db.DataBaseversion != AssetDatabaseWindow.dbCurrentBuild)
+                ////{
+                ////    MessageBox.Show(pe,
+                ////        "LE1 Asset Database is out of date! Please regenerate it in the Asset Database tool. This could take about 10 minutes.");
+                ////    pe.EndBusy();
+                ////    return;
+                ////}
 
-                    pe.BusyText = "Loading packages";
+                pe.BusyText = "Loading packages";
 
 
-                    // BIOA_PRC2AA_00_LAY
+                // BIOA_PRC2AA_00_LAY
+                {
+                    var sourceFile = "BIOA_PRC2AA_00_LAY";
+                    var layFile = $@"Y:\ModLibrary\LE1\V Test\DLC_MOD_Vegas\CookedPCConsole\{sourceFile}.pcc";
+                    CreateEmptyLevel(layFile, MEGame.LE1);
+
+                    using var le1File = MEPackageHandler.OpenMEPackage(layFile);
+                    using var me1File = MEPackageHandler.OpenMEPackage($@"Y:\ModLibrary\LE1\V Test\ModdedSource\{sourceFile}.SFM");
+
+                    var itemsToPort = new ExportEntry[]
                     {
-                        var sourceFile = "BIOA_PRC2AA_00_LAY";
-                        var layFile = $@"Y:\ModLibrary\LE1\V Test\DLC_MOD_Vegas\CookedPCConsole\{sourceFile}.pcc";
-                        CreateEmptyLevel(layFile, MEGame.LE1);
-
-                        using var le1File = MEPackageHandler.OpenMEPackage(layFile);
-                        using var me1File = MEPackageHandler.OpenMEPackage($@"Y:\ModLibrary\LE1\V Test\ModdedSource\{sourceFile}.SFM");
-
-                        var itemsToPort = new ExportEntry[]
-                        {
-                            me1File.FindExport(@"TheWorld.PersistentLevel.StaticLightCollectionActor_16"),
-                            me1File.FindExport(@"TheWorld.PersistentLevel.StaticMeshCollectionActor_45"),
-                            me1File.FindExport(@"TheWorld.PersistentLevel.Terrain_0"),
-                            me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_0"),
-                            me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_2"),
-                            me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_3"),
-                            me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_4"),
-                            me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_5"),
-                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_0"),
-                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_1"),
-                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_10"),
-                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_11"),
-                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_12"),
-                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_13"),
-                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_14"),
-                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_2"),
-                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_3"),
-                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_35"),
-                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_36"),
-                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_37"),
-                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_4"),
-                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_5"),
-                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_6"),
-                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_7"),
-                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_8"),
-                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_9"),
-                            me1File.FindExport(@"TheWorld.PersistentLevel.PostProcessVolume_0"),
-                            me1File.FindExport(@"TheWorld.PersistentLevel.SkeletalMeshActor_0"),
-                            me1File.FindExport(@"TheWorld.PersistentLevel.SkeletalMeshActor_1"),
-                            me1File.FindExport(@"TheWorld.PersistentLevel.SkeletalMeshActor_2"),
-                            me1File.FindExport(@"TheWorld.PersistentLevel.SkeletalMeshActor_9"),
-                            me1File.FindExport(@"TheWorld.PersistentLevel.BioDoor_0"),
-                        };
-                        VTestFilePorting(le1File, itemsToPort, db, pe);
-                    }
+                        me1File.FindExport(@"TheWorld.PersistentLevel.StaticLightCollectionActor_16"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.StaticMeshCollectionActor_45"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.Terrain_0"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_0"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_2"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_3"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_4"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_5"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_0"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_1"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_10"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_11"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_12"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_13"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_14"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_2"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_3"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_35"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_36"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_37"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_4"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_5"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_6"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_7"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_8"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_9"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.PostProcessVolume_0"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.SkeletalMeshActor_0"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.SkeletalMeshActor_1"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.SkeletalMeshActor_2"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.SkeletalMeshActor_9"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BioDoor_0"),
+                    };
+                    VTestFilePorting(le1File, itemsToPort, db, pe);
+                }
 
                 // BIOA_PRC2AA_00_DSG
                 {
@@ -1950,6 +1950,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         me1File.FindExport(@"TheWorld.PersistentLevel.InterpActor_36"),
                     };
                     VTestFilePorting(le1File, itemsToPort, db, pe);
+
+                    // Port sequence in
+                    pe.BusyText = "Porting sequencing...";
+                    var dest = le1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence");
+                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, me1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence"), le1File, dest, true, out _, importExportDependencies: true, targetGameDonorDB: db);
+                    RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
+                    le1File.Save(); // Save again
                 }
 
 
@@ -2065,24 +2072,24 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     pe.BusyText = $"Indexing file [{++numDone}/{allPackages.Count}]";
                     using var package = MEPackageHandler.OpenMEPackage(f.Value);
 
-                        // Index objects
-                        foreach (var exp in package.Exports)
+                    // Index objects
+                    foreach (var exp in package.Exports)
                     {
                         var ifp = exp.InstancedFullPath;
 
-                            // Things to ignore
-                            if (ifp.StartsWith(@"TheWorld"))
+                        // Things to ignore
+                        if (ifp.StartsWith(@"TheWorld"))
                             continue;
                         if (ifp.StartsWith(@"ObjectReferencer"))
                             continue;
 
-                            // Index it
-                            objectDB.AddRecord(ifp, packageNameIndex);
+                        // Index it
+                        objectDB.AddRecord(ifp, packageNameIndex);
                     }
                 }
 
-                    // Compile the database
-                    pe.BusyText = "Compiling database";
+                // Compile the database
+                pe.BusyText = "Compiling database";
                 File.WriteAllText(AppDirectories.GetObjectDatabasePath(game), objectDB.Serialize());
 
             }).ContinueWithOnUIThread(result => { pe.EndBusy(); });

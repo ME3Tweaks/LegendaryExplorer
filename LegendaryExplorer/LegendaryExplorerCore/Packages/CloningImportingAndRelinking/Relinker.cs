@@ -305,9 +305,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
 
             // Leave the following 4 lines for debugging
-            int sourceObjReference = uIndex;
-            if (sourceObjReference == 287)
-                Debugger.Break();
+            //int sourceObjReference = uIndex;
+            //if (sourceObjReference == 287)
+            //    Debugger.Break();
             //Debug.WriteLine($"{prefix} Relinking:{propertyName}");
             if (crossPCCObjectMappingList.TryGetValue(importingPCC.GetEntry(uIndex), out IEntry targetEntry))
             {

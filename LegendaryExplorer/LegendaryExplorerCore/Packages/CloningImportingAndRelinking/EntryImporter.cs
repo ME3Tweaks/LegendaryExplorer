@@ -229,8 +229,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 // Port in donor instead
                 var ifp = sourceExport.InstancedFullPath;
                 Debug.WriteLine($@"Porting {ifp}");
-                //if (ifp.Contains("sam08"))
-                //    Debugger.Break();
+                if (ifp.Contains("MaxMedigel"))
+                    Debugger.Break();
                 var donorFiles = targetGameDB.GetFilesContainingObject(ifp);
                 //if ((donorFiles == null || !donorFiles.Any()) && ifp.EndsWith("_dup", StringComparison.InvariantCultureIgnoreCase))
                 //{
