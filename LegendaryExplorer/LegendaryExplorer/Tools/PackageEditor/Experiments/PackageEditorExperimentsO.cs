@@ -9,9 +9,11 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Threading;
+using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Matinee;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.TLK.ME1;
@@ -432,6 +434,73 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             var toc = new TOCBinFile(inputFile);
             toc.DumpTOCToTxtFile(outputFile);
+        }
+
+        public static void AddPresetGroup(string preset, PackageEditorWindow pew)
+        {
+            if (pew.SelectedItem != null && pew.SelectedItem.Entry != null)
+            {
+
+                if (pew.SelectedItem.Entry.ClassName != "InterpData")
+                {
+                    MessageBox.Show("InterpData not selected.", "Warning", MessageBoxButton.OK);
+                    return;
+                }
+
+                if (pew.SelectedItem.Entry is not ExportEntry interp)
+                    return;
+
+                switch (preset)
+                {
+                    case "Director":
+                        MatineeHelper.AddPresetDirectorGroup(interp);
+                        break;
+
+                    case "Camera":
+                        if (PromptDialog.Prompt(null, "Name of camera actor:") is string camName)
+                        {
+                            if (string.IsNullOrEmpty(camName))
+                            {
+                                MessageBox.Show("Not a valid camera actor name.", "Warning", MessageBoxButton.OK);
+                                return;
+                            }
+                            MatineeHelper.AddPresetCameraGroup(interp, camName);
+                        }
+                        break;
+                }
+            }
+            return;
+        }
+
+        public static void AddPresetTrack(string preset, PackageEditorWindow pew)
+        {
+            if (pew.SelectedItem != null && pew.SelectedItem.Entry != null)
+            {
+                if (pew.SelectedItem.Entry.ClassName != "InterpGroup")
+                {
+                    MessageBox.Show("InterpGroup not selected.", "Warning", MessageBoxButton.OK);
+                    return;
+                }
+
+                if (pew.SelectedItem.Entry is not ExportEntry interp)
+                    return;
+
+                switch (preset)
+                {
+                    case "Gesture":
+                        if (PromptDialog.Prompt(null, "Name of gesture actor:") is string actor)
+                        {
+                            if (string.IsNullOrEmpty(actor))
+                            {
+                                MessageBox.Show("Not a valid gesture actor name.", "Warning", MessageBoxButton.OK);
+                                return;
+                            }
+                            MatineeHelper.AddPresetGestureTrack(interp, actor);
+                        }
+                        break;
+                }
+            }
+            return;
         }
     }
 }

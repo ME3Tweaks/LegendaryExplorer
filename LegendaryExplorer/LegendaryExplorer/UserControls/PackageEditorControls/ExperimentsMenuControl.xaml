@@ -37,6 +37,7 @@
         <MenuItem Header="VTest" Click="VTest_Click" Visibility="{x:Static global:App.IsDebugVisibility}"/>
         <MenuItem Header="Check NeverStreams" Click="CheckNeverStream_Click"/>
         <MenuItem Header="Print Texture Formats" Click="PrintTextureFormats_Click"/>
+        <MenuItem Header="Force Vignette Off in coded game" Click="ForceVignetteOff_Click"/>
         <MenuItem Header="Dump LE1 TLK to XML" Click="DumpLE1TLK_Clicked"/>
         <MenuItem Header="Update textures to game" Click="RepointTexturesToGame_Click" ToolTip="You're gonna break your file lol"/>
         <MenuItem Header="Save package...">
@@ -128,6 +129,9 @@
         <MenuItem Header="Create test TLK from XML with IDs in string" Click="CreateTestTLKWithStringIDs_Click"/>
         <MenuItem Header="Relink Children Tree and Update Local Functions" ToolTip="Must have UStruct selected (Class, State, Function, Struct, ScriptStruct)" Click="UpdateLocalFunctions_Click"/>
         <MenuItem Header="Dump TOC file" Click="DumpTOC_Click"/>
+        <MenuItem Header="Add Preset Director InterpGroup" Click="AddPresetDirectorGroup_Click"/>
+        <MenuItem Header="Add Preset Camera InterpGroup" Click="AddPresetCameraGroup_Click"/>
+        <MenuItem Header="Add Preset Gesture Track" Click="AddPresetGestureTrack_Click"/>
     </MenuItem>
     <MenuItem Header="Object Database">
         <MenuItem Header="Build ME1 Object Database" Click="ChonkyDB_BuildME1GameDB"/>

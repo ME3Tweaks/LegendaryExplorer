@@ -364,6 +364,12 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.UpdateTexturesMatsToGame(GetPEWindow());
         }
 
+        private async void ForceVignetteOff_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.OverrideVignettes(GetPEWindow());
+        }
+
+
         private async void SavePackageUnCompressed_Click(object sender, RoutedEventArgs e)
         {
             await GetPEWindow().Pcc.SaveAsync(compress: false);
@@ -1146,6 +1152,21 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         private void DumpTOC_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsO.DumpTOC();
+        }
+
+        private void AddPresetDirectorGroup_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.AddPresetGroup("Director", GetPEWindow());
+        }
+
+        private void AddPresetCameraGroup_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.AddPresetGroup("Camera", GetPEWindow());
+        }
+
+        private void AddPresetGestureTrack_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.AddPresetTrack("Gesture", GetPEWindow());
         }
         #endregion
 
