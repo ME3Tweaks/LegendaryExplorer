@@ -1794,6 +1794,43 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             ld.Show();
         }
 
+        public static void MapMaterialIDs(PackageEditorWindow pe)
+        {
+            MEGame game = MEGame.LE1;
+            var materialGuidMap = new Dictionary<Guid, string>();
+            //foreach (var exp in pe.Pcc.Exports.Where(x => x.IsTexture()))
+            //{
+            //    var props = exp.GetProperties();
+            //    var format = props.GetProp<EnumProperty>("Format");
+            //    badNST.Add(new EntryStringPair(exp, $"{format.Value} | {exp.InstancedFullPath}"));
+            //}
+            Task.Run(() =>
+            {
+                pe.SetBusy("Checking materials");
+
+                var allPackages = MELoadedFiles.GetFilesLoadedInGame(game).ToList();
+                int numDone = 0;
+                foreach (var f in allPackages)
+                {
+                    pe.BusyText = $"Indexing file [{++numDone}/{allPackages.Count}]";
+                    using var package = MEPackageHandler.OpenMEPackage(f.Value);
+
+                    // Index objects
+                    foreach (var exp in package.Exports.Where(x => x.ClassName == "Material" && !x.IsDefaultObject))
+                    {
+                        var material = ObjectBinary.From<Material>(exp);
+                        var guid = material.SM3MaterialResource.ID;
+                        materialGuidMap[guid] = exp.InstancedFullPath;
+                    }
+
+                    File.WriteAllText(Path.Combine(AppDirectories.ObjectDatabasesFolder, $"{game}MaterialMap.json"), JsonConvert.SerializeObject(materialGuidMap));
+                }
+            }).ContinueWithOnUIThread(list =>
+            {
+                pe.EndBusy();
+            });
+        }
+
         public static void ShowTextureFormats(PackageEditorWindow pe)
         {
             List<string> texFormats = new List<string>();

@@ -359,6 +359,12 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.ShowTextureFormats(GetPEWindow());
         }
 
+        private async void MapMaterialIDs_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.MapMaterialIDs(GetPEWindow());
+        }
+
+
         private async void RepointTexturesToGame_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.UpdateTexturesMatsToGame(GetPEWindow());
