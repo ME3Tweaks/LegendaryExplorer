@@ -349,6 +349,16 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.VTest(GetPEWindow());
         }
 
+        private async void CheckNeverStream_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.CheckNeverstream(GetPEWindow());
+        }
+
+        private async void PrintTextureFormats_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.ShowTextureFormats(GetPEWindow());
+        }
+
         private async void RepointTexturesToGame_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.UpdateTexturesMatsToGame(GetPEWindow());

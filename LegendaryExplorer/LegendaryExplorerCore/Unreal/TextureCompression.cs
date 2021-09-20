@@ -244,7 +244,15 @@ namespace LegendaryExplorerCore.Unreal
             bool external = !forceInternal && storageType.IsExternal(); // Should this be stored externally?
             storageType = TextureCompression.GetStorageTypeForGame(newGame, external);
 
-            textureCompressed = TextureCompression.CompressTexture(decompressed, storageType);
+            if (storageType != StorageTypes.pccUnc)
+            {
+                textureCompressed = TextureCompression.CompressTexture(decompressed, storageType);
+            }
+            else
+            {
+                textureCompressed = decompressed;
+            }
+
             return textureCompressed;
 
         }
@@ -258,7 +266,7 @@ namespace LegendaryExplorerCore.Unreal
                 case MEGame.ME3 when isExternal: return StorageTypes.extZlib;
                 case MEGame.ME3: return StorageTypes.pccZlib;
                 case MEGame.LE1 or MEGame.LE2 or MEGame.LE3 when isExternal: return StorageTypes.extOodle;
-                case MEGame.LE1 or MEGame.LE2 or MEGame.LE3: return StorageTypes.pccOodle;
+                case MEGame.LE1 or MEGame.LE2 or MEGame.LE3: return StorageTypes.pccUnc; // LE game packages are always compressed. Do not compress pcc stored textures
                 default: throw new Exception($"{game} is not a supported game for getting texture storage types");
             }
         }

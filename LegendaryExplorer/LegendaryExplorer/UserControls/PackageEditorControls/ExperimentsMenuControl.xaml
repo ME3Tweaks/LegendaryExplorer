@@ -35,6 +35,8 @@
     </MenuItem>
     <MenuItem Header="Mgamerz's Programming Circus">
         <MenuItem Header="VTest" Click="VTest_Click" Visibility="{x:Static global:App.IsDebugVisibility}"/>
+        <MenuItem Header="Check NeverStreams" Click="CheckNeverStream_Click"/>
+        <MenuItem Header="Print Texture Formats" Click="PrintTextureFormats_Click"/>
         <MenuItem Header="Dump LE1 TLK to XML" Click="DumpLE1TLK_Clicked"/>
         <MenuItem Header="Update textures to game" Click="RepointTexturesToGame_Click" ToolTip="You're gonna break your file lol"/>
         <MenuItem Header="Save package...">

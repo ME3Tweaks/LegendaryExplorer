@@ -15,6 +15,7 @@ using LegendaryExplorer.Misc;
 using LegendaryExplorer.Tools.AssetDatabase;
 using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode;
@@ -1698,83 +1699,274 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
-        public static async void VTest(PackageEditorWindow pe)
+        public static void CheckNeverstream(PackageEditorWindow pe)
         {
-            await Task.Run(() =>
+            List<ExportEntry> badNST = new List<ExportEntry>();
+            foreach (var exp in pe.Pcc.Exports.Where(x => x.IsTexture()))
             {
-
-                string dbPath = AssetDatabaseWindow.GetDBPath(MEGame.LE1);
-                if (File.Exists(dbPath))
+                var props = exp.GetProperties();
+                var texinfo = ObjectBinary.From<UTexture2D>(exp);
+                var numMips = texinfo.Mips.Count;
+                var ns = props.GetProp<BoolProperty>("NeverStream");
+                int lowMipCount = 0;
+                for (int i = numMips - 1; i > 0; i--)
                 {
-                    bool shouldIgnore(ExportEntry export)
+                    if (lowMipCount > 6 && (ns == null || ns.Value == false) && texinfo.Mips[i].IsLocallyStored && texinfo.Mips[i].StorageType != StorageTypes.empty)
                     {
-                        if (export.ClassName.StartsWith("MaterialExpression"))
-                            return true;
-                        if (export.ClassName.StartsWith("DistributionFloat"))
-                            return true;
-                        if (export.ClassName.StartsWith("DistributionVector"))
-                            return true;
-                        if (export.ClassName.StartsWith("ParticleModule"))
-                            return true;
-                        if (export.ClassName.StartsWith("InterpCurveEdSetup"))
-                            return true;
-                        if (export.ClassName.StartsWith("RB_BodySetup"))
-                            return true;
-                        if (export.ClassName.StartsWith("ParticleLODLevel"))
-                            return true;
-                        return false;
+                        exp.WriteProperty(new BoolProperty(true, "NeverStream"));
+                        badNST.Add(exp);
+                        break;
                     }
+                    lowMipCount++;
+                }
+            }
 
-                    pe.SetBusy("Loading LE1 Database");
+            var ld = new ListDialog(badNST.Select(x => new EntryStringPair(x, $"{x.InstancedFullPath} has incorrect neverstream")),
+                "Bad NeverStream settings", "The following textures have incorrect NeverStream values:", pe)
+            {
+                DoubleClickEntryHandler = pe.GetEntryDoubleClickAction()
+            };
+            ld.Show();
+        }
 
-                    var objectDB =
-                        ObjectInstanceDB.DeserializeDB(File.ReadAllText(@"C:\users\public\chonkydbLE1.json"));
-                    objectDB.BuildLookupTable();
-                    //var db = new AssetDB();
-                    //await AssetDatabaseWindow.LoadDatabase(dbPath, MEGame.LE1, db, CancellationToken.None);
-                    //if (db.DataBaseversion != AssetDatabaseWindow.dbCurrentBuild)
-                    //{
-                    //    MessageBox.Show(pe,
-                    //        "LE1 Asset Database is out of date! Please regenerate it in the Asset Database tool. This could take about 10 minutes.");
-                    //    pe.EndBusy();
-                    //    return;
-                    //}
+        public static void ShowTextureFormats(PackageEditorWindow pe)
+        {
+            List<string> texFormats = new List<string>();
+            //foreach (var exp in pe.Pcc.Exports.Where(x => x.IsTexture()))
+            //{
+            //    var props = exp.GetProperties();
+            //    var format = props.GetProp<EnumProperty>("Format");
+            //    badNST.Add(new EntryStringPair(exp, $"{format.Value} | {exp.InstancedFullPath}"));
+            //}
+            Task.Run(() =>
+            {
+                pe.SetBusy("Checking textures");
 
-                    // This is going to get real ugly
-                    var emptyLevelPath = @"Y:\ModLibrary\LE1\V Test\EmptyLevels";
-                    var destPath = @"Y:\ModLibrary\LE1\V Test\DLC_MOD_VTest\CookedPCConsole";
-                    var sourcePath = @"D:\Origin Games\Mass Effect\DLC\DLC_Vegas\CookedPC\Maps\PRC2AA";
-
-                    var filesToWorkOn = new[] { @"bioa_prc2aa_00_lay.SFM" };
-
-                    foreach (var f in filesToWorkOn)
+                if (pe.Pcc == null)
+                {
+                    var allPackages = MELoadedFiles.GetFilesLoadedInGame(MEGame.LE1).ToList();
+                    int numDone = 0;
+                    foreach (var f in allPackages)
                     {
-                        using var me1p = MEPackageHandler.OpenMEPackage(Path.Combine(sourcePath, f));
-                        foreach (var exp in me1p.Exports)
+                        pe.BusyText = $"Indexing file [{++numDone}/{allPackages.Count}]";
+                        using var package = MEPackageHandler.OpenMEPackage(f.Value);
+
+                        // Index objects
+                        foreach (var exp in package.Exports.Where(x => x.IsTexture()))
                         {
-                            var ifp = exp.InstancedFullPath;
-                            if (ifp.StartsWith("TheWorld") || ifp.StartsWith("ObjectReferencer") ||
-                                ifp.StartsWith("ShadowMap"))
-                                continue;
-                            //if (exp.ClassName == "Texture2D")
-                            //{
-                            var containingFiles = objectDB.GetFilesContainingObject(exp.InstancedFullPath);
-                            if (containingFiles == null || containingFiles.Count == 0)
+                            var format = exp.GetProperty<EnumProperty>("Format");
+                            if (format != null && !texFormats.Contains(format.Value))
                             {
-                                if (!shouldIgnore(exp))
-                                {
-                                    Debug.WriteLine($"{exp.InstancedFullPath} ({exp.ClassName}) not found");
-                                }
-                            }
-                            else
-                            {
-                                //Debug.WriteLine($@">> FOUND {exp.InstancedFullPath} ({exp.ClassName})");
+                                texFormats.Add(format.Value);
                             }
                         }
-                        //
                     }
                 }
-            }).ContinueWithOnUIThread(result => { pe.EndBusy(); });
+                else
+                {
+                    foreach (var exp in pe.Pcc.Exports.Where(x => x.IsTexture()))
+                    {
+                        var format = exp.GetProperty<EnumProperty>("Format");
+                        if (format != null && !texFormats.Contains(format.Value))
+                        {
+                            texFormats.Add(format.Value);
+                        }
+                    }
+                }
+
+                return texFormats;
+            }).ContinueWithOnUIThread(list =>
+            {
+                pe.EndBusy();
+                var ld = new ListDialog(list.Result, "Texture formats", "The game uses the following texture formats:", pe);
+                ld.Show();
+            });
+        }
+
+        public static async void VTest(PackageEditorWindow pe)
+        {
+            pe.SetBusy("Performing VTest");
+            await Task.Run(() =>
+            {
+                ObjectInstanceDB db = null;
+                string dbPath = AppDirectories.GetObjectDatabasePath(MEGame.LE1);
+                if (File.Exists(dbPath))
+                {
+                    pe.BusyText = "Loading database";
+                    db = ObjectInstanceDB.DeserializeDB(File.ReadAllText(dbPath));
+                }
+                else
+                {
+                    return;
+                }
+
+                    //bool shouldIgnore(ExportEntry export)
+                    //{
+                    //    if (export.ClassName.StartsWith("MaterialExpression"))
+                    //        return true;
+                    //    if (export.ClassName.StartsWith("DistributionFloat"))
+                    //        return true;
+                    //    if (export.ClassName.StartsWith("DistributionVector"))
+                    //        return true;
+                    //    if (export.ClassName.StartsWith("ParticleModule"))
+                    //        return true;
+                    //    if (export.ClassName.StartsWith("InterpCurveEdSetup"))
+                    //        return true;
+                    //    if (export.ClassName.StartsWith("RB_BodySetup"))
+                    //        return true;
+                    //    if (export.ClassName.StartsWith("ParticleLODLevel"))
+                    //        return true;
+                    //    return false;
+                    //}
+
+                    //pe.SetBusy("Loading LE1 Database");
+
+                    //var objectDB =
+                    //    ObjectInstanceDB.DeserializeDB(File.ReadAllText(@"C:\users\public\chonkydbLE1.json"));
+                    //objectDB.BuildLookupTable();
+                    ////var db = new AssetDB();
+                    ////await AssetDatabaseWindow.LoadDatabase(dbPath, MEGame.LE1, db, CancellationToken.None);
+                    ////if (db.DataBaseversion != AssetDatabaseWindow.dbCurrentBuild)
+                    ////{
+                    ////    MessageBox.Show(pe,
+                    ////        "LE1 Asset Database is out of date! Please regenerate it in the Asset Database tool. This could take about 10 minutes.");
+                    ////    pe.EndBusy();
+                    ////    return;
+                    ////}
+
+                    pe.BusyText = "Loading packages";
+
+
+                    // BIOA_PRC2AA_00_LAY
+                    {
+                        var sourceFile = "BIOA_PRC2AA_00_LAY";
+                        var layFile = $@"Y:\ModLibrary\LE1\V Test\DLC_MOD_Vegas\CookedPCConsole\{sourceFile}.pcc";
+                        CreateEmptyLevel(layFile, MEGame.LE1);
+
+                        using var le1File = MEPackageHandler.OpenMEPackage(layFile);
+                        using var me1File = MEPackageHandler.OpenMEPackage($@"Y:\ModLibrary\LE1\V Test\ModdedSource\{sourceFile}.SFM");
+
+                        var itemsToPort = new ExportEntry[]
+                        {
+                            me1File.FindExport(@"TheWorld.PersistentLevel.StaticLightCollectionActor_16"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.StaticMeshCollectionActor_45"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.Terrain_0"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_0"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_2"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_3"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_4"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_5"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_0"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_1"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_10"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_11"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_12"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_13"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_14"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_2"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_3"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_35"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_36"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_37"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_4"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_5"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_6"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_7"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_8"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_9"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.PostProcessVolume_0"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.SkeletalMeshActor_0"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.SkeletalMeshActor_1"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.SkeletalMeshActor_2"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.SkeletalMeshActor_9"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BioDoor_0"),
+                        };
+                        VTestFilePorting(le1File, itemsToPort, db, pe);
+                    }
+
+                // BIOA_PRC2AA_00_DSG
+                {
+                    var sourceFile = "BIOA_PRC2AA_00_DSG";
+                    var layFile = $@"Y:\ModLibrary\LE1\V Test\DLC_MOD_Vegas\CookedPCConsole\{sourceFile}.pcc";
+                    CreateEmptyLevel(layFile, MEGame.LE1);
+
+                    using var le1File = MEPackageHandler.OpenMEPackage(layFile);
+                    using var me1File = MEPackageHandler.OpenMEPackage($@"Y:\ModLibrary\LE1\V Test\ModdedSource\{sourceFile}.SFM");
+
+                    var itemsToPort = new ExportEntry[]
+                    {
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BioDoor_1"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BioInert_0"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BioInert_3"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BioInert_4"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BioInert_5"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.InterpActor_33"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.InterpActor_34"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.InterpActor_35"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.InterpActor_36"),
+                    };
+                    VTestFilePorting(le1File, itemsToPort, db, pe);
+                }
+
+
+            }).ContinueWithOnUIThread(result =>
+            {
+                if (result.Exception != null)
+                    Debugger.Break();
+                pe.EndBusy();
+            });
+        }
+
+        private static void VTestFilePorting(IMEPackage destPackage, ExportEntry[] itemsToPort, ObjectInstanceDB db, PackageEditorWindow pe)
+        {
+
+            var le1PL = destPackage.FindExport("TheWorld.PersistentLevel");
+            foreach (var e in itemsToPort)
+            {
+                pe.BusyText = $"Porting {e.ObjectName}";
+                var report = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, e, destPackage,
+                    le1PL, true, out _, targetGameDonorDB: db);
+            }
+
+            RebuildPersistentLevelChildren(le1PL);
+            pe.BusyText = "Saving package";
+            destPackage.Save();
+        }
+
+        private static void RebuildPersistentLevelChildren(ExportEntry pl)
+        {
+            ExportEntry[] actorsToAdd = pl.FileRef.Exports.Where(exp => exp.Parent == pl && exp.IsA("Actor")).ToArray();
+            Level level = ObjectBinary.From<Level>(pl);
+            level.Actors.ReplaceAll(actorsToAdd.Select(x => new UIndex(x.UIndex)));
+            pl.WriteBinary(level);
+        }
+
+        private static void CreateEmptyLevel(string outpath, MEGame game)
+        {
+            var emptyLevelName = $"{game}EmptyLevel";
+            File.Copy(Path.Combine(AppDirectories.ExecFolder, $"{emptyLevelName}.pcc"), outpath, true);
+            using var Pcc = MEPackageHandler.OpenMEPackage(outpath);
+            for (int i = 0; i < Pcc.Names.Count; i++)
+            {
+                string name = Pcc.Names[i];
+                if (name.Equals(emptyLevelName))
+                {
+                    var newName = name.Replace(emptyLevelName, Path.GetFileNameWithoutExtension(outpath));
+                    Pcc.replaceName(i, newName);
+                }
+            }
+
+            var packguid = Guid.NewGuid();
+            var package = Pcc.GetUExport(game switch
+            {
+                MEGame.LE1 => 4,
+                MEGame.LE3 => 6,
+                MEGame.ME2 => 7,
+                _ => 1
+            });
+            package.PackageGUID = packguid;
+            Pcc.PackageGuid = packguid;
+            Pcc.Save();
         }
 
         private static void FindTexture2D(AssetDB db, ExportEntry exp)
@@ -1829,24 +2021,24 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     pe.BusyText = $"Indexing file [{++numDone}/{allPackages.Count}]";
                     using var package = MEPackageHandler.OpenMEPackage(f.Value);
 
-                    // Index objects
-                    foreach (var exp in package.Exports)
+                        // Index objects
+                        foreach (var exp in package.Exports)
                     {
                         var ifp = exp.InstancedFullPath;
 
-                        // Things to ignore
-                        if (ifp.StartsWith(@"TheWorld"))
+                            // Things to ignore
+                            if (ifp.StartsWith(@"TheWorld"))
                             continue;
                         if (ifp.StartsWith(@"ObjectReferencer"))
                             continue;
 
-                        // Index it
-                        objectDB.AddRecord(ifp, packageNameIndex);
+                            // Index it
+                            objectDB.AddRecord(ifp, packageNameIndex);
                     }
                 }
 
-                // Compile the database
-                pe.BusyText = "Compiling database";
+                    // Compile the database
+                    pe.BusyText = "Compiling database";
                 File.WriteAllText(AppDirectories.GetObjectDatabasePath(game), objectDB.Serialize());
 
             }).ContinueWithOnUIThread(result => { pe.EndBusy(); });
@@ -1858,7 +2050,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             if (searchTerm != null)
             {
                 string searchResult = "";
-                MEGame[] games = new[] {MEGame.ME1, MEGame.ME2, MEGame.ME3, MEGame.LE1, MEGame.LE2, MEGame.LE3};
+                MEGame[] games = new[] { MEGame.ME1, MEGame.ME2, MEGame.ME3, MEGame.LE1, MEGame.LE2, MEGame.LE3 };
 
                 foreach (var game in games)
                 {

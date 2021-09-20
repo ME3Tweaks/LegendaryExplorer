@@ -406,22 +406,29 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         IEntry parent = null;
                         if (sourceExport.Parent != null && !crossPCCObjectMappingList.TryGetValue(sourceExport.Parent, out parent))
                         {
-                            if (sourceExport.Parent is ExportEntry parExp)
-                            {
-                                // Parent is export
-                                // How to find parent UIndex from here if it might not yet exist?
+                            //if (sourceExport.Parent is ExportEntry parExp)
+                            //{
+                            //    // Parent is export
+                            //    // How to find parent UIndex from here if it might not yet exist?
 
-                                // Note: This doesn't work if it's nested deeper than one link we can find. Might be best to put this in a loop to ensure parent creation?
-                                var parParLink = parExp.Parent != null ? destinationPcc.FindEntry(parExp.ParentInstancedFullPath) : null; // This is pretty weak...
-                                parent = destinationPcc.FindEntry(parExp.InstancedFullPath) ?? EntryImporter.ImportExport(destinationPcc, parExp, parParLink?.UIndex ?? 0, true, crossPCCObjectMappingList, targetGameDB: targetGameDonorDB);
-                            }
-                            else
-                            {
-                                //Parent is import
-                                parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceExport.ParentFullPath, importingPCC, destinationPcc, true, crossPCCObjectMappingList);
-                            }
+                            //    // Note: This doesn't work if it's nested deeper than one link we can find. Might be best to put this in a loop to ensure parent creation?
+
+                            //    // Port parents recursively
+
+                            //    var parParLink = parExp.Parent != null ? destinationPcc.FindEntry(parExp.ParentInstancedFullPath) : null; // This is pretty weak...
+                            //    parent = destinationPcc.FindEntry(parExp.InstancedFullPath) ?? EntryImporter.ImportExport(destinationPcc, parExp, parParLink?.UIndex ?? 0, true, crossPCCObjectMappingList, targetGameDB: targetGameDonorDB);
+                            //}
+                            //else
+                            //{
+                            //Parent is import
+                            parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceExport.ParentInstancedFullPath, importingPCC, destinationPcc, true, crossPCCObjectMappingList);
+                            //}
                         }
                         ExportEntry importedExport = EntryImporter.ImportExport(destinationPcc, sourceExport, parent?.UIndex ?? 0, true, crossPCCObjectMappingList, targetGameDB: targetGameDonorDB);
+                        if (!importedExport.InstancedFullPath.CaseInsensitiveEquals(sourceExport.InstancedFullPath))
+                        {
+                            Debugger.Break();
+                        }
                         uIndex = importedExport.UIndex;
                     }
                 }
