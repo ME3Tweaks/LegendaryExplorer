@@ -126,7 +126,7 @@ namespace LegendaryExplorerCore.Matinee
                     ges.WriteProperty(new EnumProperty("None", "EBioGestureAllPoses", MEGame.LE3, "eStartingPose"));
                     ges.WriteProperty(new BoolProperty(true, "m_bUseDynamicAnimSets"));
                     ges.WriteProperty(new NameProperty(param1, "m_nmFindActor"));
-                    ges.WriteProperty(new StrProperty("Gesture -- " + param1, "TrackTitle"));
+                    ges.WriteProperty(new StrProperty($"Gesture -- {param1}", "TrackTitle"));
                     break;
             }
             return;
