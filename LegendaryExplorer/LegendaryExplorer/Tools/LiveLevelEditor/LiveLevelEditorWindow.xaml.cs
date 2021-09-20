@@ -33,14 +33,24 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
     /// </summary>
     public partial class LiveLevelEditorWindow : TrackingNotifyPropertyChangedWindowBase
     {
-        static LiveLevelEditorWindow ME3Instance;
-        static LiveLevelEditorWindow ME2Instance;
+        private static LiveLevelEditorWindow ME3Instance { get; set; }
+        private static LiveLevelEditorWindow ME2Instance { get; set; }
+        private static LiveLevelEditorWindow LE1Instance { get; set; }
 
         public static LiveLevelEditorWindow Instance(MEGame game) => game switch
         {
             MEGame.ME3 => ME3Instance,
             MEGame.ME2 => ME2Instance,
+            MEGame.LE1 => LE1Instance,
             _ => throw new ArgumentException("Live Level Editor only supports ME3 and ME2", nameof(game))
+        };
+
+        public bool GameCanUseLLE(MEGame game) => game switch
+        {
+            MEGame.ME3 => true,
+            MEGame.ME2 => true,
+            MEGame.LE1 => true,
+            _ => false
         };
 
         private enum FloatVarIndexes
@@ -93,29 +103,31 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
 
         public LiveLevelEditorWindow(MEGame game) : base("Live Level Editor", true)
         {
-            if (game is not MEGame.ME3 and not MEGame.ME2)
+            if (!GameCanUseLLE(game))
             {
                 throw new Exception("Live Level Editor is only supported for ME2 and ME3!");
             }
 
             Game = game;
-            if (game is MEGame.ME3)
+            if (Instance(game) is not null)
             {
-                if (ME3Instance is not null)
-                {
-                    throw new Exception("Can only have one instance of ME3 LiveLevelEditor open!");
-                }
-                ME3Instance = this;
-                GameController.RecieveME3Message += GameControllerOnRecieveMessage;
+                throw new Exception($"Can only have one instance of {game} LiveLevelEditor open!");
             }
-            else
+
+            switch (game)
             {
-                if (ME2Instance is not null)
-                {
-                    throw new Exception("Can only have one instance of ME2 LiveLevelEditor open!");
-                }
-                ME2Instance = this;
-                GameController.RecieveME2Message += GameControllerOnRecieveMessage;
+                case MEGame.ME3:
+                    ME3Instance = this;
+                    GameController.RecieveME3Message += GameControllerOnRecieveMessage;
+                    break;
+                case MEGame.ME2:
+                    ME2Instance = this;
+                    GameController.RecieveME2Message += GameControllerOnRecieveMessage;
+                    break;
+                case MEGame.LE1:
+                    LE1Instance = this;
+                    GameController.RecieveLE1Message += GameControllerOnRecieveMessage;
+                    break;
             }
 
             DataContext = this;
@@ -138,6 +150,11 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                     gameInstalledReq.UnFullfilledText = "Can't find Mass Effect 2 installation!";
                     gameInstalledReq.ButtonText = "Set ME2 path";
                     break;
+                case MEGame.LE1:
+                    gameInstalledReq.FullfilledText = "Legendary Edition is installed";
+                    gameInstalledReq.UnFullfilledText = "Can't find Legendary Edition installation!";
+                    gameInstalledReq.ButtonText = "Set LE1 path";
+                    break;
             }
         }
 
@@ -154,6 +171,10 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                 case MEGame.ME3:
                     GameController.RecieveME3Message -= GameControllerOnRecieveMessage;
                     ME3Instance = null;
+                    break;
+                case MEGame.LE1:
+                    GameController.RecieveLE1Message -= GameControllerOnRecieveMessage;
+                    LE1Instance = null;
                     break;
             }
         }

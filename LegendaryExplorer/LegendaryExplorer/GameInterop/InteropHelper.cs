@@ -50,13 +50,12 @@ namespace LegendaryExplorer.GameInterop
 
         private static string GetAsiDir(MEGame game)
         {
-            string exeDirPath = MEDirectories.GetExecutableFolderPath(game);
-            string asiDir = Path.Combine(exeDirPath, "ASI");
+            string asiDir = MEDirectories.GetASIPath(game);
             Directory.CreateDirectory(asiDir);
             return asiDir;
         }
 
-        public static bool IsME3Closed() => !GameController.TryGetMEProcess(MEGame.ME3, out _);
+        public static bool IsGameClosed(MEGame game) => !GameController.TryGetMEProcess(game, out _);
 
         public static void KillGame(MEGame game)
         {
@@ -73,6 +72,9 @@ namespace LegendaryExplorer.GameInterop
             {
                 return false;
             }
+            // TODO: DELETE THIS
+            if (game.IsLEGame()) return true;
+
             string dllDir = MEDirectories.GetExecutableFolderPath(game);
             string binkw23Path = Path.Combine(dllDir, "binkw23.dll");
             string binkw32Path = Path.Combine(dllDir, "binkw32.dll");
@@ -126,10 +128,12 @@ namespace LegendaryExplorer.GameInterop
             string asiPath = GetInteropAsiWritePath(game);
             const string me2MD5 = "a65d9325dd3b0ec5ea4184cc10e5e692";
             const string me3MD5 = "7ac354e16e62434de656f7eea3259316";
+            string le1MD5 = "8a021214ec99870e689a51dfa69ba8f6";
             return File.Exists(asiPath) && game switch
             {
                 MEGame.ME2 => me2MD5,
                 MEGame.ME3 => me3MD5,
+                MEGame.LE1 => le1MD5,
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
             } == CalculateMD5(asiPath);
         }

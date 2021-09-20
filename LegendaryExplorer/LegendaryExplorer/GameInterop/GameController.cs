@@ -16,6 +16,7 @@ namespace LegendaryExplorer.GameInterop
     {
         public static string InteropAsiName(MEGame game) => game switch
         {
+            MEGame.LE1 => "ZZZ_LEXInteropLE1.asi",
             MEGame.ME2 => "ZZZ_LEXInteropME2.asi",
             MEGame.ME3 => "LEXInteropME3.asi",
             _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
@@ -42,10 +43,24 @@ namespace LegendaryExplorer.GameInterop
                 {
                     MEGame.ME1 => "MassEffect",
                     MEGame.ME3 => "MassEffect3",
+                    MEGame.LE1 => "MassEffect1",
                     _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
                 }).FirstOrDefault();
             }
             return meProcess != null;
+        }
+
+        public static bool GameCanExecuteConsoleCommands(MEGame game)
+        {
+            switch (game)
+            {
+                case MEGame.ME2:
+                case MEGame.ME3:
+                case MEGame.LE1:
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         private static bool hasRegisteredForMessages; 
@@ -64,41 +79,12 @@ namespace LegendaryExplorer.GameInterop
         public static event Action<string> RecieveME2Message;
 
         public static event Action<string> RecieveME1Message;
-        public static void SendKey(IntPtr hWnd, Keys key) => SendKey(hWnd, (int)key);
 
-        public static void ExecuteConsoleCommands(MEGame game, params string[] commands)
-        {
-            switch (game)
-            {
-                case MEGame.ME2:
-                    ExecuteME2ConsoleCommands(commands.AsEnumerable());
-                    break;
-                case MEGame.ME3:
-                    ExecuteME3ConsoleCommands(commands.AsEnumerable());
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(game), game, null);
-            }
-        }
+        public static event Action<string> RecieveLE3Message;
 
-        public static void ExecuteME3ConsoleCommands(params string[] commands) => ExecuteME3ConsoleCommands(commands.AsEnumerable());
-        public static void ExecuteME3ConsoleCommands(IEnumerable<string> commands)
-        {
-            if (TryGetMEProcess(MEGame.ME3, out Process me3Process))
-            {
-                ExecuteConsoleCommands(me3Process.MainWindowHandle, MEGame.ME3, commands);
-            }
-        }
+        public static event Action<string> RecieveLE2Message;
 
-
-        public static void ExecuteME2ConsoleCommands(params string[] commands) => ExecuteME2ConsoleCommands(commands.AsEnumerable());
-        public static void ExecuteME2ConsoleCommands(IEnumerable<string> commands)
-        {
-            if (TryGetMEProcess(MEGame.ME2, out Process me2Process))
-            {
-                ExecuteConsoleCommands(me2Process.MainWindowHandle, MEGame.ME2, commands);
-            }
-        }
+        public static event Action<string> RecieveLE1Message;
 
         public static bool SendME3TOCUpdateMessage()
         {
@@ -111,11 +97,27 @@ namespace LegendaryExplorer.GameInterop
             return false;
         }
 
-        public static void ExecuteConsoleCommands(IntPtr hWnd, MEGame game, params string[] commands) => ExecuteConsoleCommands(hWnd, game, commands.AsEnumerable());
-        public static void ExecuteConsoleCommands(IntPtr hWnd, MEGame game, IEnumerable<string> commands)
+        public static void SendKey(IntPtr hWnd, Keys key) => SendKey(hWnd, (int)key);
+
+        public static void ExecuteConsoleCommands(MEGame game, params string[] commands) =>
+            ExecuteConsoleCommands(game, commands.AsEnumerable());
+
+        public static void ExecuteME3ConsoleCommands(params string[] commands) => ExecuteConsoleCommands(MEGame.ME3, commands.AsEnumerable());
+
+        public static void ExecuteConsoleCommands(MEGame game, IEnumerable<string> commands)
         {
-            const string execFileName = "me3expinterop";
+            if (GameCanExecuteConsoleCommands(game) && TryGetMEProcess(game, out Process gameProcess))
+            {
+                ExecuteConsoleCommands(gameProcess.MainWindowHandle, game, commands);
+            }
+        }
+
+        internal static void ExecuteConsoleCommands(IntPtr hWnd, MEGame game, params string[] commands) => ExecuteConsoleCommands(hWnd, game, commands.AsEnumerable());
+        internal static void ExecuteConsoleCommands(IntPtr hWnd, MEGame game, IEnumerable<string> commands)
+        {
+            const string execFileName = "lexinterop";
             string execFilePath = Path.Combine(MEDirectories.GetDefaultGamePath(game), "Binaries", execFileName);
+
             File.WriteAllText(execFilePath, string.Join(Environment.NewLine, commands));
             DirectExecuteConsoleCommand(hWnd, $"exec {execFileName}");
         }
@@ -136,6 +138,9 @@ namespace LegendaryExplorer.GameInterop
             const uint SENT_FROM_ME3 = 0x02AC00C2;
             const uint SENT_FROM_ME2 = 0x02AC00C3;
             const uint SENT_FROM_ME1 = 0x02AC00C4;
+            const uint SENT_FROM_LE3 = 0x02AC00C5;
+            const uint SENT_FROM_LE2 = 0x02AC00C6;
+            const uint SENT_FROM_LE1 = 0x02AC00C7;
             if (msg == WM_COPYDATA)
             {
                 COPYDATASTRUCT cds = Marshal.PtrToStructure<COPYDATASTRUCT>(lParam);
@@ -160,6 +165,27 @@ namespace LegendaryExplorer.GameInterop
                         string value = Marshal.PtrToStringUni(cds.lpData);
                         handled = true;
                         RecieveME1Message?.Invoke(value);
+                        return (IntPtr)1;
+                    }
+                    case SENT_FROM_LE3:
+                    {
+                        string value = Marshal.PtrToStringUni(cds.lpData);
+                        handled = true;
+                        RecieveLE3Message?.Invoke(value);
+                        return (IntPtr)1;
+                    }
+                    case SENT_FROM_LE2:
+                    {
+                        string value = Marshal.PtrToStringUni(cds.lpData);
+                        handled = true;
+                        RecieveLE2Message?.Invoke(value);
+                        return (IntPtr)1;
+                    }
+                    case SENT_FROM_LE1:
+                    {
+                        string value = Marshal.PtrToStringUni(cds.lpData);
+                        handled = true;
+                        RecieveLE1Message?.Invoke(value);
                         return (IntPtr)1;
                     }
                 }
