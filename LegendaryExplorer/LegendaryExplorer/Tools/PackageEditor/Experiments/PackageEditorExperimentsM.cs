@@ -1959,6 +1959,37 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     le1File.Save(); // Save again
                 }
 
+                // BIOA_PRC2AA_00_SND
+                {
+                    var sourceFile = "BIOA_PRC2AA_00_SND";
+                    var layFile = $@"Y:\ModLibrary\LE1\V Test\DLC_MOD_Vegas\CookedPCConsole\{sourceFile}.pcc";
+                    CreateEmptyLevel(layFile, MEGame.LE1);
+
+                    using var le1File = MEPackageHandler.OpenMEPackage(layFile);
+                    using var me1File = MEPackageHandler.OpenMEPackage($@"Y:\ModLibrary\LE1\V Test\ModdedSource\{sourceFile}.SFM");
+
+                    var itemsToPort = new ExportEntry[]
+                    {
+                        me1File.FindExport(@"TheWorld.PersistentLevel.Brush_20"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.ReverbVolume_1"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.ReverbVolume_0"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BioAudioVolume_1"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BioAudioVolume_0"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.AmbientSound_3"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.AmbientSound_4"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.AmbientSound_2"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.AmbientSound_1"),
+                    };
+                    VTestFilePorting(le1File, itemsToPort, db, pe);
+
+                    // Port sequence in
+                    pe.BusyText = "Porting sequencing...";
+                    var dest = le1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence");
+                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, me1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence"), le1File, dest, true, out _, importExportDependencies: true, targetGameDonorDB: db);
+                    RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
+                    le1File.Save(); // Save again
+                }
+
 
             }).ContinueWithOnUIThread(result =>
             {

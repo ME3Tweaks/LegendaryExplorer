@@ -592,10 +592,48 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     new KeyValuePair<string, PropertyInfo>("OptionType", new PropertyInfo(PropertyType.IntProperty)),
                 }
             };
+
             sequenceObjects["SFXSeqAct_GetGameOption"] = new SequenceObjectInfo
             {
                 ObjInstanceVersion = 1
             };
+
+            // Mgamerz - Classes for VTest
+            classes["SeqAct_GetPlayerMaxGrenades"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 11, //in LE1Resources.pcc
+                properties =
+                {
+                    new KeyValuePair<string, PropertyInfo>("NumGrenades", new PropertyInfo(PropertyType.IntProperty)),
+                }
+            };
+
+            sequenceObjects["SeqAct_GetPlayerMaxGrenades"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+
+            classes["SeqAct_GetPlayerMaxMedigel"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 18, //in LE1Resources.pcc
+                properties =
+                {
+                    new KeyValuePair<string, PropertyInfo>("NumMedigel", new PropertyInfo(PropertyType.FloatProperty)),
+                }
+            };
+
+            sequenceObjects["SeqAct_GetPlayerMaxMedigel"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+
+            // END CUSTOM CLASSES
+
+
 
             ME3UnrealObjectInfo.AddIntrinsicClasses(classes, MEGame.LE1);
 
