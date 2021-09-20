@@ -39,6 +39,51 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         }
 
+        public static void OverrideVignettes(PackageEditorWindow pewpf)
+        {
+
+            Task.Run(() =>
+            {
+                pewpf.BusyText = "Enumerating exports for PPS...";
+                pewpf.IsBusy = true;
+                var allFiles = MELoadedFiles.GetOfficialFiles(MEGame.LE3).Where(x => Path.GetExtension(x) == ".pcc").ToList();
+                int totalFiles = allFiles.Count;
+                int numDone = 0;
+                foreach (string filePath in allFiles)
+                {
+                    //if (!filePath.EndsWith("Engine.pcc"))
+                    //    continue;
+                    using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
+                    foreach (var f in pcc.Exports)
+                    {
+                        var props = f.GetProperties();
+                        foreach (var prop in props)
+                        {
+                            if (prop is StructProperty sp && sp.StructType == "PostProcessSettings")
+                            {
+                                var vignette = sp.GetProp<BoolProperty>("bEnableVignette");
+                                var vigOverride = sp.GetProp<BoolProperty>("bOverride_EnableVignette");
+
+                                if (vigOverride != null && vignette != null)
+                                {
+                                    vignette.Value = false;
+                                    vigOverride.Value = true;
+                                    f.WriteProperty(sp);
+                                }
+                            }
+                        }
+
+                    }
+
+                    if (pcc.IsModified)
+                        pcc.Save();
+
+                    numDone++;
+                    pewpf.BusyText = $"Enumerating exports for PPS [{numDone}/{totalFiles}]";
+                }
+            }).ContinueWithOnUIThread(foundCandidates => { pewpf.IsBusy = false; });
+        }
+
         public static void UpdateTexturesMatsToGame(PackageEditorWindow pewpf)
         {
             Task.Run(() =>
@@ -110,9 +155,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 int numDone = 0;
                 foreach (string filePath in allFiles)
                 {
-            //if (!filePath.EndsWith("Engine.pcc"))
-            //    continue;
-            using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
+                    //if (!filePath.EndsWith("Engine.pcc"))
+                    //    continue;
+                    using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
                     foreach (var f in pcc.Exports.Where(x => x.ClassName is "Function" or "State"))
                     {
                         if (pcc.Game is MEGame.ME1 or MEGame.ME2)
@@ -250,11 +295,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 var restorePackage = MEPackageHandler.OpenMEPackage(choice, forceLoadFromDisk: true);
 
-        // Get classes
-        var differences = restorePackage.CompareToPackage(sourcePackage);
+                // Get classes
+                var differences = restorePackage.CompareToPackage(sourcePackage);
 
-        // Classes
-        var classNames = differences.Where(x => x.Entry != null).Select(x => x.Entry.ClassName).Distinct().OrderBy(x => x).ToList();
+                // Classes
+                var classNames = differences.Where(x => x.Entry != null).Select(x => x.Entry.ClassName).Distinct().OrderBy(x => x).ToList();
                 if (classNames.Any())
                 {
                     var allDiffs = "[ALL DIFFERENCES]";
@@ -318,8 +363,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                     if (matchingExport == null)
                     {
-                //Debug.WriteLine($"Trash {export.FullPath}");
-                entriesToTrash.Add(export);
+                        //Debug.WriteLine($"Trash {export.FullPath}");
+                        entriesToTrash.Add(export);
                     }
                 });
 
@@ -1616,9 +1661,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     int numDone = 0;
                     foreach (var f in allPackages)
                     {
-                //if (!f.Key.Contains("Startup"))
-                //    continue;
-                pewpf.BusyText = $"Dumping TLKs [{++numDone}/{allPackages.Count}]";
+                        //if (!f.Key.Contains("Startup"))
+                        //    continue;
+                        pewpf.BusyText = $"Dumping TLKs [{++numDone}/{allPackages.Count}]";
                         using var package = MEPackageHandler.OpenMEPackage(f.Value);
                         foreach (var v in package.LocalTalkFiles)
                         {

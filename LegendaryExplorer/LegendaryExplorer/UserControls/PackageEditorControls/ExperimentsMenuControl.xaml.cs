@@ -413,6 +413,12 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.UpdateTexturesMatsToGame(GetPEWindow());
         }
 
+        private async void ForceVignetteOff_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.OverrideVignettes(GetPEWindow());
+        }
+
+
         private async void SavePackageUnCompressed_Click(object sender, RoutedEventArgs e)
         {
             await GetPEWindow().Pcc.SaveAsync(compress: false);
