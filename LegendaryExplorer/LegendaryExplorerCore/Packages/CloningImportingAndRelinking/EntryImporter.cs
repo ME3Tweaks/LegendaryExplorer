@@ -245,7 +245,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     bool isCached = false;
                     foreach (var df in donorFiles)
                     {
-                        var dfp = Path.Combine(MEDirectories.GetDefaultGamePath(destPackage.Game), df);
+                        string dfp = df;
+                        if (!File.Exists(dfp))
+                        {
+                            // Relative to game
+                            dfp = Path.Combine(MEDirectories.GetDefaultGamePath(destPackage.Game), df);
+                        }
+
                         if (targetGameDB.HACK_CACHE.TryGetCachedPackage(dfp, false, out donorPackage))
                         {
                             var testExp = donorPackage.FindExport(sourceExport.InstancedFullPath);
