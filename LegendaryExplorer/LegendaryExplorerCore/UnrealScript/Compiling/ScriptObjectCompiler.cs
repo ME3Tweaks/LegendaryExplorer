@@ -204,7 +204,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             ExportEntry funcExport;
             if (funcObj is null)
             {
-                funcExport = CreateNewExport(functionName, "Function", parent, new UFunction { ScriptBytes = Array.Empty<byte>() }, super);
+                funcExport = CreateNewExport(functionName, "Function", parent, new UFunction { ScriptBytes = Array.Empty<byte>(), FriendlyName = functionName}, super);
                 funcObj = funcExport.GetBinaryData<UFunction>();
             }
             else
