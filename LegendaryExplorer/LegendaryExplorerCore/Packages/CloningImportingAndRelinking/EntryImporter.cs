@@ -75,6 +75,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             relinkMap ??= new Dictionary<IEntry, IEntry>();
             IMEPackage sourcePcc = sourceEntry.FileRef;
 
+            bool isCrossGame = sourceEntry.Game != destPcc.Game;
+
             if (portingOption == PortingOption.ReplaceSingular)
             {
                 //replace data only
@@ -118,7 +120,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             List<EntryStringPair> relinkResults = null;
             if (shouldRelink)
             {
-                relinkResults = Relinker.RelinkAll(relinkMap, importExportDependencies || portingOption == PortingOption.CloneAllDependencies, targetGameDonorDB);
+                relinkResults = Relinker.RelinkAll(relinkMap, importExportDependencies || portingOption == PortingOption.CloneAllDependencies, targetGameDonorDB, isCrossGame);
             }
 
             //Port Shaders
@@ -287,13 +289,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                 if (!usingDonor && !ifp.StartsWith(@"TheWorld"))
                 {
-                    if (sourceExport.ClassName == "Material")
+                    //if (sourceExport.ClassName == "Material")
                         Debug.WriteLine($@"Not ported using donor: {sourceExport.InstancedFullPath} ({sourceExport.ClassName})");
-                }
-
-                if (usingDonor && ifp.StartsWith(@"ShadowMap"))
-                {
-                    Debug.WriteLine($@"PORTED SHADOWMAP: {sourceExport.InstancedFullPath} ({sourceExport.ClassName})");
                 }
             }
 #endif

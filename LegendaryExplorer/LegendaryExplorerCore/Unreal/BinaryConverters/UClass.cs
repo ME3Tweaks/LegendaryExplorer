@@ -49,6 +49,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             else
             {
                 sc.Serialize(ref unkNameList2, SCExt.Serialize);
+                if (sc.IsLoading)
+                {
+                    // Stuff for cross porting
+                    unkName2 = "None";
+                    unk2 = 0;
+                }
             }
 
             if (sc.Game is MEGame.LE2 || sc.Game == MEGame.ME2 && sc.Pcc.Platform == MEPackage.GamePlatform.PS3) //ME2 PS3 has extra integer here for some reason

@@ -10,6 +10,8 @@ using LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.UnrealScript;
+using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 
 namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 {
@@ -19,7 +21,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <summary>
         /// Attempts to relink unreal property data and object pointers in binary when cross porting an export
         /// </summary>
-        public static List<EntryStringPair> RelinkAll(IDictionary<IEntry, IEntry> crossPccObjectMap, bool importExportDependencies = false, ObjectInstanceDB targetGameDonorDB = null)
+        public static List<EntryStringPair> RelinkAll(IDictionary<IEntry, IEntry> crossPccObjectMap, bool importExportDependencies = false, ObjectInstanceDB targetGameDonorDB = null, bool isCrossGame = false)
         {
             var relinkReport = new List<EntryStringPair>();
             //relink each modified export
@@ -67,7 +69,56 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 //    mappingList = crossPackageMap.ToList();
                 //}
             }
-            crossPccObjectMap.ReplaceAll(crossPccObjectMap);
+            crossPccObjectMap.ReplaceAll(crossPackageMap);
+
+            // If porting cross game, functions need recompiled (most times)
+            if (isCrossGame)
+            {
+                var functionsToRelink = crossPccObjectMap.Keys.OfType<ExportEntry>().Where(x => x.ClassName == "Function").ToList();
+                if (functionsToRelink.Any())
+                {
+                    var sourcePcc = functionsToRelink[0].FileRef;
+                    FileLib sourceFL = new FileLib(sourcePcc);
+                    var sourceOK = sourceFL.Initialize();
+
+                    var destPcc = crossPccObjectMap[functionsToRelink[0]].FileRef;
+                    FileLib destFL = new FileLib(destPcc);
+                    var destOK = destFL.Initialize();
+
+                    if (sourceOK && destOK)
+                    {
+                        // crossgen debug
+                        int origBCBIdx = -1;
+                        if (sourcePcc.Game == MEGame.ME1)
+                        {
+                            origBCBIdx = sourcePcc.findName("BIOC_Base");
+                            sourcePcc.replaceName(origBCBIdx, "SFXGame");
+                        }
+
+                        foreach (var f in functionsToRelink)
+                        {
+                            var targetFuncExp = crossPccObjectMap[f] as ExportEntry;
+                            var sourceInfo = UnrealScriptCompiler.DecompileExport(f, sourceFL);
+                            //    var targetFunc = ObjectBinary.From<UFunction>(targetFuncExp);
+                            //    targetFunc.ScriptBytes = new byte[0]; // Zero out function
+                            //    targetFuncExp.WriteBinary(targetFunc);
+
+                            (_, MessageLog log) = UnrealScriptCompiler.CompileFunction(targetFuncExp, sourceInfo.text, destFL);
+                            if (log.AllErrors.Any())
+                            {
+                                relinkReport.Add(new EntryStringPair(targetFuncExp, $"{targetFuncExp.UIndex} {targetFuncExp.InstancedFullPath} binary relinking failed. Could not recompile function. Errors: {string.Join("\n", log.AllErrors.Select(x => x.Message))}"));
+                            }
+                        }
+
+                        if (origBCBIdx >= 0)
+                        {
+                            // Restore BIOC_Base
+                            sourcePcc.replaceName(origBCBIdx, "BIOC_Base");
+                        }
+                    }
+                }
+            }
+
             return relinkReport;
         }
 
@@ -145,10 +196,15 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             bool removedProperties = false;
             if (sourcePcc.Game != relinkingExport.Game && props.Count > 0)
             {
-                props = EntryPruner.RemoveIncompatibleProperties(sourcePcc, props, sourceExport.ClassName, relinkingExport.Game, ref removedProperties);
-                if (removedProperties)
+                // crossgen-v code 9/20/2021 - mgamerz
+
+                if (!sourceExport.IsDefaultObject)
                 {
-                    relinkReport.Add(new EntryStringPair(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.InstancedFullPath}: Some properties were removed from this object because they do not exist in {relinkingExport.Game}!"));
+                    props = EntryPruner.RemoveIncompatibleProperties(sourcePcc, props, sourceExport.ClassName, relinkingExport.Game, ref removedProperties);
+                    if (removedProperties)
+                    {
+                        relinkReport.Add(new EntryStringPair(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.InstancedFullPath}: Some properties were removed from this object because they do not exist in {relinkingExport.Game}!"));
+                    }
                 }
             }
             relinkPropertiesRecursive(sourcePcc, relinkingExport, props, crossPCCObjectMappingList, "", relinkReport, importExportDependencies, targetGameDonorDB);
@@ -156,7 +212,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             //Relink Binary
             try
             {
-                if (relinkingExport.Game != sourcePcc.Game && (relinkingExport.IsClass || relinkingExport.ClassName is "State" or "Function"))
+                // crossgen-v disabled .IsClass sept 20 2021 - mgamerz
+                if (relinkingExport.Game != sourcePcc.Game && (/*relinkingExport.IsClass || */relinkingExport.ClassName is "State" /*or "Function"*/))
                 {
                     relinkReport.Add(new EntryStringPair(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.InstancedFullPath} binary relinking failed. Cannot port {relinkingExport.ClassName} between games!"));
                 }
@@ -170,6 +227,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         // We can't relink labeltable as it depends on none
                         // Use the source export instead
                         objBin = ObjectBinary.From(sourceExport);
+                    }
+                    else if (relinkingExport.Game != sourcePcc.Game && objBin is UFunction uf)
+                    {
+                        uf.ScriptBytes = new byte[0]; // This needs zero'd out so it doesn't try to relink anything. The relink will occur on the second pass
                     }
 
 
@@ -327,7 +388,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     //Get the original import
                     ImportEntry origImport = importingPCC.GetImport(n);
                     string origImportFullName = origImport.InstancedFullPath; //used to be just FullPath - but some imports are indexed!
-                    //Debug.WriteLine("We should import " + origImport.GetFullPath);
+                                                                              //Debug.WriteLine("We should import " + origImport.GetFullPath);
 
                     IEntry crossImport = null;
                     string linkFailedDueToError = null;
