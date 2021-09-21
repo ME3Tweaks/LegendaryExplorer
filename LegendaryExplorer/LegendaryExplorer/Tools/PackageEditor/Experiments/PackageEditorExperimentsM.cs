@@ -1850,6 +1850,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static async void VTest(PackageEditorWindow pe)
         {
+            // Setup variables
+            var finalDestDir = @"Y:\ModLibrary\LE1\V Test\DLC_MOD_Vegas\CookedPCConsole";
+            var moddedSourceDir = @"Y:\ModLibrary\LE1\V Test\ModdedSource";
+            var extraDonorsDir = @"Y:\ModLibrary\LE1\V Test\Donors";
+
+
             pe.SetBusy("Performing VTest");
             await Task.Run(() =>
             {
@@ -1859,57 +1865,65 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     pe.BusyText = "Loading database";
                     db = ObjectInstanceDB.DeserializeDB(File.ReadAllText(dbPath));
+                    db.BuildLookupTable(); // Lookup table is required as we are going to compile things
+
+                    // Add extra donors
+                    foreach (var file in Directory.GetFiles(extraDonorsDir))
+                    {
+                        if (file.RepresentsPackageFilePath())
+                        {
+                            using var p = MEPackageHandler.OpenMEPackage(file);
+                            IndexFileForObjDB(db, MEGame.LE1, p);
+                        }
+                    }
                 }
                 else
                 {
                     return;
                 }
 
-                //bool shouldIgnore(ExportEntry export)
-                //{
-                //    if (export.ClassName.StartsWith("MaterialExpression"))
-                //        return true;
-                //    if (export.ClassName.StartsWith("DistributionFloat"))
-                //        return true;
-                //    if (export.ClassName.StartsWith("DistributionVector"))
-                //        return true;
-                //    if (export.ClassName.StartsWith("ParticleModule"))
-                //        return true;
-                //    if (export.ClassName.StartsWith("InterpCurveEdSetup"))
-                //        return true;
-                //    if (export.ClassName.StartsWith("RB_BodySetup"))
-                //        return true;
-                //    if (export.ClassName.StartsWith("ParticleLODLevel"))
-                //        return true;
-                //    return false;
-                //}
-
-                //pe.SetBusy("Loading LE1 Database");
-
-                //var objectDB =
-                //    ObjectInstanceDB.DeserializeDB(File.ReadAllText(@"C:\users\public\chonkydbLE1.json"));
-                //objectDB.BuildLookupTable();
-                ////var db = new AssetDB();
-                ////await AssetDatabaseWindow.LoadDatabase(dbPath, MEGame.LE1, db, CancellationToken.None);
-                ////if (db.DataBaseversion != AssetDatabaseWindow.dbCurrentBuild)
-                ////{
-                ////    MessageBox.Show(pe,
-                ////        "LE1 Asset Database is out of date! Please regenerate it in the Asset Database tool. This could take about 10 minutes.");
-                ////    pe.EndBusy();
-                ////    return;
-                ////}
-
                 pe.BusyText = "Loading packages";
+
+
+
+                // BIOA_PRC22
+                {
+                    var sourceName = "BIOA_PRC2AA";
+                    var outputFile = $@"{finalDestDir}\{sourceName}.pcc";
+                    CreateEmptyLevel(outputFile, MEGame.LE1);
+
+                    using var le1File = MEPackageHandler.OpenMEPackage(outputFile);
+                    using var me1File = MEPackageHandler.OpenMEPackage($@"{moddedSourceDir}\{sourceName}.SFM");
+
+                    var itemsToPort = new ExportEntry[]
+                    {
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BioMapNote_26"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BioMapNote_27"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BioMapNote_28"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.BioTriggerStream_32"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.PlayerStart_0"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.StaticLightCollectionActor_15"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.StaticMeshCollectionActor_44"),
+                    };
+
+                    VTestFilePorting(le1File, itemsToPort, db, pe);
+
+                    // Replace BioWorldInfo
+                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, me1File.FindExport(@"TheWorld.PersistentLevel.BioWorldInfo_0"), le1File, le1File.FindExport(@"TheWorld.PersistentLevel.BioWorldInfo_0"), true, out _, importExportDependencies: true, targetGameDonorDB: db);
+                    RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
+                    CorrectNeverStream(le1File);
+                    le1File.Save();
+                }
 
 
                 // BIOA_PRC2AA_00_LAY
                 {
-                    var sourceFile = "BIOA_PRC2AA_00_LAY";
-                    var layFile = $@"Y:\ModLibrary\LE1\V Test\DLC_MOD_Vegas\CookedPCConsole\{sourceFile}.pcc";
-                    CreateEmptyLevel(layFile, MEGame.LE1);
+                    var sourceName = "BIOA_PRC2AA_00_LAY";
+                    var outputFile = $@"{finalDestDir}\{sourceName}.pcc";
+                    CreateEmptyLevel(outputFile, MEGame.LE1);
 
-                    using var le1File = MEPackageHandler.OpenMEPackage(layFile);
-                    using var me1File = MEPackageHandler.OpenMEPackage($@"Y:\ModLibrary\LE1\V Test\ModdedSource\{sourceFile}.SFM");
+                    using var le1File = MEPackageHandler.OpenMEPackage(outputFile);
+                    using var me1File = MEPackageHandler.OpenMEPackage($@"{moddedSourceDir}\{sourceName}.SFM");
 
                     var itemsToPort = new ExportEntry[]
                     {
@@ -1949,17 +1963,23 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     VTestFilePorting(le1File, itemsToPort, db, pe);
                     RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
                     CorrectNeverStream(le1File);
+
+                    // Correct terrain
+                    var terrainExp = le1File.FindExport(@"TheWorld.PersistentLevel.Terrain_0");
+                    var terrain = ObjectBinary.From<Terrain>(terrainExp);
+                    terrain.CachedDisplacements = new byte[terrain.Heights.Length];
+                    terrainExp.WriteBinary(terrain);
                     le1File.Save();
                 }
 
                 // BIOA_PRC2AA_00_DSG
                 {
-                    var sourceFile = "BIOA_PRC2AA_00_DSG";
-                    var layFile = $@"Y:\ModLibrary\LE1\V Test\DLC_MOD_Vegas\CookedPCConsole\{sourceFile}.pcc";
-                    CreateEmptyLevel(layFile, MEGame.LE1);
+                    var sourceName = "BIOA_PRC2AA_00_DSG";
+                    var outputFile = $@"{finalDestDir}\{sourceName}.pcc";
+                    CreateEmptyLevel(outputFile, MEGame.LE1);
 
-                    using var le1File = MEPackageHandler.OpenMEPackage(layFile);
-                    using var me1File = MEPackageHandler.OpenMEPackage($@"Y:\ModLibrary\LE1\V Test\ModdedSource\{sourceFile}.SFM");
+                    using var le1File = MEPackageHandler.OpenMEPackage(outputFile);
+                    using var me1File = MEPackageHandler.OpenMEPackage($@"{moddedSourceDir}\{sourceName}.SFM");
 
                     var itemsToPort = new ExportEntry[]
                     {
@@ -1986,12 +2006,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 // BIOA_PRC2AA_00_SND
                 {
-                    var sourceFile = "BIOA_PRC2AA_00_SND";
-                    var layFile = $@"Y:\ModLibrary\LE1\V Test\DLC_MOD_Vegas\CookedPCConsole\{sourceFile}.pcc";
-                    CreateEmptyLevel(layFile, MEGame.LE1);
+                    var sourceName = "BIOA_PRC2AA_00_SND";
+                    var outputFile = $@"{finalDestDir}\{sourceName}.pcc";
+                    CreateEmptyLevel(outputFile, MEGame.LE1);
 
-                    using var le1File = MEPackageHandler.OpenMEPackage(layFile);
-                    using var me1File = MEPackageHandler.OpenMEPackage($@"Y:\ModLibrary\LE1\V Test\ModdedSource\{sourceFile}.SFM");
+                    using var le1File = MEPackageHandler.OpenMEPackage(outputFile);
+                    using var me1File = MEPackageHandler.OpenMEPackage($@"{moddedSourceDir}\{sourceName}.SFM");
 
                     var itemsToPort = new ExportEntry[]
                     {
@@ -2045,7 +2065,33 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
             ExportEntry[] actorsToAdd = pl.FileRef.Exports.Where(exp => exp.Parent == pl && exp.IsA("Actor")).ToArray();
             Level level = ObjectBinary.From<Level>(pl);
-            level.Actors.ReplaceAll(actorsToAdd.Select(x => new UIndex(x.UIndex)));
+            level.Actors.Clear();
+            foreach (var actor in actorsToAdd)
+            {
+                // Don't add things that are in collection actors
+
+                var lc = actor.GetProperty<ObjectProperty>("LightComponent");
+                if (lc != null && pl.FileRef.TryGetUExport(lc.Value, out var lightComp))
+                {
+                    if (lightComp.Parent != null && lightComp.Parent.ClassName == "StaticLightCollectionActor")
+                        continue; // don't add this one
+                }
+
+                //var mc = actor.GetProperty<ObjectProperty>("MeshComponent");
+                //if (mc != null && pl.FileRef.TryGetUExport(mc.Value, out var meshComp))
+                //{
+                //    if (meshComp.Parent != null && meshComp.Parent.ClassName == "StaticMeshCollectionActor")
+                //        continue; // don't add this one
+                //}
+
+                level.Actors.Add(new UIndex(actor.UIndex));
+            }
+
+            if (level.Actors.Count > 1)
+            {
+                level.Actors.Insert(1, new UIndex(0)); // This is stupid
+            }
+
             pl.WriteBinary(level);
         }
 
@@ -2125,24 +2171,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 int numDone = 0;
                 foreach (var f in allPackages)
                 {
-                    var packageNameIndex = objectDB.GetNameTableIndex(f.Value.Substring(MEDirectories.GetDefaultGamePath(game).Length + 1));
                     pe.BusyText = $"Indexing file [{++numDone}/{allPackages.Count}]";
                     using var package = MEPackageHandler.OpenMEPackage(f.Value);
 
-                    // Index objects
-                    foreach (var exp in package.Exports)
-                    {
-                        var ifp = exp.InstancedFullPath;
-
-                        // Things to ignore
-                        if (ifp.StartsWith(@"TheWorld"))
-                            continue;
-                        if (ifp.StartsWith(@"ObjectReferencer"))
-                            continue;
-
-                        // Index it
-                        objectDB.AddRecord(ifp, packageNameIndex);
-                    }
+                    IndexFileForObjDB(objectDB, game, package);
                 }
 
                 // Compile the database
@@ -2150,6 +2182,37 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 File.WriteAllText(AppDirectories.GetObjectDatabasePath(game), objectDB.Serialize());
 
             }).ContinueWithOnUIThread(result => { pe.EndBusy(); });
+        }
+
+        private static void IndexFileForObjDB(ObjectInstanceDB objectDB, MEGame game, IMEPackage package)
+        {
+            // Index package path
+            int packageNameIndex;
+            if (package.FilePath.StartsWith(MEDirectories.GetDefaultGamePath(game)))
+            {
+                // Get relative path
+                packageNameIndex = objectDB.GetNameTableIndex(package.FilePath.Substring(MEDirectories.GetDefaultGamePath(game).Length + 1));
+            }
+            else
+            {
+                // Store full path
+                packageNameIndex = objectDB.GetNameTableIndex(package.FilePath);
+            }
+
+            // Index objects
+            foreach (var exp in package.Exports)
+            {
+                var ifp = exp.InstancedFullPath;
+
+                // Things to ignore
+                if (ifp.StartsWith(@"TheWorld"))
+                    continue;
+                if (ifp.StartsWith(@"ObjectReferencer"))
+                    continue;
+
+                // Index it
+                objectDB.AddRecord(ifp, packageNameIndex);
+            }
         }
 
         public static void SearchObjectInfos(PackageEditorWindow pe)

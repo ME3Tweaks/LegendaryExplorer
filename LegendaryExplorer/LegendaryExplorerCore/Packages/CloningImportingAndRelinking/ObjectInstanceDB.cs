@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -43,6 +44,16 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 return index;
             }
 
+            if (nametableMap.Count != NameTable.Count)
+            {
+                for (int i = 0; i < NameTable.Count; i++)
+                {
+                    if (!nametableMap.TryGetValue(NameTable[i], out _))
+                    {
+                        Debug.WriteLine($"Not found: {NameTable[i]}");
+                    }
+                }
+            }
             nametableMap[name] = nametableMap.Count;
             NameTable.Add(name);
             return nametableMap[name];
@@ -100,7 +111,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         public void BuildLookupTable()
         {
             nametableMap.Clear();
-            for (int i = 0; i < NameTable.Count - 1; i++)
+            for (int i = 0; i < NameTable.Count; i++)
             {
                 nametableMap[NameTable[i]] = i;
             }

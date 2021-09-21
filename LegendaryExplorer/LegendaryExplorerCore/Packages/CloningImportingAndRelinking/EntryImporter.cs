@@ -224,12 +224,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         {
 #if DEBUG
             // BIG HACKJOB
-            if (targetGameDB != null && sourceExport.ClassName != "Package") // Actors cannot be donors
+            if (targetGameDB != null && sourceExport.ClassName != "Package" && sourceExport.indexValue == 0) // Actors cannot be donors
             {
                 // Port in donor instead
                 var ifp = sourceExport.InstancedFullPath;
                 //Debug.WriteLine($@"Porting {ifp}");
-                //if (ifp == "Brush")
+                //if (ifp.Contains("STA30_WALL04"))
                 //    Debugger.Break();
                 var donorFiles = targetGameDB.GetFilesContainingObject(ifp);
                 //if ((donorFiles == null || !donorFiles.Any()) && ifp.EndsWith("_dup", StringComparison.InvariantCultureIgnoreCase))
@@ -245,7 +245,18 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     bool isCached = false;
                     foreach (var df in donorFiles)
                     {
-                        var dfp = Path.Combine(MEDirectories.GetDefaultGamePath(destPackage.Game), df);
+                        if (!df.RepresentsPackageFilePath())
+                        {
+                            Debugger.Break(); // LOOKUP INTO DB FAILED
+                        }
+                        
+                        string dfp = df;
+                        if (!File.Exists(dfp))
+                        {
+                            // Relative to game
+                            dfp = Path.Combine(MEDirectories.GetDefaultGamePath(destPackage.Game), df);
+                        }
+
                         if (targetGameDB.HACK_CACHE.TryGetCachedPackage(dfp, false, out donorPackage))
                         {
                             var testExp = donorPackage.FindExport(sourceExport.InstancedFullPath);
@@ -276,7 +287,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                 if (!usingDonor && !ifp.StartsWith(@"TheWorld"))
                 {
-                    Debug.WriteLine($@"Not ported using donor: {sourceExport.InstancedFullPath} ({sourceExport.ClassName})");
+                    if (sourceExport.ClassName == "Material")
+                        Debug.WriteLine($@"Not ported using donor: {sourceExport.InstancedFullPath} ({sourceExport.ClassName})");
                 }
 
                 if (usingDonor && ifp.StartsWith(@"ShadowMap"))
