@@ -102,7 +102,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 CurrentFileLib.InitializationStatusChange += CurrentFileLibOnInitialized;
                 if (IsVisible)
                 {
-                    CurrentFileLib?.Initialize();
+                    CurrentFileLib?.InitializeAsync();
                 }
             }
             else if (CurrentFileLib?.IsInitialized == true)
@@ -116,7 +116,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 BusyText = "Recompiling local classes";
                 if (IsVisible)
                 {
-                    CurrentFileLib?.Initialize();
+                    CurrentFileLib?.InitializeAsync();
                 }
             }
             if (!IsBusy)
@@ -303,7 +303,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 FullyInitialized = false;
                 if (IsVisible)
                 {
-                    CurrentFileLib?.Initialize();
+                    CurrentFileLib?.InitializeAsync();
                 }
             }
         }
@@ -317,7 +317,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                     progressBarTimer.Start();
                 }
 
-                CurrentFileLib?.Initialize();
+                CurrentFileLib?.InitializeAsync();
             }
             else
             {

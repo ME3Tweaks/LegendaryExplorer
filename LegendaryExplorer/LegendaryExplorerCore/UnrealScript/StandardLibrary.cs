@@ -123,7 +123,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
             }
 
-            public async Task<bool> InitializeStandardLib(MessageLog log, PackageCache packageCache, string gameRootPath = null)
+            public async Task<bool> InitializeStandardLibAsync(MessageLog log, PackageCache packageCache, string gameRootPath = null)
             {
                 lock (_initializationLock)
                 {
@@ -135,18 +135,24 @@ namespace LegendaryExplorerCore.UnrealScript
 
                 return await Task.Run(() =>
                 {
-                    bool success;
-                    lock (_initializationLock)
-                    {
-                        if (_isInitialized)
-                        {
-                            return true;
-                        }
-                        success = InternalInitialize(log, packageCache, gameRootPath);
-                        _isInitialized = success;
-                    }
-                    return success;
+                    return InitializeStandardLib(log, packageCache, gameRootPath);
                 });
+            }
+
+            // Non-async
+            public bool InitializeStandardLib(MessageLog log, PackageCache packageCache, string gameRootPath)
+            {
+                bool success;
+                lock (_initializationLock)
+                {
+                    if (_isInitialized)
+                    {
+                        return true;
+                    }
+                    success = InternalInitialize(log, packageCache, gameRootPath);
+                    _isInitialized = success;
+                }
+                return success;
             }
 
             private bool InternalInitialize(MessageLog log, PackageCache packageCache, string gameRootPath = null)
