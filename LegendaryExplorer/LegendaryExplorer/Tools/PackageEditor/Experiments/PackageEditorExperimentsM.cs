@@ -13,6 +13,7 @@ using System.Windows.Input;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Tools.AssetDatabase;
+using LegendaryExplorer.Tools.Sequence_Editor;
 using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
@@ -1851,9 +1852,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         public static async void VTest(PackageEditorWindow pe)
         {
             // Setup variables
-            var finalDestDir = @"Y:\ModLibrary\LE1\V Test\DLC_MOD_Vegas\CookedPCConsole";
-            var moddedSourceDir = @"Y:\ModLibrary\LE1\V Test\ModdedSource";
-            var extraDonorsDir = @"Y:\ModLibrary\LE1\V Test\Donors";
+            var finalDestDir = @"D:\Mass Effect Modding\ME3TweaksModManager\mods\LE1\V Test\DLC_MOD_Vegas\CookedPCConsole";
+            var moddedSourceDir = @"D:\Mass Effect Modding\ME3TweaksModManager\mods\LE1\V Test\ModdedSource";
+            var extraDonorsDir = @"D:\Mass Effect Modding\ME3TweaksModManager\mods\LE1\V Test\Donors";
 
 
             pe.SetBusy("Performing VTest");
@@ -1885,7 +1886,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 pe.BusyText = "Loading packages";
 
 
-
+                using var sequencePackageCache = new PackageCache();
                 // BIOA_PRC22
                 {
                     var sourceName = "BIOA_PRC2AA";
@@ -1904,6 +1905,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         me1File.FindExport(@"TheWorld.PersistentLevel.PlayerStart_0"),
                         me1File.FindExport(@"TheWorld.PersistentLevel.StaticLightCollectionActor_15"),
                         me1File.FindExport(@"TheWorld.PersistentLevel.StaticMeshCollectionActor_44"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.Note_0"),
+                        me1File.FindExport(@"TheWorld.PersistentLevel.Note_1")
                     };
 
                     VTestFilePorting(le1File, itemsToPort, db, pe);
@@ -1999,6 +2002,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     pe.BusyText = "Porting sequencing...";
                     var dest = le1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence");
                     EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, me1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence"), le1File, dest, true, out _, importExportDependencies: true, targetGameDonorDB: db);
+                    CorrectSequenceObjects(dest, sequencePackageCache);
                     RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
                     CorrectNeverStream(le1File);
                     le1File.Save(); // Save again
@@ -2031,6 +2035,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     pe.BusyText = "Porting sequencing...";
                     var dest = le1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence");
                     EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, me1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence"), le1File, dest, true, out _, importExportDependencies: true, targetGameDonorDB: db);
+                    CorrectSequenceObjects(dest, sequencePackageCache);
                     RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
                     CorrectNeverStream(le1File);
                     le1File.Save(); // Save again
@@ -2093,6 +2098,48 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
 
             pl.WriteBinary(level);
+        }
+
+        private static void CorrectSequenceObjects(ExportEntry seq, PackageCache pc = null)
+        {
+            // Set ObjInstanceVersions to LE value
+            if (seq.IsA("SequenceObject"))
+            {
+                if (LE1UnrealObjectInfo.SequenceObjects.TryGetValue(seq.ClassName, out var soi))
+                {
+                    seq.WriteProperty(new IntProperty(soi.ObjInstanceVersion, "ObjInstanceVersion"));
+                }
+
+                var children = seq.GetChildren();
+                foreach (var child in children)
+                {
+                    if (child is ExportEntry chExp)
+                    {
+                        CorrectSequenceObjects(chExp, pc);
+                    }
+                }
+            }
+            // Fix missing PropertyNames on VariableLinks
+            if (seq.IsA("SequenceOp"))
+            {
+                var defaultProperties =
+                    SequenceObjectCreator.GetSequenceObjectDefaults(seq.FileRef, seq.ClassName, seq.Game, pc);
+                var defaultVarLinks = defaultProperties.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
+
+                var varLinks = seq.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
+                if (varLinks is null || defaultVarLinks is null) return;
+                foreach (var t in varLinks.Values)
+                {
+                    string desc = t.GetProp<StrProperty>("LinkDesc").Value;
+                    var defaultLink = defaultVarLinks.Values.FirstOrDefault(property => property.GetProp<StrProperty>("LinkDesc").Value == desc);
+                    if (defaultLink != null)
+                    {
+                        var propertyName = defaultLink.GetProp<NameProperty>("PropertyName");
+                        t.Properties.AddOrReplaceProp(propertyName);
+                    }
+                }
+                seq.WriteProperty(varLinks);
+            }
         }
 
         private static void CreateEmptyLevel(string outpath, MEGame game)
