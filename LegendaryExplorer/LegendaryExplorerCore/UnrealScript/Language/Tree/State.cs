@@ -13,12 +13,10 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public CodeBody Body { get; set; }
         public State Parent;
         public List<Function> Functions { get; }
-        public List<Function> Ignores;
+        public EProbeFunctions IgnoreMask = (EProbeFunctions)ulong.MaxValue;
         public List<Label> Labels;
 
-        public State(string name, CodeBody body, EStateFlags flags,
-            State parent, List<Function> funcs, List<Function> ignores,
-            List<Label> labels, SourcePosition start, SourcePosition end)
+        public State(string name, CodeBody body, EStateFlags flags, State parent, List<Function> funcs, List<Label> labels, SourcePosition start, SourcePosition end)
             : base(ASTNodeType.State, start, end)
         {
             Flags = flags;
@@ -26,7 +24,6 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             Body = body;
             Parent = parent;
             Functions = funcs;
-            Ignores = ignores;
             Labels = labels;
             if (Body != null) Body.Outer = this;
         }
@@ -42,7 +39,6 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
                 yield return Parent;
                 if (Functions != null) foreach (Function function in Functions) yield return function;
                 yield return Body;
-                if (Ignores != null) foreach (Function function in Ignores) yield return function;
             }
         }
 

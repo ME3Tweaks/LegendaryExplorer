@@ -168,7 +168,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
 
         private void ExportLoaderControl_Loaded(object sender, RoutedEventArgs e)
         {
-            Window window = Window.GetWindow(this);
+            var window = Window.GetWindow(this);
             if (window is { })
             {
                 window.Closed += (_, _) => UnloadFileLib();
@@ -349,16 +349,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                         outputListBox.ItemsSource = log?.Content;
                         break;
                     }
-                    //case "State":
-                    //{
-                    //    (_, MessageLog log) = UnrealScriptCompiler.CompileState(CurrentLoadedExport, ScriptText, CurrentFileLib);
-                    //    outputListBox.ItemsSource = log?.Content;
-                    //    break;
-                    //}
+                    case "State":
+                    {
+                        (_, MessageLog log) = UnrealScriptCompiler.CompileState(CurrentLoadedExport, ScriptText, CurrentFileLib);
+                        outputListBox.ItemsSource = log?.Content;
+                        break;
+                    }
                     default:
                         outputListBox.ItemsSource = new[]
                         {
-                            $"Can only compile functions right now. {(CurrentLoadedExport.IsDefaultObject ? "Defaults" : CurrentLoadedExport.ClassName)} compilation will be added in a future update."
+                            $"Can only compile functions and States right now. {(CurrentLoadedExport.IsDefaultObject ? "Defaults" : CurrentLoadedExport.ClassName)} compilation will be added in a future update."
                         };
                         break;
                 }
@@ -422,7 +422,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
 
                     RootNode = ast;
                     ScriptText = text;
-                    textEditor.IsReadOnly = RootNode is not (Function);// or State);
+                    textEditor.IsReadOnly = RootNode is not (Function or State);
                 });
 
             }

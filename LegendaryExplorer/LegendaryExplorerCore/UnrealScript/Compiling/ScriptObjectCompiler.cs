@@ -138,8 +138,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
 
             stateObj.StateFlags = stateAST.Flags;
-            stateObj.ProbeMask = EProbeFunctions.BeginState | EProbeFunctions.EndState | EProbeFunctions.PoppedState | EProbeFunctions.PushedState;
-            stateObj.IgnoreMask = (EProbeFunctions)ulong.MaxValue;
+            stateObj.ProbeMask = 0;
+            stateObj.IgnoreMask = stateAST.IgnoreMask;
             stateObj.SuperClass = super?.UIndex ?? 0;
 
 
@@ -149,7 +149,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 foreach (Function stateFunc in curState.Functions)
                 {
-                    if (/*stateFunc.IsDefined && */Enum.TryParse(stateFunc.Name, true, out EProbeFunctions enumVal))
+                    if (Enum.TryParse(stateFunc.Name, true, out EProbeFunctions enumVal))
                     {
                         stateObj.ProbeMask |= enumVal;
                     }
@@ -161,6 +161,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
             UFunction prevFunc = null;
             var existingFuncs = GetMembers<UFunction>(stateObj).ToDictionary(uFunc => uFunc.Export.ObjectName.Instanced);
+            stateObj.Children = 0;
             foreach (Function member in stateAST.Functions)
             {
                 existingFuncs.Remove(member.Name, out UFunction childFunc);

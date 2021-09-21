@@ -121,7 +121,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             CurrentLoadedExport = exportEntry;
             ScriptEditor_Hexbox.ByteProvider = new ReadOptimizedByteProvider(CurrentLoadedExport.Data);
             ScriptEditor_Hexbox.ByteProvider.Changed += ByteProviderBytesChanged;
-            StartFunctionScan(CurrentLoadedExport.Data);
+            try
+            {
+                StartFunctionScan(CurrentLoadedExport.Data);
+            }
+            catch (Exception e)
+            {
+                DecompiledScriptBlocks.ClearEx();
+                DecompiledScriptBlocks.Add("Decompilation Error!");
+                DecompiledScriptBlocks.Add(e.FlattenException());
+            }
         }
 
         public override void PopOut()

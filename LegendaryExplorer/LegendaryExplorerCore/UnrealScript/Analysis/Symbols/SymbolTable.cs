@@ -555,7 +555,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                     if (functionName.Contains("."))
                     {
                         var parts = functionName.Split('.');
-                        functionName = parts[parts.Length - 1];
+                        functionName = parts[^1];
                         if (parts.Length == 2 && Types.TryGetValue(parts[0], out VariableType type) && type is Class cls)
                         {
                             scope = cls.GetInheritanceString();
@@ -712,11 +712,16 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             return Scopes.Last().TryGetValue(symbol, out node);
         }
 
-        public bool TryGetSymbolFromSpecificScope(string symbol, out ASTNode node, string specificScope)
+        public bool TryGetSymbolFromSpecificScope<T>(string symbol, out T node, string specificScope) where T : ASTNode
         {
+            if (Cache.TryGetValue(specificScope, out ASTNodeDict scope) &&
+                scope.TryGetValue(symbol, out ASTNode astNode) && astNode is T tNode)
+            {
+                node = tNode;
+                return true;
+            }
             node = null;
-            return Cache.TryGetValue(specificScope, out ASTNodeDict scope) &&
-                   scope.TryGetValue(symbol, out node);
+            return false;
         }
 
         public void AddSymbol(string symbol, ASTNode node)

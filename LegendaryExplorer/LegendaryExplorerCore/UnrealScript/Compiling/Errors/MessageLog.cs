@@ -21,8 +21,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling.Errors
 
         public IList<LogMessage> LineWarnings => content.Where(m => m is LineWarning).ToList();
 
-        public IList<LogMessage> AllErrors => content.Where(m => m is Error || m is LineError).ToList();
-        public IList<LogMessage> AllWarnings => content.Where(m => m is Warning || m is LineWarning).ToList();
+        public IList<LogMessage> AllErrors => content.Where(m => m is Error or LineError).ToList();
+        public IList<LogMessage> AllWarnings => content.Where(m => m is Warning or LineWarning).ToList();
 
         public MessageLog()
         {

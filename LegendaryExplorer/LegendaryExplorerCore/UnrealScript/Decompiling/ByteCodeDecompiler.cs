@@ -156,10 +156,30 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 statements.Add(current);
             }
             CurrentScope.Pop();
-            AddStateLabels();
 
             Dictionary<Statement, ushort> LocationStatements = StatementLocations.ToDictionary(kvp => kvp.Value, kvp => kvp.Key);
-            DecompileLoopsAndIfs(codeBody, LocationStatements);
+            try
+            {
+                DecompileLoopsAndIfs(codeBody, LocationStatements);
+            }
+            catch (Exception e)
+            {
+                //as well as being eye-catching in generated code, this is totally invalid unrealscript and will cause compilation errors!
+                statements.Clear();
+                statements.Add(new ExpressionOnlyStatement(new SymbolReference(null, "**************************")));
+                statements.Add(new ExpressionOnlyStatement(new SymbolReference(null, "*                        *")));
+                statements.Add(new ExpressionOnlyStatement(new SymbolReference(null, "*  DECOMPILATION ERROR!  *")));
+                statements.Add(new ExpressionOnlyStatement(new SymbolReference(null, "*                        *")));
+                statements.Add(new ExpressionOnlyStatement(new SymbolReference(null, "**************************")));
+                statements.Add(new ExpressionOnlyStatement(new SymbolReference(null, e.FlattenException())));
+                return codeBody;
+            }
+
+            //insert state Labels
+            foreach (LabelTableEntry label in LabelTable)
+            {
+                InsertLabel(new Label(label.NameRef, (ushort)label.Offset));
+            }
 
             //insert labels for any (non-state) gotos
             foreach ((ushort labelPos, List<Goto> gotos) in LabelLocationsToFix)
@@ -180,49 +200,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 {
                     continue;
                 }
-                var statementAtLabelLocation = StatementLocations[labelPos];
-                while (statementAtLabelLocation is UnconditionalJump unJump)
-                {
-                    statementAtLabelLocation = StatementLocations[unJump.JumpLoc];
-                }
-
-                switch (statementAtLabelLocation.Outer)
-                {
-                    case CodeBody cb:
-                    {
-                        int stmntIdx = cb.Statements.IndexOf(statementAtLabelLocation);
-                        label.Outer = cb;
-                        cb.Statements.Insert(stmntIdx, label);
-                        break;
-                    }
-                    case ForLoop forLoop:
-                        if (statementAtLabelLocation == forLoop.Update)
-                        {
-                            label.Outer = forLoop.Body;
-                            forLoop.Body.Statements.Add(label);
-                        }
-                        else //statementAtLabelLocation is the initializer
-                        {
-                            var cb = (CodeBody)forLoop.Outer;
-                            int stmntIdx = cb.Statements.IndexOf(forLoop);
-                            label.Outer = cb;
-                            cb.Statements.Insert(stmntIdx, label);
-                        }
-                        break;
-                    case ForEachLoop forEachLoop:
-                        if (statementAtLabelLocation is IteratorNext)
-                        {
-                            label.Outer = forEachLoop.Body;
-                            forEachLoop.Body.Statements.Add(label);
-                        }
-                        else
-                        {
-                            throw new Exception("Invalid control flow!");
-                        }
-                        break;
-                    default:
-                        throw new Exception("Invalid control flow!");
-                }
+                InsertLabel(label);
             }
 
             //a void return at the end of a function is a bytecode implementation detail, get rid of it.
@@ -235,6 +213,55 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return codeBody;
         }
 
+        private void InsertLabel(Label label)
+        {
+            var statementAtLabelLocation = StatementLocations[label.StartOffset];
+            while (statementAtLabelLocation is UnconditionalJump unJump)
+            {
+                statementAtLabelLocation = StatementLocations[unJump.JumpLoc];
+            }
+
+            switch (statementAtLabelLocation.Outer)
+            {
+                case CodeBody cb:
+                {
+                    int stmntIdx = cb.Statements.IndexOf(statementAtLabelLocation);
+                    label.Outer = cb;
+                    cb.Statements.Insert(stmntIdx, label);
+                    break;
+                }
+                case ForLoop forLoop:
+                    if (statementAtLabelLocation == forLoop.Update)
+                    {
+                        label.Outer = forLoop.Body;
+                        forLoop.Body.Statements.Add(label);
+                    }
+                    else //statementAtLabelLocation is the initializer
+                    {
+                        var cb = (CodeBody) forLoop.Outer;
+                        int stmntIdx = cb.Statements.IndexOf(forLoop);
+                        label.Outer = cb;
+                        cb.Statements.Insert(stmntIdx, label);
+                    }
+
+                    break;
+                case ForEachLoop forEachLoop:
+                    if (statementAtLabelLocation is IteratorNext)
+                    {
+                        label.Outer = forEachLoop.Body;
+                        forEachLoop.Body.Statements.Add(label);
+                    }
+                    else
+                    {
+                        throw new Exception("Invalid control flow!");
+                    }
+
+                    break;
+                default:
+                    throw new Exception("Invalid control flow!");
+            }
+        }
+
         private readonly Dictionary<ushort, List<Goto>> LabelLocationsToFix = new();
 
         private void DecompileLoopsAndIfs(CodeBody outer, Dictionary<Statement, ushort> positions, bool inLoop = false)
@@ -244,38 +271,39 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             var switchEnds = new Dictionary<int, ushort>();
             for (int i = statements.Count - 1; i >= 0; i--)
             {
-                var cur = statements[i];
+                Statement cur = statements[i];
                 cur.Outer = outer;
                 if (!positions.TryGetValue(cur, out ushort curPos)) continue; //default param values, labels
 
                 if (cur is UnconditionalJump loopEnd && loopEnd.JumpLoc < curPos)
                 {
                     //end of while or for loop
-                    var continueToPos = curPos;
+                    ushort continueToPos = curPos;
                     Statement statementBeforeEndOfLoop = statements[i - 1];
                     bool isForLoop = IsIncrementDecrement(statementBeforeEndOfLoop, out Statement update);
-                    var loopStart = StatementLocations[loopEnd.JumpLoc];
+                    Statement loopStart = StatementLocations[loopEnd.JumpLoc];
                     int conditionIdx = statements.IndexOf(loopStart);
                     int skipStart = conditionIdx;
                     int numToSkip = i - conditionIdx + 1;
 
-                    if (!(statements[conditionIdx] is ConditionalJump conditionalJump))
+                    if (statements[conditionIdx] is not ConditionalJump conditionalJump)
                     {
-                        //TODO: replace the unconditional jump with a goto? or perhaps this is a loop with no condition?
-                        throw new Exception("Invalid Control Flow!");
+                        //no loop condition, so this is a backwards goto instead
+                        ReplaceWithGoto(loopEnd, outer, i);
+                        continue;
                     }
                     var loopBody = new CodeBody(statements.GetRange(conditionIdx + 1, i - conditionIdx - 1));
-                    if (!isForLoop && !(statementBeforeEndOfLoop is Jump))
+                    if (!isForLoop && statementBeforeEndOfLoop is not Jump)
                     {
                         //check to see if there is an unconditional jump to the statement before the end of the loop. This indicates a continue inside a for loop
-                        var checkPos = positions[statementBeforeEndOfLoop];
+                        ushort checkPos = positions[statementBeforeEndOfLoop];
                         if (loopBody.Statements.OfType<UnconditionalJump>().Any(possibleContinue => possibleContinue.JumpLoc == checkPos))
                         {
                             update = statementBeforeEndOfLoop;
                             isForLoop = true;
                         }
                     }
-                    else if (isForLoop)
+                    if (isForLoop)
                     {
                         //check to see if there is an unconditional jump to the end of the loop.
                         //This indicates that the loop is NOT a for loop, as there is no way to skip the increment statement in a for loop
@@ -284,6 +312,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                             if (statements[j] is UnconditionalJump unj && unj.JumpLoc == curPos)
                             {
                                 isForLoop = false;
+                                update = null;
                                 break;
                             }
                         }
@@ -328,8 +357,8 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 else if (cur is ConditionalJump inj && inj.JumpLoc < curPos)
                 {
                     //end of do until loop
-                    var loopStart = StatementLocations[inj.JumpLoc];
-                    var loopStartIdx = statements.IndexOf(loopStart);
+                    Statement loopStart = StatementLocations[inj.JumpLoc];
+                    int loopStartIdx = statements.IndexOf(loopStart);
                     int loopLength = i - loopStartIdx;
                     var loop = new DoUntilLoop(inj.Condition, new CodeBody(statements.GetRange(loopStartIdx, loopLength))) { Outer = outer };
 
@@ -349,7 +378,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 else if (cur is ConditionalJump ifJump)
                 {
                     //Just a plain if (and maybe else)
-                    var jumpToStatement = StatementLocations[ifJump.JumpLoc];
+                    Statement jumpToStatement = StatementLocations[ifJump.JumpLoc];
                     int jumpToStatementIdx = statements.IndexOf(jumpToStatement);
                     if (jumpToStatementIdx == -1)
                     {
@@ -364,22 +393,29 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     CodeBody elseBody = null;
                     if (jumpToStatementIdx < statements.Count)
                     {
-                        if (inLoop && thenBodyLength == 1 && statements[thenBodyStartIdx] is UnconditionalJump possibleContinue && possibleContinue.JumpLoc > positions[statements.Last()])
+                        if (inLoop && thenBodyLength == 1 && statements[thenBodyStartIdx] is UnconditionalJump possibleContinue && possibleContinue.JumpLoc > positions[statements[^1]])
                         {
                             //this is a continue, not an else. Will be converted elsewhere
                         }
                         else if (statements[jumpToStatementIdx - 1] is UnconditionalJump elseJump)
                         {
-                            var elseJumpToStatement = StatementLocations[elseJump.JumpLoc];
-                            int elseJumpToStatementIdx = statements.IndexOf(elseJumpToStatement);
-                            if (elseJumpToStatementIdx == -1)
+                            if (inLoop && elseJump.JumpLoc > positions[statements[^1]])
                             {
-                                elseJumpToStatementIdx = statements.Count;
+                                //this is a break or goto. Will be converted elsewhere
                             }
+                            else
+                            {
+                                Statement elseJumpToStatement = StatementLocations[elseJump.JumpLoc];
+                                int elseJumpToStatementIdx = statements.IndexOf(elseJumpToStatement);
+                                if (elseJumpToStatementIdx == -1)
+                                {
+                                    elseJumpToStatementIdx = statements.Count;
+                                }
 
-                            elseBody = new CodeBody(statements.GetRange(jumpToStatementIdx, elseJumpToStatementIdx - jumpToStatementIdx));
-                            thenBodyLength--;
-                            totalLength += elseBody.Statements.Count;
+                                elseBody = new CodeBody(statements.GetRange(jumpToStatementIdx, elseJumpToStatementIdx - jumpToStatementIdx));
+                                thenBodyLength--;
+                                totalLength += elseBody.Statements.Count;
+                            }
                         }
                     }
                     var thenBody = new CodeBody(statements.GetRange(thenBodyStartIdx, thenBodyLength));
@@ -411,7 +447,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 {
                     defaultCaseStatements.Push(cur);
                     int breakIdx = i - 1;
-                    while (breakIdx >= 0 && (!(statements[breakIdx] is UnconditionalJump uj) || uj.JumpLoc <= curPos))
+                    while (breakIdx >= 0 && (statements[breakIdx] is not UnconditionalJump uj || uj.JumpLoc <= curPos))
                     {
                         --breakIdx;
                     }
@@ -453,7 +489,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     {
                         switchEnds.Remove(defaultCaseStatements.Count);
                         defaultCaseStatements.Pop();
-                        var jumpToStatement = StatementLocations[jumpLoc];
+                        Statement jumpToStatement = StatementLocations[jumpLoc];
                         lastStatementIdx = statements.IndexOf(jumpToStatement) - 1;
                         if (lastStatementIdx < i)
                         {
@@ -496,8 +532,8 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 {
                     switch (expStmnt.Value)
                     {
-                        case PreOpReference preOp when (preOp.Operator.OperatorKeyword == "++" || preOp.Operator.OperatorKeyword == "--"):
-                        case PostOpReference postOp when (postOp.Operator.OperatorKeyword == "++" || postOp.Operator.OperatorKeyword == "--"):
+                        case PreOpReference preOp when (preOp.Operator.OperatorKeyword is "++" or "--"):
+                        case PostOpReference postOp when (postOp.Operator.OperatorKeyword is "++" or "--"):
                             return true;
                     }
                 }
@@ -527,13 +563,9 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                             positions[breakStatement] = position;
                             break;
                         }
-                        case UnconditionalJump unJump when unJump is not Goto:
+                        case UnconditionalJump unJump and not Goto:
                         {
-                            var gotoStatement = new Goto($"{unJump.JumpLoc:X}", jumpLoc: unJump.JumpLoc) { Outer = codeBody };
-                            ushort position = positions[bodyStatement];
-                            StatementLocations[position] = codeBody.Statements[j] = gotoStatement;
-                            positions[gotoStatement] = position;
-                            LabelLocationsToFix.AddToListAt(unJump.JumpLoc, gotoStatement);
+                            ReplaceWithGoto(unJump, codeBody, j);
                             break;
                         }
                         case IfStatement ifStatement:
@@ -546,20 +578,14 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     }
                 }
             }
-        }
 
-        private void AddStateLabels()
-        {
-            foreach (var label in LabelTable)
+            void ReplaceWithGoto(UnconditionalJump unJump, CodeBody codeBody, int j)
             {
-                var node = new Label(label.NameRef, (ushort)label.Offset);
-                var statement = StatementLocations[(ushort)label.Offset];
-                foreach (List<Statement> stmnt in Scopes)
-                {
-                    var index = stmnt.IndexOf(statement);
-                    if (index != -1)
-                        stmnt.Insert(index, node);
-                }
+                var gotoStatement = new Goto($"{unJump.JumpLoc:X}", jumpLoc: unJump.JumpLoc) {Outer = codeBody};
+                ushort position = positions[unJump];
+                StatementLocations[position] = codeBody.Statements[j] = gotoStatement;
+                positions[gotoStatement] = position;
+                LabelLocationsToFix.AddToListAt(unJump.JumpLoc, gotoStatement);
             }
         }
 
@@ -572,11 +598,10 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 {
                     OptionalParams.Enqueue(param);
                 }
-                while (PeekByte == (byte)OpCodes.DefaultParmValue
-                    || PeekByte == (byte)OpCodes.Nothing)
+                while (PeekByte is (byte)OpCodes.DefaultParmValue or (byte)OpCodes.Nothing)
                 {
                     StartPositions.Push((ushort)Position);
-                    var token = PopByte();
+                    byte token = PopByte();
                     if (token == (byte)OpCodes.DefaultParmValue) // default value assigned
                     {
 

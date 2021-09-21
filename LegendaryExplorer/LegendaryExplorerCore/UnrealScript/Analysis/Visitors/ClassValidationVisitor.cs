@@ -582,7 +582,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     while (state is not null)
                     {
                         string stateScope = $"{((Class)state.Outer).GetInheritanceString()}.{state.Name}";
-                        if (Symbols.TryGetSymbolInScopeStack(node.Name, out superFunc, stateScope))
+                        if (Symbols.TryGetSymbolFromSpecificScope(node.Name, out superFunc, stateScope))
                         {
                             break;
                         }
@@ -705,29 +705,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                             node.Parent = parent as State;
                     }
                 }
-
-                int numFuncs = node.Functions.Count;
+                
                 string parentScope = node.Parent is not null ? $"{NodeUtils.GetContainingClass(node.Parent)?.GetInheritanceString()}.{node.Parent.Name}" : null;
                 Symbols.PushScope(node.Name, parentScope);
-                foreach (Function ignore in node.Ignores)
-                {
-                    if (Symbols.TryGetSymbol(ignore.Name, out ASTNode original) && original.Type == ASTNodeType.Function)
-                    {
-                        var header = (Function)original;
-                        var emptyOverride = new Function(header.Name, header.Flags, header.ReturnValueDeclaration?.Clone(), new CodeBody(), header.Parameters, ignore.StartPos, ignore.EndPos)
-                        {
-                            Outer = node
-                        };
-                        node.Functions.Add(emptyOverride);
-                    }
-                    else //TODO: really ought to throw error, but PlayerController.PlayerWaiting.Jump is like this. Find alternate way of handling this?
-                    {
-                        ignore.Outer = node;
-                        node.Functions.Add(ignore);
-                    }
-                }
 
-                foreach (Function func in node.Functions.GetRange(0, numFuncs))
+                foreach (Function func in node.Functions)
                 {
                     func.Outer = node;
                     Symbols.AddSymbol(func.Name, func);

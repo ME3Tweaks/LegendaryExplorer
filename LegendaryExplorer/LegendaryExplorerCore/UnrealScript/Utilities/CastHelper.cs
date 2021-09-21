@@ -48,7 +48,7 @@ namespace LegendaryExplorerCore.UnrealScript.Utilities
                 srcType = EPropertyType.Interface;
             }
 
-            if (src is null && (destType == EPropertyType.Object || destType == EPropertyType.Delegate))
+            if (src is null && (destType is EPropertyType.Object or EPropertyType.Delegate))
             {
                 return ECast.AutoConvert;
             }

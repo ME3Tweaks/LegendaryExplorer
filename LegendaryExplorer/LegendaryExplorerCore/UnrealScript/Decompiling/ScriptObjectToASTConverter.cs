@@ -126,7 +126,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
         {
             if (containingClass is null)
             {
-                ExportEntry classExport = obj.Export.Parent as ExportEntry;
+                var classExport = obj.Export.Parent as ExportEntry;
                 while (classExport is {IsClass: false})
                 {
                     classExport = classExport.Parent as ExportEntry;
@@ -146,47 +146,37 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             if (obj.SuperClass != 0 && obj.SuperClass.GetEntry(obj.Export.FileRef) is IEntry parentState &&
                 !parentState.ObjectName.Instanced.CaseInsensitiveEquals(obj.Export.ObjectName.Instanced))
             {
-                parent = new State(parentState.ObjectName.Instanced, null, default, null, null, null, null, null, null);
+                parent = new State(parentState.ObjectName.Instanced, null, default, null, null, null, null, null);
             }
 
-            var Funcs = new List<Function>();
-            var Ignores = new List<Function>();
+            var funcs = new List<Function>();
             var nextItem = obj.Children;
             while (obj.Export.FileRef.TryGetUExport(nextItem, out ExportEntry nextChild))
             {
                 var objBin = ObjectBinary.From(nextChild);
-                switch (objBin)
+                if (objBin is not UFunction uFunction)
                 {
-                    case UFunction uFunction when uFunction.FunctionFlags.Has(EFunctionFlags.Defined):
-                        Funcs.Add(ConvertFunction(uFunction, containingClass, decompileBytecode));
-                        nextItem = uFunction.Next;
-                        break;
-                    case UFunction uFunction:
-                        Ignores.Add(new Function(uFunction.Export.ObjectName.Instanced, default, null, null));
-                        /* Ignored functions are not marked as defined, so we dont need to lookup the ignormask.
-                         * They are defined though, each being its own proper object with simply a return nothing for bytecode.
-                         * */
-                        nextItem = uFunction.Next;
-                        break; ;
-                    default:
-                        nextItem = 0;
-                        break;
+                    //todo: State should never have non-function children, so this is indicative of a broken state definition. is there some way to log this?
+                    break;
                 }
+                funcs.Add(ConvertFunction(uFunction, containingClass, decompileBytecode, lib));
+                nextItem = uFunction.Next;
             }
 
             var body = decompileBytecode ? new ByteCodeDecompiler(obj, containingClass, lib).Decompile() : null;
 
-            return new State(obj.Export.ObjectName.Instanced, body, obj.StateFlags, parent, Funcs, Ignores, new List<Label>(), null, null)
+            return new State(obj.Export.ObjectName.Instanced, body, obj.StateFlags, parent, funcs, new List<Label>(), null, null)
             {
                 FilePath = obj.Export.FileRef.FilePath,
-                UIndex = obj.Export.UIndex
+                UIndex = obj.Export.UIndex,
+                IgnoreMask = obj.IgnoreMask
             };
         }
 
         public static Struct ConvertStruct(UScriptStruct obj, PackageCache packageCache)
         {
-            var Vars = new List<VariableDeclaration>();
-            var Types = new List<VariableType>();
+            var vars = new List<VariableDeclaration>();
+            var types = new List<VariableType>();
             var nextItem = obj.Children;
 
             IMEPackage pcc = obj.Export.FileRef;
@@ -196,11 +186,11 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 switch (objBin)
                 {
                     case UProperty uProperty:
-                        Vars.Add(ConvertVariable(uProperty));
+                        vars.Add(ConvertVariable(uProperty));
                         nextItem = uProperty.Next;
                         break;
                     case UScriptStruct uStruct:
-                        Types.Add(ConvertStruct(uStruct, packageCache));
+                        types.Add(ConvertStruct(uStruct, packageCache));
                         nextItem = uStruct.Next;
                         break;
                     default:
@@ -212,7 +202,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             VariableType parent = obj.SuperClass != 0
                 ? new VariableType(obj.SuperClass.GetEntry(pcc).ObjectName.Instanced) : null;
 
-            DefaultPropertiesBlock defaults = null;
+            DefaultPropertiesBlock defaults;
             try
             {
                 defaults = new DefaultPropertiesBlock(ConvertProperties(RemoveDefaultValues(obj.Defaults, pcc.Game),
@@ -223,13 +213,13 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 throw new Exception($"Exception while removing default properties in export {obj.Export.InstancedFullPath} {obj.Export.FileRef.FilePath}", e);
             }
 
-            var node = new Struct(obj.Export.ObjectName.Instanced, parent, obj.StructFlags, Vars, Types, defaults)
+            var node = new Struct(obj.Export.ObjectName.Instanced, parent, obj.StructFlags, vars, types, defaults)
             {
                 FilePath = pcc.FilePath,
                 UIndex = obj.Export.UIndex
             };
 
-            foreach (var member in Vars)
+            foreach (VariableDeclaration member in vars)
                 member.Outer = node;
 
             return node;

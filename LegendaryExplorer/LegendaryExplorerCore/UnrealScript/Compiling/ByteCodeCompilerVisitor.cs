@@ -180,7 +180,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             if (Target is UState uState)
             {
                 CompilationUnit = state;
-                uState.LabelTableOffset = 0;
+                uState.LabelTableOffset = ushort.MaxValue;
                 Emit(state.Body);
 
                 WriteOpCode(OpCodes.Stop);
@@ -194,7 +194,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     }
                     WriteOpCode(OpCodes.LabelTable);
                     uState.LabelTableOffset = Position;
-                    foreach (Label label in state.Labels)
+                    foreach (Label label in Enumerable.Reverse(state.Labels))
                     {
                         WriteName(label.Name);
                         WriteInt(label.StartOffset);
