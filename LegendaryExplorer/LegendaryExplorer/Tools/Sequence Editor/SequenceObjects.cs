@@ -202,7 +202,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                         var soundObjRef = properties.GetProp<ObjectProperty>("PlaySound");
                         if (soundObjRef != null)
                         {
-                            res += export.FileRef.GetEntry(soundObjRef.Value).InstancedFullPath;
+                            res += export.FileRef.GetEntry(soundObjRef.Value)?.InstancedFullPath ?? "";
                         }
                         break;
                     case "BioSeqAct_SetWeapon":

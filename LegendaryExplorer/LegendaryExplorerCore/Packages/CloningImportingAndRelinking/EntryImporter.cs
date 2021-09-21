@@ -249,7 +249,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         {
                             Debugger.Break(); // LOOKUP INTO DB FAILED
                         }
-                        
+
                         string dfp = df;
                         if (!File.Exists(dfp))
                         {
@@ -260,7 +260,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         if (targetGameDB.HACK_CACHE.TryGetCachedPackage(dfp, false, out donorPackage))
                         {
                             var testExp = donorPackage.FindExport(sourceExport.InstancedFullPath);
-                            if (testExp.ClassName == sourceExport.ClassName)
+                            if (testExp.ClassName == sourceExport.ClassName || (sourceExport.ClassName == "BioSWF" && testExp.ClassName == "GFxMovieInfo"))
                             {
                                 sourceExport = testExp;
                                 isCached = true;
@@ -276,7 +276,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         if (targetGameDB.HACK_CACHE.TryGetCachedPackage(dfp, true, out donorPackage))
                         {
                             var testExp = donorPackage.FindExport(sourceExport.InstancedFullPath);
-                            if (testExp.ClassName == sourceExport.ClassName)
+                            if (testExp.ClassName == sourceExport.ClassName || (sourceExport.ClassName == "BioSWF" && testExp.ClassName == "GFxMovieInfo")) // Use GFxMovieInfo Donors for BioSWF export
                             {
                                 sourceExport = testExp;
                                 usingDonor = true;
