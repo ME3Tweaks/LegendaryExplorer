@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using LegendaryExplorer.Misc;
 using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorer.UnrealExtensions;
 using LegendaryExplorer.UnrealExtensions.Classes;
@@ -13,6 +14,7 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Helpers;
+using Newtonsoft.Json;
 using static LegendaryExplorer.Tools.TlkManagerNS.TLKManagerWPF;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
@@ -1213,6 +1215,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var subnodes = new List<ITreeItem>();
             try
             {
+                var materialMapFile = Path.Combine(AppDirectories.ObjectDatabasesFolder, $"{CurrentLoadedExport.Game}MaterialMap.json");
+                Dictionary<Guid, string> materialGuidMap = null;
+                if (File.Exists(materialMapFile))
+                {
+                    materialGuidMap = JsonConvert.DeserializeObject<Dictionary<Guid, string>>(File.ReadAllText(materialMapFile));
+                }
                 var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
@@ -1224,7 +1232,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     subnodes.Add(MakeArrayNode(bin, "CachedTerrainMaterials", i =>
                     {
-                        var node = MakeMaterialResourceNode(bin, $"{i}");
+                        var node = MakeMaterialResourceNode(bin, $"{i}", materialGuidMap);
 
                         node.Items.Add(MakeEntryNode(bin, "Terrain"));
                         node.Items.Add(new BinInterpNode(bin.Position, "Mask")
@@ -1236,7 +1244,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 new BinInterpNode(bin.Position, $"BitMask: {Convert.ToString(bin.ReadInt64(), 2).PadLeft(64, '0')}")
                             }
                         });
-                        node.Items.Add(MakeArrayNode(bin, "MaterialIds", j => MakeGuidNode(bin, $"{j}")));
+                        node.Items.Add(MakeArrayNode(bin, "MaterialIds", j => MakeMaterialGuidNode(bin, $"{j}", materialGuidMap)));
                         if (Pcc.Game >= MEGame.ME3)
                         {
                             node.Items.Add(MakeGuidNode(bin, "LightingGuid"));
@@ -2186,7 +2194,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private static List<ITreeItem> ReadList(int count, Func<int, ITreeItem> selector)
         {
             //sanity check. if this number is too small, feel free to increase
-            if (count > 2097152)
+            if (count > 20971520)
             {
                 throw new Exception($"Is this actually a list? {count} seems like an incorrect count");
             }
@@ -4930,7 +4938,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         combinerNode.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
                     }
 
-                        // Format type 6 includes two subsequent partial entries, that don't belong inside the outer group
+                    // Format type 6 includes two subsequent partial entries, that don't belong inside the outer group
                     if (formatType == 6)
                     {
                         var materialSlotId = new List<ITreeItem>();
@@ -5104,7 +5112,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         });
                     }
 
-                        nodes.Add(new BinInterpNode(bin.Position, $"Fade In Time: {bin.ReadFloat()}") { Length = 4 });
+                    nodes.Add(new BinInterpNode(bin.Position, $"Fade In Time: {bin.ReadFloat()}") { Length = 4 });
                     nodes.Add(new BinInterpNode(bin.Position, $"Fade Out Time: {bin.ReadFloat()}") { Length = 4 });
                     nodes.Add(MakeInt32Node(bin, "Unknown"));
                     if (game == MEGame.ME2)
@@ -5139,7 +5147,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 subnodes.Add(MakeInt32Node(bin, "Unknown"));
                 if (game is MEGame.LE1 or MEGame.LE2)
                 {
-                    subnodes.Add(MakeArrayNode(bin, "Unknown Ints", i =>  new BinInterpNode(bin.Position, $"Unknown: {nameTable[bin.ReadInt32()]}") { Length = 4 }));
+                    subnodes.Add(MakeArrayNode(bin, "Unknown Ints", i => new BinInterpNode(bin.Position, $"Unknown: {nameTable[bin.ReadInt32()]}") { Length = 4 }));
                 }
 
             }
@@ -6338,7 +6346,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             var probeMaskNode = new BinInterpNode(classFlagsPos, $"ProbeMask: {(ulong)probeFuncs:X16}")
             {
-                Length = 8, 
+                Length = 8,
                 IsExpanded = true
             };
             foreach (EProbeFunctions flag in probeFuncs.MaskToList())
@@ -7061,6 +7069,21 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             };
         }
 
+
+        private static BinInterpNode MakeMaterialGuidNode(EndianReader bin, string name, Dictionary<Guid, string> materialGuidMap = null)
+        {
+            var guid = bin.ReadGuid();
+            var node = new BinInterpNode(bin.Position - 16, $"{name}: {guid}") { Length = 16 };
+
+#if DEBUG
+            if (materialGuidMap != null && materialGuidMap.TryGetValue(guid, out var matName))
+            {
+                node.Header += matName;
+            }
+#endif
+            return node;
+        }
+
         private static BinInterpNode MakeGuidNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadGuid()}") { Length = 16 };
 
         private static BinInterpNode MakeArrayNode(EndianReader bin, string name, Func<int, BinInterpNode> selector, bool IsExpanded = false,
@@ -7258,7 +7281,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             return result;
         }
 
-        private BinInterpNode MakeMaterialResourceNode(EndianReader bin, string name)
+        private BinInterpNode MakeMaterialResourceNode(EndianReader bin, string name, Dictionary<Guid, string> materialGuidMap = null)
         {
             BinInterpNode node = new BinInterpNode(bin.Position, name)
             {
@@ -7270,7 +7293,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 nodes.Add(MakeArrayNode(bin, "Compile Errors", i => MakeStringNode(bin, $"{i}")));
                 nodes.Add(MakeArrayNode(bin, "TextureDependencyLengthMap", i => new BinInterpNode(bin.Position, $"{entryRefString(bin)}: {bin.ReadInt32()}")));
                 nodes.Add(MakeInt32Node(bin, "MaxTextureDependencyLength"));
-                nodes.Add(MakeGuidNode(bin, "ID"));
+                nodes.Add(MakeMaterialGuidNode(bin, "ID", materialGuidMap));
                 nodes.Add(MakeUInt32Node(bin, "NumUserTexCoords"));
                 if (Pcc.Game >= MEGame.ME3)
                 {
@@ -8522,7 +8545,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     subnodes.Add(MakeInt32Node(bin, "Unknown Int ME3/LE"));
                 }
-                
+
                 if (Pcc.Game >= MEGame.ME3 && CurrentLoadedExport.ClassName == "LightMapTexture2D")
                 {
                     subnodes.Add(new BinInterpNode(bin.Position, $"LightMapFlags: {(ELightMapFlags)bin.ReadInt32()}"));

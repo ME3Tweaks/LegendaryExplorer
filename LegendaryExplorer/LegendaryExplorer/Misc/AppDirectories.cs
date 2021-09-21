@@ -22,6 +22,7 @@ namespace LegendaryExplorer.Misc
 
         public static string ObjectDatabasesFolder => Directory.CreateDirectory(Path.Combine(AppDataFolder, "ObjectDatabases")).FullName;
         public static string GetObjectDatabasePath(MEGame game) => Path.Combine(ObjectDatabasesFolder, $"{game}.json"); //todo: update to .bin format
+        public static string GetMaterialGuidMapPath(MEGame game) => Path.Combine(ObjectDatabasesFolder, $"{game}MaterialMap.json"); //todo: update to .bin format
 
     }
 }
