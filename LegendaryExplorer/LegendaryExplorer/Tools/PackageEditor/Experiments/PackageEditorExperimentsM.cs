@@ -1892,15 +1892,20 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             var moddedSourceDir = @"Y:\ModLibrary\LE1\V Test\ModdedSource";
             var extraDonorsDir = @"Y:\ModLibrary\LE1\V Test\Donors";
 
+            bool prc2aa = false;
+            bool prc2 = true;
 
             pe.SetBusy("Performing VTest");
             await Task.Run(() =>
             {
                 ObjectInstanceDB db = null;
                 string dbPath = AppDirectories.GetObjectDatabasePath(MEGame.LE1);
+                string matPath = AppDirectories.GetMaterialGuidMapPath(MEGame.ME1);
+                Dictionary<Guid, string> me1MaterialMap = null;
+                pe.BusyText = "Loading databases";
+
                 if (File.Exists(dbPath))
                 {
-                    pe.BusyText = "Loading database";
                     db = ObjectInstanceDB.DeserializeDB(File.ReadAllText(dbPath));
                     db.BuildLookupTable(); // Lookup table is required as we are going to compile things
 
@@ -1919,161 +1924,260 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     return;
                 }
 
+                if (File.Exists(matPath))
+                {
+                    me1MaterialMap = JsonConvert.DeserializeObject<Dictionary<Guid, string>>(File.ReadAllText(matPath));
+                }
+                else
+                {
+                    return;
+                }
+
                 pe.BusyText = "Loading packages";
 
 
+                // BIOA_PRC2AA ---------------------------------------
 
-                // BIOA_PRC22
+                if (prc2aa)
                 {
-                    var sourceName = "BIOA_PRC2AA";
-                    var outputFile = $@"{finalDestDir}\{sourceName}.pcc";
-                    CreateEmptyLevel(outputFile, MEGame.LE1);
 
-                    using var le1File = MEPackageHandler.OpenMEPackage(outputFile);
-                    using var me1File = MEPackageHandler.OpenMEPackage($@"{moddedSourceDir}\{sourceName}.SFM");
-
-                    var itemsToPort = new ExportEntry[]
+                    // BIOA_PRC2AA
                     {
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BioMapNote_26"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BioMapNote_27"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BioMapNote_28"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BioTriggerStream_32"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.PlayerStart_0"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.StaticLightCollectionActor_15"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.StaticMeshCollectionActor_44"),
-                    };
+                        var sourceName = "BIOA_PRC2AA";
+                        var outputFile = $@"{finalDestDir}\{sourceName}.pcc";
+                        CreateEmptyLevel(outputFile, MEGame.LE1);
 
-                    VTestFilePorting(le1File, itemsToPort, db, pe);
+                        using var le1File = MEPackageHandler.OpenMEPackage(outputFile);
+                        using var me1File = MEPackageHandler.OpenMEPackage($@"{moddedSourceDir}\PRC2AA\{sourceName}.SFM");
 
-                    // Replace BioWorldInfo
-                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, me1File.FindExport(@"TheWorld.PersistentLevel.BioWorldInfo_0"), le1File, le1File.FindExport(@"TheWorld.PersistentLevel.BioWorldInfo_0"), true, out _, importExportDependencies: true, targetGameDonorDB: db);
-                    RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
-                    CorrectNeverStream(le1File);
-                    le1File.Save();
+                        var itemsToPort = new ExportEntry[]
+                        {
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BioMapNote_26"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BioMapNote_27"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BioMapNote_28"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BioTriggerStream_32"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.PlayerStart_0"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.StaticLightCollectionActor_15"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.StaticMeshCollectionActor_44"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.Note_0"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.Note_1")
+                        };
+
+                        VTestFilePorting(le1File, itemsToPort, db, pe);
+
+                        // Replace BioWorldInfo
+                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, me1File.FindExport(@"TheWorld.PersistentLevel.BioWorldInfo_0"), le1File, le1File.FindExport(@"TheWorld.PersistentLevel.BioWorldInfo_0"), true, out _, importExportDependencies: true, targetGameDonorDB: db);
+                        RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
+                        CorrectNeverStream(le1File);
+                        le1File.Save();
+                    }
+
+                    // BIOA_PRC2AA_00_LAY
+                    {
+                        var sourceName = "BIOA_PRC2AA_00_LAY";
+                        var outputFile = $@"{finalDestDir}\{sourceName}.pcc";
+                        CreateEmptyLevel(outputFile, MEGame.LE1);
+
+                        using var le1File = MEPackageHandler.OpenMEPackage(outputFile);
+                        using var me1File = MEPackageHandler.OpenMEPackage($@"{moddedSourceDir}\PRC2AA\{sourceName}.SFM");
+
+                        var itemsToPort = new ExportEntry[]
+                        {
+                            me1File.FindExport(@"TheWorld.PersistentLevel.StaticLightCollectionActor_16"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.StaticMeshCollectionActor_45"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.Terrain_0"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_0"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_2"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_3"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_4"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_5"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_0"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_1"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_10"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_11"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_12"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_13"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_14"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_2"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_3"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_35"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_36"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_37"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_4"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_5"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_6"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_7"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_8"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_9"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.PostProcessVolume_0"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.SkeletalMeshActor_0"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.SkeletalMeshActor_1"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.SkeletalMeshActor_2"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.SkeletalMeshActor_9"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BioDoor_0"),
+                        };
+                        VTestFilePorting(le1File, itemsToPort, db, pe);
+                        RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
+                        CorrectNeverStream(le1File);
+
+                        // Correct terrain (doesn't seem to work)
+                        var terrainExp = le1File.FindExport(@"TheWorld.PersistentLevel.Terrain_0");
+                        var terrain = ObjectBinary.From<Terrain>(terrainExp);
+                        terrain.CachedDisplacements = new byte[terrain.Heights.Length];
+                        // Update the GUIDs of the materials
+                        foreach (var cm in terrain.CachedTerrainMaterials)
+                        {
+                            for (int i = 0; i < cm.MaterialIds.Length; i++)
+                            {
+                                var origId = cm.MaterialIds[i];
+                                if (me1MaterialMap.TryGetValue(origId, out var matIFP))
+                                {
+                                    var inFileMat = le1File.FindExport(matIFP);
+                                    var matObjBin = ObjectBinary.From<Material>(inFileMat);
+                                    cm.MaterialIds[i] = matObjBin.SM3MaterialResource.ID;
+                                }
+                                else
+                                {
+                                    Debug.WriteLine($@"UNMAPPED MATERIAL: {origId}");
+                                }
+                            }
+                        }
+
+                        terrainExp.WriteBinary(terrain);
+
+                        // Terrain testing - crashes game
+                        //var preTerrainProps = terrainExp.GetProperties();
+                        //var donorTerrainF = Path.Combine(LE1Directory.CookedPCPath, @"BIOA_UNC10_00_LAY.pcc");
+                        //using var donorTP = MEPackageHandler.OpenMEPackage(donorTerrainF);
+                        //var donorTerrain = donorTP.Exports.First(x => x.ClassName == "Terrain");
+                        //EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, donorTerrain, le1File, terrainExp, false, out _);
+
+                        //foreach (var p in preTerrainProps)
+                        //{
+                        //    if (p is IntProperty ip)
+                        //    {
+                        //        terrainExp.WriteProperty(ip);
+                        //    } else if (p.Name == "TerrainComponents" || p.Name == "Location")
+                        //    {
+                        //        terrainExp.WriteProperty(p);
+                        //    }
+                        //}
+
+                        le1File.Save();
+                    }
+
+                    // BIOA_PRC2AA_00_DSG
+                    {
+                        var sourceName = "BIOA_PRC2AA_00_DSG";
+                        var outputFile = $@"{finalDestDir}\{sourceName}.pcc";
+                        CreateEmptyLevel(outputFile, MEGame.LE1);
+
+                        using var le1File = MEPackageHandler.OpenMEPackage(outputFile);
+                        using var me1File = MEPackageHandler.OpenMEPackage($@"{moddedSourceDir}\PRC2AA\{sourceName}.SFM");
+
+                        var itemsToPort = new ExportEntry[]
+                        {
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BioDoor_1"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BioInert_0"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BioInert_3"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BioInert_4"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BioInert_5"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.InterpActor_33"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.InterpActor_34"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.InterpActor_35"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.InterpActor_36"),
+                        };
+                        VTestFilePorting(le1File, itemsToPort, db, pe);
+
+                        // Port sequence in
+                        pe.BusyText = "Porting sequencing...";
+                        var dest = le1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence");
+                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, me1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence"), le1File, dest, true, out _, importExportDependencies: true, targetGameDonorDB: db);
+                        RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
+                        CorrectNeverStream(le1File);
+                        le1File.Save(); // Save again
+                    }
+
+                    // BIOA_PRC2AA_00_SND
+                    {
+                        var sourceName = "BIOA_PRC2AA_00_SND";
+                        var outputFile = $@"{finalDestDir}\{sourceName}.pcc";
+                        CreateEmptyLevel(outputFile, MEGame.LE1);
+
+                        using var le1File = MEPackageHandler.OpenMEPackage(outputFile);
+                        using var me1File = MEPackageHandler.OpenMEPackage($@"{moddedSourceDir}\PRC2AA\{sourceName}.SFM");
+
+                        var itemsToPort = new ExportEntry[]
+                        {
+                            me1File.FindExport(@"TheWorld.PersistentLevel.Brush_20"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.ReverbVolume_1"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.ReverbVolume_0"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BioAudioVolume_1"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.BioAudioVolume_0"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.AmbientSound_3"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.AmbientSound_4"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.AmbientSound_2"),
+                            me1File.FindExport(@"TheWorld.PersistentLevel.AmbientSound_1"),
+                        };
+                        VTestFilePorting(le1File, itemsToPort, db, pe);
+
+                        // Port sequence in
+                        pe.BusyText = "Porting sequencing...";
+                        var dest = le1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence");
+                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, me1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence"), le1File, dest, true, out _, importExportDependencies: true, targetGameDonorDB: db);
+                        RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
+                        CorrectNeverStream(le1File);
+                        le1File.Save(); // Save again
+                    }
                 }
 
-
-                // BIOA_PRC2AA_00_LAY
+                // BIOA_PRC2 ------------------------------------------
+                if (prc2)
                 {
-                    var sourceName = "BIOA_PRC2AA_00_LAY";
-                    var outputFile = $@"{finalDestDir}\{sourceName}.pcc";
-                    CreateEmptyLevel(outputFile, MEGame.LE1);
+                    //{
+                    //    var sourceName = "BIOA_PRC2";
+                    //    var outputFile = $@"{finalDestDir}\{sourceName}.pcc";
+                    //    CreateEmptyLevel(outputFile, MEGame.LE1);
 
-                    using var le1File = MEPackageHandler.OpenMEPackage(outputFile);
-                    using var me1File = MEPackageHandler.OpenMEPackage($@"{moddedSourceDir}\{sourceName}.SFM");
+                    //    using var le1File = MEPackageHandler.OpenMEPackage(outputFile);
+                    //    using var me1File = MEPackageHandler.OpenMEPackage($@"{moddedSourceDir}\PRC2\{sourceName}.SFM");
 
-                    var itemsToPort = new ExportEntry[]
+                    //    // BIOC_BASE -> SFXGame
+                    //    var bcBaseIdx = me1File.findName("BIOC_Base");
+                    //    me1File.replaceName(bcBaseIdx, "SFXGame");
+
+                    //    var itemsToPort = new List<ExportEntry>();
+
+                    //    itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BlockingVolume"));
+                    //    //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioUsable"));
+                    //    itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioSunActor"));
+                    //    //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioPawn"));
+                    //    //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioMapNote"));
+                    //    itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioDoor"));
+                    //    itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "PlayerStart"));
+                    //    itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "StaticLightCollectionActor"));
+                    //    itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "StaticMeshCollectionActor"));
+
+
+                    //    VTestFilePorting(le1File, itemsToPort, db, pe);
+
+                    //    // Replace BioWorldInfo
+                    //    //EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, me1File.FindExport(@"TheWorld.PersistentLevel.BioWorldInfo_0"), le1File, le1File.FindExport(@"TheWorld.PersistentLevel.BioWorldInfo_0"), true, out _, importExportDependencies: true, targetGameDonorDB: db);
+
+                    //    RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
+                    //    CorrectNeverStream(le1File);
+                    //    le1File.Save();
+                    //}
+
+                    var prc2Files = Directory.GetFiles(Path.Combine(moddedSourceDir, "PRC2"));
+                    foreach (var f in prc2Files)
                     {
-                        me1File.FindExport(@"TheWorld.PersistentLevel.StaticLightCollectionActor_16"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.StaticMeshCollectionActor_45"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.Terrain_0"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_0"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_2"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_3"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_4"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_5"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_0"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_1"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_10"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_11"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_12"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_13"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_14"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_2"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_3"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_35"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_36"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_37"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_4"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_5"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_6"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_7"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_8"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_9"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.PostProcessVolume_0"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.SkeletalMeshActor_0"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.SkeletalMeshActor_1"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.SkeletalMeshActor_2"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.SkeletalMeshActor_9"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BioDoor_0"),
-                    };
-                    VTestFilePorting(le1File, itemsToPort, db, pe);
-                    RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
-                    CorrectNeverStream(le1File);
-
-                    // Correct terrain
-                    var terrainExp = le1File.FindExport(@"TheWorld.PersistentLevel.Terrain_0");
-                    var terrain = ObjectBinary.From<Terrain>(terrainExp);
-                    terrain.CachedDisplacements = new byte[terrain.Heights.Length];
-                    terrainExp.WriteBinary(terrain);
-                    le1File.Save();
+                        if (f.Contains("_LOC_"))
+                            continue; // Skip for now
+                        var levelName = Path.GetFileNameWithoutExtension(f);
+                        PortVTestLevel(levelName, finalDestDir, moddedSourceDir, db, pe, levelName == "BIOA_PRC2");
+                    }
                 }
-
-                // BIOA_PRC2AA_00_DSG
-                {
-                    var sourceName = "BIOA_PRC2AA_00_DSG";
-                    var outputFile = $@"{finalDestDir}\{sourceName}.pcc";
-                    CreateEmptyLevel(outputFile, MEGame.LE1);
-
-                    using var le1File = MEPackageHandler.OpenMEPackage(outputFile);
-                    using var me1File = MEPackageHandler.OpenMEPackage($@"{moddedSourceDir}\{sourceName}.SFM");
-
-                    var itemsToPort = new ExportEntry[]
-                    {
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BioDoor_1"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BioInert_0"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BioInert_3"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BioInert_4"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BioInert_5"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.InterpActor_33"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.InterpActor_34"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.InterpActor_35"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.InterpActor_36"),
-                    };
-                    VTestFilePorting(le1File, itemsToPort, db, pe);
-
-                    // Port sequence in
-                    pe.BusyText = "Porting sequencing...";
-                    var dest = le1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence");
-                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, me1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence"), le1File, dest, true, out _, importExportDependencies: true, targetGameDonorDB: db);
-                    RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
-                    CorrectNeverStream(le1File);
-                    le1File.Save(); // Save again
-                }
-
-                // BIOA_PRC2AA_00_SND
-                {
-                    var sourceName = "BIOA_PRC2AA_00_SND";
-                    var outputFile = $@"{finalDestDir}\{sourceName}.pcc";
-                    CreateEmptyLevel(outputFile, MEGame.LE1);
-
-                    using var le1File = MEPackageHandler.OpenMEPackage(outputFile);
-                    using var me1File = MEPackageHandler.OpenMEPackage($@"{moddedSourceDir}\{sourceName}.SFM");
-
-                    var itemsToPort = new ExportEntry[]
-                    {
-                        me1File.FindExport(@"TheWorld.PersistentLevel.Brush_20"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.ReverbVolume_1"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.ReverbVolume_0"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BioAudioVolume_1"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BioAudioVolume_0"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.AmbientSound_3"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.AmbientSound_4"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.AmbientSound_2"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.AmbientSound_1"),
-                    };
-                    VTestFilePorting(le1File, itemsToPort, db, pe);
-
-                    // Port sequence in
-                    pe.BusyText = "Porting sequencing...";
-                    var dest = le1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence");
-                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, me1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence"), le1File, dest, true, out _, importExportDependencies: true, targetGameDonorDB: db);
-                    RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
-                    CorrectNeverStream(le1File);
-                    le1File.Save(); // Save again
-                }
-
-
             }).ContinueWithOnUIThread(result =>
             {
                 if (result.Exception != null)
@@ -2082,7 +2186,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             });
         }
 
-        private static void VTestFilePorting(IMEPackage destPackage, ExportEntry[] itemsToPort, ObjectInstanceDB db, PackageEditorWindow pe)
+        private static void VTestFilePorting(IMEPackage destPackage, IEnumerable<ExportEntry> itemsToPort, ObjectInstanceDB db, PackageEditorWindow pe)
         {
 
             var le1PL = destPackage.FindExport("TheWorld.PersistentLevel");
@@ -2130,6 +2234,67 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
 
             pl.WriteBinary(level);
+        }
+
+        private static void PortVTestLevel(string sourceName, string finalDestDir, string moddedSourceDir, ObjectInstanceDB db, PackageEditorWindow pe, bool syncBioWorldInfo)
+        {
+            var outputFile = $@"{finalDestDir}\{sourceName}.pcc";
+            CreateEmptyLevel(outputFile, MEGame.LE1);
+
+            using var le1File = MEPackageHandler.OpenMEPackage(outputFile);
+            using var me1File = MEPackageHandler.OpenMEPackage($@"{moddedSourceDir}\PRC2\{sourceName}.SFM");
+
+            // BIOC_BASE -> SFXGame
+            var bcBaseIdx = me1File.findName("BIOC_Base");
+            me1File.replaceName(bcBaseIdx, "SFXGame");
+
+            var itemsToPort = new List<ExportEntry>();
+
+            if (syncBioWorldInfo)
+            {
+                itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioUsable"));
+                itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioPawn"));
+                itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioMapNote"));
+                itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioTrigger"));
+                itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioTriggerStream"));
+                itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "PlayerStart"));
+                itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "StaticMeshCollectionActor"));
+                itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "StaticLightCollectionActor"));
+                itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioSunActor"));
+                itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BlockingVolume"));
+                itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioDoor"));
+
+                // Port sequence in
+                pe.BusyText = "Porting sequencing...";
+                var dest = le1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence");
+                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, me1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence"), le1File, dest, true, out _, importExportDependencies: true, targetGameDonorDB: db);
+
+            }
+
+            VTestFilePorting(le1File, itemsToPort, db, pe);
+
+            // Replace BioWorldInfo
+            //EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, me1File.FindExport(@"TheWorld.PersistentLevel.BioWorldInfo_0"), le1File, le1File.FindExport(@"TheWorld.PersistentLevel.BioWorldInfo_0"), true, out _, importExportDependencies: true, targetGameDonorDB: db);
+
+
+            if (syncBioWorldInfo)
+            {
+                var me1BWI = me1File.Exports.FirstOrDefault(x => x.ClassName == "BioWorldInfo");
+                if (me1BWI != null)
+                {
+                    me1BWI.indexValue = 1;
+                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, me1BWI, le1File, le1File.FindExport(@"TheWorld.PersistentLevel.BioWorldInfo_0"), true, out _, importExportDependencies: true, targetGameDonorDB: db);
+                }
+            }
+            RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
+            CorrectNeverStream(le1File);
+
+            if (le1File.Exports.Any(x => x.IsA("PathNode")))
+            {
+                Debugger.Break();
+            }
+
+            le1File.Save();
         }
 
         private static void CreateEmptyLevel(string outpath, MEGame game)
@@ -2252,6 +2417,27 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
+        public static void PortSequenceObjectClassAcrossGame(PackageEditorWindow pe)
+        {
+            var seqObjsToPort = pe.Pcc.Exports.Where(x => !x.IsDefaultObject && x.SuperClassName == "SequenceAction" && x.IsClass).ToList();
+            var extraDonorsDir = @"Y:\ModLibrary\LE1\V Test\Donors";
+
+            List<string> createdPackages = new List<string>();
+            foreach (var seqObjClass in seqObjsToPort)
+            {
+                var package = seqObjClass.ParentName;
+                var donorDest = Path.Combine(extraDonorsDir, $"{package}.pcc");
+                if (!createdPackages.Contains(package))
+                {
+                    createdPackages.Add(package);
+                    MEPackageHandler.CreateAndSavePackage(donorDest, pe.Pcc.Game.ToLEVersion());
+                }
+
+                using var p = MEPackageHandler.OpenMEPackage(donorDest);
+            }
+
+        }
+
         public static void SearchObjectInfos(PackageEditorWindow pe)
         {
             var searchTerm = PromptDialog.Prompt(pe, "Enter key value to search", "ObjectInfos Search");
@@ -2278,6 +2464,44 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
 
                 MessageBox.Show(searchResult);
+            }
+        }
+
+        public static void TestCrossGenClassPorting(PackageEditorWindow pe)
+        {
+            var destFile = @"Y:\ModLibrary\LE1\V Test\Donors\BIOC_BaseDLC_Vegas.pcc";
+            var sourceFile = "BIOC_BaseDLC_Vegas.u";
+
+            var loadedFiles = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1);
+            if (loadedFiles.TryGetValue(sourceFile, out var vegasU))
+            {
+                using var vegasP = MEPackageHandler.OpenMEPackage(vegasU);
+                MEPackageHandler.CreateAndSavePackage(destFile, MEGame.LE1);
+                using var destP = MEPackageHandler.OpenMEPackage(destFile);
+
+                var packageName = Path.GetFileNameWithoutExtension(sourceFile);
+                var link = ExportCreator.CreatePackageExport(destP, packageName);
+
+                List<EntryStringPair> results = new List<EntryStringPair>();
+                foreach (var v in vegasP.Exports.Where(x => x.IsClass))
+                {
+                    results.AddRange(EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, v, destP, null, true, out _));
+                }
+
+                foreach (var v in destP.Exports.Where(x => x.ObjectName != packageName && x.Parent == null))
+                {
+                    v.idxLink = link.UIndex;
+                }
+
+                destP.Save();
+
+                if (results.Any())
+                {
+                    var b = new ListDialog(results, "Errors porting classes", "The following errors occurred porting classes.", pe);
+                    b.Show();
+                }
+
+
             }
         }
     }

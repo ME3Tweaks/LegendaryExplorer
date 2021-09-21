@@ -974,7 +974,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
                 var fileLib = new FileLib(pcc);
-                if (await fileLib.Initialize())
+                if (await fileLib.InitializeAsync())
                 {
                     foreach (ExportEntry exp in pcc.Exports.Reverse().Where(exp => exp.ClassName == "Function" && exp.Parent.ClassName == "Class" && !exp.GetBinaryData<UFunction>().FunctionFlags.Has(EFunctionFlags.Native)))
                     {
@@ -1020,7 +1020,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
                 var fileLib = new FileLib(pcc);
-                if (await fileLib.Initialize())
+                if (await fileLib.InitializeAsync())
                 {
                     foreach (ExportEntry exp in pcc.Exports.Where(exp => exp.ClassName == "Function"))
                     {
