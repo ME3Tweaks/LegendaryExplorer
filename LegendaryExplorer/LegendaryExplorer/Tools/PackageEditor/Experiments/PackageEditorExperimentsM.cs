@@ -2127,6 +2127,32 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         CorrectNeverStream(le1File);
                         le1File.Save(); // Save again
                     }
+
+                    // LOC files
+                    {
+                        var pathSource = Path.Combine(PAEMPaths.VTest_SourceDir, "PRC2AA");
+                        var files = Directory.GetFiles(pathSource).Where(x => x.RepresentsPackageFilePath() && x.Contains("_LOC_", StringComparison.InvariantCultureIgnoreCase));
+                        foreach (var file in files)
+                        {
+                            var packName = Path.GetFileNameWithoutExtension(file);
+                            var packagePath = Path.Combine(PAEMPaths.VTest_FinalDestDir, $"{packName}.pcc");
+                            MEPackageHandler.CreateAndSavePackage(packagePath, MEGame.LE1);
+                            using var package = MEPackageHandler.OpenMEPackage(packagePath);
+                            using var sourcePackage = MEPackageHandler.OpenMEPackage(file);
+                            foreach (var e in sourcePackage.Exports.Where(x => x.ClassName == "ObjectReferencer"))
+                            {
+                                pe.BusyText = $"Porting {e.ObjectName}";
+                                var report = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, e, package, null, true, out _, targetGameDonorDB: db);
+                                if (report.Any())
+                                {
+                                    //Debugger.Break();
+                                }
+                            }   
+
+                            pe.BusyText = $"Saving {packName}";
+                            package.Save();
+                        }
+                    }
                 }
 
                 // BIOA_PRC2 ------------------------------------------
