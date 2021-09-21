@@ -1725,7 +1725,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void DumpSound(PackageEditorWindow packEd)
         {
-            if (InputComboBoxDialog.GetValue(packEd, "Choose game:", "Game to dump sound for", new[] { "ME3", "ME2" }, "ME3") is string gameStr &&
+            if (InputComboBoxDialog.GetValue(packEd, "Choose game:", "Game to dump sound for", new[] { "ME3", "ME2", "LE3", "LE2" }, "LE3") is string gameStr &&
                 Enum.TryParse(gameStr, out MEGame game))
             {
                 string tag = PromptDialog.Prompt(packEd, "Character tag:", defaultValue: "player_f", selectText: true);
@@ -1760,18 +1760,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     foreach (string filePath in filePaths)
                     {
                         using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
-                        if (game is MEGame.ME3 or MEGame.ME2)
+                        foreach (ExportEntry export in pcc.Exports.Where(exp => exp.ClassName == "WwiseStream"))
                         {
-                            foreach (ExportEntry export in pcc.Exports.Where(exp => exp.ClassName == "WwiseStream"))
+                            if (export.ObjectNameString.Split(',') is string[] { Length: > 1 } parts && parts[0] == "en-us" && parts[1] == tag)
                             {
-                                if (export.ObjectNameString.Split(',') is string[] { Length: > 1 } parts && parts[0] == "en-us" && parts[1] == tag)
-                                {
-                                    string fileName = Path.Combine(outFolder, $"{export.ObjectNameString}.wav");
-                                    using var fs = new FileStream(fileName, FileMode.Create);
-                                    Stream wavStream = export.GetBinaryData<WwiseStream>().CreateWaveStream();
-                                    wavStream.SeekBegin();
-                                    wavStream.CopyTo(fs);
-                                }
+                                string fileName = Path.Combine(outFolder, $"{export.ObjectNameString}.wav");
+                                using var fs = new FileStream(fileName, FileMode.Create);
+                                Stream wavStream = export.GetBinaryData<WwiseStream>().CreateWaveStream();
+                                wavStream.SeekBegin();
+                                wavStream.CopyTo(fs);
                             }
                         }
                     }
