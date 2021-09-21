@@ -28,6 +28,7 @@ namespace LegendaryExplorer.GameInterop
         {
             MEGame.ME3 => "ME3LiveEditor",
             MEGame.ME2 => "ME2LiveEditor",
+            MEGame.LE1 => "LE1LiveEditor",
             _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
         };
 
@@ -56,9 +57,11 @@ namespace LegendaryExplorer.GameInterop
 
             var levelLoaded = SequenceObjectCreator.CreateSequenceObject(pcc, "SeqEvent_LevelLoaded", game);
             KismetHelper.AddObjectToSequence(levelLoaded, mainSequence);
-            var sendMessageToME3Exp = SequenceObjectCreator.CreateSequenceObject(pcc, "SeqAct_SendMessageToME3Explorer", game);
+
+            var sendMessageClassName = game.IsLEGame() ? "SeqAct_SendMessageToLEX" : "SeqAct_SendMessageToME3Explorer";
+            var sendMessageToME3Exp = SequenceObjectCreator.CreateSequenceObject(pcc, sendMessageClassName, game);
             KismetHelper.AddObjectToSequence(sendMessageToME3Exp, mainSequence);
-            KismetHelper.CreateOutputLink(levelLoaded, game is MEGame.ME3 ? "Loaded and Visible" : "Out", sendMessageToME3Exp);
+            KismetHelper.CreateOutputLink(levelLoaded, game is MEGame.ME2 ? "Out" : "Loaded and Visible", sendMessageToME3Exp);
             var stringVar = SequenceObjectCreator.CreateSequenceObject(pcc, "SeqVar_String", game);
             stringVar.WriteProperty(new StrProperty(LoaderLoadedMessage, "StrValue"));
             KismetHelper.AddObjectToSequence(stringVar, mainSequence);
@@ -92,10 +95,16 @@ namespace LegendaryExplorer.GameInterop
             pcc.AddToLevelActorsIfNotThere(bts);
         }
 
+        static void AugmentMapToLoadLiveEditorLE1(IMEPackage pcc)
+        {
+            AugmentMapToLoadLiveEditor(pcc);
+        }
+
         static string ModName(MEGame game) => game switch
         {
             MEGame.ME2 => "DLC_MOD_Interop2",
             MEGame.ME3 => "DLC_MOD_Interop",
+            MEGame.LE1 => "DLC_MOD_InteropLE1",
             _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
         };
         public static string ModInstallPath(MEGame game) => Path.Combine(MEDirectories.GetDLCPath(game), ModName(game));
@@ -104,7 +113,7 @@ namespace LegendaryExplorer.GameInterop
         private const string camPathFileName = "ME3LiveEditorCamPath.pcc";
         public static string CamPathFilePath(MEGame game) => Path.Combine(ModInstallPath(game), game.CookedDirName(), camPathFileName);
 
-        public static void InstallDLC_MOD_Interop(MEGame game)
+        public static void InstallDLC_MOD_Interop(MEGame game, IEnumerable<string> le1MapFiles = null)
         {
             if (Directory.Exists(ModInstallPath(game)))
             {
@@ -119,16 +128,27 @@ namespace LegendaryExplorer.GameInterop
                 PadCamPathFile(game);
             }
 
+            var sourceFiles = new List<(string filePath, string md5)>();
+
             const string bioPGlobalFileName = "BioP_Global.pcc";
             const string bioPGlobalNCFileName = "BioP_Global_NC.pcc";
+            le1MapFiles = new string[] { "BIOA_STA00.pcc" };
 
-            var sourceFiles = new List<(string filePath, string md5)>
+            if (game.IsGame2() || game.IsGame3())
             {
-                AugmentAndInstall(bioPGlobalFileName)
-            };
-            if (game == MEGame.ME3)
+                sourceFiles.Add(AugmentAndInstall(bioPGlobalFileName, fileMap, ref game));
+            }
+            else if (game.IsGame1() && le1MapFiles is not null)
             {
-                sourceFiles.Add(AugmentAndInstall(bioPGlobalNCFileName));
+                foreach (var map in le1MapFiles)
+                {
+                    sourceFiles.Add(AugmentAndInstall(map, fileMap, ref game));
+                }
+            }
+
+            if (game is MEGame.ME3)
+            {
+                sourceFiles.Add(AugmentAndInstall(bioPGlobalNCFileName, fileMap, ref game));
             }
 
             File.WriteAllText(InstallInfoPath(game), JsonConvert.SerializeObject(new InstallInfo
@@ -137,23 +157,24 @@ namespace LegendaryExplorer.GameInterop
                 Version = CURRENT_VERSION,
                 SourceFiles = sourceFiles
             }));
-            if (game == MEGame.ME3)
+            if (game is not MEGame.ME1 or MEGame.ME2)
             {
                 TOCCreator.CreateTOCForGame(game);
             }
+        }
 
-            (string, string) AugmentAndInstall(string fileName)
+        private static (string, string) AugmentAndInstall(string fileName, Dictionary<string, string> fileMap, ref MEGame game)
+        {
+            string existingFile = fileMap[fileName];
+            string destFile = Path.Combine(ModInstallPath(game), game.CookedDirName(), fileName);
+            File.Copy(existingFile, destFile, true);
+            using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(destFile))
             {
-                string existingFile = fileMap[fileName];
-                string destFile = Path.Combine(ModInstallPath(game), game.CookedDirName(), fileName);
-                File.Copy(existingFile, destFile, true);
-                using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(destFile))
-                {
-                    AugmentMapToLoadLiveEditor(pcc);
-                    pcc.Save();
-                }
-                return (existingFile, InteropHelper.CalculateMD5(existingFile));
+                AugmentMapToLoadLiveEditor(pcc);
+                pcc.Save();
             }
+
+            return (existingFile, InteropHelper.CalculateMD5(existingFile));
         }
 
         public static bool IsModInstalledAndUpToDate(MEGame game)

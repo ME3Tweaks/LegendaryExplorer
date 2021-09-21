@@ -67,9 +67,9 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             return classes;
         }
 
-        public static PropertyCollection GetSequenceObjectDefaults(IMEPackage pcc, string className, MEGame game) => GetSequenceObjectDefaults(pcc, GlobalUnrealObjectInfo.GetClassOrStructInfo(game, className));
+        public static PropertyCollection GetSequenceObjectDefaults(IMEPackage pcc, string className, MEGame game, PackageCache pc = null) => GetSequenceObjectDefaults(pcc, GlobalUnrealObjectInfo.GetClassOrStructInfo(game, className), pc);
 
-        public static PropertyCollection GetSequenceObjectDefaults(IMEPackage pcc, ClassInfo info)
+        public static PropertyCollection GetSequenceObjectDefaults(IMEPackage pcc, ClassInfo info, PackageCache pc = null)
         {
             MEGame game = pcc.Game;
             PropertyCollection defaults = new();
@@ -168,10 +168,11 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     while (classInfo != null && (varLinksProp is null || outLinksProp is null || eventLinksProp is null || inLinksProp is null))
                     {
                         string filepath = Path.Combine(MEDirectories.GetBioGamePath(game), classInfo.pccPath);
+                        string loadPath = null;
                         Stream loadStream = null;
                         if (File.Exists(classInfo.pccPath))
                         {
-                            loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(classInfo.pccPath);
+                            loadPath = classInfo.pccPath;
                         }
                         else if (classInfo.pccPath == GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
                         {
@@ -179,19 +180,27 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                         }
                         else if (File.Exists(filepath))
                         {
-                            loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(filepath);
+                            loadPath = filepath;
                         }
                         else if (game == MEGame.ME1)
                         {
                             filepath = Path.Combine(ME1Directory.DefaultGamePath, classInfo.pccPath); //for files from ME1 DLC
                             if (File.Exists(filepath))
                             {
-                                loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(filepath);
+                                loadPath = filepath;
                             }
                         }
-                        if (loadStream != null)
+                        if (loadStream != null || loadPath != null)
                         {
-                            using IMEPackage importPCC = MEPackageHandler.OpenMEPackageFromStream(loadStream);
+                            IMEPackage importPCC;
+                            if (loadStream is null)
+                            {
+                                pc.TryGetCachedPackage(loadPath, true, out importPCC);
+                            }
+                            else
+                            {
+                                importPCC = MEPackageHandler.OpenMEPackageFromStream(loadStream);
+                            }
                             ExportEntry classExport = importPCC.GetUExport(classInfo.exportIndex);
                             UClass classBin = ObjectBinary.From<UClass>(classExport);
                             ExportEntry classDefaults = importPCC.GetUExport(classBin.Defaults);
@@ -240,6 +249,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                                     inLinksProp = ilp;
                                 }
                             }
+                            if(!pc.TryGetCachedPackage(loadPath, false, out _)) importPCC.Dispose(); // Can't do a using statement because of the pc out var - not good enough at c# to fix
                         }
                         classes.TryGetValue(classInfo.baseClass, out classInfo);
                         switch (classInfo.ClassName)
