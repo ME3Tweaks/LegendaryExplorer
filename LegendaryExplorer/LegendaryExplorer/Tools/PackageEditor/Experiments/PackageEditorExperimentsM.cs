@@ -1888,13 +1888,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static async void VTest(PackageEditorWindow pe)
         {
-            // Setup variables
-            var finalDestDir = @"D:\Mass Effect Modding\ME3TweaksModManager\mods\LE1\V Test\DLC_MOD_Vegas\CookedPCConsole";
-            var moddedSourceDir = @"D:\Mass Effect Modding\ME3TweaksModManager\mods\LE1\V Test\ModdedSource";
-            var extraDonorsDir = @"D:\Mass Effect Modding\ME3TweaksModManager\mods\LE1\V Test\Donors";
+            // Paths are in PAEMPaths.cs
 
-            bool prc2aa = false;
-            bool prc2 = true;
+            bool prc2aa = true;
+            bool prc2 = false;
 
             pe.SetBusy("Performing VTest");
             await Task.Run(() =>
@@ -1911,7 +1908,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     db.BuildLookupTable(); // Lookup table is required as we are going to compile things
 
                     // Add extra donors
-                    foreach (var file in Directory.GetFiles(extraDonorsDir))
+                    foreach (var file in Directory.GetFiles(PAEMPaths.VTest_DonorsDir))
                     {
                         if (file.RepresentsPackageFilePath())
                         {
@@ -1943,11 +1940,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     // BIOA_PRC2AA
                     {
                         var sourceName = "BIOA_PRC2AA";
-                        var outputFile = $@"{finalDestDir}\{sourceName}.pcc";
+                        var outputFile = $@"{PAEMPaths.VTest_FinalDestDir}\{sourceName}.pcc";
                         CreateEmptyLevel(outputFile, MEGame.LE1);
 
                         using var le1File = MEPackageHandler.OpenMEPackage(outputFile);
-                        using var me1File = MEPackageHandler.OpenMEPackage($@"{moddedSourceDir}\PRC2AA\{sourceName}.SFM");
+                        using var me1File = MEPackageHandler.OpenMEPackage($@"{PAEMPaths.VTest_SourceDir}\PRC2AA\{sourceName}.SFM");
 
                         var itemsToPort = new ExportEntry[]
                         {
@@ -1974,11 +1971,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     // BIOA_PRC2AA_00_LAY
                     {
                         var sourceName = "BIOA_PRC2AA_00_LAY";
-                        var outputFile = $@"{finalDestDir}\{sourceName}.pcc";
+                        var outputFile = $@"{PAEMPaths.VTest_FinalDestDir}\{sourceName}.pcc";
                         CreateEmptyLevel(outputFile, MEGame.LE1);
 
                         using var le1File = MEPackageHandler.OpenMEPackage(outputFile);
-                        using var me1File = MEPackageHandler.OpenMEPackage($@"{moddedSourceDir}\PRC2AA\{sourceName}.SFM");
+                        using var me1File = MEPackageHandler.OpenMEPackage($@"{PAEMPaths.VTest_SourceDir}\PRC2AA\{sourceName}.SFM");
 
                         var itemsToPort = new ExportEntry[]
                         {
@@ -2068,11 +2065,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     // BIOA_PRC2AA_00_DSG
                     {
                         var sourceName = "BIOA_PRC2AA_00_DSG";
-                        var outputFile = $@"{finalDestDir}\{sourceName}.pcc";
+                        var outputFile = $@"{PAEMPaths.VTest_FinalDestDir}\{sourceName}.pcc";
                         CreateEmptyLevel(outputFile, MEGame.LE1);
 
                         using var le1File = MEPackageHandler.OpenMEPackage(outputFile);
-                        using var me1File = MEPackageHandler.OpenMEPackage($@"{moddedSourceDir}\PRC2AA\{sourceName}.SFM");
+                        using var me1File = MEPackageHandler.OpenMEPackage($@"{PAEMPaths.VTest_SourceDir}\PRC2AA\{sourceName}.SFM");
 
                         var itemsToPort = new ExportEntry[]
                         {
@@ -2101,11 +2098,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     // BIOA_PRC2AA_00_SND
                     {
                         var sourceName = "BIOA_PRC2AA_00_SND";
-                        var outputFile = $@"{finalDestDir}\{sourceName}.pcc";
+                        var outputFile = $@"{PAEMPaths.VTest_FinalDestDir}\{sourceName}.pcc";
                         CreateEmptyLevel(outputFile, MEGame.LE1);
 
                         using var le1File = MEPackageHandler.OpenMEPackage(outputFile);
-                        using var me1File = MEPackageHandler.OpenMEPackage($@"{moddedSourceDir}\PRC2AA\{sourceName}.SFM");
+                        using var me1File = MEPackageHandler.OpenMEPackage($@"{PAEMPaths.VTest_SourceDir}\PRC2AA\{sourceName}.SFM");
 
                         var itemsToPort = new ExportEntry[]
                         {
@@ -2137,11 +2134,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     //{
                     //    var sourceName = "BIOA_PRC2";
-                    //    var outputFile = $@"{finalDestDir}\{sourceName}.pcc";
+                    //    var outputFile = $@"{PAEMPaths.VTest_FinalDestDir}\{sourceName}.pcc";
                     //    CreateEmptyLevel(outputFile, MEGame.LE1);
 
                     //    using var le1File = MEPackageHandler.OpenMEPackage(outputFile);
-                    //    using var me1File = MEPackageHandler.OpenMEPackage($@"{moddedSourceDir}\PRC2\{sourceName}.SFM");
+                    //    using var me1File = MEPackageHandler.OpenMEPackage($@"{PAEMPaths.VTest_SourceDir}\PRC2\{sourceName}.SFM");
 
                     //    // BIOC_BASE -> SFXGame
                     //    var bcBaseIdx = me1File.findName("BIOC_Base");
@@ -2170,13 +2167,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     //    le1File.Save();
                     //}
 
-                    var prc2Files = Directory.GetFiles(Path.Combine(moddedSourceDir, "PRC2"));
+                    var prc2Files = Directory.GetFiles(Path.Combine(PAEMPaths.VTest_SourceDir, "PRC2"));
                     foreach (var f in prc2Files)
                     {
                         if (f.Contains("_LOC_"))
                             continue; // Skip for now
                         var levelName = Path.GetFileNameWithoutExtension(f);
-                        PortVTestLevel(levelName, finalDestDir, moddedSourceDir, db, pe, levelName == "BIOA_PRC2");
+                        PortVTestLevel(levelName, PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, db, pe, levelName == "BIOA_PRC2");
                     }
                 }
             }).ContinueWithOnUIThread(result =>
@@ -2237,13 +2234,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             pl.WriteBinary(level);
         }
 
-        private static void PortVTestLevel(string sourceName, string finalDestDir, string moddedSourceDir, ObjectInstanceDB db, PackageEditorWindow pe, bool syncBioWorldInfo)
+        private static void PortVTestLevel(string sourceName, string finalDestDir, string sourceDir, ObjectInstanceDB db, PackageEditorWindow pe, bool syncBioWorldInfo)
         {
             var outputFile = $@"{finalDestDir}\{sourceName}.pcc";
             CreateEmptyLevel(outputFile, MEGame.LE1);
 
             using var le1File = MEPackageHandler.OpenMEPackage(outputFile);
-            using var me1File = MEPackageHandler.OpenMEPackage($@"{moddedSourceDir}\PRC2\{sourceName}.SFM");
+            using var me1File = MEPackageHandler.OpenMEPackage($@"{sourceDir}\PRC2\{sourceName}.SFM");
 
             // BIOC_BASE -> SFXGame
             var bcBaseIdx = me1File.findName("BIOC_Base");
@@ -2463,13 +2460,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         public static void PortSequenceObjectClassAcrossGame(PackageEditorWindow pe)
         {
             var seqObjsToPort = pe.Pcc.Exports.Where(x => !x.IsDefaultObject && x.SuperClassName == "SequenceAction" && x.IsClass).ToList();
-            var extraDonorsDir = @"Y:\ModLibrary\LE1\V Test\Donors";
+            var sourceDir = @"Y:\ModLibrary\LE1\V Test\Donors";
 
             List<string> createdPackages = new List<string>();
             foreach (var seqObjClass in seqObjsToPort)
             {
                 var package = seqObjClass.ParentName;
-                var donorDest = Path.Combine(extraDonorsDir, $"{package}.pcc");
+                var donorDest = Path.Combine(PAEMPaths.VTest_DonorsDir, $"{package}.pcc");
                 if (!createdPackages.Contains(package))
                 {
                     createdPackages.Add(package);
