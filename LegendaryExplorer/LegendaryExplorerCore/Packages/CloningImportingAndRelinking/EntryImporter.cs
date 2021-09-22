@@ -17,6 +17,21 @@ using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 {
+    /// <summary>
+    /// Options that change how porting is done
+    /// </summary>
+    public class PortingOptions
+    {
+        /// <summary>
+        /// What option was chosen
+        /// </summary>
+        public EntryImporter.PortingOption PortingOptionChosen { get; set; }
+
+        /// <summary>
+        /// If the porting should use donors. This option only does stuff if porting between games
+        /// </summary>
+        public bool PortUsingDonors { get; set; }
+    }
     public static class EntryImporter
     {
         public enum PortingOption

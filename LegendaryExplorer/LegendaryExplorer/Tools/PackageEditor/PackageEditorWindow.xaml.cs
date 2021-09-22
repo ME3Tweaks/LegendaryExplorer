@@ -3235,7 +3235,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
                 var portingOption = TreeMergeDialog.GetMergeType(this, sourceItem, targetItem, Pcc.Game);
 
-                if (portingOption == EntryImporter.PortingOption.Cancel)
+                if (portingOption.PortingOptionChosen == EntryImporter.PortingOption.Cancel)
                 {
                     return;
                 }
@@ -3254,7 +3254,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 int originalIndex = -1;
                 bool hadChanges = false;
                 bool hadHeaderChanges = false;
-                if (portingOption != EntryImporter.PortingOption.ReplaceSingular && targetItem.Entry?.FileRef.FindEntry(sourceItem.Entry.InstancedFullPath) != null)
+                if (portingOption.PortingOptionChosen != EntryImporter.PortingOption.ReplaceSingular && targetItem.Entry?.FileRef.FindEntry(sourceItem.Entry.InstancedFullPath) != null)
                 {
                     // It's a duplicate. Offer to index it, as this will break the lookup if it's identical on inbound
                     // (it will just install into an existing entry)
@@ -3276,8 +3276,9 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 }
 
                 // Load the object DB if games are different
-                ObjectInstanceDB objectDB = sourceEntry.Game != targetItem.Game && sourceEntry.Game != MEGame.UDK ? ObjectInstanceDB.DeserializeDB(File.ReadAllText(AppDirectories.GetObjectDatabasePath(targetItem.Game))) : null;
+                ObjectInstanceDB objectDB = portingOption.PortUsingDonors && sourceEntry.Game != targetItem.Game && sourceEntry.Game != MEGame.UDK ? ObjectInstanceDB.DeserializeDB(File.ReadAllText(AppDirectories.GetObjectDatabasePath(targetItem.Game))) : null;
                 objectDB?.BuildLookupTable();
+
                 // To profile this, run dotTrace and attach to the process, make sure to choose option to profile via API
                 //MeasureProfiler.StartCollectingData(); // Start profiling
                 //var sw = new Stopwatch();
@@ -3286,7 +3287,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
                 int numExports = Pcc.ExportCount;
                 //Import!
-                var relinkResults = EntryImporter.ImportAndRelinkEntries(portingOption, sourceEntry, Pcc,
+                var relinkResults = EntryImporter.ImportAndRelinkEntries(portingOption.PortingOptionChosen, sourceEntry, Pcc,
                     targetLinkEntry, true, out IEntry newEntry, targetGameDonorDB: objectDB);
 
                 if (originalIndex >= 0)

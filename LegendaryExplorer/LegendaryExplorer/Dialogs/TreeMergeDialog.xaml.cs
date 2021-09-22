@@ -13,7 +13,7 @@ namespace LegendaryExplorer.Dialogs
     /// </summary>
     public partial class TreeMergeDialog : NotifyPropertyChangedWindowBase
     {
-        public EntryImporter.PortingOption PortingOptionChosen = EntryImporter.PortingOption.Cancel; //Click X, get cancel
+        public PortingOptions PortingOption = new PortingOptions() {PortingOptionChosen = EntryImporter.PortingOption.Cancel};//Click X, get cancel
         private readonly IEntry sourceEntry;
         private readonly IEntry targetEntry;
         private readonly bool sourceHasChildren;
@@ -28,10 +28,18 @@ namespace LegendaryExplorer.Dialogs
         public ICommand CloneTreeCommand { get; set; }
         public ICommand CloneAllReferencesCommand { get; set; }
 
+        // For crossgen, try to use donors in dest game instead
+        private bool _portUsingDonors;
+        public bool PortUsingDonors { get => _portUsingDonors; set => SetProperty(ref _portUsingDonors, value); }
+
         public TreeMergeDialog(IEntry sourceEntry, IEntry targetEntry, MEGame targetGame)
         {
             this.sourceEntry = sourceEntry;
             this.targetEntry = targetEntry;
+
+            IsCrossGamePort = sourceEntry.Game != targetGame;
+            if (IsCrossGamePort)
+                PortUsingDonors = true;
 
             //target can be null, which means root node
             sourceHasChildren = sourceEntry.FileRef.Exports.Any(x => x.idxLink == sourceEntry.UIndex);
@@ -42,16 +50,18 @@ namespace LegendaryExplorer.Dialogs
             LoadCommands();
             InitializeComponent();
 
-//            if (sourceEntry.Game != targetGame
-//#if DEBUG
-//                && (sourceEntry.Game != MEGame.ME3 || !targetGame.IsLEGame())
-//#endif
-//            )
-//            {
-//                cloneAllRefsButton.IsEnabled = false;
-//                cloneAllRefsText.Text = "Cannot do this when cross-game porting";
-//            }
+            //            if (sourceEntry.Game != targetGame
+            //#if DEBUG
+            //                && (sourceEntry.Game != MEGame.ME3 || !targetGame.IsLEGame())
+            //#endif
+            //            )
+            //            {
+            //                cloneAllRefsButton.IsEnabled = false;
+            //                cloneAllRefsText.Text = "Cannot do this when cross-game porting";
+            //            }
         }
+
+        public bool IsCrossGamePort { get; }
 
         private void LoadCommands()
         {
@@ -64,25 +74,25 @@ namespace LegendaryExplorer.Dialogs
 
         private void CloneAllReferences()
         {
-            PortingOptionChosen = EntryImporter.PortingOption.CloneAllDependencies;
+            PortingOption.PortingOptionChosen = EntryImporter.PortingOption.CloneAllDependencies;
             Close();
         }
 
         private void CloneTree()
         {
-            PortingOptionChosen = EntryImporter.PortingOption.CloneTreeAsChild;
+            PortingOption.PortingOptionChosen = EntryImporter.PortingOption.CloneTreeAsChild;
             Close();
         }
 
         private void AddSingular()
         {
-            PortingOptionChosen = EntryImporter.PortingOption.AddSingularAsChild;
+            PortingOption.PortingOptionChosen = EntryImporter.PortingOption.AddSingularAsChild;
             Close();
         }
 
         private void MergeTree()
         {
-            PortingOptionChosen = EntryImporter.PortingOption.MergeTreeChildren;
+            PortingOption.PortingOptionChosen = EntryImporter.PortingOption.MergeTreeChildren;
             Close();
         }
 
@@ -108,7 +118,7 @@ namespace LegendaryExplorer.Dialogs
 
         private void ReplaceData()
         {
-            PortingOptionChosen = EntryImporter.PortingOption.ReplaceSingular;
+            PortingOption.PortingOptionChosen = EntryImporter.PortingOption.ReplaceSingular;
             Close();
         }
 
@@ -117,7 +127,7 @@ namespace LegendaryExplorer.Dialogs
             return (sourceEntry is ExportEntry && targetEntry is ExportEntry && sourceEntry.ClassName == targetEntry.ClassName);
         }
 
-        public static EntryImporter.PortingOption GetMergeType(Window w, TreeViewEntry sourceItem, TreeViewEntry targetItem, MEGame targetGame)
+        public static PortingOptions GetMergeType(Window w, TreeViewEntry sourceItem, TreeViewEntry targetItem, MEGame targetGame)
         {
             TreeMergeDialog tmd = new TreeMergeDialog(sourceItem.Entry, targetItem.Entry, targetGame)
             {
@@ -125,31 +135,31 @@ namespace LegendaryExplorer.Dialogs
             };
             tmd.ShowDialog(); //modal
 
-            return tmd.PortingOptionChosen;
+            tmd.PortingOption.PortUsingDonors = tmd.PortUsingDonors;
+            return tmd.PortingOption;
         }
 
         private void MergeButton_Click(object sender, RoutedEventArgs e)
         {
-            PortingOptionChosen = EntryImporter.PortingOption.MergeTreeChildren;
+            PortingOption.PortingOptionChosen = EntryImporter.PortingOption.MergeTreeChildren;
             Close();
         }
 
         private void CloneTreeButton_Click(object sender, RoutedEventArgs e)
         {
-            PortingOptionChosen = EntryImporter.PortingOption.CloneTreeAsChild;
+            PortingOption.PortingOptionChosen = EntryImporter.PortingOption.CloneTreeAsChild;
             Close();
-
         }
 
         private void AddSingularButton_Click(object sender, RoutedEventArgs e)
         {
-            PortingOptionChosen = EntryImporter.PortingOption.AddSingularAsChild;
+            PortingOption.PortingOptionChosen = EntryImporter.PortingOption.AddSingularAsChild;
             Close();
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            PortingOptionChosen = EntryImporter.PortingOption.Cancel;
+            PortingOption.PortingOptionChosen = EntryImporter.PortingOption.Cancel;
             Close();
         }
     }
