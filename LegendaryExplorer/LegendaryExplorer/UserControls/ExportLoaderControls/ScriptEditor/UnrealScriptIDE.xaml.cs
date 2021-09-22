@@ -168,7 +168,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
 
         private void ExportLoaderControl_Loaded(object sender, RoutedEventArgs e)
         {
-            Window window = Window.GetWindow(this);
+            var window = Window.GetWindow(this);
             if (window is { })
             {
                 window.Closed += (_, _) => UnloadFileLib();
@@ -337,10 +337,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             }
         }
 
-        private void CompileToBytecode(object sender, RoutedEventArgs e)
+        private void Compile_OnClick(object sender, RoutedEventArgs e)
         {
             if (ScriptText != null && CurrentLoadedExport != null)
             {
+                
                 switch (CurrentLoadedExport.ClassName)
                 {
                     case "Function":
@@ -349,16 +350,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                         outputListBox.ItemsSource = log?.Content;
                         break;
                     }
-                    //case "State":
-                    //{
-                    //    (_, MessageLog log) = UnrealScriptCompiler.CompileState(CurrentLoadedExport, ScriptText, CurrentFileLib);
-                    //    outputListBox.ItemsSource = log?.Content;
-                    //    break;
-                    //}
+                    case "State":
+                    {
+                        (_, MessageLog log) = UnrealScriptCompiler.CompileState(CurrentLoadedExport, ScriptText, CurrentFileLib);
+                        outputListBox.ItemsSource = log?.Content;
+                        break;
+                    }
                     default:
                         outputListBox.ItemsSource = new[]
                         {
-                            $"Can only compile functions right now. {(CurrentLoadedExport.IsDefaultObject ? "Defaults" : CurrentLoadedExport.ClassName)} compilation will be added in a future update."
+                            $"Can only compile Functions and States right now. {(CurrentLoadedExport.IsDefaultObject ? "Defaults" : CurrentLoadedExport.ClassName)} compilation will be added in a future update."
                         };
                         break;
                 }
@@ -422,7 +423,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
 
                     RootNode = ast;
                     ScriptText = text;
-                    textEditor.IsReadOnly = RootNode is not (Function);// or State);
+                    textEditor.IsReadOnly = RootNode is not (Function or State);
                 });
 
             }
@@ -543,14 +544,24 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
 
                 if (RootNode != null && log.AllErrors.IsEmpty())
                 {
-                    if (FullyInitialized && CurrentLoadedExport.Parent is ExportEntry parentExport)
+                    if (FullyInitialized)
                     {
-                        RootNode = RootNode switch
+                        if (RootNode is DefaultPropertiesBlock propBlock)
                         {
-                            Function func => UnrealScriptCompiler.CompileNewFunctionBodyAST(parentExport, func, log, CurrentFileLib),
-                            State state => UnrealScriptCompiler.CompileNewStateBodyAST(parentExport, state, log, CurrentFileLib),
-                            _ => RootNode
-                        };
+                            if (CurrentLoadedExport.Class is ExportEntry classExport)
+                            {
+                                RootNode = UnrealScriptCompiler.CompileDefaultPropertiesAST(classExport, propBlock, log, CurrentFileLib);
+                            }
+                        }
+                        else if (CurrentLoadedExport.Parent is ExportEntry parentExport)
+                        {
+                            RootNode = RootNode switch
+                            {
+                                Function func => UnrealScriptCompiler.CompileNewFunctionBodyAST(parentExport, func, log, CurrentFileLib),
+                                State state => UnrealScriptCompiler.CompileNewStateBodyAST(parentExport, state, log, CurrentFileLib),
+                                _ => RootNode
+                            };
+                        }
                     }
                     var codeBuilder = new CodeBuilderVisitor<SyntaxInfoCodeFormatter, (string, SyntaxInfo)>();
                     RootNode.AcceptVisitor(codeBuilder);

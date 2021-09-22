@@ -39,7 +39,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
 
                 data.Advance();
                 string hex = SubNumber(data, hexDigits);
-                if (hex == null || data.CurrentItem == "." || data.CurrentItem == "x")
+                if (hex == null || data.CurrentItem is "." or "x")
                     return null;
 
                 hex = Convert.ToInt32(hex, 16).ToString("D", CultureInfo.InvariantCulture);
@@ -59,7 +59,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
                 {
                     data.Advance();
                     string exponent = SubNumber(data, digits);
-                    if (exponent == null || data.CurrentItem == "." || data.CurrentItem == "x")
+                    if (exponent == null || data.CurrentItem is "." or "x")
                         return null;
                     value = $"{first}.{second ?? "0"}e{exponent}";
                 }
@@ -74,7 +74,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
                     {
                         data.Advance();
                     }
-                    if (second == null || data.CurrentItem == "." || data.CurrentItem == "x")
+                    if (second == null || data.CurrentItem is "." or "x")
                         return null;
 
                     value = $"{first}.{second}";

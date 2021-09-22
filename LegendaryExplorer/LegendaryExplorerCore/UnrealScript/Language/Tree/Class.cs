@@ -19,7 +19,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public List<VariableType> TypeDeclarations { get; }
         public List<Function> Functions { get; }
         public List<State> States { get; }
-        public DefaultPropertiesBlock DefaultProperties { get; }
+        public DefaultPropertiesBlock DefaultProperties { get; set; }
 
         public Dictionary<string, ushort> VirtualFunctionLookup;
 
@@ -72,7 +72,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             {
                 return true;
             }
-            string nodeName = this.Name.ToLower();
+            string nodeName = Name.ToLower();
             if (nodeName == inputName)
                 return true;
             Class current = this;
@@ -87,7 +87,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public string GetInheritanceString()
         {
-            string str = this.Name;
+            string str = Name;
             Class current = this;
             while (current?.Parent != null)
             {

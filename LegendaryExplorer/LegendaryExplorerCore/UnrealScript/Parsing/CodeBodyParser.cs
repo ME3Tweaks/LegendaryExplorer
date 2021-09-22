@@ -170,7 +170,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         public CodeBody ParseBody()
         {
-            if (Body.StartPos.Equals(Body.EndPos))
+            if (Equals(Body.StartPos, Body.EndPos))
             {
                 Body.Statements = new List<Statement>();
                 return Body;
@@ -528,7 +528,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 return null;
             }
 
-            VariableDeclaration varDecl = new VariableDeclaration(type, UnrealFlags.EPropertyFlags.None, var.Name, var.Size, null, startPos, var.EndPos);
+            var varDecl = new VariableDeclaration(type, EPropertyFlags.None, var.Name, var.Size, null, startPos, var.EndPos);
             Symbols.AddSymbol(varDecl.Name, varDecl);
             if (Node is Function func)
             {
@@ -633,7 +633,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             if (body.Statements.Any())
             {
                 Statement firstStatement = body.Statements[0];
-                if (!(firstStatement is CaseStatement) && !(firstStatement is DefaultCaseStatement))
+                if (firstStatement is not CaseStatement && firstStatement is not DefaultCaseStatement)
                 {
                     ParseError($"First statement in a '{SWITCH}' body must be a '{CASE}' or '{DEFAULT}' statement!", firstStatement);
                 }
@@ -698,10 +698,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             if (Consume(TokenType.SemiColon) == null) throw ParseError("Expected semi-colon after condition!", CurrentPosition);
 
             var updateStatement = ParseStatement();
-            //if (updateStatement is null) //this should technically be limited to assignment, increment, decrement, or function call. Don't think it really matters though
-            //{
-            //    throw Error("Expected an update statement!", CurrentPosition);
-            //}
 
             if (Consume(TokenType.RightParenth) == null) throw ParseError("Expected ')'!", CurrentPosition);
 
@@ -743,7 +739,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     }
                 }
             }
-            else if (!(iterator is DynArrayIterator) && !(iterator is CompositeSymbolRef {InnerSymbol: DynArrayIterator}))
+            else if (iterator is not DynArrayIterator && iterator is not CompositeSymbolRef {InnerSymbol: DynArrayIterator})
             {
                 TypeError($"Expected an iterator function call or dynamic array iterator after '{FOREACH}'!", iterator);
             }
@@ -759,7 +755,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             InForEachBody = alreadyInForEach;
             if (body == null) return null;
 
-            ForEachLoop forEach = new ForEachLoop(iterator, body, token.StartPos, token.EndPos);
+            var forEach = new ForEachLoop(iterator, body, token.StartPos, token.EndPos);
 
             var labels = LabelNests.Pop();
             if (gotoStatementsIdx < gotoStatements.Count)
@@ -1118,7 +1114,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     {
                         //seems wrong but this exists in SFXPawn_Player::ImpactWithPower
                         expr = new DelegateComparison(isEqualEqual, lhs, rhs, lhs.StartPos, rhs.EndPos);
-                        //TODO: log a warning here, as this is almost certainly NOT intended 
+                        Log.LogWarning("Comparison of a delegate to boolean. Was this intended?", expr.StartPos, expr.EndPos);
                     }
                     else
                     {
@@ -1272,7 +1268,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return expr;
         }
 
-        static void AddConversion(VariableType destType, ref Expression expr)
+        private static void AddConversion(VariableType destType, ref Expression expr)
         {
             if (expr is NoneLiteral noneLit)
             {
@@ -1384,11 +1380,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         {
                             throw ParseError($"'{STATIC}' can only be used with class or object references!", lhs.EndPos, CurrentPosition);
                         }
-                        //else
-                        //{
-                        //    //disable type checking in this case
-                        //    _useDynamicResolution = true;
-                        //}
                     }
 
                     if (lhsType is not ClassType && !isStatic && !CompositeTypes.Contains(lhsType?.NodeType ?? ASTNodeType.INVALID))
@@ -1415,7 +1406,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                             specificScope += $".{string.Join(".", outerStructs)}";
                         }
                     }
-                    if (!(lhsType is ClassType) && lhsType != containingClass)
+                    if (lhsType is not ClassType && lhsType != containingClass)
                     {
                         specificScope += $".{lhsType.Name}";
                     }
@@ -1568,7 +1559,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         throw ParseError("Expected function argument!", CurrentPosition);
                     }
 
-                    if (!(memberNameArg is NameLiteral nameLiteral))
+                    if (memberNameArg is not NameLiteral nameLiteral)
                     {
                         ParseError($"Expected 'membername' argument to '{FIND}' to be a name literal!", memberNameArg);
                         nameLiteral = new NameLiteral("");
@@ -1665,7 +1656,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                 if (!NodeUtils.TypeCompatible(expectedType, arg.ResolveType()))
                 {
-                    if (!(expectedType is DelegateType)) //seems wrong, but required to parse bioware classes, so...
+                    if (expectedType is not DelegateType) //seems wrong, but required to parse bioware classes, so...
                     {
                         TypeError($"Expected '{argumentName}' argument to '{functionName}' to evaluate to '{expectedType?.Name ?? "None"}'!", arg);
                     }
@@ -1685,7 +1676,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             if (isStatic)
             {
-                if (!(expr is SymbolReference {Node: Function fun}) || !fun.Flags.Has(EFunctionFlags.Static))
+                if (expr is not SymbolReference {Node: Function fun} || !fun.Flags.Has(EFunctionFlags.Static))
                 {
                     TypeError("'static.' can only be used for calling a function with the 'static' modifier!", expr);
                 }
@@ -1713,7 +1704,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         private Expression FinishArrayAccess(Expression expr)
         {
             var exprType = expr.ResolveType();
-            if (!(exprType is DynamicArrayType) && !(exprType is StaticArrayType))
+            if (exprType is not DynamicArrayType && exprType is not StaticArrayType)
             {
                 TypeError("Can only use array access operator on an array!", expr);
             }
@@ -1776,6 +1767,17 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
                 if (func != null)
                 {
+                    if (func.Flags.Has(EFunctionFlags.Latent))
+                    {
+                        if (Node is Function)
+                        {
+                            TypeError($"Can only call Latent functions from {STATE} code!", funcRef);
+                        }
+                        else if (InForEachBody)
+                        {
+                            TypeError($"Cannot call Latent functions from within a {FOREACH}!", funcRef);
+                        }
+                    }
                     var arguments = new List<Expression>();
                     ExpressionScopes.Push(ExpressionScopes.Last());
                     for (int i = 0; i < func.Parameters.Count; i++)
@@ -1809,7 +1811,9 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                             }
                             throw ParseError($"Expected an argument of type '{p.VarType.Name}'!", paramStartPos);
                         }
-                        if (!NodeUtils.TypeCompatible(p.VarType, currentArg.ResolveType(), p.Flags.Has(EPropertyFlags.CoerceParm)))
+
+                        VariableType argType = currentArg.ResolveType();
+                        if (!NodeUtils.TypeCompatible(p.VarType, argType, p.Flags.Has(EPropertyFlags.CoerceParm)))
                         {
                             var cbv = new CodeBuilderVisitor();
                             cbv.AppendTypeName(p.VarType);
@@ -1830,9 +1834,18 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                             {
                                 parmType = cType.ClassLimiter;
                             }
-                            if (!(parmType is Enumeration && currentArg is IntegerLiteral) && !NodeUtils.TypeEqual(parmType, currentArg.ResolveType()))
+                            if (!(parmType is Enumeration && currentArg is IntegerLiteral) && !NodeUtils.TypeEqual(parmType, argType))
                             {
-                                TypeError($"Expected an argument of type '{p.VarType.Name}'! Arguments given to an out parameter must be the exact same type.", currentArg);
+                                if (parmType is DynamicArrayType {ElementType: Class classA} && argType is DynamicArrayType {ElementType: Class classB} && classA.SameAsOrSubClassOf(classB.Name))
+                                {
+                                    Log.LogWarning($"Array types mismatch, but '{classA.Name}' is a subclass of '{classB.Name}' so this might work. Google 'Array Covariance' for why this is dangerous.", currentArg.StartPos, currentArg.EndPos);
+                                }
+                                else
+                                {
+                                    var cbv = new CodeBuilderVisitor();
+                                    cbv.AppendTypeName(p.VarType);
+                                    TypeError($"Expected an argument of type '{cbv.GetOutput()}'! Arguments given to an out parameter must be the exact same type.", currentArg);
+                                }
                             }
                         }
 
@@ -2236,7 +2249,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             //try to find function in parent states
             while (state != null)
             {
-                Class stateClass = (Class)state.Outer;
+                var stateClass = (Class)state.Outer;
                 if (stateClass != superClass && stateClass.SameAsOrSubClassOf(superClass.Name))
                 {
                     //Walk up the state inheritance chain until we get to one that is in the specified superclass (or an ancestor)
@@ -2338,8 +2351,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 throw ParseError($"Expected '{NEW}' expression's class type!", CurrentPosition);
             }
 
-            var newClass = (objClass.ResolveType() as ClassType)?.ClassLimiter as Class;
-            if (newClass is null)
+            if ((objClass.ResolveType() as ClassType)?.ClassLimiter is not Class newClass)
             {
                 throw ParseError($"'{NEW}' expression must specify a class type!", objClass); //TODO: write better error message
             }
@@ -2352,7 +2364,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             var outerObjType = outerObj?.ResolveType();
             if (outerObjType != null)
             {
-                if (!(outerObjType is Class outerClass) || !outerClass.SameAsOrSubClassOf(newClass.OuterClass.Name))
+                if (outerObjType is not Class outerClass || !outerClass.SameAsOrSubClassOf(newClass.OuterClass.Name))
                 {
                     TypeError($"OuterObject argument for a '{NEW}' expression of type '{newClass.Name}' must be an object of class '{newClass.OuterClass.Name}'!", outerObj);
                 }
@@ -2368,7 +2380,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
 
                 var templateType = template.ResolveType();
-                if (!(templateType is Class templateClass) || !newClass.SameAsOrSubClassOf(templateClass.Name))
+                if (templateType is not Class templateClass || !newClass.SameAsOrSubClassOf(templateClass.Name))
                 {
                     TypeError($"Template argument for a '{NEW}' expression of type '{newClass.Name}' must be an object of that class or a parent class!");
                 }
@@ -2508,10 +2520,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             type == SymbolTable.StringRefType ||
             type == SymbolTable.StringType;
 
-        private bool IsLValue(Expression expr)
+        private static bool IsLValue(Expression expr)
         {
             //TODO: is this correct?
-            return expr is SymbolReference || expr is DynArrayLength;
+            return expr is SymbolReference or DynArrayLength;
         }
     }
 }

@@ -2194,7 +2194,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private static List<ITreeItem> ReadList(int count, Func<int, ITreeItem> selector)
         {
             //sanity check. if this number is too small, feel free to increase
-            if (count > 20971520)
+            if (count > 5097152)
             {
                 throw new Exception($"Is this actually a list? {count} seems like an incorrect count");
             }
@@ -6341,10 +6341,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 yield return node;
             }
 
-            long classFlagsPos = bin.Position;
+            long probeMaskPos = bin.Position;
             var probeFuncs = (EProbeFunctions)bin.ReadUInt64();
-
-            var probeMaskNode = new BinInterpNode(classFlagsPos, $"ProbeMask: {(ulong)probeFuncs:X16}")
+            var probeMaskNode = new BinInterpNode(probeMaskPos, $"ProbeMask: {(ulong)probeFuncs:X16}")
             {
                 Length = 8,
                 IsExpanded = true
@@ -6354,13 +6353,30 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 probeMaskNode.Items.Add(new BinInterpNode
                 {
                     Header = $"{(ulong)flag:X16} {flag}",
-                    Name = $"_{classFlagsPos}",
+                    Name = $"_{probeMaskPos}",
                     Length = 8
                 });
             }
             yield return probeMaskNode;
 
-            yield return new BinInterpNode(bin.Position, $"IgnoreMask: {bin.ReadUInt64():X16}") { Length = 8 };
+
+            long ignoreMaskPos = bin.Position;
+            var ignoredFuncs = (EProbeFunctions)bin.ReadUInt64();
+            var ignoreMaskNode = new BinInterpNode(ignoreMaskPos, $"IgnoreMask: {(ulong)ignoredFuncs:X16}")
+            {
+                Length = 8,
+                IsExpanded = true
+            };
+            foreach (EProbeFunctions flag in (~ignoredFuncs).MaskToList())
+            {
+                ignoreMaskNode.Items.Add(new BinInterpNode
+                {
+                    Header = $"{(ulong)flag:X16} {flag}",
+                    Name = $"_{ignoreMaskPos}",
+                    Length = 8
+                });
+            }
+            yield return ignoreMaskNode;
             yield return MakeInt16Node(bin, "Label Table Offset");
             yield return new BinInterpNode(bin.Position, $"StateFlags: {getStateFlagsStr((EStateFlags)bin.ReadUInt32())}") { Length = 4 };
             yield return MakeArrayNode(bin, "Local Functions", i =>

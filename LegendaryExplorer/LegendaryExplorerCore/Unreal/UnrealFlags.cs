@@ -477,7 +477,7 @@ namespace LegendaryExplorerCore.Unreal
             UnusedProbe62 = 1ul << 62,
             All = 1ul << 63,
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Has(this EProbeFunctions enumValue, EProbeFunctions flag) => (enumValue & flag) == flag;
     }
