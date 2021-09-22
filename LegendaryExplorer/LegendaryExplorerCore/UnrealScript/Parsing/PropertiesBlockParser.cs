@@ -10,6 +10,7 @@ using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing;
+using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
 
 namespace LegendaryExplorerCore.UnrealScript.Parsing
@@ -22,7 +23,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         public static void Parse(DefaultPropertiesBlock propsBlock, IMEPackage pcc, SymbolTable symbols, MessageLog log)
         {
             var parser = new PropertiesBlockParser(propsBlock, pcc, symbols, log);
-            var statements = parser.Parse();
+            var statements = parser.Parse(false);
 
             propsBlock.Statements = statements;
         }
@@ -33,11 +34,14 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             Log = log;
             Tokens = propsBlock.Tokens;
             Pcc = pcc;
+
+            ExpressionScopes = new Stack<string>();
+            ExpressionScopes.Push(Symbols.CurrentScopeName);
         }
 
         private List<Statement> Parse(bool requireBrackets = true)
         {
-            if (Consume(TokenType.LeftBracket) == null) throw ParseError("Expected '{'!", CurrentPosition);
+            if (requireBrackets && Consume(TokenType.LeftBracket) == null) throw ParseError("Expected '{'!", CurrentPosition);
 
             var statements = new List<Statement>();
             try
@@ -55,7 +59,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 Symbols.PopScope();
             }
 
-            if (Consume(TokenType.RightBracket) == null) throw ParseError("Expected '}'!", CurrentPosition);
+            if (requireBrackets && Consume(TokenType.RightBracket) == null) throw ParseError("Expected '}'!", CurrentPosition);
             return statements;
         }
 
@@ -150,16 +154,30 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             if (Consume(TokenType.Word) is Token<string> propName)
             {
                 var target = ParsePropName(propName);
+                VariableType targetType = target.ResolveType();
                 if (Matches(TokenType.Assign))
                 {
                     if (CurrentIs(TokenType.LeftBracket))
                     {
-                        //struct value
+                        throw new NotImplementedException("struct literal parsing is not implemented yet");
                     }
 
                     if (CurrentIs(TokenType.LeftParenth))
                     {
-                        //array or struct
+                        switch (targetType)
+                        {
+                            case DynamicArrayType dynamicArrayType:
+                                throw new NotImplementedException("dynamic array literal parsing is not implemented yet");
+                                break;
+                            case StaticArrayType staticArrayType:
+                                throw new NotImplementedException("static array literal parsing is not implemented yet");
+                                break;
+                            case Struct targetStructType:
+
+                                break;
+                            default:
+                                throw ParseError($"Expected a {targetType.FullTypeName()} literal!", CurrentPosition);
+                        }
                     }
 
                     bool isNegative = Matches(TokenType.MinusSign);
@@ -205,6 +223,134 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         {
                             throw ParseError("Expected a value in assignment!", CurrentPosition);
                         }
+                    }
+
+                    switch (targetType)
+                    {
+                        case Class targetClass:
+                            if (literal is not NoneLiteral)
+                            {
+                                VariableType valueClass;
+                                if (literal is ObjectLiteral objectLiteral)
+                                {
+                                    valueClass = objectLiteral.Class;
+                                }
+                                else if (literal is SymbolReference {Node: Subobject {Class: SymbolReference {Node: VariableType subObjClass}}})
+                                {
+                                    valueClass = subObjClass;
+                                }
+                                else
+                                {
+                                    TypeError($"Expected an {OBJECT} literal or sub-object name!", literal);
+                                    break;
+                                }
+                                if (valueClass is not (Class or ClassType)
+                                    || valueClass is Class literalClass && !literalClass.SameAsOrSubClassOf(targetClass.Name)
+                                    || valueClass is ClassType && targetClass.Name is not ("Class" or "Object"))
+                                {
+                                    TypeError($"Expected an object of class {targetClass.Name} or a subclass!", literal);
+                                }
+                            }
+                            break;
+                        case ClassType targetClassLimiter:
+                            if (literal is not NoneLiteral)
+                            {
+                                if (literal is not ObjectLiteral { Class: ClassType literalClassType })
+                                {
+                                    TypeError($"Expected a class literal!", literal);
+                                }
+                                else if (targetClassLimiter.ClassLimiter != literalClassType.ClassLimiter && !((Class)targetClassLimiter.ClassLimiter).SameAsOrSubClassOf(literalClassType.ClassLimiter.Name))
+                                {
+                                    TypeError($"Cannot assign a value of type '{literalClassType.FullTypeName()}' to a variable of type '{literalClassType.FullTypeName()}'.", literal);
+                                }
+                            }
+                            break;
+                        case DelegateType delegateType:
+                            if (literal is not NameLiteral nameLiteral)
+                            {
+                                TypeError("Expected a name literal!", literal);
+                            }
+                            else if (!Symbols.TryGetSymbol(nameLiteral.Value, out Function func))
+                            {
+                                TypeError($"No function named {nameLiteral.Value} found!", literal);
+                            }
+                            else if (!func.SignatureEquals(delegateType.DefaultFunction))
+                            {
+                                TypeError($"Expected a function with the same signature as {(delegateType.DefaultFunction.Outer as Class)?.Name}.{delegateType.DefaultFunction.Name}!", literal);
+                            }
+                            break;
+                        case DynamicArrayType dynamicArrayType:
+                            throw new NotImplementedException();
+                            break;
+                        case Enumeration enumeration:
+                            if (literal is not SymbolReference {Node: EnumValue enumVal})
+                            {
+                                TypeError($"Expected an enum value!", literal);
+                            }
+                            break;
+                        case Struct:
+                            if (literal is not StructLiteral)
+                            {
+                                TypeError($"Expected a {STRUCT} literal!", literal);
+                            }
+                            break;
+                        default:
+                            switch (targetType.PropertyType)
+                            {
+                                case EPropertyType.Byte:
+                                    if (literal is not IntegerLiteral byteLiteral)
+                                    {
+                                        TypeError($"Expected a {BYTE}!", literal);
+                                    }
+                                    else if (byteLiteral.Value is < 0 or > 255)
+                                    {
+                                        TypeError($"{byteLiteral.Value} is not in the range of valid byte values: [0, 255]", literal);
+                                    }
+                                    break;
+                                case EPropertyType.Int:
+                                    if (literal is not IntegerLiteral)
+                                    {
+                                        TypeError($"Expected an integer!", literal);
+                                    }
+                                    break;
+                                case EPropertyType.Bool:
+                                    if (literal is not BooleanLiteral)
+                                    {
+                                        TypeError($"Expected {TRUE} or {FALSE}!");
+                                    }
+                                    break;
+                                case EPropertyType.Float:
+                                    if (literal is IntegerLiteral intLit)
+                                    {
+                                        literal = new FloatLiteral(intLit.Value, intLit.StartPos, intLit.EndPos);
+                                    }
+                                    else if (literal is not FloatLiteral)
+                                    {
+                                        TypeError($"Expected a floating point number!", literal);
+                                    }
+                                    break;
+                                case EPropertyType.Name:
+                                    if (literal is not NameLiteral)
+                                    {
+                                        TypeError($"Expected a {NAME} literal!", literal);
+                                    }
+                                    break;
+                                case EPropertyType.String:
+                                    if (literal is not StringLiteral)
+                                    {
+                                        TypeError($"Expected a {STRING} literal!", literal);
+                                    }
+                                    break;
+                                case EPropertyType.StringRef:
+                                    if (literal is not StringRefLiteral)
+                                    {
+                                        TypeError($"Expected a {STRINGREF} literal!", literal);
+                                    }
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException();
+                            }
+                            break;
                     }
                     return new AssignStatement(target, literal, propName.StartPos, literal.EndPos);
                 }

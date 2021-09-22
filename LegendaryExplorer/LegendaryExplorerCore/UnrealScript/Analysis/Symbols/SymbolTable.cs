@@ -519,12 +519,12 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             ScopeNames.RemoveLast();
         }
 
-        public bool TryGetSymbol(string symbol, out ASTNode node)
+        public bool TryGetSymbol<T>(string symbol, out T node) where T : ASTNode
         {
             return TryGetSymbolInternal(symbol, out node, Scopes);
         }
 
-        public bool TryGetSymbol(string symbol, out ASTNode node, string outerScope)
+        public bool TryGetSymbol<T>(string symbol, out T node, string outerScope) where T : ASTNode
         {
             return TryGetSymbolInternal(symbol, out node, Scopes) ||
                 TryGetSymbolInScopeStack(symbol, out node, outerScope);
@@ -570,8 +570,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                         scope = NodeUtils.GetOuterClassScope(stub.Outer);
                     }
 
-                    if (TryGetSymbol(functionName, out ASTNode funcNode, scope)
-                     && funcNode is Function func)
+                    if (TryGetSymbol(functionName, out Function func, scope))
                     {
                         delegateType.DefaultFunction = func;
                         return true;
@@ -608,7 +607,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
 
         public bool SymbolExists(string symbol, string outerScope)
         {
-            return TryGetSymbol(symbol, out _, outerScope);
+            return TryGetSymbol<ASTNode>(symbol, out _, outerScope);
         }
 
         public bool TypeExists(VariableType type, bool globalOnly = false) => TryResolveType(ref type, globalOnly);

@@ -20,7 +20,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
     public static class ScriptObjectToASTConverter
     {
 
-        public static Class ConvertClass(UClass uClass, bool decompileBytecode, FileLib lib = null, PackageCache packageCache = null)
+        public static Class ConvertClass(UClass uClass, bool decompileBytecodeAndDefaults, FileLib lib = null, PackageCache packageCache = null)
         {
             ExportEntry uClassExport = uClass.Export;
             IMEPackage pcc = uClassExport.FileRef;
@@ -63,7 +63,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         nextItem = uEnum.Next;
                         break;
                     case UFunction uFunction:
-                        Funcs.Add(ConvertFunction(uFunction, uClass, decompileBytecode, lib));
+                        Funcs.Add(ConvertFunction(uFunction, uClass, decompileBytecodeAndDefaults, lib));
                         nextItem = uFunction.Next;
                         break;
                     case UProperty uProperty:
@@ -76,25 +76,28 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         break;
                     case UState uState:
                         nextItem = uState.Next;
-                        States.Add(ConvertState(uState, uClass, decompileBytecode, lib));
+                        States.Add(ConvertState(uState, uClass, decompileBytecodeAndDefaults, lib));
                         break;
                     default:
                         nextItem = 0;
                         break;
                 }
             }
+            DefaultPropertiesBlock defaultProperties = null;
             var propEntry = pcc.GetEntry(uClass.Defaults);
-            DefaultPropertiesBlock defaultProperties = null; ;
-            if (propEntry is ExportEntry propExport)
+            if (decompileBytecodeAndDefaults)
             {
-                defaultProperties = ConvertDefaultProperties(propExport, packageCache);
+                if (propEntry is ExportEntry propExport)
+                {
+                    defaultProperties = ConvertDefaultProperties(propExport, packageCache);
+                }
             }
 
             var AST = new Class(uClassExport.ObjectName.Instanced, parent, outer, uClass.ClassFlags, interfaces, Types, Vars, Funcs, States, defaultProperties)
             {
                 ConfigName = uClass.ClassConfigName,
                 Package = uClassExport.Parent is null ? Path.GetFileNameWithoutExtension(pcc.FilePath) : uClassExport.ParentInstancedFullPath,
-                IsFullyDefined = nextItem.value == 0 && defaultProperties != null,
+                IsFullyDefined = nextItem.value == 0 && propEntry is ExportEntry,
                 FilePath = pcc.FilePath,
                 UIndex = uClassExport.UIndex
             };
@@ -544,7 +547,12 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 {
                     continue;
                 }
-                var name = new SymbolReference(null, prop.Name);
+
+                Expression name = new SymbolReference(null, prop.Name.Instanced);
+                if (prop.StaticArrayIndex > 0)
+                {
+                    name = new ArraySymbolRef(name, new IntegerLiteral(prop.StaticArrayIndex), null, null);
+                }
                 var value = ConvertPropertyValue(prop, packageCache);
                 if (value is StructLiteral structLiteral)
                 {
@@ -577,7 +585,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     case BioMask4Property bioMask4Property:
                         return new IntegerLiteral(bioMask4Property.Value) { NumType = Keywords.BIOMASK4 };
                     case DelegateProperty delegateProperty:
-                        return new SymbolReference(null, delegateProperty.Value.FunctionName);
+                        return new SymbolReference(null, delegateProperty.Value.FunctionName.Instanced);
                     case EnumProperty enumProperty:
                         return new SymbolReference(new EnumValue(enumProperty.Value.Instanced, 0) {Enum = new Enumeration(enumProperty.EnumType.Instanced, new List<EnumValue>(), null, null)}, enumProperty.Value.Instanced);
                     case FloatProperty floatProperty:
@@ -585,7 +593,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     case IntProperty intProperty:
                         return new IntegerLiteral(intProperty.Value);
                     case NameProperty nameProperty:
-                        return new NameLiteral(nameProperty.Value);
+                        return new NameLiteral(nameProperty.Value.Instanced);
                     case ObjectProperty objectProperty:
                         var objRef = objectProperty.Value;
                         if (objRef == 0)
