@@ -2121,23 +2121,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         var files = Directory.GetFiles(pathSource).Where(x => x.RepresentsPackageFilePath() && x.Contains("_LOC_", StringComparison.InvariantCultureIgnoreCase));
                         foreach (var file in files)
                         {
-                            var packName = Path.GetFileNameWithoutExtension(file);
-                            var packagePath = Path.Combine(PAEMPaths.VTest_FinalDestDir, $"{packName}.pcc");
-                            MEPackageHandler.CreateAndSavePackage(packagePath, MEGame.LE1);
-                            using var package = MEPackageHandler.OpenMEPackage(packagePath);
-                            using var sourcePackage = MEPackageHandler.OpenMEPackage(file);
-                            foreach (var e in sourcePackage.Exports.Where(x => x.ClassName == "ObjectReferencer"))
-                            {
-                                pe.BusyText = $"Porting {e.ObjectName}";
-                                var report = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, e, package, null, true, out _, targetGameDonorDB: db);
-                                if (report.Any())
-                                {
-                                    //Debugger.Break();
-                                }
-                            }
-
-                            pe.BusyText = $"Saving {packName}";
-                            package.Save();
+                            PortLOCFile(file, db, pe);
                         }
                     }
                 }
@@ -2148,10 +2132,18 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     var prc2Files = Directory.GetFiles(Path.Combine(PAEMPaths.VTest_SourceDir, "PRC2"));
                     foreach (var f in prc2Files)
                     {
-                        if (f.Contains("_LOC_"))
+                        if (f.Contains("_LOC_", StringComparison.InvariantCultureIgnoreCase))
                             continue; // Skip for now
                         var levelName = Path.GetFileNameWithoutExtension(f);
-                        PortVTestLevel("PRC2", levelName, PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, db, pe, levelName == "BIOA_PRC2", levelName == "BIOA_PRC2", enableDynamicLighting: true);
+                        PortVTestLevel("PRC2", levelName, PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, db, pe, /*levelName == "BIOA_PRC2"*/true, levelName == "BIOA_PRC2", enableDynamicLighting: true);
+                    }
+
+                    // Port LOC files
+                    foreach (var f in prc2Files)
+                    {
+                        if (!f.Contains("_LOC_", StringComparison.InvariantCultureIgnoreCase))
+                            continue; // Only include LOC files
+                        // PortLOCFile(f, db, pe); // breaks the game currently
                     }
                 }
             }).ContinueWithOnUIThread(result =>
@@ -2160,6 +2152,27 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     Debugger.Break();
                 pe.EndBusy();
             });
+        }
+
+        private static void PortLOCFile(string sourceFile, ObjectInstanceDB db, PackageEditorWindow pe)
+        {
+            var packName = Path.GetFileNameWithoutExtension(sourceFile);
+            var destPackagePath = Path.Combine(PAEMPaths.VTest_FinalDestDir, $"{packName}.pcc");
+            MEPackageHandler.CreateAndSavePackage(destPackagePath, MEGame.LE1);
+            using var package = MEPackageHandler.OpenMEPackage(destPackagePath);
+            using var sourcePackage = MEPackageHandler.OpenMEPackage(sourceFile);
+            foreach (var e in sourcePackage.Exports.Where(x => x.ClassName == "ObjectReferencer"))
+            {
+                pe.BusyText = $"Porting {e.ObjectName}";
+                var report = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, e, package, null, true, out _, targetGameDonorDB: db);
+                if (report.Any())
+                {
+                    //Debugger.Break();
+                }
+            }
+
+            pe.BusyText = $"Saving {packName}";
+            package.Save();
         }
 
         private static void PostPortingCorrections(IMEPackage me1File, IMEPackage le1File)
