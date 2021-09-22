@@ -3,6 +3,7 @@ using System.Linq;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Compiling;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
@@ -300,5 +301,29 @@ namespace LegendaryExplorerCore.UnrealScript
         }
 
 
+        public static DefaultPropertiesBlock CompileDefaultPropertiesAST(ExportEntry classExport, DefaultPropertiesBlock propBlock, MessageLog log, FileLib lib)
+        {
+            SymbolTable symbols = lib.GetSymbolTable();
+            symbols.RevertToObjectStack();
+
+
+            if (classExport.IsClass && symbols.TryGetType(classExport.ObjectName.Instanced, out Class propsClass))
+            {
+                if (!propsClass.Name.CaseInsensitiveEquals("Object"))
+                {
+                    symbols.GoDirectlyToStack(((Class)propsClass.Parent).GetInheritanceString());
+                    symbols.PushScope(propsClass.Name);
+                }
+
+                propsClass.DefaultProperties = propBlock;
+                propBlock.Outer = propsClass;
+
+                PropertiesBlockParser.Parse(propBlock, classExport.FileRef, symbols, log);
+
+                return propBlock;
+            }
+
+            return null;
+        }
     }
 }

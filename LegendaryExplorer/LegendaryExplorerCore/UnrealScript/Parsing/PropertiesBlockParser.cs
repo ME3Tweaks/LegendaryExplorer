@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
@@ -17,16 +18,21 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
     public class PropertiesBlockParser : StringParserBase
     {
         private readonly Stack<string> ExpressionScopes;
-        public static void Parse(DefaultPropertiesBlock propsBlock, SymbolTable symbols, MessageLog log)
+        private readonly IMEPackage Pcc;
+        public static void Parse(DefaultPropertiesBlock propsBlock, IMEPackage pcc, SymbolTable symbols, MessageLog log)
         {
-            var parser = new PropertiesBlockParser(propsBlock, symbols, log);
+            var parser = new PropertiesBlockParser(propsBlock, pcc, symbols, log);
+            var statements = parser.Parse();
+
+            propsBlock.Statements = statements;
         }
 
-        private PropertiesBlockParser(DefaultPropertiesBlock propsBlock, SymbolTable symbols, MessageLog log)
+        private PropertiesBlockParser(DefaultPropertiesBlock propsBlock, IMEPackage pcc, SymbolTable symbols, MessageLog log)
         {
             Symbols = symbols;
             Log = log;
             Tokens = propsBlock.Tokens;
+            Pcc = pcc;
         }
 
         private List<Statement> Parse(bool requireBrackets = true)

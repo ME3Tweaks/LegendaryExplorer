@@ -1296,7 +1296,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             {
                 Append(")");
             }
-            if (node.IsClassContext && !(node.InnerSymbol is DefaultReference))
+            if (node.IsClassContext && node.InnerSymbol is not DefaultReference)
             {
                 Append(".", EF.Operator);
                 Append(STATIC, EF.Keyword);

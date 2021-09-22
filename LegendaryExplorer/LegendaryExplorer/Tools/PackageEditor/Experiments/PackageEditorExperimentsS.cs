@@ -686,7 +686,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             pewpf.IsBusy = true;
             pewpf.BusyText = "Scanning";
-            Task.Run(async () =>
+            Task.Run(() =>
             {
                 foreach (MEGame game in new[] { /*MEGame.LE2, MEGame.LE3, */MEGame.LE1, MEGame.ME2, MEGame.ME3, MEGame.ME1})
                 {
@@ -707,9 +707,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         //ScanLevel(filePath);
                         //if (findClass(filePath, "ShaderCache", true)) break;
                         //findClassesWithBinary(filePath);
-                        //await ScanScripts2(filePath);
-                        //await RecompileAllFunctions(filePath);
-                        await RecompileAllStates(filePath);
+                        //ScanScripts2(filePath);
+                        //RecompileAllFunctions(filePath);
+                        RecompileAllStates(filePath);
                     }
                     if (interestingExports.Any())
                     {
@@ -971,11 +971,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
             }
 
-            async Task ScanScripts2(string filePath)
+            void ScanScripts2(string filePath)
             {
                 using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
                 var fileLib = new FileLib(pcc);
-                if (await fileLib.Initialize())
+                if (fileLib.Initialize())
                 {
                     foreach (ExportEntry exp in pcc.Exports.Reverse().Where(exp => exp.ClassName == "Function" && exp.Parent.ClassName == "Class" && !exp.GetBinaryData<UFunction>().FunctionFlags.Has(EFunctionFlags.Native)))
                     {
@@ -1017,11 +1017,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
             }
 
-            async Task RecompileAllFunctions(string filePath)
+            void RecompileAllFunctions(string filePath)
             {
                 using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
                 var fileLib = new FileLib(pcc);
-                if (await fileLib.Initialize())
+                if (fileLib.Initialize())
                 {
                     foreach (ExportEntry exp in pcc.Exports.Where(exp => exp.ClassName == "Function"))
                     {
@@ -1049,7 +1049,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
             }
 
-            async Task RecompileAllStates(string filePath)
+            void RecompileAllStates(string filePath)
             {
                 using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
                 var fileLib = new FileLib(pcc);
@@ -1065,7 +1065,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     foundClasses.Add(instancedFullPath);
                     try
                     {
-                        if (await fileLib.Initialize())
+                        if (fileLib.Initialize())
                         {
                             var originalData = exp.Data;
                             (_, string originalScript) = UnrealScriptCompiler.DecompileExport(exp, fileLib);

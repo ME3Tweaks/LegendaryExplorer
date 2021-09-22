@@ -579,7 +579,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     case DelegateProperty delegateProperty:
                         return new SymbolReference(null, delegateProperty.Value.FunctionName);
                     case EnumProperty enumProperty:
-                        return new CompositeSymbolRef(new SymbolReference(null, enumProperty.EnumType.Instanced), new SymbolReference(null, enumProperty.Value.Instanced));
+                        return new SymbolReference(new EnumValue(enumProperty.Value.Instanced, 0) {Enum = new Enumeration(enumProperty.EnumType.Instanced, new List<EnumValue>(), null, null)}, enumProperty.Value.Instanced);
                     case FloatProperty floatProperty:
                         return new FloatLiteral(floatProperty.Value);
                     case IntProperty intProperty:
@@ -594,7 +594,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         if (objEntry is ExportEntry objExp && objExp.Parent == containingExport)
                         {
                             string name = objExp.ObjectName.Instanced;
-                            if (!(statements.FirstOrDefault(stmnt => (stmnt as Subobject)?.Name.Name == name) is Subobject subObj))
+                            if (statements.FirstOrDefault(stmnt => (stmnt as Subobject)?.Name.Name == name) is not Subobject subObj)
                             {
                                 var type = new VariableType(objExp.ClassName);
                                 var decl = new VariableDeclaration(type, default, name);
