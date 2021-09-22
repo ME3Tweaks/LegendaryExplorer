@@ -71,6 +71,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
         public static PropertyCollection GetSequenceObjectDefaults(IMEPackage pcc, ClassInfo info, PackageCache pc = null)
         {
+            pc ??= new PackageCache();
             MEGame game = pcc.Game;
             PropertyCollection defaults = new();
             if (info.ClassName == "Sequence")
