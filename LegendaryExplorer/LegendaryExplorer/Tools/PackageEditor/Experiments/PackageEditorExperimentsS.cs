@@ -93,11 +93,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                             PortShadowMap(otsmcExp, smcExp);
                         }
-                        else if (actor.ClassName.CaseInsensitiveEquals("StaticMeshCollectionActor") && actor.GetProperty<ArrayProperty<ObjectProperty>>("StaticMeshComponents") is {} smcArray)
+                        else if (actor.ClassName.CaseInsensitiveEquals("StaticMeshCollectionActor") && actor.GetProperty<ArrayProperty<ObjectProperty>>("StaticMeshComponents") is { } smcArray)
                         {
                             foreach (ObjectProperty objProp in smcArray)
                             {
-                                if (objProp.ResolveToEntry(pcc) is ExportEntry {ObjectName: {Instanced: var smcName}} smcExport && otPcc.Exports.FirstOrDefault(exp => exp.ObjectName.Instanced.CaseInsensitiveEquals(smcName)) is ExportEntry otsmcExport)
+                                if (objProp.ResolveToEntry(pcc) is ExportEntry { ObjectName: { Instanced: var smcName } } smcExport && otPcc.Exports.FirstOrDefault(exp => exp.ObjectName.Instanced.CaseInsensitiveEquals(smcName)) is ExportEntry otsmcExport)
                                 {
                                     PortShadowMap(otsmcExport, smcExport);
                                 }
@@ -123,7 +123,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 void PortShadowMap(ExportEntry otsmcExp, ExportEntry smcExp)
                 {
-                    if (otsmcExp.GetProperty<ArrayProperty<StructProperty>>("IrrelevantLights") is {} irrelevantLightsProp)
+                    if (otsmcExp.GetProperty<ArrayProperty<StructProperty>>("IrrelevantLights") is { } irrelevantLightsProp)
                     {
                         smcExp.WriteProperty(irrelevantLightsProp);
                     }
@@ -163,7 +163,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         Debugger.Break();
                     }
 
-                    smcBin.LODData[0].ShadowMaps = new UIndex[] {leShadowMap.UIndex};
+                    smcBin.LODData[0].ShadowMaps = new UIndex[] { leShadowMap.UIndex };
                     smcExp.WriteBinary(smcBin);
                 }
             }).ContinueWithOnUIThread(prevTask =>
@@ -386,7 +386,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             var oodleData = new List<CompressionData>();
             Task.Run(() =>
             {
-                foreach (MEGame game in new []{MEGame.LE1, MEGame.LE2, MEGame.LE3})//, MEGame.ME1, MEGame.ME2, MEGame.ME3})
+                foreach (MEGame game in new[] { MEGame.LE1, MEGame.LE2, MEGame.LE3 })//, MEGame.ME1, MEGame.ME2, MEGame.ME3})
                 {
                     var filePaths = MELoadedFiles.GetOfficialFiles(game);
                     foreach (string filePath in filePaths)
@@ -398,7 +398,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                         raw.SkipInt32(); //skip magic as we have already read it
                         var versionLicenseePacked = raw.ReadUInt32();
-                        
+
                         raw.ReadInt32();
                         int foldernameStrLen = raw.ReadInt32();
                         if (foldernameStrLen > 0)
@@ -407,7 +407,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             fs.ReadStringUnicodeNull(foldernameStrLen * -2);
 
                         var Flags = (UnrealFlags.EPackageFlags)raw.ReadUInt32();
-                        
+
                         if ((game == MEGame.ME3 || game == MEGame.LE3)
                          && Flags.HasFlag(UnrealFlags.EPackageFlags.Cooked))
                         {
@@ -446,7 +446,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         }
                         //should never be more than 1 generation, but just in case
                         raw.Skip(generationsTableCount * 12);
-                        
+
                         raw.SkipInt32(); //engineVersion          Like unrealVersion and licenseeVersion, these 2 are determined by what game this is,
                         raw.SkipInt32(); //cookedContentVersion   so we don't have to read them in
 
@@ -478,7 +478,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                         var NumChunks = raw.ReadInt32();
                         int compressedSize = 0;
-                        int uncompressedSize = 0; 
+                        int uncompressedSize = 0;
                         for (int i = 0; i < NumChunks; i++)
                         {
                             raw.ReadInt32();
@@ -506,7 +506,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 var oodleWS = xl.AddWorksheet("Oodle");
                 var lzoWS = xl.AddWorksheet("lzo");
                 var zlibWS = xl.AddWorksheet("zlib");
-                foreach ((List<CompressionData> data, IXLWorksheet ws) in new []{oodleData, lzoData, zLibData}.Zip(new []{oodleWS, lzoWS, zlibWS}))
+                foreach ((List<CompressionData> data, IXLWorksheet ws) in new[] { oodleData, lzoData, zLibData }.Zip(new[] { oodleWS, lzoWS, zlibWS }))
                 {
                     ws.Cell(1, 1).SetValue("Compressed Size");
                     ws.Cell(1, 2).SetValue("Uncompressed Size");
@@ -650,7 +650,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }).ContinueWithOnUIThread(prevTask =>
             {
                 pewpf.IsBusy = false;
-                new ListDialog(new []
+                new ListDialog(new[]
                 {
                     $"build:\n {string.Join('\n', prevTask.Result.buildData.Select(kvp => $"{kvp.Key}: {string.Join(',', kvp.Value)}"))}",
                     $"branc:\n {string.Join('\n', prevTask.Result.branchData.Select(kvp => $"{kvp.Key}: {string.Join(',', kvp.Value)}"))}",
@@ -1092,7 +1092,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             #endregion
         }
 
-        public static void CreateDynamicLighting(IMEPackage Pcc)
+        public static void CreateDynamicLighting(IMEPackage Pcc, bool silent = false)
         {
             foreach (ExportEntry exp in Pcc.Exports.Where(exp => exp.IsA("MeshComponent") || exp.IsA("BrushComponent")))
             {
@@ -1147,7 +1147,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 exp.WriteProperties(props);
             }
 
-            MessageBox.Show("Done!");
+            if (!silent)
+                MessageBox.Show("Done!");
         }
 
         public static void ConvertAllDialogueToSkippable(PackageEditorWindow pewpf)

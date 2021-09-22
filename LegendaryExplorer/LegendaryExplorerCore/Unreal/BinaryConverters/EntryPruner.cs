@@ -234,7 +234,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                             string structType = structProperty.StructType;
                             if (GlobalUnrealObjectInfo.GetStructs(newGame).ContainsKey(structType))
                             {
-                                if (HasIncompatibleImmutabilities(structType, out bool newImmutability)) break;
+                                if (HasIncompatibleImmutabilities(structType, out bool newImmutability))
+                                {
+                                    Debug.WriteLine($"Trimmed property {prop.Name} from {typeName}, as the struct immutabilities are not guaranteed compatible");
+                                    removedProperties = true;
+                                    break;
+                                }
                                 structProperty.Properties = RemoveIncompatibleProperties(sourcePcc, structProperty.Properties, structType, newGame, ref removedProperties);
                                 structProperty.IsImmutable = newImmutability;
                                 newProps.Add(structProperty);
