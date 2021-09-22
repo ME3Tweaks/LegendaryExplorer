@@ -6780,7 +6780,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 int forceStreamTexturesCount;
                 subnodes.Add(new BinInterpNode(bin.Position, $"ForceStreamTextures: ({forceStreamTexturesCount = bin.ReadInt32()})")
                 {
-                    Items = ReadList(forceStreamTexturesCount, i => MakeBoolIntNode(bin, "Texture: {entryRefString(bin)} | ForceStream"))
+                    Items = ReadList(forceStreamTexturesCount, i => MakeBoolIntNode(bin, $"Texture: {entryRefString(bin)} | ForceStream"))
                 });
 
                 if (Pcc.Game == MEGame.UDK)
