@@ -1977,42 +1977,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         using var le1File = MEPackageHandler.OpenMEPackage(outputFile);
                         using var me1File = MEPackageHandler.OpenMEPackage($@"{PAEMPaths.VTest_SourceDir}\PRC2AA\{sourceName}.SFM");
 
-                        var itemsToPort = new ExportEntry[]
-                        {
-                        me1File.FindExport(@"TheWorld.PersistentLevel.StaticLightCollectionActor_16"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.StaticMeshCollectionActor_45"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.Terrain_0"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_0"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_2"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_3"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_4"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BioSunActor_5"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_0"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_1"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_10"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_11"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_12"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_13"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_14"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_2"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_3"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_35"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_36"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_37"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_4"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_5"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_6"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_7"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_8"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_9"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.PostProcessVolume_0"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.SkeletalMeshActor_0"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.SkeletalMeshActor_1"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.SkeletalMeshActor_2"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.SkeletalMeshActor_9"),
-                        me1File.FindExport(@"TheWorld.PersistentLevel.BioDoor_0"),
-                        };
-                        VTestFilePorting(le1File, itemsToPort, db, pe);
+                        PortVTestLevel("PRC2AA", sourceName, PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, db, pe, false);
                         RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
                         CorrectNeverStream(le1File);
 
@@ -2020,6 +1985,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         var terrainExp = le1File.FindExport(@"TheWorld.PersistentLevel.Terrain_0");
                         var terrain = ObjectBinary.From<Terrain>(terrainExp);
                         terrain.CachedDisplacements = new byte[terrain.Heights.Length];
+
                         // Update the GUIDs of the materials
                         foreach (var cm in terrain.CachedTerrainMaterials)
                         {
@@ -2147,7 +2113,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 {
                                     //Debugger.Break();
                                 }
-                            }   
+                            }
 
                             pe.BusyText = $"Saving {packName}";
                             package.Save();
@@ -2199,7 +2165,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         if (f.Contains("_LOC_"))
                             continue; // Skip for now
                         var levelName = Path.GetFileNameWithoutExtension(f);
-                        PortVTestLevel(levelName, PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, db, pe, levelName == "BIOA_PRC2");
+                        PortVTestLevel("PRC2", levelName, PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, db, pe, levelName == "BIOA_PRC2");
                     }
                 }
             }).ContinueWithOnUIThread(result =>
@@ -2214,12 +2180,67 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
 
             var le1PL = destPackage.FindExport("TheWorld.PersistentLevel");
+
+
+
+            bool first = true;
             foreach (var e in itemsToPort)
             {
+                if (first)
+                {
+                    // Strip static mesh light maps since they don't work crossgen. Strip them from
+                    // the source so they don't port
+                    foreach (var exp in e.FileRef.Exports.Where(x => x.ClassName == "StaticMeshComponent" || x.ClassName == "TerrainComponent"))
+                    {
+                        if (exp.ClassName == "StaticMeshComponent")
+                        {
+                            var b = ObjectBinary.From<StaticMeshComponent>(exp);
+                            foreach (var lod in b.LODData)
+                            {
+                                // Clear light and shadowmaps
+                                lod.ShadowMaps = new UIndex[0];
+                                lod.LightMap = new LightMap() { LightMapType = ELightMapType.LMT_None };
+                            }
+
+                            exp.WriteBinary(b);
+                        }
+                        else if (exp.ClassName == "TerrainComponent")
+                        {
+                            // Strip Lightmap
+                            var b = ObjectBinary.From<TerrainComponent>(exp);
+                            b.LightMap = new LightMap() { LightMapType = ELightMapType.LMT_None };
+                            exp.WriteBinary(b);
+
+                            // Make dynamic lighting
+                            var props = exp.GetProperties();
+                            props.RemoveNamedProperty("ShadowMaps");
+                            props.AddOrReplaceProp(new BoolProperty(false, "bForceDirectLightMap"));
+                            props.AddOrReplaceProp(new BoolProperty(true, "bCastDynamicShadow"));
+                            props.AddOrReplaceProp(new BoolProperty(true, "bAcceptDynamicLights"));
+
+                            var lightingChannels = props.GetProp<StructProperty>("LightingChannels") ??
+                                                   new StructProperty("LightingChannelContainer", false,
+                                                       new BoolProperty(true, "bIsInitialized"))
+                                                   {
+                                                       Name = "LightingChannels"
+                                                   };
+                            lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "Static"));
+                            lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "Dynamic"));
+                            lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "CompositeDynamic"));
+                            props.AddOrReplaceProp(lightingChannels);
+
+                            exp.WriteProperties(props);
+                        }
+
+                    }
+                    first = false;
+                }
                 pe.BusyText = $"Porting {e.ObjectName}";
                 var report = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, e, destPackage,
                     le1PL, true, out _, targetGameDonorDB: db);
             }
+
+
 
             RebuildPersistentLevelChildren(le1PL);
             pe.BusyText = "Saving package";
@@ -2260,13 +2281,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             pl.WriteBinary(level);
         }
 
-        private static void PortVTestLevel(string sourceName, string finalDestDir, string sourceDir, ObjectInstanceDB db, PackageEditorWindow pe, bool syncBioWorldInfo)
+        private static void PortVTestLevel(string mapName, string sourceName, string finalDestDir, string sourceDir, ObjectInstanceDB db, PackageEditorWindow pe, bool syncBioWorldInfo)
         {
             var outputFile = $@"{finalDestDir}\{sourceName}.pcc";
             CreateEmptyLevel(outputFile, MEGame.LE1);
 
             using var le1File = MEPackageHandler.OpenMEPackage(outputFile);
-            using var me1File = MEPackageHandler.OpenMEPackage($@"{sourceDir}\PRC2\{sourceName}.SFM");
+            using var me1File = MEPackageHandler.OpenMEPackage($@"{sourceDir}\{mapName}\{sourceName}.SFM");
 
             // BIOC_BASE -> SFXGame
             var bcBaseIdx = me1File.findName("BIOC_Base");
@@ -2276,24 +2297,30 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             if (syncBioWorldInfo)
             {
-                itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioUsable"));
-                itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioPawn"));
-                itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioMapNote"));
-                itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioTrigger"));
+
                 itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioTriggerStream"));
                 itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "PlayerStart"));
-                itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "StaticMeshCollectionActor"));
-                itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "StaticLightCollectionActor"));
-                itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioSunActor"));
-                itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BlockingVolume"));
-                itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioDoor"));
+
 
                 // Port sequence in
                 pe.BusyText = "Porting sequencing...";
                 var dest = le1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence");
                 EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, me1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence"), le1File, dest, true, out _, importExportDependencies: true, targetGameDonorDB: db);
-
             }
+
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioInert"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioUsable"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioPawn"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "SkeletalMeshActor"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "PostProcessVolume"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioMapNote"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioTrigger"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioSunActor"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BlockingVolume"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioDoor"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "StaticMeshCollectionActor"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "StaticLightCollectionActor"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "Terrain"));
 
             VTestFilePorting(le1File, itemsToPort, db, pe);
 
