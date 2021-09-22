@@ -2186,7 +2186,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private static List<ITreeItem> ReadList(int count, Func<int, ITreeItem> selector)
         {
             //sanity check. if this number is too small, feel free to increase
-            if (count > 2097152)
+            if (count > 5097152)
             {
                 throw new Exception($"Is this actually a list? {count} seems like an incorrect count");
             }
