@@ -44,6 +44,11 @@ namespace LegendaryExplorer.UserControls.InterpEditorControls
         {
             InterpEditorExperimentsE.AddPresetTrack("Gesture", GetIEWindow());
         }
+
+        private void AddPresetGestureTrack2_Click(object sender, RoutedEventArgs e)
+        {
+            InterpEditorExperimentsE.AddPresetTrack("Gesture2", GetIEWindow());
+        }
         #endregion
     }
 }

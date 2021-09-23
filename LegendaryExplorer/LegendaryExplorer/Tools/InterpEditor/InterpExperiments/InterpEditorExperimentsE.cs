@@ -25,14 +25,14 @@ namespace LegendaryExplorer.Tools.InterpEditor.InterpExperiments
                 switch (preset)
                 {
                     case "Director":
-                        MatineeHelper.AddPreset("Director", currExp);
+                        MatineeHelper.AddPreset(preset, currExp);
                         break;
 
                     case "Camera":
                         var actor = promptForActor("Name of camera actor:", "Not a valid camera actor name.");
                         if (!string.IsNullOrEmpty(actor))
                         {
-                            MatineeHelper.AddPreset("Camera", currExp, actor);
+                            MatineeHelper.AddPreset(preset, currExp, actor);
                         }
                         break;
                 }
@@ -55,10 +55,11 @@ namespace LegendaryExplorer.Tools.InterpEditor.InterpExperiments
                 switch (preset)
                 {
                     case "Gesture":
+                    case "Gesture2":
                         var actor = promptForActor("Name of gesture actor:", "Not a valid gesture actor name.");
                         if (!string.IsNullOrEmpty(actor))
                         {
-                            MatineeHelper.AddPreset("Gesture", currExp, actor);
+                            MatineeHelper.AddPreset(preset, currExp, actor);
                         }
                         break;
                 }

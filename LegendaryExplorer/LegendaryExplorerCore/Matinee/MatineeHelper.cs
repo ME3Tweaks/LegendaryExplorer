@@ -304,8 +304,79 @@ namespace LegendaryExplorerCore.Matinee
                     ges.WriteProperty(new NameProperty(param1, "m_nmFindActor"));
                     ges.WriteProperty(new StrProperty($"Gesture -- {param1}", "TrackTitle"));
                     break;
+
+                case "Gesture2":
+                    var ges2 = AddNewTrackToGroup(interpGroup, "BioEvtSysTrackGesture");
+                    var m_aGestures = new ArrayProperty<StructProperty>("m_aGestures");
+                    var gesProps = PresetCreateProperties("Gesture2-gesture");
+                    if (gesProps != null)
+                    {
+                        m_aGestures.Add(new StructProperty("BioGestureData", gesProps, "BioGestureData"));
+                        ges2.WriteProperty(m_aGestures);
+                    }
+                    ges2.WriteProperty(new NameProperty("None", "nmStartingPoseSet"));
+                    ges2.WriteProperty(new NameProperty("None", "nmStartingPoseAnim"));
+                    ges2.WriteProperty(new FloatProperty(0, "m_fStartPoseOffset"));
+                    ges2.WriteProperty(new BoolProperty(true, "m_bUseDynamicAnimSets"));
+                    ges2.WriteProperty(new EnumProperty("None", "EBioTrackAllPoseGroups", MEGame.LE3, "ePoseFilter"));
+                    ges2.WriteProperty(new NameProperty(param1, "m_nmFindActor"));
+                    var m_aTrackKeys = new ArrayProperty<StructProperty>("m_aTrackKeys");
+                    var keyProps = PresetCreateProperties("Gesture2-key");
+                    if (keyProps != null)
+                    {
+                        m_aTrackKeys.Add(new StructProperty("BioTrackKey", keyProps, "BioTrackKey"));
+                        ges2.WriteProperty(m_aTrackKeys);
+                    }
+                    ges2.WriteProperty(new StrProperty($"Gesture -- {param1}", "TrackTitle"));
+                    break;
+
+                default:
+                    return;
             }
-            return;
+        }
+
+        private static PropertyCollection PresetCreateProperties(string preset)
+        {
+            PropertyCollection props = null;
+            switch (preset)
+            {
+                case "Gesture2-gesture":
+                    props = new PropertyCollection();
+                    props.AddOrReplaceProp(new ArrayProperty<IntProperty>("aChainedGestures"));
+                    props.AddOrReplaceProp(new NameProperty("None", "nmPoseSet"));
+                    props.AddOrReplaceProp(new NameProperty("None", "nmPoseAnim"));
+                    props.AddOrReplaceProp(new NameProperty("None", "nmGestureSet"));
+                    props.AddOrReplaceProp(new NameProperty("None", "nmGestureAnim"));
+                    props.AddOrReplaceProp(new NameProperty("None", "nmTransitionSet"));
+                    props.AddOrReplaceProp(new NameProperty("None", "nmTransitionAnim"));
+                    props.AddOrReplaceProp(new FloatProperty(1, "fPlayRate"));
+                    props.AddOrReplaceProp(new FloatProperty(0, "fStartOffset"));
+                    props.AddOrReplaceProp(new FloatProperty(0, "fEndOffset"));
+                    props.AddOrReplaceProp(new FloatProperty(0.1F, "fStartBlendDuration"));
+                    props.AddOrReplaceProp(new FloatProperty(0.1F, "fEndBlendDuration"));
+                    props.AddOrReplaceProp(new FloatProperty(1, "fWeight"));
+                    props.AddOrReplaceProp(new FloatProperty(0, "fTransBlendTime"));
+                    props.AddOrReplaceProp(new BoolProperty(false, "bInvalidData"));
+                    props.AddOrReplaceProp(new BoolProperty(false, "bOneShotAnim"));
+                    props.AddOrReplaceProp(new BoolProperty(false, "bChainToPrevious"));
+                    props.AddOrReplaceProp(new BoolProperty(false, "bPlayUntilNext"));
+                    props.AddOrReplaceProp(new BoolProperty(false, "bTerminateAllGestures"));
+                    props.AddOrReplaceProp(new BoolProperty(false, "bUseDynAnimSets"));
+                    props.AddOrReplaceProp(new BoolProperty(false, "bSnapToPose"));
+                    props.AddOrReplaceProp(new EnumProperty("None", "EBioValidPoseGroups", MEGame.LE3, "ePoseFilter"));
+                    props.AddOrReplaceProp(new EnumProperty("None", "EBioGestureValidPoses", MEGame.LE3, "ePose"));
+                    props.AddOrReplaceProp(new EnumProperty("None", "EBioGestureGroups", MEGame.LE3, "eGestureFiler"));
+                    props.AddOrReplaceProp(new EnumProperty("None", "EBioGestureValidGestures", MEGame.LE3, "eGesture"));
+
+                    break;
+                case "Gesture2-key":
+                    props = new PropertyCollection();
+                    props.AddOrReplaceProp(new NameProperty("None", "KeyName"));
+                    props.AddOrReplaceProp(new FloatProperty(0, "fTime"));
+
+                    break;
+            }
+            return props;
         }
     }
 }
