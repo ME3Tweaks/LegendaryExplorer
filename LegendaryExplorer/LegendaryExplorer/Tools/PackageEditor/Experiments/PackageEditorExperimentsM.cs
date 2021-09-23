@@ -2228,6 +2228,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             MEPackageHandler.CreateAndSavePackage(destPackagePath, MEGame.LE1);
             using var package = MEPackageHandler.OpenMEPackage(destPackagePath);
             using var sourcePackage = MEPackageHandler.OpenMEPackage(sourceFile);
+
+            var bcBaseIdx = sourcePackage.findName("BIOC_Base");
+            sourcePackage.replaceName(bcBaseIdx, "SFXGame");
+
             foreach (var e in sourcePackage.Exports.Where(x => x.ClassName == "ObjectReferencer"))
             {
                 pe.BusyText = $"Porting {e.ObjectName}";
@@ -2238,13 +2242,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
             }
 
-            foreach (var e in sourcePackage.Exports.Where(x => x.ClassName == "Sequence"))
-            {
-                if (!e.Parent.IsA("SequenceObject"))
-                {
-                    CorrectSequenceObjects(e);
-                }
-            }
+            CorrectSequences(package);
 
             pe.BusyText = $"Saving {packName}";
             package.Save();
@@ -2255,7 +2253,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             // Corrections to run AFTER porting is done
             CorrectNeverStream(le1File);
             CorrectPrefabSequenceClass(le1File);
-            CorrectSequenceObjects(le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence")); // Might need to change this to find other roots. Maybe prefabs?
+            CorrectSequences(le1File);
             CorrectPathfindingNetwork(me1File, le1File);
             RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
 
@@ -2523,9 +2521,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             //if (triggerStream.ObjectName.Instanced == "BioTriggerStream_0")
             //    Debugger.Break();
-            triggerStream.RemoveProperty("m_oAreaMapOverride"); // Remove this when stuff is NOT borked up
-
-            return;
+            // triggerStream.RemoveProperty("m_oAreaMapOverride"); // Remove this when stuff is NOT borked up
+            //
+            // return;
             var streamingStates = triggerStream.GetProperty<ArrayProperty<StructProperty>>("StreamingStates");
             if (streamingStates != null)
             {
@@ -2634,23 +2632,23 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             // Once we are confident in porting we will just take the actor list from PersistentLevel
             // For now just port these
-            //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "InterpActor"));
-            //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioInert"));
-            //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioUsable"));
-            //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioPawn"));
-            //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "SkeletalMeshActor"));
-            //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "PostProcessVolume"));
-            //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioMapNote"));
-            //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "Note"));
-            //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioTrigger"));
-            //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioSunActor"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "InterpActor"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioInert"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioUsable"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioPawn"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "SkeletalMeshActor"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "PostProcessVolume"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioMapNote"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "Note"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioTrigger"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioSunActor"));
             itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BlockingVolume"));
-            //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioDoor"));
-            //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "StaticMeshCollectionActor"));
-            //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "StaticLightCollectionActor"));
-            //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "ReverbVolume"));
-            //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioAudioVolume"));
-            //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "AmbientSound"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioDoor"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "StaticMeshCollectionActor"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "StaticLightCollectionActor"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "ReverbVolume"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioAudioVolume"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "AmbientSound"));
 
 
             VTestFilePorting(me1File, le1File, itemsToPort, db, pe);
@@ -2700,6 +2698,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             foreach (var err in rcp.GetSignificantIssues())
             {
                 Debug.WriteLine($"RCP: [WARN] {err.Entry.InstancedFullPath} {err.Message}");
+            }
+        }
+
+        private static void CorrectSequences(IMEPackage le1File)
+        {
+            // Find sequences that aren't in other sequences
+            foreach (var seq in le1File.Exports.Where(e => e is {ClassName: "Sequence"} && !e.Parent.IsA("SequenceObject")))
+            {
+                CorrectSequenceObjects(seq);
             }
         }
 
@@ -2869,7 +2876,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         public static void PortSequenceObjectClassAcrossGame(PackageEditorWindow pe)
         {
             var seqObjsToPort = pe.Pcc.Exports.Where(x => !x.IsDefaultObject && x.SuperClassName == "SequenceAction" && x.IsClass).ToList();
-            var sourceDir = @"Y:\ModLibrary\LE1\V Test\Donors";
+            var sourceDir = PAEMPaths.VTest_DonorsDir;
 
             List<string> createdPackages = new List<string>();
             foreach (var seqObjClass in seqObjsToPort)
@@ -2918,7 +2925,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void TestCrossGenClassPorting(PackageEditorWindow pe)
         {
-            var destFile = @"Y:\ModLibrary\LE1\V Test\Donors\BIOC_BaseDLC_Vegas.pcc";
+            var destFile = Path.Combine(PAEMPaths.VTest_DonorsDir, "BIOC_BaseDLC_Vegas.pcc");
             var sourceFile = "BIOC_BaseDLC_Vegas.u";
 
             var loadedFiles = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1);
@@ -2927,6 +2934,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 using var vegasP = MEPackageHandler.OpenMEPackage(vegasU);
                 MEPackageHandler.CreateAndSavePackage(destFile, MEGame.LE1);
                 using var destP = MEPackageHandler.OpenMEPackage(destFile);
+
+                // BIOC_BASE -> SFXGame
+                var bcBaseIdx = vegasP.findName("BIOC_Base");
+                vegasP.replaceName(bcBaseIdx, "SFXGame");
 
                 var packageName = Path.GetFileNameWithoutExtension(sourceFile);
                 var link = ExportCreator.CreatePackageExport(destP, packageName);
