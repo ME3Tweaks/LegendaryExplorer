@@ -232,9 +232,15 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     {
                         uf.ScriptBytes = new byte[0]; // This needs zero'd out so it doesn't try to relink anything. The relink will occur on the second pass
                     }
-
-
+                    
                     List<(UIndex, string)> indices = objBin.GetUIndexes(relinkingExport.FileRef.Game);
+                    if (relinkingExport.Game != sourcePcc.Game && objBin is UFunction uf2)
+                    {
+                        // This forces data to copy over that may have been referenced in the script data, such as another class in the same file. 
+                        // It won't be relinked till later though
+                        indices.AddRange(ObjectBinary.From(sourceExport).GetUIndexes(sourceExport.FileRef.Game));
+                    }
+
 
                     foreach ((UIndex uIndex, string propName) in indices)
                     {
@@ -351,6 +357,18 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
         }
 
+        /// <summary>
+        /// Relinks the specified uIndex (the index in the source importingPCC that now exists in the relinkingExport's data, but needs repointed to the right data) to the correct new UIndex.
+        /// </summary>
+        /// <param name="importingPCC"></param>
+        /// <param name="relinkingExport"></param>
+        /// <param name="uIndex"></param>
+        /// <param name="propertyName"></param>
+        /// <param name="crossPCCObjectMappingList"></param>
+        /// <param name="prefix"></param>
+        /// <param name="importExportDependencies"></param>
+        /// <param name="targetGameDonorDB"></param>
+        /// <returns></returns>
         private static EntryStringPair relinkUIndex(IMEPackage importingPCC, ExportEntry relinkingExport, ref int uIndex, string propertyName,
                                            IDictionary<IEntry, IEntry> crossPCCObjectMappingList, string prefix, bool importExportDependencies = false, ObjectInstanceDB targetGameDonorDB = null)
         {
