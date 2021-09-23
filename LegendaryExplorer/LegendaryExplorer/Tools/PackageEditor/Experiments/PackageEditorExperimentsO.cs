@@ -453,7 +453,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 switch (preset)
                 {
                     case "Director":
-                        MatineeHelper.AddPresetDirectorGroup(interp);
+                        MatineeHelper.AddPreset("Director", interp);
                         break;
 
                     case "Camera":
@@ -464,7 +464,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 MessageBox.Show("Not a valid camera actor name.", "Warning", MessageBoxButton.OK);
                                 return;
                             }
-                            MatineeHelper.AddPresetCameraGroup(interp, camName);
+                            MatineeHelper.AddPreset("Camera", interp, camName);
                         }
                         break;
                 }
@@ -495,7 +495,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 MessageBox.Show("Not a valid gesture actor name.", "Warning", MessageBoxButton.OK);
                                 return;
                             }
-                            MatineeHelper.AddPresetGestureTrack(interp, actor);
+                            MatineeHelper.AddPreset("Gesture", interp, actor);
                         }
                         break;
                 }

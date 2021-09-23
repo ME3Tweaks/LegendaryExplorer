@@ -25,18 +25,14 @@ namespace LegendaryExplorer.Tools.InterpEditor.InterpExperiments
                 switch (preset)
                 {
                     case "Director":
-                        MatineeHelper.AddPresetDirectorGroup(currExp);
+                        MatineeHelper.AddPreset("Director", currExp);
                         break;
 
                     case "Camera":
-                        if (PromptDialog.Prompt(null, "Name of camera actor:") is string camName)
+                        var actor = promptForActor("Name of camera actor:", "Not a valid camera actor name.");
+                        if (!string.IsNullOrEmpty(actor))
                         {
-                            if (string.IsNullOrEmpty(camName))
-                            {
-                                MessageBox.Show("Not a valid camera actor name.", "Warning", MessageBoxButton.OK);
-                                return;
-                            }
-                            MatineeHelper.AddPresetCameraGroup(currExp, camName);
+                            MatineeHelper.AddPreset("Camera", currExp, actor);
                         }
                         break;
                 }
@@ -59,19 +55,29 @@ namespace LegendaryExplorer.Tools.InterpEditor.InterpExperiments
                 switch (preset)
                 {
                     case "Gesture":
-                        if (PromptDialog.Prompt(null, "Name of gesture actor:") is string actor)
+                        var actor = promptForActor("Name of gesture actor:", "Not a valid gesture actor name.");
+                        if (!string.IsNullOrEmpty(actor))
                         {
-                            if (string.IsNullOrEmpty(actor))
-                            {
-                                MessageBox.Show("Not a valid gesture actor name.", "Warning", MessageBoxButton.OK);
-                                return;
-                            }
-                            MatineeHelper.AddPresetGestureTrack(currExp, actor);
+                            MatineeHelper.AddPreset("Gesture", currExp, actor);
                         }
                         break;
                 }
             }
             return;
+        }
+
+        private static string promptForActor(string msg, string err)
+        {
+            if (PromptDialog.Prompt(null, msg) is string actor)
+            {
+                if (string.IsNullOrEmpty(actor))
+                {
+                    MessageBox.Show(err, "Warning", MessageBoxButton.OK);
+                    return null;
+                }
+                return actor;
+            }
+            return null;
         }
     }
 }
