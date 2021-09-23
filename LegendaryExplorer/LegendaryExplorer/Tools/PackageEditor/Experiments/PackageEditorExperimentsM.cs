@@ -1773,7 +1773,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 var numMips = texinfo.Mips.Count;
                 var ns = props.GetProp<BoolProperty>("NeverStream");
                 int lowMipCount = 0;
-                for (int i = numMips - 1; i > 0; i--)
+                for (int i = numMips - 1; i >= 0; i--)
                 {
                     if (lowMipCount > 6 && (ns == null || ns.Value == false) && texinfo.Mips[i].IsLocallyStored && texinfo.Mips[i].StorageType != StorageTypes.empty)
                     {
@@ -1949,6 +1949,19 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 else
                 {
                     return;
+                }
+
+                pe.BusyText = "Preparing...";
+                // Clear out dest dir
+                foreach (var f in Directory.GetFiles(PAEMPaths.VTest_FinalDestDir))
+                {
+                    File.Delete(f);
+                }
+
+                // Copy in precomputed files
+                foreach (var f in Directory.GetFiles(PAEMPaths.VTest_PrecomputedDir))
+                {
+                    File.Copy(f, Path.Combine(PAEMPaths.VTest_FinalDestDir, Path.GetFileName(f)));
                 }
 
                 pe.BusyText = "Loading packages";
@@ -2135,7 +2148,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         if (f.Contains("_LOC_", StringComparison.InvariantCultureIgnoreCase))
                             continue; // Skip for now
                         var levelName = Path.GetFileNameWithoutExtension(f);
-                        PortVTestLevel("PRC2", levelName, PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, db, pe, /*levelName == "BIOA_PRC2"*/true, levelName == "BIOA_PRC2", enableDynamicLighting: true);
+                        PortVTestLevel("PRC2", levelName, PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, db, pe, levelName == "BIOA_PRC2"/*true*/, levelName == "BIOA_PRC29", enableDynamicLighting: true);
                     }
 
                     // Port LOC files
@@ -2145,6 +2158,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             continue; // Only include LOC files
                         // PortLOCFile(f, db, pe); // breaks the game currently
                     }
+
+                    Debug.WriteLine("Checking BTS....");
+                    VTest_CheckBTS();
                 }
             }).ContinueWithOnUIThread(result =>
             {
@@ -2152,6 +2168,57 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     Debugger.Break();
                 pe.EndBusy();
             });
+        }
+
+        public static void VTest_CheckBTS()
+        {
+            // Make sure all files are available that are required
+            var prc2Files = Directory.GetFiles(PAEMPaths.VTest_FinalDestDir);
+            var prc2FilesAvailable = prc2Files.Select(x => Path.GetFileNameWithoutExtension(x).ToLower()).ToList();
+            foreach (var v in prc2Files)
+            {
+                using var package = MEPackageHandler.OpenMEPackage(v);
+                var triggerStraems = package.Exports.Where(x => x.ClassName == "BioTriggerStream").ToList();
+                foreach (var triggerStream in triggerStraems)
+                {
+                    var streamingStates = triggerStream.GetProperty<ArrayProperty<StructProperty>>("StreamingStates");
+                    if (streamingStates != null)
+                    {
+                        foreach (var ss in streamingStates)
+                        {
+                            List<NameProperty> namesToCheck = new List<NameProperty>();
+                            var inChunkName = ss.GetProp<NameProperty>("InChunkName");
+
+                            if (inChunkName.Value.Name != "None" && !prc2FilesAvailable.Contains(inChunkName.Value.Name.ToLower()))
+                            {
+                                Debug.WriteLine($"LEVEL MISSING (ICN): {inChunkName} in {triggerStream.UIndex} {triggerStream.ObjectName.Instanced}");
+                            }
+
+                            foreach (var levelNameProperty in ss.GetProp<ArrayProperty<NameProperty>>("VisibleChunkNames"))
+                            {
+                                var levelName = levelNameProperty.Value.Name;
+                                if (levelName != "None" && !prc2FilesAvailable.Contains(levelName.ToLower()))
+                                {
+                                    Debug.WriteLine($"LEVEL MISSING (VC): {levelName} in {triggerStream.UIndex} {triggerStream.ObjectName.Instanced}");
+                                }
+                            }
+
+                            foreach (var levelNameProperty in ss.GetProp<ArrayProperty<NameProperty>>("LoadChunkNames"))
+                            {
+                                var levelName = levelNameProperty.Value.Name;
+                                if (levelName != "None" && !prc2FilesAvailable.Contains(levelName.ToLower()))
+                                {
+                                    Debug.WriteLine($"LEVEL MISSING (LC): {levelName} in {triggerStream.UIndex} {triggerStream.ObjectName.Instanced}");
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"{triggerStream.InstancedFullPath} in {v} has NO StreamingStates!!");
+                    }
+                }
+            }
         }
 
         private static void PortLOCFile(string sourceFile, ObjectInstanceDB db, PackageEditorWindow pe)
@@ -2179,9 +2246,47 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
             // Corrections to run AFTER porting is done
             CorrectNeverStream(le1File);
+            CorrectPrefabSequenceClass(le1File);
             CorrectSequenceObjects(le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence")); // Might need to change this to find other roots. Maybe prefabs?
             CorrectPathfindingNetwork(me1File, le1File);
             RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
+
+            //CorrectTriggerStreamsMaybe(me1File, le1File);
+        }
+
+        private static void CorrectTriggerStreamsMaybe(IMEPackage me1File, IMEPackage le1File)
+        {
+            foreach (var lExp in le1File.Exports.Where(x => x.HasStack))
+            {
+                var mExp = me1File.FindExport(lExp.InstancedFullPath);
+                if (mExp != null)
+                {
+                    var lData = lExp.Data;
+                    var mData = mExp.Data;
+                    lData.OverwriteRange(0x10, mData.Slice(0x10, 2)); // LatentAction?
+                    lExp.Data = lData;
+                }
+            }
+        }
+
+        // ME1 -> LE1 Prefab's Sequence class was changed to a subclass. No different props though.
+        private static void CorrectPrefabSequenceClass(IMEPackage le1File)
+        {
+            foreach (var le1Exp in le1File.Exports.Where(x => x.IsA("Prefab")))
+            {
+                var prefabSeqObj = le1Exp.GetProperty<ObjectProperty>("PrefabSequence");
+                if (prefabSeqObj != null && prefabSeqObj.ResolveToEntry(le1File) is ExportEntry export)
+                {
+                    var prefabSeqClass = le1File.FindImport("Engine.PrefabSequence");
+                    if (prefabSeqClass == null)
+                    {
+                        var seqClass = le1File.FindImport("Engine.Sequence");
+                        prefabSeqClass = new ImportEntry(le1File, seqClass.Parent?.UIndex ?? 0, "PrefabSequence") { PackageFile = seqClass.PackageFile, ClassName = "Class" };
+                        le1File.AddImport(prefabSeqClass);
+                    }
+                    export.Class = prefabSeqClass;
+                }
+            }
         }
 
         private static void CorrectPathfindingNetwork(IMEPackage me1File, IMEPackage le1File)
@@ -2320,6 +2425,135 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     exp.WriteProperties(props);
                 }
                 #endregion
+                else if (exp.ClassName == "BioTriggerStream")
+                {
+                    PreCorrectBioTriggerStream(exp);
+                }
+                else if (exp.ClassName == "BioWorldInfo")
+                {
+                    // Remove streaminglevels that don't do anything
+                    //PreCorrectBioWorldInfoStreamingLevels(exp);
+                }
+
+
+
+                if (exp.IsA("Actor"))
+                {
+                    exp.RemoveProperty("m_oAreaMap"); // Remove this when stuff is NOT borked up
+                    exp.RemoveProperty("Base"); // No bases
+                    exp.RemoveProperty("nextNavigationPoint"); // No bases
+                }
+            }
+        }
+
+        private static void PreCorrectBioWorldInfoStreamingLevels(ExportEntry exp)
+        {
+            // Older games (ME1 at least) can reference levels that don't exist. This didn't breka game. Later games this does break
+            // has a bunch of level references that don't exist
+
+            //if (triggerStream.ObjectName.Instanced == "BioTriggerStream_0")
+            //    Debugger.Break();
+            var streamingLevels = exp.GetProperty<ArrayProperty<ObjectProperty>>("StreamingLevels");
+            if (streamingLevels != null)
+            {
+                for (int i = streamingLevels.Count - 1; i >= 0; i--)
+                {
+                    var lsk = streamingLevels[i].ResolveToEntry(exp.FileRef) as ExportEntry;
+                    var packageName = lsk.GetProperty<NameProperty>("PackageName");
+                    if (VTest_NonExistentBTSFiles.Contains(packageName.Value.Instanced.ToLower()))
+                    {
+                        // Do not port this
+                        Debug.WriteLine($@"Removed non-existent LSK package: {packageName.Value.Instanced} in {Path.GetFileNameWithoutExtension(exp.FileRef.FilePath)}");
+                        streamingLevels.RemoveAt(i);
+                    }
+                    else
+                    {
+                        Debug.WriteLine($@"LSK package exists: {packageName.Value.Instanced} in {Path.GetFileNameWithoutExtension(exp.FileRef.FilePath)}");
+                    }
+                }
+
+                exp.WriteProperty(streamingLevels);
+            }
+        }
+
+
+        // Files we know are referenced by do not exist
+        private static string[] VTest_NonExistentBTSFiles =
+        {
+            "bioa_prc2_ccahern_l",
+            "bioa_prc2_cccave01",
+            "bioa_prc2_cccave02",
+            "bioa_prc2_cccave03",
+            "bioa_prc2_cccave04",
+            "bioa_prc2_cccrate01",
+            "bioa_prc2_cccrate02",
+            "bioa_prc2_cclobby01",
+            "bioa_prc2_cclobby02",
+            "bioa_prc2_ccmid01",
+            "bioa_prc2_ccmid02",
+            "bioa_prc2_ccmid03",
+            "bioa_prc2_ccmid04",
+            "bioa_prc2_ccscoreboard",
+            "bioa_prc2_ccsim01",
+            "bioa_prc2_ccsim02",
+            "bioa_prc2_ccsim03",
+            "bioa_prc2_ccsim04",
+            "bioa_prc2_ccspace02",
+            "bioa_prc2_ccspace03",
+            "bioa_prc2_ccthai01",
+            "bioa_prc2_ccthai02",
+            "bioa_prc2_ccthai03",
+            "bioa_prc2_ccthai04",
+            "bioa_prc2_ccthai05",
+            "bioa_prc2_ccthai06",
+        };
+
+        private static void PreCorrectBioTriggerStream(ExportEntry triggerStream)
+        {
+            // Older games (ME1 at least) can reference levels that don't exist. This didn't breka game. Later games this does break. Maybe. IDK. Game dies a lot for no apparent reason
+            // has a bunch of level references that don't exist
+
+            //if (triggerStream.ObjectName.Instanced == "BioTriggerStream_0")
+            //    Debugger.Break();
+            triggerStream.RemoveProperty("m_oAreaMapOverride"); // Remove this when stuff is NOT borked up
+
+            return;
+            var streamingStates = triggerStream.GetProperty<ArrayProperty<StructProperty>>("StreamingStates");
+            if (streamingStates != null)
+            {
+                foreach (var ss in streamingStates)
+                {
+                    var inChunkName = ss.GetProp<NameProperty>("InChunkName").Value.Name.ToLower();
+
+                    if (inChunkName != "none" && VTest_NonExistentBTSFiles.Contains(inChunkName))
+                        Debugger.Break(); // Hmm....
+
+                    var visibleChunks = ss.GetProp<ArrayProperty<NameProperty>>("VisibleChunkNames");
+                    for (int i = visibleChunks.Count - 1; i >= 0; i--)
+                    {
+                        if (VTest_NonExistentBTSFiles.Contains(visibleChunks[i].Value.Name.ToLower()))
+                        {
+                            Debug.WriteLine($"PreCorrect: VS Remove BTS level {visibleChunks[i].Value}");
+                            visibleChunks.RemoveAt(i);
+                        }
+                    }
+
+                    var loadChunks = ss.GetProp<ArrayProperty<NameProperty>>("LoadChunkNames");
+                    for (int i = loadChunks.Count - 1; i >= 0; i--)
+                    {
+                        if (VTest_NonExistentBTSFiles.Contains(loadChunks[i].Value.Name.ToLower()))
+                        {
+                            Debug.WriteLine($"PreCorrect: LC Remove BTS level {loadChunks[i].Value}");
+                            loadChunks.RemoveAt(i);
+                        }
+                    }
+                }
+
+                triggerStream.WriteProperty(streamingStates);
+            }
+            else
+            {
+                //yDebug.WriteLine($"{triggerStream.InstancedFullPath} in {triggerStream} has NO StreamingStates!!");
             }
         }
 
@@ -2387,28 +2621,29 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             if (syncBioWorldInfo)
             {
                 itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "PlayerStart"));
+                itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioTriggerStream"));
             }
-
 
             // Once we are confident in porting we will just take the actor list from PersistentLevel
             // For now just port these
-            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioTriggerStream"));
-            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "InterpActor"));
-            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioInert"));
-            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioUsable"));
-            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioPawn"));
-            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "SkeletalMeshActor"));
-            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "PostProcessVolume"));
-            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioMapNote"));
-            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioTrigger"));
-            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioSunActor"));
+            //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "InterpActor"));
+            //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioInert"));
+            //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioUsable"));
+            //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioPawn"));
+            //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "SkeletalMeshActor"));
+            //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "PostProcessVolume"));
+            //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioMapNote"));
+            //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "Note"));
+            //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioTrigger"));
+            //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioSunActor"));
             itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BlockingVolume"));
-            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioDoor"));
-            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "StaticMeshCollectionActor"));
-            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "StaticLightCollectionActor"));
-            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "ReverbVolume"));
-            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioAudioVolume"));
-            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "AmbientSound"));
+            //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioDoor"));
+            //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "StaticMeshCollectionActor"));
+            //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "StaticLightCollectionActor"));
+            //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "ReverbVolume"));
+            //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioAudioVolume"));
+            //itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "AmbientSound"));
+
 
             VTestFilePorting(me1File, le1File, itemsToPort, db, pe);
 
@@ -2444,6 +2679,20 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             //}
 
             le1File.Save();
+
+            Debug.WriteLine($"RCP CHECK FOR {Path.GetFileNameWithoutExtension(le1File.FilePath)} -------------------------");
+            ReferenceCheckPackage rcp = new ReferenceCheckPackage();
+            EntryChecker.CheckReferences(rcp, le1File, EntryChecker.NonLocalizedStringConverter);
+
+            foreach (var err in rcp.GetBlockingErrors())
+            {
+                Debug.WriteLine($"RCP: [ERROR] {err.Entry.InstancedFullPath} {err.Message}");
+            }
+
+            foreach (var err in rcp.GetSignificantIssues())
+            {
+                Debug.WriteLine($"RCP: [WARN] {err.Entry.InstancedFullPath} {err.Message}");
+            }
         }
 
         private static void CorrectSequenceObjects(ExportEntry seq, PackageCache pc = null)

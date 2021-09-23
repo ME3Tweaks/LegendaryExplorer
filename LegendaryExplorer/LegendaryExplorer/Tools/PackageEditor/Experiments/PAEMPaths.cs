@@ -15,6 +15,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         internal const string VTest_FinalDestDir = @"Y:ModLibrary\LE1\V Test\DLC_MOD_Vegas\CookedPCConsole";
         internal const string VTest_SourceDir = @"Y:ModLibrary\LE1\V Test\ModdedSource";
         internal const string VTest_DonorsDir = @"Y:ModLibrary\LE1\V Test\Donors";
+        internal const string VTest_PrecomputedDir = @"Y:ModLibrary\LE1\V Test\PrecomputedFiles";
     }
 
 }
