@@ -833,7 +833,14 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         /// </summary>
         public static readonly string[] NativeClasses =
         {
-            @"Engine.CodecMovieBink"
+            @"Engine.CodecMovieBink",
+            @"Engine.StaticMesh",
+            @"Engine.World",
+            @"Engine.World",
+            @"Engine.Level",
+            @"Engine.Model",
+            @"Engine.Polys",
+            @"Core.Package",
         };
     }
 }

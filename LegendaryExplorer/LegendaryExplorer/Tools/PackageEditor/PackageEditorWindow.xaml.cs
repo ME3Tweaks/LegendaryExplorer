@@ -290,7 +290,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             OpenLEVersionCommand = new GenericCommand(() => OpenOtherVersion(true), IsLoadedPackageOT);
             OpenOTVersionCommand = new GenericCommand(() => OpenOtherVersion(false), IsLoadedPackageLE);
 
-            ForceReloadPackageCommand = new GenericCommand(()=> ExperimentsMenu.ForceReloadPackageWithoutSharing(), ()=> ShowExperiments && ExperimentsMenu.CanForceReload());
+            ForceReloadPackageCommand = new GenericCommand(() => ExperimentsMenu.ForceReloadPackageWithoutSharing(), () => ShowExperiments && ExperimentsMenu.CanForceReload());
         }
 
         private void CalculateExportMD5()
@@ -326,8 +326,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 pe.Show();
                 return;
             }
-            
-            
+
+
             if (Pcc.Game == MEGame.LE1)
             {
                 // try other extensions
@@ -368,12 +368,20 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     var cache = new PackageCache();
                     foreach (var impTV in treeNodes)
                     {
-                        var resolvedExp = EntryImporter.ResolveImport(impTV.Entry as ImportEntry, null, cache, clipRootLevelPackage: false);
-                        if (resolvedExp?.FileRef.FilePath != null)
+                        if (impTV.Entry.IsAKnownNativeClass())
                         {
-                            var fname = Path.GetFileName(resolvedExp.FileRef.FilePath);
-                            impTV.SubText = fname;
+                            impTV.SubText = $"{impTV.Entry.InstancedFullPath.Substring(0, impTV.Entry.InstancedFullPath.IndexOf('.'))}.{(impTV.Game == MEGame.ME1 ? "u": "pcc")} (Native)";
                         }
+                        else
+                        {
+                            var resolvedExp = EntryImporter.ResolveImport(impTV.Entry as ImportEntry, null, cache, clipRootLevelPackage: false);
+                            if (resolvedExp?.FileRef.FilePath != null)
+                            {
+                                var fname = Path.GetFileName(resolvedExp.FileRef.FilePath);
+                                impTV.SubText = fname;
+                            }
+                        }
+
                     }
 
 
@@ -951,7 +959,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             {
                 var dlg = new SaveFileDialog
                 {
-                    
+
                     Filter = GameFileFilters.ME3ME2SaveFileFilter,
                     OverwritePrompt = true
                 };
