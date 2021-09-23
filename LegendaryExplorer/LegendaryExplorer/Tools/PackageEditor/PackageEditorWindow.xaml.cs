@@ -954,7 +954,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         private void NewLevelFile()
         {
             string gameString = InputComboBoxDialog.GetValue(this, "Choose game to create a level file for:",
-                                                          "Create new level file", new[] { "LE3", "LE1", "ME3", "ME2" }, "ME3");
+                                                          "Create new level file", new[] { "LE3", "LE1", "ME3", "ME2" }, "LE3");
             if (Enum.TryParse(gameString, out MEGame game) && game is MEGame.ME3 or MEGame.ME2 or MEGame.LE3 or MEGame.LE1)
             {
                 var dlg = new SaveFileDialog
@@ -1000,6 +1000,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     });
                     package.PackageGUID = packguid;
                     Pcc.PackageGuid = packguid;
+                    //Pcc.Flags |= UnrealFlags.EPackageFlags.Map;
                     SaveFile();
                 }
             }
