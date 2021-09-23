@@ -12,10 +12,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
     public static class PAEMPaths
     {
         // VTest
-        internal const string VTest_FinalDestDir = @"Y:ModLibrary\LE1\V Test\DLC_MOD_Vegas\CookedPCConsole";
-        internal const string VTest_SourceDir = @"Y:ModLibrary\LE1\V Test\ModdedSource";
-        internal const string VTest_DonorsDir = @"Y:ModLibrary\LE1\V Test\Donors";
-        internal const string VTest_PrecomputedDir = @"Y:ModLibrary\LE1\V Test\PrecomputedFiles";
+        internal const string VTest_FinalDestDir = @"D:\Mass Effect Modding\ME3TweaksModManager\mods\LE1\V Test\DLC_MOD_Vegas\CookedPCConsole";
+        internal const string VTest_SourceDir = @"D:\Mass Effect Modding\ME3TweaksModManager\mods\LE1\V Test\ModdedSource";
+        internal const string VTest_DonorsDir = @"D:\Mass Effect Modding\ME3TweaksModManager\mods\LE1\V Test\Donors";
+        internal const string VTest_PrecomputedDir = @"D:\Mass Effect Modding\ME3TweaksModManager\mods\LE1\V Test\PrecomputedFiles";
     }
 
 }

@@ -1817,7 +1817,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void MapMaterialIDs(PackageEditorWindow pe)
         {
-            MEGame game = MEGame.LE1;
+            MEGame game = MEGame.ME1;
             var materialGuidMap = new Dictionary<Guid, string>();
             //foreach (var exp in pe.Pcc.Exports.Where(x => x.IsTexture()))
             //{
@@ -1910,8 +1910,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
             // Paths are in PAEMPaths.cs
 
-            bool prc2aa = false;
-            bool prc2 = true;
+            bool prc2aa = true;
+            bool prc2 = false;
 
             pe.SetBusy("Performing VTest");
             await Task.Run(() =>
@@ -2066,9 +2066,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     // BIOA_PRC2AA_00_DSG
                     //{
                     PortVTestLevel("PRC2AA", "BIOA_PRC2AA", PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, db, pe, syncBioWorldInfo: true, portMainSequence: false);
-                    PortVTestLevel("PRC2AA", "BIOA_PRC2AA_00_LAY", PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, db, pe, portMainSequence: false);
-                    PortVTestLevel("PRC2AA", "BIOA_PRC2AA_00_DSG", PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, db, pe, portMainSequence: true);
-                    PortVTestLevel("PRC2AA", "BIOA_PRC2AA_00_SND", PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, db, pe, portMainSequence: true);
+                    PortVTestLevel("PRC2AA", "bioa_prc2aa_00_lay", PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, db, pe, portMainSequence: false);
+                    PortVTestLevel("PRC2AA", "bioa_prc2aa_00_dsg", PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, db, pe, portMainSequence: true);
+                    PortVTestLevel("PRC2AA", "bioa_prc2aa_00_snd", PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, db, pe, portMainSequence: true);
                     //    var outputFile = $@"{PAEMPaths.VTest_FinalDestDir}\{sourceName}.pcc";
                     //    CreateEmptyLevel(outputFile, MEGame.LE1);
 
@@ -2224,7 +2224,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         private static void PortLOCFile(string sourceFile, ObjectInstanceDB db, PackageEditorWindow pe)
         {
             var packName = Path.GetFileNameWithoutExtension(sourceFile);
-            var destPackagePath = Path.Combine(PAEMPaths.VTest_FinalDestDir, $"{packName}.pcc");
+            var destPackagePath = Path.Combine(PAEMPaths.VTest_FinalDestDir, $"{packName.ToUpper()}.pcc");
             MEPackageHandler.CreateAndSavePackage(destPackagePath, MEGame.LE1);
             using var package = MEPackageHandler.OpenMEPackage(destPackagePath);
             using var sourcePackage = MEPackageHandler.OpenMEPackage(sourceFile);
@@ -2235,6 +2235,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 if (report.Any())
                 {
                     //Debugger.Break();
+                }
+            }
+
+            foreach (var e in sourcePackage.Exports.Where(x => x.ClassName == "Sequence"))
+            {
+                if (!e.Parent.IsA("SequenceObject"))
+                {
+                    CorrectSequenceObjects(e);
                 }
             }
 
@@ -2606,7 +2614,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         private static void PortVTestLevel(string mapName, string sourceName, string finalDestDir, string sourceDir, ObjectInstanceDB db, PackageEditorWindow pe, bool syncBioWorldInfo = false, bool portMainSequence = false, bool enableDynamicLighting = false)
         {
-            var outputFile = $@"{finalDestDir}\{sourceName}.pcc";
+            var outputFile = $@"{finalDestDir}\{sourceName.ToUpper()}.pcc";
             CreateEmptyLevel(outputFile, MEGame.LE1);
 
             using var le1File = MEPackageHandler.OpenMEPackage(outputFile);
