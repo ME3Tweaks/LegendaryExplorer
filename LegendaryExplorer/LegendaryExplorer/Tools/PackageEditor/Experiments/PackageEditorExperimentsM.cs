@@ -2746,7 +2746,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     if (defaultLink != null)
                     {
                         var propertyName = defaultLink.GetProp<NameProperty>("PropertyName");
-                        t.Properties.AddOrReplaceProp(propertyName);
+                        var existingLink = t.GetProp<NameProperty>("PropertyName");
+                        if (existingLink.Value == "None" && propertyName.Value != "None")
+                        {
+                            t.Properties.AddOrReplaceProp(propertyName);
+                        }
                     }
                 }
                 seq.WriteProperty(varLinks);
