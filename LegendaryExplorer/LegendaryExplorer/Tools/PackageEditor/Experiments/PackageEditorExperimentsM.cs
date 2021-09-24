@@ -2730,6 +2730,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     }
                 }
             }
+
+            // Fix extra four bytes after SeqAct_Interp
+            if (seq.ClassName == "SeqAct_Interp")
+            {
+                seq.WriteBinary(Array.Empty<byte>());
+            }
+
             // Fix missing PropertyNames on VariableLinks
             if (seq.IsA("SequenceOp"))
             {
@@ -2742,7 +2749,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 foreach (var t in varLinks.Values)
                 {
                     string desc = t.GetProp<StrProperty>("LinkDesc").Value;
-                    var defaultLink = defaultVarLinks.Values.FirstOrDefault(property => property.GetProp<StrProperty>("LinkDesc").Value == desc);
+                    var defaultLink = defaultVarLinks.Values.FirstOrDefault(property =>
+                        property.GetProp<StrProperty>("LinkDesc").Value == desc);
                     if (defaultLink != null)
                     {
                         var propertyName = defaultLink.GetProp<NameProperty>("PropertyName");
@@ -2753,6 +2761,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         }
                     }
                 }
+
                 seq.WriteProperty(varLinks);
             }
         }
