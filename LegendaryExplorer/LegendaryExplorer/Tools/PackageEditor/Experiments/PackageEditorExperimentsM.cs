@@ -1906,12 +1906,68 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             });
         }
 
+        public static void MScanner(PackageEditorWindow pe)
+        {
+            // just dump whatever shit you want to find here
+            foreach (string filePath in MELoadedFiles.GetOfficialFiles(MEGame.LE1 /*, MEGame.LE2, MEGame.LE3*/))
+            {
+                using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
+                foreach (ExportEntry export in pcc.Exports)
+                {
+                    // code here
+                    if (export.ClassName == "BioInert" && !export.IsDefaultObject && !export.IsClass)
+                    {
+                        if (export.DataSize > export.propsEnd() + 4)
+                            Debug.WriteLine($"BIOINERT WITH BINARY {export.UIndex} {export.InstancedFullPath} in {filePath}");
+                    }
+
+                }
+            }
+        }
+
+        public static void TestCurrentPackageForUnknownBinary(PackageEditorWindow pe)
+        {
+            if (pe.Pcc == null)
+                return;
+
+            List<EntryStringPair> unknowns = new List<EntryStringPair>();
+
+            foreach (var export in pe.Pcc.Exports)
+            {
+                if (ObjectBinary.From(export) is ObjectBinary bin)
+                {
+                    var original = export.Data;
+                    export.WriteBinary(bin);
+                    if (!export.DataReadOnly.SequenceEqual(original))
+                    {
+                        unknowns.Add(new EntryStringPair(export, $"({export.ClassName}) {export.UIndex} {export.ObjectName} has binary that didn't reserialize back to itself"));
+                    }
+                }
+                else
+                {
+                    // Binary class is not defined for this
+                    // Check to make sure there is in fact no binary so 
+                    // we aren't missing anything
+                    if (export.propsEnd() != export.DataSize)
+                    {
+                        unknowns.Add(new EntryStringPair(export, $"({export.ClassName}) {export.UIndex} {export.ObjectName} has unparsed binary"));
+                    }
+                }
+            }
+
+            if (unknowns.Any())
+            {
+                ListDialog ld = new ListDialog(unknowns, "Unknown binary found", "The following items are not parsed by LEX but appear to have binary following the properties:", pe) {DoubleClickEntryHandler = pe.GetEntryDoubleClickAction()};
+                ld.Show();
+            }
+        }
+
         public static async void VTest(PackageEditorWindow pe)
         {
             // Paths are in PAEMPaths.cs
 
-            bool prc2aa = true;
-            bool prc2 = false;
+            bool prc2aa = false;
+            bool prc2 = true;
 
             pe.SetBusy("Performing VTest");
             await Task.Run(() =>
@@ -2148,7 +2204,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         if (f.Contains("_LOC_", StringComparison.InvariantCultureIgnoreCase))
                             continue; // Skip for now
                         var levelName = Path.GetFileNameWithoutExtension(f);
-                        PortVTestLevel("PRC2", levelName, PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, db, pe, levelName == "BIOA_PRC2"/*true*/, levelName == "BIOA_PRC2", enableDynamicLighting: true);
+                        PortVTestLevel("PRC2", levelName, PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, db, pe, levelName == "BIOA_PRC2"/*true*/, /*levelName == "BIOA_PRC2"*/true, enableDynamicLighting: true);
                     }
 
                     // Port LOC files
@@ -2156,7 +2212,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     {
                         if (!f.Contains("_LOC_", StringComparison.InvariantCultureIgnoreCase))
                             continue; // Only include LOC files
-                        // PortLOCFile(f, db, pe); // breaks the game currently
+                        PortLOCFile(f, db, pe); // breaks the game currently
                     }
 
                     Debug.WriteLine("Checking BTS....");

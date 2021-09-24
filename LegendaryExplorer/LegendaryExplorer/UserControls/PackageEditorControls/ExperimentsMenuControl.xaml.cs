@@ -334,6 +334,15 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsM.VTest(GetPEWindow());
         }
+        private void MScanner_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.MScanner(GetPEWindow());
+        }
+
+        private void TestCurrentPackageBinary(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.TestCurrentPackageForUnknownBinary(GetPEWindow());
+        }
 
         private void TestCrossGenClassPort_Click(object sender, RoutedEventArgs e)
         {
