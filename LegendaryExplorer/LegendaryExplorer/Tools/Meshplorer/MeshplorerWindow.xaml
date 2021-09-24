@@ -204,7 +204,7 @@
                     </Grid.RowDefinitions>
                     <exportLoaderControls:InterpreterExportLoader x:Name="InterpreterTab_Interpreter" HideHexBox="True"/>
                     <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch"/>
-                    <exportLoaderControls:BinaryInterpreterWPF x:Name="BinaryInterpreterTab_BinaryInterpreter" Grid.Row="2" HideHexBox="True" AlwaysLoadRegardlessOfSize="True"/>
+                    <exportLoaderControls:BinaryInterpreterWPF x:Name="BinaryInterpreterTab_BinaryInterpreter" Grid.Row="2" HideHexBox="True" AlwaysLoadRegardlessOfSize="True" HostingControl="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
                 </Grid>
                 <GridSplitter Grid.Column="3" Width="5" HorizontalAlignment="Stretch"  Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, FallbackValue=Collapsed}"/>
                 <exportLoaderControls:MeshRenderer x:Name="Mesh3DViewer" Grid.Column="4" Visibility="{Binding Path=Pcc, RelativeSource={RelativeSource AncestorType={x:Type local:MeshplorerWindow}}, Converter={StaticResource NullVisibilityConverter}, FallbackValue=Collapsed}"/>

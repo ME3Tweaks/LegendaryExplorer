@@ -219,6 +219,7 @@
                                         <Image Source="/Tools/Icons/packageeditorwpf_256x256.ico" Width="64"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
+                                <MenuItem Header="Attempt to find definition of import" ToolTip="Attempts to find the likely source of this import. Due to how Unreal handles memory this may not be the actual one used." Command="{Binding FindDefinitionOfImportCommand}" sharedUi:Bindings.VisibilityToEnabled="True"/>
                             </ContextMenu>
                         </TreeView.ContextMenu>
                         
