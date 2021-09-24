@@ -2148,7 +2148,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         if (f.Contains("_LOC_", StringComparison.InvariantCultureIgnoreCase))
                             continue; // Skip for now
                         var levelName = Path.GetFileNameWithoutExtension(f);
-                        PortVTestLevel("PRC2", levelName, PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, db, pe, levelName == "BIOA_PRC2"/*true*/, levelName == "BIOA_PRC29", enableDynamicLighting: true);
+                        PortVTestLevel("PRC2", levelName, PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, db, pe, levelName == "BIOA_PRC2"/*true*/, levelName == "BIOA_PRC2", enableDynamicLighting: true);
                     }
 
                     // Port LOC files
@@ -2160,7 +2160,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     }
 
                     Debug.WriteLine("Checking BTS....");
-                    VTest_CheckBTS();
+                    VTest_Check();
                 }
             }).ContinueWithOnUIThread(result =>
             {
@@ -2170,14 +2170,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             });
         }
 
-        public static void VTest_CheckBTS()
+        public static void VTest_Check()
         {
-            // Make sure all files are available that are required
-            var prc2Files = Directory.GetFiles(PAEMPaths.VTest_FinalDestDir);
-            var prc2FilesAvailable = prc2Files.Select(x => Path.GetFileNameWithoutExtension(x).ToLower()).ToList();
-            foreach (var v in prc2Files)
+            var vtestFinalFiles = Directory.GetFiles(PAEMPaths.VTest_FinalDestDir);
+            var vtestFinalFilesAvailable = vtestFinalFiles.Select(x => Path.GetFileNameWithoutExtension(x).ToLower()).ToList();
+            foreach (var v in vtestFinalFiles)
             {
                 using var package = MEPackageHandler.OpenMEPackage(v);
+
+                #region Check BioTriggerStream files exists
                 var triggerStraems = package.Exports.Where(x => x.ClassName == "BioTriggerStream").ToList();
                 foreach (var triggerStream in triggerStraems)
                 {
@@ -2189,7 +2190,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             List<NameProperty> namesToCheck = new List<NameProperty>();
                             var inChunkName = ss.GetProp<NameProperty>("InChunkName");
 
-                            if (inChunkName.Value.Name != "None" && !prc2FilesAvailable.Contains(inChunkName.Value.Name.ToLower()))
+                            if (inChunkName.Value.Name != "None" && !vtestFinalFilesAvailable.Contains(inChunkName.Value.Name.ToLower()))
                             {
                                 Debug.WriteLine($"LEVEL MISSING (ICN): {inChunkName} in {triggerStream.UIndex} {triggerStream.ObjectName.Instanced}");
                             }
@@ -2197,7 +2198,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             foreach (var levelNameProperty in ss.GetProp<ArrayProperty<NameProperty>>("VisibleChunkNames"))
                             {
                                 var levelName = levelNameProperty.Value.Name;
-                                if (levelName != "None" && !prc2FilesAvailable.Contains(levelName.ToLower()))
+                                if (levelName != "None" && !vtestFinalFilesAvailable.Contains(levelName.ToLower()))
                                 {
                                     Debug.WriteLine($"LEVEL MISSING (VC): {levelName} in {triggerStream.UIndex} {triggerStream.ObjectName.Instanced}");
                                 }
@@ -2206,7 +2207,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             foreach (var levelNameProperty in ss.GetProp<ArrayProperty<NameProperty>>("LoadChunkNames"))
                             {
                                 var levelName = levelNameProperty.Value.Name;
-                                if (levelName != "None" && !prc2FilesAvailable.Contains(levelName.ToLower()))
+                                if (levelName != "None" && !vtestFinalFilesAvailable.Contains(levelName.ToLower()))
                                 {
                                     Debug.WriteLine($"LEVEL MISSING (LC): {levelName} in {triggerStream.UIndex} {triggerStream.ObjectName.Instanced}");
                                 }
@@ -2218,6 +2219,21 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         Debug.WriteLine($"{triggerStream.InstancedFullPath} in {v} has NO StreamingStates!!");
                     }
                 }
+                #endregion
+
+                #region Check Level has at least 2 actors
+
+                var level = package.FindExport("TheWorld.PersistentLevel");
+                {
+                    if (level != null)
+                    {
+                        var levelBin = ObjectBinary.From<Level>(level);
+                        Debug.WriteLine($"{Path.GetFileName(v)} actor list count: {levelBin.Actors.Count}");
+                    }
+                }
+
+                #endregion
+
             }
         }
 
@@ -2589,10 +2605,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 level.Actors.Add(new UIndex(actor.UIndex));
             }
 
-            if (level.Actors.Count > 1)
-            {
-                level.Actors.Insert(1, new UIndex(0)); // This is stupid
-            }
+            //if (level.Actors.Count > 1)
+            //{
+
+            // BioWorldInfo will always be present
+            // or at least, it better be!
+            // Slot 2 has to be blank in LE. In ME1 i guess it was a brush.
+            level.Actors.Insert(1, new UIndex(0)); // This is stupid
+            //}
 
             pl.WriteBinary(level);
         }
@@ -2704,7 +2724,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         private static void CorrectSequences(IMEPackage le1File)
         {
             // Find sequences that aren't in other sequences
-            foreach (var seq in le1File.Exports.Where(e => e is {ClassName: "Sequence"} && !e.Parent.IsA("SequenceObject")))
+            foreach (var seq in le1File.Exports.Where(e => e is { ClassName: "Sequence" } && !e.Parent.IsA("SequenceObject")))
             {
                 CorrectSequenceObjects(seq);
             }
