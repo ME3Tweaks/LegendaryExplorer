@@ -581,55 +581,493 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             sequenceObjects["BioSeqAct_ShowMedals"] = new SequenceObjectInfo();
             */
 
-            // HenBagle - New Class - used to fix a bug in LE1 CP
+
+            #region SFXSeqAct_GetGameOption
             classes["SFXSeqAct_GetGameOption"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
                 pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                exportIndex = 2, //in LE1Resources.pcc
+                exportIndex = 2, // in LE1Resources.pcc
                 properties =
-                {
-                    new KeyValuePair<string, PropertyInfo>("OptionType", new PropertyInfo(PropertyType.IntProperty)),
-                }
+    {
+        new KeyValuePair<string, PropertyInfo>("Target", new PropertyInfo(PropertyType.IntProperty)),
+        new KeyValuePair<string, PropertyInfo>("OptionType", new PropertyInfo(PropertyType.IntProperty)),
+    }
             };
 
             sequenceObjects["SFXSeqAct_GetGameOption"] = new SequenceObjectInfo
             {
                 ObjInstanceVersion = 1
             };
-
-            // Mgamerz - Classes for VTest
+            #endregion
+            #region SeqAct_GetPlayerMaxGrenades
             classes["SeqAct_GetPlayerMaxGrenades"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
                 pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                exportIndex = 11, //in LE1Resources.pcc
+                exportIndex = 11, // in LE1Resources.pcc
                 properties =
-                {
-                    new KeyValuePair<string, PropertyInfo>("NumGrenades", new PropertyInfo(PropertyType.IntProperty)),
-                }
+    {
+        new KeyValuePair<string, PropertyInfo>("NumGrenades", new PropertyInfo(PropertyType.IntProperty)),
+    }
             };
 
             sequenceObjects["SeqAct_GetPlayerMaxGrenades"] = new SequenceObjectInfo
             {
                 ObjInstanceVersion = 1
             };
-
+            #endregion
+            #region SeqAct_GetPlayerMaxMedigel
             classes["SeqAct_GetPlayerMaxMedigel"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
                 pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                exportIndex = 18, //in LE1Resources.pcc
+                exportIndex = 18, // in LE1Resources.pcc
                 properties =
-                {
-                    new KeyValuePair<string, PropertyInfo>("NumMedigel", new PropertyInfo(PropertyType.FloatProperty)),
-                }
+    {
+        new KeyValuePair<string, PropertyInfo>("NumMedigel", new PropertyInfo(PropertyType.FloatProperty)),
+    }
             };
 
             sequenceObjects["SeqAct_GetPlayerMaxMedigel"] = new SequenceObjectInfo
             {
                 ObjInstanceVersion = 1
             };
+            #endregion
+            #region SeqAct_ActorFactoryWithOwner
+            classes["SeqAct_ActorFactoryWithOwner"] = new ClassInfo
+            {
+                baseClass = "BioSequenceLatentAction",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 25, // in LE1Resources.pcc
+                properties =
+    {
+        new KeyValuePair<string, PropertyInfo>("m_ID", new PropertyInfo(PropertyType.IntProperty)),
+        new KeyValuePair<string, PropertyInfo>("bEnabled", new PropertyInfo(PropertyType.BoolProperty)),
+        new KeyValuePair<string, PropertyInfo>("bIsSpawning", new PropertyInfo(PropertyType.BoolProperty)),
+        new KeyValuePair<string, PropertyInfo>("PrintToLog", new PropertyInfo(PropertyType.BoolProperty)),
+        new KeyValuePair<string, PropertyInfo>("SpawnDelay", new PropertyInfo(PropertyType.FloatProperty)),
+        new KeyValuePair<string, PropertyInfo>("RemainingDelay", new PropertyInfo(PropertyType.FloatProperty)),
+    }
+            };
+
+            sequenceObjects["SeqAct_ActorFactoryWithOwner"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+            #endregion
+            #region SeqAct_CopyFloatList
+            classes["SeqAct_CopyFloatList"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 51, // in LE1Resources.pcc
+            };
+
+            sequenceObjects["SeqAct_CopyFloatList"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+            #endregion
+            #region SeqVar_FloatList
+            classes["SeqVar_FloatList"] = new ClassInfo
+            {
+                baseClass = "SequenceVariable",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 57, // in LE1Resources.pcc
+                properties =
+    {
+        new KeyValuePair<string, PropertyInfo>("FloatList", new PropertyInfo(PropertyType.ArrayProperty, reference: "FloatProperty")),
+    }
+            };
+
+            sequenceObjects["SeqVar_FloatList"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+            #endregion
+            #region SeqAct_DiscardInventory
+            classes["SeqAct_DiscardInventory"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 63, // in LE1Resources.pcc
+            };
+
+            sequenceObjects["SeqAct_DiscardInventory"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+            #endregion
+            #region SeqAct_Get2DAString
+            classes["SeqAct_Get2DAString"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 70, // in LE1Resources.pcc
+                properties =
+    {
+        new KeyValuePair<string, PropertyInfo>("Package2DA", new PropertyInfo(PropertyType.ObjectProperty, reference: "Bio2DA")),
+        new KeyValuePair<string, PropertyInfo>("Index", new PropertyInfo(PropertyType.IntProperty)),
+        new KeyValuePair<string, PropertyInfo>("Reference", new PropertyInfo(PropertyType.NameProperty)),
+        new KeyValuePair<string, PropertyInfo>("Value", new PropertyInfo(PropertyType.StrProperty)),
+        new KeyValuePair<string, PropertyInfo>("DefaultArray", new PropertyInfo(PropertyType.ArrayProperty, reference: "StrProperty")),
+        new KeyValuePair<string, PropertyInfo>("DefaultColumns", new PropertyInfo(PropertyType.ArrayProperty, reference: "NameProperty")),
+    }
+            };
+
+            sequenceObjects["SeqAct_Get2DAString"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+            #endregion
+            #region SeqAct_GetDifficulty
+            classes["SeqAct_GetDifficulty"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 86, // in LE1Resources.pcc
+            };
+
+            sequenceObjects["SeqAct_GetDifficulty"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+            #endregion
+            #region SeqAct_GetNthNearestSpawnPoint
+            classes["SeqAct_GetNthNearestSpawnPoint"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 95, // in LE1Resources.pcc
+                properties =
+    {
+        new KeyValuePair<string, PropertyInfo>("WeightX", new PropertyInfo(PropertyType.FloatProperty)),
+        new KeyValuePair<string, PropertyInfo>("WeightY", new PropertyInfo(PropertyType.FloatProperty)),
+        new KeyValuePair<string, PropertyInfo>("WeightZ", new PropertyInfo(PropertyType.FloatProperty)),
+        new KeyValuePair<string, PropertyInfo>("PlayerPawn", new PropertyInfo(PropertyType.ObjectProperty, reference: "Pawn")),
+    }
+            };
+
+            sequenceObjects["SeqAct_GetNthNearestSpawnPoint"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+            #endregion
+            #region SeqAct_SortFloatList
+            classes["SeqAct_SortFloatList"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 114, // in LE1Resources.pcc
+            };
+
+            sequenceObjects["SeqAct_SortFloatList"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+            #endregion
+            #region SeqAct_GetPawnActorType
+            classes["SeqAct_GetPawnActorType"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 182, // in LE1Resources.pcc
+                properties =
+    {
+        new KeyValuePair<string, PropertyInfo>("m_oActorType", new PropertyInfo(PropertyType.ObjectProperty, reference: "BioActorType")),
+    }
+            };
+
+            sequenceObjects["SeqAct_GetPawnActorType"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+            #endregion
+            #region SeqAct_GetPlayerMaxGrenades
+            classes["SeqAct_GetPlayerMaxGrenades"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 188, // in LE1Resources.pcc
+                properties =
+    {
+        new KeyValuePair<string, PropertyInfo>("NumGrenades", new PropertyInfo(PropertyType.IntProperty)),
+    }
+            };
+
+            sequenceObjects["SeqAct_GetPlayerMaxGrenades"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+            #endregion
+            #region SeqAct_GetPlayerMaxMedigel
+            classes["SeqAct_GetPlayerMaxMedigel"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 195, // in LE1Resources.pcc
+                properties =
+    {
+        new KeyValuePair<string, PropertyInfo>("NumMedigel", new PropertyInfo(PropertyType.FloatProperty)),
+    }
+            };
+
+            sequenceObjects["SeqAct_GetPlayerMaxMedigel"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+            #endregion
+            #region SeqAct_GetWeightedComponentDistance
+            classes["SeqAct_GetWeightedComponentDistance"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 202, // in LE1Resources.pcc
+                properties =
+    {
+        new KeyValuePair<string, PropertyInfo>("WeightX", new PropertyInfo(PropertyType.FloatProperty)),
+        new KeyValuePair<string, PropertyInfo>("WeightY", new PropertyInfo(PropertyType.FloatProperty)),
+        new KeyValuePair<string, PropertyInfo>("WeightZ", new PropertyInfo(PropertyType.FloatProperty)),
+        new KeyValuePair<string, PropertyInfo>("Distance", new PropertyInfo(PropertyType.FloatProperty)),
+        new KeyValuePair<string, PropertyInfo>("PrintToLog", new PropertyInfo(PropertyType.BoolProperty)),
+    }
+            };
+
+            sequenceObjects["SeqAct_GetWeightedComponentDistance"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+            #endregion
+            #region SeqAct_HealToxicDamage
+            classes["SeqAct_HealToxicDamage"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 218, // in LE1Resources.pcc
+                properties =
+    {
+        new KeyValuePair<string, PropertyInfo>("PrintToLog", new PropertyInfo(PropertyType.BoolProperty)),
+    }
+            };
+
+            sequenceObjects["SeqAct_HealToxicDamage"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+            #endregion
+            #region SeqAct_ModifyFloatList
+            classes["SeqAct_ModifyFloatList"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 226, // in LE1Resources.pcc
+                properties =
+    {
+        new KeyValuePair<string, PropertyInfo>("InputOutputValue", new PropertyInfo(PropertyType.FloatProperty)),
+        new KeyValuePair<string, PropertyInfo>("InputIndex", new PropertyInfo(PropertyType.IntProperty)),
+        new KeyValuePair<string, PropertyInfo>("OutputListLength", new PropertyInfo(PropertyType.IntProperty)),
+    }
+            };
+
+            sequenceObjects["SeqAct_ModifyFloatList"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+            #endregion
+            #region SeqAct_ModifyPawnMaxHealth
+            classes["SeqAct_ModifyPawnMaxHealth"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 233, // in LE1Resources.pcc
+                properties =
+    {
+        new KeyValuePair<string, PropertyInfo>("m_fFactor", new PropertyInfo(PropertyType.FloatProperty)),
+        new KeyValuePair<string, PropertyInfo>("PrintToLog", new PropertyInfo(PropertyType.BoolProperty)),
+    }
+            };
+
+            sequenceObjects["SeqAct_ModifyPawnMaxHealth"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+            #endregion
+            #region SeqAct_RestoreShields
+            classes["SeqAct_RestoreShields"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 242, // in LE1Resources.pcc
+                properties =
+    {
+        new KeyValuePair<string, PropertyInfo>("PrintToLog", new PropertyInfo(PropertyType.BoolProperty)),
+    }
+            };
+
+            sequenceObjects["SeqAct_RestoreShields"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+            #endregion
+            #region SeqAct_SetDifficulty
+            classes["SeqAct_SetDifficulty"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 249, // in LE1Resources.pcc
+                properties =
+    {
+        new KeyValuePair<string, PropertyInfo>("m_nDifficulty", new PropertyInfo(PropertyType.IntProperty)),
+    }
+            };
+
+            sequenceObjects["SeqAct_SetDifficulty"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+            #endregion
+            #region SeqAct_UnapplyGameProperties
+            classes["SeqAct_UnapplyGameProperties"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 257, // in LE1Resources.pcc
+                properties =
+    {
+        new KeyValuePair<string, PropertyInfo>("PrintToLog", new PropertyInfo(PropertyType.BoolProperty)),
+    }
+            };
+
+            sequenceObjects["SeqAct_UnapplyGameProperties"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+            #endregion
+            #region SeqAct_ZeroAllCooldowns
+            classes["SeqAct_ZeroAllCooldowns"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 268, // in LE1Resources.pcc
+                properties =
+    {
+        new KeyValuePair<string, PropertyInfo>("PrintToLog", new PropertyInfo(PropertyType.BoolProperty)),
+    }
+            };
+
+            sequenceObjects["SeqAct_ZeroAllCooldowns"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+            #endregion
+
+
+            // OLD KEEP FOR NOW
+            //// HenBagle - New Class - used to fix a bug in LE1 CP
+            //classes["SFXSeqAct_GetGameOption"] = new ClassInfo
+            //{
+            //    baseClass = "SequenceAction",
+            //    pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+            //    exportIndex = 2, //in LE1Resources.pcc
+            //    properties =
+            //    {
+            //        new KeyValuePair<string, PropertyInfo>("OptionType", new PropertyInfo(PropertyType.IntProperty)),
+            //    }
+            //};
+
+            //sequenceObjects["SFXSeqAct_GetGameOption"] = new SequenceObjectInfo
+            //{
+            //    ObjInstanceVersion = 1
+            //};
+
+            //#region MGAMERZ CROSSGEN PROJECT
+            //#region SeqAct_GetPlayerMaxGrenades
+            //classes["SeqAct_GetPlayerMaxGrenades"] = new ClassInfo
+            //{
+            //    baseClass = "SequenceAction",
+            //    pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+            //    exportIndex = 11, //in LE1Resources.pcc
+            //    properties =
+            //    {
+            //        new KeyValuePair<string, PropertyInfo>("NumGrenades", new PropertyInfo(PropertyType.IntProperty)),
+            //    }
+            //};
+
+            //sequenceObjects["SeqAct_GetPlayerMaxGrenades"] = new SequenceObjectInfo
+            //{
+            //    ObjInstanceVersion = 1
+            //};
+            //#endregion
+            //#region SeqAct_GetPlayerMaxMedigel
+            //classes["SeqAct_GetPlayerMaxMedigel"] = new ClassInfo
+            //{
+            //    baseClass = "SequenceAction",
+            //    pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+            //    exportIndex = 18, //in LE1Resources.pcc
+            //    properties =
+            //    {
+            //        new KeyValuePair<string, PropertyInfo>("NumMedigel", new PropertyInfo(PropertyType.FloatProperty)),
+            //    }
+            //};
+
+            //sequenceObjects["SeqAct_GetPlayerMaxMedigel"] = new SequenceObjectInfo
+            //{
+            //    ObjInstanceVersion = 1
+            //};
+            //#endregion
+
+            //#region SeqAct_ActorFactoryWithOwner
+            //classes["SeqAct_ActorFactoryWithOwner"] = new ClassInfo
+            //{
+            //    baseClass = "BioSequenceLatentAction",
+            //    pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+            //    exportIndex = 25, //in LE1Resources.pcc
+            //};
+
+            //sequenceObjects["SeqAct_ActorFactoryWithOwner"] = new SequenceObjectInfo
+            //{
+            //    ObjInstanceVersion = 1
+            //};
+            //#endregion
+
+
+            //#region SeqAct_ModifyListFloat
+            //classes["SeqAct_ModifyFloatList"] = new ClassInfo
+            //{
+            //    baseClass = "SequenceAction",
+            //    pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+            //    exportIndex = 168, //in LE1Resources.pcc
+            //    properties =
+            //    {
+            //        new KeyValuePair<string, PropertyInfo>("OutputListLength", new PropertyInfo(PropertyType.IntProperty)),
+            //        new KeyValuePair<string, PropertyInfo>("InputIndex", new PropertyInfo(PropertyType.IntProperty)),
+            //        new KeyValuePair<string, PropertyInfo>("InputOutputValue", new PropertyInfo(PropertyType.FloatProperty)),
+            //    }
+            //};
+
+            //sequenceObjects["SeqAct_ModifyFloatList"] = new SequenceObjectInfo
+            //{
+            //    ObjInstanceVersion = 1
+            //};
+            //#endregion
+            //#region SeqAct_CopyListFloat
+            //classes["SeqAct_CopyFloatList"] = new ClassInfo
+            //{
+            //    baseClass = "SequenceAction",
+            //    pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+            //    exportIndex = 28, //in LE1Resources.pcc
+            //};
+
+            //sequenceObjects["SeqAct_CopyFloatList"] = new SequenceObjectInfo
+            //{
+            //    ObjInstanceVersion = 1
+            //};
+            //#endregion
+
+
+
+            //#endregion
 
             // END CUSTOM CLASSES
 

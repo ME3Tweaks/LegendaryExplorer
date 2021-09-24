@@ -1908,6 +1908,61 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void MScanner(PackageEditorWindow pe)
         {
+            MEGame game = MEGame.LE1;
+            StringBuilder sb = new StringBuilder();
+            using var p = MEPackageHandler.OpenMEPackage(@"Y:\ModLibrary\LE1\V Test\Donors\LE1Resources.pcc");
+            foreach (var c in p.Exports.Where(x => x.IsClass))
+            {
+                sb.AppendLine($"#region {c.ObjectName}");
+                sb.AppendLine($"classes[\"{c.ObjectName}\"] = new ClassInfo");
+                sb.AppendLine("{");
+                sb.AppendLine($"\tbaseClass = \"{c.SuperClassName}\",");
+                sb.AppendLine($"\tpccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,");
+                sb.AppendLine($"\texportIndex = {c.UIndex}, // in {game}Resources.pcc");
+
+                // Properties
+                var ci = GlobalUnrealObjectInfo.generateClassInfo(c);
+                if (ci.properties.Any())
+                {
+                    sb.AppendLine("\tproperties =");
+                    sb.AppendLine("\t{");
+                    foreach (var prop in ci.properties)
+                    {
+                        var propInfoStr = $"new PropertyInfo(PropertyType.{prop.Value.Type.ToString()}";
+                        // If this is an array it needs a reference type
+                        // Probably on objectproperty too?
+                        if (prop.Value.Reference != null)
+                        {
+                            propInfoStr += $", reference: \"{prop.Value.Reference}\"";
+                        }
+
+                        if (prop.Value.Transient)
+                        {
+                            propInfoStr += ", transient: true";
+                        }
+                        propInfoStr += ")";
+
+                        sb.AppendLine($"\t\tnew KeyValuePair<string, PropertyInfo>(\"{prop.Key}\", {propInfoStr}),");
+                    }
+                    sb.AppendLine("\t}");
+
+                }
+
+                sb.AppendLine("};");
+                if (c.SuperClass.InheritsFrom("SequenceObject"))
+                {
+                    sb.AppendLine();
+                    sb.AppendLine($"sequenceObjects[\"{c.ObjectName}\"] = new SequenceObjectInfo");
+                    sb.AppendLine("{");
+                    sb.AppendLine($"\tObjInstanceVersion = 1"); // Not sure if this is correct...
+                    sb.AppendLine("};");
+                }
+                sb.AppendLine("#endregion");
+            }
+
+            Clipboard.SetText(sb.ToString());
+            return;
+
             // just dump whatever shit you want to find here
             foreach (string filePath in MELoadedFiles.GetOfficialFiles(MEGame.LE1 /*, MEGame.LE2, MEGame.LE3*/))
             {
@@ -1957,7 +2012,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             if (unknowns.Any())
             {
-                ListDialog ld = new ListDialog(unknowns, "Unknown binary found", "The following items are not parsed by LEX but appear to have binary following the properties:", pe) {DoubleClickEntryHandler = pe.GetEntryDoubleClickAction()};
+                ListDialog ld = new ListDialog(unknowns, "Unknown binary found", "The following items are not parsed by LEX but appear to have binary following the properties:", pe) { DoubleClickEntryHandler = pe.GetEntryDoubleClickAction() };
                 ld.Show();
             }
         }
@@ -2206,7 +2261,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         var levelName = Path.GetFileNameWithoutExtension(f);
                         PortVTestLevel("PRC2", levelName, PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, db, pe, levelName == "BIOA_PRC2"/*true*/, /*levelName == "BIOA_PRC2"*/true, enableDynamicLighting: true);
                     }
-
                     // Port LOC files
                     foreach (var f in prc2Files)
                     {
@@ -2314,7 +2368,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
             }
 
-            CorrectSequences(package);
+            CorrectSequences(package, new PackageCache());
 
             pe.BusyText = $"Saving {packName}";
             package.Save();
@@ -2323,9 +2377,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         private static void PostPortingCorrections(IMEPackage me1File, IMEPackage le1File)
         {
             // Corrections to run AFTER porting is done
+            using PackageCache pc = new PackageCache();
             CorrectNeverStream(le1File);
             CorrectPrefabSequenceClass(le1File);
-            CorrectSequences(le1File);
+            CorrectSequences(le1File, pc);
             CorrectPathfindingNetwork(me1File, le1File);
             RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
 
@@ -2612,7 +2667,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         if (VTest_NonExistentBTSFiles.Contains(visibleChunks[i].Value.Name.ToLower()))
                         {
                             Debug.WriteLine($"PreCorrect: VS Remove BTS level {visibleChunks[i].Value}");
-                            visibleChunks.RemoveAt(i);
+                            //visibleChunks.RemoveAt(i);
                         }
                     }
 
@@ -2622,7 +2677,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         if (VTest_NonExistentBTSFiles.Contains(loadChunks[i].Value.Name.ToLower()))
                         {
                             Debug.WriteLine($"PreCorrect: LC Remove BTS level {loadChunks[i].Value}");
-                            loadChunks.RemoveAt(i);
+                            //loadChunks.RemoveAt(i);
                         }
                     }
                 }
@@ -2725,7 +2780,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "ReverbVolume"));
             itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioAudioVolume"));
             itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "AmbientSound"));
-
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioLedgeMeshActor"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "BioStage"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "HeightFog"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "PrefabInstance"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "CameraActor"));
 
             VTestFilePorting(me1File, le1File, itemsToPort, db, pe);
 
@@ -2777,12 +2836,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
-        private static void CorrectSequences(IMEPackage le1File)
+        private static void CorrectSequences(IMEPackage le1File, PackageCache pc)
         {
             // Find sequences that aren't in other sequences
             foreach (var seq in le1File.Exports.Where(e => e is { ClassName: "Sequence" } && !e.Parent.IsA("SequenceObject")))
             {
-                CorrectSequenceObjects(seq);
+                CorrectSequenceObjects(seq, pc);
             }
         }
 
