@@ -261,9 +261,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             pewpf.BusyText = "Re-serializing all binary in LE2 and LE3";
             var interestingExports = new List<EntryStringPair>();
             var comparisonDict = new Dictionary<string, (byte[] original, byte[] newData)>();
+            var classesMissingObjBin = new List<string>();
             Task.Run(() =>
             {
-                foreach (string filePath in EnumerateOfficialFiles(MEGame.LE1, MEGame.LE2, MEGame.LE3))
+                foreach (string filePath in EnumerateOfficialFiles(MEGame.LE1/*, MEGame.LE2, MEGame.LE3*/))
                 {
                     using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
                     foreach (ExportEntry export in pcc.Exports)
@@ -280,6 +281,17 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                     comparisonDict.Add($"{export.UIndex} {export.FileRef.FilePath}", (original, export.Data));
                                 }
                             }
+                            else
+                            {
+                                // Binary class is not defined for this
+                                // Check to make sure there is in fact no binary so 
+                                // we aren't missing anything
+                                if (export.propsEnd() != export.DataSize && !classesMissingObjBin.Contains(export.ClassName))
+                                {
+                                    classesMissingObjBin.Add(export.ClassName);
+                                    interestingExports.Add(new EntryStringPair($"{export.ClassName} Export has data after properties but no objectbinary class exists for this "));
+                                }
+                            }
                         }
                         catch (Exception e)
                         {
@@ -287,10 +299,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         }
                     }
 
-                    if (interestingExports.Count >= 2)
-                    {
-                        return;
-                    }
+                    // Uncomment this if you don't want it to do a lot before stopping
+                    //if (interestingExports.Count >= 2)
+                    //{
+                    //    return;
+                    //}
                 }
             }).ContinueWithOnUIThread(prevTask =>
             {
@@ -688,7 +701,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             pewpf.BusyText = "Scanning";
             Task.Run(() =>
             {
-                foreach (MEGame game in new[] { /*MEGame.LE2, MEGame.LE3, */MEGame.LE1, MEGame.ME2, MEGame.ME3, MEGame.ME1})
+                foreach (MEGame game in new[] { /*MEGame.LE2, MEGame.LE3, */MEGame.LE1, MEGame.ME2, MEGame.ME3, MEGame.ME1 })
                 {
                     //preload base files for faster scanning
                     using DisposableCollection<IMEPackage> baseFiles = MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(game)
