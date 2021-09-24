@@ -28,7 +28,9 @@ using LegendaryExplorerCore.UnrealScript.Decompiling;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
+using SharpDX.D3DCompiler;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
+using Function = LegendaryExplorerCore.UnrealScript.Language.Tree.Function;
 
 namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 {
@@ -1270,7 +1272,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         string pathWithoutInvalids = Path.Combine(dlg.FileName,
                             $"{shaderType.GetPathWithoutInvalids()} - {shader.Guid}.txt");
                         File.WriteAllText(pathWithoutInvalids,
-                            SharpDX.D3DCompiler.ShaderBytecode.FromStream(new MemoryStream(shader.ShaderByteCode))
+                            ShaderBytecode.FromStream(new MemoryStream(shader.ShaderByteCode))
                                 .Disassemble());
                     }
 
@@ -1892,5 +1894,65 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             });
         }
 
+
+        public static void RecompileAll(PackageEditorWindow pew)
+        {
+            if (pew.Pcc is { Platform: MEPackage.GamePlatform.PC } && pew.Pcc.Game != MEGame.UDK)
+            {
+                var exportsWithDecompilationErrors = new List<EntryStringPair>();
+                var fileLib = new FileLib(pew.Pcc);
+                if (!fileLib.Initialize())
+                {
+                    exportsWithDecompilationErrors.Add(new EntryStringPair("Filelib failed to initialize!"));
+                }
+                foreach (ExportEntry export in pew.Pcc.Exports.Where(exp => exp.IsClass))
+                {
+                    try
+                    {
+                        (_, string script) = UnrealScriptCompiler.DecompileExport(export, fileLib);
+                        (ASTNode ast, MessageLog log, _) = UnrealScriptCompiler.CompileAST(script, export.ClassName, export.Game);
+                        if (ast is not Class c|| log.AllErrors.Any())
+                        {
+                            throw new Exception();
+                        }
+
+                        //foreach (State state in c.States)
+                        //{
+                        //    ast = UnrealScriptCompiler.CompileNewStateBodyAST(export, state, log, fileLib);
+                        //    if (ast is not State || log.AllErrors.Any())
+                        //    {
+                        //        throw new Exception();
+                        //    }
+                        //}
+
+                        //foreach (Function function in c.Functions)
+                        //{
+                        //    ast = UnrealScriptCompiler.CompileNewFunctionBodyAST(export, function, log, fileLib);
+                        //    if (ast is not Function || log.AllErrors.Any())
+                        //    {
+                        //        throw new Exception();
+                        //    }
+                        //}
+
+                        ast = UnrealScriptCompiler.CompileDefaultPropertiesAST(export, c.DefaultProperties, log, fileLib);
+                        if (ast is not DefaultPropertiesBlock || log.AllErrors.Any())
+                        {
+                            throw new Exception();
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        exportsWithDecompilationErrors.Add(new EntryStringPair(export, "Compilation Error!"));
+                        break;
+                    }
+                }
+
+                var dlg = new ListDialog(exportsWithDecompilationErrors, "Compilation errors", "", pew)
+                {
+                    DoubleClickEntryHandler = pew.GetEntryDoubleClickAction()
+                };
+                dlg.Show();
+            }
+        }
     }
 }

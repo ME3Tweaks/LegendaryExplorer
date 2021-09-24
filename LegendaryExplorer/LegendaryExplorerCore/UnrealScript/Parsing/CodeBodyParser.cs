@@ -30,7 +30,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         private readonly CaseInsensitiveDictionary<Label> Labels = new();
 
-        private readonly Stack<string> ExpressionScopes;
+        private readonly Stack<(string scope, bool isStructScope)> ExpressionScopes;
 
         private bool IsFunction => Node.Type == ASTNodeType.Function;
         private bool IsState => Node.Type == ASTNodeType.State;
@@ -161,8 +161,8 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             OuterClassScope = NodeUtils.GetOuterClassScope(containingNode);
 
 
-            ExpressionScopes = new Stack<string>();
-            ExpressionScopes.Push(Symbols.CurrentScopeName);
+            ExpressionScopes = new();
+            ExpressionScopes.Push((Symbols.CurrentScopeName, false));
 
             LabelNests = new Stack<List<Label>>();
             LabelNests.Push(new List<Label>());
@@ -976,15 +976,25 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 Expression falseExpr = Ternary();
                 VariableType trueType = trueExpr.ResolveType();
                 VariableType falseType = falseExpr.ResolveType();
-                if (trueType == SymbolTable.IntType && falseExpr is IntegerLiteral falseLit)
+                if (trueType == SymbolTable.IntType && falseExpr is IntegerLiteral falseIntLit)
                 {
-                    falseLit.NumType = INT;
-                    falseType = falseLit.ResolveType();
+                    falseIntLit.NumType = INT;
+                    falseType = falseIntLit.ResolveType();
                 }
-                else if (falseType == SymbolTable.IntType && trueExpr is IntegerLiteral trueLit)
+                else if (falseType == SymbolTable.IntType && trueExpr is IntegerLiteral trueIntLit)
                 {
-                    trueLit.NumType = INT;
-                    trueType = trueLit.ResolveType();
+                    trueIntLit.NumType = INT;
+                    trueType = trueIntLit.ResolveType();
+                }
+                else if (trueType == SymbolTable.ByteType && falseExpr is IntegerLiteral falseByteLit)
+                {
+                    falseByteLit.NumType = BYTE;
+                    falseType = falseByteLit.ResolveType();
+                }
+                else if (falseType == SymbolTable.ByteType && trueExpr is IntegerLiteral trueByteLit)
+                {
+                    trueByteLit.NumType = BYTE;
+                    trueType = trueByteLit.ResolveType();
                 }
 
                 if (NodeUtils.TypeEqual(trueType, falseType))
@@ -1418,12 +1428,14 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     {
                         specificScope = "Object.Field.Struct.State.Class";
                     }
+                    bool isStructMemberExpression = lhsType is Struct;
 
-                    ExpressionScopes.Push(specificScope);
+                    ExpressionScopes.Push((specificScope, isStructMemberExpression));
 
                     Expression rhs = CallOrAccess(isStatic);
 
                     ExpressionScopes.Pop();
+                    
                     if (rhs is null)
                     {
                         throw ParseError("Expected a valid member name to follow the dot!", CurrentPosition);
@@ -1451,7 +1463,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         {
                             var csf = new CompositeSymbolRef(lhs, asr.Array, isClassContext, lhs.StartPos, asr.Array.EndPos)
                             {
-                                IsStructMemberExpression = lhsType is Struct
+                                IsStructMemberExpression = isStructMemberExpression
                             };
                             asr.StartPos = csf.StartPos;
                             asr.Array = csf;
@@ -1462,7 +1474,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         {
                             var csf = new CompositeSymbolRef(lhs, dai.DynArrayExpression, isClassContext, lhs.StartPos, dai.DynArrayExpression.EndPos)
                             {
-                                IsStructMemberExpression = lhsType is Struct
+                                IsStructMemberExpression = isStructMemberExpression
                             };
                             dai.StartPos = csf.StartPos;
                             dai.DynArrayExpression = csf;
@@ -1473,7 +1485,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         {
                             var csf = new CompositeSymbolRef(lhs, dal.DynArrayExpression, isClassContext, lhs.StartPos, dal.DynArrayExpression.EndPos)
                             {
-                                IsStructMemberExpression = lhsType is Struct
+                                IsStructMemberExpression = isStructMemberExpression
                             };
                             dal.StartPos = csf.StartPos;
                             dal.DynArrayExpression = csf;
@@ -1486,7 +1498,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         default:
                             lhs = new CompositeSymbolRef(lhs, rhs, isClassContext, lhs.StartPos, rhs.EndPos)
                             {
-                                IsStructMemberExpression = lhsType is Struct
+                                IsStructMemberExpression = isStructMemberExpression
                             };
                             break;
                     }
@@ -1953,7 +1965,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
 
             //if there is a collision between a function name and another symbol, this may be required to disambiguate
-            if (expr is SymbolReference notFunc && Symbols.TryGetSymbolInScopeStack(notFunc.Name, out Function secondChanceFunc, ExpressionScopes.Peek()))
+            if (expr is SymbolReference notFunc && Symbols.TryGetSymbolInScopeStack(notFunc.Name, out Function secondChanceFunc, ExpressionScopes.Peek().scope))
             {
                 return FinishCall(NewSymbolReference(secondChanceFunc, new Token<string>(TokenType.Word, notFunc.Name, expr.StartPos, expr.EndPos), expr is DefaultReference), out succeeded);
             }
@@ -2008,7 +2020,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                                 }
                             }
                         }
-                        else if (!(exprType is Class classType) || !classType.Name.CaseInsensitiveEquals(OBJECT))
+                        else if (exprType is not Class classType || !classType.Name.CaseInsensitiveEquals(OBJECT))
                         {
                             TypeError("Cannot cast to a class type from a non-class type!", expr);
                         }
@@ -2067,7 +2079,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     if (Node.Outer is State)
                     {
                         isState = true;
-                        ExpressionScopes.Push(Self.GetInheritanceString());
+                        ExpressionScopes.Push((Self.GetInheritanceString(), false));
                     }
                 
                     if (!Matches(TokenType.Word))
@@ -2392,7 +2404,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         private Expression ParseBasicRefOrCast(Token<string> token, bool isDefaultRef = false)
         {
-            string specificScope = ExpressionScopes.Peek();
+            (string specificScope, bool isStructScope) = ExpressionScopes.Peek();
             if (!Symbols.TryGetSymbolInScopeStack(token.Value, out ASTNode symbol, specificScope))
             {
                 //primitive or dynamic cast, or enum
@@ -2423,6 +2435,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     return ParsePrimitiveOrDynamicCast(token, destType);
                 }
                 //TODO: better error message
+                TypeError($"{specificScope} has no member named '{token.Value}'!", token);
+                symbol = new VariableType("ERROR");
+            }
+
+            if (isStructScope && symbol.Outer is not Struct)
+            {
                 TypeError($"{specificScope} has no member named '{token.Value}'!", token);
                 symbol = new VariableType("ERROR");
             }

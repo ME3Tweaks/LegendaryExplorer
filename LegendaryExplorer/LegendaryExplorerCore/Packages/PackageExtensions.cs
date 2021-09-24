@@ -883,5 +883,7 @@ namespace LegendaryExplorerCore.Packages
         }
 
         public static T GetBinaryData<T>(this ExportEntry export) where T : ObjectBinary, new() => ObjectBinary.From<T>(export);
+
+        public static T GetBinaryData<T>(this ExportEntry export, PackageCache packageCache) where T : ObjectBinary, new() => ObjectBinary.From<T>(export, packageCache);
     }
 }

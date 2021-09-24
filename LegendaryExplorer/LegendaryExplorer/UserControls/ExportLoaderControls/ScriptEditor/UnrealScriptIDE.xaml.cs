@@ -502,7 +502,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             {
                 log.LogError("Parse Failed!");
             }
-            catch (Exception exception) when (!LegendaryExplorerCoreLib.IsDebug)
+            catch (Exception exception)// when (!LegendaryExplorerCoreLib.IsDebug)
             {
                 log.LogError($"Exception: {exception.Message}");
             }

@@ -90,7 +90,7 @@
         <MenuItem Header="UDKify" Click="UDKifyTest"/>
         <MenuItem Header="Make List of ME1 files with externally referenced textures" Click="MakeME1TextureFileList"/>
         <MenuItem Header="Condense All Level Archetypes" Click="CondenseAllArchetypes"/>
-        <MenuItem Header="Recompile All classes (ME3 Only!)" Click="RecompileAll_OnClick" />
+        <MenuItem Header="Recompile All classes in file" Click="RecompileAll_OnClick" />
         <MenuItem Header="Find OpCode" Click="FindOpCode_OnClick" />
         <MenuItem Header="Build Native Table" Click="BuildNativeTable_OnClick" />
         <MenuItem Header="DumpTaggedWwiseStreams" Click="DumptTaggedWwiseStreams_OnClick" />
