@@ -7,12 +7,9 @@ using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    public class UTexture2D : ObjectBinary
-    {
-        public List<Texture2DMipMap> Mips;
-        public int Unk1;
-        public Guid TextureGuid;
 
+    public class UTexture : ObjectBinary
+    {
         protected override void Serialize(SerializingContainer2 sc)
         {
             if (!sc.Game.IsGame3())
@@ -23,6 +20,27 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref dummy);
                 sc.SerializeFileOffset();
             }
+        }
+    }
+
+    public class UTextureCube : UTexture
+    {
+        // This is here just to make sure it's different
+        protected override void Serialize(SerializingContainer2 sc)
+        {
+            base.Serialize(sc);
+        }
+    }
+
+    public class UTexture2D : UTexture
+    {
+        public List<Texture2DMipMap> Mips;
+        public int Unk1;
+        public Guid TextureGuid;
+
+        protected override void Serialize(SerializingContainer2 sc)
+        {
+            base.Serialize(sc);
             sc.Serialize(ref Mips, SCExt.Serialize);
             if (sc.Game != MEGame.UDK)
             {
