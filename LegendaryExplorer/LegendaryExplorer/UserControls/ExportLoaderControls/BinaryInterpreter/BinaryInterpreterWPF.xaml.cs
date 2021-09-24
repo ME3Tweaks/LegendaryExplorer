@@ -159,7 +159,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         #region Commands
         public ICommand CopyOffsetCommand { get; set; }
         public ICommand OpenInPackageEditorCommand { get; set; }
-
         public ICommand FindDefinitionOfImportCommand { get; set; }
 
         private void LoadCommands()
@@ -259,7 +258,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             if (nodeobj is BinInterpNode b && IsObjectNodeType(nodeobj))
             {
                 int index = b.UIndexValue == 0 ? b.GetObjectRefValue(CurrentLoadedExport) : b.UIndexValue;
-                return index < 0;
+                return CurrentLoadedExport.FileRef.IsImport(index);
             }
             return false;
         }
