@@ -390,8 +390,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public override bool CanParse(ExportEntry exportEntry)
         {
-            return exportEntry.HasStack || ((ParsableBinaryClasses.Contains(exportEntry.ClassName) || exportEntry.IsA("BioPawn")) && !exportEntry.IsDefaultObject)
-                || exportEntry.TemplateOwnerClassIdx >= 0;
+            //return exportEntry.HasStack || ((ParsableBinaryClasses.Contains(exportEntry.ClassName) || exportEntry.IsA("BioPawn")) && !exportEntry.IsDefaultObject)
+            //    || exportEntry.TemplateOwnerClassIdx >= 0;
+
+            // crossgen 9/24/2021
+            return exportEntry.HasStack || exportEntry.TemplateOwnerClassIdx >= 0 || exportEntry.propsEnd() < exportEntry.DataSize;
         }
 
         public override void PopOut()
