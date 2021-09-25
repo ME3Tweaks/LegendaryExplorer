@@ -246,6 +246,49 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
 
         }
+
+        private void BuildAllObjectInfo_Clicked(object sender, RoutedEventArgs e)
+        {
+            var pew = GetPEWindow();
+            pew.BusyText = "Building Object Info";
+            pew.IsBusy = true;
+
+            var currentGame = MEGame.ME1;
+            void setProgress(int done, int total)
+            {
+                Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    pew.BusyText = $"Building {currentGame} Object Info [{done}/{total}]";
+                });
+            }
+            var sw = new Stopwatch();
+
+            Task.Run(() =>
+            {
+                sw.Start();
+                ME1UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "ME1ObjectInfo.json"), true, setProgress);
+                currentGame = MEGame.ME2;
+                ME2UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "ME2ObjectInfo.json"), true, setProgress);
+                currentGame = MEGame.ME3;
+                ME3UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "ME3ObjectInfo.json"), true, setProgress);
+                currentGame = MEGame.LE1;
+                LE1UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE1ObjectInfo.json"), true, setProgress);
+                currentGame = MEGame.LE2;
+                LE2UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE2ObjectInfo.json"), true, setProgress);
+                currentGame = MEGame.LE3;
+                LE3UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE3ObjectInfo.json"), true, setProgress);
+                sw.Stop();
+            }).ContinueWithOnUIThread(x =>
+            {
+                pew.IsBusy = false;
+                pew.RestoreAndBringToFront();
+                MessageBox.Show(GetPEWindow(), $"Done. Took {sw.Elapsed.TotalSeconds} seconds");
+            });
+
+
+
+
+        }
         private void ObjectInfosSearch_Click(object sender, RoutedEventArgs e)
         {
             var searchTerm = PromptDialog.Prompt(GetPEWindow(), "Enter key value to search", "ObjectInfos Search");

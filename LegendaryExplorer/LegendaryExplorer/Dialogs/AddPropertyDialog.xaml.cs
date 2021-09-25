@@ -23,22 +23,44 @@ namespace LegendaryExplorer.Dialogs
         {
             public AddPropertyItem() { }
 
-            public AddPropertyItem(string propname, PropertyInfo propInfo)
+            public AddPropertyItem(NameReference propname, int staticArrayIndex, PropertyInfo propInfo)
             {
-                this.PropertyName = propname;
-                this.PropInfo = propInfo;
+                PropertyName = propname;
+                PropInfo = propInfo;
+                StaticArrayIndex = staticArrayIndex;
             }
 
-            public string PropertyName { get; }
+            public string DisplayName => PropInfo.IsStaticArray() ? $"{PropertyName.Instanced}[{StaticArrayIndex}]" : PropertyName.Instanced; 
+            public NameReference PropertyName { get; }
+            public int StaticArrayIndex { get; }
             public PropertyInfo PropInfo { get; }
         }
 
-        public AddPropertyDialog(List<ClassInfo> classList, List<string> _existingProperties) : base ("Add Property Dialog", false)
+        public AddPropertyDialog(List<ClassInfo> classList, List<PropNameStaticArrayIdxPair> _existingProperties) : base ("Add Property Dialog", false)
         {
             _classHierarchy.ReplaceAll(classList.Select(x => x.ClassName));
             existingProperties = _existingProperties;
-            classToClassPropertyMap = classList.ToDictionary(x => x.ClassName,
-                x => x.properties.Select(y => new AddPropertyItem(y.Key, y.Value)).ToList());
+            classToClassPropertyMap = new Dictionary<string, List<AddPropertyItem>>(classList.Count);
+            foreach (ClassInfo classInfo in classList)
+            {
+                var addPropertyItems = new List<AddPropertyItem>();
+                foreach ((NameReference propName, PropertyInfo propInfo) in classInfo.properties)
+                {
+                    if (propInfo.IsStaticArray())
+                    {
+                        for (int i = 0; i < propInfo.StaticArrayLength; i++)
+                        {
+                            addPropertyItems.Add(new AddPropertyItem(propName, i, propInfo));
+                        }
+                    }
+                    else
+                    {
+                        addPropertyItems.Add(new AddPropertyItem(propName, 0, propInfo));
+                    }
+                }
+                classToClassPropertyMap.Add(classInfo.ClassName, addPropertyItems);
+            }
+
             LoadCommands();
             InitializeComponent();
 
@@ -64,9 +86,9 @@ namespace LegendaryExplorer.Dialogs
             if (obj is AddPropertyItem api)
             {
                 if (api.PropInfo.Transient) return false; //Don't show transient props
-                if (existingProperties.Contains(api.PropertyName, StringComparer.InvariantCultureIgnoreCase)) return false; //Don't show existing properties
+                if (existingProperties.Contains(new PropNameStaticArrayIdxPair(api.PropertyName, api.StaticArrayIndex))) return false; //Don't show existing properties
                 if (string.IsNullOrWhiteSpace(FilterText)) return true; //no filter
-                if (api.PropertyName.Contains(FilterText, StringComparison.InvariantCultureIgnoreCase)) 
+                if (api.PropertyName.Instanced.Contains(FilterText, StringComparison.InvariantCultureIgnoreCase)) 
                     return true;
                 if (api.PropInfo.Type.ToString().Contains(FilterText, StringComparison.InvariantCultureIgnoreCase)) 
                     return true;
@@ -78,12 +100,12 @@ namespace LegendaryExplorer.Dialogs
         /// <summary>
         /// Properties already attached to our export (that should not be shown)
         /// </summary>
-        private List<string> existingProperties;
+        private readonly List<PropNameStaticArrayIdxPair> existingProperties;
         /// <summary>
         /// Mapping of class names to the class properties
         /// </summary>
 
-        private Dictionary<string, List<AddPropertyItem>> classToClassPropertyMap;
+        private readonly Dictionary<string, List<AddPropertyItem>> classToClassPropertyMap;
 
 
         #region Binding properties
@@ -138,9 +160,9 @@ namespace LegendaryExplorer.Dialogs
             }
         }
 
-        private ObservableCollectionExtended<string> _classHierarchy { get; } = new ObservableCollectionExtended<string>();
+        private ObservableCollectionExtended<string> _classHierarchy { get; } = new();
         public ICollectionView ClassesView => CollectionViewSource.GetDefaultView(_classHierarchy);
-        private ObservableCollectionExtended<AddPropertyItem> _availableProperties { get; } = new ObservableCollectionExtended<AddPropertyItem>();
+        private ObservableCollectionExtended<AddPropertyItem> _availableProperties { get; } = new();
         public ICollectionView PropertiesView => CollectionViewSource.GetDefaultView(_availableProperties);
 
         #endregion
@@ -154,8 +176,8 @@ namespace LegendaryExplorer.Dialogs
                 if (SelectedClassName != null)
                 {
                     _availableProperties.ReplaceAll(classToClassPropertyMap[SelectedClassName]
-                        .Where(x => !x.PropInfo.Transient && !existingProperties.Contains(x.PropertyName))
-                        .OrderBy(x => x.PropertyName));
+                        .Where(x => !x.PropInfo.Transient && !existingProperties.Contains(new PropNameStaticArrayIdxPair(x.PropertyName, x.StaticArrayIndex)))
+                        .OrderBy(x => new PropNameStaticArrayIdxPair(x.PropertyName, x.StaticArrayIndex)));
                 }
                 else
                 {
@@ -188,7 +210,7 @@ namespace LegendaryExplorer.Dialogs
 
 
 
-        public static (string, PropertyInfo)? GetProperty(ExportEntry export, List<string> _existingProperties, MEGame game, Window callingWindow = null)
+        public static (NameReference, int, PropertyInfo)? GetProperty(ExportEntry export, List<PropNameStaticArrayIdxPair> _existingProperties, MEGame game, Window callingWindow = null)
         {
             string temp = export.ClassName;
             var classes = new List<ClassInfo>();
@@ -270,7 +292,7 @@ namespace LegendaryExplorer.Dialogs
                 temp = classList[temp].baseClass;
             }
             classes.Reverse();
-            AddPropertyDialog prompt = new AddPropertyDialog(classes, _existingProperties)
+            var prompt = new AddPropertyDialog(classes, _existingProperties)
             {
                 Owner = callingWindow
             };
@@ -281,7 +303,7 @@ namespace LegendaryExplorer.Dialogs
              && prompt.DialogResult.Value
              && prompt.SelectedProperty != null)
             {
-                return (prompt.SelectedProperty.PropertyName, prompt.SelectedProperty.PropInfo);
+                return (prompt.SelectedProperty.PropertyName, prompt.SelectedProperty.StaticArrayIndex,  prompt.SelectedProperty.PropInfo);
             }
             return null;
         }
@@ -294,5 +316,83 @@ namespace LegendaryExplorer.Dialogs
                 Close();
             }
         }
+    }
+
+    public readonly struct PropNameStaticArrayIdxPair : IEquatable<PropNameStaticArrayIdxPair>, IComparable<PropNameStaticArrayIdxPair>, IComparable
+    {
+        public readonly NameReference Name;
+        public readonly int StaticArrayIdx;
+
+        public PropNameStaticArrayIdxPair(NameReference name, int staticArrayIdx)
+        {
+            Name = name;
+            StaticArrayIdx = staticArrayIdx;
+        }
+
+        #region IEquatable
+
+        public bool Equals(PropNameStaticArrayIdxPair other)
+        {
+            return Name.Equals(other.Name) && StaticArrayIdx == other.StaticArrayIdx;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is PropNameStaticArrayIdxPair other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Name, StaticArrayIdx);
+        }
+
+        public static bool operator ==(PropNameStaticArrayIdxPair left, PropNameStaticArrayIdxPair right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(PropNameStaticArrayIdxPair left, PropNameStaticArrayIdxPair right)
+        {
+            return !left.Equals(right);
+        }
+
+        #endregion
+
+        #region IComparable
+
+        public int CompareTo(PropNameStaticArrayIdxPair other)
+        {
+            int nameComparison = Name.CompareTo(other.Name);
+            if (nameComparison != 0) return nameComparison;
+            return StaticArrayIdx.CompareTo(other.StaticArrayIdx);
+        }
+
+        public int CompareTo(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return 1;
+            return obj is PropNameStaticArrayIdxPair other ? CompareTo(other) : throw new ArgumentException($"Object must be of type {nameof(PropNameStaticArrayIdxPair)}");
+        }
+
+        public static bool operator <(PropNameStaticArrayIdxPair left, PropNameStaticArrayIdxPair right)
+        {
+            return left.CompareTo(right) < 0;
+        }
+
+        public static bool operator >(PropNameStaticArrayIdxPair left, PropNameStaticArrayIdxPair right)
+        {
+            return left.CompareTo(right) > 0;
+        }
+
+        public static bool operator <=(PropNameStaticArrayIdxPair left, PropNameStaticArrayIdxPair right)
+        {
+            return left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >=(PropNameStaticArrayIdxPair left, PropNameStaticArrayIdxPair right)
+        {
+            return left.CompareTo(right) >= 0;
+        }
+
+        #endregion
     }
 }

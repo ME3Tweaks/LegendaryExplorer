@@ -147,18 +147,22 @@ namespace LegendaryExplorerCore.Packages
     public class PropertyInfo : IEquatable<PropertyInfo>
     {
         //DO NOT CHANGE THE NAME OF ANY OF THESE fields/properties. THIS WILL BREAK JSON PARSING!
-        public Unreal.PropertyType Type { get; }
+        public PropertyType Type { get; }
         public string Reference { get; }
         public bool Transient { get; }
+        public int StaticArrayLength { get; }
 
-        public PropertyInfo(PropertyType type, string reference = null, bool transient = false)
+        public PropertyInfo(PropertyType type, string reference = null, bool transient = false, int staticArrayLength = 1)
         {
             Type = type;
             Reference = reference;
             Transient = transient;
+            StaticArrayLength = staticArrayLength;
         }
 
         public bool IsEnumProp() => Type == PropertyType.ByteProperty && Reference != null && Reference != "Class" && Reference != "Object";
+
+        public bool IsStaticArray() => StaticArrayLength > 1;
 
         #region IEquatable
 
@@ -206,7 +210,7 @@ namespace LegendaryExplorerCore.Packages
         [JsonIgnore]
         public string ClassName { get; set; }
 
-        public OrderedMultiValueDictionary<string, PropertyInfo> properties = new();
+        public OrderedMultiValueDictionary<NameReference, PropertyInfo> properties = new();
         public string baseClass;
         //Relative to BIOGame
         public string pccPath;
@@ -214,7 +218,7 @@ namespace LegendaryExplorerCore.Packages
         public int exportIndex;
         public bool isAbstract;
 
-        public bool TryGetPropInfo(string name, MEGame game, out PropertyInfo propInfo) =>
+        public bool TryGetPropInfo(NameReference name, MEGame game, out PropertyInfo propInfo) =>
             properties.TryGetValue(name, out propInfo) || (GlobalUnrealObjectInfo.GetClassOrStructInfo(game, baseClass)?.TryGetPropInfo(name, game, out propInfo) ?? false);
     }
 

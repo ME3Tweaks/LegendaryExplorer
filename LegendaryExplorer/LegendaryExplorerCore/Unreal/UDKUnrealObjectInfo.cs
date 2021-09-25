@@ -44,7 +44,7 @@ namespace LegendaryExplorerCore.Unreal
             }
         }
 
-        public static string getEnumTypefromProp(string className, string propName)
+        public static string getEnumTypefromProp(string className, NameReference propName)
         {
             PropertyInfo p = getPropertyInfo(className, propName, false);
             if (p == null)
@@ -68,7 +68,7 @@ namespace LegendaryExplorerCore.Unreal
             return null;
         }*/
 
-        public static ArrayType getArrayType(string className, string propName, ExportEntry export = null)
+        public static ArrayType getArrayType(string className, NameReference propName, ExportEntry export = null)
         {
             if (!IsLoaded) loadfromJSON();
             PropertyInfo p = getPropertyInfo(className, propName, false, containingExport: export);
@@ -153,7 +153,7 @@ namespace LegendaryExplorerCore.Unreal
             }
         }
 
-        public static PropertyInfo getPropertyInfo(string className, string propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null, bool reSearch = true, ExportEntry containingExport = null)
+        public static PropertyInfo getPropertyInfo(string className, NameReference propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null, bool reSearch = true, ExportEntry containingExport = null)
         {
             if (!IsLoaded) loadfromJSON();
             if (className.StartsWith("Default__"))
@@ -180,7 +180,7 @@ namespace LegendaryExplorerCore.Unreal
                 {
                     foreach (PropertyInfo p in info.properties.Values())
                     {
-                        if ((p.Type == PropertyType.StructProperty || p.Type == PropertyType.ArrayProperty) && reSearch)
+                        if ((p.Type is PropertyType.StructProperty or PropertyType.ArrayProperty) && reSearch)
                         {
                             PropertyInfo val = getPropertyInfo(p.Reference, propName, true, nonVanillaClassInfo, reSearch: true);
                             if (val != null)
@@ -257,12 +257,12 @@ namespace LegendaryExplorerCore.Unreal
                     && entry.ClassName != "Function" && entry.ClassName != "Const" && entry.ClassName != "State")
                 {
                     //Skip if property is transient (only used during execution, will never be in game files)
-                    if (/*(BitConverter.ToUInt64(entry.Data, 24) & 0x0000000000002000) == 0 &&*/ !info.properties.ContainsKey(entry.ObjectName.Name))
+                    if (/*(BitConverter.ToUInt64(entry.Data, 24) & 0x0000000000002000) == 0 &&*/ !info.properties.ContainsKey(entry.ObjectName))
                     {
                         PropertyInfo p = getProperty(pcc, entry);
                         if (p != null)
                         {
-                            info.properties.Add(entry.ObjectName.Name, p);
+                            info.properties.Add(entry.ObjectName, p);
                         }
                     }
                     //else
