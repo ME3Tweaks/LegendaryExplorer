@@ -17,7 +17,7 @@ namespace LegendaryExplorerCore.Matinee
 
         public static ExportEntry AddNewGroupDirectorToInterpData(ExportEntry interpData) => InternalAddGroup("InterpGroupDirector", interpData, null);
 
-        public static ExportEntry AddPreset(string preset, ExportEntry export, string? param1 = null) => InternalAddPreset(preset, export, param1);
+        public static ExportEntry AddPreset(string preset, ExportEntry export, MEGame game, string? param1 = null) => InternalAddPreset(preset, export, game, param1);
 
         private static ExportEntry InternalAddGroup(string className, ExportEntry interpData, string groupName)
         {
@@ -38,16 +38,16 @@ namespace LegendaryExplorerCore.Matinee
             return group;
         }
 
-        private static ExportEntry InternalAddPreset(string preset, ExportEntry export, string param1)
+        private static ExportEntry InternalAddPreset(string preset, ExportEntry export, MEGame game, string param1)
         {
             switch (export.ClassName)
             {
                 case "InterpData":
-                    var group = PresetCreateNewExport(preset, export, param1);
-                    PresetAddTracks(preset, group, param1);
+                    var group = PresetCreateNewExport(preset, export, game, param1);
+                    PresetAddTracks(preset, group, game, param1);
                     return group;
                 case "InterpGroup":
-                    PresetAddTracks(preset, export, param1);
+                    PresetAddTracks(preset, export, game, param1);
                     return export;
                 default:
                     return null;
@@ -232,7 +232,7 @@ namespace LegendaryExplorerCore.Matinee
             }
         }
 
-        private static ExportEntry PresetCreateNewExport(string preset, ExportEntry interpData, string param1)
+        private static ExportEntry PresetCreateNewExport(string preset, ExportEntry interpData, MEGame game, string param1)
         {
             string className = "InterpGroup";
             var properties = new PropertyCollection { new ArrayProperty<ObjectProperty>("InterpTracks") };
@@ -269,7 +269,7 @@ namespace LegendaryExplorerCore.Matinee
             return group;
         }
 
-        private static void PresetAddTracks(string preset, ExportEntry interpGroup, string? param1 = null)
+        private static void PresetAddTracks(string preset, ExportEntry interpGroup, MEGame game, string? param1 = null)
         {
             switch (preset)
             {
@@ -298,8 +298,8 @@ namespace LegendaryExplorerCore.Matinee
                     ges.WriteProperty(new NameProperty("None", "nmStartingPoseSet"));
                     ges.WriteProperty(new NameProperty("None", "nmStartingPoseAnim"));
                     ges.WriteProperty(new FloatProperty(0, "m_fStartPoseOffset"));
-                    ges.WriteProperty(new EnumProperty("None", "EBioTrackAllPoseGroups", MEGame.LE3, "ePoseFilter"));
-                    ges.WriteProperty(new EnumProperty("None", "EBioGestureAllPoses", MEGame.LE3, "eStartingPose"));
+                    ges.WriteProperty(new EnumProperty("None", "EBioTrackAllPoseGroups", game, "ePoseFilter"));
+                    ges.WriteProperty(new EnumProperty("None", "EBioGestureAllPoses", game, "eStartingPose"));
                     ges.WriteProperty(new BoolProperty(true, "m_bUseDynamicAnimSets"));
                     ges.WriteProperty(new NameProperty(param1, "m_nmFindActor"));
                     ges.WriteProperty(new StrProperty($"Gesture -- {param1}", "TrackTitle"));
@@ -308,7 +308,7 @@ namespace LegendaryExplorerCore.Matinee
                 case "Gesture2":
                     var ges2 = AddNewTrackToGroup(interpGroup, "BioEvtSysTrackGesture");
                     var m_aGestures = new ArrayProperty<StructProperty>("m_aGestures");
-                    var gesProps = PresetCreateProperties("Gesture2-gesture");
+                    var gesProps = PresetCreateProperties("Gesture2-gesture", game);
                     if (gesProps != null)
                     {
                         m_aGestures.Add(new StructProperty("BioGestureData", gesProps, "BioGestureData"));
@@ -318,10 +318,10 @@ namespace LegendaryExplorerCore.Matinee
                     ges2.WriteProperty(new NameProperty("None", "nmStartingPoseAnim"));
                     ges2.WriteProperty(new FloatProperty(0, "m_fStartPoseOffset"));
                     ges2.WriteProperty(new BoolProperty(true, "m_bUseDynamicAnimSets"));
-                    ges2.WriteProperty(new EnumProperty("None", "EBioTrackAllPoseGroups", MEGame.LE3, "ePoseFilter"));
+                    ges2.WriteProperty(new EnumProperty("None", "EBioTrackAllPoseGroups", game, "ePoseFilter"));
                     ges2.WriteProperty(new NameProperty(param1, "m_nmFindActor"));
                     var m_aTrackKeys = new ArrayProperty<StructProperty>("m_aTrackKeys");
-                    var keyProps = PresetCreateProperties("Gesture2-key");
+                    var keyProps = PresetCreateProperties("Gesture2-key", game);
                     if (keyProps != null)
                     {
                         m_aTrackKeys.Add(new StructProperty("BioTrackKey", keyProps, "BioTrackKey"));
@@ -335,7 +335,7 @@ namespace LegendaryExplorerCore.Matinee
             }
         }
 
-        private static PropertyCollection PresetCreateProperties(string preset)
+        private static PropertyCollection PresetCreateProperties(string preset, MEGame game)
         {
             PropertyCollection props = null;
             switch (preset)
@@ -363,10 +363,10 @@ namespace LegendaryExplorerCore.Matinee
                     props.AddOrReplaceProp(new BoolProperty(false, "bTerminateAllGestures"));
                     props.AddOrReplaceProp(new BoolProperty(false, "bUseDynAnimSets"));
                     props.AddOrReplaceProp(new BoolProperty(false, "bSnapToPose"));
-                    props.AddOrReplaceProp(new EnumProperty("None", "EBioValidPoseGroups", MEGame.LE3, "ePoseFilter"));
-                    props.AddOrReplaceProp(new EnumProperty("None", "EBioGestureValidPoses", MEGame.LE3, "ePose"));
-                    props.AddOrReplaceProp(new EnumProperty("None", "EBioGestureGroups", MEGame.LE3, "eGestureFiler"));
-                    props.AddOrReplaceProp(new EnumProperty("None", "EBioGestureValidGestures", MEGame.LE3, "eGesture"));
+                    props.AddOrReplaceProp(new EnumProperty("None", "EBioValidPoseGroups", game, "ePoseFilter"));
+                    props.AddOrReplaceProp(new EnumProperty("None", "EBioGestureValidPoses", game, "ePose"));
+                    props.AddOrReplaceProp(new EnumProperty("None", "EBioGestureGroups", game, "eGestureFiler"));
+                    props.AddOrReplaceProp(new EnumProperty("None", "EBioGestureValidGestures", game, "eGesture"));
 
                     break;
                 case "Gesture2-key":

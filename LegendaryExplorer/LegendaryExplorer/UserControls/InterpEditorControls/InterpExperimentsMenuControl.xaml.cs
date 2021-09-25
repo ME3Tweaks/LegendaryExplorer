@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using LegendaryExplorer.Tools.InterpEditor;
 using LegendaryExplorer.Tools.InterpEditor.InterpExperiments;
+using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorer.UserControls.InterpEditorControls
 {

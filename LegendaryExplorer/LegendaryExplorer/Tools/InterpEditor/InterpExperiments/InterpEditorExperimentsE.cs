@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorerCore.Matinee;
+using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorer.Tools.InterpEditor.InterpExperiments
 {
@@ -13,8 +14,15 @@ namespace LegendaryExplorer.Tools.InterpEditor.InterpExperiments
         {
             var currExp = iew.Properties_InterpreterWPF.CurrentLoadedExport;
 
-            if (currExp != null)
+            if (currExp != null && iew.Pcc != null)
             {
+                var game = iew.Pcc.Game;
+
+                if (!game.IsGame3())
+                {
+                    MessageBox.Show("This experiment is currently available for ME3 or LE3 files only.", "Warning", MessageBoxButton.OK);
+                    return;
+                }
 
                 if (currExp.ClassName != "InterpData")
                 {
@@ -25,14 +33,14 @@ namespace LegendaryExplorer.Tools.InterpEditor.InterpExperiments
                 switch (preset)
                 {
                     case "Director":
-                        MatineeHelper.AddPreset(preset, currExp);
+                        MatineeHelper.AddPreset(preset, currExp, game);
                         break;
 
                     case "Camera":
                         var actor = promptForActor("Name of camera actor:", "Not a valid camera actor name.");
                         if (!string.IsNullOrEmpty(actor))
                         {
-                            MatineeHelper.AddPreset(preset, currExp, actor);
+                            MatineeHelper.AddPreset(preset, currExp, game, actor);
                         }
                         break;
                 }
@@ -44,8 +52,16 @@ namespace LegendaryExplorer.Tools.InterpEditor.InterpExperiments
         {
             var currExp = iew.Properties_InterpreterWPF.CurrentLoadedExport;
 
-            if (currExp != null)
+            if (currExp != null && iew.Pcc != null)
             {
+                var game = iew.Pcc.Game;
+
+                if (!game.IsGame3())
+                {
+                    MessageBox.Show("This experiment is currently available for ME3 or LE3 files only.", "Warning", MessageBoxButton.OK);
+                    return;
+                }
+
                 if (currExp.ClassName != "InterpGroup")
                 {
                     MessageBox.Show("InterpGroup not selected.", "Warning", MessageBoxButton.OK);
@@ -59,7 +75,7 @@ namespace LegendaryExplorer.Tools.InterpEditor.InterpExperiments
                         var actor = promptForActor("Name of gesture actor:", "Not a valid gesture actor name.");
                         if (!string.IsNullOrEmpty(actor))
                         {
-                            MatineeHelper.AddPreset(preset, currExp, actor);
+                            MatineeHelper.AddPreset(preset, currExp, game, actor);
                         }
                         break;
                 }

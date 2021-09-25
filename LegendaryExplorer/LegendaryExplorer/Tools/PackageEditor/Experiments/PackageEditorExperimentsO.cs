@@ -438,8 +438,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void AddPresetGroup(string preset, PackageEditorWindow pew)
         {
-            if (pew.SelectedItem != null && pew.SelectedItem.Entry != null)
+            if (pew.SelectedItem != null && pew.SelectedItem.Entry != null && pew.Pcc != null)
             {
+                var game = pew.Pcc.Game;
+
+                if (!game.IsGame3())
+                {
+                    MessageBox.Show("This experiment is currently available for ME3 or LE3 files only.", "Warning", MessageBoxButton.OK);
+                    return;
+                }
 
                 if (pew.SelectedItem.Entry.ClassName != "InterpData")
                 {
@@ -453,14 +460,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 switch (preset)
                 {
                     case "Director":
-                        MatineeHelper.AddPreset(preset, interp);
+                        MatineeHelper.AddPreset(preset, interp, game);
                         break;
 
                     case "Camera":
                         var actor = promptForActor("Name of camera actor:", "Not a valid camera actor name.");
                         if (!string.IsNullOrEmpty(actor))
                         {
-                            MatineeHelper.AddPreset(preset, interp, actor);
+                            MatineeHelper.AddPreset(preset, interp, game, actor);
                         }
                         break;
                 }
@@ -470,8 +477,16 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void AddPresetTrack(string preset, PackageEditorWindow pew)
         {
-            if (pew.SelectedItem != null && pew.SelectedItem.Entry != null)
+            if (pew.SelectedItem != null && pew.SelectedItem.Entry != null && pew.Pcc != null)
             {
+                var game = pew.Pcc.Game;
+
+                if (!game.IsGame3())
+                {
+                    MessageBox.Show("This experiment is currently available for ME3 or LE3 files only.", "Warning", MessageBoxButton.OK);
+                    return;
+                }
+
                 if (pew.SelectedItem.Entry.ClassName != "InterpGroup")
                 {
                     MessageBox.Show("InterpGroup not selected.", "Warning", MessageBoxButton.OK);
@@ -488,7 +503,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         var actor = promptForActor("Name of gesture actor:", "Not a valid gesture actor name.");
                         if (!string.IsNullOrEmpty(actor))
                         {
-                            MatineeHelper.AddPreset(preset, interp, actor);
+                            MatineeHelper.AddPreset(preset, interp, game, actor);
                         }
                         break;
                 }
