@@ -332,8 +332,14 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
         private async void VTest_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsM.VTest(GetPEWindow());
+            PackageEditorExperimentsM.VTest(GetPEWindow(), false);
         }
+
+        private async void MakeVTestDonor_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.ConvertMaterialToVtestDonor(GetPEWindow());
+        }
+
         private void MScanner_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.MScanner(GetPEWindow());
@@ -375,6 +381,10 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.OverrideVignettes(GetPEWindow());
         }
 
+        private void RebuildSelectedMaterialExpressions(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.UpdateMaterialExpressionsList(GetPEWindow());
+        }
 
         private async void SavePackageUnCompressed_Click(object sender, RoutedEventArgs e)
         {

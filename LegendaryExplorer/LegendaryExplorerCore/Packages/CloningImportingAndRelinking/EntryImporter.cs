@@ -225,7 +225,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
         }
 
+        // CROSSGEN-V HACKS!
         public static List<IMEPackage> HACK_PACKAGESTOCLOSE = new List<IMEPackage>();
+        public static List<string> NonDonorMaterials = new List<string>();
+        // END CROSSGEN-V HACKS
 
         /// <summary>
         /// Imports an export from another package file. Does not perform a relink, if you want to relink, use ImportAndRelinkEntries().
@@ -304,8 +307,14 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                 if (!usingDonor && !ifp.StartsWith(@"TheWorld"))
                 {
-                    //if (sourceExport.ClassName == "Material")
+                    if (sourceExport.ClassName == "Material")
+                    {
                         Debug.WriteLine($@"Not ported using donor: {sourceExport.InstancedFullPath} ({sourceExport.ClassName})");
+                        if (!NonDonorMaterials.Contains(sourceExport.InstancedFullPath))
+                        {
+                            NonDonorMaterials.Add(sourceExport.InstancedFullPath);
+                        }
+                    }
                 }
             }
 #endif

@@ -42,9 +42,16 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
     /// </summary>
     public class PackageEditorExperimentsM
     {
-        public static void CompareISB()
+        public static void UpdateMaterialExpressionsList(PackageEditorWindow pe)
         {
+            if (pe.Pcc != null && pe.GetSelected(out var idx) && idx > 0)
+            {
+                var exp = pe.Pcc.GetUExport(idx);
+                if (exp.ClassName != "Material")
+                    return;
 
+                exp.WriteProperty(new ArrayProperty<ObjectProperty>(pe.Pcc.Exports.Where(x => x.idxLink == exp.UIndex && x.InheritsFrom("MaterialExpression")).Select(x => new ObjectProperty(x.UIndex)), "Expressions"));
+            }
         }
 
         public static void OverrideVignettes(PackageEditorWindow pewpf)
@@ -1764,6 +1771,163 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
+        // This is a list of materials that the old ones were based off
+        // but don't exist in the game. We need to update these to match
+        // values in the old ones.
+        private static string[] vtest_DonorMaterials = new[]
+        {
+            "BIOA_MAR10_T.UNC_HORIZON_MAT_Dup",
+            //"BIOA_Apartment_S.ICE20_RIMGLASS01_Dup",
+        };
+
+        // For making testing materials faster
+        public static void ConvertMaterialToVtestDonor(PackageEditorWindow pe)
+        {
+            if (pe.Pcc != null && pe.TryGetSelectedExport(out var exp) && exp.ClassName == "Material")
+            {
+                var donorFullName = PromptDialog.Prompt(pe, "Enter instanced full path of donor this is for", "VTest Donor");
+                if (string.IsNullOrEmpty(donorFullName))
+                    return;
+                var donorPath = Path.Combine(PAEMPaths.VTest_DonorsDir, $"{donorFullName}.pcc");
+                MEPackageHandler.CreateAndSavePackage(donorPath, MEGame.LE1);
+                using var donorPackage = MEPackageHandler.OpenMEPackage(donorPath);
+
+                var parts = donorFullName.Split('.');
+                ExportEntry parent = null;
+                for (int i = 0; i < parts.Length; i++)
+                {
+                    if (i < parts.Length - 1)
+                    {
+                        parent = ExportCreator.CreatePackageExport(donorPackage, parts[i], parent);
+                        parent.indexValue = 0;
+                    }
+                    else
+                    {
+                        exp.ObjectName = parts[i];
+                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, exp, donorPackage, parent, true, out var newDonor, importExportDependencies: true);
+                    }
+                }
+                donorPackage.Save();
+                VTest(pe, true);
+            }
+        }
+
+        private static StructProperty MakeLinearColorStruct(string propertyName, float r, float g, float b, float a)
+        {
+            PropertyCollection p = new PropertyCollection();
+            p.AddOrReplaceProp(new FloatProperty(r, "R"));
+            p.AddOrReplaceProp(new FloatProperty(g, "G"));
+            p.AddOrReplaceProp(new FloatProperty(b, "B"));
+            p.AddOrReplaceProp(new FloatProperty(a, "A"));
+            return new StructProperty("LinearColor", p, propertyName, true);
+        }
+
+        private static void PostCorrectMaterialsToInstanceConstants(IMEPackage me1Package, IMEPackage le1Package, IMEPackage helperPackage)
+        {
+            // Oh lordy this is gonna suck
+
+            // Donor materials need tweaks to behave like the originals
+            // So we make a new MaterialInstanceConstant, copy in the relevant(?) values,
+            // and then repoint all incoming references to the Material to use this MaterialInstanceConstant instead.
+            // This is going to be slow and ugly code
+            // Technically this could be done in the relinker but I don't want to stuff
+            // something this ugly in there
+            foreach (var le1Material in le1Package.Exports.Where(x => vtest_DonorMaterials.Contains(x.InstancedFullPath)).ToList())
+            {
+                Debug.WriteLine($"Correcting material inputs for donor material: {le1Material.InstancedFullPath}");
+                var donorinputs = new List<string>();
+                var expressions = le1Material.GetProperty<ArrayProperty<ObjectProperty>>("Expressions");
+                foreach (var express in expressions.Select(x => x.ResolveToEntry(le1Package) as ExportEntry))
+                {
+                    if (express.ClassName == "MaterialExpressionVectorParameter")
+                    {
+                        donorinputs.Add(express.GetProperty<NameProperty>("ParameterName").Value.Name);
+                    }
+                }
+
+                Debug.WriteLine(@"Donor has the following inputs:");
+                foreach (var di in donorinputs)
+                {
+                    Debug.WriteLine(di);
+                }
+
+                var me1Material = me1Package.FindExport(le1Material.InstancedFullPath);
+
+                var sourceMatInst = helperPackage.Exports.First(x => x.ClassName == "MaterialInstanceConstant"); // cause it can change names here
+                sourceMatInst.ObjectName = $"{le1Material.ObjectName}_MatInst";
+                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceMatInst, le1Package, le1Material.Parent, true, out var le1MatInstEntryt);
+
+                var le1MatInst = le1MatInstEntryt as ExportEntry;
+                var le1MatInstProps = le1MatInst.GetProperties();
+
+                le1MatInstProps.AddOrReplaceProp(new ObjectProperty(le1Material, "Parent")); // Update the parent
+
+                // VECTOR EXPRESSIONS
+                var vectorExpressions = new ArrayProperty<StructProperty>("VectorParameterValues");
+                foreach (var v in me1Material.GetProperty<ArrayProperty<ObjectProperty>>("Expressions").Select(x => x.ResolveToEntry(me1Package) as ExportEntry))
+                {
+                    if (v.ClassName == "MaterialExpressionVectorParameter")
+                    {
+                        var exprInput = v.GetProperty<NameProperty>("ParameterName").Value.Name;
+                        if (donorinputs.Contains(exprInput))
+                        {
+                            var vpv = v.GetProperty<StructProperty>("DefaultValue");
+                            PropertyCollection pc = new PropertyCollection();
+                            pc.AddOrReplaceProp(MakeLinearColorStruct("ParameterValue", vpv.GetProp<FloatProperty>("R"), vpv.GetProp<FloatProperty>("G"), vpv.GetProp<FloatProperty>("B"), vpv.GetProp<FloatProperty>("A")));
+                            pc.AddOrReplaceProp(new FGuid(Guid.Empty).ToStructProperty("ExpressionGUID"));
+                            pc.AddOrReplaceProp(new NameProperty(exprInput, "ParameterName"));
+                            vectorExpressions.Add(new StructProperty("VectorParameterValue", pc));
+                            donorinputs.Remove(exprInput);
+                        }
+                    }
+                    else
+                    {
+                        //Debugger.Break();
+                    }
+                }
+
+                if (vectorExpressions.Any())
+                {
+                    le1MatInstProps.AddOrReplaceProp(vectorExpressions);
+                }
+
+                // SCALAR EXPRESSIONS
+                var me1MatInfo = ObjectBinary.From<Material>(me1Material);
+                var scalarExpressions = new ArrayProperty<StructProperty>("ScalarParameterValues");
+                foreach (var v in me1MatInfo.SM3MaterialResource.UniformPixelScalarExpressions)
+                {
+                    if (v is MaterialUniformExpressionScalarParameter spv)
+                    {
+                        PropertyCollection pc = new PropertyCollection();
+                        pc.AddOrReplaceProp(new FGuid(Guid.Empty).ToStructProperty("ExpressionGUID"));
+                        pc.AddOrReplaceProp(new NameProperty(spv.ParameterName, "ParameterName"));
+                        pc.AddOrReplaceProp(new FloatProperty(spv.DefaultValue, "ParameterValue"));
+                        scalarExpressions.Add(new StructProperty("ScalarParameterValue", pc));
+                    }
+                }
+
+                if (scalarExpressions.Any())
+                {
+                    le1MatInstProps.AddOrReplaceProp(scalarExpressions);
+                }
+
+                le1MatInst.WriteProperties(le1MatInstProps);
+
+                // Find things that reference this material and repoint them
+                var entriesToUpdate = le1Material.GetEntriesThatReferenceThisOne();
+                foreach (var entry in entriesToUpdate.Keys)
+                {
+                    if (entry == le1MatInst)
+                        continue;
+                    le1MatInst.GetProperties();
+                    var relinkDict = new Dictionary<IEntry, IEntry>();
+                    relinkDict[le1Material] = le1MatInst; // This is a ridiculous hack
+                    Relinker.Relink(entry as ExportEntry, entry as ExportEntry, relinkDict, new List<EntryStringPair>(0));
+                    le1MatInst.GetProperties();
+                }
+            }
+        }
+
         private static void CorrectNeverStream(IMEPackage package)
         {
             foreach (var exp in package.Exports.Where(x => x.IsTexture()))
@@ -2017,12 +2181,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
-        public static async void VTest(PackageEditorWindow pe)
+
+        public static async void VTest(PackageEditorWindow pe, bool installAndBootGame)
         {
             // Paths are in PAEMPaths.cs
 
-            bool prc2aa = false;
-            bool prc2 = true;
+            EntryImporter.NonDonorMaterials.Clear();
+
+            bool prc2aa = true;
+            bool prc2 = false;
 
             pe.SetBusy("Performing VTest");
             await Task.Run(() =>
@@ -2081,163 +2248,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 // BIOA_PRC2AA ---------------------------------------
                 if (prc2aa)
                 {
-                    // BIOA_PRC2AA
-                    //{
-                    //    var sourceName = "BIOA_PRC2AA";
-                    //    var outputFile = $@"{PAEMPaths.VTest_FinalDestDir}\{sourceName}.pcc";
-                    //    CreateEmptyLevel(outputFile, MEGame.LE1);
-
-                    //    using var le1File = MEPackageHandler.OpenMEPackage(outputFile);
-                    //    using var me1File = MEPackageHandler.OpenMEPackage($@"{PAEMPaths.VTest_SourceDir}\PRC2AA\{sourceName}.SFM");
-
-                    //    var itemsToPort = new ExportEntry[]
-                    //    {
-                    //    me1File.FindExport(@"TheWorld.PersistentLevel.BioMapNote_26"),
-                    //    me1File.FindExport(@"TheWorld.PersistentLevel.BioMapNote_27"),
-                    //    me1File.FindExport(@"TheWorld.PersistentLevel.BioMapNote_28"),
-                    //    me1File.FindExport(@"TheWorld.PersistentLevel.BioTriggerStream_32"),
-                    //    me1File.FindExport(@"TheWorld.PersistentLevel.PlayerStart_0"),
-                    //    me1File.FindExport(@"TheWorld.PersistentLevel.StaticLightCollectionActor_15"),
-                    //    me1File.FindExport(@"TheWorld.PersistentLevel.StaticMeshCollectionActor_44"),
-                    //    me1File.FindExport(@"TheWorld.PersistentLevel.Note_0"),
-                    //    me1File.FindExport(@"TheWorld.PersistentLevel.Note_1")
-                    //    };
-
-                    //    VTestFilePorting(me1File, le1File, itemsToPort, db, pe);
-
-                    //    // Replace BioWorldInfo
-                    //    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, me1File.FindExport(@"TheWorld.PersistentLevel.BioWorldInfo_0"), le1File, le1File.FindExport(@"TheWorld.PersistentLevel.BioWorldInfo_0"), true, out _, importExportDependencies: true, targetGameDonorDB: db);
-
-                    //    PostPortingCorrections(me1File, le1File);
-                    //    RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
-                    //    CorrectNeverStream(le1File);
-                    //    le1File.Save();
-                    //}
-
-                    // BIOA_PRC2AA_00_LAY
-                    //{
-                    //    var sourceName = "BIOA_PRC2AA_00_LAY";
-                    //    var outputFile = $@"{PAEMPaths.VTest_FinalDestDir}\{sourceName}.pcc";
-                    //    CreateEmptyLevel(outputFile, MEGame.LE1);
-
-                    //    using var le1File = MEPackageHandler.OpenMEPackage(outputFile);
-                    //    using var me1File = MEPackageHandler.OpenMEPackage($@"{PAEMPaths.VTest_SourceDir}\PRC2AA\{sourceName}.SFM");
-
-                    //    PortVTestLevel("PRC2AA", sourceName, PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, db, pe, false);
-                    //    RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
-                    //    CorrectNeverStream(le1File);
-
-                    //    // Correct terrain (doesn't seem to work)
-                    //    var terrainExp = le1File.FindExport(@"TheWorld.PersistentLevel.Terrain_0");
-                    //    var terrain = ObjectBinary.From<Terrain>(terrainExp);
-                    //    terrain.CachedDisplacements = new byte[terrain.Heights.Length];
-
-                    //    // Update the GUIDs of the materials
-                    //    foreach (var cm in terrain.CachedTerrainMaterials)
-                    //    {
-                    //        for (int i = 0; i < cm.MaterialIds.Length; i++)
-                    //        {
-                    //            var origId = cm.MaterialIds[i];
-                    //            if (me1MaterialMap.TryGetValue(origId, out var matIFP))
-                    //            {
-                    //                var inFileMat = le1File.FindExport(matIFP);
-                    //                var matObjBin = ObjectBinary.From<Material>(inFileMat);
-                    //                cm.MaterialIds[i] = matObjBin.SM3MaterialResource.ID;
-                    //            }
-                    //            else
-                    //            {
-                    //                Debug.WriteLine($@"UNMAPPED MATERIAL: {origId}");
-                    //            }
-                    //        }
-                    //    }
-
-                    //    terrainExp.WriteBinary(terrain);
-
-                    //    // Terrain testing - crashes game
-                    //    //var preTerrainProps = terrainExp.GetProperties();
-                    //    //var donorTerrainF = Path.Combine(LE1Directory.CookedPCPath, @"BIOA_UNC10_00_LAY.pcc");
-                    //    //using var donorTP = MEPackageHandler.OpenMEPackage(donorTerrainF);
-                    //    //var donorTerrain = donorTP.Exports.First(x => x.ClassName == "Terrain");
-                    //    //EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, donorTerrain, le1File, terrainExp, false, out _);
-
-                    //    //foreach (var p in preTerrainProps)
-                    //    //{
-                    //    //    if (p is IntProperty ip)
-                    //    //    {
-                    //    //        terrainExp.WriteProperty(ip);
-                    //    //    } else if (p.Name == "TerrainComponents" || p.Name == "Location")
-                    //    //    {
-                    //    //        terrainExp.WriteProperty(p);
-                    //    //    }
-                    //    //}
-
-                    //    le1File.Save();
-                    //}
-
-                    // BIOA_PRC2AA_00_DSG
-                    //{
                     PortVTestLevel("PRC2AA", "BIOA_PRC2AA", PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, db, pe, syncBioWorldInfo: true, portMainSequence: false);
                     PortVTestLevel("PRC2AA", "bioa_prc2aa_00_lay", PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, db, pe, portMainSequence: false);
                     PortVTestLevel("PRC2AA", "bioa_prc2aa_00_dsg", PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, db, pe, portMainSequence: true);
                     PortVTestLevel("PRC2AA", "bioa_prc2aa_00_snd", PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, db, pe, portMainSequence: true);
-                    //    var outputFile = $@"{PAEMPaths.VTest_FinalDestDir}\{sourceName}.pcc";
-                    //    CreateEmptyLevel(outputFile, MEGame.LE1);
-
-                    //    using var le1File = MEPackageHandler.OpenMEPackage(outputFile);
-                    //    using var me1File = MEPackageHandler.OpenMEPackage($@"{PAEMPaths.VTest_SourceDir}\PRC2AA\{sourceName}.SFM");
-
-                    //    var itemsToPort = new ExportEntry[]
-                    //    {
-                    //    me1File.FindExport(@"TheWorld.PersistentLevel.BioDoor_1"),
-                    //    me1File.FindExport(@"TheWorld.PersistentLevel.BioInert_0"),
-                    //    me1File.FindExport(@"TheWorld.PersistentLevel.BioInert_3"),
-                    //    me1File.FindExport(@"TheWorld.PersistentLevel.BioInert_4"),
-                    //    me1File.FindExport(@"TheWorld.PersistentLevel.BioInert_5"),
-                    //    me1File.FindExport(@"TheWorld.PersistentLevel.InterpActor_33"),
-                    //    me1File.FindExport(@"TheWorld.PersistentLevel.InterpActor_34"),
-                    //    me1File.FindExport(@"TheWorld.PersistentLevel.InterpActor_35"),
-                    //    me1File.FindExport(@"TheWorld.PersistentLevel.InterpActor_36"),
-                    //    };
-                    //    VTestFilePorting(me1File, le1File, itemsToPort, db, pe);
-
-                    //    CorrectSequenceObjects(dest, sequencePackageCache);
-                    //    RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
-                    //    CorrectNeverStream(le1File);
-                    //    le1File.Save(); // Save again
-                    //}
-
-                    // BIOA_PRC2AA_00_SND
-                    //{
-                    //    var sourceName = "BIOA_PRC2AA_00_SND";
-                    //    var outputFile = $@"{PAEMPaths.VTest_FinalDestDir}\{sourceName}.pcc";
-                    //    CreateEmptyLevel(outputFile, MEGame.LE1);
-
-                    //    using var le1File = MEPackageHandler.OpenMEPackage(outputFile);
-                    //    using var me1File = MEPackageHandler.OpenMEPackage($@"{PAEMPaths.VTest_SourceDir}\PRC2AA\{sourceName}.SFM");
-
-                    //    var itemsToPort = new ExportEntry[]
-                    //    {
-                    //    me1File.FindExport(@"TheWorld.PersistentLevel.Brush_20"),
-                    //    me1File.FindExport(@"TheWorld.PersistentLevel.ReverbVolume_1"),
-                    //    me1File.FindExport(@"TheWorld.PersistentLevel.ReverbVolume_0"),
-                    //    me1File.FindExport(@"TheWorld.PersistentLevel.BioAudioVolume_1"),
-                    //    me1File.FindExport(@"TheWorld.PersistentLevel.BioAudioVolume_0"),
-                    //    me1File.FindExport(@"TheWorld.PersistentLevel.AmbientSound_3"),
-                    //    me1File.FindExport(@"TheWorld.PersistentLevel.AmbientSound_4"),
-                    //    me1File.FindExport(@"TheWorld.PersistentLevel.AmbientSound_2"),
-                    //    me1File.FindExport(@"TheWorld.PersistentLevel.AmbientSound_1"),
-                    //    };
-                    //    VTestFilePorting(me1File, le1File, itemsToPort, db, pe);
-
-                    //    // Port sequence in
-                    //    pe.BusyText = "Porting sequencing...";
-                    //    var dest = le1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence");
-                    //    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, me1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence"), le1File, dest, true, out _, importExportDependencies: true, targetGameDonorDB: db);
-                    //    CorrectSequenceObjects(dest, sequencePackageCache);
-                    //    RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
-                    //    CorrectNeverStream(le1File);
-                    //    le1File.Save(); // Save again
-                    //}
 
                     // LOC files
                     {
@@ -2272,11 +2286,26 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     Debug.WriteLine("Checking BTS....");
                     VTest_Check();
                 }
+
+                Debug.WriteLine("Non donated materials: ");
+                foreach (var nonDonorMaterial in EntryImporter.NonDonorMaterials)
+                {
+                    Debug.WriteLine(nonDonorMaterial);
+                }
             }).ContinueWithOnUIThread(result =>
             {
                 if (result.Exception != null)
-                    Debugger.Break();
+                    throw result.Exception;
                 pe.EndBusy();
+                if (installAndBootGame)
+                {
+                    var moddesc = Path.Combine(Directory.GetParent(PAEMPaths.VTest_DonorsDir).FullName, "moddesc.ini");
+                    if (File.Exists(moddesc))
+                    {
+                        ProcessStartInfo psi = new ProcessStartInfo(PAEMPaths.VTest_ModManagerPath, $"--installmod \"{moddesc}\" --bootgame LE1");
+                        Process.Start(psi);
+                    }
+                }
             });
         }
 
@@ -2374,7 +2403,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             package.Save();
         }
 
-        private static void PostPortingCorrections(IMEPackage me1File, IMEPackage le1File)
+        private static void PostPortingCorrections(IMEPackage me1File, IMEPackage le1File, IMEPackage vtestHelperFile)
         {
             // Corrections to run AFTER porting is done
             using PackageCache pc = new PackageCache();
@@ -2382,6 +2411,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             CorrectPrefabSequenceClass(le1File);
             CorrectSequences(le1File, pc);
             CorrectPathfindingNetwork(me1File, le1File);
+            PostCorrectMaterialsToInstanceConstants(me1File, le1File, vtestHelperFile);
             RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
 
             //CorrectTriggerStreamsMaybe(me1File, le1File);
@@ -2503,12 +2533,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 var report = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, e, destPackage,
                     le1PL, true, out _, targetGameDonorDB: db);
             }
-
-            // POSTCORRECTION - CORECTIONS AFTER EVERYTHING HAS BEEN PORTED
-            PostPortingCorrections(sourcePackage, destPackage);
-
-            pe.BusyText = "Saving package";
-            destPackage.Save();
         }
 
         private static void PrePortingCorrections(IMEPackage sourcePackage)
@@ -2743,6 +2767,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         private static void PortVTestLevel(string mapName, string sourceName, string finalDestDir, string sourceDir, ObjectInstanceDB db, PackageEditorWindow pe, bool syncBioWorldInfo = false, bool portMainSequence = false, bool enableDynamicLighting = false)
         {
+            var vTestHelperFile = MEPackageHandler.OpenMEPackage(Path.Combine(PAEMPaths.VTest_DonorsDir, "VTestHelper.pcc"));
+
             var outputFile = $@"{finalDestDir}\{sourceName.ToUpper()}.pcc";
             CreateEmptyLevel(outputFile, MEGame.LE1);
 
@@ -2807,7 +2833,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, me1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence"), le1File, dest, true, out _, importExportDependencies: true, targetGameDonorDB: db);
             }
 
-            PostPortingCorrections(me1File, le1File);
+            PostPortingCorrections(me1File, le1File, vTestHelperFile);
 
             if (enableDynamicLighting)
             {
