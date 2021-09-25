@@ -2189,7 +2189,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             EntryImporter.NonDonorMaterials.Clear();
 
             bool prc2aa = true;
-            bool prc2 = false;
+            bool prc2 = true;
 
             pe.SetBusy("Performing VTest");
             await Task.Run(() =>
@@ -2244,14 +2244,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 pe.BusyText = "Loading packages";
 
-                using var sequencePackageCache = new PackageCache();
+                using var pc = new PackageCache();
                 // BIOA_PRC2AA ---------------------------------------
                 if (prc2aa)
                 {
-                    PortVTestLevel("PRC2AA", "BIOA_PRC2AA", PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, db, pe, syncBioWorldInfo: true, portMainSequence: false);
-                    PortVTestLevel("PRC2AA", "bioa_prc2aa_00_lay", PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, db, pe, portMainSequence: false);
-                    PortVTestLevel("PRC2AA", "bioa_prc2aa_00_dsg", PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, db, pe, portMainSequence: true);
-                    PortVTestLevel("PRC2AA", "bioa_prc2aa_00_snd", PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, db, pe, portMainSequence: true);
+                    PortVTestLevel("PRC2AA", "BIOA_PRC2AA", PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, pc, db, pe, syncBioWorldInfo: true, portMainSequence: false);
+                    PortVTestLevel("PRC2AA", "bioa_prc2aa_00_lay", PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, pc, db, pe, portMainSequence: false);
+                    PortVTestLevel("PRC2AA", "bioa_prc2aa_00_dsg", PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, pc, db, pe, portMainSequence: true);
+                    PortVTestLevel("PRC2AA", "bioa_prc2aa_00_snd", PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, pc, db, pe, portMainSequence: true);
 
                     // LOC files
                     {
@@ -2259,7 +2259,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         var files = Directory.GetFiles(pathSource).Where(x => x.RepresentsPackageFilePath() && x.Contains("_LOC_", StringComparison.InvariantCultureIgnoreCase));
                         foreach (var file in files)
                         {
-                            PortLOCFile(file, db, pe);
+                            PortLOCFile(file, db, pc, pe);
                         }
                     }
                 }
@@ -2273,14 +2273,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         if (f.Contains("_LOC_", StringComparison.InvariantCultureIgnoreCase))
                             continue; // Skip for now
                         var levelName = Path.GetFileNameWithoutExtension(f);
-                        PortVTestLevel("PRC2", levelName, PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, db, pe, levelName == "BIOA_PRC2"/*true*/, /*levelName == "BIOA_PRC2"*/true, enableDynamicLighting: true);
+                        PortVTestLevel("PRC2", levelName, PAEMPaths.VTest_FinalDestDir, PAEMPaths.VTest_SourceDir, pc, db, pe, levelName == "BIOA_PRC2"/*true*/, /*levelName == "BIOA_PRC2"*/true, enableDynamicLighting: true);
                     }
                     // Port LOC files
                     foreach (var f in prc2Files)
                     {
                         if (!f.Contains("_LOC_", StringComparison.InvariantCultureIgnoreCase))
                             continue; // Only include LOC files
-                        PortLOCFile(f, db, pe); // breaks the game currently
+                        PortLOCFile(f, db, pc, pe); // breaks the game currently
                     }
 
                     Debug.WriteLine("Checking BTS....");
@@ -2376,7 +2376,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
-        private static void PortLOCFile(string sourceFile, ObjectInstanceDB db, PackageEditorWindow pe)
+        private static void PortLOCFile(string sourceFile, ObjectInstanceDB db, PackageCache pc, PackageEditorWindow pe)
         {
             var packName = Path.GetFileNameWithoutExtension(sourceFile);
             var destPackagePath = Path.Combine(PAEMPaths.VTest_FinalDestDir, $"{packName.ToUpper()}.pcc");
@@ -2397,16 +2397,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
             }
 
-            CorrectSequences(package, new PackageCache());
+            CorrectSequences(package, pc);
 
             pe.BusyText = $"Saving {packName}";
             package.Save();
         }
 
-        private static void PostPortingCorrections(IMEPackage me1File, IMEPackage le1File, IMEPackage vtestHelperFile)
+        private static void PostPortingCorrections(IMEPackage me1File, IMEPackage le1File, IMEPackage vtestHelperFile, PackageCache pc)
         {
             // Corrections to run AFTER porting is done
-            using PackageCache pc = new PackageCache();
             CorrectNeverStream(le1File);
             CorrectPrefabSequenceClass(le1File);
             CorrectSequences(le1File, pc);
@@ -2765,8 +2764,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// <param name="syncBioWorldInfo"></param>
         /// <param name="portMainSequence"></param>
 
-        private static void PortVTestLevel(string mapName, string sourceName, string finalDestDir, string sourceDir, ObjectInstanceDB db, PackageEditorWindow pe, bool syncBioWorldInfo = false, bool portMainSequence = false, bool enableDynamicLighting = false)
+        private static void PortVTestLevel(string mapName, string sourceName, string finalDestDir, string sourceDir, PackageCache pc, ObjectInstanceDB db, PackageEditorWindow pe, bool syncBioWorldInfo = false, bool portMainSequence = false, bool enableDynamicLighting = false)
         {
+            pc.ReleasePackages(true); //Reduce memory overhead
+
             var vTestHelperFile = MEPackageHandler.OpenMEPackage(Path.Combine(PAEMPaths.VTest_DonorsDir, "VTestHelper.pcc"));
 
             var outputFile = $@"{finalDestDir}\{sourceName.ToUpper()}.pcc";
@@ -2833,7 +2834,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, me1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence"), le1File, dest, true, out _, importExportDependencies: true, targetGameDonorDB: db);
             }
 
-            PostPortingCorrections(me1File, le1File, vTestHelperFile);
+            PostPortingCorrections(me1File, le1File, vTestHelperFile, pc);
 
             if (enableDynamicLighting)
             {
@@ -2998,7 +2999,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             var objectDB = new ObjectInstanceDB();
             Task.Run(() =>
             {
-                pe.SetBusy("Building chonky DB");
+                pe.SetBusy("Building Object IFP DB");
                 var allPackages = MELoadedFiles.GetFilesLoadedInGame(game).ToList();
                 int numDone = 0;
                 foreach (var f in allPackages)
@@ -3043,7 +3044,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     continue;
 
                 // Index it
-                objectDB.AddRecord(ifp, packageNameIndex);
+                objectDB.AddRecord(ifp, packageNameIndex, true);
             }
         }
 

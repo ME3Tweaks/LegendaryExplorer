@@ -20,7 +20,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
     /// </summary>
     public class ObjectInstanceDB
     {
-       
+
         // DB PUBLIC PROPERTIES
         /// <summary>
         /// The list of names
@@ -93,7 +93,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// </summary>
         /// <param name="ifp"></param>
         /// <param name="packageNameIndex"></param>
-        public void AddRecord(string ifp, int packageNameIndex)
+        public void AddRecord(string ifp, int packageNameIndex, bool insertAtFront = false)
         {
             var keyIdx = GetNameTableIndex(ifp);
             if (!ObjectRecords.TryGetValue(keyIdx, out var records))
@@ -102,7 +102,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 ObjectRecords[keyIdx] = records;
             }
 
-            records.Add(packageNameIndex);
+            if (insertAtFront)
+                records.Insert(0, packageNameIndex);
+            else
+                records.Add(packageNameIndex);
         }
 
         /// <summary>

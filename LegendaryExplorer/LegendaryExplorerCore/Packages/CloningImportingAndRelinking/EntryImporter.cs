@@ -226,8 +226,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         }
 
         // CROSSGEN-V HACKS!
-        public static List<IMEPackage> HACK_PACKAGESTOCLOSE = new List<IMEPackage>();
         public static List<string> NonDonorMaterials = new List<string>();
+        private static string[] badlyNamedME1Assets = new[]
+        {
+            "BIOA_JUG80_T.JUG80_SAIL",
+            "BIOA_ICE60_T.checker",
+        };
         // END CROSSGEN-V HACKS
 
         /// <summary>
@@ -249,7 +253,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 // Port in donor instead
                 var ifp = sourceExport.InstancedFullPath;
                 //Debug.WriteLine($@"Porting {ifp}");
-                //if (ifp.Contains("STA30_WALL04"))
+                //if (ifp.Contains("JUG80_SAIL"))
                 //    Debugger.Break();
                 var donorFiles = targetGameDB.GetFilesContainingObject(ifp);
                 //if ((donorFiles == null || !donorFiles.Any()) && ifp.EndsWith("_dup", StringComparison.InvariantCultureIgnoreCase))
@@ -263,6 +267,14 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     // See if any packages are open in our cache that already contain this asset
                     IMEPackage donorPackage = null;
                     bool isCached = false;
+
+                    if (badlyNamedME1Assets.Contains(ifp))
+                    {
+                        // Force use to use a donor without the cache
+                        targetGameDB.HACK_CACHE.ReleasePackages(); // Drop the cache so we have to look in the list of packages
+                    }
+
+
                     foreach (var df in donorFiles)
                     {
                         if (!df.RepresentsPackageFilePath())
@@ -279,13 +291,34 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                         if (targetGameDB.HACK_CACHE.TryGetCachedPackage(dfp, false, out donorPackage))
                         {
-                            var testExp = donorPackage.FindExport(sourceExport.InstancedFullPath);
+                            var seIFP = sourceExport.InstancedFullPath;
+                            var testExp = donorPackage.FindExport(seIFP);
                             if (testExp.ClassName == sourceExport.ClassName || (sourceExport.ClassName == "BioSWF" && testExp.ClassName == "GFxMovieInfo"))
                             {
                                 sourceExport = testExp;
                                 isCached = true;
                                 usingDonor = true;
                                 break;
+                            }
+
+                            if (testExp.ClassName != sourceExport.ClassName)
+                            {
+                                // have to manually try to find the export...
+                                var properDonor = donorPackage.Exports.FirstOrDefault(x => x.InstancedFullPath == seIFP && x.ClassName == sourceExport.ClassName);
+
+                                if (properDonor == null)
+                                {
+                                    Debug.WriteLine($"CLASSES DIFFER FOR DONORS, CAN'T FIND SUITABLE REPLACEMENT: {sourceExport.ClassName} vs {testExp.ClassName} for {testExp.InstancedFullPath}");
+                                }
+                                else
+                                {
+                                    // Dunno if this will work...
+                                    Debug.WriteLine($"Porting same-IFP differing-types object {seIFP}");
+                                    sourceExport = properDonor;
+                                    isCached = true;
+                                    usingDonor = true;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -300,6 +333,23 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             {
                                 sourceExport = testExp;
                                 usingDonor = true;
+                            }
+                            else if (testExp.ClassName != sourceExport.ClassName)
+                            {
+                                // have to manually try to find the export...
+                                var properDonor = donorPackage.Exports.FirstOrDefault(x => x.InstancedFullPath == sourceExport.InstancedFullPath && x.ClassName == sourceExport.ClassName);
+
+                                if (properDonor == null)
+                                {
+                                    Debug.WriteLine($"CLASSES DIFFER FOR DONORS, CAN'T FIND SUITABLE REPLACEMENT: {sourceExport.ClassName} vs {testExp.ClassName} for {testExp.InstancedFullPath}");
+                                }
+                                else
+                                {
+                                    // Dunno if this will work...
+                                    Debug.WriteLine($"Porting same-IFP differing-types object {sourceExport.InstancedFullPath}");
+                                    sourceExport = properDonor;
+                                    usingDonor = true;
+                                }
                             }
                         }
                     }
