@@ -1680,7 +1680,12 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     showthis = false;
                 }
 
-                if (showthis && menu_fltrMatOpq.IsChecked && mr.MatSettings.Any(x => x.Name == "BlendMode" && (x.Parm2 == "BLEND_Additive" || x.Parm2 == "BLEND_Translucent")))
+                if (showthis && menu_fltrMatMsk.IsChecked && !mr.MatSettings.Any(x => x.Name == "BlendMode" && x.Parm2 == "BLEND_Masked"))
+                {
+                    showthis = false;
+                }
+
+                if (showthis && menu_fltrMatOpq.IsChecked && mr.MatSettings.Any(x => x.Name == "BlendMode" && (x.Parm2 == "BLEND_Additive" || x.Parm2 == "BLEND_Translucent" || x.Parm2 == "BLEND_Masked")))
                 {
                     showthis = false;
                 }
@@ -2213,10 +2218,24 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                         menu_fltrMatTrans.IsChecked = false;
                         menu_fltrMatAdd.IsChecked = true;
                         menu_fltrMatOpq.IsChecked = false;
+                        menu_fltrMatMsk.IsChecked = false;
                     }
                     else
                     {
                         menu_fltrMatAdd.IsChecked = false;
+                    }
+                    break;
+                case "Msk":
+                    if (!menu_fltrMatMsk.IsChecked)
+                    {
+                        menu_fltrMatTrans.IsChecked = false;
+                        menu_fltrMatAdd.IsChecked = false;
+                        menu_fltrMatOpq.IsChecked = false;
+                        menu_fltrMatMsk.IsChecked = true;
+                    }
+                    else
+                    {
+                        menu_fltrMatMsk.IsChecked = false;
                     }
                     break;
                 case "Opq":
@@ -2225,6 +2244,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                         menu_fltrMatTrans.IsChecked = false;
                         menu_fltrMatAdd.IsChecked = false;
                         menu_fltrMatOpq.IsChecked = true;
+                        menu_fltrMatMsk.IsChecked = false;
                     }
                     else
                     {

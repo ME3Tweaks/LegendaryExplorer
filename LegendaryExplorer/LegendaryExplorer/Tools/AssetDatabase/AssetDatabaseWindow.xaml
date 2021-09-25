@@ -137,6 +137,7 @@
                             <MenuItem Name="menu_fltrMatTrans" Header="Only Translucent Materials" Command="{Binding FilterMatCommand}" CommandParameter="Transl" ToolTip="Show translucent materials only." StaysOpenOnClick="True"/>
                             <MenuItem Name="menu_fltrMatAdd" Header="Only Additive Materials" Command="{Binding FilterMatCommand}" CommandParameter="BAdd" ToolTip="Show additive materials only." StaysOpenOnClick="True"/>
                             <MenuItem Name="menu_fltrMatOpq" Header="Only Opaque Materials" Command="{Binding FilterMatCommand}" CommandParameter="Opq" ToolTip="Show opaque materials only." StaysOpenOnClick="True"/>
+                            <MenuItem Name="menu_fltrMatMsk" Header="Only Masked Materials" Command="{Binding FilterMatCommand}" CommandParameter="Msk" ToolTip="Show masked materials only." StaysOpenOnClick="True"/>
                             <Separator/>
                             <MenuItem Name="menu_fltrMat2side" Header="Only 2 sided Materials" Command="{Binding FilterMatCommand}" CommandParameter="Twoside" ToolTip="Show 2 sided materials only." StaysOpenOnClick="True"/>
                             <MenuItem Name="menu_fltrMat1side" Header="Only Backface culled (1 side)" Command="{Binding FilterMatCommand}" CommandParameter="Oneside" ToolTip="Show 1 sided materials only." StaysOpenOnClick="True"/>
