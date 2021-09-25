@@ -11,6 +11,7 @@ namespace LegendaryExplorerCore.Packages
     /// </summary>
     public class PackageCache : IDisposable
     {
+        private Guid guid = Guid.NewGuid(); // For logging
         /// <summary>
         /// Object used for synchronizing for threads
         /// </summary>
@@ -45,13 +46,13 @@ namespace LegendaryExplorerCore.Packages
                 {
                     if (File.Exists(packagePath))
                     {
-                        Debug.WriteLine($@"PackageCache load: {packagePath}");
+                        Debug.WriteLine($@"PackageCache {guid} load: {packagePath}");
                         package = MEPackageHandler.OpenMEPackage(packagePath, forceLoadFromDisk: true);
                         Cache[packagePath] = package;
                         return package;
                     }
 
-                    Debug.WriteLine($@"PackageCache miss: File not found: {packagePath}");
+                    Debug.WriteLine($@"PackageCache {guid} miss: File not found: {packagePath}");
                 }
             }
 
@@ -72,7 +73,7 @@ namespace LegendaryExplorerCore.Packages
         }
 
         /// <summary>
-        /// Releases packages referenced by this cache and forces a garbage collection to reclaim memory they may have used
+        /// Releases packages referenced by this cache and can optionally force a garbage collection to reclaim memory they may have used
         /// </summary>
         public void ReleasePackages(bool gc = false)
         {
