@@ -1648,6 +1648,39 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
+        public static void PrintTerrainsBySize(PackageEditorWindow pewpf)
+        {
+            pewpf.SetBusy("Inventorying terrains...");
+            Task.Run(() =>
+            {
+                List<(int numComponents, string file)> items = new List<(int numComponents, string file)>();
+                var loadedFiles = MELoadedFiles.GetFilesLoadedInGame(MEGame.LE1);
+                int done = 0;
+                foreach (var v in loadedFiles)
+                {
+                    pewpf.BusyText = $"Inventorying terrains [{done++}/{loadedFiles.Count}]";
+                    using var p = MEPackageHandler.OpenMEPackage(v.Value);
+                    foreach (var t in p.Exports.Where(x => x.ClassName == "Terrain" && !x.IsDefaultObject))
+                    {
+                        var tcSize = t.GetProperty<ArrayProperty<ObjectProperty>>("TerrainComponents");
+                        if (tcSize != null)
+                        {
+                            items.Add((tcSize.Count, v.Key));
+                        }
+                    }
+                }
+                items = items.OrderBy(x => x.numComponents).ToList();
+                foreach (var item in items)
+                {
+                    Debug.WriteLine($"{item.numComponents} terrain components in {item.file}");
+                }
+            }).ContinueWithOnUIThread(foundCandidates => { pewpf.IsBusy = false; });
+
+
+
+
+        }
+
         public static void MakeAllGrenadesAndAmmoRespawn(PackageEditorWindow pew)
         {
             var ammoGrenades = pew.Pcc.Exports.Where(x =>
@@ -2564,6 +2597,43 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     // Strip Lightmap
                     var b = ObjectBinary.From<TerrainComponent>(exp);
                     b.LightMap = new LightMap() { LightMapType = ELightMapType.LMT_None };
+                    // Correct collision vertices as they've changed from local to world in LE
+
+                    float scaleX = 1;
+                    float scaleY = 1;
+                    float scaleZ = 1;
+
+                    float basex = 0;
+                    float basey = 0;
+                    float basez = 0;
+
+                    var ds3d = (exp.Parent as ExportEntry).GetProperty<StructProperty>("DrawScale3D");
+                    if (ds3d != null)
+                    {
+                        scaleX = ds3d.GetProp<FloatProperty>("X").Value;
+                        scaleY = ds3d.GetProp<FloatProperty>("Y").Value;
+                        scaleZ = ds3d.GetProp<FloatProperty>("Z").Value;
+                    }
+
+                    var loc = (exp.Parent as ExportEntry).GetProperty<StructProperty>("Location");
+                    if (loc != null)
+                    {
+                        basex = loc.GetProp<FloatProperty>("X").Value;
+                        basey = loc.GetProp<FloatProperty>("Y").Value;
+                        basez = loc.GetProp<FloatProperty>("Z").Value;
+                    }
+
+                    for (int i = 0; i < b.CollisionVertices.Length; i++)
+                    {
+                        var cv = b.CollisionVertices[i];
+                        Vector3 newV = new Vector3();
+
+                        newV.X = (cv.X * scaleX) + basex;
+                        newV.Y = (cv.Y * scaleY) + basey;
+                        newV.Z = (cv.Z * scaleZ) + basez;
+                        b.CollisionVertices[i] = newV;
+                    }
+
                     exp.WriteBinary(b);
 
                     // Make dynamic lighting
@@ -2816,6 +2886,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "HeightFog"));
             itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "PrefabInstance"));
             itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "CameraActor"));
+            itemsToPort.AddRange(me1File.Exports.Where(x => x.indexValue != 0 && x.ClassName == "Terrain")); // OH BOY
 
             VTestFilePorting(me1File, le1File, itemsToPort, db, pe);
 
