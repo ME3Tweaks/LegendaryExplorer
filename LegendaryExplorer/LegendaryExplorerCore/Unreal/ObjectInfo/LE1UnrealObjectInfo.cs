@@ -599,8 +599,8 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 exportIndex = 2, // in LE1Resources.pcc
                 properties =
     {
-        new KeyValuePair<string, PropertyInfo>("Target", new PropertyInfo(PropertyType.IntProperty)),
-        new KeyValuePair<string, PropertyInfo>("OptionType", new PropertyInfo(PropertyType.IntProperty)),
+        new KeyValuePair<NameReference, PropertyInfo>("Target", new PropertyInfo(PropertyType.IntProperty)),
+        new KeyValuePair<NameReference, PropertyInfo>("OptionType", new PropertyInfo(PropertyType.IntProperty)),
     }
             };
 
@@ -616,9 +616,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 exportIndex = 11, // in LE1Resources.pcc
                 properties =
-    {
-        new KeyValuePair<string, PropertyInfo>("NumGrenades", new PropertyInfo(PropertyType.IntProperty)),
-    }
+                {
+                    new KeyValuePair<NameReference, PropertyInfo>Clas("NumGrenades", new PropertyInfo(PropertyType.IntProperty)),
+                }
             };
 
             sequenceObjects["SeqAct_GetPlayerMaxGrenades"] = new SequenceObjectInfo
@@ -634,7 +634,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 exportIndex = 18, // in LE1Resources.pcc
                 properties =
     {
-        new KeyValuePair<string, PropertyInfo>("NumMedigel", new PropertyInfo(PropertyType.FloatProperty)),
+        new KeyValuePair<NameReference, PropertyInfo>("NumMedigel", new PropertyInfo(PropertyType.FloatProperty)),
     }
             };
 
@@ -651,12 +651,12 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 exportIndex = 25, // in LE1Resources.pcc
                 properties =
     {
-        new KeyValuePair<string, PropertyInfo>("m_ID", new PropertyInfo(PropertyType.IntProperty)),
-        new KeyValuePair<string, PropertyInfo>("bEnabled", new PropertyInfo(PropertyType.BoolProperty)),
-        new KeyValuePair<string, PropertyInfo>("bIsSpawning", new PropertyInfo(PropertyType.BoolProperty)),
-        new KeyValuePair<string, PropertyInfo>("PrintToLog", new PropertyInfo(PropertyType.BoolProperty)),
-        new KeyValuePair<string, PropertyInfo>("SpawnDelay", new PropertyInfo(PropertyType.FloatProperty)),
-        new KeyValuePair<string, PropertyInfo>("RemainingDelay", new PropertyInfo(PropertyType.FloatProperty)),
+        new KeyValuePair<NameReference, PropertyInfo>("m_ID", new PropertyInfo(PropertyType.IntProperty)),
+        new KeyValuePair<NameReference, PropertyInfo>("bEnabled", new PropertyInfo(PropertyType.BoolProperty)),
+        new KeyValuePair<NameReference, PropertyInfo>("bIsSpawning", new PropertyInfo(PropertyType.BoolProperty)),
+        new KeyValuePair<NameReference, PropertyInfo>("PrintToLog", new PropertyInfo(PropertyType.BoolProperty)),
+        new KeyValuePair<NameReference, PropertyInfo>("SpawnDelay", new PropertyInfo(PropertyType.FloatProperty)),
+        new KeyValuePair<NameReference, PropertyInfo>("RemainingDelay", new PropertyInfo(PropertyType.FloatProperty)),
     }
             };
 
@@ -686,7 +686,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 exportIndex = 57, // in LE1Resources.pcc
                 properties =
     {
-        new KeyValuePair<string, PropertyInfo>("FloatList", new PropertyInfo(PropertyType.ArrayProperty, reference: "FloatProperty")),
+        new KeyValuePair<NameReference, PropertyInfo>("FloatList", new PropertyInfo(PropertyType.ArrayProperty, reference: "FloatProperty")),
     }
             };
 
@@ -716,12 +716,12 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 exportIndex = 70, // in LE1Resources.pcc
                 properties =
     {
-        new KeyValuePair<string, PropertyInfo>("Package2DA", new PropertyInfo(PropertyType.ObjectProperty, reference: "Bio2DA")),
-        new KeyValuePair<string, PropertyInfo>("Index", new PropertyInfo(PropertyType.IntProperty)),
-        new KeyValuePair<string, PropertyInfo>("Reference", new PropertyInfo(PropertyType.NameProperty)),
-        new KeyValuePair<string, PropertyInfo>("Value", new PropertyInfo(PropertyType.StrProperty)),
-        new KeyValuePair<string, PropertyInfo>("DefaultArray", new PropertyInfo(PropertyType.ArrayProperty, reference: "StrProperty")),
-        new KeyValuePair<string, PropertyInfo>("DefaultColumns", new PropertyInfo(PropertyType.ArrayProperty, reference: "NameProperty")),
+        new KeyValuePair<NameReference, PropertyInfo>("Package2DA", new PropertyInfo(PropertyType.ObjectProperty, reference: "Bio2DA")),
+        new KeyValuePair<NameReference, PropertyInfo>("Index", new PropertyInfo(PropertyType.IntProperty)),
+        new KeyValuePair<NameReference, PropertyInfo>("Reference", new PropertyInfo(PropertyType.NameProperty)),
+        new KeyValuePair<NameReference, PropertyInfo>("Value", new PropertyInfo(PropertyType.StrProperty)),
+        new KeyValuePair<NameReference, PropertyInfo>("DefaultArray", new PropertyInfo(PropertyType.ArrayProperty, reference: "StrProperty")),
+        new KeyValuePair<NameReference, PropertyInfo>("DefaultColumns", new PropertyInfo(PropertyType.ArrayProperty, reference: "NameProperty")),
     }
             };
 
@@ -751,10 +751,10 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 exportIndex = 95, // in LE1Resources.pcc
                 properties =
     {
-        new KeyValuePair<string, PropertyInfo>("WeightX", new PropertyInfo(PropertyType.FloatProperty)),
-        new KeyValuePair<string, PropertyInfo>("WeightY", new PropertyInfo(PropertyType.FloatProperty)),
-        new KeyValuePair<string, PropertyInfo>("WeightZ", new PropertyInfo(PropertyType.FloatProperty)),
-        new KeyValuePair<string, PropertyInfo>("PlayerPawn", new PropertyInfo(PropertyType.ObjectProperty, reference: "Pawn")),
+        new KeyValuePair<NameReference, PropertyInfo>("WeightX", new PropertyInfo(PropertyType.FloatProperty)),
+        new KeyValuePair<NameReference, PropertyInfo>("WeightY", new PropertyInfo(PropertyType.FloatProperty)),
+        new KeyValuePair<NameReference, PropertyInfo>("WeightZ", new PropertyInfo(PropertyType.FloatProperty)),
+        new KeyValuePair<NameReference, PropertyInfo>("PlayerPawn", new PropertyInfo(PropertyType.ObjectProperty, reference: "Pawn")),
     }
             };
 
@@ -784,7 +784,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 exportIndex = 182, // in LE1Resources.pcc
                 properties =
     {
-        new KeyValuePair<string, PropertyInfo>("m_oActorType", new PropertyInfo(PropertyType.ObjectProperty, reference: "BioActorType")),
+        new KeyValuePair<NameReference, PropertyInfo>("m_oActorType", new PropertyInfo(PropertyType.ObjectProperty, reference: "BioActorType")),
     }
             };
 
@@ -801,7 +801,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 exportIndex = 188, // in LE1Resources.pcc
                 properties =
     {
-        new KeyValuePair<string, PropertyInfo>("NumGrenades", new PropertyInfo(PropertyType.IntProperty)),
+        new KeyValuePair<NameReference, PropertyInfo>("NumGrenades", new PropertyInfo(PropertyType.IntProperty)),
     }
             };
 
@@ -818,7 +818,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 exportIndex = 195, // in LE1Resources.pcc
                 properties =
     {
-        new KeyValuePair<string, PropertyInfo>("NumMedigel", new PropertyInfo(PropertyType.FloatProperty)),
+        new KeyValuePair<NameReference, PropertyInfo>("NumMedigel", new PropertyInfo(PropertyType.FloatProperty)),
     }
             };
 
@@ -835,11 +835,11 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 exportIndex = 202, // in LE1Resources.pcc
                 properties =
     {
-        new KeyValuePair<string, PropertyInfo>("WeightX", new PropertyInfo(PropertyType.FloatProperty)),
-        new KeyValuePair<string, PropertyInfo>("WeightY", new PropertyInfo(PropertyType.FloatProperty)),
-        new KeyValuePair<string, PropertyInfo>("WeightZ", new PropertyInfo(PropertyType.FloatProperty)),
-        new KeyValuePair<string, PropertyInfo>("Distance", new PropertyInfo(PropertyType.FloatProperty)),
-        new KeyValuePair<string, PropertyInfo>("PrintToLog", new PropertyInfo(PropertyType.BoolProperty)),
+        new KeyValuePair<NameReference, PropertyInfo>("WeightX", new PropertyInfo(PropertyType.FloatProperty)),
+        new KeyValuePair<NameReference, PropertyInfo>("WeightY", new PropertyInfo(PropertyType.FloatProperty)),
+        new KeyValuePair<NameReference, PropertyInfo>("WeightZ", new PropertyInfo(PropertyType.FloatProperty)),
+        new KeyValuePair<NameReference, PropertyInfo>("Distance", new PropertyInfo(PropertyType.FloatProperty)),
+        new KeyValuePair<NameReference, PropertyInfo>("PrintToLog", new PropertyInfo(PropertyType.BoolProperty)),
     }
             };
 
@@ -856,7 +856,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 exportIndex = 218, // in LE1Resources.pcc
                 properties =
     {
-        new KeyValuePair<string, PropertyInfo>("PrintToLog", new PropertyInfo(PropertyType.BoolProperty)),
+        new KeyValuePair<NameReference, PropertyInfo>("PrintToLog", new PropertyInfo(PropertyType.BoolProperty)),
     }
             };
 
@@ -873,9 +873,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 exportIndex = 226, // in LE1Resources.pcc
                 properties =
     {
-        new KeyValuePair<string, PropertyInfo>("InputOutputValue", new PropertyInfo(PropertyType.FloatProperty)),
-        new KeyValuePair<string, PropertyInfo>("InputIndex", new PropertyInfo(PropertyType.IntProperty)),
-        new KeyValuePair<string, PropertyInfo>("OutputListLength", new PropertyInfo(PropertyType.IntProperty)),
+        new KeyValuePair<NameReference, PropertyInfo>("InputOutputValue", new PropertyInfo(PropertyType.FloatProperty)),
+        new KeyValuePair<NameReference, PropertyInfo>("InputIndex", new PropertyInfo(PropertyType.IntProperty)),
+        new KeyValuePair<NameReference, PropertyInfo>("OutputListLength", new PropertyInfo(PropertyType.IntProperty)),
     }
             };
 
@@ -892,8 +892,8 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 exportIndex = 233, // in LE1Resources.pcc
                 properties =
     {
-        new KeyValuePair<string, PropertyInfo>("m_fFactor", new PropertyInfo(PropertyType.FloatProperty)),
-        new KeyValuePair<string, PropertyInfo>("PrintToLog", new PropertyInfo(PropertyType.BoolProperty)),
+        new KeyValuePair<NameReference, PropertyInfo>("m_fFactor", new PropertyInfo(PropertyType.FloatProperty)),
+        new KeyValuePair<NameReference, PropertyInfo>("PrintToLog", new PropertyInfo(PropertyType.BoolProperty)),
     }
             };
 
@@ -910,7 +910,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 exportIndex = 242, // in LE1Resources.pcc
                 properties =
     {
-        new KeyValuePair<string, PropertyInfo>("PrintToLog", new PropertyInfo(PropertyType.BoolProperty)),
+        new KeyValuePair<NameReference, PropertyInfo>("PrintToLog", new PropertyInfo(PropertyType.BoolProperty)),
     }
             };
 
@@ -927,7 +927,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 exportIndex = 249, // in LE1Resources.pcc
                 properties =
     {
-        new KeyValuePair<string, PropertyInfo>("m_nDifficulty", new PropertyInfo(PropertyType.IntProperty)),
+        new KeyValuePair<NameReference, PropertyInfo>("m_nDifficulty", new PropertyInfo(PropertyType.IntProperty)),
     }
             };
 
@@ -944,7 +944,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 exportIndex = 257, // in LE1Resources.pcc
                 properties =
     {
-        new KeyValuePair<string, PropertyInfo>("PrintToLog", new PropertyInfo(PropertyType.BoolProperty)),
+        new KeyValuePair<NameReference, PropertyInfo>("PrintToLog", new PropertyInfo(PropertyType.BoolProperty)),
     }
             };
 
@@ -961,7 +961,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 exportIndex = 268, // in LE1Resources.pcc
                 properties =
     {
-        new KeyValuePair<string, PropertyInfo>("PrintToLog", new PropertyInfo(PropertyType.BoolProperty)),
+        new KeyValuePair<NameReference, PropertyInfo>("PrintToLog", new PropertyInfo(PropertyType.BoolProperty)),
     }
             };
 
@@ -981,7 +981,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             //    exportIndex = 2, //in LE1Resources.pcc
             //    properties =
             //    {
-            //        new KeyValuePair<string, PropertyInfo>("OptionType", new PropertyInfo(PropertyType.IntProperty)),
+            //        new KeyValuePair<NameReference, PropertyInfo>("OptionType", new PropertyInfo(PropertyType.IntProperty)),
             //    }
             //};
 
@@ -999,7 +999,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             //    exportIndex = 11, //in LE1Resources.pcc
             //    properties =
             //    {
-            //        new KeyValuePair<string, PropertyInfo>("NumGrenades", new PropertyInfo(PropertyType.IntProperty)),
+            //        new KeyValuePair<NameReference, PropertyInfo>("NumGrenades", new PropertyInfo(PropertyType.IntProperty)),
             //    }
             //};
 
@@ -1016,7 +1016,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             //    exportIndex = 18, //in LE1Resources.pcc
             //    properties =
             //    {
-            //        new KeyValuePair<string, PropertyInfo>("NumMedigel", new PropertyInfo(PropertyType.FloatProperty)),
+            //        new KeyValuePair<NameReference, PropertyInfo>("NumMedigel", new PropertyInfo(PropertyType.FloatProperty)),
             //    }
             //};
 
@@ -1049,9 +1049,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             //    exportIndex = 168, //in LE1Resources.pcc
             //    properties =
             //    {
-            //        new KeyValuePair<string, PropertyInfo>("OutputListLength", new PropertyInfo(PropertyType.IntProperty)),
-            //        new KeyValuePair<string, PropertyInfo>("InputIndex", new PropertyInfo(PropertyType.IntProperty)),
-            //        new KeyValuePair<string, PropertyInfo>("InputOutputValue", new PropertyInfo(PropertyType.FloatProperty)),
+            //        new KeyValuePair<NameReference, PropertyInfo>("OutputListLength", new PropertyInfo(PropertyType.IntProperty)),
+            //        new KeyValuePair<NameReference, PropertyInfo>("InputIndex", new PropertyInfo(PropertyType.IntProperty)),
+            //        new KeyValuePair<NameReference, PropertyInfo>("InputOutputValue", new PropertyInfo(PropertyType.FloatProperty)),
             //    }
             //};
 
