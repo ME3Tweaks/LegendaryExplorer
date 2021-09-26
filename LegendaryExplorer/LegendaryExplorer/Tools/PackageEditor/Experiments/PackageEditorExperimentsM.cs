@@ -19,6 +19,7 @@ using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Kismet;
 using LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
@@ -2595,7 +2596,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     // Remove streaminglevels that don't do anything
                     //PreCorrectBioWorldInfoStreamingLevels(exp);
                 }
-                
+
                 if (exp.IsA("Actor"))
                 {
                     //exp.RemoveProperty("m_oAreaMap"); // Remove this when stuff is NOT borked up
@@ -2885,6 +2886,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     seq.WriteProperty(new IntProperty(soi.ObjInstanceVersion, "ObjInstanceVersion"));
                 }
+                else
+                {
+                    Debug.WriteLine($"SequenceCorrection: Didn't correct {seq.UIndex} {seq.ObjectName}, not in LE1 ObjectInfo SequenceObjects");
+                }
 
                 var children = seq.GetChildren();
                 foreach (var child in children)
@@ -2908,7 +2913,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 var defaultProperties =
                     SequenceObjectCreator.GetSequenceObjectDefaults(seq.FileRef, seq.ClassName, seq.Game, pc);
                 var defaultVarLinks = defaultProperties.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
-
                 var varLinks = seq.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
                 if (varLinks is null || defaultVarLinks is null) return;
                 foreach (var t in varLinks.Values)
@@ -2922,6 +2926,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         var existingLink = t.GetProp<NameProperty>("PropertyName");
                         if (existingLink.Value == "None" && propertyName.Value != "None")
                         {
+                            if (seq.ClassName != "SeqAct_SetBool")
+                                Debug.WriteLine($"SequenceCorrection: Correcting property name for varlink on {Path.GetFileName(seq.FileRef.FilePath)} {seq.UIndex} ({seq.ClassName}) {desc}: {existingLink} -> {propertyName}");
                             t.Properties.AddOrReplaceProp(propertyName);
                         }
                     }
