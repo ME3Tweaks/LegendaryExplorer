@@ -1591,19 +1591,19 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         }
         public bool VisitNode(StructLiteral node)
         {
-            bool multiLine = !ForceNoNewLines && (node.Statements.Count > 5 || node.Statements.Any(stmnt => (stmnt as AssignStatement)?.Value is StructLiteral || (stmnt as AssignStatement)?.Value is DynamicArrayLiteral));
+            bool multiLine = !ForceNoNewLines && (node.Statements.Count > 5 || node.Statements.Any(stmnt => (stmnt as AssignStatement)?.Value is StructLiteral or DynamicArrayLiteral));
 
             bool oldForceNoNewLines = ForceNoNewLines;
             int oldForcedAlignment = ForcedAlignment;
             if (multiLine)
             {
-                Append("{(");
+                Append("{");
                 ForceAlignment();
             }
             else
             {
                 ForceNoNewLines = true;
-                Append("(");
+                Append("{");
             }
             for (int i = 0; i < node.Statements.Count; i++)
             {
@@ -1617,13 +1617,13 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
             if (multiLine)
             {
-                ForcedAlignment -= 2;
-                Write(")}");
+                ForcedAlignment -= 1;
+                Write("}");
                 ForcedAlignment = oldForcedAlignment;
             }
             else
             {
-                Append(")");
+                Append("}");
                 ForceNoNewLines = oldForceNoNewLines;
             }
             return true;
@@ -1631,7 +1631,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public bool VisitNode(DynamicArrayLiteral node)
         {
-            bool multiLine = !ForceNoNewLines && (node.Values.Any(expr => expr is StructLiteral || expr is DynamicArrayLiteral) || node.Values.Count > 7);
+            bool multiLine = !ForceNoNewLines && (node.Values.Any(expr => expr is StructLiteral or DynamicArrayLiteral) || node.Values.Count > 7);
 
             bool oldForceNoNewLines = ForceNoNewLines;
             int oldForcedAlignment = ForcedAlignment;

@@ -9,7 +9,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
     public class StaticArrayType : VariableType, IEquatable<StaticArrayType>
     {
         public VariableType ElementType;
-        public int Length;
+        public readonly int Length;
 
         public StaticArrayType(VariableType elementType, int length, SourcePosition start = null, SourcePosition end = null) : base(elementType.Name, start, end)
         {

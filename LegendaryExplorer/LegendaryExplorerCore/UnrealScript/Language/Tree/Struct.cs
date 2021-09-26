@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
+using LegendaryExplorerCore.UnrealScript.Language.Util;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
@@ -170,6 +172,26 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
                 foreach (VariableType typeDeclaration in TypeDeclarations) yield return typeDeclaration;
                 if (DefaultProperties != null) yield return DefaultProperties;
             }
+        }
+
+        public override string GetScope()
+        {
+            Struct targetStruct = this;
+            string specificScope = NodeUtils.GetContainingClass(targetStruct).GetInheritanceString();
+            var outerStructs = new Stack<string>();
+            while (targetStruct.Outer is Struct lhsStructOuter)
+            {
+                outerStructs.Push(lhsStructOuter.Name);
+                targetStruct = lhsStructOuter;
+            }
+
+            if (outerStructs.Any())
+            {
+                specificScope += $".{string.Join(".", outerStructs)}";
+            }
+
+            specificScope += $".{targetStruct.Name}";
+            return specificScope;
         }
     }
 }

@@ -20,7 +20,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
     public static class ScriptObjectToASTConverter
     {
 
-        public static Class ConvertClass(UClass uClass, bool decompileBytecode, FileLib lib = null, PackageCache packageCache = null)
+        public static Class ConvertClass(UClass uClass, bool decompileBytecodeAndDefaults, FileLib lib = null, PackageCache packageCache = null)
         {
             ExportEntry uClassExport = uClass.Export;
             IMEPackage pcc = uClassExport.FileRef;
@@ -63,38 +63,41 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         nextItem = uEnum.Next;
                         break;
                     case UFunction uFunction:
-                        Funcs.Add(ConvertFunction(uFunction, uClass, decompileBytecode, lib));
+                        Funcs.Add(ConvertFunction(uFunction, uClass, decompileBytecodeAndDefaults, lib, packageCache));
                         nextItem = uFunction.Next;
                         break;
                     case UProperty uProperty:
-                        Vars.Add(ConvertVariable(uProperty));
+                        Vars.Add(ConvertVariable(uProperty, packageCache));
                         nextItem = uProperty.Next;
                         break;
                     case UScriptStruct uScriptStruct:
-                        Types.Add(ConvertStruct(uScriptStruct, packageCache));
+                        Types.Add(ConvertStruct(uScriptStruct, packageCache, lib));
                         nextItem = uScriptStruct.Next;
                         break;
                     case UState uState:
                         nextItem = uState.Next;
-                        States.Add(ConvertState(uState, uClass, decompileBytecode, lib));
+                        States.Add(ConvertState(uState, uClass, decompileBytecodeAndDefaults, lib, packageCache));
                         break;
                     default:
                         nextItem = 0;
                         break;
                 }
             }
+            DefaultPropertiesBlock defaultProperties = null;
             var propEntry = pcc.GetEntry(uClass.Defaults);
-            DefaultPropertiesBlock defaultProperties = null; ;
-            if (propEntry is ExportEntry propExport)
+            if (decompileBytecodeAndDefaults)
             {
-                defaultProperties = ConvertDefaultProperties(propExport, packageCache);
+                if (propEntry is ExportEntry propExport)
+                {
+                    defaultProperties = ConvertDefaultProperties(propExport, lib, packageCache);
+                }
             }
 
             var AST = new Class(uClassExport.ObjectName.Instanced, parent, outer, uClass.ClassFlags, interfaces, Types, Vars, Funcs, States, defaultProperties)
             {
                 ConfigName = uClass.ClassConfigName,
                 Package = uClassExport.Parent is null ? Path.GetFileNameWithoutExtension(pcc.FilePath) : uClassExport.ParentInstancedFullPath,
-                IsFullyDefined = nextItem.value == 0 && defaultProperties != null,
+                IsFullyDefined = nextItem.value == 0 && propEntry is ExportEntry,
                 FilePath = pcc.FilePath,
                 UIndex = uClassExport.UIndex
             };
@@ -122,7 +125,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return AST;
         }
 
-        public static State ConvertState(UState obj, UClass containingClass = null, bool decompileBytecode = true, FileLib lib = null)
+        public static State ConvertState(UState obj, UClass containingClass = null, bool decompileBytecode = true, FileLib lib = null, PackageCache packageCache = null)
         {
             if (containingClass is null)
             {
@@ -137,7 +140,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     throw new Exception($"Could not get containing class for state {obj.Export.ObjectName}");
                 }
 
-                containingClass = classExport.GetBinaryData<UClass>();
+                containingClass = classExport.GetBinaryData<UClass>(packageCache);
             }
             // TODO: labels
 
@@ -153,7 +156,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             var nextItem = obj.Children;
             while (obj.Export.FileRef.TryGetUExport(nextItem, out ExportEntry nextChild))
             {
-                var objBin = ObjectBinary.From(nextChild);
+                var objBin = ObjectBinary.From(nextChild, packageCache);
                 if (objBin is not UFunction uFunction)
                 {
                     //todo: State should never have non-function children, so this is indicative of a broken state definition. is there some way to log this?
@@ -173,7 +176,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             };
         }
 
-        public static Struct ConvertStruct(UScriptStruct obj, PackageCache packageCache)
+        public static Struct ConvertStruct(UScriptStruct obj, PackageCache packageCache, FileLib fileLib)
         {
             var vars = new List<VariableDeclaration>();
             var types = new List<VariableType>();
@@ -186,11 +189,11 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 switch (objBin)
                 {
                     case UProperty uProperty:
-                        vars.Add(ConvertVariable(uProperty));
+                        vars.Add(ConvertVariable(uProperty, packageCache));
                         nextItem = uProperty.Next;
                         break;
                     case UScriptStruct uStruct:
-                        types.Add(ConvertStruct(uStruct, packageCache));
+                        types.Add(ConvertStruct(uStruct, packageCache, fileLib));
                         nextItem = uStruct.Next;
                         break;
                     default:
@@ -205,8 +208,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             DefaultPropertiesBlock defaults;
             try
             {
-                defaults = new DefaultPropertiesBlock(ConvertProperties(RemoveDefaultValues(obj.Defaults, pcc.Game),
-                    obj.Export, packageCache));
+                defaults = new DefaultPropertiesBlock(ConvertProperties(RemoveDefaultValues(obj.Defaults, pcc.Game), obj.Export, obj.Export.ObjectName.Instanced, true, fileLib, packageCache));
             }
             catch (Exception e)
             {
@@ -348,24 +350,24 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return node;
         }
 
-        public static VariableDeclaration ConvertVariable(UProperty obj)
+        public static VariableDeclaration ConvertVariable(UProperty obj, PackageCache packageCache)
         {
             int size = obj.ArraySize;
 
-            return new VariableDeclaration(GetPropertyType(obj), obj.PropertyFlags, obj.Export.ObjectName.Instanced, size, obj.Category != "None" ? obj.Category : null)
+            return new VariableDeclaration(GetPropertyType(obj, packageCache), obj.PropertyFlags, obj.Export.ObjectName.Instanced, size, obj.Category != "None" ? obj.Category : null)
             {
                 FilePath = obj.Export.FileRef.FilePath,
                 UIndex = obj.Export.UIndex
             };
         }
 
-        private static VariableType GetPropertyType(UProperty obj)
+        private static VariableType GetPropertyType(UProperty obj, PackageCache packageCache = null)
         {
             string typeStr = "UNKNOWN";
             switch (obj)
             {
                 case UArrayProperty arrayProperty:
-                    return new DynamicArrayType(GetPropertyType(ObjectBinary.From(obj.Export.FileRef.GetUExport(arrayProperty.ElementType)) as UProperty));
+                    return new DynamicArrayType(GetPropertyType(ObjectBinary.From(obj.Export.FileRef.GetUExport(arrayProperty.ElementType), packageCache) as UProperty, packageCache));
                 case UBioMask4Property _:
                     return SymbolTable.BioMask4Type;
                 case UBoolProperty _:
@@ -376,7 +378,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         IEntry enumDef = byteProperty.Enum.GetEntry(obj.Export.FileRef);
                         if (enumDef is ExportEntry enumExp)
                         {
-                            return ConvertEnum(enumExp.GetBinaryData<UEnum>());
+                            return ConvertEnum(enumExp.GetBinaryData<UEnum>(packageCache));
                         }
                         typeStr = enumDef.ObjectName.Instanced;
                     }
@@ -451,11 +453,11 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return new VariableType(typeStr);
         }
 
-        public static Function ConvertFunction(UFunction obj, UClass containingClass = null, bool decompileBytecode = true, FileLib lib = null)
+        public static Function ConvertFunction(UFunction obj, UClass containingClass = null, bool decompileBytecode = true, FileLib lib = null, PackageCache packageCache = null)
         {
             if (containingClass is null)
             {
-                ExportEntry classExport = obj.Export.Parent as ExportEntry;
+                var classExport = obj.Export.Parent as ExportEntry;
                 while (classExport is {IsClass: false})
                 {
                     classExport = classExport.Parent as ExportEntry;
@@ -466,7 +468,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     throw new Exception($"Could not get containing class for function {obj.Export.ObjectName}");
                 }
 
-                containingClass = classExport.GetBinaryData<UClass>();
+                containingClass = classExport.GetBinaryData<UClass>(packageCache);
             }
             VariableDeclaration returnVal = null;
             var nextItem = obj.Children;
@@ -476,22 +478,22 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             IMEPackage pcc = obj.Export.FileRef;
             while (pcc.TryGetUExport(nextItem, out ExportEntry nextChild))
             {
-                var objBin = ObjectBinary.From(nextChild);
+                var objBin = ObjectBinary.From(nextChild, packageCache);
                 switch (objBin)
                 {
                     case UProperty uProperty:
                         if (uProperty.PropertyFlags.Has(EPropertyFlags.ReturnParm))
                         {
-                            returnVal = ConvertVariable(uProperty);
+                            returnVal = ConvertVariable(uProperty, packageCache);
                         }
                         else if (uProperty.PropertyFlags.Has(EPropertyFlags.Parm))
                         {
-                            var convert = ConvertVariable(uProperty);
+                            var convert = ConvertVariable(uProperty, packageCache);
                             parameters.Add(new FunctionParameter(convert.VarType, convert.Flags, convert.Name, convert.ArrayLength));
                         }
                         else
                         {
-                            locals.Add(ConvertVariable(uProperty));
+                            locals.Add(ConvertVariable(uProperty, packageCache));
                         }
                         nextItem = uProperty.Next;
                         break;
@@ -528,14 +530,14 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return func;
         }
 
-        public static DefaultPropertiesBlock ConvertDefaultProperties(ExportEntry defaultsExport, PackageCache packageCache)
+        public static DefaultPropertiesBlock ConvertDefaultProperties(ExportEntry defaultsExport, FileLib fileLib, PackageCache packageCache)
         {
-            List<Statement> defaults = ConvertProperties(defaultsExport.GetProperties(packageCache: packageCache), defaultsExport, packageCache);
+            List<Statement> defaults = ConvertProperties(defaultsExport.GetProperties(packageCache: packageCache), defaultsExport, defaultsExport.Class.ObjectName.Instanced, false, fileLib, packageCache);
 
             return new DefaultPropertiesBlock(new List<Statement>(defaults));
         }
 
-        private static List<Statement> ConvertProperties(PropertyCollection properties, ExportEntry containingExport, PackageCache packageCache)
+        private static List<Statement> ConvertProperties(PropertyCollection properties, ExportEntry containingExport, string objectName, bool isStruct, FileLib fileLib, PackageCache packageCache)
         {
             var statements = new List<Statement>();
             foreach (var prop in properties)
@@ -544,20 +546,58 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 {
                     continue;
                 }
-                var name = new SymbolReference(null, prop.Name);
-                var value = ConvertPropertyValue(prop, packageCache);
-                if (value is StructLiteral structLiteral)
+
+                Expression name = new SymbolReference(null, prop.Name.Instanced);
+
+                if (fileLib?.ReadonlySymbolTable is SymbolTable symbols)
                 {
-                    var subObjectsToAdd = new List<Subobject>();
-                    foreach (Subobject subobject in structLiteral.Statements.OfType<Subobject>())
+                    string scope = null;
+                    if (isStruct && !containingExport.ClassName.CaseInsensitiveEquals("ScriptStruct"))
                     {
-                        if (statements.All(stmnt => (stmnt as Subobject)?.Name != subobject.Name))
+                        if (symbols.TryGetType(objectName, out Struct strct))
                         {
-                            subObjectsToAdd.Add(subobject);
+                            scope = strct.GetScope();
                         }
                     }
-                    statements.AddRange(subObjectsToAdd);
-                    structLiteral.Statements = structLiteral.Statements.Where(stmnt => stmnt is AssignStatement).ToList();
+                    else if (symbols.TryGetType(isStruct ? containingExport.Parent.ObjectName.Instanced : objectName, out Class containingClass))
+                    {
+                        if (isStruct)
+                        {
+                            foreach (Struct strct in containingClass.TypeDeclarations.OfType<Struct>())
+                            {
+                                if (strct.Name.CaseInsensitiveEquals(objectName))
+                                {
+                                    scope = strct.GetScope();
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            scope = containingClass.GetScope();
+                        }
+                    }
+
+                    if (scope is not null && symbols.TryGetSymbolInScopeStack(prop.Name, out VariableDeclaration decl, scope) && decl.IsStaticArray)
+                    {
+                        name = new ArraySymbolRef(name, new IntegerLiteral(prop.StaticArrayIndex), null, null);
+                    }
+                }
+                else if (prop.StaticArrayIndex > 0)
+                {
+                    name = new ArraySymbolRef(name, new IntegerLiteral(prop.StaticArrayIndex), null, null);
+                }
+                var value = ConvertPropertyValue(prop);
+                if (value is StructLiteral structLiteral)
+                {
+                    ExtractSubObjects(structLiteral, statements);
+                }
+                else if (value is DynamicArrayLiteral arrayLiteral)
+                {
+                    foreach (StructLiteral structLit in arrayLiteral.Values.OfType<StructLiteral>())
+                    {
+                        ExtractSubObjects(structLit, statements);
+                    }
                 }
                 statements.Add(new AssignStatement(name, value));
             }
@@ -566,7 +606,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
             return statements;
 
-            Expression ConvertPropertyValue(Property prop, PackageCache packageCache)
+            Expression ConvertPropertyValue(Property prop)
             {
                 switch (prop)
                 {
@@ -577,15 +617,19 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     case BioMask4Property bioMask4Property:
                         return new IntegerLiteral(bioMask4Property.Value) { NumType = Keywords.BIOMASK4 };
                     case DelegateProperty delegateProperty:
-                        return new SymbolReference(null, delegateProperty.Value.FunctionName);
+                        return new SymbolReference(null, delegateProperty.Value.FunctionName.Instanced);
                     case EnumProperty enumProperty:
+                        if (enumProperty.Value.Instanced.CaseInsensitiveEquals("None"))
+                        {
+                            return new NoneLiteral();
+                        }
                         return new SymbolReference(new EnumValue(enumProperty.Value.Instanced, 0) {Enum = new Enumeration(enumProperty.EnumType.Instanced, new List<EnumValue>(), null, null)}, enumProperty.Value.Instanced);
                     case FloatProperty floatProperty:
                         return new FloatLiteral(floatProperty.Value);
                     case IntProperty intProperty:
                         return new IntegerLiteral(intProperty.Value);
                     case NameProperty nameProperty:
-                        return new NameLiteral(nameProperty.Value);
+                        return new NameLiteral(nameProperty.Value.Instanced);
                     case ObjectProperty objectProperty:
                         var objRef = objectProperty.Value;
                         if (objRef == 0)
@@ -598,27 +642,43 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                             {
                                 var type = new VariableType(objExp.ClassName);
                                 var decl = new VariableDeclaration(type, default, name);
-                                subObj = new Subobject(decl, new SymbolReference(null, objExp.ClassName), ConvertProperties(objExp.GetProperties(packageCache: packageCache), objExp, packageCache));
+                                subObj = new Subobject(decl, new Class(objExp.ClassName, null, null, default), 
+                                    ConvertProperties(objExp.GetProperties(packageCache: packageCache), objExp, objExp.Class.ObjectName.Instanced, false, fileLib, packageCache));
                                 statements.Add(subObj);
                             }
                             return new SymbolReference(subObj.Name, name);
                         }
                         else
                         {
-                            return new ObjectLiteral(new NameLiteral(objEntry.InstancedFullPath), new VariableType(objEntry.ClassName));
+                            return new ObjectLiteral(new NameLiteral(objEntry.ClassName.CaseInsensitiveEquals("Class") ? objEntry.ObjectName.Instanced : objEntry.InstancedFullPath), new VariableType(objEntry.ClassName));
                         }
                     case StringRefProperty stringRefProperty:
                         return new StringRefLiteral(stringRefProperty.Value);
                     case StrProperty strProperty:
                         return new StringLiteral(strProperty.Value);
                     case StructProperty structProperty:
-                        return new StructLiteral(structProperty.StructType, ConvertProperties(structProperty.Properties, containingExport, packageCache));
+                        return new StructLiteral(null, ConvertProperties(structProperty.Properties, containingExport, structProperty.StructType, true, fileLib, packageCache));
                     case ArrayPropertyBase arrayPropertyBase:
-                        return new DynamicArrayLiteral(arrayPropertyBase.Reference, arrayPropertyBase.Properties.Select(x => ConvertPropertyValue(x, packageCache)).ToList());
+                        return new DynamicArrayLiteral(null, arrayPropertyBase.Properties.Select(ConvertPropertyValue).ToList());
                     default:
                         return new SymbolReference(null, "UNSUPPORTED:" + prop.PropType);
 
                 }
+            }
+
+            static void ExtractSubObjects(StructLiteral structLiteral, List<Statement> list)
+            {
+                var subObjectsToAdd = new List<Subobject>();
+                foreach (Subobject subobject in structLiteral.Statements.OfType<Subobject>())
+                {
+                    if (list.All(stmnt => (stmnt as Subobject)?.Name != subobject.Name))
+                    {
+                        subObjectsToAdd.Add(subobject);
+                    }
+                }
+
+                list.AddRange(subObjectsToAdd);
+                structLiteral.Statements = structLiteral.Statements.Where(stmnt => stmnt is AssignStatement).ToList();
             }
         }
     }

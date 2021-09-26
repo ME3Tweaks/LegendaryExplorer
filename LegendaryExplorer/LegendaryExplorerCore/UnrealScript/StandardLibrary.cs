@@ -194,7 +194,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 var classes = new List<(Class ast, string scriptText)>();
                 foreach (ExportEntry export in pcc.Exports.Where(exp => exp.IsClass))
                 {
-                    Class cls = ScriptObjectToASTConverter.ConvertClass(export.GetBinaryData<UClass>(), false, packageCache: packageCache);
+                    Class cls = ScriptObjectToASTConverter.ConvertClass(export.GetBinaryData<UClass>(packageCache), false, packageCache: packageCache);
                     if (!cls.IsFullyDefined)
                     {
                         continue;

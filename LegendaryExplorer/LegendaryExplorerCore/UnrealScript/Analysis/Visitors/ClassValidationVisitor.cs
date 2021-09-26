@@ -423,6 +423,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 {
                     decl.Outer = node;
                     Success = Success && decl.AcceptVisitor(this);
+                    //todo: verify that the member does not attempt to override a member from a parent struct
                 }
 
                 Symbols.PopScope();
