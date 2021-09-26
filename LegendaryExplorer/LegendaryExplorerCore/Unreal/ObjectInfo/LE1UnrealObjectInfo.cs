@@ -617,7 +617,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 exportIndex = 11, // in LE1Resources.pcc
                 properties =
                 {
-                    new KeyValuePair<NameReference, PropertyInfo>Clas("NumGrenades", new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("NumGrenades", new PropertyInfo(PropertyType.IntProperty)),
                 }
             };
 
