@@ -1239,6 +1239,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsO.AddPresetTrack("Gesture", GetPEWindow());
         }
+
+        private void AddPresetGestureTrack2_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.AddPresetTrack("Gesture2", GetPEWindow());
+        }
         #endregion
 
 

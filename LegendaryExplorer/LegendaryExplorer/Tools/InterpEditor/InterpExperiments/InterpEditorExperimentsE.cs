@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorerCore.Matinee;
+using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorer.Tools.InterpEditor.InterpExperiments
 {
@@ -13,8 +14,15 @@ namespace LegendaryExplorer.Tools.InterpEditor.InterpExperiments
         {
             var currExp = iew.Properties_InterpreterWPF.CurrentLoadedExport;
 
-            if (currExp != null)
+            if (currExp != null && iew.Pcc != null)
             {
+                var game = iew.Pcc.Game;
+
+                if (!game.IsGame3())
+                {
+                    MessageBox.Show("This experiment is currently available for ME3 or LE3 files only.", "Warning", MessageBoxButton.OK);
+                    return;
+                }
 
                 if (currExp.ClassName != "InterpData")
                 {
@@ -25,18 +33,14 @@ namespace LegendaryExplorer.Tools.InterpEditor.InterpExperiments
                 switch (preset)
                 {
                     case "Director":
-                        MatineeHelper.AddPresetDirectorGroup(currExp);
+                        MatineeHelper.AddPreset(preset, currExp, game);
                         break;
 
                     case "Camera":
-                        if (PromptDialog.Prompt(null, "Name of camera actor:") is string camName)
+                        var actor = promptForActor("Name of camera actor:", "Not a valid camera actor name.");
+                        if (!string.IsNullOrEmpty(actor))
                         {
-                            if (string.IsNullOrEmpty(camName))
-                            {
-                                MessageBox.Show("Not a valid camera actor name.", "Warning", MessageBoxButton.OK);
-                                return;
-                            }
-                            MatineeHelper.AddPresetCameraGroup(currExp, camName);
+                            MatineeHelper.AddPreset(preset, currExp, game, actor);
                         }
                         break;
                 }
@@ -48,8 +52,16 @@ namespace LegendaryExplorer.Tools.InterpEditor.InterpExperiments
         {
             var currExp = iew.Properties_InterpreterWPF.CurrentLoadedExport;
 
-            if (currExp != null)
+            if (currExp != null && iew.Pcc != null)
             {
+                var game = iew.Pcc.Game;
+
+                if (!game.IsGame3())
+                {
+                    MessageBox.Show("This experiment is currently available for ME3 or LE3 files only.", "Warning", MessageBoxButton.OK);
+                    return;
+                }
+
                 if (currExp.ClassName != "InterpGroup")
                 {
                     MessageBox.Show("InterpGroup not selected.", "Warning", MessageBoxButton.OK);
@@ -59,19 +71,30 @@ namespace LegendaryExplorer.Tools.InterpEditor.InterpExperiments
                 switch (preset)
                 {
                     case "Gesture":
-                        if (PromptDialog.Prompt(null, "Name of gesture actor:") is string actor)
+                    case "Gesture2":
+                        var actor = promptForActor("Name of gesture actor:", "Not a valid gesture actor name.");
+                        if (!string.IsNullOrEmpty(actor))
                         {
-                            if (string.IsNullOrEmpty(actor))
-                            {
-                                MessageBox.Show("Not a valid gesture actor name.", "Warning", MessageBoxButton.OK);
-                                return;
-                            }
-                            MatineeHelper.AddPresetGestureTrack(currExp, actor);
+                            MatineeHelper.AddPreset(preset, currExp, game, actor);
                         }
                         break;
                 }
             }
             return;
+        }
+
+        private static string promptForActor(string msg, string err)
+        {
+            if (PromptDialog.Prompt(null, msg) is string actor)
+            {
+                if (string.IsNullOrEmpty(actor))
+                {
+                    MessageBox.Show(err, "Warning", MessageBoxButton.OK);
+                    return null;
+                }
+                return actor;
+            }
+            return null;
         }
     }
 }

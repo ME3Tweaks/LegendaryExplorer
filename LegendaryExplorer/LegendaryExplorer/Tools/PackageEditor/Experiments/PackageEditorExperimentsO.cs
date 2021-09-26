@@ -438,8 +438,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void AddPresetGroup(string preset, PackageEditorWindow pew)
         {
-            if (pew.SelectedItem != null && pew.SelectedItem.Entry != null)
+            if (pew.SelectedItem != null && pew.SelectedItem.Entry != null && pew.Pcc != null)
             {
+                var game = pew.Pcc.Game;
+
+                if (!game.IsGame3())
+                {
+                    MessageBox.Show("This experiment is currently available for ME3 or LE3 files only.", "Warning", MessageBoxButton.OK);
+                    return;
+                }
 
                 if (pew.SelectedItem.Entry.ClassName != "InterpData")
                 {
@@ -453,18 +460,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 switch (preset)
                 {
                     case "Director":
-                        MatineeHelper.AddPresetDirectorGroup(interp);
+                        MatineeHelper.AddPreset(preset, interp, game);
                         break;
 
                     case "Camera":
-                        if (PromptDialog.Prompt(null, "Name of camera actor:") is string camName)
+                        var actor = promptForActor("Name of camera actor:", "Not a valid camera actor name.");
+                        if (!string.IsNullOrEmpty(actor))
                         {
-                            if (string.IsNullOrEmpty(camName))
-                            {
-                                MessageBox.Show("Not a valid camera actor name.", "Warning", MessageBoxButton.OK);
-                                return;
-                            }
-                            MatineeHelper.AddPresetCameraGroup(interp, camName);
+                            MatineeHelper.AddPreset(preset, interp, game, actor);
                         }
                         break;
                 }
@@ -474,8 +477,16 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void AddPresetTrack(string preset, PackageEditorWindow pew)
         {
-            if (pew.SelectedItem != null && pew.SelectedItem.Entry != null)
+            if (pew.SelectedItem != null && pew.SelectedItem.Entry != null && pew.Pcc != null)
             {
+                var game = pew.Pcc.Game;
+
+                if (!game.IsGame3())
+                {
+                    MessageBox.Show("This experiment is currently available for ME3 or LE3 files only.", "Warning", MessageBoxButton.OK);
+                    return;
+                }
+
                 if (pew.SelectedItem.Entry.ClassName != "InterpGroup")
                 {
                     MessageBox.Show("InterpGroup not selected.", "Warning", MessageBoxButton.OK);
@@ -488,19 +499,30 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 switch (preset)
                 {
                     case "Gesture":
-                        if (PromptDialog.Prompt(null, "Name of gesture actor:") is string actor)
+                    case "Gesture2":
+                        var actor = promptForActor("Name of gesture actor:", "Not a valid gesture actor name.");
+                        if (!string.IsNullOrEmpty(actor))
                         {
-                            if (string.IsNullOrEmpty(actor))
-                            {
-                                MessageBox.Show("Not a valid gesture actor name.", "Warning", MessageBoxButton.OK);
-                                return;
-                            }
-                            MatineeHelper.AddPresetGestureTrack(interp, actor);
+                            MatineeHelper.AddPreset(preset, interp, game, actor);
                         }
                         break;
                 }
             }
             return;
+        }
+
+        private static string promptForActor(string msg, string err)
+        {
+            if (PromptDialog.Prompt(null, msg) is string actor)
+            {
+                if (string.IsNullOrEmpty(actor))
+                {
+                    MessageBox.Show(err, "Warning", MessageBoxButton.OK);
+                    return null;
+                }
+                return actor;
+            }
+            return null;
         }
     }
 }
