@@ -552,7 +552,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 {
                     case Token.INPACKAGEREFTYPE_NAME:
                         int newValue = destinationExport.FileRef.FindNameOrAdd(sourceExport.FileRef.GetNameEntry(value));
-                        Debug.WriteLine($"Function relink hit @ 0x{t.pos + pos:X6}, cross ported a name: {sourceExport.FileRef.GetNameEntry(value)}");
+                        //Debug.WriteLine($"Function relink hit @ 0x{t.pos + pos:X6}, cross ported a name: {sourceExport.FileRef.GetNameEntry(value)}");
                         script.OverwriteRange(pos, BitConverter.GetBytes(newValue));
                         break;
                     case Token.INPACKAGEREFTYPE_ENTRY:
