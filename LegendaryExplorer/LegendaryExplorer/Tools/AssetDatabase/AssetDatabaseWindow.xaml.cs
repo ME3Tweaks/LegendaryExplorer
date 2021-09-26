@@ -1680,6 +1680,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     showthis = false;
                 }
 
+                if (showthis && menu_fltrMatSpecialEngine.IsChecked && !mr.MatSettings.Any(x => x.Name == "bUsedAsSpecialEngineMaterial" && x.Parm2 == "True"))
+                {
+                    showthis = false;
+                }
+
                 if (showthis && menu_fltrMatOpq.IsChecked && mr.MatSettings.Any(x => x.Name == "BlendMode" && (x.Parm2 == "BLEND_Additive" || x.Parm2 == "BLEND_Translucent")))
                 {
                     showthis = false;
@@ -2201,6 +2206,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                         menu_fltrMatTrans.IsChecked = true;
                         menu_fltrMatAdd.IsChecked = false;
                         menu_fltrMatOpq.IsChecked = false;
+                        menu_fltrMatSpecialEngine.IsChecked = false;
                     }
                     else
                     {
@@ -2213,6 +2219,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                         menu_fltrMatTrans.IsChecked = false;
                         menu_fltrMatAdd.IsChecked = true;
                         menu_fltrMatOpq.IsChecked = false;
+                        menu_fltrMatSpecialEngine.IsChecked = false;
                     }
                     else
                     {
@@ -2225,10 +2232,24 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                         menu_fltrMatTrans.IsChecked = false;
                         menu_fltrMatAdd.IsChecked = false;
                         menu_fltrMatOpq.IsChecked = true;
+                        menu_fltrMatSpecialEngine.IsChecked = false;
                     }
                     else
                     {
                         menu_fltrMatOpq.IsChecked = false;
+                    }
+                    break;
+                case "SpeEngMat":
+                    if (!menu_fltrMatSpecialEngine.IsChecked)
+                    {
+                        menu_fltrMatTrans.IsChecked = false;
+                        menu_fltrMatAdd.IsChecked = false;
+                        menu_fltrMatOpq.IsChecked = false;
+                        menu_fltrMatSpecialEngine.IsChecked = true;
+                    }
+                    else
+                    {
+                        menu_fltrMatSpecialEngine.IsChecked = false;
                     }
                     break;
                 case "Vcolor":
@@ -2907,7 +2928,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             {
                 text = string.Join("\n", ge.Usages.Select(x => FileListExtended[x.FileKey]?.FileName).Distinct());
             }
-            
+
             if (text != null)
             {
                 try
