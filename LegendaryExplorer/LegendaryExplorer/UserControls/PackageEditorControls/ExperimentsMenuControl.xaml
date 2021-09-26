@@ -40,6 +40,7 @@
         <MenuItem Header="Make current material a VTest Donor" Click="MakeVTestDonor_Click" Visibility="{x:Static global:App.IsDebugVisibility}"/>
         <MenuItem Header="Test current package binary against LEX serializer" Click="TestCurrentPackageBinary"/>
         <MenuItem Header="MScanner" Click="MScanner_Click"/>
+        <MenuItem Header="Print LE1 Terrains By Size to debug console" Click="PrintTerrainsBySize_Click"/>
         <MenuItem Header="Rebuild selected Material's expressions list" Click="RebuildSelectedMaterialExpressions"/>
         <MenuItem Header="Test CrossGen class porting" Click="TestCrossGenClassPort_Click" Visibility="{x:Static global:App.IsDebugVisibility}"/>
         <MenuItem Header="Map Material IDs" Click="MapMaterialIDs_Click" />

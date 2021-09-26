@@ -591,6 +591,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.MakeAllGrenadesAndAmmoRespawn(GetPEWindow());
         }
 
+        private void PrintTerrainsBySize_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.PrintTerrainsBySize(GetPEWindow());
+        }
+
         private void SetAllWwiseEventDurations_Click(object sender, RoutedEventArgs e)
         {
             var pew = GetPEWindow();
