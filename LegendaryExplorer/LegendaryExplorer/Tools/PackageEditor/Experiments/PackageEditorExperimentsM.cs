@@ -1808,7 +1808,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     }
                 }
                 donorPackage.Save();
-                VTest(pe, true);
+                VTest(pe);
             }
         }
 
@@ -2182,13 +2182,18 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         }
 
 
-        public static async void VTest(PackageEditorWindow pe, bool installAndBootGame)
+        public static async void VTest(PackageEditorWindow pe, bool? installAndBootGame = null)
         {
-            // Paths are in PAEMPaths.cs
+            if (installAndBootGame == null)
+            {
+                var result = MessageBox.Show(pe, "Install VTest and run the game when VTest completes? PAEMPaths must be set.", "Auto install and boot", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes);
+                installAndBootGame = result == MessageBoxResult.Yes;
+            }
 
+            // Paths are in PAEMPaths.cs
             EntryImporter.NonDonorMaterials.Clear();
 
-            bool prc2aa = true;
+            bool prc2aa = false;
             bool prc2 = true;
 
             pe.SetBusy("Performing VTest");
@@ -2297,7 +2302,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 if (result.Exception != null)
                     throw result.Exception;
                 pe.EndBusy();
-                if (installAndBootGame)
+                if (installAndBootGame != null && installAndBootGame.Value)
                 {
                     var moddesc = Path.Combine(Directory.GetParent(PAEMPaths.VTest_DonorsDir).FullName, "moddesc.ini");
                     if (File.Exists(moddesc))
@@ -2590,14 +2595,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     // Remove streaminglevels that don't do anything
                     //PreCorrectBioWorldInfoStreamingLevels(exp);
                 }
-
-
-
+                
                 if (exp.IsA("Actor"))
                 {
-                    exp.RemoveProperty("m_oAreaMap"); // Remove this when stuff is NOT borked up
-                    exp.RemoveProperty("Base"); // No bases
-                    exp.RemoveProperty("nextNavigationPoint"); // No bases
+                    //exp.RemoveProperty("m_oAreaMap"); // Remove this when stuff is NOT borked up
+                    //exp.RemoveProperty("Base"); // No bases
+                    //exp.RemoveProperty("nextNavigationPoint"); // No bases
                 }
             }
         }

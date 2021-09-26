@@ -332,7 +332,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
         private async void VTest_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsM.VTest(GetPEWindow(), false);
+            PackageEditorExperimentsM.VTest(GetPEWindow());
         }
 
         private async void MakeVTestDonor_Click(object sender, RoutedEventArgs e)
