@@ -161,8 +161,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public ICommand OpenInPackageEditorCommand { get; set; }
         public ICommand FindDefinitionOfImportCommand { get; set; }
 
-        public ICommand FindDefinitionOfImportCommand { get; set; }
-
         private void LoadCommands()
         {
             CopyOffsetCommand = new RelayCommand(CopyFileOffsetToClipboard, OffsetIsSelected);
