@@ -2907,29 +2907,29 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 seq.WriteBinary(Array.Empty<byte>());
             }
 
+            if (seq.ClassName == "SeqAct_SetInt")
+            {
+                seq.WriteProperty(new BoolProperty(true, "bIsUpdated"));
+            }
+
+
             // Fix missing PropertyNames on VariableLinks
             if (seq.IsA("SequenceOp"))
             {
-                var defaultProperties =
-                    SequenceObjectCreator.GetSequenceObjectDefaults(seq.FileRef, seq.ClassName, seq.Game, pc);
-                var defaultVarLinks = defaultProperties.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
                 var varLinks = seq.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
-                if (varLinks is null || defaultVarLinks is null) return;
+                if (varLinks is null) return;
                 foreach (var t in varLinks.Values)
                 {
                     string desc = t.GetProp<StrProperty>("LinkDesc").Value;
-                    var defaultLink = defaultVarLinks.Values.FirstOrDefault(property =>
-                        property.GetProp<StrProperty>("LinkDesc").Value == desc);
-                    if (defaultLink != null)
+
+                    if (desc == "Target" && seq.ClassName == "SeqAct_SetBool")
                     {
-                        var propertyName = defaultLink.GetProp<NameProperty>("PropertyName");
-                        var existingLink = t.GetProp<NameProperty>("PropertyName");
-                        if (existingLink.Value == "None" && propertyName.Value != "None")
-                        {
-                            if (seq.ClassName != "SeqAct_SetBool")
-                                Debug.WriteLine($"SequenceCorrection: Correcting property name for varlink on {Path.GetFileName(seq.FileRef.FilePath)} {seq.UIndex} ({seq.ClassName}) {desc}: {existingLink} -> {propertyName}");
-                            t.Properties.AddOrReplaceProp(propertyName);
-                        }
+                        t.Properties.AddOrReplaceProp(new NameProperty("Target", "PropertyName"));
+                    }
+
+                    if (desc == "Value" && seq.ClassName == "SeqAct_SetInt")
+                    {
+                        t.Properties.AddOrReplaceProp(new NameProperty("Values", "PropertyName"));
                     }
                 }
 
