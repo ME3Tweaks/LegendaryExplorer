@@ -240,9 +240,13 @@ namespace LegendaryExplorerCore.Matinee
             switch (preset)
             {
                 case "Camera":
+                case "Actor":
                     if (!string.IsNullOrEmpty(param1))
                     {
-                        properties.Add(new NameProperty(param1, "m_nmSFXFindActor"));
+                        if (game.IsGame3())
+                        {
+                            properties.Add(new NameProperty(param1, "m_nmSFXFindActor"));
+                        }
                         properties.Add(new NameProperty(param1, "GroupName"));
                     }
                     properties.Add(CommonStructs.ColorProp(Color.Green, "GroupColor"));
@@ -328,6 +332,12 @@ namespace LegendaryExplorerCore.Matinee
                         ges2.WriteProperty(m_aTrackKeys);
                     }
                     ges2.WriteProperty(new StrProperty($"Gesture -- {param1}", "TrackTitle"));
+                    break;
+
+                case "Actor":
+                    var actMove = AddNewTrackToGroup(interpGroup, "InterpTrackMove");
+                    AddDefaultPropertiesToTrack(actMove);
+                    PresetAddTracks("Gesture", interpGroup, game, param1);
                     break;
 
                 default:
