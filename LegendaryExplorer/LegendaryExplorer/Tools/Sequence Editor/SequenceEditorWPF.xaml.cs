@@ -828,7 +828,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 if (Pcc.IsModified)
                 {
                     var warningResult = MessageBox.Show(this, "The current package is modified. Reloading the package will cause you to lose all changes to this package.\n\nReload anyways?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                    if (warningResult != MessageBoxResult.Yes) 
+                    if (warningResult != MessageBoxResult.Yes)
                         return; // Do not continue!
                 }
 
@@ -882,7 +882,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     }
 
                     objsInNeedOfLayout.Add(obj);
-                    obj.Layout(0,0);
+                    obj.Layout(0, 0);
                     //switch (obj)
                     //{
                     //    case SEvent:
@@ -1427,6 +1427,19 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     }
                 }
 
+                if (contextMenu.GetChild("sequenceRefGotoMenuItem") is MenuItem sequenceRefGotoMenuItem)
+                {
+
+                    if (obj is SAction sAction && sAction.Export != null && sAction.Export.ClassName == "SequenceReference")
+                    {
+                        sequenceRefGotoMenuItem.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        sequenceRefGotoMenuItem.Visibility = Visibility.Collapsed;
+                    }
+                }
+
                 contextMenu.IsOpen = true;
                 graphEditor.DisableDragging();
             }
@@ -1807,7 +1820,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 //set SequenceReference's linked name indices
                 var inputIndices = new List<int>();
                 var outputIndices = new List<int>();
-                
+
                 var props = newSequence.GetProperties();
                 var inLinksProp = props.GetProp<ArrayProperty<StructProperty>>("InputLinks");
                 if (inLinksProp != null)
@@ -2096,6 +2109,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         {
             foreach (ExportEntry exp in SequenceExports)
             {
+                // Are we trying to select a sequence?
                 if (selectSequences && export == exp)
                 {
                     if (export.ClassName == "SequenceReference")
@@ -2115,6 +2129,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     break;
                 }
 
+                // Get the export for the sequence we will look for objects in
                 ExportEntry sequence = exp;
                 if (sequence.ClassName == "SequenceReference")
                 {
@@ -2129,6 +2144,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     }
                 }
 
+                // Enumerate the objects in the sequence to see if what we are looking for is in this sequence
                 var seqObjs = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
                 if (seqObjs != null && seqObjs.Any(objProp => objProp.Value == export.UIndex))
                 {
@@ -2142,7 +2158,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
         private void PlotEditorMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if (CurrentObjects_ListBox.SelectedItem is SAction sAction && 
+            if (CurrentObjects_ListBox.SelectedItem is SAction sAction &&
                 sAction.Export.ClassName == "BioSeqAct_PMExecuteTransition" &&
                 sAction.Export.GetProperty<IntProperty>("m_nIndex")?.Value is int m_nIndex)
             {
@@ -2300,6 +2316,16 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         {
             RecentsController.PropogateRecentsChange(false, newRecents);
         }
+
+        private void GotoSequenceReference_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (CurrentObjects_ListBox.SelectedItem is SAction sAction &&
+                sAction.Export.ClassName == "SequenceReference")
+            {
+                GoToExport(sAction.Export); // GoToExport should probably go to the export, not the data in it
+            }
+        }
+
         public string Toolname => "SequenceEditor";
     }
     static class SequenceEditorExtensions

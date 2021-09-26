@@ -33,6 +33,7 @@
         <converters:InverseVisibilityConverter x:Key="InverseVisibilityConverter"/>
         <converters:GameTypeConverter x:Key="GameTypeConverter"/>
         <ContextMenu x:Key="nodeContextMenu" Closed="ContextMenu_Closed">
+            <MenuItem Header="Goto sequence" Name="sequenceRefGotoMenuItem" Click="GotoSequenceReference_Clicked" />
             <MenuItem Header="Open in Package Editor" Click="OpenInPackageEditor_Clicked" />
             <MenuItem Header="Open Referenced Object in Package Editor" Click="OpenReferencedObjectInPackageEditor_Clicked" Name="openRefInPackEdMenuItem"/>
             <MenuItem Header="Open in Interp Editor" Click="OpenInInterpViewer_Clicked" Name="interpViewerMenuItem"/>
