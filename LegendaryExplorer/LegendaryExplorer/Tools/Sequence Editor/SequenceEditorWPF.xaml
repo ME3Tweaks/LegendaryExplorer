@@ -230,7 +230,7 @@
                                 Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
                         <TextBlock Margin="5" Text="Welcome to Sequence Editor" FontWeight="Bold" />
                         <TextBlock Margin="5">
-                            Sequence Editor is the toolsets editor for Kismet sequencencing, which is heavily utilized in Mass Effect games.
+                            Sequence Editor is the toolsets editor for Kismet sequencing, which is heavily utilized in Mass Effect games.
                             <LineBreak />
                             Package files that contain sequences are ones that contain levels, which for ME1 are nearly everything in the
                             <LineBreak/>
