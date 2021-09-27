@@ -216,7 +216,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                                     {
                                         if (varLink.GetProp<ObjectProperty>("ExpectedType") is ObjectProperty expectedTypeProp &&
                                             importPCC.TryGetEntry(expectedTypeProp.Value, out IEntry expectedVar) &&
-                                            EntryImporter.EnsureClassIsInFile(pcc, expectedVar.ObjectName, RelinkResultsAvailable: EntryImporterExtended.ShowRelinkResults) is IEntry portedExpectedVar)
+                                            EntryImporter.EnsureClassIsInFile(pcc, expectedVar.ObjectName, RelinkResultsAvailable: EntryImporterExtended.ShowRelinkResults, cache: pc) is IEntry portedExpectedVar)
                                         {
                                             expectedTypeProp.Value = portedExpectedVar.UIndex;
                                         }
@@ -235,7 +235,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                                     {
                                         if (eventLink.GetProp<ObjectProperty>("ExpectedType") is ObjectProperty expectedTypeProp &&
                                             importPCC.TryGetEntry(expectedTypeProp.Value, out IEntry expectedVar) &&
-                                            EntryImporter.EnsureClassIsInFile(pcc, expectedVar.ObjectName, RelinkResultsAvailable: EntryImporterExtended.ShowRelinkResults) is IEntry portedExpectedVar)
+                                            EntryImporter.EnsureClassIsInFile(pcc, expectedVar.ObjectName, RelinkResultsAvailable: EntryImporterExtended.ShowRelinkResults, cache: pc) is IEntry portedExpectedVar)
                                         {
                                             expectedTypeProp.Value = portedExpectedVar.UIndex;
                                         }
@@ -315,11 +315,11 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             return defaults;
         }
 
-        public static ExportEntry CreateSequenceObject(IMEPackage pcc, string className, MEGame game)
+        public static ExportEntry CreateSequenceObject(IMEPackage pcc, string className, MEGame game, PackageCache cache = null)
         {
-            var seqObj = new ExportEntry(pcc, 0, pcc.GetNextIndexedName(className), properties: GetSequenceObjectDefaults(pcc, className, game))
+            var seqObj = new ExportEntry(pcc, 0, pcc.GetNextIndexedName(className), properties: GetSequenceObjectDefaults(pcc, className, game, cache))
             {
-                Class = EntryImporter.EnsureClassIsInFile(pcc, className, RelinkResultsAvailable: EntryImporterExtended.ShowRelinkResults)
+                Class = EntryImporter.EnsureClassIsInFile(pcc, className, RelinkResultsAvailable: EntryImporterExtended.ShowRelinkResults, cache: cache)
             };
             seqObj.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
             pcc.AddExport(seqObj);

@@ -123,6 +123,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         public ICommand AutoLayoutCommand { get; set; }
         public ICommand ScanFolderForLoopsCommand { get; set; }
         public ICommand CheckSequenceSetsCommand { get; set; }
+        public ICommand ConvertSeqActLogCommentCommand { get; set; }
         public ICommand GotoCommand { get; set; }
         public ICommand KismetLogCommand { get; set; }
         public ICommand KismetLogCurrentSequenceCommand { get; set; }
@@ -142,6 +143,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             KismetLogCommand = new RelayCommand(OpenKismetLogParser, CanOpenKismetLog);
             ScanFolderForLoopsCommand = new GenericCommand(ScanFolderPackagesForTightLoops);
             CheckSequenceSetsCommand = new GenericCommand(() => SequenceEditorExperimentsM.CheckSequenceSets(this), () => CurrentObjects.Any);
+            ConvertSeqActLogCommentCommand = new GenericCommand(() => SequenceEditorExperimentsM.ConvertSeqAct_Log_objComments(this), () => SequenceExports.Any);
             SearchCommand = new GenericCommand(SearchDialogue, () => CurrentObjects.Any);
         }
 

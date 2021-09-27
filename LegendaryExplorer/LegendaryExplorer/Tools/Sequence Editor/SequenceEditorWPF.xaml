@@ -159,6 +159,8 @@
                               ToolTip="Scans a folder of package files for sequence objects that have an output that leads to itself&#10;These types of loops severely harm game performance" />
                     <MenuItem Header="Check current sequence Sets" Command="{Binding CheckSequenceSetsCommand}"
                               ToolTip="Checks the VarLinks of SetInt/Float...etc to make sure their PropertyName is on the target class of the recipient object." />
+                    <MenuItem Header="Make all SeqAct__Log m__aObjComment's into SeqVar_String" Command="{Binding ConvertSeqActLogCommentCommand}"
+                              ToolTip="Converts the m_aObjComment's on SeqAct_Log's into a String var that is attached to it, so it can be logged by the SeqAct logger ASI" />
 
                 </MenuItem>
             </Menu>

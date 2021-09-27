@@ -464,6 +464,18 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                                             return $"#{entry.UIndex}\n{entry.ObjectName.Instanced}";
                                         }
                                     }
+                                case ArrayProperty<ObjectProperty> objList when objList.Name == "ObjList":
+                                    {
+                                        string text = $"ObjList: {objList.Count} item (s)";
+                                        if (objList.Count > 0)
+                                            text += $"\n0: {objList[0].ResolveToEntry(export.FileRef)?.ObjectName.Instanced}";
+                                        if (objList.Count > 0)
+                                            text += $"\n1: {objList[1].ResolveToEntry(export.FileRef)?.ObjectName.Instanced}";
+                                        if (objList.Count > 0)
+                                            text += "\n...";
+
+                                        return text;
+                                    }
                             }
                         }
                         return unknownValue;
@@ -515,6 +527,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                             return CommonStructs.GetRotator(rotStruct).ToString();
                         }
                         return unknownValue;
+
                     default:
                         return unknownValue;
                 }

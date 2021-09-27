@@ -1051,7 +1051,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             return associatedFiles;
         }
 
-        public static IEntry EnsureClassIsInFile(IMEPackage pcc, string className, string gamePathOverride = null, Action<List<EntryStringPair>> RelinkResultsAvailable = null)
+        public static IEntry EnsureClassIsInFile(IMEPackage pcc, string className, string gamePathOverride = null, Action<List<EntryStringPair>> RelinkResultsAvailable = null, PackageCache cache = null)
         {
             //check to see class is already in file
             foreach (ImportEntry import in pcc.Imports)
@@ -1075,9 +1075,18 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             int exportCount = pcc.ExportCount;
             int importCount = pcc.ImportCount;
             List<string> nameListBackup = pcc.Names.ToList();
+
+            // If there is no package cache, we may have to open package
+            // If we open package not with cache we should make sure we re-close the package
+            IMEPackage nonCachedOpenedPackage = null;
             try
             {
+                IMEPackage packageToImportFrom; // Not inlined for clarity of scope and purpose
                 Stream loadStream = null;
+
+                #region Read from DLC_TestPatch (ME3 only)
+                // Caching this would be pretty complicated so we're just not going to do that
+                // Files are pretty small anyways so won't have too big of a performance improvement
                 if (pcc.Game is MEGame.ME3 && info.pccPath.StartsWith("DLC_TestPatch"))
                 {
                     string fileName = Path.GetFileName(info.pccPath);
@@ -1086,6 +1095,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     {
                         return null;
                     }
+
                     var patchSFAR = new DLCPackage(testPatchSfarPath);
                     int fileIdx = patchSFAR.FindFileEntry(fileName);
                     if (fileIdx == -1)
@@ -1108,57 +1118,62 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         }
                     }
                 }
+                #endregion
 
-                if (loadStream is null)
+                string fullPackagePath = Path.Combine(MEDirectories.GetBioGamePath(pcc.Game, gamePathOverride), info.pccPath);
+                if (cache == null || !cache.TryGetCachedPackage(fullPackagePath, true, out packageToImportFrom))
                 {
-                    if (IsSafeToImportFrom(info.pccPath, pcc.Game))
-                    {
-                        string package = Path.GetFileNameWithoutExtension(info.pccPath);
-                        return pcc.getEntryOrAddImport($"{package}.{className}");
-                    }
-
-                    //It's a class that's defined locally in every file that uses it.
-                    if (info.pccPath == GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
-                    {
-                        loadStream = LegendaryExplorerCoreUtilities.GetCustomAppResourceStream(pcc.Game);
-                        //string resourceFilePath = App.CustomResourceFilePath(pcc.Game);
-                        //if (File.Exists(resourceFilePath))
-                        //{
-                        //    sourceFilePath = resourceFilePath;
-                        //}
-                    }
-                    else
-                    {
-                        string testPath = Path.Combine(MEDirectories.GetBioGamePath(pcc.Game, gamePathOverride), info.pccPath);
-                        if (File.Exists(testPath))
-                        {
-                            loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(testPath);
-                        }
-                        else if (pcc.Game == MEGame.ME1)
-                        {
-                            testPath = Path.Combine(gamePathOverride ?? ME1Directory.DefaultGamePath, info.pccPath);
-                            if (File.Exists(testPath))
-                            {
-                                loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(testPath);
-                            }
-                        }
-                    }
-
                     if (loadStream is null)
                     {
-                        //can't find file to import from. This may occur if user does not have game or neccesary dlc installed 
-                        return null;
+                        if (IsSafeToImportFrom(info.pccPath, pcc.Game))
+                        {
+                            string package = Path.GetFileNameWithoutExtension(info.pccPath);
+                            return pcc.getEntryOrAddImport($"{package}.{className}");
+                        }
+
+                        //It's a class that's defined locally in every file that uses it.
+                        if (info.pccPath == GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
+                        {
+                            loadStream = LegendaryExplorerCoreUtilities.GetCustomAppResourceStream(pcc.Game);
+                            //string resourceFilePath = App.CustomResourceFilePath(pcc.Game);
+                            //if (File.Exists(resourceFilePath))
+                            //{
+                            //    sourceFilePath = resourceFilePath;
+                            //}
+                        }
+                        else
+                        {
+                            if (File.Exists(fullPackagePath))
+                            {
+                                loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(fullPackagePath);
+                            }
+                            else if (pcc.Game == MEGame.ME1)
+                            {
+                                fullPackagePath = Path.Combine(gamePathOverride ?? ME1Directory.DefaultGamePath, info.pccPath);
+                                if (File.Exists(fullPackagePath))
+                                {
+                                    loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(fullPackagePath);
+                                }
+                            }
+                        }
+
+                        if (loadStream is null)
+                        {
+                            //can't find file to import from. This may occur if user does not have game or neccesary dlc installed 
+                            return null;
+                        }
                     }
+
+                    packageToImportFrom = MEPackageHandler.OpenMEPackageFromStream(loadStream);
+                    nonCachedOpenedPackage = packageToImportFrom; // Needs re-closed at end
                 }
 
-                using IMEPackage sourcePackage = MEPackageHandler.OpenMEPackageFromStream(loadStream);
-
-                if (!sourcePackage.IsUExport(info.exportIndex))
+                if (!packageToImportFrom.IsUExport(info.exportIndex))
                 {
                     return null; //not sure how this would happen
                 }
 
-                ExportEntry sourceClassExport = sourcePackage.GetUExport(info.exportIndex);
+                ExportEntry sourceClassExport = packageToImportFrom.GetUExport(info.exportIndex);
 
                 if (sourceClassExport.ObjectName != className)
                 {
@@ -1166,13 +1181,14 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 }
 
                 //Will make sure that, if the class is in a package, that package will exist in pcc
-                IEntry parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceClassExport.ParentFullPath, sourcePackage, pcc);
+                IEntry parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceClassExport.ParentFullPath, packageToImportFrom, pcc);
 
                 var relinkResults = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceClassExport, pcc, parent, true, out IEntry result);
                 if (relinkResults?.Count > 0)
                 {
                     RelinkResultsAvailable?.Invoke(relinkResults);
                 }
+
                 return result;
             }
             catch (Exception e)
@@ -1183,13 +1199,19 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 {
                     entriesToRemove.Add(pcc.Exports[i]);
                 }
+
                 for (int i = importCount; i < pcc.Imports.Count; i++)
                 {
                     entriesToRemove.Add(pcc.Imports[i]);
                 }
+
                 EntryPruner.TrashEntries(pcc, entriesToRemove);
                 pcc.restoreNames(nameListBackup);
                 return null;
+            }
+            finally
+            {
+                nonCachedOpenedPackage?.Dispose(); // If opened from non-cache, make sure it's closed
             }
         }
 
