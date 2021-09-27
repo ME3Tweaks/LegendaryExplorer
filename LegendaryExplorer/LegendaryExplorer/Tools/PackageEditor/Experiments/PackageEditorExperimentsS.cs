@@ -65,22 +65,25 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             pewpf.IsBusy = true;
             pewpf.BusyText = $"Porting Shadow Maps from OT file.";
-            if (pcc is null || !pcc.FileNameNoExtension.CaseInsensitiveEquals("BioA_CitSam_800Finalroom") || pcc.Game is not MEGame.LE3)
+            if (pcc?.Game is not MEGame.LE3)
             {
-                MessageBox.Show("This is only designed to work on LE3's BioA_CitSam_800Finalroom.pcc!");
+                MessageBox.Show("This is only designed to work on LE3 BioA_CitSam_800Finalroom.pcc!");
                 return;
             }
 
-            if (!MELoadedFiles.GetFilesLoadedInGame(MEGame.ME3).TryGetValue("BioA_CitSam_800Finalroom.pcc", out string otFilePath))
+            string fileName = Path.GetFileName(pcc.FilePath);
+            if (!MELoadedFiles.GetFilesLoadedInGame(MEGame.ME3).TryGetValue(fileName, out string otFilePath))
             {
-                MessageBox.Show("Could not find ME3 version of BioA_CitSam_800Finalroom.pcc!");
+                MessageBox.Show($"Could not find ME3 version of {fileName}!");
                 return;
             }
             Task.Run(() =>
             {
-                EntryPruner.TrashEntryAndDescendants(pcc.FindExport("ShadowMapTexture2D_69"));
                 var levelExport = pcc.FindExport("TheWorld.PersistentLevel");
                 var levelBin = levelExport.GetBinaryData<Level>();
+                levelBin.TextureToInstancesMap.RemoveAll(kvp => kvp.Key.GetEntry(pcc) is ExportEntry exp && exp.ClassName.CaseInsensitiveEquals("ShadowMapTexture2D"));
+                var shadowMapsToTrash = pcc.Exports.Where(exp => exp.ClassName.CaseInsensitiveEquals("ShadowMapTexture2D")).ToList();
+                EntryPruner.TrashEntriesAndDescendants(shadowMapsToTrash);
 
                 using IMEPackage otPcc = MEPackageHandler.OpenME3Package(otFilePath);
                 var relinkMap = new Dictionary<IEntry, IEntry>();
@@ -106,7 +109,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         }
                     }
                 }
-                levelBin.TextureToInstancesMap.RemoveAt(66);
 
                 var otLevelExport = otPcc.FindExport("TheWorld.PersistentLevel");
                 var otLevelTexToInst = otLevelExport.GetBinaryData<Level>().TextureToInstancesMap;

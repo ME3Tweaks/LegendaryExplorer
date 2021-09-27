@@ -114,10 +114,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 throw ParseError("Expected name of Object!", CurrentPosition);
             }
+            string objectName = nameToken.Value;
 
             var statements = new List<Statement>();
 
             ExpressionScopes.Push(objectClass.GetInheritanceString());
+            Symbols.PushScope(objectName);
             try
             {
                 while (true)
@@ -129,12 +131,14 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     }
                     else if (CurrentIs("END") && NextIs("Object"))
                     {
-                        Tokens.Advance(2);// END Object
-                        var subObj = new Subobject(new VariableDeclaration(objectClass, default, nameToken.Value), objectClass, statements, startPos, PrevToken.EndPos);
-                        if (!Symbols.TryAddSymbol(nameToken.Value, subObj))
+                        Symbols.PopScope();
+                        Tokens.Advance(2); // END Object
+                        var subObj = new Subobject(new VariableDeclaration(objectClass, default, objectName), objectClass, statements, startPos, PrevToken.EndPos);
+                        if (!Symbols.TryAddSymbol(objectName, subObj))
                         {
-                            throw ParseError($"'{nameToken.Value}' has already been defined in this scope!");
+                            throw ParseError($"'{objectName}' has already been defined in this scope!");
                         }
+
                         return subObj;
                     }
                     else
@@ -146,8 +150,14 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     {
                         throw ParseError("Subobject declarations must be closed with 'End Object' !");
                     }
+
                     statements.Add(current);
                 }
+            }
+            catch
+            {
+                Symbols.PopScope();
+                throw;
             }
             finally
             {
@@ -406,15 +416,17 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                     break;
                 case DelegateType delegateType:
-                    if (literal is not SymbolReference {Node: Function func})
+                    if (literal is not NoneLiteral)
                     {
-                        TypeError("Expected a function reference!", literal);
+                        if (literal is not SymbolReference {Node: Function func})
+                        {
+                            TypeError("Expected a function reference!", literal);
+                        }
+                        else if (!func.SignatureEquals(delegateType.DefaultFunction))
+                        {
+                            TypeError($"Expected a function with the same signature as {(delegateType.DefaultFunction.Outer as Class)?.Name}.{delegateType.DefaultFunction.Name}!", literal);
+                        }
                     }
-                    else if (!func.SignatureEquals(delegateType.DefaultFunction))
-                    {
-                        TypeError($"Expected a function with the same signature as {(delegateType.DefaultFunction.Outer as Class)?.Name}.{delegateType.DefaultFunction.Name}!", literal);
-                    }
-
                     break;
                 case DynamicArrayType:
                     if (literal is not DynamicArrayLiteral)
@@ -427,6 +439,21 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     {
                         if (literal is not SymbolReference {Node: EnumValue enumVal})
                         {
+                            var prevToken = PrevToken;
+                            if (Symbols.TryGetType(prevToken.Value, out Enumeration enum2) && enum2 == enumeration 
+                                && Matches(TokenType.Dot) && Consume(TokenType.Word) is Token<string> enumValueToken)
+                            {
+                                prevToken.SyntaxType = EF.Enum;
+                                prevToken.AssociatedNode = enum2;
+                                if (enumeration.Values.FirstOrDefault(val => val.Name.CaseInsensitiveEquals(enumValueToken.Value)) is EnumValue enumValue)
+                                {
+
+                                    enumValueToken.AssociatedNode = enumeration;
+                                    literal = NewSymbolReference(enumValue, enumValueToken, false);
+                                    break;
+                                }
+                                throw ParseError("Expected valid enum value!", CurrentPosition);
+                            }
                             TypeError($"Expected an enum value!", literal);
                         }
                         else if (enumeration != enumVal.Enum)
