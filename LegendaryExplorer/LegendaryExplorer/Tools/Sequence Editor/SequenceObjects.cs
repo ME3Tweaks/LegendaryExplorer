@@ -839,6 +839,15 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                             Desc = props.GetProp<StrProperty>("LinkDesc"),
                             type = getType(pcc.getObjectName(props.GetProp<ObjectProperty>("ExpectedType").Value))
                         };
+
+                        // CROSSGEN - TRYING TO FIGURE OUT WHATS UP
+                        //if (props.GetProp<NameProperty>("PropertyName").Value.Instanced is string str && str != l.Desc)
+                        //{
+                        //    l.Desc += $" (PN: {str})";
+                        //}
+
+                        // ENDCROSSGEN
+
                         foreach (var objProp in linkedVars)
                         {
                             l.Links.Add(objProp.Value);
@@ -1688,7 +1697,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                     CreateInputLink(inputLinksProp[i].GetProp<StrProperty>("LinkDesc"), i);
                 }
             }
-            else 
+            else
             {
                 try
                 {
