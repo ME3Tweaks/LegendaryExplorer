@@ -1183,46 +1183,51 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         }
         #endregion
 
+        // EXPERIMENTS: HENBAGLE ------------------------------------------------------------
+        #region HenBagle's Experiments
+
+        private void BuildME1SuperTLK_Clicked(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsH.BuildME1SuperTLKFile(GetPEWindow());
+        }
+
+        private void AssociateAllExtensions_Clicked(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsH.AssociateAllExtensions();
+        }
+
+        private void GenerateAudioFileInfo_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsH.CreateAudioSizeInfo(GetPEWindow(), MEGame.LE3);
+        }
+
+        private void GenerateWwiseId_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsH.GenerateWwiseId(GetPEWindow());
+        }
+
+        private void CreateTestTLKWithStringIDs_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsH.CreateTestTLKWithStringIDs(GetPEWindow());
+        }
+
+        private void UpdateLocalFunctions_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsH.UpdateLocalFunctions(GetPEWindow());
+        }
+
+        private void DumpTOC_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsH.DumpTOC();
+        }
+
+        #endregion
+
         // EXPERIMENTS: OTHER PEOPLE ------------------------------------------------------------
         #region Other people's experiments
         private void ExportLevelToT3D_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsO.DumpPackageToT3D(GetPEWindow().Pcc);
-        }
-
-        private void BuildME1SuperTLK_Clicked(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsO.BuildME1SuperTLKFile(GetPEWindow());
-        }
-
-        private void AssociateAllExtensions_Clicked(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsO.AssociateAllExtensions();
-        }
-
-        private void GenerateAudioFileInfo_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsO.CreateAudioSizeInfo(GetPEWindow(), MEGame.LE3);
-        }
-
-        private void GenerateWwiseId_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsO.GenerateWwiseId(GetPEWindow());
-        }
-
-        private void CreateTestTLKWithStringIDs_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsO.CreateTestTLKWithStringIDs(GetPEWindow());
-        }
-
-        private void UpdateLocalFunctions_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsO.UpdateLocalFunctions(GetPEWindow());
-        }
-
-        private void DumpTOC_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsO.DumpTOC();
         }
 
         private void AddPresetDirectorGroup_Click(object sender, RoutedEventArgs e)
