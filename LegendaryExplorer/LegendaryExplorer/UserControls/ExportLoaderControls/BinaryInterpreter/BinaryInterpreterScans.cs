@@ -1244,7 +1244,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 new BinInterpNode(bin.Position, $"BitMask: {Convert.ToString(bin.ReadInt64(), 2).PadLeft(64, '0')}")
                             }
                         });
-                        node.Items.Add(MakeArrayNode(bin, "MaterialIds", j => MakeMaterialGuidNode(bin, $"{j}", materialGuidMap)));
+                        node.Items.Add(MakeArrayNode(bin, "MaterialIds", j => MakeMaterialGuidNode(bin, $"{j}", materialGuidMap), true));
                         if (Pcc.Game >= MEGame.ME3)
                         {
                             node.Items.Add(MakeGuidNode(bin, "LightingGuid"));
@@ -7094,7 +7094,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 #if DEBUG
             if (materialGuidMap != null && materialGuidMap.TryGetValue(guid, out var matName))
             {
-                node.Header += matName;
+                node.Header += " " + matName;
             }
 #endif
             return node;
