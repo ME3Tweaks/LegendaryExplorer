@@ -1660,7 +1660,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     pewpf.BusyText = $"Inventorying terrains [{done++}/{loadedFiles.Count}]";
                     using var p = MEPackageHandler.OpenMEPackage(v.Value);
-                    foreach (var t in p.Exports.Where(x => x.ClassName == "Terrain" && !x.IsDefaultObject))
+                    foreach (var t in p.Exports.Where(x => x.ClassName =="Terrain" && !x.IsDefaultObject))
                     {
                         var tcSize = t.GetProperty<ArrayProperty<ObjectProperty>>("TerrainComponents");
                         if (tcSize != null)
@@ -2451,8 +2451,34 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             CorrectPathfindingNetwork(me1File, le1File);
             PostCorrectMaterialsToInstanceConstants(me1File, le1File, vtestHelperFile);
             RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
-
+            CorrectTerrainMaterials(le1File);
             //CorrectTriggerStreamsMaybe(me1File, le1File);
+        }
+
+        private static Guid? tempDonorGuid = null;
+        private static void CorrectTerrainMaterials(IMEPackage le1File)
+        {
+            if (tempDonorGuid == null)
+            {
+                using var donorMatP = MEPackageHandler.OpenMEPackage(Path.Combine(LE1Directory.CookedPCPath, "BIOA_PRO10_11_LAY.pcc"));
+                var terrain = donorMatP.FindExport("TheWorld.PersistentLevel.Terrain_0");
+                var terrbinD = ObjectBinary.From<Terrain>(terrain);
+                tempDonorGuid = terrbinD.CachedTerrainMaterials[0].ID;
+            }
+
+            var fname = Path.GetFileNameWithoutExtension(le1File.FilePath);
+            var terrains = le1File.Exports.Where(x => x.ClassName == "Terrain").ToList();
+            foreach (var terrain in terrains)
+            {
+                var terrbin = ObjectBinary.From<Terrain>(terrain);
+
+                foreach (var terrainMat in terrbin.CachedTerrainMaterials)
+                {
+                    terrainMat.ID = tempDonorGuid.Value;
+                }
+
+                terrain.WriteBinary(terrbin);
+            }
         }
 
         private static void CorrectTriggerStreamsMaybe(IMEPackage me1File, IMEPackage le1File)
@@ -2623,6 +2649,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         basez = loc.GetProp<FloatProperty>("Z").Value;
                     }
 
+                    // COLLISION VERTICES
                     for (int i = 0; i < b.CollisionVertices.Length; i++)
                     {
                         var cv = b.CollisionVertices[i];
@@ -2632,6 +2659,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         newV.Y = (cv.Y * scaleY) + basey;
                         newV.Z = (cv.Z * scaleZ) + basez;
                         b.CollisionVertices[i] = newV;
+                    }
+
+                    // Bounding Volume Tree
+                    for (int i = 0; i < b.BVTree.Length; i++)
+                    {
+                        var box = b.BVTree[i].BoundingVolume;
+                        box.Min = new Vector3 { X = (box.Min.X * scaleX) + basex, Y = (box.Min.Y * scaleY) + basey, Z = (box.Min.Z * scaleZ) + basez };
+                        box.Max = new Vector3 { X = (box.Max.X * scaleX) + basex, Y = (box.Max.Y * scaleY) + basey, Z = (box.Max.Z * scaleZ) + basez };
                     }
 
                     exp.WriteBinary(b);
