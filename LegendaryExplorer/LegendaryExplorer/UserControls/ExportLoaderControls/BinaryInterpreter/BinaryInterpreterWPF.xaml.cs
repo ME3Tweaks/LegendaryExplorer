@@ -606,6 +606,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     case "BioDynamicAnimSet":
                         subNodes.AddRange(StartBioDynamicAnimSetScan(data, ref binarystart));
                         break;
+                    case "BioSquadCombat":
+                        subNodes.AddRange(StartBioSquadCombatScan(data, ref binarystart));
+                        break;
                     case "ObjectRedirector":
                         subNodes.AddRange(StartObjectRedirectorScan(data, ref binarystart));
                         break;

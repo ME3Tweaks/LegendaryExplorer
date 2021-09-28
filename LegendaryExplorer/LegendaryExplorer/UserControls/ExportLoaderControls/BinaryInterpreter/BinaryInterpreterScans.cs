@@ -6121,6 +6121,35 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             return subnodes;
         }
 
+        private List<ITreeItem> StartBioSquadCombatScan(byte[] data, ref int binarystart)
+        {
+            var subnodes = new List<ITreeItem>();
+
+            try
+            {
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+                bin.JumpTo(binarystart);
+                subnodes.Add(MakeArrayNode(bin, "Count", i =>
+                {
+                    string entry = null;
+                    if (Pcc.Game.IsLEGame())
+                    {
+                        entry = Pcc.GetEntryString(bin.ReadInt32());
+                    }
+
+                    var guid = bin.ReadGuid();
+                    int num = bin.ReadInt32();
+
+                    return new BinInterpNode(bin.Position, $"{guid}: {num} {entry}");
+                }));
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
+            }
+            return subnodes;
+        }
+
         private List<ITreeItem> StartBioDynamicAnimSetScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<ITreeItem>();
