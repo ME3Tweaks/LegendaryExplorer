@@ -2472,6 +2472,11 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     {
                         linkToAttachTo = varLinks.First(x => x.LinkDesc == "Obj List");
                     }
+                    else if (sVar.Export.IsA("SeqVar_External"))
+                    {
+                        // Just use Object
+                        linkToAttachTo = varLinks.First(x => x.LinkDesc == "Object");
+                    }
 
 
                     if (linkToAttachTo == null)
