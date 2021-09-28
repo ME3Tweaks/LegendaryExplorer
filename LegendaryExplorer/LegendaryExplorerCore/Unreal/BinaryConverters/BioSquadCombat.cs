@@ -18,18 +18,20 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public EntryGuidNumPair[] EntryGuidNumPairs;//? Speculative name
         protected override void Serialize(SerializingContainer2 sc)
         {
+            if (!sc.Game.IsGame1())
+                return; // No binary except in Game 1
+
             sc.Serialize(ref EntryGuidNumPairs, SCExt.Serialize);
         }
 
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
         {
+            if (game != MEGame.LE1) return new List<(UIndex, string)>(0);
+
             List<(UIndex, string)> indices = new List<(UIndex, string)>(EntryGuidNumPairs.Length);
-            if (game == MEGame.LE1)
+            for (int i = 0; i < EntryGuidNumPairs.Length; i++)
             {
-                for (int i = 0; i < EntryGuidNumPairs.Length; i++)
-                {
-                    indices.Add((EntryGuidNumPairs[i].Entry, $"EntryGuidNumPair[{i}]")); // how to handle nulls?
-                }
+                indices.Add((EntryGuidNumPairs[i].Entry, $"EntryGuidNumPair[{i}]")); // how to handle nulls?
             }
             return indices;
         }
@@ -39,9 +41,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public static void Serialize(this SerializingContainer2 sc, ref EntryGuidNumPair egnp)
         {
-            if (!sc.Game.IsGame1())
-                return; // No binary except in Game 1
-            
+
             if (sc.IsLoading)
             {
                 egnp = new EntryGuidNumPair();
