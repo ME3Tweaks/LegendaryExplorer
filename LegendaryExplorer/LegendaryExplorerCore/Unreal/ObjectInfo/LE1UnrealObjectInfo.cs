@@ -1289,6 +1289,13 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             @"Engine.Model",
             @"Engine.Polys",
             @"Core.Package",
+            @"Core.ArrayProperty",
+            @"Core.FloatProperty",
+            @"Core.Function",
+            @"Core.ObjectProperty",
+            @"Core.IntProperty",
+            @"Core.BoolProperty",
+            @"Core.StructProperty"
         };
     }
 }
