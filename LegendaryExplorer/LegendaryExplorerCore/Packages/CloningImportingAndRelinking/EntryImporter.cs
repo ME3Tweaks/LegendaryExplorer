@@ -247,7 +247,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             IDictionary<IEntry, IEntry> objectMapping = null, Action<string> errorOccuredCallback = null, ObjectInstanceDB targetGameDB = null)
         {
 #if DEBUG
-            // BIG HACKJOB
+            // CROSSGEN - WILL NEED HEAVY REWORK IF THIS IS TO BE MERGED TO BETA
+            // Cause there's a lot of things that seem to have to be manually accounted for
             if (targetGameDB != null && sourceExport.ClassName != "Package" && sourceExport.indexValue == 0) // Actors cannot be donors
             {
                 // Port in donor instead
@@ -785,6 +786,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         private static readonly string[] le1FilesSafeToImportFrom =
         {
             "Core.pcc", "Engine.pcc", "GFxUI.pcc", "PlotManagerMap.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc", "Startup_INT.pcc", "BIOC_Materials.pcc"
+            // SFXWorldResources and SFXVehicleResources are always loaded
+            // EXCEPT ON STA MAPS!!
         };
 
         private static readonly string[] le2FilesSafeToImportFrom =
