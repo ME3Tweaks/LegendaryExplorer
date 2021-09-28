@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using LegendaryExplorerCore.Misc;
 
 namespace LegendaryExplorerCore.Packages
@@ -73,7 +74,7 @@ namespace LegendaryExplorerCore.Packages
         }
 
         /// <summary>
-        /// Releases packages referenced by this cache and can optionally force a garbage collection to reclaim memory they may have used
+        /// Releases all packages referenced by this cache and can optionally force a garbage collection to reclaim memory they may have used
         /// </summary>
         public void ReleasePackages(bool gc = false)
         {
@@ -83,6 +84,25 @@ namespace LegendaryExplorerCore.Packages
             }
 
             Cache.Clear();
+            if (gc)
+                GC.Collect();
+        }
+
+        /// <summary>
+        /// Releases all packages referenced by this cache that match the specified predicate, and can optionally force a garbage collection to reclaim memory they may have used
+        /// </summary>
+        public void ReleasePackages(Predicate<string> packagesToDropPredicate, bool gc = false)
+        {
+            var keys = Cache.Keys.ToList();
+            foreach (var key in keys)
+            {
+                if (packagesToDropPredicate?.Invoke(key) ?? true)
+                {
+                    Cache[key].Dispose();
+                    Cache.Remove(key, out _);
+                }
+            }
+            
             if (gc)
                 GC.Collect();
         }
