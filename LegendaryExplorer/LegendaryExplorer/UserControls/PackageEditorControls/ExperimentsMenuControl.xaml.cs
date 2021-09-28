@@ -374,12 +374,22 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
         private async void VTest_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsM.VTest(GetPEWindow());
+            VTestExperiment.VTest(GetPEWindow());
         }
 
         private async void MakeVTestDonor_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ConvertMaterialToVtestDonor(GetPEWindow());
+        }
+
+        /// <summary>
+        /// If this proves useful, will graduate out of experiments
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void FindAppErrorFLocation_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.FindBadReference(GetPEWindow());
         }
 
         private void MScanner_Click(object sender, RoutedEventArgs e)
