@@ -607,7 +607,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         subNodes.AddRange(StartBioDynamicAnimSetScan(data, ref binarystart));
                         break;
                     case "BioSquadCombat":
-                        subNodes.AddRange(StartBioSquadCombatScan(data, ref binarystart));
+                        if (CurrentLoadedExport != null && CurrentLoadedExport.Game.IsGame1()) // Only game 1 has binary data
+                        {
+                            subNodes.AddRange(StartBioSquadCombatScan(data, ref binarystart));
+                        }
                         break;
                     case "ObjectRedirector":
                         subNodes.AddRange(StartObjectRedirectorScan(data, ref binarystart));

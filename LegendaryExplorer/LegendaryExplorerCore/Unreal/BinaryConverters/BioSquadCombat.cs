@@ -39,6 +39,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public static void Serialize(this SerializingContainer2 sc, ref EntryGuidNumPair egnp)
         {
+            if (!sc.Game.IsGame1())
+                return; // No binary except in Game 1
+            
             if (sc.IsLoading)
             {
                 egnp = new EntryGuidNumPair();
