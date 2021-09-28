@@ -360,6 +360,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             {
                 Task.Run(() =>
                 {
+                    var unresolvableImports = new List<EntryStringPair>();
                     BusyText = "Resolving imports";
                     IsBusy = true;
 
@@ -370,12 +371,16 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     {
                         if (impTV.Entry.IsAKnownNativeClass())
                         {
-                            impTV.SubText = $"{impTV.Entry.InstancedFullPath.Substring(0, impTV.Entry.InstancedFullPath.IndexOf('.'))}.{(impTV.Game == MEGame.ME1 ? "u": "pcc")} (Native)";
+                            impTV.SubText = $"{impTV.Entry.InstancedFullPath.Substring(0, impTV.Entry.InstancedFullPath.IndexOf('.'))}.{(impTV.Game == MEGame.ME1 ? "u" : "pcc")} (Native)";
                         }
                         else
                         {
                             var resolvedExp = EntryImporter.ResolveImport(impTV.Entry as ImportEntry, null, cache, clipRootLevelPackage: false);
-                            if (resolvedExp?.FileRef.FilePath != null)
+                            if (resolvedExp == null)
+                            {
+                                unresolvableImports.Add(new EntryStringPair(impTV.Entry, $"Unresolvable import: {impTV.Entry.InstancedFullPath}"));
+                            }
+                            else if (resolvedExp.FileRef.FilePath != null)
                             {
                                 var fname = Path.GetFileName(resolvedExp.FileRef.FilePath);
                                 impTV.SubText = fname;
@@ -385,10 +390,15 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     }
 
 
-                    return null;
-                }).ContinueWithOnUIThread(foundCandidates =>
+                    return unresolvableImports;
+                }).ContinueWithOnUIThread(unresolvableImports =>
                 {
                     IsBusy = false;
+                    if (unresolvableImports.Exception == null)
+                    {
+                        ListDialog ld = new ListDialog(unresolvableImports.Result,"Found unresolved imports", "The following imports failed to resolve. This may be due to improperly named files (an issue in LEX, not in the game), or they may be incorrectly named.", this) {DoubleClickEntryHandler = GetEntryDoubleClickAction()}; 
+                        ld.Show();
+                    }
                 });
             }
         }
