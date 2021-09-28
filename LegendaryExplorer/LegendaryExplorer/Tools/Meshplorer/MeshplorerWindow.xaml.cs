@@ -681,7 +681,7 @@ namespace LegendaryExplorer.Tools.Meshplorer
             }
         }
 
-        public void PropogateRecentsChange(IEnumerable<RecentsControl.RecentItem> newRecents)
+        public void PropogateRecentsChange(string propogationSource, IEnumerable<RecentsControl.RecentItem> newRecents)
         {
             RecentsController.PropogateRecentsChange(false, newRecents);
         }

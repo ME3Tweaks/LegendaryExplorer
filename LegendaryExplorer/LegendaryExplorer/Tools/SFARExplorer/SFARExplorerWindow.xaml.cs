@@ -148,7 +148,7 @@ namespace LegendaryExplorer.Tools.SFARExplorer
             if (obj is DLCPackage.FileEntryStruct fes)
             {
                 var tlkStream = LoadedDLCPackage.DecompressEntry(fes);
-                var tlkEd = new TLKEditor();
+                var tlkEd = new TLKEditorExportLoader();
                 var elhw = new ExportLoaderHostedWindow(tlkEd);
                 tlkEd.LoadFileFromStream(tlkStream);
                 elhw.Show();
@@ -203,7 +203,7 @@ namespace LegendaryExplorer.Tools.SFARExplorer
             }
         }
 
-        public void PropogateRecentsChange(IEnumerable<RecentsControl.RecentItem> newRecents)
+        public void PropogateRecentsChange(string propogationSource, IEnumerable<RecentsControl.RecentItem> newRecents)
         {
             RecentsController.PropogateRecentsChange(false, newRecents);
         }
