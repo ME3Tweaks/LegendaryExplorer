@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using LegendaryExplorer.Misc;
+using LegendaryExplorer.Tools.Sequence_Editor.Experiments;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
@@ -35,7 +36,16 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 "PRC2",
                 "PRC2AA"
             };
+
+            /// <summary>
+            /// If lightmaps and shadowmaps should be stripped and dynamic lighting turned on
+            /// </summary>
             public bool useDynamicLighting = true;
+
+            /// <summary>
+            /// If debug features should be enabled in the build such as loggig conversions
+            /// </summary>
+            public bool debugBuild = true;
             #endregion
 
             #region Autoset options - Do not change these
@@ -287,8 +297,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     }
                     else
                     {
-                        var levelName = Path.GetFileNameWithoutExtension(f);
-                        PortVTestLevel(vTestLevel, levelName, vTestOptions, levelName == "BIOA_" + vTestLevel, true);
+                        //var levelName = Path.GetFileNameWithoutExtension(f);
+                        //PortVTestLevel(vTestLevel, levelName, vTestOptions, levelName == "BIOA_" + vTestLevel, true);
                     }
                 }
             }
@@ -440,6 +450,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 PackageEditorExperimentsS.CreateDynamicLighting(le1File, true);
             }
 
+            if (vTestOptions.debugBuild)
+            {
+                VTest_EnableDebugOptionsOnPackage(le1File, vTestOptions);
+            }
+
             //if (le1File.Exports.Any(x => x.IsA("PathNode")))
             //{
             //    Debugger.Break();
@@ -460,6 +475,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 Debug.WriteLine($"RCP: [WARN] {err.Entry.InstancedFullPath} {err.Message}");
             }
+        }
+
+        private static void VTest_EnableDebugOptionsOnPackage(IMEPackage le1File, VTestOptions vTestOptions)
+        {
+            SequenceEditorExperimentsM.ConvertSeqAct_Log_objComments(le1File);
         }
 
         /// <summary>
@@ -1005,6 +1025,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         private static Guid? tempDonorGuid = null;
         private static void CorrectTerrainMaterials(IMEPackage le1File)
         {
+            // Todo: Improve this... somehow
             if (tempDonorGuid == null)
             {
                 using var donorMatP = MEPackageHandler.OpenMEPackage(Path.Combine(LE1Directory.CookedPCPath, "BIOA_PRO10_11_LAY.pcc"));
