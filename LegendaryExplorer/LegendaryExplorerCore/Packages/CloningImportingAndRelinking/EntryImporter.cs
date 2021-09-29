@@ -1173,6 +1173,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     nonCachedOpenedPackage = packageToImportFrom; // Needs re-closed at end
                 }
 
+                if (packageToImportFrom == null && loadStream != null)
+                {
+                    // Open package (TestPatch)
+                    packageToImportFrom = MEPackageHandler.OpenMEPackageFromStream(loadStream);
+                }
+
                 if (packageToImportFrom == null)
                 {
                     Debug.WriteLine(@"Could not find package to import from!");
