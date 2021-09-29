@@ -609,13 +609,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             {
                 IsExpanded = true
             };
-
-            var objComment = rootSeq.GetProperty<ArrayProperty<StrProperty>>("m_aObjComment")?.FirstOrDefault();
-            if (objComment != null)
-            {
-                root.SubText = objComment.Value;
-            }
-
             var pcc = rootSeq.FileRef;
             var seqObjs = rootSeq.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
             if (seqObjs != null)
@@ -712,12 +705,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             {
                 MessageBox.Show(this, $"Error loading sequences from file:\n{e.Message}");
             }
-
-            // Try to bring the sequence into view in the tree view
-            // Oh boy bringing something into view with treeview
-            // what could go wrong
-
-
             graphEditor.Enabled = true;
             graphEditor.UseWaitCursor = false;
         }
