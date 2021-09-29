@@ -143,7 +143,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             KismetLogCommand = new RelayCommand(OpenKismetLogParser, CanOpenKismetLog);
             ScanFolderForLoopsCommand = new GenericCommand(ScanFolderPackagesForTightLoops);
             CheckSequenceSetsCommand = new GenericCommand(() => SequenceEditorExperimentsM.CheckSequenceSets(this), () => CurrentObjects.Any);
-            ConvertSeqActLogCommentCommand = new GenericCommand(() => SequenceEditorExperimentsM.ConvertSeqAct_Log_objComments(this), () => SequenceExports.Any);
+            ConvertSeqActLogCommentCommand = new GenericCommand(() => SequenceEditorExperimentsM.ConvertSeqAct_Log_objComments(Pcc), () => SequenceExports.Any);
             SearchCommand = new GenericCommand(SearchDialogue, () => CurrentObjects.Any);
         }
 
@@ -609,6 +609,13 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             {
                 IsExpanded = true
             };
+
+            var objComment = rootSeq.GetProperty<ArrayProperty<StrProperty>>("m_aObjComment")?.FirstOrDefault();
+            if (objComment != null)
+            {
+                root.SubText = objComment.Value;
+            }
+
             var pcc = rootSeq.FileRef;
             var seqObjs = rootSeq.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
             if (seqObjs != null)
@@ -705,6 +712,12 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             {
                 MessageBox.Show(this, $"Error loading sequences from file:\n{e.Message}");
             }
+
+            // Try to bring the sequence into view in the tree view
+            // Oh boy bringing something into view with treeview
+            // what could go wrong
+
+
             graphEditor.Enabled = true;
             graphEditor.UseWaitCursor = false;
         }
@@ -1485,7 +1498,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
                 if (contextMenu.GetChild("seqLogLogOutlinkFiringMenuItem") is MenuItem seqLogLogOutlinkFiringMenuItem)
                 {
-                    if (obj is SAction sAction && sAction.Export != null && sAction.Outlinks.Any())
+                    if (obj is SBox sAction && sAction.Export != null && sAction.Outlinks.Any())
                     {
                         seqLogLogOutlinkFiringMenuItem.Visibility = Visibility.Visible;
 
@@ -2494,7 +2507,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             }
         }
 
-        private void SeqLogLogOutlink(SAction sourceAction, string outLinkName)
+        private void SeqLogLogOutlink(SBox sourceAction, string outLinkName)
         {
             var result = PromptDialog.Prompt(this, $"Enter the string to log when the outlink '{outLinkName}' is fired.", "Enter string", $"Outlink {outLinkName} fired from {sourceAction.Export.UIndex} {sourceAction.Export.ObjectName.Instanced}", true);
             if (!string.IsNullOrWhiteSpace(result))
@@ -2513,6 +2526,33 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
                 // Add an outlink to the new object
                 KismetHelper.CreateOutputLink(sourceAction.Export, outLinkName, seqLogObj);
+            }
+        }
+
+        private void OpenClassDefinitionInPackageEditor_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (CurrentObjects_ListBox.SelectedItem is SObj obj && obj.Export != null)
+            {
+                // Get class of the object
+                var objClass = obj.Export.Class;
+                string className = objClass.ClassName;
+                if (objClass is ImportEntry imp)
+                {
+                    objClass = EntryImporter.ResolveImport(imp);
+                }
+
+                if (objClass != null)
+                {
+                    AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
+                    var p = new PackageEditor.PackageEditorWindow();
+                    p.Show();
+                    p.LoadFile(objClass.FileRef.FilePath, objClass.UIndex);
+                    p.Activate(); //bring to front
+                }
+                else
+                {
+                    MessageBox.Show($"Could not determine where class '{className}' is defined.", "Cannot locate class");
+                }
             }
         }
 
