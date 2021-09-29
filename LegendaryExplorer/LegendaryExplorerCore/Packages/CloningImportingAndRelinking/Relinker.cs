@@ -500,7 +500,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             //else
                             //{
                             //Parent is import
-                            parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceExport.ParentInstancedFullPath, importingPCC, destinationPcc, true, crossPCCObjectMappingList);
+                            parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceExport.ParentInstancedFullPath, importingPCC, destinationPcc, true, crossPCCObjectMappingList, targetDonorFileDB: targetGameDonorDB);
                             //}
                         }
                         ExportEntry importedExport = EntryImporter.ImportExport(destinationPcc, sourceExport, parent?.UIndex ?? 0, true, crossPCCObjectMappingList, targetGameDB: targetGameDonorDB);
