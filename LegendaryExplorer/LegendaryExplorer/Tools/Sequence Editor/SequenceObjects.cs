@@ -125,6 +125,17 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                 var properties = export.GetProperties();
                 switch (export.ClassName)
                 {
+                    case "BioSeqAct_ScalarMathUnit":
+                        var op = properties.GetProp<EnumProperty>("Operation");
+                        if (op == null)
+                        {
+                            res += "Operation: OP_Add"; // is this right? The class doesn't define anything as default
+                        }
+                        else
+                        {
+                            res += $"Operation: {op.Value}";
+                        }
+                        break;
                     case "BioSeqAct_AreaTransition":
                         var newMap = properties.GetProp<NameProperty>("AreaName");
                         var startPoint = properties.GetProp<NameProperty>("startPoint");
