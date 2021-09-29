@@ -275,7 +275,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             vTestOptions.packageEditorWindow.BusyText = "Running VTest";
 
-            // VTest LEvel Loop ---------------------------------------
+            // VTest Level Loop ---------------------------------------
             foreach (var vTestLevel in vTestOptions.vTestLevels)
             {
                 var levelFiles = Directory.GetFiles(Path.Combine(PAEMPaths.VTest_SourceDir, vTestLevel));
@@ -293,6 +293,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
             }
 
+            vTestOptions.cache.ReleasePackages(true); // Dump everything out of memory
+
             Debug.WriteLine("Non donated materials: ");
             foreach (var nonDonorMaterial in EntryImporter.NonDonorMaterials)
             {
@@ -303,6 +305,48 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             foreach (var ac in actorTypesNotPorted)
             {
                 Debug.WriteLine(ac);
+            }
+
+            // VTest post QA
+            vTestOptions.packageEditorWindow.BusyText = "Performing checks";
+
+
+            foreach (var f in Directory.GetFiles(PAEMPaths.VTest_FinalDestDir))
+            {
+                if (f.RepresentsPackageFilePath())
+                {
+                    using var p = MEPackageHandler.OpenMEPackage(f);
+
+                    VTestCheckImports(p, vTestOptions);
+                }
+            }
+
+        }
+
+        private static void VTestCheckImports(IMEPackage p, VTestOptions vTestOptions)
+        {
+            foreach (var import in p.Imports)
+            {
+                if (import.IsAKnownNativeClass())
+                    continue; //skip
+                var resolvedExp = EntryImporter.ResolveImport(import, null, vTestOptions.cache, clipRootLevelPackage: false);
+                if (resolvedExp == null)
+                {
+                    // Look in DB for objects that have same suffix
+                    // This is going to be VERY slow
+
+                    var instancedNameSuffix = "." + import.ObjectName.Instanced;
+                    string similar = "";
+                    foreach (var name in vTestOptions.objectDB.NameTable)
+                    {
+                        if (name.EndsWith(instancedNameSuffix, StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            similar += ", " + name;
+                        }
+                    }
+
+                    Debug.WriteLine($"Import not resolved: {import.InstancedFullPath}, may be these ones instead: {similar}");
+                }
             }
         }
 

@@ -22,7 +22,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
     /// <summary>
     /// Interaction logic for TLKEditor.xaml
     /// </summary>
-    public partial class TLKEditor : FileExportLoaderControl
+    public partial class TLKEditorExportLoader : FileExportLoaderControl
     {
         private TalkFile CurrentME2ME3TalkFile;
         public List<ME1TalkFile.TLKStringRef> LoadedStrings; //Loaded TLK
@@ -40,7 +40,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
-        public TLKEditor() : base("TLKEditor")
+        public TLKEditorExportLoader() : base("TLKEditor")
         {
             DataContext = this;
             LoadCommands();
@@ -93,7 +93,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (CurrentLoadedExport != null)
             {
-                var elhw = new ExportLoaderHostedWindow(new TLKEditor(), CurrentLoadedExport)
+                var elhw = new ExportLoaderHostedWindow(new TLKEditorExportLoader(), CurrentLoadedExport)
                 {
                     Title = $"TLK Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}"
                 };
@@ -139,11 +139,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         //SirC "efficiency is next to godliness" way of Checking export is ME1/TLK
         public override bool CanParse(ExportEntry exportEntry) => exportEntry.FileRef.Game.IsGame1() && exportEntry.ClassName == "BioTlkFile" && !exportEntry.IsDefaultObject;
-        public override void PoppedOut(MenuItem recentsMenuItem)
+        public override void PoppedOut(ExportLoaderHostedWindow elhw)
         {
-            Recents_MenuItem = recentsMenuItem;
-            LoadRecentList();
-            RefreshRecent(false);
+
+            //Recents_MenuItem = recentsMenuItem;
+            //LoadRecentList();
+            //RefreshRecent(false);
         }
 
         /// <summary>
@@ -379,14 +380,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             CurrentLoadedFile = filepath;
             CurrentME2ME3TalkFile = new TalkFile();
             CurrentME2ME3TalkFile.LoadTlkData(filepath);
-
+            LoadedFile = filepath;
             RefreshME2ME3TLK();
             FileModified = false;
-
-            AddRecent(filepath, false);
-            SaveRecentList();
-            RefreshRecent(true, RFiles);
             Window.GetWindow(this).Title = "TLK Editor - " + filepath;
+            OnFileLoaded(EventArgs.Empty);
         }
 
         private void RefreshME2ME3TLK()
@@ -402,6 +400,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             CurrentLoadedFile = null;
             CurrentME2ME3TalkFile = new TalkFile();
             CurrentME2ME3TalkFile.LoadTlkDataFromStream(stream);
+
+            // Need way to load a file without having it show up in the recents
 
             RefreshME2ME3TLK();
             FileModified = false;
@@ -480,18 +480,20 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public override bool CanSave() => CurrentLoadedExport is not null || CurrentME2ME3TalkFile is not null;
 
-        internal override void RecentFile_click(object sender, RoutedEventArgs e)
-        {
-            string s = ((FrameworkElement)sender).Tag.ToString();
-            if (File.Exists(s))
-            {
-                LoadFile(s);
-            }
-            else
-            {
-                MessageBox.Show("File does not exist: " + s);
-            }
-        }
+        //internal override void RecentFile_click(object sender, RoutedEventArgs e)
+        //{
+        //    string s = ((FrameworkElement)sender).Tag.ToString();
+        //    if (File.Exists(s))
+        //    {
+        //        LoadFile(s);
+        //    }
+        //    else
+        //    {
+        //        MessageBox.Show("File does not exist: " + s);
+        //    }
+        //}
+
+        public override string Toolname => "TLKEditor";
 
         internal override bool CanLoadFileExtension(string extension)
         {
@@ -507,8 +509,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     return false;
             }
         }
-
-        internal override string DataFolder { get; } = "TLKEditor";
 
         private void TlkStrField_PreviewKeyDown(object sender, KeyEventArgs e)
         {

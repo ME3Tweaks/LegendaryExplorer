@@ -8,6 +8,7 @@
             xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
             xmlns:Converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+            xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
             x:Class="LegendaryExplorer.UserControls.ExportLoaderControls.ExportLoaderHostedWindow"
             mc:Ignorable="d" 
             d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
@@ -16,6 +17,7 @@
             DragOver="ExportLoaderHostedWindow_OnDragOver"
             AllowDrop="True"
             Drop="ExportLoaderHostedWindow_OnDrop"
+            ContentRendered="ExportLoaderHostedWindow_OnContentRendered"
             d:DesignHeight="297.789" d:DesignWidth="600.737" Title="Hosted Export Loader">
     <Window.Resources>
         <Converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
@@ -47,10 +49,8 @@
                               Command="{Binding SaveCommand}" />
                     <MenuItem Header="Save As" x:Name="SaveFileAsMenuItem" InputGestureText="Ctrl+Shift+S"
                               Command="{Binding SaveAsCommand}" />
-                    <Separator
-                        Visibility="{Binding SupportsRecents, Converter={StaticResource BoolToVisibilityConverter}}" />
-                    <MenuItem Name="Recents_MenuItem" Header="Recents"
-                              Visibility="{Binding SupportsRecents, Converter={StaticResource BoolToVisibilityConverter}}" />
+                    <Separator />
+                    <MenuItem Name="Recents_MenuItem" Header="Recent" IsEnabled="false" />
                 </MenuItem>
                 <MenuItem Header="Modified" IsEnabled="False" HorizontalAlignment="Right" Background="Yellow"
                           Visibility="{Binding IsModifiedProxy, Converter={StaticResource BoolToVisibilityConverter}}" />
@@ -69,5 +69,10 @@
                     </StackPanel>
                 </StatusBarItem>
             </StatusBar>
-        </DockPanel></xctk:BusyIndicator>
+            <Grid Name="ContentGrid">
+                <sharedToolControls:RecentsControl x:Name="RecentsController" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.ZIndex="5" Visibility="{Binding ShouldShowRecentsController, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type exportLoaderControls:ExportLoaderHostedWindow}}, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+            </Grid>
+        </DockPanel>
+    </xctk:BusyIndicator>
 </bases:WPFBase>

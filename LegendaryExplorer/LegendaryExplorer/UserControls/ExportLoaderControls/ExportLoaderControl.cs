@@ -26,7 +26,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// <summary>
         /// Called when the control is being popped out. Allows subcontrol to updated UI to account for more space than when embedded in a tool
         /// </summary>
-        public virtual void PoppedOut(MenuItem recentsMenuItem) {}
+        public virtual void PoppedOut(ExportLoaderHostedWindow window) {}
 
         /// <summary>
         /// The list of supported games that this loader control can handle. Typically used by CanParse().

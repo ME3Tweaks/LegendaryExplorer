@@ -513,7 +513,7 @@
                         <TabItem.Header>
                             <TextBlock Text="Talktable" ToolTip="Edit entries in this BioTLKFile"/>
                         </TabItem.Header>
-                        <exportLoaderControls:TLKEditor x:Name="TlkEditorTab_TlkEditor"/>
+                        <exportLoaderControls:TLKEditorExportLoader x:Name="TlkEditorTab_TlkEditor"/>
                     </TabItem>
                     <TabItem Name="MaterialViewer_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>

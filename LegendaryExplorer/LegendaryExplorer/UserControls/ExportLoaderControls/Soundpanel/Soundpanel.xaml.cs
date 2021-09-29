@@ -187,7 +187,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
-        public override void PoppedOut(MenuItem recentsMenuItem)
+        public override void PoppedOut(ExportLoaderHostedWindow elhw)
         {
             //todo: improve ui layout on popout
         }

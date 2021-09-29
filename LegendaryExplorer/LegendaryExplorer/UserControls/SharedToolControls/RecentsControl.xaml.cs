@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using BCnEncoder.Shared.ImageFiles;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Converters;
@@ -94,18 +95,27 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
         /// <param name="openFileCallback">The callback to invoke when a recents item is clicked.</param>
         public void InitRecentControl(string toolname, MenuItem recentsMenu, Action<string> openFileCallback)
         {
-            RecentsFoldername = toolname;
             RecentsMenu = recentsMenu;
-            RecentItemClicked += openFileCallback;
-
             RecentsMenu.IsEnabled = false; //Default to false as there may be no recents
+            RecentItemClicked = null;
+            if (toolname == null)
+            {
+                // Recents is disabled
+                RecentItems.ClearEx();
+                return;
+            }
 
+            // Init the control
+            RecentsFoldername = toolname;
+            RecentItemClicked = openFileCallback;
+            
             // Load recents list
             if (File.Exists(RecentsAppDataFile))
             {
                 string[] recents = File.ReadAllLines(RecentsAppDataFile);
                 SetRecents(recents.Select(RecentItem.FromRecentEntryString));
             }
+
         }
 
         /// <summary>
@@ -166,8 +176,8 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
         /// <summary>
         /// Adds a new item to the recents list in the appropriate position.
         /// </summary>
-        /// <param name="path"></param>
-        /// <param name="isLoading"></param>
+        /// <param name="path">The file path of the file that is being added</param>
+        /// <param name="isLoading">If the control is loading, and the list shouldn't be cleared, rather just appended to. </param>
         public void AddRecent(string path, bool isLoading, MEGame? game)
         {
             if (isLoading)
@@ -200,10 +210,13 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
         /// <param name="propogate">If the list of recents from this instance should be shared to other instances that are hosted by the same type of window</param>
         public void SaveRecentList(bool propogate)
         {
-            File.WriteAllLines(RecentsAppDataFile, RecentItems.Select(x => x.ConvertToRecentEntry()));
-            if (propogate)
+            if (RecentsFoldername != null)
             {
-                PropogateRecentsChange(true, RecentItems);
+                File.WriteAllLines(RecentsAppDataFile, RecentItems.Select(x => x.ConvertToRecentEntry()));
+                if (propogate)
+                {
+                    PropogateRecentsChange(true, RecentItems);
+                }
             }
         }
 
@@ -217,7 +230,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
                 {
                     if (form.GetType() == propogationSource.GetType() && !ReferenceEquals(form, propogationSource) && form is IRecents recentsSupportedWindow && ((Window)form).IsLoaded)
                     {
-                        recentsSupportedWindow.PropogateRecentsChange(newRecents);
+                        recentsSupportedWindow.PropogateRecentsChange(RecentsFoldername, newRecents);
                     }
                 }
             }
