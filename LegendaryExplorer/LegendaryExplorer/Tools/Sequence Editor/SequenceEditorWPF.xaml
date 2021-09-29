@@ -275,7 +275,9 @@
                     <sharedToolControls:RecentsControl x:Name="RecentsController" Grid.Column="3" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}"/>
                     <TreeView x:Name="Sequences_TreeView" Grid.Row="0" Grid.Column="0" FontFamily="Consolas"
                                 Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}"
-                                ItemsSource="{Binding TreeViewRootNodes}" FocusManager.IsFocusScope="True">
+                                ItemsSource="{Binding TreeViewRootNodes}" 
+                                FocusManager.IsFocusScope="True"
+                                SelectedValuePath="IsSelected">
                         <TreeView.Resources>
                             <HierarchicalDataTemplate DataType="{x:Type sharedUi:TreeViewEntry}"
                                                         ItemsSource="{Binding Sublinks}">
