@@ -297,8 +297,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     }
                     else
                     {
-                        //var levelName = Path.GetFileNameWithoutExtension(f);
-                        //PortVTestLevel(vTestLevel, levelName, vTestOptions, levelName == "BIOA_" + vTestLevel, true);
+                        var levelName = Path.GetFileNameWithoutExtension(f);
+                        PortVTestLevel(vTestLevel, levelName, vTestOptions, levelName == "BIOA_" + vTestLevel, true);
                     }
                 }
             }
