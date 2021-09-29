@@ -469,9 +469,9 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                                         string text = $"ObjList: {objList.Count} item (s)";
                                         if (objList.Count > 0)
                                             text += $"\n0: {objList[0].ResolveToEntry(export.FileRef)?.ObjectName.Instanced}";
-                                        if (objList.Count > 0)
+                                        if (objList.Count > 1)
                                             text += $"\n1: {objList[1].ResolveToEntry(export.FileRef)?.ObjectName.Instanced}";
-                                        if (objList.Count > 0)
+                                        if (objList.Count > 2)
                                             text += "\n...";
 
                                         return text;
