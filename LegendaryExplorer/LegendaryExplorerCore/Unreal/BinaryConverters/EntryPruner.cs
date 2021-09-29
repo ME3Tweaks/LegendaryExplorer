@@ -200,7 +200,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                         case DelegateProperty delegateProperty:
                             //script related, so just delete it.
                             // ?? Could this be automatically converted these days?
-                            removedProperties = true; 
+                            removedProperties = true;
                             Debug.WriteLine($"Trimmed property {prop.Name} from {typeName}");
                             break;
                         case EnumProperty enumProperty:
@@ -256,7 +256,20 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 }
                 else
                 {
-                    removedProperties = true;
+                    // CROSSGEN-V TEST: Don't remove USEFUL but non-functional properties 
+                    switch (prop)
+                    {
+                        case StrProperty when prop.Name == "ObjName":
+                            newProps.Add(prop);
+                            continue;
+                        default:
+                            removedProperties = true;
+                            continue;
+                    }
+                    // End CROSSGEN-V
+
+                    // OLD CODE
+                    // removedProperties = true;
                 }
             }
 
