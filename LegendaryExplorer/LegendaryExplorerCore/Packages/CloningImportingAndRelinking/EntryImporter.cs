@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.IO;
@@ -1084,8 +1085,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             IMEPackage nonCachedOpenedPackage = null;
             try
             {
-                IMEPackage packageToImportFrom; // Not inlined for clarity of scope and purpose
-                Stream loadStream = null;
+                IMEPackage packageToImportFrom = null; // Not inlined for clarity of scope and purpose
+                Stream loadStream = null; // The package stream to open. It might have to load from an SFAR
 
                 #region Read from DLC_TestPatch (ME3 only)
                 // Caching this would be pretty complicated so we're just not going to do that
@@ -1123,52 +1124,59 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 }
                 #endregion
 
-                string fullPackagePath = Path.Combine(MEDirectories.GetBioGamePath(pcc.Game, gamePathOverride), info.pccPath);
-                if (cache == null || !cache.TryGetCachedPackage(fullPackagePath, true, out packageToImportFrom))
+                // No cache and not testpatch. Can this be imported?
+                // Not actually sure if you can import testpatch since I think it just
+                // patches on object load but who knows
+                if (loadStream == null && IsSafeToImportFrom(info.pccPath, pcc.Game))
                 {
-                    if (loadStream is null)
-                    {
-                        if (IsSafeToImportFrom(info.pccPath, pcc.Game))
-                        {
-                            string package = Path.GetFileNameWithoutExtension(info.pccPath);
-                            return pcc.getEntryOrAddImport($"{package}.{className}");
-                        }
+                    string package = Path.GetFileNameWithoutExtension(info.pccPath);
+                    return pcc.getEntryOrAddImport($"{package}.{className}");
+                }
 
-                        //It's a class that's defined locally in every file that uses it.
-                        if (info.pccPath == GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
+                string fullPackagePath = Path.Combine(MEDirectories.GetBioGamePath(pcc.Game, gamePathOverride), info.pccPath);
+                if (loadStream is null && (cache == null || !cache.TryGetCachedPackage(fullPackagePath, true, out packageToImportFrom)))
+                {
+                    // Loadstream is null and we don't have a package cache or we could not load it from disk
+                    //It's a class that's defined locally in every file that uses it.
+                    if (info.pccPath == GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
+                    {
+                        loadStream = LegendaryExplorerCoreUtilities.GetCustomAppResourceStream(pcc.Game);
+                        //string resourceFilePath = App.CustomResourceFilePath(pcc.Game);
+                        //if (File.Exists(resourceFilePath))
+                        //{
+                        //    sourceFilePath = resourceFilePath;
+                        //}
+                    }
+                    else
+                    {
+                        if (File.Exists(fullPackagePath))
                         {
-                            loadStream = LegendaryExplorerCoreUtilities.GetCustomAppResourceStream(pcc.Game);
-                            //string resourceFilePath = App.CustomResourceFilePath(pcc.Game);
-                            //if (File.Exists(resourceFilePath))
-                            //{
-                            //    sourceFilePath = resourceFilePath;
-                            //}
+                            loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(fullPackagePath);
                         }
-                        else
+                        else if (pcc.Game == MEGame.ME1)
                         {
+                            fullPackagePath = Path.Combine(gamePathOverride ?? ME1Directory.DefaultGamePath, info.pccPath);
                             if (File.Exists(fullPackagePath))
                             {
                                 loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(fullPackagePath);
                             }
-                            else if (pcc.Game == MEGame.ME1)
-                            {
-                                fullPackagePath = Path.Combine(gamePathOverride ?? ME1Directory.DefaultGamePath, info.pccPath);
-                                if (File.Exists(fullPackagePath))
-                                {
-                                    loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(fullPackagePath);
-                                }
-                            }
                         }
+                    }
 
-                        if (loadStream is null)
-                        {
-                            //can't find file to import from. This may occur if user does not have game or neccesary dlc installed 
-                            return null;
-                        }
+                    if (loadStream is null)
+                    {
+                        //can't find file to import from. This may occur if user does not have game or neccesary dlc installed 
+                        return null;
                     }
 
                     packageToImportFrom = MEPackageHandler.OpenMEPackageFromStream(loadStream);
                     nonCachedOpenedPackage = packageToImportFrom; // Needs re-closed at end
+                }
+
+                if (packageToImportFrom == null)
+                {
+                    Debug.WriteLine(@"Could not find package to import from!");
+                    return null;
                 }
 
                 if (!packageToImportFrom.IsUExport(info.exportIndex))
