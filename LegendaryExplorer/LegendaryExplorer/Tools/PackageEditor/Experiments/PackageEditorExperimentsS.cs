@@ -692,7 +692,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             pewpf.BusyText = "Scanning";
             Task.Run(() =>
             {
-                foreach (MEGame game in new[] { /*MEGame.LE2, MEGame.LE3, */MEGame.LE1, MEGame.ME2, MEGame.ME3, MEGame.ME1})
+                foreach (MEGame game in new[] { /*MEGame.LE2, MEGame.LE3,*/ MEGame.LE1, MEGame.ME2, MEGame.ME3, MEGame.ME1})
                 {
                     //preload base files for faster scanning
                     using DisposableCollection<IMEPackage> baseFiles = MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(game)
@@ -713,7 +713,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         //findClassesWithBinary(filePath);
                         //ScanScripts2(filePath);
                         //RecompileAllFunctions(filePath);
-                        RecompileAllStates(filePath);
+                        //RecompileAllStates(filePath);
+                        RecompileAllDefaults(filePath);
                     }
                     if (interestingExports.Any())
                     {
@@ -1082,6 +1083,55 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             {
                                 comparisonDict[$"{exp.UIndex} {exp.FileRef.FilePath}"] = (originalData, exp.Data);
                                 interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nRecompilation does not match!"));
+                            }
+                        }
+                        else
+                        {
+                            interestingExports.Add(new EntryStringPair($"{pcc.FilePath} failed to compile!"));
+                            return;
+                        }
+
+                    }
+                    catch (Exception exception)
+                    {
+                        Console.WriteLine(exception);
+                        interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\n{exception}"));
+                        return;
+                    }
+                }
+            }
+
+            void RecompileAllDefaults(string filePath)
+            {
+                using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
+                var fileLib = new FileLib(pcc);
+
+                foreach (ExportEntry exp in pcc.Exports.Where(exp => exp.IsClass))
+                {
+                    string instancedFullPath = exp.InstancedFullPath;
+                    if (foundClasses.Contains(instancedFullPath))
+                    {
+                        continue;
+                    }
+
+                    foundClasses.Add(instancedFullPath);
+                    try
+                    {
+                        if (fileLib.Initialize())
+                        {
+                            (_, string script) = UnrealScriptCompiler.DecompileExport(exp, fileLib);
+                            (ASTNode ast, MessageLog log, _) = UnrealScriptCompiler.CompileAST(script, exp.ClassName, exp.Game);
+                            if (ast is not Class c || log.AllErrors.Any())
+                            {
+                                interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath} \nfailed to parse class"));
+                                return;
+                            }
+
+                            ast = UnrealScriptCompiler.CompileDefaultPropertiesAST(exp, c.DefaultProperties, log, fileLib);
+                            if (ast is not DefaultPropertiesBlock || log.AllErrors.Any())
+                            {
+                                interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse defaults!"));
+                                return;
                             }
                         }
                         else

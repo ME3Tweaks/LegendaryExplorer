@@ -21,23 +21,27 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
     {
         private readonly Stack<string> ExpressionScopes;
         private readonly IMEPackage Pcc;
-        private bool IsStructDefaults;
+        private readonly bool IsStructDefaults;
+        private readonly ObjectType Outer;
+        private readonly DefaultPropertiesBlock PropsBlock;
 
-        public static void Parse(DefaultPropertiesBlock propsBlock, bool isStructDefaults, IMEPackage pcc, SymbolTable symbols, MessageLog log)
+        public static void Parse(DefaultPropertiesBlock propsBlock, IMEPackage pcc, SymbolTable symbols, MessageLog log)
         {
-            var parser = new PropertiesBlockParser(propsBlock, isStructDefaults, pcc, symbols, log);
+            var parser = new PropertiesBlockParser(propsBlock, pcc, symbols, log);
             var statements = parser.Parse(false);
 
             propsBlock.Statements = statements;
         }
 
-        private PropertiesBlockParser(DefaultPropertiesBlock propsBlock, bool isStructDefaults, IMEPackage pcc, SymbolTable symbols, MessageLog log)
+        private PropertiesBlockParser(DefaultPropertiesBlock propsBlock, IMEPackage pcc, SymbolTable symbols, MessageLog log)
         {
             Symbols = symbols;
             Log = log;
             Tokens = propsBlock.Tokens;
             Pcc = pcc;
-            IsStructDefaults = isStructDefaults;
+            Outer = (ObjectType)propsBlock.Outer;
+            IsStructDefaults = Outer is Struct;
+            PropsBlock = propsBlock;
 
             ExpressionScopes = new Stack<string>();
             ExpressionScopes.Push(Symbols.CurrentScopeName);
@@ -292,11 +296,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     {
                         if (Consume(TokenType.NameLiteral) is { } objName)
                         {
-                            literal = ParseObjectLiteral(token, objName);
+                            literal = ParseObjectLiteral(token, objName, false);
                         }
                         else
                         {
-                            literal = ParseBasicRef(token, targetType is DelegateType);
+                            literal = ParseBasicRef(token);
                             if (literal is SymbolReference {Node: Const cnst})
                             {
                                 literal = cnst.Literal;
@@ -420,9 +424,18 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     {
                         if (literal is not SymbolReference {Node: Function func})
                         {
-                            TypeError("Expected a function reference!", literal);
+                            if (literal is ObjectLiteral {Class: ClassType {ClassLimiter: Class containingclass}} && Matches(TokenType.Dot) && Consume(TokenType.Word) is Token<string> funcNameToken 
+                                && Symbols.TryGetSymbolInScopeStack(funcNameToken.Value, out func, containingclass.GetScope()))
+                            {
+                                literal = new CompositeSymbolRef(literal, NewSymbolReference(func, funcNameToken, false), true, literal.StartPos, funcNameToken.EndPos);
+                            }
+                            else
+                            {
+                                TypeError("Expected a function reference!", literal);
+                                break;
+                            }
                         }
-                        else if (!func.SignatureEquals(delegateType.DefaultFunction))
+                        if (!func.SignatureEquals(delegateType.DefaultFunction))
                         {
                             TypeError($"Expected a function with the same signature as {(delegateType.DefaultFunction.Outer as Class)?.Name}.{delegateType.DefaultFunction.Name}!", literal);
                         }
@@ -447,8 +460,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                                 prevToken.AssociatedNode = enum2;
                                 if (enumeration.Values.FirstOrDefault(val => val.Name.CaseInsensitiveEquals(enumValueToken.Value)) is EnumValue enumValue)
                                 {
-
-                                    enumValueToken.AssociatedNode = enumeration;
                                     literal = NewSymbolReference(enumValue, enumValueToken, false);
                                     break;
                                 }
@@ -550,9 +561,9 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return NewSymbolReference(symbol, token, false);
         }
 
-        private SymbolReference ParseBasicRef(Token<string> token, bool useExpressionScope)
+        private SymbolReference ParseBasicRef(Token<string> token)
         {
-            string specificScope = useExpressionScope ? ExpressionScopes.Peek() : Symbols.CurrentScopeName;
+            string specificScope = Symbols.CurrentScopeName;
             if (!Symbols.TryGetSymbolInScopeStack(token.Value, out ASTNode symbol, specificScope))
             {
                 //const, or enum

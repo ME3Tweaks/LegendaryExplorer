@@ -56,12 +56,12 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Util
             return outer as Class;
         }
 
-        public static IObjectType GetContainingScopeObject(ASTNode node)
+        public static ObjectType GetContainingScopeObject(ASTNode node)
         {
             var outer = node.Outer;
-            while (outer?.Outer != null && !(outer is IObjectType))
+            while (outer?.Outer != null && !(outer is ObjectType))
                 outer = outer.Outer;
-            return outer as IObjectType;
+            return outer as ObjectType;
         }
 
 

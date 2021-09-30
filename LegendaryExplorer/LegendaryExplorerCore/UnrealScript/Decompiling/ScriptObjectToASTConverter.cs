@@ -327,13 +327,9 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
         public static Enumeration ConvertEnum(UEnum obj)
         {
             var vals = new List<EnumValue>();
-            for (byte i = 0; i < obj.Names.Length; i++)
+            for (byte i = 0; i < obj.Names.Length - 1; i++) //- 1 to skip to _MAX value
             {
                 var val = obj.Names[i];
-                if (val.Name.EndsWith("_MAX"))
-                {
-                    continue;
-                }
 
                 vals.Add(new EnumValue(val.Instanced, i));
             }
@@ -617,7 +613,13 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     case BioMask4Property bioMask4Property:
                         return new IntegerLiteral(bioMask4Property.Value) { NumType = Keywords.BIOMASK4 };
                     case DelegateProperty delegateProperty:
-                        return new SymbolReference(null, delegateProperty.Value.FunctionName.Instanced);
+                        string funcName = delegateProperty.Value.FunctionName.Instanced;
+                        var symRef = new SymbolReference(null, funcName);
+                        if (containingExport.FileRef.TryGetEntry(delegateProperty.Value.Object, out IEntry containingObject))
+                        {
+                            symRef = new CompositeSymbolRef(new ObjectLiteral(new NameLiteral(containingObject.ClassName), new VariableType("Class")), symRef);
+                        }
+                        return symRef;
                     case EnumProperty enumProperty:
                         if (enumProperty.Value.Instanced.CaseInsensitiveEquals("None"))
                         {
@@ -671,7 +673,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 var subObjectsToAdd = new List<Subobject>();
                 foreach (Subobject subobject in structLiteral.Statements.OfType<Subobject>())
                 {
-                    if (list.All(stmnt => (stmnt as Subobject)?.Name != subobject.Name))
+                    if (list.All(stmnt => (stmnt as Subobject)?.Name.Name != subobject.Name.Name))
                     {
                         subObjectsToAdd.Add(subobject);
                     }

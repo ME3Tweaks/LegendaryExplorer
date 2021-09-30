@@ -318,7 +318,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 propsClass.DefaultProperties = propBlock;
                 propBlock.Outer = propsClass;
 
-                PropertiesBlockParser.Parse(propBlock, false, classExport.FileRef, symbols, log);
+                PropertiesBlockParser.Parse(propBlock, classExport.FileRef, symbols, log);
 
                 return propBlock;
             }

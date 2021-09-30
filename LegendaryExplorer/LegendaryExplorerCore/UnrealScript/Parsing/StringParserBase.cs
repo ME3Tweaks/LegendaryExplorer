@@ -498,7 +498,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return isNegative ? -val : val;
         }
 
-        protected Expression ParseObjectLiteral(Token<string> className, Token<string> objName)
+        protected Expression ParseObjectLiteral(Token<string> className, Token<string> objName, bool noActors = true)
         {
             className.SyntaxType = EF.TypeName;
             bool isClassLiteral = className.Value.CaseInsensitiveEquals(CLASS);
@@ -518,7 +518,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
                 else
                 {
-                    if (cls.SameAsOrSubClassOf("Actor"))
+                    if (noActors && cls.SameAsOrSubClassOf("Actor"))
                     {
                         TypeError("Object constants must not be Actors!", className);
                     }

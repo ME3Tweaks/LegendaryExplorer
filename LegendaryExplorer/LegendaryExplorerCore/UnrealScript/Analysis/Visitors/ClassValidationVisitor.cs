@@ -372,7 +372,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 if (!Symbols.TryAddType(node))
                 {
                     //Structs do not have to be globally unique, but they do have to be unique within a scope
-                    if (((IObjectType)node.Outer).TypeDeclarations.Any(decl => decl != node && decl.Name.CaseInsensitiveEquals(node.Name)))
+                    if (((ObjectType)node.Outer).TypeDeclarations.Any(decl => decl != node && decl.Name.CaseInsensitiveEquals(node.Name)))
                     {
                         return Error($"A type named '{node.Name}' already exists in this {node.Outer.GetType().Name.ToLower()}!", node.StartPos, node.EndPos);
                     }
@@ -458,7 +458,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             if (!Symbols.TryAddType(node))
             {
                 //Enums do not have to be globally unique, but they do have to be unique within a scope
-                if (((IObjectType)node.Outer).TypeDeclarations.Any(decl => decl != node && decl.Name.CaseInsensitiveEquals(node.Name)))
+                if (((ObjectType)node.Outer).TypeDeclarations.Any(decl => decl != node && decl.Name.CaseInsensitiveEquals(node.Name)))
                 {
                     return Error($"A type named '{node.Name}' already exists in this {node.Outer.GetType().Name.ToLower()}!", node.StartPos, node.EndPos);
                 }
@@ -488,7 +488,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             if (!Symbols.TryAddType(node))
             {
                 //Consts do not have to be globally unique, but they do have to be unique within a scope
-                if (((IObjectType)node.Outer).TypeDeclarations.Any(decl => decl != node && decl.Name.CaseInsensitiveEquals(node.Name)))
+                if (((ObjectType)node.Outer).TypeDeclarations.Any(decl => decl != node && decl.Name.CaseInsensitiveEquals(node.Name)))
                 {
                     return Error($"A type named '{node.Name}' already exists in this {node.Outer.GetType().Name.ToLower()}!", node.StartPos, node.EndPos);
                 }

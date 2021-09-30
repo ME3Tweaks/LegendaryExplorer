@@ -7,7 +7,7 @@ using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
-    public sealed class Class : VariableType, IObjectType, IContainsFunctions
+    public sealed class Class : ObjectType, IContainsFunctions
     {
         public string Package;
         public VariableType Parent;
@@ -15,11 +15,11 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public UnrealFlags.EClassFlags Flags;
         public string ConfigName;
         public List<VariableType> Interfaces { get; }
-        public List<VariableDeclaration> VariableDeclarations { get; }
-        public List<VariableType> TypeDeclarations { get; }
+        public override List<VariableDeclaration> VariableDeclarations { get; }
+        public override List<VariableType> TypeDeclarations { get; }
         public List<Function> Functions { get; }
         public List<State> States { get; }
-        public DefaultPropertiesBlock DefaultProperties { get; set; }
+        public override DefaultPropertiesBlock DefaultProperties { get; set; }
 
         public Dictionary<string, ushort> VirtualFunctionLookup;
 
