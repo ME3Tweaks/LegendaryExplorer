@@ -587,6 +587,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             // the source so they don't port
             foreach (var exp in sourcePackage.Exports)
             {
+
+                PruneComponents(exp);
                 #region Remove Light and Shadow Maps
                 if (exp.ClassName == "StaticMeshComponent")
                 {
@@ -691,6 +693,24 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     //exp.RemoveProperty("nextNavigationPoint"); // No bases
                 }
             }
+        }
+
+        private static void PruneComponents(ExportEntry exp)
+        {
+            // Lots of components are not used or don't exist and can't be imported in LE1
+            // Get rid of them here
+            PropertyCollection props = exp.GetProperties();
+            
+            // Might be better to enumerate all object properties and trim out ones that reference
+            // known non-existent things
+            if (exp.IsA("LightComponent"))
+            {
+                props.RemoveNamedProperty("PreviewInnerCone");
+                props.RemoveNamedProperty("PreviewOuterCone");
+                props.RemoveNamedProperty("PreviewLightRadius");
+            }
+
+            exp.WriteProperties(props);
         }
 
         private static void PreCorrectBioWorldInfoStreamingLevels(ExportEntry exp)
@@ -821,9 +841,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     if (entry == le1MatInst)
                         continue;
                     le1MatInst.GetProperties();
-                    var relinkDict = new Dictionary<IEntry, IEntry>();
+                    var relinkDict = new ListenableDictionary<IEntry, IEntry>();
                     relinkDict[le1Material] = le1MatInst; // This is a ridiculous hack
-                    Relinker.Relink(entry as ExportEntry, entry as ExportEntry, relinkDict, new List<EntryStringPair>(0));
+
+                    RelinkerOptionsPackage rop = new RelinkerOptionsPackage()
+                    {
+                        CrossPackageMap = relinkDict,
+                    };
+
+                    Relinker.Relink(entry as ExportEntry, entry as ExportEntry, rop);
                     le1MatInst.GetProperties();
                 }
             }
