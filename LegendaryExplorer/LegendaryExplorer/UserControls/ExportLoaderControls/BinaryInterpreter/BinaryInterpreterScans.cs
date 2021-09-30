@@ -4886,7 +4886,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         formatType = bin.ReadInt16();
                     }
-                    else formatType = bin.ReadInt32();  //maybe version id?
+                    else formatType = bin.ReadInt32();
+
                     var nameIdx = bin.ReadInt32();
 
                     var combinerNode = new List<ITreeItem>();
@@ -4901,13 +4902,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     combinerNode.Add(new BinInterpNode(bin.Position - 4, $"Table index: {nameIdx}"));
                     int flagMaybe = bin.ReadInt32();
                     combinerNode.Add(new BinInterpNode(bin.Position - 4, $"another version?: {flagMaybe}") { Length = 4 });
+                    combinerNode.Add(new BinInterpNode(bin.Position, $"Minimum Value?: {bin.ReadSingle()}") { Length = 4 });
+                    combinerNode.Add(new BinInterpNode(bin.Position, $"Maximum Value: {bin.ReadSingle()}") { Length = 4 });
                     combinerNode.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
-                    combinerNode.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
-                    combinerNode.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
-                    combinerNode.Add(MakeInt32Node(bin, "Unknown int"));
+                    var inputOp = bin.ReadInt32();
+                    combinerNode.Add(new BinInterpNode(bin.Position - 4, $"Input Operation?: {inputOp} - {(FaceFXAsset.InputOperation)inputOp}"));
                     var unkNameList2 = new List<ITreeItem>(); //Name list to Bones and other facefx phenomes?
                     var countUk2 = bin.ReadInt32();
-                    combinerNode.Add(new BinInterpNode(bin.Position - 4, $"Child links?: {countUk2} items")
+                    combinerNode.Add(new BinInterpNode(bin.Position - 4, $"Parent Links: {countUk2} items")
                     {
                         Items = unkNameList2
                     });
@@ -4920,12 +4922,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         {
                             Items = unkNameList2items
                         });
-                        unkNameList2items.Add(MakeInt32Node(bin, "Unknown int"));
+                        var linkFunction = bin.ReadInt32();
+                        unkNameList2items.Add(new BinInterpNode(bin.Position - 4, $"Link Function: {(FaceFXAsset.LinkFunction)linkFunction}"));
                         var n3count = bin.ReadInt32();
-                        unkNameList2items.Add(new BinInterpNode(bin.Position - 4, $"Unknown count: {n3count}"));
+                        unkNameList2items.Add(new BinInterpNode(bin.Position - 4, $"Parameter Count: {n3count}"));
                         for (int n3 = 0; n3 < n3count; n3++)
                         {
-                            unkNameList2items.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                            unkNameList2items.Add(new BinInterpNode(bin.Position, $"Function Parameter {n3}: {bin.ReadSingle()}") { Length = 4 });
                         }
                     }
                     if (formatType != 6 && formatType != 8)
@@ -5017,7 +5020,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         Items = unkListCitems
                     });
                     int name;
-                    unkListCitems.Add(new BinInterpNode(bin.Position, $"Name?: {name = bin.ReadInt32()} {nameTable[name]}") { Length = 4 });
+                    unkListCitems.Add(new BinInterpNode(bin.Position, $"Name?: {name = bin.ReadInt32()} {combinerListNames[name]}") { Length = 4 });
                     unkListCitems.Add(MakeInt32Node(bin, "Unknown int"));
                     int stringCount = bin.ReadInt32();
                     unkListCitems.Add(new BinInterpNode(bin.Position - 4, $"String count: {stringCount}") { Length = 4 });

@@ -108,6 +108,26 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
+        public enum LinkFunction : int
+        {
+            Linear = 1,
+            Quadratic = 2,
+            Cubic = 3,
+            SquareRoot = 4,
+            Negate = 5,
+            Inverse = 6,
+            OneClamp = 7,
+            Constant = 8,
+            Corrective = 9,
+            ClampedLinear = 10
+        }
+
+        public enum InputOperation : int
+        {
+            SumInputs = 0,
+            MultiplyInputs = 1
+        }
+
         public class FXATableCElement
         {
             public int Name;
@@ -166,7 +186,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     }
 
     public class CombinerNodeType0 : FaceFXCombinerNode
-    {
+    { // FxBonePoseNode - 4; FxCombinerNode - 0
         public float unk5;
     }
 
