@@ -71,6 +71,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             return JsonConvert.DeserializeObject<ObjectInstanceDB>(dbText);
         }
 
+        /// <summary>
+        /// Returns a list of relative package file paths (to the game root) that contain the specified ExportEntry with the same InstancedFullPath. Returns null if the specified IFP is not in the database, indicating an object of that name does not exist in the game.
+        /// </summary>
+        /// <param name="ifp"></param>
+        /// <returns></returns>
         public List<string> GetFilesContainingObject(string ifp)
         {
             int nameIdx = -1;

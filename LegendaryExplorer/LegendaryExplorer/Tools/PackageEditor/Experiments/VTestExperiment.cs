@@ -501,7 +501,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 vTestOptions.packageEditorWindow.BusyText = $"Porting {e.ObjectName}";
                 var report = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, e, destPackage,
-                    le1PL, true, out _, targetGameDonorDB: vTestOptions.objectDB);
+                    le1PL, true, out _, targetGameDonorDB: vTestOptions.objectDB, cache: vTestOptions.cache);
             }
         }
 
@@ -847,6 +847,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     RelinkerOptionsPackage rop = new RelinkerOptionsPackage()
                     {
                         CrossPackageMap = relinkDict,
+                        Cache = vTestOptions.cache
                     };
 
                     Relinker.Relink(entry as ExportEntry, entry as ExportEntry, rop);

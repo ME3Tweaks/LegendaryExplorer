@@ -86,7 +86,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <returns></returns>
         public static List<EntryStringPair> ImportAndRelinkEntries(PortingOption portingOption, IEntry sourceEntry, IMEPackage destPcc, IEntry targetLinkEntry, bool shouldRelink,
                                                                         out IEntry newEntry, ListenableDictionary<IEntry, IEntry> relinkMap = null,
-                                                                        Action<string> errorOccuredCallback = null, bool importExportDependencies = false, ObjectInstanceDB targetGameDonorDB = null)
+                                                                        Action<string> errorOccuredCallback = null, bool importExportDependencies = false, ObjectInstanceDB targetGameDonorDB = null,
+                                                                        PackageCache cache = null)
         {
 
             // TODO: MAKE THIS TAKE RELINKER OPTIONS PACKAGE
@@ -143,10 +144,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     CrossPackageMap = new ListenableDictionary<IEntry, IEntry>(relinkMap),
                     ImportExportDependencies = importExportDependencies || portingOption == PortingOption.CloneAllDependencies,
                     IsCrossGame = isCrossGame,
-                    TargetGameDonorDB = targetGameDonorDB
+                    TargetGameDonorDB = targetGameDonorDB,
+                    Cache = cache ?? new PackageCache()
                 };
 
                 Relinker.RelinkAll(rop);
+                relinkResults = rop.RelinkReport;
             }
 
             //Port Shaders
@@ -178,7 +181,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             //    ReindexExportEntriesWithSamePath(item.Value);
             //}
 
-            return relinkResults;
+            return relinkResults ?? new List<EntryStringPair>(); // Pass back empty list if we have no results
 
             void importChildrenOf(IEntry sourceNode, IEntry newParent)
             {
@@ -624,9 +627,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="forcedLink">force this as parent</param>
         /// <param name="importNonPackageExportsToo"></param>
         /// <param name="objectMapping"></param>
+        /// <param name="originalImportFullName">The original, uncorrected name that will exist in the source pcc</param>
         /// <returns></returns>
         public static IEntry GetOrAddCrossImportOrPackage(string importFullNameInstanced, IMEPackage sourcePcc, IMEPackage destinationPCC,
-                                                          bool importNonPackageExportsToo = false, IDictionary<IEntry, IEntry> objectMapping = null, int? forcedLink = null, ObjectInstanceDB targetDonorFileDB = null)
+                                                          bool importNonPackageExportsToo = false, IDictionary<IEntry, IEntry> objectMapping = null, int? forcedLink = null, ObjectInstanceDB targetDonorFileDB = null,
+                                                          string originalImportFullName = null)
         {
             if (string.IsNullOrEmpty(importFullNameInstanced))
             {
@@ -689,7 +694,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
             parent ??= GetOrAddCrossImportOrPackage(string.Join('.', importParts[..^1]), sourcePcc, destinationPCC, importNonPackageExportsToo, objectMapping, targetDonorFileDB: targetDonorFileDB);
 
-            var sourceEntry = sourcePcc.FindEntry(importFullNameInstanced); // should this search entries instead? What if an import has an export parent?
+            var sourceEntry = sourcePcc.FindEntry(importFullNameInstanced); 
             if (sourceEntry is ImportEntry imp) // import not found
             {
                 // Code below forces Package objects to be imported as exports instead of imports. However if an object is an import (that works properly) the parent already has to exist upstream.
@@ -847,7 +852,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         //TODO: make LE lists more exhaustive
         private static readonly string[] le1FilesSafeToImportFrom =
         {
-            "Core.pcc", "Engine.pcc", "GFxUI.pcc", "PlotManagerMap.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc", "Startup_INT.pcc", "BIOC_Materials.pcc"
+            "Core.pcc", "Engine.pcc", "GFxUI.pcc", "PlotManagerMap.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc", "Startup_INT.pcc", "BIOC_Materials.pcc",
+            "SFXStrategicAI.pcc",
             // SFXWorldResources and SFXVehicleResources are always loaded
             // EXCEPT ON STA MAPS!!
         };

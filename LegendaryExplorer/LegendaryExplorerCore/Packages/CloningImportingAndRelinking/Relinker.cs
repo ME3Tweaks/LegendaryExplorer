@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Collections.ObjectModel;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Helpers;
@@ -42,6 +43,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// The results of the relink. If this is empty, everything was OK, otherwise warnings and errors will populate this list.
         /// </summary>
         public List<EntryStringPair> RelinkReport { get; set; } = new();
+
+        /// <summary>
+        /// Package Cache that can be used to open packages. Can speed up performance if many packages have to be opened in succession.
+        /// </summary>
+        public PackageCache Cache { get; set; } = new();
     }
 
     public static class Relinker
@@ -151,7 +157,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 {
                     // This code makes a lot of assumptions, like how components are always directly below the current export
                     var nameIndex = relinkingExport.FileRef.FindNameOrAdd(cmk.Key.Name);
-                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport.FileRef.GetUExport(cmk.Value + 1), relinkingExport.FileRef, relinkingExport, true, out var newComponent, 
+                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport.FileRef.GetUExport(cmk.Value + 1), relinkingExport.FileRef, relinkingExport, true, out var newComponent,
                         // Todo: Pass ROP through on this
                         rop.CrossPackageMap, null, rop.ImportExportDependencies, rop.TargetGameDonorDB);
 
@@ -364,6 +370,157 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
         }
 
+
+        /// <summary>
+        /// Relinks a uIndex that represents an import in the original package - that is, the UIndex is less than zero.
+        /// </summary>
+        /// <param name="importingPCC"></param>
+        /// <param name="destinationPcc"></param>
+        /// <param name="uIndex"></param>
+        /// <param name="rop"></param>
+        /// <returns></returns>
+        private static EntryStringPair relinkImportUIndex(IMEPackage importingPCC, ExportEntry relinkingExport, ref int uIndex, string propertyName, string prefix, RelinkerOptionsPackage rop)
+        {
+            //objProperty is currently pointing to importingPCC as that is where we read the properties from
+            int n = uIndex;
+            int origvalue = n;
+            //Debug.WriteLine("Relink miss, attempting JIT relink on " + n + " " + rootNode.Text);
+            if (importingPCC.IsImport(n))
+            {
+                //Get the original import
+                ImportEntry importFullName = importingPCC.GetImport(n);
+                string originalInstancedFullPath = importFullName.InstancedFullPath; //used to be just FullPath - but some imports are indexed!
+                                                                              //Debug.WriteLine("We should import " + origImport.GetFullPath);
+
+
+                string DONOTEDIT_OriginalInstancedFullPath = originalInstancedFullPath;
+                // CROSSGEN-V
+                // Imports are not reliable across games (or even across a single game)
+                // Check to see if this import is safe to import from,
+                // if not take the export instead. Might use some disk space but maybe with better algorith
+                // We can identify master/persistent files in ME2+ and also inspect those.
+                if (rop.IsCrossGame && rop.TargetGameDonorDB != null && !EntryImporter.IsSafeToImportFrom($"{importFullName.GetRootName()}.{(relinkingExport.Game == MEGame.ME1 ? "u" : "pcc")}", relinkingExport.Game)) // This doesn't 
+                {
+                    // Find an export version instead that we can import
+                    var canddiates = rop.TargetGameDonorDB.GetFilesContainingObject(originalInstancedFullPath);
+                    if (canddiates == null || !canddiates.Any())
+                    {
+                        // Ruh Roh
+                        Debug.WriteLine($@"No candidates for export substitution of an unsafe import: {originalInstancedFullPath}, we will port this as an import, but it may not work!");
+                    }
+                    else
+                    {
+                        bool continueConvertingToExport = true; // Should we just leave this as an import?
+                        bool isForcedExport = false; // If we should append the package name to the path - but only if continueConvertingToExport = false
+
+                        // Map the relative paths onto the game directory
+                        canddiates = canddiates.Select(x => Path.Combine(MEDirectories.GetDefaultGamePath(relinkingExport.Game), x)).ToList();
+
+                        if (canddiates.Any(x=>EntryImporter.IsSafeToImportFrom(Path.GetFileName(x), relinkingExport.Game))) // Some things are in multiple files, like things in startup files.
+                        {
+                            // It's been moved, we need to change how we import to it.
+                            // Depending on if it's ForcedExport or not changes how we reference it
+                            continueConvertingToExport = false; // Leave as an import
+                        }
+
+
+                        // See if cache has any of the packages open
+                        IMEPackage newSourcePackage;
+                        bool closePackageOnCompletion = true;
+                        if (rop.Cache != null)
+                        {
+                            // See if any packages are already open to avoid wasting memory
+                            newSourcePackage = rop.Cache.GetFirstCachedPackage(canddiates);
+                            if (newSourcePackage == null)
+                                newSourcePackage = rop.Cache.GetCachedPackage(canddiates[0], true); // Open package in the cache
+
+                            closePackageOnCompletion = false;
+                        }
+                        else
+                        {
+                            // Just pick the first file
+                            newSourcePackage = MEPackageHandler.OpenMEPackage(canddiates[0]);
+                        }
+
+                        // See if target export is ForcedExport
+                        var targetTest = newSourcePackage.FindExport(originalInstancedFullPath);
+                        //if (targetTest == null && originalInstancedFullPath.StartsWith($"{Path.GetFileNameWithoutExtension(canddiates[0])}."))
+                        //{
+                        //    // Import starts with 'SFXGame.' or the like, which almost guarantees this is not a forced export...
+                        //    originalInstancedFullPath = originalInstancedFullPath
+                        //}
+                        if (targetTest != null)
+                        {
+                            isForcedExport = true;
+                        }
+
+                        if (continueConvertingToExport)
+                        {
+                            if (originalInstancedFullPath.Contains("EngineMaterials"))
+                                Debugger.Break();
+                            Debug.WriteLine($@"Redirecting relink of import {originalInstancedFullPath} to pull export from {newSourcePackage.FilePath} instead");
+
+                            // Have to kind of hack it to work
+                            var newSourceUIndex = newSourcePackage.FindExport(importingPCC.GetEntry(uIndex).InstancedFullPath).UIndex;
+
+                            var result = relinkExportUIndex(newSourcePackage, relinkingExport, ref newSourceUIndex, propertyName, prefix, rop);
+
+                            uIndex = newSourceUIndex; // Assign the ported value from the new package source onto the original one we're going to write back to the dest package
+
+                            if (closePackageOnCompletion)
+                                newSourcePackage.Dispose();
+
+                            return result;
+                        }
+                    }
+
+                }
+
+                // END CROSSGEN-V
+
+
+                IEntry crossImport = null;
+                string linkFailedDueToError = null;
+                try
+                {
+                    crossImport = EntryImporter.GetOrAddCrossImportOrPackage(originalInstancedFullPath, importingPCC, relinkingExport.FileRef, originalImportFullName: DONOTEDIT_OriginalInstancedFullPath);
+                }
+                catch (Exception e)
+                {
+                    //Error during relink
+                    linkFailedDueToError = e.Message;
+                }
+
+                if (crossImport != null)
+                {
+                    rop.CrossPackageMap.Add(importFullName, crossImport); //add to mapping to speed up future relinks
+                    uIndex = crossImport.UIndex;
+                    // Debug.WriteLine($"Relink hit: Dynamic CrossImport for {origvalue} {importingPCC.GetEntry(origvalue).InstancedFullPath} -> {uIndex}");
+                    return null; // OK
+                }
+                else
+                {
+                    string path = importingPCC.GetEntry(uIndex) != null ? importingPCC.GetEntry(uIndex).InstancedFullPath : "Entry not found: " + uIndex;
+                    if (linkFailedDueToError != null)
+                    {
+                        Debug.WriteLine($"Relink failed: CrossImport porting failed for {relinkingExport.ObjectName.Instanced} {relinkingExport.UIndex}: {propertyName} ({uIndex}): {importingPCC.GetEntry(origvalue).InstancedFullPath}");
+                        return new EntryStringPair(relinkingExport, $"Relink failed for {prefix}{propertyName} {uIndex} in export {path}({relinkingExport.UIndex}): {linkFailedDueToError}");
+                    }
+
+                    if (relinkingExport.FileRef.GetEntry(uIndex) != null)
+                    {
+                        Debug.WriteLine($"Relink failed: CrossImport porting failed for {relinkingExport.ObjectName.Instanced} {relinkingExport.UIndex}: {propertyName} ({uIndex}): {importingPCC.GetEntry(origvalue).InstancedFullPath}");
+                        return new EntryStringPair(relinkingExport, $"Relink failed: CrossImport porting failed for {prefix}{propertyName} {uIndex} {relinkingExport.FileRef.GetEntry(uIndex).InstancedFullPath} in export {relinkingExport.InstancedFullPath}({relinkingExport.UIndex})");
+                    }
+
+                    return new EntryStringPair(relinkingExport, $"Relink failed: New export does not exist - this is probably a bug in cross import code for {prefix}{propertyName} {uIndex} in export {relinkingExport.InstancedFullPath}({relinkingExport.UIndex})");
+                }
+            }
+
+            return new EntryStringPair(relinkingExport, $"Relink failed: Provided value is negative but is not an import for {prefix}{propertyName} in export {relinkingExport.UIndex} {relinkingExport.InstancedFullPath}: {uIndex}");
+        }
+
+
         /// <summary>
         /// Relinks the specified uIndex (the index in the source importingPCC that now exists in the relinkingExport's data, but needs repointed to the right data) to the correct new UIndex.
         /// </summary>
@@ -403,127 +560,101 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
             else if (uIndex < 0) //It's an unmapped import
             {
-                //objProperty is currently pointing to importingPCC as that is where we read the properties from
-                int n = uIndex;
-                int origvalue = n;
-                //Debug.WriteLine("Relink miss, attempting JIT relink on " + n + " " + rootNode.Text);
-                if (importingPCC.IsImport(n))
+                return relinkImportUIndex(importingPCC, relinkingExport, ref uIndex, propertyName, prefix, rop);
+            }
+            else
+            {
+                // It's an export
+                return relinkExportUIndex(importingPCC, relinkingExport, ref uIndex, propertyName, prefix, rop);
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Relinks a uIndex entry reference within an ExportEntry.
+        /// </summary>
+        /// <param name="importingPCC"></param>
+        /// <param name="relinkingExport"></param>
+        /// <param name="uIndex"></param>
+        /// <param name="propertyName"></param>
+        /// <param name="prefix"></param>
+        /// <param name="rop"></param>
+        /// <returns></returns>
+        private static EntryStringPair relinkExportUIndex(IMEPackage importingPCC, ExportEntry relinkingExport, ref int uIndex, string propertyName, string prefix, RelinkerOptionsPackage rop)
+        {
+            bool importingFromGlobalFile = false;
+            //It's an export
+            //Attempt lookup
+            ExportEntry sourceExport = importingPCC.GetUExport(uIndex);
+            string instancedFullPath = sourceExport.InstancedFullPath;
+            string sourceFilePath = sourceExport.FileRef.FilePath;
+
+            // Typically global files are not ForceExport'd 
+            // which means objects in them will sit at the root instead of under a package export
+            if (EntryImporter.IsSafeToImportFrom(sourceFilePath, relinkingExport.FileRef.Game))
+            {
+                importingFromGlobalFile = true;
+                instancedFullPath = $"{Path.GetFileNameWithoutExtension(sourceFilePath)}.{instancedFullPath}";
+            }
+
+            IEntry existingEntry = relinkingExport.FileRef.FindEntry(instancedFullPath);
+
+            if (existingEntry != null)
+            {
+#if DEBUG
+                if (existingEntry.InstancedFullPath.StartsWith(UnrealPackageFile.TrashPackageName))
                 {
-                    //Get the original import
-                    ImportEntry origImport = importingPCC.GetImport(n);
-                    string origImportFullName = origImport.InstancedFullPath; //used to be just FullPath - but some imports are indexed!
-                                                                              //Debug.WriteLine("We should import " + origImport.GetFullPath);
-
-                    IEntry crossImport = null;
-                    string linkFailedDueToError = null;
-                    try
+                    // RELINKED TO TRASH!
+                    Debugger.Break();
+                }
+#endif
+                //Debug.WriteLine($"Relink hit [EXPERIMENTAL]: Existing entry in file was found, linking to it:  {uIndex} {sourceExport.InstancedFullPath} -> {existingEntry.InstancedFullPath}");
+                uIndex = existingEntry.UIndex;
+            }
+            else if (rop.ImportExportDependencies)
+            {
+                if (importingFromGlobalFile)
+                {
+                    uIndex = EntryImporter.GetOrAddCrossImportOrPackageFromGlobalFile(sourceExport.InstancedFullPath, importingPCC, relinkingExport.FileRef, rop.CrossPackageMap).UIndex;
+                }
+                else
+                {
+                    IEntry parent = null;
+                    if (sourceExport.Parent != null && !rop.CrossPackageMap.TryGetValue(sourceExport.Parent, out parent))
                     {
-                        crossImport = EntryImporter.GetOrAddCrossImportOrPackage(origImportFullName, importingPCC, destinationPcc);
+                        //if (sourceExport.Parent is ExportEntry parExp)
+                        //{
+                        //    // Parent is export
+                        //    // How to find parent UIndex from here if it might not yet exist?
+
+                        //    // Note: This doesn't work if it's nested deeper than one link we can find. Might be best to put this in a loop to ensure parent creation?
+
+                        //    // Port parents recursively
+
+                        //    var parParLink = parExp.Parent != null ? relinkingExport.FileRef.FindEntry(parExp.ParentInstancedFullPath) : null; // This is pretty weak...
+                        //    parent = relinkingExport.FileRef.FindEntry(parExp.InstancedFullPath) ?? EntryImporter.ImportExport(relinkingExport.FileRef, parExp, parParLink?.UIndex ?? 0, true, crossPCCObjectMappingList, targetGameDB: targetGameDonorDB);
+                        //}
+                        //else
+                        //{
+                        //Parent is import
+                        parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceExport.ParentInstancedFullPath, importingPCC, relinkingExport.FileRef, true, rop.CrossPackageMap, targetDonorFileDB: rop.TargetGameDonorDB);
+                        //}
                     }
-                    catch (Exception e)
+                    ExportEntry importedExport = EntryImporter.ImportExport(relinkingExport.FileRef, sourceExport, parent?.UIndex ?? 0, true, rop.CrossPackageMap, targetGameDB: rop.TargetGameDonorDB);
+                    if (!importedExport.InstancedFullPath.CaseInsensitiveEquals(sourceExport.InstancedFullPath))
                     {
-                        //Error during relink
-                        linkFailedDueToError = e.Message;
+                        Debugger.Break();
                     }
-
-                    if (crossImport != null)
-                    {
-                        rop.CrossPackageMap.Add(origImport, crossImport); //add to mapping to speed up future relinks
-                        uIndex = crossImport.UIndex;
-                        // Debug.WriteLine($"Relink hit: Dynamic CrossImport for {origvalue} {importingPCC.GetEntry(origvalue).InstancedFullPath} -> {uIndex}");
-
-                    }
-                    else
-                    {
-                        string path = importingPCC.GetEntry(uIndex) != null ? importingPCC.GetEntry(uIndex).InstancedFullPath : "Entry not found: " + uIndex;
-                        if (linkFailedDueToError != null)
-                        {
-                            Debug.WriteLine($"Relink failed: CrossImport porting failed for {relinkingExport.ObjectName.Instanced} {relinkingExport.UIndex}: {propertyName} ({uIndex}): {importingPCC.GetEntry(origvalue).InstancedFullPath}");
-                            return new EntryStringPair(relinkingExport, $"Relink failed for {prefix}{propertyName} {uIndex} in export {path}({relinkingExport.UIndex}): {linkFailedDueToError}");
-                        }
-
-                        if (destinationPcc.GetEntry(uIndex) != null)
-                        {
-                            Debug.WriteLine($"Relink failed: CrossImport porting failed for {relinkingExport.ObjectName.Instanced} {relinkingExport.UIndex}: {propertyName} ({uIndex}): {importingPCC.GetEntry(origvalue).InstancedFullPath}");
-                            return new EntryStringPair(relinkingExport, $"Relink failed: CrossImport porting failed for {prefix}{propertyName} {uIndex} {destinationPcc.GetEntry(uIndex).InstancedFullPath} in export {relinkingExport.InstancedFullPath}({relinkingExport.UIndex})");
-                        }
-
-                        return new EntryStringPair(relinkingExport, $"Relink failed: New export does not exist - this is probably a bug in cross import code for {prefix}{propertyName} {uIndex} in export {relinkingExport.InstancedFullPath}({relinkingExport.UIndex})");
-                    }
+                    uIndex = importedExport.UIndex;
                 }
             }
             else
             {
-                bool importingFromGlobalFile = false;
-                //It's an export
-                //Attempt lookup
-                ExportEntry sourceExport = importingPCC.GetUExport(uIndex);
-                string instancedFullPath = sourceExport.InstancedFullPath;
-                string sourceFilePath = sourceExport.FileRef.FilePath;
-                if (EntryImporter.IsSafeToImportFrom(sourceFilePath, destinationPcc.Game))
-                {
-                    importingFromGlobalFile = true;
-                    instancedFullPath = $"{Path.GetFileNameWithoutExtension(sourceFilePath)}.{instancedFullPath}";
-                }
-
-                IEntry existingEntry = destinationPcc.FindEntry(instancedFullPath);
-
-                if (existingEntry != null)
-                {
-#if DEBUG
-                    if (existingEntry.InstancedFullPath.StartsWith(UnrealPackageFile.TrashPackageName))
-                    {
-                        // RELINKED TO TRASH!
-                        Debugger.Break();
-                    }
-#endif
-                    //Debug.WriteLine($"Relink hit [EXPERIMENTAL]: Existing entry in file was found, linking to it:  {uIndex} {sourceExport.InstancedFullPath} -> {existingEntry.InstancedFullPath}");
-                    uIndex = existingEntry.UIndex;
-                }
-                else if (rop.ImportExportDependencies)
-                {
-                    if (importingFromGlobalFile)
-                    {
-                        uIndex = EntryImporter.GetOrAddCrossImportOrPackageFromGlobalFile(sourceExport.InstancedFullPath, importingPCC, destinationPcc, rop.CrossPackageMap).UIndex;
-                    }
-                    else
-                    {
-                        IEntry parent = null;
-                        if (sourceExport.Parent != null && !rop.CrossPackageMap.TryGetValue(sourceExport.Parent, out parent))
-                        {
-                            //if (sourceExport.Parent is ExportEntry parExp)
-                            //{
-                            //    // Parent is export
-                            //    // How to find parent UIndex from here if it might not yet exist?
-
-                            //    // Note: This doesn't work if it's nested deeper than one link we can find. Might be best to put this in a loop to ensure parent creation?
-
-                            //    // Port parents recursively
-
-                            //    var parParLink = parExp.Parent != null ? destinationPcc.FindEntry(parExp.ParentInstancedFullPath) : null; // This is pretty weak...
-                            //    parent = destinationPcc.FindEntry(parExp.InstancedFullPath) ?? EntryImporter.ImportExport(destinationPcc, parExp, parParLink?.UIndex ?? 0, true, crossPCCObjectMappingList, targetGameDB: targetGameDonorDB);
-                            //}
-                            //else
-                            //{
-                            //Parent is import
-                            parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceExport.ParentInstancedFullPath, importingPCC, destinationPcc, true, rop.CrossPackageMap, targetDonorFileDB: rop.TargetGameDonorDB);
-                            //}
-                        }
-                        ExportEntry importedExport = EntryImporter.ImportExport(destinationPcc, sourceExport, parent?.UIndex ?? 0, true, rop.CrossPackageMap, targetGameDB: rop.TargetGameDonorDB);
-                        if (!importedExport.InstancedFullPath.CaseInsensitiveEquals(sourceExport.InstancedFullPath))
-                        {
-                            Debugger.Break();
-                        }
-                        uIndex = importedExport.UIndex;
-                    }
-                }
-                else
-                {
-                    string path = importingPCC.GetEntry(uIndex)?.InstancedFullPath ?? $"Entry not found: {uIndex}";
-                    Debug.WriteLine($"Relink failed in {relinkingExport.ObjectName.Instanced} {relinkingExport.UIndex}: {propertyName} {uIndex} {path}");
-                    return new EntryStringPair(relinkingExport, $"Relink failed: {prefix}{propertyName} {uIndex} in export {relinkingExport.InstancedFullPath}({relinkingExport.UIndex})");
-                }
+                string path = importingPCC.GetEntry(uIndex)?.InstancedFullPath ?? $"Entry not found: {uIndex}";
+                Debug.WriteLine($"Relink failed in {relinkingExport.ObjectName.Instanced} {relinkingExport.UIndex}: {propertyName} {uIndex} {path}");
+                return new EntryStringPair(relinkingExport, $"Relink failed: {prefix}{propertyName} {uIndex} in export {relinkingExport.InstancedFullPath}({relinkingExport.UIndex})");
             }
+
             return null;
         }
 

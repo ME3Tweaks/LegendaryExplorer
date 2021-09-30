@@ -22,6 +22,8 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         public CaseInsensitiveConcurrentDictionary<IMEPackage> Cache { get; } = new();
 
+        public PackageCache(){ }
+
         /// <summary>
         /// Thread-safe package cache fetch. Can be passed to various methods to help expedite operations by preventing package reopening. Packages opened with this method do not use the global LegendaryExplorerCore caching system and will always load from disk if not in this local cache.
         /// </summary>
@@ -145,6 +147,22 @@ namespace LegendaryExplorerCore.Packages
         {
             Cache.Remove(packagePath, out var pack);
             return pack != null;
+        }
+
+        /// <summary>
+        /// Enumerates the list of files and returns the first one that is arleady present in the cache, or null if none of the files are currently in the cache.
+        /// </summary>
+        /// <param name="canddiates"></param>
+        /// <returns></returns>
+        public virtual IMEPackage GetFirstCachedPackage(IEnumerable<string> packageNames)
+        {
+            foreach (var pn in packageNames)
+            {
+                if (Cache.TryGetValue(pn, out var cached))
+                    return cached;
+            }
+
+            return null;
         }
     }
 }
