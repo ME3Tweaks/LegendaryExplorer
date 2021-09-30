@@ -207,7 +207,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
     public class FaceFXCombinerNodeChildLink
     {
-        public int Name;
+        public int NodeIndex;
         public int unkInt;
         public List<float> floats;
     }
@@ -314,7 +314,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 node = new FaceFXCombinerNodeChildLink();
             }
-            sc.Serialize(ref node.Name);
+            sc.Serialize(ref node.NodeIndex);
             sc.Serialize(ref node.unkInt);
             sc.Serialize(ref node.floats, Serialize);
         }

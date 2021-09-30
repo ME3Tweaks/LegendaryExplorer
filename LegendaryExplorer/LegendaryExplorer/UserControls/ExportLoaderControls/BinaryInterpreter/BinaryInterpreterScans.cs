@@ -4864,6 +4864,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 //I have literally no idea how this works in ME2
 
                 var combinerList = new List<ITreeItem>();
+                var combinerListNames = new List<string>();
                 var combinerCount = bin.ReadInt32();
 
                 if (game == MEGame.ME2)
@@ -4893,6 +4894,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         Items = combinerNode
                     });
+                    combinerListNames.Add(nameTable[nameIdx]);
 
 
                     combinerNode.Add(new BinInterpNode(bin.Position - 8, $"Format?: {formatType}"));
@@ -4911,9 +4913,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     });
                     for (int n2 = 0; n2 < countUk2; n2++)
                     {
-                        var unameVal = bin.ReadInt32();
+                        var combinerIdx = bin.ReadInt32();
+                        var linkedNode = combinerIdx < b ? combinerListNames[combinerIdx] : "";
                         var unkNameList2items = new List<ITreeItem>();
-                        unkNameList2.Add(new BinInterpNode(bin.Position - 4, $"Name: {unameVal} {nameTable[unameVal]}")
+                        unkNameList2.Add(new BinInterpNode(bin.Position - 4, $"Combiner Idx: {combinerIdx} {linkedNode}")
                         {
                             Items = unkNameList2items
                         });
