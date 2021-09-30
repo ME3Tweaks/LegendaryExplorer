@@ -85,10 +85,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="importExportDependencies">Import dependencies when relinking. Requires shouldRelink = true. If portingOption is CloneAllDependencies this value is ignored</param>
         /// <returns></returns>
         public static List<EntryStringPair> ImportAndRelinkEntries(PortingOption portingOption, IEntry sourceEntry, IMEPackage destPcc, IEntry targetLinkEntry, bool shouldRelink,
-                                                                        out IEntry newEntry, Dictionary<IEntry, IEntry> relinkMap = null
-                                                                        , Action<string> errorOccuredCallback = null, bool importExportDependencies = false, ObjectInstanceDB targetGameDonorDB = null)
+                                                                        out IEntry newEntry, ListenableDictionary<IEntry, IEntry> relinkMap = null,
+                                                                        Action<string> errorOccuredCallback = null, bool importExportDependencies = false, ObjectInstanceDB targetGameDonorDB = null)
         {
-            relinkMap ??= new Dictionary<IEntry, IEntry>();
+
+            // TODO: MAKE THIS TAKE RELINKER OPTIONS PACKAGE
+            relinkMap ??= new ListenableDictionary<IEntry, IEntry>();
             IMEPackage sourcePcc = sourceEntry.FileRef;
 
             bool isCrossGame = sourceEntry.Game != destPcc.Game;
@@ -136,7 +138,15 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             List<EntryStringPair> relinkResults = null;
             if (shouldRelink)
             {
-                relinkResults = Relinker.RelinkAll(relinkMap, importExportDependencies || portingOption == PortingOption.CloneAllDependencies, targetGameDonorDB, isCrossGame);
+                RelinkerOptionsPackage rop = new RelinkerOptionsPackage()
+                {
+                    CrossPackageMap = new ListenableDictionary<IEntry, IEntry>(relinkMap),
+                    ImportExportDependencies = importExportDependencies || portingOption == PortingOption.CloneAllDependencies,
+                    IsCrossGame = isCrossGame,
+                    TargetGameDonorDB = targetGameDonorDB
+                };
+
+                Relinker.RelinkAll(rop);
             }
 
             //Port Shaders
@@ -174,21 +184,35 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 foreach (IEntry node in sourceNode.GetChildren().ToList())
                 {
+                    //we must check to see if there is an item already matching what we are trying to port.
+
+                    //Todo: We may need to enhance target checking here as fullpath may not be reliable enough. Maybe have to do indexing, or something.
+                    IEntry sameObjInTarget = newParent.GetChildren().FirstOrDefault(x => node.InstancedFullPath == x.InstancedFullPath);
+
                     if (portingOption == PortingOption.MergeTreeChildren)
                     {
-                        //we must check to see if there is an item already matching what we are trying to port.
-
-                        //Todo: We may need to enhance target checking here as fullpath may not be reliable enough. Maybe have to do indexing, or something.
-                        IEntry sameObjInTarget = newParent.GetChildren().FirstOrDefault(x => node.InstancedFullPath == x.InstancedFullPath);
                         if (sameObjInTarget != null)
                         {
                             relinkMap[node] = sameObjInTarget;
 
                             //merge children to this node instead
                             importChildrenOf(node, sameObjInTarget);
-
                             continue;
                         }
+                    }
+
+                    if (portingOption == PortingOption.CloneAllDependencies && sameObjInTarget != null)
+                    {
+                        // Already exists in target
+                        relinkMap[node] = sameObjInTarget;
+                        importChildrenOf(node, sameObjInTarget);
+                        continue;
+                    }
+
+                    // CROSSGEN
+                    if (destPcc.FindExport(node.InstancedFullPath) != null)
+                    {
+                        Debugger.Break();
                     }
 
                     IEntry entry;
@@ -203,6 +227,44 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
 
                     importChildrenOf(node, entry);
+
+
+                    // ORIGINAL CODE
+                    //if (portingOption == PortingOption.MergeTreeChildren)
+                    //{
+                    //    //we must check to see if there is an item already matching what we are trying to port.
+
+                    //    //Todo: We may need to enhance target checking here as fullpath may not be reliable enough. Maybe have to do indexing, or something.
+                    //    IEntry sameObjInTarget = newParent.GetChildren().FirstOrDefault(x => node.InstancedFullPath == x.InstancedFullPath);
+                    //    if (sameObjInTarget != null)
+                    //    {
+                    //        relinkMap[node] = sameObjInTarget;
+
+                    //        //merge children to this node instead
+                    //        importChildrenOf(node, sameObjInTarget);
+
+                    //        continue;
+                    //    }
+                    //}
+
+                    //// CROSSGEN
+                    //if (destPcc.FindExport(node.InstancedFullPath) != null)
+                    //{
+                    //    Debugger.Break();
+                    //}
+
+                    //IEntry entry;
+                    //if (node is ExportEntry exportNode)
+                    //{
+                    //    entry = ImportExport(destPcc, exportNode, newParent.UIndex, portingOption == PortingOption.CloneAllDependencies, relinkMap, errorOccuredCallback, targetGameDonorDB);
+                    //}
+                    //else
+                    //{
+                    //    entry = GetOrAddCrossImportOrPackage(node.InstancedFullPath, sourcePcc, destPcc, objectMapping: relinkMap, forcedLink: newParent.UIndex, targetDonorFileDB: targetGameDonorDB);
+                    //}
+
+
+                    //importChildrenOf(node, entry);
                 }
             }
         }
@@ -244,8 +306,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="importExportDependencies">Whether to import exports that are referenced in header</param>
         /// <param name="objectMapping"></param>
         /// <returns></returns>
-        public static ExportEntry ImportExport(IMEPackage destPackage, ExportEntry sourceExport, int link, bool importExportDependencies = false,
-            IDictionary<IEntry, IEntry> objectMapping = null, Action<string> errorOccuredCallback = null, ObjectInstanceDB targetGameDB = null)
+        public static ExportEntry ImportExport(IMEPackage destPackage, ExportEntry sourceExport, int link, bool importExportDependencies = false, IDictionary<IEntry, IEntry> objectMapping = null, Action<string> errorOccuredCallback = null, ObjectInstanceDB targetGameDB = null)
         {
 #if DEBUG
             // CROSSGEN - WILL NEED HEAVY REWORK IF THIS IS TO BE MERGED TO BETA

@@ -83,7 +83,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 var levelBin = levelExport.GetBinaryData<Level>();
 
                 using IMEPackage otPcc = MEPackageHandler.OpenME3Package(otFilePath);
-                var relinkMap = new Dictionary<IEntry, IEntry>();
+                var relinkMap = new ListenableDictionary<IEntry, IEntry>();
                 foreach (UIndex uIndex in levelBin.Actors)
                 {
                     if (uIndex.GetEntry(pcc) is ExportEntry actor)

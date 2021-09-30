@@ -28,7 +28,7 @@ namespace LegendaryExplorerCore.Misc
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    class ListenableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
+    public class ListenableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {
 
         public delegate void DictionaryChanged(object sender, DictionaryChangedEvent<TKey, TValue> e);
