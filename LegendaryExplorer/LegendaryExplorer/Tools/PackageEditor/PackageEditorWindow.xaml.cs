@@ -113,15 +113,23 @@ namespace LegendaryExplorer.Tools.PackageEditor
         public ObservableCollectionExtended<TreeViewEntry> AllTreeViewNodesX { get; } = new();
 
         private TreeViewEntry _selectedItem;
-
         public TreeViewEntry SelectedItem
         {
             get => _selectedItem;
             set
             {
                 var oldIndex = _selectedItem?.UIndex;
-                if (SetProperty(ref _selectedItem, value) && !SuppressSelectionEvent)
+                // Some weird oddity exists in TreeView WPF where it selects the node twice when expanding stuff
+                // and it makes first selection sometimes reset to nothing.
+                // This is hack to make it not do that.
+
+                // only allow selecting a null tree entry if there is no package loaded
+                bool allowSelection = Pcc != null && value != null;
+                if (!allowSelection && Pcc == null) allowSelection = true;
+
+                if (allowSelection && SetProperty(ref _selectedItem, value) && !SuppressSelectionEvent)
                 {
+                    //_lastSelectionEvent = now;
                     if (oldIndex.HasValue && oldIndex.Value != 0 && !IsBackForwardsNavigationEvent)
                     {
                         // 0 = tree root
@@ -396,7 +404,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     IsBusy = false;
                     if (unresolvableImports.Exception == null)
                     {
-                        ListDialog ld = new ListDialog(unresolvableImports.Result,"Found unresolved imports", "The following imports failed to resolve. This may be due to improperly named files (an issue in LEX, not in the game), or they may be incorrectly named.", this) {DoubleClickEntryHandler = GetEntryDoubleClickAction()}; 
+                        ListDialog ld = new ListDialog(unresolvableImports.Result, "Found unresolved imports", "The following imports failed to resolve. This may be due to improperly named files (an issue in LEX, not in the game), or they may be incorrectly named.", this) { DoubleClickEntryHandler = GetEntryDoubleClickAction() };
                         ld.Show();
                     }
                 });
@@ -2424,6 +2432,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             {
                 preloadPackage(Path.GetFileName(s), new FileInfo(s).Length);
                 LoadMEPackage(s);
+                _selectedItem = null; // We change the backing data so we don't fire off a tree event since it checks if Pcc is null.
                 if (goToIndex == 0 && !string.IsNullOrWhiteSpace(goToEntry))
                 {
                     goToIndex = Pcc.FindEntry(goToEntry)?.UIndex ?? 0;
