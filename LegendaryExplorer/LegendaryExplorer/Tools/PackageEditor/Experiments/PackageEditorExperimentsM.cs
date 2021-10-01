@@ -16,6 +16,7 @@ using LegendaryExplorer.Misc;
 using LegendaryExplorer.Tools.AssetDatabase;
 using LegendaryExplorer.Tools.Sequence_Editor;
 using LegendaryExplorer.UnrealExtensions.Classes;
+using LegendaryExplorerCore;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Gammtek.IO;
@@ -2019,62 +2020,130 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             });
         }
 
+
+        public static void RebuildInternalResourceClassInformations(PackageEditorWindow pe)
+        {
+            MEGame game = MEGame.LE1;
+            StringBuilder sb = new StringBuilder();
+            var loadStream = LegendaryExplorerCoreUtilities.LoadFileFromCompressedResource("GameResources.zip",
+                LegendaryExplorerCoreLib.CustomResourceFileName(MEGame.LE1));
+
+            using var p = MEPackageHandler.OpenMEPackageFromStream(loadStream,
+                GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName);
+            foreach (var c in p.Exports.Where(x => x.IsClass))
+            {
+                sb.AppendLine($"#region {c.ObjectName}");
+                sb.AppendLine($"classes[\"{c.ObjectName}\"] = new ClassInfo");
+                sb.AppendLine("{");
+                sb.AppendLine($"\tbaseClass = \"{c.SuperClassName}\",");
+                sb.AppendLine($"\tpccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,");
+                sb.AppendLine($"\texportIndex = {c.UIndex}, // in {game}Resources.pcc");
+
+                // Properties
+                var ci = GlobalUnrealObjectInfo.generateClassInfo(c);
+                if (ci.properties.Any())
+                {
+                    sb.AppendLine("\tproperties =");
+                    sb.AppendLine("\t{");
+                    foreach (var prop in ci.properties)
+                    {
+                        var propInfoStr = $"new PropertyInfo(PropertyType.{prop.Value.Type.ToString()}";
+                        // If this is an array it needs a reference type
+                        // Probably on objectproperty too?
+                        if (prop.Value.Reference != null)
+                        {
+                            propInfoStr += $", reference: \"{prop.Value.Reference}\"";
+                        }
+
+                        if (prop.Value.Transient)
+                        {
+                            propInfoStr += ", transient: true";
+                        }
+
+                        propInfoStr += ")";
+
+                        sb.AppendLine(
+                            $"\t\tnew KeyValuePair<NameReference, PropertyInfo>(\"{prop.Key}\", {propInfoStr}),");
+                    }
+
+                    sb.AppendLine("\t}");
+
+                }
+
+                sb.AppendLine("};");
+                if (c.SuperClass.InheritsFrom("SequenceObject"))
+                {
+                    sb.AppendLine();
+                    sb.AppendLine($"sequenceObjects[\"{c.ObjectName}\"] = new SequenceObjectInfo");
+                    sb.AppendLine("{");
+                    sb.AppendLine($"\tObjInstanceVersion = 1"); // Not sure if this is correct...
+                    sb.AppendLine("};");
+                }
+
+                sb.AppendLine("#endregion");
+            }
+
+            Clipboard.SetText(sb.ToString());
+        }
+
         public static void MScanner(PackageEditorWindow pe)
         {
-            //MEGame game = MEGame.LE1;
-            //StringBuilder sb = new StringBuilder();
-            //using var p = MEPackageHandler.OpenMEPackage(@"Y:\ModLibrary\LE1\V Test\Donors\LE1Resources.pcc");
-            //foreach (var c in p.Exports.Where(x => x.IsClass))
-            //{
-            //    sb.AppendLine($"#region {c.ObjectName}");
-            //    sb.AppendLine($"classes[\"{c.ObjectName}\"] = new ClassInfo");
-            //    sb.AppendLine("{");
-            //    sb.AppendLine($"\tbaseClass = \"{c.SuperClassName}\",");
-            //    sb.AppendLine($"\tpccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,");
-            //    sb.AppendLine($"\texportIndex = {c.UIndex}, // in {game}Resources.pcc");
+            MEGame game = MEGame.LE1;
+            StringBuilder sb = new StringBuilder();
+            var loadStream = LegendaryExplorerCoreUtilities.LoadFileFromCompressedResource("GameResources.zip", LegendaryExplorerCoreLib.CustomResourceFileName(MEGame.LE1));
 
-            //    // Properties
-            //    var ci = GlobalUnrealObjectInfo.generateClassInfo(c);
-            //    if (ci.properties.Any())
-            //    {
-            //        sb.AppendLine("\tproperties =");
-            //        sb.AppendLine("\t{");
-            //        foreach (var prop in ci.properties)
-            //        {
-            //            var propInfoStr = $"new PropertyInfo(PropertyType.{prop.Value.Type.ToString()}";
-            //            // If this is an array it needs a reference type
-            //            // Probably on objectproperty too?
-            //            if (prop.Value.Reference != null)
-            //            {
-            //                propInfoStr += $", reference: \"{prop.Value.Reference}\"";
-            //            }
+            using var p = MEPackageHandler.OpenMEPackageFromStream(loadStream, GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName);
+            foreach (var c in p.Exports.Where(x => x.IsClass))
+            {
+                sb.AppendLine($"#region {c.ObjectName}");
+                sb.AppendLine($"classes[\"{c.ObjectName}\"] = new ClassInfo");
+                sb.AppendLine("{");
+                sb.AppendLine($"\tbaseClass = \"{c.SuperClassName}\",");
+                sb.AppendLine($"\tpccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,");
+                sb.AppendLine($"\texportIndex = {c.UIndex}, // in {game}Resources.pcc");
 
-            //            if (prop.Value.Transient)
-            //            {
-            //                propInfoStr += ", transient: true";
-            //            }
-            //            propInfoStr += ")";
+                // Properties
+                var ci = GlobalUnrealObjectInfo.generateClassInfo(c);
+                if (ci.properties.Any())
+                {
+                    sb.AppendLine("\tproperties =");
+                    sb.AppendLine("\t{");
+                    foreach (var prop in ci.properties)
+                    {
+                        var propInfoStr = $"new PropertyInfo(PropertyType.{prop.Value.Type.ToString()}";
+                        // If this is an array it needs a reference type
+                        // Probably on objectproperty too?
+                        if (prop.Value.Reference != null)
+                        {
+                            propInfoStr += $", reference: \"{prop.Value.Reference}\"";
+                        }
 
-            //            sb.AppendLine($"\t\tnew KeyValuePair<string, PropertyInfo>(\"{prop.Key}\", {propInfoStr}),");
-            //        }
-            //        sb.AppendLine("\t}");
+                        if (prop.Value.Transient)
+                        {
+                            propInfoStr += ", transient: true";
+                        }
+                        propInfoStr += ")";
 
-            //    }
+                        sb.AppendLine($"\t\tnew KeyValuePair<NameReference, PropertyInfo>(\"{prop.Key}\", {propInfoStr}),");
+                    }
+                    sb.AppendLine("\t}");
 
-            //    sb.AppendLine("};");
-            //    if (c.SuperClass.InheritsFrom("SequenceObject"))
-            //    {
-            //        sb.AppendLine();
-            //        sb.AppendLine($"sequenceObjects[\"{c.ObjectName}\"] = new SequenceObjectInfo");
-            //        sb.AppendLine("{");
-            //        sb.AppendLine($"\tObjInstanceVersion = 1"); // Not sure if this is correct...
-            //        sb.AppendLine("};");
-            //    }
-            //    sb.AppendLine("#endregion");
-            //}
+                }
 
-            //Clipboard.SetText(sb.ToString());
-            //return;
+                sb.AppendLine("};");
+                if (c.SuperClass.InheritsFrom("SequenceObject"))
+                {
+                    sb.AppendLine();
+                    sb.AppendLine($"sequenceObjects[\"{c.ObjectName}\"] = new SequenceObjectInfo");
+                    sb.AppendLine("{");
+                    sb.AppendLine($"\tObjInstanceVersion = 1"); // Not sure if this is correct...
+                    sb.AppendLine("};");
+                }
+                sb.AppendLine("#endregion");
+            }
+
+            Clipboard.SetText(sb.ToString());
+            return;
 
             // just dump whatever shit you want to find here
             //foreach (string filePath in MELoadedFiles.GetOfficialFiles(MEGame.LE1 /*, MEGame.LE2, MEGame.LE3*/))
