@@ -2443,7 +2443,10 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         private void CreateSplineConnection(ExportEntry sourceActor, ExportEntry destActor)
         {
             ArrayProperty<StructProperty> connections = sourceActor.GetProperty<ArrayProperty<StructProperty>>("Connections") ?? new ArrayProperty<StructProperty>("Connections");
-            var splineComponentClass = EntryImporter.EnsureClassIsInFile(Pcc, "SplineComponent", RelinkResultsAvailable: EntryImporterExtended.ShowRelinkResults);
+            var rop = new RelinkerOptionsPackage();
+            var splineComponentClass = EntryImporter.EnsureClassIsInFile(Pcc, "SplineComponent", rop);
+            if (rop.RelinkReport.Any()) EntryImporterExtended.ShowRelinkResults(rop.RelinkReport);
+
             var splineComponent = new ExportEntry(Pcc, sourceActor, Pcc.GetNextIndexedName("SplineComponent"), new byte[8])
             {
                 Class = splineComponentClass,

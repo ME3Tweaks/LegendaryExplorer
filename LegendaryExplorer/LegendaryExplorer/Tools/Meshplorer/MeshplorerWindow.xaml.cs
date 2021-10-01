@@ -221,8 +221,7 @@ namespace LegendaryExplorer.Tools.Meshplorer
                         }
                         CurrentExport.WritePropertiesAndBinary(new PropertyCollection(), objBin);
 
-                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, CurrentExport, upk, null, true,
-                                                             out IEntry _);
+                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, CurrentExport, upk, null, true, new RelinkerOptionsPackage(), out IEntry _);
                         CurrentExport.Data = dataBackup;
                         if (!cachedDataChanged)
                         {
@@ -435,7 +434,7 @@ namespace LegendaryExplorer.Tools.Meshplorer
                         }
                         meshExport.WritePropertiesAndBinary(new PropertyCollection(), objBin);
                         var results = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, meshExport, Pcc,
-                                                                           null, true, out _);
+                                                                           null, true, new RelinkerOptionsPackage(), out _);
                         if (results.Any())
                         {
                             var ld = new ListDialog(results, "Relink report",

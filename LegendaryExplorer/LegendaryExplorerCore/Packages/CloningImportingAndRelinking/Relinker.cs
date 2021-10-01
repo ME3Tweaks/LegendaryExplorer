@@ -16,7 +16,9 @@ using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 
 namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 {
-
+    /// <summary>
+    /// Specifies options used for relinking, as well as containing objects that can be passed through the entry porting process without having to modify method signatures.
+    /// </summary>
     public class RelinkerOptionsPackage
     {
         /// <summary>
@@ -25,9 +27,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         public ListenableDictionary<IEntry, IEntry> CrossPackageMap = new();
 
         /// <summary>
-        /// Whether objects an export depends on should be imported during a relink. This will cause all dependencies of dependencies to also be ported in, as well as the parents of those dependencies so they can be fully qualified paths.
+        /// Whether objects an export depends on should be imported during a relink.
+        /// This will cause all dependencies of dependencies to also be ported in, as well as the parents of those dependencies so they can be fully qualified paths.
         /// </summary>
-        public bool ImportExportDependencies { get; set; } = false;
+        public bool ImportExportDependencies { get; set; } = true;
 
         /// <summary>
         /// The object database that will be used for donating from the target game. This is only used if IsCrossGame is true. Passing this as null will still allow cross game, but donors will not be used.
@@ -48,6 +51,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// Package Cache that can be used to open packages. Can speed up performance if many packages have to be opened in succession.
         /// </summary>
         public PackageCache Cache { get; set; } = new();
+
+        /// <summary>
+        /// Invoked when an error occurs during porting. Can be null.
+        /// </summary>
+        public Action<string> ErrorOccurredCallback;
     }
 
     public static class Relinker
@@ -150,6 +158,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             IMEPackage sourcePcc = sourceExport.FileRef;
 
             // Relink header (component map)
+            // When porting to a game newer than ME2 might want to just strip this out. As I don't think that engine version uses this anymore
             if (relinkingExport.HasComponentMap && relinkingExport.ComponentMap.Count > 0)
             {
                 OrderedMultiValueDictionary<NameReference, int> newComponentMap = new OrderedMultiValueDictionary<NameReference, int>();
@@ -157,10 +166,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 {
                     // This code makes a lot of assumptions, like how components are always directly below the current export
                     var nameIndex = relinkingExport.FileRef.FindNameOrAdd(cmk.Key.Name);
-                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport.FileRef.GetUExport(cmk.Value + 1), relinkingExport.FileRef, relinkingExport, true, out var newComponent,
-                        // Todo: Pass ROP through on this
-                        rop.CrossPackageMap, null, rop.ImportExportDependencies, rop.TargetGameDonorDB);
-
+                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport.FileRef.GetUExport(cmk.Value + 1), relinkingExport.FileRef, relinkingExport, true, rop, out var newComponent);
                     newComponentMap.Add(new KeyValuePair<NameReference, int>(cmk.Key, newComponent.UIndex - 1)); // TODO: Relink the 
                 }
                 relinkingExport.ComponentMap = newComponentMap;
@@ -390,7 +396,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 //Get the original import
                 ImportEntry importFullName = importingPCC.GetImport(n);
                 string originalInstancedFullPath = importFullName.InstancedFullPath; //used to be just FullPath - but some imports are indexed!
-                                                                              //Debug.WriteLine("We should import " + origImport.GetFullPath);
+                                                                                     //Debug.WriteLine("We should import " + origImport.GetFullPath);
 
 
                 string DONOTEDIT_OriginalInstancedFullPath = originalInstancedFullPath;
@@ -416,7 +422,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         // Map the relative paths onto the game directory
                         canddiates = canddiates.Select(x => Path.Combine(MEDirectories.GetDefaultGamePath(relinkingExport.Game), x)).ToList();
 
-                        if (canddiates.Any(x=>EntryImporter.IsSafeToImportFrom(Path.GetFileName(x), relinkingExport.Game))) // Some things are in multiple files, like things in startup files.
+                        if (canddiates.Any(x => EntryImporter.IsSafeToImportFrom(Path.GetFileName(x), relinkingExport.Game))) // Some things are in multiple files, like things in startup files.
                         {
                             // It's been moved, we need to change how we import to it.
                             // Depending on if it's ForcedExport or not changes how we reference it
@@ -483,7 +489,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 string linkFailedDueToError = null;
                 try
                 {
-                    crossImport = EntryImporter.GetOrAddCrossImportOrPackage(originalInstancedFullPath, importingPCC, relinkingExport.FileRef, originalImportFullName: DONOTEDIT_OriginalInstancedFullPath);
+                    crossImport = EntryImporter.GetOrAddCrossImportOrPackage(originalInstancedFullPath, importingPCC, relinkingExport.FileRef, rop);
                 }
                 catch (Exception e)
                 {
@@ -493,7 +499,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                 if (crossImport != null)
                 {
-                    rop.CrossPackageMap.Add(importFullName, crossImport); //add to mapping to speed up future relinks
+                    if (!rop.CrossPackageMap.ContainsKey(importFullName))
+                        rop.CrossPackageMap.Add(importFullName, crossImport); //add to mapping to speed up future relinks
                     uIndex = crossImport.UIndex;
                     // Debug.WriteLine($"Relink hit: Dynamic CrossImport for {origvalue} {importingPCC.GetEntry(origvalue).InstancedFullPath} -> {uIndex}");
                     return null; // OK
@@ -615,7 +622,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 if (importingFromGlobalFile)
                 {
-                    uIndex = EntryImporter.GetOrAddCrossImportOrPackageFromGlobalFile(sourceExport.InstancedFullPath, importingPCC, relinkingExport.FileRef, rop.CrossPackageMap).UIndex;
+                    uIndex = EntryImporter.GetOrAddCrossImportOrPackageFromGlobalFile(sourceExport.InstancedFullPath, importingPCC, relinkingExport.FileRef, rop).UIndex;
                 }
                 else
                 {
@@ -637,10 +644,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         //else
                         //{
                         //Parent is import
-                        parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceExport.ParentInstancedFullPath, importingPCC, relinkingExport.FileRef, true, rop.CrossPackageMap, targetDonorFileDB: rop.TargetGameDonorDB);
+                        parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceExport.ParentInstancedFullPath, importingPCC, relinkingExport.FileRef, rop);
                         //}
                     }
-                    ExportEntry importedExport = EntryImporter.ImportExport(relinkingExport.FileRef, sourceExport, parent?.UIndex ?? 0, true, rop.CrossPackageMap, targetGameDB: rop.TargetGameDonorDB);
+                    ExportEntry importedExport = EntryImporter.ImportExport(relinkingExport.FileRef, sourceExport, parent?.UIndex ?? 0, rop);
                     if (!importedExport.InstancedFullPath.CaseInsensitiveEquals(sourceExport.InstancedFullPath))
                     {
                         Debugger.Break();

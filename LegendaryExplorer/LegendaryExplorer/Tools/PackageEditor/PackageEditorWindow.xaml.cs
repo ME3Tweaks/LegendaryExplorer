@@ -3306,8 +3306,16 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
                 int numExports = Pcc.ExportCount;
                 //Import!
+                RelinkerOptionsPackage rop = new RelinkerOptionsPackage()
+                {
+                    IsCrossGame = sourceEntry.Game != targetItem.Game && sourceEntry.Game != MEGame.UDK,
+                    TargetGameDonorDB = objectDB,
+                    Cache = null, // Disable cache as we want to pull from open files in LEX. Will reduce performance
+                    ImportExportDependencies = portingOption.PortingOptionChosen == EntryImporter.PortingOption.CloneAllDependencies
+                };
+
                 var relinkResults = EntryImporter.ImportAndRelinkEntries(portingOption.PortingOptionChosen, sourceEntry, Pcc,
-                    targetLinkEntry, true, out IEntry newEntry, targetGameDonorDB: objectDB);
+                    targetLinkEntry, true, rop, out IEntry newEntry);
 
                 if (originalIndex >= 0)
                 {

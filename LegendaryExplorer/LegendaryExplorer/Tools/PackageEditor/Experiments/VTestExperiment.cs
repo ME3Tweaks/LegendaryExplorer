@@ -46,13 +46,18 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             /// If debug features should be enabled in the build such as loggig conversions
             /// </summary>
             public bool debugBuild = true;
+
+            /// <summary>
+            /// The cache that is passed through to sub operations. You can change the
+            /// CacheMaxSize to tune memory usage vs performance.
+            /// </summary>
+            public PackageCache cache = new PackageCache() { CacheMaxSize = 20 };
             #endregion
 
             #region Autoset options - Do not change these
             public PackageEditorWindow packageEditorWindow;
             public IMEPackage vTestHelperPackage;
             public ObjectInstanceDB objectDB;
-            public PackageCache cache = new PackageCache();
             #endregion
         }
 
@@ -192,7 +197,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             // This object is passed through to all the methods so we don't have to constantly update the signatures
             var vTestOptions = new VTestOptions()
             {
-                packageEditorWindow = pe
+                packageEditorWindow = pe,
             };
 
             pe.SetBusy("Performing VTest");
@@ -222,6 +227,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// <param name="vTestOptions"></param>
         private static void RunVTest(VTestOptions vTestOptions)
         {
+            Debug.WriteLine("Beginning VTest");
+            Debug.WriteLine($"Cache GUID: {vTestOptions.cache.guid}");
             string dbPath = AppDirectories.GetObjectDatabasePath(MEGame.LE1);
             //string matPath = AppDirectories.GetMaterialGuidMapPath(MEGame.ME1);
             //Dictionary<Guid, string> me1MaterialMap = null;
@@ -415,6 +422,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             VTestFilePorting(me1File, le1File, itemsToPort, vTestOptions);
 
+            RelinkerOptionsPackage rop = new RelinkerOptionsPackage()
+            {
+                Cache = vTestOptions.cache,
+                IsCrossGame = true,
+                ImportExportDependencies = true,
+                TargetGameDonorDB = vTestOptions.objectDB
+            };
+
             // Replace BioWorldInfo if requested
             if (syncBioWorldInfo)
             {
@@ -422,11 +437,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 if (me1BWI != null)
                 {
                     me1BWI.indexValue = 1;
-                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, me1BWI, le1File, le1File.FindExport(@"TheWorld.PersistentLevel.BioWorldInfo_0"), true, out _, importExportDependencies: true, targetGameDonorDB: vTestOptions.objectDB);
+                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, me1BWI, le1File, le1File.FindExport(@"TheWorld.PersistentLevel.BioWorldInfo_0"), true, rop, out _);
                 }
             }
 
             // Replace Main_Sequence if requested
+
             if (portMainSequence)
             {
                 vTestOptions.packageEditorWindow.BusyText = "Porting sequencing...";
@@ -434,7 +450,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 var source = me1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence");
                 if (source != null && dest != null)
                 {
-                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, source, le1File, dest, true, out _, importExportDependencies: true, targetGameDonorDB: vTestOptions.objectDB);
+                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, source, le1File, dest, true, rop, out _);
                 }
                 else
                 {
@@ -479,7 +495,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         private static void VTest_EnableDebugOptionsOnPackage(IMEPackage le1File, VTestOptions vTestOptions)
         {
-            SequenceEditorExperimentsM.ConvertSeqAct_Log_objComments(le1File);
+            SequenceEditorExperimentsM.ConvertSeqAct_Log_objComments(le1File, vTestOptions.cache);
         }
 
         /// <summary>
@@ -500,8 +516,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             foreach (var e in itemsToPort)
             {
                 vTestOptions.packageEditorWindow.BusyText = $"Porting {e.ObjectName}";
+                RelinkerOptionsPackage rop = new RelinkerOptionsPackage()
+                {
+                    Cache = vTestOptions.cache,
+                    ImportExportDependencies = true,
+                    IsCrossGame = true,
+                    TargetGameDonorDB = vTestOptions.objectDB
+                };
                 var report = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, e, destPackage,
-                    le1PL, true, out _, targetGameDonorDB: vTestOptions.objectDB, cache: vTestOptions.cache);
+                    le1PL, true, rop, out _);
             }
         }
 
@@ -527,7 +550,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             foreach (var e in sourcePackage.Exports.Where(x => x.ClassName == "ObjectReferencer"))
             {
-                var report = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, e, package, null, true, out _, targetGameDonorDB: vTestOptions.objectDB);
+                RelinkerOptionsPackage rop = new RelinkerOptionsPackage()
+                {
+                    IsCrossGame = true,
+                    ImportExportDependencies = true,
+                    Cache = vTestOptions.cache,
+                    TargetGameDonorDB = vTestOptions.objectDB
+                };
+
+                var report = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, e, package, null, true, rop, out _);
                 if (report.Any())
                 {
                     //Debugger.Break();
@@ -776,9 +807,16 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 var sourceMatInst = vTestOptions.vTestHelperPackage.Exports.First(x => x.ClassName == "MaterialInstanceConstant"); // cause it can change names here
                 sourceMatInst.ObjectName = $"{le1Material.ObjectName}_MatInst";
-                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceMatInst, le1Package, le1Material.Parent, true, out var le1MatInstEntryt);
+                RelinkerOptionsPackage rop = new RelinkerOptionsPackage()
+                {
+                    Cache = vTestOptions.cache,
+                    ImportExportDependencies = true,
+                    IsCrossGame = true,
+                    TargetGameDonorDB = vTestOptions.objectDB
+                };
+                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceMatInst, le1Package, le1Material.Parent, true, rop, out var le1MatInstEntry);
 
-                var le1MatInst = le1MatInstEntryt as ExportEntry;
+                var le1MatInst = le1MatInstEntry as ExportEntry;
                 var le1MatInstProps = le1MatInst.GetProperties();
 
                 le1MatInstProps.AddOrReplaceProp(new ObjectProperty(le1Material, "Parent")); // Update the parent
@@ -844,10 +882,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     var relinkDict = new ListenableDictionary<IEntry, IEntry>();
                     relinkDict[le1Material] = le1MatInst; // This is a ridiculous hack
 
-                    RelinkerOptionsPackage rop = new RelinkerOptionsPackage()
+                    rop = new RelinkerOptionsPackage()
                     {
                         CrossPackageMap = relinkDict,
-                        Cache = vTestOptions.cache
+                        Cache = vTestOptions.cache,
+                        ImportExportDependencies = false // This is same-package so there's nothing to import.
                     };
 
                     Relinker.Relink(entry as ExportEntry, entry as ExportEntry, rop);

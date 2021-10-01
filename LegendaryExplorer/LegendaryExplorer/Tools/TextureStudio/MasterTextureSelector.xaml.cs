@@ -358,7 +358,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
 
             var texport = new ExportEntry(package, idxLink, objectName, properties: props, binary: binary)
             {
-                Class = EntryImporter.GetOrAddCrossImportOrPackage("Engine.Texture2D", GetGlobalPackageForGame(package.Game), package),
+                Class = EntryImporter.GetOrAddCrossImportOrPackage("Engine.Texture2D", GetGlobalPackageForGame(package.Game), package, new RelinkerOptionsPackage()),
             };
 
             package.AddExport(texport);

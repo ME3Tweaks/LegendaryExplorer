@@ -266,7 +266,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public bool VisitNode(ForEachLoop node)
         {
-            if (node.IteratorCall is DynArrayIterator or CompositeSymbolRef {InnerSymbol: DynArrayIterator})
+            if (node.IteratorCall is DynArrayIterator or CompositeSymbolRef { InnerSymbol: DynArrayIterator })
             {
                 WriteOpCode(OpCodes.DynArrayIterator);
             }
@@ -504,8 +504,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public bool VisitNode(ExpressionOnlyStatement node)
         {
-            
-            if (GetAffector(node.Value) is {RetValNeedsDestruction: true} func)
+
+            if (GetAffector(node.Value) is { RetValNeedsDestruction: true } func)
             {
                 WriteOpCode(OpCodes.EatReturnValue);
                 WriteObjectRef(ResolveReturnValue(func));
@@ -570,7 +570,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
             VariableType lType = node.Operator.LeftOperand.VarType;
             VariableType rType = node.Operator.RightOperand.VarType;
-            if (node.Operator.LeftOperand.VarType is Class {IsInterface: true} c)
+            if (node.Operator.LeftOperand.VarType is Class { IsInterface: true } c)
             {
                 lType = rType = node.LeftOperand.ResolveType() ?? node.RightOperand.ResolveType() ?? c;
             }
@@ -623,7 +623,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         public bool VisitNode(DelegateComparison node)
         {
             useInstanceDelegate = true;
-            WriteOpCode(node.RightOperand.ResolveType() is DelegateType {IsFunction: true}
+            WriteOpCode(node.RightOperand.ResolveType() is DelegateType { IsFunction: true }
                             ? node.IsEqual
                                 ? OpCodes.EqualEqual_DelFunc
                                 : OpCodes.NotEqual_DelFunc
@@ -1179,22 +1179,22 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 WriteByte((byte)i);
             }
             else switch (i)
-            {
-                case 0:
-                    WriteOpCode(OpCodes.IntZero);
-                    break;
-                case 1:
-                    WriteOpCode(OpCodes.IntOne);
-                    break;
-                case >= 0 and < 256:
-                    WriteOpCode(OpCodes.IntConstByte);
-                    WriteByte((byte)i);
-                    break;
-                default:
-                    WriteOpCode(OpCodes.IntConst);
-                    WriteInt(i);
-                    break;
-            }
+                {
+                    case 0:
+                        WriteOpCode(OpCodes.IntZero);
+                        break;
+                    case 1:
+                        WriteOpCode(OpCodes.IntOne);
+                        break;
+                    case >= 0 and < 256:
+                        WriteOpCode(OpCodes.IntConstByte);
+                        WriteByte((byte)i);
+                        break;
+                    default:
+                        WriteOpCode(OpCodes.IntConst);
+                        WriteInt(i);
+                        break;
+                }
 
             return true;
         }
@@ -1337,7 +1337,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 State state => ResolveState(state),
                 Function func => ResolveFunction(func),
                 FunctionParameter param => parameters[param.Name].Export,
-                VariableDeclaration {Outer: Function} local => locals[local.Name].Export,
+                VariableDeclaration { Outer: Function } local => locals[local.Name].Export,
                 VariableDeclaration field => ResolveProperty(field),
                 SymbolReference symRef => ResolveSymbol(symRef.Node),
                 _ => throw new ArgumentOutOfRangeException(nameof(node))
@@ -1356,9 +1356,16 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         private IEntry ResolveState(State s) => Pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer).InstancedFullPath}.{s.Name}", "State");
 
-        private IEntry ResolveClass(Class c) =>
-            EntryImporter.EnsureClassIsInFile(Pcc, c.Name, RelinkResultsAvailable: relinkResults =>
-                    throw new Exception($"Unable to resolve class '{c.Name}'! There were relinker errors: {string.Join("\n\t", relinkResults.Select(pair => pair.Message))}"));
+        private IEntry ResolveClass(Class c)
+        {
+            RelinkerOptionsPackage rop = new RelinkerOptionsPackage() { ImportExportDependencies = true };
+            var entry = EntryImporter.EnsureClassIsInFile(Pcc, c.Name, rop);
+            if (rop.RelinkReport.Any())
+            {
+                throw new Exception($"Unable to resolve class '{c.Name}'! There were relinker errors: {string.Join("\n\t", rop.RelinkReport.Select(pair => pair.Message))}");
+            }
+            return entry;
+        }
 
         private IEntry ResolveObject(string instancedFullPath) => Pcc.Exports.FirstOrDefault(exp => exp.InstancedFullPath == instancedFullPath) ??
                                                                   (IEntry)Pcc.Imports.FirstOrDefault(imp => imp.InstancedFullPath == instancedFullPath);
@@ -1367,7 +1374,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             type switch
             {
                 Class component when component.SameAsOrSubClassOf("Component") => "ComponentProperty",
-                Class {IsInterface: true} => "InterfaceProperty",
+                Class { IsInterface: true } => "InterfaceProperty",
                 Class _ => "ObjectProperty",
                 Struct _ => "StructProperty",
                 ClassType _ => "ClassProperty",

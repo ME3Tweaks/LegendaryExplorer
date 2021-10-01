@@ -12,7 +12,10 @@ namespace LegendaryExplorerCore.Packages
     /// </summary>
     public class PackageCache : IDisposable
     {
-        private Guid guid = Guid.NewGuid(); // For logging
+        /// <summary>
+        /// Unique identifier for this cache
+        /// </summary>
+        public readonly Guid guid = Guid.NewGuid(); // For logging
         /// <summary>
         /// Object used for synchronizing for threads
         /// </summary>
@@ -22,7 +25,19 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         public CaseInsensitiveConcurrentDictionary<IMEPackage> Cache { get; } = new();
 
-        public PackageCache(){ }
+        /// <summary>
+        /// The last access order. Packages at the bottom are the last accessed, the ones at the top are first.
+        /// This is only for dropping packages if the count is not 0.
+        /// </summary>
+        private Dictionary<string, DateTime> LastAccessMap = new();
+
+        public PackageCache() { }
+
+        /// <summary>
+        /// The maximum amount of packages this cache can hold open at a time. The default is unlimited (0). Global packages like SFXGame, Core, etc do not count against this.
+        /// When a new package is opened, the stalest package is dropped if the amount of open packages exceeds this number. 
+        /// </summary>
+        public int CacheMaxSize { get; set; }
 
         /// <summary>
         /// Thread-safe package cache fetch. Can be passed to various methods to help expedite operations by preventing package reopening. Packages opened with this method do not use the global LegendaryExplorerCore caching system and will always load from disk if not in this local cache.
@@ -42,6 +57,7 @@ namespace LegendaryExplorerCore.Packages
                 if (Cache.TryGetValue(packagePath, out var package))
                 {
                     //Debug.WriteLine($@"PackageCache hit: {packagePath}");
+                    LastAccessMap[packagePath] = DateTime.Now; // Update access time
                     return package;
                 }
 
@@ -51,7 +67,7 @@ namespace LegendaryExplorerCore.Packages
                     {
                         Debug.WriteLine($@"PackageCache {guid} load: {packagePath}");
                         package = MEPackageHandler.OpenMEPackage(packagePath, forceLoadFromDisk: true);
-                        Cache[packagePath] = package;
+                        InsertIntoCache(package);
                         return package;
                     }
 
@@ -65,26 +81,63 @@ namespace LegendaryExplorerCore.Packages
         public void InsertIntoCache(IMEPackage package)
         {
             Cache[package.FilePath] = package;
+            LastAccessMap[package.FilePath] = DateTime.Now;
+            CheckCacheFullness();
+        }
+
+        private void CheckCacheFullness()
+        {
+            if (CacheMaxSize > 1 && Cache.Count > CacheMaxSize)
+            {
+                var accessOrder = LastAccessMap.OrderBy(x => x.Value).ToList();
+                while (CacheMaxSize > 1 && Cache.Count > CacheMaxSize)
+                {
+                    // Find the oldest package
+                    ReleasePackage(accessOrder[0].Key);
+                    accessOrder.RemoveAt(0);
+                }
+            }
+
+            if (CacheMaxSize == 0)
+            {
+                Debug.WriteLine(guid);
+                Debugger.Break();
+            }
+        }
+
+
+        /// <summary>
+        /// Releases a package by it's filepath from the cache.
+        /// </summary>
+        /// <param name="packagePath"></param>
+        public virtual void ReleasePackage(string packagePath)
+        {
+            if (Cache.Remove(packagePath, out var package))
+            {
+                Debug.WriteLine($"Package Cache {guid} dropping package: {packagePath}");
+                LastAccessMap.Remove(packagePath);
+            }
         }
 
         public void InsertIntoCache(IEnumerable<IMEPackage> packages)
         {
             foreach (var package in packages)
             {
-                Cache[package.FilePath] = package;
+                InsertIntoCache(package);
             }
         }
 
         /// <summary>
         /// Releases all packages referenced by this cache and can optionally force a garbage collection to reclaim memory they may have used
         /// </summary>
-        public void ReleasePackages(bool gc = false)
+        public virtual void ReleasePackages(bool gc = false)
         {
             foreach (var p in Cache.Values)
             {
                 p.Dispose();
             }
 
+            LastAccessMap.Clear();
             Cache.Clear();
             if (gc)
                 GC.Collect();
@@ -102,9 +155,10 @@ namespace LegendaryExplorerCore.Packages
                 {
                     Cache[key].Dispose();
                     Cache.Remove(key, out _);
+                    LastAccessMap.Remove(key);
                 }
             }
-            
+
             if (gc)
                 GC.Collect();
         }
@@ -120,6 +174,10 @@ namespace LegendaryExplorerCore.Packages
         public virtual bool TryGetCachedPackage(string filepath, bool openIfNotInCache, out IMEPackage cachedPackage)
         {
             cachedPackage = GetCachedPackage(filepath, openIfNotInCache);
+            if (cachedPackage != null && !openIfNotInCache)
+            {
+                LastAccessMap[filepath] = DateTime.Now; // Update access time
+            }
             return cachedPackage != null;
         }
 

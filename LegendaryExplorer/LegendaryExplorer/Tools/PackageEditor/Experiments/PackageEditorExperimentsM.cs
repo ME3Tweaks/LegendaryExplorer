@@ -78,7 +78,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             if (exportRef)
                 index += 1;
             if (importRef)
-                index =  (index * -1) - 1;
+                index = (index * -1) - 1;
 
             var searchStream = pe.Pcc.SaveToStream(false);
             var matches = new List<int>();
@@ -95,7 +95,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             ListDialog ld = new ListDialog(matches.Select(x => x.ToString("X8")), "Matches", "The following areas in the file have the specified integer value.", pe);
             ld.Show();
-            
+
             void parseErrorLine(string text)
             {
                 if (text.StartsWith("Bad import index "))
@@ -177,64 +177,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     pewpf.BusyText = $"Enumerating exports for PPS [{numDone}/{totalFiles}]";
                 }
             }).ContinueWithOnUIThread(foundCandidates => { pewpf.IsBusy = false; });
-        }
-
-        public static void UpdateTexturesMatsToGame(PackageEditorWindow pewpf)
-        {
-            Task.Run(() =>
-            {
-                pewpf.BusyText = "Updating objects...";
-                pewpf.IsBusy = true;
-                var packages = MELoadedFiles.GetFilesLoadedInGame(MEGame.LE3);
-
-                //var updatableObjects = pewpf.Pcc.Exports.Where(x => x.IsTexture());
-                //updatableObjects = updatableObjects.Concat(pewpf.Pcc.Exports.Where(x => x.ClassName == @"Material"));
-
-                var lookupPackages = new[] { @"BIOG_HMF_ARM_HVY_R.pcc", @"BIOG_HMF_ARM_CTH_R.pcc", @"Startup.pcc" };
-                foreach (var lookupPackage in lookupPackages)
-                {
-                    using var importPackage = MEPackageHandler.OpenMEPackage(packages[lookupPackage]);
-
-                    foreach (var sourceObj in importPackage.Exports)
-                    {
-                        var matchingObj =
-                            pewpf.Pcc.Exports.FirstOrDefault(x => x.InstancedFullPath == sourceObj.InstancedFullPath);
-                        if (matchingObj != null && !matchingObj.DataChanged)
-                        {
-                            if (!shouldUpdateObject(matchingObj))
-                                continue;
-
-                            var resultst = EntryImporter.ImportAndRelinkEntries(
-                                EntryImporter.PortingOption.ReplaceSingular,
-                                sourceObj, matchingObj.FileRef, matchingObj, true, out _,
-                                errorOccuredCallback: x => throw new Exception(x),
-                                importExportDependencies: true);
-                            if (resultst.Any())
-                            {
-                                Debug.WriteLine("MERGE FAILED!");
-                            }
-
-                            if (matchingObj.DataChanged)
-                                Debug.WriteLine($@"Updated {matchingObj.InstancedFullPath}");
-                        }
-                        else
-                        {
-                            //Debug.WriteLine($@"Did not update {sourceObj.InstancedFullPath}");
-                        }
-                    }
-
-
-                }
-
-            }).ContinueWithOnUIThread(x => { pewpf.IsBusy = false; });
-        }
-
-        private static bool shouldUpdateObject(ExportEntry matchingObj)
-        {
-            if (matchingObj.ClassName == @"ObjectReferencer") return false;
-            if (matchingObj.ClassName == @"ObjectRedirector") return false;
-
-            return true;
         }
 
         public static void EnumerateAllFunctions(PackageEditorWindow pewpf)
@@ -1890,7 +1832,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     else
                     {
                         exp.ObjectName = parts[i];
-                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, exp, donorPackage, parent, true, out var newDonor, importExportDependencies: true);
+                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, exp, donorPackage, parent, true, new RelinkerOptionsPackage() { ImportExportDependencies = true }, out var newDonor);
                     }
                 }
                 donorPackage.Save();
@@ -2288,13 +2230,21 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 var bcBaseIdx = vegasP.findName("BIOC_Base");
                 vegasP.replaceName(bcBaseIdx, "SFXGame");
 
+                // Should probably make method for name correction
+
                 var packageName = Path.GetFileNameWithoutExtension(sourceFile);
                 var link = ExportCreator.CreatePackageExport(destP, packageName);
 
                 List<EntryStringPair> results = new List<EntryStringPair>();
+                RelinkerOptionsPackage rop = new RelinkerOptionsPackage()
+                {
+                    IsCrossGame = vegasP.Game != destP.Game,
+                    ImportExportDependencies = true
+                };
+
                 foreach (var v in vegasP.Exports.Where(x => x.IsClass))
                 {
-                    results.AddRange(EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, v, destP, null, true, out _));
+                    results.AddRange(EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, v, destP, null, true, rop, out _));
                 }
 
                 foreach (var v in destP.Exports.Where(x => x.ObjectName != packageName && x.Parent == null))

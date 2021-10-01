@@ -206,17 +206,21 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                             UClass classBin = ObjectBinary.From<UClass>(classExport);
                             ExportEntry classDefaults = importPCC.GetUExport(classBin.Defaults);
 
+                            RelinkerOptionsPackage rop = new RelinkerOptionsPackage() { Cache = pc ?? new PackageCache() };
+
                             foreach (var prop in classDefaults.GetProperties())
                             {
                                 if (varLinksProp == null && prop.Name == "VariableLinks" && prop is ArrayProperty<StructProperty> vlp)
                                 {
                                     varLinksProp = vlp;
                                     //relink ExpectedType
+
                                     foreach (StructProperty varLink in varLinksProp)
                                     {
+
                                         if (varLink.GetProp<ObjectProperty>("ExpectedType") is ObjectProperty expectedTypeProp &&
                                             importPCC.TryGetEntry(expectedTypeProp.Value, out IEntry expectedVar) &&
-                                            EntryImporter.EnsureClassIsInFile(pcc, expectedVar.ObjectName, RelinkResultsAvailable: EntryImporterExtended.ShowRelinkResults, cache: pc) is IEntry portedExpectedVar)
+                                            EntryImporter.EnsureClassIsInFile(pcc, expectedVar.ObjectName, rop) is IEntry portedExpectedVar)
                                         {
                                             expectedTypeProp.Value = portedExpectedVar.UIndex;
                                         }
@@ -235,7 +239,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                                     {
                                         if (eventLink.GetProp<ObjectProperty>("ExpectedType") is ObjectProperty expectedTypeProp &&
                                             importPCC.TryGetEntry(expectedTypeProp.Value, out IEntry expectedVar) &&
-                                            EntryImporter.EnsureClassIsInFile(pcc, expectedVar.ObjectName, RelinkResultsAvailable: EntryImporterExtended.ShowRelinkResults, cache: pc) is IEntry portedExpectedVar)
+                                            EntryImporter.EnsureClassIsInFile(pcc, expectedVar.ObjectName, rop) is IEntry portedExpectedVar)
                                         {
                                             expectedTypeProp.Value = portedExpectedVar.UIndex;
                                         }
@@ -250,7 +254,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                                     inLinksProp = ilp;
                                 }
                             }
-                            if(!pc.TryGetCachedPackage(loadPath, false, out _)) importPCC.Dispose(); // Can't do a using statement because of the pc out var - not good enough at c# to fix
+                            if (!pc.TryGetCachedPackage(loadPath, false, out _)) importPCC.Dispose(); // Can't do a using statement because of the pc out var - not good enough at c# to fix
                         }
                         classes.TryGetValue(classInfo.baseClass, out classInfo);
                         switch (classInfo.ClassName)
@@ -267,7 +271,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
                         }
                     }
-                    loopend: ;
+                loopend:;
                 }
                 catch
                 {
@@ -317,10 +321,12 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
         public static ExportEntry CreateSequenceObject(IMEPackage pcc, string className, MEGame game, PackageCache cache = null)
         {
+            var rop = new RelinkerOptionsPackage() { Cache = cache ?? new PackageCache() };
             var seqObj = new ExportEntry(pcc, 0, pcc.GetNextIndexedName(className), properties: GetSequenceObjectDefaults(pcc, className, game, cache))
             {
-                Class = EntryImporter.EnsureClassIsInFile(pcc, className, RelinkResultsAvailable: EntryImporterExtended.ShowRelinkResults, cache: cache)
+                Class = EntryImporter.EnsureClassIsInFile(pcc, className, rop)
             };
+            EntryImporterExtended.ShowRelinkResultsIfAny(rop);
             seqObj.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
             pcc.AddExport(seqObj);
             return seqObj;

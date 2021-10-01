@@ -83,7 +83,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 var levelBin = levelExport.GetBinaryData<Level>();
 
                 using IMEPackage otPcc = MEPackageHandler.OpenME3Package(otFilePath);
-                var relinkMap = new ListenableDictionary<IEntry, IEntry>();
                 foreach (UIndex uIndex in levelBin.Actors)
                 {
                     if (uIndex.GetEntry(pcc) is ExportEntry actor)
@@ -157,8 +156,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         EntryPruner.TrashEntryAndDescendants(shadowMaps[0].GetEntry(pcc));
                     }
 
+                    RelinkerOptionsPackage rop = new RelinkerOptionsPackage()
+                    {
+                        Cache = null, // Maintains original behavior of this func (09/30/2021: Change to RelinkerOptionsPackage)
+                        ImportExportDependencies = true,
+                    };
+
                     var results = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies,
-                        otShadowMaps[0].GetEntry(otPcc), pcc, smcExp, true, out IEntry leShadowMap, relinkMap);
+                        otShadowMaps[0].GetEntry(otPcc), pcc, smcExp, true, rop, out IEntry leShadowMap);
                     if (results?.Count > 0)
                     {
                         Debugger.Break();

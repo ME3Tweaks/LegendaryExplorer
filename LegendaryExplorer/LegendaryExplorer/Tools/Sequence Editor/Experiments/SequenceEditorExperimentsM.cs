@@ -59,9 +59,9 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
             }
         }
 
-        public static void ConvertSeqAct_Log_objComments(IMEPackage package)
+        public static void ConvertSeqAct_Log_objComments(IMEPackage package, PackageCache cache = null)
         {
-            PackageCache cache = new PackageCache(); // So we don't have to open file like 50 times
+            cache ??= new PackageCache(); // So we don't have to open file like 50 times
             foreach (var seqLog in package.Exports.Where(x => x.ClassName == "SeqAct_Log").ToList())
             {
                 bool alreadyAdded = false; // Has this objcomment been added already (has this been run on this file already?)

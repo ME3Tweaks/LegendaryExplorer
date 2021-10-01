@@ -101,6 +101,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                         throw new ArgumentException($"Expected {nameof(existingObject)} to be of type {nameof(UProperty)}!");
                     }
             }
+
             throw new ArgumentOutOfRangeException(nameof(node));
         }
 
@@ -121,7 +122,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             ExportEntry stateExport;
             if (stateObj is null)
             {
-                stateExport = CreateNewExport(stateName, "State", parent, new UState { ScriptBytes = Array.Empty<byte>(), LocalFunctionMap = new()}, super);
+                stateExport = CreateNewExport(stateName, "State", parent, new UState { ScriptBytes = Array.Empty<byte>(), LocalFunctionMap = new() }, super);
                 stateObj = stateExport.GetBinaryData<UState>();
             }
             else
@@ -131,6 +132,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 {
                     stateExport.SuperClass = super;
                 }
+
                 if (stateExport.ObjectName != stateName)
                 {
                     stateExport.ObjectName = stateName;
@@ -154,6 +156,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                         stateObj.ProbeMask |= enumVal;
                     }
                 }
+
                 curState = curState.Parent;
             }
 
@@ -175,9 +178,11 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     prevFunc.Next = childFunc.Export;
                     prevFunc.Export.WriteBinary(prevFunc);
                 }
+
                 stateObj.LocalFunctionMap.Add(childFunc.Export.ObjectName, childFunc.Export.UIndex);
                 prevFunc = childFunc;
             }
+
             foreach (UFunction removedFunc in existingFuncs.Values)
             {
                 EntryPruner.TrashEntryAndDescendants(removedFunc.Export);
@@ -204,16 +209,17 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             ExportEntry funcExport;
             if (funcObj is null)
             {
-                funcExport = CreateNewExport(functionName, "Function", parent, new UFunction { ScriptBytes = Array.Empty<byte>(), FriendlyName = functionName}, super);
+                funcExport = CreateNewExport(functionName, "Function", parent, new UFunction { ScriptBytes = Array.Empty<byte>(), FriendlyName = functionName }, super);
                 funcObj = funcExport.GetBinaryData<UFunction>();
             }
             else
             {
-                funcExport= funcObj.Export;
+                funcExport = funcObj.Export;
                 if (funcExport.SuperClass != super)
                 {
                     funcExport.SuperClass = super;
                 }
+
                 if (funcExport.ObjectName != functionName)
                 {
                     funcExport.ObjectName = functionName;
@@ -232,6 +238,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 newMembers.Add(funcAST.ReturnValueDeclaration);
             }
+
             newMembers.AddRange(funcAST.Locals);
 
             UProperty prevProp = null;
@@ -249,8 +256,10 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                             childProp = (UProperty)current;
                             break;
                         }
+
                         EntryPruner.TrashEntryAndDescendants(current.Export);
                     }
+
                     Compile(member, funcExport, ref childProp);
                     if (prevProp is null)
                     {
@@ -261,8 +270,10 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                         prevProp.Next = childProp.Export;
                         prevProp.Export.WriteBinary(prevProp);
                     }
+
                     prevProp = childProp;
                 }
+
                 while (existingEnumerator.MoveNext())
                 {
                     EntryPruner.TrashEntryAndDescendants(existingEnumerator.Current.Export);
@@ -349,6 +360,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     {
                         parentClassName = parent.Parent.ClassName;
                     }
+
                     uDelegateProperty.Delegate = parentClassName.CaseInsensitiveEquals("Function") ? uDelegateProperty.Function : 0;
                     break;
                 case UMapProperty uMapProperty:
@@ -376,32 +388,33 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                             EntryPruner.TrashEntryAndDescendants(childExp);
                         }
                     }
+
                     Compile(new VariableDeclaration(elementType, dynArrType.ElementPropertyFlags, propName), uArrayProperty.Export, ref child);
                     child.Export.WriteBinary(child);
                     uArrayProperty.ElementType = child.Export.UIndex;
                     break;
 
-                //have no properties beyond the base class
-                //case UIntProperty uIntProperty:
-                //    break;
-                //case UBoolProperty uBoolProperty:
-                //    break;
-                //case UFloatProperty uFloatProperty:
-                //    break;
-                //case UNameProperty uNameProperty:
-                //    break;
-                //case UStringRefProperty uStringRefProperty:
-                //    break;
-                //case UStrProperty uStrProperty:
-                //    break;
+                    //have no properties beyond the base class
+                    //case UIntProperty uIntProperty:
+                    //    break;
+                    //case UBoolProperty uBoolProperty:
+                    //    break;
+                    //case UFloatProperty uFloatProperty:
+                    //    break;
+                    //case UNameProperty uNameProperty:
+                    //    break;
+                    //case UStringRefProperty uStringRefProperty:
+                    //    break;
+                    //case UStrProperty uStrProperty:
+                    //    break;
 
-                //have no properties of their own, handled by their base classes above
-                //case UComponentProperty uComponentProperty:
-                //    break;
-                //case UInterfaceProperty uInterfaceProperty:
-                //    break;
-                //case UBioMask4Property uBioMask4Property:
-                //    break;
+                    //have no properties of their own, handled by their base classes above
+                    //case UComponentProperty uComponentProperty:
+                    //    break;
+                    //case UInterfaceProperty uInterfaceProperty:
+                    //    break;
+                    //case UBioMask4Property uBioMask4Property:
+                    //    break;
             }
 
         }
@@ -438,6 +451,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                         break;
                 }
             }
+
             return members;
         }
 
@@ -449,7 +463,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             if (pcc.FindEntry(UnrealPackageFile.TrashPackageName)?.GetChildren().LastOrDefault(entry => entry is ExportEntry) is ExportEntry trashExport)
             {
                 trashExport.ObjectName = name;
-                trashExport.Class = EntryImporter.EnsureClassIsInFile(pcc, className);
+                trashExport.Class = EntryImporter.EnsureClassIsInFile(pcc, className, new RelinkerOptionsPackage() { ImportExportDependencies = true });
                 trashExport.SuperClass = super;
                 trashExport.Parent = parent;
                 trashExport.WritePrePropsAndPropertiesAndBinary(new byte[4], new PropertyCollection(), (ObjectBinary)binary ?? new GenericObjectBinary(new byte[0]));
@@ -458,7 +472,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
             var exp = new ExportEntry(pcc, parent, name, binary: binary, isClass: binary is UClass)
             {
-                Class = EntryImporter.EnsureClassIsInFile(pcc, className),
+                Class = EntryImporter.EnsureClassIsInFile(pcc, className, new RelinkerOptionsPackage() { ImportExportDependencies = true }),
                 SuperClass = super
             };
             pcc.AddExport(exp);
@@ -485,8 +499,15 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         private static IEntry ResolveState(State s, IMEPackage pcc) => pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer, pcc).InstancedFullPath}.{s.Name}", "State");
 
-        private static IEntry ResolveClass(Class c, IMEPackage pcc) =>
-            EntryImporter.EnsureClassIsInFile(pcc, c.Name, RelinkResultsAvailable: relinkResults =>
-                                                  throw new Exception($"Unable to resolve class '{c.Name}'! There were relinker errors: {string.Join("\n\t", relinkResults.Select(pair => pair.Message))}"));
+        private static IEntry ResolveClass(Class c, IMEPackage pcc)
+        {
+            var rop = new RelinkerOptionsPackage() { ImportExportDependencies = true }; // Might need to disable cache here depending on if that is desirable
+            var entry = EntryImporter.EnsureClassIsInFile(pcc, c.Name, rop);
+            if (rop.RelinkReport.Any())
+            {
+                throw new Exception($"Unable to resolve class '{c.Name}'! There were relinker errors: {string.Join("\n\t", rop.RelinkReport.Select(pair => pair.Message))}");
+            }
+            return entry;
+        }
     }
 }
