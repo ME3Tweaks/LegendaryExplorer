@@ -17,6 +17,7 @@
     <MenuItem Header="Exkywor's buttons for lazy people">
         <MenuItem Header="Add Preset Director InterpGroup" Click="AddPresetDirectorGroup_Click" ToolTip="Add an InterpGroupDirector along with Director and DOF tracks."/>
         <MenuItem Header="Add Preset Camera InterpGroup" Click="AddPresetCameraGroup_Click" ToolTip="Add a Camera InterpGroup with its actor set along with Move and FOV tracks."/>
+        <MenuItem Header="Add Preset Actor InterpGroup" Click="AddPresetActorGroup_Click" ToolTip="Add an Actor InterpGroup with its actor set along with Move and Gesture tracks, as designed by Mentlegen."/>
         <MenuItem Header="Add Preset Gesture Track" Click="AddPresetGestureTrack_Click" ToolTip="Add a Gesture track with its actor set along with all the default properties."/>
         <MenuItem Header="Add Preset Gesture Track 2" Click="AddPresetGestureTrack2_Click" ToolTip="Alternate version of preset Gesture track, as designed by Lunk."/>
     </MenuItem>

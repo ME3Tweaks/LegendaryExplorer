@@ -228,9 +228,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 var game = pew.Pcc.Game;
 
-                if (!game.IsGame3())
+                if (!(game.IsGame3() || game.IsGame2()))
                 {
-                    MessageBox.Show("This experiment is currently available for ME3 or LE3 files only.", "Warning", MessageBoxButton.OK);
+                    MessageBox.Show("This experiment is not available for ME1/LE1 files.", "Warning", MessageBoxButton.OK);
                     return;
                 }
 
@@ -250,10 +250,18 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         break;
 
                     case "Camera":
-                        var actor = promptForActor("Name of camera actor:", "Not a valid camera actor name.");
-                        if (!string.IsNullOrEmpty(actor))
+                        var camActor = promptForActor("Name of camera actor:", "Not a valid camera actor name.");
+                        if (!string.IsNullOrEmpty(camActor))
                         {
-                            MatineeHelper.AddPreset(preset, interp, game, actor);
+                            MatineeHelper.AddPreset(preset, interp, game, camActor);
+                        }
+                        break;
+
+                    case "Actor":
+                        var actActor = promptForActor("Name of actor:", "Not a valid actor name.");
+                        if (!string.IsNullOrEmpty(actActor))
+                        {
+                            MatineeHelper.AddPreset(preset, interp, game, actActor);
                         }
                         break;
                 }
@@ -267,9 +275,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 var game = pew.Pcc.Game;
 
-                if (!game.IsGame3())
+                if (!(game.IsGame3() || game.IsGame2()))
                 {
-                    MessageBox.Show("This experiment is currently available for ME3 or LE3 files only.", "Warning", MessageBoxButton.OK);
+                    MessageBox.Show("This experiment is not available for ME1/LE1 files.", "Warning", MessageBoxButton.OK);
                     return;
                 }
 
