@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using LegendaryExplorer.Misc;
+using LegendaryExplorer.Tools.PathfindingEditor;
 using LegendaryExplorer.Tools.Sequence_Editor.Experiments;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
@@ -16,7 +17,9 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.Classes;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 
 namespace LegendaryExplorer.Tools.PackageEditor.Experiments
@@ -33,7 +36,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             public string[] vTestLevels = new[]
             {
                 // Comment/uncomment these to select which files to run on
-                "PRC2",
+                //"PRC2",
                 "PRC2AA"
             };
 
@@ -211,11 +214,16 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 pe.EndBusy();
                 if (installAndBootGame != null && installAndBootGame.Value)
                 {
-                    var moddesc = Path.Combine(Directory.GetParent(PAEMPaths.VTest_DonorsDir).FullName, "moddesc.ini");
-                    if (File.Exists(moddesc))
+                    var mmPath = (string)Registry.GetValue(@"HKEY_CURRENT_USER\Software\ME3Tweaks", "ExecutableLocation", null);
+                    if (mmPath != null && File.Exists(mmPath))
                     {
-                        ProcessStartInfo psi = new ProcessStartInfo(PAEMPaths.VTest_ModManagerPath, $"--installmod \"{moddesc}\" --bootgame LE1");
-                        Process.Start(psi);
+
+                        var moddesc = Path.Combine(Directory.GetParent(PAEMPaths.VTest_DonorsDir).FullName, "moddesc.ini");
+                        if (File.Exists(moddesc))
+                        {
+                            ProcessStartInfo psi = new ProcessStartInfo(mmPath, $"--installmod \"{moddesc}\" --bootgame LE1");
+                            Process.Start(psi);
+                        }
                     }
                 }
             });
@@ -305,6 +313,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     else
                     {
                         var levelName = Path.GetFileNameWithoutExtension(f);
+                        //if (levelName == "BIOA_PRC2")
                         PortVTestLevel(vTestLevel, levelName, vTestOptions, levelName == "BIOA_" + vTestLevel, true);
                     }
                 }
@@ -327,7 +336,26 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             // VTest post QA
             vTestOptions.packageEditorWindow.BusyText = "Performing checks";
 
+            // TERRAIN DEBUGGING
+            //using var testTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(PAEMPaths.VTest_SourceDir, "PRC2AA", "testterrain.sfm"));
+            //using var testTerrainP = MEPackageHandler.OpenMEPackage(@"D:\Origin Games\Mass Effect\BioGame\CookedPC\Maps\ICE\LAY\BIOA_ICE25_00_LAY.sfm");
+            //using var destTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(PAEMPaths.VTest_FinalDestDir, "BIOA_PRC2.pcc"));
 
+            //var terrainExp = testTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1");
+            ////PathEdUtils.SetLocation(terrainExp, -1115, 420, -845); // move to area we can see
+            //PrePortingCorrections(testTerrainP);
+            //EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, terrainExp,
+            //    destTerrainP, destTerrainP.FindExport("TheWorld.PersistentLevel"), true,
+            //    new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var destTerrainExp);
+
+            //var terrBin = ObjectBinary.From<Terrain>(destTerrainExp as ExportEntry);
+            ////terrBin.CachedDisplacements = new byte[terrBin.Heights.Length]; // just a big fat empty list
+            //(destTerrainExp as ExportEntry).WriteBinary(terrBin);
+
+            //RebuildPersistentLevelChildren(destTerrainP.FindExport("TheWorld.PersistentLevel"));
+            //destTerrainP.Save();
+
+            // Perform checks on all files
             foreach (var f in Directory.GetFiles(PAEMPaths.VTest_FinalDestDir))
             {
                 if (f.RepresentsPackageFilePath())
@@ -335,9 +363,20 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     using var p = MEPackageHandler.OpenMEPackage(f);
 
                     VTestCheckImports(p, vTestOptions);
+                    VTestCheckTextures(p, vTestOptions);
                 }
             }
 
+        }
+
+        private static void VTestCheckTextures(IMEPackage mePackage, VTestOptions vTestOptions)
+        {
+            foreach (var exp in mePackage.Exports.Where(x => x.IsTexture()))
+            {
+                var texinfo = ObjectBinary.From<UTexture2D>(exp);
+                if (texinfo.Mips.Any(x => x.StorageType == StorageTypes.empty))
+                    Debug.WriteLine($@"FOUND EMPTY MIP: {exp.InstancedFullPath} IN {Path.GetFileNameWithoutExtension(mePackage.FilePath)}");
+            }
         }
 
         private static void VTestCheckImports(IMEPackage p, VTestOptions vTestOptions)
@@ -362,7 +401,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         }
                     }
 
-                    Debug.WriteLine($"Import not resolved: {import.InstancedFullPath}, may be these ones instead: {similar}");
+                    Debug.WriteLine($"Import not resolved in {Path.GetFileName(p.FilePath)}: {import.InstancedFullPath}, may be these ones instead: {similar}");
                 }
             }
         }
@@ -550,6 +589,31 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             foreach (var e in sourcePackage.Exports.Where(x => x.ClassName == "ObjectReferencer"))
             {
+                // Correct the object referencer to remove objects that shouldn't be be ported.
+                var ro = e.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedObjects");
+                foreach (var refObj in ro.ToList())
+                {
+                    if (refObj.ResolveToEntry(sourcePackage) is ExportEntry resolved)
+                    {
+                        bool removed = false; // for if we check more than just archetypes
+
+                        // Prune items with bad archetypes
+                        var archetypeObjectName = resolved.Archetype?.ObjectName.Name ?? null;
+                        switch (archetypeObjectName) // Not instanced as these are typically sub items and have instance numbers
+                        {
+                            case "DistributionLPFMaxRadius":
+                            case "DistributionLPFMinRadius":
+                                ro.Remove(refObj);
+                                removed = true;
+                                break;
+                        }
+
+                        if (removed)
+                            continue;
+
+                    }
+                }
+                e.WriteProperty(ro);
                 RelinkerOptionsPackage rop = new RelinkerOptionsPackage()
                 {
                     IsCrossGame = true,
@@ -619,7 +683,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             foreach (var exp in sourcePackage.Exports)
             {
 
-                PruneComponents(exp);
+                PruneUnusedProperties(exp);
                 #region Remove Light and Shadow Maps
                 if (exp.ClassName == "StaticMeshComponent")
                 {
@@ -649,11 +713,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     float basez = 0;
 
                     var ds3d = (exp.Parent as ExportEntry).GetProperty<StructProperty>("DrawScale3D");
+                    var ds = (exp.Parent as ExportEntry).GetProperty<FloatProperty>("DrawScale");
                     if (ds3d != null)
                     {
-                        scaleX = ds3d.GetProp<FloatProperty>("X").Value;
-                        scaleY = ds3d.GetProp<FloatProperty>("Y").Value;
-                        scaleZ = ds3d.GetProp<FloatProperty>("Z").Value;
+                        scaleX = ds3d.GetProp<FloatProperty>("X").Value * (ds?.Value ?? 1);
+                        scaleY = ds3d.GetProp<FloatProperty>("Y").Value * (ds?.Value ?? 1);
+                        scaleZ = ds3d.GetProp<FloatProperty>("Z").Value * (ds?.Value ?? 1);
                     }
 
                     var loc = (exp.Parent as ExportEntry).GetProperty<StructProperty>("Location");
@@ -688,6 +753,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                     // Make dynamic lighting
                     var props = exp.GetProperties();
+                    props.RemoveNamedProperty("BlockRigidBody"); // make collidable?
                     props.RemoveNamedProperty("ShadowMaps");
                     props.AddOrReplaceProp(new BoolProperty(false, "bForceDirectLightMap"));
                     props.AddOrReplaceProp(new BoolProperty(true, "bCastDynamicShadow"));
@@ -726,12 +792,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
-        private static void PruneComponents(ExportEntry exp)
+        private static void PruneUnusedProperties(ExportEntry exp)
         {
             // Lots of components are not used or don't exist and can't be imported in LE1
             // Get rid of them here
             PropertyCollection props = exp.GetProperties();
-            
+
             // Might be better to enumerate all object properties and trim out ones that reference
             // known non-existent things
             if (exp.IsA("LightComponent"))
@@ -739,6 +805,33 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 props.RemoveNamedProperty("PreviewInnerCone");
                 props.RemoveNamedProperty("PreviewOuterCone");
                 props.RemoveNamedProperty("PreviewLightRadius");
+            }
+
+            if (exp.IsA("NavigationPoint"))
+            {
+                props.RemoveNamedProperty("GoodSprite");
+                props.RemoveNamedProperty("BadSprite");
+            }
+
+            if (exp.IsA("BioArtPlaceable"))
+            {
+                props.RemoveNamedProperty("CoverMesh"); // Property exists but is never set
+            }
+
+            if (exp.IsA("SoundNodeAttenuation"))
+            {
+                props.RemoveNamedProperty("LPFMinRadius");
+                props.RemoveNamedProperty("LPFMaxRadius");
+            }
+
+            if (exp.IsA("BioAPCoverMeshComponent"))
+            {
+                exp.Archetype = null; // Remove the archetype. This is on BioDoor's and does nothing in practice, in ME1 there is nothing to copy from the archetype
+            }
+
+            if (exp.IsA("BioSquadCombat"))
+            {
+                props.RemoveNamedProperty("m_oSprite");
             }
 
             exp.WriteProperties(props);
@@ -946,7 +1039,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         private static void PostPortingCorrections(IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
         {
             // Corrections to run AFTER porting is done
-            CorrectNeverStream(le1File);
+            CorrectTextures(le1File);
             CorrectPrefabSequenceClass(le1File);
             CorrectSequences(le1File, vTestOptions);
             CorrectPathfindingNetwork(me1File, le1File);
@@ -956,7 +1049,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             //CorrectTriggerStreamsMaybe(me1File, le1File);
         }
 
-        private static void CorrectNeverStream(IMEPackage package)
+        private static void CorrectTextures(IMEPackage package)
         {
             foreach (var exp in package.Exports.Where(x => x.IsTexture()))
             {
@@ -970,10 +1063,25 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     if (lowMipCount > 6 && (ns == null || ns.Value == false) && texinfo.Mips[i].IsLocallyStored && texinfo.Mips[i].StorageType != StorageTypes.empty)
                     {
                         exp.WriteProperty(new BoolProperty(true, "NeverStream"));
-                        break;
+                        lowMipCount = -100; // This prevents this block from running again
                     }
+
+                    if (texinfo.Mips[i].StorageType == StorageTypes.empty && exp.Parent.ClassName != "TextureCube")
+                    {
+                        // Strip this empty mip
+                        Debug.WriteLine($"Dropping empty mip {i} in {exp.InstancedFullPath}");
+                        texinfo.Mips.RemoveAt(i);
+                    }
+
                     lowMipCount++;
                 }
+                exp.WriteBinary(texinfo);
+
+                // Correct the MipTailBaseIdx. It's an indexer thing so it starts at 0
+                //exp.WriteProperty(new IntProperty(texinfo.Mips.Count - 1, "MipTailBaseIdx"));
+
+                // Correct the size. Is this required?
+
             }
         }
 
