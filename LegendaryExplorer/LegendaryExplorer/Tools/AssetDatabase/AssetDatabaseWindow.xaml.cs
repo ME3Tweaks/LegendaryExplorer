@@ -2211,6 +2211,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                         menu_fltrMatTrans.IsChecked = true;
                         menu_fltrMatAdd.IsChecked = false;
                         menu_fltrMatOpq.IsChecked = false;
+                        menu_fltrMatMsk.IsChecked = false;
                         menu_fltrMatSpecialEngine.IsChecked = false;
                     }
                     else
@@ -2224,8 +2225,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                         menu_fltrMatTrans.IsChecked = false;
                         menu_fltrMatAdd.IsChecked = true;
                         menu_fltrMatOpq.IsChecked = false;
-                        menu_fltrMatSpecialEngine.IsChecked = false;
                         menu_fltrMatMsk.IsChecked = false;
+                        menu_fltrMatSpecialEngine.IsChecked = false;
                     }
                     else
                     {
@@ -2239,6 +2240,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                         menu_fltrMatAdd.IsChecked = false;
                         menu_fltrMatOpq.IsChecked = false;
                         menu_fltrMatMsk.IsChecked = true;
+                        menu_fltrMatSpecialEngine.IsChecked = false;
                     }
                     else
                     {
@@ -2251,8 +2253,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                         menu_fltrMatTrans.IsChecked = false;
                         menu_fltrMatAdd.IsChecked = false;
                         menu_fltrMatOpq.IsChecked = true;
-                        menu_fltrMatSpecialEngine.IsChecked = false;
                         menu_fltrMatMsk.IsChecked = false;
+                        menu_fltrMatSpecialEngine.IsChecked = false;
                     }
                     else
                     {
@@ -2265,6 +2267,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                         menu_fltrMatTrans.IsChecked = false;
                         menu_fltrMatAdd.IsChecked = false;
                         menu_fltrMatOpq.IsChecked = false;
+                        menu_fltrMatMsk.IsChecked = false;
                         menu_fltrMatSpecialEngine.IsChecked = true;
                     }
                     else
