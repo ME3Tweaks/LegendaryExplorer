@@ -14,6 +14,7 @@ using System.Windows.Input;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Tools.AssetDatabase;
+using LegendaryExplorer.Tools.PathfindingEditor;
 using LegendaryExplorer.Tools.Sequence_Editor;
 using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorerCore;
@@ -2030,34 +2031,50 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void MScanner(PackageEditorWindow pe)
         {
-            using var testTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(ME1Directory.CookedPCPath,@"Maps\LAV\LAY\BIOA_LAV70_01_LAY.sfm"));
-            using var destTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(PAEMPaths.VTest_FinalDestDir, "BIOA_PRC2.pcc"));
-            using var leSameTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(LE1Directory.CookedPCPath,@"BIOA_LAV70_00_ART.pcc"));
+            // Open base
+            using var terrainBaseP = MEPackageHandler.OpenMEPackage(Path.Combine(LE1Directory.CookedPCPath, "BIOA_TERRAINTEST_BASE.pcc"));
+            var tbpPL = terrainBaseP.FindExport("TheWorld.PersistentLevel");
 
+            // SET STARTING LOCATION
+            //PathEdUtils.SetLocation(terrainBaseP.FindExport("TheWorld.PersistentLevel.PlayerStart_0"), 0,0,0);
+
+            // DONOR TERRAIN TO TEST
+            using var testTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(ME1Directory.CookedPCPath, @"Maps\LAV\LAY\BIOA_LAV70_01_LAY.sfm"));
             var testTerrain = testTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1");
-            var destTerrain = destTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1");
-            var leSameTerrain = leSameTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1");
 
-            var meSourceTerrainC = testTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1.TerrainComponent_522");
-            var destTerrainC = destTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1.TerrainComponent_522");
-            var leSameTerrainC = leSameTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1.TerrainComponent_232");
+            // Precorrect and port
+            VTestExperiment.PrePortingCorrections(terrainBaseP);
+            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, testTerrain, tbpPL.FileRef, tbpPL, true, new RelinkerOptionsPackage(), out var newTerrain);
+            VTestExperiment.RebuildPersistentLevelChildren(tbpPL);
+            terrainBaseP.Save(Path.Combine(LE1Directory.CookedPCPath, "BIOA_TERRAINTEST.pcc"));
 
-            var meBin = ObjectBinary.From<TerrainComponent>(meSourceTerrainC);
-            VTestExperiment.ConvertME1TerrainComponent(meSourceTerrainC);
+            return;
+            //using var destTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(PAEMPaths.VTest_FinalDestDir, "BIOA_PRC2.pcc"));
+            //using var leSameTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(LE1Directory.CookedPCPath,@"BIOA_LAV70_00_ART.pcc"));
+
+            //var destTerrain = destTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1");
+            //var leSameTerrain = leSameTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1");
+
+            //var meSourceTerrainC = testTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1.TerrainComponent_522");
+            //var destTerrainC = destTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1.TerrainComponent_522");
+            //var leSameTerrainC = leSameTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1.TerrainComponent_232");
+
+            //var meBin = ObjectBinary.From<TerrainComponent>(meSourceTerrainC);
+            //VTestExperiment.ConvertME1TerrainComponent(meSourceTerrainC);
 
 
-            var destBin = ObjectBinary.From<TerrainComponent>(meSourceTerrainC); // after conversion
-            var leBin = ObjectBinary.From<TerrainComponent>(leSameTerrainC);
+            //var destBin = ObjectBinary.From<TerrainComponent>(meSourceTerrainC); // after conversion
+            //var leBin = ObjectBinary.From<TerrainComponent>(leSameTerrainC);
 
-            for (int i = 0; i < meBin.CollisionVertices.Length; i++)
-            {
-                var meCol = meBin.CollisionVertices[i];
-                var destCol = destBin.CollisionVertices[i];
-                var leCol = leBin.CollisionVertices[i];
+            //for (int i = 0; i < meBin.CollisionVertices.Length; i++)
+            //{
+            //    var meCol = meBin.CollisionVertices[i];
+            //    var destCol = destBin.CollisionVertices[i];
+            //    var leCol = leBin.CollisionVertices[i];
 
-                // Z seem OK it's only X and Y
-                Debug.WriteLine($"{i}\t({meCol.X},{meCol.Y}) | ({leCol.X}, {leCol.Y}) | ({destCol.X},{destCol.Y}) | DIFF [LE-PORTED]: ({leCol.X - destCol.X},{leCol.Y - destCol.Y})");
-            }
+            //    // Z seem OK it's only X and Y
+            //    Debug.WriteLine($"{i}\t({meCol.X},{meCol.Y}) | ({leCol.X}, {leCol.Y}) | ({destCol.X},{destCol.Y}) | DIFF [LE-PORTED]: ({leCol.X - destCol.X},{leCol.Y - destCol.Y})");
+            //}
 
             // just dump whatever shit you want to find here
             //foreach (string filePath in MELoadedFiles.GetOfficialFiles(MEGame.LE1 /*, MEGame.LE2, MEGame.LE3*/))

@@ -314,7 +314,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     {
                         var levelName = Path.GetFileNameWithoutExtension(f);
                         //if (levelName == "BIOA_PRC2")
-                        PortVTestLevel(vTestLevel, levelName, vTestOptions, levelName == "BIOA_" + vTestLevel, true);
+                            PortVTestLevel(vTestLevel, levelName, vTestOptions, levelName == "BIOA_" + vTestLevel, true);
                     }
                 }
             }
@@ -340,7 +340,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             // TERRAIN DEBUGGING
             //using var testTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(PAEMPaths.VTest_SourceDir, "PRC2AA", "testterrain.sfm"));
             // You need to make sure you use the right filepath here
-            using var testTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(ME1Directory.BioGamePath,@"CookedPC\Maps\LAV\LAY\BIOA_LAV70_01_LAY.sfm"));
+            using var testTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(ME1Directory.BioGamePath, @"CookedPC\Maps\LAV\LAY\BIOA_LAV70_01_LAY.sfm"));
             using var destTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(PAEMPaths.VTest_FinalDestDir, "BIOA_PRC2.pcc"));
 
             var terrainExp = testTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1");
@@ -638,7 +638,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         #endregion
 
         #region Utility methods
-        private static void CreateEmptyLevel(string outpath, MEGame game)
+        public static void CreateEmptyLevel(string outpath, MEGame game)
         {
             var emptyLevelName = $"{game}EmptyLevel";
             File.Copy(Path.Combine(AppDirectories.ExecFolder, $"{emptyLevelName}.pcc"), outpath, true);
@@ -678,7 +678,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         #endregion
 
         #region Correction methods
-        private static void PrePortingCorrections(IMEPackage sourcePackage)
+        public static void PrePortingCorrections(IMEPackage sourcePackage)
         {
             // Strip static mesh light maps since they don't work crossgen. Strip them from
             // the source so they don't port
@@ -731,28 +731,28 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             // Convert the tesselation... something... idk something that makes it multiply
             // by what appears to be 16x16 (256)
             var props = exp.GetProperties();
-            var sizeX = props.GetProp<IntProperty>("SectionSizeX");
-            var sizeY = props.GetProp<IntProperty>("SectionSizeY");
-            var trueSizeX = props.GetProp<IntProperty>("TrueSectionSizeX");
-            var trueSizeY = props.GetProp<IntProperty>("TrueSectionSizeY");
+            //var sizeX = props.GetProp<IntProperty>("SectionSizeX");
+            //var sizeY = props.GetProp<IntProperty>("SectionSizeY");
+            //var trueSizeX = props.GetProp<IntProperty>("TrueSectionSizeX");
+            //var trueSizeY = props.GetProp<IntProperty>("TrueSectionSizeY");
 
-            var factorSize = sizeX * sizeY; // idk
-            for (int i = 0; i < trueSizeY; i++)
-            {
-                for (int j = 0; j < trueSizeX; j++)
-                {
-                    // uh... idk?
-                    var collisionIdx = (i * trueSizeY) + j;
-                    var vtx = b.CollisionVertices[collisionIdx];
-                    b.CollisionVertices[collisionIdx] = new Vector3(vtx.X * factorSize, vtx.Y * factorSize, vtx.Z);
-                    Debug.WriteLine(collisionIdx + " " + b.CollisionVertices[collisionIdx].ToString());
-                }
-            }
+            //var factorSize = sizeX * sizeY; // idk
+            //for (int i = 0; i < trueSizeY; i++)
+            //{
+            //    for (int j = 0; j < trueSizeX; j++)
+            //    {
+            //        // uh... idk?
+            //        var collisionIdx = (i * trueSizeY) + j;
+            //        var vtx = b.CollisionVertices[collisionIdx];
+            //        b.CollisionVertices[collisionIdx] = new Vector3(vtx.X * factorSize, vtx.Y * factorSize, vtx.Z);
+            //        Debug.WriteLine(collisionIdx + " " + b.CollisionVertices[collisionIdx].ToString());
+            //    }
+            //}
 
             // Correct collision vertices as they've changed from local to world in LE
-            float scaleX = 1;
-            float scaleY = 1;
-            float scaleZ = 1;
+            float scaleX = 256; // Default DrawScale3D for terrain is 256
+            float scaleY = 256;
+            float scaleZ = 256;
 
             float basex = 0;
             float basey = 0;
@@ -788,9 +788,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 var cv = b.CollisionVertices[i];
                 Vector3 newV = new Vector3();
 
-                newV.X = (cv.X * scaleX) + basex;
-                newV.Y = (cv.Y * scaleY) + basey;
-                newV.Z = (cv.Z * scaleZ) + basez;
+                newV.X = basex - (cv.X * scaleX);
+                newV.Y = basey -(cv.Y * scaleY);
+                newV.Z = basez - (cv.Z * scaleZ);
                 b.CollisionVertices[i] = newV;
             }
 
@@ -1129,7 +1129,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         }
 
 
-        private static void RebuildPersistentLevelChildren(ExportEntry pl)
+        public static void RebuildPersistentLevelChildren(ExportEntry pl)
         {
             ExportEntry[] actorsToAdd = pl.FileRef.Exports.Where(exp => exp.Parent == pl && exp.IsA("Actor")).ToArray();
             Level level = ObjectBinary.From<Level>(pl);
