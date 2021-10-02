@@ -23,6 +23,7 @@ namespace LegendaryExplorer.Dialogs
         public string SourceEntryObjectName => sourceEntry.ObjectName.Instanced;
 
         public ICommand ReplaceDataCommand { get; set; }
+        public ICommand ReplaceDataWithRelinkCommand { get; set; }
         public ICommand AddSingularCommand { get; set; }
         public ICommand MergeTreeCommand { get; set; }
         public ICommand CloneTreeCommand { get; set; }
@@ -66,6 +67,7 @@ namespace LegendaryExplorer.Dialogs
         private void LoadCommands()
         {
             ReplaceDataCommand = new GenericCommand(ReplaceData, CanReplaceData);
+            ReplaceDataWithRelinkCommand = new GenericCommand(ReplaceDataWithRelink, CanReplaceData);
             MergeTreeCommand = new GenericCommand(MergeTree, CanMergeTree);
             AddSingularCommand = new GenericCommand(AddSingular, CanAddSingular);
             CloneTreeCommand = new GenericCommand(CloneTree, CanCloneTree);
@@ -119,6 +121,12 @@ namespace LegendaryExplorer.Dialogs
         private void ReplaceData()
         {
             PortingOption.PortingOptionChosen = EntryImporter.PortingOption.ReplaceSingular;
+            Close();
+        }
+
+        private void ReplaceDataWithRelink()
+        {
+            PortingOption.PortingOptionChosen = EntryImporter.PortingOption.ReplaceSingularWithRelink;
             Close();
         }
 

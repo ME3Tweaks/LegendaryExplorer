@@ -3282,7 +3282,9 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 int originalIndex = -1;
                 bool hadChanges = false;
                 bool hadHeaderChanges = false;
-                if (portingOption.PortingOptionChosen != EntryImporter.PortingOption.ReplaceSingular && targetItem.Entry?.FileRef.FindEntry(sourceItem.Entry.InstancedFullPath) != null)
+                if (portingOption.PortingOptionChosen != EntryImporter.PortingOption.ReplaceSingular
+                    && portingOption.PortingOptionChosen != EntryImporter.PortingOption.ReplaceSingularWithRelink
+                    && targetItem.Entry?.FileRef.FindEntry(sourceItem.Entry.InstancedFullPath) != null)
                 {
                     // It's a duplicate. Offer to index it, as this will break the lookup if it's identical on inbound
                     // (it will just install into an existing entry)
@@ -3320,7 +3322,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     IsCrossGame = sourceEntry.Game != targetItem.Game && sourceEntry.Game != MEGame.UDK,
                     TargetGameDonorDB = objectDB,
                     Cache = null, // Disable cache as we want to pull from open files in LEX. Will reduce performance
-                    ImportExportDependencies = portingOption.PortingOptionChosen == EntryImporter.PortingOption.CloneAllDependencies
+                    ImportExportDependencies = portingOption.PortingOptionChosen is EntryImporter.PortingOption.CloneAllDependencies 
+                        or EntryImporter.PortingOption.ReplaceSingularWithRelink
                 };
 
                 var relinkResults = EntryImporter.ImportAndRelinkEntries(portingOption.PortingOptionChosen, sourceEntry, Pcc,

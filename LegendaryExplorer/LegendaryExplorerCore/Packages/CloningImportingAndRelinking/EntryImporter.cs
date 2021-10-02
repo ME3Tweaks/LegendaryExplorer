@@ -42,7 +42,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             ReplaceSingular,
             MergeTreeChildren,
             Cancel,
-            CloneAllDependencies
+            CloneAllDependencies,
+            ReplaceSingularWithRelink
         }
 
         private static readonly byte[] me1Me2StackDummy =
@@ -73,6 +74,15 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
         public static List<EntryStringPair> ImportAndRelinkEntries(PortingOption portingOption, IEntry sourceEntry, IMEPackage destPcc, IEntry targetLinkEntry, bool shouldRelink, RelinkerOptionsPackage rop, out IEntry newEntry)
         {
+            // Porting option 'ReplaceSingular' covers the same as 'ReplaceSingularWithRelink'
+            // as it just flips the ROP option 'ImportExportDependencies'
+            if (portingOption == PortingOption.ReplaceSingularWithRelink)
+            {
+                portingOption = PortingOption.ReplaceSingular;
+                rop.ImportExportDependencies = true;
+            }
+
+
             IMEPackage sourcePcc = sourceEntry.FileRef;
 
             rop.IsCrossGame = sourcePcc.Game != destPcc.Game;
@@ -103,12 +113,14 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 {
                     newEntry = GetOrAddCrossImportOrPackage(sourceEntry.InstancedFullPath, sourcePcc, destPcc, rop, forcedLink: sourcePcc.Tree.NumChildrenOf(sourceEntry) == 0 ? link : (int?)null);
                 }
-
             }
 
 
             //if this node has children
-            if ((portingOption == PortingOption.CloneTreeAsChild || portingOption == PortingOption.MergeTreeChildren || portingOption == PortingOption.CloneAllDependencies)
+            // Is it correct to import children if we clone all dependencies? Isn't relink supposed to take care of this?
+
+            // Crossgen Sept 30 2021: Disabled import children when doing clone all dependencies as not all children are dependendencies
+            if ((portingOption == PortingOption.CloneTreeAsChild || portingOption == PortingOption.MergeTreeChildren/* || portingOption == PortingOption.CloneAllDependencies*/)
              && sourcePcc.Tree.NumChildrenOf(sourceEntry) > 0)
             {
                 importChildrenOf(sourceEntry, newEntry);
@@ -305,6 +317,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <returns></returns>
         public static ExportEntry ImportExport(IMEPackage destPackage, ExportEntry sourceExport, int link, RelinkerOptionsPackage rop)
         {
+            if (sourceExport.InstancedFullPath == "TheWorld.PersistentLevel.BioPathPoint_9.SpriteComponent_1895")
+                Debugger.Break();
 #if DEBUG
             // CROSSGEN - WILL NEED HEAVY REWORK IF THIS IS TO BE MERGED TO BETA
             // Cause there's a lot of things that seem to have to be manually accounted for
@@ -740,7 +754,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         public static IEntry GetOrAddCrossImportOrPackageFromGlobalFile(string importFullNameInstanced, IMEPackage sourcePcc, IMEPackage destinationPCC, RelinkerOptionsPackage rop, Action<EntryStringPair> doubleClickCallback = null)
         {
             string packageName = sourcePcc.FileNameNoExtension;
-            if (string.IsNullOrEmpty(importFullNameInstanced))
+            if (string.IsNullOrEmpty(importFullNameInstanced)) // This doesn't work for ForcedExports in global packages. You don't use the filename as a base unless it's not a package at the root.
             {
                 return destinationPCC.getEntryOrAddImport(packageName, "Package");
             }
@@ -783,7 +797,29 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             string[] importParts = importFullNameInstanced.Split('.');
 
             //recursively ensure parent exists
-            IEntry parent = GetOrAddCrossImportOrPackageFromGlobalFile(string.Join(".", importParts.Take(importParts.Length - 1)), sourcePcc, destinationPCC, rop, doubleClickCallback);
+            var importName = string.Join(".", importParts.Take(importParts.Length - 1));
+            IEntry parent = null;
+            if (importName == "")
+            {
+                // Todo: We need a DB or something to know if we need to prepend the parent or not here.
+                // TODO: THIS IS A HACK FOR CROSSGEN. WE NEED A BETTER SOLUTION THAN THIS TO TELL IF WE
+                // NEED TO PREPEND THE PACKAGE FILENAME OR NOT BASED ON IF THE REFERENCED EXPORT IS 
+                // A FORCED EXPORT (in which case, we should not) OR NOT (in which case, we should)
+                if (importParts[0].StartsWith("BIOG", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    // This is the root we want
+                    // Do not add another parent
+                }
+                else
+                {
+                    // Prepend
+                    parent = GetOrAddCrossImportOrPackageFromGlobalFile(importName, sourcePcc, destinationPCC, rop, doubleClickCallback);
+                }
+            }
+            else
+            {
+                parent = GetOrAddCrossImportOrPackageFromGlobalFile(importName, sourcePcc, destinationPCC, rop, doubleClickCallback);
+            }
 
             ImportEntry matchingSourceImport = sourcePcc.FindImport(importFullNameInstanced);
             if (matchingSourceImport != null)
@@ -802,15 +838,26 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 return newImport;
             }
 
+            // Use the source to build an import
             ExportEntry matchingSourceExport = sourcePcc.FindExport(importFullNameInstanced);
             if (matchingSourceExport != null)
             {
                 var foundImp = destinationPCC.FindImport(importFullNameInstanced);
                 if (foundImp != null) return foundImp;
+                //if (matchingSourceExport.ObjectName == "Metal_Cube")
+                //    Debugger.Break();
+                var pf = matchingSourceExport.Class.GetRootName(); // This is correct 'most' times but not always
+                // Try to determine what file the class is defined out of
+                if (pf != "Engine" && pf != "Core" && pf != "SFXGame" && pf != "BIOC_Base")
+                {
+                    Debug.WriteLine($@"Converting export to import in global file, unknown base class root {pf} for {matchingSourceExport.InstancedFullPath}. We are going to convert it to 'Core'");
+                    pf = "Core";
+                }
+
                 var newImport = new ImportEntry(destinationPCC, parent, matchingSourceExport.ObjectName)
                 {
                     ClassName = matchingSourceExport.ClassName,
-                    PackageFile = "Core" //This should be the file that the Class of this object is in, but I don't think it actually matters
+                    PackageFile = pf
                 };
                 destinationPCC.AddImport(newImport);
                 if (rop.CrossPackageMap != null) // Is this nececessary with ROP?
