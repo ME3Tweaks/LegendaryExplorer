@@ -36,7 +36,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             public string[] vTestLevels = new[]
             {
                 // Comment/uncomment these to select which files to run on
-                //"PRC2",
+                "PRC2",
                 "PRC2AA"
             };
 
@@ -335,25 +335,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             // VTest post QA
             vTestOptions.packageEditorWindow.BusyText = "Performing checks";
-
-            // TERRAIN DEBUGGING
-            //using var testTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(PAEMPaths.VTest_SourceDir, "PRC2AA", "testterrain.sfm"));
-            //using var testTerrainP = MEPackageHandler.OpenMEPackage(@"D:\Origin Games\Mass Effect\BioGame\CookedPC\Maps\ICE\LAY\BIOA_ICE25_00_LAY.sfm");
-            //using var destTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(PAEMPaths.VTest_FinalDestDir, "BIOA_PRC2.pcc"));
-
-            //var terrainExp = testTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1");
-            ////PathEdUtils.SetLocation(terrainExp, -1115, 420, -845); // move to area we can see
-            //PrePortingCorrections(testTerrainP);
-            //EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, terrainExp,
-            //    destTerrainP, destTerrainP.FindExport("TheWorld.PersistentLevel"), true,
-            //    new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var destTerrainExp);
-
-            //var terrBin = ObjectBinary.From<Terrain>(destTerrainExp as ExportEntry);
-            ////terrBin.CachedDisplacements = new byte[terrBin.Heights.Length]; // just a big fat empty list
-            //(destTerrainExp as ExportEntry).WriteBinary(terrBin);
-
-            //RebuildPersistentLevelChildren(destTerrainP.FindExport("TheWorld.PersistentLevel"));
-            //destTerrainP.Save();
 
             // Perform checks on all files
             foreach (var f in Directory.GetFiles(PAEMPaths.VTest_FinalDestDir))

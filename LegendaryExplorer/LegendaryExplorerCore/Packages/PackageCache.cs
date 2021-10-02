@@ -100,8 +100,8 @@ namespace LegendaryExplorerCore.Packages
 
             if (CacheMaxSize == 0)
             {
-                Debug.WriteLine(guid);
-                Debugger.Break();
+                //Debug.WriteLine(guid);
+                //Debugger.Break();
             }
         }
 
