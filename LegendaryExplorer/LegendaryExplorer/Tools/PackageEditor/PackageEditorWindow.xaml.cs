@@ -3339,7 +3339,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 if ((relinkResults?.Count ?? 0) > 0)
                 {
                     var ld = new ListDialog(relinkResults, "Relink report",
-                        "The following items reported relinking issues.", this);
+                        "The following items reported relinking issues.", this)
+                        { DoubleClickEntryHandler = entryDoubleClick };
                     ld.Show();
                 }
                 else
