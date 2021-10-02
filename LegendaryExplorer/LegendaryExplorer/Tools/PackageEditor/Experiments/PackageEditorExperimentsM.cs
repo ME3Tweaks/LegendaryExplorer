@@ -2036,28 +2036,67 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             var tbpPL = terrainBaseP.FindExport("TheWorld.PersistentLevel");
 
             // SET STARTING LOCATION
-            //PathEdUtils.SetLocation(terrainBaseP.FindExport("TheWorld.PersistentLevel.PlayerStart_0"), 0,0,0);
+            PathEdUtils.SetLocation(terrainBaseP.FindExport("TheWorld.PersistentLevel.PlayerStart_0"), 62863, -91054, -7000);
+            PathEdUtils.SetLocation(terrainBaseP.FindExport("TheWorld.PersistentLevel.BlockingVolume_21"), 62863, -91054, -7200); // -200 Z from player start to make base
 
             // DONOR TERRAIN TO TEST
-            using var testTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(ME1Directory.CookedPCPath, @"Maps\LAV\LAY\BIOA_LAV70_01_LAY.sfm"));
-            var testTerrain = testTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1");
+            using var meTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(ME1Directory.CookedPCPath, @"Maps\LAV\LAY\BIOA_LAV70_01_LAY.sfm"));
+            var meTerrain = meTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1");
 
             // Precorrect and port
-            VTestExperiment.PrePortingCorrections(terrainBaseP);
-            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, testTerrain, tbpPL.FileRef, tbpPL, true, new RelinkerOptionsPackage(), out var newTerrain);
+            VTestExperiment.PrePortingCorrections(meTerrainP);
+            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, meTerrain, tbpPL.FileRef, tbpPL, true, new RelinkerOptionsPackage(), out var newTerrain);
             VTestExperiment.RebuildPersistentLevelChildren(tbpPL);
             terrainBaseP.Save(Path.Combine(LE1Directory.CookedPCPath, "BIOA_TERRAINTEST.pcc"));
 
+            // Check values...
+            using var leSameTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(LE1Directory.CookedPCPath, @"BIOA_LAV70_00_ART.pcc"));
+            var leSameTerrain = leSameTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1");
+            var leSameTerrainComponents = leSameTerrain.GetProperty<ArrayProperty<ObjectProperty>>("TerrainComponents");
+            var portTerrainComponents = (newTerrain as ExportEntry).GetProperty<ArrayProperty<ObjectProperty>>("TerrainComponents");
+
+            for (int i = 0; i < leSameTerrainComponents.Count; i++)
+            {
+                var leTC = leSameTerrainP.GetUExport(leSameTerrainComponents[i].Value);
+                var portedTC = terrainBaseP.GetUExport(portTerrainComponents[i].Value);
+
+                var leC = ObjectBinary.From<TerrainComponent>(leTC);
+                var portedC = ObjectBinary.From<TerrainComponent>(portedTC);
+
+                for (int j = 0; j < leC.CollisionVertices.Length; j++)
+                {
+                    var leCol = leC.CollisionVertices[j];
+                    var portedCol = portedC.CollisionVertices[j];
+                    if (leCol.X != portedCol.X || leCol.Y != portedCol.Y || leCol.Z != portedCol.Z)
+                        Debug.WriteLine($"{i}-{j}\t({leCol.X}, {leCol.Y}, {leCol.Z}) | ({portedCol.X}, {portedCol.Y} ,{portedCol.Z}) | DIFF [LE-PORTED]: ({leCol.X - portedCol.X}, {leCol.Y - portedCol.Y}, {leCol.Z - portedCol.Z})");
+                }
+
+                // Bounding volume
+                for (int j = 0; j < leC.BVTree.Length; j++)
+                {
+                    var leColMin = leC.BVTree[j].BoundingVolume.Min;
+                    var portedColMin = portedC.BVTree[j].BoundingVolume.Min;
+                    var leColMax = leC.BVTree[j].BoundingVolume.Max;
+                    var portedColMax = portedC.BVTree[j].BoundingVolume.Max;
+
+                    if (leColMin.X != portedColMin.X || leColMin.Y != portedColMin.Y || leColMin.Z != portedColMin.Z)
+                        Debug.WriteLine($"{i}-{j} MIN\t({leColMin.X}, {leColMin.Y}, {leColMin.Z}) | ({portedColMin.X}, {portedColMin.Y} ,{portedColMin.Z}) | DIFF [LE-PORTED]: ({leColMin.X - portedColMin.X}, {leColMin.Y - portedColMin.Y}, {leColMin.Z - portedColMin.Z})");
+
+                    if (leColMax.X != portedColMax.X || leColMax.Y != portedColMax.Y || leColMax.Z != portedColMax.Z)
+                        Debug.WriteLine($"{i}-{j} MAX\t({leColMax.X}, {leColMax.Y}, {leColMax.Z}) | ({portedColMax.X}, {portedColMax.Y} ,{portedColMax.Z}) | DIFF [LE-PORTED]: ({leColMax.X - portedColMax.X}, {leColMax.Y - portedColMax.Y}, {leColMax.Z - portedColMax.Z})");
+
+
+                }
+            }
+
             return;
             //using var destTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(PAEMPaths.VTest_FinalDestDir, "BIOA_PRC2.pcc"));
-            //using var leSameTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(LE1Directory.CookedPCPath,@"BIOA_LAV70_00_ART.pcc"));
 
             //var destTerrain = destTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1");
             //var leSameTerrain = leSameTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1");
 
             //var meSourceTerrainC = testTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1.TerrainComponent_522");
             //var destTerrainC = destTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1.TerrainComponent_522");
-            //var leSameTerrainC = leSameTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1.TerrainComponent_232");
 
             //var meBin = ObjectBinary.From<TerrainComponent>(meSourceTerrainC);
             //VTestExperiment.ConvertME1TerrainComponent(meSourceTerrainC);

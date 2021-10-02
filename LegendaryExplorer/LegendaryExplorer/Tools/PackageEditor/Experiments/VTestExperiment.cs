@@ -314,7 +314,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     {
                         var levelName = Path.GetFileNameWithoutExtension(f);
                         //if (levelName == "BIOA_PRC2")
-                            PortVTestLevel(vTestLevel, levelName, vTestOptions, levelName == "BIOA_" + vTestLevel, true);
+                        PortVTestLevel(vTestLevel, levelName, vTestOptions, levelName == "BIOA_" + vTestLevel, true);
                     }
                 }
             }
@@ -789,8 +789,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 Vector3 newV = new Vector3();
 
                 newV.X = basex - (cv.X * scaleX);
-                newV.Y = basey -(cv.Y * scaleY);
-                newV.Z = basez - (cv.Z * scaleZ);
+                newV.Y = basey - (cv.Y * scaleY);
+                newV.Z = basez + (cv.Z * scaleZ); // Is this right?
                 b.CollisionVertices[i] = newV;
             }
 
@@ -798,8 +798,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             for (int i = 0; i < b.BVTree.Length; i++)
             {
                 var box = b.BVTree[i].BoundingVolume;
-                box.Min = new Vector3 { X = (box.Min.X * scaleX) + basex, Y = (box.Min.Y * scaleY) + basey, Z = (box.Min.Z * scaleZ) + basez };
-                box.Max = new Vector3 { X = (box.Max.X * scaleX) + basex, Y = (box.Max.Y * scaleY) + basey, Z = (box.Max.Z * scaleZ) + basez };
+                box.Min = new Vector3 { X = basex - (box.Min.X * scaleX), Y = basey - (box.Min.Y * scaleY), Z = basez + (box.Min.Z * scaleZ) };
+                box.Max = new Vector3 { X = basex - (box.Max.X * scaleX), Y = basey - (box.Max.Y * scaleY), Z = basez + (box.Max.Z * scaleZ) };
             }
 
             exp.WriteBinary(b);
