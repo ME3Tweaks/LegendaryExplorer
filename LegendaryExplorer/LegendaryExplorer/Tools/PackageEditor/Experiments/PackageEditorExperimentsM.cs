@@ -2030,62 +2030,34 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void MScanner(PackageEditorWindow pe)
         {
-            MEGame game = MEGame.LE1;
-            StringBuilder sb = new StringBuilder();
-            var loadStream = LegendaryExplorerCoreUtilities.LoadFileFromCompressedResource("GameResources.zip", LegendaryExplorerCoreLib.CustomResourceFileName(MEGame.LE1));
+            using var testTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(ME1Directory.CookedPCPath,@"Maps\LAV\LAY\BIOA_LAV70_01_LAY.sfm"));
+            using var destTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(PAEMPaths.VTest_FinalDestDir, "BIOA_PRC2.pcc"));
+            using var leSameTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(LE1Directory.CookedPCPath,@"BIOA_LAV70_00_ART.pcc"));
 
-            using var p = MEPackageHandler.OpenMEPackageFromStream(loadStream, GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName);
-            foreach (var c in p.Exports.Where(x => x.IsClass))
+            var testTerrain = testTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1");
+            var destTerrain = destTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1");
+            var leSameTerrain = leSameTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1");
+
+            var meSourceTerrainC = testTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1.TerrainComponent_522");
+            var destTerrainC = destTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1.TerrainComponent_522");
+            var leSameTerrainC = leSameTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1.TerrainComponent_232");
+
+            var meBin = ObjectBinary.From<TerrainComponent>(meSourceTerrainC);
+            VTestExperiment.ConvertME1TerrainComponent(meSourceTerrainC);
+
+
+            var destBin = ObjectBinary.From<TerrainComponent>(meSourceTerrainC); // after conversion
+            var leBin = ObjectBinary.From<TerrainComponent>(leSameTerrainC);
+
+            for (int i = 0; i < meBin.CollisionVertices.Length; i++)
             {
-                sb.AppendLine($"#region {c.ObjectName}");
-                sb.AppendLine($"classes[\"{c.ObjectName}\"] = new ClassInfo");
-                sb.AppendLine("{");
-                sb.AppendLine($"\tbaseClass = \"{c.SuperClassName}\",");
-                sb.AppendLine($"\tpccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,");
-                sb.AppendLine($"\texportIndex = {c.UIndex}, // in {game}Resources.pcc");
+                var meCol = meBin.CollisionVertices[i];
+                var destCol = destBin.CollisionVertices[i];
+                var leCol = leBin.CollisionVertices[i];
 
-                // Properties
-                var ci = GlobalUnrealObjectInfo.generateClassInfo(c);
-                if (ci.properties.Any())
-                {
-                    sb.AppendLine("\tproperties =");
-                    sb.AppendLine("\t{");
-                    foreach (var prop in ci.properties)
-                    {
-                        var propInfoStr = $"new PropertyInfo(PropertyType.{prop.Value.Type.ToString()}";
-                        // If this is an array it needs a reference type
-                        // Probably on objectproperty too?
-                        if (prop.Value.Reference != null)
-                        {
-                            propInfoStr += $", reference: \"{prop.Value.Reference}\"";
-                        }
-
-                        if (prop.Value.Transient)
-                        {
-                            propInfoStr += ", transient: true";
-                        }
-                        propInfoStr += ")";
-
-                        sb.AppendLine($"\t\tnew KeyValuePair<NameReference, PropertyInfo>(\"{prop.Key}\", {propInfoStr}),");
-                    }
-                    sb.AppendLine("\t}");
-
-                }
-
-                sb.AppendLine("};");
-                if (c.SuperClass.InheritsFrom("SequenceObject"))
-                {
-                    sb.AppendLine();
-                    sb.AppendLine($"sequenceObjects[\"{c.ObjectName}\"] = new SequenceObjectInfo");
-                    sb.AppendLine("{");
-                    sb.AppendLine($"\tObjInstanceVersion = 1"); // Not sure if this is correct...
-                    sb.AppendLine("};");
-                }
-                sb.AppendLine("#endregion");
+                // Z seem OK it's only X and Y
+                Debug.WriteLine($"{i}\t({meCol.X},{meCol.Y}) | ({leCol.X}, {leCol.Y}) | ({destCol.X},{destCol.Y}) | DIFF [LE-PORTED]: ({leCol.X - destCol.X},{leCol.Y - destCol.Y})");
             }
-
-            Clipboard.SetText(sb.ToString());
-            return;
 
             // just dump whatever shit you want to find here
             //foreach (string filePath in MELoadedFiles.GetOfficialFiles(MEGame.LE1 /*, MEGame.LE2, MEGame.LE3*/))

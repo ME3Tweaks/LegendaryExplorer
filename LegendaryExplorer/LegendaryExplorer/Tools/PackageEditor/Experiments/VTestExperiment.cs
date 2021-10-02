@@ -336,6 +336,27 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             // VTest post QA
             vTestOptions.packageEditorWindow.BusyText = "Performing checks";
 
+
+            // TERRAIN DEBUGGING
+            //using var testTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(PAEMPaths.VTest_SourceDir, "PRC2AA", "testterrain.sfm"));
+            // You need to make sure you use the right filepath here
+            using var testTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(ME1Directory.BioGamePath,@"CookedPC\Maps\LAV\LAY\BIOA_LAV70_01_LAY.sfm"));
+            using var destTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(PAEMPaths.VTest_FinalDestDir, "BIOA_PRC2.pcc"));
+
+            var terrainExp = testTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1");
+            //PathEdUtils.SetLocation(terrainExp, -1115, 420, -845); // move to area we can see
+            PrePortingCorrections(testTerrainP);
+            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, terrainExp,
+                destTerrainP, destTerrainP.FindExport("TheWorld.PersistentLevel"), true,
+                new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var destTerrainExp);
+
+            var terrBin = ObjectBinary.From<Terrain>(destTerrainExp as ExportEntry);
+            //terrBin.CachedDisplacements = new byte[terrBin.Heights.Length]; // just a big fat empty list
+            (destTerrainExp as ExportEntry).WriteBinary(terrBin);
+
+            RebuildPersistentLevelChildren(destTerrainP.FindExport("TheWorld.PersistentLevel"));
+            destTerrainP.Save();
+
             // Perform checks on all files
             foreach (var f in Directory.GetFiles(PAEMPaths.VTest_FinalDestDir))
             {
@@ -680,78 +701,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
                 else if (exp.ClassName == "TerrainComponent")
                 {
-                    // Strip Lightmap
-                    var b = ObjectBinary.From<TerrainComponent>(exp);
-                    b.LightMap = new LightMap() { LightMapType = ELightMapType.LMT_None };
-                    // Correct collision vertices as they've changed from local to world in LE
-
-                    float scaleX = 1;
-                    float scaleY = 1;
-                    float scaleZ = 1;
-
-                    float basex = 0;
-                    float basey = 0;
-                    float basez = 0;
-
-                    var ds3d = (exp.Parent as ExportEntry).GetProperty<StructProperty>("DrawScale3D");
-                    var ds = (exp.Parent as ExportEntry).GetProperty<FloatProperty>("DrawScale");
-                    if (ds3d != null)
-                    {
-                        scaleX = ds3d.GetProp<FloatProperty>("X").Value * (ds?.Value ?? 1);
-                        scaleY = ds3d.GetProp<FloatProperty>("Y").Value * (ds?.Value ?? 1);
-                        scaleZ = ds3d.GetProp<FloatProperty>("Z").Value * (ds?.Value ?? 1);
-                    }
-
-                    var loc = (exp.Parent as ExportEntry).GetProperty<StructProperty>("Location");
-                    if (loc != null)
-                    {
-                        basex = loc.GetProp<FloatProperty>("X").Value;
-                        basey = loc.GetProp<FloatProperty>("Y").Value;
-                        basez = loc.GetProp<FloatProperty>("Z").Value;
-                    }
-
-                    // COLLISION VERTICES
-                    for (int i = 0; i < b.CollisionVertices.Length; i++)
-                    {
-                        var cv = b.CollisionVertices[i];
-                        Vector3 newV = new Vector3();
-
-                        newV.X = (cv.X * scaleX) + basex;
-                        newV.Y = (cv.Y * scaleY) + basey;
-                        newV.Z = (cv.Z * scaleZ) + basez;
-                        b.CollisionVertices[i] = newV;
-                    }
-
-                    // Bounding Volume Tree
-                    for (int i = 0; i < b.BVTree.Length; i++)
-                    {
-                        var box = b.BVTree[i].BoundingVolume;
-                        box.Min = new Vector3 { X = (box.Min.X * scaleX) + basex, Y = (box.Min.Y * scaleY) + basey, Z = (box.Min.Z * scaleZ) + basez };
-                        box.Max = new Vector3 { X = (box.Max.X * scaleX) + basex, Y = (box.Max.Y * scaleY) + basey, Z = (box.Max.Z * scaleZ) + basez };
-                    }
-
-                    exp.WriteBinary(b);
-
-                    // Make dynamic lighting
-                    var props = exp.GetProperties();
-                    props.RemoveNamedProperty("BlockRigidBody"); // make collidable?
-                    props.RemoveNamedProperty("ShadowMaps");
-                    props.AddOrReplaceProp(new BoolProperty(false, "bForceDirectLightMap"));
-                    props.AddOrReplaceProp(new BoolProperty(true, "bCastDynamicShadow"));
-                    props.AddOrReplaceProp(new BoolProperty(true, "bAcceptDynamicLights"));
-
-                    var lightingChannels = props.GetProp<StructProperty>("LightingChannels") ??
-                                           new StructProperty("LightingChannelContainer", false,
-                                               new BoolProperty(true, "bIsInitialized"))
-                                           {
-                                               Name = "LightingChannels"
-                                           };
-                    lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "Static"));
-                    lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "Dynamic"));
-                    lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "CompositeDynamic"));
-                    props.AddOrReplaceProp(lightingChannels);
-
-                    exp.WriteProperties(props);
+                    ConvertME1TerrainComponent(exp);
                 }
                 #endregion
                 else if (exp.ClassName == "BioTriggerStream")
@@ -771,6 +721,109 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     //exp.RemoveProperty("nextNavigationPoint"); // No bases
                 }
             }
+        }
+
+        public static void ConvertME1TerrainComponent(ExportEntry exp)
+        {
+            // Strip Lightmap
+            var b = ObjectBinary.From<TerrainComponent>(exp);
+            b.LightMap = new LightMap() { LightMapType = ELightMapType.LMT_None };
+            // Convert the tesselation... something... idk something that makes it multiply
+            // by what appears to be 16x16 (256)
+            var props = exp.GetProperties();
+            var sizeX = props.GetProp<IntProperty>("SectionSizeX");
+            var sizeY = props.GetProp<IntProperty>("SectionSizeY");
+            var trueSizeX = props.GetProp<IntProperty>("TrueSectionSizeX");
+            var trueSizeY = props.GetProp<IntProperty>("TrueSectionSizeY");
+
+            var factorSize = sizeX * sizeY; // idk
+            for (int i = 0; i < trueSizeY; i++)
+            {
+                for (int j = 0; j < trueSizeX; j++)
+                {
+                    // uh... idk?
+                    var collisionIdx = (i * trueSizeY) + j;
+                    var vtx = b.CollisionVertices[collisionIdx];
+                    b.CollisionVertices[collisionIdx] = new Vector3(vtx.X * factorSize, vtx.Y * factorSize, vtx.Z);
+                    Debug.WriteLine(collisionIdx + " " + b.CollisionVertices[collisionIdx].ToString());
+                }
+            }
+
+            // Correct collision vertices as they've changed from local to world in LE
+            float scaleX = 1;
+            float scaleY = 1;
+            float scaleZ = 1;
+
+            float basex = 0;
+            float basey = 0;
+            float basez = 0;
+
+            var ds3d = (exp.Parent as ExportEntry).GetProperty<StructProperty>("DrawScale3D");
+            if (ds3d != null)
+            {
+                scaleX = ds3d.GetProp<FloatProperty>("X").Value;
+                scaleY = ds3d.GetProp<FloatProperty>("Y").Value;
+                scaleZ = ds3d.GetProp<FloatProperty>("Z").Value;
+            }
+
+            var ds = (exp.Parent as ExportEntry).GetProperty<FloatProperty>("DrawScale");
+            if (ds != null)
+            {
+                scaleX *= ds.Value;
+                scaleY *= ds.Value;
+                scaleZ *= ds.Value;
+            }
+
+            var loc = (exp.Parent as ExportEntry).GetProperty<StructProperty>("Location");
+            if (loc != null)
+            {
+                basex = loc.GetProp<FloatProperty>("X").Value;
+                basey = loc.GetProp<FloatProperty>("Y").Value;
+                basez = loc.GetProp<FloatProperty>("Z").Value;
+            }
+
+            // COLLISION VERTICES
+            for (int i = 0; i < b.CollisionVertices.Length; i++)
+            {
+                var cv = b.CollisionVertices[i];
+                Vector3 newV = new Vector3();
+
+                newV.X = (cv.X * scaleX) + basex;
+                newV.Y = (cv.Y * scaleY) + basey;
+                newV.Z = (cv.Z * scaleZ) + basez;
+                b.CollisionVertices[i] = newV;
+            }
+
+            // Bounding Volume Tree
+            for (int i = 0; i < b.BVTree.Length; i++)
+            {
+                var box = b.BVTree[i].BoundingVolume;
+                box.Min = new Vector3 { X = (box.Min.X * scaleX) + basex, Y = (box.Min.Y * scaleY) + basey, Z = (box.Min.Z * scaleZ) + basez };
+                box.Max = new Vector3 { X = (box.Max.X * scaleX) + basex, Y = (box.Max.Y * scaleY) + basey, Z = (box.Max.Z * scaleZ) + basez };
+            }
+
+            exp.WriteBinary(b);
+
+            // Make dynamic lighting
+            //var props = exp.GetProperties();
+            //props.RemoveNamedProperty("BlockRigidBody"); // make collidable?
+            props.RemoveNamedProperty("ShadowMaps");
+            props.AddOrReplaceProp(new BoolProperty(false, "bForceDirectLightMap"));
+            props.AddOrReplaceProp(new BoolProperty(true, "bCastDynamicShadow"));
+            props.AddOrReplaceProp(new BoolProperty(true, "bAcceptDynamicLights"));
+
+            var lightingChannels = props.GetProp<StructProperty>("LightingChannels") ??
+                                   new StructProperty("LightingChannelContainer", false,
+                                       new BoolProperty(true, "bIsInitialized"))
+                                   {
+                                       Name = "LightingChannels"
+                                   };
+            lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "Static"));
+            lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "Dynamic"));
+            lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "CompositeDynamic"));
+            props.AddOrReplaceProp(lightingChannels);
+
+            exp.WriteProperties(props);
         }
 
         private static void PruneUnusedProperties(ExportEntry exp)
