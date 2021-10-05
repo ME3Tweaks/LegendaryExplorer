@@ -1184,7 +1184,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                     MakeUInt16Node(bin, "NodeIndex[2]"),
                                     MakeUInt16Node(bin, "NodeIndex[3]"),
                                 }),
-                                MakeFloatNode(bin, "Unknown float"),
+                                MakeFloatNodeConditional(bin, "Unknown float", CurrentLoadedExport.Game != MEGame.UDK),
                             }
                         })
                     }
@@ -1253,7 +1253,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         return node;
                     }));
                 }
-                if (Pcc.Game != MEGame.ME1)
+                if (Pcc.Game != MEGame.ME1 && Pcc.Game != MEGame.UDK)
                 {
                     subnodes.Add(MakeArrayNode(bin, "CachedDisplacements", i => new BinInterpNode(bin.Position, $"{i}: {bin.ReadByte()}")));
                     subnodes.Add(MakeFloatNode(bin, "MaxCollisionDisplacement"));
@@ -5212,7 +5212,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
 
                 MemoryStream ms = new MemoryStream(data) { Position = bin.Position };
-                var scriptStructProperties = PropertyCollection.ReadProps(CurrentLoadedExport, ms, "ScriptStruct", includeNoneProperty: true, entry: CurrentLoadedExport);
+                var containingClass = CurrentLoadedExport.FileRef.GetUExport(CurrentLoadedExport.idxLink);
+                var scriptStructProperties = PropertyCollection.ReadProps(CurrentLoadedExport, ms, "ScriptStruct", includeNoneProperty: true, entry: containingClass);
 
                 UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry(); //not used, just for holding and building data.
                 foreach (Property prop in scriptStructProperties)
@@ -7023,6 +7024,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private static BinInterpNode MakeBoolByteNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadBoolByte()}") { Length = 1 };
 
         private static BinInterpNode MakeFloatNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadFloat()}", NodeType.StructLeafFloat) { Length = 4 };
+
+        private static BinInterpNode MakeFloatNodeConditional(EndianReader bin, string name, bool create)
+        {
+            if (create)
+            {
+                return new BinInterpNode(bin.Position, $"{name}: {bin.ReadFloat()}", NodeType.StructLeafFloat) { Length = 4 };
+            }
+            return null;
+        } 
 
         private static BinInterpNode MakeUInt32Node(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadUInt32()}") { Length = 4 };
 
