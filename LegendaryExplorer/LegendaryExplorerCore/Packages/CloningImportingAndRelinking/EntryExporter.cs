@@ -84,7 +84,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         }
 
         /// <summary>
-        /// Exporst the export and all rqeuired dependencies to a package file located at the specified path. The package is saved to disk.
+        /// Exports the export and all required dependencies to a package file located at the specified path. The package is saved to disk.
         /// </summary>
         /// <param name="sourceExport"></param>
         /// <param name="newPackagePath"></param>

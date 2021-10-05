@@ -126,8 +126,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 importChildrenOf(sourceEntry, newEntry);
             }
 
+            // DISABLED IN CROSSGEN AS RELINKER HAS CHANGED
             //for shader porting. For some reason the relinkMap gets cleared during relinking, so make the list here
-            var sourceExports = rop.CrossPackageMap.Keys.OfType<ExportEntry>().ToList();
+            //var sourceExports = rop.CrossPackageMap.Keys.OfType<ExportEntry>().ToList();
 
             List<EntryStringPair> relinkResults = null;
             if (shouldRelink)
@@ -137,7 +138,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
 
             //Port Shaders
-            var portingCache = ShaderCacheManipulator.GetLocalShadersForMaterials(sourceExports);
+            //var portingCache = ShaderCacheManipulator.GetLocalShadersForMaterials(sourceExports); // CrossGen Disabled
+            var portingCache = ShaderCacheManipulator.GetLocalShadersForMaterials(rop.CrossPackageMap.Keys.OfType<ExportEntry>().ToList());
             if (portingCache is not null)
             {
                 if (destPcc.Game != sourcePcc.Game)

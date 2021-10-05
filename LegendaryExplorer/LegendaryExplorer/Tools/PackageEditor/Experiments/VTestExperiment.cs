@@ -46,7 +46,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             public bool useDynamicLighting = true;
 
             /// <summary>
-            /// If debug features should be enabled in the build such as loggig conversions
+            /// If debug features should be enabled in the build
             /// </summary>
             public bool debugBuild = true;
 
@@ -93,7 +93,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             "HeightFog",
             "PrefabInstance",
             "CameraActor",
-            "Terrain", // OH BOY
+            //"Terrain", // Do not port in - we will specifically port this with a special donor system
 
             // Pass 2
             "StaticMeshActor",
@@ -313,7 +313,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     else
                     {
                         var levelName = Path.GetFileNameWithoutExtension(f);
-                        //if (levelName == "BIOA_PRC2")
+                        //if (levelName.CaseInsensitiveEquals("BIOA_PRC2_CCLAVA"))
                         PortVTestLevel(vTestLevel, levelName, vTestOptions, levelName == "BIOA_" + vTestLevel, true);
                     }
                 }
@@ -340,22 +340,22 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             // TERRAIN DEBUGGING
             //using var testTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(PAEMPaths.VTest_SourceDir, "PRC2AA", "testterrain.sfm"));
             // You need to make sure you use the right filepath here
-            using var testTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(ME1Directory.BioGamePath, @"CookedPC\Maps\LAV\LAY\BIOA_LAV70_01_LAY.sfm"));
-            using var destTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(PAEMPaths.VTest_FinalDestDir, "BIOA_PRC2.pcc"));
+            //using var testTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(ME1Directory.BioGamePath, @"CookedPC\Maps\LAV\LAY\BIOA_LAV70_01_LAY.sfm"));
+            //using var destTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(PAEMPaths.VTest_FinalDestDir, "BIOA_PRC2.pcc"));
 
-            var terrainExp = testTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1");
-            //PathEdUtils.SetLocation(terrainExp, -1115, 420, -845); // move to area we can see
-            PrePortingCorrections(testTerrainP);
-            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, terrainExp,
-                destTerrainP, destTerrainP.FindExport("TheWorld.PersistentLevel"), true,
-                new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var destTerrainExp);
+            //var terrainExp = testTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1");
+            ////PathEdUtils.SetLocation(terrainExp, -1115, 420, -845); // move to area we can see
+            //PrePortingCorrections(testTerrainP);
+            //EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, terrainExp,
+            //    destTerrainP, destTerrainP.FindExport("TheWorld.PersistentLevel"), true,
+            //    new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var destTerrainExp);
 
-            var terrBin = ObjectBinary.From<Terrain>(destTerrainExp as ExportEntry);
-            //terrBin.CachedDisplacements = new byte[terrBin.Heights.Length]; // just a big fat empty list
-            (destTerrainExp as ExportEntry).WriteBinary(terrBin);
+            //var terrBin = ObjectBinary.From<Terrain>(destTerrainExp as ExportEntry);
+            ////terrBin.CachedDisplacements = new byte[terrBin.Heights.Length]; // just a big fat empty list
+            //(destTerrainExp as ExportEntry).WriteBinary(terrBin);
 
-            RebuildPersistentLevelChildren(destTerrainP.FindExport("TheWorld.PersistentLevel"));
-            destTerrainP.Save();
+            //RebuildPersistentLevelChildren(destTerrainP.FindExport("TheWorld.PersistentLevel"));
+            //destTerrainP.Save();
 
             // Perform checks on all files
             foreach (var f in Directory.GetFiles(PAEMPaths.VTest_FinalDestDir))
@@ -534,9 +534,48 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
+        private static StructProperty ConvertCoverSlot(StructProperty me1CS, VTestOptions vTestOptions)
+        {
+            // How to convert a coverslot
+
+            // 1. Draw some circles
+            var csProps = GlobalUnrealObjectInfo.getDefaultStructValue(MEGame.LE1, "CoverSlot", false, vTestOptions.cache);
+
+            // 2. Draw the rest of the fucking owl
+            foreach (var me1Prop in me1CS.Properties)
+            {
+                switch (me1Prop)
+                {
+                    case IntProperty:
+                    case FloatProperty:
+                    case BoolProperty:
+                    case EnumProperty:
+                        TryUpdateProp(me1Prop, csProps);
+                        break;
+
+                }
+            }
+
+
+            return new StructProperty("CoverSlot", csProps, isImmutable: true);
+
+            void TryUpdateProp(Property p, PropertyCollection destCollection)
+            {
+                if (destCollection.ContainsNamedProp(p.Name))
+                {
+                    destCollection.AddOrReplaceProp(p);
+                }
+                else
+                {
+                    Debug.WriteLine($"Target doesn't have property named {p.Name}");
+                }
+            }
+        }
+
         private static void VTest_EnableDebugOptionsOnPackage(IMEPackage le1File, VTestOptions vTestOptions)
         {
-            SequenceEditorExperimentsM.ConvertSeqAct_Log_objComments(le1File, vTestOptions.cache);
+            // This is no longer necessary with m_aObjLog Enabler mod
+            //SequenceEditorExperimentsM.ConvertSeqAct_Log_objComments(le1File, vTestOptions.cache);
         }
 
         /// <summary>
@@ -699,11 +738,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                     exp.WriteBinary(b);
                 }
-                else if (exp.ClassName == "TerrainComponent")
-                {
-                    ConvertME1TerrainComponent(exp);
-                }
                 #endregion
+                // These are precomputed and stored in VTestHelper.pcc 
+                else if (exp.ClassName == "Terrain")
+                {
+                    exp.RemoveProperty("TerrainComponents"); // Don't port the components; we will port them ourselves in post
+                }
                 else if (exp.ClassName == "BioTriggerStream")
                 {
                     PreCorrectBioTriggerStream(exp);
@@ -795,11 +835,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
 
             // Bounding Volume Tree
+            Vector3 dif = new Vector3(86806.1f, -70072.58f, -6896.561f);
             for (int i = 0; i < b.BVTree.Length; i++)
             {
                 var box = b.BVTree[i].BoundingVolume;
-                box.Min = new Vector3 { X = basex - (box.Min.X * scaleX), Y = basey - (box.Min.Y * scaleY), Z = basez + (box.Min.Z * scaleZ) };
-                box.Max = new Vector3 { X = basex - (box.Max.X * scaleX), Y = basey - (box.Max.Y * scaleY), Z = basez + (box.Max.Z * scaleZ) };
+                box.Min = new Vector3 { X = basex - (box.Min.X * scaleX), Y = basey /*- (box.Min.Y * scaleY)*/, Z = basez + (box.Min.Z * scaleZ) };
+                box.Max = new Vector3 { X = basex /*+ (box.Max.X * scaleX)*/, Y = basey + (box.Max.Y * scaleY), Z = basez + (box.Max.Z * scaleZ) };
             }
 
             exp.WriteBinary(b);
@@ -1078,10 +1119,49 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             CorrectSequences(le1File, vTestOptions);
             CorrectPathfindingNetwork(me1File, le1File);
             PostCorrectMaterialsToInstanceConstants(me1File, le1File, vTestOptions);
+            //CorrectTerrainMaterials(le1File);
+
+            if (Path.GetFileNameWithoutExtension(le1File.FilePath).CaseInsensitiveEquals("BIOA_PRC2_CCLava"))
+            {
+                PortInCorrectedTerrain(le1File, "CCLava.Terrain_1", "BIOA_LAV60_00_LAY.pcc", vTestOptions);
+            }
             RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
-            CorrectTerrainMaterials(le1File);
+
             //CorrectTriggerStreamsMaybe(me1File, le1File);
         }
+
+        private static void PortInCorrectedTerrain(IMEPackage le1File, string vTestIFP, string materialsFile, VTestOptions vTestOptions)
+        {
+            // Port in the material's file terrain - but not it's subcomponents
+            using var le1VanillaTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(LE1Directory.CookedPCPath, materialsFile));
+            var le1VanillaTerrain = le1VanillaTerrainP.Exports.FirstOrDefault(x => x.ClassName == "Terrain");
+            le1VanillaTerrain.RemoveProperty("TerrainComponents");
+
+            var rop = new RelinkerOptionsPackage() { Cache = vTestOptions.cache };
+
+            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, le1VanillaTerrain, le1File,
+                le1File.FindExport("TheWorld.PersistentLevel"), true, rop, out var destTerrainEntry);
+            var destTerrain = destTerrainEntry as ExportEntry;
+
+            // Port in the precomputed components
+            var sourceTerrain = vTestOptions.vTestHelperPackage.FindExport(vTestIFP);
+            ArrayProperty<ObjectProperty> components = new ArrayProperty<ObjectProperty>("TerrainComponents");
+            foreach (var subComp in sourceTerrain.GetProperty<ArrayProperty<ObjectProperty>>("TerrainComponents"))
+            {
+                rop.CrossPackageMap.Clear();
+                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, vTestOptions.vTestHelperPackage.GetUExport(subComp.Value), le1File,
+                    destTerrain, true, rop, out var newSubComp);
+                components.Add(new ObjectProperty(newSubComp.UIndex));
+            }
+            destTerrain.WriteProperty(components);
+
+            // Manual fixes for VTest
+            destTerrain.RemoveProperty("PrePivot"); // on lav60 donor terrain
+
+            // Update the main terrain with our data, without touching anything about materials or layers
+            PackageEditorExperimentsM.ImportUDKTerrainData(sourceTerrain, destTerrain, false);
+        }
+
 
         private static void CorrectTextures(IMEPackage package)
         {

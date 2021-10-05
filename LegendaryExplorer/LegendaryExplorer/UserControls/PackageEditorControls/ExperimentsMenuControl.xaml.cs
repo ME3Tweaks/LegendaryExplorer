@@ -382,6 +382,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.ConvertMaterialToVtestDonor(GetPEWindow());
         }
 
+        private void ImportUDKTerrain_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.ImportUDKTerrain(GetPEWindow());
+        }
+
         /// <summary>
         /// If this proves useful, will graduate out of experiments
         /// </summary>
@@ -445,6 +450,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         private void FindEmptyMips_Clicked(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.FindEmptyMips(GetPEWindow());
+        }
+
+        private void CloneCachedTerrainMaterials_Clicked(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.CloneTerrainMaterialsIntoFile(GetPEWindow());
         }
 
         private void DumpLE1TLK_Clicked(object sender, RoutedEventArgs e)

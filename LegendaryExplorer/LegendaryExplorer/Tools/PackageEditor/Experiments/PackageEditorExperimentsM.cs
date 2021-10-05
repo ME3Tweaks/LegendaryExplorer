@@ -2029,7 +2029,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             Clipboard.SetText(sb.ToString());
         }
 
-        public static void MScanner(PackageEditorWindow pe)
+        public static void TerrainLevelMaker(PackageEditorWindow pe)
         {
             // Open base
             using var terrainBaseP = MEPackageHandler.OpenMEPackage(Path.Combine(LE1Directory.CookedPCPath, "BIOA_TERRAINTEST_BASE.pcc"));
@@ -2075,8 +2075,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 for (int j = 0; j < leC.BVTree.Length; j++)
                 {
                     var leColMin = leC.BVTree[j].BoundingVolume.Min;
-                    var portedColMin = portedC.BVTree[j].BoundingVolume.Min;
                     var leColMax = leC.BVTree[j].BoundingVolume.Max;
+                    var portedColMin = portedC.BVTree[j].BoundingVolume.Min;
                     var portedColMax = portedC.BVTree[j].BoundingVolume.Max;
 
                     if (leColMin.X != portedColMin.X || leColMin.Y != portedColMin.Y || leColMin.Z != portedColMin.Z)
@@ -2088,40 +2088,55 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 }
             }
+        }
 
-            return;
+        public static void MScanner(PackageEditorWindow pe)
+        {
+            //using var me1TerrainP = MEPackageHandler.OpenMEPackage(@"D:\Origin Games\Mass Effect\DLC\DLC_Vegas\CookedPC\Maps\PRC2\BIOA_PRC2_CCLava.SFM");
             //using var destTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(PAEMPaths.VTest_FinalDestDir, "BIOA_PRC2.pcc"));
 
-            //var destTerrain = destTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1");
-            //var leSameTerrain = leSameTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1");
+            // Two same terrains so we can compare the conversion
+            using var me1TerrainP = MEPackageHandler.OpenMEPackage(@"D:\Origin Games\Mass Effect\BioGame\CookedPC\Maps\LAV\LAY\BIOA_LAV70_01_LAY.SFM");
+            using var le1TerrainP = MEPackageHandler.OpenMEPackage(@"B:\SteamLibrary\steamapps\common\Mass Effect Legendary Edition\Game\ME1\BioGame\CookedPCConsole\BIOA_LAV70_00_ART.pcc");
 
-            //var meSourceTerrainC = testTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1.TerrainComponent_522");
-            //var destTerrainC = destTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1.TerrainComponent_522");
+            var me1Terrain = me1TerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1");
+            var le1Terrain = le1TerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1");
 
-            //var meBin = ObjectBinary.From<TerrainComponent>(meSourceTerrainC);
-            //VTestExperiment.ConvertME1TerrainComponent(meSourceTerrainC);
+            var me1Components = me1Terrain.GetProperty<ArrayProperty<ObjectProperty>>("TerrainComponents").Select(x => x.ResolveToEntry(me1TerrainP) as ExportEntry).ToList();
+            var le1Components = le1Terrain.GetProperty<ArrayProperty<ObjectProperty>>("TerrainComponents").Select(x => x.ResolveToEntry(le1TerrainP) as ExportEntry).ToList();
+
+            foreach (var tc in me1Components)
+                VTestExperiment.ConvertME1TerrainComponent(tc);
+
+            // Compare
+            for (int i = 0; i < me1Components.Count; i++)
+            {
+                var meConvBin = ObjectBinary.From<TerrainComponent>(me1Components[i]); // after conversion
+                var leBin = ObjectBinary.From<TerrainComponent>(le1Components[i]);
+
+                for (int j = 0; j < meConvBin.CollisionVertices.Length; j++)
+                {
+                    var destCol = meConvBin.CollisionVertices[j];
+                    var leCol = leBin.CollisionVertices[j];
+
+                    // Z seem OK it's only X and Y
+                    if (leCol.X != destCol.X || leCol.Y != destCol.Y)
+                        Debug.WriteLine($"{i}-{j}\t({leCol.X}, {leCol.Y}) | ({destCol.X},{destCol.Y}) | DIFF [LE-PORTED]: ({leCol.X - destCol.X},{leCol.Y - destCol.Y})");
+                }
+            }
 
 
-            //var destBin = ObjectBinary.From<TerrainComponent>(meSourceTerrainC); // after conversion
-            //var leBin = ObjectBinary.From<TerrainComponent>(leSameTerrainC);
 
-            //for (int i = 0; i < meBin.CollisionVertices.Length; i++)
-            //{
-            //    var meCol = meBin.CollisionVertices[i];
-            //    var destCol = destBin.CollisionVertices[i];
-            //    var leCol = leBin.CollisionVertices[i];
 
-            //    // Z seem OK it's only X and Y
-            //    Debug.WriteLine($"{i}\t({meCol.X},{meCol.Y}) | ({leCol.X}, {leCol.Y}) | ({destCol.X},{destCol.Y}) | DIFF [LE-PORTED]: ({leCol.X - destCol.X},{leCol.Y - destCol.Y})");
-            //}
 
-            // just dump whatever shit you want to find here
+
+            //just dump whatever shit you want to find here
             //foreach (string filePath in MELoadedFiles.GetOfficialFiles(MEGame.LE1 /*, MEGame.LE2, MEGame.LE3*/))
             //{
             //    using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
             //    foreach (ExportEntry export in pcc.Exports)
             //    {
-            //        // code here
+            //        //code here
             //        if (export.ClassName == "BioInert" && !export.IsDefaultObject && !export.IsClass)
             //        {
             //            if (export.DataSize > export.propsEnd() + 4)
@@ -2130,6 +2145,271 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             //    }
             //}
+        }
+
+        public static void ImportUDKTerrain(PackageEditorWindow pe)
+        {
+            if (pe.Pcc == null)
+                return;
+
+            var localTerrain = pe.Pcc.Exports.FirstOrDefault(x => x.ClassName == "Terrain");
+            if (localTerrain == null)
+            {
+                MessageBox.Show("The local file must have a terrain.");
+                return;
+            }
+
+            OpenFileDialog d = new OpenFileDialog { Title = "Select UDK file with terrain", Filter = "*.udk|*.udk" };
+            if (d.ShowDialog() == true)
+            {
+                using var udkP = MEPackageHandler.OpenUDKPackage(d.FileName);
+                var udkTerrain = udkP.Exports.FirstOrDefault(x => x.ClassName == "Terrain");
+                if (udkTerrain == null)
+                {
+                    MessageBox.Show("Selected UDK file doesn't contain a Terrain.");
+                    return;
+                }
+
+                ImportUDKTerrainData(udkTerrain, localTerrain);
+            }
+        }
+
+        public static void ImportUDKTerrainData(ExportEntry udkTerrain, ExportEntry targetTerrain, bool removeExistingComponents = true)
+        {
+            // Binary (Terrain)
+            var udkBin = ObjectBinary.From<Terrain>(udkTerrain);
+            var destBin = ObjectBinary.From<Terrain>(targetTerrain);
+            destBin.Heights = udkBin.Heights;
+            destBin.InfoData = udkBin.InfoData;
+            destBin.CachedDisplacements = new byte[udkBin.Heights.Length];
+            targetTerrain.WriteBinary(destBin);
+
+            // Properties (Terrain)
+            var terrainProps = targetTerrain.GetProperties();
+            var udkProps = udkTerrain.GetProperties();
+            terrainProps.RemoveNamedProperty("DrawScale3D");
+            var udkDS3D = udkProps.GetProp<StructProperty>("DrawScale3D");
+            if (udkDS3D != null)
+            {
+                terrainProps.AddOrReplaceProp(udkDS3D);
+            }
+
+            terrainProps.RemoveNamedProperty("DrawScale");
+            var udkDS = udkProps.GetProp<FloatProperty>("DrawScale");
+            if (udkDS != null)
+            {
+                terrainProps.AddOrReplaceProp(udkDS);
+            }
+
+            terrainProps.RemoveNamedProperty("Location");
+            var loc = udkProps.GetProp<StructProperty>("Location");
+            if (loc != null)
+            {
+                terrainProps.AddOrReplaceProp(loc);
+            }
+
+            // All Ints
+            terrainProps.Remove(x => x is IntProperty);
+            terrainProps.AddRange(udkProps.Where(x => x is IntProperty));
+
+            // Components
+            if (removeExistingComponents)
+            {
+                var components = terrainProps.GetProp<ArrayProperty<ObjectProperty>>("TerrainComponents");
+                EntryPruner.TrashEntries(targetTerrain.FileRef, components.Select(x => x.ResolveToEntry(targetTerrain.FileRef))); // Trash the components
+                components.Clear();
+
+                // Port over the UDK ones
+                var udkComponents = udkTerrain.GetProperty<ArrayProperty<ObjectProperty>>("TerrainComponents");
+                foreach (var tc in udkComponents)
+                {
+                    var entry = tc.ResolveToEntry(udkTerrain.FileRef);
+                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, entry, targetTerrain.FileRef, targetTerrain, true, new RelinkerOptionsPackage(), out var portedComp);
+                    components.Add(new ObjectProperty(portedComp.UIndex));
+                }
+            }
+
+            targetTerrain.WriteProperties(terrainProps);
+        }
+
+        public static void CloneTerrainMaterialsIntoFile(PackageEditorWindow pe)
+        {
+            {
+                var udkDestFile = @"B:\Documents\CCLAVA_TERRAIN.udk";
+                using var udkP = MEPackageHandler.OpenUDKPackage(udkDestFile);
+
+                var sourcePackage = @"B:\SteamLibrary\steamapps\common\Mass Effect Legendary Edition\Game\ME1\BioGame\DLC\DLC_MOD_Vegas\CookedPCConsole\BIOA_PRC2_CCLava.pcc";
+                using var sourceP = MEPackageHandler.OpenMEPackage(sourcePackage);
+
+                var udkT = udkP.FindExport(@"TheWorld.PersistentLevel.Terrain_0");
+                var sourceT = sourceP.FindExport(@"TheWorld.PersistentLevel.Terrain_1");
+
+                var udkTerrBin = ObjectBinary.From<Terrain>(udkT);
+                var sourceTerrBin = ObjectBinary.From<Terrain>(sourceT);
+
+                udkTerrBin.Heights = sourceTerrBin.Heights;
+                udkTerrBin.InfoData = sourceTerrBin.InfoData;
+                udkT.WriteBinary(udkTerrBin);
+
+                var udkComponents = udkT.GetProperty<ArrayProperty<ObjectProperty>>("TerrainComponents");
+                var le1Components = sourceT.GetProperty<ArrayProperty<ObjectProperty>>("TerrainComponents");
+                for (int i = 0; i < udkComponents.Count; i++)
+                {
+                    var udkComp = udkComponents[i].ResolveToEntry(udkP) as ExportEntry;
+                    var le1Comp = le1Components[i].ResolveToEntry(sourceP) as ExportEntry;
+
+                    var udkCompBin = ObjectBinary.From<TerrainComponent>(udkComp);
+                    var le1CompBin = ObjectBinary.From<TerrainComponent>(le1Comp);
+
+                    udkCompBin.CollisionVertices = le1CompBin.CollisionVertices;
+                    udkComp.WriteBinary(udkCompBin);
+                }
+
+
+                udkP.Save(@"B:\Documents\CCLAVA_TERRAIN_PORTED.udk");
+            }
+            return;
+            //if (pe.Pcc == null)
+            //    return;
+
+            //var localTerrain = pe.Pcc.Exports.FirstOrDefault(x => x.ClassName == "Terrain");
+            //if (localTerrain == null)
+            //{
+            //    MessageBox.Show("There's no terrain export in this file!", "Terrain required");
+            //    return;
+            //}
+            {
+                var outputFile = Path.Combine(LE1Directory.CookedPCPath, @"BIOA_TERRAINTEST.pcc");
+                VTestExperiment.CreateEmptyLevel(outputFile, MEGame.LE1);
+                using var destPackage = MEPackageHandler.OpenMEPackage(outputFile);
+                var destLevel = destPackage.FindExport("TheWorld.PersistentLevel");
+
+                // Select file to donate from
+                var preselected = @"B:\SteamLibrary\steamapps\common\Mass Effect Legendary Edition\Game\ME1\BioGame\CookedPCConsole\BIOA_ICE20_08_ART.pcc";
+
+                OpenFileDialog d = new OpenFileDialog { Title = "Select donor file with terrain", Filter = "*.pcc|*.pcc" };
+                if (preselected != null || d.ShowDialog() == true)
+                {
+                    using var donorFile = MEPackageHandler.OpenMEPackage(preselected ?? d.FileName);
+                    var donorTerrain = donorFile.Exports.FirstOrDefault(x => x.ClassName == "Terrain");
+                    if (donorTerrain == null)
+                    {
+                        MessageBox.Show("There's no terrain export in the selected file!", "Terrain required");
+                        return;
+                    }
+
+                    // Port in the donor terrain to begin with
+                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, donorTerrain, destPackage, destLevel, true, new RelinkerOptionsPackage(), out var destTerrainEntry);
+                    var destTerrain = (ExportEntry)destTerrainEntry;
+
+                    // Overwrite the terrain with our data
+                    var inputPath = @"B:\Documents\TerrainTest.udk";
+                    using var udkP = MEPackageHandler.OpenUDKPackage(inputPath);
+                    var udkTerrain = udkP.FindExport("TheWorld.PersistentLevel.Terrain_1");
+
+                    // Binary (Terrain)
+                    var udkBin = ObjectBinary.From<Terrain>(udkTerrain);
+                    var destBin = ObjectBinary.From<Terrain>(destTerrain);
+                    destBin.Heights = udkBin.Heights;
+                    destBin.InfoData = udkBin.InfoData;
+                    destBin.CachedDisplacements = new byte[udkBin.Heights.Length];
+                    destTerrain.WriteBinary(destBin);
+
+                    // Properties (Terrain)
+                    var terrainProps = destTerrain.GetProperties();
+                    var udkProps = udkTerrain.GetProperties();
+                    terrainProps.RemoveNamedProperty("DrawScale3D");
+                    terrainProps.Remove(x => x is IntProperty);
+                    terrainProps.AddRange(udkProps.Where(x => x is IntProperty));
+                    terrainProps.RemoveNamedProperty("Location");
+                    var loc = udkProps.GetProp<StructProperty>("Location");
+                    if (loc != null)
+                    {
+                        terrainProps.AddOrReplaceProp(loc);
+                    }
+
+
+                    // Components
+                    var components = terrainProps.GetProp<ArrayProperty<ObjectProperty>>("TerrainComponents");
+                    EntryPruner.TrashEntries(destPackage, components.Select(x => x.ResolveToEntry(destPackage))); // Trash the components
+                    components.Clear();
+
+                    // Port over the UDK ones
+                    var udkComponents = udkTerrain.GetProperty<ArrayProperty<ObjectProperty>>("TerrainComponents");
+                    foreach (var tc in udkComponents)
+                    {
+                        var entry = tc.ResolveToEntry(udkP);
+                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, entry, destPackage, destTerrain, true, new RelinkerOptionsPackage(), out var portedComp);
+                        components.Add(new ObjectProperty(portedComp.UIndex));
+                    }
+
+
+                    destTerrain.WriteProperties(terrainProps);
+
+                    //localBin.CachedTerrainMaterials = donorBin.CachedTerrainMaterials;
+                    //localBin.CachedTerrainMaterials2 = donorBin.CachedTerrainMaterials2;
+
+
+                    //// Correct the material parent ref (I don't think the game uses these)
+                    //foreach (var ctm in localBin.CachedTerrainMaterials)
+                    //{
+                    //    foreach (var utex in ctm.UniformExpressionTextures)
+                    //    {
+                    //        var sourceTex = donorFile.GetEntry(utex.value);
+                    //        if (sourceTex is ImportEntry imp)
+                    //        {
+                    //            utex.value = EntryImporter.GetOrAddCrossImportOrPackage(imp.InstancedFullPath, donorFile, destPackage, new RelinkerOptionsPackage()).UIndex;
+                    //        }
+                    //        else if (sourceTex is ExportEntry exp)
+                    //        {
+                    //            EntryExporter.ExportExportToPackage(exp, destPackage, out var newExp);
+                    //            utex.value = newExp.UIndex;
+                    //        }
+                    //    }
+
+                    //    ctm.Terrain.value = localTerrain.UIndex;
+                    //}
+                    //localTerrain.WriteBinary(localBin);
+
+                    //// Port over the TerrainLayers and relink them
+                    //localTerrain.WriteProperty(donorTerrain.GetProperty<ArrayProperty<StructProperty>>("Layers"));
+                    //var localLayers = localTerrain.GetProperty<ArrayProperty<StructProperty>>("Layers");
+                    //foreach (var layer in localLayers)
+                    //{
+                    //    var setup = layer.GetProp<ObjectProperty>("Setup");
+                    //    var donorObj = donorFile.GetUExport(setup.Value);
+                    //    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, donorObj, destPackage, null, true, new RelinkerOptionsPackage(), out var newSetup);
+                    //    setup.Value = newSetup.UIndex;
+                    //}
+                    //localTerrain.WriteProperty(localLayers);
+                }
+
+                // Port in a PlayerStart
+                using var psDonor = MEPackageHandler.OpenMEPackage(Path.Combine(LE1Directory.CookedPCPath, @"BIOA_STA00.pcc"));
+                var psStart = psDonor.FindExport("TheWorld.PersistentLevel.PlayerStart_0");
+                psStart.RemoveProperty("nextNavigationPoint");
+                EntryExporter.ExportExportToPackage(psStart, destPackage, out var newPStart);
+                PathEdUtils.SetLocation(newPStart as ExportEntry, 2000, 2000, 2000);
+
+                // Port in a skybox
+                using var skyDonor = MEPackageHandler.OpenMEPackage(Path.Combine(LE1Directory.CookedPCPath, @"BIOA_WAR00.pcc"));
+                var sky = skyDonor.FindExport("TheWorld.PersistentLevel.StaticMeshActor_1");
+                //psStart.RemoveProperty("nextNavigationPoint");
+                EntryExporter.ExportExportToPackage(sky, destPackage, out var newSky);
+                PathEdUtils.SetLocation(newSky as ExportEntry, 2000, 2000, 92);
+
+                // Put in a mako because why not
+                using var makoDonor = MEPackageHandler.OpenMEPackage(Path.Combine(LE1Directory.CookedPCPath, @"BIOA_LOS00.pcc"));
+                var mako = makoDonor.FindExport("TheWorld.PersistentLevel.BioVehicleWheeled_0");
+                //psStart.RemoveProperty("nextNavigationPoint");
+                EntryExporter.ExportExportToPackage(mako, destPackage, out var newMako);
+                PathEdUtils.SetLocation(newMako as ExportEntry, 2300, 2300, 92);
+
+                VTestExperiment.RebuildPersistentLevelChildren(destLevel);
+                destPackage.Save();
+
+
+            }
         }
 
         public static void TestCurrentPackageForUnknownBinary(PackageEditorWindow pe)
