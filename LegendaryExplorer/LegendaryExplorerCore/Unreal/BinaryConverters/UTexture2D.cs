@@ -10,6 +10,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
     public class UTexture : ObjectBinary
     {
+        public byte[] Thumbnail; // Not ME3 or LE3
+
         protected override void Serialize(SerializingContainer2 sc)
         {
             if (!sc.Game.IsGame3())
@@ -17,7 +19,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 int dummy = 0;
                 sc.Serialize(ref dummy);
                 sc.Serialize(ref dummy);
-                sc.Serialize(ref dummy);
+                sc.Serialize(ref Thumbnail);
                 sc.SerializeFileOffset();
             }
         }
