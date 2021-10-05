@@ -650,7 +650,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     ExportEntry importedExport = EntryImporter.ImportExport(relinkingExport.FileRef, sourceExport, parent?.UIndex ?? 0, rop);
                     if (!importedExport.InstancedFullPath.CaseInsensitiveEquals(sourceExport.InstancedFullPath))
                     {
-                        Debugger.Break();
+                        // This needs to be suppressed if we are doing replace export with another
+                        // as IFP will likely be different
+                        //Debugger.Break();
                     }
                     uIndex = importedExport.UIndex;
                 }
