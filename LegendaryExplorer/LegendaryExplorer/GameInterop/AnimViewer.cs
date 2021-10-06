@@ -89,13 +89,13 @@ namespace LegendaryExplorer.GameInterop
                 }
             }
 
-            if (GameController.TryGetMEProcess(MEGame.ME3, out Process me3Process) && canHotLoad)
+            if (canHotLoad)
             {
-                IntPtr handle = me3Process.MainWindowHandle;
-                GameController.ExecuteConsoleCommands(handle, MEGame.ME3, $"at {tempMapName}");
+                GameController.GetInteropTargetForGame(MEGame.ME3).ExecuteConsoleCommands($"at {tempMapName}");
                 return;
             }
 
+            GameController.GetInteropTargetForGame(MEGame.ME3).TryGetProcess(out var me3Process);
             me3Process?.Kill();
             int resX = 1000;
             int resY = 800;
