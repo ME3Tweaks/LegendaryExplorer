@@ -1909,6 +1909,26 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 indexList.Add(exp.UIndex);
             }
 
+            // IMPORTS TOO
+            foreach (ImportEntry imp in Pcc.Imports)
+            {
+                string key = imp.InstancedFullPath;
+                if (key.StartsWith(UnrealPackageFile.TrashPackageName))
+                    continue; //Do not report these as requiring re-indexing.
+                if (!duplicatesPackagePathIndexMapping.TryGetValue(key, out List<int> indexList))
+                {
+                    indexList = new List<int>();
+                    duplicatesPackagePathIndexMapping[key] = indexList;
+                }
+                else
+                {
+                    duplicates.Add(new EntryStringPair(imp,
+                        $"{imp.UIndex} {imp.InstancedFullPath} has duplicate index (index value {imp.indexValue})"));
+                }
+
+                indexList.Add(imp.UIndex);
+            }
+
             if (duplicates.Count > 0)
             {
                 string copy = "";
