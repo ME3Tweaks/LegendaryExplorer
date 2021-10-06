@@ -20,6 +20,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
     public class PropertiesBlockParser : StringParserBase
     {
         private readonly Stack<string> ExpressionScopes;
+        private readonly Stack<Class> SubObjectClasses;
         private readonly IMEPackage Pcc;
         private readonly bool IsStructDefaults;
         private readonly ObjectType Outer;
@@ -43,6 +44,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             IsStructDefaults = Outer is Struct;
             PropsBlock = propsBlock;
 
+            SubObjectClasses = new Stack<Class>();
             ExpressionScopes = new Stack<string>();
             ExpressionScopes.Push(Symbols.CurrentScopeName);
         }
@@ -52,15 +54,22 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             if (requireBrackets && Consume(TokenType.LeftBracket) == null) throw ParseError("Expected '{'!", CurrentPosition);
 
             var statements = new List<Statement>();
+            var subObjects = new List<Subobject>();
+            Symbols.PushScope("DefaultProperties");
             try
             {
-                Symbols.PushScope("DefaultProperties");
                 var current = ParseTopLevelStatement();
                 while (current != null)
                 {
+                    if (current is Subobject subObj)
+                    {
+                        subObjects.Add(subObj);
+                    }
                     statements.Add(current);
                     current = ParseTopLevelStatement();
                 }
+
+                ParseSubObjectBodys(subObjects);
             }
             finally
             {
@@ -79,13 +88,47 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 {
                     throw ParseError($"SubObjects are not allowed in {STRUCTDEFAULTPROPERTIES}!", CurrentPosition);
                 }
-                return ParseSubobject();
+                return ParseSubobjectDeclaration();
             }
 
             return ParseNonStructAssignment();
         }
+        private void ParseSubObjectBodys(List<Subobject> subObjects)
+        {
+            foreach(Subobject currentSubObj in subObjects)
+            {
+                var subSubObjects = new List<Subobject>();
+                var statements = currentSubObj.Statements;
+                var objectClass = currentSubObj.Class;
+                var objectName = currentSubObj.Name.Name;
+                ExpressionScopes.Push(objectClass.GetInheritanceString());
+                SubObjectClasses.Push(objectClass);
+                Symbols.PushScope(objectName);
+                Tokens = currentSubObj.Tokens;
+                try
+                {
+                    var current = ParseTopLevelStatement();
+                    while (current != null)
+                    {
+                        if (current is Subobject subObj)
+                        {
+                            subSubObjects.Add(subObj);
+                        }
+                        statements.Add(current);
+                        current = ParseTopLevelStatement();
+                    }
+                    ParseSubObjectBodys(subSubObjects);
+                }
+                finally
+                {
+                    Symbols.PopScope();
+                    ExpressionScopes.Pop();
+                    SubObjectClasses.Pop();
+                }
+            }
+        }
 
-        private Subobject ParseSubobject()
+        private Subobject ParseSubobjectDeclaration()
         {
             var startPos = CurrentPosition;
             Tokens.Advance(2);// Begin Object
@@ -107,6 +150,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 throw ParseError($"{classNameToken} is not the name of a class!", classNameToken);
             }
 
+            if (objectClass.OuterClass is Class outerClass && SubObjectClasses.Any() && !SubObjectClasses.Peek().SameAsOrSubClassOf(outerClass))
+            {
+                TypeError($"A '{objectClass.Name}' must be declared within a '{outerClass.Name}', not a '{SubObjectClasses.Peek().Name}'!", classNameToken);
+            }
 
             if (!Matches("Name") || !Matches(TokenType.Assign))
             {
@@ -120,58 +167,42 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
             string objectName = nameToken.Value;
 
-            var statements = new List<Statement>();
-
-            ExpressionScopes.Push(objectClass.GetInheritanceString());
-            Symbols.PushScope(objectName);
-            try
+            var bodyStartPos = CurrentToken.StartPos;
+            int nestedLevel = 1;
+            while (true)
             {
-                while (true)
+                if (CurrentTokenType == TokenType.EOF)
                 {
-                    Statement current;
-                    if (CurrentIs("BEGIN") && NextIs("Object"))
-                    {
-                        current = ParseSubobject();
-                    }
-                    else if (CurrentIs("END") && NextIs("Object"))
-                    {
-                        Symbols.PopScope();
-                        Tokens.Advance(2); // END Object
-                        var subObj = new Subobject(new VariableDeclaration(objectClass, default, objectName), objectClass, statements, startPos, PrevToken.EndPos);
-                        if (!Symbols.TryAddSymbol(objectName, subObj))
-                        {
-                            throw ParseError($"'{objectName}' has already been defined in this scope!");
-                        }
-
-                        return subObj;
-                    }
-                    else
-                    {
-                        current = ParseNonStructAssignment();
-                    }
-
-                    if (current is null)
-                    {
-                        throw ParseError("Subobject declarations must be closed with 'End Object' !");
-                    }
-
-                    statements.Add(current);
+                    throw ParseError("SubObject declaration has no end!", startPos);
                 }
+                if (CurrentIs("BEGIN") && NextIs("Object"))
+                    nestedLevel++;
+                else if (CurrentIs("END") && NextIs("Object"))
+                    nestedLevel--;
+                if (nestedLevel > 0)
+                {
+                    Tokens.Advance();
+                    continue;
+                }
+                break;
             }
-            catch
+            var bodyEndPos = PrevToken.EndPos;
+            Tokens.Advance(2); // END Object
+
+            var subObj = new Subobject(new VariableDeclaration(objectClass, default, objectName), objectClass, new List<Statement>(), startPos, PrevToken.EndPos)
             {
-                Symbols.PopScope();
-                throw;
-            }
-            finally
+                Tokens = new TokenStream<string>(() => bodyEndPos > bodyStartPos ? Tokens.GetTokensInRange(bodyStartPos, bodyEndPos).ToList() : new List<Token<string>>())
+            };
+            if (!Symbols.TryAddSymbol(objectName, subObj))
             {
-                ExpressionScopes.Pop();
+                throw ParseError($"'{objectName}' has already been defined in this scope!");
             }
+            return subObj;
         }
 
         private AssignStatement ParseNonStructAssignment()
         {
-            if (CurrentIs(TokenType.RightBracket))
+            if (CurrentIs(TokenType.RightBracket, TokenType.EOF))
             {
                 return null;
             }
@@ -189,7 +220,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         {
             if (Consume(TokenType.Word) is Token<string> propName)
             {
-                var target = ParsePropName(propName, inStruct);
+                SymbolReference target = ParsePropName(propName, inStruct);
                 VariableType targetType = target.ResolveType();
                 if (Matches(TokenType.LeftSqrBracket))
                 {
@@ -384,6 +415,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         VariableType valueClass;
                         if (literal is ObjectLiteral objectLiteral)
                         {
+                            if (Pcc.FindEntry(objectLiteral.Name.Value) is not IEntry)
+                            {
+                                TypeError($"Could not find '{objectLiteral.Name.Value}' in this file!");
+                            }
                             valueClass = objectLiteral.Class;
                         }
                         else if (literal is SymbolReference {Node: Subobject {Class: Class subObjClass}})
@@ -397,7 +432,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         }
 
                         if (valueClass is not (Class or ClassType)
-                            || valueClass is Class literalClass && !literalClass.SameAsOrSubClassOf(targetClass.Name)
+                            || valueClass is Class literalClass && !literalClass.SameAsOrSubClassOf(targetClass)
                             || valueClass is ClassType && targetClass.Name is not ("Class" or "Object"))
                         {
                             TypeError($"Expected an object of class {targetClass.Name} or a subclass!", literal);
@@ -453,6 +488,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         if (literal is not SymbolReference {Node: EnumValue enumVal})
                         {
                             var prevToken = PrevToken;
+                            //this handles the case where a property has the same name as the Enumeration, and reparses it as an enumvalue
                             if (Symbols.TryGetType(prevToken.Value, out Enumeration enum2) && enum2 == enumeration 
                                 && Matches(TokenType.Dot) && Consume(TokenType.Word) is Token<string> enumValueToken)
                             {
@@ -556,6 +592,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 //TODO: better error message
                 TypeError($"{specificScope} has no member named '{token.Value}'!", token);
                 symbol = new VariableType("ERROR");
+            }
+
+            if (!inStruct && token.Value.CaseInsensitiveEquals("Name") || token.Value.CaseInsensitiveEquals("ObjectArchetype "))
+            {
+                TypeError($"Cannot set '{token.Value}' property!", token);
             }
 
             return NewSymbolReference(symbol, token, false);

@@ -692,7 +692,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             pewpf.BusyText = "Scanning";
             Task.Run(() =>
             {
-                foreach (MEGame game in new[] { /*MEGame.LE2, MEGame.LE3,*/ MEGame.LE1, MEGame.ME2, MEGame.ME3, MEGame.ME1})
+                foreach (MEGame game in new[] { MEGame.LE3, MEGame.LE2, MEGame.LE1, MEGame.ME2, MEGame.ME3, MEGame.ME1})
                 {
                     //preload base files for faster scanning
                     using DisposableCollection<IMEPackage> baseFiles = MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(game)
@@ -716,10 +716,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         //RecompileAllStates(filePath);
                         RecompileAllDefaults(filePath);
                     }
-                    if (interestingExports.Any())
-                    {
-                        break;
-                    }
+                    //if (interestingExports.Any())
+                    //{
+                    //    break;
+                    //}
                 }
             }).ContinueWithOnUIThread(prevTask =>
             {
@@ -1030,6 +1030,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     foreach (ExportEntry exp in pcc.Exports.Where(exp => exp.ClassName == "Function"))
                     {
+                        string instancedFullPath = exp.InstancedFullPath;
+                        if (foundClasses.Contains(instancedFullPath))
+                        {
+                            continue;
+                        }
+
+                        foundClasses.Add(instancedFullPath);
                         try
                         {
                             //var originalData = exp.Data;

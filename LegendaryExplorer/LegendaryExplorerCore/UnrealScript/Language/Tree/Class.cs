@@ -27,8 +27,13 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public bool IsInterface => Flags.Has(UnrealFlags.EClassFlags.Interface);
 
+        public bool IsComponent => SameAsOrSubClassOf("Component");
+
         public bool IsNative => Flags.Has(UnrealFlags.EClassFlags.Native);
 
+        //Sometimes, a class Export will have its Default__ object as an import, and no children.
+        //So the actual definition is in another file, but instead of being included as an import, it's a strange partial definition.
+        //In that case, we can;t do anything with it, so this is set to false.
         public bool IsFullyDefined = true;
 
         public Class(string name, VariableType parent, VariableType outer, UnrealFlags.EClassFlags flags,
@@ -64,6 +69,8 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         }
 
         #region Helpers
+
+        public bool SameAsOrSubClassOf(Class c) => SameAsOrSubClassOf(c.Name);
 
         public bool SameAsOrSubClassOf(string name)
         {

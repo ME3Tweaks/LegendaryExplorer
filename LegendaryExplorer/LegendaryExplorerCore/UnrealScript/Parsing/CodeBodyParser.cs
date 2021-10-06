@@ -1580,7 +1580,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         nameLiteral = new NameLiteral("");
                     }
 
-                    if (!(s.VariableDeclarations.FirstOrDefault(varDecl => varDecl.Name.CaseInsensitiveEquals(nameLiteral.Value)) is VariableDeclaration variableDeclaration))
+                    if (s.VariableDeclarations.FirstOrDefault(varDecl => varDecl.Name.CaseInsensitiveEquals(nameLiteral.Value)) is not VariableDeclaration variableDeclaration)
                     {
                         ParseError($"Struct '{s.Name}' does not have a member named '{nameLiteral.Value}'!", memberNameArg);
                         variableDeclaration = null;
@@ -1841,6 +1841,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                                 TypeError("Argument given to an out parameter must be an lvalue!", currentArg);
                             }
 
+                            if (currentArg is ArraySymbolRef {IsDynamic: true} || currentArg is ConditionalExpression cndExp && (cndExp.TrueExpression is ArraySymbolRef { IsDynamic: true } || cndExp.FalseExpression is ArraySymbolRef { IsDynamic: true}))
+                            {
+                                TypeError("Argument given to an out parameter cannot be a dynamic array element!", currentArg);
+                            }
+
                             VariableType parmType = p.VarType;
                             if (func.Flags.Has(EFunctionFlags.Iterator) && arguments.Count > 0 && arguments[0]?.ResolveType() is ClassType cType &&
                                 parmType is Class baseClass && func.Parameters[0].VarType is ClassType originalClassType && baseClass.SameAsOrSubClassOf(originalClassType.ClassLimiter.Name))
@@ -1849,7 +1854,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                             }
                             if (!(parmType is Enumeration && currentArg is IntegerLiteral) && !NodeUtils.TypeEqual(parmType, argType))
                             {
-                                if (parmType is DynamicArrayType {ElementType: Class classA} && argType is DynamicArrayType {ElementType: Class classB} && classA.SameAsOrSubClassOf(classB.Name))
+                                if (parmType is DynamicArrayType {ElementType: Class classA} && argType is DynamicArrayType {ElementType: Class classB} && classA.SameAsOrSubClassOf(classB))
                                 {
                                     Log.LogWarning($"Array types mismatch, but '{classA.Name}' is a subclass of '{classB.Name}' so this might work. Google 'Array Covariance' for why this is dangerous.", currentArg.StartPos, currentArg.EndPos);
                                 }
@@ -1908,7 +1913,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     Expression valueArg = CompositeRef() ?? throw ParseError("Expected argument to dynamic array iterator!", CurrentPosition);
                     if (!NodeUtils.TypeEqual(valueArg.ResolveType(), dynArrType.ElementType) && (Game.IsGame3() || 
                         //documentation says this shouldn't be allowed, but bioware code does this in ME2
-                        valueArg.ResolveType() is Class argClass && dynArrType.ElementType is Class dynArrClass && !dynArrClass.SameAsOrSubClassOf(argClass.Name)))
+                        valueArg.ResolveType() is Class argClass && dynArrType.ElementType is Class dynArrClass && !dynArrClass.SameAsOrSubClassOf(argClass)))
                     {
                         string elementType = dynArrType.ElementType.FullTypeName();
                         TypeError($"Iterator variable for an '{ARRAY}<{elementType}>' must be of type '{elementType}'", expr);
@@ -2213,7 +2218,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     className.AssociatedNode = super;
                     superSpecifier = super;
                     superClass = super;
-                    if (!Self.SameAsOrSubClassOf(superClass.Name))
+                    if (!Self.SameAsOrSubClassOf(superClass))
                     {
                         TypeError($"'{superClass.Name}' is not a superclass of '{Self.Name}'!", className);
                     }
@@ -2258,7 +2263,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             while (state != null)
             {
                 var stateClass = (Class)state.Outer;
-                if (stateClass != superClass && stateClass.SameAsOrSubClassOf(superClass.Name))
+                if (stateClass != superClass && stateClass.SameAsOrSubClassOf(superClass))
                 {
                     //Walk up the state inheritance chain until we get to one that is in the specified superclass (or an ancestor)
                     state = state.Parent;
@@ -2388,7 +2393,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
 
                 var templateType = template.ResolveType();
-                if (templateType is not Class templateClass || !newClass.SameAsOrSubClassOf(templateClass.Name))
+                if (templateType is not Class templateClass || !newClass.SameAsOrSubClassOf(templateClass))
                 {
                     TypeError($"Template argument for a '{NEW}' expression of type '{newClass.Name}' must be an object of that class or a parent class!");
                 }
@@ -2496,7 +2501,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 //dynamic cast
                 bool isInterfaceCast = destClass.IsInterface || srcClass.IsInterface;
-                if (!srcClass.SameAsOrSubClassOf(destClass.Name) && !destClass.SameAsOrSubClassOf(srcClass.Name) && !isInterfaceCast)
+                if (!srcClass.SameAsOrSubClassOf(destClass) && !destClass.SameAsOrSubClassOf(srcClass) && !isInterfaceCast)
                 {
                     TypeError($"Cannot cast between unrelated classes '{exprType.Name}' and '{destType?.Name}'!", castToken.StartPos, CurrentPosition);
                 }

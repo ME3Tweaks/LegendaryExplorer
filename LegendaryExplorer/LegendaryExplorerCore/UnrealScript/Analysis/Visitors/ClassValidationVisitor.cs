@@ -129,7 +129,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 {
                     if (node.Name != "Object")
                     {
-                        if (((Class)node.Parent).SameAsOrSubClassOf(node.Name)) // TODO: not needed due to no forward declarations?
+                        if (((Class)node.Parent).SameAsOrSubClassOf(node)) // TODO: not needed due to no forward declarations?
                         {
                             return Error($"Extending from '{node.Parent.Name}' causes circular extension!", node.Parent.StartPos, node.Parent.EndPos);
                         }
@@ -279,7 +279,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 switch ((node.VarType as StaticArrayType)?.ElementType ?? node.VarType)
                 {
                     case DynamicArrayType {ElementType: VariableType elType} dynArrType:
-                        if (elType is Class elClass && elClass.SameAsOrSubClassOf("Component"))
+                        if (elType is Class {IsComponent: true})
                         {
                             dynArrType.ElementPropertyFlags |= EPropertyFlags.Component;
                             node.Flags |= EPropertyFlags.Component;
@@ -291,7 +291,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                             dynArrType.ElementPropertyFlags |= EPropertyFlags.NeedCtorLink;
                         }
                         break;
-                    case Class c when c.SameAsOrSubClassOf("Component"):
+                    case Class {IsComponent: true}:
                         node.Flags |= EPropertyFlags.Component;
                         break;
                     case Struct strct when !node.Flags.Has(EPropertyFlags.Native) && StructNeedsCtorLink(strct, new Stack<Struct> { strct }):
