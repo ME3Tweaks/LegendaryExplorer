@@ -34,6 +34,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
     /// </summary>
     public partial class LiveLevelEditorWindow : TrackingNotifyPropertyChangedWindowBase
     {
+        #region Properties and Startup
+
         private static readonly Dictionary<MEGame, LiveLevelEditorWindow> Instances = new();
         public static LiveLevelEditorWindow Instance(MEGame game)
         {
@@ -120,9 +122,12 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             DisposeCamPath();
             DataContext = null;
             GameTarget.GameReceiveMessage -= GameControllerOnRecieveMessage;
-            Instances[Game] = null;
+            Instances.Remove(Game);
         }
 
+        #endregion
+
+        #region Commands
         public Requirement.RequirementCommand GameInstalledRequirementCommand { get; set; }
         public Requirement.RequirementCommand ASILoaderInstalledRequirementCommand { get; set; }
         public Requirement.RequirementCommand InteropASIInstalledRequirementCommand { get; set; }
@@ -217,6 +222,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                 CommandManager.InvalidateRequerySuggested();
             });
         }
+        #endregion
 
         private void GameControllerOnRecieveMessage(string msg)
         {
@@ -459,28 +465,6 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             }
         }
 
-        private enum FloatVarIndexes
-        {
-            XPos = 1,
-            YPos = 2,
-            ZPos = 3,
-            XRotComponent = 4,
-            YRotComponent = 5,
-            ZRotComponent = 6,
-        }
-
-        private enum BoolVarIndexes
-        {
-        }
-
-        private enum IntVarIndexes
-        {
-            ActorArrayIndex = 1,
-            ME3Pitch = 2,
-            ME3Yaw = 3,
-            ME3Roll = 4,
-        }
-
         #region Position/Rotation
         private static readonly Vector3 defaultPosition = Vector3.Zero;
         private readonly Rotator defaultRotation = new(0,0,0);
@@ -574,6 +558,28 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         {
             get => _rotIncrement;
             set => SetProperty(ref _rotIncrement, value);
+        }
+
+        private enum FloatVarIndexes
+        {
+            XPos = 1,
+            YPos = 2,
+            ZPos = 3,
+            XRotComponent = 4,
+            YRotComponent = 5,
+            ZRotComponent = 6,
+        }
+
+        private enum BoolVarIndexes
+        {
+        }
+
+        private enum IntVarIndexes
+        {
+            ActorArrayIndex = 1,
+            ME3Pitch = 2,
+            ME3Yaw = 3,
+            ME3Roll = 4,
         }
 
         private bool noUpdate;
