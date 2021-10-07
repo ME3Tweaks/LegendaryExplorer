@@ -331,9 +331,10 @@ namespace LegendaryExplorerCore.Packages
             if (importEntry.FileRef != this)
                 throw new Exception("you cannot add a new import entry from another package file, it has invalid references!");
 
-            // Crossgen WIP
-            if (importEntry.ObjectName.Name.Contains("geth_jugg"))
-                Debugger.Break();
+            // If you need to catch a certain import being added
+            // uncomment the following
+            //if (importEntry.InstancedFullPath == "BIOC_Materials")
+            //    Debugger.Break();
 
             importEntry.Index = imports.Count;
             importEntry.PropertyChanged += importChanged;
