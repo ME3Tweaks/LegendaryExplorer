@@ -376,10 +376,14 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             VTestExperiment.VTest(GetPEWindow());
         }
-
+        
         private async void MakeVTestDonor_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ConvertMaterialToVtestDonor(GetPEWindow());
+        }
+        private void MakeLE1MakoMap_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.MakeMakoLevel(GetPEWindow());
         }
 
         private void ImportUDKTerrain_Click(object sender, RoutedEventArgs e)
@@ -1260,5 +1264,5 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
             // PLEASE MOVE YOUR EXPERIMENT HANDLER INTO YOUR SECTION ABOVE
         }
-    }
+        }
 }
