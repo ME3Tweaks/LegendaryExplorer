@@ -339,6 +339,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 int dataOffset = CurrentLoadedExport.DataOffset;
                 var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
+
+                if (CurrentLoadedExport.Game == MEGame.UDK)
+                {
+                    subnodes.Add(new BinInterpNode(bin.Position, $"UDK Unknown: {bin.ReadInt32()}"));
+                }
+
+
                 if (CurrentLoadedExport.Game.IsLEGame())
                 {
                     subnodes.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformLE)bin.ReadByte()}")
@@ -349,6 +356,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     subnodes.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformOT)bin.ReadByte()}")
                     { Length = 1 });
                 }
+
+
 
                 int mapCount = Pcc.Game is MEGame.ME3 || Pcc.Game.IsLEGame() ? 2 : 1;
                 var nameMappings = new[] { "CompressedCacheMap", "ShaderTypeCRCMap" }; // hack...
@@ -361,11 +370,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                     for (int i = 0; i < vertexMapCount; i++)
                     {
+                        //if (i > 1000)
+                        //    continue;
                         NameReference shaderName = bin.ReadNameReference(Pcc);
                         int shaderCRC = bin.ReadInt32();
                         mappingNode.Items.Add(new BinInterpNode(bin.Position - 12, $"CRC:{shaderCRC:X8} {shaderName.Instanced}") { Length = 12 });
                     }
                 }
+
 
                 if (Pcc.Game == MEGame.ME1)
                 {
@@ -391,16 +403,38 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     int shaderEndOffset = bin.ReadInt32();
                     shaderNode.Items.Add(new BinInterpNode(bin.Position - 4, $"Shader End Offset: {shaderEndOffset}") { Length = 4 });
 
-                    if (CurrentLoadedExport.Game.IsLEGame())
+                    if (CurrentLoadedExport.Game == MEGame.UDK)
                     {
-                        shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformLE)bin.ReadByte()}") { Length = 1 });
+                        // UDK 2015 SM3 cache has what appears to be a count followed by...
+                        // two pairs of ushorts?
+
+                        int udkCount = bin.ReadInt32();
+                        var udkCountNode = new BinInterpNode(bin.Position - 4, $"Some UDK count: {udkCount}");
+                        shaderNode.Items.Add(udkCountNode);
+
+                        for (int j = 0; j < udkCount; j++)
+                        {
+                            udkCountNode.Items.Add(MakeUInt16Node(bin, $"UDK Count[{j}]"));
+                        }
+
+                        shaderNode.Items.Add(MakeUInt16Node(bin, $"UDK Unknown Post Count Thing"));
                     }
                     else
                     {
-                        shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformOT)bin.ReadByte()}") { Length = 1 });
-                    }
+                        if (CurrentLoadedExport.Game.IsLEGame())
+                        {
+                            shaderNode.Items.Add(new BinInterpNode(bin.Position,
+                                $"Platform: {(EShaderPlatformLE) bin.ReadByte()}") {Length = 1});
+                        }
+                        else
+                        {
+                            shaderNode.Items.Add(new BinInterpNode(bin.Position,
+                                $"Platform: {(EShaderPlatformOT) bin.ReadByte()}") {Length = 1});
+                        }
 
-                    shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Frequency: {(EShaderFrequency)bin.ReadByte()}") { Length = 1 });
+                        shaderNode.Items.Add(new BinInterpNode(bin.Position,
+                            $"Frequency: {(EShaderFrequency) bin.ReadByte()}") {Length = 1});
+                    }
 
                     int shaderSize = bin.ReadInt32();
                     shaderNode.Items.Add(new BinInterpNode(bin.Position - 4, $"Shader File Size: {shaderSize}") { Length = 4 });
@@ -917,6 +951,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             PS3 = 1,
             XBOXDirect3D = 2,
             PCDirect3D_ShaderModel4 = 3,
+            PCDirect3D_ShaderModel5 = 4, // UDK?
             WiiU = 5 // unless its LE then it's SM5!
         }
 
@@ -7032,7 +7067,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 return new BinInterpNode(bin.Position, $"{name}: {bin.ReadFloat()}", NodeType.StructLeafFloat) { Length = 4 };
             }
             return null;
-        } 
+        }
 
         private static BinInterpNode MakeUInt32Node(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadUInt32()}") { Length = 4 };
 

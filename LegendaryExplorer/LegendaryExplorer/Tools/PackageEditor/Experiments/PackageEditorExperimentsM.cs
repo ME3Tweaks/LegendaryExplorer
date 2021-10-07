@@ -2092,6 +2092,72 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void MScanner(PackageEditorWindow pe)
         {
+            var infile = @"D:\Steam\steamapps\common\Mass Effect Legendary Edition\Game\ME1\BioGame\CookedPCConsole\GlobalShaderCache-PC-D3D-SM5.bin"; ;
+            var stream = new MemoryStream(File.ReadAllBytes(infile));
+            Debug.WriteLine($"Magic: {stream.ReadStringASCII(4)}");
+            Debug.WriteLine($"Unreal version: {stream.ReadInt32()}");
+            Debug.WriteLine($"Licensee version: {stream.ReadInt32()}");
+
+            var shaderModelNum = stream.ReadByte();
+            Debug.WriteLine($"Shader model version?: {shaderModelNum}");
+
+
+            // CRC MAP
+            int crcMapCount = stream.ReadInt32();
+            Debug.WriteLine($"CRC MAP COUNT: {crcMapCount}");
+            for (int i = 0; i < crcMapCount; i++)
+            {
+                Debug.WriteLine($"String[{i}]: {stream.ReadUnrealString()}");
+                Debug.WriteLine($"CRC[{i}]?: 0x{(stream.ReadInt32()):X8}");
+            }
+
+            // Some Zero
+            Debug.WriteLine($"Some zero: {stream.ReadInt32()}");
+
+            // Shaders
+            var shaderCount = stream.ReadInt32();
+            Debug.WriteLine($"Shader file count: {shaderCount}");
+            for (int i = 0; i < shaderCount; i++)
+            {
+                if (i == 348)
+                    Debug.WriteLine("ok");
+                Debug.WriteLine($"Shader name[{i}]: {stream.ReadUnrealString()}");
+                Debug.WriteLine($"Shader guid[{i}]: {stream.ReadGuid()}");
+                var nextShaderStart = stream.ReadInt32();
+                Debug.WriteLine($"Shader next offset[{i}]: 0x{nextShaderStart:X8}");
+                if (i == 348)
+                {
+                    Debug.WriteLine($"SPECIAL UNKNOWN: {stream.ReadUInt32()}");
+                    Debug.WriteLine($"SPECIAL UNKNOWN: {stream.ReadUInt16()}");
+                } else if (i == 349)
+                {
+                    // No idea what this is
+                    Debug.WriteLine("UNKNOWN STUFF BLOCK");
+                    stream.Skip(0x30);
+                }
+
+                Debug.WriteLine($"Shader Platform ID[{i}]: 0x{stream.ReadByte():X2}");
+                Debug.WriteLine($"Shader Frequency[{i}]: 0x{stream.ReadByte():X2}");
+                var shaderFileSize = stream.ReadInt32();
+                Debug.WriteLine($"Shader file[{i}]: 0x{stream.Position:X8} to 0x{nextShaderStart:X8} ({shaderFileSize} bytes)");
+                stream.Skip(shaderFileSize);
+                Debug.WriteLine($"Shader parameter map crc[{i}]: {stream.ReadInt32():X8}");
+                Debug.WriteLine($"Shader guid clone[{i}]: {stream.ReadGuid()}");
+                Debug.WriteLine($"Shader name clone[{i}]: {stream.ReadUnrealString()}");
+
+                stream.Position = nextShaderStart;
+            }
+
+            var countAgain = stream.ReadInt32();
+            for (int i = 0; i < countAgain; i++)
+            {
+                Debug.WriteLine($"Shader name/guid[{i}]: {stream.ReadUnrealString()} {stream.ReadGuid()}");
+            }
+
+            Debug.WriteLine($"Position: 0x{(stream.Position):X8}");
+
+
+            return;
             //using var me1TerrainP = MEPackageHandler.OpenMEPackage(@"D:\Origin Games\Mass Effect\DLC\DLC_Vegas\CookedPC\Maps\PRC2\BIOA_PRC2_CCLava.SFM");
             //using var destTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(PAEMPaths.VTest_FinalDestDir, "BIOA_PRC2.pcc"));
 
