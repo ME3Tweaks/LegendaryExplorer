@@ -542,7 +542,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             var csProps = GlobalUnrealObjectInfo.getDefaultStructValue(MEGame.LE1, "CoverSlot", false, vTestOptions.cache);
 
             // 2. Draw the rest of the fucking owl
-            foreach (var me1Prop in me1CS.Properties)
+            foreach (var me1Prop in me1CS.Properties.ToList())
             {
                 switch (me1Prop)
                 {
@@ -550,25 +550,51 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     case FloatProperty:
                     case BoolProperty:
                     case EnumProperty:
-                        TryUpdateProp(me1Prop, csProps);
+                        if (TryUpdateProp(me1Prop, csProps))
+                        {
+                            me1CS.Properties.Remove(me1Prop);
+                        }
                         break;
+                    case ObjectProperty op:
+                        if (op.Value == 0)
+                            me1CS.Properties.Remove(me1Prop); // This doesn't have a value
+                        break;
+                    case StructProperty sp:
+                    {
+                        if (sp.Name == "LocationOffset" || sp.Name == "RotationOffset")
+                        {
+                            if (!sp.IsImmutable)
+                                Debugger.Break();
+                            TryUpdateProp(me1Prop, csProps);
+                            me1CS.Properties.Remove(sp);
+                        }
+                        break;
+                    }
+                }
+            }
 
+            if (me1CS.Properties.Count > 0)
+            {
+                // uncomment to debug these
+                //Debug.WriteLine("The following properties were not translated:");
+                foreach (var mp in me1CS.Properties)
+                {
+                    //Debug.WriteLine(mp.Name );
                 }
             }
 
 
             return new StructProperty("CoverSlot", csProps, isImmutable: true);
 
-            void TryUpdateProp(Property p, PropertyCollection destCollection)
+            bool TryUpdateProp(Property p, PropertyCollection destCollection)
             {
                 if (destCollection.ContainsNamedProp(p.Name))
                 {
-                    destCollection.AddOrReplaceProp(p);
+                    //destCollection.AddOrReplaceProp(p);
+                    return true;
                 }
-                else
-                {
-                    Debug.WriteLine($"Target doesn't have property named {p.Name}");
-                }
+                Debug.WriteLine($"Target doesn't have property named {p.Name}");
+                return false;
             }
         }
 
@@ -1114,6 +1140,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         private static void PostPortingCorrections(IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
         {
             // Corrections to run AFTER porting is done
+            //ReinstateCoverSlots(me1File, le1File, vTestOptions);
             CorrectTextures(le1File);
             CorrectPrefabSequenceClass(le1File);
             CorrectSequences(le1File, vTestOptions);
@@ -1128,6 +1155,29 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
 
             //CorrectTriggerStreamsMaybe(me1File, le1File);
+        }
+
+        private static void ReinstateCoverSlots(IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
+        {
+            var coverLinks = le1File.Exports.Where(x => x.ClassName == "CoverLink");
+            foreach (var le1CoverLink in coverLinks)
+            {
+                var me1CoverLink = me1File.FindExport(le1CoverLink.InstancedFullPath);
+                var me1Slots = me1CoverLink.GetProperty<ArrayProperty<StructProperty>>("Slots");
+                if (me1Slots != null && me1Slots.Any())
+                {
+                    var le1Slots = new ArrayProperty<StructProperty>("Slots");
+
+                    foreach (var slot in me1Slots)
+                    {
+                        le1Slots.Add(ConvertCoverSlot(slot, vTestOptions));
+                    }
+
+                    le1CoverLink.WriteProperty(le1Slots);
+                    le1File.Save();
+                }
+
+            }
         }
 
         private static void PortInCorrectedTerrain(IMEPackage le1File, string vTestIFP, string materialsFile, VTestOptions vTestOptions)
@@ -1397,8 +1447,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             }
 
-
-
             // Cross level actors
             foreach (var exportIdx in me1L.CrossLevelActors)
             {
@@ -1410,7 +1458,17 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
 
             // Regenerate the 'End' struct cause it will have ported wrong
-            #region ReachSpecs
+            CorrectReachSpecs(me1File, le1File);
+            le1PL.WriteBinary(le1L);
+        }
+
+        /// <summary>
+        /// Corrects UDK/ME1/ME2 reachspec system to ME3 / LE
+        /// </summary>
+        /// <param name="me1File"></param>
+        /// <param name="le1File"></param>
+        public static void CorrectReachSpecs(IMEPackage me1File, IMEPackage le1File)
+        {
 
             // Have to do LE1 -> ME1 for references as not all reachspecs may have been ported
             foreach (var le1Exp in le1File.Exports.Where(x => x.IsA("ReachSpec")))
@@ -1427,6 +1485,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     newEnd.Add(me1End.GetProp<StructProperty>("Guid"));
 
                     var me1EndEntry = me1End.GetProp<ObjectProperty>("Nav");
+                    me1EndEntry ??= me1End.GetProp<ObjectProperty>("Actor"); // UDK uses 'Actor' but it's in wrong position
                     if (me1EndEntry != null)
                     {
                         newEnd.Add(new ObjectProperty(le1File.FindExport(me1File.GetUExport(me1EndEntry.Value).InstancedFullPath).UIndex, "Actor"));
@@ -1439,16 +1498,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     StructProperty nes = new StructProperty("ActorReference", newEnd, "End", true);
                     le1Props.AddOrReplaceProp(nes);
                     le1Exp.WriteProperties(le1Props);
+                    le1Exp.WriteBinary(new byte[0]); // When porting from UDK there's some binary data. This removes it
 
                     // Test properties
                     le1Exp.GetProperties();
                 }
             }
-            #endregion
-
-            le1PL.WriteBinary(le1L);
         }
-        #endregion
+
+#endregion
 
         #region QA Methods
         public static void VTest_Check()
