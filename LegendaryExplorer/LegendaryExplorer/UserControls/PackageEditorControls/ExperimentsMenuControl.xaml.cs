@@ -267,14 +267,17 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                 pew.RestoreAndBringToFront();
                 MessageBox.Show(GetPEWindow(), $"Done. Took {sw.Elapsed.TotalSeconds} seconds");
             });
-
-
-
-
         }
         private void ObjectInfosSearch_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.SearchObjectInfos(GetPEWindow());
+        }
+
+
+        private void ReInventoryCustomClasses_Click(object sender, RoutedEventArgs e)
+        {
+            // Todo: Move this into a 'general' class
+            PackageEditorExperimentsM.RebuildInternalResourceClassInformations(GetPEWindow());
         }
 
 
@@ -1264,5 +1267,5 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
             // PLEASE MOVE YOUR EXPERIMENT HANDLER INTO YOUR SECTION ABOVE
         }
-        }
+    }
 }

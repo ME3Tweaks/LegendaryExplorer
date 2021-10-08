@@ -12,6 +12,7 @@ using LegendaryExplorer.Tools.PathfindingEditor;
 using LegendaryExplorer.Tools.Sequence_Editor.Experiments;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Kismet;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
@@ -255,7 +256,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     {
                         if (Path.GetFileNameWithoutExtension(file) == "VTestHelper")
                         {
-                            // Load the VTestHelper
+                            // Load the VTestHelper, don't index it
                             vTestOptions.vTestHelperPackage = MEPackageHandler.OpenMEPackage(file, forceLoadFromDisk: true); // Do not put into cache
                         }
                         else
@@ -560,16 +561,16 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             me1CS.Properties.Remove(me1Prop); // This doesn't have a value
                         break;
                     case StructProperty sp:
-                    {
-                        if (sp.Name == "LocationOffset" || sp.Name == "RotationOffset")
                         {
-                            if (!sp.IsImmutable)
-                                Debugger.Break();
-                            TryUpdateProp(me1Prop, csProps);
-                            me1CS.Properties.Remove(sp);
+                            if (sp.Name == "LocationOffset" || sp.Name == "RotationOffset")
+                            {
+                                if (!sp.IsImmutable)
+                                    Debugger.Break();
+                                TryUpdateProp(me1Prop, csProps);
+                                me1CS.Properties.Remove(sp);
+                            }
+                            break;
                         }
-                        break;
-                    }
                 }
             }
 
@@ -651,6 +652,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             using var package = MEPackageHandler.OpenMEPackage(destPackagePath);
             using var sourcePackage = MEPackageHandler.OpenMEPackage(sourceFile);
 
+            PrePortingCorrections(sourcePackage);
+            
             var bcBaseIdx = sourcePackage.findName("BIOC_Base");
             sourcePackage.replaceName(bcBaseIdx, "SFXGame");
 
@@ -779,6 +782,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     // Remove streaminglevels that don't do anything
                     //PreCorrectBioWorldInfoStreamingLevels(exp);
                 }
+                else if (exp.ClassName == "MaterialInstanceConstant")
+                {
+                    PreCorrectMaterialInstanceConstant(exp);
+                }
 
                 if (exp.IsA("Actor"))
                 {
@@ -787,6 +794,70 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     //exp.RemoveProperty("nextNavigationPoint"); // No bases
                 }
             }
+        }
+
+        // Terrible performance, but i don't care
+        private static byte[] StringToByteArray(string hex)
+        {
+            return Enumerable.Range(0, hex.Length)
+                .Where(x => x % 2 == 0)
+                .Select(x => Convert.ToByte(hex.Substring(x, 2), 16))
+                .ToArray();
+        }
+
+        private static Dictionary<Guid, Guid> expressionGuidMap = new()
+        {
+            { new Guid(StringToByteArray("AD2F8F9FB837D8499EF1FC9799289A3E")), new Guid(StringToByteArray("896318E56A762B4FAEA9AA29B4B968CD")) }, // Alpha_Map -> Texture (Scoreboard)
+            { new Guid(StringToByteArray("32144A9CDE189141BC421589B7EF3C0A")), new Guid(StringToByteArray("A1A3A72858C9DC45A10D3E9967BE4EE8")) }, // Character_Color -> ColorSelected (Scoreboard)
+        };
+
+        private static Dictionary<string, string> parameterNameMap = new()
+        {
+            { "Alpha_Map", "Texture" }, // PRC2 Scoreboard
+            { "Character_Color", "ColorSelected"} // PRC2 Scoreboard
+        };
+
+        private static void PreCorrectMaterialInstanceConstant(ExportEntry exp)
+        {
+            // Some parameters need updated to match new materials
+
+            // VECTORS
+            var vectorParams = exp.GetProperty<ArrayProperty<StructProperty>>("VectorParameterValues");
+            if (vectorParams != null)
+            {
+                foreach (var vp in vectorParams)
+                {
+                    var parameterName = vp.GetProp<NameProperty>("ParameterName").Value.Name;
+                    var expressionGuid = CommonStructs.GetGuid(vp.GetProp<StructProperty>("ExpressionGUID"));
+                    if (expressionGuidMap.TryGetValue(expressionGuid, out var newGuid) && parameterNameMap.TryGetValue(parameterName, out var newParameterName))
+                    {
+                        Debug.WriteLine($"Updating VP MIC {exp.InstancedFullPath}");
+                        vp.GetProp<NameProperty>("ParameterName").Value = newParameterName;
+                        vp.Properties.AddOrReplaceProp(CommonStructs.GuidProp(newGuid, "ExpressionGUID"));
+                    }
+                }
+                exp.WriteProperty(vectorParams);
+            }
+
+            // TEXTURES
+            var textureParams = exp.GetProperty<ArrayProperty<StructProperty>>("TextureParameterValues");
+            if (textureParams != null)
+            {
+                foreach (var tp in textureParams)
+                {
+                    var parameterName = tp.GetProp<NameProperty>("ParameterName").Value.Name;
+                    var expressionGuid = CommonStructs.GetGuid(tp.GetProp<StructProperty>("ExpressionGUID"));
+                    if (expressionGuidMap.TryGetValue(expressionGuid, out var newGuid) && parameterNameMap.TryGetValue(parameterName, out var newParameterName))
+                    {
+                        Debug.WriteLine($"Updating TP MIC {exp.InstancedFullPath}");
+                        tp.GetProp<NameProperty>("ParameterName").Value = newParameterName;
+                        tp.Properties.AddOrReplaceProp(CommonStructs.GuidProp(newGuid, "ExpressionGUID"));
+                    }
+                }
+                exp.WriteProperty(textureParams);
+            }
+
+
         }
 
         public static void ConvertME1TerrainComponent(ExportEntry exp)
@@ -1148,10 +1219,27 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             PostCorrectMaterialsToInstanceConstants(me1File, le1File, vTestOptions);
             //CorrectTerrainMaterials(le1File);
 
-            if (Path.GetFileNameWithoutExtension(le1File.FilePath).CaseInsensitiveEquals("BIOA_PRC2_CCLava"))
+
+            var fName = Path.GetFileNameWithoutExtension(le1File.FilePath);
+            // Port in the collision-corrected terrain
+            if (fName.CaseInsensitiveEquals("BIOA_PRC2_CCLava"))
             {
                 PortInCorrectedTerrain(le1File, "CCLava.Terrain_1", "BIOA_LAV60_00_LAY.pcc", vTestOptions);
             }
+            else if (fName.CaseInsensitiveEquals("BIOA_PRC2_CCSIM05_DSG"))
+            {
+                // Port in the custom sequence used for switching UIs
+                var seq = le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence.Play_Central_Scoreboard_Matinee");
+                var uiSeq = vTestOptions.vTestHelperPackage.FindExport("ScoreboardSequence.UISwitcherLogic");
+                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, uiSeq, le1File, seq, true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var newUiSeq);
+                KismetHelper.AddObjectToSequence(newUiSeq as ExportEntry, seq);
+                // link it up
+                var showCentralScoreboard = le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence.Play_Central_Scoreboard_Matinee.SeqEvent_RemoteEvent_0");
+                KismetHelper.CreateOutputLink(showCentralScoreboard, "Out", newUiSeq as ExportEntry);
+            }
+
+
+
             RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
 
             //CorrectTriggerStreamsMaybe(me1File, le1File);
@@ -1292,7 +1380,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             // or at least, it better be!
             // Slot 2 has to be blank in LE. In ME1 i guess it was a brush.
             level.Actors.Insert(1, new UIndex(0)); // This is stupid
-            //}
+                                                   //}
 
             pl.WriteBinary(level);
         }
@@ -1506,7 +1594,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
-#endregion
+        #endregion
 
         #region QA Methods
         public static void VTest_Check()

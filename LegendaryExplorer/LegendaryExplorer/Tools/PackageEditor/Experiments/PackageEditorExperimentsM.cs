@@ -1838,7 +1838,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     }
                 }
                 donorPackage.Save();
-                VTestExperiment.VTest(pe);
+
+                if (MessageBox.Show(pe, "Run VTest?", "", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
+                {
+                    VTestExperiment.VTest(pe);
+                }
             }
         }
 
@@ -1987,7 +1991,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 if (ci.properties.Any())
                 {
                     sb.AppendLine("\tproperties =");
-                    sb.AppendLine("\t{");
+                    sb.AppendLine("\t\t\t\t{"); // stupid intellisense
                     foreach (var prop in ci.properties)
                     {
                         var propInfoStr = $"new PropertyInfo(PropertyType.{prop.Value.Type.ToString()}";
@@ -2005,11 +2009,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                         propInfoStr += ")";
 
-                        sb.AppendLine(
-                            $"\t\tnew KeyValuePair<NameReference, PropertyInfo>(\"{prop.Key}\", {propInfoStr}),");
+                        sb.AppendLine($"\t\t\t\t\tnew KeyValuePair<NameReference, PropertyInfo>(\"{prop.Key}\", {propInfoStr}),");
                     }
 
-                    sb.AppendLine("\t}");
+                    sb.AppendLine("\t\t\t\t}"); // stupid intellisense
 
                 }
 
