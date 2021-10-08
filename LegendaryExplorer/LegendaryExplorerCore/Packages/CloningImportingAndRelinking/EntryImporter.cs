@@ -120,7 +120,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             // Is it correct to import children if we clone all dependencies? Isn't relink supposed to take care of this?
 
             // Crossgen Sept 30 2021: Disabled import children when doing clone all dependencies as not all children are dependendencies
-            if ((portingOption == PortingOption.CloneTreeAsChild || portingOption == PortingOption.MergeTreeChildren/* || portingOption == PortingOption.CloneAllDependencies*/)
+            // Crossgen Oct 8 2021: Re-enabled, but only for packages, as they won't have any direct references to children
+            if ((portingOption == PortingOption.CloneTreeAsChild || portingOption == PortingOption.MergeTreeChildren || (portingOption == PortingOption.CloneAllDependencies && sourceEntry.ClassName == "Package"))
              && sourcePcc.Tree.NumChildrenOf(sourceEntry) > 0)
             {
                 importChildrenOf(sourceEntry, newEntry);
@@ -277,7 +278,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         //                                                                PackageCache cache = null)
         //{
 
-            
+
         //}
 
         public static void ReindexExportEntriesWithSamePath(ExportEntry entry)
@@ -371,7 +372,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         {
                             var seIFP = sourceExport.InstancedFullPath;
                             var testExp = donorPackage.FindExport(seIFP);
-                            if (testExp.ClassName == sourceExport.ClassName || (sourceExport.ClassName == "BioSWF" && testExp.ClassName == "GFxMovieInfo"))
+                            if (testExp.ClassName == sourceExport.ClassName || (sourceExport.ClassName == "BioSWF" && testExp.ClassName == "GFxMovieInfo") || (sourceExport.ClassName == "Material" && testExp.ClassName == "MaterialInstanceConstant"))
                             {
                                 sourceExport = testExp;
                                 isCached = true;
@@ -379,6 +380,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                                 break;
                             }
 
+                            // CROSSGEN ONLY: We allow substitution of MaterialInstanceConstant for Material with donor system
+                            // as we need to be able to tune things
                             if (testExp.ClassName != sourceExport.ClassName)
                             {
                                 // have to manually try to find the export...
@@ -386,7 +389,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                                 if (properDonor == null)
                                 {
-                                    Debug.WriteLine($"CLASSES DIFFER FOR DONORS, CAN'T FIND SUITABLE REPLACEMENT: {sourceExport.ClassName} vs {testExp.ClassName} for {testExp.InstancedFullPath}");
+                                    if (sourceExport.ClassName != "Model" && sourceExport.ClassName != "Brush")
+                                        Debug.WriteLine($"CLASSES DIFFER FOR DONORS, CAN'T FIND SUITABLE REPLACEMENT: {sourceExport.ClassName} vs {testExp.ClassName} for {testExp.InstancedFullPath}");
                                 }
                                 else
                                 {
@@ -407,7 +411,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         if (rop.Cache.TryGetCachedPackage(dfp, true, out donorPackage))
                         {
                             var testExp = donorPackage.FindExport(sourceExport.InstancedFullPath);
-                            if (testExp.ClassName == sourceExport.ClassName || (sourceExport.ClassName == "BioSWF" && testExp.ClassName == "GFxMovieInfo")) // Use GFxMovieInfo Donors for BioSWF export
+                            if (testExp.ClassName == sourceExport.ClassName || (sourceExport.ClassName == "BioSWF" && testExp.ClassName == "GFxMovieInfo") || (sourceExport.ClassName == "Material" && testExp.ClassName == "MaterialInstanceConstant")) // Use GFxMovieInfo Donors for BioSWF export
                             {
                                 sourceExport = testExp;
                                 usingDonor = true;
@@ -419,7 +423,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                                 if (properDonor == null)
                                 {
-                                    Debug.WriteLine($"CLASSES DIFFER FOR DONORS, CAN'T FIND SUITABLE REPLACEMENT: {sourceExport.ClassName} vs {testExp.ClassName} for {testExp.InstancedFullPath}");
+                                    if (sourceExport.ClassName != "Model" && sourceExport.ClassName != "Brush")
+                                        Debug.WriteLine($"CLASSES DIFFER FOR DONORS, CAN'T FIND SUITABLE REPLACEMENT: {sourceExport.ClassName} vs {testExp.ClassName} for {testExp.InstancedFullPath}");
                                 }
                                 else
                                 {
@@ -702,7 +707,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
             parent ??= GetOrAddCrossImportOrPackage(string.Join('.', importParts[..^1]), sourcePcc, destinationPCC, rop);
 
-            var sourceEntry = sourcePcc.FindEntry(importFullNameInstanced); 
+            var sourceEntry = sourcePcc.FindEntry(importFullNameInstanced);
             if (sourceEntry is ImportEntry imp) // import not found
             {
                 // Code below forces Package objects to be imported as exports instead of imports. However if an object is an import (that works properly) the parent already has to exist upstream.
