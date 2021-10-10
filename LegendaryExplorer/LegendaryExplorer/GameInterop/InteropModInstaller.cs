@@ -17,6 +17,9 @@ using Newtonsoft.Json;
 
 namespace LegendaryExplorer.GameInterop
 {
+    /// <summary>
+    /// Installation handler for Interop DLC Mod. Can be subclassed to modify installation behavior
+    /// </summary>
     public class InteropModInstaller
     {
         protected readonly InteropTarget Target;

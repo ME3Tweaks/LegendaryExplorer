@@ -74,20 +74,33 @@ namespace LegendaryExplorer.GameInterop
             {
                 return false;
             }
-            // TODO: use a different method for LEbinkproxy detection, as that one may be getting updates (unlike the OT ASIs).
-            if (game.IsLEGame()) return true;
-
-            string dllDir = MEDirectories.GetExecutableFolderPath(game);
-            string binkw23Path = Path.Combine(dllDir, "binkw23.dll");
-            string binkw32Path = Path.Combine(dllDir, "binkw32.dll");
-            // const string me1binkw23MD5 = "d9e2a3b9303ca80560218af9f6eebaae";
-            // const string me1binkw32MD5 = "30660f25ab7f7435b9f3e1a08422411a";
 
             InteropTarget target = GameController.GetInteropTargetForGame(game);
+            string dllDir = MEDirectories.GetExecutableFolderPath(game);
+            if (game.IsOTGame())
+            {
+                string binkw23Path = Path.Combine(dllDir, "binkw23.dll");
+                string binkw32Path = Path.Combine(dllDir, "binkw32.dll");
+                // const string me1binkw23MD5 = "d9e2a3b9303ca80560218af9f6eebaae";
+                // const string me1binkw32MD5 = "30660f25ab7f7435b9f3e1a08422411a";
 
-            return File.Exists(binkw23Path) && File.Exists(binkw32Path)
-                                            && target.BinkBypassMD5 == CalculateMD5(binkw23Path)
-                                            && target.OriginalBinkMD5 == CalculateMD5(binkw32Path);
+                return File.Exists(binkw23Path) && File.Exists(binkw32Path)
+                                                && target.BinkBypassMD5 == CalculateMD5(binkw32Path)
+                                                && target.OriginalBinkMD5 == CalculateMD5(binkw23Path);
+            }
+            else if (game.IsLEGame())
+            {
+                string binkPath = Path.Combine(dllDir, "bink2w64.dll");
+                string originalBinkPath = Path.Combine(dllDir, "bink2w64_original.dll");
+                var binkVersionInfo = FileVersionInfo.GetVersionInfo(binkPath);
+                var binkProductName = binkVersionInfo.ProductName ?? "";
+
+                return File.Exists(binkPath) && File.Exists(originalBinkPath)
+                                             && target.OriginalBinkMD5 == CalculateMD5(originalBinkPath)
+                                             && binkProductName.StartsWith("LEBinkProxy")
+                                             && binkVersionInfo.ProductMajorPart >= 2;
+            }
+            return false;
         }
 
         public static bool IsME3ConsoleExtensionInstalled()

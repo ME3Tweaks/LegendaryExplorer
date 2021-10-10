@@ -25,6 +25,9 @@ namespace LegendaryExplorer.GameInterop.InteropTargets
         public virtual string OldInteropASIName => null;
         public abstract string InteropASIDownloadLink { get; }
         public abstract string InteropASIMD5 { get; }
+        /// <summary>
+        /// MD5 of Bink Bypass. Only required for OT games
+        /// </summary>
         public abstract string BinkBypassMD5 { get; }
         public abstract string OriginalBinkMD5 { get; }
         public abstract InteropModInfo ModInfo { get; }

@@ -21,8 +21,8 @@ namespace LegendaryExplorer.GameInterop.InteropTargets
         public override string InteropASIDownloadLink => "https://github.com/ME3Tweaks/ME2-ASI-Plugins/releases/tag/v2.0-LegendaryExplorerInterop";
         public override string InteropASIMD5 => "a65d9325dd3b0ec5ea4184cc10e5e692";
 
-        public override string BinkBypassMD5 => "56a99d682e752702604533b2d5055a5e";
-        public override string OriginalBinkMD5 => "a5318e756893f6232284202c1196da13";
+        public override string BinkBypassMD5 => "a5318e756893f6232284202c1196da13";
+        public override string OriginalBinkMD5 => "56a99d682e752702604533b2d5055a5e";
         public override InteropModInfo ModInfo { get; } = new InteropModInfo("DLC_MOD_Interop2", true)
         {
             LiveEditorFilename = "ME2LiveEditor"

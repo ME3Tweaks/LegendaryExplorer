@@ -12,7 +12,7 @@ namespace LegendaryExplorer.GameInterop.InteropTargets
         public override string InteropASIDownloadLink { get; }
         public override string InteropASIMD5 => "8a021214ec99870e689a51dfa69ba8f6";
         public override string BinkBypassMD5 { get; }
-        public override string OriginalBinkMD5 { get; }
+        public override string OriginalBinkMD5 => "1f00452ad61a944556399e2ad5292b35";
 
         public override InteropModInfo ModInfo { get; } = new InteropModInfo("DLC_MOD_InteropLE1", true)
         {
