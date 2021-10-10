@@ -1455,7 +1455,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             if (contextMenu.GetChild("sequenceRefGotoMenuItem") is MenuItem sequenceRefGotoMenuItem)
             {
 
-                if (obj is SAction sAction && sAction.Export != null && sAction.Export.ClassName == "SequenceReference")
+                if (obj is SAction sAction && sAction.Export != null && (sAction.Export.ClassName is "SequenceReference" or "Sequence"))
                 {
                     sequenceRefGotoMenuItem.Visibility = Visibility.Visible;
                 }
@@ -2397,8 +2397,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
     private void GotoSequenceReference_Clicked(object sender, RoutedEventArgs e)
     {
-        if (CurrentObjects_ListBox.SelectedItem is SAction sAction &&
-            sAction.Export.ClassName == "SequenceReference")
+        if (CurrentObjects_ListBox.SelectedItem is SAction sAction && (sAction.Export.ClassName is "SequenceReference" or "Sequence"))
         {
             GoToExport(sAction.Export); // GoToExport should probably go to the export, not the data in it
         }
