@@ -35,16 +35,23 @@ namespace LegendaryExplorer.GameInterop
 
         protected override IEnumerable<string> GetFilesToAugment()
         {
-            var maps = SelectMap(le1MapNames);
+            var maps = SelectMap(le1MapNames).ToList();
+            if (!maps.Any()) CancelInstallation = true;
             return maps.Select(s => Path.ChangeExtension(s, ".pcc"));
         }
 
         protected override void AugmentMapToLoadLiveEditor(IMEPackage pcc)
         {
+            if (Target.Game is not MEGame.LE1 || pcc.Game is not MEGame.LE1) throw new Exception("Cannot augment non-LE1 map for LE1 Interop Mod.");
+
             var mainSequence = pcc.Exports.First(exp => exp.ObjectName == "Main_Sequence" && exp.ClassName == "Sequence");
 
-            var liveEditorFile = Path.ChangeExtension(Target.ModInfo.LiveEditorFilename, ".pcc");
-            using IMEPackage liveEditor = MEPackageHandler.OpenMEPackage(Path.Combine(ModInstallPath, Target.Game.CookedDirName(), liveEditorFile));
+            // Load the LE1LiveEditor pcc. This is just a donor file for a sequence, it will never be loaded by the game.
+            var liveEditorFilename = Path.ChangeExtension(Target.ModInfo.LiveEditorFilename, ".pcc");
+            var liveEditorFile = Path.Combine(ModInstallPath, Target.Game.CookedDirName(), liveEditorFilename ?? "");
+            if (liveEditorFilename is null || liveEditorFilename == "" || !File.Exists(liveEditorFile)) throw new Exception("Cannot find Live Editor file for LE1.");
+
+            using IMEPackage liveEditor = MEPackageHandler.OpenMEPackage(liveEditorFile);
             var liveEditorSequence = liveEditor.FindExport(@"TheWorld.PersistentLevel.LE1LiveEditor");
 
             EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, liveEditorSequence,

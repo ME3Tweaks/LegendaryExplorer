@@ -22,6 +22,8 @@ namespace LegendaryExplorer.GameInterop
         protected readonly InteropTarget Target;
         private MEGame Game => Target.Game;
 
+        protected bool CancelInstallation = false;
+
         private string InstallInfoPath => Path.Combine(ModInstallPath, "InstallInfo.json");
         protected string ModInstallPath => Path.Combine(MEDirectories.GetDLCPath(Game), Target.ModInfo.InteropModName);
 
@@ -34,17 +36,14 @@ namespace LegendaryExplorer.GameInterop
             Target = target;
         }
 
-        public virtual void InstallDLC_MOD_Interop()
+        public void InstallDLC_MOD_Interop()
         {
-            var modInstallPath = ModInstallPath;
-            var modSourcePath = Path.Combine(AppDirectories.ExecFolder, Target.ModInfo.InteropModName);
-            if (Directory.Exists(modInstallPath))
-            {
-                DeleteFilesAndFoldersRecursively(modInstallPath);
-            }
+            DeleteExistingInstallation();
 
             Dictionary<string, string> fileMap = MELoadedFiles.GetFilesLoadedInGame(Game, true);
-            FileSystem.CopyDirectory(modSourcePath, modInstallPath);
+
+            var modSourcePath = Path.Combine(AppDirectories.ExecFolder, Target.ModInfo.InteropModName);
+            FileSystem.CopyDirectory(modSourcePath, ModInstallPath);
 
             if (Target.ModInfo.CanUseCamPath)
             {
@@ -52,6 +51,14 @@ namespace LegendaryExplorer.GameInterop
             }
 
             var augmentedFiles = AugmentAndInstall(GetFilesToAugment(), fileMap);
+
+            if (CancelInstallation)
+            {
+                DeleteExistingInstallation();
+                CancelInstallation = false;
+                return;
+            }
+
             File.WriteAllText(InstallInfoPath, JsonConvert.SerializeObject(new InstallInfo
             {
                 InstallTime = DateTime.Now,
@@ -65,6 +72,14 @@ namespace LegendaryExplorer.GameInterop
             }
         }
 
+        private void DeleteExistingInstallation()
+        {
+            if (Directory.Exists(ModInstallPath))
+            {
+                DeleteFilesAndFoldersRecursively(ModInstallPath);
+            }
+        }
+
         protected virtual IEnumerable<string> GetFilesToAugment()
         {
             const string bioPGlobalFileName = "BioP_Global.pcc";
@@ -75,7 +90,7 @@ namespace LegendaryExplorer.GameInterop
             return filesToAugment;
         }
 
-        protected IEnumerable<(string filePath, string md5)> AugmentAndInstall(IEnumerable<string> filesToAugment, Dictionary<string, string> fileMap)
+        private IEnumerable<(string filePath, string md5)> AugmentAndInstall(IEnumerable<string> filesToAugment, Dictionary<string, string> fileMap)
         {
             var md5Hashes = new List<(string filePath, string md5)>();
             foreach (var fileName in filesToAugment)

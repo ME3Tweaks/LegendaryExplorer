@@ -234,7 +234,6 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             var selectedMaps = new List<string>();
             Application.Current.Dispatcher.Invoke(() =>
             {
-                // TODO: Make the mod not install when you select cancel on either of these dialogs
                 var dropdownDialog = new DropdownPromptDialog("Please select the master file for the map you will be live editing.\nThe interop mod must be re-installed if you want to edit in a different map.", "Select LE1 Map to use in Interop Mod",
                     "Select master file", maps, this);
                 dropdownDialog.ShowDialog();
