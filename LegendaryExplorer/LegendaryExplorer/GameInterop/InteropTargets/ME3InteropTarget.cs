@@ -22,9 +22,10 @@ namespace LegendaryExplorer.GameInterop.InteropTargets
         public override string BinkBypassMD5 => "128b560ef70e8085c507368da6f26fe6";
         public override string OriginalBinkMD5 => "1acccbdae34e29ca7a50951999ed80d5";
 
-        public override InteropModInfo ModInfo { get; } = new InteropModInfo("DLC_MOD_Interop", true)
+        public override InteropModInfo ModInfo { get; } = new InteropModInfo("DLC_MOD_Interop", true, true)
         {
-            LiveEditorFilename = "ME3LiveEditor"
+            LiveEditorFilename = "ME3LiveEditor",
+            CanUseCamPath = true
         };
         public override string ProcessName => "MassEffect3";
         public override uint GameMessageSignature => 0x02AC00C2;

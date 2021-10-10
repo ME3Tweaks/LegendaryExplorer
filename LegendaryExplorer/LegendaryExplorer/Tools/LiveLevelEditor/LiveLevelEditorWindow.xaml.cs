@@ -209,7 +209,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
 
         private bool AreSupportFilesInstalled()
         {
-            return LiveEditHelper.IsModInstalledAndUpToDate(Game);
+            return InteropModInstaller.IsModInstalledAndUpToDate(GameTarget);
         }
 
         private void InstallSupportFiles()
@@ -217,10 +217,44 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             SetBusy("Installing Support Files");
             Task.Run(() =>
             {
-                LiveEditHelper.InstallDLC_MOD_Interop(Game);
+                InteropModInstaller installer = Game is MEGame.LE1 ? new LE1InteropModInstaller(GameTarget, SelectLE1Map) : new InteropModInstaller(GameTarget);
+                installer.InstallDLC_MOD_Interop();
                 EndBusy();
                 CommandManager.InvalidateRequerySuggested();
             });
+        }
+
+        /// <summary>
+        /// Callback method for the user to select a map when installing the LE1 Interop Mod
+        /// </summary>
+        /// <param name="maps">List of LE1 Map files to be selectable in the dialog</param>
+        /// <returns>List of master file names to augment and install in interop mod</returns>
+        private IEnumerable<string> SelectLE1Map(IEnumerable<string> maps)
+        {
+            var selectedMaps = new List<string>();
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                // TODO: Make the mod not install when you select cancel on either of these dialogs
+                var dropdownDialog = new DropdownPromptDialog("Please select the master file for the map you will be live editing.\nThe interop mod must be re-installed if you want to edit in a different map.", "Select LE1 Map to use in Interop Mod",
+                    "Select master file", maps, this);
+                dropdownDialog.ShowDialog();
+                if (dropdownDialog.DialogResult == true)
+                {
+                    if (dropdownDialog.Response == "CUSTOM")
+                    {
+                        var prompt = new PromptDialog("Enter custom master file name. (For advanced users only)",
+                            "Custom Master File")
+                        {
+                            Owner = this
+                        };
+                        prompt.ShowDialog();
+                        if(prompt.DialogResult == true) selectedMaps.Add(prompt.ResponseText);
+                    }
+                    else selectedMaps.Add(dropdownDialog.Response);
+                }
+            });
+
+            return selectedMaps;
         }
         #endregion
 
