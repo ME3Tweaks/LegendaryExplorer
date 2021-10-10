@@ -2090,6 +2090,29 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
+        public static void CreatePowerMaster()
+        {
+            MEPackageHandler.CreateAndSavePackage(@"C:\Users\Mgamerz\Desktop\LE2Powers.pcc", MEGame.LE2);
+            using var masterFile = MEPackageHandler.OpenMEPackage(@"C:\Users\Mgamerz\Desktop\LE2Powers.pcc");
+
+            PackageCache globalCache = new PackageCache();
+            PackageCache localCache = new PackageCache();
+
+            var allPowers = new List<string>();
+            foreach (var f in MELoadedFiles.GetFilesLoadedInGame(MEGame.LE2, true))
+            {
+                using var p = MEPackageHandler.OpenMEPackage(f.Value);
+                foreach (var powerExp in p.Exports.Where(x => x.InheritsFrom("SFXPower") && !allPowers.Contains(x.InstancedFullPath)))
+                {
+                    EntryExporter.ExportExportToPackage(powerExp, masterFile, out var newEntry, globalCache, localCache);
+                    allPowers.Add(powerExp.InstancedFullPath);
+                }
+            }
+
+            masterFile.Save();
+            File.WriteAllLines(@"C:\users\mgamerz\desktop\le2powers.txt", allPowers);
+        }
+
         public static void MScanner(PackageEditorWindow pe)
         {
             var infile = @"D:\Steam\steamapps\common\Mass Effect Legendary Edition\Game\ME1\BioGame\CookedPCConsole\GlobalShaderCache-PC-D3D-SM5.bin"; ;
@@ -2129,7 +2152,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     Debug.WriteLine($"SPECIAL UNKNOWN: {stream.ReadUInt32()}");
                     Debug.WriteLine($"SPECIAL UNKNOWN: {stream.ReadUInt16()}");
-                } else if (i == 349)
+                }
+                else if (i == 349)
                 {
                     // No idea what this is
                     Debug.WriteLine("UNKNOWN STUFF BLOCK");
