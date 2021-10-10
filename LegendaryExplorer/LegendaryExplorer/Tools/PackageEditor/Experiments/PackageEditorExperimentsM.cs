@@ -2095,7 +2095,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void MScanner(PackageEditorWindow pe)
         {
-            var infile = @"D:\Steam\steamapps\common\Mass Effect Legendary Edition\Game\ME1\BioGame\CookedPCConsole\GlobalShaderCache-PC-D3D-SM5.bin"; ;
+
+            #region GlobalShaderCache.bin parsing
+
+            /*var infile = @"D:\Steam\steamapps\common\Mass Effect Legendary Edition\Game\ME1\BioGame\CookedPCConsole\GlobalShaderCache-PC-D3D-SM5.bin"; ;
             var stream = new MemoryStream(File.ReadAllBytes(infile));
             Debug.WriteLine($"Magic: {stream.ReadStringASCII(4)}");
             Debug.WriteLine($"Unreal version: {stream.ReadInt32()}");
@@ -2132,7 +2135,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     Debug.WriteLine($"SPECIAL UNKNOWN: {stream.ReadUInt32()}");
                     Debug.WriteLine($"SPECIAL UNKNOWN: {stream.ReadUInt16()}");
-                } else if (i == 349)
+                }
+                else if (i == 349)
                 {
                     // No idea what this is
                     Debug.WriteLine("UNKNOWN STUFF BLOCK");
@@ -2160,60 +2164,36 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             Debug.WriteLine($"Position: 0x{(stream.Position):X8}");
 
 
-            return;
-            //using var me1TerrainP = MEPackageHandler.OpenMEPackage(@"D:\Origin Games\Mass Effect\DLC\DLC_Vegas\CookedPC\Maps\PRC2\BIOA_PRC2_CCLava.SFM");
-            //using var destTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(PAEMPaths.VTest_FinalDestDir, "BIOA_PRC2.pcc"));
+            return;*/
 
-            // Two same terrains so we can compare the conversion
-            using var me1TerrainP = MEPackageHandler.OpenMEPackage(@"D:\Origin Games\Mass Effect\BioGame\CookedPC\Maps\LAV\LAY\BIOA_LAV70_01_LAY.SFM");
-            using var le1TerrainP = MEPackageHandler.OpenMEPackage(@"B:\SteamLibrary\steamapps\common\Mass Effect Legendary Edition\Game\ME1\BioGame\CookedPCConsole\BIOA_LAV70_00_ART.pcc");
-
-            var me1Terrain = me1TerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1");
-            var le1Terrain = le1TerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1");
-
-            var me1Components = me1Terrain.GetProperty<ArrayProperty<ObjectProperty>>("TerrainComponents").Select(x => x.ResolveToEntry(me1TerrainP) as ExportEntry).ToList();
-            var le1Components = le1Terrain.GetProperty<ArrayProperty<ObjectProperty>>("TerrainComponents").Select(x => x.ResolveToEntry(le1TerrainP) as ExportEntry).ToList();
-
-            foreach (var tc in me1Components)
-                VTestExperiment.ConvertME1TerrainComponent(tc);
-
-            // Compare
-            for (int i = 0; i < me1Components.Count; i++)
-            {
-                var meConvBin = ObjectBinary.From<TerrainComponent>(me1Components[i]); // after conversion
-                var leBin = ObjectBinary.From<TerrainComponent>(le1Components[i]);
-
-                for (int j = 0; j < meConvBin.CollisionVertices.Length; j++)
-                {
-                    var destCol = meConvBin.CollisionVertices[j];
-                    var leCol = leBin.CollisionVertices[j];
-
-                    // Z seem OK it's only X and Y
-                    if (leCol.X != destCol.X || leCol.Y != destCol.Y)
-                        Debug.WriteLine($"{i}-{j}\t({leCol.X}, {leCol.Y}) | ({destCol.X},{destCol.Y}) | DIFF [LE-PORTED]: ({leCol.X - destCol.X},{leCol.Y - destCol.Y})");
-                }
-            }
-
-
-
-
-
+            #endregion
 
             //just dump whatever shit you want to find here
-            //foreach (string filePath in MELoadedFiles.GetOfficialFiles(MEGame.LE1 /*, MEGame.LE2, MEGame.LE3*/))
-            //{
-            //    using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
-            //    foreach (ExportEntry export in pcc.Exports)
-            //    {
-            //        //code here
-            //        if (export.ClassName == "BioInert" && !export.IsDefaultObject && !export.IsClass)
-            //        {
-            //            if (export.DataSize > export.propsEnd() + 4)
-            //                Debug.WriteLine($"BIOINERT WITH BINARY {export.UIndex} {export.InstancedFullPath} in {filePath}");
-            //        }
+            ConcurrentDictionary<string, string> dupes = new ConcurrentDictionary<string, string>();
+            Parallel.ForEach(MELoadedFiles.GetOfficialFiles(MEGame.LE1 /*, MEGame.LE2, MEGame.LE3*/), filePath =>
+            {
+                {
+                    using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
+                    Dictionary<string, string> expMap = new();
 
-            //    }
-            //}
+                    foreach (ExportEntry export in pcc.Exports)
+                    {
+                        if (expMap.TryGetValue(export.InstancedFullPath, out _))
+                        {
+                            Debug.WriteLine($"FOUND A DUPLICATE: {export.InstancedFullPath} in {Path.GetFileName(filePath)}");
+                            dupes[export.InstancedFullPath] = filePath;
+                        }
+
+                        expMap[export.InstancedFullPath] = export.InstancedFullPath;
+
+                    }
+                }
+            });
+
+            foreach (var duplicate in dupes)
+            {
+                Debug.WriteLine($"DUPLICATE IFP: {duplicate.Key} in {duplicate.Value}");
+            }
         }
 
         public static void ImportUDKTerrain(PackageEditorWindow pe)
