@@ -9,7 +9,9 @@ using LegendaryExplorerCore.Kismet;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
+using Microsoft.Win32;
 
 namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
 {
@@ -56,6 +58,34 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
                         }
                     }
                 }
+            }
+        }
+
+        public static void LoadCustomClasses(SequenceEditorWPF seqEd)
+        {
+            OpenFileDialog ofd = new OpenFileDialog()
+            {
+                Filter = GameFileFilters.OpenFileFilter
+            };
+            bool reload = false;
+            var result = ofd.ShowDialog();
+            if (result.HasValue && result.Value)
+            {
+                using var p = MEPackageHandler.OpenMEPackage(ofd.FileName, forceLoadFromDisk: true);
+                foreach (var e in p.Exports.Where(x => x.IsClass && x.InheritsFrom("SequenceObject")))
+                {
+                    var classInfo = GlobalUnrealObjectInfo.generateClassInfo(e);
+                    var defaults = p.GetUExport(ObjectBinary.From<UClass>(e).Defaults);
+                    Debug.WriteLine($@"Inventorying {e.InstancedFullPath}");
+                    GlobalUnrealObjectInfo.GenerateSequenceObjectInfoForClassDefaults(defaults);
+                    GlobalUnrealObjectInfo.InstallCustomClassInfo(e.ObjectName, classInfo, e.Game);
+                    reload = true;
+                }
+            }
+
+            if (reload)
+            {
+                seqEd.RefreshToolboxItems();
             }
         }
 

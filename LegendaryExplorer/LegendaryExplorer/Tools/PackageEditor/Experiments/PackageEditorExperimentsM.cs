@@ -2093,6 +2093,29 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
+        public static void CreatePowerMaster()
+        {
+            MEPackageHandler.CreateAndSavePackage(@"C:\Users\Mgamerz\Desktop\LE2Powers.pcc", MEGame.LE2);
+            using var masterFile = MEPackageHandler.OpenMEPackage(@"C:\Users\Mgamerz\Desktop\LE2Powers.pcc");
+
+            PackageCache globalCache = new PackageCache();
+            PackageCache localCache = new PackageCache();
+
+            var allPowers = new List<string>();
+            foreach (var f in MELoadedFiles.GetFilesLoadedInGame(MEGame.LE2, true))
+            {
+                using var p = MEPackageHandler.OpenMEPackage(f.Value);
+                foreach (var powerExp in p.Exports.Where(x => x.InheritsFrom("SFXPower") && !allPowers.Contains(x.InstancedFullPath)))
+                {
+                    EntryExporter.ExportExportToPackage(powerExp, masterFile, out var newEntry, globalCache, localCache);
+                    allPowers.Add(powerExp.InstancedFullPath);
+                }
+            }
+
+            masterFile.Save();
+            File.WriteAllLines(@"C:\users\mgamerz\desktop\le2powers.txt", allPowers);
+        }
+
         public static void MScanner(PackageEditorWindow pe)
         {
 

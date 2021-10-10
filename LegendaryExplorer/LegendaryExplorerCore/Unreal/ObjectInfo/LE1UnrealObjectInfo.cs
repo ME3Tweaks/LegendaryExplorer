@@ -534,24 +534,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 {
                     if (exportEntry.IsA("SequenceObject"))
                     {
-                        string className = exportEntry.ClassName;
-                        if (!SequenceObjects.TryGetValue(className, out SequenceObjectInfo seqObjInfo))
-                        {
-                            seqObjInfo = new SequenceObjectInfo();
-                            SequenceObjects.Add(className, seqObjInfo);
-                        }
-
-                        int objInstanceVersion = exportEntry.GetProperty<IntProperty>("ObjInstanceVersion");
-                        if (objInstanceVersion > seqObjInfo.ObjInstanceVersion)
-                        {
-                            seqObjInfo.ObjInstanceVersion = objInstanceVersion;
-                        }
-
-                        if (seqObjInfo.inputLinks is null && exportEntry.IsDefaultObject)
-                        {
-                            List<string> inputLinks = generateSequenceObjectInfo(exportEntry);
-                            seqObjInfo.inputLinks = inputLinks;
-                        }
+                        GlobalUnrealObjectInfo.GenerateSequenceObjectInfoForClassDefaults(exportEntry, SequenceObjects);
                     }
                 }
                 numDone++;
@@ -1116,23 +1099,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 exportIndex = 0,
                 pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
             };
-        }
-
-        //call on the _Default object
-        private static List<string> generateSequenceObjectInfo(ExportEntry export)
-        {
-            var inLinks = export.GetProperty<ArrayProperty<StructProperty>>("InputLinks");
-            if (inLinks != null)
-            {
-                var inputLinks = new List<string>();
-                foreach (var seqOpInputLink in inLinks)
-                {
-                    inputLinks.Add(seqOpInputLink.GetProp<StrProperty>("LinkDesc").Value);
-                }
-                return inputLinks;
-            }
-
-            return null;
         }
 
         public static ClassInfo generateClassInfo(ExportEntry export, bool isStruct = false)

@@ -483,11 +483,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             Title = $"Sequence Editor - {filePath}";
             StatusText = null; //no status
 
-            commonToolBox.Classes = SequenceObjectCreator.GetCommonObjects(Pcc.Game).OrderBy(info => info.ClassName).ToList();
-            eventsToolBox.Classes = SequenceObjectCreator.GetSequenceEvents(Pcc.Game).OrderBy(info => info.ClassName).ToList();
-            actionsToolBox.Classes = SequenceObjectCreator.GetSequenceActions(Pcc.Game).OrderBy(info => info.ClassName).ToList();
-            conditionsToolBox.Classes = SequenceObjectCreator.GetSequenceConditions(Pcc.Game).OrderBy(info => info.ClassName).ToList();
-            variablesToolBox.Classes = SequenceObjectCreator.GetSequenceVariables(Pcc.Game).OrderBy(info => info.ClassName).ToList();
+            RefreshToolboxItems();
         }
         catch (Exception ex) when (!App.IsDebug)
         {
@@ -495,6 +491,26 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             Title = "Sequence Editor";
             CurrentFile = null;
             UnLoadMEPackage();
+        }
+    }
+
+    /// <summary>
+    /// Reloads the toolbox data
+    /// </summary>
+    public void RefreshToolboxItems()
+    {
+        if (Pcc != null)
+        {
+            commonToolBox.Classes = SequenceObjectCreator.GetCommonObjects(Pcc.Game).OrderBy(info => info.ClassName)
+                .ToList();
+            eventsToolBox.Classes = SequenceObjectCreator.GetSequenceEvents(Pcc.Game).OrderBy(info => info.ClassName)
+                .ToList();
+            actionsToolBox.Classes = SequenceObjectCreator.GetSequenceActions(Pcc.Game).OrderBy(info => info.ClassName)
+                .ToList();
+            conditionsToolBox.Classes = SequenceObjectCreator.GetSequenceConditions(Pcc.Game)
+                .OrderBy(info => info.ClassName).ToList();
+            variablesToolBox.Classes = SequenceObjectCreator.GetSequenceVariables(Pcc.Game)
+                .OrderBy(info => info.ClassName).ToList();
         }
     }
 
@@ -2548,6 +2564,11 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 MessageBox.Show($"Could not determine where class '{className}' is defined.", "Cannot locate class");
             }
         }
+    }
+
+    private void LoadCustomClasses_Clicked(object sender, RoutedEventArgs e)
+    {
+        SequenceEditorExperimentsM.LoadCustomClasses(this);
     }
 
     public string Toolname => "SequenceEditor";
