@@ -1838,7 +1838,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     }
                 }
                 donorPackage.Save();
-                VTestExperiment.VTest(pe);
+
+                if (MessageBox.Show(pe, "Run VTest?", "", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
+                {
+                    VTestExperiment.VTest(pe);
+                }
             }
         }
 
@@ -1987,7 +1991,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 if (ci.properties.Any())
                 {
                     sb.AppendLine("\tproperties =");
-                    sb.AppendLine("\t{");
+                    sb.AppendLine("\t\t\t\t{"); // stupid intellisense
                     foreach (var prop in ci.properties)
                     {
                         var propInfoStr = $"new PropertyInfo(PropertyType.{prop.Value.Type.ToString()}";
@@ -2005,11 +2009,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                         propInfoStr += ")";
 
-                        sb.AppendLine(
-                            $"\t\tnew KeyValuePair<NameReference, PropertyInfo>(\"{prop.Key}\", {propInfoStr}),");
+                        sb.AppendLine($"\t\t\t\t\tnew KeyValuePair<NameReference, PropertyInfo>(\"{prop.Key}\", {propInfoStr}),");
                     }
 
-                    sb.AppendLine("\t}");
+                    sb.AppendLine("\t\t\t\t}"); // stupid intellisense
 
                 }
 
@@ -2359,6 +2362,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 udkP.Save(@"B:\Documents\CCLAVA_TERRAIN_PORTED.udk");
             }
             return;
+
+        }
+
+        public static void MakeMakoLevel(PackageEditorWindow pe)
+        {
             //if (pe.Pcc == null)
             //    return;
 
@@ -2368,138 +2376,162 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             //    MessageBox.Show("There's no terrain export in this file!", "Terrain required");
             //    return;
             //}
+
+            var outputFile = Path.Combine(LE1Directory.CookedPCPath, @"BIOA_TERRAINTEST.pcc");
+            VTestExperiment.CreateEmptyLevel(outputFile, MEGame.LE1);
+            using var destPackage = MEPackageHandler.OpenMEPackage(outputFile);
+            var destLevel = destPackage.FindExport("TheWorld.PersistentLevel");
+
+            // Select file to donate from
+            var preselected = @"B:\SteamLibrary\steamapps\common\Mass Effect Legendary Edition\Game\ME1\BioGame\CookedPCConsole\BIOA_ICE20_08_ART.pcc";
+
+            OpenFileDialog d = new OpenFileDialog { Title = "Select donor file with terrain", Filter = "*.pcc|*.pcc" };
+            if (preselected == null && d.ShowDialog() == false)
+                return;
+            using var donorFile = MEPackageHandler.OpenMEPackage(preselected ?? d.FileName);
+            var donorTerrain = donorFile.Exports.FirstOrDefault(x => x.ClassName == "Terrain");
+            if (donorTerrain == null)
             {
-                var outputFile = Path.Combine(LE1Directory.CookedPCPath, @"BIOA_TERRAINTEST.pcc");
-                VTestExperiment.CreateEmptyLevel(outputFile, MEGame.LE1);
-                using var destPackage = MEPackageHandler.OpenMEPackage(outputFile);
-                var destLevel = destPackage.FindExport("TheWorld.PersistentLevel");
-
-                // Select file to donate from
-                var preselected = @"B:\SteamLibrary\steamapps\common\Mass Effect Legendary Edition\Game\ME1\BioGame\CookedPCConsole\BIOA_ICE20_08_ART.pcc";
-
-                OpenFileDialog d = new OpenFileDialog { Title = "Select donor file with terrain", Filter = "*.pcc|*.pcc" };
-                if (preselected != null || d.ShowDialog() == true)
-                {
-                    using var donorFile = MEPackageHandler.OpenMEPackage(preselected ?? d.FileName);
-                    var donorTerrain = donorFile.Exports.FirstOrDefault(x => x.ClassName == "Terrain");
-                    if (donorTerrain == null)
-                    {
-                        MessageBox.Show("There's no terrain export in the selected file!", "Terrain required");
-                        return;
-                    }
-
-                    // Port in the donor terrain to begin with
-                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, donorTerrain, destPackage, destLevel, true, new RelinkerOptionsPackage(), out var destTerrainEntry);
-                    var destTerrain = (ExportEntry)destTerrainEntry;
-
-                    // Overwrite the terrain with our data
-                    var inputPath = @"B:\Documents\TerrainTest.udk";
-                    using var udkP = MEPackageHandler.OpenUDKPackage(inputPath);
-                    var udkTerrain = udkP.FindExport("TheWorld.PersistentLevel.Terrain_1");
-
-                    // Binary (Terrain)
-                    var udkBin = ObjectBinary.From<Terrain>(udkTerrain);
-                    var destBin = ObjectBinary.From<Terrain>(destTerrain);
-                    destBin.Heights = udkBin.Heights;
-                    destBin.InfoData = udkBin.InfoData;
-                    destBin.CachedDisplacements = new byte[udkBin.Heights.Length];
-                    destTerrain.WriteBinary(destBin);
-
-                    // Properties (Terrain)
-                    var terrainProps = destTerrain.GetProperties();
-                    var udkProps = udkTerrain.GetProperties();
-                    terrainProps.RemoveNamedProperty("DrawScale3D");
-                    terrainProps.Remove(x => x is IntProperty);
-                    terrainProps.AddRange(udkProps.Where(x => x is IntProperty));
-                    terrainProps.RemoveNamedProperty("Location");
-                    var loc = udkProps.GetProp<StructProperty>("Location");
-                    if (loc != null)
-                    {
-                        terrainProps.AddOrReplaceProp(loc);
-                    }
-
-
-                    // Components
-                    var components = terrainProps.GetProp<ArrayProperty<ObjectProperty>>("TerrainComponents");
-                    EntryPruner.TrashEntries(destPackage, components.Select(x => x.ResolveToEntry(destPackage))); // Trash the components
-                    components.Clear();
-
-                    // Port over the UDK ones
-                    var udkComponents = udkTerrain.GetProperty<ArrayProperty<ObjectProperty>>("TerrainComponents");
-                    foreach (var tc in udkComponents)
-                    {
-                        var entry = tc.ResolveToEntry(udkP);
-                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, entry, destPackage, destTerrain, true, new RelinkerOptionsPackage(), out var portedComp);
-                        components.Add(new ObjectProperty(portedComp.UIndex));
-                    }
-
-
-                    destTerrain.WriteProperties(terrainProps);
-
-                    //localBin.CachedTerrainMaterials = donorBin.CachedTerrainMaterials;
-                    //localBin.CachedTerrainMaterials2 = donorBin.CachedTerrainMaterials2;
-
-
-                    //// Correct the material parent ref (I don't think the game uses these)
-                    //foreach (var ctm in localBin.CachedTerrainMaterials)
-                    //{
-                    //    foreach (var utex in ctm.UniformExpressionTextures)
-                    //    {
-                    //        var sourceTex = donorFile.GetEntry(utex.value);
-                    //        if (sourceTex is ImportEntry imp)
-                    //        {
-                    //            utex.value = EntryImporter.GetOrAddCrossImportOrPackage(imp.InstancedFullPath, donorFile, destPackage, new RelinkerOptionsPackage()).UIndex;
-                    //        }
-                    //        else if (sourceTex is ExportEntry exp)
-                    //        {
-                    //            EntryExporter.ExportExportToPackage(exp, destPackage, out var newExp);
-                    //            utex.value = newExp.UIndex;
-                    //        }
-                    //    }
-
-                    //    ctm.Terrain.value = localTerrain.UIndex;
-                    //}
-                    //localTerrain.WriteBinary(localBin);
-
-                    //// Port over the TerrainLayers and relink them
-                    //localTerrain.WriteProperty(donorTerrain.GetProperty<ArrayProperty<StructProperty>>("Layers"));
-                    //var localLayers = localTerrain.GetProperty<ArrayProperty<StructProperty>>("Layers");
-                    //foreach (var layer in localLayers)
-                    //{
-                    //    var setup = layer.GetProp<ObjectProperty>("Setup");
-                    //    var donorObj = donorFile.GetUExport(setup.Value);
-                    //    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, donorObj, destPackage, null, true, new RelinkerOptionsPackage(), out var newSetup);
-                    //    setup.Value = newSetup.UIndex;
-                    //}
-                    //localTerrain.WriteProperty(localLayers);
-                }
-
-                // Port in a PlayerStart
-                using var psDonor = MEPackageHandler.OpenMEPackage(Path.Combine(LE1Directory.CookedPCPath, @"BIOA_STA00.pcc"));
-                var psStart = psDonor.FindExport("TheWorld.PersistentLevel.PlayerStart_0");
-                psStart.RemoveProperty("nextNavigationPoint");
-                EntryExporter.ExportExportToPackage(psStart, destPackage, out var newPStart);
-                PathEdUtils.SetLocation(newPStart as ExportEntry, 2000, 2000, 2000);
-
-                // Port in a skybox
-                using var skyDonor = MEPackageHandler.OpenMEPackage(Path.Combine(LE1Directory.CookedPCPath, @"BIOA_WAR00.pcc"));
-                var sky = skyDonor.FindExport("TheWorld.PersistentLevel.StaticMeshActor_1");
-                //psStart.RemoveProperty("nextNavigationPoint");
-                EntryExporter.ExportExportToPackage(sky, destPackage, out var newSky);
-                PathEdUtils.SetLocation(newSky as ExportEntry, 2000, 2000, 92);
-
-                // Put in a mako because why not
-                using var makoDonor = MEPackageHandler.OpenMEPackage(Path.Combine(LE1Directory.CookedPCPath, @"BIOA_LOS00.pcc"));
-                var mako = makoDonor.FindExport("TheWorld.PersistentLevel.BioVehicleWheeled_0");
-                //psStart.RemoveProperty("nextNavigationPoint");
-                EntryExporter.ExportExportToPackage(mako, destPackage, out var newMako);
-                PathEdUtils.SetLocation(newMako as ExportEntry, 2300, 2300, 92);
-
-                VTestExperiment.RebuildPersistentLevelChildren(destLevel);
-                destPackage.Save();
-
-
+                MessageBox.Show("There's no terrain export in the selected file!", "Terrain required");
+                return;
             }
+
+            // Port in the donor terrain to begin with
+            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, donorTerrain, destPackage, destLevel, true, new RelinkerOptionsPackage(), out var destTerrainEntry);
+            var destTerrain = (ExportEntry)destTerrainEntry;
+
+            // Overwrite the terrain with our data
+            var inputPath = @"B:\Documents\SpiralMountain.udk";
+            using var udkP = MEPackageHandler.OpenUDKPackage(inputPath);
+            var udkTerrain = udkP.FindExport("TheWorld.PersistentLevel.Terrain_1");
+
+            // Binary (Terrain)
+            var udkBin = ObjectBinary.From<Terrain>(udkTerrain);
+            var destBin = ObjectBinary.From<Terrain>(destTerrain);
+            destBin.Heights = udkBin.Heights;
+            destBin.InfoData = udkBin.InfoData;
+            destBin.CachedDisplacements = new byte[udkBin.Heights.Length];
+            destTerrain.WriteBinary(destBin);
+
+            // Properties (Terrain)
+            var terrainProps = destTerrain.GetProperties();
+            var udkProps = udkTerrain.GetProperties();
+            terrainProps.RemoveNamedProperty("DrawScale3D");
+            terrainProps.Remove(x => x is IntProperty);
+            terrainProps.AddRange(udkProps.Where(x => x is IntProperty));
+            terrainProps.RemoveNamedProperty("Location");
+            var loc = udkProps.GetProp<StructProperty>("Location");
+            if (loc != null)
+            {
+                terrainProps.AddOrReplaceProp(loc);
+            }
+
+
+            // Components
+            var components = terrainProps.GetProp<ArrayProperty<ObjectProperty>>("TerrainComponents");
+            EntryPruner.TrashEntries(destPackage, components.Select(x => x.ResolveToEntry(destPackage))); // Trash the components
+            components.Clear();
+
+            // Port over the UDK ones
+            var udkComponents = udkTerrain.GetProperty<ArrayProperty<ObjectProperty>>("TerrainComponents");
+            foreach (var tc in udkComponents)
+            {
+                var entry = tc.ResolveToEntry(udkP);
+                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, entry, destPackage, destTerrain, true, new RelinkerOptionsPackage(), out var portedComp);
+                components.Add(new ObjectProperty(portedComp.UIndex));
+            }
+
+
+            destTerrain.WriteProperties(terrainProps);
+
+            //localBin.CachedTerrainMaterials = donorBin.CachedTerrainMaterials;
+            //localBin.CachedTerrainMaterials2 = donorBin.CachedTerrainMaterials2;
+
+
+            //// Correct the material parent ref (I don't think the game uses these)
+            //foreach (var ctm in localBin.CachedTerrainMaterials)
+            //{
+            //    foreach (var utex in ctm.UniformExpressionTextures)
+            //    {
+            //        var sourceTex = donorFile.GetEntry(utex.value);
+            //        if (sourceTex is ImportEntry imp)
+            //        {
+            //            utex.value = EntryImporter.GetOrAddCrossImportOrPackage(imp.InstancedFullPath, donorFile, destPackage, new RelinkerOptionsPackage()).UIndex;
+            //        }
+            //        else if (sourceTex is ExportEntry exp)
+            //        {
+            //            EntryExporter.ExportExportToPackage(exp, destPackage, out var newExp);
+            //            utex.value = newExp.UIndex;
+            //        }
+            //    }
+
+            //    ctm.Terrain.value = localTerrain.UIndex;
+            //}
+            //localTerrain.WriteBinary(localBin);
+
+            //// Port over the TerrainLayers and relink them
+            //localTerrain.WriteProperty(donorTerrain.GetProperty<ArrayProperty<StructProperty>>("Layers"));
+            //var localLayers = localTerrain.GetProperty<ArrayProperty<StructProperty>>("Layers");
+            //foreach (var layer in localLayers)
+            //{
+            //    var setup = layer.GetProp<ObjectProperty>("Setup");
+            //    var donorObj = donorFile.GetUExport(setup.Value);
+            //    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, donorObj, destPackage, null, true, new RelinkerOptionsPackage(), out var newSetup);
+            //    setup.Value = newSetup.UIndex;
+            //}
+            //localTerrain.WriteProperty(localLayers);
+
+
+            // Port in a PlayerStart
+            //using var psDonor = MEPackageHandler.OpenMEPackage(Path.Combine(LE1Directory.CookedPCPath, @"BIOA_STA00.pcc"));
+            //var psStart = psDonor.FindExport("TheWorld.PersistentLevel.PlayerStart_0");
+            //psStart.RemoveProperty("nextNavigationPoint");
+            //EntryExporter.ExportExportToPackage(psStart, destPackage, out var newPStart);
+
+            // Map already has a player start, just port it in too
+            string[] otherClassesToPortIn = new[] { "PlayerStart", "HeightFog", /*"DominantDirectionalLight"*/};
+            Point3D startLoc = null;
+            foreach (var exp in udkP.Exports.Where(x => otherClassesToPortIn.Contains(x.ClassName)))
+            {
+                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, exp, destPackage, destLevel, true, new RelinkerOptionsPackage(), out var playerStart);
+                if (exp.ClassName == "PlayerStart")
+                {
+                    startLoc = PathEdUtils.GetLocation(playerStart as ExportEntry);
+                }
+            }
+
+            // Import the pathfinding network
+            var udkPLBin = ObjectBinary.From<Level>(udkP.FindExport("TheWorld.PersistentLevel"));
+            var le1PLBin = ObjectBinary.From<Level>(destLevel);
+
+            var pathfindingSource = udkPLBin.NavListStart;
+            if (pathfindingSource != null && pathfindingSource.value != 0)
+            {
+                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, udkP.GetUExport(pathfindingSource.value), destPackage, destLevel, true, new RelinkerOptionsPackage(), out var chainStart);
+                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, udkP.GetUExport(udkPLBin.NavListEnd.value), destPackage, destLevel, true, new RelinkerOptionsPackage(), out var chainEnd);
+                le1PLBin.NavListStart.value = chainStart.UIndex;
+                le1PLBin.NavListEnd.value = chainEnd.UIndex;
+                destLevel.WriteBinary(le1PLBin);
+            }
+
+            VTestExperiment.CorrectReachSpecs(udkP, destPackage);
+
+            // Port in a skybox
+            using var skyDonor = MEPackageHandler.OpenMEPackage(Path.Combine(LE1Directory.CookedPCPath, @"BIOA_WAR00.pcc"));
+            var sky = skyDonor.FindExport("TheWorld.PersistentLevel.StaticMeshActor_1");
+            //psStart.RemoveProperty("nextNavigationPoint");
+            EntryExporter.ExportExportToPackage(sky, destPackage, out var newSky);
+            PathEdUtils.SetLocation(newSky as ExportEntry, 2000, 2000, 92);
+
+            // Put in a mako because why not
+            using var makoDonor = MEPackageHandler.OpenMEPackage(Path.Combine(LE1Directory.CookedPCPath, @"BIOA_LOS00.pcc"));
+            var mako = makoDonor.FindExport("TheWorld.PersistentLevel.BioVehicleWheeled_0");
+            //psStart.RemoveProperty("nextNavigationPoint");
+            EntryExporter.ExportExportToPackage(mako, destPackage, out var newMako);
+            PathEdUtils.SetLocation(newMako as ExportEntry, (float)startLoc.X + 500f, (float)startLoc.Y + 500, (float)startLoc.Z + 50);
+
+            VTestExperiment.RebuildPersistentLevelChildren(destLevel);
+            destPackage.Save();
         }
 
         public static void TestCurrentPackageForUnknownBinary(PackageEditorWindow pe)

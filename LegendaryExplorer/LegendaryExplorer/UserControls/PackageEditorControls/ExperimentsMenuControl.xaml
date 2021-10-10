@@ -34,6 +34,8 @@
         <Separator/>
         <!--<MenuItem Header="Generate ME3 Code" Click="GenerateME3Code_Click"/>-->
         <MenuItem Header="Generate ME2/ME3 object info diff" Click="GenerateObjectInfoDiff_Click"/>
+        <Separator/>
+        <MenuItem Header="Re-Inventory game resources file" ToolTip="Generates the code for custom classes in the resources zip. Check the code for which game" Click="ReInventoryCustomClasses_Click"/>
     </MenuItem>
     <MenuItem Header="Mgamerz's Programming Circus">
         <MenuItem Header="VTest" Click="VTest_Click" Visibility="{x:Static global:App.IsDebugVisibility}"/>
@@ -41,6 +43,7 @@
         <MenuItem Header="Test current package binary against LEX serializer" Click="TestCurrentPackageBinary"/>
         <MenuItem Header="Find bad index location from appErrorF message (doesn't work)" Click="FindAppErrorFLocation_Click"/>
         <MenuItem Header="MScanner" Click="MScanner_Click"/>
+        <MenuItem Header="Make LE1 Mako Map from terrain from UDK file" Click="MakeLE1MakoMap_Click"/>
         <MenuItem Header="Import UDK Terrain Collision Data" Click="ImportUDKTerrain_Click"/>
         <MenuItem Header="Clone another file's cached terrain materials" Click="CloneCachedTerrainMaterials_Clicked" Visibility="{x:Static global:App.IsDebugVisibility}"/>
         <MenuItem Header="Print LE1 Terrains By Size to debug console" Click="PrintTerrainsBySize_Click"/>

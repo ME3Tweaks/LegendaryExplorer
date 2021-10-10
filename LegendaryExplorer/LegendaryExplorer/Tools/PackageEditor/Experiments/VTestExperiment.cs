@@ -12,6 +12,7 @@ using LegendaryExplorer.Tools.PathfindingEditor;
 using LegendaryExplorer.Tools.Sequence_Editor.Experiments;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Kismet;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
@@ -255,7 +256,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     {
                         if (Path.GetFileNameWithoutExtension(file) == "VTestHelper")
                         {
-                            // Load the VTestHelper
+                            // Load the VTestHelper, don't index it
                             vTestOptions.vTestHelperPackage = MEPackageHandler.OpenMEPackage(file, forceLoadFromDisk: true); // Do not put into cache
                         }
                         else
@@ -542,7 +543,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             var csProps = GlobalUnrealObjectInfo.getDefaultStructValue(MEGame.LE1, "CoverSlot", false, vTestOptions.cache);
 
             // 2. Draw the rest of the fucking owl
-            foreach (var me1Prop in me1CS.Properties)
+            foreach (var me1Prop in me1CS.Properties.ToList())
             {
                 switch (me1Prop)
                 {
@@ -550,25 +551,51 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     case FloatProperty:
                     case BoolProperty:
                     case EnumProperty:
-                        TryUpdateProp(me1Prop, csProps);
+                        if (TryUpdateProp(me1Prop, csProps))
+                        {
+                            me1CS.Properties.Remove(me1Prop);
+                        }
                         break;
+                    case ObjectProperty op:
+                        if (op.Value == 0)
+                            me1CS.Properties.Remove(me1Prop); // This doesn't have a value
+                        break;
+                    case StructProperty sp:
+                        {
+                            if (sp.Name == "LocationOffset" || sp.Name == "RotationOffset")
+                            {
+                                if (!sp.IsImmutable)
+                                    Debugger.Break();
+                                TryUpdateProp(me1Prop, csProps);
+                                me1CS.Properties.Remove(sp);
+                            }
+                            break;
+                        }
+                }
+            }
 
+            if (me1CS.Properties.Count > 0)
+            {
+                // uncomment to debug these
+                //Debug.WriteLine("The following properties were not translated:");
+                foreach (var mp in me1CS.Properties)
+                {
+                    //Debug.WriteLine(mp.Name );
                 }
             }
 
 
             return new StructProperty("CoverSlot", csProps, isImmutable: true);
 
-            void TryUpdateProp(Property p, PropertyCollection destCollection)
+            bool TryUpdateProp(Property p, PropertyCollection destCollection)
             {
                 if (destCollection.ContainsNamedProp(p.Name))
                 {
-                    destCollection.AddOrReplaceProp(p);
+                    //destCollection.AddOrReplaceProp(p);
+                    return true;
                 }
-                else
-                {
-                    Debug.WriteLine($"Target doesn't have property named {p.Name}");
-                }
+                Debug.WriteLine($"Target doesn't have property named {p.Name}");
+                return false;
             }
         }
 
@@ -625,6 +652,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             using var package = MEPackageHandler.OpenMEPackage(destPackagePath);
             using var sourcePackage = MEPackageHandler.OpenMEPackage(sourceFile);
 
+            PrePortingCorrections(sourcePackage);
+            
             var bcBaseIdx = sourcePackage.findName("BIOC_Base");
             sourcePackage.replaceName(bcBaseIdx, "SFXGame");
 
@@ -753,6 +782,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     // Remove streaminglevels that don't do anything
                     //PreCorrectBioWorldInfoStreamingLevels(exp);
                 }
+                else if (exp.ClassName == "MaterialInstanceConstant")
+                {
+                    PreCorrectMaterialInstanceConstant(exp);
+                }
 
                 if (exp.IsA("Actor"))
                 {
@@ -761,6 +794,70 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     //exp.RemoveProperty("nextNavigationPoint"); // No bases
                 }
             }
+        }
+
+        // Terrible performance, but i don't care
+        private static byte[] StringToByteArray(string hex)
+        {
+            return Enumerable.Range(0, hex.Length)
+                .Where(x => x % 2 == 0)
+                .Select(x => Convert.ToByte(hex.Substring(x, 2), 16))
+                .ToArray();
+        }
+
+        private static Dictionary<Guid, Guid> expressionGuidMap = new()
+        {
+            { new Guid(StringToByteArray("AD2F8F9FB837D8499EF1FC9799289A3E")), new Guid(StringToByteArray("896318E56A762B4FAEA9AA29B4B968CD")) }, // Alpha_Map -> Texture (Scoreboard)
+            { new Guid(StringToByteArray("32144A9CDE189141BC421589B7EF3C0A")), new Guid(StringToByteArray("A1A3A72858C9DC45A10D3E9967BE4EE8")) }, // Character_Color -> ColorSelected (Scoreboard)
+        };
+
+        private static Dictionary<string, string> parameterNameMap = new()
+        {
+            { "Alpha_Map", "Texture" }, // PRC2 Scoreboard
+            { "Character_Color", "ColorSelected"} // PRC2 Scoreboard
+        };
+
+        private static void PreCorrectMaterialInstanceConstant(ExportEntry exp)
+        {
+            // Some parameters need updated to match new materials
+
+            // VECTORS
+            var vectorParams = exp.GetProperty<ArrayProperty<StructProperty>>("VectorParameterValues");
+            if (vectorParams != null)
+            {
+                foreach (var vp in vectorParams)
+                {
+                    var parameterName = vp.GetProp<NameProperty>("ParameterName").Value.Name;
+                    var expressionGuid = CommonStructs.GetGuid(vp.GetProp<StructProperty>("ExpressionGUID"));
+                    if (expressionGuidMap.TryGetValue(expressionGuid, out var newGuid) && parameterNameMap.TryGetValue(parameterName, out var newParameterName))
+                    {
+                        Debug.WriteLine($"Updating VP MIC {exp.InstancedFullPath}");
+                        vp.GetProp<NameProperty>("ParameterName").Value = newParameterName;
+                        vp.Properties.AddOrReplaceProp(CommonStructs.GuidProp(newGuid, "ExpressionGUID"));
+                    }
+                }
+                exp.WriteProperty(vectorParams);
+            }
+
+            // TEXTURES
+            var textureParams = exp.GetProperty<ArrayProperty<StructProperty>>("TextureParameterValues");
+            if (textureParams != null)
+            {
+                foreach (var tp in textureParams)
+                {
+                    var parameterName = tp.GetProp<NameProperty>("ParameterName").Value.Name;
+                    var expressionGuid = CommonStructs.GetGuid(tp.GetProp<StructProperty>("ExpressionGUID"));
+                    if (expressionGuidMap.TryGetValue(expressionGuid, out var newGuid) && parameterNameMap.TryGetValue(parameterName, out var newParameterName))
+                    {
+                        Debug.WriteLine($"Updating TP MIC {exp.InstancedFullPath}");
+                        tp.GetProp<NameProperty>("ParameterName").Value = newParameterName;
+                        tp.Properties.AddOrReplaceProp(CommonStructs.GuidProp(newGuid, "ExpressionGUID"));
+                    }
+                }
+                exp.WriteProperty(textureParams);
+            }
+
+
         }
 
         public static void ConvertME1TerrainComponent(ExportEntry exp)
@@ -1114,6 +1211,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         private static void PostPortingCorrections(IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
         {
             // Corrections to run AFTER porting is done
+            //ReinstateCoverSlots(me1File, le1File, vTestOptions);
             CorrectTextures(le1File);
             CorrectPrefabSequenceClass(le1File);
             CorrectSequences(le1File, vTestOptions);
@@ -1121,13 +1219,53 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             PostCorrectMaterialsToInstanceConstants(me1File, le1File, vTestOptions);
             //CorrectTerrainMaterials(le1File);
 
-            if (Path.GetFileNameWithoutExtension(le1File.FilePath).CaseInsensitiveEquals("BIOA_PRC2_CCLava"))
+
+            var fName = Path.GetFileNameWithoutExtension(le1File.FilePath);
+            // Port in the collision-corrected terrain
+            if (fName.CaseInsensitiveEquals("BIOA_PRC2_CCLava"))
             {
                 PortInCorrectedTerrain(le1File, "CCLava.Terrain_1", "BIOA_LAV60_00_LAY.pcc", vTestOptions);
             }
+            else if (fName.CaseInsensitiveEquals("BIOA_PRC2_CCSIM05_DSG"))
+            {
+                // Port in the custom sequence used for switching UIs
+                var seq = le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence.Play_Central_Scoreboard_Matinee");
+                var uiSeq = vTestOptions.vTestHelperPackage.FindExport("ScoreboardSequence.UISwitcherLogic");
+                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, uiSeq, le1File, seq, true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var newUiSeq);
+                KismetHelper.AddObjectToSequence(newUiSeq as ExportEntry, seq);
+                // link it up
+                var showCentralScoreboard = le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence.Play_Central_Scoreboard_Matinee.SeqEvent_RemoteEvent_0");
+                KismetHelper.CreateOutputLink(showCentralScoreboard, "Out", newUiSeq as ExportEntry);
+            }
+
+
+
             RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
 
             //CorrectTriggerStreamsMaybe(me1File, le1File);
+        }
+
+        private static void ReinstateCoverSlots(IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
+        {
+            var coverLinks = le1File.Exports.Where(x => x.ClassName == "CoverLink");
+            foreach (var le1CoverLink in coverLinks)
+            {
+                var me1CoverLink = me1File.FindExport(le1CoverLink.InstancedFullPath);
+                var me1Slots = me1CoverLink.GetProperty<ArrayProperty<StructProperty>>("Slots");
+                if (me1Slots != null && me1Slots.Any())
+                {
+                    var le1Slots = new ArrayProperty<StructProperty>("Slots");
+
+                    foreach (var slot in me1Slots)
+                    {
+                        le1Slots.Add(ConvertCoverSlot(slot, vTestOptions));
+                    }
+
+                    le1CoverLink.WriteProperty(le1Slots);
+                    le1File.Save();
+                }
+
+            }
         }
 
         private static void PortInCorrectedTerrain(IMEPackage le1File, string vTestIFP, string materialsFile, VTestOptions vTestOptions)
@@ -1242,7 +1380,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             // or at least, it better be!
             // Slot 2 has to be blank in LE. In ME1 i guess it was a brush.
             level.Actors.Insert(1, new UIndex(0)); // This is stupid
-            //}
+                                                   //}
 
             pl.WriteBinary(level);
         }
@@ -1397,8 +1535,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             }
 
-
-
             // Cross level actors
             foreach (var exportIdx in me1L.CrossLevelActors)
             {
@@ -1410,7 +1546,17 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
 
             // Regenerate the 'End' struct cause it will have ported wrong
-            #region ReachSpecs
+            CorrectReachSpecs(me1File, le1File);
+            le1PL.WriteBinary(le1L);
+        }
+
+        /// <summary>
+        /// Corrects UDK/ME1/ME2 reachspec system to ME3 / LE
+        /// </summary>
+        /// <param name="me1File"></param>
+        /// <param name="le1File"></param>
+        public static void CorrectReachSpecs(IMEPackage me1File, IMEPackage le1File)
+        {
 
             // Have to do LE1 -> ME1 for references as not all reachspecs may have been ported
             foreach (var le1Exp in le1File.Exports.Where(x => x.IsA("ReachSpec")))
@@ -1427,6 +1573,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     newEnd.Add(me1End.GetProp<StructProperty>("Guid"));
 
                     var me1EndEntry = me1End.GetProp<ObjectProperty>("Nav");
+                    me1EndEntry ??= me1End.GetProp<ObjectProperty>("Actor"); // UDK uses 'Actor' but it's in wrong position
                     if (me1EndEntry != null)
                     {
                         newEnd.Add(new ObjectProperty(le1File.FindExport(me1File.GetUExport(me1EndEntry.Value).InstancedFullPath).UIndex, "Actor"));
@@ -1439,15 +1586,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     StructProperty nes = new StructProperty("ActorReference", newEnd, "End", true);
                     le1Props.AddOrReplaceProp(nes);
                     le1Exp.WriteProperties(le1Props);
+                    le1Exp.WriteBinary(new byte[0]); // When porting from UDK there's some binary data. This removes it
 
                     // Test properties
                     le1Exp.GetProperties();
                 }
             }
-            #endregion
-
-            le1PL.WriteBinary(le1L);
         }
+
         #endregion
 
         #region QA Methods

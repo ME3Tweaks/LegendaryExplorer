@@ -1198,9 +1198,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         var parmName = sp.GetProp<NameProperty>("ParameterName");
                         var parmValue = sp.GetProp<ObjectProperty>("ParameterValue");
 
-                        if (parmName != null && parmValue != null && parmValue.Value != 0)
+                        if (parmName != null && parmValue != null && parmValue.Value != 0 && parsingExport.FileRef.TryGetEntry(parmValue.Value, out var entry))
                         {
-                            parsedValue = $" {parmName}: {parsingExport.FileRef.GetEntry(parmValue.Value).ObjectName.Instanced}";
+                            parsedValue = $" {parmName}: {entry.ObjectName.Instanced}";
                         }
                     }
                     else if (sp.StructType == "TextureParameter")

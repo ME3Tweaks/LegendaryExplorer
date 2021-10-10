@@ -267,14 +267,17 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                 pew.RestoreAndBringToFront();
                 MessageBox.Show(GetPEWindow(), $"Done. Took {sw.Elapsed.TotalSeconds} seconds");
             });
-
-
-
-
         }
         private void ObjectInfosSearch_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.SearchObjectInfos(GetPEWindow());
+        }
+
+
+        private void ReInventoryCustomClasses_Click(object sender, RoutedEventArgs e)
+        {
+            // Todo: Move this into a 'general' class
+            PackageEditorExperimentsM.RebuildInternalResourceClassInformations(GetPEWindow());
         }
 
 
@@ -376,10 +379,14 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             VTestExperiment.VTest(GetPEWindow());
         }
-
+        
         private async void MakeVTestDonor_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ConvertMaterialToVtestDonor(GetPEWindow());
+        }
+        private void MakeLE1MakoMap_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.MakeMakoLevel(GetPEWindow());
         }
 
         private void ImportUDKTerrain_Click(object sender, RoutedEventArgs e)
