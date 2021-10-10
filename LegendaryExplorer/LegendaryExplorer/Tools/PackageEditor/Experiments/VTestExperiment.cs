@@ -314,7 +314,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     else
                     {
                         var levelName = Path.GetFileNameWithoutExtension(f);
-                        //if (levelName.CaseInsensitiveEquals("BIOA_PRC2_CCLAVA"))
+                        //if (levelName.CaseInsensitiveEquals("BIOA_PRC2_CCAirlock"))
                         PortVTestLevel(vTestLevel, levelName, vTestOptions, levelName == "BIOA_" + vTestLevel, true);
                     }
                 }
@@ -653,7 +653,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             using var sourcePackage = MEPackageHandler.OpenMEPackage(sourceFile);
 
             PrePortingCorrections(sourcePackage);
-            
+
             var bcBaseIdx = sourcePackage.findName("BIOC_Base");
             sourcePackage.replaceName(bcBaseIdx, "SFXGame");
 
@@ -814,7 +814,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         private static Dictionary<string, string> parameterNameMap = new()
         {
             { "Alpha_Map", "Texture" }, // PRC2 Scoreboard
-            { "Character_Color", "ColorSelected"} // PRC2 Scoreboard
+            { "Character_Color", "ColorSelected" } // PRC2 Scoreboard
         };
 
         private static void PreCorrectMaterialInstanceConstant(ExportEntry exp)
@@ -1238,11 +1238,54 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 KismetHelper.CreateOutputLink(showCentralScoreboard, "Out", newUiSeq as ExportEntry);
             }
 
+            LevelSpecificPostCorrections(fName, me1File, le1File, vTestOptions);
+
 
 
             RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
 
             //CorrectTriggerStreamsMaybe(me1File, le1File);
+        }
+
+        private static void LevelSpecificPostCorrections(string fName, IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
+        {
+            switch (fName.ToUpper())
+            {
+                case "BIOA_PRC2_CCLAVA":
+                    {
+                        // SeqAct_ChangeCollision changed and requires an additional property otherwise it doesn't work.
+                        string[] collisionsToTurnOff = new[]
+                        {
+                            // Hut doors and kill volumes
+                            "TheWorld.PersistentLevel.Main_Sequence.Set_Hut_Accessibility.SeqAct_ChangeCollision_1",
+                            "TheWorld.PersistentLevel.Main_Sequence.Set_Hut_Accessibility.SeqAct_ChangeCollision_3",
+                            "TheWorld.PersistentLevel.Main_Sequence.Set_Hut_Accessibility.SeqAct_ChangeCollision_5",
+                            "TheWorld.PersistentLevel.Main_Sequence.Set_Hut_Accessibility.SeqAct_ChangeCollision_6",
+                        };
+
+                        foreach (var cto in collisionsToTurnOff)
+                        {
+                            var exp = le1File.FindExport(cto);
+                            exp.WriteProperty(new EnumProperty("COLLIDE_NoCollision", "ECollisionType", MEGame.LE1, "CollisionType"));
+                        }
+
+                        string[] collisionsToTurnOn = new[]
+                        {
+                            // Hut doors and kill volumes
+                            "TheWorld.PersistentLevel.Main_Sequence.Set_Hut_Accessibility.SeqAct_ChangeCollision_0",
+                            "TheWorld.PersistentLevel.Main_Sequence.Set_Hut_Accessibility.SeqAct_ChangeCollision_9",
+                            "TheWorld.PersistentLevel.Main_Sequence.Set_Hut_Accessibility.SeqAct_ChangeCollision_2",
+                            "TheWorld.PersistentLevel.Main_Sequence.Set_Hut_Accessibility.SeqAct_ChangeCollision_4",
+                        };
+
+                        foreach (var cto in collisionsToTurnOn)
+                        {
+                            var exp = le1File.FindExport(cto);
+                            exp.WriteProperty(new EnumProperty("COLLIDE_BlockAll", "ECollisionType", MEGame.LE1, "CollisionType"));
+                        }
+                    }
+                    break;
+            }
         }
 
         private static void ReinstateCoverSlots(IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
