@@ -10,6 +10,7 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.UnrealScript.Language.Tree;
 
 namespace LegendaryExplorerCore.Unreal.ObjectInfo
 {
@@ -530,6 +531,92 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 MEGame.LE3 => LE3UnrealObjectInfo.getSequenceObjectInfoInputLinks(exportClassName),
                 _ => null
             };
+        }
+
+
+
+        // Shared global methods for loading custom data
+
+        /// <summary>
+        /// Generates sequence object information from a sequence object's class DEFAULTS. The information is installed into the infos object if not present already.
+        /// </summary>
+        /// <param name="exportEntry"></param>
+        /// <param name="infos"></param>
+        public static void GenerateSequenceObjectInfoForClassDefaults(ExportEntry exportEntry, Dictionary<string, SequenceObjectInfo> infos = null)
+        {
+            if (infos == null)
+            {
+                infos = exportEntry.Game switch
+                {
+                    MEGame.ME1 => ME1UnrealObjectInfo.SequenceObjects,
+                    MEGame.ME2 => ME2UnrealObjectInfo.SequenceObjects,
+                    MEGame.ME3 => ME3UnrealObjectInfo.SequenceObjects,
+                    MEGame.UDK => ME3UnrealObjectInfo.SequenceObjects,
+                    MEGame.LE1 => LE1UnrealObjectInfo.SequenceObjects,
+                    MEGame.LE2 => LE2UnrealObjectInfo.SequenceObjects,
+                    MEGame.LE3 => LE3UnrealObjectInfo.SequenceObjects,
+                    _ => throw new ArgumentOutOfRangeException($"GenerateSequenceObjectInfoForClassDefaults() does not accept export for game {exportEntry.Game}")
+                };
+            }
+
+
+            string className = exportEntry.ClassName;
+            if (!infos.TryGetValue(className, out SequenceObjectInfo seqObjInfo))
+            {
+                seqObjInfo = new SequenceObjectInfo();
+                infos.Add(className, seqObjInfo);
+            }
+
+            int objInstanceVersion = exportEntry.GetProperty<IntProperty>("ObjInstanceVersion");
+            if (objInstanceVersion > seqObjInfo.ObjInstanceVersion)
+            {
+                seqObjInfo.ObjInstanceVersion = objInstanceVersion;
+            }
+
+            if (seqObjInfo.inputLinks is null && exportEntry.IsDefaultObject)
+            {
+                List<string> inputLinks = generateSequenceObjectInfo(exportEntry);
+                seqObjInfo.inputLinks = inputLinks;
+            }
+        }
+
+        //call on the _Default object
+        private static List<string> generateSequenceObjectInfo(ExportEntry export)
+        {
+            var inLinks = export.GetProperty<ArrayProperty<StructProperty>>("InputLinks");
+            if (inLinks != null)
+            {
+                var inputLinks = new List<string>();
+                foreach (var seqOpInputLink in inLinks)
+                {
+                    inputLinks.Add(seqOpInputLink.GetProp<StrProperty>("LinkDesc").Value);
+                }
+                return inputLinks;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Installs a ClassInfo object into the respective game's Classes list. Overwrites the existing one if it's already defined.
+        /// </summary>
+        /// <param name="className"></param>
+        /// <param name="info"></param>
+        /// <param name="game"></param>
+        public static void InstallCustomClassInfo(string className, ClassInfo info, MEGame game)
+        {
+            var classes = game switch
+            {
+                MEGame.ME1 => ME1UnrealObjectInfo.Classes,
+                MEGame.ME2 => ME2UnrealObjectInfo.Classes,
+                MEGame.ME3 => ME3UnrealObjectInfo.Classes,
+                MEGame.UDK => ME3UnrealObjectInfo.Classes,
+                MEGame.LE1 => LE1UnrealObjectInfo.Classes,
+                MEGame.LE2 => LE2UnrealObjectInfo.Classes,
+                MEGame.LE3 => LE3UnrealObjectInfo.Classes,
+                _ => throw new ArgumentOutOfRangeException($"InstallCustomClassInfo() does not accept game {game}")
+            };
+            classes[className] = info;
         }
     }
 }
