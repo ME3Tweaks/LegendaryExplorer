@@ -236,7 +236,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         private void CreateSubObject(Subobject subObject, ExportEntry parent, Dictionary<NameReference, ExportEntry> parentSubObjectDict, ref ExportEntry subExport)
         {
             var objName = NameReference.FromInstancedString(subObject.Name.Name);
-            IEntry classEntry = EntryImporter.EnsureClassIsInFile(Pcc, subObject.Class.Name);
+            IEntry classEntry = EntryImporter.EnsureClassIsInFile(Pcc, subObject.Class.Name, new RelinkerOptionsPackage()); //Todo: Pass the ROP through to speed this up
             if (subExport is null)
             {
                 if (Pcc.TryGetTrash(out subExport))

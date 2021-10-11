@@ -27,6 +27,7 @@ using LegendaryExplorer.Tools.Sequence_Editor;
 using LegendaryExplorer.UserControls.ExportLoaderControls;
 using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
@@ -114,7 +115,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
         private readonly PathingGraphEditor graphEditor;
         private bool AllowRefresh;
-        public PathingZoomController zoomController;
+        public PathfindingEditorWindow.PathingZoomController zoomController;
 
         private string FileQueuedForLoad;
         private ExportEntry ExportQueuedForFocus;
