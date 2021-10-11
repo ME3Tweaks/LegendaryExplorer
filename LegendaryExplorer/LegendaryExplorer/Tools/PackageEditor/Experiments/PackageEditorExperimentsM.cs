@@ -2281,7 +2281,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
 
             // All Ints
-            terrainProps.Remove(x => x is IntProperty);
+            terrainProps.RemoveAll(x => x is IntProperty);
             terrainProps.AddRange(udkProps.Where(x => x is IntProperty));
 
             // Components
@@ -2396,7 +2396,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             var terrainProps = destTerrain.GetProperties();
             var udkProps = udkTerrain.GetProperties();
             terrainProps.RemoveNamedProperty("DrawScale3D");
-            terrainProps.Remove(x => x is IntProperty);
+            terrainProps.RemoveAll(x => x is IntProperty);
             terrainProps.AddRange(udkProps.Where(x => x is IntProperty));
             terrainProps.RemoveNamedProperty("Location");
             var loc = udkProps.GetProp<StructProperty>("Location");

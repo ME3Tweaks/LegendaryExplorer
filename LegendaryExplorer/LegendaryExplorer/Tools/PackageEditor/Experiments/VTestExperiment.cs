@@ -1246,10 +1246,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 // Port in the UI switching and keybinding for PC
                 // Port in the custom sequence used for switching UIs. Should only run if not skipping the scoreboard
-                //InstallVTestHelperSequence(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Post_Scenario_Scoreboard_Matinee.UIAction_PlaySound_0", "ScoreboardSequence.UISwitcherLogic", vTestOptions);
+                InstallVTestHelperSequence(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Post_Scenario_Scoreboard_Matinee.UIAction_PlaySound_0", "ScoreboardSequence.UISwitcherLogic", vTestOptions);
 
                 // Port in the keybinding sequences
-                //InstallVTestHelperSequence(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Post_Scenario_Scoreboard_Matinee.UIAction_PlaySound_0", "ScoreboardSequence.KeybindsInstaller", vTestOptions);
+                // Both of the following crashes the game currently, not sure why.
+                //InstallVTestHelperSequence(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Post_Scenario_Scoreboard_Matinee.BioSeqAct_MiniGame_1", "ScoreboardSequence.KeybindsInstaller", vTestOptions);
                 //InstallVTestHelperSequence(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Post_Scenario_Scoreboard_Matinee.UIAction_PlaySound_1", "ScoreboardSequence.KeybindsUninstaller", vTestOptions);
 
             }
@@ -1269,9 +1270,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             if (glitchRandom != null)
             {
                 var props = glitchRandom.GetProperties();
-                props.AddOrReplaceProp(new NameProperty("EMT_HoloWipe", "m_nEffectsMaterial"));
+                props.AddOrReplaceProp(new NameProperty("EMT_HoloWipe", "m_nmEffectsMaterial"));
                 props.AddOrReplaceProp(new BoolProperty(true, "m_bIgnorePooling"));
-                props.AddOrReplaceProp(new EnumProperty("BIO_VFX_PRIORITY_ALWAYS", "EBioVFXPriority", MEGame.LE1, "m_nEffectsMaterial"));
+                props.AddOrReplaceProp(new EnumProperty("BIO_VFX_PRIORITY_ALWAYS", "EBioVFXPriority", MEGame.LE1, "ePriority"));
                 glitchRandom.WriteProperties(props);
             }
 
@@ -1279,9 +1280,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             if (glitchedToDeath != null)
             {
                 var props = glitchedToDeath.GetProperties();
-                props.AddOrReplaceProp(new NameProperty("EMT_HoloWipe", "m_nEffectsMaterial"));
+                props.AddOrReplaceProp(new NameProperty("EMT_HoloWipe", "m_nmEffectsMaterial"));
                 props.AddOrReplaceProp(new BoolProperty(true, "m_bIgnorePooling"));
-                props.AddOrReplaceProp(new EnumProperty("BIO_VFX_PRIORITY_ALWAYS", "EBioVFXPriority", MEGame.LE1, "m_nEffectsMaterial"));
+                props.AddOrReplaceProp(new EnumProperty("BIO_VFX_PRIORITY_ALWAYS", "EBioVFXPriority", MEGame.LE1, "ePriority"));
                 glitchedToDeath.WriteProperties(props);
             }
         }
