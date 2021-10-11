@@ -647,9 +647,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 properties =
                 {
-                    new KeyValuePair<string, PropertyInfo>("m_oTarget", new PropertyInfo(PropertyType.ObjectProperty, "Actor")),
-                    new KeyValuePair<string, PropertyInfo>("Location", new PropertyInfo(PropertyType.StructProperty, "Vector")),
-                    new KeyValuePair<string, PropertyInfo>("RotationVector", new PropertyInfo(PropertyType.StructProperty, "Vector"))
+                    {"m_oTarget", new PropertyInfo(PropertyType.ObjectProperty, "Actor")},
+                    {"Location", new PropertyInfo(PropertyType.StructProperty, "Vector")},
+                    {"RotationVector", new PropertyInfo(PropertyType.StructProperty, "Vector")}
                 }
             };
             sequenceObjects["SeqAct_LEXGetLocationAndRotation"] = new SequenceObjectInfo { ObjInstanceVersion = 0 };
@@ -661,11 +661,11 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 properties =
                 {
-                    new KeyValuePair<string, PropertyInfo>("bSetRotation", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<string, PropertyInfo>("bSetLocation", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<string, PropertyInfo>("m_oTarget", new PropertyInfo(PropertyType.ObjectProperty, "Actor")),
-                    new KeyValuePair<string, PropertyInfo>("Location", new PropertyInfo(PropertyType.StructProperty, "Vector")),
-                    new KeyValuePair<string, PropertyInfo>("RotationVector", new PropertyInfo(PropertyType.StructProperty, "Vector")),
+                    {"bSetRotation", new PropertyInfo(PropertyType.BoolProperty)},
+                    {"bSetLocation", new PropertyInfo(PropertyType.BoolProperty)},
+                    {"m_oTarget", new PropertyInfo(PropertyType.ObjectProperty, "Actor")},
+                    {"Location", new PropertyInfo(PropertyType.StructProperty, "Vector")},
+                    {"RotationVector", new PropertyInfo(PropertyType.StructProperty, "Vector")},
                 }
             };
             sequenceObjects["SeqAct_SetLocationAndRotation"] = new SequenceObjectInfo { ObjInstanceVersion = 0 };
