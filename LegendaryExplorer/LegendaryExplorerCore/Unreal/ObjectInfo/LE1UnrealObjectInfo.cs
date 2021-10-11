@@ -606,6 +606,70 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 ObjInstanceVersion = 1
             };
 
+            // Game Interop Classes
+                        //CUSTOM ADDITIONS
+            classes["SeqAct_SendMessageToLEX"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                exportIndex = 23,
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
+            };
+            sequenceObjects["SeqAct_SendMessageToLEX"] = new SequenceObjectInfo { ObjInstanceVersion = 2 };
+
+            classes["SeqAct_LEXDumpActors"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                exportIndex = 29,
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
+            };
+            sequenceObjects["SeqAct_LEXDumpActors"] = new SequenceObjectInfo { ObjInstanceVersion = 2 };
+
+            classes["SeqAct_LEXAccessDumpedActorsList"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                exportIndex = 31,
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
+            };
+            sequenceObjects["SeqAct_LEXAccessDumpedActorsList"] = new SequenceObjectInfo { ObjInstanceVersion = 2 };
+
+            classes["SeqAct_LEXGetPlayerCamPOV"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                exportIndex = 33,
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
+            };
+            sequenceObjects["SeqAct_LEXGetPlayerCamPOV"] = new SequenceObjectInfo { ObjInstanceVersion = 2 };
+
+            classes["SeqAct_LEXGetLocationAndRotation"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                exportIndex = 55,
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                properties =
+                {
+                    {"m_oTarget", new PropertyInfo(PropertyType.ObjectProperty, "Actor")},
+                    {"Location", new PropertyInfo(PropertyType.StructProperty, "Vector")},
+                    {"RotationVector", new PropertyInfo(PropertyType.StructProperty, "Vector")}
+                }
+            };
+            sequenceObjects["SeqAct_LEXGetLocationAndRotation"] = new SequenceObjectInfo { ObjInstanceVersion = 0 };
+
+            classes["SeqAct_SetLocationAndRotation"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                exportIndex = 43,
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                properties =
+                {
+                    {"bSetRotation", new PropertyInfo(PropertyType.BoolProperty)},
+                    {"bSetLocation", new PropertyInfo(PropertyType.BoolProperty)},
+                    {"m_oTarget", new PropertyInfo(PropertyType.ObjectProperty, "Actor")},
+                    {"Location", new PropertyInfo(PropertyType.StructProperty, "Vector")},
+                    {"RotationVector", new PropertyInfo(PropertyType.StructProperty, "Vector")},
+                }
+            };
+            sequenceObjects["SeqAct_SetLocationAndRotation"] = new SequenceObjectInfo { ObjInstanceVersion = 0 };
+
             ME3UnrealObjectInfo.AddIntrinsicClasses(classes, MEGame.LE1);
 
             // Native classes 

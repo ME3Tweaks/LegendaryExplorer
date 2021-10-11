@@ -6,46 +6,37 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
+using LegendaryExplorer.GameInterop.InteropTargets;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Packages;
 using Keys = System.Windows.Forms.Keys;
 
 namespace LegendaryExplorer.GameInterop
 {
+    /// <summary>
+    /// Handles communication between LEX and a game executable via the interop ASI
+    /// </summary>
     public static class GameController
     {
-        public static string InteropAsiName(MEGame game) => game switch
-        {
-            MEGame.ME2 => "ZZZ_LEXInteropME2.asi",
-            MEGame.ME3 => "LEXInteropME3.asi",
-            _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
-        };
-
-        //asis used by ME3Explorer. here so that they can be deleted if found in game's asi dir.
-        public static string OldInteropAsiName(MEGame game) => game switch
-        {
-            MEGame.ME2 => "ME3ExplorerInteropME2.asi",
-            MEGame.ME3 => "ME3ExplorerInterop.asi",
-            _ => null
-        };
-
         public const string TempMapName = "AAAME3EXPDEBUGLOAD";
+
+        private static readonly Dictionary<MEGame, InteropTarget> Targets = new()
+        {
+            {MEGame.LE1, new LE1InteropTarget()},
+            {MEGame.ME2, new ME2InteropTarget()},
+            {MEGame.ME3, new ME3InteropTarget()}
+        };
+
+        public static InteropTarget GetInteropTargetForGame(MEGame game)
+        {
+            if (Targets.ContainsKey(game)) return Targets[game];
+            return null;
+        }
+
         public static bool TryGetMEProcess(MEGame game, out Process meProcess)
         {
-            if (game is MEGame.ME2)
-            {
-                meProcess = Process.GetProcessesByName("ME2Game").FirstOrDefault() ?? Process.GetProcessesByName("MassEffect2").FirstOrDefault();
-            }
-            else
-            {
-                meProcess = Process.GetProcessesByName(game switch
-                {
-                    MEGame.ME1 => "MassEffect",
-                    MEGame.ME3 => "MassEffect3",
-                    _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
-                }).FirstOrDefault();
-            }
-            return meProcess != null;
+            meProcess = null;
+            return GetInteropTargetForGame(game)?.TryGetProcess(out meProcess) ?? false;
         }
 
         private static bool hasRegisteredForMessages; 
@@ -59,69 +50,12 @@ namespace LegendaryExplorer.GameInterop
             }
         }
 
-        public static event Action<string> RecieveME3Message;
-
-        public static event Action<string> RecieveME2Message;
-
-        public static event Action<string> RecieveME1Message;
-        public static void SendKey(IntPtr hWnd, Keys key) => SendKey(hWnd, (int)key);
-
-        public static void ExecuteConsoleCommands(MEGame game, params string[] commands)
-        {
-            switch (game)
-            {
-                case MEGame.ME2:
-                    ExecuteME2ConsoleCommands(commands.AsEnumerable());
-                    break;
-                case MEGame.ME3:
-                    ExecuteME3ConsoleCommands(commands.AsEnumerable());
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(game), game, null);
-            }
-        }
-
-        public static void ExecuteME3ConsoleCommands(params string[] commands) => ExecuteME3ConsoleCommands(commands.AsEnumerable());
-        public static void ExecuteME3ConsoleCommands(IEnumerable<string> commands)
-        {
-            if (TryGetMEProcess(MEGame.ME3, out Process me3Process))
-            {
-                ExecuteConsoleCommands(me3Process.MainWindowHandle, MEGame.ME3, commands);
-            }
-        }
-
-
-        public static void ExecuteME2ConsoleCommands(params string[] commands) => ExecuteME2ConsoleCommands(commands.AsEnumerable());
-        public static void ExecuteME2ConsoleCommands(IEnumerable<string> commands)
-        {
-            if (TryGetMEProcess(MEGame.ME2, out Process me2Process))
-            {
-                ExecuteConsoleCommands(me2Process.MainWindowHandle, MEGame.ME2, commands);
-            }
-        }
-
         public static bool SendME3TOCUpdateMessage()
         {
-            if (TryGetMEProcess(MEGame.ME3, out Process me3Process))
-            {
-                const uint ME3_TOCUPDATE = 0x8000 + 'T' + 'O' + 'C';
-                return SendMessage(me3Process.MainWindowHandle, ME3_TOCUPDATE, 0, 0);
-            }
-
-            return false;
-        }
-
-        public static void ExecuteConsoleCommands(IntPtr hWnd, MEGame game, params string[] commands) => ExecuteConsoleCommands(hWnd, game, commands.AsEnumerable());
-        public static void ExecuteConsoleCommands(IntPtr hWnd, MEGame game, IEnumerable<string> commands)
-        {
-            const string execFileName = "me3expinterop";
-            string execFilePath = Path.Combine(MEDirectories.GetDefaultGamePath(game), "Binaries", execFileName);
-            File.WriteAllText(execFilePath, string.Join(Environment.NewLine, commands));
-            DirectExecuteConsoleCommand(hWnd, $"exec {execFileName}");
+            return ((ME3InteropTarget)Targets[MEGame.ME3]).SendTOCUpdateMessage();
         }
 
         //private
-
         #region Internal support functions
         [StructLayout(LayoutKind.Sequential)]
         struct COPYDATASTRUCT
@@ -133,38 +67,26 @@ namespace LegendaryExplorer.GameInterop
         private static IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
             const int WM_COPYDATA = 0x004a;
-            const uint SENT_FROM_ME3 = 0x02AC00C2;
-            const uint SENT_FROM_ME2 = 0x02AC00C3;
-            const uint SENT_FROM_ME1 = 0x02AC00C4;
+            // const uint SENT_FROM_ME3 = 0x02AC00C2;
+            // const uint SENT_FROM_ME2 = 0x02AC00C3;
+            // const uint SENT_FROM_ME1 = 0x02AC00C4;
+            // const uint SENT_FROM_LE3 = 0x02AC00C5;
+            // const uint SENT_FROM_LE2 = 0x02AC00C6;
+            // const uint SENT_FROM_LE1 = 0x02AC00C7;
             if (msg == WM_COPYDATA)
             {
                 COPYDATASTRUCT cds = Marshal.PtrToStructure<COPYDATASTRUCT>(lParam);
-                switch (cds.dwData)
+                foreach (var target in Targets.Values)
                 {
-                    case SENT_FROM_ME3:
+                    if (cds.dwData == target.GameMessageSignature)
                     {
                         string value = Marshal.PtrToStringUni(cds.lpData);
                         handled = true;
-                        RecieveME3Message?.Invoke(value);
-                        return (IntPtr)1;
-                    }
-                    case SENT_FROM_ME2:
-                    {
-                        string value = Marshal.PtrToStringUni(cds.lpData);
-                        handled = true;
-                        RecieveME2Message?.Invoke(value);
-                        return (IntPtr)1;
-                    }
-                    case SENT_FROM_ME1:
-                    {
-                        string value = Marshal.PtrToStringUni(cds.lpData);
-                        handled = true;
-                        RecieveME1Message?.Invoke(value);
+                        target.RaiseReceivedMessage(value);
                         return (IntPtr)1;
                     }
                 }
             }
-
             return IntPtr.Zero;
         }
 
@@ -174,6 +96,7 @@ namespace LegendaryExplorer.GameInterop
         static extern bool PostMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
         const int WM_SYSKEYDOWN = 0x0104;
 
+        private static void SendKey(IntPtr hWnd, Keys key) => SendKey(hWnd, (int)key);
         private static void SendKey(IntPtr hWnd, int key) => PostMessage(hWnd, WM_SYSKEYDOWN, key, 0);
 
         /// <summary>
@@ -182,7 +105,7 @@ namespace LegendaryExplorer.GameInterop
         /// </summary>
         /// <param name="gameWindowHandle"></param>
         /// <param name="command"></param>
-        private static void DirectExecuteConsoleCommand(IntPtr gameWindowHandle, string command)
+        internal static void DirectExecuteConsoleCommand(IntPtr gameWindowHandle, string command)
         {
             SendKey(gameWindowHandle, Keys.Tab);
             foreach (char c in command)
@@ -197,6 +120,11 @@ namespace LegendaryExplorer.GameInterop
                 }
             }
             SendKey(gameWindowHandle, Keys.Enter);
+        }
+
+        internal static bool SendTOCMessage(IntPtr hWnd, uint Msg)
+        {
+            return SendMessage(hWnd, Msg, 0, 0);
         }
 
         static readonly Dictionary<char, Keys> characterMapping = new()
