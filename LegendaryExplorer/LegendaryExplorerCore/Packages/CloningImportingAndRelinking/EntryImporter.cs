@@ -320,8 +320,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <returns></returns>
         public static ExportEntry ImportExport(IMEPackage destPackage, ExportEntry sourceExport, int link, RelinkerOptionsPackage rop)
         {
-            if (sourceExport.InstancedFullPath == "TheWorld.PersistentLevel.BioPathPoint_9.SpriteComponent_1895")
-                Debugger.Break();
+            //Debug.WriteLine($"Importing {sourceExport.InstancedFullPath}");
+            //if (sourceExport.InstancedFullPath.Contains("Nor10_StaticMesh", StringComparison.InvariantCultureIgnoreCase))
+            //    Debugger.Break();
 #if DEBUG
             // CROSSGEN - WILL NEED HEAVY REWORK IF THIS IS TO BE MERGED TO BETA
             // Cause there's a lot of things that seem to have to be manually accounted for
@@ -332,14 +333,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 // Port in donor instead
                 var ifp = sourceExport.InstancedFullPath;
                 //Debug.WriteLine($@"Porting {ifp}");
-                //if (ifp.Contains("JUG80_SAIL"))
+                //if (ifp.Contains("Nor10_StaticMesh"))
                 //    Debugger.Break();
                 var donorFiles = rop.TargetGameDonorDB.GetFilesContainingObject(ifp);
-                //if ((donorFiles == null || !donorFiles.Any()) && ifp.EndsWith("_dup", StringComparison.InvariantCultureIgnoreCase))
-                //{
-                //    ifp = ifp.Substring(0, ifp.Length - 4);
-                //    donorFiles = targetGameDB.GetFilesContainingObject(ifp);
-                //}
                 bool usingDonor = false;
                 if (donorFiles != null && donorFiles.Any())
                 {

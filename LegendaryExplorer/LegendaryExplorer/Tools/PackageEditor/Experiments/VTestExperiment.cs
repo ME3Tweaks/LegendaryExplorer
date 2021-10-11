@@ -314,7 +314,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     else
                     {
                         var levelName = Path.GetFileNameWithoutExtension(f);
-                        //if (levelName.CaseInsensitiveEquals("BIOA_PRC2_CCAirlock"))
+                        //if (levelName.CaseInsensitiveEquals("BIOA_PRC2_CCSIM05_DSG"))
                         PortVTestLevel(vTestLevel, levelName, vTestOptions, levelName == "BIOA_" + vTestLevel, true);
                     }
                 }
@@ -809,12 +809,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
             { new Guid(StringToByteArray("AD2F8F9FB837D8499EF1FC9799289A3E")), new Guid(StringToByteArray("896318E56A762B4FAEA9AA29B4B968CD")) }, // Alpha_Map -> Texture (Scoreboard)
             { new Guid(StringToByteArray("32144A9CDE189141BC421589B7EF3C0A")), new Guid(StringToByteArray("A1A3A72858C9DC45A10D3E9967BE4EE8")) }, // Character_Color -> ColorSelected (Scoreboard)
+            { new Guid(StringToByteArray("E1EC0FC0E38D07439505E7C1EBB17F6D")), new Guid(StringToByteArray("896318E56A762B4FAEA9AA29B4B968CD")) }, // Alpha_Map -> Texture (Scoreboard Pulse)
+
         };
 
         private static Dictionary<string, string> parameterNameMap = new()
         {
-            { "Alpha_Map", "Texture" }, // PRC2 Scoreboard
-            { "Character_Color", "ColorSelected" } // PRC2 Scoreboard
+            { "Alpha_Map", "Texture" }, // PRC2 Scoreboard Materials
+            { "Character_Color", "ColorSelected" } // PRC2 Scoreboard Materials
         };
 
         private static void PreCorrectMaterialInstanceConstant(ExportEntry exp)
@@ -1004,6 +1006,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             if (exp.IsA("BioSquadCombat"))
             {
                 props.RemoveNamedProperty("m_oSprite");
+            }
+
+            if (exp.IsA("CameraActor"))
+            {
+                props.RemoveNamedProperty("MeshComp"); // some actors have a camera mesh that was probably used to better visualize in-editor
             }
 
             exp.WriteProperties(props);
@@ -1217,6 +1224,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             CorrectSequences(le1File, vTestOptions);
             CorrectPathfindingNetwork(me1File, le1File);
             PostCorrectMaterialsToInstanceConstants(me1File, le1File, vTestOptions);
+            CorrectVFX(me1File, le1File, vTestOptions);
             //CorrectTerrainMaterials(le1File);
 
 
@@ -1229,13 +1237,21 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             else if (fName.CaseInsensitiveEquals("BIOA_PRC2_CCSIM05_DSG"))
             {
                 // Port in the custom sequence used for switching UIs
-                var seq = le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence.Play_Central_Scoreboard_Matinee");
-                var uiSeq = vTestOptions.vTestHelperPackage.FindExport("ScoreboardSequence.UISwitcherLogic");
-                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, uiSeq, le1File, seq, true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var newUiSeq);
-                KismetHelper.AddObjectToSequence(newUiSeq as ExportEntry, seq);
-                // link it up
-                var showCentralScoreboard = le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence.Play_Central_Scoreboard_Matinee.SeqEvent_RemoteEvent_0");
-                KismetHelper.CreateOutputLink(showCentralScoreboard, "Out", newUiSeq as ExportEntry);
+                InstallVTestHelperSequence(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Central_Scoreboard_Matinee.SeqEvent_RemoteEvent_0", "ScoreboardSequence.UISwitcherLogic", vTestOptions);
+
+                // Port in the keybinding sequences
+                InstallVTestHelperSequence(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Central_Scoreboard_Matinee.SeqEvent_RemoteEvent_0", "ScoreboardSequence.KeybindsInstaller", vTestOptions);
+                InstallVTestHelperSequence(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Central_Scoreboard_Matinee.SeqAct_Gate_3", "ScoreboardSequence.KeybindsUninstaller", vTestOptions);
+            } else if (fName.CaseInsensitiveEquals("BIOA_PRC2_CCSCOREBOARD_DSG"))
+            {
+                // Port in the UI switching and keybinding for PC
+                // Port in the custom sequence used for switching UIs. Should only run if not skipping the scoreboard
+                //InstallVTestHelperSequence(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Post_Scenario_Scoreboard_Matinee.UIAction_PlaySound_0", "ScoreboardSequence.UISwitcherLogic", vTestOptions);
+
+                // Port in the keybinding sequences
+                //InstallVTestHelperSequence(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Post_Scenario_Scoreboard_Matinee.UIAction_PlaySound_0", "ScoreboardSequence.KeybindsInstaller", vTestOptions);
+                //InstallVTestHelperSequence(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Post_Scenario_Scoreboard_Matinee.UIAction_PlaySound_1", "ScoreboardSequence.KeybindsUninstaller", vTestOptions);
+
             }
 
             LevelSpecificPostCorrections(fName, me1File, le1File, vTestOptions);
@@ -1247,11 +1263,107 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             //CorrectTriggerStreamsMaybe(me1File, le1File);
         }
 
+        private static void CorrectVFX(IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
+        {
+            var glitchRandom = le1File.FindExport("BIOA_PRC2_MatFX.VFX.Glitch_Random");
+            if (glitchRandom != null)
+            {
+                var props = glitchRandom.GetProperties();
+                props.AddOrReplaceProp(new NameProperty("EMT_HoloWipe", "m_nEffectsMaterial"));
+                props.AddOrReplaceProp(new BoolProperty(true, "m_bIgnorePooling"));
+                props.AddOrReplaceProp(new EnumProperty("BIO_VFX_PRIORITY_ALWAYS", "EBioVFXPriority", MEGame.LE1, "m_nEffectsMaterial"));
+                glitchRandom.WriteProperties(props);
+            }
+
+            var glitchedToDeath = le1File.FindExport("BIOA_PRC2_MatFX.DeathEffects.GlitchedToDeath");
+            if (glitchedToDeath != null)
+            {
+                var props = glitchedToDeath.GetProperties();
+                props.AddOrReplaceProp(new NameProperty("EMT_HoloWipe", "m_nEffectsMaterial"));
+                props.AddOrReplaceProp(new BoolProperty(true, "m_bIgnorePooling"));
+                props.AddOrReplaceProp(new EnumProperty("BIO_VFX_PRIORITY_ALWAYS", "EBioVFXPriority", MEGame.LE1, "m_nEffectsMaterial"));
+                glitchedToDeath.WriteProperties(props);
+            }
+        }
+
+        private static void InstallVTestHelperSequence(IMEPackage le1File, string sourceSequenceOpIFP, string vTestSequenceIFP, VTestOptions vTestOptions)
+        {
+            var sourceItemToOutFrom = le1File.FindExport(sourceSequenceOpIFP);
+            var parentSequence = SeqTools.GetParentSequence(sourceItemToOutFrom, true);
+            var donorSequence = vTestOptions.vTestHelperPackage.FindExport(vTestSequenceIFP);
+            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, donorSequence, le1File, parentSequence, true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var newUiSeq);
+            KismetHelper.AddObjectToSequence(newUiSeq as ExportEntry, parentSequence);
+
+            // link it up
+            KismetHelper.CreateOutputLink(sourceItemToOutFrom, "Out", newUiSeq as ExportEntry);
+        }
+
         private static void LevelSpecificPostCorrections(string fName, IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
         {
-            switch (fName.ToUpper())
+            var upperFName = fName.ToUpper();
+
+            // Semi-global
+            switch (upperFName)
             {
-                case "BIOA_PRC2_CCLAVA":
+                case "BIOA_PRC2_CCCAVE_DSG":
+                case "BIOA_PRC2_CCLAVA_DSG":
+                case "BIOA_PRC2_CCCRATE_DSG":
+                case "BIOA_PRC2_CCTHAI_DSG":
+                    // Might need Aherns
+                    {
+                        foreach (var exp in le1File.Exports.Where(x => x.ClassName == "Sequence" && x.GetProperty<StrProperty>("ObjName")?.Value == "Spawn_Single_Guy"))
+                        {
+                            // These sequences need the 'bit explosion' effect removed because BioWare changed something in SeqAct_ActorFactory and completely broke it
+                            // We are just going to use the crust effect instead
+                            var sequenceObjects = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+                            foreach (var seqObjProp in sequenceObjects.ToList()) // ToList as we're going to modify it so we need a copy
+                            {
+                                if (!sequenceObjects.Contains(seqObjProp))
+                                    continue; // it's already been removed
+
+                                var seqObj = seqObjProp.ResolveToEntry(le1File) as ExportEntry;
+                                if (seqObj != null)
+                                {
+                                    if (seqObj.ClassName == "SeqAct_ActorFactory")
+                                    {
+                                        var outLinks = SeqTools.GetOutboundLinksOfNode(seqObj);
+                                        outLinks[0].RemoveAt(0); // Remove the first outlink, which goes to Delay
+                                        SeqTools.WriteOutboundLinksToNode(seqObj,outLinks); // remove the link so we don't try to connect to it when skipping
+                                        SeqTools.SkipSequenceElement(seqObj, "Finished");
+                                        sequenceObjects.Remove(seqObjProp);
+                                    }
+                                    else if (seqObj.ClassName == "BioSeqAct_Delay")
+                                    {
+                                        // We can ID these by the position data since they are built from a template and thus always have the same positions
+                                        // It also references destroying the spawned particle system
+                                        var props = seqObj.GetProperties();
+                                        if (props.GetProp<IntProperty>("ObjPosX")?.Value == 4440 && props.GetProp<IntProperty>("ObjPosY")?.Value == 2672)
+                                        {
+                                            // This needs removed too
+                                            var nextNodes = SeqTools.GetOutboundLinksOfNode(seqObj);
+                                            var nextNode = nextNodes[0][0].LinkedOp as ExportEntry;
+                                            var subNodeOfNext = SeqTools.GetVariableLinksOfNode(nextNode)[0].LinkedNodes[0] as ExportEntry;
+
+                                            // Remove all of them from the sequence
+                                            sequenceObjects.Remove(seqObjProp); // Delay
+                                            sequenceObjects.Remove(new ObjectProperty(subNodeOfNext.UIndex)); // Destroy
+                                            sequenceObjects.Remove(new ObjectProperty(nextNode.UIndex)); // SeqVar_Object
+                                        }
+                                    }
+                                }
+                            }
+
+                            exp.WriteProperty(sequenceObjects);
+
+                        }
+                    }
+                    break;
+            }
+
+            // Individual
+            switch (upperFName)
+            {
+                case "BIOA_PRC2_CCLAVA_DSG":
                     {
                         // SeqAct_ChangeCollision changed and requires an additional property otherwise it doesn't work.
                         string[] collisionsToTurnOff = new[]

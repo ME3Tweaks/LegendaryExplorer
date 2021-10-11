@@ -1287,7 +1287,11 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             @"Core.ObjectProperty",
             @"Core.IntProperty",
             @"Core.BoolProperty",
-            @"Core.StructProperty"
+            @"Core.StructProperty",
+            @"Core.NameProperty",
+            @"Core.StrProperty"
+
+
         };
     }
 }
