@@ -6,11 +6,11 @@
         public string InteropModName { get; }
         public bool CanUseLLE { get; }
         public bool CanUseCamPath { get; init; } = false;
-        public bool CanUseAnimViewer { get; }
+        public bool CanUseAnimViewer { get; init; } = false;
         public string LiveEditorFilename { get; init; }
         public int Version { get; init; } = InteropModVersion;
 
-        public InteropModInfo(string interopModName, bool canUseLLE, bool canUseAnimViewer = false)
+        public InteropModInfo(string interopModName, bool canUseLLE)
         {
             InteropModName = interopModName;
             CanUseLLE = canUseLLE;
