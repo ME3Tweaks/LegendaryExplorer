@@ -18,6 +18,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref EditorData, SCExt.Serialize, SCExt.Serialize);
         }
 
+        public static SoundCue Create()
+        {
+            return new()
+            {
+                EditorData = new OrderedMultiValueDictionary<UIndex, Point>()
+            };
+        }
+
         public override List<(UIndex, string)> GetUIndexes(MEGame game) => EditorData.Keys().Select((u, i) => (u, $"EditorData[{i}].SoundNode")).ToList();
     }
 

@@ -65,6 +65,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
+        public static BioStage Create()
+        {
+            return new()
+            {
+                CameraList = new OrderedMultiValueDictionary<NameReference, PropertyCollection>()
+            };
+        }
+
         //GetNames for this class must be implemented whereever ObjectBinary::GetNames is called
         //Gross, should fix this someday
     }

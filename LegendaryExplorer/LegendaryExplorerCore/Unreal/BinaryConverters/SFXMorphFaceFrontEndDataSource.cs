@@ -1,4 +1,6 @@
-﻿namespace LegendaryExplorerCore.Unreal.BinaryConverters
+﻿using System;
+
+namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public class SFXMorphFaceFrontEndDataSource : ObjectBinary
     {
@@ -8,10 +10,18 @@
             int i = 0;
             sc.Serialize(ref DefaultSettingsNames, (SerializingContainer2 sc2, ref string name) =>
             {
-                sc.Serialize(ref name);
-                sc.Serialize(ref i);
+                sc2.Serialize(ref name);
+                sc2.Serialize(ref i);
                 ++i;
             });
+        }
+
+        public static SFXMorphFaceFrontEndDataSource Create()
+        {
+            return new()
+            {
+                DefaultSettingsNames = Array.Empty<string>()
+            };
         }
     }
 }

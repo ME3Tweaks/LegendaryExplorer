@@ -534,7 +534,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 {
                     var type = new VariableType(child.ClassName);
                     var decl = new VariableDeclaration(type, default, child.ObjectName.Instanced);
-                    defaults.Add(new Subobject(decl, new Class(child.ClassName, null, null, default), GetStatements(child)));
+                    defaults.Add(new Subobject(decl, new Class(child.ClassName, null, null, default), GetStatements(child), child.HasArchetype));
                 }
 
                 defaults.AddRange(ConvertProperties(exportEntry.GetProperties(packageCache: packageCache), defaultsExport, exportEntry.Class.ObjectName.Instanced, false, fileLib));

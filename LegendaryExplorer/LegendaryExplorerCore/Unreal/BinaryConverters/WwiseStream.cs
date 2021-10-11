@@ -62,5 +62,13 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref EmbeddedData, DataSize);
             }
         }
+
+        public static WwiseStream Create()
+        {
+            return new()
+            {
+                EmbeddedData = Array.Empty<byte>()
+            };
+        }
     }
 }

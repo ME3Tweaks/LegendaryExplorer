@@ -20,5 +20,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref EmbeddedICB, ISBOffset - 4);
             sc.Serialize(ref EmbeddedISB, totalLength - ISBOffset);
         }
+
+        public static BioSoundNodeWaveStreamingData Create()
+        {
+            return new()
+            {
+                EmbeddedICB = Array.Empty<byte>(),
+                EmbeddedISB = Array.Empty<byte>()
+            };
+        }
     }
 }

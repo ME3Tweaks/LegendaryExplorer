@@ -161,6 +161,52 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
+        public static Level Create(MEGame game)
+        {
+            return new()
+            {
+                Self = 0,
+                Actors = new List<UIndex>(),
+                URL = new URL
+                {
+                    Protocol = "unreal",
+                    Host = "",
+                    Map = game.IsGame1() ? "Entry.SFM" : "EntryMenu",
+                    Portal = "",
+                    Op = Array.Empty<string>(),
+                    Port = game.IsGame3() ? 3659 : 7777,
+                    Valid = 1
+                },
+                Model = 0,
+                ModelComponents = Array.Empty<UIndex>(),
+                GameSequences = Array.Empty<UIndex>(),
+                TextureToInstancesMap = new OrderedMultiValueDictionary<UIndex, StreamableTextureInstanceList>(),
+                MeshComponentsWithDynamiclighting = new OrderedMultiValueDictionary<UIndex, uint>(),
+                ApexMesh = Array.Empty<byte>(),
+                CachedPhysBSPData = Array.Empty<byte>(),
+                CachedPhysSMDataMap = new OrderedMultiValueDictionary<UIndex, CachedPhysSMData>(),
+                CachedPhysSMDataStore = new List<KCachedConvexData>(),
+                CachedPhysPerTriSMDataMap = new OrderedMultiValueDictionary<UIndex, CachedPhysSMData>(),
+                CachedPhysPerTriSMDataStore = new List<KCachedPerTriData>(),
+                ForceStreamTextures = new OrderedMultiValueDictionary<UIndex, bool>(),
+                NavListStart = 0,
+                NavListEnd = 0,
+                CoverListStart = 0,
+                CoverListEnd = 0,
+                PylonListStart = 0,
+                PylonListEnd = 0,
+                guidToIntMap = new OrderedMultiValueDictionary<Guid, int>(),
+                CoverLinks = new List<UIndex>(),
+                intToByteMap = new OrderedMultiValueDictionary<int, byte>(),
+                guidToIntMap2 = new OrderedMultiValueDictionary<Guid, int>(),
+                NavPoints = new List<UIndex>(),
+                numbers = new List<int>(),
+                CrossLevelActors = new List<UIndex>(),
+                ArtPlaceable1 = 0,
+                ArtPlaceable2 = 0
+            };
+        }
+
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
         {
             var uIndexes = new List<(UIndex, string)>();

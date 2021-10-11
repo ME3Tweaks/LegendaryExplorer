@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -11,6 +12,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 sc2.BulkSerialize(ref lod, SCExt.Serialize, 12);
             });
+        }
+
+        public static BioMorphFace Create()
+        {
+            return new()
+            {
+                LODs = Array.Empty<Vector3[]>()
+            };
         }
     }
 }

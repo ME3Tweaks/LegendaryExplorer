@@ -29,7 +29,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             t.Serialize(serializer);
             if (serializer.FileOffset - dataStartPosition != export.DataSize)
             {
-                Debug.WriteLine($@"Serial size mismatch on {export.InstancedFullPath}! Parsing stopped at {(serializer.FileOffset - dataStartPosition)} bytes, but export is {export.DataSize} bytes");
+                Debug.WriteLine($@"Serial size mismatch on {export.InstancedFullPath}! Parsing stopped at {serializer.FileOffset - dataStartPosition} bytes, but export is {export.DataSize} bytes");
                 Debugger.Break();
             }
 
@@ -48,6 +48,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 //way, waaay too many subclasses of BioPawn to put in the switch statement, so we take care of it here
                 className = "BioPawn";
+            }
+            else if (export.IsA("BioActorBehavior"))
+            {
+                className = "BioActorBehavior";
             }
             switch (className)
             {
@@ -84,6 +88,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 case "InteractiveFoliageComponent":
                 case "SplineMeshComponent":
                 case "FracturedStaticMeshComponent":
+                case "FracturedSkinnedMeshComponent":
                 case "StaticMeshComponent":
                     return FromDEBUG<StaticMeshComponent>(export, packageCache);
                 case "DecalComponent":
@@ -213,6 +218,18 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     return FromDEBUG<BioSoundNodeWaveStreamingData>(export, packageCache);
                 case "BioInert":
                     return FromDEBUG<BioInert>(export, packageCache);
+                case "BioGestureAnimSetMgr":
+                    return FromDEBUG<BioGestureAnimSetMgr>(export, packageCache);
+                case "BioQuestProgressionMap":
+                    return FromDEBUG<BioQuestProgressionMap>(export, packageCache);
+                case "BioDiscoveredCodexMap":
+                    return FromDEBUG<BioDiscoveredCodexMap>(export, packageCache);
+                case "SpeedTreeComponent":
+                    return FromDEBUG<SpeedTreeComponent>(export, packageCache);
+                case "BioGamePropertyEventDispatcher":
+                    return FromDEBUG<BioGamePropertyEventDispatcher>(export, packageCache);
+                case "BioActorBehavior":
+                    return FromDEBUG<BioActorBehavior>(export, packageCache);
                 default:
                     return null;
             }
@@ -230,6 +247,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 //way, waaay too many subclasses of BioPawn to put in the switch statement, so we take care of it here
                 className = "BioPawn";
+            }
+            else if (export.IsA("BioActorBehavior"))
+            {
+                className = "BioActorBehavior";
             }
             switch (className)
             {
@@ -266,6 +287,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 case "InteractiveFoliageComponent":
                 case "SplineMeshComponent":
                 case "FracturedStaticMeshComponent":
+                case "FracturedSkinnedMeshComponent":
                 case "StaticMeshComponent":
                     return From<StaticMeshComponent>(export, packageCache);
                 case "DecalComponent":
@@ -403,9 +425,225 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     return From<FaceFXAsset>(export, packageCache);
                 case "BioInert":
                     return From<BioInert>(export, packageCache);
+                case "BioGestureAnimSetMgr":
+                    return From<BioGestureAnimSetMgr>(export, packageCache);
+                case "BioQuestProgressionMap":
+                    return From<BioQuestProgressionMap>(export, packageCache);
+                case "BioDiscoveredCodexMap":
+                    return From<BioDiscoveredCodexMap>(export, packageCache);
+                case "SpeedTreeComponent":
+                    return From<SpeedTreeComponent>(export, packageCache);
+                case "BioGamePropertyEventDispatcher":
+                    return From<BioGamePropertyEventDispatcher>(export, packageCache);
+                case "BioActorBehavior":
+                    return From<BioActorBehavior>(export, packageCache);
                 default:
                     return null;
             }
+        }
+
+        public static ObjectBinary Create(string className, MEGame game, PropertyCollection props = null)
+        {
+            if (GlobalUnrealObjectInfo.IsA(className, "BioPawn", game))
+            {
+                //way, waaay too many subclasses of BioPawn to put in the switch statement, so we take care of it here
+                className = "BioPawn";
+            }
+            else if (GlobalUnrealObjectInfo.IsA(className, "BioActorBehavior", game))
+            {
+                className = "BioActorBehavior";
+            }
+            switch (className)
+            {
+                case "AnimSequence":
+                    return AnimSequence.Create();
+                case "BioStage":
+                    return BioStage.Create();
+                case "Level":
+                    return Level.Create(game);
+                case "World":
+                    return World.Create();
+                case "Model":
+                    return Model.Create();
+                case "Polys":
+                    return Polys.Create();
+                case "DecalMaterial":
+                case "Material":
+                    return Material.Create();
+                case "FracturedStaticMesh":
+                    return FracturedStaticMesh.Create();
+                case "StaticMesh":
+                    return StaticMesh.Create();
+                case "SkeletalMesh":
+                case "BioSocketSupermodel":
+                    return SkeletalMesh.Create();
+                case "CoverMeshComponent":
+                case "InteractiveFoliageComponent":
+                case "SplineMeshComponent":
+                case "FracturedStaticMeshComponent":
+                case "FracturedSkinnedMeshComponent":
+                case "StaticMeshComponent":
+                    return StaticMeshComponent.Create();
+                case "DecalComponent":
+                    return DecalComponent.Create();
+                case "Terrain":
+                    return Terrain.Create();
+                case "TerrainComponent":
+                    return TerrainComponent.Create();
+                case "FluidSurfaceComponent":
+                    return FluidSurfaceComponent.Create();
+                case "ModelComponent":
+                    return ModelComponent.Create();
+                case "BioDynamicAnimSet":
+                    return BioDynamicAnimSet.Create();
+                case "BioPawn":
+                    return BioPawn.Create();
+                case "PrefabInstance":
+                    return PrefabInstance.Create();
+                case "Class":
+                    return UClass.Create();
+                case "State":
+                    return UState.Create();
+                case "Function":
+                    return UFunction.Create();
+                case "Enum":
+                    return UEnum.Create();
+                case "Const":
+                    return UConst.Create();
+                case "ScriptStruct":
+                    return UScriptStruct.Create();
+                case "IntProperty":
+                    return UIntProperty.Create();
+                case "BoolProperty":
+                    return UBoolProperty.Create();
+                case "FloatProperty":
+                    return UFloatProperty.Create();
+                case "NameProperty":
+                    return UNameProperty.Create();
+                case "StrProperty":
+                    return UStrProperty.Create();
+                case "StringRefProperty":
+                    return UStringRefProperty.Create();
+                case "ByteProperty":
+                    return UByteProperty.Create();
+                case "ObjectProperty":
+                    return UObjectProperty.Create();
+                case "ComponentProperty":
+                    return UComponentProperty.Create();
+                case "InterfaceProperty":
+                    return UInterfaceProperty.Create();
+                case "ArrayProperty":
+                    return UArrayProperty.Create();
+                case "StructProperty":
+                    return UStructProperty.Create();
+                case "BioMask4Property":
+                    return UBioMask4Property.Create();
+                case "MapProperty":
+                    return UMapProperty.Create();
+                case "ClassProperty":
+                    return UClassProperty.Create();
+                case "DelegateProperty":
+                    return UDelegateProperty.Create();
+                case "ShaderCache":
+                    return ShaderCache.Create();
+                case "StaticMeshCollectionActor":
+                    return StaticMeshCollectionActor.Create();
+                case "StaticLightCollectionActor":
+                    return StaticLightCollectionActor.Create();
+                case "WwiseEvent":
+                    return WwiseEvent.Create();
+                case "WwiseStream":
+                    return WwiseStream.Create();
+                case "WwiseBank":
+                    return WwiseBank.Create();
+                case "BioGestureRuntimeData":
+                    return BioGestureRuntimeData.Create();
+                case "LightMapTexture2D":
+                    return LightMapTexture2D.Create();
+                case "Texture2D":
+                case "ShadowMapTexture2D":
+                case "TerrainWeightMapTexture":
+                case "TextureFlipBook":
+                    return UTexture2D.Create();
+                case "GuidCache":
+                    return GuidCache.Create();
+                case "FaceFXAnimSet":
+                    return FaceFXAnimSet.Create();
+                case "Bio2DA":
+                case "Bio2DANumberedRows":
+                    return Bio2DABinary.Create();
+                case "BioMorphFace":
+                    return BioMorphFace.Create();
+                case "MorphTarget":
+                    return MorphTarget.Create();
+                case "SFXMorphFaceFrontEndDataSource":
+                    return SFXMorphFaceFrontEndDataSource.Create();
+                case "PhysicsAssetInstance":
+                    return PhysicsAssetInstance.Create();
+                case "DirectionalLightComponent":
+                case "PointLightComponent":
+                case "SkyLightComponent":
+                case "SphericalHarmonicLightComponent":
+                case "SpotLightComponent":
+                case "DominantSpotLightComponent":
+                case "DominantPointLightComponent":
+                case "DominantDirectionalLightComponent":
+                    return LightComponent.Create();
+                case "ShadowMap1D":
+                    return ShadowMap1D.Create();
+                case "BioTlkFileSet":
+                    return BioTlkFileSet.Create();
+                case "RB_BodySetup":
+                    return RB_BodySetup.Create();
+                case "BrushComponent":
+                    return BrushComponent.Create();
+                case "ForceFeedbackWaveform":
+                    return ForceFeedbackWaveform.Create(props);
+                case "SoundCue":
+                    return SoundCue.Create();
+                case "SoundNodeWave":
+                    return SoundNodeWave.Create();
+                case "ObjectRedirector":
+                    return ObjectRedirector.Create();
+                case "TextureMovie":
+                    return TextureMovie.Create();
+                case "BioCodexMap":
+                    return BioCodexMap.Create();
+                case "BioQuestMap":
+                    return BioQuestMap.Create();
+                case "BioStateEventMap":
+                    return BioStateEventMap.Create();
+                case "BioSoundNodeWaveStreamingData":
+                    return BioSoundNodeWaveStreamingData.Create();
+                case "FaceFXAsset":
+                    if (game != MEGame.ME2)
+                    {
+                        return FaceFXAsset.Create();
+                    }
+                    break;
+                case "BioInert":
+                    return BioInert.Create();
+                case "BioGestureAnimSetMgr":
+                    return BioGestureAnimSetMgr.Create();
+                case "BioQuestProgressionMap":
+                    return BioQuestProgressionMap.Create();
+                case "BioDiscoveredCodexMap":
+                    return BioDiscoveredCodexMap.Create();
+                case "SpeedTreeComponent":
+                    return SpeedTreeComponent.Create();
+                case "BioGamePropertyEventDispatcher":
+                    return BioGamePropertyEventDispatcher.Create();
+                case "BioActorBehavior":
+                    return BioActorBehavior.Create();
+                case "MaterialInstanceConstant":
+                case "MaterialInstanceTimeVarying":
+                    if (props?.GetProp<BoolProperty>("bHasStaticPermutationResource")?.Value is true)
+                    {
+                        return MaterialInstance.Create();
+                    }
+                    break;
+            }
+            return GenericObjectBinary.Create();
         }
 
         protected abstract void Serialize(SerializingContainer2 sc);
@@ -450,6 +688,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             data = sc.ms.BaseStream.ReadFully();
         }
+
+        public static GenericObjectBinary Create() => new(Array.Empty<byte>());
 
         public override void WriteTo(EndianWriter ms, IMEPackage pcc, int fileOffset = 0)
         {

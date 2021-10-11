@@ -280,6 +280,7 @@ namespace LegendaryExplorerCore.Unreal
             ClassDefaultObject = 0x0000000000000200, // this object is its class's default object
             IsCrossLevelReferenced = 0x0000000000400000, // This object has been pointed to by a cross-level reference, and therefore requires additional cleanup upon deletion
             ArchetypeObject = 0x0000000000000400, // this object is a template for another object - treat like a class default object
+            LocalizedResource = 0x0000000000080000, // Resource object is localized
             Transactional = 0x0000000100000000,   // Object is transactional.
             Unreachable = 0x0000000200000000,	// Object is not reachable on the object graph.
             Public = 0x0000000400000000,	// Object is visible outside its package.

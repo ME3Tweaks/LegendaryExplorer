@@ -80,6 +80,27 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         }
 
+        public static Model Create()
+        {
+            return new()
+            {
+                Bounds = new BoxSphereBounds(),
+                Vectors = Array.Empty<Vector3>(),
+                Points = Array.Empty<Vector3>(),
+                Nodes = Array.Empty<BspNode>(),
+                Self = 0,
+                Surfs = Array.Empty<BspSurf>(),
+                Verts = Array.Empty<Vert>(),
+                Zones = Array.Empty<ZoneProperties>(),
+                Polys = 0,
+                LeafHulls = Array.Empty<int>(),
+                Leaves = Array.Empty<int>(),
+                PortalNodes = Array.Empty<int>(),
+                ShadowVolume = Array.Empty<MeshEdge>(),
+                VertexBuffer = Array.Empty<ModelVertex>(),
+                LightmassSettings = Array.Empty<LightmassPrimitiveSettings>()
+            };
+        }
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
         {
             var uIndexes = new List<(UIndex, string)>();

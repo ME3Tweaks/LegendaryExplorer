@@ -12,6 +12,7 @@ using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Language.Util;
 using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Parsing;
+using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
 
 namespace LegendaryExplorerCore.UnrealScript
 {
@@ -72,14 +73,14 @@ namespace LegendaryExplorerCore.UnrealScript
             return astNode;
         }
 
-        public static (ASTNode ast, MessageLog log, TokenStream<string> tokens) CompileAST(string script, string type, MEGame game)
+        public static (ASTNode ast, MessageLog log, TokenStream<string> tokens) CompileAST(string script, string type, MEGame game, bool isDefaultObject = false)
         {
             var log = new MessageLog();
             var tokens = new TokenStream<string>(new StringLexer(script, log));
             var parser = new ClassOutlineParser(tokens, game, log);
             try
             {
-                ASTNode ast = parser.ParseDocument(type);
+                ASTNode ast = isDefaultObject ? parser.TryParseDefaultProperties() : parser.ParseDocument(type);
                 if (ast is null)
                 {
                     log.LogError("Parse failed!");
@@ -300,6 +301,61 @@ namespace LegendaryExplorerCore.UnrealScript
             return func;
         }
 
+        public static (ASTNode astNode, MessageLog log) CompileDefaultProperties(ExportEntry export, string scriptText, FileLib lib, PackageCache packageCache = null)
+        {
+            (ASTNode astNode, MessageLog log, _) = CompileAST(scriptText, export.ClassName, export.Game, true);
+            if (log.AllErrors.IsEmpty())
+            {
+                if (astNode is not DefaultPropertiesBlock propBlock)
+                {
+                    log.LogError($"Tried to parse a {DEFAULTPROPERTIES}, but no {DEFAULTPROPERTIES} was found!");
+                    return (null, log);
+                }
+                if (!lib.IsInitialized)
+                {
+                    log.LogError("FileLib not initialized!");
+                    return (null, log);
+                }
+                if (export.Class is not ExportEntry { IsClass: true } classExport)
+                {
+                    log.LogError(export.InstancedFullPath + " does not have a Class Export!");
+                    return (null, log);
+                }
+
+                try
+                {
+                    astNode = CompileDefaultPropertiesAST(classExport, propBlock, log, lib);
+                    if (astNode is null || log.AllErrors.Count > 0)
+                    {
+                        log.LogError("Parse failed!");
+                        return (astNode, log);
+                    }
+                }
+                catch (ParseException)
+                {
+                    log.LogError("Parse failed!");
+                    return (astNode, log);
+                }
+                catch (Exception exception)
+                {
+                    log.LogError($"Parse failed! Exception: {exception}");
+                    return (astNode, log);
+                }
+                try
+                {
+                    Default__ObjectCompiler.Compile(propBlock, classExport, ref export, packageCache);
+                    log.LogMessage("Compiled!");
+                    return (astNode, log);
+                }
+                catch (Exception exception) when (!LegendaryExplorerCoreLib.IsDebug)
+                {
+                    log.LogError($"Compilation failed! Exception: {exception}");
+                    return (astNode, log);
+                }
+            }
+
+            return (null, log);
+        }
 
         public static DefaultPropertiesBlock CompileDefaultPropertiesAST(ExportEntry classExport, DefaultPropertiesBlock propBlock, MessageLog log, FileLib lib)
         {

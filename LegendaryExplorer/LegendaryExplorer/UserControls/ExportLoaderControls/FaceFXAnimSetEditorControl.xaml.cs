@@ -116,7 +116,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public ICommand AddKeyWithZeroWeightCommand { get; set; }
         #region ExportLoaderControl
 
-        public override bool CanParse(ExportEntry exportEntry) => exportEntry.ClassName == "FaceFXAnimSet" || (exportEntry.ClassName == "FaceFXAsset" && exportEntry.Game != MEGame.ME2);
+        public override bool CanParse(ExportEntry exportEntry) => (exportEntry.ClassName == "FaceFXAnimSet" || (exportEntry.ClassName == "FaceFXAsset" && exportEntry.Game != MEGame.ME2)) && !exportEntry.IsDefaultObject;
 
         public override void LoadExport(ExportEntry exportEntry)
         {

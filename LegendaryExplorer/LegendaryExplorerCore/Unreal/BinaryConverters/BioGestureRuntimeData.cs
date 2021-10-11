@@ -28,6 +28,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
+        public static BioGestureRuntimeData Create()
+        {
+            return new()
+            {
+                m_mapAnimSetOwners = new OrderedMultiValueDictionary<NameReference, NameReference>(),
+                m_mapMeshProps = new OrderedMultiValueDictionary<NameReference, BioMeshPropData>(),
+                m_mapCharTypeOverrides = new OrderedMultiValueDictionary<NameReference, BioGestCharOverride>()
+            };
+        }
+
         public override List<(NameReference, string)> GetNames(MEGame game)
         {
             List<(NameReference, string)> names = base.GetNames(game);

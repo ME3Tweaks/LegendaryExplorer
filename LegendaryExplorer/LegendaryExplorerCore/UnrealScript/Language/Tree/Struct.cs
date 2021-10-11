@@ -19,6 +19,8 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public override List<VariableType> TypeDeclarations { get; }
         public override DefaultPropertiesBlock DefaultProperties { get; set; }
 
+        public bool IsAtomic => Flags.Has(ScriptStructFlags.Atomic) || Flags.Has(ScriptStructFlags.AtomicWhenCooked);
+
         public Struct(string name, VariableType parent, ScriptStructFlags flags,
                       List<VariableDeclaration> variableDeclarations = null,
                       List<VariableType> typeDeclarations = null,

@@ -14,6 +14,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref LightMap);
             }
         }
+
+        public static FluidSurfaceComponent Create()
+        {
+            return new()
+            {
+                LightMap = new LightMap()
+            };
+        }
+
         public override List<(UIndex, string)> GetUIndexes(MEGame game) => game >= MEGame.ME3 ? LightMap.GetUIndexes(game) : new List<(UIndex, string)>();
     }
 }

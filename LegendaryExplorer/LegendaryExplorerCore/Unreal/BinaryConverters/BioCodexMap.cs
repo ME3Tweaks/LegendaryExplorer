@@ -16,6 +16,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref Sections, SCExt.Serialize);
             sc.Serialize(ref Pages, SCExt.Serialize);
         }
+
+        public static BioCodexMap Create()
+        {
+            return new()
+            {
+                Pages = new List<BioCodexPage>(),
+                Sections = new List<BioCodexSection>()
+            };
+        }
     }
 
     public class BioCodexPage

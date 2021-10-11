@@ -17,6 +17,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref LODData, SCExt.Serialize);
         }
 
+        public static StaticMeshComponent Create()
+        {
+            return new()
+            {
+                LODData = Array.Empty<StaticMeshComponentLODInfo>()
+            };
+        }
+
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
         {
             var uIndexes = new List<(UIndex, string)>();

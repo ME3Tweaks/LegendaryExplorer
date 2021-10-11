@@ -72,6 +72,23 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
+        public static SkeletalMesh Create()
+        {
+            return new()
+            {
+                Bounds = new BoxSphereBounds(),
+                Materials = Array.Empty<UIndex>(),
+                RefSkeleton = Array.Empty<MeshBone>(),
+                LODModels = Array.Empty<StaticLODModel>(),
+                NameIndexMap = new OrderedMultiValueDictionary<NameReference, int>(),
+                PerPolyBoneKDOPs = Array.Empty<PerPolyBoneCollisionData>(),
+                BoneBreakNames = Array.Empty<string>(),
+                ClothingAssets = Array.Empty<UIndex>(),
+                unk1 = 1,
+                unkFloats = new[] { 1f, 0f, 0f, 0f }
+            };
+        }
+
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
         {
             List<(UIndex t, string)> uIndexes = Materials.Select((t, i) => (t, $"Materials[{i}]")).ToList();

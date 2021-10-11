@@ -11,6 +11,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref DestinationObject);
         }
 
+        public static ObjectRedirector Create()
+        {
+            return new()
+            {
+                DestinationObject = 0
+            };
+        }
+
         public override List<(UIndex, string)> GetUIndexes(MEGame game) => new List<(UIndex, string)>{(DestinationObject, nameof(DestinationObject))};
     }
 }

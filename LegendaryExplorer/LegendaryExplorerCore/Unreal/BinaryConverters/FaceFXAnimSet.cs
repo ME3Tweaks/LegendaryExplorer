@@ -100,6 +100,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
+        public static FaceFXAnimSet Create()
+        {
+            return new()
+            {
+                HNodes = FaceFXAsset.HNode.GetFXANodeTable(),
+                Names = new List<string>(),
+                Lines = new List<FaceFXLine>()
+            };
+        }
+
         public void FixNodeTable()
         {
             HNodes = FaceFXAsset.HNode.GetFXANodeTable();

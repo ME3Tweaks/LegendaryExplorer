@@ -8,7 +8,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         protected override void Serialize(SerializingContainer2 sc)
         {
-            sc.Serialize(ref CollisionDisableTable, (SerializingContainer2 sc2, ref (int, int) indexPair) =>
+            sc.Serialize(ref CollisionDisableTable, static (SerializingContainer2 sc2, ref (int, int) indexPair) =>
             {
                 if (sc2.IsLoading)
                 {
@@ -21,6 +21,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 }
                 sc2.SerializeConstInt(0);
             });
+        }
+
+        public static PhysicsAssetInstance Create()
+        {
+            return new()
+            {
+                CollisionDisableTable = new List<(int, int)>()
+            };
         }
     }
 }

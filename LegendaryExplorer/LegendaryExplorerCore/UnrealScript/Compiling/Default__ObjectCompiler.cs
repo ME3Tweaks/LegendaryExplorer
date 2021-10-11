@@ -9,23 +9,27 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Utilities;
+using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.UnrealScript.Compiling
 {
     public class Default__ObjectCompiler
     {
         private readonly IMEPackage Pcc;
-        private ExportEntry Default__Export;
+        private readonly ExportEntry Default__Export;
         private ExportEntry Default__Archetype;
+        private bool InSubObject;
+        private readonly PackageCache packageCache;
 
-        public Default__ObjectCompiler(IMEPackage pcc, ExportEntry default__Export)
+        private Default__ObjectCompiler(IMEPackage pcc, ExportEntry default__Export, PackageCache packageCache = null)
         {
+            this.packageCache = packageCache;
             Pcc = pcc;
             Default__Export = default__Export;
         }
 
 
-        public static void Compile(DefaultPropertiesBlock defaultsAST, ExportEntry classExport, ref ExportEntry defaultsExport)
+        public static void Compile(DefaultPropertiesBlock defaultsAST, ExportEntry classExport, ref ExportEntry defaultsExport, PackageCache packageCache = null)
         {
             IMEPackage pcc = classExport.FileRef;
             var defaultsExportObjectName = new NameReference($"Default__{classExport.ObjectNameString}", classExport.indexValue);
@@ -41,18 +45,28 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     pcc.AddExport(defaultsExport);
                 }
             }
+            Class cls = (Class)defaultsAST.Outer;
 
-            var compiler = new Default__ObjectCompiler(pcc, defaultsExport);
+            var compiler = new Default__ObjectCompiler(pcc, defaultsExport, packageCache);
 
             defaultsExport.SuperClass = null;
             defaultsExport.Class = classExport;
             defaultsExport.ObjectName = defaultsExportObjectName;
-            defaultsExport.ObjectFlags = UnrealFlags.EObjectFlags.ClassDefaultObject | UnrealFlags.EObjectFlags.Public | UnrealFlags.EObjectFlags.LoadForClient | UnrealFlags.EObjectFlags.LoadForServer | UnrealFlags.EObjectFlags.LoadForEdit;
-            defaultsExport.Archetype = compiler.GetClassDefaultObject(classExport.Parent);
+            var defaultsExportObjectFlags = EObjectFlags.ClassDefaultObject | EObjectFlags.Public | EObjectFlags.LoadForClient | EObjectFlags.LoadForServer | EObjectFlags.LoadForEdit;
+            if (cls.Flags.Has(EClassFlags.PerObjectLocalized) || cls.Flags.Has(EClassFlags.PerObjectConfig) && cls.Flags.Has(EClassFlags.Localized))
+            {
+                defaultsExportObjectFlags |= EObjectFlags.PerObjectLocalized;
+            }
+            if ((pcc.Game.IsGame1() || pcc.Game.IsGame2()) && cls.Name is "BioConversation" or "Font" or "MultiFont" or "FaceFXAnimSet" or "BioCreatureSoundSet")
+            {
+                defaultsExportObjectFlags |= EObjectFlags.LocalizedResource;
+            }
+            defaultsExport.ObjectFlags = defaultsExportObjectFlags;
+            defaultsExport.Archetype = classExport.SuperClass is not null ? compiler.GetClassDefaultObject(classExport.SuperClass) : null;
 
             compiler.Default__Archetype = defaultsExport.Archetype switch
             {
-                ImportEntry defaultArchetypeImport => EntryImporter.ResolveImport(defaultArchetypeImport),
+                ImportEntry defaultArchetypeImport => EntryImporter.ResolveImport(defaultArchetypeImport, packageCache, null, "INT"),
                 ExportEntry defaultArchetypeExport => defaultArchetypeExport,
                 _ => null
             };
@@ -60,6 +74,124 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             var props = compiler.ConvertStatementsToPropertyCollection(defaultsExport, defaultsAST.Statements, new Dictionary<NameReference, ExportEntry>());
             
             defaultsExport.WriteProperties(props);
+        }
+
+        private PropertyCollection ConvertStatementsToPropertyCollection(ExportEntry export, List<Statement> statements, Dictionary<NameReference, ExportEntry> subObjectDict)
+        {
+            var existingSubObjects = export.GetChildren<ExportEntry>().ToList();
+            var props = new PropertyCollection();
+            var subObjectsToFinish = new List<(Subobject, ExportEntry, int)>();
+            foreach (Statement subobjectStatement in statements)
+            {
+                switch (subobjectStatement)
+                {
+                    case Subobject subObj:
+                        var subObjName = NameReference.FromInstancedString(subObj.Name.Name);
+                        existingSubObjects.TryRemove(exp => exp.ObjectName == subObjName, out ExportEntry existingSubObject);
+                        int netIndex = existingSubObject?.NetIndex ?? 0;
+                        CreateSubObject(subObj, export, ref existingSubObject);
+                        subObjectDict[subObjName] = existingSubObject;
+                        subObjectsToFinish.Add(subObj, existingSubObject, netIndex);
+                        break;
+                    case AssignStatement assignStatement:
+                        Property prop = ConvertToProperty(assignStatement, subObjectDict);
+                        props.AddOrReplaceProp(prop);
+                        break;
+                    default:
+                        throw new Exception($"Unexpected statement type: {subobjectStatement.GetType().Name}");
+                }
+            }
+            InSubObject = true;
+            foreach ((Subobject subobject, ExportEntry subExport, int netIndex) in subObjectsToFinish)
+            {
+                WriteSubObjectData(subobject, subExport, netIndex, subObjectDict);
+            }
+
+            if (existingSubObjects.Any())
+            {
+                EntryPruner.TrashEntriesAndDescendants(existingSubObjects);
+            }
+            return props;
+        }
+
+        private void CreateSubObject(Subobject subObject, ExportEntry parent, ref ExportEntry subExport)
+        {
+            var objName = NameReference.FromInstancedString(subObject.Name.Name);
+            IEntry classEntry = EntryImporter.EnsureClassIsInFile(Pcc, subObject.Class.Name);
+            if (subExport is null)
+            {
+                if (Pcc.TryGetTrash(out subExport))
+                {
+                    subExport.Parent = parent;
+                }
+                else
+                {
+                    subExport = new ExportEntry(Pcc, parent, objName);
+                    Pcc.AddExport(subExport);
+                }
+            }
+            subExport.SuperClass = null;
+            subExport.Class = classEntry;
+            subExport.ObjectName = objName;
+            subExport.Class = classEntry;
+
+            if (subObject.IsTemplate && Default__Archetype is not null)
+            {
+                string defaultArchetypePath = Default__Archetype.InstancedFullPath;
+                string defaultObjectPath = Default__Export.InstancedFullPath;
+                string subObjPath = subExport.InstancedFullPath;
+                string subPath = subObjPath[(defaultObjectPath.Length + 1)..];
+                ExportEntry subObjArchetype = Default__Archetype.FileRef.FindExport($"{defaultArchetypePath}.{subPath}");
+                if (subObjArchetype is null)
+                {
+                    //sometimes the subobjects have a flat structure under the Default__
+                    subPath = objName.Instanced;
+                    subObjArchetype = Default__Archetype.FileRef.FindExport($"{defaultArchetypePath}.{subPath}");
+                }
+
+                if (subObjArchetype is not null && subObjArchetype.ClassName.CaseInsensitiveEquals(subExport.ClassName))
+                {
+                    subExport.Archetype = ReferenceEquals(Default__Archetype.FileRef, Pcc)
+                        ? subObjArchetype
+                        : Pcc.getEntryOrAddImport($"{Default__Export.Archetype.InstancedFullPath}.{subPath}", classEntry.ObjectName.Instanced, classEntry.ParentName);
+                    return;
+                }
+                //sometimes the archetype is a subobject of the Default__ for a parent suboject's class.
+                if (parent != Default__Export)
+                {
+                    var archetypeRoot = parent;
+                    while (archetypeRoot.Archetype is not null)
+                    {
+                        archetypeRoot = (ExportEntry)archetypeRoot.Parent;
+                    }
+                    subPath = subObjPath[(archetypeRoot.InstancedFullPath.Length + 1)..];
+                    IEntry classDefaultObject = GetClassDefaultObject(archetypeRoot.Class);
+                    var baseDefault = classDefaultObject switch
+                    {
+                        ExportEntry exp => exp,
+                        ImportEntry imp => EntryImporter.ResolveImport(imp, packageCache, null, "INT"),
+                        _ => null
+                    };
+                    if (baseDefault is not null)
+                    {
+                        subObjArchetype = baseDefault.FileRef.FindExport($"{baseDefault.InstancedFullPath}.{subPath}");
+                        if (subObjArchetype is null)
+                        {
+                            subPath = objName.Instanced;
+                            subObjArchetype = baseDefault.FileRef.FindExport($"{baseDefault.InstancedFullPath}.{subPath}");
+                        }
+                        if (subObjArchetype is not null && subObjArchetype.ClassName.CaseInsensitiveEquals(subExport.ClassName))
+                        {
+                            subExport.Archetype = ReferenceEquals(baseDefault.FileRef, Pcc)
+                                ? subObjArchetype
+                                : Pcc.getEntryOrAddImport($"{classDefaultObject.InstancedFullPath}.{subPath}", classEntry.ObjectName.Instanced, classEntry.ParentName);
+                            return;
+                        }
+                    }
+                }
+
+            }
+            subExport.Archetype = null;
         }
 
         private Property ConvertToProperty(AssignStatement assignStatement, Dictionary<NameReference, ExportEntry> subObjectDict)
@@ -83,15 +215,16 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         private Property MakeProperty(NameReference propName, VariableType type, Expression literal, Dictionary<NameReference, ExportEntry> subObjectDict)
         {
             Property prop;
+            if (type is StaticArrayType sat)
+            {
+                type = sat.ElementType;
+            }
             switch (type)
             {
                 case ClassType classType:
-                    prop = new ObjectProperty(literal is NoneLiteral ? null : CompilerUtils.ResolveClass((Class)((ClassType)((ObjectLiteral)literal).Class).ClassLimiter, Pcc), propName)
-                    {
-                        InternalPropType = ((Class)classType.ClassLimiter).IsInterface ? PropertyType.InterfaceProperty : PropertyType.ObjectProperty
-                    };
+                    prop = new ObjectProperty(literal is NoneLiteral ? null : CompilerUtils.ResolveClass((Class)((ClassType)((ObjectLiteral)literal).Class).ClassLimiter, Pcc), propName);
                     break;
-                case Class @class:
+                case Class cls:
                     IEntry entry;
                     if (literal is NoneLiteral)
                     {
@@ -108,7 +241,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
                     prop = new ObjectProperty(entry, propName)
                     {
-                        InternalPropType = @class.IsComponent ? PropertyType.ComponentProperty : PropertyType.ObjectProperty
+                        InternalPropType = cls.IsInterface ? PropertyType.InterfaceProperty : PropertyType.ObjectProperty
                     };
                     break;
                 case DelegateType:
@@ -149,7 +282,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                             prop = new ArrayProperty<StructProperty>(properties.Cast<StructProperty>().ToList(), propName);
                             break;
                         default:
-                            switch (type.PropertyType)
+                            switch (elementType.PropertyType)
                             {
                                 case EPropertyType.Byte:
                                     prop = new ArrayProperty<ByteProperty>(properties.Cast<ByteProperty>().ToList(), propName);
@@ -173,7 +306,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                                     prop = new ArrayProperty<StringRefProperty>(properties.Cast<StringRefProperty>().ToList(), propName);
                                     break;
                                 default:
-                                    throw new ArgumentOutOfRangeException();
+                                    throw new ArgumentOutOfRangeException(nameof(elementType.PropertyType), elementType.PropertyType, $"{elementType.PropertyType} is not a valid array element type!");
                             }
                             break;
                     }
@@ -192,7 +325,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     break;
                 case Struct @struct:
                     //todo: Spec says that unspecified properties on a struct value should be inherited from base class's default for that property
-                    var structProps = GlobalUnrealObjectInfo.getDefaultStructValue(Pcc.Game, @struct.Name, true);
+                    var structProps = @struct.IsAtomic ? GlobalUnrealObjectInfo.getDefaultStructValue(Pcc.Game, @struct.Name, InSubObject, packageCache) : new PropertyCollection();
                     foreach (Statement statement in ((StructLiteral)literal).Statements)
                     {
                         structProps.AddOrReplaceProp(ConvertToProperty((AssignStatement)statement, subObjectDict));
@@ -233,103 +366,68 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return prop;
         }
 
-        private void CreateSubObject(Subobject subObject, ExportEntry parent, Dictionary<NameReference, ExportEntry> parentSubObjectDict, ref ExportEntry subExport)
+        private void WriteSubObjectData(Subobject subObject, ExportEntry subExport, int netIndex, Dictionary<NameReference, ExportEntry> parentSubObjectDict)
         {
-            var objName = NameReference.FromInstancedString(subObject.Name.Name);
-            IEntry classEntry = EntryImporter.EnsureClassIsInFile(Pcc, subObject.Class.Name);
-            if (subExport is null)
-            {
-                if (Pcc.TryGetTrash(out subExport))
-                {
-                    subExport.Parent = parent;
-                }
-                else
-                {
-                    subExport = new ExportEntry(Pcc, parent, objName);
-                    Pcc.AddExport(subExport);
-                }
-            }
-            subExport.SuperClass = null;
-            subExport.Class = classEntry;
-            subExport.ObjectName = objName;
-            subExport.Class = classEntry;
-
-            if (Default__Archetype is not null)
-            {
-                string defaultArchetypePath = Default__Archetype.InstancedFullPath;
-                string defaultObjectPath = Default__Export.InstancedFullPath;
-                string subObjPath = subExport.InstancedFullPath;
-                string subPath = subObjPath[defaultObjectPath.Length..];
-                ExportEntry subObjArchetype = Default__Archetype.FileRef.FindExport($"{defaultArchetypePath}.{subPath}");
-                if (subObjArchetype == null)
-                {
-                    //sometimes the subobjects have a flat structure under the Default__
-                    subPath = objName.Instanced;
-                    subObjArchetype = Default__Archetype.FileRef.FindExport($"{defaultArchetypePath}.{subPath}");
-                }
-
-                if (subObjArchetype is not null && subObjArchetype.ClassName.CaseInsensitiveEquals(subExport.ClassName))
-                {
-                    subExport.Archetype = ReferenceEquals(Default__Archetype.FileRef, Pcc)
-                        ? subObjArchetype
-                        : Pcc.getEntryOrAddImport($"{Default__Export.Archetype.InstancedFullPath}.{subPath}", classEntry.ObjectName.Instanced, classEntry.ParentName);
-                }
-            }
-
             PropertyCollection props = ConvertStatementsToPropertyCollection(subExport, subObject.Statements, new(parentSubObjectDict));
+            var binary = ObjectBinary.Create(subExport.ClassName, subExport.Game, props);
+            
+            //this code should probably be somewhere else, perhaps integrated into ObjectBinary.Create somehow?
+            if (binary is BioDynamicAnimSet dynAnimSet && props.GetProp<ArrayProperty<ObjectProperty>>("Sequences") is {} sequences)
+            {
+                var setName = props.GetProp<NameProperty>("m_nmOrigSetName");
+                foreach (ObjectProperty objProp in sequences)
+                {
+                    switch (objProp.ResolveToEntry(Pcc))
+                    {
+                        case ExportEntry exportEntry when exportEntry.GetProperty<NameProperty>("SequenceName") is {} seqNameProperty:
+                            dynAnimSet.SequenceNamesToUnkMap.Add(seqNameProperty.Value, 1);
+                            break;
+                        case IEntry entry:
+                            if (setName is null)
+                            {
+                                throw new Exception($"{nameof(BioDynamicAnimSet)} must have m_nmOrigSetName property defined!");
+                            }
+                            dynAnimSet.SequenceNamesToUnkMap.Add(entry.ObjectName.Instanced[(setName.Value.Instanced.Length + 1)..], 1);
+                            break;
+                    }
+                }
+            }
 
-            if (subObject.Class.IsComponent)
+
+            if (subExport.ClassName is "DominantDirectionalLightComponent" or "DominantSpotLightComponent")
+            {
+                Span<byte> preProps = stackalloc byte[20];
+                const int templateOwnerClass = 0; //todo: When is this not 0?
+
+                EndianBitConverter.WriteAsBytes(0, preProps, Pcc.Endian);
+                EndianBitConverter.WriteAsBytes(templateOwnerClass, preProps[4..], Pcc.Endian);
+                EndianBitConverter.WriteAsBytes(Pcc.FindNameOrAdd(subExport.ObjectName.Name), preProps[8..], Pcc.Endian);
+                EndianBitConverter.WriteAsBytes(subExport.ObjectName.Number, preProps[12..], Pcc.Endian);
+                EndianBitConverter.WriteAsBytes(netIndex, preProps[16..], Pcc.Endian);
+                subExport.WritePrePropsAndPropertiesAndBinary(preProps.ToArray(), props, binary);
+            }
+            else if (subObject.Class.IsComponent)
             {
                 Span<byte> preProps = stackalloc byte[16];
                 const int templateOwnerClass = 0; //todo: When is this not 0?
-                const int netIndex = 0; //should this be set to something?
-                
+
                 EndianBitConverter.WriteAsBytes(templateOwnerClass, preProps, Pcc.Endian);
-                EndianBitConverter.WriteAsBytes(Pcc.FindNameOrAdd(subObject.Class.Name), preProps[4..], Pcc.Endian);
-                EndianBitConverter.WriteAsBytes(0, preProps[8..], Pcc.Endian);
+                EndianBitConverter.WriteAsBytes(Pcc.FindNameOrAdd(subExport.ObjectName.Name), preProps[4..], Pcc.Endian);
+                EndianBitConverter.WriteAsBytes(subExport.ObjectName.Number, preProps[8..], Pcc.Endian);
                 EndianBitConverter.WriteAsBytes(netIndex, preProps[12..], Pcc.Endian);
-                subExport.WritePrePropsAndPropertiesAndBinary(preProps.ToArray(), props, new GenericObjectBinary(Array.Empty<byte>()));
+                subExport.WritePrePropsAndPropertiesAndBinary(preProps.ToArray(), props, binary);
             }
             else
             {
-                subExport.WriteProperties(props);
+                subExport.WritePropertiesAndBinary(props, binary);
             }
-        }
-
-        private PropertyCollection ConvertStatementsToPropertyCollection(ExportEntry export, List<Statement> statements, Dictionary<NameReference, ExportEntry> subObjectDict)
-        {
-            var existingSubObjects = export.GetChildren<ExportEntry>().ToList();
-            var props = new PropertyCollection();
-            foreach (Statement subobjectStatement in statements)
-            {
-                switch (subobjectStatement)
-                {
-                    case Subobject subObj:
-                        var subObjName = NameReference.FromInstancedString(subObj.Name.Name);
-                        existingSubObjects.TryRemove(exp => exp.ObjectName == subObjName, out ExportEntry existingSubObject);
-                        CreateSubObject(subObj, export, subObjectDict, ref existingSubObject);
-                        subObjectDict.Add(subObjName, existingSubObject);
-                        break;
-                    case AssignStatement assignStatement:
-                        Property prop = ConvertToProperty(assignStatement, subObjectDict);
-                        props.AddOrReplaceProp(prop);
-                        break;
-                    default:
-                        throw new Exception($"Unexpected statement type: {subobjectStatement.GetType().Name}");
-                }
-            }
-            if (existingSubObjects.Any())
-            {
-                EntryPruner.TrashEntriesAndDescendants(existingSubObjects);
-            }
-            return props;
         }
 
         private IEntry GetClassDefaultObject(IEntry classEntry)
         {
             if (classEntry is ExportEntry export)
             {
-                var classObj = export.GetBinaryData<UClass>();
+                var classObj = export.GetBinaryData<UClass>(packageCache);
                 return classObj.Defaults.GetEntry(Pcc);
             }
             string parentPath = classEntry.ParentInstancedFullPath;

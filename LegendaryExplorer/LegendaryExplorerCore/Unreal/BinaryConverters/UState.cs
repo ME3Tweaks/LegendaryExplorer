@@ -26,6 +26,21 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref LocalFunctionMap, SCExt.Serialize, SCExt.Serialize);
         }
 
+        public static UState Create()
+        {
+            return new()
+            {
+                SuperClass = 0,
+                Next = 0,
+                Children = 0,
+                ScriptBytecodeSize = 2,
+                ScriptStorageSize = 2,
+                ScriptBytes = new byte[] { 0xB, 0x53 },
+                IgnoreMask = (EProbeFunctions)ulong.MaxValue,
+                LocalFunctionMap = new OrderedMultiValueDictionary<NameReference, UIndex>()
+            };
+        }
+
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
         {
             List<(UIndex, string)> uIndices = base.GetUIndexes(game);

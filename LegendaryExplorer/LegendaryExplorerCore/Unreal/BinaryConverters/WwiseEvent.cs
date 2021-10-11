@@ -37,6 +37,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
+        public static WwiseEvent Create()
+        {
+            return new()
+            {
+                Links = new List<WwiseEventLink> { new WwiseEventLink { WwiseStreams = new List<UIndex>() } }
+            };
+        }
+
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
         {
             List<(UIndex, string)> uIndexes = base.GetUIndexes(game);

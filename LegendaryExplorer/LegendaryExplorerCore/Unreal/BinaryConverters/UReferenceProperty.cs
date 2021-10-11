@@ -14,6 +14,18 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref Enum);
         }
 
+        public static UByteProperty Create()
+        {
+            return new()
+            {
+                SuperClass = 0,
+                Next = 0,
+                Category = "None",
+                ArraySizeEnum = 0,
+                Enum = 0
+            };
+        }
+
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
         {
             List<(UIndex, string)> uIndices = base.GetUIndexes(game);
@@ -31,6 +43,18 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref ObjectRef);
         }
 
+        public static UObjectProperty Create()
+        {
+            return new()
+            {
+                SuperClass = 0,
+                Next = 0,
+                Category = "None",
+                ArraySizeEnum = 0,
+                ObjectRef = 0
+            };
+        }
+
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
         {
             List<(UIndex, string)> uIndices = base.GetUIndexes(game);
@@ -41,6 +65,17 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
     public class UComponentProperty : UObjectProperty
     {
+        public new static UComponentProperty Create()
+        {
+            return new()
+            {
+                SuperClass = 0,
+                Next = 0,
+                Category = "None",
+                ArraySizeEnum = 0,
+                ObjectRef = 0
+            };
+        }
     }
 
     public class UClassProperty : UObjectProperty
@@ -50,6 +85,19 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             base.Serialize(sc);
             sc.Serialize(ref ClassRef);
+        }
+
+        public new static UClassProperty Create()
+        {
+            return new()
+            {
+                SuperClass = 0,
+                Next = 0,
+                Category = "None",
+                ArraySizeEnum = 0,
+                ObjectRef = 0,
+                ClassRef = 0
+            };
         }
 
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
@@ -62,6 +110,17 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
     public class UInterfaceProperty : UObjectProperty
     {
+        public new static UInterfaceProperty Create()
+        {
+            return new()
+            {
+                SuperClass = 0,
+                Next = 0,
+                Category = "None",
+                ArraySizeEnum = 0,
+                ObjectRef = 0
+            };
+        }
     }
 
     public class UArrayProperty : UProperty
@@ -71,6 +130,18 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             base.Serialize(sc);
             sc.Serialize(ref ElementType);
+        }
+
+        public static UArrayProperty Create()
+        {
+            return new()
+            {
+                SuperClass = 0,
+                Next = 0,
+                Category = "None",
+                ArraySizeEnum = 0,
+                ElementType = 0
+            };
         }
 
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
@@ -90,6 +161,18 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref Struct);
         }
 
+        public static UStructProperty Create()
+        {
+            return new()
+            {
+                SuperClass = 0,
+                Next = 0,
+                Category = "None",
+                ArraySizeEnum = 0,
+                Struct = 0
+            };
+        }
+
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
         {
             List<(UIndex, string)> uIndices = base.GetUIndexes(game);
@@ -100,6 +183,17 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
     public class UBioMask4Property : UByteProperty
     {
+        public static UBioMask4Property Create()
+        {
+            return new()
+            {
+                SuperClass = 0,
+                Next = 0,
+                Category = "None",
+                ArraySizeEnum = 0,
+                Enum = 0
+            };
+        }
     }
 
     public class UMapProperty : UProperty
@@ -111,6 +205,19 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             base.Serialize(sc);
             sc.Serialize(ref KeyType);
             sc.Serialize(ref ValueType);
+        }
+
+        public static UMapProperty Create()
+        {
+            return new()
+            {
+                SuperClass = 0,
+                Next = 0,
+                Category = "None",
+                ArraySizeEnum = 0,
+                KeyType = 0,
+                ValueType = 0
+            };
         }
 
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
@@ -130,6 +237,19 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             base.Serialize(sc);
             sc.Serialize(ref Function);
             sc.Serialize(ref Delegate);
+        }
+
+        public static UDelegateProperty Create()
+        {
+            return new()
+            {
+                SuperClass = 0,
+                Next = 0,
+                Category = "None",
+                ArraySizeEnum = 0,
+                Function = 0,
+                Delegate = 0
+            };
         }
 
         public override List<(UIndex, string)> GetUIndexes(MEGame game)

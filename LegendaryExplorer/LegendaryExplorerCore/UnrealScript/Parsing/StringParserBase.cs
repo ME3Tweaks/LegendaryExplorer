@@ -376,7 +376,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 if (token.Value.Length > 63)
                 {
-                    TypeError($"The max length of a name is 63 characters! (This name is {token.Value.Length})", token);
+                    Log.LogWarning($"Names should be less than 64 characters! (This name is {token.Value.Length})", token.StartPos, token.EndPos);
                 }
                 return new NameLiteral(token.Value, token.StartPos, token.EndPos);
             }

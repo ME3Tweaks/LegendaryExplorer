@@ -22,7 +22,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
             string word = null;
             loopStart:
             while (!data.AtEnd() && !string.IsNullOrWhiteSpace(peek) 
-                && (Delimiters.All(d => d.Keyword != peek))
+                && Delimiters.All(d => d.Keyword != peek)
                 && peek != "\"" && peek != "'")
             {
                 word += peek;

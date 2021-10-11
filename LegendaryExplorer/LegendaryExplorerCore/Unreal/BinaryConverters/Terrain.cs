@@ -32,6 +32,21 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref MaxCollisionDisplacement);
             }
         }
+
+        public static Terrain Create()
+        {
+            return new()
+            {
+                Heights = Array.Empty<ushort>(),
+                InfoData = Array.Empty<TerrainInfoFlags>(),
+                AlphaMaps = Array.Empty<AlphaMap>(),
+                WeightedTextureMaps = Array.Empty<UIndex>(),
+                CachedTerrainMaterials = Array.Empty<TerrainMaterialResource>(),
+                CachedTerrainMaterials2 = Array.Empty<TerrainMaterialResource>(),
+                CachedDisplacements = Array.Empty<byte>(),
+            };
+        }
+
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
         {
             var uIndexes = new List<(UIndex, string)>();

@@ -72,6 +72,17 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
+        public static ShaderCache Create()
+        {
+            return new()
+            {
+                ShaderTypeCRCMap = new OrderedMultiValueDictionary<NameReference, uint>(),
+                Shaders = new OrderedMultiValueDictionary<Guid, Shader>(),
+                VertexFactoryTypeCRCMap = new OrderedMultiValueDictionary<NameReference, uint>(),
+                MaterialShaderMaps = new OrderedMultiValueDictionary<StaticParameterSet, MaterialShaderMap>()
+            };
+        }
+
         public override List<(NameReference, string)> GetNames(MEGame game)
         {
             var names = base.GetNames(game);

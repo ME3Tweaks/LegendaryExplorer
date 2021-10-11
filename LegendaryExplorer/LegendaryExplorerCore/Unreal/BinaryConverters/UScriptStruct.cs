@@ -27,6 +27,18 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 Defaults.WriteTo(sc.ms.Writer, sc.Pcc, true);
             }
         }
+
+        public static UScriptStruct Create()
+        {
+            return new()
+            {
+                SuperClass = 0,
+                Next = 0,
+                Children = 0,
+                ScriptBytes = Array.Empty<byte>(),
+                Defaults = new PropertyCollection{new NoneProperty()}
+            };
+        }
     }
 
     public static partial class SCExt

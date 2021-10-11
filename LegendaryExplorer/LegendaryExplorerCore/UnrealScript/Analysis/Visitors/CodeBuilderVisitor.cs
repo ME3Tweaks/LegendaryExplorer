@@ -207,6 +207,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
 
             Write();
+            Write("//class default properties can be edited in the Properties tab for the class's Default__ object.", EF.Comment);
             node.DefaultProperties?.AcceptVisitor(this);
 
             return true;
@@ -694,10 +695,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(DefaultPropertiesBlock node)
         {
             bool isStructDefaults = node.Outer is Struct;
-            if (!isStructDefaults)
-            { 
-                Write("//class default properties can be edited in the Properties tab for the class's Default__ object.", EF.Comment);
-            }
             Write(isStructDefaults ? STRUCTDEFAULTPROPERTIES : DEFAULTPROPERTIES, EF.Keyword);
             Write("{");
             NestingLevel++;
@@ -715,7 +712,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         {
             Write("Begin", EF.Keyword);
             Space();
-            Append("Object", EF.Keyword);
+            Append(node.IsTemplate ? "Template" : "Object", EF.Keyword);
             Space();
             Append("Class", EF.Keyword);
             Append("=", EF.Operator);
@@ -733,7 +730,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             NestingLevel--;
             Write("End", EF.Keyword);
             Space();
-            Append("Object", EF.Keyword);
+            Append(node.IsTemplate ? "Template" : "Object", EF.Keyword);
             return true;
         }
 

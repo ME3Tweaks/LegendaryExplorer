@@ -13,6 +13,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref AnimationMap, SCExt.Serialize, SCExt.Serialize);
         }
 
+        public static BioPawn Create()
+        {
+            return new()
+            {
+                AnimationMap = new OrderedMultiValueDictionary<NameReference, UIndex>()
+            };
+        }
+
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
         {
             return AnimationMap.Select((kvp, i) => (kvp.Value, $"AnimationMap[{i}]")).ToList();

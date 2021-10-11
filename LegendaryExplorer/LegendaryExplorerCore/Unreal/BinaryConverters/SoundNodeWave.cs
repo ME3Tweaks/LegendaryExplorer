@@ -1,4 +1,5 @@
-﻿using LegendaryExplorerCore.Packages;
+﻿using System;
+using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -25,6 +26,17 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.SerializeBulkData(ref CompressedPCData, SCExt.Serialize);
             sc.SerializeBulkData(ref CompressedXbox360Data, SCExt.Serialize);
             sc.SerializeBulkData(ref CompressedPS3Data, SCExt.Serialize);
+        }
+
+        public static SoundNodeWave Create()
+        {
+            return new()
+            {
+                RawData = Array.Empty<byte>(),
+                CompressedPCData = Array.Empty<byte>(),
+                CompressedXbox360Data = Array.Empty<byte>(),
+                CompressedPS3Data = Array.Empty<byte>(),
+            };
         }
     }
 }

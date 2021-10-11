@@ -692,11 +692,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             pewpf.BusyText = "Scanning";
             Task.Run(() =>
             {
-                foreach (MEGame game in new[] { MEGame.LE3, MEGame.LE2, MEGame.LE1, MEGame.ME2, MEGame.ME3, MEGame.ME1})
+                foreach (MEGame game in new[] { /*MEGame.LE3,*/ MEGame.LE2, MEGame.LE1, MEGame.ME3, MEGame.ME2, MEGame.ME1})
                 {
                     //preload base files for faster scanning
                     using DisposableCollection<IMEPackage> baseFiles = MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(game)
                         .Select(f => Path.Combine(MEDirectories.GetCookedPath(game), f)));
+                    using var packageCache = new PackageCache();
+                    packageCache.InsertIntoCache(baseFiles);
                     if (game == MEGame.ME3)
                     {
                         baseFiles.Add(MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "BIOP_MP_COMMON.pcc")));
@@ -714,7 +716,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         //ScanScripts2(filePath);
                         //RecompileAllFunctions(filePath);
                         //RecompileAllStates(filePath);
-                        RecompileAllDefaults(filePath);
+                        RecompileAllDefaults(filePath, packageCache);
                     }
                     //if (interestingExports.Any())
                     //{
@@ -1108,12 +1110,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
             }
 
-            void RecompileAllDefaults(string filePath)
+            void RecompileAllDefaults(string filePath, PackageCache packageCache = null)
             {
                 using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
                 var fileLib = new FileLib(pcc);
 
-                foreach (ExportEntry exp in pcc.Exports.Where(exp => exp.IsClass))
+                foreach (ExportEntry exp in pcc.Exports.Where(exp => exp.IsDefaultObject && exp.Class is ExportEntry))
                 {
                     string instancedFullPath = exp.InstancedFullPath;
                     if (foundClasses.Contains(instancedFullPath))
@@ -1127,18 +1129,16 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         if (fileLib.Initialize())
                         {
                             (_, string script) = UnrealScriptCompiler.DecompileExport(exp, fileLib);
-                            (ASTNode ast, MessageLog log, _) = UnrealScriptCompiler.CompileAST(script, exp.ClassName, exp.Game);
-                            if (ast is not Class c || log.AllErrors.Any())
-                            {
-                                interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath} \nfailed to parse class"));
-                                return;
-                            }
-
-                            ast = UnrealScriptCompiler.CompileDefaultPropertiesAST(exp, c.DefaultProperties, log, fileLib);
+                            (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileDefaultProperties(exp, script, fileLib, packageCache);
                             if (ast is not DefaultPropertiesBlock || log.AllErrors.Any())
                             {
                                 interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse defaults!"));
                                 return;
+                            }
+
+                            if (exp.EntryHasPendingChanges || exp.GetChildren().Any(entry => entry.EntryHasPendingChanges && entry.ClassName is not "ForceFeedbackWaveform") || pcc.FindEntry(UnrealPackageFile.TrashPackageName) is not null)
+                            {
+                                interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nRecompilation does not match!"));
                             }
                         }
                         else

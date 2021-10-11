@@ -84,6 +84,22 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
+        public static FaceFXAsset Create()
+        {
+            return new()
+            {
+                HNodes = new List<HNode>(),
+                Names = new List<string>(),
+                BoneNodes = new List<FaceFXBoneNode>(),
+                CombinerNodes = new List<FxNode>(),
+                TableC = Array.Empty<FXATableCElement>(),
+                Lines = new List<FaceFXLine>(),
+                TableD = new List<FXATableDElement>(),
+                LipSyncPhonemeNames = new List<int>(),
+                EndingInts = new List<int>()
+            };
+        }
+
         public class HNode
         {
             public int unk1;

@@ -52,21 +52,81 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
     public class UIntProperty : UProperty
     {
+        public static UIntProperty Create()
+        {
+            return new()
+            {
+                SuperClass = 0,
+                Next = 0,
+                Category = "None",
+                ArraySizeEnum = 0
+            };
+        }
     }
     public class UBoolProperty : UProperty
     {
+        public static UBoolProperty Create()
+        {
+            return new()
+            {
+                SuperClass = 0,
+                Next = 0,
+                Category = "None",
+                ArraySizeEnum = 0
+            };
+        }
     }
     public class UFloatProperty : UProperty
     {
+        public static UFloatProperty Create()
+        {
+            return new()
+            {
+                SuperClass = 0,
+                Next = 0,
+                Category = "None",
+                ArraySizeEnum = 0
+            };
+        }
     }
     public class UNameProperty : UProperty
     {
+        public static UNameProperty Create()
+        {
+            return new()
+            {
+                SuperClass = 0,
+                Next = 0,
+                Category = "None",
+                ArraySizeEnum = 0
+            };
+        }
     }
     public class UStrProperty : UProperty
     {
+        public static UStrProperty Create()
+        {
+            return new()
+            {
+                SuperClass = 0,
+                Next = 0,
+                Category = "None",
+                ArraySizeEnum = 0
+            };
+        }
     }
     public class UStringRefProperty : UProperty
     {
+        public static UStringRefProperty Create()
+        {
+            return new()
+            {
+                SuperClass = 0,
+                Next = 0,
+                Category = "None",
+                ArraySizeEnum = 0
+            };
+        }
     }
 
     public static partial class SCExt

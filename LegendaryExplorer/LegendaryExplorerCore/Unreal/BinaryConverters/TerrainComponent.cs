@@ -23,6 +23,18 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref PatchBounds, SCExt.Serialize);
             sc.Serialize(ref LightMap);
         }
+
+        public static TerrainComponent Create()
+        {
+            return new()
+            {
+                CollisionVertices = Array.Empty<Vector3>(),
+                BVTree = Array.Empty<TerrainBVNode>(),
+                PatchBounds = Array.Empty<TerrainPatchBounds>(),
+                LightMap = new LightMap()
+            };
+        }
+
         public override List<(UIndex, string)> GetUIndexes(MEGame game) => LightMap.GetUIndexes(game);
     }
 

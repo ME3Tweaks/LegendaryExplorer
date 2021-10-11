@@ -129,6 +129,19 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 _ => null
             };
 
+        public static bool IsValidEnum(MEGame game, string enumName) =>
+            game switch
+            {
+                MEGame.ME1 => ME1UnrealObjectInfo.Enums.ContainsKey(enumName),
+                MEGame.ME2 => ME2UnrealObjectInfo.Enums.ContainsKey(enumName),
+                MEGame.ME3 => ME3UnrealObjectInfo.Enums.ContainsKey(enumName),
+                MEGame.UDK => ME3UnrealObjectInfo.Enums.ContainsKey(enumName),
+                MEGame.LE1 => LE1UnrealObjectInfo.Enums.ContainsKey(enumName),
+                MEGame.LE2 => LE2UnrealObjectInfo.Enums.ContainsKey(enumName),
+                MEGame.LE3 => LE3UnrealObjectInfo.Enums.ContainsKey(enumName),
+                _ => false
+            };
+
 
         /// <summary>
         /// Recursively gets class defaults, traveling up inheritiance chain, but stopping at <paramref name="notIncludingClass"></paramref>
@@ -351,18 +364,18 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             {
 
                 case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache);
+                    return ME1UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache)?.DeepClone();
                 case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache);
+                    return ME2UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache)?.DeepClone();
                 case MEGame.ME3:
                 case MEGame.UDK:
-                    return ME3UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache);
+                    return ME3UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache)?.DeepClone();
                 case MEGame.LE1:
-                    return LE1UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache);
+                    return LE1UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache)?.DeepClone();
                 case MEGame.LE2:
-                    return LE2UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache);
+                    return LE2UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache)?.DeepClone();
                 case MEGame.LE3:
-                    return LE3UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache);
+                    return LE3UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache)?.DeepClone();
             }
             return null;
         }

@@ -145,6 +145,19 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
+        public static StaticMesh Create()
+        {
+            return new()
+            {
+                Bounds = new BoxSphereBounds(),
+                BodySetup = 0,
+                kDOPTreeME3UDKLE = KDOPTreeBuilder.ToCompact(Array.Empty<kDOPCollisionTriangle>(), Array.Empty<Vector3>()),
+                LODModels = Array.Empty<StaticMeshRenderData>(),
+                HighResSourceMeshName = "",
+                unkFloats = Array.Empty<float>()
+            };
+        }
+
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
         {
             var uIndexes = new List<(UIndex, string)> {(BodySetup, "BodySetup")};

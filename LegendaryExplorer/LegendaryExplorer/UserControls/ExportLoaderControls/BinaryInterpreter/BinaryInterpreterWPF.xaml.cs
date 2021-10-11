@@ -570,7 +570,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         break;
                 }
 
-                if (CurrentLoadedExport.TemplateOwnerClassIdx is var toci && toci >= 0)
+                if (CurrentLoadedExport.TemplateOwnerClassIdx is var toci and >= 0)
                 {
                     int n = EndianReader.ToInt32(data, toci, CurrentLoadedExport.FileRef.Endian);
                     subNodes.Add(new BinInterpNode(toci, $"TemplateOwnerClass: #{n} {CurrentLoadedExport.FileRef.GetEntryString(n)}", NodeType.StructLeafObject) { Length = 4 });
@@ -806,7 +806,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         if (!CurrentLoadedExport.HasStack)
                         {
                             isGenericScan = true;
-                            subNodes = StartGenericScan(data, ref binarystart);
+                            subNodes.AddRange(StartGenericScan(data, ref binarystart));
                         }
                         break;
                 }

@@ -15,6 +15,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref ArchetypeToInstanceMap, SCExt.Serialize, SCExt.Serialize);
             sc.Serialize(ref ObjectMap, SCExt.Serialize, SCExt.Serialize);
         }
+
+        public static PrefabInstance Create()
+        {
+            return new()
+            {
+                ArchetypeToInstanceMap = new OrderedMultiValueDictionary<UIndex, UIndex>(),
+                ObjectMap = new OrderedMultiValueDictionary<UIndex, int>()
+            };
+        }
+
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
         {
             var uIndexes = new List<(UIndex, string)>();

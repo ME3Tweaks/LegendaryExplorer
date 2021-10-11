@@ -232,7 +232,7 @@ namespace LegendaryExplorerCore.Packages
         }
 
         //should only have to check the flag, but custom mod classes might not have set it properly
-        public bool IsDefaultObject => ObjectFlags.Has(EObjectFlags.ClassDefaultObject) || ObjectNameString.StartsWith("Default__", StringComparison.Ordinal);
+        public bool IsDefaultObject => ObjectFlags.Has(EObjectFlags.ClassDefaultObject);
 
         private byte[] _header;
 
@@ -331,7 +331,7 @@ namespace LegendaryExplorerCore.Packages
 
         private void RegenerateHeader(OrderedMultiValueDictionary<NameReference, int> componentMap, int[] generationNetObjectCount, bool? hasComponentMap = null)
         {
-            Header = GenerateHeader(componentMap, generationNetObjectCount, hasComponentMap);
+            Header = GenerateHeader(componentMap, generationNetObjectCount, hasComponentMap, componentMap is null);
         }
 
         public int HeaderOffset { get; set; }
@@ -341,8 +341,11 @@ namespace LegendaryExplorerCore.Packages
             get => EndianReader.ToInt32(_header.AsSpan(OFFSET_idxClass), FileRef.Endian);
             private set
             {
-                EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_idxClass), FileRef.Endian);
-                HeaderChanged = true;
+                if (value != idxClass)
+                {
+                    EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_idxClass), FileRef.Endian);
+                    HeaderChanged = true;
+                }
             }
         }
 
@@ -351,13 +354,16 @@ namespace LegendaryExplorerCore.Packages
             get => EndianReader.ToInt32(_header.AsSpan(OFFSET_idxSuperClass), FileRef.Endian);
             private set
             {
-                // 0 check for setup
-                if (UIndex != 0 && value == UIndex)
+                if (value != idxSuperClass)
                 {
-                    throw new Exception("Cannot set export superclass to itself, this will cause infinite recursion");
+                    // 0 check for setup
+                    if (UIndex != 0 && value == UIndex)
+                    {
+                        throw new Exception("Cannot set export superclass to itself, this will cause infinite recursion");
+                    }
+                    EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_idxSuperClass), FileRef.Endian);
+                    HeaderChanged = true;
                 }
-                EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_idxSuperClass), FileRef.Endian);
-                HeaderChanged = true;
             }
         }
 
@@ -366,14 +372,17 @@ namespace LegendaryExplorerCore.Packages
             get => EndianReader.ToInt32(_header.AsSpan(OFFSET_idxLink), FileRef.Endian);
             set
             {
-                // HeaderOffset = 0 means this was instantiated and not read in from a stream
-                if (value == UIndex && HeaderOffset != 0)
+                if (value != idxLink)
                 {
-                    throw new Exception("Cannot set import link to itself, this will cause infinite recursion");
+                    // HeaderOffset = 0 means this was instantiated and not read in from a stream
+                    if (value == UIndex && HeaderOffset != 0)
+                    {
+                        throw new Exception("Cannot set import link to itself, this will cause infinite recursion");
+                    }
+                    EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_idxLink), FileRef.Endian);
+                    HeaderChanged = true;
+                    FileRef.InvalidateLookupTable();
                 }
-                EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_idxLink), FileRef.Endian);
-                HeaderChanged = true;
-                FileRef.InvalidateLookupTable();
             }
         }
 
@@ -382,9 +391,12 @@ namespace LegendaryExplorerCore.Packages
             get => EndianReader.ToInt32(_header.AsSpan(OFFSET_idxObjectName), FileRef.Endian);
             set
             {
-                EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_idxObjectName), FileRef.Endian);
-                HeaderChanged = true;
-                FileRef.InvalidateLookupTable();
+                if (value != idxObjectName)
+                {
+                    EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_idxObjectName), FileRef.Endian);
+                    HeaderChanged = true;
+                    FileRef.InvalidateLookupTable();
+                }
             }
         }
 
@@ -393,7 +405,7 @@ namespace LegendaryExplorerCore.Packages
             get => EndianReader.ToInt32(_header.AsSpan(OFFSET_indexValue), FileRef.Endian);
             set
             {
-                if (indexValue != value)
+                if (value != indexValue)
                 {
                     EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_indexValue), FileRef.Endian);
                     HeaderChanged = true;
@@ -407,8 +419,11 @@ namespace LegendaryExplorerCore.Packages
             get => EndianReader.ToInt32(_header.AsSpan(OFFSET_idxArchetype), FileRef.Endian);
             private set
             {
-                EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_idxArchetype), FileRef.Endian);
-                HeaderChanged = true;
+                if (value != idxArchetype)
+                {
+                    EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_idxArchetype), FileRef.Endian);
+                    HeaderChanged = true;
+                }
             }
         }
 
@@ -417,8 +432,11 @@ namespace LegendaryExplorerCore.Packages
             get => (EObjectFlags)EndianReader.ToUInt64(_header.AsSpan(OFFSET_ObjectFlags), FileRef.Endian);
             set
             {
-                EndianBitConverter.WriteAsBytes((ulong)value, _header.AsSpan(OFFSET_ObjectFlags), FileRef.Endian);
-                HeaderChanged = true;
+                if (value != ObjectFlags)
+                {
+                    EndianBitConverter.WriteAsBytes((ulong)value, _header.AsSpan(OFFSET_ObjectFlags), FileRef.Endian);
+                    HeaderChanged = true;
+                }
             }
         }
 
@@ -467,8 +485,11 @@ namespace LegendaryExplorerCore.Packages
             get => (EExportFlags)EndianReader.ToUInt32(_header.AsSpan(ExportFlagsOffset), FileRef.Endian);
             set
             {
-                EndianBitConverter.WriteAsBytes((uint)value, _header.AsSpan(ExportFlagsOffset), FileRef.Endian);
-                HeaderChanged = true;
+                if (value != ExportFlags)
+                {
+                    EndianBitConverter.WriteAsBytes((uint)value, _header.AsSpan(ExportFlagsOffset), FileRef.Endian);
+                    HeaderChanged = true;
+                }
             }
         }
 
@@ -494,8 +515,11 @@ namespace LegendaryExplorerCore.Packages
             get => EndianReader.ToGuid(_header.AsSpan(PackageGuidOffset, 16), FileRef.Endian);
             set
             {
-                EndianBitConverter.WriteAsBytes(value, _header.AsSpan(PackageGuidOffset), FileRef.Endian);
-                HeaderChanged = true;
+                if (value != PackageGUID)
+                {
+                    EndianBitConverter.WriteAsBytes(value, _header.AsSpan(PackageGuidOffset), FileRef.Endian);
+                    HeaderChanged = true;
+                }
             }
         }
 
@@ -504,8 +528,11 @@ namespace LegendaryExplorerCore.Packages
             get => (EPackageFlags)EndianReader.ToUInt32(_header.AsSpan(PackageGuidOffset + 16), FileRef.Endian);
             set
             {
-                EndianBitConverter.WriteAsBytes((uint)value, _header.AsSpan(PackageGuidOffset + 16), FileRef.Endian);
-                HeaderChanged = true;
+                if (value != PackageFlags)
+                {
+                    EndianBitConverter.WriteAsBytes((uint)value, _header.AsSpan(PackageGuidOffset + 16), FileRef.Endian);
+                    HeaderChanged = true;
+                }
             }
         }
 
@@ -570,7 +597,7 @@ namespace LegendaryExplorerCore.Packages
         private byte[] _data;
 
         /// <summary>
-        /// Returns a ReadOnlySpan of Data. This is a much more efficient than cloning with Data.
+        /// Returns a ReadOnlySpan of Data. This is much more efficient than cloning with Data.
         /// </summary>
         public ReadOnlySpan<byte> DataReadOnly => _data.AsSpan();
 

@@ -20,6 +20,35 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref Samples, SCExt.Serialize);
             }
         }
+
+        public static ForceFeedbackWaveform Create(PropertyCollection props)
+        {
+            var waveform = new ForceFeedbackWaveform
+            {
+                Samples = new List<WaveformSample>()
+            };
+            if (props is not null)
+            {
+                waveform.IsLooping = props.GetProp<BoolProperty>("bIsLooping")?.Value ?? false;
+                if (props.GetProp<ArrayProperty<StructProperty>>("Samples") is {} samplesProp)
+                {
+                    foreach (StructProperty sample in samplesProp)
+                    {
+                        Enum.TryParse(sample.GetProp<EnumProperty>("LeftFunction")?.Value.Instanced ?? "WF_Constant", true, out EWaveformFunction leftFunction);
+                        Enum.TryParse(sample.GetProp<EnumProperty>("RightFunction")?.Value.Instanced ?? "WF_Constant", true, out EWaveformFunction rightFunction);
+                        waveform.Samples.Add(new WaveformSample
+                        {
+                            LeftAmplitude = sample.GetProp<ByteProperty>("LeftAmplitude")?.Value ?? 0,
+                            RightAmplitude = sample.GetProp<ByteProperty>("RightAmplitude")?.Value ?? 0,
+                            LeftFunction = leftFunction,
+                            RightFunction = rightFunction,
+                            Duration = sample.GetProp<FloatProperty>("Duration")?.Value ?? 0f
+                        });
+                    }
+                }
+            }
+            return waveform;
+        }
     }
 
     public class WaveformSample

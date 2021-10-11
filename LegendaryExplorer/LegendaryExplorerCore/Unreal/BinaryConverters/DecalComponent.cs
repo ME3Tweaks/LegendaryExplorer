@@ -17,6 +17,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref StaticReceivers, SCExt.Serialize);
         }
 
+        public static DecalComponent Create()
+        {
+            return new()
+            {
+                StaticReceivers = Array.Empty<StaticReceiverData>()
+            };
+        }
+
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
         {
             var uIndexes = new List<(UIndex, string)>();

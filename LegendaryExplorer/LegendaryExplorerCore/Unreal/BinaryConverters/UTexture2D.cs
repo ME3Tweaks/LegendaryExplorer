@@ -46,6 +46,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
+        public static UTexture2D Create()
+        {
+            return new()
+            {
+                Mips = new List<Texture2DMipMap>()
+            };
+        }
+
         public class Texture2DMipMap
         {
             public StorageTypes StorageType;
@@ -86,6 +94,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref lmf);
                 LightMapFlags = (ELightMapFlags)lmf;
             }
+        }
+
+        public new static LightMapTexture2D Create()
+        {
+            return new()
+            {
+                Mips = new List<Texture2DMipMap>()
+            };
         }
     }
     public enum ELightMapFlags
