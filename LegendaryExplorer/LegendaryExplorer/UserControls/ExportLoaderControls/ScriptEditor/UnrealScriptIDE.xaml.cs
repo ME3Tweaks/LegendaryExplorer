@@ -565,7 +565,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                     }
                     var codeBuilder = new CodeBuilderVisitor<SyntaxInfoCodeFormatter, (string, SyntaxInfo)>();
                     RootNode.AcceptVisitor(codeBuilder);
-                    (_, SyntaxInfo syntaxInfo) = codeBuilder.GetOutput();
+                    (string text, SyntaxInfo syntaxInfo) = codeBuilder.GetOutput();
+                    ScriptText = text;
                     textEditor.SyntaxHighlighting = syntaxInfo;
                 }
 

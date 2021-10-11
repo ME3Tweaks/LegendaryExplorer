@@ -7,7 +7,7 @@ using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
-    public sealed class Class : VariableType, IObjectType, IContainsFunctions
+    public sealed class Class : ObjectType, IContainsFunctions
     {
         public string Package;
         public VariableType Parent;
@@ -15,11 +15,11 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public UnrealFlags.EClassFlags Flags;
         public string ConfigName;
         public List<VariableType> Interfaces { get; }
-        public List<VariableDeclaration> VariableDeclarations { get; }
-        public List<VariableType> TypeDeclarations { get; }
+        public override List<VariableDeclaration> VariableDeclarations { get; }
+        public override List<VariableType> TypeDeclarations { get; }
         public List<Function> Functions { get; }
         public List<State> States { get; }
-        public DefaultPropertiesBlock DefaultProperties { get; set; }
+        public override DefaultPropertiesBlock DefaultProperties { get; set; }
 
         public Dictionary<string, ushort> VirtualFunctionLookup;
 
@@ -27,8 +27,13 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public bool IsInterface => Flags.Has(UnrealFlags.EClassFlags.Interface);
 
+        public bool IsComponent => SameAsOrSubClassOf("Component");
+
         public bool IsNative => Flags.Has(UnrealFlags.EClassFlags.Native);
 
+        //Sometimes, a class Export will have its Default__ object as an import, and no children.
+        //So the actual definition is in another file, but instead of being included as an import, it's a strange partial definition.
+        //In that case, we can;t do anything with it, so this is set to false.
         public bool IsFullyDefined = true;
 
         public Class(string name, VariableType parent, VariableType outer, UnrealFlags.EClassFlags flags,
@@ -64,6 +69,8 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         }
 
         #region Helpers
+
+        public bool SameAsOrSubClassOf(Class c) => SameAsOrSubClassOf(c.Name);
 
         public bool SameAsOrSubClassOf(string name)
         {

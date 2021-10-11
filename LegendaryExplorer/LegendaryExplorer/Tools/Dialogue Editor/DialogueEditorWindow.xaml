@@ -323,7 +323,8 @@
                                      ItemsSource="{Binding Path=SelectedConv.StageDirections}"
                                      VerticalContentAlignment="Stretch" ScrollViewer.CanContentScroll="True"
                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                     ScrollViewer.VerticalScrollBarVisibility="Visible">
+                                     ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                     MouseDoubleClick="StageDirs_ListBox_OnMouseDoubleClick">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <Grid HorizontalAlignment="Stretch">
@@ -345,6 +346,8 @@
                                 </ListBox.ItemTemplate>
                                 <ListBox.ContextMenu>
                                     <ContextMenu>
+                                        <MenuItem Header="Go to node" Command="{Binding StageDirectionsModCommand}"
+                                                  CommandParameter="Goto" />
                                         <MenuItem Header="Add" Command="{Binding StageDirectionsModCommand}"
                                                   CommandParameter="Add" />
                                         <MenuItem Header="Delete" Command="{Binding StageDirectionsModCommand}"

@@ -589,7 +589,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             return false;
         }
 
-        private VariableType InternalResolveType(VariableType stub, IObjectType containingClass)
+        private VariableType InternalResolveType(VariableType stub, ObjectType containingClass)
         {
             //first check the containing class (needed for structs that don't have globally unique names)
             if (containingClass?.TypeDeclarations.FirstOrDefault(decl => decl.Name.CaseInsensitiveEquals(stub.Name)) is VariableType typeDecl)

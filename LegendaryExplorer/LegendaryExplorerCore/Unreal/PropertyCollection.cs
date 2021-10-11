@@ -1016,7 +1016,7 @@ namespace LegendaryExplorerCore.Unreal
 
         public ObjectProperty(IEntry referencedEntry, NameReference? name = null) : base(name)
         {
-            Value = referencedEntry.UIndex;
+            Value = referencedEntry?.UIndex ?? 0;
         }
 
         public ObjectProperty() { }

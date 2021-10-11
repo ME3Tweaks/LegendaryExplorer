@@ -2684,8 +2684,27 @@ namespace LegendaryExplorer.DialogueEditor
                 SelectedConv.StageDirections.RemoveAt(StageDirs_ListBox.SelectedIndex);
                 SaveStageDirectionsToProperties(SelectedConv);
             }
-
+            else if (command == "Goto" && StageDirs_ListBox.SelectedIndex >= 0)
+            {
+                GoToSelectedStageDirection();
+            }
         }
+
+        private void StageDirs_ListBox_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            GoToSelectedStageDirection();
+        }
+
+        private void GoToSelectedStageDirection()
+        {
+            var selectedIndex = StageDirs_ListBox.SelectedIndex;
+            if (selectedIndex >= -0)
+            {
+                var selectedDirection = SelectedConv.StageDirections[StageDirs_ListBox.SelectedIndex];
+                TrySelectStrRef(selectedDirection.StageStrRef, suppressErrorMessageBox: true);
+            }
+        }
+
         #endregion
 
         #region UIHandling-graph
@@ -3336,7 +3355,7 @@ namespace LegendaryExplorer.DialogueEditor
             }
         }
 
-        public void TrySelectStrRef(int strRef)
+        public void TrySelectStrRef(int strRef, bool suppressErrorMessageBox = false)
         {
             var selectedObj = SelectedObjects.FirstOrDefault();
             DiagNode tgt = CurrentObjects.AfterThenBefore(selectedObj).OfType<DiagNode>().FirstOrDefault(d => d.Node.LineStrRef == strRef);
@@ -3346,7 +3365,7 @@ namespace LegendaryExplorer.DialogueEditor
                 graphEditor.Camera.AnimateViewToCenterBounds(tgt.GlobalFullBounds, false, 100);
                 graphEditor.Refresh();
             }
-            else
+            else if(suppressErrorMessageBox == false)
             {
                 MessageBox.Show($"\"{searchtext}\" not found");
             }

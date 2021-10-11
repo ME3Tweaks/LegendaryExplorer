@@ -314,7 +314,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 if (src is Class srcClass)
                 {
-                    bool sameAsOrSubClassOf = srcClass.SameAsOrSubClassOf(destClass.Name);
+                    bool sameAsOrSubClassOf = srcClass.SameAsOrSubClassOf(destClass);
                     if (srcClass.IsInterface)
                     {
                         return sameAsOrSubClassOf || destClass.Implements(srcClass);
@@ -328,7 +328,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                            //this seems super wrong obviously. A sane type system would require an explicit downcast.
                            //But to make this work with existing bioware code, it's this, or write a control-flow analyzer that implicitly downcasts based on typecheck conditional gates
                            //I have chosen the lazy path
-                           || destClass.SameAsOrSubClassOf(srcClass.Name);
+                           || destClass.SameAsOrSubClassOf(srcClass);
                 }
 
                 if (destClass.Name.CaseInsensitiveEquals("Object") && src is ClassType)
@@ -374,6 +374,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             if (Matches(TokenType.NameLiteral))
             {
+                if (token.Value.Length > 63)
+                {
+                    TypeError($"The max length of a name is 63 characters! (This name is {token.Value.Length})", token);
+                }
                 return new NameLiteral(token.Value, token.StartPos, token.EndPos);
             }
 
@@ -498,7 +502,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return isNegative ? -val : val;
         }
 
-        protected Expression ParseObjectLiteral(Token<string> className, Token<string> objName)
+        protected Expression ParseObjectLiteral(Token<string> className, Token<string> objName, bool noActors = true)
         {
             className.SyntaxType = EF.TypeName;
             bool isClassLiteral = className.Value.CaseInsensitiveEquals(CLASS);
@@ -518,7 +522,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
                 else
                 {
-                    if (cls.SameAsOrSubClassOf("Actor"))
+                    if (noActors && cls.SameAsOrSubClassOf("Actor"))
                     {
                         TypeError("Object constants must not be Actors!", className);
                     }

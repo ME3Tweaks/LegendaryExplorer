@@ -129,7 +129,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 {
                     if (node.Name != "Object")
                     {
-                        if (((Class)node.Parent).SameAsOrSubClassOf(node.Name)) // TODO: not needed due to no forward declarations?
+                        if (((Class)node.Parent).SameAsOrSubClassOf(node)) // TODO: not needed due to no forward declarations?
                         {
                             return Error($"Extending from '{node.Parent.Name}' causes circular extension!", node.Parent.StartPos, node.Parent.EndPos);
                         }
@@ -279,7 +279,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 switch ((node.VarType as StaticArrayType)?.ElementType ?? node.VarType)
                 {
                     case DynamicArrayType {ElementType: VariableType elType} dynArrType:
-                        if (elType is Class elClass && elClass.SameAsOrSubClassOf("Component"))
+                        if (elType is Class {IsComponent: true})
                         {
                             dynArrType.ElementPropertyFlags |= EPropertyFlags.Component;
                             node.Flags |= EPropertyFlags.Component;
@@ -291,7 +291,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                             dynArrType.ElementPropertyFlags |= EPropertyFlags.NeedCtorLink;
                         }
                         break;
-                    case Class c when c.SameAsOrSubClassOf("Component"):
+                    case Class {IsComponent: true}:
                         node.Flags |= EPropertyFlags.Component;
                         break;
                     case Struct strct when !node.Flags.Has(EPropertyFlags.Native) && StructNeedsCtorLink(strct, new Stack<Struct> { strct }):
@@ -372,7 +372,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 if (!Symbols.TryAddType(node))
                 {
                     //Structs do not have to be globally unique, but they do have to be unique within a scope
-                    if (((IObjectType)node.Outer).TypeDeclarations.Any(decl => decl != node && decl.Name.CaseInsensitiveEquals(node.Name)))
+                    if (((ObjectType)node.Outer).TypeDeclarations.Any(decl => decl != node && decl.Name.CaseInsensitiveEquals(node.Name)))
                     {
                         return Error($"A type named '{node.Name}' already exists in this {node.Outer.GetType().Name.ToLower()}!", node.StartPos, node.EndPos);
                     }
@@ -458,7 +458,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             if (!Symbols.TryAddType(node))
             {
                 //Enums do not have to be globally unique, but they do have to be unique within a scope
-                if (((IObjectType)node.Outer).TypeDeclarations.Any(decl => decl != node && decl.Name.CaseInsensitiveEquals(node.Name)))
+                if (((ObjectType)node.Outer).TypeDeclarations.Any(decl => decl != node && decl.Name.CaseInsensitiveEquals(node.Name)))
                 {
                     return Error($"A type named '{node.Name}' already exists in this {node.Outer.GetType().Name.ToLower()}!", node.StartPos, node.EndPos);
                 }
@@ -488,7 +488,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             if (!Symbols.TryAddType(node))
             {
                 //Consts do not have to be globally unique, but they do have to be unique within a scope
-                if (((IObjectType)node.Outer).TypeDeclarations.Any(decl => decl != node && decl.Name.CaseInsensitiveEquals(node.Name)))
+                if (((ObjectType)node.Outer).TypeDeclarations.Any(decl => decl != node && decl.Name.CaseInsensitiveEquals(node.Name)))
                 {
                     return Error($"A type named '{node.Name}' already exists in this {node.Outer.GetType().Name.ToLower()}!", node.StartPos, node.EndPos);
                 }

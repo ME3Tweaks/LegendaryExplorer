@@ -1188,48 +1188,51 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
         #endregion
 
-        // EXPERIMENTS: OTHER PEOPLE ------------------------------------------------------------
-
-        #region Other people's experiments
-
-        private void ExportLevelToT3D_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsO.DumpPackageToT3D(GetPEWindow().Pcc);
-        }
+        // EXPERIMENTS: HENBAGLE ------------------------------------------------------------
+        #region HenBagle's Experiments
 
         private void BuildME1SuperTLK_Clicked(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsO.BuildME1SuperTLKFile(GetPEWindow());
+            PackageEditorExperimentsH.BuildME1SuperTLKFile(GetPEWindow());
         }
 
         private void AssociateAllExtensions_Clicked(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsO.AssociateAllExtensions();
+            PackageEditorExperimentsH.AssociateAllExtensions();
         }
 
         private void GenerateAudioFileInfo_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsO.CreateAudioSizeInfo(GetPEWindow(), MEGame.LE3);
+            PackageEditorExperimentsH.CreateAudioSizeInfo(GetPEWindow(), MEGame.LE3);
         }
 
         private void GenerateWwiseId_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsO.GenerateWwiseId(GetPEWindow());
+            PackageEditorExperimentsH.GenerateWwiseId(GetPEWindow());
         }
 
         private void CreateTestTLKWithStringIDs_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsO.CreateTestTLKWithStringIDs(GetPEWindow());
+            PackageEditorExperimentsH.CreateTestTLKWithStringIDs(GetPEWindow());
         }
 
         private void UpdateLocalFunctions_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsO.UpdateLocalFunctions(GetPEWindow());
+            PackageEditorExperimentsH.UpdateLocalFunctions(GetPEWindow());
         }
 
         private void DumpTOC_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsO.DumpTOC();
+            PackageEditorExperimentsH.DumpTOC();
+        }
+
+        #endregion
+
+        // EXPERIMENTS: OTHER PEOPLE ------------------------------------------------------------
+        #region Other people's experiments
+        private void ExportLevelToT3D_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.DumpPackageToT3D(GetPEWindow().Pcc);
         }
 
         private void AddPresetDirectorGroup_Click(object sender, RoutedEventArgs e)
@@ -1240,6 +1243,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         private void AddPresetCameraGroup_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsO.AddPresetGroup("Camera", GetPEWindow());
+        }
+
+        private void AddPresetActorGroup_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.AddPresetGroup("Actor", GetPEWindow());
         }
 
         private void AddPresetGestureTrack_Click(object sender, RoutedEventArgs e)

@@ -41,6 +41,11 @@ namespace LegendaryExplorer.UserControls.InterpEditorControls
             InterpEditorExperimentsE.AddPresetGroup("Camera", GetIEWindow());
         }
 
+        private void AddPresetActorGroup_Click(object sender, RoutedEventArgs e)
+        {
+            InterpEditorExperimentsE.AddPresetGroup("Actor", GetIEWindow());
+        }
+
         private void AddPresetGestureTrack_Click(object sender, RoutedEventArgs e)
         {
             InterpEditorExperimentsE.AddPresetTrack("Gesture", GetIEWindow());

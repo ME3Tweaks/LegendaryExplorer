@@ -2504,7 +2504,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
                 sourceActor.WriteProperty(connections);
                 ArrayProperty<ObjectProperty> linksFrom = destActor.GetProperty<ArrayProperty<ObjectProperty>>("LinksFrom") ?? new ArrayProperty<ObjectProperty>("LinksFrom");
-                linksFrom.Remove(objProp => objProp.Value == sourceActor.UIndex);
+                linksFrom.RemoveAll(objProp => objProp.Value == sourceActor.UIndex);
                 destActor.WriteProperty(linksFrom);
                 //ValidationPanel.RecalculateSplineComponents(Pcc);
             }

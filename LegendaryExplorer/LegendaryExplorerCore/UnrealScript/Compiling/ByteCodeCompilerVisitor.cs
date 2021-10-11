@@ -758,7 +758,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public bool VisitNode(ArraySymbolRef node)
         {
-            WriteOpCode(node.Array.ResolveType() is DynamicArrayType ? OpCodes.DynArrayElement : OpCodes.ArrayElement);
+            WriteOpCode(node.IsDynamic ? OpCodes.DynArrayElement : OpCodes.ArrayElement);
             Emit(node.Index);
             Emit(node.Array);
             return true;
@@ -1373,8 +1373,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         public static string PropertyTypeName(VariableType type) =>
             type switch
             {
-                Class component when component.SameAsOrSubClassOf("Component") => "ComponentProperty",
-                Class { IsInterface: true } => "InterfaceProperty",
+                Class {IsComponent: true} => "ComponentProperty",
+                Class {IsInterface: true} => "InterfaceProperty",
                 Class _ => "ObjectProperty",
                 Struct _ => "StructProperty",
                 ClassType _ => "ClassProperty",
