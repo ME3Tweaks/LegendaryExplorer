@@ -37,7 +37,7 @@
                 <ComboBox Width="200" VerticalContentAlignment="Center" Margin="6" FontSize="13" SelectedItem="{Binding TfcName, Mode=OneWay}" ItemsSource="{Binding AvailableTFCNames}"  ToolTip="Select a different cache" Name="TextureCacheComboBox" IsEnabled="{Binding IsExternalFile, Converter={StaticResource InverseBooleanConverter}}" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,30">
-                <Image Source="bink.jpg" MaxWidth="320" Cursor="Hand" Height="28" Width="28" Margin="10" MouseLeftButtonUp="DownloadRad_MouseUp" ToolTip="Click logo to go to RadTools site for download" IsEnabled="{Binding RADNotInstalled}"/>
+                <Image Source="Resources/Images/bink.jpg" MaxWidth="320" Cursor="Hand" Height="28" Width="28" Margin="10" MouseLeftButtonUp="DownloadRad_MouseUp" ToolTip="Click logo to go to RadTools site for download" IsEnabled="{Binding RADNotInstalled}"/>
                 <Button Content="Playback in RadTools" FontWeight="Bold" HorizontalAlignment="Left" Command="{Binding OpenFileInRADCommand}" Padding="7" Margin="5,0,0,0" ToolTip="Open the file externally in Rad Tools"/>
                 <Button Content="Extract bik to file" FontWeight="Bold" HorizontalAlignment="Left" Command="{Binding ExtractBikCommand}" Padding="7" Margin="5,0,0,0" ToolTip="Save as new .bik file"/>
                 <Button Content="Import bik" FontWeight="Bold" HorizontalAlignment="Left" Command="{Binding ImportBikFileCommand}" Margin="5,0,0,0" Padding="7" ToolTip="Import new .bik file"/>

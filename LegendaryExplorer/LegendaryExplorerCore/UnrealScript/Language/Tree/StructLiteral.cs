@@ -9,9 +9,9 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
     {
         public List<Statement> Statements;
 
-        public string StructType;
+        public readonly Struct StructType;
 
-        public StructLiteral(string structType, List<Statement> statements, SourcePosition start = null, SourcePosition end = null) : base(ASTNodeType.StructLiteral, start, end)
+        public StructLiteral(Struct structType, List<Statement> statements, SourcePosition start = null, SourcePosition end = null) : base(ASTNodeType.StructLiteral, start, end)
         {
             Statements = statements;
             StructType = structType;
@@ -27,10 +27,8 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             return visitor.VisitNode(this);
         }
 
-        public override VariableType ResolveType()
-        {
-            return new VariableType(StructType, null, null);
-        }
+        public override VariableType ResolveType() => StructType;
+
         public override IEnumerable<ASTNode> ChildNodes => Statements;
     }
 }

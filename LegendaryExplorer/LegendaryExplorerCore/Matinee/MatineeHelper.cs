@@ -17,11 +17,7 @@ namespace LegendaryExplorerCore.Matinee
 
         public static ExportEntry AddNewGroupDirectorToInterpData(ExportEntry interpData) => InternalAddGroup("InterpGroupDirector", interpData, null);
 
-        public static ExportEntry AddPresetDirectorGroup(ExportEntry interpData) => InternalAddPresetGroup("Director", interpData);
-
-        public static ExportEntry AddPresetCameraGroup(ExportEntry interpData, string param1) => InternalAddPresetGroup("Camera", interpData, param1);
-
-        public static ExportEntry AddPresetGestureTrack(ExportEntry interpGroup, string param1) => InternalAddPresetTrack("Gesture", interpGroup, param1);
+        public static ExportEntry AddPreset(string preset, ExportEntry export, MEGame game, string? param1 = null) => InternalAddPreset(preset, export, game, param1);
 
         private static ExportEntry InternalAddGroup(string className, ExportEntry interpData, string groupName)
         {
@@ -42,94 +38,20 @@ namespace LegendaryExplorerCore.Matinee
             return group;
         }
 
-        private static ExportEntry InternalAddPresetGroup(string preset, ExportEntry interpData, string? param1 = null)
+        private static ExportEntry InternalAddPreset(string preset, ExportEntry export, MEGame game, string param1)
         {
-            var group = PresetCreateNewExport(preset, interpData, param1);
-            PresetAddTracks(preset, group, param1);
-
-            return group;
-        }
-
-        private static ExportEntry InternalAddPresetTrack(string preset, ExportEntry interpGroup, string? param1 = null)
-        {
-            PresetAddTracks(preset, interpGroup, param1);
-            return interpGroup;
-        }
-
-        private static ExportEntry PresetCreateNewExport(string preset, ExportEntry interpData, string param1)
-        {
-            string className = "InterpGroup";
-            var properties = new PropertyCollection { new ArrayProperty<ObjectProperty>("InterpTracks") };
-
-            switch (preset)
+            switch (export.ClassName)
             {
-                case "Camera":
-                    if (!string.IsNullOrEmpty(param1))
-                    {
-                        properties.Add(new NameProperty(param1, "m_nmSFXFindActor"));
-                        properties.Add(new NameProperty(param1, "GroupName"));
-                    }
-                    properties.Add(CommonStructs.ColorProp(Color.Green, "GroupColor"));
-                    break;
-
-                case "Director":
-                    className = "InterpGroupDirector";
-                    properties.Add(CommonStructs.ColorProp(Color.Purple, "GroupColor"));
-                    break;
-
+                case "InterpData":
+                    var group = PresetCreateNewExport(preset, export, game, param1);
+                    PresetAddTracks(preset, group, game, param1);
+                    return group;
+                case "InterpGroup":
+                    PresetAddTracks(preset, export, game, param1);
+                    return export;
                 default:
-                    properties.Add(CommonStructs.ColorProp(Color.Green, "GroupColor"));
-                    break;
+                    return null;
             }
-
-            ExportEntry group = CreateNewExport(className, interpData, properties);
-
-            var props = interpData.GetProperties();
-            var groupsProp = props.GetProp<ArrayProperty<ObjectProperty>>("InterpGroups") ?? new ArrayProperty<ObjectProperty>("InterpGroups");
-            groupsProp.Add(new ObjectProperty(group));
-            props.AddOrReplaceProp(groupsProp);
-            interpData.WriteProperties(props);
-
-            return group;
-        }
-
-        private static void PresetAddTracks(string preset, ExportEntry group, string? param1 = null)
-        {
-            switch (preset)
-            {
-                case "Camera":
-                    var move = AddNewTrackToGroup(group, "InterpTrackMove");
-                    AddDefaultPropertiesToTrack(move);
-
-                    var fov = AddNewTrackToGroup(group, "InterpTrackFloatProp");
-                    fov.WriteProperty(new InterpCurveFloat().ToStructProperty(fov.Game, "FloatTrack"));
-                    fov.WriteProperty(new StrProperty("FOVAngle", "TrackTitle"));
-                    fov.WriteProperty(new NameProperty("FOVAngle", "PropertyName"));
-                    break;
-
-                case "Director":
-                    var dir = AddNewTrackToGroup(group, "InterpTrackDirector");
-                    AddDefaultPropertiesToTrack(dir);
-
-                    var dof = AddNewTrackToGroup(group, "BioEvtSysTrackDOF");
-                    AddDefaultPropertiesToTrack(dof);
-                    break;
-
-                case "Gesture":
-                    var ges = AddNewTrackToGroup(group, "BioEvtSysTrackGesture");
-                    ges.WriteProperty(new ArrayProperty<StructProperty>("m_aGestures"));
-                    ges.WriteProperty(new ArrayProperty<StructProperty>("m_aTrackKeys"));
-                    ges.WriteProperty(new NameProperty("None", "nmStartingPoseSet"));
-                    ges.WriteProperty(new NameProperty("None", "nmStartingPoseAnim"));
-                    ges.WriteProperty(new FloatProperty(0, "m_fStartPoseOffset"));
-                    ges.WriteProperty(new EnumProperty("None", "EBioTrackAllPoseGroups", MEGame.LE3, "ePoseFilter"));
-                    ges.WriteProperty(new EnumProperty("None", "EBioGestureAllPoses", MEGame.LE3, "eStartingPose"));
-                    ges.WriteProperty(new BoolProperty(true, "m_bUseDynamicAnimSets"));
-                    ges.WriteProperty(new NameProperty(param1, "m_nmFindActor"));
-                    ges.WriteProperty(new StrProperty("Gesture -- " + param1, "TrackTitle"));
-                    break;
-            }
-            return;
         }
 
         private static ExportEntry CreateNewExport(string className, ExportEntry parent, PropertyCollection properties)
@@ -308,6 +230,163 @@ namespace LegendaryExplorerCore.Matinee
             {
                 trackExport.WriteProperty(new InterpCurveVector().ToStructProperty(trackExport.Game, "VectorTrack"));
             }
+        }
+
+        private static ExportEntry PresetCreateNewExport(string preset, ExportEntry interpData, MEGame game, string param1)
+        {
+            string className = "InterpGroup";
+            var properties = new PropertyCollection { new ArrayProperty<ObjectProperty>("InterpTracks") };
+
+            switch (preset)
+            {
+                case "Camera":
+                case "Actor":
+                    if (!string.IsNullOrEmpty(param1))
+                    {
+                        if (game.IsGame3())
+                        {
+                            properties.Add(new NameProperty(param1, "m_nmSFXFindActor"));
+                        }
+                        properties.Add(new NameProperty(param1, "GroupName"));
+                    }
+                    properties.Add(CommonStructs.ColorProp(Color.Green, "GroupColor"));
+                    break;
+
+                case "Director":
+                    className = "InterpGroupDirector";
+                    properties.Add(CommonStructs.ColorProp(Color.Purple, "GroupColor"));
+                    break;
+
+                default:
+                    properties.Add(CommonStructs.ColorProp(Color.Green, "GroupColor"));
+                    break;
+            }
+
+            ExportEntry group = CreateNewExport(className, interpData, properties);
+
+            var props = interpData.GetProperties();
+            var groupsProp = props.GetProp<ArrayProperty<ObjectProperty>>("InterpGroups") ?? new ArrayProperty<ObjectProperty>("InterpGroups");
+            groupsProp.Add(new ObjectProperty(group));
+            props.AddOrReplaceProp(groupsProp);
+            interpData.WriteProperties(props);
+
+            return group;
+        }
+
+        private static void PresetAddTracks(string preset, ExportEntry interpGroup, MEGame game, string? param1 = null)
+        {
+            switch (preset)
+            {
+                case "Camera":
+                    var move = AddNewTrackToGroup(interpGroup, "InterpTrackMove");
+                    AddDefaultPropertiesToTrack(move);
+
+                    var fov = AddNewTrackToGroup(interpGroup, "InterpTrackFloatProp");
+                    fov.WriteProperty(new InterpCurveFloat().ToStructProperty(fov.Game, "FloatTrack"));
+                    fov.WriteProperty(new StrProperty("FOVAngle", "TrackTitle"));
+                    fov.WriteProperty(new NameProperty("FOVAngle", "PropertyName"));
+                    break;
+
+                case "Director":
+                    var dir = AddNewTrackToGroup(interpGroup, "InterpTrackDirector");
+                    AddDefaultPropertiesToTrack(dir);
+
+                    var dof = AddNewTrackToGroup(interpGroup, "BioEvtSysTrackDOF");
+                    AddDefaultPropertiesToTrack(dof);
+                    break;
+
+                case "Gesture":
+                    var ges = AddNewTrackToGroup(interpGroup, "BioEvtSysTrackGesture");
+                    ges.WriteProperty(new ArrayProperty<StructProperty>("m_aGestures"));
+                    ges.WriteProperty(new ArrayProperty<StructProperty>("m_aTrackKeys"));
+                    ges.WriteProperty(new NameProperty("None", "nmStartingPoseSet"));
+                    ges.WriteProperty(new NameProperty("None", "nmStartingPoseAnim"));
+                    ges.WriteProperty(new FloatProperty(0, "m_fStartPoseOffset"));
+                    ges.WriteProperty(new EnumProperty("None", "EBioTrackAllPoseGroups", game, "ePoseFilter"));
+                    ges.WriteProperty(new EnumProperty("None", "EBioGestureAllPoses", game, "eStartingPose"));
+                    ges.WriteProperty(new BoolProperty(true, "m_bUseDynamicAnimSets"));
+                    ges.WriteProperty(new NameProperty(param1, "m_nmFindActor"));
+                    ges.WriteProperty(new StrProperty($"Gesture -- {param1}", "TrackTitle"));
+                    break;
+
+                case "Gesture2":
+                    var ges2 = AddNewTrackToGroup(interpGroup, "BioEvtSysTrackGesture");
+                    var m_aGestures = new ArrayProperty<StructProperty>("m_aGestures");
+                    var gesProps = PresetCreateProperties("Gesture2-gesture", game);
+                    if (gesProps != null)
+                    {
+                        m_aGestures.Add(new StructProperty("BioGestureData", gesProps, "BioGestureData"));
+                        ges2.WriteProperty(m_aGestures);
+                    }
+                    ges2.WriteProperty(new NameProperty("None", "nmStartingPoseSet"));
+                    ges2.WriteProperty(new NameProperty("None", "nmStartingPoseAnim"));
+                    ges2.WriteProperty(new FloatProperty(0, "m_fStartPoseOffset"));
+                    ges2.WriteProperty(new BoolProperty(true, "m_bUseDynamicAnimSets"));
+                    ges2.WriteProperty(new EnumProperty("None", "EBioTrackAllPoseGroups", game, "ePoseFilter"));
+                    ges2.WriteProperty(new NameProperty(param1, "m_nmFindActor"));
+                    var m_aTrackKeys = new ArrayProperty<StructProperty>("m_aTrackKeys");
+                    var keyProps = PresetCreateProperties("Gesture2-key", game);
+                    if (keyProps != null)
+                    {
+                        m_aTrackKeys.Add(new StructProperty("BioTrackKey", keyProps, "BioTrackKey"));
+                        ges2.WriteProperty(m_aTrackKeys);
+                    }
+                    ges2.WriteProperty(new StrProperty($"Gesture -- {param1}", "TrackTitle"));
+                    break;
+
+                case "Actor":
+                    var actMove = AddNewTrackToGroup(interpGroup, "InterpTrackMove");
+                    AddDefaultPropertiesToTrack(actMove);
+                    PresetAddTracks("Gesture", interpGroup, game, param1);
+                    break;
+
+                default:
+                    return;
+            }
+        }
+
+        private static PropertyCollection PresetCreateProperties(string preset, MEGame game)
+        {
+            PropertyCollection props = null;
+            switch (preset)
+            {
+                case "Gesture2-gesture":
+                    props = new PropertyCollection();
+                    props.AddOrReplaceProp(new ArrayProperty<IntProperty>("aChainedGestures"));
+                    props.AddOrReplaceProp(new NameProperty("None", "nmPoseSet"));
+                    props.AddOrReplaceProp(new NameProperty("None", "nmPoseAnim"));
+                    props.AddOrReplaceProp(new NameProperty("None", "nmGestureSet"));
+                    props.AddOrReplaceProp(new NameProperty("None", "nmGestureAnim"));
+                    props.AddOrReplaceProp(new NameProperty("None", "nmTransitionSet"));
+                    props.AddOrReplaceProp(new NameProperty("None", "nmTransitionAnim"));
+                    props.AddOrReplaceProp(new FloatProperty(1, "fPlayRate"));
+                    props.AddOrReplaceProp(new FloatProperty(0, "fStartOffset"));
+                    props.AddOrReplaceProp(new FloatProperty(0, "fEndOffset"));
+                    props.AddOrReplaceProp(new FloatProperty(0.1F, "fStartBlendDuration"));
+                    props.AddOrReplaceProp(new FloatProperty(0.1F, "fEndBlendDuration"));
+                    props.AddOrReplaceProp(new FloatProperty(1, "fWeight"));
+                    props.AddOrReplaceProp(new FloatProperty(0, "fTransBlendTime"));
+                    props.AddOrReplaceProp(new BoolProperty(false, "bInvalidData"));
+                    props.AddOrReplaceProp(new BoolProperty(false, "bOneShotAnim"));
+                    props.AddOrReplaceProp(new BoolProperty(false, "bChainToPrevious"));
+                    props.AddOrReplaceProp(new BoolProperty(false, "bPlayUntilNext"));
+                    props.AddOrReplaceProp(new BoolProperty(false, "bTerminateAllGestures"));
+                    props.AddOrReplaceProp(new BoolProperty(false, "bUseDynAnimSets"));
+                    props.AddOrReplaceProp(new BoolProperty(false, "bSnapToPose"));
+                    props.AddOrReplaceProp(new EnumProperty("None", "EBioValidPoseGroups", game, "ePoseFilter"));
+                    props.AddOrReplaceProp(new EnumProperty("None", "EBioGestureValidPoses", game, "ePose"));
+                    props.AddOrReplaceProp(new EnumProperty("None", "EBioGestureGroups", game, "eGestureFiler"));
+                    props.AddOrReplaceProp(new EnumProperty("None", "EBioGestureValidGestures", game, "eGesture"));
+
+                    break;
+                case "Gesture2-key":
+                    props = new PropertyCollection();
+                    props.AddOrReplaceProp(new NameProperty("None", "KeyName"));
+                    props.AddOrReplaceProp(new FloatProperty(0, "fTime"));
+
+                    break;
+            }
+            return props;
         }
     }
 }

@@ -314,7 +314,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             SaveFileListCommand = new GenericCommand(SaveCustomFileList);
             EditFileListCommand = new RelayCommand(EditCustomFileList);
             CopyToClipboardCommand = new RelayCommand(CopyStringToClipboard);
-            OpenInWindowsExplorerCommand = new GenericCommand(OpenFileInWindowsExplorer);
+            OpenInWindowsExplorerCommand = new RelayCommand(OpenFileInWindowsExplorer, IsUsageSelected);
             OpenInPlotDBCommand = new GenericCommand(OpenInPlotDB, IsPlotElementSelected);
             OpenPEDefinitionCommand = new GenericCommand(OpenPEDefinitionInToolset, IsPlotElementSelected);
             ChangeLocalizationCommand = new RelayCommand((e) => { Localization = (MELocalization)e; });
@@ -845,15 +845,13 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             }
 
         }
-        private void OpenUsagePkg(object obj)
+
+        private (string, string, int, int) GetSelectedUsageInfo()
         {
-            var tool = obj as string;
             string usagepkg = null;
+            string contentdir = null;
             int usagemount = 0;
             int usageUID = 0;
-            int strRef = 0;
-            string contentdir = null;
-
             if (lstbx_Usages.SelectedIndex >= 0 && currentView == 1)
             {
                 var c = (ClassUsage)lstbx_Usages.SelectedItem;
@@ -902,13 +900,41 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 usagepkg = CurrentConvo.Item2;
                 contentdir = CurrentConvo.Item4;
                 usageUID = CurrentConvo.Item3;
-                strRef = lu.StrRef;
             }
             else if (lstbx_PlotUsages.SelectedIndex >= 0 && currentView == 9)
             {
                 var pu = (PlotUsage)lstbx_PlotUsages.SelectedItem;
                 (usagepkg, contentdir, usagemount) = FileListExtended[pu.FileKey];
                 usageUID = pu.UIndex;
+
+            }
+            else if (lstbx_Files.SelectedIndex >= 0 && currentView == 0)
+            {
+                (usagepkg, contentdir, usagemount) = (FileDirPair)lstbx_Files.SelectedItem;
+            }
+
+            return (usagepkg, contentdir, usagemount, usageUID);
+        }
+
+        private void OpenUsagePkg(object obj)
+        {
+            var tool = obj as string;
+            string usagepkg = null;
+            int usagemount = 0;
+            int usageUID = 0;
+            int strRef = 0;
+            string contentdir = null;
+
+            (usagepkg, contentdir, usagemount, usageUID) = GetSelectedUsageInfo();
+
+            if (lstbx_Lines.SelectedIndex >= 0 && currentView == 8)
+            {
+                var lu = (ConvoLine)lstbx_Lines.SelectedItem;
+                strRef = lu.StrRef;
+            }
+            else if (lstbx_PlotUsages.SelectedIndex >= 0 && currentView == 9)
+            {
+                var pu = (PlotUsage)lstbx_PlotUsages.SelectedItem;
                 tool = pu.Context.ToTool();
                 if (tool == "PlotEd")
                 {
@@ -919,11 +945,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 {
                     strRef = pu.ContainerID.Value;
                 }
-
-            }
-            else if (lstbx_Files.SelectedIndex >= 0 && currentView == 0)
-            {
-                (usagepkg, contentdir, usagemount) = (FileDirPair)lstbx_Files.SelectedItem;
             }
 
             if (usagepkg == null)
@@ -1081,23 +1102,21 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             }
         }
 
-        private void OpenFileInWindowsExplorer()
+        private void OpenFileInWindowsExplorer(object obj)
         {
-            string filename = null;
-            string contentdir = null;
-            int mount = 0;
-            if (lstbx_Files.SelectedIndex >= 0 && currentView == 0)
+            var (filename, contentDir, _, _) = GetSelectedUsageInfo();
+            if (filename is null || contentDir is null) return;
+
+            string filePath = GetFilePath(filename, contentDir);
+
+            if (File.Exists(filePath))
             {
-                (filename, contentdir, mount) = (FileDirPair)lstbx_Files.SelectedItem;
+                string cmd = "explorer.exe";
+                string arg = "/select, " + filePath;
+                System.Diagnostics.Process.Start(cmd, arg);
             }
-            else return;
-
-            string filePath = GetFilePath(filename, contentdir);
-
-            string cmd = "explorer.exe";
-            string arg = "/select, " + filePath;
-            System.Diagnostics.Process.Start(cmd, arg);
         }
+
         private void OpenInPlotDB()
         {
             var record = GetSelectedPlotRecord();

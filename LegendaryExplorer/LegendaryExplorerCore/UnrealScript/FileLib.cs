@@ -25,7 +25,7 @@ namespace LegendaryExplorerCore.UnrealScript
 
         public SymbolTable ReadonlySymbolTable
         {
-            get 
+            get
             {
                 lock (_initializationLock)
                 {
@@ -37,7 +37,7 @@ namespace LegendaryExplorerCore.UnrealScript
         private bool _isInitialized;
         public bool IsInitialized
         {
-            get 
+            get
             {
                 lock (_initializationLock)
                 {
@@ -56,48 +56,63 @@ namespace LegendaryExplorerCore.UnrealScript
 
         private readonly BaseLib Base;
 
-        public async Task<bool> Initialize(PackageCache packageCache = null, string gameRootPath = null)
+        /// <summary>
+        /// Initializes the FileLib asynchronously.
+        /// </summary>
+        /// <param name="packageCache"></param>
+        /// <param name="gameRootPath"></param>
+        /// <returns></returns>
+        public async Task<bool> InitializeAsync(PackageCache packageCache = null, string gameRootPath = null)
         {
             if (IsInitialized)
             {
                 return true;
             }
 
-            return await Task.Run(() =>
+            return await Task.Run(() => Initialize(packageCache, gameRootPath));
+        }
+
+        /// <summary>
+        /// Initializes the FileLib on the current thread. This may take some time.
+        /// </summary>
+        /// <returns></returns>
+        public bool Initialize(PackageCache packageCache = null, string gameRootPath = null)
+        {
+            if (IsInitialized) return true;
+
+            bool success = false;
+            lock (_initializationLock)
             {
-                bool success = false;
-                lock (_initializationLock)
+                if (_isInitialized)
                 {
-                    if (_isInitialized)
-                    {
-                        return true;
-                    }
-
-                    InitializationLog = new MessageLog();
-                    if (!Base.InitializeStandardLib(InitializationLog, packageCache, gameRootPath).Result)
-                    {
-                        HadInitializationError = true;
-                    }
-                    else if (BaseFileNames(Base.Game).Contains(Path.GetFileName(Pcc.FilePath)))
-                    {
-                        _symbols = Base.GetSymbolTable();
-                        HadInitializationError = false;
-                        _isInitialized = true;
-
-                        success = true;
-                    }
-
-                    if (!_isInitialized && !HadInitializationError)
-                    {
-                        success = InternalInitialize(packageCache);
-                        _isInitialized = success;
-                        HadInitializationError = !success;
-                    }
+                    return true;
                 }
 
-                InitializationStatusChange?.Invoke(true);
-                return success;
-            });
+                InitializationLog = new MessageLog();
+                //if (!Base.InitializeStandardLibAsync(InitializationLog, packageCache, gameRootPath).Result)
+                if (!Base.InitializeStandardLib(InitializationLog, packageCache, gameRootPath))
+                {
+                    HadInitializationError = true;
+                }
+                else if (BaseFileNames(Base.Game).Contains(Path.GetFileName(Pcc.FilePath)))
+                {
+                    _symbols = Base.GetSymbolTable();
+                    HadInitializationError = false;
+                    _isInitialized = true;
+
+                    success = true;
+                }
+
+                if (!_isInitialized && !HadInitializationError)
+                {
+                    success = InternalInitialize(packageCache);
+                    _isInitialized = success;
+                    HadInitializationError = !success;
+                }
+            }
+
+            InitializationStatusChange?.Invoke(true);
+            return success;
         }
 
         private bool InternalInitialize(PackageCache packageCache)
@@ -108,11 +123,11 @@ namespace LegendaryExplorerCore.UnrealScript
                 var files = EntryImporter.GetPossibleAssociatedFiles(Pcc, includeNonBioPRelated: false);
                 if (Pcc.Game is MEGame.ME3)
                 {
-                    if (Pcc.FindEntry("SFXGameMPContent") is IEntry {ClassName: "Package"} && !files.Contains("BIOP_MP_COMMON.pcc"))
+                    if (Pcc.FindEntry("SFXGameMPContent") is IEntry { ClassName: "Package" } && !files.Contains("BIOP_MP_COMMON.pcc"))
                     {
                         files.Add("BIOP_MP_COMMON.pcc");
                     }
-                    if (Pcc.FindEntry("SFXGameContentDLC_CON_MP2") is IEntry {ClassName: "Package"})
+                    if (Pcc.FindEntry("SFXGameContentDLC_CON_MP2") is IEntry { ClassName: "Package" })
                     {
                         files.Add("Startup_DLC_CON_MP2_INT.pcc");
                     }

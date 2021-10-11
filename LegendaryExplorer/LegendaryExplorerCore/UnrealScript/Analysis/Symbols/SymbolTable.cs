@@ -519,12 +519,12 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             ScopeNames.RemoveLast();
         }
 
-        public bool TryGetSymbol(string symbol, out ASTNode node)
+        public bool TryGetSymbol<T>(string symbol, out T node) where T : ASTNode
         {
             return TryGetSymbolInternal(symbol, out node, Scopes);
         }
 
-        public bool TryGetSymbol(string symbol, out ASTNode node, string outerScope)
+        public bool TryGetSymbol<T>(string symbol, out T node, string outerScope) where T : ASTNode
         {
             return TryGetSymbolInternal(symbol, out node, Scopes) ||
                 TryGetSymbolInScopeStack(symbol, out node, outerScope);
@@ -555,7 +555,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                     if (functionName.Contains("."))
                     {
                         var parts = functionName.Split('.');
-                        functionName = parts[parts.Length - 1];
+                        functionName = parts[^1];
                         if (parts.Length == 2 && Types.TryGetValue(parts[0], out VariableType type) && type is Class cls)
                         {
                             scope = cls.GetInheritanceString();
@@ -570,8 +570,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                         scope = NodeUtils.GetOuterClassScope(stub.Outer);
                     }
 
-                    if (TryGetSymbol(functionName, out ASTNode funcNode, scope)
-                     && funcNode is Function func)
+                    if (TryGetSymbol(functionName, out Function func, scope))
                     {
                         delegateType.DefaultFunction = func;
                         return true;
@@ -590,7 +589,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             return false;
         }
 
-        private VariableType InternalResolveType(VariableType stub, IObjectType containingClass)
+        private VariableType InternalResolveType(VariableType stub, ObjectType containingClass)
         {
             //first check the containing class (needed for structs that don't have globally unique names)
             if (containingClass?.TypeDeclarations.FirstOrDefault(decl => decl.Name.CaseInsensitiveEquals(stub.Name)) is VariableType typeDecl)
@@ -608,7 +607,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
 
         public bool SymbolExists(string symbol, string outerScope)
         {
-            return TryGetSymbol(symbol, out _, outerScope);
+            return TryGetSymbol<ASTNode>(symbol, out _, outerScope);
         }
 
         public bool TypeExists(VariableType type, bool globalOnly = false) => TryResolveType(ref type, globalOnly);
@@ -712,11 +711,16 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             return Scopes.Last().TryGetValue(symbol, out node);
         }
 
-        public bool TryGetSymbolFromSpecificScope(string symbol, out ASTNode node, string specificScope)
+        public bool TryGetSymbolFromSpecificScope<T>(string symbol, out T node, string specificScope) where T : ASTNode
         {
+            if (Cache.TryGetValue(specificScope, out ASTNodeDict scope) &&
+                scope.TryGetValue(symbol, out ASTNode astNode) && astNode is T tNode)
+            {
+                node = tNode;
+                return true;
+            }
             node = null;
-            return Cache.TryGetValue(specificScope, out ASTNodeDict scope) &&
-                   scope.TryGetValue(symbol, out node);
+            return false;
         }
 
         public void AddSymbol(string symbol, ASTNode node)

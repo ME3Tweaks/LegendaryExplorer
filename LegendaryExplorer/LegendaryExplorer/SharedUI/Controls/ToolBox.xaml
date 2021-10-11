@@ -15,9 +15,14 @@
         <ListView Name="listView" SelectedItem="{Binding SelectedItem}">
             <ListView.ItemTemplate>
                 <DataTemplate DataType="packages:ClassInfo">
-                    <TextBlock Text="{Binding ClassName}" MouseDown="classInfo_MouseDown"/>
+                    <TextBlock HorizontalAlignment="Stretch" Text="{Binding ClassName}" MouseDown="classInfo_MouseDown"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+                </Style>
+            </ListBox.ItemContainerStyle>
         </ListView>
     </DockPanel>
 </misc:NotifyPropertyChangedControlBase>

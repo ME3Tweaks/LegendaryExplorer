@@ -211,6 +211,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     return FromDEBUG<TextureMovie>(export, packageCache);
                 case "BioSoundNodeWaveStreamingData":
                     return FromDEBUG<BioSoundNodeWaveStreamingData>(export, packageCache);
+                case "BioInert":
+                    return FromDEBUG<BioInert>(export, packageCache);
                 default:
                     return null;
             }
@@ -399,6 +401,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     return From<BioSoundNodeWaveStreamingData>(export, packageCache);
                 case "FaceFXAsset" when export.Game != MEGame.ME2:
                     return From<FaceFXAsset>(export, packageCache);
+                case "BioInert":
+                    return From<BioInert>(export, packageCache);
                 default:
                     return null;
             }

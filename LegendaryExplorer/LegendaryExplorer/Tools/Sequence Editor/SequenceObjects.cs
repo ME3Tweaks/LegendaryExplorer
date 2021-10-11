@@ -19,6 +19,7 @@ using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Kismet;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.PlotDatabase;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 
@@ -202,7 +203,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                         var soundObjRef = properties.GetProp<ObjectProperty>("PlaySound");
                         if (soundObjRef != null)
                         {
-                            res += export.FileRef.GetEntry(soundObjRef.Value).InstancedFullPath;
+                            res += export.FileRef.GetEntry(soundObjRef.Value)?.InstancedFullPath ?? "";
                         }
                         break;
                     case "BioSeqAct_SetWeapon":
@@ -219,6 +220,31 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                         if (properties.GetProp<EnumProperty>("m_eBlackScreenAction") is { } blackScreenProp)
                         {
                             res += blackScreenProp.Value.Name.Split('_').Last();
+                        }
+                        break;
+                    case "BioSeqVar_StoryManagerInt":
+                        var intId = properties.GetProp<IntProperty>("m_nIndex");
+                        if (intId != null)
+                        {
+                            res += PlotDatabases.FindPlotIntByID(intId, export.Game)?.Path ?? "";
+                            res += "\n";
+                        }
+                        break;
+                    case "BioSeqVar_StoryManagerFloat":
+                        var floatId = properties.GetProp<IntProperty>("m_nIndex");
+                        if (floatId != null)
+                        {
+                            res += PlotDatabases.FindPlotFloatByID(floatId, export.Game)?.Path ?? "";
+                            res += "\n";
+                        }
+                        break;
+                    case "BioSeqVar_StoryManagerStateId":
+                    case "BioSeqVar_StoryManagerBool":
+                        var boolId = properties.GetProp<IntProperty>("m_nIndex");
+                        if (boolId != null)
+                        {
+                            res += PlotDatabases.FindPlotBoolByID(boolId, export.Game)?.Path ?? "";
+                            res += "\n";
                         }
                         break;
                 }

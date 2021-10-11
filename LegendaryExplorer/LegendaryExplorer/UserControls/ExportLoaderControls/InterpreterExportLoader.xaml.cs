@@ -192,7 +192,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             InterpreterExportLoader i = (InterpreterExportLoader)obj;
             if ((bool)e.NewValue)
             {
-                i.hexBoxContainer.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexbox_Button.Visibility = i.SaveHexChange_Button.Visibility = Visibility.Collapsed;
+                i.hexBoxContainer.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexbox_Button.Visibility = i.SaveHexChange_Button.Visibility = i.HexInfoStatusBar.Visibility = Visibility.Collapsed;
                 i.HexboxColumn_GridSplitter_ColumnDefinition.Width = new GridLength(0);
                 i.HexboxColumnDefinition.MinWidth = 0;
                 i.HexboxColumnDefinition.MaxWidth = 0;
@@ -200,7 +200,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
             else
             {
-                i.hexBoxContainer.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexbox_Button.Visibility = i.SaveHexChange_Button.Visibility = Visibility.Visible;
+                i.hexBoxContainer.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexbox_Button.Visibility = i.SaveHexChange_Button.Visibility = i.HexInfoStatusBar.Visibility = Visibility.Visible;
                 i.HexboxColumnDefinition.Width = new GridLength(i.HexBoxMinWidth);
                 i.HexboxColumn_GridSplitter_ColumnDefinition.Width = new GridLength(1);
                 i.HexboxColumnDefinition.bind(ColumnDefinition.MinWidthProperty, i, nameof(HexBoxMinWidth));
@@ -609,19 +609,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 return;
             }
 
-            var props = new List<string>();
+            var props = new List<PropNameStaticArrayIdxPair>();
             foreach (Property cProp in CurrentLoadedProperties)
             {
                 //build a list we are going to the add dialog
-                props.Add(cProp.Name);
+                props.Add(new(cProp.Name, cProp.StaticArrayIndex));
             }
-
-            (string, PropertyInfo)? prop = AddPropertyDialog.GetProperty(CurrentLoadedExport, props, Pcc.Game, Window.GetWindow(this));
-
-            if (prop.HasValue)
+            
+            if (AddPropertyDialog.GetProperty(CurrentLoadedExport, props, Pcc.Game, Window.GetWindow(this)) is (NameReference propName, int staticArrayIndex, PropertyInfo propInfo))
             {
                 Property newProperty = null;
-                (string propName, PropertyInfo propInfo) = prop.Value;
                 //Todo: Maybe lookup the default value?
                 switch (propInfo.Type)
                 {
@@ -674,6 +671,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 //UProperty property = generateNewProperty(prop.Item1, currentInfo);
                 if (newProperty != null)
                 {
+                    newProperty.StaticArrayIndex = staticArrayIndex;
                     CurrentLoadedProperties.Insert(CurrentLoadedProperties.Count - 1, newProperty); //insert before noneproperty
                     ForcedRescanOffset = (int)CurrentLoadedProperties.Last().StartOffset;
                 }
@@ -703,16 +701,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (Interpreter_TreeView?.SelectedItem is UPropertyTreeViewEntry tvi)
             {
-                return tvi.Parent != null && !(tvi.Property is NoneProperty) &&
+                return tvi.Parent != null && tvi.Property is not NoneProperty &&
                        (tvi.Parent.Parent == null //items with a single parent (root nodes)
-                     || tvi.Parent.Property is StructProperty sp && !sp.IsImmutable); //properties that are part of a non-immutable StructProperty
+                     || tvi.Parent.Property is StructProperty {IsImmutable: false}); //properties that are part of a non-immutable StructProperty
             }
             return false;
         }
 
         private void AddPropertiesToStruct()
         {
-            if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi && tvi.Property is StructProperty sp)
+            if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry {Property: StructProperty sp})
             {
                 PropertyCollection defaultProps = GlobalUnrealObjectInfo.getDefaultStructValue(Pcc.Game, sp.StructType, true);
                 foreach (Property prop in sp.Properties)
@@ -727,17 +725,30 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private bool CanAddPropertiesToStruct()
         {
-            if (Interpreter_TreeView?.SelectedItem is UPropertyTreeViewEntry tvi && tvi.Property is StructProperty sp && !sp.IsImmutable)
+            if (Interpreter_TreeView?.SelectedItem is UPropertyTreeViewEntry {Property: StructProperty {IsImmutable: false} sp} tvi)
             {
-                ClassInfo info = GlobalUnrealObjectInfo.GetClassOrStructInfo(Pcc.Game, sp.StructType);
-                var allPropNames = new List<string>();
-                while (info != null)
+                ClassInfo structInfo = GlobalUnrealObjectInfo.GetClassOrStructInfo(Pcc.Game, sp.StructType);
+                var allProps = new List<PropNameStaticArrayIdxPair>();
+                while (structInfo != null)
                 {
-                    allPropNames.AddRange(info.properties.Select(kvp => kvp.Key));
-                    info = GlobalUnrealObjectInfo.GetClassOrStructInfo(Pcc.Game, info.baseClass);
+                    foreach ((NameReference propName, PropertyInfo propInfo) in structInfo.properties)
+                    {
+                        if (propInfo.IsStaticArray())
+                        {
+                            for (int i = 0; i < propInfo.StaticArrayLength; i++)
+                            {
+                                allProps.Add(new PropNameStaticArrayIdxPair(propName, i));
+                            }
+                        }
+                        else
+                        {
+                            allProps.Add(new PropNameStaticArrayIdxPair(propName, 0));
+                        }
+                    }
+                    structInfo = GlobalUnrealObjectInfo.GetClassOrStructInfo(Pcc.Game, structInfo.baseClass);
                 }
-                HashSet<string> existingPropNames = tvi.ChildrenProperties.Select(t => t.Property.Name.Name).ToHashSet();
-                if (!allPropNames.All(existingPropNames.Contains))
+                HashSet<PropNameStaticArrayIdxPair> existingPropNames = tvi.ChildrenProperties.Select(t => new PropNameStaticArrayIdxPair(t.Property.Name, t.Property.StaticArrayIndex)).ToHashSet();
+                if (!allProps.All(existingPropNames.Contains))
                 {
                     return true;
                 }
@@ -951,12 +962,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     strLength += displayPrefix.Length + 1;
                 }
-                if (prop.StaticArrayIndex > 0)
+
+                var propInfo = GlobalUnrealObjectInfo.GetPropertyInfo(parsingExport.FileRef.Game, prop.Name, 
+                    parent.Property is StructProperty sp ? sp.StructType : parsingExport.ClassName, containingExport: parsingExport);
+                bool isStaticArrayProp = false;
+                if (propInfo?.StaticArrayLength > 1 || prop.StaticArrayIndex > 0)
                 {
+                    isStaticArrayProp = true;
                     strLength += prop.StaticArrayIndex.NumDigits() + 2;
                 }
 
-                displayName = string.Create(strLength, (displayPrefix, propName, prop.StaticArrayIndex), (span, tuple) =>
+                displayName = string.Create(strLength, (displayPrefix, propName, isStaticArrayProp ? prop.StaticArrayIndex : -1), (span, tuple) =>
                 {
                     int pos = 0;
                     if (tuple.displayPrefix.Length > 0)
@@ -968,12 +984,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                     tuple.propName.AsSpan().CopyTo(span.Slice(pos));
                     pos += tuple.propName.Length;
-                    if (tuple.StaticArrayIndex > 0)
+                    if (tuple.Item3 >= 0)
                     {
                         span[pos] = '[';
                         ++pos;
-                        int numDigits = tuple.StaticArrayIndex.NumDigits();
-                        ((uint)tuple.StaticArrayIndex).ToStrInPlace(span.Slice(pos, numDigits));
+                        int numDigits = tuple.Item3.NumDigits();
+                        ((uint)tuple.Item3).ToStrInPlace(span.Slice(pos, numDigits));
                         pos += numDigits;
                         span[pos] = ']';
                         ++pos;
@@ -1063,7 +1079,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     break;
                 case ArrayPropertyBase ap:
                     {
-                        ArrayType at = GlobalUnrealObjectInfo.GetArrayType(parsingExport.FileRef.Game, prop.Name.Name, parent.Property is StructProperty sp ? sp.StructType : parsingExport.ClassName, parsingExport);
+                        ArrayType at = GlobalUnrealObjectInfo.GetArrayType(parsingExport.FileRef.Game, prop.Name, parent.Property is StructProperty sp ? sp.StructType : parsingExport.ClassName, parsingExport);
                         editableValue = $"{at} array";
                     }
                     break;
@@ -2686,7 +2702,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                     container = psp.StructType;
                                 }
 
-                                var type = GlobalUnrealObjectInfo.GetPropertyInfo(AttachedExport.Game, op.Name.Name, container, containingExport: AttachedExport);
+                                var type = GlobalUnrealObjectInfo.GetPropertyInfo(AttachedExport.Game, op.Name, container, containingExport: AttachedExport);
                                 if (type != null)
                                 {
                                     return $"ObjectProperty ({type.Reference})";

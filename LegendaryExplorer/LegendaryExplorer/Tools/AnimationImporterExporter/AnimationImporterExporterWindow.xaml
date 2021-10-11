@@ -178,7 +178,8 @@
                     <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" />
                     <exportLoaderControls:BinaryInterpreterWPF x:Name="BinaryInterpreterTab_BinaryInterpreter"
                                                                Grid.Row="2" HideHexBox="True"
-                                                               AlwaysLoadRegardlessOfSize="True" />
+                                                               AlwaysLoadRegardlessOfSize="True"
+                                                               HostingControl="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
                 </Grid>
             </Grid>
         </DockPanel>

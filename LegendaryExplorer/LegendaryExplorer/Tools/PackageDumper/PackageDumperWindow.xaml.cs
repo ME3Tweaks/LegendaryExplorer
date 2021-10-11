@@ -625,7 +625,7 @@ namespace LegendaryExplorer.Tools.PackageDumper
                             fileLib = new FileLib(pcc);
                             try
                             {
-                                fileLib.Initialize().Wait();
+                                fileLib.InitializeAsync().Wait();
                             }
                             catch
                             {

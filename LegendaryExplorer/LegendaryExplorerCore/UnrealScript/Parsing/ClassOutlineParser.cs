@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
@@ -591,15 +592,24 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                 if (Consume(TokenType.LeftBracket) == null) throw ParseError("Expected '{'!", CurrentPosition);
 
-                var ignores = new List<Function>();
+                var ignoreMask = (EProbeFunctions)ulong.MaxValue;
                 if (Matches(IGNORES, EF.Keyword))
                 {
                     do
                     {
-                        VariableIdentifier variable = TryParseVariable();
-                        if (variable == null) throw ParseError("Malformed ignore statement!", CurrentPosition);
-
-                        ignores.Add(new Function(variable.Name, EFunctionFlags.Public, null, null, null, variable.StartPos, variable.EndPos));
+                        if (Consume(TokenType.Word) is not Token<string> ignore)
+                        {
+                            throw ParseError("Malformed ignore statement!", CurrentPosition);
+                        }
+                        ignore.SyntaxType = EF.Function;
+                        if (Enum.TryParse(ignore.Value, out EProbeFunctions ignoreFlag))
+                        {
+                            ignoreMask &= ~ignoreFlag;
+                        }
+                        else
+                        {
+                            TypeError("Only probed functions can be ignored! To ignore a non-probe function, simply declare it with a ; instead of a body.", ignore);
+                        }
                     } while (Consume(TokenType.Comma) != null);
 
                     if (Consume(TokenType.SemiColon) == null) throw ParseError("Expected semi-colon!", CurrentPosition);
@@ -625,8 +635,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     Tokens = new TokenStream<string>(() => Tokens.GetTokensInRange(bodyStart, bodyEnd).ToList())
                 };
 
-                var parentState = parent != null ? new State(parent.Name, null, default, null, null, null, null, parent.StartPos, parent.EndPos) : null;
-                return new State(name.Value, body, flags, parentState, funcs, ignores, null, name.StartPos, CurrentPosition);
+                var parentState = parent != null ? new State(parent.Name, null, default, null, null, null, parent.StartPos, parent.EndPos) : null;
+                return new State(name.Value, body, flags, parentState, funcs, null, name.StartPos, CurrentPosition)
+                {
+                    IgnoreMask = ignoreMask
+                };
             }
         }
 

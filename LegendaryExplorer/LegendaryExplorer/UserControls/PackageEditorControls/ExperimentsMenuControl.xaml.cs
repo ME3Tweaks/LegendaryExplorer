@@ -246,6 +246,49 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
 
         }
+
+        private void BuildAllObjectInfo_Clicked(object sender, RoutedEventArgs e)
+        {
+            var pew = GetPEWindow();
+            pew.BusyText = "Building Object Info";
+            pew.IsBusy = true;
+
+            var currentGame = MEGame.ME1;
+            void setProgress(int done, int total)
+            {
+                Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    pew.BusyText = $"Building {currentGame} Object Info [{done}/{total}]";
+                });
+            }
+            var sw = new Stopwatch();
+
+            Task.Run(() =>
+            {
+                sw.Start();
+                ME1UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "ME1ObjectInfo.json"), true, setProgress);
+                currentGame = MEGame.ME2;
+                ME2UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "ME2ObjectInfo.json"), true, setProgress);
+                currentGame = MEGame.ME3;
+                ME3UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "ME3ObjectInfo.json"), true, setProgress);
+                currentGame = MEGame.LE1;
+                LE1UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE1ObjectInfo.json"), true, setProgress);
+                currentGame = MEGame.LE2;
+                LE2UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE2ObjectInfo.json"), true, setProgress);
+                currentGame = MEGame.LE3;
+                LE3UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE3ObjectInfo.json"), true, setProgress);
+                sw.Stop();
+            }).ContinueWithOnUIThread(x =>
+            {
+                pew.IsBusy = false;
+                pew.RestoreAndBringToFront();
+                MessageBox.Show(GetPEWindow(), $"Done. Took {sw.Elapsed.TotalSeconds} seconds");
+            });
+
+
+
+
+        }
         private void ObjectInfosSearch_Click(object sender, RoutedEventArgs e)
         {
             var searchTerm = PromptDialog.Prompt(GetPEWindow(), "Enter key value to search", "ObjectInfos Search");
@@ -936,28 +979,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
         private void RecompileAll_OnClick(object sender, RoutedEventArgs e)
         {
-            var pew = GetPEWindow();
-            if (pew.Pcc != null && pew.Pcc.Platform == MEPackage.GamePlatform.PC && pew.Pcc.Game != MEGame.UDK)
-            {
-                var exportsWithDecompilationErrors = new List<EntryStringPair>();
-                var fileLib = new FileLib(GetPEWindow().Pcc);
-                foreach (ExportEntry export in pew.Pcc.Exports.Where(exp => exp.IsClass))
-                {
-                    (_, string script) = UnrealScriptCompiler.DecompileExport(export, fileLib);
-                    (ASTNode ast, MessageLog log, _) = UnrealScriptCompiler.CompileAST(script, export.ClassName, export.Game);
-                    if (ast == null)
-                    {
-                        exportsWithDecompilationErrors.Add(new EntryStringPair(export, "Compilation Error!"));
-                        break;
-                    }
-                }
-
-                var dlg = new ListDialog(exportsWithDecompilationErrors, $"Compilation errors", "", GetPEWindow())
-                {
-                    DoubleClickEntryHandler = pew.GetEntryDoubleClickAction()
-                };
-                dlg.Show();
-            }
+            PackageEditorExperimentsS.RecompileAll(GetPEWindow());
         }
 
         private void FindOpCode_OnClick(object sender, RoutedEventArgs e)
@@ -1161,46 +1183,51 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         }
         #endregion
 
+        // EXPERIMENTS: HENBAGLE ------------------------------------------------------------
+        #region HenBagle's Experiments
+
+        private void BuildME1SuperTLK_Clicked(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsH.BuildME1SuperTLKFile(GetPEWindow());
+        }
+
+        private void AssociateAllExtensions_Clicked(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsH.AssociateAllExtensions();
+        }
+
+        private void GenerateAudioFileInfo_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsH.CreateAudioSizeInfo(GetPEWindow(), MEGame.LE3);
+        }
+
+        private void GenerateWwiseId_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsH.GenerateWwiseId(GetPEWindow());
+        }
+
+        private void CreateTestTLKWithStringIDs_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsH.CreateTestTLKWithStringIDs(GetPEWindow());
+        }
+
+        private void UpdateLocalFunctions_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsH.UpdateLocalFunctions(GetPEWindow());
+        }
+
+        private void DumpTOC_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsH.DumpTOC();
+        }
+
+        #endregion
+
         // EXPERIMENTS: OTHER PEOPLE ------------------------------------------------------------
         #region Other people's experiments
         private void ExportLevelToT3D_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsO.DumpPackageToT3D(GetPEWindow().Pcc);
-        }
-
-        private void BuildME1SuperTLK_Clicked(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsO.BuildME1SuperTLKFile(GetPEWindow());
-        }
-
-        private void AssociateAllExtensions_Clicked(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsO.AssociateAllExtensions();
-        }
-
-        private void GenerateAudioFileInfo_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsO.CreateAudioSizeInfo(GetPEWindow(), MEGame.LE3);
-        }
-
-        private void GenerateWwiseId_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsO.GenerateWwiseId(GetPEWindow());
-        }
-
-        private void CreateTestTLKWithStringIDs_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsO.CreateTestTLKWithStringIDs(GetPEWindow());
-        }
-
-        private void UpdateLocalFunctions_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsO.UpdateLocalFunctions(GetPEWindow());
-        }
-
-        private void DumpTOC_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsO.DumpTOC();
         }
 
         private void AddPresetDirectorGroup_Click(object sender, RoutedEventArgs e)
@@ -1213,9 +1240,19 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsO.AddPresetGroup("Camera", GetPEWindow());
         }
 
+        private void AddPresetActorGroup_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.AddPresetGroup("Actor", GetPEWindow());
+        }
+
         private void AddPresetGestureTrack_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsO.AddPresetTrack("Gesture", GetPEWindow());
+        }
+
+        private void AddPresetGestureTrack2_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.AddPresetTrack("Gesture2", GetPEWindow());
         }
         #endregion
 

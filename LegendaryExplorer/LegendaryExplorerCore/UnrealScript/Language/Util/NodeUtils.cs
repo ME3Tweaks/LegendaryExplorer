@@ -56,79 +56,14 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Util
             return outer as Class;
         }
 
-        public static IObjectType GetContainingScopeObject(ASTNode node)
+        public static ObjectType GetContainingScopeObject(ASTNode node)
         {
             var outer = node.Outer;
-            while (outer?.Outer != null && !(outer is IObjectType))
+            while (outer?.Outer != null && !(outer is ObjectType))
                 outer = outer.Outer;
-            return outer as IObjectType;
+            return outer as ObjectType;
         }
 
-        public static bool TypeCompatible(VariableType dest, VariableType src, bool coerce = false)
-        {
-            if (dest is DynamicArrayType destArr && src is DynamicArrayType srcArr)
-            {
-                return TypeCompatible(destArr.ElementType, srcArr.ElementType);
-            }
-
-            if (dest is ClassType destClassType && src is ClassType srcClassType)
-            {
-                return destClassType.ClassLimiter == srcClassType.ClassLimiter || ((Class)srcClassType.ClassLimiter).SameAsOrSubClassOf(destClassType.ClassLimiter.Name);
-            }
-
-            if (dest.PropertyType == EPropertyType.Byte && src.PropertyType == EPropertyType.Byte)
-            {
-                return true;
-            }
-
-            if (dest is DelegateType destDel && src is DelegateType srcDel)
-            {
-                return true;
-                // this seems like how it ought to be done, but there is bioware code that would have only compiled if all delegates are considered the same type
-                // maybe log a warning here instead of an error?
-                //return destDel.DefaultFunction.SignatureEquals(srcDel.DefaultFunction);
-            }
-
-            if (dest is Class destClass)
-            {
-                if (src is Class srcClass)
-                {
-                    bool sameAsOrSubClassOf = srcClass.SameAsOrSubClassOf(destClass.Name);
-                    if (srcClass.IsInterface)
-                    {
-                        return sameAsOrSubClassOf || destClass.Implements(srcClass);
-                    }
-
-                    if (destClass.IsInterface)
-                    {
-                        return sameAsOrSubClassOf || srcClass.Implements(destClass);
-                    }
-                    return sameAsOrSubClassOf 
-                        //this seems super wrong obviously. A sane type system would require an explicit downcast.
-                        //But to make this work with existing bioware code, it's this, or write a control-flow analyzer that implicitly downcasts based on typecheck conditional gates
-                        //I have chosen the lazy path
-                        || destClass.SameAsOrSubClassOf(srcClass.Name);
-                }
-
-                if (destClass.Name.CaseInsensitiveEquals("Object") && src is ClassType)
-                {
-                    return true;
-                }
-
-                if (src is null)
-                {
-                    return true;
-                }
-            }
-
-            if (dest.Name.CaseInsensitiveEquals(src?.Name)) return true;
-            ECast cast = CastHelper.GetConversion(dest, src);
-            if (coerce)
-            {
-                return cast != ECast.Max;
-            }
-            return cast.Has(ECast.AutoConvert);
-        }
 
         public static bool TypeEqual(VariableType a, VariableType b)
         {

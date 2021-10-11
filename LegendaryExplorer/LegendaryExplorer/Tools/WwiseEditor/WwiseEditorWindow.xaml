@@ -183,7 +183,7 @@
                             <exportLoaderControls:InterpreterExportLoader x:Name="Properties_InterpreterWPF" HideHexBox="True"/>
                         </TabItem>
                         <TabItem Header="Binary Interpreter" >
-                            <exportLoaderControls:BinaryInterpreterWPF x:Name="binaryInterpreter"/>
+                            <exportLoaderControls:BinaryInterpreterWPF x:Name="binaryInterpreter" HostingControl="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
                         </TabItem>
                     </TabControl>
                 </Grid>

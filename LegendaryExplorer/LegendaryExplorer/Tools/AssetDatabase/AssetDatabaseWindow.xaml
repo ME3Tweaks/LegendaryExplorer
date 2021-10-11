@@ -436,6 +436,7 @@
                                             <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor" />
                                             <MenuItem Header="Open Class Definition" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor" />
                                             <MenuItem Header="Go to SuperClass" Command="{Binding GoToSuperclassCommand}" ToolTip="Go to the superclass for more properties"/>
+                                            <MenuItem Header="Open in Windows Explorer" Command="{Binding OpenInWindowsExplorerCommand}" ToolTip="Opens this file in Windows Explorer."/>
                                         </ContextMenu>
                                     </controls:ListBoxScroll.ContextMenu>
                                 </controls:ListBoxScroll>
@@ -522,6 +523,7 @@
                                 <controls:ListBoxScroll.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
+                                        <MenuItem Header="Open in Windows Explorer" Command="{Binding OpenInWindowsExplorerCommand}" ToolTip="Opens this file in Windows Explorer."/>
                                     </ContextMenu>
                                 </controls:ListBoxScroll.ContextMenu>
                             </controls:ListBoxScroll>
@@ -608,6 +610,7 @@
                                                 <Image Source="{StaticResource iconMeshplorer16}" Width="64"/>
                                             </MenuItem.Icon>
                                         </MenuItem>
+                                        <MenuItem Header="Open in Windows Explorer" Command="{Binding OpenInWindowsExplorerCommand}" ToolTip="Opens this file in Windows Explorer."/>
                                     </ContextMenu>
                                 </controls:ListBoxScroll.ContextMenu>
                             </controls:ListBoxScroll>
@@ -707,6 +710,7 @@
                                 <controls:ListBoxScroll.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
+                                        <MenuItem Header="Open in Windows Explorer" Command="{Binding OpenInWindowsExplorerCommand}" ToolTip="Opens this file in Windows Explorer."/>
                                     </ContextMenu>
                                 </controls:ListBoxScroll.ContextMenu>
                             </controls:ListBoxScroll>
@@ -812,6 +816,7 @@
                                 <controls:ListBoxScroll.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
+                                        <MenuItem Header="Open in Windows Explorer" Command="{Binding OpenInWindowsExplorerCommand}" ToolTip="Opens this file in Windows Explorer."/>
                                     </ContextMenu>
                                 </controls:ListBoxScroll.ContextMenu>
                             </controls:ListBoxScroll>
@@ -911,6 +916,7 @@
                                 <controls:ListBoxScroll.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
+                                        <MenuItem Header="Open in Windows Explorer" Command="{Binding OpenInWindowsExplorerCommand}" ToolTip="Opens this file in Windows Explorer."/>
                                     </ContextMenu>
                                 </controls:ListBoxScroll.ContextMenu>
                             </controls:ListBoxScroll>
@@ -987,6 +993,7 @@
                                 <controls:ListBoxScroll.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
+                                        <MenuItem Header="Open in Windows Explorer" Command="{Binding OpenInWindowsExplorerCommand}" ToolTip="Opens this file in Windows Explorer."/>
                                     </ContextMenu>
                                 </controls:ListBoxScroll.ContextMenu>
                             </controls:ListBoxScroll>
@@ -1031,6 +1038,7 @@
                                                 <Image Source="{StaticResource iconDialogueEditor16}" Width="64"/>
                                             </MenuItem.Icon>
                                         </MenuItem>
+                                        <MenuItem Header="Open in Windows Explorer" Command="{Binding OpenInWindowsExplorerCommand}" ToolTip="Opens this file in Windows Explorer."/>
                                         <Separator/>
                                         <MenuItem Header="Copy Line to Clipboard" Command="{Binding CopyToClipboardCommand}" CommandParameter="Line" ToolTip="Copy this line's text to the clipboard."/>
                                         <MenuItem Header="Copy StringRef to Clipboard" Command="{Binding CopyToClipboardCommand}" CommandParameter="StrRef" ToolTip="Copy this line's String Reference to the clipboard."/>
@@ -1205,6 +1213,7 @@
                                     <controls:ListBoxScroll.ContextMenu>
                                         <ContextMenu>
                                             <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in it's relevant tool" />
+                                            <MenuItem Header="Open in Windows Explorer" Command="{Binding OpenInWindowsExplorerCommand}" ToolTip="Opens this file in Windows Explorer."/>
                                         </ContextMenu>
                                     </controls:ListBoxScroll.ContextMenu>
                                 </controls:ListBoxScroll>

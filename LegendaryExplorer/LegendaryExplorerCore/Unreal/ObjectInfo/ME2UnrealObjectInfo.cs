@@ -81,7 +81,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             return null;
         }
 
-        public static string getEnumTypefromProp(string className, string propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null)
+        public static string getEnumTypefromProp(string className, NameReference propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null)
         {
             PropertyInfo p = getPropertyInfo(className, propName, inStruct, nonVanillaClassInfo);
             if (p == null && !inStruct)
@@ -147,7 +147,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             return null;
         }
 
-        public static ArrayType getArrayType(string className, string propName, bool inStruct = false, ExportEntry export = null)
+        public static ArrayType getArrayType(string className, NameReference propName, bool inStruct = false, ExportEntry export = null)
         {
             PropertyInfo p = getPropertyInfo(className, propName, inStruct, containingExport: export)
                           ?? getPropertyInfo(className, propName, !inStruct, containingExport: export);
@@ -226,7 +226,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             return ArrayType.Int;
         }
 
-        public static PropertyInfo getPropertyInfo(string className, string propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null, bool reSearch = true, ExportEntry containingExport = null)
+        public static PropertyInfo getPropertyInfo(string className, NameReference propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null, bool reSearch = true, ExportEntry containingExport = null)
         {
             if (className.StartsWith("Default__", StringComparison.OrdinalIgnoreCase))
             {
@@ -250,7 +250,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
                 foreach (PropertyInfo p in info.properties.Values())
                 {
-                    if ((p.Type == PropertyType.StructProperty || p.Type == PropertyType.ArrayProperty) && reSearch)
+                    if ((p.Type is PropertyType.StructProperty or PropertyType.ArrayProperty) && reSearch)
                     {
                         PropertyInfo val = getPropertyInfo(p.Reference, propName, true, nonVanillaClassInfo, reSearch: false);
                         if (val != null)
@@ -345,7 +345,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     PropertyCollection props = new();
                     while (info != null)
                     {
-                        foreach ((string propName, PropertyInfo propInfo) in info.properties)
+                        foreach ((NameReference propName, PropertyInfo propInfo) in info.properties)
                         {
                             if (stripTransients && propInfo.Transient)
                             {
@@ -354,6 +354,15 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                             if (getDefaultProperty(propName, propInfo, packageCache, stripTransients, isImmutable) is Property uProp)
                             {
                                 props.Add(uProp);
+                                if (propInfo.IsStaticArray())
+                                {
+                                    for (int i = 1; i < propInfo.StaticArrayLength; i++)
+                                    {
+                                        uProp = getDefaultProperty(propName, propInfo, packageCache, stripTransients, isImmutable);
+                                        uProp.StaticArrayIndex = i;
+                                        props.Add(uProp);
+                                    }
+                                }
                             }
                         }
 
@@ -431,7 +440,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             }
         }
 
-        public static Property getDefaultProperty(string propName, PropertyInfo propInfo, PackageCache packageCache, bool stripTransients = true, bool isImmutable = false)
+        public static Property getDefaultProperty(NameReference propName, PropertyInfo propInfo, PackageCache packageCache, bool stripTransients = true, bool isImmutable = false)
         {
             switch (propInfo.Type)
             {
@@ -553,14 +562,14 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 properties =
                     {
-                        new KeyValuePair<string, PropertyInfo>("UseSimpleRigidBodyCollision", new PropertyInfo(PropertyType.BoolProperty)),
-                        new KeyValuePair<string, PropertyInfo>("UseSimpleLineCollision", new PropertyInfo(PropertyType.BoolProperty)),
-                        new KeyValuePair<string, PropertyInfo>("UseSimpleBoxCollision", new PropertyInfo(PropertyType.BoolProperty)),
-                        new KeyValuePair<string, PropertyInfo>("UseFullPrecisionUVs", new PropertyInfo(PropertyType.BoolProperty)),
-                        new KeyValuePair<string, PropertyInfo>("BodySetup", new PropertyInfo(PropertyType.ObjectProperty, "RB_BodySetup")),
-                        new KeyValuePair<string, PropertyInfo>("LODDistanceRatio", new PropertyInfo(PropertyType.FloatProperty)),
-                        new KeyValuePair<string, PropertyInfo>("LightMapCoordinateIndex", new PropertyInfo(PropertyType.IntProperty)),
-                        new KeyValuePair<string, PropertyInfo>("LightMapResolution", new PropertyInfo(PropertyType.IntProperty)),
+                        new KeyValuePair<NameReference, PropertyInfo>("UseSimpleRigidBodyCollision", new PropertyInfo(PropertyType.BoolProperty)),
+                        new KeyValuePair<NameReference, PropertyInfo>("UseSimpleLineCollision", new PropertyInfo(PropertyType.BoolProperty)),
+                        new KeyValuePair<NameReference, PropertyInfo>("UseSimpleBoxCollision", new PropertyInfo(PropertyType.BoolProperty)),
+                        new KeyValuePair<NameReference, PropertyInfo>("UseFullPrecisionUVs", new PropertyInfo(PropertyType.BoolProperty)),
+                        new KeyValuePair<NameReference, PropertyInfo>("BodySetup", new PropertyInfo(PropertyType.ObjectProperty, "RB_BodySetup")),
+                        new KeyValuePair<NameReference, PropertyInfo>("LODDistanceRatio", new PropertyInfo(PropertyType.FloatProperty)),
+                        new KeyValuePair<NameReference, PropertyInfo>("LightMapCoordinateIndex", new PropertyInfo(PropertyType.IntProperty)),
+                        new KeyValuePair<NameReference, PropertyInfo>("LightMapResolution", new PropertyInfo(PropertyType.IntProperty)),
                     }
             };
 
@@ -651,9 +660,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 properties =
                 {
-                    new KeyValuePair<string, PropertyInfo>("m_oTarget", new PropertyInfo(PropertyType.ObjectProperty, "Actor")),
-                    new KeyValuePair<string, PropertyInfo>("Location", new PropertyInfo(PropertyType.StructProperty, "Vector")),
-                    new KeyValuePair<string, PropertyInfo>("RotationVector", new PropertyInfo(PropertyType.StructProperty, "Vector"))
+                    new KeyValuePair<NameReference, PropertyInfo>("m_oTarget", new PropertyInfo(PropertyType.ObjectProperty, "Actor")),
+                    new KeyValuePair<NameReference, PropertyInfo>("Location", new PropertyInfo(PropertyType.StructProperty, "Vector")),
+                    new KeyValuePair<NameReference, PropertyInfo>("RotationVector", new PropertyInfo(PropertyType.StructProperty, "Vector"))
                 }
             };
             sequenceObjects["SeqAct_GetLocationAndRotation"] = new SequenceObjectInfo { ObjInstanceVersion = 0 };
@@ -665,11 +674,11 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 properties =
                 {
-                    new KeyValuePair<string, PropertyInfo>("bSetRotation", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<string, PropertyInfo>("bSetLocation", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<string, PropertyInfo>("m_oTarget", new PropertyInfo(PropertyType.ObjectProperty, "Actor")),
-                    new KeyValuePair<string, PropertyInfo>("Location", new PropertyInfo(PropertyType.StructProperty, "Vector")),
-                    new KeyValuePair<string, PropertyInfo>("RotationVector", new PropertyInfo(PropertyType.StructProperty, "Vector")),
+                    new KeyValuePair<NameReference, PropertyInfo>("bSetRotation", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("bSetLocation", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("m_oTarget", new PropertyInfo(PropertyType.ObjectProperty, "Actor")),
+                    new KeyValuePair<NameReference, PropertyInfo>("Location", new PropertyInfo(PropertyType.StructProperty, "Vector")),
+                    new KeyValuePair<NameReference, PropertyInfo>("RotationVector", new PropertyInfo(PropertyType.StructProperty, "Vector")),
                 }
             };
             sequenceObjects["SeqAct_SetLocationAndRotation"] = new SequenceObjectInfo { ObjInstanceVersion = 0 };
@@ -689,7 +698,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             };
             if (!isStruct)
             {
-                UClass classBinary = ObjectBinary.From<UClass>(export);
+                var classBinary = ObjectBinary.From<UClass>(export);
                 info.isAbstract = classBinary.ClassFlags.Has(UnrealFlags.EClassFlags.Abstract);
             }
 
@@ -729,7 +738,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         private static void generateEnumValues(ExportEntry export, Dictionary<string, List<NameReference>> NewEnums = null)
         {
             var enumTable = NewEnums ?? Enums;
-            string enumName = export.ObjectName;
+            string enumName = export.ObjectName.Instanced;
             if (!enumTable.ContainsKey(enumName))
             {
                 var values = new List<NameReference>();
@@ -835,7 +844,8 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             }
 
             bool transient = ((UnrealFlags.EPropertyFlags)EndianReader.ToUInt64(entry.DataReadOnly, 24, entry.FileRef.Endian)).Has(UnrealFlags.EPropertyFlags.Transient);
-            return new PropertyInfo(type, reference, transient);
+            int arrayLength = EndianReader.ToInt32(entry.DataReadOnly, 20, entry.FileRef.Endian);
+            return new PropertyInfo(type, reference, transient, arrayLength);
         }
         #endregion
 

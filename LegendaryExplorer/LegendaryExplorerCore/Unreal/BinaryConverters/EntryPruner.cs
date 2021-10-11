@@ -135,7 +135,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public static PropertyCollection RemoveIncompatibleProperties(IMEPackage sourcePcc, PropertyCollection props, string typeName, MEGame newGame, ref bool removedProperties)
         {
             var infoProps = GlobalUnrealObjectInfo.GetAllProperties(newGame, typeName);
-            infoProps.KeyComparer = StringComparer.OrdinalIgnoreCase;
             var newProps = new PropertyCollection();
             foreach (Property prop in props)
             {

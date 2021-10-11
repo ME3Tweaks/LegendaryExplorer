@@ -52,7 +52,7 @@ namespace LegendaryExplorerCore.Unreal
             PerObjectLocalized = 0x40000000,
             HasCrossLevelRefs = 0x80000000,
 
-            Inherit = Transient | Config | Localized | SafeReplace | PerObjectConfig | PerObjectLocalized | Placeable 
+            Inherit = Transient | Config | Localized | SafeReplace | PerObjectConfig | PerObjectLocalized | Placeable
                     | HasComponents | Deprecated | Intrinsic | HasInstancedProps | HasCrossLevelRefs
         }
 
@@ -149,51 +149,63 @@ namespace LegendaryExplorerCore.Unreal
         public enum EPropertyFlags : ulong
         {
             None = 0,
-            Editable = 0x0000000000000001U,
-            Const = 0x0000000000000002U,
-            Input = 0x0000000000000004U,
-            ExportObject = 0x0000000000000008U,
-            OptionalParm = 0x0000000000000010U,
-            Net = 0x0000000000000020U,
-            EditFixedSize = 0x0000000000000040U, // also EditConstArray
-            Parm = 0x0000000000000080U,
-            OutParm = 0x0000000000000100U,
-            SkipParm = 0x0000000000000200U,
-            ReturnParm = 0x0000000000000400U,
-            CoerceParm = 0x0000000000000800U,
-            Native = 0x0000000000001000U,
-            Transient = 0x0000000000002000U,
-            Config = 0x0000000000004000U,
-            Localized = 0x0000000000008000U,
-            Travel = 0x0000000000010000U,
-            EditConst = 0x0000000000020000U,
-            GlobalConfig = 0x0000000000040000U,
+            Editable =            0x0000000000000001U,
+            Const =               0x0000000000000002U,
+            Input =               0x0000000000000004U,
+            ExportObject =        0x0000000000000008U,
+            OptionalParm =        0x0000000000000010U,
+            Net =                 0x0000000000000020U,
+            EditFixedSize =       0x0000000000000040U, // also EditConstArray
+            Parm =                0x0000000000000080U,
+            OutParm =             0x0000000000000100U,
+            SkipParm =            0x0000000000000200U,
+            ReturnParm =          0x0000000000000400U,
+            CoerceParm =          0x0000000000000800U,
+            Native =              0x0000000000001000U,
+            Transient =           0x0000000000002000U,
+            Config =              0x0000000000004000U,
+            Localized =           0x0000000000008000U,
+            Travel =              0x0000000000010000U,
+            EditConst =           0x0000000000020000U,    
+            GlobalConfig =        0x0000000000040000U,
             //Component = 0x0000000000080000U,
-            AlwaysInit = 0x0000000000100000U,
-            DuplicateTransient = 0x0000000000200000U,
-            NeedCtorLink = 0x0000000000400000U,
-            NoExport = 0x0000000000800000U,
-            NoImport = 0x0000000001000000U,
-            NoClear = 0x0000000002000000U,
-            Component = 0x0000000004000000U,
-            EdFindable = 0x0000000008000000U,
-            EditInlineUse = 0x0000000010000000U,
-            Deprecated = 0x0000000020000000U,
-            DataBinding = 0x0000000040000000U, // also EditInlineNotify
-            SerializeText = 0x0000000080000000U,
-            RepNotify = 0x0000000100000000U,
-            Interp = 0x0000000200000000U,
-            NonTransactional = 0x0000000400000000U,
-            EditorOnly = 0x0000000800000000U,
-            NotForConsole = 0x0000001000000000U,
-            RepRetry = 0x0000002000000000U,
-            PrivateWrite = 0x0000004000000000U,
-            ProtectedWrite = 0x0000008000000000U,
-            Archetype = 0x0000010000000000U,
-            EditHide = 0x0000020000000000U,
-            EditTextBox = 0x0000040000000000U,
-            CrossLevelPassive = 0x0000100000000000U,
-            CrossLevelActive = 0x0000200000000000U,
+            AlwaysInit =          0x0000000000100000U,
+            DuplicateTransient =  0x0000000000200000U,
+            NeedCtorLink =        0x0000000000400000U,
+            NoExport =            0x0000000000800000U,
+            NoImport =            0x0000000001000000U,
+            NoClear =             0x0000000002000000U,
+            Component =           0x0000000004000000U,
+            EdFindable =          0x0000000008000000U,
+            EditInlineUse =       0x0000000010000000U,
+            Deprecated =          0x0000000020000000U,
+            DataBinding =         0x0000000040000000U, // also EditInlineNotify
+            SerializeText =       0x0000000080000000U,
+            RepNotify =           0x0000000100000000U,
+            Interp =              0x0000000200000000U,
+            NonTransactional =    0x0000000400000000U,
+            EditorOnly =          0x0000000800000000U,
+            NotForConsole =       0x0000001000000000U,
+            RepRetry =            0x0000002000000000U,
+            PrivateWrite =        0x0000004000000000U,
+            ProtectedWrite =      0x0000008000000000U,
+            Archetype =           0x0000010000000000U,
+            EditHide =            0x0000020000000000U,
+            EditTextBox =         0x0000040000000000U,
+            CrossLevelPassive =   0x0000100000000000U,
+            CrossLevelActive =    0x0000200000000000U,
+
+            // BioWare specific
+            RsxStorage =          0x0001000000000000U,        // Property can be moved into RSX memory on the PS3
+            LoadForCooking =      0x0100000000000000U,        // property is editoronly or notforconsole but needs to be loaded during cooking
+            BioNonShip =          0x0200000000000000U,        // Property doesn't serialize to or from disk
+            BioIgnorePropertyAdd =0x0400000000000000U,        // ??????
+            SortBarrier =         0x0800000000000000U,        // Inserts a barrier between the marked property and the previous property to avoid sorting properties across. 
+            ClearCrossLevel =     0x1000000000000000U,        // Property should call BioClearCrossLevelReferences
+            BioSave =             0x2000000000000000U,        // Property should automagically synch with a save object
+            BioExpanded =         0x4000000000000000U,        // EDITOR ONLY Property should be initially expanded (arrays and structs).
+            BioAutoGrow =         0x8000000000000000U,        // EDITOR ONLY Property should auto grow the array when enter hit on last entry
+
             CrossLevel = CrossLevelPassive | CrossLevelActive,
         }
 
@@ -248,6 +260,17 @@ namespace LegendaryExplorerCore.Unreal
             [EPropertyFlags.EditTextBox] = "",
             [EPropertyFlags.CrossLevelPassive] = "",
             [EPropertyFlags.CrossLevelActive] = "",
+
+            // BIOWARE SPECIFIC
+            [EPropertyFlags.RsxStorage] = "Property can be moved into RSX memory (PS3)",
+            [EPropertyFlags.LoadForCooking] = "Property is editor only, but must be loaded during cooking",
+            [EPropertyFlags.BioNonShip] = "Property does not serialize to or from disk",
+            [EPropertyFlags.BioIgnorePropertyAdd] = "",
+            [EPropertyFlags.SortBarrier] = "BioEditor Only",
+            [EPropertyFlags.ClearCrossLevel] = "Property should call BioClearCrossLevelReferences",
+            [EPropertyFlags.BioSave] = "Property should automatically sync with a save object",
+            [EPropertyFlags.BioExpanded] = "EDITOR ONLY Property should be initially expanded",
+            [EPropertyFlags.BioAutoGrow] = "EDITOR ONLY Property should automatially grow the array when adding an item to the end",
         };
 
         [Flags]
@@ -292,7 +315,7 @@ namespace LegendaryExplorerCore.Unreal
             DebugSerialize = 0x4000000000000000,   // For debugging Serialize calls.
             DebugDestroy = 0x8000000000000000,   // For debugging Destroy calls.
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Has(this EObjectFlags enumValue, EObjectFlags flag) => (enumValue & flag) == flag;
 
@@ -477,7 +500,7 @@ namespace LegendaryExplorerCore.Unreal
             UnusedProbe62 = 1ul << 62,
             All = 1ul << 63,
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Has(this EProbeFunctions enumValue, EProbeFunctions flag) => (enumValue & flag) == flag;
     }

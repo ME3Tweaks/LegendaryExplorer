@@ -1,22 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
-using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.UnrealScript.Compiling
 {
     public static class ScriptObjectCompiler
     {
-        public static void Compile(ASTNode node, IEntry parent, UField existingObject = null, ExportEntry defaultPropExportEntry = null)
+        public static void Compile(ASTNode node, IEntry parent, UField existingObject = null)
         {
             switch (node)
             {
@@ -42,9 +39,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     {
                         throw new ArgumentException($"Expected {nameof(existingObject)} to be of type {nameof(UConst)}!");
                     }
-                case DefaultPropertiesBlock defaultPropertiesBlockAST:
-                    Compile(defaultPropertiesBlockAST, parent, ref defaultPropExportEntry);
-                    return;
                 case Enumeration enumAST:
                     if (existingObject is null or UEnum)
                     {
@@ -114,7 +108,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             IEntry super = null;
             if (stateAST.Parent is not null)
             {
-                super = ResolveState(stateAST.Parent, parent.FileRef);
+                super = CompilerUtils.ResolveState(stateAST.Parent, parent.FileRef);
             }
 
             var stateName = NameReference.FromInstancedString(stateAST.Name);
@@ -138,8 +132,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
 
             stateObj.StateFlags = stateAST.Flags;
-            stateObj.ProbeMask = EProbeFunctions.BeginState | EProbeFunctions.EndState | EProbeFunctions.PoppedState | EProbeFunctions.PushedState;
-            stateObj.IgnoreMask = (EProbeFunctions)ulong.MaxValue;
+            stateObj.ProbeMask = 0;
+            stateObj.IgnoreMask = stateAST.IgnoreMask;
             stateObj.SuperClass = super?.UIndex ?? 0;
 
 
@@ -149,7 +143,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 foreach (Function stateFunc in curState.Functions)
                 {
-                    if (/*stateFunc.IsDefined && */Enum.TryParse(stateFunc.Name, true, out EProbeFunctions enumVal))
+                    if (Enum.TryParse(stateFunc.Name, true, out EProbeFunctions enumVal))
                     {
                         stateObj.ProbeMask |= enumVal;
                     }
@@ -161,6 +155,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
             UFunction prevFunc = null;
             var existingFuncs = GetMembers<UFunction>(stateObj).ToDictionary(uFunc => uFunc.Export.ObjectName.Instanced);
+            stateObj.Children = 0;
             foreach (Function member in stateAST.Functions)
             {
                 existingFuncs.Remove(member.Name, out UFunction childFunc);
@@ -196,14 +191,14 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             IEntry super = null;
             if (funcAST.SuperFunction is not null)
             {
-                super = ResolveFunction(funcAST.SuperFunction, parent.FileRef);
+                super = CompilerUtils.ResolveFunction(funcAST.SuperFunction, parent.FileRef);
             }
 
             var functionName = NameReference.FromInstancedString(funcAST.Name);
             ExportEntry funcExport;
             if (funcObj is null)
             {
-                funcExport = CreateNewExport(functionName, "Function", parent, new UFunction { ScriptBytes = Array.Empty<byte>() }, super);
+                funcExport = CreateNewExport(functionName, "Function", parent, new UFunction { ScriptBytes = Array.Empty<byte>(), FriendlyName = functionName}, super);
                 funcObj = funcExport.GetBinaryData<UFunction>();
             }
             else
@@ -335,14 +330,14 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             switch (propObj)
             {
                 case UByteProperty uByteProperty:
-                    uByteProperty.Enum = varType is Enumeration ? ResolveSymbol(varType, pcc).UIndex : 0;
+                    uByteProperty.Enum = varType is Enumeration ? CompilerUtils.ResolveSymbol(varType, pcc).UIndex : 0;
                     break;
                 case UClassProperty uClassProperty:
                     uClassProperty.ObjectRef = pcc.getEntryOrAddImport("Core.Class").UIndex;
-                    uClassProperty.ClassRef = ResolveSymbol(((ClassType)varType).ClassLimiter, pcc).UIndex;
+                    uClassProperty.ClassRef = CompilerUtils.ResolveSymbol(((ClassType)varType).ClassLimiter, pcc).UIndex;
                     break;
                 case UDelegateProperty uDelegateProperty:
-                    uDelegateProperty.Function = ResolveFunction(((DelegateType)varType).DefaultFunction, pcc).UIndex;
+                    uDelegateProperty.Function = CompilerUtils.ResolveFunction(((DelegateType)varType).DefaultFunction, pcc).UIndex;
                     string parentClassName = parent.ClassName;
                     if (parentClassName.CaseInsensitiveEquals("ArrayProperty"))
                     {
@@ -355,10 +350,10 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     uMapProperty.ValueType = 0;
                     break;
                 case UObjectProperty uObjectProperty:
-                    uObjectProperty.ObjectRef = ResolveSymbol(varType, pcc).UIndex;
+                    uObjectProperty.ObjectRef = CompilerUtils.ResolveSymbol(varType, pcc).UIndex;
                     break;
                 case UStructProperty uStructProperty:
-                    uStructProperty.Struct = ResolveSymbol(varType, pcc).UIndex;
+                    uStructProperty.Struct = CompilerUtils.ResolveSymbol(varType, pcc).UIndex;
                     break;
                 case UArrayProperty uArrayProperty:
                     UProperty child = null;
@@ -410,11 +405,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             throw new NotImplementedException();
         }
 
-        public static void Compile(DefaultPropertiesBlock defaultsAST, IEntry parent, ref ExportEntry defaultsExport)
-        {
-            throw new NotImplementedException();
-        }
-
         public static List<T> GetMembers<T>(UStruct obj) where T : UField
         {
             IMEPackage pcc = obj.Export.FileRef;
@@ -445,7 +435,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             IMEPackage pcc = parent.FileRef;
 
             //reuse trash exports
-            if (pcc.FindEntry(UnrealPackageFile.TrashPackageName)?.GetChildren().LastOrDefault(entry => entry is ExportEntry) is ExportEntry trashExport)
+            if (pcc.TryGetTrash(out ExportEntry trashExport))
             {
                 trashExport.ObjectName = name;
                 trashExport.Class = EntryImporter.EnsureClassIsInFile(pcc, className);
@@ -463,29 +453,5 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             pcc.AddExport(exp);
             return exp;
         }
-
-        private static IEntry ResolveSymbol(ASTNode node, IMEPackage pcc) =>
-            node switch
-            {
-                Class cls => ResolveClass(cls, pcc),
-                Struct strct => ResolveStruct(strct, pcc),
-                State state => ResolveState(state, pcc),
-                Function func => ResolveFunction(func, pcc),
-                Enumeration @enum => ResolveEnum(@enum, pcc),
-                StaticArrayType statArr => ResolveSymbol(statArr.ElementType, pcc),
-                _ => throw new ArgumentOutOfRangeException(nameof(node))
-            };
-
-        private static IEntry ResolveEnum(Enumeration e, IMEPackage pcc) => pcc.getEntryOrAddImport($"{ResolveSymbol(e.Outer, pcc).InstancedFullPath}.{e.Name}", "Enum");
-
-        private static IEntry ResolveStruct(Struct s, IMEPackage pcc) => pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer, pcc).InstancedFullPath}.{s.Name}", "ScriptStruct");
-
-        private static IEntry ResolveFunction(Function f, IMEPackage pcc) => pcc.getEntryOrAddImport($"{ResolveSymbol(f.Outer, pcc).InstancedFullPath}.{f.Name}", "Function");
-
-        private static IEntry ResolveState(State s, IMEPackage pcc) => pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer, pcc).InstancedFullPath}.{s.Name}", "State");
-
-        private static IEntry ResolveClass(Class c, IMEPackage pcc) =>
-            EntryImporter.EnsureClassIsInFile(pcc, c.Name, RelinkResultsAvailable: relinkResults =>
-                                                  throw new Exception($"Unable to resolve class '{c.Name}'! There were relinker errors: {string.Join("\n\t", relinkResults.Select(pair => pair.Message))}"));
     }
 }

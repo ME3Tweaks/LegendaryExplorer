@@ -129,7 +129,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 {
                     if (node.Name != "Object")
                     {
-                        if (((Class)node.Parent).SameAsOrSubClassOf(node.Name)) // TODO: not needed due to no forward declarations?
+                        if (((Class)node.Parent).SameAsOrSubClassOf(node)) // TODO: not needed due to no forward declarations?
                         {
                             return Error($"Extending from '{node.Parent.Name}' causes circular extension!", node.Parent.StartPos, node.Parent.EndPos);
                         }
@@ -279,7 +279,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 switch ((node.VarType as StaticArrayType)?.ElementType ?? node.VarType)
                 {
                     case DynamicArrayType {ElementType: VariableType elType} dynArrType:
-                        if (elType is Class elClass && elClass.SameAsOrSubClassOf("Component"))
+                        if (elType is Class {IsComponent: true})
                         {
                             dynArrType.ElementPropertyFlags |= EPropertyFlags.Component;
                             node.Flags |= EPropertyFlags.Component;
@@ -291,7 +291,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                             dynArrType.ElementPropertyFlags |= EPropertyFlags.NeedCtorLink;
                         }
                         break;
-                    case Class c when c.SameAsOrSubClassOf("Component"):
+                    case Class {IsComponent: true}:
                         node.Flags |= EPropertyFlags.Component;
                         break;
                     case Struct strct when !node.Flags.Has(EPropertyFlags.Native) && StructNeedsCtorLink(strct, new Stack<Struct> { strct }):
@@ -372,7 +372,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 if (!Symbols.TryAddType(node))
                 {
                     //Structs do not have to be globally unique, but they do have to be unique within a scope
-                    if (((IObjectType)node.Outer).TypeDeclarations.Any(decl => decl != node && decl.Name.CaseInsensitiveEquals(node.Name)))
+                    if (((ObjectType)node.Outer).TypeDeclarations.Any(decl => decl != node && decl.Name.CaseInsensitiveEquals(node.Name)))
                     {
                         return Error($"A type named '{node.Name}' already exists in this {node.Outer.GetType().Name.ToLower()}!", node.StartPos, node.EndPos);
                     }
@@ -423,6 +423,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 {
                     decl.Outer = node;
                     Success = Success && decl.AcceptVisitor(this);
+                    //todo: verify that the member does not attempt to override a member from a parent struct
                 }
 
                 Symbols.PopScope();
@@ -457,7 +458,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             if (!Symbols.TryAddType(node))
             {
                 //Enums do not have to be globally unique, but they do have to be unique within a scope
-                if (((IObjectType)node.Outer).TypeDeclarations.Any(decl => decl != node && decl.Name.CaseInsensitiveEquals(node.Name)))
+                if (((ObjectType)node.Outer).TypeDeclarations.Any(decl => decl != node && decl.Name.CaseInsensitiveEquals(node.Name)))
                 {
                     return Error($"A type named '{node.Name}' already exists in this {node.Outer.GetType().Name.ToLower()}!", node.StartPos, node.EndPos);
                 }
@@ -487,7 +488,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             if (!Symbols.TryAddType(node))
             {
                 //Consts do not have to be globally unique, but they do have to be unique within a scope
-                if (((IObjectType)node.Outer).TypeDeclarations.Any(decl => decl != node && decl.Name.CaseInsensitiveEquals(node.Name)))
+                if (((ObjectType)node.Outer).TypeDeclarations.Any(decl => decl != node && decl.Name.CaseInsensitiveEquals(node.Name)))
                 {
                     return Error($"A type named '{node.Name}' already exists in this {node.Outer.GetType().Name.ToLower()}!", node.StartPos, node.EndPos);
                 }
@@ -582,7 +583,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     while (state is not null)
                     {
                         string stateScope = $"{((Class)state.Outer).GetInheritanceString()}.{state.Name}";
-                        if (Symbols.TryGetSymbolInScopeStack(node.Name, out superFunc, stateScope))
+                        if (Symbols.TryGetSymbolFromSpecificScope(node.Name, out superFunc, stateScope))
                         {
                             break;
                         }
@@ -705,29 +706,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                             node.Parent = parent as State;
                     }
                 }
-
-                int numFuncs = node.Functions.Count;
+                
                 string parentScope = node.Parent is not null ? $"{NodeUtils.GetContainingClass(node.Parent)?.GetInheritanceString()}.{node.Parent.Name}" : null;
                 Symbols.PushScope(node.Name, parentScope);
-                foreach (Function ignore in node.Ignores)
-                {
-                    if (Symbols.TryGetSymbol(ignore.Name, out ASTNode original) && original.Type == ASTNodeType.Function)
-                    {
-                        var header = (Function)original;
-                        var emptyOverride = new Function(header.Name, header.Flags, header.ReturnValueDeclaration?.Clone(), new CodeBody(), header.Parameters, ignore.StartPos, ignore.EndPos)
-                        {
-                            Outer = node
-                        };
-                        node.Functions.Add(emptyOverride);
-                    }
-                    else //TODO: really ought to throw error, but PlayerController.PlayerWaiting.Jump is like this. Find alternate way of handling this?
-                    {
-                        ignore.Outer = node;
-                        node.Functions.Add(ignore);
-                    }
-                }
 
-                foreach (Function func in node.Functions.GetRange(0, numFuncs))
+                foreach (Function func in node.Functions)
                 {
                     func.Outer = node;
                     Symbols.AddSymbol(func.Name, func);

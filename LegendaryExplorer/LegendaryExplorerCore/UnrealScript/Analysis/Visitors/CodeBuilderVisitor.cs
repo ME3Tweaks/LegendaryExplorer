@@ -46,6 +46,8 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             set => Formatter.NestingLevel = value;
         }
 
+        private int LabelNest;
+
         public int ForcedAlignment
         {
             get => Formatter.ForcedAlignment;
@@ -554,6 +556,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
             if (flags.Has(EFunctionFlags.Defined) && node.Body.Statements != null)
             {
+                var tmp = LabelNest;
+                LabelNest = NestingLevel;
+
                 Write("{");
                 NestingLevel++;
                 if (node.Locals.Any())
@@ -565,6 +570,8 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 node.Body.AcceptVisitor(this);
                 NestingLevel--;
                 Write("}");
+
+                LabelNest = tmp;
             }
             else
             {
@@ -638,14 +645,17 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 Space();
             }
 
+            var nestTmp = LabelNest;
+            LabelNest = NestingLevel;
+
             Write("{");
             NestingLevel++;
 
-            if (node.Ignores.Count > 0)
+            if (node.IgnoreMask != (EProbeFunctions)ulong.MaxValue)
             {
                 Write(IGNORES, EF.Keyword);
                 Space();
-                Join(node.Ignores.Select(x => x.Name).ToList(), ", ", EF.Function);
+                Join((~node.IgnoreMask).MaskToList().Select(flag => flag.ToString()).ToList(), ", ", EF.Function);
                 Write(";");
             }
 
@@ -653,15 +663,17 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             foreach (Function func in node.Functions)
                 func.AcceptVisitor(this);
 
+            Write();
+            Write("// State code", EF.Comment);
             if (node.Body.Statements.Count != 0)
             {
-                Write();
-                Write("// State code", EF.Comment);
                 node.Body.AcceptVisitor(this);
             }
 
             NestingLevel--;
             Write("};");
+
+            LabelNest = nestTmp;
 
             return true;
         }
@@ -1284,7 +1296,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             {
                 Append(")");
             }
-            if (node.IsClassContext && !(node.InnerSymbol is DefaultReference))
+            if (node.IsClassContext && node.InnerSymbol is not DefaultReference)
             {
                 Append(".", EF.Operator);
                 Append(STATIC, EF.Keyword);
@@ -1579,19 +1591,19 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         }
         public bool VisitNode(StructLiteral node)
         {
-            bool multiLine = !ForceNoNewLines && (node.Statements.Count > 5 || node.Statements.Any(stmnt => (stmnt as AssignStatement)?.Value is StructLiteral || (stmnt as AssignStatement)?.Value is DynamicArrayLiteral));
+            bool multiLine = !ForceNoNewLines && (node.Statements.Count > 5 || node.Statements.Any(stmnt => (stmnt as AssignStatement)?.Value is StructLiteral or DynamicArrayLiteral));
 
             bool oldForceNoNewLines = ForceNoNewLines;
             int oldForcedAlignment = ForcedAlignment;
             if (multiLine)
             {
-                Append("{(");
+                Append("{");
                 ForceAlignment();
             }
             else
             {
                 ForceNoNewLines = true;
-                Append("(");
+                Append("{");
             }
             for (int i = 0; i < node.Statements.Count; i++)
             {
@@ -1605,13 +1617,13 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
             if (multiLine)
             {
-                ForcedAlignment -= 2;
-                Write(")}");
+                ForcedAlignment -= 1;
+                Write("}");
                 ForcedAlignment = oldForcedAlignment;
             }
             else
             {
-                Append(")");
+                Append("}");
                 ForceNoNewLines = oldForceNoNewLines;
             }
             return true;
@@ -1619,7 +1631,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public bool VisitNode(DynamicArrayLiteral node)
         {
-            bool multiLine = !ForceNoNewLines && (node.Values.Any(expr => expr is StructLiteral || expr is DynamicArrayLiteral) || node.Values.Count > 7);
+            bool multiLine = !ForceNoNewLines && (node.Values.Any(expr => expr is StructLiteral or DynamicArrayLiteral) || node.Values.Count > 7);
 
             bool oldForceNoNewLines = ForceNoNewLines;
             int oldForcedAlignment = ForcedAlignment;
@@ -1663,7 +1675,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         {
             // Label
             var temp = NestingLevel;
-            NestingLevel = NestingLevel > 0 ? NestingLevel - 1 : 0;
+            NestingLevel = LabelNest;
             Write(node.Name, EF.Label);
             Append(":");
             NestingLevel = temp;

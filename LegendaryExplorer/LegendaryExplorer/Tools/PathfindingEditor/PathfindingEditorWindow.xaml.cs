@@ -2501,7 +2501,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
                 sourceActor.WriteProperty(connections);
                 ArrayProperty<ObjectProperty> linksFrom = destActor.GetProperty<ArrayProperty<ObjectProperty>>("LinksFrom") ?? new ArrayProperty<ObjectProperty>("LinksFrom");
-                linksFrom.Remove(objProp => objProp.Value == sourceActor.UIndex);
+                linksFrom.RemoveAll(objProp => objProp.Value == sourceActor.UIndex);
                 destActor.WriteProperty(linksFrom);
                 //ValidationPanel.RecalculateSplineComponents(Pcc);
             }
@@ -4672,7 +4672,8 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 level.CachedPhysPerTriSMDataStore = newPhysPerTristore;
                 references.Clear();
 
-                //Clean up NAV data - how to clean up Nav ints?
+
+                //Clean up NAV data - how to clean up Nav ints?  [Just null unwanted refs]
                 if (norefsList.Contains(level.NavListStart ?? 0))
                 {
                     level.NavListStart = 0;
@@ -4683,17 +4684,18 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 }
                 var newNavArray = new List<UIndex>();
                 newNavArray.AddRange(level.NavPoints);
-                foreach (var navref in level.NavPoints)
+
+                for (int n = 0; n < level.NavPoints.Count; n++)
                 {
-                    var navpoint = navref?.value ?? -1;
-                    if (norefsList.Contains(navpoint) || navpoint == 0)
+                    var navpoint = newNavArray[n].value;
+                    if (norefsList.Contains(navpoint))
                     {
-                        newNavArray.Remove(navref);
+                        newNavArray[n] = 0;
                     }
                 }
                 level.NavPoints = newNavArray;
 
-                //Clean up Coverlink Lists => pare down guid2byte? table
+                //Clean up Coverlink Lists => pare down guid2byte? table [Just null unwanted refs]
                 if (norefsList.Contains(level.CoverListStart ?? 0))
                 {
                     level.CoverListStart = 0;
@@ -4704,16 +4706,15 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 }
                 var newCLArray = new List<UIndex>();
                 newCLArray.AddRange(level.CoverLinks);
-                foreach (var clref in level.CoverLinks)
+                for (int l = 0; l < level.CoverLinks.Count; l++)
                 {
-                    var coverlink = clref?.value ?? -1;
-                    if (norefsList.Contains(coverlink) || coverlink == 0)
+                    var coverlink = newCLArray[l].value;
+                    if (norefsList.Contains(coverlink))
                     {
-                        newCLArray.Remove(clref);
+                        newCLArray[l] = 0;
                     }
                 }
                 level.CoverLinks = newCLArray;
-
 
                 if (Pcc.Game.IsGame3())
                 {

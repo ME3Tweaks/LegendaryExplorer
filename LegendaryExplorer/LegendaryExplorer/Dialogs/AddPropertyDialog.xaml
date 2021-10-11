@@ -37,7 +37,7 @@
                 <DataTemplate DataType="{x:Type local:AddPropertyDialog+AddPropertyItem}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding PropInfo.Type}" Foreground="Gray"/>
-                        <TextBlock Margin="5,0,0,0" Text="{Binding Path=PropertyName}" />
+                        <TextBlock Margin="5,0,0,0" Text="{Binding Path=DisplayName, Mode=OneTime}" />
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>

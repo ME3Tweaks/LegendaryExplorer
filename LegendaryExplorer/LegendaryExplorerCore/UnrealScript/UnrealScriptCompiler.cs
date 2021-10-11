@@ -3,6 +3,7 @@ using System.Linq;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Compiling;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
@@ -43,28 +44,28 @@ namespace LegendaryExplorerCore.UnrealScript
             switch (export.ClassName)
             {
                 case "Class":
-                    astNode = ScriptObjectToASTConverter.ConvertClass(export.GetBinaryData<UClass>(), true, lib);
+                    astNode = ScriptObjectToASTConverter.ConvertClass(export.GetBinaryData<UClass>(packageCache), true, lib, packageCache);
                     break;
                 case "Function":
-                    astNode = ScriptObjectToASTConverter.ConvertFunction(export.GetBinaryData<UFunction>(), lib: lib);
+                    astNode = ScriptObjectToASTConverter.ConvertFunction(export.GetBinaryData<UFunction>(packageCache), lib: lib, packageCache: packageCache);
                     break;
                 case "State":
-                    astNode = ScriptObjectToASTConverter.ConvertState(export.GetBinaryData<UState>(), lib: lib);
+                    astNode = ScriptObjectToASTConverter.ConvertState(export.GetBinaryData<UState>(packageCache), lib: lib, packageCache: packageCache);
                     break;
                 case "Enum":
-                    astNode = ScriptObjectToASTConverter.ConvertEnum(export.GetBinaryData<UEnum>());
+                    astNode = ScriptObjectToASTConverter.ConvertEnum(export.GetBinaryData<UEnum>(packageCache));
                     break;
                 case "ScriptStruct":
-                    astNode = ScriptObjectToASTConverter.ConvertStruct(export.GetBinaryData<UScriptStruct>(), packageCache);
+                    astNode = ScriptObjectToASTConverter.ConvertStruct(export.GetBinaryData<UScriptStruct>(packageCache), packageCache, lib);
                     break;
                 default:
-                    if (export.ClassName.EndsWith("Property") && ObjectBinary.From(export) is UProperty uProp)
+                    if (export.ClassName.EndsWith("Property") && ObjectBinary.From(export, packageCache) is UProperty uProp)
                     {
-                        astNode = ScriptObjectToASTConverter.ConvertVariable(uProp);
+                        astNode = ScriptObjectToASTConverter.ConvertVariable(uProp, packageCache);
                     }
                     else
                     {
-                        astNode = ScriptObjectToASTConverter.ConvertDefaultProperties(export, packageCache);
+                        astNode = ScriptObjectToASTConverter.ConvertDefaultProperties(export, lib, packageCache);
                     }
                     break;
             }
@@ -300,5 +301,29 @@ namespace LegendaryExplorerCore.UnrealScript
         }
 
 
+        public static DefaultPropertiesBlock CompileDefaultPropertiesAST(ExportEntry classExport, DefaultPropertiesBlock propBlock, MessageLog log, FileLib lib)
+        {
+            SymbolTable symbols = lib.GetSymbolTable();
+            symbols.RevertToObjectStack();
+
+
+            if (classExport.IsClass && symbols.TryGetType(classExport.ObjectName.Instanced, out Class propsClass))
+            {
+                if (!propsClass.Name.CaseInsensitiveEquals("Object"))
+                {
+                    symbols.GoDirectlyToStack(((Class)propsClass.Parent).GetInheritanceString());
+                    symbols.PushScope(propsClass.Name);
+                }
+
+                propsClass.DefaultProperties = propBlock;
+                propBlock.Outer = propsClass;
+
+                PropertiesBlockParser.Parse(propBlock, classExport.FileRef, symbols, log);
+
+                return propBlock;
+            }
+
+            return null;
+        }
     }
 }

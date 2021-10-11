@@ -12,7 +12,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         private List<HNode> HNodes;
         public List<string> Names;
         public List<FaceFXBoneNode> BoneNodes;
-        public List<FaceFXCombinerNode> CombinerNodes;
+        public List<FxNode> CombinerNodes;
         private FXATableCElement[] TableC;
         private int unk1;
         private int Name;
@@ -143,73 +143,92 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public float[] unkFloats = new float[10];
     }
 
-    public class FaceFXCombinerNode
+    public enum FxNodeType : int
     {
-        public int Format;
+        FxCombinerNode = 0,
+        FxDeltaNode = 1,
+        FxCurrentTimeNode = 2,
+        FxBonePoseNode = 4,
+        FxMorphTargetNode = 5,
+        FxEmotionsWeightNode = 8
+    }
+
+    public enum FxInputOperation : int
+    {
+        SumInputs = 0,
+        MultiplyInputs = 1
+    }
+
+    public class FxNode
+    {
+        public int format;
+        public FxNodeType Format
+        {
+            get => (FxNodeType) format;
+            set => format = (int)value;
+        }
         public int Name;
-        public int Flag;
+        public float MinVal;
         public float unk1;
+        public float MaxVal;
         public float unk2;
-        public float unk3;
-        public int unk4;
-        public List<FaceFXCombinerNodeChildLink> ChildLinks;
-
-        public static FaceFXCombinerNode GetNodeTypeFromFormat(int format)
+        public int inputOp;
+        public FxInputOperation InputOperation
         {
-            return format switch
-            {
-                6 => new CombinerNodeType6(),
-                8 => new CombinerNodeType8(),
-                _ => new CombinerNodeType0()
-            };
+            get => (FxInputOperation)inputOp;
+            set => inputOp= (int)value;
         }
+        public List<FxNodeParentLink> ChildLinks;
+        public List<FxNodeParameter> Parameters;
     }
 
-    public class CombinerNodeType0 : FaceFXCombinerNode
+    public enum FxLinkFunction : int
     {
-        public float unk5;
+        Linear = 1,
+        Quadratic = 2,
+        Cubic = 3,
+        SquareRoot = 4,
+        Negate = 5,
+        Inverse = 6,
+        OneClamp = 7,
+        Constant = 8,
+        Corrective = 9,
+        ClampedLinear = 10
     }
 
-    public class CombinerNodeType6 : FaceFXCombinerNode
+    public class FxNodeParentLink
     {
-        public MaterialSlotID MaterialSlot;
-        public ParameterName Parameter;
-        public class MaterialSlotID
-        {
-            public int unk;
-            public int Name;
-            public float unk1;
-            public float unk3;
-            public float unk2;
-        }
+        public int NodeIndex;
+        public int linkFunction;
 
-        public class ParameterName
+        public FxLinkFunction LinkFunction
         {
-            public int unk;
-            public int Name;
-            public List<float> Floats;
-            public string Parameter;
+            get => (FxLinkFunction) linkFunction;
+            set => linkFunction = (int)value;
         }
-        
+        public List<float> FunctionSettings; // Each function has a different number of float settings
     }
 
-    public class CombinerNodeType8 : FaceFXCombinerNode
+    public enum FxNodeParamFormat
     {
-        public List<Type8FXAInfo> FXAInfo;
-        public class Type8FXAInfo
-        {
-            public int Name;
-            public List<float> Floats;
-            public string Path;
-        }
+        Integer = 0,
+        String = 3
     }
-
-
-    public class FaceFXCombinerNodeChildLink
+    
+    public class FxNodeParameter
     {
         public int Name;
-        public int unkInt;
-        public List<float> floats;
+        public int paramFormat;
+        public FxNodeParamFormat Format
+        {
+            get => (FxNodeParamFormat) paramFormat;
+            set => paramFormat = (int)value;
+        }
+
+        public int IntParameter;
+        public float FloatParameter;
+        public int unk2;
+        public string StringParameter;
     }
 
     public static partial class SCExt
@@ -272,87 +291,47 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref FaceFXCombinerNode node)
+        public static void Serialize(this SerializingContainer2 sc, ref FxNode node)
         {
-            if (sc.IsLoading)
-            {
-                int fmt = sc.ms.ReadInt32();
-                node = FaceFXCombinerNode.GetNodeTypeFromFormat(fmt);
-                node.Format = fmt;
-            }
-            else
-            {
-                sc.Serialize(ref node.Format);
-            }
+            if (sc.IsLoading) node = new FxNode();
+
+            sc.Serialize(ref node.format);
             sc.Serialize(ref node.Name);
-            sc.Serialize(ref node.Flag);
+            sc.Serialize(ref node.MinVal);
             sc.Serialize(ref node.unk1);
+            sc.Serialize(ref node.MaxVal);
             sc.Serialize(ref node.unk2);
-            sc.Serialize(ref node.unk3);
-            sc.Serialize(ref node.unk4);
+            sc.Serialize(ref node.inputOp);
             sc.Serialize(ref node.ChildLinks, Serialize);
-
-            switch (node)
-            {
-                case CombinerNodeType0 t0:
-                    sc.Serialize(ref t0.unk5);
-                    break;
-                case CombinerNodeType6 t6:
-                    sc.Serialize(ref t6.MaterialSlot);
-                    sc.Serialize(ref t6.Parameter);
-                    break;
-                case CombinerNodeType8 t8:
-                    sc.Serialize(ref t8.FXAInfo, Serialize);
-                    break;
-            }
-
+            sc.Serialize(ref node.Parameters, Serialize);
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref FaceFXCombinerNodeChildLink node)
+        public static void Serialize(this SerializingContainer2 sc, ref FxNodeParentLink node)
         {
             if (sc.IsLoading)
             {
-                node = new FaceFXCombinerNodeChildLink();
+                node = new FxNodeParentLink();
             }
-            sc.Serialize(ref node.Name);
-            sc.Serialize(ref node.unkInt);
-            sc.Serialize(ref node.floats, Serialize);
+            sc.Serialize(ref node.NodeIndex);
+            sc.Serialize(ref node.linkFunction);
+            sc.Serialize(ref node.FunctionSettings, Serialize);
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref CombinerNodeType8.Type8FXAInfo info)
+        public static void Serialize(this SerializingContainer2 sc, ref FxNodeParameter param)
         {
             if (sc.IsLoading)
             {
-                info = new CombinerNodeType8.Type8FXAInfo();
+                param = new FxNodeParameter();
             }
-            sc.Serialize(ref info.Name);
-            sc.Serialize(ref info.Floats, Serialize);
-            sc.SerializeFaceFXString(ref info.Path);
-        }
-
-        public static void Serialize(this SerializingContainer2 sc, ref CombinerNodeType6.MaterialSlotID node)
-        {
-            if (sc.IsLoading)
+            sc.Serialize(ref param.Name);
+            sc.Serialize(ref param.paramFormat);
+            sc.Serialize(ref param.IntParameter);
+            sc.Serialize(ref param.FloatParameter);
+            sc.Serialize(ref param.unk2);
+            if (param.paramFormat == 3)
             {
-                node = new CombinerNodeType6.MaterialSlotID();
+                sc.SerializeFaceFXString(ref param.StringParameter);
             }
-            sc.Serialize(ref node.unk);
-            sc.Serialize(ref node.Name);
-            sc.Serialize(ref node.unk1);
-            sc.Serialize(ref node.unk2);
-            sc.Serialize(ref node.unk3);
-        }
-
-        public static void Serialize(this SerializingContainer2 sc, ref CombinerNodeType6.ParameterName node)
-        {
-            if (sc.IsLoading)
-            {
-                node = new CombinerNodeType6.ParameterName();
-            }
-            sc.Serialize(ref node.unk);
-            sc.Serialize(ref node.Name);
-            sc.Serialize(ref node.Floats, Serialize);
-            sc.SerializeFaceFXString(ref node.Parameter);
         }
 
         public static void Serialize(this SerializingContainer2 sc, ref FaceFXAsset.FXATableCElement el)

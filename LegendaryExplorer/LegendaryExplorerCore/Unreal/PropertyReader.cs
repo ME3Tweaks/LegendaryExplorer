@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 namespace LegendaryExplorerCore.Unreal
 {
     [DebuggerDisplay("NameReference - Name: {Name} Number: {Number} Instanced: {Instanced}")]
-    public readonly struct NameReference : IEquatable<NameReference>
+    public readonly struct NameReference : IEquatable<NameReference>, IComparable<NameReference>, IComparable
     {
         public string Name { get; }
         public int Number { get; }
@@ -157,6 +157,41 @@ namespace LegendaryExplorerCore.Unreal
                 return (Name.GetHashCode() * 397) ^ Number;
             }
         }
+        #endregion
+
+        #region IComparable
+        public int CompareTo(NameReference other)
+        {
+            int nameComparison = string.Compare(Name, other.Name, StringComparison.OrdinalIgnoreCase);
+            if (nameComparison != 0) return nameComparison;
+            return Number.CompareTo(other.Number);
+        }
+
+        public int CompareTo(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return 1;
+            return obj is NameReference other ? CompareTo(other) : throw new ArgumentException($"Object must be of type {nameof(NameReference)}");
+        }
+
+        public static bool operator <(NameReference left, NameReference right)
+        {
+            return left.CompareTo(right) < 0;
+        }
+
+        public static bool operator >(NameReference left, NameReference right)
+        {
+            return left.CompareTo(right) > 0;
+        }
+
+        public static bool operator <=(NameReference left, NameReference right)
+        {
+            return left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >=(NameReference left, NameReference right)
+        {
+            return left.CompareTo(right) >= 0;
+        } 
         #endregion
     }
 

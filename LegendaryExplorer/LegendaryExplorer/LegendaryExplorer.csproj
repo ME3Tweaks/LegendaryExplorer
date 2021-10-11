@@ -40,6 +40,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Images\bink.jpg" />
     <None Remove="Resources\Images\GameIcons\UDK_48.ico" />
     <Compile Remove="Resources\exec\**" />
     <EmbeddedResource Remove="Resources\exec\**" />
@@ -63,6 +64,7 @@
     <Resource Include="Resources\Fonts\TitilliumWeb-SemiBold.ttf" />
     <Resource Include="Resources\Fonts\BIOMASS2-LIGHT.ttf" />
     <Resource Include="Resources\Fonts\BIOMASS2-BOLD.ttf" />
+    <Resource Include="Resources\Images\bink.jpg" />
     <Resource Include="Tools\PlotDatabase\PlotTypeIcons\icon_float.png" />
     <Resource Include="Tools\PlotDatabase\PlotTypeIcons\icon_cnd.png" />
     <Resource Include="Tools\PlotDatabase\PlotTypeIcons\icon_int.png" />
@@ -466,6 +468,9 @@
     </Page>
     <Page Update="Dialogs\SoundReplaceOptionsDialog.xaml">
       <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UserControls\InterpEditorControls\InterpExperimentsMenuControl.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
   </ItemGroup>
 

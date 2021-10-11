@@ -14,7 +14,7 @@
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
         <StackPanel MaxWidth="500" VerticalAlignment="Center">
             <TextBlock Text="Scaleform/Adobe Flash Editor" FontWeight="Bold" FontSize="22"  TextAlignment="Center"/>
-            <Image Source="jpex.png" MaxWidth="320" Cursor="Hand"/>
+            <Image Source="Resources/Images/jpex.png" MaxWidth="320" Cursor="Hand"/>
             <TextBlock Text="Open this export's SWF file in JPEXs with the button below and make your edits.&#10;After saving your file, press Import saved file to automatically import the saved file back into this export." FontWeight="Bold" TextAlignment="Center" TextWrapping="Wrap"/>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,30">

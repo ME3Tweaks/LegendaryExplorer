@@ -65,6 +65,13 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public string FilePath { get; init; }
         public int UIndex { get; init; }
+
+        public string FullTypeName()
+        {
+            var builder = new CodeBuilderVisitor();
+            builder.AppendTypeName(this);
+            return builder.GetOutput();
+        }
     }
 
     public interface IHasFileReference

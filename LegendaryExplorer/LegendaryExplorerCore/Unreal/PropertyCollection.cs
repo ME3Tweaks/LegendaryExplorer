@@ -33,16 +33,17 @@ namespace LegendaryExplorerCore.Unreal
         private readonly int sourceExportUIndex;
 
         /// <summary>
-        /// Gets the UProperty with the specified name, returns null if not found. The property name is checked case insensitively. 
+        /// Gets the UProperty with the specified name and optionally a static array index, returns null if not found. The property name is checked case insensitively. 
         /// Ensure the generic type matches the result you want or you will receive a null object back.
         /// </summary>
         /// <param name="name">Name of property to find</param>
+        /// <param name="staticArrayIdx"></param>
         /// <returns>specified UProperty or null if not found</returns>
-        public T GetProp<T>(NameReference name) where T : Property
+        public T GetProp<T>(NameReference name, int staticArrayIdx = 0) where T : Property
         {
             foreach (var prop in this)
             {
-                if (prop.Name == name)
+                if (prop.Name == name && prop.StaticArrayIndex == staticArrayIdx)
                 {
                     return prop as T;
                 }
@@ -51,17 +52,18 @@ namespace LegendaryExplorerCore.Unreal
         }
 
         /// <summary>
-        /// Gets the UProperty with the specified name. Will get default values for properties that are part of the type but do not appear in the collection.
+        /// Gets the UProperty with the specified name and (optionally) static array index. Will get default values for properties that are part of the type but do not appear in the collection.
         /// The property name is checked case insensitively. 
         /// Ensure the property name is spelled correctly and that generic type matches the result you want or it will throw an exception.
         /// </summary>
         /// <param name="name">Name of property to find</param>
+        /// <param name="staticArrayIdx"></param>
         /// <returns>specified UProperty</returns>
-        public T GetPropOrDefault<T>(string name, PackageCache packageCache) where T : Property
+        public T GetPropOrDefault<T>(NameReference name, int staticArrayIdx = 0, PackageCache packageCache = null) where T : Property
         {
             foreach (var prop in this)
             {
-                if (prop.Name.Name != null && string.Equals(prop.Name.Name, name, StringComparison.CurrentCultureIgnoreCase))
+                if (prop.Name.Name != null && prop.Name == name && prop.StaticArrayIndex == staticArrayIdx)
                 {
                     return (T)prop;
                 }
@@ -69,7 +71,9 @@ namespace LegendaryExplorerCore.Unreal
 
             if (info.TryGetPropInfo(name, game, out PropertyInfo propInfo))
             {
-                return (T)GlobalUnrealObjectInfo.getDefaultProperty(game, name, propInfo, packageCache, true, IsImmutable);
+                var defaultProperty = (T)GlobalUnrealObjectInfo.getDefaultProperty(game, name, propInfo, packageCache, true, IsImmutable);
+                defaultProperty.StaticArrayIndex = staticArrayIdx;
+                return defaultProperty;
             }
             //dynamic lookup
             try
@@ -83,22 +87,24 @@ namespace LegendaryExplorerCore.Unreal
                 ClassInfo classInfo = GlobalUnrealObjectInfo.generateClassInfo(exportToBuildFor);
                 if (classInfo.TryGetPropInfo(name, game, out propInfo))
                 {
-                    return (T)GlobalUnrealObjectInfo.getDefaultProperty(game, name, propInfo, packageCache, true, IsImmutable);
+                    var defaultProperty = (T)GlobalUnrealObjectInfo.getDefaultProperty(game, name, propInfo, packageCache, true, IsImmutable);
+                    defaultProperty.StaticArrayIndex = staticArrayIdx;
+                    return defaultProperty;
                 }
             }
             catch
             {
-                throw new ArgumentException($"Property \"{name}\" does not exist on {TypeName}", nameof(name));
+                throw new ArgumentException($"Property \"{name.Instanced}\" does not exist on {TypeName}", nameof(name));
             }
 
-            throw new ArgumentException($"Property \"{name}\" does not exist on {TypeName}", nameof(name));
+            throw new ArgumentException($"Property \"{name.Instanced}\" does not exist on {TypeName}", nameof(name));
         }
 
         public bool TryReplaceProp(Property prop)
         {
             for (int i = 0; i < this.Count; i++)
             {
-                if (this[i].Name == prop.Name)
+                if (this[i].Name == prop.Name && this[i].StaticArrayIndex == prop.StaticArrayIndex)
                 {
                     this[i] = prop;
                     return true;
@@ -121,7 +127,7 @@ namespace LegendaryExplorerCore.Unreal
             {
                 prop.WriteTo(stream, pcc, IsImmutable);
             }
-            if (!IsImmutable && requireNoneAtEnd && (Count == 0 || !(this.Last() is NoneProperty)))
+            if (!IsImmutable && requireNoneAtEnd && (Count == 0 || this.Last() is not NoneProperty))
             {
                 stream.WriteNoneProperty(pcc);
             }
@@ -186,7 +192,7 @@ namespace LegendaryExplorerCore.Unreal
                     int staticArrayIndex = stream.ReadInt32();
                     PropertyType type;
                     string namev = pcc.GetNameEntry(typeIdx);
-                    //Debug.WriteLine("Reading " + name + " (" + namev + ") at 0x" + (stream.Position - 24).ToString("X8"));
+                    //Debug.WriteLine("Reading " + nameRef.Instanced + " (" + namev + ") at 0x" + (stream.Position - 24).ToString("X8"));
                     if (Enum.IsDefined(typeof(PropertyType), namev))
                     {
                         Enum.TryParse(namev, out type);
@@ -251,7 +257,7 @@ namespace LegendaryExplorerCore.Unreal
                                         //Debug.WriteLine("Reading enum for ME1/ME2 at 0x" + propertyStartPosition.ToString("X6"));
 
                                         //Attempt to get info without lookup first
-                                        var enumname = GlobalUnrealObjectInfo.GetEnumType(pcc.Game, name, typeName);
+                                        var enumname = GlobalUnrealObjectInfo.GetEnumType(pcc.Game, nameRef, typeName);
                                         ClassInfo classInfo = null;
                                         if (enumname == null && entry is ExportEntry exp)
                                         {
@@ -259,7 +265,7 @@ namespace LegendaryExplorerCore.Unreal
                                         }
 
                                         //Use DB info or attempt lookup
-                                        enumType = new NameReference(enumname ?? GlobalUnrealObjectInfo.GetEnumType(pcc.Game, name, typeName == @"ScriptStruct" ? entry.ObjectName : typeName, classInfo));
+                                        enumType = new NameReference(enumname ?? GlobalUnrealObjectInfo.GetEnumType(pcc.Game, nameRef, typeName == @"ScriptStruct" ? entry.ObjectName : typeName, classInfo));
                                     }
                                     try
                                     {
@@ -363,7 +369,7 @@ namespace LegendaryExplorerCore.Unreal
         {
             IMEPackage pcc = export.FileRef;
             //strip transients unless this is a class definition
-            bool stripTransients = !(parsingEntry != null && (parsingEntry.ClassName == "Class" || parsingEntry.ClassName == "ScriptStruct"));
+            bool stripTransients = parsingEntry is not {ClassName: "Class" or "ScriptStruct"};
 
             MEGame structValueLookupGame = pcc.Game;
             var props = new PropertyCollection(export, structType);
@@ -518,7 +524,7 @@ namespace LegendaryExplorerCore.Unreal
                         }
 
                         //Use DB info or attempt lookup
-                        NameReference enumType = new NameReference(enumname ?? GlobalUnrealObjectInfo.GetEnumType(pcc.Game, name, enclosingType, classInfo));
+                        var enumType = new NameReference(enumname ?? GlobalUnrealObjectInfo.GetEnumType(pcc.Game, name, enclosingType, classInfo));
 
                         var props = new List<EnumProperty>();
                         for (int i = 0; i < count; i++)
@@ -774,14 +780,14 @@ namespace LegendaryExplorerCore.Unreal
             }
         }
 
-        public T GetProp<T>(string name) where T : Property
+        public T GetProp<T>(string name, int staticArrayIndex = 0) where T : Property
         {
-            return Properties.GetProp<T>(name);
+            return Properties.GetProp<T>(name, staticArrayIndex);
         }
 
-        public T GetPropOrDefault<T>(string name, PackageCache packageCache = null) where T : Property
+        public T GetPropOrDefault<T>(NameReference name, int staticArrayIdx = 0, PackageCache packageCache = null) where T : Property
         {
-            return Properties.GetPropOrDefault<T>(name, packageCache);
+            return Properties.GetPropOrDefault<T>(name, staticArrayIdx, packageCache);
         }
 
         public override void WriteTo(EndianWriter stream, IMEPackage pcc, bool valueOnly = false)
@@ -794,7 +800,7 @@ namespace LegendaryExplorerCore.Unreal
             {
                 stream.WriteStructProperty(pcc, Name, StructType, () =>
                 {
-                    EndianReader m = new EndianReader(MemoryManager.GetMemoryStream()) { Endian = pcc.Endian };
+                    var m = new EndianReader(MemoryManager.GetMemoryStream()) { Endian = pcc.Endian };
                     Properties.WriteTo(m.Writer, pcc);
                     return m.BaseStream;
                 }, StaticArrayIndex);
@@ -809,7 +815,7 @@ namespace LegendaryExplorerCore.Unreal
         /// <returns></returns>
         public static StructProperty FromGuid(Guid guid, string name = null)
         {
-            PropertyCollection pc = new PropertyCollection();
+            var pc = new PropertyCollection();
             var ba = guid.ToByteArray();
             pc.Add(new IntProperty(BitConverter.ToInt32(ba, 0), "A"));
             pc.Add(new IntProperty(BitConverter.ToInt32(ba, 4), "B"));
@@ -1010,7 +1016,7 @@ namespace LegendaryExplorerCore.Unreal
 
         public ObjectProperty(IEntry referencedEntry, NameReference? name = null) : base(name)
         {
-            Value = referencedEntry.UIndex;
+            Value = referencedEntry?.UIndex ?? 0;
         }
 
         public ObjectProperty() { }

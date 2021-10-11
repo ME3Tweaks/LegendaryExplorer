@@ -89,7 +89,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             return null;
         }
 
-        public static string getEnumTypefromProp(string className, string propName, ClassInfo nonVanillaClassInfo = null)
+        public static string getEnumTypefromProp(string className, NameReference propName, ClassInfo nonVanillaClassInfo = null)
         {
             PropertyInfo p = getPropertyInfo(className, propName, nonVanillaClassInfo: nonVanillaClassInfo);
             if (p == null)
@@ -113,7 +113,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             return null;
         }
 
-        public static ArrayType getArrayType(string className, string propName, ExportEntry export = null)
+        public static ArrayType getArrayType(string className, NameReference propName, ExportEntry export = null)
         {
             PropertyInfo p = getPropertyInfo(className, propName, false, containingExport: export);
             if (p == null)
@@ -209,7 +209,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             return LegendaryExplorerCoreLibSettings.Instance.ParseUnknownArrayTypesAsObject ? ArrayType.Object : ArrayType.Int;
         }
 
-        public static PropertyInfo getPropertyInfo(string className, string propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null, bool reSearch = true, ExportEntry containingExport = null)
+        public static PropertyInfo getPropertyInfo(string className, NameReference propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null, bool reSearch = true, ExportEntry containingExport = null)
         {
             if (className.StartsWith("Default__", StringComparison.OrdinalIgnoreCase))
             {
@@ -241,7 +241,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 {
                     foreach (PropertyInfo p in info.properties.Values())
                     {
-                        if ((p.Type == PropertyType.StructProperty || p.Type == PropertyType.ArrayProperty) && reSearch)
+                        if ((p.Type is PropertyType.StructProperty or PropertyType.ArrayProperty) && reSearch)
                         {
                             reSearch = false;
                             PropertyInfo val = getPropertyInfo(p.Reference, propName, true, nonVanillaClassInfo, reSearch);
@@ -295,7 +295,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     PropertyCollection props = new();
                     while (info != null)
                     {
-                        foreach ((string propName, PropertyInfo propInfo) in info.properties)
+                        foreach ((NameReference propName, PropertyInfo propInfo) in info.properties)
                         {
                             if (stripTransients && propInfo.Transient)
                             {
@@ -304,6 +304,15 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                             if (getDefaultProperty(propName, propInfo, packageCache, stripTransients, isImmutable) is Property uProp)
                             {
                                 props.Add(uProp);
+                                if (propInfo.IsStaticArray())
+                                {
+                                    for (int i = 1; i < propInfo.StaticArrayLength; i++)
+                                    {
+                                        uProp = getDefaultProperty(propName, propInfo, packageCache, stripTransients, isImmutable);
+                                        uProp.StaticArrayIndex = i;
+                                        props.Add(uProp);
+                                    }
+                                }
                             }
                         }
                         string filepath = null;
@@ -380,7 +389,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             }
         }
 
-        public static Property getDefaultProperty(string propName, PropertyInfo propInfo, PackageCache packageCache, bool stripTransients = true, bool isImmutable = false)
+        public static Property getDefaultProperty(NameReference propName, PropertyInfo propInfo, PackageCache packageCache, bool stripTransients = true, bool isImmutable = false)
         {
             switch (propInfo.Type)
             {
@@ -496,7 +505,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 {
                     ExportEntry exportEntry = pcc.GetUExport(i);
                     string className = exportEntry.ClassName;
-                    string objectName = exportEntry.ObjectName.Name;
+                    string objectName = exportEntry.ObjectName.Instanced;
                     if (className == "Enum")
                     {
                         generateEnumValues(exportEntry, Enums);
@@ -574,8 +583,8 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 exportIndex = 22, //in ME3Resources.pcc
                 properties =
                 {
-                    new KeyValuePair<string, PropertyInfo>("bFromMainMenu", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<string, PropertyInfo>("m_oGuiReferenced", new PropertyInfo(PropertyType.ObjectProperty, "GFxMovieInfo"))
+                    new KeyValuePair<NameReference, PropertyInfo>("bFromMainMenu", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("m_oGuiReferenced", new PropertyInfo(PropertyType.ObjectProperty, "GFxMovieInfo"))
                 }
             };
             sequenceObjects["BioSeqAct_ShowMedals"] = new SequenceObjectInfo();
@@ -589,7 +598,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 exportIndex = 2, //in LE1Resources.pcc
                 properties =
                 {
-                    new KeyValuePair<string, PropertyInfo>("OptionType", new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("OptionType", new PropertyInfo(PropertyType.IntProperty)),
                 }
             };
             sequenceObjects["SFXSeqAct_GetGameOption"] = new SequenceObjectInfo
@@ -700,7 +709,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             };
             if (export.IsClass)
             {
-                UClass classBinary = ObjectBinary.From<UClass>(export);
+                var classBinary = ObjectBinary.From<UClass>(export);
                 info.isAbstract = classBinary.ClassFlags.Has(UnrealFlags.EClassFlags.Abstract);
             }
             if (pcc.FilePath.Contains("BioGame"))
@@ -724,12 +733,12 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 if (entry.ClassName != "ScriptStruct" && entry.ClassName != "Enum"
                     && entry.ClassName != "Function" && entry.ClassName != "Const" && entry.ClassName != "State")
                 {
-                    if (!info.properties.ContainsKey(entry.ObjectName.Name))
+                    if (!info.properties.ContainsKey(entry.ObjectName))
                     {
                         PropertyInfo p = getProperty(entry);
                         if (p != null)
                         {
-                            info.properties.Add(entry.ObjectName.Name, p);
+                            info.properties.Add(entry.ObjectName, p);
                         }
                     }
                 }
@@ -742,7 +751,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         private static void generateEnumValues(ExportEntry export, Dictionary<string, List<NameReference>> NewEnums = null)
         {
             var enumTable = NewEnums ?? Enums;
-            string enumName = export.ObjectName.Name;
+            string enumName = export.ObjectName.Instanced;
             if (!enumTable.ContainsKey(enumName))
             {
                 var values = new List<NameReference>();
@@ -848,7 +857,8 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             }
 
             bool transient = ((UnrealFlags.EPropertyFlags)EndianReader.ToUInt64(entry.DataReadOnly, 24, entry.FileRef.Endian)).Has(UnrealFlags.EPropertyFlags.Transient);
-            return new PropertyInfo(type, reference, transient);
+            int arrayLength = EndianReader.ToInt32(entry.DataReadOnly, 20, entry.FileRef.Endian);
+            return new PropertyInfo(type, reference, transient, arrayLength);
         }
         #endregion
 

@@ -8,10 +8,10 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
     {
         public List<Expression> Values;
 
-        public string ElementType;
-        public DynamicArrayLiteral(string elementType, List<Expression> values, SourcePosition start = null, SourcePosition end = null) : base(ASTNodeType.DynamicArrayLiteral, start, end)
+        public DynamicArrayType ArrayType;
+        public DynamicArrayLiteral(DynamicArrayType arrayType, List<Expression> values, SourcePosition start = null, SourcePosition end = null) : base(ASTNodeType.DynamicArrayLiteral, start, end)
         {
-            ElementType = elementType;
+            ArrayType = arrayType;
             Values = values;
         }
 
@@ -20,10 +20,8 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             return visitor.VisitNode(this);
         }
 
-        public override VariableType ResolveType()
-        {
-            return new VariableType(ElementType, null, null);
-        }
+        public override VariableType ResolveType() => ArrayType;
+
         public override IEnumerable<ASTNode> ChildNodes => Values;
     }
 }
