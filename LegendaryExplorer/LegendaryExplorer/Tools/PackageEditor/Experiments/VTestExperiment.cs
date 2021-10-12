@@ -1259,6 +1259,48 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 //InstallVTestHelperSequence(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Post_Scenario_Scoreboard_Matinee.UIAction_PlaySound_1", "ScoreboardSequence.KeybindsUninstaller", vTestOptions);
 
             }
+            else if (fName.CaseInsensitiveEquals("BIOA_PRC2AA"))
+            {
+                // Port in collision-corrected terrain
+            }
+            else if (fName.CaseInsensitiveEquals("BIOA_PRC2"))
+            {
+                // Adjust the triggerstreams to pre-stream in some files to prevent a full blocking load from occurring.
+                // They all have the same state name
+
+                string[] levelsToAdd = new[]
+                {
+                    "BIOA_PRC2_CCMain_Conv", // This will trigger blocking load as it goes directly to visible on the next change
+                    "BIOA_PRC2_CCMain_SND", // This will trigger blocking load as it goes directly to visible on the next change
+
+                    // These ones are here just to pre-load things into memory in the event the player just mashes their way through
+                    "BIOA_PRC2_CCSim",
+                    "BIOA_PRC2_CCSim_ART",
+                    "BIOA_PRC2_CCSim_DSG",
+                };
+
+                foreach (var export in le1File.Exports.Where(x => x.ClassName == "BioTriggerStream"))
+                {
+                    var ss = export.GetProperty<ArrayProperty<StructProperty>>("StreamingStates");
+
+                    if (ss != null && ss.Count == 2)
+                    {
+                        // State idx 1 is the one we want.
+                        var state = ss[1];
+                        if (state.GetProp<NameProperty>("StateName")?.Value.Name == "Load_Post_Scenario_Scoreboard")
+                        {
+                            Debug.WriteLine($"Updating streaming state for more preload: BIOA_PRC2 {export.ObjectName.Instanced}");
+                            var loadChunkNames = state.GetProp<ArrayProperty<NameProperty>>("LoadChunkNames");
+                            foreach (var lta in levelsToAdd)
+                            {
+                                loadChunkNames.Add(new NameProperty(lta));
+                            }
+
+                            export.WriteProperty(ss);
+                        }
+                    }
+                }
+            }
 
             LevelSpecificPostCorrections(fName, me1File, le1File, vTestOptions);
 
