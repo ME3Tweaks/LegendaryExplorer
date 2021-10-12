@@ -736,17 +736,33 @@ namespace LegendaryExplorerCore.Dialogue
                 newreplyList.Add(reply.NodeProp);
             }
 
-            var newSpeakerList = new ArrayProperty<StructProperty>("m_SpeakerList");
-            foreach(var speaker in Speakers.OrderBy(x => x.SpeakerID))
+
+            if (Export.Game.IsGame3())
             {
-                if (speaker.SpeakerID < 0)
-                    continue; // They don't belong here
-                PropertyCollection ssProps = new PropertyCollection();
-                ssProps.Add(new NameProperty(speaker.SpeakerNameRef, "sSpeakerTag"));
-                var speakerStruct = new StructProperty("BioDialogSpeaker", ssProps);
-                newSpeakerList.Add(speakerStruct);
+                var newSpeakerList = new ArrayProperty<NameProperty>( "m_aSpeakerList");
+                foreach (var speaker in Speakers.OrderBy(x => x.SpeakerID))
+                {
+                    if (speaker.SpeakerID < 0)
+                        continue; // They don't belong here
+                    newSpeakerList.Add(new NameProperty(speaker.SpeakerNameRef));
+                }
+                BioConvo.AddOrReplaceProp(newSpeakerList);
             }
-            BioConvo.AddOrReplaceProp(newSpeakerList);
+            else
+            {
+                var newSpeakerList = new ArrayProperty<StructProperty>("m_SpeakerList");
+                foreach (var speaker in Speakers.OrderBy(x => x.SpeakerID))
+                {
+                    if (speaker.SpeakerID < 0)
+                        continue; // They don't belong here
+                    PropertyCollection ssProps = new PropertyCollection();
+                    ssProps.Add(new NameProperty(speaker.SpeakerNameRef, "sSpeakerTag"));
+                    var speakerStruct = new StructProperty("BioDialogSpeaker", ssProps);
+                    newSpeakerList.Add(speakerStruct);
+                }
+                BioConvo.AddOrReplaceProp(newSpeakerList);
+            }
+
 
             if (newstartlist.Count > 0)
             {
