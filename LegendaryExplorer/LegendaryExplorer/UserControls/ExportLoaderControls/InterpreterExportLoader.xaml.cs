@@ -134,22 +134,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             public int offset;
         }
 
-        //public string[] Types =
-        //{
-        //    "StructProperty", //0
-        //    "IntProperty",
-        //    "FloatProperty",
-        //    "ObjectProperty",
-        //    "NameProperty",
-        //    "BoolProperty",  //5
-        //    "ByteProperty",
-        //    "ArrayProperty",
-        //    "StrProperty",
-        //    "StringRefProperty",
-        //    "DelegateProperty",//10
-        //    "None",
-        //    "BioMask4Property",
-        //};
         private HexBox Interpreter_Hexbox;
         private bool isLoadingNewData;
         private int ForcedRescanOffset;
@@ -1080,6 +1064,19 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 case ArrayPropertyBase ap:
                     {
                         ArrayType at = GlobalUnrealObjectInfo.GetArrayType(parsingExport.FileRef.Game, prop.Name, parent.Property is StructProperty sp ? sp.StructType : parsingExport.ClassName, parsingExport);
+
+                        if (at == ArrayType.Struct)
+                        {
+                            // Try to get the type of struct array
+                            // This code doesn't work for nested structs as the containing class is different
+                            PropertyInfo p = GlobalUnrealObjectInfo.GetPropertyInfo(parsingExport.FileRef.Game, prop.Name, parsingExport.ClassName);
+                            if (p != null)
+                            {
+                                editableValue = $"{p.Reference} struct array";
+                                break;
+                            }
+                        }
+                        
                         editableValue = $"{at} array";
                     }
                     break;
@@ -2315,7 +2312,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             {
                                 string typeName = p.Reference;
                                 PropertyCollection props = GlobalUnrealObjectInfo.getDefaultStructValue(Pcc.Game, typeName, true);
-                                astructp.Insert(insertIndex, new StructProperty(typeName, props));
+                                astructp.Insert(insertIndex, new StructProperty(typeName, props, isImmutable: GlobalUnrealObjectInfo.IsImmutable(typeName, Pcc.Game)));
                             }
                         }
                         break;
