@@ -2284,7 +2284,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 int extraObjsCount;
                 subnodes.Add(new BinInterpNode(bin.Position, $"ExtraReferencedObjects: {extraObjsCount = bin.ReadInt32()}")
                 {
-                    Items = ReadList(extraObjsCount, i => new BinInterpNode(bin.Position, $"{entryRefString(bin)}"))
+                    ArrayAddAlgoritm = BinInterpNode.ArrayPropertyChildAddAlgorithm.FourBytes,
+                    Items = ReadList(extraObjsCount, i => new BinInterpNode(bin.Position, $"{entryRefString(bin)}", NodeType.ArrayLeafObject))
                 });
 
                 binarystart = (int)bin.Position;
