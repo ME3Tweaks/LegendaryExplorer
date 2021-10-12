@@ -11,6 +11,7 @@ using LegendaryExplorer.Misc;
 using LegendaryExplorer.Tools.PathfindingEditor;
 using LegendaryExplorer.Tools.Sequence_Editor.Experiments;
 using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Kismet;
 using LegendaryExplorerCore.Misc;
@@ -1242,11 +1243,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 // Port in the keybinding sequences
                 InstallVTestHelperSequence(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Central_Scoreboard_Matinee.SeqEvent_RemoteEvent_0", "ScoreboardSequence.KeybindsInstaller", vTestOptions);
                 InstallVTestHelperSequence(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Central_Scoreboard_Matinee.SeqAct_Gate_3", "ScoreboardSequence.KeybindsUninstaller", vTestOptions);
-            } else if (fName.CaseInsensitiveEquals("BIOA_PRC2_CCSCOREBOARD_DSG"))
+            }
+            else if (fName.CaseInsensitiveEquals("BIOA_PRC2_CCSCOREBOARD_DSG"))
             {
+                // Porting in ANY of these crashes the game. Why??
+
                 // Port in the UI switching and keybinding for PC
                 // Port in the custom sequence used for switching UIs. Should only run if not skipping the scoreboard
-                InstallVTestHelperSequence(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Post_Scenario_Scoreboard_Matinee.UIAction_PlaySound_0", "ScoreboardSequence.UISwitcherLogic", vTestOptions);
+                //InstallVTestHelperSequence(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Post_Scenario_Scoreboard_Matinee.UIAction_PlaySound_0", "ScoreboardSequence.UISwitcherLogic", vTestOptions);
 
                 // Port in the keybinding sequences
                 // Both of the following crashes the game currently, not sure why.
@@ -1266,6 +1270,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         private static void CorrectVFX(IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
         {
+            // These could probably use a bit of cleaning up to look better like fade in/out
             var glitchRandom = le1File.FindExport("BIOA_PRC2_MatFX.VFX.Glitch_Random");
             if (glitchRandom != null)
             {
@@ -1299,6 +1304,22 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             KismetHelper.CreateOutputLink(sourceItemToOutFrom, "Out", newUiSeq as ExportEntry);
         }
 
+        private static void AddWorldReferencedObjects(IMEPackage le1File, IEnumerable<ExportEntry> entriesToReference)
+        {
+            var world = le1File.FindExport("TheWorld");
+            var worldBin = ObjectBinary.From<World>(world);
+            var newItems = worldBin.ExtraReferencedObjects.ToList();
+            newItems.AddRange(entriesToReference.Select(x => new UIndex(x.UIndex)));
+            worldBin.ExtraReferencedObjects = newItems.ToArray();
+            world.WriteBinary(worldBin);
+        }
+
+        private static string[] assetsToEnsureReferencedInSim = new[]
+        {
+            "BIOG_GTH_TRO_NKD_R.NKDa.GTH_TRO_NKDa_MDL", // Geth Trooper
+            "BIOG_GTH_STP_NKD_R.NKDa.GTH_STP_NKDa_MDL", // Geth Prime
+        };
+
         private static void LevelSpecificPostCorrections(string fName, IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
         {
             var upperFName = fName.ToUpper();
@@ -1312,50 +1333,78 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 case "BIOA_PRC2_CCTHAI_DSG":
                     // Might need Aherns
                     {
-                        foreach (var exp in le1File.Exports.Where(x => x.ClassName == "Sequence" && x.GetProperty<StrProperty>("ObjName")?.Value == "Spawn_Single_Guy"))
+                        // Force the pawns that will spawn to have their meshes in memory
+                        // They are not referenced directly
+
+                        var assetsToReference = le1File.Exports.Where(x => assetsToEnsureReferencedInSim.Contains(x.InstancedFullPath));
+                        AddWorldReferencedObjects(le1File, assetsToReference);
+
+                        foreach (var exp in le1File.Exports.Where(x => x.ClassName == "Sequence"))
                         {
-                            // These sequences need the 'bit explosion' effect removed because BioWare changed something in SeqAct_ActorFactory and completely broke it
-                            // We are just going to use the crust effect instead
-                            var sequenceObjects = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-                            foreach (var seqObjProp in sequenceObjects.ToList()) // ToList as we're going to modify it so we need a copy
+                            var seqName = exp.GetProperty<StrProperty>("ObjName")?.Value;
+
+                            #region Skip broken SeqAct_ActorFactory for bit explosion :(
+
+                            if (seqName == "Spawn_Single_Guy")
                             {
-                                if (!sequenceObjects.Contains(seqObjProp))
-                                    continue; // it's already been removed
-
-                                var seqObj = seqObjProp.ResolveToEntry(le1File) as ExportEntry;
-                                if (seqObj != null)
+                                // These sequences need the 'bit explosion' effect removed because BioWare changed something in SeqAct_ActorFactory and completely broke it
+                                // We are just going to use the crust effect instead
+                                var sequenceObjects = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+                                foreach (var seqObjProp in sequenceObjects.ToList()) // ToList as we're going to modify it so we need a copy
                                 {
-                                    if (seqObj.ClassName == "SeqAct_ActorFactory")
-                                    {
-                                        var outLinks = SeqTools.GetOutboundLinksOfNode(seqObj);
-                                        outLinks[0].RemoveAt(0); // Remove the first outlink, which goes to Delay
-                                        SeqTools.WriteOutboundLinksToNode(seqObj,outLinks); // remove the link so we don't try to connect to it when skipping
-                                        SeqTools.SkipSequenceElement(seqObj, "Finished");
-                                        sequenceObjects.Remove(seqObjProp);
-                                    }
-                                    else if (seqObj.ClassName == "BioSeqAct_Delay")
-                                    {
-                                        // We can ID these by the position data since they are built from a template and thus always have the same positions
-                                        // It also references destroying the spawned particle system
-                                        var props = seqObj.GetProperties();
-                                        if (props.GetProp<IntProperty>("ObjPosX")?.Value == 4440 && props.GetProp<IntProperty>("ObjPosY")?.Value == 2672)
-                                        {
-                                            // This needs removed too
-                                            var nextNodes = SeqTools.GetOutboundLinksOfNode(seqObj);
-                                            var nextNode = nextNodes[0][0].LinkedOp as ExportEntry;
-                                            var subNodeOfNext = SeqTools.GetVariableLinksOfNode(nextNode)[0].LinkedNodes[0] as ExportEntry;
+                                    if (!sequenceObjects.Contains(seqObjProp))
+                                        continue; // it's already been removed
 
-                                            // Remove all of them from the sequence
-                                            sequenceObjects.Remove(seqObjProp); // Delay
-                                            sequenceObjects.Remove(new ObjectProperty(subNodeOfNext.UIndex)); // Destroy
-                                            sequenceObjects.Remove(new ObjectProperty(nextNode.UIndex)); // SeqVar_Object
+                                    var seqObj = seqObjProp.ResolveToEntry(le1File) as ExportEntry;
+                                    if (seqObj != null)
+                                    {
+                                        if (seqObj.ClassName == "SeqAct_ActorFactory")
+                                        {
+                                            var outLinks = SeqTools.GetOutboundLinksOfNode(seqObj);
+                                            outLinks[0].RemoveAt(0); // Remove the first outlink, which goes to Delay
+                                            SeqTools.WriteOutboundLinksToNode(seqObj, outLinks); // remove the link so we don't try to connect to it when skipping
+                                            SeqTools.SkipSequenceElement(seqObj, "Finished");
+                                            sequenceObjects.Remove(seqObjProp);
+                                        }
+                                        else if (seqObj.ClassName == "BioSeqAct_Delay")
+                                        {
+                                            // We can ID these by the position data since they are built from a template and thus always have the same positions
+                                            // It also references destroying the spawned particle system
+                                            var props = seqObj.GetProperties();
+                                            if (props.GetProp<IntProperty>("ObjPosX")?.Value == 4440 && props.GetProp<IntProperty>("ObjPosY")?.Value == 2672)
+                                            {
+                                                // This needs removed too
+                                                var nextNodes = SeqTools.GetOutboundLinksOfNode(seqObj);
+                                                var nextNode = nextNodes[0][0].LinkedOp as ExportEntry;
+                                                var subNodeOfNext = SeqTools.GetVariableLinksOfNode(nextNode)[0].LinkedNodes[0] as ExportEntry;
+
+                                                // Remove all of them from the sequence
+                                                sequenceObjects.Remove(seqObjProp); // Delay
+                                                sequenceObjects.Remove(new ObjectProperty(subNodeOfNext.UIndex)); // Destroy
+                                                sequenceObjects.Remove(new ObjectProperty(nextNode.UIndex)); // SeqVar_Object
+                                            }
                                         }
                                     }
                                 }
+
+                                exp.WriteProperty(sequenceObjects);
                             }
 
-                            exp.WriteProperty(sequenceObjects);
+                            #endregion
 
+                            #region Fix dual-finishing sequence. Someone thought they were being clever, bet they didn't know it'd cause an annurysm 12 years later
+                            else if (seqName == "Hench_Take_Damage")
+                            {
+                                var sequenceObjects = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects").Select(x => x.ResolveToEntry(le1File) as ExportEntry).ToList();
+                                var attachEvents = sequenceObjects.Where(x => x.ClassName == "SeqAct_AttachToEvent").ToList(); // We will route one of these to the other
+                                var starting = sequenceObjects.First(x => x.ClassName == "SeqEvent_SequenceActivated");
+                                //var ending = sequenceObjects.First(x => x.ClassName == "SeqEvent_FinishSequence");
+                                KismetHelper.RemoveOutputLinks(starting); // prevent dual outs
+                                KismetHelper.CreateOutputLink(starting, "Out", attachEvents[0]);
+                                KismetHelper.RemoveOutputLinks(attachEvents[0]);
+                                KismetHelper.CreateOutputLink(attachEvents[0], "Out", attachEvents[1]); // Make it serial
+                            }
+                            #endregion
                         }
                     }
                     break;
