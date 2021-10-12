@@ -1225,6 +1225,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             CorrectPathfindingNetwork(me1File, le1File);
             PostCorrectMaterialsToInstanceConstants(me1File, le1File, vTestOptions);
             CorrectVFX(me1File, le1File, vTestOptions);
+            FixPinkVisorMaterial(le1File);
             //CorrectTerrainMaterials(le1File);
 
 
@@ -1454,6 +1455,28 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             // Update the main terrain with our data, without touching anything about materials or layers
             PackageEditorExperimentsM.ImportUDKTerrainData(sourceTerrain, destTerrain, false);
+        }
+
+        private static void FixPinkVisorMaterial(IMEPackage package)
+        {
+            ExportEntry visorMatInstance = package.FindExport(@"BIOG_HMM_HGR_HVY_R.BRT.HMM_BRT_HVYa_MAT_1a");
+            if (visorMatInstance is not null)
+            {
+                var vectorParameterValues = visorMatInstance.GetProperty<ArrayProperty<StructProperty>>("VectorParameterValues");
+                foreach (var param in vectorParameterValues.Values)
+                {
+                    var name = param.GetProp<NameProperty>("ParameterName").Value;
+                    if (name == "HGR_Colour_01")
+                    {
+                        param.Properties.AddOrReplaceProp(MakeLinearColorStruct("ParameterValue", 0.07058824f, 0.08235294f, 0.09019608f, 0));
+                    }
+                    else if (name == "HGR_Colour_02")
+                    {
+                        param.Properties.AddOrReplaceProp(MakeLinearColorStruct("ParameterValue", 0.05882353f, 0.07058824f, 0.08235294f, 0));
+                    }
+                }
+                visorMatInstance.WriteProperty(vectorParameterValues);
+            }
         }
 
 
