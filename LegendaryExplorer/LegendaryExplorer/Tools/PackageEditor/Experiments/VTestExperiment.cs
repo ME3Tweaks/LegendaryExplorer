@@ -21,6 +21,7 @@ using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Classes;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
+using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 
@@ -29,7 +30,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
     public class VTestExperiment
     {
 
-        class VTestOptions
+        public class VTestOptions
         {
             #region Configurable options
             /// <summary>
@@ -53,6 +54,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             public bool debugBuild = true;
 
             /// <summary>
+            /// If static lighting should be converted to non-static lighting. Only works if debugBuild is true
+            /// </summary>
+            public bool debugConvertStaticLightingToNonStatic = false;
+
+            /// <summary>
             /// The cache that is passed through to sub operations. You can change the
             /// CacheMaxSize to tune memory usage vs performance.
             /// </summary>
@@ -64,6 +70,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             public IMEPackage vTestHelperPackage;
             public ObjectInstanceDB objectDB;
             #endregion
+
         }
 
 
@@ -130,6 +137,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
             "PlayerStart",
             "BioTriggerStream"
+        };
+
+        private static string[] DebugBuildClassesToVTestPort = new[]
+        {
+            "PointLight",
+            "SpotLight",
+
         };
 
         // Files we know are referenced by name but do not exist
@@ -315,7 +329,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     else
                     {
                         var levelName = Path.GetFileNameWithoutExtension(f);
-                        //if (levelName.CaseInsensitiveEquals("BIOA_PRC2_CCSIM05_DSG"))
+                        //if (levelName.CaseInsensitiveEquals("BIOA_PRC2_CCAHERN_DSG"))
                         PortVTestLevel(vTestLevel, levelName, vTestOptions, levelName == "BIOA_" + vTestLevel, true);
                     }
                 }
@@ -430,6 +444,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             using var le1File = MEPackageHandler.OpenMEPackage(outputFile);
             using var me1File = MEPackageHandler.OpenMEPackage($@"{PAEMPaths.VTest_SourceDir}\{mapName}\{sourceName}.SFM");
 
+            var levelName = Path.GetFileNameWithoutExtension(le1File.FilePath);
+
+            vTestOptions.packageEditorWindow.BusyText = $"Preparing\n{levelName}";
+
             // BIOC_BASE -> SFXGame
             var bcBaseIdx = me1File.findName("BIOC_Base");
             me1File.replaceName(bcBaseIdx, "SFXGame");
@@ -443,10 +461,25 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             // For now just port these
             var itemsToPort = new List<ExportEntry>();
 
-            var me1PersistentLevel = ObjectBinary.From<Level>(me1File.FindExport(@"TheWorld.PersistentLevel"));
+            var me1PL = me1File.FindExport(@"TheWorld.PersistentLevel");
+            var me1PersistentLevel = ObjectBinary.From<Level>(me1PL);
             itemsToPort.AddRange(me1PersistentLevel.Actors.Where(x => x.value != 0) // Skip blanks
                 .Select(x => me1File.GetUExport(x.value))
                 .Where(x => ClassesToVTestPort.Contains(x.ClassName) || (syncBioWorldInfo && ClassesToVTestPortMasterOnly.Contains(x.ClassName))));
+
+            if (vTestOptions.debugBuild && vTestOptions.debugConvertStaticLightingToNonStatic)
+            {
+                // Lights are baked into the files but they are not part of the actors list. We have to manually find these
+                var lights = me1File.Exports.Where(x => x.Parent == me1PL && x.IsA("Light") && x.ClassName != "StaticLightCollectionActor").ToList();
+                foreach (var light in lights)
+                {
+                    // Lights lose their settings when coalesced into a SLCA
+                    light.ObjectFlags = 0; // Clear
+                    light.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional | UnrealFlags.EObjectFlags.LoadForClient | UnrealFlags.EObjectFlags.LoadForServer | UnrealFlags.EObjectFlags.LoadForEdit | UnrealFlags.EObjectFlags.HasStack;
+                }
+                itemsToPort.AddRange(lights);
+
+            }
 
             // WIP: Find which classes we have yet to port
             // BioWorldInfo is not ported except on the level master. Might need to see if there's things
@@ -461,7 +494,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
 
             // End WIP
-
 
             VTestFilePorting(me1File, le1File, itemsToPort, vTestOptions);
 
@@ -488,7 +520,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             if (portMainSequence)
             {
-                vTestOptions.packageEditorWindow.BusyText = "Porting sequencing...";
+                vTestOptions.packageEditorWindow.BusyText = $"Porting sequencing on\n{levelName}";
                 var dest = le1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence");
                 var source = me1File.FindExport(@"TheWorld.PersistentLevel.Main_Sequence");
                 if (source != null && dest != null)
@@ -504,13 +536,16 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             PostPortingCorrections(me1File, le1File, vTestOptions);
 
+
             if (vTestOptions.useDynamicLighting)
             {
+                vTestOptions.packageEditorWindow.BusyText = $"Generating Dynamic Lighting on\n{levelName}";
                 PackageEditorExperimentsS.CreateDynamicLighting(le1File, true);
             }
 
             if (vTestOptions.debugBuild)
             {
+                vTestOptions.packageEditorWindow.BusyText = $"Enabling debug features on\n{levelName}";
                 VTest_EnableDebugOptionsOnPackage(le1File, vTestOptions);
             }
 
@@ -518,8 +553,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             //{
             //    Debugger.Break();
             //}
-
+            vTestOptions.packageEditorWindow.BusyText = $"Saving package\n{levelName}";
             le1File.Save();
+
+            vTestOptions.packageEditorWindow.BusyText = $"RCP CHECK on\n{levelName}";
 
             Debug.WriteLine($"RCP CHECK FOR {Path.GetFileNameWithoutExtension(le1File.FilePath)} -------------------------");
             ReferenceCheckPackage rcp = new ReferenceCheckPackage();
@@ -536,15 +573,24 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
-        private static StructProperty ConvertCoverSlot(StructProperty me1CS, VTestOptions vTestOptions)
+        private static StructProperty ConvertCoverSlot(StructProperty me1CoverSlotProps, IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
         {
             // How to convert a coverslot
 
             // 1. Draw some circles
-            var csProps = GlobalUnrealObjectInfo.getDefaultStructValue(MEGame.LE1, "CoverSlot", false, vTestOptions.cache);
+            var csProps = GlobalUnrealObjectInfo.getDefaultStructValue(MEGame.LE1, "CoverSlot", true, vTestOptions.cache);
+
+            // Populate Actions in 684 before we enumerate things
+            var actions = csProps.GetProp<ArrayProperty<EnumProperty>>("Actions");
+            actions.Clear();
+            if (me1CoverSlotProps.GetProp<BoolProperty>("bLeanLeft").Value) actions.Add(new EnumProperty("CA_LeanLeft", "ECoverAction", MEGame.LE1));
+            if (me1CoverSlotProps.GetProp<BoolProperty>("bLeanRight").Value) actions.Add(new EnumProperty("CA_LeanRight", "ECoverAction", MEGame.LE1));
+            if (me1CoverSlotProps.GetProp<BoolProperty>("bCanPopUp").Value) actions.Add(new EnumProperty("CA_PopUp", "ECoverAction", MEGame.LE1));
+            // Might be more but no clue.
+
 
             // 2. Draw the rest of the fucking owl
-            foreach (var me1Prop in me1CS.Properties.ToList())
+            foreach (var me1Prop in me1CoverSlotProps.Properties.ToList())
             {
                 switch (me1Prop)
                 {
@@ -554,32 +600,101 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     case EnumProperty:
                         if (TryUpdateProp(me1Prop, csProps))
                         {
-                            me1CS.Properties.Remove(me1Prop);
+                            me1CoverSlotProps.Properties.Remove(me1Prop);
                         }
+
                         break;
                     case ObjectProperty op:
                         if (op.Value == 0)
-                            me1CS.Properties.Remove(me1Prop); // This doesn't have a value
+                            me1CoverSlotProps.Properties.Remove(me1Prop); // This doesn't have a value
                         break;
                     case StructProperty sp:
                         {
+
                             if (sp.Name == "LocationOffset" || sp.Name == "RotationOffset")
                             {
+                                // These can be directly moved.
                                 if (!sp.IsImmutable)
                                     Debugger.Break();
                                 TryUpdateProp(me1Prop, csProps);
-                                me1CS.Properties.Remove(sp);
+                                me1CoverSlotProps.Properties.Remove(sp);
+                            }
+
+                            if (sp.Name == "MantleTarget")
+                            {
+                                ConvertCoverReference(sp, csProps.GetProp<StructProperty>("MantleTarget").Properties, me1File, le1File, vTestOptions);
+                                me1CoverSlotProps.Properties.Remove(sp);
+                            }
+
+                            break;
+                        }
+                    case ArrayProperty<StructProperty> asp:
+                        {
+                            switch (asp.Name)
+                            {
+                                case "DangerLinks":
+                                    {
+                                        var le1DLProp = csProps.GetProp<ArrayProperty<StructProperty>>("DangerLinks");
+                                        foreach (var dl in asp)
+                                        {
+                                            var dlProps = GlobalUnrealObjectInfo.getDefaultStructValue(MEGame.LE1, "DangerLink", true, vTestOptions.cache);
+                                            ConvertDangerLink(dl, dlProps, me1File, le1File, vTestOptions);
+                                            le1DLProp.Add(new StructProperty("DangerLink", dlProps, isImmutable: true));
+                                        }
+
+                                        break;
+                                    }
+                                case "ExposedFireLinks":
+                                    {
+                                        var le1DLProp = csProps.GetProp<ArrayProperty<StructProperty>>("ExposedFireLinks");
+                                        foreach (var dl in asp)
+                                        {
+                                            // CoverReference -> ExposedLink (ExposedScale). No way to compute this at all... Guess just random ¯\_(ツ)_/¯
+                                            var dlProps = GlobalUnrealObjectInfo.getDefaultStructValue(MEGame.LE1, "ExposedLink", true, vTestOptions.cache);
+                                            ConvertExposedLink(dl, dlProps, me1File, le1File, vTestOptions);
+                                            le1DLProp.Add(new StructProperty("ExposedLink", dlProps, isImmutable: true));
+                                        }
+
+                                        break;
+                                    }
+                                case "FireLinks":
+                                case "ForcedFireLinks":
+                                    {
+                                        var le1DLProp = csProps.GetProp<ArrayProperty<StructProperty>>(asp.Name);
+                                        foreach (var dl in asp)
+                                        {
+                                            // FireLink -> FireLink. This struct changed a lot
+                                            var dlProps = GlobalUnrealObjectInfo.getDefaultStructValue(MEGame.LE1, "FireLink", true, vTestOptions.cache);
+                                            ConvertFireLink(dl, dlProps, me1File, le1File, vTestOptions);
+                                            le1DLProp.Add(new StructProperty("FireLink", dlProps, isImmutable: true));
+                                        }
+
+                                        break;
+                                    }
+                                case "OverlapClaims":
+                                case "TurnTarget":
+                                    {
+                                        var le1DLProp = csProps.GetProp<ArrayProperty<StructProperty>>(asp.Name);
+                                        foreach (var me1CovRef in asp)
+                                        {
+                                            // FireLink -> FireLink. This struct changed a lot
+                                            var le1CovRefProps = GlobalUnrealObjectInfo.getDefaultStructValue(MEGame.LE1, me1CovRef.StructType, true, vTestOptions.cache);
+                                            ConvertCoverReference(me1CovRef, le1CovRefProps, me1File, le1File, vTestOptions);
+                                            le1DLProp.Add(new StructProperty(me1CovRef.StructType, le1CovRefProps, isImmutable: true));
+                                        }
+                                        break;
+                                    }
                             }
                             break;
                         }
                 }
             }
 
-            if (me1CS.Properties.Count > 0)
+            if (me1CoverSlotProps.Properties.Count > 0)
             {
                 // uncomment to debug these
                 //Debug.WriteLine("The following properties were not translated:");
-                foreach (var mp in me1CS.Properties)
+                foreach (var mp in me1CoverSlotProps.Properties)
                 {
                     //Debug.WriteLine(mp.Name );
                 }
@@ -592,12 +707,177 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 if (destCollection.ContainsNamedProp(p.Name))
                 {
-                    //destCollection.AddOrReplaceProp(p);
+                    destCollection.AddOrReplaceProp(p);
                     return true;
                 }
                 Debug.WriteLine($"Target doesn't have property named {p.Name}");
                 return false;
             }
+        }
+
+        private static void ConvertFireLink(StructProperty me1FL, PropertyCollection le1FL, IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
+        {
+            le1FL.GetProp<BoolProperty>("bFallbackLink").Value = me1FL.GetProp<BoolProperty>("bFallbackLink")?.Value ?? false;
+            var mta = me1FL.GetProp<StructProperty>("TargetLink");
+            var slotIdx = me1FL.GetProp<IntProperty>("TargetSlotIdx");
+            var lta = le1FL.GetProp<StructProperty>("TargetActor").Properties;
+            ConvertNavRefToCoverRef(mta, lta, slotIdx, me1File, le1File, vTestOptions);
+
+            // Items MUST BE DONE ON A SECOND PASS ONCE ALL THE COVERSLOTS HAVE BEEN GENERATED
+        }
+
+        private static void GenerateFireLinkItemsForFile(IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
+        {
+            // This appears to be map of SourceCoverType and the action on it -> Destination Cover Type and Action
+            // E.g. This FirELinkItem is for Me popping up, shooting at a coverlink that has someone doing action Default MidLevel (hiding)
+            // Will require reading the destination CoverSlots so this will actually probably need to be done on a second pass...
+
+            foreach (var le1Cl in le1File.Exports.Where(x => x.ClassName == "CoverLink"))
+            {
+                var me1cl = me1File.FindExport(le1Cl.InstancedFullPath);
+
+                var me1Props = me1cl.GetProperties();
+                var le1Props = le1Cl.GetProperties();
+
+                var me1Slots = me1Props.GetProp<ArrayProperty<StructProperty>>("Slots");
+                var le1Slots = le1Props.GetProp<ArrayProperty<StructProperty>>("Slots");
+
+                for (int i = 0; i < me1Slots.Count; i++)
+                {
+                    var me1Slot = me1Slots[i];
+                    var le1Slot = le1Slots[i];
+                    GenerateFireLinkItemsForSlot(me1Slot, le1Slot, me1File, le1File, vTestOptions);
+                }
+
+                le1Cl.WriteProperties(le1Props);
+            }
+        }
+
+        private static void GenerateFireLinkItemsForSlot(StructProperty me1Slot, StructProperty le1Slot, IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
+        {
+            // GET THE RAGU MARIO
+            // WE'RE A MAKIN SPAGHETTI
+
+            var me1FireLinks = me1Slot.GetProp<ArrayProperty<StructProperty>>("FireLinks");
+            var le1FireLinks = le1Slot.GetProp<ArrayProperty<StructProperty>>("FireLinks");
+            for (int i = 0; i < me1FireLinks.Count; i++)
+            {
+                var le1FL = le1FireLinks[i];
+                var le1Items = le1FL.GetProp<ArrayProperty<StructProperty>>("Items"); // We will populate this list
+
+                var targetActor = le1FL.GetProp<StructProperty>("TargetActor");
+                var destCoverVal = targetActor.GetProp<ObjectProperty>("Actor");
+                if (destCoverVal == null)
+                    Debugger.Break(); // it's cross level, what a nightmare
+
+                var destSlotIdx = targetActor.GetProp<IntProperty>("SlotIdx");
+                var destCover = destCoverVal.ResolveToEntry(le1File) as ExportEntry;
+                var destSlot = destCover.GetProperty<ArrayProperty<StructProperty>>("Slots")[destSlotIdx];
+
+                var destType = destSlot.GetProp<EnumProperty>("CoverType").Value; //DestType
+                List<string> destActions = new List<string>();
+                if (destSlot.GetProp<BoolProperty>("bLeanLeft")) destActions.Add("CA_LeanLeft");
+                if (destSlot.GetProp<BoolProperty>("bLeanRight")) destActions.Add("CA_LeanRight");
+                if (destSlot.GetProp<BoolProperty>("bCanPopUp")) destActions.Add("CA_PopUp");
+                destActions.Add("CA_Default"); // This doesn't seem reliable but idk what else to do
+
+                var srcType = me1FireLinks[i].GetProp<EnumProperty>("CoverType").Value;
+
+                int generated = 0;
+                var srcActions = me1FireLinks[i].GetProp<ArrayProperty<EnumProperty>>("CoverActions");
+                foreach (var srcAction in srcActions)
+                {
+                    // This now has enough info for SrcType, SrcAction, destType in the dest
+
+                    // UNKNOWN HOW THE DEST ACTION IS DETERMINED, IT DOESN'T APPEAR RELIABLE. See above
+                    foreach (var destAction in destActions)
+                    {
+                        PropertyCollection fliProps = new PropertyCollection();
+                        fliProps.Add(new EnumProperty(srcType, "ECoverType", MEGame.LE1, "SrcType"));
+                        fliProps.Add(new EnumProperty(srcAction.Value, "ECoverAction", MEGame.LE1, "SrcAction"));
+                        fliProps.Add(new EnumProperty(destType, "ECoverType", MEGame.LE1, "DestType"));
+                        fliProps.Add(new EnumProperty(destAction, "ECoverAction", MEGame.LE1, "DestAction"));
+                        le1Items.Add(new StructProperty("FireLinkItem", fliProps, isImmutable: true));
+                        generated++;
+                        Debug.WriteLine($"Generated FLI {generated}. DAC: {destActions.Count}, SAC: {srcActions.Count}");
+                    }
+                }
+            }
+
+        }
+
+        private static void ConvertNavRefToCoverRef(StructProperty mta, PropertyCollection lta, IntProperty slotIdx, IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
+        {
+            // ME1: NavReference (w/ External SlotIdx)
+            // LE1: CoverReference
+            // We don't bother changing the Direction.
+
+            lta.GetProp<IntProperty>("SlotIdx").Value = slotIdx;
+            lta.GetProp<StructProperty>("Guid").Properties = mta.GetProp<StructProperty>("Guid").Properties;
+
+            var nav = mta.GetProp<ObjectProperty>("Nav");
+            lta.GetProp<ObjectProperty>("Actor").Value = le1File.FindExport(me1File.GetUExport(nav.Value).InstancedFullPath).UIndex;
+
+        }
+
+        private static void ConvertExposedLink(StructProperty me1ELStruct, PropertyCollection le1ELStructProps, IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
+        {
+            // ME1: NavReference
+            // LE1: DangerLink
+            // We don't bother changing the DangerCost.
+            var le1ExposedTargetActor = le1ELStructProps.GetProp<StructProperty>("TargetActor");
+            ConvertCoverReference(me1ELStruct, le1ExposedTargetActor.Properties, me1File, le1File, vTestOptions);
+
+            // The ExposedScale is the amount of exposure to other links. Higher exposure is better... I think?
+            // This is computed during map cook so ... yeah ... ... ...
+            le1ELStructProps.GetProp<ByteProperty>("ExposedScale").Value = 128; // No idea what to put here
+        }
+
+        private static void ConvertDangerLink(StructProperty me1DLStruct, PropertyCollection le1DLStruct, IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
+        {
+            // ME1: NavReference
+            // LE1: DangerLink
+            // We don't bother changing the DangerCost.
+            var le1ARStruct = le1DLStruct.GetProp<StructProperty>("DangerNav");
+            ConvertNavRefToActorRef(me1DLStruct, le1ARStruct.Properties, me1File, le1File, vTestOptions);
+        }
+
+        private static void ConvertNavRefToActorRef(StructProperty me1NRStruct, PropertyCollection le1ARStruct, IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
+        {
+            le1ARStruct.GetProp<StructProperty>("Guid").Properties = me1NRStruct.GetProp<StructProperty>("Guid").Properties;
+            var nav = me1NRStruct.GetProp<ObjectProperty>("Nav");
+            if (nav.Value != 0)
+            {
+                // All navigation points should have been imported by VTest... Soo......
+                // Hopefully this works
+                le1ARStruct.GetProp<ObjectProperty>("Actor").Value = le1File.FindExport(me1File.GetUExport(nav.Value).InstancedFullPath).UIndex;
+                //Debugger.Break();
+            }
+        }
+
+        /// <summary>
+        /// Converts CoverReference (491) -> CoverReference (684)
+        /// </summary>
+        /// <param name="me1Prop"></param>
+        /// <param name="le1Props"></param>
+        /// <param name="targetPropName"></param>
+        /// <param name="me1File"></param>
+        /// <param name="le1File"></param>
+        /// <param name="vTestOptions"></param>
+        private static void ConvertCoverReference(StructProperty me1Prop, PropertyCollection le1Props, IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
+        {
+            le1Props.GetProp<IntProperty>("SlotIdx").Value = me1Prop.GetProp<IntProperty>("SlotIdx").Value;
+            le1Props.GetProp<IntProperty>("Direction").Value = me1Prop.GetProp<IntProperty>("Direction").Value;
+            le1Props.GetProp<StructProperty>("Guid").Properties = me1Prop.GetProp<StructProperty>("Guid").Properties;
+            var nav = me1Prop.GetProp<ObjectProperty>("Nav");
+            if (nav.Value != 0)
+            {
+                // All navigation points should have been imported by VTest... Soo......
+                // Hopefully this works
+                le1Props.GetProp<ObjectProperty>("Actor").Value = le1File.FindExport(me1File.GetUExport(nav.Value).InstancedFullPath).UIndex;
+                //Debugger.Break();
+            }
+            // Default is 0 so don't have to do anything
         }
 
         private static void VTest_EnableDebugOptionsOnPackage(IMEPackage le1File, VTestOptions vTestOptions)
@@ -617,13 +897,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         private static void VTestFilePorting(IMEPackage sourcePackage, IMEPackage destPackage, IEnumerable<ExportEntry> itemsToPort, VTestOptions vTestOptions)
         {
             // PRECORRECTION - CORRECTIONS TO THE SOURCE FILE BEFORE PORTING
-            PrePortingCorrections(sourcePackage);
+            var levelName = Path.GetFileNameWithoutExtension(destPackage.FilePath);
+            vTestOptions.packageEditorWindow.BusyText = $"PrePortingCorrections on \n{levelName}";
+            PrePortingCorrections(sourcePackage, vTestOptions);
 
             // PORTING ACTORS
             var le1PL = destPackage.FindExport("TheWorld.PersistentLevel");
             foreach (var e in itemsToPort)
             {
-                vTestOptions.packageEditorWindow.BusyText = $"Porting {e.ObjectName}";
+                vTestOptions.packageEditorWindow.BusyText = $"Porting {e.ObjectName.Instanced} on\n{levelName}";
                 RelinkerOptionsPackage rop = new RelinkerOptionsPackage()
                 {
                     Cache = vTestOptions.cache,
@@ -653,7 +935,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             using var package = MEPackageHandler.OpenMEPackage(destPackagePath);
             using var sourcePackage = MEPackageHandler.OpenMEPackage(sourceFile);
 
-            PrePortingCorrections(sourcePackage);
+            PrePortingCorrections(sourcePackage, vTestOptions);
 
             var bcBaseIdx = sourcePackage.findName("BIOC_Base");
             sourcePackage.replaceName(bcBaseIdx, "SFXGame");
@@ -747,7 +1029,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         #endregion
 
         #region Correction methods
-        public static void PrePortingCorrections(IMEPackage sourcePackage)
+        public static void PrePortingCorrections(IMEPackage sourcePackage, VTestOptions vTestOptions)
         {
             // Strip static mesh light maps since they don't work crossgen. Strip them from
             // the source so they don't port
@@ -758,15 +1040,18 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 #region Remove Light and Shadow Maps
                 if (exp.ClassName == "StaticMeshComponent")
                 {
-                    var b = ObjectBinary.From<StaticMeshComponent>(exp);
-                    foreach (var lod in b.LODData)
+                    if (vTestOptions == null || vTestOptions.useDynamicLighting)
                     {
-                        // Clear light and shadowmaps
-                        lod.ShadowMaps = new UIndex[0];
-                        lod.LightMap = new LightMap() { LightMapType = ELightMapType.LMT_None };
-                    }
+                        var b = ObjectBinary.From<StaticMeshComponent>(exp);
+                        foreach (var lod in b.LODData)
+                        {
+                            // Clear light and shadowmaps
+                            lod.ShadowMaps = new UIndex[0];
+                            lod.LightMap = new LightMap() { LightMapType = ELightMapType.LMT_None };
+                        }
 
-                    exp.WriteBinary(b);
+                        exp.WriteBinary(b);
+                    }
                 }
                 #endregion
                 // These are precomputed and stored in VTestHelper.pcc 
@@ -1219,16 +1504,29 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         private static void PostPortingCorrections(IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
         {
             // Corrections to run AFTER porting is done
-            //ReinstateCoverSlots(me1File, le1File, vTestOptions);
+            var levelName = Path.GetFileNameWithoutExtension(le1File.FilePath);
+
+            vTestOptions.packageEditorWindow.BusyText = $"PPC (CoverSlots) on\n{levelName}";
+            ReinstateCoverSlots(me1File, le1File, vTestOptions);
+            vTestOptions.packageEditorWindow.BusyText = $"PPC (FireLinks) on\n{levelName}";
+            GenerateFireLinkItemsForFile(me1File, le1File, vTestOptions); // This must run after cover slots are reinstated. This might need to run after all files are generated if there are cross levels
+            vTestOptions.packageEditorWindow.BusyText = $"PPC (Textures) on\n{levelName}";
             CorrectTextures(le1File);
+            vTestOptions.packageEditorWindow.BusyText = $"PPC (PrefabSequences) on\n{levelName}";
             CorrectPrefabSequenceClass(le1File);
+            vTestOptions.packageEditorWindow.BusyText = $"PPC (Sequences) on\n{levelName}";
             CorrectSequences(le1File, vTestOptions);
-            CorrectPathfindingNetwork(me1File, le1File);
+            vTestOptions.packageEditorWindow.BusyText = $"PPC (Pathfinding) on\n{levelName}";
+            CorrectPathfindingNetwork(me1File, le1File, vTestOptions);
+            vTestOptions.packageEditorWindow.BusyText = $"PPC (MaterialInstanceConstants) on\n{levelName}";
             PostCorrectMaterialsToInstanceConstants(me1File, le1File, vTestOptions);
+            vTestOptions.packageEditorWindow.BusyText = $"PPC (VFX) on\n{levelName}";
             CorrectVFX(me1File, le1File, vTestOptions);
+            vTestOptions.packageEditorWindow.BusyText = $"PPC (Pink Visor) on\n{levelName}";
             FixPinkVisorMaterial(le1File);
             //CorrectTerrainMaterials(le1File);
 
+            vTestOptions.packageEditorWindow.BusyText = $"PPC (LEVEL SPECIFIC) on\n{levelName}";
 
             var fName = Path.GetFileNameWithoutExtension(le1File.FilePath);
             // Port in the collision-corrected terrain
@@ -1306,7 +1604,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
 
 
-            RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"));
+            RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"), vTestOptions);
 
             //CorrectTriggerStreamsMaybe(me1File, le1File);
         }
@@ -1506,13 +1804,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                     foreach (var slot in me1Slots)
                     {
-                        le1Slots.Add(ConvertCoverSlot(slot, vTestOptions));
+                        le1Slots.Add(ConvertCoverSlot(slot, me1File, le1File, vTestOptions));
                     }
 
                     le1CoverLink.WriteProperty(le1Slots);
-                    le1File.Save();
+                    //le1File.Save();
                 }
-
             }
         }
 
@@ -1617,28 +1914,29 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         }
 
 
-        public static void RebuildPersistentLevelChildren(ExportEntry pl)
+        public static void RebuildPersistentLevelChildren(ExportEntry pl, VTestOptions vTestOptions)
         {
             ExportEntry[] actorsToAdd = pl.FileRef.Exports.Where(exp => exp.Parent == pl && exp.IsA("Actor")).ToArray();
             Level level = ObjectBinary.From<Level>(pl);
             level.Actors.Clear();
             foreach (var actor in actorsToAdd)
             {
-                // Don't add things that are in collection actors
-
-                var lc = actor.GetProperty<ObjectProperty>("LightComponent");
-                if (lc != null && pl.FileRef.TryGetUExport(lc.Value, out var lightComp))
+                if (vTestOptions != null && (!vTestOptions.debugBuild || !vTestOptions.debugConvertStaticLightingToNonStatic))
                 {
-                    if (lightComp.Parent != null && lightComp.Parent.ClassName == "StaticLightCollectionActor")
-                        continue; // don't add this one
+                    // Don't add things that are in collection actors. 
+                    // In a debug build we want to not use them in a collection actor
+                    // so that they are not static.
+                    var lc = actor.GetProperty<ObjectProperty>("LightComponent");
+                    if (lc != null && pl.FileRef.TryGetUExport(lc.Value, out var lightComp))
+                    {
+                        if (lightComp.Parent != null && lightComp.Parent.ClassName == "StaticLightCollectionActor")
+                            continue; // don't add this one
+                    }
                 }
-
-                //var mc = actor.GetProperty<ObjectProperty>("MeshComponent");
-                //if (mc != null && pl.FileRef.TryGetUExport(mc.Value, out var meshComp))
-                //{
-                //    if (meshComp.Parent != null && meshComp.Parent.ClassName == "StaticMeshCollectionActor")
-                //        continue; // don't add this one
-                //}
+                else if (vTestOptions != null && vTestOptions.debugBuild && vTestOptions.debugConvertStaticLightingToNonStatic && actor.ClassName == "StaticLightCollectionActor")
+                {
+                    continue; // Debug builds with debugConvertStaticLightingToNonStatic don't add StaticLightCollectionActor, instead porting over the lights individually.
+                }
 
                 level.Actors.Add(new UIndex(actor.UIndex));
             }
@@ -1654,9 +1952,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             pl.WriteBinary(level);
         }
-
-
-
 
         private static void CorrectSequenceObjects(ExportEntry seq, VTestOptions vTestOptions)
         {
@@ -1766,18 +2061,18 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
-        private static void CorrectPathfindingNetwork(IMEPackage me1File, IMEPackage le1File)
+        private static void CorrectPathfindingNetwork(IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
         {
             var le1PL = le1File.FindExport("TheWorld.PersistentLevel");
             Level me1L = ObjectBinary.From<Level>(me1File.FindExport("TheWorld.PersistentLevel"));
             Level le1L = ObjectBinary.From<Level>(le1PL);
 
-            PropertyCollection mcs = new PropertyCollection();
-            mcs.AddOrReplaceProp(new FloatProperty(400, "Radius"));
-            mcs.AddOrReplaceProp(new FloatProperty(400, "Height"));
-            StructProperty maxPathSize = new StructProperty("Cylinder", mcs, "MaxPathSize");
+            //PropertyCollection mcs = new PropertyCollection();
+            //mcs.AddOrReplaceProp(new FloatProperty(400, "Radius"));
+            //mcs.AddOrReplaceProp(new FloatProperty(400, "Height"));
+            //StructProperty maxPathSize = new StructProperty("Cylinder", mcs, "MaxPathSize");
 
-            // Chain start and end
+            // NavList Chain start and end
             if (me1L.NavListEnd.value != 0 && le1File.FindExport(me1File.GetUExport(me1L.NavListEnd.value).InstancedFullPath) is { } matchingNavEnd)
             {
                 le1L.NavListEnd = new UIndex(matchingNavEnd.UIndex);
@@ -1785,15 +2080,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 if (me1L.NavListStart.value != 0 && le1File.FindExport(me1File.GetUExport(me1L.NavListStart.value).InstancedFullPath) is { } matchingNavStart)
                 {
                     le1L.NavListStart = new UIndex(matchingNavStart.UIndex);
-
-                    // TEST: Widen the size of each node to see if that's why BioActorFactory fires Cancelled
                     while (matchingNavStart != null)
                     {
                         int uindex = matchingNavStart.UIndex;
                         var props = matchingNavStart.GetProperties();
-                        props.AddOrReplaceProp(maxPathSize);
+                        //props.AddOrReplaceProp(maxPathSize);
                         var next = props.GetProp<ObjectProperty>("nextNavigationPoint");
-                        matchingNavStart.WriteProperties(props);
+                        //matchingNavStart.WriteProperties(props);
                         matchingNavStart = next?.ResolveToEntry(le1File) as ExportEntry;
                         if (matchingNavStart == null && uindex != matchingNavEnd.UIndex)
                         {
@@ -1801,8 +2094,30 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         }
                     }
                 }
+            }
 
+            // CoverList Chain start and end
+            if (me1L.CoverListEnd.value != 0 && le1File.FindExport(me1File.GetUExport(me1L.CoverListEnd.value).InstancedFullPath) is { } matchingCoverEnd)
+            {
+                le1L.CoverListEnd = new UIndex(matchingCoverEnd.UIndex);
 
+                if (me1L.CoverListStart.value != 0 && le1File.FindExport(me1File.GetUExport(me1L.CoverListStart.value).InstancedFullPath) is { } matchingCoverStart)
+                {
+                    le1L.CoverListStart = new UIndex(matchingCoverStart.UIndex);
+                    while (matchingCoverStart != null)
+                    {
+                        int uindex = matchingCoverStart.UIndex;
+                        var props = matchingCoverStart.GetProperties();
+                        //props.AddOrReplaceProp(maxPathSize);
+                        var next = props.GetProp<ObjectProperty>("NextCoverLink");
+                        //matchingNavStart.WriteProperties(props);
+                        matchingCoverStart = next?.ResolveToEntry(le1File) as ExportEntry;
+                        if (matchingCoverStart == null && uindex != matchingCoverEnd.UIndex)
+                        {
+                            Debugger.Break();
+                        }
+                    }
+                }
             }
 
             // Cross level actors
@@ -1817,6 +2132,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             // Regenerate the 'End' struct cause it will have ported wrong
             CorrectReachSpecs(me1File, le1File);
+            CorrectBioWaypointSet(me1File, le1File, vTestOptions); // Has NavReference -> ActorReference
             le1PL.WriteBinary(le1L);
         }
 
@@ -1861,6 +2177,25 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     // Test properties
                     le1Exp.GetProperties();
                 }
+            }
+        }
+
+        public static void CorrectBioWaypointSet(IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
+        {
+            foreach (var lbwps in le1File.Exports.Where(x => x.ClassName == "BioWaypointSet"))
+            {
+                var matchingMe1 = me1File.FindExport(lbwps.InstancedFullPath);
+                var mWaypointRefs = matchingMe1.GetProperty<ArrayProperty<StructProperty>>("WaypointReferences");
+                var lWaypointRefs = lbwps.GetProperty<ArrayProperty<StructProperty>>("WaypointReferences");
+                lWaypointRefs.Clear(); // We're going to reconstruct these
+
+                foreach (var mWay in mWaypointRefs)
+                {
+                    var le1Props = GlobalUnrealObjectInfo.getDefaultStructValue(MEGame.LE1, "ActorReference", true, vTestOptions.cache);
+                    ConvertNavRefToActorRef(mWay, le1Props, me1File, le1File, vTestOptions);
+                    lWaypointRefs.Add(new StructProperty("ActorReference", le1Props, isImmutable: true));
+                }
+                lbwps.WriteProperty(lWaypointRefs);
             }
         }
 
