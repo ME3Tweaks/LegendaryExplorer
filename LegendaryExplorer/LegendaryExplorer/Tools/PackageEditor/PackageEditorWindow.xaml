@@ -20,6 +20,7 @@
         xmlns:appsettings="clr-namespace:LegendaryExplorer.Misc.AppSettings"
         xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
         xmlns:scriptEditor="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor"
+        xmlns:packageEditor="clr-namespace:LegendaryExplorer.Tools.PackageEditor"
         Icon="pack://application:,,,/Tools/Icons/16x16/PackageEditor_Icon_16.ico"
         Title="Package Editor" Height="720" Width="1100"
         DragOver="Window_DragOver"
@@ -235,7 +236,7 @@
                     <MenuItem Header="Resolve imports*" ToolTip="Attempts to resolve the imports and show the source of them in the treeview" Command="{Binding ResolveImportsTreeViewCommand}"/>
                     <MenuItem Header="Enable experiments (Warning: dangerous)" ToolTip="Enables experiments used by toolset developers. These features are not tested, not supported, and can easily break the toolset and/or games without warning" IsChecked="{Binding ShowExperiments}" IsCheckable="True" StaysOpenOnClick="True"/>
                 </MenuItem>
-                <packageEditorControls:ExperimentsMenuControl x:Name="ExperimentsMenu"  Visibility="{Binding ShowExperiments, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                <packageEditorControls:ExperimentsMenuControl x:Name="ExperimentsMenu"  Visibility="{Binding ShowExperiments, RelativeSource={RelativeSource FindAncestor, AncestorType=packageEditor:PackageEditorWindow},Converter={StaticResource BoolToVisibilityConverter}}"/>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">
                 <sharedToolControls:StatusBarGameIDIndicator GameType="{Binding Pcc.Game}" Margin="0,-4"/>
