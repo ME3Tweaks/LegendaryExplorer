@@ -599,7 +599,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 //build a list we are going to the add dialog
                 props.Add(new(cProp.Name, cProp.StaticArrayIndex));
             }
-            
+
             if (AddPropertyDialog.GetProperty(CurrentLoadedExport, props, Pcc.Game, Window.GetWindow(this)) is (NameReference propName, int staticArrayIndex, PropertyInfo propInfo))
             {
                 Property newProperty = null;
@@ -687,14 +687,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 return tvi.Parent != null && tvi.Property is not NoneProperty &&
                        (tvi.Parent.Parent == null //items with a single parent (root nodes)
-                     || tvi.Parent.Property is StructProperty {IsImmutable: false}); //properties that are part of a non-immutable StructProperty
+                     || tvi.Parent.Property is StructProperty { IsImmutable: false }); //properties that are part of a non-immutable StructProperty
             }
             return false;
         }
 
         private void AddPropertiesToStruct()
         {
-            if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry {Property: StructProperty sp})
+            if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry { Property: StructProperty sp })
             {
                 PropertyCollection defaultProps = GlobalUnrealObjectInfo.getDefaultStructValue(Pcc.Game, sp.StructType, true);
                 foreach (Property prop in sp.Properties)
@@ -709,7 +709,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private bool CanAddPropertiesToStruct()
         {
-            if (Interpreter_TreeView?.SelectedItem is UPropertyTreeViewEntry {Property: StructProperty {IsImmutable: false} sp} tvi)
+            if (Interpreter_TreeView?.SelectedItem is UPropertyTreeViewEntry { Property: StructProperty { IsImmutable: false } sp } tvi)
             {
                 ClassInfo structInfo = GlobalUnrealObjectInfo.GetClassOrStructInfo(Pcc.Game, sp.StructType);
                 var allProps = new List<PropNameStaticArrayIdxPair>();
@@ -947,7 +947,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     strLength += displayPrefix.Length + 1;
                 }
 
-                var propInfo = GlobalUnrealObjectInfo.GetPropertyInfo(parsingExport.FileRef.Game, prop.Name, 
+                var propInfo = GlobalUnrealObjectInfo.GetPropertyInfo(parsingExport.FileRef.Game, prop.Name,
                     parent.Property is StructProperty sp ? sp.StructType : parsingExport.ClassName, containingExport: parsingExport);
                 bool isStaticArrayProp = false;
                 if (propInfo?.StaticArrayLength > 1 || prop.StaticArrayIndex > 0)
@@ -1065,18 +1065,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         ArrayType at = GlobalUnrealObjectInfo.GetArrayType(parsingExport.FileRef.Game, prop.Name, parent.Property is StructProperty sp ? sp.StructType : parsingExport.ClassName, parsingExport);
 
-                        if (at == ArrayType.Struct)
+                        if (at == ArrayType.Struct || at == ArrayType.Enum || at == ArrayType.Object)
                         {
                             // Try to get the type of struct array
                             // This code doesn't work for nested structs as the containing class is different
-                            PropertyInfo p = GlobalUnrealObjectInfo.GetPropertyInfo(parsingExport.FileRef.Game, prop.Name, parsingExport.ClassName);
+                            var containingType = parent.Property is StructProperty pStructProp ? pStructProp.StructType : parsingExport.ClassName;
+                            PropertyInfo p = GlobalUnrealObjectInfo.GetPropertyInfo(parsingExport.FileRef.Game, prop.Name, containingType);
                             if (p != null)
                             {
-                                editableValue = $"{p.Reference} struct array";
+                                editableValue = $"{p.Reference} {at} array";
                                 break;
                             }
                         }
-                        
                         editableValue = $"{at} array";
                     }
                     break;
@@ -2306,7 +2306,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             {
                                 string typeName = p.Reference;
                                 PropertyCollection props = GlobalUnrealObjectInfo.getDefaultStructValue(Pcc.Game, typeName, true);
-                                astructp.Insert(insertIndex, new StructProperty(typeName, props, isImmutable: GlobalUnrealObjectInfo.IsImmutable(typeName, Pcc.Game)));
+                                var isInImmutable = IsInImmutable(tvi);
+                                astructp.Insert(insertIndex, new StructProperty(typeName, props, isImmutable: isInImmutable || GlobalUnrealObjectInfo.IsImmutable(typeName, Pcc.Game)));
                             }
                         }
                         break;
@@ -2318,6 +2319,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
             }
+        }
+
+        private bool IsInImmutable(UPropertyTreeViewEntry tvi)
+        {
+            if (tvi?.Property == null)
+                return false; // The root
+
+            if (tvi.Property is StructProperty sp && sp.IsImmutable)
+                return true;
+
+            return IsInImmutable(tvi.Parent);
         }
 
         private void RemoveArrayElement()
