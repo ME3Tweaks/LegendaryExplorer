@@ -344,7 +344,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         /// </summary>
         /// <param name="game">Game to pull info from</param>
         /// <param name="typeName">Struct type name</param>
-        /// <param name="stripTransients">Strip transients from the struct</param>
+        /// <param name="stripTransients">Strip transients from the struct. Transients are not serialized to disk in immutable structs. If your property is going to be serialized as part of an immutable struct, do not include transient properties</param>
         /// <returns></returns>
         public static PropertyCollection getDefaultStructValue(MEGame game, string typeName, bool stripTransients, PackageCache packageCache = null)
         {
