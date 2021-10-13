@@ -80,7 +80,7 @@
                 </StackPanel>
             </Button.Content>
         </Button>
-        <TextBlock Text="The Clone option is how how porting was done in ME3Explorer versions prior to version 3.1.2.14" HorizontalAlignment="Center" Foreground="Gray" FontSize="9" Margin="0"/>
+        <TextBlock Text="The Clone option is how porting was done in ME3Explorer versions prior to version 3.1.2.14" HorizontalAlignment="Center" Foreground="Gray" FontSize="9" Margin="0"/>
         <Button Content="Cancel" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Margin="5,5,5,0" Padding="8" Click="CancelButton_Click"/>
     </StackPanel>
 </misc:NotifyPropertyChangedWindowBase>
