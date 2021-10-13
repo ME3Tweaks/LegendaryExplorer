@@ -2032,6 +2032,30 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             Clipboard.SetText(sb.ToString());
         }
 
+        public static void ConvertSLCALightToNonSLCA(PackageEditorWindow pe)
+        {
+            if (pe.Pcc != null && pe.TryGetSelectedExport(out var exp) && exp.IsA("LightComponent") && exp.Parent.ClassName == "StaticLightCollectionActor")
+            {
+                var parent = ObjectBinary.From<StaticLightCollectionActor>(exp.Parent as ExportEntry);
+                var uindex = new UIndex(exp.UIndex);
+                var slcaIndex = parent.Components.IndexOf(uindex);
+
+                var PL = pe.Pcc.FindExport("TheWorld.PersistentLevel");
+                var lightType = exp.ObjectName.Name.Substring(0, exp.ObjectName.Name.IndexOf("_"));
+                var newExport = ExportCreator.CreateExport(pe.Pcc, lightType, lightType, PL);
+
+                var positioning = parent.LocalToWorldTransforms[slcaIndex].UnrealDecompose();
+
+                var newProps = newExport.GetProperties();
+                newProps.AddOrReplaceProp(new ObjectProperty(exp, "LightComponent"));
+                newProps.AddOrReplaceProp(CommonStructs.Vector3Prop(positioning.translation, "Location"));
+                newProps.AddOrReplaceProp(CommonStructs.RotatorProp(positioning.rotation, "Rotation"));
+                //newProps.AddOrReplaceProp(CommonStructs.Vector3Prop(parent.LocalToWorldTransforms[slcaIndex].M41, parent.LocalToWorldTransforms[slcaIndex].M42, parent.LocalToWorldTransforms[slcaIndex].M43, "Rotation")); // No idea which var is this...
+                newProps.AddOrReplaceProp(new NameProperty(lightType, "Tag"));
+                newExport.WriteProperties(newProps);
+            }
+        }
+
         public static void TerrainLevelMaker(PackageEditorWindow pe)
         {
             // Open base
@@ -2047,9 +2071,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             var meTerrain = meTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1");
 
             // Precorrect and port
-            VTestExperiment.PrePortingCorrections(meTerrainP);
+            VTestExperiment.PrePortingCorrections(meTerrainP, null);
             EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, meTerrain, tbpPL.FileRef, tbpPL, true, new RelinkerOptionsPackage(), out var newTerrain);
-            VTestExperiment.RebuildPersistentLevelChildren(tbpPL);
+            VTestExperiment.RebuildPersistentLevelChildren(tbpPL, null);
             terrainBaseP.Save(Path.Combine(LE1Directory.CookedPCPath, "BIOA_TERRAINTEST.pcc"));
 
             // Check values...
@@ -2509,7 +2533,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             EntryExporter.ExportExportToPackage(mako, destPackage, out var newMako);
             PathEdUtils.SetLocation(newMako as ExportEntry, (float)startLoc.X + 500f, (float)startLoc.Y + 500, (float)startLoc.Z + 50);
 
-            VTestExperiment.RebuildPersistentLevelChildren(destLevel);
+            VTestExperiment.RebuildPersistentLevelChildren(destLevel, null);
             destPackage.Save();
         }
 

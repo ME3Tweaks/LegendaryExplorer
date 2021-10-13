@@ -41,6 +41,7 @@
         <MenuItem Header="VTest" Click="VTest_Click" Visibility="{x:Static global:App.IsDebugVisibility}"/>
         <MenuItem Header="Make current material a VTest Donor" Click="MakeVTestDonor_Click" Visibility="{x:Static global:App.IsDebugVisibility}"/>
         <MenuItem Header="Test current package binary against LEX serializer" Click="TestCurrentPackageBinary"/>
+        <MenuItem Header="Convert Static Light component to non-static" Click="ConvertSLCALightToNonSLCA"/>
         <MenuItem Header="Find bad index location from appErrorF message (doesn't work)" Click="FindAppErrorFLocation_Click"/>
         <MenuItem Header="MScanner" Click="MScanner_Click"/>
         <MenuItem Header="Make LE1 Mako Map from terrain from UDK file" Click="MakeLE1MakoMap_Click"/>

@@ -384,6 +384,12 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsM.ConvertMaterialToVtestDonor(GetPEWindow());
         }
+
+        private async void ConvertSLCALightToNonSLCA(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.ConvertSLCALightToNonSLCA(GetPEWindow());
+        }
+
         private void MakeLE1MakoMap_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.MakeMakoLevel(GetPEWindow());
