@@ -21,6 +21,8 @@ namespace LegendaryExplorer.SharedUI
     [DebuggerDisplay("TreeViewEntry {" + nameof(DisplayName) + "}")]
     public class TreeViewEntry : NotifyPropertyChangedBase
     {
+        private static PackageCache defaultsLookupCache = new PackageCache() { CacheMaxSize = 3 }; // Don't let cache get big.
+
         public bool IsProgramaticallySelecting;
 
         private bool isSelected;
@@ -257,7 +259,7 @@ namespace LegendaryExplorer.SharedUI
                                     }
 
                                     if (Entry.ObjectName.Name.StartsWith("F") &&
-                                        Entry.ParentName.Equals("BioAutoConditionals", StringComparison.OrdinalIgnoreCase) && 
+                                        Entry.ParentName.Equals("BioAutoConditionals", StringComparison.OrdinalIgnoreCase) &&
                                         int.TryParse(Entry.ObjectName.Name.Substring(1), out int id))
                                     {
                                         _subtext = PlotDatabases.FindPlotConditionalByID(id, Entry.Game)?.Path;
@@ -306,7 +308,7 @@ namespace LegendaryExplorer.SharedUI
                                     break;
                                 }
                         }
-                        
+
                         if (BinaryInterpreterWPF.IsNativePropertyType(Entry.ClassName))
                         {
                             var objectFlags = ee.GetPropertyFlags();
@@ -342,7 +344,8 @@ namespace LegendaryExplorer.SharedUI
                         }
                         else
                         {
-                            var tag = ee.GetProperty<NameProperty>("Tag");
+                            var tag = ee.GetProperty<NameProperty>("Tag", defaultsLookupCache); // Todo: Pass a package cache through here so hits to Engine.pcc aren't as costly. We will need a global shared package cache (maybe just for this treeview), but one that is not
+                            // using the LEX cache as we don't want the package actually open.
                             if (tag != null && tag.Value.Name != Entry.ObjectName)
                             {
                                 _subtext = tag.Value.Name;
