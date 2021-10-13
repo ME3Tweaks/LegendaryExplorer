@@ -1280,6 +1280,19 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         var cameraTag = sp.GetProp<StrProperty>("m_sCameraName");
                         parsedValue = cameraTag?.Value ?? "";
                     }
+                    else if (sp.StructType == "FireLink" && parsingExport.Game.IsLEGame())
+                    {
+                        var destActor = sp.GetProp<StructProperty>("TargetActor").GetProp<ObjectProperty>("Actor");
+                        var destSlot = sp.GetProp<StructProperty>("TargetActor").GetProp<IntProperty>("SlotIdx");
+                        if (destActor.Value != 0 && parsingExport.FileRef.TryGetEntry(destActor.Value, out var entry))
+                        {
+                            parsedValue = $"-> {entry.ObjectName.Instanced} Slot {destSlot.Value}";
+                        }
+                    }
+                    else if (sp.StructType == "FireLinkItem" && parsingExport.Game.IsLEGame())
+                    {
+                        parsedValue = $"{sp.GetProp<EnumProperty>("SrcType").Value} {sp.GetProp<EnumProperty>("SrcAction").Value} -> {sp.GetProp<EnumProperty>("DestType").Value} {sp.GetProp<EnumProperty>("DestAction").Value}";
+                    }
                     else
                     {
                         parsedValue = sp.StructType;
