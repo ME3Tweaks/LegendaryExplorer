@@ -978,6 +978,50 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 ObjInstanceVersion = 1
             };
             #endregion
+            #region LEXSeqAct_SetKeybind
+            classes["LEXSeqAct_SetKeybind"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 292, // in LE1Resources.pcc
+            };
+
+            sequenceObjects["LEXSeqAct_SetKeybind"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+            #endregion
+            #region LEXSeqAct_RemoveKeybind
+            classes["LEXSeqAct_RemoveKeybind"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 305, // in LE1Resources.pcc
+                properties =
+                {
+                    new KeyValuePair<NameReference, PropertyInfo>("NumRemoved", new PropertyInfo(PropertyType.IntProperty)),
+                }
+            };
+
+            sequenceObjects["LEXSeqAct_RemoveKeybind"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+            #endregion
+            #region LEXSeqAct_SquadCommand
+            classes["LEXSeqAct_SquadCommand"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 319, // in LE1Resources.pcc
+            };
+
+            sequenceObjects["LEXSeqAct_SquadCommand"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+            #endregion
+
 
 
             // OLD KEEP FOR NOW
