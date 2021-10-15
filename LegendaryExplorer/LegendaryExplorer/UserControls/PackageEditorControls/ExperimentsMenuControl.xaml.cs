@@ -430,6 +430,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.CheckNeverstream(GetPEWindow());
         }
 
+        private async void GenerateMaterialInstanceConstant_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.GenerateMaterialInstanceConstantFromMaterial(GetPEWindow());
+        }
+
         private async void PrintTextureFormats_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ShowTextureFormats(GetPEWindow());
