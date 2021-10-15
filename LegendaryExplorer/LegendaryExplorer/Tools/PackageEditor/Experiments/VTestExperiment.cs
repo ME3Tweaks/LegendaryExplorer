@@ -329,7 +329,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     else
                     {
                         var levelName = Path.GetFileNameWithoutExtension(f);
-                        //if (levelName.CaseInsensitiveEquals("BIOA_PRC2_CCAHERN_DSG"))
+                        //if (levelName.CaseInsensitiveEquals("BIOA_PRC2_CCTHAI"))
                         PortVTestLevel(vTestLevel, levelName, vTestOptions, levelName == "BIOA_" + vTestLevel, true);
                     }
                 }
@@ -982,7 +982,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
             }
 
-            CorrectSequences(package, vTestOptions);
+            //CorrectSequences(package, vTestOptions);
+            PostPortingCorrections(sourcePackage, package, vTestOptions);
+
             vTestOptions.packageEditorWindow.BusyText = $"Saving {packName}";
             package.Save();
         }
@@ -1534,14 +1536,18 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 PortInCorrectedTerrain(le1File, "CCLava.Terrain_1", "BIOA_LAV60_00_LAY.pcc", vTestOptions);
             }
+            else if (fName.CaseInsensitiveEquals("BIOA_PRC2AA_00_LAY"))
+            {
+                PortInCorrectedTerrain(le1File, "PRC2AA.Terrain_1", "BIOA_UNC20_00_LAY.pcc", vTestOptions);
+            }
             else if (fName.CaseInsensitiveEquals("BIOA_PRC2_CCSIM05_DSG"))
             {
                 // Port in the custom sequence used for switching UIs
-                InstallVTestHelperSequence(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Central_Scoreboard_Matinee.SeqEvent_RemoteEvent_0", "ScoreboardSequence.UISwitcherLogic", vTestOptions);
+                InstallVTestHelperSequenceViaOut(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Central_Scoreboard_Matinee.SeqEvent_RemoteEvent_0", "ScoreboardSequence.UISwitcherLogic", vTestOptions);
 
                 // Port in the keybinding sequences
-                InstallVTestHelperSequence(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Central_Scoreboard_Matinee.SeqEvent_RemoteEvent_0", "ScoreboardSequence.KeybindsInstaller", vTestOptions);
-                InstallVTestHelperSequence(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Central_Scoreboard_Matinee.SeqAct_Gate_3", "ScoreboardSequence.KeybindsUninstaller", vTestOptions);
+                InstallVTestHelperSequenceViaOut(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Central_Scoreboard_Matinee.SeqEvent_RemoteEvent_0", "ScoreboardSequence.KeybindsInstaller", vTestOptions);
+                InstallVTestHelperSequenceViaOut(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Central_Scoreboard_Matinee.SeqAct_Gate_3", "ScoreboardSequence.KeybindsUninstaller", vTestOptions);
             }
             else if (fName.CaseInsensitiveEquals("BIOA_PRC2_CCSCOREBOARD_DSG"))
             {
@@ -1549,20 +1555,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 // Port in the UI switching and keybinding for PC
                 // Port in the custom sequence used for switching UIs. Should only run if not skipping the scoreboard
-                //InstallVTestHelperSequence(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Post_Scenario_Scoreboard_Matinee.UIAction_PlaySound_0", "ScoreboardSequence.UISwitcherLogic", vTestOptions);
+                InstallVTestHelperSequenceViaOut(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Post_Scenario_Scoreboard_Matinee.UIAction_PlaySound_0", "ScoreboardSequence.UISwitcherLogic", vTestOptions);
 
                 // Port in the keybinding sequences
-                // Both of the following crashes the game currently, not sure why.
-                //InstallVTestHelperSequence(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Post_Scenario_Scoreboard_Matinee.BioSeqAct_MiniGame_1", "ScoreboardSequence.KeybindsInstaller", vTestOptions);
-                //InstallVTestHelperSequence(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Post_Scenario_Scoreboard_Matinee.UIAction_PlaySound_1", "ScoreboardSequence.KeybindsUninstaller", vTestOptions);
-
-            }
-            else if (fName.CaseInsensitiveEquals("BIOA_PRC2AA"))
-            {
-                // Port in collision-corrected terrain
+                InstallVTestHelperSequenceViaOut(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Post_Scenario_Scoreboard_Matinee.BioSeqAct_MiniGame_1", "ScoreboardSequence.KeybindsInstaller", vTestOptions);
+                InstallVTestHelperSequenceViaOut(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Post_Scenario_Scoreboard_Matinee.UIAction_PlaySound_1", "ScoreboardSequence.KeybindsUninstaller", vTestOptions);
             }
             else if (fName.CaseInsensitiveEquals("BIOA_PRC2"))
             {
+                #region Full Blocking Load Fix
                 // Adjust the triggerstreams to pre-stream in some files to prevent a full blocking load from occurring.
                 // They all have the same state name
 
@@ -1598,14 +1599,50 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         }
                     }
                 }
+
+                #endregion
+
+                #region Level Load Blocking Texture Streaming
+                InstallVTestHelperSequenceViaEvent(le1File, "TheWorld.PersistentLevel.Main_Sequence", "HelperSequences.LevelLoadTextureStreaming", vTestOptions);
+                // The original logic is removed in the ModdedSource file
+                #endregion
+            }
+            else if (fName.CaseInsensitiveEquals("BIOA_PRC2_CCMAIN_CONV_LOC_INT"))
+            {
+                // InterpLength needs fixed to be +.5s
+                var interpData = le1File.FindExport("prc2_ahern_N.Node_Data_Sequence.InterpData_7");
+                interpData.WriteProperty(new FloatProperty(9.516706f, "InterpLength"));
+            }
+
+            // Not an else statement as this is level generic
+            if (fName.StartsWith("BIOA_PRC2AA"))
+            {
+                // Lights are way overblown for this map. This value is pretty close to the original game
+                foreach (var pl in le1File.Exports.Where(x => x.IsA("LightComponent")))
+                {
+                    var brightness = pl.GetProperty<FloatProperty>("Brightness")?.Value ?? 1;
+                    pl.WriteProperty(new FloatProperty(brightness * .05f, "Brightness"));
+                }
+            }
+
+            if (fName.StartsWith("BIOA_PRC2") && !fName.StartsWith("BIOA_PRC2AAA"))
+            {
+                // Lights are way overblown for this map. This value is pretty close to the original game
+                foreach (var pl in le1File.Exports.Where(x => x.IsA("LightComponent")))
+                {
+                    var brightness = pl.GetProperty<FloatProperty>("Brightness")?.Value ?? 1;
+                    pl.WriteProperty(new FloatProperty(brightness * .5f, "Brightness"));
+                }
             }
 
             LevelSpecificPostCorrections(fName, me1File, le1File, vTestOptions);
 
 
-
-            RebuildPersistentLevelChildren(le1File.FindExport("TheWorld.PersistentLevel"), vTestOptions);
-
+            var level = le1File.FindExport("TheWorld.PersistentLevel");
+            if (level != null)
+            {
+                RebuildPersistentLevelChildren(level, vTestOptions);
+            }
             //CorrectTriggerStreamsMaybe(me1File, le1File);
         }
 
@@ -1633,7 +1670,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
-        private static void InstallVTestHelperSequence(IMEPackage le1File, string sourceSequenceOpIFP, string vTestSequenceIFP, VTestOptions vTestOptions)
+        /// <summary>
+        /// Installs a sequence from VTestHelper. The sequence will be connected via the In pin.
+        /// </summary>
+        /// <param name="le1File"></param>
+        /// <param name="sourceSequenceOpIFP"></param>
+        /// <param name="vTestSequenceIFP"></param>
+        /// <param name="vTestOptions"></param>
+        private static void InstallVTestHelperSequenceViaOut(IMEPackage le1File, string sourceSequenceOpIFP, string vTestSequenceIFP, VTestOptions vTestOptions)
         {
             var sourceItemToOutFrom = le1File.FindExport(sourceSequenceOpIFP);
             var parentSequence = SeqTools.GetParentSequence(sourceItemToOutFrom, true);
@@ -1643,6 +1687,21 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             // link it up
             KismetHelper.CreateOutputLink(sourceItemToOutFrom, "Out", newUiSeq as ExportEntry);
+        }
+
+        /// <summary>
+        /// Installs a sequence from VTestHelper. The sequence should already contain it's own triggers like LevelLoaded.
+        /// </summary>
+        /// <param name="le1File"></param>
+        /// <param name="sequenceIFP"></param>
+        /// <param name="vTestSequenceIFP"></param>
+        /// <param name="vTestOptions"></param>
+        private static void InstallVTestHelperSequenceViaEvent(IMEPackage le1File, string sequenceIFP, string vTestSequenceIFP, VTestOptions vTestOptions)
+        {
+            var targetSequence = le1File.FindExport(sequenceIFP);
+            var donorSequence = vTestOptions.vTestHelperPackage.FindExport(vTestSequenceIFP);
+            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, donorSequence, le1File, targetSequence, true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var newUiSeq);
+            KismetHelper.AddObjectToSequence(newUiSeq as ExportEntry, targetSequence);
         }
 
         private static void AddWorldReferencedObjects(IMEPackage le1File, IEnumerable<ExportEntry> entriesToReference)
@@ -1821,6 +1880,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             le1VanillaTerrain.RemoveProperty("TerrainComponents");
 
             var rop = new RelinkerOptionsPackage() { Cache = vTestOptions.cache };
+            var b = ObjectBinary.From<Terrain>(le1VanillaTerrain);
+            b.WeightedTextureMaps = new UIndex[0]; // These don't work with our different data format for these maps
+            le1VanillaTerrain.WriteBinary(b);
 
             EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, le1VanillaTerrain, le1File,
                 le1File.FindExport("TheWorld.PersistentLevel"), true, rop, out var destTerrainEntry);
@@ -2064,6 +2126,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         private static void CorrectPathfindingNetwork(IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
         {
             var le1PL = le1File.FindExport("TheWorld.PersistentLevel");
+            if (le1PL == null)
+                return; // This file doesn't have a level
             Level me1L = ObjectBinary.From<Level>(me1File.FindExport("TheWorld.PersistentLevel"));
             Level le1L = ObjectBinary.From<Level>(le1PL);
 
