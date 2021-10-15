@@ -1813,7 +1813,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         // For making testing materials faster
         public static void ConvertMaterialToVtestDonor(PackageEditorWindow pe)
         {
-            if (pe.Pcc != null && pe.TryGetSelectedExport(out var exp) && exp.ClassName == "Material")
+            if (pe.Pcc != null && pe.TryGetSelectedExport(out var exp) && (exp.ClassName == "Material" || exp.ClassName == "MaterialInstanceConstant"))
             {
                 var donorFullName = PromptDialog.Prompt(pe, "Enter instanced full path of donor this is for", "VTest Donor");
                 if (string.IsNullOrEmpty(donorFullName))
@@ -1843,6 +1843,77 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     VTestExperiment.VTest(pe);
                 }
+            }
+        }
+
+        public static void GenerateMaterialInstanceConstantFromMaterial(PackageEditorWindow pe)
+        {
+            if (pe.Pcc != null && pe.TryGetSelectedExport(out var matExp) && (matExp.ClassName == "Material" || matExp.ClassName == "MaterialInstanceConstant"))
+            {
+                var matExpProps = matExp.GetProperties();
+
+                // Create the export
+                var matInstConst = ExportCreator.CreateExport(pe.Pcc, matExp.ObjectName.Name + "_matInst", "MaterialInstanceConstant", matExp.Parent);
+                matInstConst.indexValue--; // Decrement it by one so it starts at 0
+
+                var matInstConstProps = matInstConst.GetProperties();
+                var lightingParent = matExpProps.GetProp<StructProperty>("LightingGuid");
+                if (lightingParent != null)
+                {
+                    lightingParent.Name = "ParentLightingGuid"; // we aren't writing to parent so this is fine
+                    matInstConstProps.AddOrReplaceProp(lightingParent);
+                }
+
+                matInstConstProps.AddOrReplaceProp(new ObjectProperty(matExp.UIndex, "Parent"));
+                matInstConstProps.AddOrReplaceProp(CommonStructs.GuidProp(Guid.NewGuid(), "m_Guid")); // IDK if this is used but we're gonna do it anyways
+
+                ArrayProperty<StructProperty> vectorParameters = new ArrayProperty<StructProperty>("VectorParameterValues");
+                ArrayProperty<StructProperty> scalarParameters = new ArrayProperty<StructProperty>("ScalarParameterValues");
+                ArrayProperty<StructProperty> textureParameters = new ArrayProperty<StructProperty>("TextureParameterValues");
+
+                var expressions = matExpProps.GetProp<ArrayProperty<ObjectProperty>>("Expressions");
+                if (expressions != null)
+                {
+                    foreach (var expressionOP in expressions)
+                    {
+                        var expression = expressionOP.ResolveToEntry(pe.Pcc) as ExportEntry;
+                        switch (expression.ClassName)
+                        {
+                            case "MaterialExpressionScalarParameter":
+                                {
+                                    var spvP = expression.GetProperties();
+                                    var paramValue = spvP.GetProp<FloatProperty>("DefaultValue");
+                                    paramValue.Name = "ParameterValue";
+                                    spvP.RemoveAt(0);
+                                    spvP.AddOrReplaceProp(paramValue); // This value goes on the end
+                                    scalarParameters.Add(new StructProperty("ScalarParameterValue", spvP));
+                                }
+                                break;
+                            case "MaterialExpressionVectorParameter":
+                                {
+                                    var vpvP = expression.GetProperties();
+                                    var paramValue = vpvP.GetProp<StructProperty>("DefaultValue");
+                                    paramValue.Name = "ParameterValue";
+                                    vectorParameters.Add(new StructProperty("VectorParameterValue", vpvP));
+                                }
+                                break;
+                            case "MaterialExpressionTextureSampleParameter2D":
+                                {
+                                    var tpvP = expression.GetProperties();
+                                    var paramValue = tpvP.GetProp<ObjectProperty>("DefaultValue");
+                                    paramValue.Name = "ParameterValue";
+                                    vectorParameters.Add(new StructProperty("TextureParameterValue", tpvP));
+                                }
+                                break;
+                        }
+                    }
+                }
+
+                if (vectorParameters.Any()) matInstConstProps.AddOrReplaceProp(vectorParameters);
+                if (scalarParameters.Any()) matInstConstProps.AddOrReplaceProp(scalarParameters);
+                if (textureParameters.Any()) matInstConstProps.AddOrReplaceProp(textureParameters);
+
+                matInstConst.WriteProperties(matInstConstProps);
             }
         }
 
