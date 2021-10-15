@@ -39,7 +39,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             public string[] vTestLevels = new[]
             {
                 // Comment/uncomment these to select which files to run on
-                "PRC2",
+                //"PRC2",
                 "PRC2AA"
             };
 
@@ -1503,6 +1503,30 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
+        private static void CopyOverTerrainSlopes(IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
+        {
+            var mSetups = me1File.Exports.Where(x=>x.ClassName == "TerrainLayerSetup").ToList();
+            var lSetups = le1File.Exports.Where(x=>x.ClassName == "TerrainLayerSetup").ToList();
+
+            for (int i = 0; i < mSetups.Count; i++)
+            {
+                var mSetup = mSetups[i].GetProperties();
+                var lSetup = lSetups[i].GetProperties();
+                var mMats = mSetup.GetProp<ArrayProperty<StructProperty>>("Materials");
+                var lMats = lSetup.GetProp< ArrayProperty<StructProperty>>("Materials");
+
+                for (int j = 0; j < mMats.Count; j++)
+                {
+                    var mMat = mMats[j];
+                    var lMat = lMats[j];
+                    mMat.GetProp<ObjectProperty>("Material").Value = lMat.GetProp<ObjectProperty>("Material").Value;
+                }
+
+                lSetup.AddOrReplaceProp(mMats);
+                lSetups[i].WriteProperties(lSetup);
+            }
+        }
+
         private static void PostPortingCorrections(IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
         {
             // Corrections to run AFTER porting is done
@@ -1535,10 +1559,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             if (fName.CaseInsensitiveEquals("BIOA_PRC2_CCLava"))
             {
                 PortInCorrectedTerrain(le1File, "CCLava.Terrain_1", "BIOA_LAV60_00_LAY.pcc", vTestOptions);
+                CopyOverTerrainSlopes(me1File, le1File, vTestOptions);
             }
             else if (fName.CaseInsensitiveEquals("BIOA_PRC2AA_00_LAY"))
             {
                 PortInCorrectedTerrain(le1File, "PRC2AA.Terrain_1", "BIOA_UNC20_00_LAY.pcc", vTestOptions);
+                CopyOverTerrainSlopes(me1File, le1File, vTestOptions);
             }
             else if (fName.CaseInsensitiveEquals("BIOA_PRC2_CCSIM05_DSG"))
             {
@@ -1621,17 +1647,17 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 foreach (var pl in le1File.Exports.Where(x => x.IsA("LightComponent")))
                 {
                     var brightness = pl.GetProperty<FloatProperty>("Brightness")?.Value ?? 1;
-                    pl.WriteProperty(new FloatProperty(brightness * .05f, "Brightness"));
+                    pl.WriteProperty(new FloatProperty(brightness * .1f, "Brightness"));
                 }
             }
 
-            if (fName.StartsWith("BIOA_PRC2") && !fName.StartsWith("BIOA_PRC2AAA"))
+            if (fName.StartsWith("BIOA_PRC2") && !fName.StartsWith("BIOA_PRC2AA"))
             {
                 // Lights are way overblown for this map. This value is pretty close to the original game
                 foreach (var pl in le1File.Exports.Where(x => x.IsA("LightComponent")))
                 {
                     var brightness = pl.GetProperty<FloatProperty>("Brightness")?.Value ?? 1;
-                    pl.WriteProperty(new FloatProperty(brightness * .5f, "Brightness"));
+                    pl.WriteProperty(new FloatProperty(brightness * .05f, "Brightness"));
                 }
             }
 
