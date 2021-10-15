@@ -24,7 +24,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         private readonly IMEPackage Pcc;
         private readonly bool IsStructDefaults;
         private readonly ObjectType Outer;
-        private readonly DefaultPropertiesBlock PropsBlock;
+        private bool InSubOject;
 
         public static void Parse(DefaultPropertiesBlock propsBlock, IMEPackage pcc, SymbolTable symbols, MessageLog log)
         {
@@ -42,7 +42,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             Pcc = pcc;
             Outer = (ObjectType)propsBlock.Outer;
             IsStructDefaults = Outer is Struct;
-            PropsBlock = propsBlock;
 
             SubObjectClasses = new Stack<Class>();
             ExpressionScopes = new Stack<string>();
@@ -68,7 +67,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     statements.Add(current);
                     current = ParseTopLevelStatement();
                 }
-
+                InSubOject = true;
                 ParseSubObjectBodys(subObjects);
             }
             finally
@@ -237,6 +236,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             if (Consume(TokenType.Word) is Token<string> propName)
             {
                 SymbolReference target = ParsePropName(propName, inStruct);
+                if (InSubOject && target.Node is VariableDeclaration {IsTransient: true})
+                {
+                    TypeError("Cannot assign to a transient property in a SubObject!", propName);
+                }
                 VariableType targetType = target.ResolveType();
                 if (Matches(TokenType.LeftSqrBracket))
                 {

@@ -692,7 +692,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             pewpf.BusyText = "Scanning";
             Task.Run(() =>
             {
-                foreach (MEGame game in new[] { /*MEGame.LE3,*/ MEGame.LE2, MEGame.LE1, MEGame.ME3, MEGame.ME2, MEGame.ME1})
+                foreach (MEGame game in new[] { MEGame.LE3, MEGame.LE2, MEGame.LE1, MEGame.ME3, MEGame.ME2, MEGame.ME1})
                 {
                     //preload base files for faster scanning
                     using DisposableCollection<IMEPackage> baseFiles = MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(game)
@@ -716,12 +716,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         //ScanScripts2(filePath);
                         //RecompileAllFunctions(filePath);
                         //RecompileAllStates(filePath);
-                        RecompileAllDefaults(filePath, packageCache);
+                        //RecompileAllDefaults(filePath, packageCache);
+                        RecompileAllStructs(filePath, packageCache);
                     }
-                    //if (interestingExports.Any())
-                    //{
-                    //    break;
-                    //}
+                    if (interestingExports.Any())
+                    {
+                        break;
+                    }
                 }
             }).ContinueWithOnUIThread(prevTask =>
             {
@@ -1153,6 +1154,56 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         Console.WriteLine(exception);
                         interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\n{exception}"));
                         return;
+                    }
+                }
+            }
+
+            void RecompileAllStructs(string filePath, PackageCache packageCache = null)
+            {
+                using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
+                var fileLib = new FileLib(pcc);
+
+                for (int i = 0; i < pcc.ExportCount; i++)
+                {
+                    ExportEntry exp = pcc.Exports[i];
+                    if (exp.ClassName is "ScriptStruct")
+                    {
+                        string instancedFullPath = exp.InstancedFullPath;
+                        if (foundClasses.Contains(instancedFullPath))
+                        {
+                            continue;
+                        }
+
+                        foundClasses.Add(instancedFullPath);
+                        try
+                        {
+                            if (fileLib.Initialize())
+                            {
+                                (_, string script) = UnrealScriptCompiler.DecompileExport(exp, fileLib);
+                                (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileStruct(exp, script, fileLib, packageCache);
+                                if (ast is not Struct || log.AllErrors.Any())
+                                {
+                                    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse defaults!"));
+                                    return;
+                                }
+
+                                if (exp.EntryHasPendingChanges || exp.GetAllDescendants().Any(entry => entry.EntryHasPendingChanges))
+                                {
+                                    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nRecompilation does not match!"));
+                                }
+                            }
+                            else
+                            {
+                                interestingExports.Add(new EntryStringPair($"{pcc.FilePath} failed to compile!"));
+                                return;
+                            }
+                        }
+                        catch (Exception exception)
+                        {
+                            Console.WriteLine(exception);
+                            interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\n{exception}"));
+                            return;
+                        }
                     }
                 }
             }
@@ -1964,47 +2015,68 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     exportsWithDecompilationErrors.Add(new EntryStringPair("Filelib failed to initialize!"));
                 }
-                foreach (ExportEntry export in pew.Pcc.Exports.Where(exp => exp.IsClass))
+                for (int i = 0; i < pew.Pcc.ExportCount; i++)
                 {
-                    try
+                    ExportEntry export = pew.Pcc.Exports[i];
+                    if (export.ClassName is "ScriptStruct")
                     {
-                        (_, string script) = UnrealScriptCompiler.DecompileExport(export, fileLib);
-                        (ASTNode ast, MessageLog log, _) = UnrealScriptCompiler.CompileAST(script, export.ClassName, export.Game);
-                        if (ast is not Class c|| log.AllErrors.Any())
+                        try
                         {
-                            throw new Exception();
+                            (_, string script) = UnrealScriptCompiler.DecompileExport(export, fileLib);
+                            (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileStruct(export, script, fileLib);
+                            if (ast is not Struct s || log.AllErrors.Any())
+                            {
+                                throw new Exception();
+                            }
                         }
-
-                        //foreach (State state in c.States)
-                        //{
-                        //    ast = UnrealScriptCompiler.CompileNewStateBodyAST(export, state, log, fileLib);
-                        //    if (ast is not State || log.AllErrors.Any())
-                        //    {
-                        //        throw new Exception();
-                        //    }
-                        //}
-
-                        //foreach (Function function in c.Functions)
-                        //{
-                        //    ast = UnrealScriptCompiler.CompileNewFunctionBodyAST(export, function, log, fileLib);
-                        //    if (ast is not Function || log.AllErrors.Any())
-                        //    {
-                        //        throw new Exception();
-                        //    }
-                        //}
-
-                        ast = UnrealScriptCompiler.CompileDefaultPropertiesAST(export, c.DefaultProperties, log, fileLib);
-                        if (ast is not DefaultPropertiesBlock || log.AllErrors.Any())
+                        catch (Exception e)
                         {
-                            throw new Exception();
+                            exportsWithDecompilationErrors.Add(new EntryStringPair(export, "Compilation Error!"));
+                            break;
                         }
-                    }
-                    catch (Exception e)
-                    {
-                        exportsWithDecompilationErrors.Add(new EntryStringPair(export, "Compilation Error!"));
-                        break;
                     }
                 }
+                //foreach (ExportEntry export in pew.Pcc.Exports.Where(exp => exp.IsClass))
+                //{
+                //    try
+                //    {
+                //        (_, string script) = UnrealScriptCompiler.DecompileExport(export, fileLib);
+                //        (ASTNode ast, MessageLog log, _) = UnrealScriptCompiler.CompileAST(script, export.ClassName, export.Game);
+                //        if (ast is not Class c|| log.AllErrors.Any())
+                //        {
+                //            throw new Exception();
+                //        }
+
+                //        //foreach (State state in c.States)
+                //        //{
+                //        //    ast = UnrealScriptCompiler.CompileNewStateBodyAST(export, state, log, fileLib);
+                //        //    if (ast is not State || log.AllErrors.Any())
+                //        //    {
+                //        //        throw new Exception();
+                //        //    }
+                //        //}
+
+                //        //foreach (Function function in c.Functions)
+                //        //{
+                //        //    ast = UnrealScriptCompiler.CompileNewFunctionBodyAST(export, function, log, fileLib);
+                //        //    if (ast is not Function || log.AllErrors.Any())
+                //        //    {
+                //        //        throw new Exception();
+                //        //    }
+                //        //}
+
+                //        ast = UnrealScriptCompiler.CompileDefaultPropertiesAST(export, c.DefaultProperties, log, fileLib);
+                //        if (ast is not DefaultPropertiesBlock || log.AllErrors.Any())
+                //        {
+                //            throw new Exception();
+                //        }
+                //    }
+                //    catch (Exception e)
+                //    {
+                //        exportsWithDecompilationErrors.Add(new EntryStringPair(export, "Compilation Error!"));
+                //        break;
+                //    }
+                //}
 
                 var dlg = new ListDialog(exportsWithDecompilationErrors, "Compilation errors", "", pew)
                 {

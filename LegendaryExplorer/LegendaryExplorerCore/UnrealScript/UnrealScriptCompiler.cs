@@ -208,6 +208,62 @@ namespace LegendaryExplorerCore.UnrealScript
             return (null, log);
         }
 
+        public static (ASTNode astNode, MessageLog log) CompileStruct(ExportEntry export, string scriptText, FileLib lib, PackageCache packageCache = null)
+        {
+            (ASTNode astNode, MessageLog log, _) = CompileAST(scriptText, export.ClassName, export.Game);
+            if (log.AllErrors.IsEmpty())
+            {
+                if (astNode is not Struct strct)
+                {
+                    log.LogError("Tried to parse a Struct, but no Struct was found!");
+                    return (null, log);
+                }
+                if (!lib.IsInitialized)
+                {
+                    log.LogError("FileLib not initialized!");
+                    return (null, log);
+                }
+                if (export.Parent is not ExportEntry { ClassName: "Class" or "ScriptStruct" } parent)
+                {
+                    log.LogError(export.InstancedFullPath + " does not have a Class or ScriptStruct Export as a parent!");
+                    return (null, log);
+                }
+
+                try
+                {
+                    astNode = CompileNewStructAST(parent, strct, log, lib);
+                    if (astNode is null || log.AllErrors.Count > 0)
+                    {
+                        log.LogError("Parse failed!");
+                        return (astNode, log);
+                    }
+                }
+                catch (ParseException)
+                {
+                    log.LogError("Parse failed!");
+                    return (astNode, log);
+                }
+                catch (Exception exception)
+                {
+                    log.LogError($"Parse failed! Exception: {exception}");
+                    return (astNode, log);
+                }
+                try
+                {
+                    ScriptObjectCompiler.Compile(astNode, parent, export.GetBinaryData<UScriptStruct>(), packageCache);
+                    log.LogMessage("Compiled!");
+                    return (astNode, log);
+                }
+                catch (Exception exception) when (!LegendaryExplorerCoreLib.IsDebug)
+                {
+                    log.LogError($"Compilation failed! Exception: {exception}");
+                    return (astNode, log);
+                }
+            }
+
+            return (null, log);
+        }
+
         public static State CompileNewStateBodyAST(ExportEntry parentExport, State state, MessageLog log, FileLib lib)
         {
             var symbols = lib.GetSymbolTable();
@@ -233,12 +289,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
 
                 state.Outer = containingClass;
-                var validator = new ClassValidationVisitor(log, symbols, ValidationPass.TypesAndFunctionNamesAndStateNames);
-                validator.VisitNode(state);
-                validator.Pass = ValidationPass.ClassAndStructMembersAndFunctionParams;
-                validator.VisitNode(state);
-                validator.Pass = ValidationPass.BodyPass;
-                validator.VisitNode(state);
+                ClassValidationVisitor.RunAllPasses(state, log, symbols);
                 CodeBodyParser.ParseState(state, parentExport.Game, symbols, log);
 
                 return state;
@@ -343,7 +394,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
                 try
                 {
-                    Default__ObjectCompiler.Compile(propBlock, classExport, ref export, packageCache);
+                    ScriptPropertiesCompiler.CompileDefault__Object(propBlock, classExport, ref export, packageCache);
                     log.LogMessage("Compiled!");
                     return (astNode, log);
                 }
@@ -377,6 +428,58 @@ namespace LegendaryExplorerCore.UnrealScript
                 PropertiesBlockParser.Parse(propBlock, classExport.FileRef, symbols, log);
 
                 return propBlock;
+            }
+
+            return null;
+        }
+
+        public static Struct CompileNewStructAST(ExportEntry parentExport, Struct strct, MessageLog log, FileLib lib)
+        {
+            var symbols = lib.GetSymbolTable();
+            symbols.RevertToObjectStack();
+            if (symbols.TryGetType(parentExport.ObjectName.Instanced, out ObjectType containingObject))
+            {
+                if (!containingObject.Name.CaseInsensitiveEquals("Object"))
+                {
+                    symbols.GoDirectlyToStack(containingObject.GetScope());
+                }
+                symbols.RemoveSymbol(strct.Name);
+                symbols.RemoveType(strct.Name);
+                foreach (VariableType innerStruct in strct.TypeDeclarations)
+                {
+                    symbols.RemoveType(innerStruct.Name);
+                }
+
+                int stateIdx = containingObject.TypeDeclarations.FindIndex(s => s is Struct && s.Name.CaseInsensitiveEquals(strct.Name));
+                if (stateIdx == -1)
+                {
+                    containingObject.TypeDeclarations.Add(strct);
+                }
+                else
+                {
+                    containingObject.TypeDeclarations[stateIdx] = strct;
+                }
+
+                strct.Outer = containingObject;
+                ClassValidationVisitor.RunAllPasses(strct, log, symbols);
+                ParseDefaults(strct);
+
+                return strct;
+
+                void ParseDefaults(Struct s)
+                {
+                    symbols.PushScope(s.Name);
+                    foreach (Struct innerStruct in s.TypeDeclarations.OfType<Struct>())
+                    {
+                        ParseDefaults(innerStruct);
+                    }
+                    var defaults = s.DefaultProperties;
+                    if (defaults.Tokens is not null)
+                    {
+                        PropertiesBlockParser.Parse(defaults, parentExport.FileRef, symbols, log);
+                    }
+                    symbols.PopScope();
+                }
             }
 
             return null;

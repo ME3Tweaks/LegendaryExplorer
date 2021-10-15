@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using LegendaryExplorerCore.Helpers;
@@ -205,14 +206,14 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             DefaultPropertiesBlock defaults;
             try
             {
-                defaults = new DefaultPropertiesBlock(ConvertProperties(RemoveDefaultValues(obj.Defaults, pcc.Game), obj.Export, obj.Export.ObjectName.Instanced, true, fileLib));
+                defaults = new DefaultPropertiesBlock(ConvertProperties(RemoveDefaultValues(obj.Defaults.DeepClone(), pcc.Game), obj.Export, obj.Export.ObjectName.Instanced, true, fileLib));
             }
             catch (Exception e)
             {
                 throw new Exception($"Exception while removing default properties in export {obj.Export.InstancedFullPath} {obj.Export.FileRef.FilePath}", e);
             }
-
-            var node = new Struct(obj.Export.ObjectName.Instanced, parent, obj.StructFlags, vars, types, defaults)
+            
+            var node = new Struct(obj.Export.ObjectName.Instanced, parent, obj.StructFlags, vars, types, defaults, obj.Defaults)
             {
                 FilePath = pcc.FilePath,
                 UIndex = obj.Export.UIndex

@@ -91,6 +91,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 var name = Consume(TokenType.Word);
                 if (name == null) return null;
+                if (name.Value.CaseInsensitiveEquals("None"))
+                {
+                    TypeError("'None' cannot be used as a variable name!", name);
+                }
 
                 if (Consume(TokenType.LeftSqrBracket) != null)
                 {

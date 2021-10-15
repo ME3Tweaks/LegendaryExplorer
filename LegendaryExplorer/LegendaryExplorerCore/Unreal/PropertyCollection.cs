@@ -393,7 +393,7 @@ namespace LegendaryExplorerCore.Unreal
                     return props;
             }
 
-            PropertyCollection defaultProps = GlobalUnrealObjectInfo.getDefaultStructValue(structValueLookupGame, structType, stripTransients, packageCache);
+            PropertyCollection defaultProps = GlobalUnrealObjectInfo.getDefaultStructValue(structValueLookupGame, structType, stripTransients, packageCache, false);
             if (defaultProps == null)
             {
                 int startPos = (int)stream.Position;
@@ -487,7 +487,7 @@ namespace LegendaryExplorerCore.Unreal
         {
             IMEPackage pcc = export.FileRef;
             long arrayOffset = IsInImmutable ? stream.Position : stream.Position - 24;
-            ArrayType arrayType = GlobalUnrealObjectInfo.GetArrayType(pcc.Game, name, enclosingType, parsingEntry);
+            ArrayType arrayType = GlobalUnrealObjectInfo.GetArrayType(pcc.Game, name, enclosingType == "ScriptStruct" ? export.ObjectName : enclosingType , parsingEntry);
             //Debug.WriteLine("Reading array length at 0x" + stream.Position.ToString("X5"));
             int count = stream.ReadInt32();
             switch (arrayType)

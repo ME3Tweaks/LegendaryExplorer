@@ -26,6 +26,7 @@ namespace LegendaryExplorerCore.Unreal
             return ComposeLocalToWorld(location, rotator, scale, pivot);
         }
 
+        //inverse of this method is Matrix4x4::UnrealDecompose
         public static Matrix4x4 ComposeLocalToWorld(Vector3 location, Rotator rotation, Vector3 scale, Vector3 pivot = default)
         {
             double pitch = rotation.Pitch.UnrealRotationUnitsToRadians();

@@ -807,6 +807,14 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             return true;
         }
 
+        public void RemoveType(string name)
+        {
+            if (Types.ContainsKey(name))
+            {
+                Types.Remove(name);
+            }
+        }
+
         public bool TryAddSymbol(string symbol, ASTNode node)
         {
             if (!SymbolExistsInCurrentScope(symbol))

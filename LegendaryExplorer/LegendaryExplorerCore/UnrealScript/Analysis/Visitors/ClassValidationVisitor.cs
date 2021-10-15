@@ -28,6 +28,16 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public ValidationPass Pass;
 
+        public static void RunAllPasses(ASTNode node, MessageLog log, SymbolTable symbols)
+        {
+            var validator = new ClassValidationVisitor(log, symbols, ValidationPass.TypesAndFunctionNamesAndStateNames);
+            node.AcceptVisitor(validator);
+            validator.Pass = ValidationPass.ClassAndStructMembersAndFunctionParams;
+            node.AcceptVisitor(validator);
+            validator.Pass = ValidationPass.BodyPass;
+            node.AcceptVisitor(validator);
+        }
+
         public ClassValidationVisitor(MessageLog log, SymbolTable symbols, ValidationPass pass)
         {
             Log = log ?? new MessageLog();
@@ -294,8 +304,15 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     case Class {IsComponent: true}:
                         node.Flags |= EPropertyFlags.Component;
                         break;
-                    case Struct strct when !node.Flags.Has(EPropertyFlags.Native) && StructNeedsCtorLink(strct, new Stack<Struct> { strct }):
-                        node.Flags |= EPropertyFlags.NeedCtorLink;
+                    case Struct strct:
+                        if (!node.Flags.Has(EPropertyFlags.Native) && StructNeedsCtorLink(strct, new Stack<Struct> { strct }))
+                        {
+                            node.Flags |= EPropertyFlags.NeedCtorLink;
+                        }
+                        if (strct.Flags.Has(ScriptStructFlags.Transient))
+                        {
+                            node.Flags |= EPropertyFlags.Transient;
+                        }
                         break;
                 }
 
@@ -416,9 +433,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 {
                     Success &= typeDeclaration.AcceptVisitor(this);
                 }
-
-                // TODO: can all types of variable declarations be supported in a struct?
-                // what does the parser let through?
+                
                 foreach (VariableDeclaration decl in node.VariableDeclarations)
                 {
                     decl.Outer = node;
@@ -435,8 +450,10 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
             if (Pass == ValidationPass.BodyPass)
             {
-                if (node.Parent != null && ((Struct)node.Parent).SameOrSubStruct(node.Name))
-                    return Error($"Extending from '{node.Parent.Name}' causes circular extension!", node.Parent.StartPos, node.Parent.EndPos);
+                if (node.Parent is Struct parentStruct && parentStruct.SameOrSubStruct(node.Name))
+                {
+                    return Error($"Extending from '{parentStruct.Name}' causes circular extension!", parentStruct.StartPos, parentStruct.EndPos);
+                }
 
                 //second pass to resolve EPropertyFlags.NeedCtorLink for Struct Properties
                 foreach (VariableDeclaration decl in node.VariableDeclarations)

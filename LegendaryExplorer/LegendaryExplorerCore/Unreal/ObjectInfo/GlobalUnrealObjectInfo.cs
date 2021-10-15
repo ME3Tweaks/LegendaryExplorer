@@ -357,27 +357,27 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         /// <param name="game">Game to pull info from</param>
         /// <param name="typeName">Struct type name</param>
         /// <param name="stripTransients">Strip transients from the struct</param>
+        /// <param name="packageCache"></param>
+        /// <param name="shouldReturnClone">Return a deep copy of the struct</param>
         /// <returns></returns>
-        public static PropertyCollection getDefaultStructValue(MEGame game, string typeName, bool stripTransients, PackageCache packageCache = null)
+        public static PropertyCollection getDefaultStructValue(MEGame game, string typeName, bool stripTransients, PackageCache packageCache = null, bool shouldReturnClone = true)
         {
-            switch (game)
+            PropertyCollection props = game switch
             {
-
-                case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache)?.DeepClone();
-                case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache)?.DeepClone();
-                case MEGame.ME3:
-                case MEGame.UDK:
-                    return ME3UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache)?.DeepClone();
-                case MEGame.LE1:
-                    return LE1UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache)?.DeepClone();
-                case MEGame.LE2:
-                    return LE2UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache)?.DeepClone();
-                case MEGame.LE3:
-                    return LE3UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache)?.DeepClone();
+                MEGame.ME1 => ME1UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache),
+                MEGame.ME2 => ME2UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache),
+                MEGame.ME3 => ME3UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache),
+                MEGame.UDK => ME3UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache),
+                MEGame.LE1 => LE1UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache),
+                MEGame.LE2 => LE2UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache),
+                MEGame.LE3 => LE3UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache),
+                _ => null
+            };
+            if (shouldReturnClone && props is not null)
+            {
+                return props.DeepClone();
             }
-            return null;
+            return props;
         }
 
         public static OrderedMultiValueDictionary<NameReference, PropertyInfo> GetAllProperties(MEGame game, string typeName)

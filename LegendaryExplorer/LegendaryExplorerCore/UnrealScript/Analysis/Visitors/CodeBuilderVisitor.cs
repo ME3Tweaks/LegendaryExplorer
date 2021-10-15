@@ -1702,6 +1702,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 specs.Add("config");
             }
 
+            if (flags.Has(EPropertyFlags.EditInline))
+            {
+                specs.Add(nameof(EPropertyFlags.EditInline).ToLowerInvariant());
+            }
+
             if (flags.Has(EPropertyFlags.Localized))
             {
                 specs.Add("localized");
@@ -1861,6 +1866,48 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             if (flags.Has(EPropertyFlags.CrossLevelPassive))
             {
                 specs.Add("crosslevelpassive");
+            }
+
+            //BioWare specific flags
+            if (flags.Has(EPropertyFlags.RsxStorage))
+            {
+                specs.Add("rsxstorage");
+            }
+            if (flags.Has(EPropertyFlags.UnkFlag1))
+            {
+                specs.Add(nameof(EPropertyFlags.UnkFlag1).ToLowerInvariant());
+            }
+            if (flags.Has(EPropertyFlags.LoadForCooking))
+            {
+                specs.Add("loadforcooking");
+            }
+            if (flags.Has(EPropertyFlags.BioNonShip))
+            {
+                specs.Add("biononship");
+            }
+            if (flags.Has(EPropertyFlags.BioIgnorePropertyAdd))
+            {
+                specs.Add("bioignorepropertyadd");
+            }
+            if (flags.Has(EPropertyFlags.SortBarrier))
+            {
+                specs.Add("sortbarrier");
+            }
+            if (flags.Has(EPropertyFlags.ClearCrossLevel))
+            {
+                specs.Add("clearcrosslevel");
+            }
+            if (flags.Has(EPropertyFlags.BioSave))
+            {
+                specs.Add("biosave");
+            }
+            if (flags.Has(EPropertyFlags.BioExpanded))
+            {
+                specs.Add("bioexpanded");
+            }
+            if (flags.Has(EPropertyFlags.BioAutoGrow))
+            {
+                specs.Add("bioautogrow");
             }
 
             foreach (string spec in specs)

@@ -1063,13 +1063,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     break;
                 case ArrayPropertyBase ap:
                     {
-                        ArrayType at = GlobalUnrealObjectInfo.GetArrayType(parsingExport.FileRef.Game, prop.Name, parent.Property is StructProperty sp ? sp.StructType : parsingExport.ClassName, parsingExport);
+                        var containingType = parent.Property is StructProperty pStructProp ? pStructProp.StructType : parsingExport.ClassName;
+                        if (containingType is "ScriptStruct")
+                        {
+                            containingType = parsingExport.ObjectName;
+                        }
+                        ArrayType at = GlobalUnrealObjectInfo.GetArrayType(parsingExport.FileRef.Game, prop.Name, containingType, parsingExport);
 
-                        if (at == ArrayType.Struct || at == ArrayType.Enum || at == ArrayType.Object)
+                        if (at is ArrayType.Struct or ArrayType.Enum or ArrayType.Object)
                         {
                             // Try to get the type of struct array
                             // This code doesn't work for nested structs as the containing class is different
-                            var containingType = parent.Property is StructProperty pStructProp ? pStructProp.StructType : parsingExport.ClassName;
                             PropertyInfo p = GlobalUnrealObjectInfo.GetPropertyInfo(parsingExport.FileRef.Game, prop.Name, containingType);
                             if (p != null)
                             {
