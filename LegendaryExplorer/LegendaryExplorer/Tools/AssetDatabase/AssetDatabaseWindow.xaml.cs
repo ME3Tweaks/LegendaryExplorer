@@ -1684,6 +1684,12 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     showthis = false;
                 }
 
+                if (showthis && menu_fltrMatDistortion.IsChecked && mr.MatSettings.FirstOrDefault(x => x.Name == "bUsesDistortion" && x.Parm2 == "True") == null)
+                {
+                    showthis = false;
+                }
+
+
                 if (showthis && menu_fltrMatNoDLC.IsChecked && mr.IsDLCOnly)
                 {
                     showthis = false;
@@ -2195,6 +2201,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     break;
                 case "Unlit":
                     menu_fltrMatUnlit.IsChecked = !menu_fltrMatUnlit.IsChecked;
+                    break;
+                case "UsesDistortion":
+                    menu_fltrMatDistortion.IsChecked = !menu_fltrMatDistortion.IsChecked;
                     break;
                 case "SkM":
                     menu_fltrMatSkM.IsChecked = !menu_fltrMatSkM.IsChecked;

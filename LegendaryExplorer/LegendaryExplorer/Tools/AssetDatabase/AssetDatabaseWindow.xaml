@@ -143,6 +143,9 @@
                             <MenuItem Name="menu_fltrMat2side" Header="Only 2 sided Materials" Command="{Binding FilterMatCommand}" CommandParameter="Twoside" ToolTip="Show 2 sided materials only." StaysOpenOnClick="True"/>
                             <MenuItem Name="menu_fltrMat1side" Header="Only Backface culled (1 side)" Command="{Binding FilterMatCommand}" CommandParameter="Oneside" ToolTip="Show 1 sided materials only." StaysOpenOnClick="True"/>
                             <Separator/>
+                            <MenuItem Name="menu_fltrMatDistortion" Header="Uses Distortion" Command="{Binding FilterMatCommand}" CommandParameter="UsesDistortion" ToolTip="Show materials with bUsesDistortion only." StaysOpenOnClick="True"/>
+
+                            <Separator/>
                             <MenuItem Name="menu_fltrMatColor" Header="Must have color setting" Command="{Binding FilterMatCommand}" CommandParameter="Vcolor" ToolTip="Show if has color parameter" StaysOpenOnClick="True"/>
                             <MenuItem Name="menu_fltrMatText" Header="Must have texture setting" Command="{Binding FilterMatCommand}" CommandParameter="TextP" ToolTip="Show only if has texture parameter." StaysOpenOnClick="True"/>
                             <MenuItem Name="menu_fltrMatTalk" Header="Must have talk scalar setting" Command="{Binding FilterMatCommand}" CommandParameter="TalkS" ToolTip="Show only if has talk scalar." StaysOpenOnClick="True"/>
