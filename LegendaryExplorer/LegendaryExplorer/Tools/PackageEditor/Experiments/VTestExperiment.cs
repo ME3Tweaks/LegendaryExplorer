@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Tools.PathfindingEditor;
+using LegendaryExplorer.Tools.Sequence_Editor;
 using LegendaryExplorer.Tools.Sequence_Editor.Experiments;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
@@ -39,7 +40,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             public string[] vTestLevels = new[]
             {
                 // Comment/uncomment these to select which files to run on
-                //"PRC2",
+                "PRC2",
                 "PRC2AA"
             };
 
@@ -1765,7 +1766,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         var assetsToReference = le1File.Exports.Where(x => assetsToEnsureReferencedInSim.Contains(x.InstancedFullPath));
                         AddWorldReferencedObjects(le1File, assetsToReference);
 
-                        foreach (var exp in le1File.Exports.Where(x => x.ClassName == "Sequence"))
+                        foreach (var exp in le1File.Exports.Where(x => x.ClassName == "Sequence").ToList())
                         {
                             var seqName = exp.GetProperty<StrProperty>("ObjName")?.Value;
 
@@ -1831,6 +1832,42 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 KismetHelper.CreateOutputLink(attachEvents[0], "Out", attachEvents[1]); // Make it serial
                             }
                             #endregion
+
+                            #region Issue Rally Command at map start to ensure squadmates don't split up
+                            else if (seqName == "TA_V3_Gametype_Handler")
+                            {
+                                // Time Trial
+                                var startObj = FindSequenceObjectByPosition(exp, 712, 2256, "BioSeqAct_SetActionState");
+                                var newObj = SequenceObjectCreator.CreateSequenceObject(le1File, "LEXSeqAct_SquadCommand", MEGame.LE1, vTestOptions.cache);
+                                KismetHelper.AddObjectToSequence(newObj, exp);
+                                KismetHelper.CreateOutputLink(startObj, "Out", newObj); // RALLY
+                            }
+                            else if (seqName == "Check_Capping_Completion")
+                            {
+                                // Survival
+                                var startObj = FindSequenceObjectByPosition(exp, 1992, 2376, "BioSeqAct_SetActionState");
+                                var newObj = SequenceObjectCreator.CreateSequenceObject(le1File, "LEXSeqAct_SquadCommand", MEGame.LE1, vTestOptions.cache);
+                                KismetHelper.AddObjectToSequence(newObj, exp);
+                                KismetHelper.CreateOutputLink(startObj, "Out", newObj); // RALLY
+                            }
+                            else if (seqName == "Vampire_Mode_Handler")
+                            {
+                                // Survival
+                                var startObj = FindSequenceObjectByPosition(exp, 1040, 2304, "BioSeqAct_SetActionState");
+                                var newObj = SequenceObjectCreator.CreateSequenceObject(le1File, "LEXSeqAct_SquadCommand", MEGame.LE1, vTestOptions.cache);
+                                KismetHelper.AddObjectToSequence(newObj, exp);
+                                KismetHelper.CreateOutputLink(startObj, "Out", newObj); // RALLY
+                            }
+                            else if (seqName == "Cap_And_Hold_Point")
+                            {
+                                // Capture
+                                var startObj = FindSequenceObjectByPosition(exp, 584, 2200, "BioSeqAct_SetActionState");
+                                var newObj = SequenceObjectCreator.CreateSequenceObject(le1File, "LEXSeqAct_SquadCommand", MEGame.LE1, vTestOptions.cache);
+                                KismetHelper.AddObjectToSequence(newObj, exp);
+                                KismetHelper.CreateOutputLink(startObj, "Out", newObj); // RALLY
+                            }
+                            
+                            #endregion
                         }
                     }
                     break;
@@ -1874,6 +1911,24 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     }
                     break;
             }
+        }
+
+        private static ExportEntry FindSequenceObjectByPosition(ExportEntry sequence, int posX, int posY, string className)
+        {
+            var seqObjs = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects")
+                .Select(x => x.ResolveToEntry(sequence.FileRef)).OfType<ExportEntry>().Where(x => x.ClassName == className).ToList();
+
+            foreach (var obj in seqObjs)
+            {
+                var props = obj.GetProperties();
+                if (props.GetProp<IntProperty>("ObjPosX")?.Value == posX &&
+                    props.GetProp<IntProperty>("ObjPosY")?.Value == posY)
+                {
+                    return obj;
+                }
+            }
+
+            return null;
         }
 
         private static void ReinstateCoverSlots(IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
