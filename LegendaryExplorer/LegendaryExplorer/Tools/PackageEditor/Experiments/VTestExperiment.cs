@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition.Primitives;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -39,7 +40,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             public string[] vTestLevels = new[]
             {
                 // Comment/uncomment these to select which files to run on
-                //"PRC2",
+                "PRC2",
                 "PRC2AA"
             };
 
@@ -103,6 +104,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             "PrefabInstance",
             "CameraActor",
             //"Terrain", // Do not port in - we will specifically port this with a special donor system
+            //"Model", // This is ported in on a case-by-case basis.
 
             // Pass 2
             "StaticMeshActor",
@@ -204,7 +206,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         public static async void VTest(PackageEditorWindow pe, bool? installAndBootGame = null)
         {
             // Prep
-            EntryImporter.NonDonorMaterials.Clear();
+            EntryImporter.NonDonorItems.Clear();
             actorTypesNotPorted = new List<string>();
 
             if (installAndBootGame == null)
@@ -330,17 +332,17 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     {
                         var levelName = Path.GetFileNameWithoutExtension(f);
                         //if (levelName.CaseInsensitiveEquals("BIOA_PRC2_CCTHAI"))
-                        PortVTestLevel(vTestLevel, levelName, vTestOptions, levelName == "BIOA_" + vTestLevel, true);
+                        PortVTestLevel(vTestLevel, levelName, vTestOptions, levelName == "BIOA_" + vTestLevel, ShouldPortModel(levelName.ToUpper()), true);
                     }
                 }
             }
 
             vTestOptions.cache.ReleasePackages(true); // Dump everything out of memory
 
-            Debug.WriteLine("Non donated materials: ");
-            foreach (var nonDonorMaterial in EntryImporter.NonDonorMaterials)
+            Debug.WriteLine("Non donated particlesystems: ");
+            foreach (var nonDonorItems in EntryImporter.NonDonorItems)
             {
-                Debug.WriteLine(nonDonorMaterial);
+                Debug.WriteLine(nonDonorItems);
             }
 
             Debug.WriteLine("Actor classes that were not ported:");
@@ -385,6 +387,16 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
             }
 
+        }
+
+        private static bool ShouldPortModel(string packageName)
+        {
+            switch (packageName)
+            {
+                case "BIOA_PRC2_CCSIM":
+                    return true;
+            }
+            return false;
         }
 
         private static void VTestCheckTextures(IMEPackage mePackage, VTestOptions vTestOptions)
@@ -435,7 +447,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// <param name="pe"></param>
         /// <param name="syncBioWorldInfo"></param>
         /// <param name="portMainSequence"></param>
-        private static void PortVTestLevel(string mapName, string sourceName, VTestOptions vTestOptions, bool syncBioWorldInfo = false, bool portMainSequence = false)
+        private static void PortVTestLevel(string mapName, string sourceName, VTestOptions vTestOptions, bool syncBioWorldInfo = false, bool portModel = false, bool portMainSequence = false)
         {
             vTestOptions.cache.ReleasePackages(x => Path.GetFileNameWithoutExtension(x) != "SFXGame" && Path.GetFileNameWithoutExtension(x) != "Engine"); //Reduce memory overhead
             var outputFile = $@"{PAEMPaths.VTest_FinalDestDir}\{sourceName.ToUpper()}.pcc";
@@ -531,17 +543,47 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     Debug.WriteLine($"No sequence to port in {sourceName}");
                 }
-
             }
 
-            PostPortingCorrections(me1File, le1File, vTestOptions);
+            // Port in the level's Model if requested
+            if (portModel)
+            {
+                var le1PL = le1File.FindExport("TheWorld.PersistentLevel");
+                var m1Level = ObjectBinary.From<Level>(me1File.FindExport("TheWorld.PersistentLevel"));
+                var l1Level = ObjectBinary.From<Level>(le1PL);
 
+                if (m1Level.Model != 0)
+                {
+                    var model = me1File.GetUExport(m1Level.Model);
+                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, model, le1File, le1PL, true, rop, out var portedModel);
+
+                    l1Level.Model = portedModel.UIndex;
+                    List<UIndex> modelComponents = new List<UIndex>();
+                    foreach (var mc in me1File.Exports.Where(x => x.ClassName == "ModelComponent"))
+                    {
+                        var mcb = ObjectBinary.From<ModelComponent>(mc);
+                        if (mcb.Model == portedModel.UIndex)
+                        {
+                            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, mc, le1File, le1PL, true, rop, out var modelComp);
+                            modelComponents.Add(modelComp.UIndex);
+                        }
+                    }
+
+                    l1Level.ModelComponents = modelComponents.ToArray();
+                    le1PL.WriteBinary(l1Level);
+
+                }
+
+            }
 
             if (vTestOptions.useDynamicLighting)
             {
                 vTestOptions.packageEditorWindow.BusyText = $"Generating Dynamic Lighting on\n{levelName}";
                 PackageEditorExperimentsS.CreateDynamicLighting(le1File, true);
             }
+
+            // This must come after dynamic lighting as we correct a few dynamic lightings
+            PostPortingCorrections(me1File, le1File, vTestOptions);
 
             if (vTestOptions.debugBuild)
             {
@@ -571,6 +613,51 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 Debug.WriteLine($"RCP: [WARN] {err.Entry.InstancedFullPath} {err.Message}");
             }
+        }
+
+        private static string[] ParticleMeshesToFix = new[]
+        {
+            "Space_Debris",
+            "Space_Debris_Lit",
+        };
+
+        private static void ConvertParticleModuleTypeDataMesh(ExportEntry le1Entry, IMEPackage me1File, VTestOptions vTestOptions)
+        {
+            var psName = le1Entry.ParentName;
+            if (!ParticleMeshesToFix.Contains(psName))
+            {
+                return; // Do not fix
+            }
+
+
+            var me1PM = me1File.FindExport(le1Entry.InstancedFullPath);
+            var me1Meshes = me1PM.GetProperty<ArrayProperty<ObjectProperty>>("m_Meshes");
+            if (me1Meshes.Count > 1)
+            {
+                Debugger.Break(); // pls no
+            }
+
+            var me1Mesh = me1Meshes[0].ResolveToEntry(me1File);
+            //if (me1Mesh is ImportEntry)
+            //    Debugger.Break(); // sigh...
+
+            Debug.WriteLine($@"Converting TypeDataMesh {le1Entry.InstancedFullPath}");
+            var rop = new RelinkerOptionsPackage()
+            {
+                Cache = vTestOptions.cache,
+                TargetGameDonorDB = vTestOptions.objectDB
+            };
+
+            var le1Props = le1Entry.GetProperties();
+            var targetMesh = le1Entry.FileRef.FindEntry(me1Mesh.InstancedFullPath);
+            if (targetMesh == null)
+            {
+                EntryExporter.PortParents(me1Mesh, le1Entry.FileRef);
+                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, me1Mesh, le1Entry.FileRef, le1Entry.FileRef.FindEntry(me1Mesh.Parent.InstancedFullPath), true, rop, out targetMesh);
+            }
+
+            le1Props.AddOrReplaceProp(new ObjectProperty(targetMesh, "Mesh"));
+            le1Entry.WriteProperties(le1Props);
         }
 
         private static StructProperty ConvertCoverSlot(StructProperty me1CoverSlotProps, IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
@@ -799,7 +886,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         fliProps.Add(new EnumProperty(destAction, "ECoverAction", MEGame.LE1, "DestAction"));
                         le1Items.Add(new StructProperty("FireLinkItem", fliProps, isImmutable: true));
                         generated++;
-                        Debug.WriteLine($"Generated FLI {generated}. DAC: {destActions.Count}, SAC: {srcActions.Count}");
+                        //Debug.WriteLine($"Generated FLI {generated}. DAC: {destActions.Count}, SAC: {srcActions.Count}");
                     }
                 }
             }
@@ -1033,11 +1120,19 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         #region Correction methods
         public static void PrePortingCorrections(IMEPackage sourcePackage, VTestOptions vTestOptions)
         {
+            // FILE SPECIFIC
+            var sourcePackageName = Path.GetFileNameWithoutExtension(sourcePackage.FilePath).ToUpper();
+            if (sourcePackageName == "BIOA_PRC2_CCSIM03_LAY")
+            {
+                sourcePackage.FindExport("TheWorld.PersistentLevel.BioDoor_1.SkeletalMeshComponent_1").RemoveProperty("Materials"); // The materials changed in LE so using the original set is wrong. Remove this property to prevent porting donors for it
+            }
+
+
+
             // Strip static mesh light maps since they don't work crossgen. Strip them from
             // the source so they don't port
             foreach (var exp in sourcePackage.Exports)
             {
-
                 PruneUnusedProperties(exp);
                 #region Remove Light and Shadow Maps
                 if (exp.ClassName == "StaticMeshComponent")
@@ -1505,26 +1600,59 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         private static void CopyOverTerrainSlopes(IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
         {
-            var mSetups = me1File.Exports.Where(x=>x.ClassName == "TerrainLayerSetup").ToList();
-            var lSetups = le1File.Exports.Where(x=>x.ClassName == "TerrainLayerSetup").ToList();
+            //var mTerrain = me1File.Exports.First(x => x.ClassName == "Terrain");
+            //var lTerrain = le1File.Exports.First(x => x.ClassName == "Terrain");
 
-            for (int i = 0; i < mSetups.Count; i++)
-            {
-                var mSetup = mSetups[i].GetProperties();
-                var lSetup = lSetups[i].GetProperties();
-                var mMats = mSetup.GetProp<ArrayProperty<StructProperty>>("Materials");
-                var lMats = lSetup.GetProp< ArrayProperty<StructProperty>>("Materials");
+            //var mLayers = mTerrain.GetProperty<ArrayProperty<StructProperty>>("Layers");
+            //var lLayers = lTerrain.GetProperty<ArrayProperty<StructProperty>>("Layers");
 
-                for (int j = 0; j < mMats.Count; j++)
-                {
-                    var mMat = mMats[j];
-                    var lMat = lMats[j];
-                    mMat.GetProp<ObjectProperty>("Material").Value = lMat.GetProp<ObjectProperty>("Material").Value;
-                }
+            //foreach (var lLayer in lLayers)
+            //{
+            //    // Find matching mLayer
+            //    var lSetup = lLayer.GetProp<ObjectProperty>("Setup").ResolveToEntry(le1File) as ExportEntry;
+            //    ExportEntry mSetup = null;
+            //    foreach (var mSetupStruct in mLayers)
+            //    {
+            //        if (mSetupStruct.GetProp<ObjectProperty>("Setup").ResolveToEntry(me1File) is ExportEntry mSetupTmp && mSetupTmp.InstancedFullPath == lSetup.InstancedFullPath)
+            //        {
+            //            mSetup = mSetupTmp;
+            //            break;
+            //        }
+            //    }
 
-                lSetup.AddOrReplaceProp(mMats);
-                lSetups[i].WriteProperties(lSetup);
-            }
+            //    if (mSetup == null)
+            //        continue; // Don't update this
+
+
+
+            //}
+
+            //for (int i = 0; i < mSetups.Count; i++)
+            //{
+            //    var lSetup = lSetups[i].GetProperties();
+
+            //    // Find matching ME1 setup
+            //    ExportEntry matchingSetup = null;
+            //    foreach (var mSetup in mSetups)
+            //    {
+            //        if 
+            //    }
+
+            //    var mSetup = mSetups[i].GetProperties();
+            //    var mMats = mSetup.GetProp<ArrayProperty<StructProperty>>("Materials");
+            //    var lMats = lSetup.GetProp<ArrayProperty<StructProperty>>("Materials");
+
+            //    for (int j = 0; j < Math.Min(mMats.Count, lMats.Count); j++)
+            //    {
+            //        var mMat = mMats[j];
+            //        var lMat = lMats[j];
+            //        lMats[j] = mMat;
+            //        lMats[j].GetProp<ObjectProperty>("Material").Value = lMat.GetProp<ObjectProperty>("Material").Value;
+            //    }
+
+            //    lSetup.AddOrReplaceProp(mMats);
+            //    lSetups[i].WriteProperties(lSetup);
+            //}
         }
 
         private static void PostPortingCorrections(IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
@@ -1559,12 +1687,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             if (fName.CaseInsensitiveEquals("BIOA_PRC2_CCLava"))
             {
                 PortInCorrectedTerrain(le1File, "CCLava.Terrain_1", "BIOA_LAV60_00_LAY.pcc", vTestOptions);
-                CopyOverTerrainSlopes(me1File, le1File, vTestOptions);
+                //CopyOverTerrainSlopes(me1File, le1File, vTestOptions);
             }
             else if (fName.CaseInsensitiveEquals("BIOA_PRC2AA_00_LAY"))
             {
                 PortInCorrectedTerrain(le1File, "PRC2AA.Terrain_1", "BIOA_UNC20_00_LAY.pcc", vTestOptions);
-                CopyOverTerrainSlopes(me1File, le1File, vTestOptions);
+
+                // Remove some slopes to match original
+                //CopyOverTerrainSlopes(me1File, le1File, vTestOptions);
             }
             else if (fName.CaseInsensitiveEquals("BIOA_PRC2_CCSIM05_DSG"))
             {
@@ -1639,6 +1769,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 var interpData = le1File.FindExport("prc2_ahern_N.Node_Data_Sequence.InterpData_7");
                 interpData.WriteProperty(new FloatProperty(9.516706f, "InterpLength"));
             }
+            else if (fName.CaseInsensitiveEquals("BIOA_PRC2AA"))
+            {
+                // Improved loader
+                InstallVTestHelperSequenceViaEvent(le1File, "TheWorld.PersistentLevel.Main_Sequence", "HelperSequences.LevelLoadTextureStreaming", vTestOptions);
+            }
+
+
 
             // Not an else statement as this is level generic
             if (fName.StartsWith("BIOA_PRC2AA"))
@@ -1657,7 +1794,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 foreach (var pl in le1File.Exports.Where(x => x.IsA("LightComponent")))
                 {
                     var brightness = pl.GetProperty<FloatProperty>("Brightness")?.Value ?? 1;
-                    pl.WriteProperty(new FloatProperty(brightness * .05f, "Brightness"));
+                    pl.WriteProperty(new FloatProperty(brightness * .3f, "Brightness"));
                 }
             }
 
@@ -1693,6 +1830,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 props.AddOrReplaceProp(new BoolProperty(true, "m_bIgnorePooling"));
                 props.AddOrReplaceProp(new EnumProperty("BIO_VFX_PRIORITY_ALWAYS", "EBioVFXPriority", MEGame.LE1, "ePriority"));
                 glitchedToDeath.WriteProperties(props);
+            }
+
+            foreach (var vfx in le1File.Exports.ToList()) // This might modify the list
+            {
+                if (vfx.ClassName == "ParticleModuleTypeDataMesh")
+                {
+                    ConvertParticleModuleTypeDataMesh(vfx, me1File, vTestOptions);
+                }
             }
         }
 
@@ -1871,6 +2016,35 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             var exp = le1File.FindExport(cto);
                             exp.WriteProperty(new EnumProperty("COLLIDE_BlockAll", "ECollisionType", MEGame.LE1, "CollisionType"));
                         }
+                    }
+                    break;
+                case "BIOA_PRC2_CCSIM03_LAY":
+                    {
+                        // The door lighting channels needs fixed up.
+                        var door = le1File.FindExport(@"TheWorld.PersistentLevel.BioDoor_1.SkeletalMeshComponent_1");
+                        var channels = door.GetProperty<StructProperty>("LightingChannels");
+                        channels.GetProp<BoolProperty>("Static").Value = false;
+                        channels.GetProp<BoolProperty>("Dynamic").Value = false;
+                        channels.GetProp<BoolProperty>("CompositeDynamic").Value = false;
+                        door.WriteProperty(channels);
+                    }
+                    break;
+                case "BIOA_PRC2_CCSIM_ART":
+                    {
+                        // Lights near the door need fixed up.
+                        var doorPL = le1File.FindExport(@"TheWorld.PersistentLevel.StaticLightCollectionActor_11.PointLight_0_LC");
+                        var lc = doorPL.GetProperty<StructProperty>("LightColor");
+                        lc.GetProp<ByteProperty>("B").Value = 158;
+                        lc.GetProp<ByteProperty>("G").Value = 194;
+                        lc.GetProp<ByteProperty>("R").Value = 143;
+                        doorPL.WriteProperty(lc);
+
+                        var doorSL = le1File.FindExport(@"TheWorld.PersistentLevel.StaticLightCollectionActor_11.SpotLight_7_LC");
+                        lc = doorSL.GetProperty<StructProperty>("LightColor");
+                        lc.GetProp<ByteProperty>("B").Value = 215;
+                        lc.GetProp<ByteProperty>("G").Value = 203;
+                        lc.GetProp<ByteProperty>("R").Value = 195;
+                        doorSL.WriteProperty(lc);
                     }
                     break;
             }
