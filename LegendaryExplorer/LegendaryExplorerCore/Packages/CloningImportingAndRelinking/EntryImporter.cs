@@ -301,7 +301,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         }
 
         // CROSSGEN-V HACKS!
-        public static List<string> NonDonorMaterials = new List<string>();
+        public static List<string> NonDonorItems = new List<string>();
         private static string[] badlyNamedME1Assets = new[]
         {
             "BIOA_JUG80_T.JUG80_SAIL",
@@ -321,7 +321,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         public static ExportEntry ImportExport(IMEPackage destPackage, ExportEntry sourceExport, int link, RelinkerOptionsPackage rop)
         {
             //Debug.WriteLine($"Importing {sourceExport.InstancedFullPath}");
-            //if (sourceExport.InstancedFullPath.Contains("Nor10_StaticMesh", StringComparison.InvariantCultureIgnoreCase))
+            //if (sourceExport.ObjectName.Name.StartsWith("Terrain", StringComparison.InvariantCultureIgnoreCase))
             //    Debugger.Break();
 #if DEBUG
             // CROSSGEN - WILL NEED HEAVY REWORK IF THIS IS TO BE MERGED TO BETA
@@ -436,12 +436,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                 if (!usingDonor && !ifp.StartsWith(@"TheWorld"))
                 {
-                    if (sourceExport.ClassName == "Material")
+                    if (sourceExport.ClassName == "ParticleSystem")
                     {
                         Debug.WriteLine($@"Not ported using donor: {sourceExport.InstancedFullPath} ({sourceExport.ClassName})");
-                        if (!NonDonorMaterials.Contains(sourceExport.InstancedFullPath))
+                        if (!NonDonorItems.Contains(sourceExport.InstancedFullPath))
                         {
-                            NonDonorMaterials.Add(sourceExport.InstancedFullPath);
+                            NonDonorItems.Add(sourceExport.InstancedFullPath);
                         }
                     }
                 }

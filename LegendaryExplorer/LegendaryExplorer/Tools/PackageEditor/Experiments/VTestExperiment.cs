@@ -1832,13 +1832,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 glitchedToDeath.WriteProperties(props);
             }
 
-            foreach (var vfx in le1File.Exports.ToList()) // This might modify the list
-            {
-                if (vfx.ClassName == "ParticleModuleTypeDataMesh")
-                {
-                    ConvertParticleModuleTypeDataMesh(vfx, me1File, vTestOptions);
-                }
-            }
+            // We have to use donors instead cause particle systems are just too different.
+            //foreach (var vfx in le1File.Exports.ToList()) // This might modify the list
+            //{
+            //    if (vfx.ClassName == "ParticleModuleTypeDataMesh")
+            //    {
+            //        ConvertParticleModuleTypeDataMesh(vfx, me1File, vTestOptions);
+            //    }
+            //}
         }
 
         /// <summary>
