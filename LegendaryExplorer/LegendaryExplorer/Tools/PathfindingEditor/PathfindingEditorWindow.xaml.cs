@@ -5,18 +5,21 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using System.Numerics;
+using System.Threading;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Nodes;
 using DashStyle = System.Drawing.Drawing2D.DashStyle;
 using System.Threading.Tasks;
 using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.GameInterop;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.Packages;
@@ -35,6 +38,7 @@ using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
+using NamedPipeWrapper;
 using RectangleF = System.Drawing.RectangleF;
 
 namespace LegendaryExplorer.Tools.PathfindingEditor
@@ -583,7 +587,46 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             InitializeComponent();
             pathfindingMouseListener = new PathfindingMouseListener(this); //Must be member so we can release reference
             graphEditor.AddInputEventListener(pathfindingMouseListener);
+
+            // CROSSGEN: Expand later
+            GameController.GetInteropTargetForGame(MEGame.LE1).GameReceiveMessage += ReceivedLE1Message;
+
+
         }
+
+        private PlayerGPSNode PlayerGPSObject;
+
+        private DateTime LastGPSUpdate = DateTime.Now;
+
+        private void ReceivedLE1Message(string obj)
+        {
+            if (PlayerGPSObject != null && (DateTime.Now - LastGPSUpdate) > TimeSpan.FromSeconds(1))
+            {
+                //LastGPSUpdate = DateTime.Now;
+                if (obj.StartsWith("PLAYERLOC="))
+                {
+                    var pos = obj.Substring(10).Split(',');
+                    //Debug.WriteLine($"Updating player position to {pos[0]}, {pos[1]}");
+                    PlayerGPSObject.SetOffset(new PointF(float.Parse(pos[0]), float.Parse(pos[1])));
+
+                    var newPos = new PointF(float.Parse(pos[0]), float.Parse(pos[1]));
+                    var panToRectangle = new RectangleF(newPos, new SizeF(200, 200));
+                    //PlayerGPSObject.Position(new PointF(PlayerGPSObject.X, PlayerGPSObject.Y), newPos, graphEditor.Bounds, 100);
+                    graphEditor.Camera.AnimateViewToCenterBounds(panToRectangle, false, 1);
+                    PlayerGPSObject.SetOffset(newPos);
+                    graphEditor.nodeLayer.ChildPaintInvalid = true;
+                    //RefreshGraph();
+                }
+                else if (obj.StartsWith("PLAYERROT="))
+                {
+                    var rot = obj.Substring(10).Split(',');
+                    //Debug.WriteLine($"Updating player rotation (yaw) to {rot[1]}");
+                    PlayerGPSObject.SetYaw(int.Parse(rot[1]).UnrealRotationUnitsToDegrees());
+                    graphEditor.nodeLayer.ChildPaintInvalid = true;
+                }
+            }
+        }
+
         public PathfindingEditorWindow(string fileName) : this()
         {
             FileQueuedForLoad = fileName;
@@ -1349,6 +1392,11 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 {
                     PathingGraphEditor.UpdateEdgeStraight(edge as PathfindingEditorEdge);
                 }
+            }
+
+            if (PlayerGPSObject != null)
+            {
+                graphEditor.addNode(PlayerGPSObject);
             }
         }
 
@@ -4430,7 +4478,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 }
                 else //is component without entire SMAC
                 {
-                    if(actor.HasParent && actor.Parent.ClassName.Contains("CollectionActor") && actor.Parent is ExportEntry actorCollection)
+                    if (actor.HasParent && actor.Parent.ClassName.Contains("CollectionActor") && actor.Parent is ExportEntry actorCollection)
                     {
                         var collectionitems = PathEdUtils.GetCollectionItems(actorCollection);
                         var location = PathEdUtils.GetLocation(actor);
@@ -4501,7 +4549,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                     }
 
                 }
-                else if ( actor.HasStack )
+                else if (actor.HasStack)
                 {
                     float oldx = 0;
                     float oldy = 0;
@@ -4857,6 +4905,51 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                     ActiveNodes_ListBox.SelectedItem = lastNewNode;
                 }
             }
+        }
+
+        private NamedPipeClientStream client;
+        private StreamReader pipeReader;
+        private StreamWriter pipeWriter;
+
+        private void ConnectGPS_Clicked(object sender, RoutedEventArgs e)
+        {
+            Task.Run(() =>
+            {
+                if (PlayerGPSObject == null)
+                {
+                    PlayerGPSObject = new PlayerGPSNode(0, 0, graphEditor);
+                    graphEditor.addNode(PlayerGPSObject);
+                }
+                client = new NamedPipeClientStream("LEX_LE1_COMM_PIPE");
+                client.Connect();
+                pipeReader = new StreamReader(client);
+                pipeWriter = new StreamWriter(client);
+
+                pipeWriter.WriteLine("ACTIVATE_PLAYERGPS");
+                pipeWriter.Flush();
+
+                client.Dispose();
+                //pipeReader.Dispose();
+                //pipeWriter.Dispose();
+            });
+
+
+            //var client = new NamedPipeClient<string>("LEX_LE1_COMM_PIPE");
+
+            //client.ServerMessage += delegate (NamedPipeConnection<string, string> conn, string message)
+            //{
+            //    Console.WriteLine($"Server says: {message}");
+            //};
+
+            ////Start up the client asynchronously and connect to the specified server pipe.
+            ////This method will return immediately while the client runs in a separate background thread.
+            //client.Start();
+
+            //Task.Run(() =>
+            //{
+            //    Thread.Sleep(2000);
+            //    client.PushMessage("ACTIVATE_PLAYERGPS");
+            //});
         }
 
         #region Busy
