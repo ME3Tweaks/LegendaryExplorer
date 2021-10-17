@@ -954,7 +954,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 return;
             }
 
-            OpenInToolkit(tool, GetFilePath(usagepkg, contentdir), usageUID, strRef);
+            var path = GetFilePath(usagepkg, contentdir);
+            if (path != null)
+                OpenInToolkit(tool, path, usageUID, strRef);
         }
         private void OpenSourcePkg(object obj)
         {
