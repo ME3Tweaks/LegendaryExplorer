@@ -7,6 +7,7 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Kismet;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 
@@ -150,7 +151,7 @@ namespace LegendaryExplorerCore.Dialogue
                 var convStarts = new Dictionary<int, ExportEntry>();
                 foreach (var prop in seqobjs)
                 {
-                    var seqobj = Export.FileRef.GetUExport(prop.Value);
+                    var seqobj = Sequence.FileRef.GetUExport(prop.Value);
                     if (seqobj.ClassName == "BioSeqEvt_ConvNode")
                     {
                         int key = seqobj.GetProperty<IntProperty>("m_nNodeID"); //ME3
@@ -236,7 +237,7 @@ namespace LegendaryExplorerCore.Dialogue
                 convStarts = new Dictionary<int, ExportEntry>();
                 foreach (var prop in seqobjs)
                 {
-                    var seqobj = Export.FileRef.GetUExport(prop.Value);
+                    var seqobj = Sequence.FileRef.GetUExport(prop.Value);
                     if (seqobj.ClassName == "BioSeqEvt_ConvNode")
                     {
                         int key = seqobj.GetProperty<IntProperty>("m_nNodeID"); //ME3
@@ -272,7 +273,7 @@ namespace LegendaryExplorerCore.Dialogue
                                 if (linkedVars != null && linkedVars.Count > 0)
                                 {
                                     var datalink = linkedVars[0].Value;
-                                    return Export.FileRef.GetUExport(datalink);
+                                    return Sequence.FileRef.GetUExport(datalink);
 
                                 }
                                 break;
@@ -648,6 +649,11 @@ namespace LegendaryExplorerCore.Dialogue
             if (seq != null)
             {
                 Sequence = Export.FileRef.GetEntry(seq.Value);
+                // TODO: Use a packagecache or something for this?
+                if (Sequence is ImportEntry sequenceImport)
+                {
+                    Sequence = EntryImporter.ResolveImport(sequenceImport);
+                }
             }
             else
             {
