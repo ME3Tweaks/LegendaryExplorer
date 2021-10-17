@@ -1983,36 +1983,37 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             else if (seqName == "TA_V3_Gametype_Handler")
                             {
                                 // Time Trial
-                                var startObj = FindSequenceObjectByPosition(exp, 712, 2256, "BioSeqAct_SetActionState");
+                                var startObj = FindSequenceObjectByClassAndPosition(exp, "BioSeqAct_SetActionState"/*, 712, 2256*/);
                                 var newObj = SequenceObjectCreator.CreateSequenceObject(le1File, "LEXSeqAct_SquadCommand", MEGame.LE1, vTestOptions.cache);
                                 KismetHelper.AddObjectToSequence(newObj, exp);
                                 KismetHelper.CreateOutputLink(startObj, "Out", newObj); // RALLY
                             }
                             else if (seqName == "Check_Capping_Completion")
                             {
-                                // Survival
-                                var startObj = FindSequenceObjectByPosition(exp, 1992, 2376, "BioSeqAct_SetActionState");
+                                // Survival uses this as game mode?
+                                // Capture...?
+                                var startObj = FindSequenceObjectByClassAndPosition(exp, "BioSeqAct_SetActionState"/*, 584, 2200*/);
                                 var newObj = SequenceObjectCreator.CreateSequenceObject(le1File, "LEXSeqAct_SquadCommand", MEGame.LE1, vTestOptions.cache);
                                 KismetHelper.AddObjectToSequence(newObj, exp);
                                 KismetHelper.CreateOutputLink(startObj, "Out", newObj); // RALLY
                             }
                             else if (seqName == "Vampire_Mode_Handler")
                             {
-                                // Survival
-                                var startObj = FindSequenceObjectByPosition(exp, 1040, 2304, "BioSeqAct_SetActionState");
+                                // Hunt
+                                var startObj = FindSequenceObjectByClassAndPosition(exp, "BioSeqAct_SetActionState" /*, 1040, 2304*/);
                                 var newObj = SequenceObjectCreator.CreateSequenceObject(le1File, "LEXSeqAct_SquadCommand", MEGame.LE1, vTestOptions.cache);
                                 KismetHelper.AddObjectToSequence(newObj, exp);
                                 KismetHelper.CreateOutputLink(startObj, "Out", newObj); // RALLY
                             }
-                            else if (seqName == "Cap_And_Hold_Point")
-                            {
-                                // Capture
-                                var startObj = FindSequenceObjectByPosition(exp, 584, 2200, "BioSeqAct_SetActionState");
-                                var newObj = SequenceObjectCreator.CreateSequenceObject(le1File, "LEXSeqAct_SquadCommand", MEGame.LE1, vTestOptions.cache);
-                                KismetHelper.AddObjectToSequence(newObj, exp);
-                                KismetHelper.CreateOutputLink(startObj, "Out", newObj); // RALLY
-                            }
-                            
+                            //else if (seqName == "Cap_And_Hold_Point")
+                            //{
+                            //    // Capture
+                            //    var startObj = FindSequenceObjectByPosition(exp, 584, 2200, "BioSeqAct_SetActionState");
+                            //    var newObj = SequenceObjectCreator.CreateSequenceObject(le1File, "LEXSeqAct_SquadCommand", MEGame.LE1, vTestOptions.cache);
+                            //    KismetHelper.AddObjectToSequence(newObj, exp);
+                            //    KismetHelper.CreateOutputLink(startObj, "Out", newObj); // RALLY
+                            //}
+
                             #endregion
                         }
                     }
@@ -2022,6 +2023,25 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             // Individual
             switch (upperFName)
             {
+                case "BIOA_PRC2_CCAHERN_DSG":
+                    {
+                        // Rally - This is not a template so it's done manually on this level
+                        foreach (var exp in le1File.Exports.Where(x => x.ClassName == "Sequence").ToList())
+                        {
+                            var seqName = exp.GetProperty<StrProperty>("ObjName")?.Value;
+
+                            if (seqName == "SUR_Ahern_Handler")
+                            {
+                                // Ahern's mission
+                                var startObj = FindSequenceObjectByClassAndPosition(exp, "SequenceReference", -7152, -1032);
+                                var newObj = SequenceObjectCreator.CreateSequenceObject(le1File, "LEXSeqAct_SquadCommand", MEGame.LE1, vTestOptions.cache);
+                                KismetHelper.AddObjectToSequence(newObj, exp);
+                                KismetHelper.CreateOutputLink(startObj, "Out", newObj); // RALLY
+                            }
+                        }
+
+                        break;
+                    }
                 case "BIOA_PRC2_CCLAVA_DSG":
                     {
                         // SeqAct_ChangeCollision changed and requires an additional property otherwise it doesn't work.
@@ -2088,18 +2108,29 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
-        private static ExportEntry FindSequenceObjectByPosition(ExportEntry sequence, int posX, int posY, string className)
+        private static ExportEntry FindSequenceObjectByClassAndPosition(ExportEntry sequence, string className, int posX = int.MinValue, int posY = int.MinValue)
         {
             var seqObjs = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects")
                 .Select(x => x.ResolveToEntry(sequence.FileRef)).OfType<ExportEntry>().Where(x => x.ClassName == className).ToList();
 
             foreach (var obj in seqObjs)
             {
-                var props = obj.GetProperties();
-                if (props.GetProp<IntProperty>("ObjPosX")?.Value == posX &&
-                    props.GetProp<IntProperty>("ObjPosY")?.Value == posY)
+                if (posX != int.MinValue && posY != int.MinValue)
                 {
-                    return obj;
+                    var props = obj.GetProperties();
+                    if (props.GetProp<IntProperty>("ObjPosX")?.Value == posX &&
+                        props.GetProp<IntProperty>("ObjPosY")?.Value == posY)
+                    {
+                        return obj;
+                    }
+                }
+                else if (seqObjs.Count == 1)
+                {
+                    return obj; // First object
+                }
+                else
+                {
+                    throw new Exception($"COULD NOT FIND OBJECT OF TYPE {className} in {sequence.InstancedFullPath}");
                 }
             }
 
