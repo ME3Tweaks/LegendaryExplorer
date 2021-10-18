@@ -1656,7 +1656,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             // Memory Unique
                             var cgv = le1File.FindExport("CROSSGENV");
                             if (cgv == null)
+                            {
                                 cgv = ExportCreator.CreatePackageExport(lTerrain.FileRef, "CROSSGENV", null);
+                                cgv.indexValue = 0;
+                            }
+
                             lSetup.Parent = cgv;
                             lSetup.ObjectName = "CROSSGENV_PRC2AA_TerrainLayerSetup";
 
@@ -1669,11 +1673,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     case "lav60_RIVER01_terrain_setup": // PRC2_CCLAVA
                         {
                             // Memory Unique
-                            //var cgv = le1File.FindExport("CROSSGENV");
-                            //if (cgv == null)
-                            //    cgv = ExportCreator.CreatePackageExport(lTerrain.FileRef, "CROSSGENV", null);
-                            //lSetup.Parent = cgv;
-                            //lSetup.ObjectName = "CROSSGENV_PRC2_CCLAVA_TerrainLayerSetup";
+                            var cgv = le1File.FindExport("CROSSGENV");
+                            if (cgv == null)
+                            {
+                                cgv = ExportCreator.CreatePackageExport(lTerrain.FileRef, "CROSSGENV", null);
+                                cgv.indexValue = 0;
+                            }
+
+                            lSetup.Parent = cgv;
+                            lSetup.ObjectName = "CROSSGENV_PRC2_CCLAVA_TerrainLayerSetup";
 
                             // No idea why this fixes it tbh but it does
                             lMaterials[0].GetProp<FloatProperty>("Alpha").Value = 0;
