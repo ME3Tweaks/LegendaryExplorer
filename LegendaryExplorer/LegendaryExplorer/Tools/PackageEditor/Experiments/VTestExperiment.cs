@@ -1599,61 +1599,93 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
-        private static void CopyOverTerrainSlopes(IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
+        private static void CorrectTerrainMaterialsAndSlopes(ExportEntry mTerrain, ExportEntry lTerrain, bool prc2aa, VTestOptions vTestOptions)
         {
-            //var mTerrain = me1File.Exports.First(x => x.ClassName == "Terrain");
-            //var lTerrain = le1File.Exports.First(x => x.ClassName == "Terrain");
+            var le1File = lTerrain.FileRef;
+            var me1File = mTerrain.FileRef;
 
-            //var mLayers = mTerrain.GetProperty<ArrayProperty<StructProperty>>("Layers");
-            //var lLayers = lTerrain.GetProperty<ArrayProperty<StructProperty>>("Layers");
-
-            //foreach (var lLayer in lLayers)
-            //{
-            //    // Find matching mLayer
-            //    var lSetup = lLayer.GetProp<ObjectProperty>("Setup").ResolveToEntry(le1File) as ExportEntry;
-            //    ExportEntry mSetup = null;
-            //    foreach (var mSetupStruct in mLayers)
-            //    {
-            //        if (mSetupStruct.GetProp<ObjectProperty>("Setup").ResolveToEntry(me1File) is ExportEntry mSetupTmp && mSetupTmp.InstancedFullPath == lSetup.InstancedFullPath)
-            //        {
-            //            mSetup = mSetupTmp;
-            //            break;
-            //        }
-            //    }
-
-            //    if (mSetup == null)
-            //        continue; // Don't update this
+            var mLayers = mTerrain.GetProperty<ArrayProperty<StructProperty>>("Layers");
+            var lLayers = lTerrain.GetProperty<ArrayProperty<StructProperty>>("Layers");
 
 
+            foreach (var lLayer in lLayers)
+            {
+                // Find matching mLayer
+                var lSetup = lLayer.GetProp<ObjectProperty>("Setup").ResolveToEntry(le1File) as ExportEntry;
+                ExportEntry mSetup = null;
+                foreach (var mSetupStruct in mLayers)
+                {
+                    var mSetupTmp = mSetupStruct.GetProp<ObjectProperty>("Setup").ResolveToEntry(me1File) as ExportEntry;
+                    if (mSetupTmp != null && mSetupTmp.InstancedFullPath == lSetup.InstancedFullPath)
+                    {
+                        mSetup = mSetupTmp;
+                        break;
+                    }
+                }
 
-            //}
+                if (mSetup == null)
+                    continue; // Don't update this
 
-            //for (int i = 0; i < mSetups.Count; i++)
-            //{
-            //    var lSetup = lSetups[i].GetProperties();
+                var mMaterials = mSetup.GetProperty<ArrayProperty<StructProperty>>("Materials");
+                var lMaterials = lSetup.GetProperty<ArrayProperty<StructProperty>>("Materials");
 
-            //    // Find matching ME1 setup
-            //    ExportEntry matchingSetup = null;
-            //    foreach (var mSetup in mSetups)
-            //    {
-            //        if 
-            //    }
+                if (prc2aa && mMaterials.Count == lMaterials.Count)
+                {
+                    // ONLY PRC2AA WILL RUN THIS CODE
+                    for (int i = 0; i < mMaterials.Count; i++)
+                    {
+                        var mMat = mMaterials[i];
+                        var lMat = lMaterials[i];
 
-            //    var mSetup = mSetups[i].GetProperties();
-            //    var mMats = mSetup.GetProp<ArrayProperty<StructProperty>>("Materials");
-            //    var lMats = lSetup.GetProp<ArrayProperty<StructProperty>>("Materials");
+                        foreach (var prop in mMat.Properties)
+                        {
+                            if (prop is ObjectProperty)
+                                continue; // Do not change
 
-            //    for (int j = 0; j < Math.Min(mMats.Count, lMats.Count); j++)
-            //    {
-            //        var mMat = mMats[j];
-            //        var lMat = lMats[j];
-            //        lMats[j] = mMat;
-            //        lMats[j].GetProp<ObjectProperty>("Material").Value = lMat.GetProp<ObjectProperty>("Material").Value;
-            //    }
+                            lMat.Properties.AddOrReplaceProp(prop);
+                        }
+                    }
+                }
 
-            //    lSetup.AddOrReplaceProp(mMats);
-            //    lSetups[i].WriteProperties(lSetup);
-            //}
+                // CORRECTIONS
+                var setupName = mSetup.ObjectName.Name;
+                switch (setupName)
+                {
+                    case "UNC20_TLSetup_lessDispl": // PRC2AA_00_LAY
+                        {
+                            // Memory Unique
+                            var cgv = le1File.FindExport("CROSSGENV");
+                            if (cgv == null)
+                                cgv = ExportCreator.CreatePackageExport(lTerrain.FileRef, "CROSSGENV", null);
+                            lSetup.Parent = cgv;
+                            lSetup.ObjectName = "CROSSGENV_PRC2AA_TerrainLayerSetup";
+
+                            // Slope Changes
+                            lMaterials[0].GetProp<StructProperty>("MinSlope").GetProp<FloatProperty>("Base").Value = 2; // 90 degrees never
+                            lMaterials[1].GetProp<StructProperty>("MinSlope").GetProp<FloatProperty>("Base").Value = 0; // 0 degrees always
+                        }
+
+                        break;
+                    case "lav60_RIVER01_terrain_setup": // PRC2_CCLAVA
+                        {
+                            // Memory Unique
+                            //var cgv = le1File.FindExport("CROSSGENV");
+                            //if (cgv == null)
+                            //    cgv = ExportCreator.CreatePackageExport(lTerrain.FileRef, "CROSSGENV", null);
+                            //lSetup.Parent = cgv;
+                            //lSetup.ObjectName = "CROSSGENV_PRC2_CCLAVA_TerrainLayerSetup";
+
+                            // No idea why this fixes it tbh but it does
+                            lMaterials[0].GetProp<FloatProperty>("Alpha").Value = 0;
+                            lMaterials[1].GetProp<FloatProperty>("Alpha").Value = 0;
+                        }
+                        break;
+                }
+
+
+                lSetup.WriteProperty(lMaterials);
+
+            }
         }
 
         private static void PostPortingCorrections(IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
@@ -1687,15 +1719,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             // Port in the collision-corrected terrain
             if (fName.CaseInsensitiveEquals("BIOA_PRC2_CCLava"))
             {
-                PortInCorrectedTerrain(le1File, "CCLava.Terrain_1", "BIOA_LAV60_00_LAY.pcc", vTestOptions);
-                //CopyOverTerrainSlopes(me1File, le1File, vTestOptions);
+                PortInCorrectedTerrain(me1File, le1File, "CCLava.Terrain_1", "BIOA_LAV60_00_LAY.pcc", vTestOptions);
+                CorrectTerrainSetup(me1File, le1File, vTestOptions);
             }
             else if (fName.CaseInsensitiveEquals("BIOA_PRC2AA_00_LAY"))
             {
-                PortInCorrectedTerrain(le1File, "PRC2AA.Terrain_1", "BIOA_UNC20_00_LAY.pcc", vTestOptions);
-
-                // Remove some slopes to match original
-                //CopyOverTerrainSlopes(me1File, le1File, vTestOptions);
+                PortInCorrectedTerrain(me1File, le1File, "PRC2AA.Terrain_1", "BIOA_UNC20_00_LAY.pcc", vTestOptions);
+                CorrectTerrainSetup(me1File, le1File, vTestOptions);
             }
             else if (fName.CaseInsensitiveEquals("BIOA_PRC2_CCSIM05_DSG"))
             {
@@ -1808,6 +1838,38 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 RebuildPersistentLevelChildren(level, vTestOptions);
             }
             //CorrectTriggerStreamsMaybe(me1File, le1File);
+        }
+
+        private static void CorrectTerrainSetup(IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
+        {
+            // Correct AlphaMaps to match the original
+            var mTerrain = me1File.Exports.First(x => x.ClassName == "Terrain");
+            var me1Terrain = ObjectBinary.From<Terrain>(mTerrain);
+            var lTerrain = le1File.Exports.First(x => x.ClassName == "Terrain");
+            var le1Terrain = ObjectBinary.From<Terrain>(lTerrain);
+
+            var fName = Path.GetFileNameWithoutExtension(le1File.FilePath);
+            var alphamaps = new List<AlphaMap>();
+
+            if (fName == "BIOA_PRC2_CCLAVA")
+            {
+                // 5 maps (vs 4 in the source)
+                alphamaps.Add(me1Terrain.AlphaMaps[0]); // Default
+                alphamaps.Add(me1Terrain.AlphaMaps[1]); // RiverOverride
+                alphamaps.Add(new AlphaMap() { Data = new byte[me1Terrain.Heights.Length] }); // Water Rock Override (NOT USED)
+                alphamaps.Add(me1Terrain.AlphaMaps[2]); // Rock02 Override (?)
+                alphamaps.Add(new AlphaMap() { Data = new byte[me1Terrain.Heights.Length] }); // BLANK (NOT USED)
+
+                CorrectTerrainMaterialsAndSlopes(mTerrain, lTerrain, false, vTestOptions); // Needs changes to avoid patches
+            }
+            else if (fName == "BIOA_PRC2AA_00_LAY")
+            {
+                // THERE ARE NO ALPHAMAPS
+                CorrectTerrainMaterialsAndSlopes(mTerrain, lTerrain, true, vTestOptions); // Needs changes to avoid patches
+            }
+
+            le1Terrain.AlphaMaps = alphamaps.ToArray();
+            lTerrain.WriteBinary(le1Terrain);
         }
 
         private static void CorrectVFX(IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
@@ -2105,6 +2167,32 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         doorSL.WriteProperty(lc);
                     }
                     break;
+                case "BIOA_PRC2_CCSPACE02_DSG":
+                    {
+                        // Port in a new DominantLight
+                        var sourceLight = vTestOptions.vTestHelperPackage.FindExport(@"CCSPACE02_DSG.DominantDirectionalLight_1");
+                        var destLevel = le1File.FindExport("TheWorld.PersistentLevel");
+                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceLight, le1File, destLevel, true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out _);
+                    }
+                    break;
+                case "BIOA_PRC2_CCCRATE":
+                    {
+                        // needs something to fill framebuffer
+                        var sourceAsset = vTestOptions.vTestHelperPackage.FindExport(@"CROSSGENV.StaticMeshActor_32000");
+                        var destLevel = le1File.FindExport("TheWorld.PersistentLevel");
+                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceAsset, le1File, destLevel, true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var mesh);
+                        PathEdUtils.SetLocation(mesh as ExportEntry, 15864, -25928, -5490);
+                    }
+                    break;
+                case "BIOA_PRC2_CCCAVE":
+                    {
+                        // needs something to fill framebuffer
+                        var sourceAsset = vTestOptions.vTestHelperPackage.FindExport(@"CROSSGENV.StaticMeshActor_32000");
+                        var destLevel = le1File.FindExport("TheWorld.PersistentLevel");
+                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceAsset, le1File, destLevel, true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var mesh);
+                        PathEdUtils.SetLocation(mesh as ExportEntry, -16430, -28799, -2580);
+                    }
+                    break;
             }
         }
 
@@ -2159,19 +2247,19 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
-        private static void PortInCorrectedTerrain(IMEPackage le1File, string vTestIFP, string materialsFile, VTestOptions vTestOptions)
+        private static void PortInCorrectedTerrain(IMEPackage me1File, IMEPackage le1File, string vTestIFP, string materialsFile, VTestOptions vTestOptions)
         {
             // Port in the material's file terrain - but not it's subcomponents
             using var le1VanillaTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(LE1Directory.CookedPCPath, materialsFile));
-            var le1VanillaTerrain = le1VanillaTerrainP.Exports.FirstOrDefault(x => x.ClassName == "Terrain");
-            le1VanillaTerrain.RemoveProperty("TerrainComponents");
+            var le1DonorTerrain = le1VanillaTerrainP.Exports.FirstOrDefault(x => x.ClassName == "Terrain");
+            le1DonorTerrain.RemoveProperty("TerrainComponents");
 
             var rop = new RelinkerOptionsPackage() { Cache = vTestOptions.cache };
-            var b = ObjectBinary.From<Terrain>(le1VanillaTerrain);
-            b.WeightedTextureMaps = new UIndex[0]; // These don't work with our different data format for these maps
-            le1VanillaTerrain.WriteBinary(b);
+            var le1TerrainBin = ObjectBinary.From<Terrain>(le1DonorTerrain);
+            le1TerrainBin.WeightedTextureMaps = new UIndex[0]; // These don't work with our different data format for these maps
+            le1DonorTerrain.WriteBinary(le1TerrainBin);
 
-            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, le1VanillaTerrain, le1File,
+            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, le1DonorTerrain, le1File,
                 le1File.FindExport("TheWorld.PersistentLevel"), true, rop, out var destTerrainEntry);
             var destTerrain = destTerrainEntry as ExportEntry;
 
