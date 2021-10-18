@@ -1719,6 +1719,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             CorrectVFX(me1File, le1File, vTestOptions);
             vTestOptions.packageEditorWindow.BusyText = $"PPC (Pink Visor) on\n{levelName}";
             FixPinkVisorMaterial(le1File);
+            vTestOptions.packageEditorWindow.BusyText = $"PPC (Unlock Ahern Mission) on\n{levelName}";
+            DebugUnlockAhernMission(le1File, vTestOptions);
             //CorrectTerrainMaterials(le1File);
 
             vTestOptions.packageEditorWindow.BusyText = $"PPC (LEVEL SPECIFIC) on\n{levelName}";
@@ -2643,6 +2645,23 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     lWaypointRefs.Add(new StructProperty("ActorReference", le1Props, isImmutable: true));
                 }
                 lbwps.WriteProperty(lWaypointRefs);
+            }
+        }
+
+        /// <summary>
+        /// Unlocks the Ahern Mission early on Debug builds for testing purposes
+        /// </summary>
+        /// <param name="le1File"></param>
+        /// <param name="vTestOptions"></param>
+        public static void DebugUnlockAhernMission(IMEPackage le1File, VTestOptions vTestOptions)
+        {
+            if (vTestOptions.debugBuild && le1File.FindExport("prc2_ochren_D.prc2_ochren_dlg") is { } conversation)
+            {
+                var replies = conversation.GetProperty<ArrayProperty<StructProperty>>("m_ReplyList");
+                replies[100].Properties.AddOrReplaceProp(new IntProperty(-1, "nConditionalFunc"));
+                replies[108].Properties.AddOrReplaceProp(new IntProperty(-1, "nConditionalFunc"));
+                Debug.WriteLine($"Unlocking Ahern Mission in Ochren Conversation in file {le1File.FileNameNoExtension}");
+                conversation.WriteProperty(replies);
             }
         }
 
