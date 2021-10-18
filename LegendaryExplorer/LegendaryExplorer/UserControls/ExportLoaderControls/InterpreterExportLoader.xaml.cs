@@ -1293,6 +1293,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         parsedValue = $"{sp.GetProp<EnumProperty>("SrcType").Value} {sp.GetProp<EnumProperty>("SrcAction").Value} -> {sp.GetProp<EnumProperty>("DestType").Value} {sp.GetProp<EnumProperty>("DestAction").Value}";
                     }
+                    else if (sp.StructType == "TerrainLayer")
+                    {
+                        parsedValue = $"{sp.GetProp<StrProperty>("Name").Value}";
+                    }
+                    else if (sp.StructType == "FilterLimit")
+                    {
+                        parsedValue = $"Enabled={sp.GetProp<BoolProperty>("Enabled").Value}, Base={sp.GetProp<FloatProperty>("Base").Value}";
+                    }
                     else
                     {
                         parsedValue = sp.StructType;
