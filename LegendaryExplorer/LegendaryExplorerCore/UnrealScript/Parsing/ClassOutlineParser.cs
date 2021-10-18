@@ -359,6 +359,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     {
                         flags |= ScriptStructFlags.StrictConfig;
                     }
+                    else if (Matches(nameof(ScriptStructFlags.UnkStructFlag), EF.Specifier))
+                    {
+                        flags |= ScriptStructFlags.UnkStructFlag;
+                    }
                     else
                     {
                         break;
@@ -386,7 +390,14 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 while (CurrentTokenType != TokenType.RightBracket && !CurrentIs(STRUCTDEFAULTPROPERTIES) && !Tokens.AtEnd())
                 {
                     var variable = TryParseVarDecl();
-                    if (variable == null) throw ParseError("Malformed struct content!", CurrentPosition);
+                    if (variable == null)
+                    {
+                        if (CurrentIs(DEFAULTPROPERTIES))
+                        {
+                            TypeError($"In Structs, use '{STRUCTDEFAULTPROPERTIES}', not '{DEFAULTPROPERTIES}'.", CurrentToken);
+                        }
+                        throw ParseError("Malformed struct content!", CurrentPosition);
+                    }
 
                     vars.Add(variable);
                 }
@@ -680,7 +691,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 ParseVariableSpecifiers(out EPropertyFlags flags);
                 if ((flags & ~(EPropertyFlags.CoerceParm | EPropertyFlags.OptionalParm | EPropertyFlags.OutParm | EPropertyFlags.SkipParm | EPropertyFlags.Component | EPropertyFlags.Const | EPropertyFlags.AlwaysInit)) != 0)
                 {
-                    throw ParseError("The only valid specifiers for function parameters are 'out', 'coerce', 'optional', 'const', 'alwaysinit' and 'skip'!", CurrentPosition);
+                    throw ParseError("The only valid specifiers for function parameters are 'out', 'coerce', 'optional', 'const', 'init' and 'skip'!", CurrentPosition);
                 }
 
                 flags |= EPropertyFlags.Parm;
@@ -907,7 +918,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 {
                     flags |= EPropertyFlags.OptionalParm;
                 }
-                else if (Matches("alwaysinit", EF.Specifier))
+                else if (Matches("init", EF.Specifier))
                 {
                     flags |= EPropertyFlags.AlwaysInit;
                 }

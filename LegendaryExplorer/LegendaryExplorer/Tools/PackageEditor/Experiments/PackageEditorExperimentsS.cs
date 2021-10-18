@@ -719,10 +719,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         //RecompileAllDefaults(filePath, packageCache);
                         RecompileAllStructs(filePath, packageCache);
                     }
-                    if (interestingExports.Any())
-                    {
-                        break;
-                    }
+                    //if (interestingExports.Any())
+                    //{
+                    //    break;
+                    //}
                 }
             }).ContinueWithOnUIThread(prevTask =>
             {
@@ -996,7 +996,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             var originalData = exp.Data;
                             (_, string originalScript) = UnrealScriptCompiler.DecompileExport(exp, fileLib);
                             (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileFunction(exp, originalScript, fileLib);
-                            if (log.AllErrors.Count > 0)
+                            if (log.HasErrors)
                             {
                                 interestingExports.Add(exp);
                                 continue;
@@ -1045,7 +1045,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             //var originalData = exp.Data;
                             (_, string originalScript) = UnrealScriptCompiler.DecompileExport(exp, fileLib);
                             (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileFunction(exp, originalScript, fileLib);
-                            if (ast == null || log.AllErrors.Count > 0)
+                            if (ast == null || log.HasErrors)
                             {
                                 interestingExports.Add(exp);
                             }
@@ -1085,7 +1085,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             var originalData = exp.Data;
                             (_, string originalScript) = UnrealScriptCompiler.DecompileExport(exp, fileLib);
                             (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileState(exp, originalScript, fileLib);
-                            if (ast == null || log.AllErrors.Count > 0)
+                            if (ast == null || log.HasErrors)
                             {
                                 interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nCompilation failed!"));
                             }
@@ -1131,7 +1131,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         {
                             (_, string script) = UnrealScriptCompiler.DecompileExport(exp, fileLib);
                             (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileDefaultProperties(exp, script, fileLib, packageCache);
-                            if (ast is not DefaultPropertiesBlock || log.AllErrors.Any())
+                            if (ast is not DefaultPropertiesBlock || log.HasErrors)
                             {
                                 interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse defaults!"));
                                 return;
@@ -1175,13 +1175,17 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         }
 
                         foundClasses.Add(instancedFullPath);
+                        if (exp.GetBinaryData<UScriptStruct>().StructFlags.Has(ScriptStructFlags.Native))
+                        {
+                            continue;
+                        }
                         try
                         {
                             if (fileLib.Initialize())
                             {
                                 (_, string script) = UnrealScriptCompiler.DecompileExport(exp, fileLib);
                                 (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileStruct(exp, script, fileLib, packageCache);
-                                if (ast is not Struct || log.AllErrors.Any())
+                                if (ast is not Struct || log.HasErrors)
                                 {
                                     interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse defaults!"));
                                     return;
@@ -2024,7 +2028,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         {
                             (_, string script) = UnrealScriptCompiler.DecompileExport(export, fileLib);
                             (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileStruct(export, script, fileLib);
-                            if (ast is not Struct s || log.AllErrors.Any())
+                            if (ast is not Struct s || log.HasErrors)
                             {
                                 throw new Exception();
                             }
@@ -2042,7 +2046,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 //    {
                 //        (_, string script) = UnrealScriptCompiler.DecompileExport(export, fileLib);
                 //        (ASTNode ast, MessageLog log, _) = UnrealScriptCompiler.CompileAST(script, export.ClassName, export.Game);
-                //        if (ast is not Class c|| log.AllErrors.Any())
+                //        if (ast is not Class c|| log.HasErrors)
                 //        {
                 //            throw new Exception();
                 //        }
@@ -2050,7 +2054,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 //        //foreach (State state in c.States)
                 //        //{
                 //        //    ast = UnrealScriptCompiler.CompileNewStateBodyAST(export, state, log, fileLib);
-                //        //    if (ast is not State || log.AllErrors.Any())
+                //        //    if (ast is not State || log.HasErrors)
                 //        //    {
                 //        //        throw new Exception();
                 //        //    }
@@ -2059,14 +2063,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 //        //foreach (Function function in c.Functions)
                 //        //{
                 //        //    ast = UnrealScriptCompiler.CompileNewFunctionBodyAST(export, function, log, fileLib);
-                //        //    if (ast is not Function || log.AllErrors.Any())
+                //        //    if (ast is not Function || log.HasErrors)
                 //        //    {
                 //        //        throw new Exception();
                 //        //    }
                 //        //}
 
                 //        ast = UnrealScriptCompiler.CompileDefaultPropertiesAST(export, c.DefaultProperties, log, fileLib);
-                //        if (ast is not DefaultPropertiesBlock || log.AllErrors.Any())
+                //        if (ast is not DefaultPropertiesBlock || log.HasErrors)
                 //        {
                 //            throw new Exception();
                 //        }

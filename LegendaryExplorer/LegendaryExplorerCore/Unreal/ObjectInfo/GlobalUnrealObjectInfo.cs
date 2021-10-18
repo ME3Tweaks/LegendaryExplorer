@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
@@ -355,29 +356,154 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         /// Gets the default values for a struct
         /// </summary>
         /// <param name="game">Game to pull info from</param>
-        /// <param name="typeName">Struct type name</param>
+        /// <param name="structName">Struct type name</param>
         /// <param name="stripTransients">Strip transients from the struct</param>
         /// <param name="packageCache"></param>
         /// <param name="shouldReturnClone">Return a deep copy of the struct</param>
         /// <returns></returns>
-        public static PropertyCollection getDefaultStructValue(MEGame game, string typeName, bool stripTransients, PackageCache packageCache = null, bool shouldReturnClone = true)
+        public static PropertyCollection getDefaultStructValue(MEGame game, string structName, bool stripTransients, PackageCache packageCache = null, bool shouldReturnClone = true)
         {
-            PropertyCollection props = game switch
+            if (game == MEGame.UDK)
             {
-                MEGame.ME1 => ME1UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache),
-                MEGame.ME2 => ME2UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache),
-                MEGame.ME3 => ME3UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache),
-                MEGame.UDK => ME3UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache),
-                MEGame.LE1 => LE1UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache),
-                MEGame.LE2 => LE2UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache),
-                MEGame.LE3 => LE3UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients, packageCache),
-                _ => null
-            };
-            if (shouldReturnClone && props is not null)
-            {
-                return props.DeepClone();
+                game = MEGame.ME3;
             }
-            return props;
+            var defaultStructValues = game switch
+            {
+                MEGame.ME1 => ME1UnrealObjectInfo.defaultStructValuesME1,
+                MEGame.ME2 => ME2UnrealObjectInfo.defaultStructValuesME2,
+                MEGame.ME3 => ME3UnrealObjectInfo.defaultStructValuesME3,
+                MEGame.LE1 => LE1UnrealObjectInfo.defaultStructValuesLE1,
+                MEGame.LE2 => LE2UnrealObjectInfo.defaultStructValuesLE2,
+                MEGame.LE3 => LE3UnrealObjectInfo.defaultStructValuesLE3,
+                _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
+            };
+            if (stripTransients && defaultStructValues.TryGetValue(structName, out var cachedProps))
+            {
+                return shouldReturnClone ? cachedProps.DeepClone() : cachedProps;
+            }
+            var structs = game switch
+            {
+                MEGame.ME1 => ME1UnrealObjectInfo.Structs,
+                MEGame.ME2 => ME2UnrealObjectInfo.Structs,
+                MEGame.ME3 => ME3UnrealObjectInfo.Structs,
+                MEGame.LE1 => LE1UnrealObjectInfo.Structs,
+                MEGame.LE2 => LE2UnrealObjectInfo.Structs,
+                MEGame.LE3 => LE3UnrealObjectInfo.Structs,
+                _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
+            };
+            bool isImmutable = IsImmutable(structName, game);
+            if (structs.TryGetValue(structName, out ClassInfo info))
+            {
+                try
+                {
+                    PropertyCollection props = new();
+                    var infoStack = new Stack<ClassInfo>();
+                    while (info is not null)
+                    {
+                        foreach ((NameReference propName, PropertyInfo propInfo) in info.properties)
+                        {
+                            if (stripTransients && propInfo.Transient)
+                            {
+                                continue;
+                            }
+
+                            if (getDefaultProperty(game, propName, propInfo, packageCache, stripTransients, isImmutable) is Property prop)
+                            {
+                                props.Add(prop);
+                                if (propInfo.IsStaticArray())
+                                {
+                                    for (int i = 1; i < propInfo.StaticArrayLength; i++)
+                                    {
+                                        prop = getDefaultProperty(game, propName, propInfo, packageCache, stripTransients, isImmutable);
+                                        prop.StaticArrayIndex = i;
+                                        props.Add(prop);
+                                    }
+                                }
+                            }
+                        }
+                        string filepath = null;
+                        if (MEDirectories.GetBioGamePath(game) is string bioGamePath)
+                        {
+                            filepath = Path.Combine(bioGamePath, info.pccPath);
+                        }
+
+                        Stream loadStream = null;
+                        IMEPackage cachedPackage = null;
+                        if (packageCache != null)
+                        {
+                            packageCache.TryGetCachedPackage(filepath, true, out cachedPackage);
+                            if (cachedPackage == null)
+                                packageCache.TryGetCachedPackage(info.pccPath, true, out cachedPackage); // some cache types may have different behavior (such as relative package cache)
+
+                            if (cachedPackage != null)
+                            {
+                                // Use this one
+                                readDefaultProps(cachedPackage, props, packageCache: packageCache);
+                            }
+                        }
+                        else if (filepath != null && MEPackageHandler.TryGetPackageFromCache(filepath, out cachedPackage))
+                        {
+                            readDefaultProps(cachedPackage, props, packageCache: packageCache);
+                        }
+                        else if (File.Exists(info.pccPath))
+                        {
+                            filepath = info.pccPath;
+                            loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(info.pccPath);
+                        }
+                        else if (info.pccPath == GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
+                        {
+                            filepath = game switch
+                            {
+                                MEGame.ME1 => "GAMERESOURCES_ME1",
+                                MEGame.ME2 => "GAMERESOURCES_ME2",
+                                MEGame.ME3 => "GAMERESOURCES_ME3",
+                                MEGame.LE1 => "GAMERESOURCES_LE1",
+                                MEGame.LE2 => "GAMERESOURCES_LE2",
+                                MEGame.LE3 => "GAMERESOURCES_LE3",
+                                _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
+                            };
+                            loadStream = LegendaryExplorerCoreUtilities.LoadFileFromCompressedResource("GameResources.zip", LegendaryExplorerCoreLib.CustomResourceFileName(game));
+                        }
+                        else if (filepath != null && File.Exists(filepath))
+                        {
+                            loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(filepath);
+                        }
+
+                        if (cachedPackage == null && loadStream != null)
+                        {
+                            using IMEPackage importPcc = MEPackageHandler.OpenMEPackageFromStream(loadStream, filepath, useSharedPackageCache: true);
+                            readDefaultProps(importPcc, props, packageCache);
+                        }
+                        structs.TryGetValue(info.baseClass, out info);
+                    }
+                    props.Add(new NoneProperty());
+
+                    if (stripTransients)
+                    {
+                        defaultStructValues.TryAdd(structName, props);
+                    }
+                    return shouldReturnClone ? props.DeepClone() : props;
+                }
+                catch (Exception e)
+                {
+                    LECLog.Warning($@"Exception getting default {game} struct property for {structName}: {e.Message}");
+                    return null;
+                }
+            }
+            return null;
+
+            void readDefaultProps(IMEPackage impPackage, PropertyCollection defaultProps, PackageCache packageCache)
+            {
+                var exportToRead = impPackage.GetUExport(info.exportIndex);
+                foreach (var prop in exportToRead.GetBinaryData<UScriptStruct>(packageCache).Defaults)
+                {
+                    if (prop is NoneProperty)
+                    {
+                        continue;
+                    }
+                    defaultProps.TryReplaceProp(prop);
+                }
+            }
         }
 
         public static OrderedMultiValueDictionary<NameReference, PropertyInfo> GetAllProperties(MEGame game, string typeName)

@@ -57,7 +57,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     astNode = ScriptObjectToASTConverter.ConvertEnum(export.GetBinaryData<UEnum>(packageCache));
                     break;
                 case "ScriptStruct":
-                    astNode = ScriptObjectToASTConverter.ConvertStruct(export.GetBinaryData<UScriptStruct>(packageCache), packageCache, lib);
+                    astNode = ScriptObjectToASTConverter.ConvertStruct(export.GetBinaryData<UScriptStruct>(packageCache), true, packageCache, lib);
                     break;
                 default:
                     if (export.ClassName.EndsWith("Property") && ObjectBinary.From(export, packageCache) is UProperty uProp)
@@ -103,7 +103,7 @@ namespace LegendaryExplorerCore.UnrealScript
         public static (ASTNode astNode, MessageLog log) CompileFunction(ExportEntry export, string scriptText, FileLib lib)
         {
             (ASTNode astNode, MessageLog log, _) = CompileAST(scriptText, export.ClassName, export.Game);
-            if (astNode != null && log.AllErrors.IsEmpty())
+            if (astNode != null && !log.HasErrors)
             {
                 if (astNode is Function func && lib.IsInitialized && export.Parent is ExportEntry parent)
                 {
@@ -115,7 +115,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     try
                     {
                         astNode = CompileNewFunctionBodyAST(parent, func, log, lib);
-                        if (log.AllErrors.Count > 0)
+                        if (log.HasErrors)
                         {
                             log.LogError("Parse failed!");
                             return (astNode, log);
@@ -155,7 +155,7 @@ namespace LegendaryExplorerCore.UnrealScript
         public static (ASTNode astNode, MessageLog log) CompileState(ExportEntry export, string scriptText, FileLib lib)
         {
             (ASTNode astNode, MessageLog log, _) = CompileAST(scriptText, export.ClassName, export.Game);
-            if (log.AllErrors.IsEmpty())
+            if (!log.HasErrors)
             {
                 if (astNode is not State state)
                 {
@@ -176,7 +176,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 try
                 {
                     astNode = CompileNewStateBodyAST(parent, state, log, lib);
-                    if (astNode is null || log.AllErrors.Count > 0)
+                    if (astNode is null || log.HasErrors)
                     {
                         log.LogError("Parse failed!");
                         return (astNode, log);
@@ -211,7 +211,7 @@ namespace LegendaryExplorerCore.UnrealScript
         public static (ASTNode astNode, MessageLog log) CompileStruct(ExportEntry export, string scriptText, FileLib lib, PackageCache packageCache = null)
         {
             (ASTNode astNode, MessageLog log, _) = CompileAST(scriptText, export.ClassName, export.Game);
-            if (log.AllErrors.IsEmpty())
+            if (!log.HasErrors)
             {
                 if (astNode is not Struct strct)
                 {
@@ -232,7 +232,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 try
                 {
                     astNode = CompileNewStructAST(parent, strct, log, lib);
-                    if (astNode is null || log.AllErrors.Count > 0)
+                    if (astNode is null || log.HasErrors)
                     {
                         log.LogError("Parse failed!");
                         return (astNode, log);
@@ -355,7 +355,7 @@ namespace LegendaryExplorerCore.UnrealScript
         public static (ASTNode astNode, MessageLog log) CompileDefaultProperties(ExportEntry export, string scriptText, FileLib lib, PackageCache packageCache = null)
         {
             (ASTNode astNode, MessageLog log, _) = CompileAST(scriptText, export.ClassName, export.Game, true);
-            if (log.AllErrors.IsEmpty())
+            if (!log.HasErrors)
             {
                 if (astNode is not DefaultPropertiesBlock propBlock)
                 {
@@ -376,7 +376,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 try
                 {
                     astNode = CompileDefaultPropertiesAST(classExport, propBlock, log, lib);
-                    if (astNode is null || log.AllErrors.Count > 0)
+                    if (astNode is null || log.HasErrors)
                     {
                         log.LogError("Parse failed!");
                         return (astNode, log);

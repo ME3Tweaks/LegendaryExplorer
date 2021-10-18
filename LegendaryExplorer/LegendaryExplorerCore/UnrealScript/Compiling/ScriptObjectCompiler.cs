@@ -326,7 +326,24 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 prevField.Next = 0;
                 prevField.Export.WriteBinary(prevField);
             }
-            structObj.Defaults = structAST.GetDefaultPropertyCollection(pcc, false, packageCache);
+            foreach (UProperty removedProp in existingProps.Values)
+            {
+                EntryPruner.TrashEntryAndDescendants(removedProp.Export);
+            }
+
+            PropertyCollection fullDefaults = structAST.GetDefaultPropertyCollection(pcc, false, packageCache);
+            //normal structs have all their properties in their defaults
+            if (structAST.Parent is null)
+            {
+                structObj.Defaults = fullDefaults;
+            }
+            //structs with a parent have only the properties which differ from their default values
+            //(for StructProperties, the difference is calculated from the default values of their members, NOT the structdefaultproperties values)
+            else
+            {
+                var baseDefaults = structAST.MakeBaseProps(pcc, packageCache, false);
+                structObj.Defaults = fullDefaults.Diff(baseDefaults);
+            }
             structObj.Export.WriteBinary(structObj);
         }
 
@@ -400,13 +417,17 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     {
                         parentClassName = parent.Parent.ClassName;
                     }
-                    uDelegateProperty.Delegate = parentClassName.CaseInsensitiveEquals("Function") ? uDelegateProperty.Function : 0;
+                    uDelegateProperty.Delegate = parentClassName.CaseInsensitiveEquals("Function") || parentClassName.CaseInsensitiveEquals("ScriptStruct") ? uDelegateProperty.Function : 0;
                     break;
                 case UMapProperty uMapProperty:
                     uMapProperty.KeyType = 0;
                     uMapProperty.ValueType = 0;
                     break;
                 case UObjectProperty uObjectProperty:
+                    if (propObj.PropertyFlags.Has(EPropertyFlags.EditInline) && propObj.PropertyFlags.Has(EPropertyFlags.ExportObject) && !propObj.PropertyFlags.Has(EPropertyFlags.Component))
+                    {
+                        propObj.PropertyFlags |= EPropertyFlags.NeedCtorLink;
+                    }
                     uObjectProperty.ObjectRef = CompilerUtils.ResolveSymbol(varType, pcc).UIndex;
                     break;
                 case UStructProperty uStructProperty:
@@ -428,6 +449,10 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                         }
                     }
                     Compile(new VariableDeclaration(elementType, dynArrType.ElementPropertyFlags, propName), uArrayProperty.Export, ref child);
+                    //propogate certain flags to inner prop
+                    child.PropertyFlags |= uArrayProperty.PropertyFlags & (EPropertyFlags.ExportObject | EPropertyFlags.EditInline | EPropertyFlags.EditInlineUse | EPropertyFlags.Localized 
+                                                                           | EPropertyFlags.Component | EPropertyFlags.Config | EPropertyFlags.EditConst | EPropertyFlags.AlwaysInit
+                                                                           | EPropertyFlags.Deprecated | EPropertyFlags.SerializeText | EPropertyFlags.CrossLevel);
                     child.Export.WriteBinary(child);
                     uArrayProperty.ElementType = child.Export.UIndex;
                     break;

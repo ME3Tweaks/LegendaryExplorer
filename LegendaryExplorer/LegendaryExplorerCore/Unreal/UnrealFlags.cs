@@ -168,14 +168,14 @@ namespace LegendaryExplorerCore.Unreal
             Travel =              0x0000000000010000U,
             EditConst =           0x0000000000020000U,    
             GlobalConfig =        0x0000000000040000U,
-            EditInline =          0x0000000000080000U,
+            Component =           0x0000000000080000U,
             AlwaysInit =          0x0000000000100000U,
             DuplicateTransient =  0x0000000000200000U,
             NeedCtorLink =        0x0000000000400000U,
             NoExport =            0x0000000000800000U,
             NoImport =            0x0000000001000000U,
             NoClear =             0x0000000002000000U,
-            Component =           0x0000000004000000U,
+            EditInline =          0x0000000004000000U,
             EdFindable =          0x0000000008000000U,
             EditInlineUse =       0x0000000010000000U,
             Deprecated =          0x0000000020000000U,
@@ -235,7 +235,7 @@ namespace LegendaryExplorerCore.Unreal
             [EPropertyFlags.Travel] = "",
             [EPropertyFlags.EditConst] = "",
             [EPropertyFlags.GlobalConfig] = "",
-            //[EPropertyFlags.Component] = "",
+            [EPropertyFlags.EditInline] = "",
             [EPropertyFlags.AlwaysInit] = "",
             [EPropertyFlags.DuplicateTransient] = "",
             [EPropertyFlags.NeedCtorLink] = "",
@@ -418,6 +418,7 @@ namespace LegendaryExplorerCore.Unreal
             StrictConfig = 0x00000040,
             ImmutableWhenCooked = 0x00000080,
             AtomicWhenCooked = 0x00000100,
+            UnkStructFlag = 0x00020000,
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

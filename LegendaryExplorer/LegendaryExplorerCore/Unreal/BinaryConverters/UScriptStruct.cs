@@ -20,7 +20,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             DefaultsStartPosition = sc.ms.Position;
             if (sc.IsLoading)
             {
-                Defaults = PropertyCollection.ReadProps(Export, sc.ms.BaseStream, Export.ObjectName, includeNoneProperty: true, entry: Export, packageCache: sc.packageCache);
+                Defaults = PropertyCollection.ReadProps(Export, sc.ms.BaseStream, Export.ObjectName, entry: Export, packageCache: sc.packageCache);
             }
             else
             {
@@ -36,7 +36,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 Next = 0,
                 Children = 0,
                 ScriptBytes = Array.Empty<byte>(),
-                Defaults = new PropertyCollection{new NoneProperty()}
+                Defaults = new PropertyCollection()
             };
         }
     }

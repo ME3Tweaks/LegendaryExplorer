@@ -240,9 +240,9 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             return props;
         }
 
-        private PropertyCollection MakeBaseProps(IMEPackage pcc, PackageCache packageCache)
+        public PropertyCollection MakeBaseProps(IMEPackage pcc, PackageCache packageCache, bool useStructDefaultsForStructProperties = true)
         {
-            var props = Parent is Struct parentStruct ? parentStruct.GetDefaultPropertyCollection(pcc, false, packageCache) : new PropertyCollection();
+            var props = new PropertyCollection();
             foreach (VariableDeclaration varDeclAST in VariableDeclarations)
             {
                 if (varDeclAST.Flags.Has(EPropertyFlags.Native))
@@ -320,7 +320,9 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
                             prop = new EnumProperty(NameReference.FromInstancedString(enumeration.Values[0].Name), NameReference.FromInstancedString(enumeration.Name), pcc.Game, propName);
                             break;
                         case Struct structType:
-                            prop = new StructProperty(NameReference.FromInstancedString(structType.Name), structType.GetDefaultPropertyCollection(pcc, false, packageCache), propName, structType.IsImmutable);
+                            prop = new StructProperty(NameReference.FromInstancedString(structType.Name),
+                                useStructDefaultsForStructProperties ? structType.GetDefaultPropertyCollection(pcc, false, packageCache) : structType.MakeBaseProps(pcc, packageCache, useStructDefaultsForStructProperties),
+                                propName, structType.IsImmutable);
                             break;
                         default:
                             switch (targetType.PropertyType)
@@ -353,6 +355,13 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
                     }
                     prop.StaticArrayIndex = i;
                     props.Add(prop);
+                }
+            }
+            if (Parent is Struct parentStruct)
+            {
+                foreach (Property property in parentStruct.GetDefaultPropertyCollection(pcc, false, packageCache))
+                {
+                    props.Add(property);
                 }
             }
             return props;

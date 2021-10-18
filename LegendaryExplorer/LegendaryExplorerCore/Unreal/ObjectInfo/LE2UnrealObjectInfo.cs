@@ -271,113 +271,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             return null;
         }
 
-        static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesLE2 = new();
-        public static PropertyCollection getDefaultStructValue(string structName, bool stripTransients, PackageCache packageCache)
-        {
-            if (stripTransients && defaultStructValuesLE2.TryGetValue(structName, out var cachedProps))
-            {
-                return cachedProps;
-            }
-            bool isImmutable = IsImmutableStruct(structName);
-            if (Structs.TryGetValue(structName, out ClassInfo info))
-            {
-                try
-                {
-                    PropertyCollection props = new();
-                    while (info != null)
-                    {
-                        foreach ((NameReference propName, PropertyInfo propInfo) in info.properties)
-                        {
-                            if (stripTransients && propInfo.Transient)
-                            {
-                                continue;
-                            }
-                            if (getDefaultProperty(propName, propInfo, packageCache, stripTransients, isImmutable) is Property uProp)
-                            {
-                                props.Add(uProp);
-                                if (propInfo.IsStaticArray())
-                                {
-                                    for (int i = 1; i < propInfo.StaticArrayLength; i++)
-                                    {
-                                        uProp = getDefaultProperty(propName, propInfo, packageCache, stripTransients, isImmutable);
-                                        uProp.StaticArrayIndex = i;
-                                        props.Add(uProp);
-                                    }
-                                }
-                            }
-                        }
-                        string filepath = info.pccPath;
-                        if (LE2Directory.GetBioGamePath() != null)
-                        {
-                            filepath = Path.Combine(LE2Directory.GetBioGamePath(), info.pccPath);
-                        }
-
-                        Stream loadStream = null;
-                        IMEPackage cachedPackage = null;
-                        if (packageCache != null)
-                        {
-                            packageCache.TryGetCachedPackage(filepath, true, out cachedPackage);
-                            if (cachedPackage == null)
-                                packageCache.TryGetCachedPackage(info.pccPath, true, out cachedPackage); // some cache types may have different behavior (such as relative package cache)
-
-                            if (cachedPackage != null)
-                            {
-                                // Use this one
-                                readDefaultProps(cachedPackage, props, packageCache: packageCache);
-                            }
-                        }
-                        else if (filepath != null && MEPackageHandler.TryGetPackageFromCache(filepath, out cachedPackage))
-                        {
-                            readDefaultProps(cachedPackage, props, packageCache: packageCache);
-                        }
-                        else if (File.Exists(info.pccPath))
-                        {
-                            filepath = info.pccPath;
-                            loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(info.pccPath);
-                        }
-                        else if (info.pccPath == GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
-                        {
-                            filepath = "GAMERESOURCES_LE2";
-                            loadStream = LegendaryExplorerCoreUtilities.LoadFileFromCompressedResource("GameResources.zip", LegendaryExplorerCoreLib.CustomResourceFileName(MEGame.LE2));
-                        }
-                        else if (filepath != null && File.Exists(filepath))
-                        {
-                            loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(filepath);
-                        }
-                        if (cachedPackage == null && loadStream != null)
-                        {
-                            using IMEPackage importPCC = MEPackageHandler.OpenMEPackageFromStream(loadStream, filepath, useSharedPackageCache: true);
-                            readDefaultProps(importPCC, props, packageCache);
-                        }
-
-                        Structs.TryGetValue(info.baseClass, out info);
-                    }
-                    props.Add(new NoneProperty());
-
-                    if (stripTransients)
-                    {
-                        defaultStructValuesLE2.TryAdd(structName, props);
-                    }
-                    return props;
-                }
-                catch
-                {
-                    return null;
-                }
-            }
-            return null;
-
-            void readDefaultProps(IMEPackage impPackage, PropertyCollection defaultProps, PackageCache packageCache)
-            {
-                var exportToRead = impPackage.GetUExport(info.exportIndex);
-                byte[] buff = exportToRead.DataReadOnly.Slice(0x24).ToArray();
-                PropertyCollection defaults = PropertyCollection.ReadProps(exportToRead, new MemoryStream(buff), structName, packageCache: packageCache);
-                foreach (var prop in defaults)
-                {
-                    defaultProps.TryReplaceProp(prop);
-                }
-            }
-        }
+        internal static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesLE2 = new();
 
         public static Property getDefaultProperty(NameReference propName, PropertyInfo propInfo, PackageCache packageCache, bool stripTransients = true, bool isImmutable = false)
         {
@@ -431,7 +325,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     }
                 case PropertyType.StructProperty:
                     isImmutable = isImmutable || GlobalUnrealObjectInfo.IsImmutable(propInfo.Reference, MEGame.LE2);
-                    return new StructProperty(propInfo.Reference, getDefaultStructValue(propInfo.Reference, stripTransients, packageCache), propName, isImmutable);
+                    return new StructProperty(propInfo.Reference, GlobalUnrealObjectInfo.getDefaultStructValue(MEGame.LE2, propInfo.Reference, stripTransients, packageCache), propName, isImmutable);
                 case PropertyType.None:
                 case PropertyType.Unknown:
                 default:

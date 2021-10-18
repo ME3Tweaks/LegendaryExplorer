@@ -24,6 +24,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling.Errors
         public IList<LogMessage> AllErrors => content.Where(m => m is Error or LineError).ToList();
         public IList<LogMessage> AllWarnings => content.Where(m => m is Warning or LineWarning).ToList();
 
+        public bool HasErrors => content.Any(m => m is Error or LineError);
+
         public MessageLog()
         {
             content = new List<LogMessage>();
@@ -38,6 +40,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling.Errors
         {
             if (start == null && end == null)
                 content.Add(new LogMessage(msg));
+            else if (end == null)
+                content.Add(new PositionedMessage(msg, start, start.GetModifiedPosition(0, 1, 1)));
             else
                 content.Add(new PositionedMessage(msg, start, end));
         }
@@ -56,6 +60,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling.Errors
         {
             if (start == null && end == null)
                 content.Add(new Warning(msg));
+            else if (end == null)
+                content.Add(new LineWarning(msg, start, start.GetModifiedPosition(0, 1, 1)));
             else
                 content.Add(new LineWarning(msg, start, end));
         }

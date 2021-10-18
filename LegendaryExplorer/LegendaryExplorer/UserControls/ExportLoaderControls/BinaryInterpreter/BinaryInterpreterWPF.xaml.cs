@@ -304,6 +304,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             "BioStage",
             "BioStateEventMap",
             "BioTlkFileSet",
+            "BioMask4Property",
             "BoolProperty",
             "BrushComponent",
             "ByteProperty",
@@ -588,6 +589,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     case "ArrayProperty":
                     case "FloatProperty":
                     case "ClassProperty":
+                    case "BioMask4Property":
                     case "ByteProperty":
                     case "StrProperty":
                     case "NameProperty":

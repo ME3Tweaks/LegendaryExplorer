@@ -168,6 +168,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     {
                         decl.Outer = node;
                         Success &= decl.AcceptVisitor(this);
+
+                        if (node.Name != "Object" && Symbols.TryGetSymbolInScopeStack<ASTNode>(decl.Name, out _, node.GetScope()))
+                        {
+                            Log.LogWarning($"A symbol named '{decl.Name}' exists in a parent class. Are you sure you want to shadow it?", decl.StartPos, decl.EndPos);
+                        }
                     }
 
                     if (node.Name != "Object")
@@ -309,10 +314,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                         {
                             node.Flags |= EPropertyFlags.NeedCtorLink;
                         }
-                        if (strct.Flags.Has(ScriptStructFlags.Transient))
-                        {
-                            node.Flags |= EPropertyFlags.Transient;
-                        }
                         break;
                 }
 
@@ -389,9 +390,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 if (!Symbols.TryAddType(node))
                 {
                     //Structs do not have to be globally unique, but they do have to be unique within a scope
-                    if (((ObjectType)node.Outer).TypeDeclarations.Any(decl => decl != node && decl.Name.CaseInsensitiveEquals(node.Name)))
+                    if (node.Outer is ObjectType nodeOuter && nodeOuter.TypeDeclarations.Any(decl => decl != node && decl.Name.CaseInsensitiveEquals(node.Name)))
                     {
-                        return Error($"A type named '{node.Name}' already exists in this {node.Outer.GetType().Name.ToLower()}!", node.StartPos, node.EndPos);
+                        return Error($"A type named '{node.Name}' already exists in this {nodeOuter.GetType().Name.ToLower()}!", node.StartPos, node.EndPos);
                     }
                 }
 
@@ -438,7 +439,16 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 {
                     decl.Outer = node;
                     Success = Success && decl.AcceptVisitor(this);
-                    //todo: verify that the member does not attempt to override a member from a parent struct
+
+                    var parentStruct = node.Parent as Struct;
+                    while (parentStruct is not null)
+                    {
+                        if (parentStruct.VariableDeclarations.Any(parentVarDecl => parentVarDecl.Name.CaseInsensitiveEquals(decl.Name)))
+                        {
+                            Log.LogWarning($"A member name '{decl.Name}' exists in a parent struct. Are you sure you want to shadow it?", decl.StartPos, decl.EndPos);
+                        }
+                        parentStruct = parentStruct.Parent as Struct;
+                    }
                 }
 
                 Symbols.PopScope();
@@ -459,10 +469,33 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 foreach (VariableDeclaration decl in node.VariableDeclarations)
                 {
                     Success &= decl.AcceptVisitor(this);
-                    if (decl.Flags.Has(EPropertyFlags.Component))
+                }
+                if (HasComponents(node))
+                {
+                    node.Flags |= ScriptStructFlags.HasComponents;
+                }
+
+                static bool HasComponents(Struct strct)
+                {
+                    bool hasComponents = false;
+                    foreach (VariableDeclaration decl in strct.VariableDeclarations)
                     {
-                        node.Flags |= ScriptStructFlags.HasComponents;
+                        if (decl.Flags.Has(EPropertyFlags.Component))
+                        {
+                            hasComponents = true;
+                        }
+                        var varType = decl.VarType is StaticArrayType staticArrayType ? staticArrayType.ElementType : decl.VarType;
+                        if (varType is DynamicArrayType dynArrType)
+                        {
+                            varType = dynArrType.ElementType;
+                        }
+                        if (varType is Struct innerStruct && (innerStruct.Flags.Has(ScriptStructFlags.HasComponents) || HasComponents(innerStruct)))
+                        {
+                            decl.Flags |= EPropertyFlags.Component;
+                            hasComponents = true;
+                        }
                     }
+                    return hasComponents;
                 }
 
                 return Success;

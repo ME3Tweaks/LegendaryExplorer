@@ -350,6 +350,10 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             {
                 specs.Add("strictconfig");
             }
+            if (flags.Has(ScriptStructFlags.UnkStructFlag))
+            {
+                specs.Add(nameof(ScriptStructFlags.UnkStructFlag).ToLowerInvariant());
+            }
 
             foreach (string spec in specs)
             {
@@ -1830,7 +1834,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
             if (flags.Has(EPropertyFlags.AlwaysInit))
             {
-                specs.Add("alwaysinit");
+                specs.Add("init");
             }
 
             if (flags.Has(EPropertyFlags.DataBinding))

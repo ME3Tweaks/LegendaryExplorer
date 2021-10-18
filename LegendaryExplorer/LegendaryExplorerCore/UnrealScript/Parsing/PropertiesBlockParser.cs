@@ -210,7 +210,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             };
             if (!Symbols.TryAddSymbol(objectName, subObj))
             {
-                throw ParseError($"'{objectName}' has already been defined in this scope!");
+                throw ParseError($"'{objectName}' has already been defined in this scope!", nameToken);
             }
             return subObj;
         }
@@ -558,7 +558,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         case EPropertyType.Bool:
                             if (literal is not BooleanLiteral)
                             {
-                                TypeError($"Expected {TRUE} or {FALSE}!");
+                                TypeError($"Expected {TRUE} or {FALSE}!", literal);
                             }
 
                             break;

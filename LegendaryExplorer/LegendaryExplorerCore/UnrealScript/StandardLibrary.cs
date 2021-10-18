@@ -247,7 +247,7 @@ namespace LegendaryExplorerCore.UnrealScript
                         {
                             var validator = new ClassValidationVisitor(log, symbols, validationPass);
                             ast.AcceptVisitor(validator);
-                            if (log.Content.Any())
+                            if (log.HasErrors)
                             {
                                 DisplayError(scriptText, log.ToString());
                                 return false;
