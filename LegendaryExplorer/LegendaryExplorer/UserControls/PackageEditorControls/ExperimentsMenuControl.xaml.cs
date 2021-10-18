@@ -385,6 +385,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.ConvertMaterialToVtestDonor(GetPEWindow());
         }
 
+        private void OrganizeParticleSystemExports_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.OrganizeParticleSystems(GetPEWindow());
+        }
+
         private async void ConvertSLCALightToNonSLCA(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ConvertSLCALightToNonSLCA(GetPEWindow());

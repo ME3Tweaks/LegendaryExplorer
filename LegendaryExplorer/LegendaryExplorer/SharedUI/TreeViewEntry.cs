@@ -188,9 +188,7 @@ namespace LegendaryExplorer.SharedUI
                 {
                     if (loadedSubtext) return _subtext;
                     if (Entry == null) return null;
-                    var ee = Entry as ExportEntry;
-
-                    if (ee != null)
+                    if (Entry is ExportEntry ee)
                     {
                         //Parse as export
                         switch (ee.ClassName)
@@ -307,6 +305,15 @@ namespace LegendaryExplorer.SharedUI
                                     _subtext = $"{sizeX?.Value}x{sizeY?.Value}";
                                     break;
                                 }
+                            case "ParticleSpriteEmitter":
+                                {
+                                    var emitterName = ee.GetProperty<NameProperty>("EmitterName");
+                                    if (emitterName != null)
+                                    {
+                                        _subtext = emitterName.Value.Instanced;
+                                    }
+                                }
+                                break;
                         }
 
                         if (BinaryInterpreterWPF.IsNativePropertyType(Entry.ClassName))
@@ -328,7 +335,7 @@ namespace LegendaryExplorer.SharedUI
                             }
                             else
                             {
-                                var bin = ObjectBinary.From<UBoolProperty>(Entry as ExportEntry);
+                                var bin = ObjectBinary.From<UBoolProperty>(ee);
                                 if (bin.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.Config))
                                 {
                                     if (_subtext != null)

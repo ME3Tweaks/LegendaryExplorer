@@ -2314,6 +2314,35 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
+        public static void OrganizeParticleSystems(PackageEditorWindow pe)
+        {
+            if (pe.Pcc == null)
+                return;
+
+            foreach (var ps in pe.Pcc.Exports.Where(x => x.ClassName == "ParticleSystem"))
+            {
+                var emitters = ps.GetProperty<ArrayProperty<ObjectProperty>>("Emitters");
+                foreach (var emitter in emitters.Select(x => x.ResolveToEntry(pe.Pcc)).OfType<ExportEntry>())
+                {
+                    var lodLevels = emitter.GetProperty<ArrayProperty<ObjectProperty>>("LODLevels");
+                    foreach (var lodLevel in lodLevels.Select(x => x.ResolveToEntry(pe.Pcc)).OfType<ExportEntry>())
+                    {
+                        lodLevel.idxLink = emitter.UIndex;
+                        var modules = lodLevel.GetProperty<ArrayProperty<ObjectProperty>>("Modules");
+                        foreach (var module in modules.Select(x => x.ResolveToEntry(pe.Pcc)).OfType<ExportEntry>())
+                        {
+                            module.idxLink = lodLevel.UIndex;
+                        }
+
+                        foreach (var objProp in lodLevel.GetProperties().OfType<ObjectProperty>().Select(x => x.ResolveToEntry(pe.Pcc)).OfType<ExportEntry>())
+                        {
+                            objProp.idxLink = lodLevel.UIndex;
+                        }
+                    }
+                }
+            }
+        }
+
         public static void ImportUDKTerrain(PackageEditorWindow pe)
         {
             if (pe.Pcc == null)

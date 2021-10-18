@@ -44,6 +44,7 @@
         <MenuItem Header="Generate MaterialInstanceConstant from Material" Click="GenerateMaterialInstanceConstant_Click"/>
         <MenuItem Header="Convert Static Light component to non-static" Click="ConvertSLCALightToNonSLCA"/>
         <MenuItem Header="Find bad index location from appErrorF message (doesn't work)" Click="FindAppErrorFLocation_Click"/>
+        <MenuItem Header="Organize Particle System Exports" Click="OrganizeParticleSystemExports_Click"/>
         <MenuItem Header="MScanner" Click="MScanner_Click"/>
         <MenuItem Header="Make LE1 Mako Map from terrain from UDK file" Click="MakeLE1MakoMap_Click"/>
         <MenuItem Header="Import UDK Terrain Collision Data" Click="ImportUDKTerrain_Click"/>
