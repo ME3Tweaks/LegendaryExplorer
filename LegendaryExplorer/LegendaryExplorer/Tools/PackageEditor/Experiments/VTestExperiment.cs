@@ -340,8 +340,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             vTestOptions.cache.ReleasePackages(true); // Dump everything out of memory
 
-            Debug.WriteLine("Non donated particlesystems: ");
-            foreach (var nonDonorItems in EntryImporter.NonDonorItems)
+            Debug.WriteLine("Non donated items: ");
+            foreach (var nonDonorItems in EntryImporter.NonDonorItems.OrderBy(x=>x))
             {
                 Debug.WriteLine(nonDonorItems);
             }

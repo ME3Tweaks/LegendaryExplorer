@@ -328,14 +328,23 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             // Cause there's a lot of things that seem to have to be manually accounted for
             // To do cross game porting you MUST have a cache object on the ROP
             // or it'll take ages!
-            if (rop.TargetGameDonorDB != null && sourceExport.ClassName != "Package" && sourceExport.indexValue == 0 && rop.Cache != null) // Actors cannot be donors
+            if (rop.TargetGameDonorDB != null && sourceExport.ClassName != "Package" && sourceExport.indexValue == 0 && rop.Cache != null && !sourceExport.InstancedFullPath.StartsWith("TheWorld.")) // Actors cannot be donors
             {
                 // Port in donor instead
                 var ifp = sourceExport.InstancedFullPath;
                 //Debug.WriteLine($@"Porting {ifp}");
-                //if (ifp.Contains("Nor10_StaticMesh"))
-                //    Debugger.Break();
+                if (ifp.Contains("TUR_ARM_HVYa_Des_Diff_Stack"))
+                    Debugger.Break();
                 var donorFiles = rop.TargetGameDonorDB.GetFilesContainingObject(ifp);
+                if (donorFiles == null || !donorFiles.Any())
+                {
+                    // Try without the front part
+                    if (ifp.Contains("."))
+                    {
+                        ifp = ifp.Substring(ifp.IndexOf(".") + 1);
+                        donorFiles = rop.TargetGameDonorDB.GetFilesContainingObject(ifp);
+                    }
+                }
                 bool usingDonor = false;
                 if (donorFiles != null && donorFiles.Any())
                 {
@@ -366,7 +375,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                         if (rop.Cache.TryGetCachedPackage(dfp, false, out donorPackage))
                         {
-                            var seIFP = sourceExport.InstancedFullPath;
+                            var seIFP = ifp;
                             var testExp = donorPackage.FindExport(seIFP);
                             if (testExp.ClassName == sourceExport.ClassName || (sourceExport.ClassName == "BioSWF" && testExp.ClassName == "GFxMovieInfo") || (sourceExport.ClassName == "Material" && testExp.ClassName == "MaterialInstanceConstant"))
                             {
@@ -406,7 +415,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         var dfp = Path.Combine(MEDirectories.GetDefaultGamePath(destPackage.Game), donorFiles[0]);
                         if (rop.Cache.TryGetCachedPackage(dfp, true, out donorPackage))
                         {
-                            var testExp = donorPackage.FindExport(sourceExport.InstancedFullPath);
+                            var testExp = donorPackage.FindExport(ifp);
                             if (testExp.ClassName == sourceExport.ClassName || (sourceExport.ClassName == "BioSWF" && testExp.ClassName == "GFxMovieInfo") || (sourceExport.ClassName == "Material" && testExp.ClassName == "MaterialInstanceConstant")) // Use GFxMovieInfo Donors for BioSWF export
                             {
                                 sourceExport = testExp;
@@ -415,7 +424,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             else if (testExp.ClassName != sourceExport.ClassName)
                             {
                                 // have to manually try to find the export...
-                                var properDonor = donorPackage.Exports.FirstOrDefault(x => x.InstancedFullPath == sourceExport.InstancedFullPath && x.ClassName == sourceExport.ClassName);
+                                var properDonor = donorPackage.Exports.FirstOrDefault(x => x.InstancedFullPath == ifp && x.ClassName == sourceExport.ClassName);
 
                                 if (properDonor == null)
                                 {
@@ -436,14 +445,15 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                 if (!usingDonor && !ifp.StartsWith(@"TheWorld"))
                 {
-                    if (sourceExport.ClassName == "ParticleSystem")
+                    //if (sourceExport.ClassName == "ParticleSystem")
+                    //{
+                    var entryStr = $"{sourceExport.ClassName} {sourceExport.InstancedFullPath}";
+                    //Debug.WriteLine($@"Not ported using donor: {sourceExport.InstancedFullPath} ({sourceExport.ClassName})");
+                    if (!NonDonorItems.Contains(entryStr))
                     {
-                        Debug.WriteLine($@"Not ported using donor: {sourceExport.InstancedFullPath} ({sourceExport.ClassName})");
-                        if (!NonDonorItems.Contains(sourceExport.InstancedFullPath))
-                        {
-                            NonDonorItems.Add(sourceExport.InstancedFullPath);
-                        }
+                        NonDonorItems.Add(entryStr);
                     }
+                    //}
                 }
             }
 #endif
