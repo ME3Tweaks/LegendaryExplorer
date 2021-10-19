@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 
@@ -24,5 +26,38 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             return visitor.VisitNode(this);
         }
         public override IEnumerable<ASTNode> ChildNodes => Values;
+
+        public string GenerateMaxName()
+        {
+            string prefix = LongestCommonPrefix(Values.Select(ev => ev.Name).ToList());
+            int underScoreIndex = prefix.LastIndexOf('_');
+            if (underScoreIndex > 0)
+            {
+                return $"{prefix[..underScoreIndex]}_MAX";
+            }
+
+            return $"{Name}_MAX";
+
+            static string LongestCommonPrefix(List<string> strings)
+            {
+                if (strings.Count is 0)
+                {
+                    return "";
+                }
+                string prefix = strings.MinBy(s => s.Length);
+                int i = 0;
+                for (; i < prefix.Length; i++)
+                {
+                    foreach (string name in strings)
+                    {
+                        if (name[i] != prefix[i])
+                        {
+                            return prefix[..i];
+                        }
+                    }
+                }
+                return prefix;
+            }
+        }
     }
 }

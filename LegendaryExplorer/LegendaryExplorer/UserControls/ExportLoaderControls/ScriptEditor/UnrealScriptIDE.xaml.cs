@@ -368,6 +368,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                             outputListBox.ItemsSource = log?.Content;
                             break;
                         }
+                        case "Enum":
+                        {
+                            (_, MessageLog log) = UnrealScriptCompiler.CompileEnum(CurrentLoadedExport, ScriptText, CurrentFileLib);
+                            outputListBox.ItemsSource = log?.Content;
+                            break;
+                        }
                         default:
                             outputListBox.ItemsSource = new[]
                             {
@@ -407,7 +413,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 _definitionLinkGenerator.Reset();
                 Dispatcher.Invoke(() =>
                 {
-                    if (ast is Function or State or DefaultPropertiesBlock && FullyInitialized)
+                    if (ast is Function or State or Struct or Enumeration or DefaultPropertiesBlock && FullyInitialized)
                     {
                         try
                         {
@@ -428,6 +434,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                                 {
                                     UnrealScriptCompiler.CompileNewStructAST(structParent, strct, log, CurrentFileLib);
                                 }
+                                else if (astNode is Enumeration enumeration && CurrentLoadedExport?.Parent is ExportEntry enumParent)
+                                {
+                                    UnrealScriptCompiler.CompileNewEnumAST(enumParent, enumeration, log, CurrentFileLib);
+                                }
                                 else if (astNode is DefaultPropertiesBlock propertiesBlock && CurrentLoadedExport?.Class is ExportEntry classExport)
                                 {
                                     UnrealScriptCompiler.CompileDefaultPropertiesAST(classExport, propertiesBlock, log, CurrentFileLib);
@@ -444,7 +454,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
 
                     RootNode = ast;
                     ScriptText = text;
-                    textEditor.IsReadOnly = RootNode is not (Function or State or Struct or DefaultPropertiesBlock);
+                    textEditor.IsReadOnly = RootNode is not (Function or State or Struct or Enumeration or DefaultPropertiesBlock);
                 });
 
             }
@@ -461,7 +471,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             try
             {
 
-                if (ast != null && !log.HasErrors && FullyInitialized && (ast is Function or State or Struct && CurrentLoadedExport.Parent is ExportEntry || ast is DefaultPropertiesBlock && CurrentLoadedExport.Class is ExportEntry))
+                if (ast != null && !log.HasErrors && FullyInitialized && (ast is Function or State or Struct or Enumeration && CurrentLoadedExport.Parent is ExportEntry || ast is DefaultPropertiesBlock && CurrentLoadedExport.Class is ExportEntry))
                 {
                     switch (ast)
                     {
@@ -473,6 +483,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                             break;
                         case Struct strct:
                             ast = UnrealScriptCompiler.CompileNewStructAST((ExportEntry)CurrentLoadedExport.Parent, strct, log, CurrentFileLib);
+                            break;
+                        case Enumeration enumeration:
+                            ast = UnrealScriptCompiler.CompileNewEnumAST((ExportEntry)CurrentLoadedExport.Parent, enumeration, log, CurrentFileLib);
                             break;
                         case DefaultPropertiesBlock propertiesBlock:
                             ast = UnrealScriptCompiler.CompileDefaultPropertiesAST((ExportEntry) CurrentLoadedExport.Class, propertiesBlock, log, CurrentFileLib);
@@ -587,6 +600,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                                 Function func => UnrealScriptCompiler.CompileNewFunctionBodyAST(parentExport, func, log, CurrentFileLib),
                                 State state => UnrealScriptCompiler.CompileNewStateBodyAST(parentExport, state, log, CurrentFileLib),
                                 Struct strct => UnrealScriptCompiler.CompileNewStructAST(parentExport, strct, log, CurrentFileLib),
+                                Enumeration enumeration => UnrealScriptCompiler.CompileNewEnumAST(parentExport, enumeration, log, CurrentFileLib),
                                 _ => RootNode
                             };
                         }

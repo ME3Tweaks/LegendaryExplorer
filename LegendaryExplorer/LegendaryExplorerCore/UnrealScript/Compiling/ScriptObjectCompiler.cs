@@ -349,7 +349,24 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public static void Compile(Enumeration enumAST, IEntry parent, ref UEnum enumObj)
         {
-            throw new NotImplementedException();
+            IMEPackage pcc = parent.FileRef;
+
+            var enumName = NameReference.FromInstancedString(enumAST.Name);
+            ExportEntry enumExport;
+            if (enumObj is null)
+            {
+                enumExport = CreateNewExport(enumName, "Enum", parent, UEnum.Create());
+                enumObj = enumExport.GetBinaryData<UEnum>();
+            }
+            else
+            {
+                enumExport = enumObj.Export;
+                enumExport.ObjectName = enumName;
+            }
+            var values = enumAST.Values.Select(ev => NameReference.FromInstancedString(ev.Name)).ToList();
+            values.Add(enumAST.GenerateMaxName());
+            enumObj.Names = values.ToArray();
+            enumExport.WriteBinary(enumObj);
         }
 
         public static void Compile(VariableDeclaration varDeclAST, IEntry parent, ref UProperty propObj)

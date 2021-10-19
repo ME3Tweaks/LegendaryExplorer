@@ -208,6 +208,62 @@ namespace LegendaryExplorerCore.UnrealScript
             return (null, log);
         }
 
+        public static (ASTNode astNode, MessageLog log) CompileEnum(ExportEntry export, string scriptText, FileLib lib, PackageCache packageCache = null)
+        {
+            (ASTNode astNode, MessageLog log, _) = CompileAST(scriptText, export.ClassName, export.Game);
+            if (!log.HasErrors)
+            {
+                if (astNode is not Enumeration enumeration)
+                {
+                    log.LogError("Tried to parse an Enum, but no Enum was found!");
+                    return (null, log);
+                }
+                if (!lib.IsInitialized)
+                {
+                    log.LogError("FileLib not initialized!");
+                    return (null, log);
+                }
+                if (export.Parent is not ExportEntry { IsClass: true } parent)
+                {
+                    log.LogError(export.InstancedFullPath + " does not have a Class Export as a parent!");
+                    return (null, log);
+                }
+
+                try
+                {
+                    astNode = CompileNewEnumAST(parent, enumeration, log, lib);
+                    if (astNode is null || log.HasErrors)
+                    {
+                        log.LogError("Parse failed!");
+                        return (astNode, log);
+                    }
+                }
+                catch (ParseException)
+                {
+                    log.LogError("Parse failed!");
+                    return (astNode, log);
+                }
+                catch (Exception exception)
+                {
+                    log.LogError($"Parse failed! Exception: {exception}");
+                    return (astNode, log);
+                }
+                try
+                {
+                    ScriptObjectCompiler.Compile(astNode, parent, export.GetBinaryData<UEnum>(), packageCache);
+                    log.LogMessage("Compiled!");
+                    return (astNode, log);
+                }
+                catch (Exception exception) when (!LegendaryExplorerCoreLib.IsDebug)
+                {
+                    log.LogError($"Compilation failed! Exception: {exception}");
+                    return (astNode, log);
+                }
+            }
+
+            return (null, log);
+        }
+
         public static (ASTNode astNode, MessageLog log) CompileStruct(ExportEntry export, string scriptText, FileLib lib, PackageCache packageCache = null)
         {
             (ASTNode astNode, MessageLog log, _) = CompileAST(scriptText, export.ClassName, export.Game);
@@ -480,6 +536,38 @@ namespace LegendaryExplorerCore.UnrealScript
                     }
                     symbols.PopScope();
                 }
+            }
+
+            return null;
+        }
+
+        public static Enumeration CompileNewEnumAST(ExportEntry parentExport, Enumeration enumeration, MessageLog log, FileLib lib)
+        {
+            var symbols = lib.GetSymbolTable();
+            symbols.RevertToObjectStack();
+            if (symbols.TryGetType(parentExport.ObjectName.Instanced, out ObjectType containingObject))
+            {
+                if (!containingObject.Name.CaseInsensitiveEquals("Object"))
+                {
+                    symbols.GoDirectlyToStack(containingObject.GetScope());
+                }
+                symbols.RemoveSymbol(enumeration.Name);
+                symbols.RemoveType(enumeration.Name);
+
+                int enumIdx = containingObject.TypeDeclarations.FindIndex(e => e is Enumeration && e.Name.CaseInsensitiveEquals(enumeration.Name));
+                if (enumIdx == -1)
+                {
+                    containingObject.TypeDeclarations.Add(enumeration);
+                }
+                else
+                {
+                    containingObject.TypeDeclarations[enumIdx] = enumeration;
+                }
+
+                enumeration.Outer = containingObject;
+                ClassValidationVisitor.RunAllPasses(enumeration, log, symbols);
+
+                return enumeration;
             }
 
             return null;

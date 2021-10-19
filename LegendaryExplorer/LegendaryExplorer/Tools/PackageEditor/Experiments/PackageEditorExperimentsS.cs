@@ -717,7 +717,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         //RecompileAllFunctions(filePath);
                         //RecompileAllStates(filePath);
                         //RecompileAllDefaults(filePath, packageCache);
-                        RecompileAllStructs(filePath, packageCache);
+                        //RecompileAllStructs(filePath, packageCache);
+                        RecompileAllEnums(filePath, packageCache);
                     }
                     //if (interestingExports.Any())
                     //{
@@ -1192,6 +1193,56 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 }
 
                                 if (exp.EntryHasPendingChanges || exp.GetAllDescendants().Any(entry => entry.EntryHasPendingChanges))
+                                {
+                                    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nRecompilation does not match!"));
+                                }
+                            }
+                            else
+                            {
+                                interestingExports.Add(new EntryStringPair($"{pcc.FilePath} failed to compile!"));
+                                return;
+                            }
+                        }
+                        catch (Exception exception)
+                        {
+                            Console.WriteLine(exception);
+                            interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\n{exception}"));
+                            return;
+                        }
+                    }
+                }
+            }
+
+            void RecompileAllEnums(string filePath, PackageCache packageCache = null)
+            {
+                using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
+                var fileLib = new FileLib(pcc);
+
+                for (int i = 0; i < pcc.ExportCount; i++)
+                {
+                    ExportEntry exp = pcc.Exports[i];
+                    if (exp.ClassName is "Enum")
+                    {
+                        string instancedFullPath = exp.InstancedFullPath;
+                        if (foundClasses.Contains(instancedFullPath))
+                        {
+                            continue;
+                        }
+
+                        foundClasses.Add(instancedFullPath);
+                        try
+                        {
+                            if (fileLib.Initialize())
+                            {
+                                (_, string script) = UnrealScriptCompiler.DecompileExport(exp, fileLib);
+                                (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileEnum(exp, script, fileLib, packageCache);
+                                if (ast is not Enumeration || log.HasErrors)
+                                {
+                                    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse defaults!"));
+                                    return;
+                                }
+
+                                if (exp.EntryHasPendingChanges)
                                 {
                                     interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nRecompilation does not match!"));
                                 }

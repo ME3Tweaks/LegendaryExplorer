@@ -339,7 +339,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
         public static Enumeration ConvertEnum(UEnum obj)
         {
             var vals = new List<EnumValue>();
-            for (byte i = 0; i < obj.Names.Length - 1; i++) //- 1 to skip to _MAX value
+            for (byte i = 0; i < obj.Names.Length - 1; i++) //- 1 to skip _MAX value
             {
                 var val = obj.Names[i];
 
