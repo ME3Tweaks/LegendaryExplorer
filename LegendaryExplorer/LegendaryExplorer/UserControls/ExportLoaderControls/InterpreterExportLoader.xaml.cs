@@ -374,7 +374,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private bool CanFireNavigateCallback()
         {
-            if (NavigateToEntryCommand != null && SelectedItem != null && SelectedItem.Property is ObjectProperty op)
+            if (CurrentLoadedExport != null && NavigateToEntryCommand != null && SelectedItem != null && SelectedItem.Property is ObjectProperty op)
             {
                 var entry = CurrentLoadedExport.FileRef.GetEntry(op.Value);
                 return NavigateToEntryCommand.CanExecute(entry);
@@ -983,6 +983,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 });
             }
 
+            bool isExpanded = false;
             string editableValue = ""; //editable value
             string parsedValue = ""; //human formatted item. Will most times be blank
             switch (prop)
@@ -1284,6 +1285,32 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         var cameraTag = sp.GetProp<StrProperty>("m_sCameraName");
                         parsedValue = cameraTag?.Value ?? "";
                     }
+                    else if (sp.StructType == "FireLink" && parsingExport.Game.IsLEGame())
+                    {
+                        var destActor = sp.GetProp<StructProperty>("TargetActor").GetProp<ObjectProperty>("Actor");
+                        var destSlot = sp.GetProp<StructProperty>("TargetActor").GetProp<IntProperty>("SlotIdx");
+                        if (destActor.Value != 0 && parsingExport.FileRef.TryGetEntry(destActor.Value, out var entry))
+                        {
+                            parsedValue = $"-> {entry.ObjectName.Instanced} Slot {destSlot.Value}";
+                        }
+                    }
+                    else if (sp.StructType == "FireLinkItem" && parsingExport.Game.IsLEGame())
+                    {
+                        parsedValue = $"{sp.GetProp<EnumProperty>("SrcType").Value} {sp.GetProp<EnumProperty>("SrcAction").Value} -> {sp.GetProp<EnumProperty>("DestType").Value} {sp.GetProp<EnumProperty>("DestAction").Value}";
+                    }
+                    else if (sp.StructType == "TerrainLayer")
+                    {
+                        parsedValue = $"{sp.GetProp<StrProperty>("Name").Value}";
+                    }
+                    else if (sp.StructType == "FilterLimit")
+                    {
+                        parsedValue = $"Enabled={sp.GetProp<BoolProperty>("Enabled").Value}, Base={sp.GetProp<FloatProperty>("Base").Value}";
+                    }
+                    else if (sp.StructType == "ExpressionInput")
+                    {
+                        isExpanded = true;
+                        parsedValue = sp.StructType;
+                    }
                     else
                     {
                         parsedValue = sp.StructType;
@@ -1300,10 +1327,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 ParsedValue = parsedValue,
                 DisplayName = displayName,
                 Parent = parent,
-                AttachedExport = parsingExport
+                AttachedExport = parsingExport,
+                IsExpanded = isExpanded
             };
 
-            //Auto expand
+            //Auto expand items
             if (item.Property != null && item.Property.Name == "StreamingStates")
             {
                 item.IsExpanded = true;
