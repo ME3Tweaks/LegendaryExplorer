@@ -23,6 +23,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
+        public static Material Create()
+        {
+            return new()
+            {
+                SM3MaterialResource = MaterialResource.Create(),
+                SM2MaterialResource = MaterialResource.Create()
+            };
+        }
+
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
         {
             var uIndexes = new List<(UIndex, string)>();
@@ -62,6 +71,17 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref SM2StaticPermutationResource);
                 sc.Serialize(ref SM2StaticParameterSet);
             }
+        }
+
+        public static MaterialInstance Create()
+        {
+            return new()
+            {
+                SM3StaticPermutationResource = MaterialResource.Create(),
+                SM3StaticParameterSet = (StaticParameterSet)Guid.Empty,
+                SM2StaticPermutationResource = MaterialResource.Create(),
+                SM2StaticParameterSet = (StaticParameterSet)Guid.Empty
+            };
         }
 
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
@@ -141,6 +161,23 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public int unkInt2;
         public (int, float, int)[] unkList;
         //end ME1
+
+        public static MaterialResource Create()
+        {
+            return new()
+            {
+                CompileErrors = Array.Empty<string>(),
+                TextureDependencyLengthMap = new OrderedMultiValueDictionary<UIndex, int>(),
+                UniformExpressionTextures = Array.Empty<UIndex>(),
+                UniformPixelVectorExpressions = Array.Empty<MaterialUniformExpression>(),
+                UniformPixelScalarExpressions = Array.Empty<MaterialUniformExpression>(),
+                Uniform2DTextureExpressions = Array.Empty<MaterialUniformExpressionTexture>(),
+                UniformCubeTextureExpressions = Array.Empty<MaterialUniformExpressionTexture>(),
+                TextureLookups = Array.Empty<TextureLookup>(),
+                Me1MaterialUniformExpressionsList = Array.Empty<ME1MaterialUniformExpressionsElement>(),
+                unkList = Array.Empty<(int, float, int)>(),
+            };
+        }
 
         public virtual List<(UIndex, string)> GetUIndexes(MEGame game)
         {

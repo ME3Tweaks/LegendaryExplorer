@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
@@ -27,6 +27,16 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         private bool Success;
 
         public ValidationPass Pass;
+
+        public static void RunAllPasses(ASTNode node, MessageLog log, SymbolTable symbols)
+        {
+            var validator = new ClassValidationVisitor(log, symbols, ValidationPass.TypesAndFunctionNamesAndStateNames);
+            node.AcceptVisitor(validator);
+            validator.Pass = ValidationPass.ClassAndStructMembersAndFunctionParams;
+            node.AcceptVisitor(validator);
+            validator.Pass = ValidationPass.BodyPass;
+            node.AcceptVisitor(validator);
+        }
 
         public ClassValidationVisitor(MessageLog log, SymbolTable symbols, ValidationPass pass)
         {
@@ -158,6 +168,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     {
                         decl.Outer = node;
                         Success &= decl.AcceptVisitor(this);
+
+                        if (node.Name != "Object" && Symbols.TryGetSymbolInScopeStack<ASTNode>(decl.Name, out _, node.GetScope()))
+                        {
+                            Log.LogWarning($"A symbol named '{decl.Name}' exists in a parent class. Are you sure you want to shadow it?", decl.StartPos, decl.EndPos);
+                        }
                     }
 
                     if (node.Name != "Object")
@@ -294,8 +309,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     case Class {IsComponent: true}:
                         node.Flags |= EPropertyFlags.Component;
                         break;
-                    case Struct strct when !node.Flags.Has(EPropertyFlags.Native) && StructNeedsCtorLink(strct, new Stack<Struct> { strct }):
-                        node.Flags |= EPropertyFlags.NeedCtorLink;
+                    case Struct strct:
+                        if (!node.Flags.Has(EPropertyFlags.Native) && StructNeedsCtorLink(strct, new Stack<Struct> { strct }))
+                        {
+                            node.Flags |= EPropertyFlags.NeedCtorLink;
+                        }
                         break;
                 }
 
@@ -372,9 +390,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 if (!Symbols.TryAddType(node))
                 {
                     //Structs do not have to be globally unique, but they do have to be unique within a scope
-                    if (((ObjectType)node.Outer).TypeDeclarations.Any(decl => decl != node && decl.Name.CaseInsensitiveEquals(node.Name)))
+                    if (node.Outer is ObjectType nodeOuter && nodeOuter.TypeDeclarations.Any(decl => decl != node && decl.Name.CaseInsensitiveEquals(node.Name)))
                     {
-                        return Error($"A type named '{node.Name}' already exists in this {node.Outer.GetType().Name.ToLower()}!", node.StartPos, node.EndPos);
+                        return Error($"A type named '{node.Name}' already exists in this {nodeOuter.GetType().Name.ToLower()}!", node.StartPos, node.EndPos);
                     }
                 }
 
@@ -388,11 +406,8 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 }
 
                 Symbols.PopScope();
-
-                return Success;
             }
-
-            if (Pass == ValidationPass.ClassAndStructMembersAndFunctionParams)
+            else if (Pass == ValidationPass.ClassAndStructMembersAndFunctionParams)
             {
                 string parentScope = null;
                 if (node.Parent != null)
@@ -416,69 +431,105 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 {
                     Success &= typeDeclaration.AcceptVisitor(this);
                 }
-
-                // TODO: can all types of variable declarations be supported in a struct?
-                // what does the parser let through?
+                
                 foreach (VariableDeclaration decl in node.VariableDeclarations)
                 {
                     decl.Outer = node;
                     Success = Success && decl.AcceptVisitor(this);
-                    //todo: verify that the member does not attempt to override a member from a parent struct
+
+                    var parentStruct = node.Parent as Struct;
+                    while (parentStruct is not null)
+                    {
+                        if (parentStruct.VariableDeclarations.Any(parentVarDecl => parentVarDecl.Name.CaseInsensitiveEquals(decl.Name)))
+                        {
+                            Log.LogWarning($"A member name '{decl.Name}' exists in a parent struct. Are you sure you want to shadow it?", decl.StartPos, decl.EndPos);
+                        }
+                        parentStruct = parentStruct.Parent as Struct;
+                    }
                 }
 
                 Symbols.PopScope();
 
                 node.Declaration = node;
-
-                return Success;
             }
-
-            if (Pass == ValidationPass.BodyPass)
+            else if (Pass == ValidationPass.BodyPass)
             {
-                if (node.Parent != null && ((Struct)node.Parent).SameOrSubStruct(node.Name))
-                    return Error($"Extending from '{node.Parent.Name}' causes circular extension!", node.Parent.StartPos, node.Parent.EndPos);
+                if (node.Parent is Struct parentStruct && parentStruct.SameOrSubStruct(node.Name))
+                {
+                    return Error($"Extending from '{parentStruct.Name}' causes circular extension!", parentStruct.StartPos, parentStruct.EndPos);
+                }
 
                 //second pass to resolve EPropertyFlags.NeedCtorLink for Struct Properties
                 foreach (VariableDeclaration decl in node.VariableDeclarations)
                 {
                     Success &= decl.AcceptVisitor(this);
-                    if (decl.Flags.Has(EPropertyFlags.Component))
-                    {
-                        node.Flags |= ScriptStructFlags.HasComponents;
-                    }
+                }
+                if (HasComponents(node))
+                {
+                    node.Flags |= ScriptStructFlags.HasComponents;
                 }
 
-                return Success;
+                static bool HasComponents(Struct strct)
+                {
+                    bool hasComponents = false;
+                    foreach (VariableDeclaration decl in strct.VariableDeclarations)
+                    {
+                        if (decl.Flags.Has(EPropertyFlags.Component))
+                        {
+                            hasComponents = true;
+                        }
+                        var varType = decl.VarType is StaticArrayType staticArrayType ? staticArrayType.ElementType : decl.VarType;
+                        if (varType is DynamicArrayType dynArrType)
+                        {
+                            varType = dynArrType.ElementType;
+                        }
+                        if (varType is Struct innerStruct && (innerStruct.Flags.Has(ScriptStructFlags.HasComponents) || HasComponents(innerStruct)))
+                        {
+                            decl.Flags |= EPropertyFlags.Component;
+                            hasComponents = true;
+                        }
+                    }
+                    return hasComponents;
+                }
             }
             return Success;
         }
 
         public bool VisitNode(Enumeration node)
         {
-            if (!Symbols.TryAddType(node))
+            if (Pass == ValidationPass.TypesAndFunctionNamesAndStateNames)
             {
-                //Enums do not have to be globally unique, but they do have to be unique within a scope
-                if (((ObjectType)node.Outer).TypeDeclarations.Any(decl => decl != node && decl.Name.CaseInsensitiveEquals(node.Name)))
+                if (!Symbols.TryAddType(node))
                 {
-                    return Error($"A type named '{node.Name}' already exists in this {node.Outer.GetType().Name.ToLower()}!", node.StartPos, node.EndPos);
+                    //Enums do not have to be globally unique, but they do have to be unique within a scope
+                    if (((ObjectType)node.Outer).TypeDeclarations.Any(decl => decl != node && decl.Name.CaseInsensitiveEquals(node.Name)))
+                    {
+                        return Error($"A type named '{node.Name}' already exists in this {node.Outer.GetType().Name.ToLower()}!", node.StartPos, node.EndPos);
+                    }
                 }
+
+                Symbols.PushScope(node.Name);
+
+                string maxName = node.GenerateMaxName();
+
+                foreach (EnumValue enumVal in node.Values)
+                {
+                    enumVal.Outer = node;
+                    if (!Symbols.TryAddSymbol(enumVal.Name, enumVal))
+                    {
+                        return Error($"'{enumVal.Name}' already exists in this enum!", enumVal.StartPos, enumVal.EndPos);
+                    }
+                    ;
+                    if (maxName.CaseInsensitiveEquals(enumVal.Name))
+                    {
+                        return Error($"'{maxName}' is the autogenerated end value for this enum! It cannot be used as a regular value.", enumVal.StartPos, enumVal.EndPos);
+                    }
+                }
+
+                Symbols.PopScope();
+
+                node.Declaration = node;
             }
-
-            Symbols.PushScope(node.Name);
-
-            foreach (EnumValue enumVal in node.Values)
-            {
-                enumVal.Outer = node;
-                Symbols.AddSymbol(enumVal.Name, enumVal);
-            }
-
-            Symbols.PopScope();
-
-            // Add enum values at the class scope so they can be used without being explicitly qualified.
-            foreach (EnumValue enumVal in node.Values)
-                Symbols.TryAddSymbol(enumVal.Name, enumVal);
-
-            node.Declaration = node;
 
             return Success;
         }

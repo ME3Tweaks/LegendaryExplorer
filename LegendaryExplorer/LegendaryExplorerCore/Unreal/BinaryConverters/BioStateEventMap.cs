@@ -14,6 +14,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref StateEvents, SCExt.Serialize);
         }
 
+        public static BioStateEventMap Create()
+        {
+            return new()
+            {
+                StateEvents = new List<BioStateEvent>()
+            };
+        }
+
         public override List<(NameReference, string)> GetNames(MEGame game)
         {
             var names = base.GetNames(game);

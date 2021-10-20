@@ -89,6 +89,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 exp.ObjectFlags &= ~UnrealFlags.EObjectFlags.HasStack;
                 exp.ObjectFlags &= ~UnrealFlags.EObjectFlags.ArchetypeObject;
                 exp.ObjectFlags &= ~UnrealFlags.EObjectFlags.ClassDefaultObject;
+                exp.ComponentMap = null;
                 if (trashContainer == null)
                 {
                     exp.ObjectName = UnrealPackageFile.TrashPackageName;

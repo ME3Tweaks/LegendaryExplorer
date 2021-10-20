@@ -16,6 +16,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref InclusionConvexVolumes, SCExt.Serialize);
             sc.Serialize(ref ExclusionConvexVolumes, SCExt.Serialize);
         }
+
+        public static LightComponent Create()
+        {
+            return new()
+            {
+                InclusionConvexVolumes = Array.Empty<ConvexVolume>(),
+                ExclusionConvexVolumes = Array.Empty<ConvexVolume>()
+            };
+        }
     }
 
     public class ConvexVolume

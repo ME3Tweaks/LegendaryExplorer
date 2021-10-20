@@ -13,6 +13,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref SequenceNamesToUnkMap, SCExt.Serialize, SCExt.Serialize);
         }
 
+        public static BioDynamicAnimSet Create()
+        {
+            return new()
+            {
+                SequenceNamesToUnkMap = new OrderedMultiValueDictionary<NameReference, int>()
+            };
+        }
+
         public override List<(NameReference, string)> GetNames(MEGame game)
         {
             var names = new List<(NameReference, string)>();

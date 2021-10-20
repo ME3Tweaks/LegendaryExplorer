@@ -19,6 +19,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref BoneOffsets, SCExt.Serialize);
         }
 
+        public static MorphTarget Create()
+        {
+            return new()
+            {
+                MorphLODModels = Array.Empty<MorphLODModel>(),
+                BoneOffsets = Array.Empty<BoneOffset>()
+            };
+        }
+
         public override List<(NameReference, string)> GetNames(MEGame game) => new List<(NameReference, string)>(BoneOffsets.Select((offset, i) => (offset.Bone, $"BoneOffsets[{i}]")));
 
         public class MorphVertex

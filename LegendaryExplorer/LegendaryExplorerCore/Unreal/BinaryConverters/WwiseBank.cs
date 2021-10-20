@@ -131,6 +131,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
+        public static WwiseBank Create()
+        {
+            return new()
+            {
+                bkhdUnks = Array.Empty<uint>()
+            };
+        }
+
         private void ReadChunks(SerializingContainer2 sc)
         {
             while (sc.ms.Position < sc.ms.Length)

@@ -5196,7 +5196,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 ScriptStructFlags flags = (ScriptStructFlags)bin.ReadUInt32();
                 BinInterpNode objectFlagsNode;
-                subnodes.Add(objectFlagsNode = new BinInterpNode(bin.Position - 4, $"PropertyFlags: 0x{(uint)flags:X16}")
+                subnodes.Add(objectFlagsNode = new BinInterpNode(bin.Position - 4, $"Struct Flags: 0x{(uint)flags:X8}")
                 {
                     IsExpanded = true
                 });
@@ -5401,6 +5401,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 switch (CurrentLoadedExport.ClassName)
                 {
                     case "ByteProperty":
+                    case "BioMask4Property":
                     case "StructProperty":
                     case "ObjectProperty":
                     case "ComponentProperty":
@@ -5410,7 +5411,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         break;
                     case "DelegateProperty":
                         subnodes.Add(MakeEntryNode(bin, "Holds objects of type"));
-                        subnodes.Add(MakeEntryNode(bin, "Same as above but only if this is in a function"));
+                        subnodes.Add(MakeEntryNode(bin, "Same as above but only if this is in a function or struct"));
                         break;
                     case "ClassProperty":
                         subnodes.Add(MakeEntryNode(bin, "Outer class"));

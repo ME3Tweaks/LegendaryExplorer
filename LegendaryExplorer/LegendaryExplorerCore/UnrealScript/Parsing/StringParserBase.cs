@@ -91,6 +91,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 var name = Consume(TokenType.Word);
                 if (name == null) return null;
+                if (name.Value.CaseInsensitiveEquals("None"))
+                {
+                    TypeError("'None' cannot be used as a variable name!", name);
+                }
 
                 if (Consume(TokenType.LeftSqrBracket) != null)
                 {
@@ -376,7 +380,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 if (token.Value.Length > 63)
                 {
-                    TypeError($"The max length of a name is 63 characters! (This name is {token.Value.Length})", token);
+                    Log.LogWarning($"Names should be less than 64 characters! (This name is {token.Value.Length})", token.StartPos, token.EndPos);
                 }
                 return new NameLiteral(token.Value, token.StartPos, token.EndPos);
             }

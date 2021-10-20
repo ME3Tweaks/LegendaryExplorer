@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
+using LegendaryExplorerCore.UnrealScript.Compiling;
 using LegendaryExplorerCore.UnrealScript.Language.Util;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
@@ -19,10 +21,15 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public override List<VariableType> TypeDeclarations { get; }
         public override DefaultPropertiesBlock DefaultProperties { get; set; }
 
+        public bool IsAtomic => Flags.Has(ScriptStructFlags.Atomic) || Flags.Has(ScriptStructFlags.AtomicWhenCooked);
+
+        public bool IsImmutable => Flags.Has(ScriptStructFlags.Immutable) || Flags.Has(ScriptStructFlags.ImmutableWhenCooked);
+
         public Struct(string name, VariableType parent, ScriptStructFlags flags,
                       List<VariableDeclaration> variableDeclarations = null,
                       List<VariableType> typeDeclarations = null,
                       DefaultPropertiesBlock defaults = null,
+                      PropertyCollection defaultPropertyCollection = null,
                       SourcePosition start = null, SourcePosition end = null)
             : base(name, start, end, name switch
             {
@@ -37,6 +44,14 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             TypeDeclarations = typeDeclarations ?? new List<VariableType>();
             Parent = parent;
             DefaultProperties = defaults ?? new DefaultPropertiesBlock();
+            if (defaultPropertyCollection is not null)
+            {
+                DefaultPropertyCollection = defaultPropertyCollection;
+                if (parent is not null)
+                {
+                    defaultPropCollectionNeedsFixing = true;
+                }
+            }
             
             foreach (ASTNode node in ChildNodes)
             {
@@ -192,6 +207,186 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
             specificScope += $".{targetStruct.Name}";
             return specificScope;
+        }
+
+        private PropertyCollection DefaultPropertyCollection;
+        private bool defaultPropCollectionNeedsFixing;
+        public PropertyCollection GetDefaultPropertyCollection(IMEPackage pcc, bool stripTransients = false, PackageCache packageCache = null)
+        {
+            if (DefaultPropertyCollection is null)
+            {
+                DefaultPropertyCollection = WriteDefaultsOntoProps(MakeBaseProps(pcc, packageCache), pcc, packageCache);
+            }
+            else if (defaultPropCollectionNeedsFixing)
+            {
+                var props = MakeBaseProps(pcc, packageCache);
+                foreach (Property property in DefaultPropertyCollection)
+                {
+                    props.AddOrReplaceProp(property);
+                }
+                DefaultPropertyCollection = props;
+                defaultPropCollectionNeedsFixing = false;
+            }
+
+            return stripTransients ? StripTransients(pcc, packageCache) : DefaultPropertyCollection.DeepClone();
+        }
+
+        private PropertyCollection WriteDefaultsOntoProps(PropertyCollection props, IMEPackage pcc, PackageCache packageCache)
+        {
+            if (DefaultProperties?.Statements is not null && DefaultProperties.Statements.Any())
+            {
+                ScriptPropertiesCompiler.CompileStructDefaults(this, props, pcc, packageCache);
+            }
+            return props;
+        }
+
+        public PropertyCollection MakeBaseProps(IMEPackage pcc, PackageCache packageCache, bool useStructDefaultsForStructProperties = true)
+        {
+            var props = new PropertyCollection();
+            foreach (VariableDeclaration varDeclAST in VariableDeclarations)
+            {
+                if (varDeclAST.Flags.Has(EPropertyFlags.Native))
+                {
+                    continue;
+                }
+                var propName = NameReference.FromInstancedString(varDeclAST.Name);
+                VariableType targetType = varDeclAST.VarType is StaticArrayType staticArrayType ? staticArrayType.ElementType : varDeclAST.VarType;
+                int staticArrayLength = varDeclAST.IsStaticArray ? varDeclAST.ArrayLength : 1;
+                for (int i = 0; i < staticArrayLength; i++)
+                {
+                    Property prop;
+                    switch (targetType)
+                    {
+                        case Class cls:
+                            prop = new ObjectProperty(0, propName)
+                            {
+                                InternalPropType = cls.IsInterface ? Unreal.PropertyType.InterfaceProperty : Unreal.PropertyType.ObjectProperty
+                            };
+                            break;
+                        case ClassType targetClassLimiter:
+                            prop = new ObjectProperty(0, propName);
+                            break;
+                        case DelegateType delegateType:
+                            prop = new DelegateProperty(0, "None", propName);
+                            break;
+                        case DynamicArrayType dynArrType:
+                            var elementType = dynArrType.ElementType;
+                            switch (elementType)
+                            {
+                                case ClassType:
+                                case Class:
+                                    prop = new ArrayProperty<ObjectProperty>(propName);
+                                    break;
+                                case DelegateType:
+                                    prop = new ArrayProperty<DelegateProperty>(propName);
+                                    break;
+                                case Enumeration:
+                                    prop = new ArrayProperty<EnumProperty>(propName);
+                                    break;
+                                case Struct:
+                                    prop = new ArrayProperty<StructProperty>(propName);
+                                    break;
+                                default:
+                                    switch (elementType.PropertyType)
+                                    {
+                                        case EPropertyType.Byte:
+                                            prop = new ArrayProperty<ByteProperty>(propName);
+                                            break;
+                                        case EPropertyType.Int:
+                                            prop = new ArrayProperty<IntProperty>(propName);
+                                            break;
+                                        case EPropertyType.Bool:
+                                            prop = new ArrayProperty<BoolProperty>(propName);
+                                            break;
+                                        case EPropertyType.Float:
+                                            prop = new ArrayProperty<FloatProperty>(propName);
+                                            break;
+                                        case EPropertyType.Name:
+                                            prop = new ArrayProperty<NameProperty>(propName);
+                                            break;
+                                        case EPropertyType.String:
+                                            prop = new ArrayProperty<StrProperty>(propName);
+                                            break;
+                                        case EPropertyType.StringRef:
+                                            prop = new ArrayProperty<StringRefProperty>(propName);
+                                            break;
+                                        default:
+                                            throw new ArgumentOutOfRangeException(nameof(elementType.PropertyType), elementType.PropertyType, $"{elementType.PropertyType} is not a valid array element type!");
+                                    }
+                                    break;
+                            }
+                            break;
+                        case Enumeration enumeration:
+                            prop = new EnumProperty(NameReference.FromInstancedString(enumeration.Values[0].Name), NameReference.FromInstancedString(enumeration.Name), pcc.Game, propName);
+                            break;
+                        case Struct structType:
+                            prop = new StructProperty(NameReference.FromInstancedString(structType.Name),
+                                useStructDefaultsForStructProperties ? structType.GetDefaultPropertyCollection(pcc, false, packageCache) : structType.MakeBaseProps(pcc, packageCache, useStructDefaultsForStructProperties),
+                                propName, structType.IsImmutable);
+                            break;
+                        default:
+                            switch (targetType.PropertyType)
+                            {
+                                case EPropertyType.Byte:
+                                    prop = new ByteProperty(0, propName);
+                                    break;
+                                case EPropertyType.Int:
+                                    prop = new IntProperty(0, propName);
+                                    break;
+                                case EPropertyType.Bool:
+                                    prop = new BoolProperty(false, propName);
+                                    break;
+                                case EPropertyType.Float:
+                                    prop = new FloatProperty(0f, propName);
+                                    break;
+                                case EPropertyType.Name:
+                                    prop = new NameProperty("None", propName);
+                                    break;
+                                case EPropertyType.String:
+                                    prop = new StrProperty("", propName);
+                                    break;
+                                case EPropertyType.StringRef:
+                                    prop = new StringRefProperty(0, propName);
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException(nameof(targetType.PropertyType), targetType.PropertyType, $"{targetType.PropertyType} is not a property type!");
+                            }
+                            break;
+                    }
+                    prop.StaticArrayIndex = i;
+                    props.Add(prop);
+                }
+            }
+            if (Parent is Struct parentStruct)
+            {
+                foreach (Property property in parentStruct.GetDefaultPropertyCollection(pcc, false, packageCache))
+                {
+                    props.Add(property);
+                }
+            }
+            return props;
+        }
+
+        private PropertyCollection StripTransients(IMEPackage pcc, PackageCache packageCache)
+        {
+            var props = new PropertyCollection();
+            foreach ((VariableDeclaration varDecl, Property prop) in VariableDeclarations.Where(varDecl => !varDecl.Flags.Has(EPropertyFlags.Native)).Zip(DefaultPropertyCollection))
+            {
+                if (varDecl.Flags.Has(EPropertyFlags.Transient))
+                {
+                    continue;
+                }
+                if (prop is StructProperty structProp)
+                {
+                    var strct = (Struct)varDecl.VarType;
+                    props.Add(new StructProperty(structProp.StructType, strct.GetDefaultPropertyCollection(pcc, true, packageCache), structProp.Name, strct.IsImmutable));
+                }
+                else
+                {
+                    props.Add(prop.DeepClone());
+                }
+            }
+            return props;
         }
     }
 }

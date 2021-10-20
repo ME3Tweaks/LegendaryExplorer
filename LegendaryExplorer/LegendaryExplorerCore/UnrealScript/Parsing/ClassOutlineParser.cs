@@ -359,6 +359,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     {
                         flags |= ScriptStructFlags.StrictConfig;
                     }
+                    else if (Matches(nameof(ScriptStructFlags.UnkStructFlag), EF.Specifier))
+                    {
+                        flags |= ScriptStructFlags.UnkStructFlag;
+                    }
                     else
                     {
                         break;
@@ -386,7 +390,14 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 while (CurrentTokenType != TokenType.RightBracket && !CurrentIs(STRUCTDEFAULTPROPERTIES) && !Tokens.AtEnd())
                 {
                     var variable = TryParseVarDecl();
-                    if (variable == null) throw ParseError("Malformed struct content!", CurrentPosition);
+                    if (variable == null)
+                    {
+                        if (CurrentIs(DEFAULTPROPERTIES))
+                        {
+                            TypeError($"In Structs, use '{STRUCTDEFAULTPROPERTIES}', not '{DEFAULTPROPERTIES}'.", CurrentToken);
+                        }
+                        throw ParseError("Malformed struct content!", CurrentPosition);
+                    }
 
                     vars.Add(variable);
                 }
@@ -406,7 +417,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                 if (Consume(TokenType.RightBracket) == null) throw ParseError("Expected '}'!", CurrentPosition);
 
-                return new Struct(name.Value, parent, flags, vars, types, defaults, name.StartPos, name.EndPos);
+                return new Struct(name.Value, parent, flags, vars, types, defaults, null, name.StartPos, name.EndPos);
             }
         }
 
@@ -415,6 +426,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return (Enumeration)Tokens.TryGetTree(EnumParser);
             ASTNode EnumParser()
             {
+                var startPos = CurrentToken.StartPos;
                 if (!Matches(ENUM, EF.Keyword)) return null;
 
                 var name = Consume(TokenType.Word);
@@ -441,8 +453,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 } while (CurrentTokenType != TokenType.RightBracket);
 
                 if (Consume(TokenType.RightBracket) == null) throw ParseError("Expected '}'!", CurrentPosition);
+                if (identifiers.IsEmpty())
+                {
+                    TypeError("Enums must have at least 1 value!", name);
+                }
 
-                return new Enumeration(name.Value, identifiers, name.StartPos, name.EndPos);
+                return new Enumeration(name.Value, identifiers, startPos, PrevToken.EndPos);
             }
         }
 
@@ -675,7 +691,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 ParseVariableSpecifiers(out EPropertyFlags flags);
                 if ((flags & ~(EPropertyFlags.CoerceParm | EPropertyFlags.OptionalParm | EPropertyFlags.OutParm | EPropertyFlags.SkipParm | EPropertyFlags.Component | EPropertyFlags.Const | EPropertyFlags.AlwaysInit)) != 0)
                 {
-                    throw ParseError("The only valid specifiers for function parameters are 'out', 'coerce', 'optional', 'const', 'alwaysinit' and 'skip'!", CurrentPosition);
+                    throw ParseError("The only valid specifiers for function parameters are 'out', 'coerce', 'optional', 'const', 'init' and 'skip'!", CurrentPosition);
                 }
 
                 flags |= EPropertyFlags.Parm;
@@ -797,6 +813,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 {
                     flags |= EPropertyFlags.GlobalConfig | EPropertyFlags.Config;
                 }
+                else if (Matches(nameof(EPropertyFlags.EditInline), EF.Specifier))
+                {
+                    flags |= EPropertyFlags.EditInline;
+                }
                 else if (Matches("localized", EF.Specifier))
                 {
                     flags |= EPropertyFlags.Localized | EPropertyFlags.Const;
@@ -898,7 +918,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 {
                     flags |= EPropertyFlags.OptionalParm;
                 }
-                else if (Matches("alwaysinit", EF.Specifier))
+                else if (Matches("init", EF.Specifier))
                 {
                     flags |= EPropertyFlags.AlwaysInit;
                 }
@@ -929,6 +949,46 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 else if (Matches("crosslevelpassive", EF.Specifier))
                 {
                     flags |= EPropertyFlags.CrossLevelPassive;
+                }
+                else if (Matches("rsxstorage", EF.Specifier))
+                {
+                    flags |= EPropertyFlags.RsxStorage;
+                }
+                else if (Matches(nameof(EPropertyFlags.UnkFlag1), EF.Specifier))
+                {
+                    flags |= EPropertyFlags.UnkFlag1;
+                }
+                else if (Matches("loadforcooking", EF.Specifier))
+                {
+                    flags |= EPropertyFlags.LoadForCooking;
+                }
+                else if (Matches("biononship", EF.Specifier))
+                {
+                    flags |= EPropertyFlags.BioNonShip;
+                }
+                else if (Matches("bioignorepropertyadd", EF.Specifier))
+                {
+                    flags |= EPropertyFlags.BioIgnorePropertyAdd;
+                }
+                else if (Matches("sortbarrier", EF.Specifier))
+                {
+                    flags |= EPropertyFlags.SortBarrier;
+                }
+                else if (Matches("clearcrosslevel", EF.Specifier))
+                {
+                    flags |= EPropertyFlags.ClearCrossLevel;
+                }
+                else if (Matches("biosave", EF.Specifier))
+                {
+                    flags |= EPropertyFlags.BioSave;
+                }
+                else if (Matches("bioexpanded", EF.Specifier))
+                {
+                    flags |= EPropertyFlags.BioExpanded;
+                }
+                else if (Matches("bioautogrow", EF.Specifier))
+                {
+                    flags |= EPropertyFlags.BioAutoGrow;
                 }
                 else
                 {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using LegendaryExplorerCore.Packages;
 
@@ -12,6 +13,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             base.Serialize(sc);
             sc.Serialize(ref Names, SCExt.Serialize);
+        }
+
+        public static UEnum Create()
+        {
+            return new()
+            {
+                SuperClass = 0,
+                Next = 0,
+                Names = Array.Empty<NameReference>()
+            };
         }
 
         public override List<(NameReference, string)> GetNames(MEGame game)

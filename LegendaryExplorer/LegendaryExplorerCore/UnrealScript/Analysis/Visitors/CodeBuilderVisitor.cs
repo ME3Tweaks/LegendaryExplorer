@@ -207,6 +207,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
 
             Write();
+            Write("//class default properties can be edited in the Properties tab for the class's Default__ object.", EF.Comment);
             node.DefaultProperties?.AcceptVisitor(this);
 
             return true;
@@ -348,6 +349,10 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             if (flags.Has(ScriptStructFlags.StrictConfig))
             {
                 specs.Add("strictconfig");
+            }
+            if (flags.Has(ScriptStructFlags.UnkStructFlag))
+            {
+                specs.Add(nameof(ScriptStructFlags.UnkStructFlag).ToLowerInvariant());
             }
 
             foreach (string spec in specs)
@@ -694,10 +699,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(DefaultPropertiesBlock node)
         {
             bool isStructDefaults = node.Outer is Struct;
-            if (!isStructDefaults)
-            { 
-                Write("//class default properties can be edited in the Properties tab for the class's Default__ object.", EF.Comment);
-            }
             Write(isStructDefaults ? STRUCTDEFAULTPROPERTIES : DEFAULTPROPERTIES, EF.Keyword);
             Write("{");
             NestingLevel++;
@@ -715,7 +716,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         {
             Write("Begin", EF.Keyword);
             Space();
-            Append("Object", EF.Keyword);
+            Append(node.IsTemplate ? "Template" : "Object", EF.Keyword);
             Space();
             Append("Class", EF.Keyword);
             Append("=", EF.Operator);
@@ -733,7 +734,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             NestingLevel--;
             Write("End", EF.Keyword);
             Space();
-            Append("Object", EF.Keyword);
+            Append(node.IsTemplate ? "Template" : "Object", EF.Keyword);
             return true;
         }
 
@@ -1705,6 +1706,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 specs.Add("config");
             }
 
+            if (flags.Has(EPropertyFlags.EditInline))
+            {
+                specs.Add(nameof(EPropertyFlags.EditInline).ToLowerInvariant());
+            }
+
             if (flags.Has(EPropertyFlags.Localized))
             {
                 specs.Add("localized");
@@ -1828,7 +1834,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
             if (flags.Has(EPropertyFlags.AlwaysInit))
             {
-                specs.Add("alwaysinit");
+                specs.Add("init");
             }
 
             if (flags.Has(EPropertyFlags.DataBinding))
@@ -1864,6 +1870,48 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             if (flags.Has(EPropertyFlags.CrossLevelPassive))
             {
                 specs.Add("crosslevelpassive");
+            }
+
+            //BioWare specific flags
+            if (flags.Has(EPropertyFlags.RsxStorage))
+            {
+                specs.Add("rsxstorage");
+            }
+            if (flags.Has(EPropertyFlags.UnkFlag1))
+            {
+                specs.Add(nameof(EPropertyFlags.UnkFlag1).ToLowerInvariant());
+            }
+            if (flags.Has(EPropertyFlags.LoadForCooking))
+            {
+                specs.Add("loadforcooking");
+            }
+            if (flags.Has(EPropertyFlags.BioNonShip))
+            {
+                specs.Add("biononship");
+            }
+            if (flags.Has(EPropertyFlags.BioIgnorePropertyAdd))
+            {
+                specs.Add("bioignorepropertyadd");
+            }
+            if (flags.Has(EPropertyFlags.SortBarrier))
+            {
+                specs.Add("sortbarrier");
+            }
+            if (flags.Has(EPropertyFlags.ClearCrossLevel))
+            {
+                specs.Add("clearcrosslevel");
+            }
+            if (flags.Has(EPropertyFlags.BioSave))
+            {
+                specs.Add("biosave");
+            }
+            if (flags.Has(EPropertyFlags.BioExpanded))
+            {
+                specs.Add("bioexpanded");
+            }
+            if (flags.Has(EPropertyFlags.BioAutoGrow))
+            {
+                specs.Add("bioautogrow");
             }
 
             foreach (string spec in specs)

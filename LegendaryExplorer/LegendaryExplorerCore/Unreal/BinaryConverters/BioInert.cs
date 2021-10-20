@@ -21,6 +21,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref NameEntryGuidPairs, SCExt.Serialize);
         }
 
+        public static BioInert Create()
+        {
+            return new()
+            {
+                NameEntryGuidPairs = Array.Empty<NameEntryGuidPair>()
+            };
+        }
+
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
         {
             List<(UIndex, string)> indices = new List<(UIndex, string)>(NameEntryGuidPairs.Length);

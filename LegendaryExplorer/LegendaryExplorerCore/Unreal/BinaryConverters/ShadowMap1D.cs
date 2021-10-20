@@ -17,5 +17,13 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref Samples, SCExt.Serialize);
             sc.Serialize(ref LightGuid);
         }
+
+        public static ShadowMap1D Create()
+        {
+            return new()
+            {
+                Samples = Array.Empty<int>()
+            };
+        }
     }
 }

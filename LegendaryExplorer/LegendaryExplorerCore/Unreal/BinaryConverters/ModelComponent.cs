@@ -23,6 +23,17 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref ComponentIndex);
             sc.Serialize(ref Nodes, SCExt.Serialize);
         }
+
+        public static ModelComponent Create()
+        {
+            return new()
+            {
+                Model = 0,
+                Elements = Array.Empty<ModelElement>(),
+                Nodes = Array.Empty<ushort>()
+            };
+        }
+
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
         {
             var uIndexes = new List<(UIndex, string)>();

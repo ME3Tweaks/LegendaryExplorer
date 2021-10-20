@@ -54,6 +54,23 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref ExtraReferencedObjects, SCExt.Serialize);
         }
 
+        public static World Create()
+        {
+            var world = new World
+            {
+                PersistentLevel = 0,
+                PersistentFaceFXAnimSet = 0,
+                DecalManager = 0,
+                ExtraReferencedObjects = Array.Empty<UIndex>()
+            };
+            for (int i = 0; i < 4; i++)
+            {
+                world.EditorViews[i] = new LevelViewportInfo();
+            }
+
+            return world;
+        }
+
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
         {
             var uIndexes = new List<(UIndex, string)> { (PersistentLevel, "PersistentLevel") };

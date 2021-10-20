@@ -9,5 +9,13 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             sc.Serialize(ref PreCachedPhysData, SCExt.Serialize);
         }
+
+        public static RB_BodySetup Create()
+        {
+            return new()
+            {
+                PreCachedPhysData = new List<KCachedConvexData>()
+            };
+        }
     }
 }

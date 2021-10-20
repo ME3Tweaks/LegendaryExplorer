@@ -304,6 +304,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             "BioStage",
             "BioStateEventMap",
             "BioTlkFileSet",
+            "BioMask4Property",
             "BoolProperty",
             "BrushComponent",
             "ByteProperty",
@@ -573,7 +574,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         break;
                 }
 
-                if (CurrentLoadedExport.TemplateOwnerClassIdx is var toci && toci >= 0)
+                if (CurrentLoadedExport.TemplateOwnerClassIdx is var toci and >= 0)
                 {
                     int n = EndianReader.ToInt32(data, toci, CurrentLoadedExport.FileRef.Endian);
                     subNodes.Add(new BinInterpNode(toci, $"TemplateOwnerClass: #{n} {CurrentLoadedExport.FileRef.GetEntryString(n)}", NodeType.StructLeafObject) { Length = 4 });
@@ -591,6 +592,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     case "ArrayProperty":
                     case "FloatProperty":
                     case "ClassProperty":
+                    case "BioMask4Property":
                     case "ByteProperty":
                     case "StrProperty":
                     case "NameProperty":
@@ -815,7 +817,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         if (!CurrentLoadedExport.HasStack)
                         {
                             isGenericScan = true;
-                            subNodes = StartGenericScan(data, ref binarystart);
+                            subNodes.AddRange(StartGenericScan(data, ref binarystart));
                         }
                         break;
                 }

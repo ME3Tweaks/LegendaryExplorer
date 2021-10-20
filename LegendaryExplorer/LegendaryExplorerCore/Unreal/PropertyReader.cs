@@ -32,7 +32,9 @@ namespace LegendaryExplorerCore.Unreal
                 if (Number > 0)
                 {
                     int n = Number - 1;
-                    int numChars = Name.Length + 1 + (n < 100000 ? n < 100 ? n < 10 ? 1 : 2 : n < 1000 ? 3 : n < 10000 ? 4 : 5 : n < 10000000 ? n < 1000000 ? 6 : 7 : n < 100000000 ? 8 : n < 1000000000 ? 9 : 10);
+                    int numChars = Name.Length + 1 + 
+                                   //determines the number of digits in n, assuming n >= 0
+                                   (n < 100000 ? n < 100 ? n < 10 ? 1 : 2 : n < 1000 ? 3 : n < 10000 ? 4 : 5 : n < 10000000 ? n < 1000000 ? 6 : 7 : n < 100000000 ? 8 : n < 1000000000 ? 9 : 10);
                     return string.Create(numChars, this, (span, nameRef) =>
                     {
                         ReadOnlySpan<char> nameSpan = nameRef.Name.AsSpan();
@@ -120,8 +122,9 @@ namespace LegendaryExplorerCore.Unreal
             if (_Idx > 0)
             {
                 string numComponent = s.Substring(_Idx + 1);
-                //if there's a leading zero, it's just part of the string
-                if (numComponent.Length > 0 && numComponent[0] != '0' && int.TryParse(numComponent, NumberStyles.None, null, out num))
+                if (numComponent.Length > 0 
+                    && !(numComponent.Length > 1 && numComponent[0] == '0') //if there's more than one character and a leading zero, it's just part of the string
+                    && int.TryParse(numComponent, NumberStyles.None, null, out num))
                 {
                     s = s.Substring(0, _Idx);
                     num += 1;

@@ -81,6 +81,19 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref CompressedAnimationData);
         }
 
+        public static AnimSequence Create()
+        {
+            return new()
+            {
+                RawAnimationData = new List<AnimTrack>(),
+                CompressedAnimationData = Array.Empty<byte>(),
+                Bones = new List<string>(),
+                Name = new NameReference("None"),
+                RateScale = 1,
+                TrackOffsets = Array.Empty<int>(),
+            };
+        }
+
         public void UpdateProps(PropertyCollection props, MEGame newGame, AnimationCompressionFormat newRotationCompression = AnimationCompressionFormat.ACF_Float96NoW)
         {
             if (compressedDataSource == MEGame.Unknown || (newGame != compressedDataSource && !(newGame != MEGame.UDK && compressedDataSource != MEGame.UDK)))

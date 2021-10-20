@@ -43,10 +43,28 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     public class StaticMeshCollectionActor : StaticCollectionActor
     {
         public override string ComponentPropName { get; } = "StaticMeshComponents";
+
+        public static StaticMeshCollectionActor Create()
+        {
+            return new()
+            {
+                Components = new List<UIndex>(),
+                LocalToWorldTransforms = new List<Matrix4x4>(),
+            };
+        }
     }
     public class StaticLightCollectionActor : StaticCollectionActor
     {
         public override string ComponentPropName { get; } = "LightComponents";
+
+        public static StaticLightCollectionActor Create()
+        {
+            return new()
+            {
+                Components = new List<UIndex>(),
+                LocalToWorldTransforms = new List<Matrix4x4>(),
+            };
+        }
     }
 
     public static partial class SCExt

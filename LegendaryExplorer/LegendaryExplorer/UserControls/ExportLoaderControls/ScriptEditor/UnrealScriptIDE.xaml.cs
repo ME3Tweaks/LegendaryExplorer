@@ -341,27 +341,46 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
         {
             if (ScriptText != null && CurrentLoadedExport != null)
             {
-                
-                switch (CurrentLoadedExport.ClassName)
+                if (CurrentLoadedExport.IsDefaultObject)
                 {
-                    case "Function":
+                    (_, MessageLog log) =  UnrealScriptCompiler.CompileDefaultProperties(CurrentLoadedExport, ScriptText, CurrentFileLib);
+                    outputListBox.ItemsSource = log?.Content;
+                }
+                else
+                {
+                    switch (CurrentLoadedExport.ClassName)
                     {
-                        (_, MessageLog log) = UnrealScriptCompiler.CompileFunction(CurrentLoadedExport, ScriptText, CurrentFileLib);
-                        outputListBox.ItemsSource = log?.Content;
-                        break;
-                    }
-                    case "State":
-                    {
-                        (_, MessageLog log) = UnrealScriptCompiler.CompileState(CurrentLoadedExport, ScriptText, CurrentFileLib);
-                        outputListBox.ItemsSource = log?.Content;
-                        break;
-                    }
-                    default:
-                        outputListBox.ItemsSource = new[]
+                        case "Function":
                         {
-                            $"Can only compile Functions and States right now. {(CurrentLoadedExport.IsDefaultObject ? "Defaults" : CurrentLoadedExport.ClassName)} compilation will be added in a future update."
-                        };
-                        break;
+                            (_, MessageLog log) = UnrealScriptCompiler.CompileFunction(CurrentLoadedExport, ScriptText, CurrentFileLib);
+                            outputListBox.ItemsSource = log?.Content;
+                            break;
+                        }
+                        case "State":
+                        {
+                            (_, MessageLog log) = UnrealScriptCompiler.CompileState(CurrentLoadedExport, ScriptText, CurrentFileLib);
+                            outputListBox.ItemsSource = log?.Content;
+                            break;
+                        }
+                        case "ScriptStruct":
+                        {
+                            (_, MessageLog log) = UnrealScriptCompiler.CompileStruct(CurrentLoadedExport, ScriptText, CurrentFileLib);
+                            outputListBox.ItemsSource = log?.Content;
+                            break;
+                        }
+                        case "Enum":
+                        {
+                            (_, MessageLog log) = UnrealScriptCompiler.CompileEnum(CurrentLoadedExport, ScriptText, CurrentFileLib);
+                            outputListBox.ItemsSource = log?.Content;
+                            break;
+                        }
+                        default:
+                            outputListBox.ItemsSource = new[]
+                            {
+                                $"{CurrentLoadedExport.ClassName} compilation is not yet supported and will be added in a future update."
+                            };
+                            break;
+                    }
                 }
             }
         }
@@ -394,22 +413,34 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 _definitionLinkGenerator.Reset();
                 Dispatcher.Invoke(() =>
                 {
-                    if (ast is Function or State && FullyInitialized && CurrentLoadedExport?.Parent is ExportEntry parentExport)
+                    if (ast is Function or State or Struct or Enumeration or DefaultPropertiesBlock && FullyInitialized)
                     {
                         try
                         {
-                            (ASTNode astNode, MessageLog log, TokenStream<string> tokens) = UnrealScriptCompiler.CompileAST(text, CurrentLoadedExport.ClassName, Pcc.Game);
+                            (ASTNode astNode, MessageLog log, TokenStream<string> tokens) = UnrealScriptCompiler.CompileAST(text, CurrentLoadedExport.ClassName, Pcc.Game, ast is DefaultPropertiesBlock);
 
-                            if (log.AllErrors.IsEmpty())
+                            if (!log.HasErrors)
                             {
                                 //compile body to ast so that symbol tokens will be associated with their definitions
-                                if (astNode is Function function)
+                                if (astNode is Function function && CurrentLoadedExport?.Parent is ExportEntry funcParent)
                                 {
-                                    UnrealScriptCompiler.CompileNewFunctionBodyAST(parentExport, function, log, CurrentFileLib);
+                                    UnrealScriptCompiler.CompileNewFunctionBodyAST(funcParent, function, log, CurrentFileLib);
                                 }
-                                else if (astNode is State state)
+                                else if (astNode is State state && CurrentLoadedExport?.Parent is ExportEntry stateParent)
                                 {
-                                    UnrealScriptCompiler.CompileNewStateBodyAST(parentExport, state, log, CurrentFileLib);
+                                    UnrealScriptCompiler.CompileNewStateBodyAST(stateParent, state, log, CurrentFileLib);
+                                }
+                                else if (astNode is Struct strct && CurrentLoadedExport?.Parent is ExportEntry structParent)
+                                {
+                                    UnrealScriptCompiler.CompileNewStructAST(structParent, strct, log, CurrentFileLib);
+                                }
+                                else if (astNode is Enumeration enumeration && CurrentLoadedExport?.Parent is ExportEntry enumParent)
+                                {
+                                    UnrealScriptCompiler.CompileNewEnumAST(enumParent, enumeration, log, CurrentFileLib);
+                                }
+                                else if (astNode is DefaultPropertiesBlock propertiesBlock && CurrentLoadedExport?.Class is ExportEntry classExport)
+                                {
+                                    UnrealScriptCompiler.CompileDefaultPropertiesAST(classExport, propertiesBlock, log, CurrentFileLib);
                                 }
                                 _definitionLinkGenerator.SetTokens(tokens);
                                 outputListBox.ItemsSource = log.Content;
@@ -423,7 +454,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
 
                     RootNode = ast;
                     ScriptText = text;
-                    textEditor.IsReadOnly = RootNode is not (Function or State);
+                    textEditor.IsReadOnly = RootNode is not (Function or State or Struct or Enumeration or DefaultPropertiesBlock);
                 });
 
             }
@@ -436,19 +467,28 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
         private void TextChanged(object sender, EventArgs e)
         {
             bool needsTokensReset = true;
-            (ASTNode ast, MessageLog log, TokenStream<string> tokens) = UnrealScriptCompiler.CompileAST(ScriptText, CurrentLoadedExport.ClassName, Pcc.Game);
+            (ASTNode ast, MessageLog log, TokenStream<string> tokens) = UnrealScriptCompiler.CompileAST(ScriptText, CurrentLoadedExport.ClassName, Pcc.Game, CurrentLoadedExport.IsDefaultObject);
             try
             {
 
-                if (ast != null && log.AllErrors.IsEmpty() && FullyInitialized && CurrentLoadedExport.Parent is ExportEntry parentExport)
+                if (ast != null && !log.HasErrors && FullyInitialized && (ast is Function or State or Struct or Enumeration && CurrentLoadedExport.Parent is ExportEntry || ast is DefaultPropertiesBlock && CurrentLoadedExport.Class is ExportEntry))
                 {
                     switch (ast)
                     {
                         case Function func:
-                            ast = UnrealScriptCompiler.CompileNewFunctionBodyAST(parentExport, func, log, CurrentFileLib);
+                            ast = UnrealScriptCompiler.CompileNewFunctionBodyAST((ExportEntry)CurrentLoadedExport.Parent, func, log, CurrentFileLib);
                             break;
                         case State state:
-                            ast = UnrealScriptCompiler.CompileNewStateBodyAST(parentExport, state, log, CurrentFileLib);
+                            ast = UnrealScriptCompiler.CompileNewStateBodyAST((ExportEntry)CurrentLoadedExport.Parent, state, log, CurrentFileLib);
+                            break;
+                        case Struct strct:
+                            ast = UnrealScriptCompiler.CompileNewStructAST((ExportEntry)CurrentLoadedExport.Parent, strct, log, CurrentFileLib);
+                            break;
+                        case Enumeration enumeration:
+                            ast = UnrealScriptCompiler.CompileNewEnumAST((ExportEntry)CurrentLoadedExport.Parent, enumeration, log, CurrentFileLib);
+                            break;
+                        case DefaultPropertiesBlock propertiesBlock:
+                            ast = UnrealScriptCompiler.CompileDefaultPropertiesAST((ExportEntry) CurrentLoadedExport.Class, propertiesBlock, log, CurrentFileLib);
                             break;
                         default:
                             return;
@@ -518,7 +558,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
         }
 
 
-        CompletionWindow completionWindow;
+        //CompletionWindow completionWindow;
         private void TextAreaOnTextEntered(object sender, TextCompositionEventArgs e)
         {
             //TODO: code completion
@@ -540,9 +580,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             if (ScriptText != null)
             {
                 MessageLog log;
-                (RootNode, log, _) = UnrealScriptCompiler.CompileAST(ScriptText, CurrentLoadedExport.ClassName, Pcc.Game);
+                (RootNode, log, _) = UnrealScriptCompiler.CompileAST(ScriptText, CurrentLoadedExport.ClassName, Pcc.Game, CurrentLoadedExport.IsDefaultObject);
 
-                if (RootNode != null && log.AllErrors.IsEmpty())
+                if (RootNode != null && !log.HasErrors)
                 {
                     if (FullyInitialized)
                     {
@@ -559,6 +599,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                             {
                                 Function func => UnrealScriptCompiler.CompileNewFunctionBodyAST(parentExport, func, log, CurrentFileLib),
                                 State state => UnrealScriptCompiler.CompileNewStateBodyAST(parentExport, state, log, CurrentFileLib),
+                                Struct strct => UnrealScriptCompiler.CompileNewStructAST(parentExport, strct, log, CurrentFileLib),
+                                Enumeration enumeration => UnrealScriptCompiler.CompileNewEnumAST(parentExport, enumeration, log, CurrentFileLib),
                                 _ => RootNode
                             };
                         }

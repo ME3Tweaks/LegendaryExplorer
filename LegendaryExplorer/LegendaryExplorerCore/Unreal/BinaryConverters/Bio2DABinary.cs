@@ -37,7 +37,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             int cellIndex = 0;
             //If IsIndexed, the index needs to be read and written, so just use the normal Serialize for ints.
             //If it's not indexed, we don't need to write anything, but the Dictionary still needs to be populated with a value
-            sc.Serialize(ref Cells, IsIndexed ? (SCExt.SerializeDelegate<int>)SCExt.Serialize : (SerializingContainer2 sc2, ref int idx) => idx = cellIndex++, SCExt.Serialize);
+            sc.Serialize(ref Cells, IsIndexed ? SCExt.Serialize : (SerializingContainer2 sc2, ref int idx) => idx = cellIndex++, SCExt.Serialize);
             if (!IsIndexed)
             {
                 sc.SerializeConstInt(0);
@@ -66,6 +66,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     sc.Serialize(ref i);
                 }
             }
+        }
+
+        public static Bio2DABinary Create()
+        {
+            return new()
+            {
+                Cells = new OrderedMultiValueDictionary<int, Cell>(),
+                ColumnNames = new List<NameReference>()
+            };
         }
 
         public override List<(NameReference, string)> GetNames(MEGame game) => ColumnNames.Select((n, i) => (n, $"{ColumnNames}[{i}]")).ToList();

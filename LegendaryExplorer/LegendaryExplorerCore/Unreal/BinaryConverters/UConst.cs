@@ -8,5 +8,15 @@
             base.Serialize(sc);
             sc.Serialize(ref Value);
         }
+
+        public static UConst Create()
+        {
+            return new()
+            {
+                SuperClass = 0,
+                Next = 0,
+                Value = ""
+            };
+        }
     }
 }

@@ -16,7 +16,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 throw new Exception($"BioTlkFileSet is not a valid class for {sc.Game}!");
             }
-            sc.Serialize(ref TlkSets, SCExt.Serialize, (SerializingContainer2 sc2, ref BioTlkSet tlkSet) =>
+            sc.Serialize(ref TlkSets, SCExt.Serialize, static (SerializingContainer2 sc2, ref BioTlkSet tlkSet) =>
             {
                 if (sc2.IsLoading)
                 {
@@ -26,6 +26,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc2.Serialize(ref tlkSet.Male);
                 sc2.Serialize(ref tlkSet.Female);
             });
+        }
+
+        public static BioTlkFileSet Create()
+        {
+            return new()
+            {
+                TlkSets = new OrderedMultiValueDictionary<NameReference, BioTlkSet>()
+            };
         }
 
         public override List<(UIndex, string)> GetUIndexes(MEGame game)

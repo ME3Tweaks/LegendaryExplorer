@@ -706,6 +706,12 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             return Scopes.Last().ContainsKey(symbol);
         }
 
+        public bool SymbolExistsInParentScopes(string symbol)
+        {
+            var parentScope = new LinkedList<ASTNodeDict>(Scopes.Take(Scopes.Count - 1));
+            return TryGetSymbolInternal<ASTNode>(symbol, out _, parentScope);
+        }
+
         public bool TryGetSymbolFromCurrentScope(string symbol, out ASTNode node)
         {
             return Scopes.Last().TryGetValue(symbol, out node);
@@ -805,6 +811,14 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             }
 
             return true;
+        }
+
+        public void RemoveType(string name)
+        {
+            if (Types.ContainsKey(name))
+            {
+                Types.Remove(name);
+            }
         }
 
         public bool TryAddSymbol(string symbol, ASTNode node)

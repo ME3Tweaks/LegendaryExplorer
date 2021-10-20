@@ -527,6 +527,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 TypeError($"A variable named '{var.Name}' already exists in this scope!", var);
                 return null;
             }
+            if (Symbols.SymbolExistsInParentScopes(var.Name))
+            {
+                Log.LogWarning($"A symbol named '{var.Name}' exists in a parent scope. Are you sure you want to shadow it?", var.StartPos, var.EndPos);
+            }
 
             var varDecl = new VariableDeclaration(type, EPropertyFlags.None, var.Name, var.Size, null, startPos, var.EndPos);
             Symbols.AddSymbol(varDecl.Name, varDecl);

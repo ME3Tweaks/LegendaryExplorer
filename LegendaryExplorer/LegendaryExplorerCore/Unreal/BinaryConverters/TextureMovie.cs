@@ -1,4 +1,5 @@
-﻿using LegendaryExplorerCore.Packages;
+﻿using System;
+using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -30,6 +31,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 sc.Serialize(ref EmbeddedData, DataSize);
             }
+        }
+
+        public static TextureMovie Create()
+        {
+            return new()
+            {
+                EmbeddedData = Array.Empty<byte>()
+            };
         }
     }
 }

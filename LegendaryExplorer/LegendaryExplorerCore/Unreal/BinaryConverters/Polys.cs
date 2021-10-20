@@ -34,6 +34,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
+        public static Polys Create()
+        {
+            return new()
+            {
+                Owner = 0,
+                Elements = Array.Empty<Poly>()
+            };
+        }
+
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
         {
             return new List<(UIndex, string)> { (Owner, "Owner") };

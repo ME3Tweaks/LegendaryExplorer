@@ -15,6 +15,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref PackageGuidMap, SCExt.Serialize, SCExt.Serialize);
         }
 
+        public static GuidCache Create()
+        {
+            return new()
+            {
+                PackageGuidMap = new OrderedMultiValueDictionary<NameReference, Guid>()
+            };
+        }
+
         public override List<(NameReference, string)> GetNames(MEGame game)
         {
             return new List<(NameReference, string)>(PackageGuidMap.Select((kvp, i) => (kvp.Key, $"{nameof(PackageGuidMap)}[{i}]")));

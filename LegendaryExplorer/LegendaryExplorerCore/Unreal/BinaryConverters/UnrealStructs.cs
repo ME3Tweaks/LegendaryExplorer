@@ -20,9 +20,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public static implicit operator UIndex(int uIndex) => new UIndex(uIndex);
 
-        public static implicit operator UIndex(Packages.ExportEntry exp) => new UIndex(exp.UIndex);
+        public static implicit operator UIndex(ExportEntry exp) => new UIndex(exp?.UIndex ?? 0);
 
-        public static implicit operator UIndex(Packages.ImportEntry imp) => new UIndex(imp.UIndex);
+        public static implicit operator UIndex(ImportEntry imp) => new UIndex(imp?.UIndex ?? 0);
 
         /// <summary>
         ///     gets Export or Import entry. Returns null for invalid UIndexes

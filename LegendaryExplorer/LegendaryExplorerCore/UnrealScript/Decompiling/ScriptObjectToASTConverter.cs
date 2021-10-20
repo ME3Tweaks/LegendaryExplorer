@@ -71,7 +71,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         nextItem = uProperty.Next;
                         break;
                     case UScriptStruct uScriptStruct:
-                        Types.Add(ConvertStruct(uScriptStruct, packageCache, lib));
+                        Types.Add(ConvertStruct(uScriptStruct, decompileBytecodeAndDefaults, packageCache, lib));
                         nextItem = uScriptStruct.Next;
                         break;
                     case UState uState:
@@ -173,7 +173,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             };
         }
 
-        public static Struct ConvertStruct(UScriptStruct obj, PackageCache packageCache, FileLib fileLib)
+        public static Struct ConvertStruct(UScriptStruct obj, bool decompileDefaults, PackageCache packageCache = null, FileLib fileLib = null)
         {
             var vars = new List<VariableDeclaration>();
             var types = new List<VariableType>();
@@ -190,7 +190,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         nextItem = uProperty.Next;
                         break;
                     case UScriptStruct uStruct:
-                        types.Add(ConvertStruct(uStruct, packageCache, fileLib));
+                        types.Add(ConvertStruct(uStruct, decompileDefaults, packageCache, fileLib));
                         nextItem = uStruct.Next;
                         break;
                     default:
@@ -202,17 +202,32 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             VariableType parent = obj.SuperClass != 0
                 ? new VariableType(obj.SuperClass.GetEntry(pcc).ObjectName.Instanced) : null;
 
-            DefaultPropertiesBlock defaults;
-            try
+            DefaultPropertiesBlock defaults = null;
+            string structName = obj.Export.ObjectName.Instanced;
+            if (decompileDefaults)
             {
-                defaults = new DefaultPropertiesBlock(ConvertProperties(RemoveDefaultValues(obj.Defaults, pcc.Game), obj.Export, obj.Export.ObjectName.Instanced, true, fileLib));
-            }
-            catch (Exception e)
-            {
-                throw new Exception($"Exception while removing default properties in export {obj.Export.InstancedFullPath} {obj.Export.FileRef.FilePath}", e);
+                try
+                {
+                    PropertyCollection properties = null;
+                    if (parent is not null)
+                    {
+                        properties = obj.Defaults;
+                    }
+                    else if (fileLib?.ReadonlySymbolTable is SymbolTable symbols && symbols.TryGetType(structName, out Struct libStruct))
+                    {
+                        properties = obj.Defaults.Diff(libStruct.MakeBaseProps(pcc, packageCache));
+                    }
+
+                    properties ??= RemoveDefaultValues(obj.Defaults.DeepClone(), pcc.Game);
+                    defaults = new DefaultPropertiesBlock(ConvertProperties(properties, obj.Export, structName, true, fileLib));
+                }
+                catch (Exception e)
+                {
+                    throw new Exception($"Exception while removing default properties in export {obj.Export.InstancedFullPath} {obj.Export.FileRef.FilePath}", e);
+                }
             }
 
-            var node = new Struct(obj.Export.ObjectName.Instanced, parent, obj.StructFlags, vars, types, defaults)
+            var node = new Struct(structName, parent, obj.StructFlags, vars, types, defaults, obj.Defaults.DeepClone())
             {
                 FilePath = pcc.FilePath,
                 UIndex = obj.Export.UIndex
@@ -324,7 +339,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
         public static Enumeration ConvertEnum(UEnum obj)
         {
             var vals = new List<EnumValue>();
-            for (byte i = 0; i < obj.Names.Length - 1; i++) //- 1 to skip to _MAX value
+            for (byte i = 0; i < obj.Names.Length - 1; i++) //- 1 to skip _MAX value
             {
                 var val = obj.Names[i];
 
@@ -343,7 +358,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return node;
         }
 
-        public static VariableDeclaration ConvertVariable(UProperty obj, PackageCache packageCache)
+        public static VariableDeclaration ConvertVariable(UProperty obj, PackageCache packageCache = null)
         {
             int size = obj.ArraySize;
 
@@ -523,7 +538,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return func;
         }
 
-        public static DefaultPropertiesBlock ConvertDefaultProperties(ExportEntry defaultsExport, FileLib fileLib, PackageCache packageCache)
+        public static DefaultPropertiesBlock ConvertDefaultProperties(ExportEntry defaultsExport, FileLib fileLib = null, PackageCache packageCache = null)
         {
             return new DefaultPropertiesBlock(GetStatements(defaultsExport));
 
@@ -534,7 +549,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 {
                     var type = new VariableType(child.ClassName);
                     var decl = new VariableDeclaration(type, default, child.ObjectName.Instanced);
-                    defaults.Add(new Subobject(decl, new Class(child.ClassName, null, null, default), GetStatements(child)));
+                    defaults.Add(new Subobject(decl, new Class(child.ClassName, null, null, default), GetStatements(child), child.HasArchetype));
                 }
 
                 defaults.AddRange(ConvertProperties(exportEntry.GetProperties(packageCache: packageCache), defaultsExport, exportEntry.Class.ObjectName.Instanced, false, fileLib));
@@ -542,7 +557,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             }
         }
 
-        private static List<Statement> ConvertProperties(PropertyCollection properties, ExportEntry defaultsExport, string objectName, bool isStruct, FileLib fileLib)
+        private static List<Statement> ConvertProperties(PropertyCollection properties, ExportEntry defaultsExport, string objectName, bool isStruct, FileLib fileLib = null)
         {
             var statements = new List<Statement>();
             foreach (var prop in properties)

@@ -70,7 +70,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
                         newFoldings.Add(new NewFolding(startOffset, i + 1));
                     }
                 }
-                else if (c == '\n' || c == '\r')
+                else if (c is '\n' or '\r')
                 {
                     lastNewLineOffset = i + 1;
                 }

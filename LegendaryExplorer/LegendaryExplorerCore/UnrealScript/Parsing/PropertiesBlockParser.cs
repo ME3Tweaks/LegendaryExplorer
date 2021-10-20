@@ -24,7 +24,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         private readonly IMEPackage Pcc;
         private readonly bool IsStructDefaults;
         private readonly ObjectType Outer;
-        private readonly DefaultPropertiesBlock PropsBlock;
+        private bool InSubOject;
 
         public static void Parse(DefaultPropertiesBlock propsBlock, IMEPackage pcc, SymbolTable symbols, MessageLog log)
         {
@@ -42,7 +42,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             Pcc = pcc;
             Outer = (ObjectType)propsBlock.Outer;
             IsStructDefaults = Outer is Struct;
-            PropsBlock = propsBlock;
 
             SubObjectClasses = new Stack<Class>();
             ExpressionScopes = new Stack<string>();
@@ -68,7 +67,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     statements.Add(current);
                     current = ParseTopLevelStatement();
                 }
-
+                InSubOject = true;
                 ParseSubObjectBodys(subObjects);
             }
             finally
@@ -82,7 +81,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         private Statement ParseTopLevelStatement()
         {
-            if (CurrentIs("BEGIN") && NextIs("Object"))
+            if (CurrentIs("BEGIN") && (NextIs("Object") || NextIs("Template")))
             {
                 if (IsStructDefaults)
                 {
@@ -131,19 +130,28 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         private Subobject ParseSubobjectDeclaration()
         {
             var startPos = CurrentPosition;
-            Tokens.Advance(2);// Begin Object
 
-            if (!Matches("Class") || !Matches(TokenType.Assign))
+            //BEGIN
+            CurrentToken.SyntaxType = EF.Keyword;
+            Tokens.Advance();
+            var objOrTemplateToken = CurrentToken;
+            objOrTemplateToken.SyntaxType = EF.Keyword;
+            Tokens.Advance();
+            bool isTemplate = objOrTemplateToken.Value.CaseInsensitiveEquals("Template");
+
+            if (Consume("Class") is not {} classKeywordToken || Consume(TokenType.Assign) is not {} classAssignToken)
             {
-                throw ParseError("Expected 'Class=' after 'Begin Object'!", CurrentPosition);
+                throw ParseError($"Expected 'Class=' after 'Begin {objOrTemplateToken.Value}'!", CurrentPosition);
             }
+            classKeywordToken.SyntaxType = EF.Keyword;
+            classAssignToken.SyntaxType = EF.Operator;
 
             var classNameToken = Consume(TokenType.Word);
             if (classNameToken is null)
             {
                 throw ParseError("Expected name of class!", CurrentPosition);
             }
-            
+            classNameToken.SyntaxType = EF.TypeName;
 
             if (!Symbols.TryGetType(classNameToken.Value, out Class objectClass))
             {
@@ -155,15 +163,17 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 TypeError($"A '{objectClass.Name}' must be declared within a '{outerClass.Name}', not a '{SubObjectClasses.Peek().Name}'!", classNameToken);
             }
 
-            if (!Matches("Name") || !Matches(TokenType.Assign))
+            if (Consume("Name") is not {} nameKeywordToken || Consume(TokenType.Assign) is not {} nameAssignToken)
             {
                 throw ParseError("Expected 'Name=' after Class reference!", CurrentPosition);
             }
+            nameKeywordToken.SyntaxType = EF.Keyword;
+            nameAssignToken.SyntaxType = EF.Operator;
 
             var nameToken = Consume(TokenType.Word);
             if (nameToken is null)
             {
-                throw ParseError("Expected name of Object!", CurrentPosition);
+                throw ParseError($"Expected name of {objOrTemplateToken.Value}!", CurrentPosition);
             }
             string objectName = nameToken.Value;
 
@@ -175,9 +185,9 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 {
                     throw ParseError("SubObject declaration has no end!", startPos);
                 }
-                if (CurrentIs("BEGIN") && NextIs("Object"))
+                if (CurrentIs("BEGIN") && (NextIs("Object") || NextIs("Template")))
                     nestedLevel++;
-                else if (CurrentIs("END") && NextIs("Object"))
+                else if (CurrentIs("END") && (NextIs("Object") || NextIs("Template")))
                     nestedLevel--;
                 if (nestedLevel > 0)
                 {
@@ -187,15 +197,20 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 break;
             }
             var bodyEndPos = PrevToken.EndPos;
-            Tokens.Advance(2); // END Object
+            //END
+            CurrentToken.SyntaxType = EF.Keyword;
+            Tokens.Advance();
+            //Object or Template
+            CurrentToken.SyntaxType = EF.Keyword;
+            Tokens.Advance();
 
-            var subObj = new Subobject(new VariableDeclaration(objectClass, default, objectName), objectClass, new List<Statement>(), startPos, PrevToken.EndPos)
+            var subObj = new Subobject(new VariableDeclaration(objectClass, default, objectName), objectClass, new List<Statement>(), isTemplate, startPos, PrevToken.EndPos)
             {
                 Tokens = new TokenStream<string>(() => bodyEndPos > bodyStartPos ? Tokens.GetTokensInRange(bodyStartPos, bodyEndPos).ToList() : new List<Token<string>>())
             };
             if (!Symbols.TryAddSymbol(objectName, subObj))
             {
-                throw ParseError($"'{objectName}' has already been defined in this scope!");
+                throw ParseError($"'{objectName}' has already been defined in this scope!", nameToken);
             }
             return subObj;
         }
@@ -221,6 +236,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             if (Consume(TokenType.Word) is Token<string> propName)
             {
                 SymbolReference target = ParsePropName(propName, inStruct);
+                if (InSubOject && target.Node is VariableDeclaration {IsTransient: true})
+                {
+                    TypeError("Cannot assign to a transient property in a SubObject!", propName);
+                }
                 VariableType targetType = target.ResolveType();
                 if (Matches(TokenType.LeftSqrBracket))
                 {
@@ -539,7 +558,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         case EPropertyType.Bool:
                             if (literal is not BooleanLiteral)
                             {
-                                TypeError($"Expected {TRUE} or {FALSE}!");
+                                TypeError($"Expected {TRUE} or {FALSE}!", literal);
                             }
 
                             break;

@@ -168,14 +168,14 @@ namespace LegendaryExplorerCore.Unreal
             Travel =              0x0000000000010000U,
             EditConst =           0x0000000000020000U,    
             GlobalConfig =        0x0000000000040000U,
-            //Component = 0x0000000000080000U,
+            Component =           0x0000000000080000U,
             AlwaysInit =          0x0000000000100000U,
             DuplicateTransient =  0x0000000000200000U,
             NeedCtorLink =        0x0000000000400000U,
             NoExport =            0x0000000000800000U,
             NoImport =            0x0000000001000000U,
             NoClear =             0x0000000002000000U,
-            Component =           0x0000000004000000U,
+            EditInline =          0x0000000004000000U,
             EdFindable =          0x0000000008000000U,
             EditInlineUse =       0x0000000010000000U,
             Deprecated =          0x0000000020000000U,
@@ -197,6 +197,7 @@ namespace LegendaryExplorerCore.Unreal
 
             // BioWare specific
             RsxStorage =          0x0001000000000000U,        // Property can be moved into RSX memory on the PS3
+            UnkFlag1 =            0x0080000000000000U,
             LoadForCooking =      0x0100000000000000U,        // property is editoronly or notforconsole but needs to be loaded during cooking
             BioNonShip =          0x0200000000000000U,        // Property doesn't serialize to or from disk
             BioIgnorePropertyAdd =0x0400000000000000U,        // ??????
@@ -234,7 +235,7 @@ namespace LegendaryExplorerCore.Unreal
             [EPropertyFlags.Travel] = "",
             [EPropertyFlags.EditConst] = "",
             [EPropertyFlags.GlobalConfig] = "",
-            //[EPropertyFlags.Component] = "",
+            [EPropertyFlags.EditInline] = "",
             [EPropertyFlags.AlwaysInit] = "",
             [EPropertyFlags.DuplicateTransient] = "",
             [EPropertyFlags.NeedCtorLink] = "",
@@ -263,6 +264,7 @@ namespace LegendaryExplorerCore.Unreal
 
             // BIOWARE SPECIFIC
             [EPropertyFlags.RsxStorage] = "Property can be moved into RSX memory (PS3)",
+            [EPropertyFlags.UnkFlag1] = "",
             [EPropertyFlags.LoadForCooking] = "Property is editor only, but must be loaded during cooking",
             [EPropertyFlags.BioNonShip] = "Property does not serialize to or from disk",
             [EPropertyFlags.BioIgnorePropertyAdd] = "",
@@ -280,6 +282,7 @@ namespace LegendaryExplorerCore.Unreal
             ClassDefaultObject = 0x0000000000000200, // this object is its class's default object
             IsCrossLevelReferenced = 0x0000000000400000, // This object has been pointed to by a cross-level reference, and therefore requires additional cleanup upon deletion
             ArchetypeObject = 0x0000000000000400, // this object is a template for another object - treat like a class default object
+            LocalizedResource = 0x0000000000080000, // Resource object is localized
             Transactional = 0x0000000100000000,   // Object is transactional.
             Unreachable = 0x0000000200000000,	// Object is not reachable on the object graph.
             Public = 0x0000000400000000,	// Object is visible outside its package.
@@ -415,6 +418,7 @@ namespace LegendaryExplorerCore.Unreal
             StrictConfig = 0x00000040,
             ImmutableWhenCooked = 0x00000080,
             AtomicWhenCooked = 0x00000100,
+            UnkStructFlag = 0x00020000,
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -22,6 +22,17 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref FloatTaskEvals, SCExt.Serialize);
         }
 
+        public static BioQuestMap Create()
+        {
+            return new()
+            {
+                Quests = new List<BioQuest>(),
+                TaskEvals = new List<BioStateTaskList>(),
+                IntTaskEvals = new List<BioStateTaskList>(),
+                FloatTaskEvals = new List<BioStateTaskList>()
+            };
+        }
+
         public override List<(NameReference, string)> GetNames(MEGame game)
         {
             var names = base.GetNames(game);

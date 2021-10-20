@@ -68,6 +68,28 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
+        public new static UClass Create()
+        {
+            return new()
+            {
+                SuperClass = 0,
+                Next = 0,
+                Children = 0,
+                ScriptBytes = Array.Empty<byte>(),
+                IgnoreMask = (UnrealFlags.EProbeFunctions)ulong.MaxValue,
+                LocalFunctionMap = new OrderedMultiValueDictionary<NameReference, UIndex>(),
+                OuterClass = 0,
+                ClassConfigName = "None",
+                unkNameList1 = Array.Empty<NameReference>(),
+                ComponentNameToDefaultObjectMap = new OrderedMultiValueDictionary<NameReference, UIndex>(),
+                Interfaces = new OrderedMultiValueDictionary<UIndex, UIndex>(),
+                unkName2 = "None",
+                unkNameList2 = Array.Empty<NameReference>(),
+                Defaults = 0,
+                VirtualFunctionTable = Array.Empty<UIndex>()
+            };
+        }
+
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
         {
             var uIndices = base.GetUIndexes(game);

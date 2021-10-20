@@ -20,12 +20,24 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             DefaultsStartPosition = sc.ms.Position;
             if (sc.IsLoading)
             {
-                Defaults = PropertyCollection.ReadProps(Export, sc.ms.BaseStream, Export.ObjectName, includeNoneProperty: true, entry: Export, packageCache: sc.packageCache);
+                Defaults = PropertyCollection.ReadProps(Export, sc.ms.BaseStream, Export.ObjectName, entry: Export, packageCache: sc.packageCache);
             }
             else
             {
                 Defaults.WriteTo(sc.ms.Writer, sc.Pcc, true);
             }
+        }
+
+        public static UScriptStruct Create()
+        {
+            return new()
+            {
+                SuperClass = 0,
+                Next = 0,
+                Children = 0,
+                ScriptBytes = Array.Empty<byte>(),
+                Defaults = new PropertyCollection()
+            };
         }
     }
 

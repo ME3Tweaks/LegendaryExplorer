@@ -47,6 +47,26 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
+        public new static FracturedStaticMesh Create()
+        {
+            return new()
+            {
+                Bounds = new BoxSphereBounds(),
+                BodySetup = 0,
+                kDOPTreeME3UDKLE = KDOPTreeBuilder.ToCompact(Array.Empty<kDOPCollisionTriangle>(), Array.Empty<Vector3>()),
+                LODModels = Array.Empty<StaticMeshRenderData>(),
+                HighResSourceMeshName = "",
+                unkFloats = Array.Empty<float>(),
+                SourceStaticMesh = 0,
+                Fragments = Array.Empty<FragmentInfo>(),
+                InteriorElementIndex = -1,
+                CoreMeshScale3D = new Vector3(1, 1, 1),
+                PlaneBias = new Vector3(1, 1, 1),
+                NonCriticalBuildVersion = 1,
+                LicenseeNonCriticalBuildVersion = 1,
+            };
+        }
+
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
         {
             List<(UIndex, string)> uIndexes = base.GetUIndexes(game);

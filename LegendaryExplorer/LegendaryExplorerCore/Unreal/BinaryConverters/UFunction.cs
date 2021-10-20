@@ -39,6 +39,20 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
+        public static UFunction Create()
+        {
+            return new()
+            {
+                SuperClass = 0,
+                Next = 0,
+                Children = 0,
+                ScriptBytecodeSize = 2,
+                ScriptStorageSize = 2,
+                ScriptBytes = new byte[] { 0xB, 0x53 },
+                FriendlyName = "None"
+            };
+        }
+
         public override List<(NameReference, string)> GetNames(MEGame game)
         {
             var names = base.GetNames(game);
