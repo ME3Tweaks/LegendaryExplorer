@@ -46,6 +46,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
     /// </summary>
     public class PackageEditorExperimentsM
     {
+        private static MaterialScreenshotLE1 msLE1; // Don't fall out of scope
+        public static void StartMatScreenshot(PackageEditorWindow pe)
+        {
+            msLE1 = new MaterialScreenshotLE1();
+            msLE1.StartWorkflow(pe);
+        }
+
         public static void FindBadReference(PackageEditorWindow pe)
         {
             if (pe.Pcc == null)
@@ -1900,9 +1907,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             case "MaterialExpressionTextureSampleParameter2D":
                                 {
                                     var tpvP = expression.GetProperties();
-                                    var paramValue = tpvP.GetProp<ObjectProperty>("DefaultValue");
+                                    var paramValue = tpvP.GetProp<ObjectProperty>("Texture");
                                     paramValue.Name = "ParameterValue";
-                                    vectorParameters.Add(new StructProperty("TextureParameterValue", tpvP));
+                                    textureParameters.Add(new StructProperty("TextureParameterValue", tpvP));
                                 }
                                 break;
                         }
