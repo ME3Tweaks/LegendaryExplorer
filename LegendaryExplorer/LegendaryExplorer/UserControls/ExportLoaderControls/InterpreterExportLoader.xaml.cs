@@ -374,7 +374,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private bool CanFireNavigateCallback()
         {
-            if (NavigateToEntryCommand != null && SelectedItem != null && SelectedItem.Property is ObjectProperty op)
+            if (CurrentLoadedExport != null && NavigateToEntryCommand != null && SelectedItem != null && SelectedItem.Property is ObjectProperty op)
             {
                 var entry = CurrentLoadedExport.FileRef.GetEntry(op.Value);
                 return NavigateToEntryCommand.CanExecute(entry);
@@ -983,6 +983,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 });
             }
 
+            bool isExpanded = false;
             string editableValue = ""; //editable value
             string parsedValue = ""; //human formatted item. Will most times be blank
             switch (prop)
@@ -1301,6 +1302,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         parsedValue = $"Enabled={sp.GetProp<BoolProperty>("Enabled").Value}, Base={sp.GetProp<FloatProperty>("Base").Value}";
                     }
+                    else if (sp.StructType == "ExpressionInput")
+                    {
+                        isExpanded = true;
+                        parsedValue = sp.StructType;
+                    }
                     else
                     {
                         parsedValue = sp.StructType;
@@ -1317,10 +1323,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 ParsedValue = parsedValue,
                 DisplayName = displayName,
                 Parent = parent,
-                AttachedExport = parsingExport
+                AttachedExport = parsingExport,
+                IsExpanded = isExpanded
             };
 
-            //Auto expand
+            //Auto expand items
             if (item.Property != null && item.Property.Name == "StreamingStates")
             {
                 item.IsExpanded = true;
