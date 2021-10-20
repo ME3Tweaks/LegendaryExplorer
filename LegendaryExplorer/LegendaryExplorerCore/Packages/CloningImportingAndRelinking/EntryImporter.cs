@@ -200,7 +200,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     }
 
                     // CROSSGEN
-                    if (destPcc.FindExport(node.InstancedFullPath) != null)
+                    if (destPcc.FindExport(node.InstancedFullPath) != null && portingOption == PortingOption.CloneAllDependencies)
                     {
                         Debugger.Break();
                     }
@@ -321,20 +321,20 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         public static ExportEntry ImportExport(IMEPackage destPackage, ExportEntry sourceExport, int link, RelinkerOptionsPackage rop)
         {
             //Debug.WriteLine($"Importing {sourceExport.InstancedFullPath}");
-            //if (sourceExport.ObjectName.Name.StartsWith("Terrain", StringComparison.InvariantCultureIgnoreCase))
+            //if (sourceExport.InstancedFullPath == "TheWorld.PersistentLevel.Model_0")
             //    Debugger.Break();
 #if DEBUG
             // CROSSGEN - WILL NEED HEAVY REWORK IF THIS IS TO BE MERGED TO BETA
             // Cause there's a lot of things that seem to have to be manually accounted for
             // To do cross game porting you MUST have a cache object on the ROP
             // or it'll take ages!
-            if (rop.TargetGameDonorDB != null && sourceExport.ClassName != "Package" && sourceExport.indexValue == 0 && rop.Cache != null && !sourceExport.InstancedFullPath.StartsWith("TheWorld.")) // Actors cannot be donors
+            if (rop.TargetGameDonorDB != null && sourceExport.indexValue == 0 && rop.Cache != null && CanDonateClassType(sourceExport.ClassName) && !sourceExport.InstancedFullPath.StartsWith("TheWorld.")) // Actors cannot be donors
             {
                 // Port in donor instead
                 var ifp = sourceExport.InstancedFullPath;
                 //Debug.WriteLine($@"Porting {ifp}");
-                if (ifp.Contains("TUR_ARM_HVYa_Des_Diff_Stack"))
-                    Debugger.Break();
+                //if (ifp.Contains("TUR_ARM_HVYa_Des_Diff_Stack"))
+                //    Debugger.Break();
                 var donorFiles = rop.TargetGameDonorDB.GetFilesContainingObject(ifp);
                 if (donorFiles == null || !donorFiles.Any())
                 {
@@ -600,6 +600,19 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
 
             return newExport;
+        }
+
+        private static bool CanDonateClassType(string sourceExportClassName)
+        {
+            switch (sourceExportClassName)
+            {
+                case "Package":
+                case "Brush":
+                case "Model":
+                    return false;
+            }
+            return true;
+
         }
 
         public static bool ReplaceExportDataWithAnother(ExportEntry incomingExport, ExportEntry targetExport, RelinkerOptionsPackage rop)

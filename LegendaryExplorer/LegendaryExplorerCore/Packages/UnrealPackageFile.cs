@@ -253,7 +253,8 @@ namespace LegendaryExplorerCore.Packages
                 // CROSSGEN-V: CHECK BEFORE ADDING TO MAKE SURE WE DON'T GOOF IT UP
                 if (EntryLookupTable.TryGetValue(exportEntry.InstancedFullPath, out _))
                 {
-                    Debugger.Break(); // This already exists!
+                    Debug.WriteLine($"ENTRY LOOKUP TABLE ALREADY HAS ITEM BEING ADDED!!! ITEM: {exportEntry.InstancedFullPath}");
+                    //Debugger.Break(); // This already exists!
                 }
                 // END CROSSGEN-V
                 EntryLookupTable[exportEntry.InstancedFullPath] = exportEntry;
