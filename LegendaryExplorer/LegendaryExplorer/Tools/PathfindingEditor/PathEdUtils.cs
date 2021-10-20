@@ -451,7 +451,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                     var idx = collection.FindIndex(o => o != null && o.UIndex == export.UIndex);
                     if (idx >= 0)
                     {
-                        return new Point3D((double)positions[idx].X, (double)positions[idx].Y, (double)positions[idx].Z);
+                        return new Point3D(positions[idx].X, positions[idx].Y, positions[idx].Z);
                     }
                 }
 
@@ -516,6 +516,18 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             return null;
         }
 
+        public static void SetDrawScale3D(ExportEntry export, float x, float y, float z)
+        {
+            if (export.ClassName.Contains("Component"))
+            {
+                SetCollectionActorDrawScale3D(export, x, y, z);
+            }
+            else
+            {
+                export.WriteProperty(CommonStructs.Vector3Prop(x, y, z, "DrawScale3D"));
+            }
+        }
+
         public static void SetLocation(ExportEntry export, float x, float y, float z)
         {
             if (export.ClassName.Contains("Component"))
@@ -562,6 +574,30 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             }
         }
 
+        public static void SetCollectionActorDrawScale3D(ExportEntry component, float x, float y, float z, List<ExportEntry> collectionitems = null, ExportEntry collectionactor = null)
+        {
+            if (collectionactor == null)
+            {
+                if (!(component.HasParent && component.Parent.ClassName.Contains("CollectionActor")))
+                    return;
+                collectionactor = (ExportEntry)component.Parent;
+            }
+
+            collectionitems ??= GetCollectionItems(collectionactor);
+
+            if (collectionitems?.Count > 0)
+            {
+                var idx = collectionitems.FindIndex(o => o != null && o.UIndex == component.UIndex);
+                if (idx >= 0)
+                {
+                    var binData = (StaticCollectionActor)ObjectBinary.From(collectionactor);
+                    Matrix4x4 m = binData.LocalToWorldTransforms[idx];
+                    var dsd = m.UnrealDecompose();
+                    binData.LocalToWorldTransforms[idx] = ActorUtils.ComposeLocalToWorld(dsd.translation, dsd.rotation, new Vector3(x,y,z));
+                    collectionactor.WriteBinary(binData);
+                }
+            }
+        }
     }
 
     [DebuggerDisplay("ReachSpecSize | {Header} {SpecHeight}x{SpecRadius}")]
@@ -647,16 +683,16 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
     public class Point3D
     {
-        public double X { get; set; }
-        public double Y { get; set; }
-        public double Z { get; set; }
+        public float X { get; set; }
+        public float Y { get; set; }
+        public float Z { get; set; }
 
         public Point3D()
         {
 
         }
 
-        public Point3D(double X, double Y, double Z)
+        public Point3D(float X, float Y, float Z)
         {
             this.X = X;
             this.Y = Y;
@@ -674,9 +710,9 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
         public Point3D getDelta(Point3D other)
         {
-            double deltaX = X - other.X;
-            double deltaY = Y - other.Y;
-            double deltaZ = Z - other.Z;
+            float deltaX = X - other.X;
+            float deltaY = Y - other.Y;
+            float deltaZ = Z - other.Z;
             return new Point3D(deltaX, deltaY, deltaZ);
         }
 
@@ -687,9 +723,9 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
         public Point3D applyDelta(Point3D other)
         {
-            double deltaX = X + other.X;
-            double deltaY = Y + other.Y;
-            double deltaZ = Z + other.Z;
+            float deltaX = X + other.X;
+            float deltaY = Y + other.Y;
+            float deltaZ = Z + other.Z;
             return new Point3D(deltaX, deltaY, deltaZ);
         }
 
