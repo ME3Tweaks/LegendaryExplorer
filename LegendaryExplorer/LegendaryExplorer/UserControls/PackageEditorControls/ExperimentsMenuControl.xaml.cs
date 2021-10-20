@@ -384,6 +384,10 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsM.ConvertMaterialToVtestDonor(GetPEWindow());
         }
+        private void RunMaterialInstanceScreenshot_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.StartMatScreenshot(GetPEWindow());
+        }
 
         private void OrganizeParticleSystemExports_Click(object sender, RoutedEventArgs e)
         {
@@ -1287,9 +1291,8 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         private void ChonkyDB_BuildME1GameDB(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.BuildAllObjectsGameDB(MEGame.ME1, GetPEWindow());
-
-
-            // PLEASE MOVE YOUR EXPERIMENT HANDLER INTO YOUR SECTION ABOVE
         }
+
+        // PLEASE MOVE YOUR EXPERIMENT HANDLER INTO YOUR SECTION ABOVE
     }
 }
