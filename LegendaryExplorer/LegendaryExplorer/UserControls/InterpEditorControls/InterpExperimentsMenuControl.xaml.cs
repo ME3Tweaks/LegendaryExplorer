@@ -57,6 +57,8 @@ namespace LegendaryExplorer.UserControls.InterpEditorControls
         }
         #endregion
 
+        // EXPERIMENTS: HenBagle------------------------------------------------------------
+        #region HenBagle's Experiments
         private void OpenFovoLineAudio_Click(object sender, RoutedEventArgs e)
         {
             bool isMale = (string) (sender as FrameworkElement)?.Tag == "M";
@@ -69,5 +71,11 @@ namespace LegendaryExplorer.UserControls.InterpEditorControls
             bool isMale = (string) (sender as FrameworkElement)?.Tag == "M";
             InterpEditorExperimentsH.OpenFovoLineFXA(isMale, GetIEWindow());
         }
+
+        private void OpenFovoLineDlg_Click(object sender, RoutedEventArgs e)
+        {
+            InterpEditorExperimentsH.OpenFovoLineDialogueEditor(GetIEWindow());
+        }
+        #endregion
     }
 }

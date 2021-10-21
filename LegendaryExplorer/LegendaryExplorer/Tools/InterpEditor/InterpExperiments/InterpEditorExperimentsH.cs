@@ -1,4 +1,6 @@
 ﻿using System.Linq;
+using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.DialogueEditor;
 using LegendaryExplorer.Tools.FaceFXEditor;
 using LegendaryExplorer.Tools.Soundplorer;
 using LegendaryExplorer.Tools.TlkManagerNS;
@@ -12,45 +14,49 @@ namespace LegendaryExplorer.Tools.InterpEditor.InterpExperiments
 {
     public static class InterpEditorExperimentsH
     {
+        public static void OpenFovoLineDialogueEditor(InterpEditorWindow iew)
+        {
+            var selectedLine = GetConversationFromSelectedTrack(iew);
+            if (!selectedLine.HasValue) return;
+            var (strRef, conv) = selectedLine.Value;
+            var dlg = new DialogueEditorWindow();
+            dlg.Show();
+            dlg.LoadFile(conv.Export.FileRef.FilePath, conv.Export.UIndex);
+            if(strRef > 0) dlg.TrySelectStrRef(strRef);
+        }
+
         public static void OpenFovoLineAudio(bool isMale, InterpEditorWindow iew)
         {
-            var Pcc = iew.Pcc;
             var node = GetSelectedFOVOLine(iew);
-            if (node is null) return;
-            var stream = isMale ? node.WwiseStream_Male : node.WwiseStream_Female;
-
-            if (stream is not null)
-            {
-                new SoundplorerWPF(stream).Show();
-            }
-            else
-            {
-                var soundplorerWPF = new SoundplorerWPF();
-                soundplorerWPF.LoadFile(Pcc.FilePath);
-                soundplorerWPF.Show();
-            }
+            var stream = isMale ? node?.WwiseStream_Male : node?.WwiseStream_Female;
+            if (stream is null) return;
+            new SoundplorerWPF(stream).Show();
         }
 
         public static void OpenFovoLineFXA(bool isMale, InterpEditorWindow iew)
         {
-            var Pcc = iew.Pcc;
             var node = GetSelectedFOVOLine(iew);
             if (node is null) return;
             var faceFx = isMale ? node.FaceFX_Male : node.FaceFX_Female;
             var faceFxUindex = isMale ? node.SpeakerTag.FaceFX_Male.UIndex : node.SpeakerTag.FaceFX_Female.UIndex;
+            var pcc = node.WwiseStream_Female?.FileRef ?? node.WwiseStream_Male?.FileRef;
+            if (pcc is null) return;
 
-            if (Pcc.IsUExport(faceFxUindex) && faceFx is not null)
+            if (pcc.IsUExport(faceFxUindex) && faceFx is not null)
             {
-                new FaceFXEditorWindow(Pcc.GetUExport(faceFxUindex), faceFx).Show();
+                var fxe = new FaceFXEditorWindow();
+                fxe.LoadFile(pcc.FilePath);
+                fxe.Show();
+                fxe.SelectAnimset(faceFxUindex, faceFx);
             }
-            else if (Pcc.IsUExport(faceFxUindex))
+            else if (pcc.IsUExport(faceFxUindex))
             {
-                new FaceFXEditorWindow(Pcc.GetUExport(faceFxUindex)).Show();
+                new FaceFXEditorWindow(pcc.GetUExport(faceFxUindex)).Show();
             }
             else
             {
                 var facefxEditor = new FaceFXEditorWindow();
-                facefxEditor.LoadFile(Pcc.FilePath);
+                facefxEditor.LoadFile(pcc.FilePath);
                 facefxEditor.Show();
             }
         }
@@ -76,8 +82,18 @@ namespace LegendaryExplorer.Tools.InterpEditor.InterpExperiments
             {
                 var keys = track.Export.GetProperty<ArrayProperty<StructProperty>>("m_aFOVOKeys");
                 if (keys is null || keys.Count == 0) return null;
-                var conversationUindex = keys[0].GetProp<ObjectProperty>("pConversation").Value;
-                var lineStrRef = keys[0].GetProp<IntProperty>("nLineStrRef")?.Value;
+                int keyIndex = 0;
+                if (keys.Count > 1)
+                {
+                    string result = PromptDialog.Prompt(iew, "Please enter FOVO key index", "Legendary Explorer", "0", true);
+                    if (string.IsNullOrEmpty(result) || !int.TryParse(result, out var idx) || idx >= keys.Count)
+                    {
+                        return null;
+                    }
+                    keyIndex = idx;
+                }
+                var conversationUindex = keys[keyIndex].GetProp<ObjectProperty>("pConversation").Value;
+                var lineStrRef = keys[keyIndex].GetProp<IntProperty>("nLineStrRef")?.Value;
                 IEntry conversationEntry = track.Export.FileRef.GetEntry(conversationUindex);
                 if (conversationEntry is ImportEntry convImport)
                 {
