@@ -332,6 +332,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 // Port in donor instead
                 var ifp = sourceExport.InstancedFullPath;
+
+
                 //Debug.WriteLine($@"Porting {ifp}");
                 //if (ifp.Contains("TUR_ARM_HVYa_Des_Diff_Stack"))
                 //    Debugger.Break();
@@ -364,6 +366,18 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         if (!df.RepresentsPackageFilePath())
                         {
                             Debugger.Break(); // LOOKUP INTO DB FAILED
+                        }
+
+                        if (sourceExport.FileRef.Localization != MELocalization.None)
+                        {
+                            // Localization must match
+                            var dfLoc = df.GetFileLocalizationFromFilePath();
+                            if (sourceExport.FileRef.Localization != dfLoc)
+                            {
+                                //Debug.WriteLine($"Rejecting donor file {Path.GetFileName(df)}, localization doesn't match source {sourceExport.FileRef.Localization}");
+                                continue;
+                            }
+                            Debug.WriteLine($"Accepting donor file {Path.GetFileName(df)}, localization matches");
                         }
 
                         string dfp = df;
