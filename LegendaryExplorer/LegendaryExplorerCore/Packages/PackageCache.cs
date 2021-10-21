@@ -34,6 +34,11 @@ namespace LegendaryExplorerCore.Packages
         public PackageCache() { }
 
         /// <summary>
+        /// The list of packages that will not be dropped from last access staleness
+        /// </summary>
+        private List<string> ResidentPackages = new List<string>();
+
+        /// <summary>
         /// The maximum amount of packages this cache can hold open at a time. The default is unlimited (0). Global packages like SFXGame, Core, etc do not count against this.
         /// When a new package is opened, the stalest package is dropped if the amount of open packages exceeds this number. 
         /// </summary>
@@ -85,6 +90,30 @@ namespace LegendaryExplorerCore.Packages
             CheckCacheFullness();
         }
 
+        /// <summary>
+        /// Makes the specified package, if in the cache, not drop when the cache is full. If the cache is uncapped, this does nothing.
+        /// </summary>
+        /// <param name="package"></param>
+        public void AddResidentPackage(IMEPackage package)
+        {
+            if (package.FilePath != null)
+                AddResidentPackage(package.FilePath);
+        }
+
+        /// <summary>
+        /// Makes the specified package path, if in the cache, not drop when the cache is full. If the cache is uncapped, this does nothing.
+        /// </summary>
+        public void AddResidentPackage(string packagePath)
+        {
+            if (CacheMaxSize <= 0)
+                return; // Does nothing.
+
+            if (CacheContains(packagePath) && !ResidentPackages.Contains(packagePath))
+            {
+                ResidentPackages.Add(packagePath);
+            }
+        }
+
         private void CheckCacheFullness()
         {
             if (CacheMaxSize > 1 && Cache.Count > CacheMaxSize)
@@ -93,8 +122,12 @@ namespace LegendaryExplorerCore.Packages
                 while (CacheMaxSize > 1 && Cache.Count > CacheMaxSize)
                 {
                     // Find the oldest package
-                    ReleasePackage(accessOrder[0].Key);
+                    if (!ResidentPackages.Contains(accessOrder[0].Key))
+                    {
+                        ReleasePackage(accessOrder[0].Key);
+                    }
                     accessOrder.RemoveAt(0);
+
                 }
             }
 

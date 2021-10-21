@@ -223,6 +223,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         #region Main porting methods
 
+        private static string GetAssetCachePath()
+        {
+            return Path.Combine(PAEMPaths.VTest_DonorsDir, "Z_CrossgenV_AssetCache.pcc");
+        }
+
         /// <summary>
         /// Runs the main VTest
         /// </summary>
@@ -316,6 +321,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 return;
             }
 
+            if (!vTestOptions.debugBuildAssetCachePackage && File.Exists(GetAssetCachePath()))
+            {
+                // Make the asset package resident so it won't be dropped
+                var resident = vTestOptions.cache.GetCachedPackage(GetAssetCachePath(), true);
+                vTestOptions.cache.AddResidentPackage(resident);
+            }
+
             vTestOptions.packageEditorWindow.BusyText = "Clearing mod folder";
             // Clear out dest dir
             foreach (var f in Directory.GetFiles(PAEMPaths.VTest_FinalDestDir))
@@ -333,7 +345,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             // If we are building an asset cache package we initialize it here
             if (vTestOptions.debugBuildAssetCachePackage)
             {
-                var assetCachePath = Path.Combine(PAEMPaths.VTest_DonorsDir, "Z_CrossgenV_AssetCache.pcc");
+                var assetCachePath = GetAssetCachePath();
                 CreateEmptyLevel(assetCachePath, MEGame.LE1);
                 vTestOptions.assetCachePackage = MEPackageHandler.OpenMEPackage(assetCachePath, forceLoadFromDisk: true);
             }
@@ -354,7 +366,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     {
                         var levelName = Path.GetFileNameWithoutExtension(f);
                         //if (levelName.CaseInsensitiveEquals("BIOA_PRC2_CCLAVA"))
-                            PortVTestLevel(vTestLevel, levelName, vTestOptions, levelName == "BIOA_" + vTestLevel, true);
+                        PortVTestLevel(vTestLevel, levelName, vTestOptions, levelName == "BIOA_" + vTestLevel, true);
                     }
                 }
             }
@@ -453,8 +465,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             var outputFile = $@"{PAEMPaths.VTest_FinalDestDir}\{sourceName.ToUpper()}.pcc";
             CreateEmptyLevel(outputFile, MEGame.LE1);
 
-            using var le1File = MEPackageHandler.OpenMEPackage(outputFile);
-            using var me1File = MEPackageHandler.OpenMEPackage($@"{PAEMPaths.VTest_SourceDir}\{mapName}\{sourceName}.SFM");
+            using var le1File = MEPackageHandler.OpenMEPackage(outputFile, forceLoadFromDisk: true);
+            using var me1File = MEPackageHandler.OpenMEPackage($@"{PAEMPaths.VTest_SourceDir}\{mapName}\{sourceName}.SFM", forceLoadFromDisk: true);
 
             var levelName = Path.GetFileNameWithoutExtension(le1File.FilePath);
 
@@ -2048,7 +2060,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         private static void CorrectVFX(IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
         {
-            // These could probably use a bit of cleaning up to look better like fade in/out
+            // Needs a fadein
             var glitchRandom = le1File.FindExport("BIOA_PRC2_MatFX.VFX.Glitch_Random");
             if (glitchRandom != null)
             {
@@ -2059,6 +2071,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 glitchRandom.WriteProperties(props);
             }
 
+            // Fixed to look fadeout
             var glitchedToDeath = le1File.FindExport("BIOA_PRC2_MatFX.DeathEffects.GlitchedToDeath");
             if (glitchedToDeath != null)
             {
@@ -2069,14 +2082,43 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 glitchedToDeath.WriteProperties(props);
             }
 
-            // We have to use donors instead cause particle systems are just too different.
-            //foreach (var vfx in le1File.Exports.ToList()) // This might modify the list
+            // Correct missing Geth Holowipe
+            // This is kind of a hack. Doing it properly would require renaming tons of objects which breaks the dynamic load system LE1 has
+
+            var le1Rvr = le1File.FindExport(@"EffectsMaterials.Users.GTH_TNT_MASTER_MAT_USER.RvrMaterialMultiplexor_16");
+            if (le1Rvr != null)
+            {
+                Debug.WriteLine("Correct Geth Holo VFX");
+                var replacement = vTestOptions.vTestHelperPackage.FindExport(@"EffectsMaterials.Users.GTH_TNT_MASTER_MAT_USER.RvrMaterialMultiplexor_16");
+                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingularWithRelink, replacement, le1File, le1Rvr, true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out _);
+            }
+
+            //var nameIdx = le1File.findName("GTH_TNT_MASTER_MAT_USER");
+            //if (nameIdx != -1)
             //{
-            //    if (vfx.ClassName == "ParticleModuleTypeDataMesh")
-            //    {
-            //        ConvertParticleModuleTypeDataMesh(vfx, me1File, vTestOptions);
-            //    }
+            //    le1File.replaceName(nameIdx, "GTH_TNT_MASTER_MAT_USER_CROSSGEN");
             //}
+
+            // DISABLED BECAUSE THIS IS WAY TOO COMPLICATED
+            // There will just have to be non-unique memory items here as renaming the whole parent chain
+            // would be a huge PITA
+
+            // These ones are special as they are looked up by building a name.
+            // We must also adjust the StrProperty that looks these up!
+            //nameIdx = le1File.findName("BIOG_GTH_TRO_NKD_R");
+            //if (nameIdx != -1)
+            //{
+            //    le1File.replaceName(nameIdx, "BIOG_GTH_TRO_CROSSGEN_NKD_R");
+            //}
+
+            //nameIdx = le1File.findName("BIOG_GTH_STP_NKD_R");
+            //if (nameIdx != -1)
+            //{
+            //    le1File.replaceName(nameIdx, "BIOG_GTH_STP_CROSSGEN_NKD_R");
+            //}
+
+
+
         }
 
         /// <summary>
