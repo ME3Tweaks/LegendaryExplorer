@@ -70,7 +70,8 @@
         "Interface",
         "new",
         "assert",
-        "goto"
+        "goto",
+        "replication"
     };
 #>
 namespace LegendaryExplorerCore.UnrealScript.Utilities

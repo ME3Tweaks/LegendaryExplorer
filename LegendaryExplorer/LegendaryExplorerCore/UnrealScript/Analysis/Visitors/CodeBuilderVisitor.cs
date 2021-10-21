@@ -206,6 +206,21 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     state.AcceptVisitor(this);
             }
 
+            if (node.ReplicationBlock?.Statements.Count > 0)
+            {
+                Write();
+                if (node.Flags.Has(EClassFlags.NativeReplication))
+                {
+                    Write("//Replication conditions for this class are native. This block has no effect", EF.Comment);
+                }
+                Write(REPLICATION, EF.Keyword);
+                Write("{");
+                NestingLevel++;
+                node.ReplicationBlock.AcceptVisitor(this);
+                NestingLevel--;
+                Write("}");
+            }
+
             Write();
             Write("//class default properties can be edited in the Properties tab for the class's Default__ object.", EF.Comment);
             node.DefaultProperties?.AcceptVisitor(this);
@@ -1003,6 +1018,29 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         {
             // if (condition) { /n contents /n } [else...]
             VisitIf(node);
+            return true;
+        }
+
+        public bool VisitNode(ReplicationStatement node)
+        {
+            Write(IF, EF.Keyword);
+            Space();
+            Append("(");
+            node.Condition.AcceptVisitor(this);
+            Append(")");
+            NestingLevel++;
+            Write();
+            for (int i = 0; i < node.ReplicatedVariables.Count; i++)
+            {
+                if (i > 0)
+                {
+                    Append(", ");
+                }
+                node.ReplicatedVariables[i].AcceptVisitor(this);
+            }
+            NestingLevel--;
+            Append(";");
+            Write();
             return true;
         }
 

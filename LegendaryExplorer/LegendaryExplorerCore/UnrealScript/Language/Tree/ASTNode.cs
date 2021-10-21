@@ -41,6 +41,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         ReturnStatement,
         StopStatement,
         ExpressionStatement,
+        ReplicationStatement,
         Goto,
 
         SwitchStatement,

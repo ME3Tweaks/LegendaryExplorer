@@ -107,12 +107,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private bool CanNopOutStatement(object obj)
         {
-            return obj is Statement && CurrentLoadedExport != null && CurrentLoadedExport.Game < MEGame.ME3; // We only support nop on ME1/ME2 cause they don't use memory jumps. memory jumps complicate things
+            return obj is Statement && CurrentLoadedExport is {Game: < MEGame.ME3}; // We only support nop on ME1/ME2 cause they don't use memory jumps. memory jumps complicate things
         }
 
         public override bool CanParse(ExportEntry exportEntry)
         {
-            return ((exportEntry.ClassName is "Function" or "State") && exportEntry.FileRef.Game != MEGame.UDK);
+            return exportEntry.ClassName is "Function" or "State" && exportEntry.FileRef.Game != MEGame.UDK;
         }
 
         public override void LoadExport(ExportEntry exportEntry)
@@ -154,17 +154,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             DecompiledScriptBoxTitle = "Decompiled Script";
             if (Pcc.Game is MEGame.ME3 or MEGame.LE1 or  MEGame.LE2 or MEGame.LE3 || Pcc.Platform == MEPackage.GamePlatform.PS3)
             {
-                var func = new Function(data, CurrentLoadedExport, 32);
+                var func = new Function(data, CurrentLoadedExport);
                 func.ParseFunction();
                 DecompiledScriptBlocks.Add(func.GetSignature());
                 DecompiledScriptBlocks.AddRange(func.ScriptBlocks);
                 TokenList.AddRange(func.SingularTokenList);
 
 
-                int pos = 12;
+                int pos = CurrentLoadedExport.IsClass ? 4 : 12;
 
                 var functionSuperclass = EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian);
-                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Function superclass", functionSuperclass, pos, functionSuperclass != 0 ? CurrentLoadedExport.FileRef.GetEntry(functionSuperclass) : null));
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem($"{CurrentLoadedExport.ClassName} superclass", functionSuperclass, pos, functionSuperclass != 0 ? CurrentLoadedExport.FileRef.GetEntry(functionSuperclass) : null));
 
                 pos += 4;
                 var nextItemCompilingChain = EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian);
@@ -246,7 +246,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     //State
                     //parse remaining
                     var footerstartpos = 0x20 + diskSize;
-                    var footerdata = CurrentLoadedExport.DataReadOnly.Slice(0x20 + diskSize, CurrentLoadedExport.DataSize - (0x20 + diskSize));
+                    if (CurrentLoadedExport.IsClass)
+                    {
+                        footerstartpos -= 8;
+                    }
+                    var footerdata = CurrentLoadedExport.DataReadOnly.Slice(footerstartpos, CurrentLoadedExport.DataSize - footerstartpos);
                     var fpos = 0;
                     ScriptFooterBlocks.Add(new ScriptHeaderItem("Probemask?", "??", fpos + footerstartpos) { length = 8 });
                     fpos += 0x8;

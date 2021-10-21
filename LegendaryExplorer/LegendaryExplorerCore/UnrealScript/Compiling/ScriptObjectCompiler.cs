@@ -102,6 +102,54 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         public static void Compile(Class classAST, IEntry parent, ref UClass classObj)
         {
             throw new NotImplementedException();
+            IMEPackage pcc = parent.FileRef;
+
+            var className = NameReference.FromInstancedString(classAST.Name);
+            IEntry superClass = classAST.Parent is Class super ? CompilerUtils.ResolveClass(super, pcc) : null;
+            ExportEntry classExport;
+            if (classObj is null)
+            {
+                classExport = CreateNewExport(className, "Class", parent, UClass.Create(), superClass);
+                classObj = classExport.GetBinaryData<UClass>();
+            }
+            else
+            {
+                classExport = classObj.Export;
+                classExport.ObjectName = className;
+                classExport.SuperClass = superClass;
+            }
+            classObj.SuperClass = superClass?.UIndex ?? 0;
+            classObj.ScriptBytecodeSize = 0;
+            classObj.ScriptBytes = Array.Empty<byte>();
+            classObj.ProbeMask = 0;
+            classObj.IgnoreMask = (EProbeFunctions)ulong.MaxValue;
+            classObj.LabelTableOffset = ushort.MaxValue;
+            classObj.StateFlags = EStateFlags.Auto;
+            classObj.ClassFlags = classAST.Flags;
+            classObj.OuterClass = classAST.OuterClass is Class outerClass ? CompilerUtils.ResolveClass(outerClass, pcc).UIndex : 0;
+            classObj.ClassConfigName = NameReference.FromInstancedString(classAST.ConfigName);
+
+            (CaseInsensitiveDictionary<UConst> existingConsts, CaseInsensitiveDictionary<UEnum> existingEnums,
+                CaseInsensitiveDictionary<UScriptStruct> existingStructs, CaseInsensitiveDictionary<UProperty> existingProperties, 
+                CaseInsensitiveDictionary<UFunction> existingFunctions, CaseInsensitiveDictionary<UState> existingStates) = GetClassMembers(classObj);
+
+
+
+            //classObj.LocalFunctionMap
+            //classObj.unkNameList1
+            //classObj.ComponentNameToDefaultObjectMap
+            //classObj.Interfaces
+            //classObj.unkName2
+            //classObj.unk2
+            //classObj.le2ps3me2Unknown
+            //classObj.unkNameList2
+            //classObj.Defaults
+            if (pcc.Game.IsGame3())
+            {
+                //classObj.VirtualFunctionTable
+            }
+
+            classExport.WriteBinary(classObj);
         }
 
         public static void Compile(State stateAST, IEntry parent, ref UState stateObj)
@@ -501,7 +549,20 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public static void Compile(Const constAST, IEntry parent, ref UConst constObj)
         {
-            throw new NotImplementedException();
+            var constName = NameReference.FromInstancedString(constAST.Name);
+            ExportEntry constExport;
+            if (constObj is null)
+            {
+                constExport = CreateNewExport(constName, "Const", parent, UConst.Create());
+                constObj = constExport.GetBinaryData<UConst>();
+            }
+            else
+            {
+                constExport = constObj.Export;
+                constExport.ObjectName = constName;
+            }
+            constObj.Value = constAST.Value;
+            constExport.WriteBinary(constObj);
         }
 
         private static UField AdvanceField(UField field, UField current, UStruct uStruct)
@@ -579,15 +640,70 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return (membersT, membersU);
         }
 
+        public static (CaseInsensitiveDictionary<UConst>, CaseInsensitiveDictionary<UEnum>, CaseInsensitiveDictionary<UScriptStruct>, 
+            CaseInsensitiveDictionary<UProperty>, CaseInsensitiveDictionary<UFunction>, CaseInsensitiveDictionary<UState>) 
+            GetClassMembers(UClass obj)
+        {
+            IMEPackage pcc = obj.Export.FileRef;
+
+            var constMembers = new CaseInsensitiveDictionary<UConst>();
+            var enumMembers = new CaseInsensitiveDictionary<UEnum>();
+            var structMembers = new CaseInsensitiveDictionary<UScriptStruct>();
+            var propMembers = new CaseInsensitiveDictionary<UProperty>();
+            var funcMembers = new CaseInsensitiveDictionary<UFunction>();
+            var stateMembers = new CaseInsensitiveDictionary<UState>();
+
+            var nextItem = obj.Children;
+
+            while (nextItem is not null && pcc.TryGetUExport(nextItem, out ExportEntry nextChild))
+            {
+                var objBin = ObjectBinary.From(nextChild);
+                string objName = objBin?.Export.ObjectName.Instanced;
+                switch (objBin)
+                {
+                    case UConst uConst:
+                        nextItem = uConst.Next;
+                        constMembers.Add(objName, uConst);
+                        break;
+                    case UEnum uEnum:
+                        nextItem = uEnum.Next;
+                        enumMembers.Add(objName, uEnum);
+                        break;
+                    case UScriptStruct uScriptStruct:
+                        nextItem = uScriptStruct.Next;
+                        structMembers.Add(objName, uScriptStruct);
+                        break;
+                    case UProperty uProperty:
+                        nextItem = uProperty.Next;
+                        propMembers.Add(objName, uProperty);
+                        break;
+                    case UFunction uFunction:
+                        nextItem = uFunction.Next;
+                        funcMembers.Add(objName, uFunction);
+                        break;
+                    case UState uState:
+                        nextItem = uState.Next;
+                        stateMembers.Add(objName, uState);
+                        break;
+                    default:
+                        nextItem = null;
+                        break;
+                }
+            }
+            return (constMembers, enumMembers, structMembers, propMembers, funcMembers, stateMembers);
+        }
+
         private static ExportEntry CreateNewExport(NameReference name, string className, IEntry parent, UField binary = null, IEntry super = null)
         {
             IMEPackage pcc = parent.FileRef;
+
+            IEntry classEntry = className.CaseInsensitiveEquals("Class") ? null : EntryImporter.EnsureClassIsInFile(pcc, className);
 
             //reuse trash exports
             if (pcc.TryGetTrash(out ExportEntry trashExport))
             {
                 trashExport.ObjectName = name;
-                trashExport.Class = EntryImporter.EnsureClassIsInFile(pcc, className);
+                trashExport.Class = classEntry;
                 trashExport.SuperClass = super;
                 trashExport.Parent = parent;
                 trashExport.WritePrePropsAndPropertiesAndBinary(new byte[4], new PropertyCollection(), (ObjectBinary)binary ?? new GenericObjectBinary(new byte[0]));
@@ -596,7 +712,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
             var exp = new ExportEntry(pcc, parent, name, binary: binary, isClass: binary is UClass)
             {
-                Class = EntryImporter.EnsureClassIsInFile(pcc, className),
+                Class = classEntry,
                 SuperClass = super
             };
             pcc.AddExport(exp);

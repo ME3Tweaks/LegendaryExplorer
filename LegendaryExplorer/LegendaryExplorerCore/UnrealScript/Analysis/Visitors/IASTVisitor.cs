@@ -44,6 +44,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         bool VisitNode(Goto node);
 
         bool VisitNode(ExpressionOnlyStatement node);
+        bool VisitNode(ReplicationStatement node);
         bool VisitNode(ErrorStatement node);
         bool VisitNode(ErrorExpression node);
 

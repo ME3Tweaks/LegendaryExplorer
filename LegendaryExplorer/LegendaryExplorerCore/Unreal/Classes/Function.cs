@@ -4,6 +4,7 @@ using System.Linq;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
 
 namespace LegendaryExplorerCore.Unreal.Classes
 {
@@ -38,9 +39,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                                                             null, "Public", "Private", "Protected",
                                                             "Delegate", "NetServer", "HasOutParms", "HasDefaults",
                                                             "NetClient", "FuncInherit", "FuncOverrideMatch");
-        public string ScriptText; //This is not used but is referenced by PAckage Editor Classic, SCriptDB. Probably does not work since I refactored
-        //the parsing script pretty heavily
-        public string HeaderText;
+
         public List<Token> ScriptBlocks;
 
         public List<BytecodeSingularToken> SingularTokenList { get; private set; }
@@ -49,15 +48,21 @@ namespace LegendaryExplorerCore.Unreal.Classes
         {
         }
 
-        public Function(byte[] raw, ExportEntry export, int clippingSize = 32)
+        public Function(byte[] raw, ExportEntry export)
         {
             this.export = export;
+            var objBin = ObjectBinary.From(export) as UStruct;
+            if (objBin is null)
+            {
+                throw new Exception($"Cannot parse export of class {export.ClassName}!");
+            }
             memory = raw;
             memsize = raw.Length;
-            flagint = GetFlagInt();
+            flagint = (int)((objBin as UFunction)?.FunctionFlags ?? 0);
             flags = new FlagValues(flagint, export.Game == MEGame.ME3 || export.Game.IsLEGame()  ? _me3flags : _flags);
-            nativeindex = GetNatIdx();
-            Deserialize(clippingSize);
+            nativeindex = (objBin as UFunction)?.NativeIndex ?? 0;
+            ReadHeader();
+            script = objBin.ScriptBytes;
         }
 
         public bool HasFlag(string name)
@@ -73,8 +78,8 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 if (Native)
                 {
                     result += "native";
-                    if (GetNatIdx() > 0)
-                        result += $"({GetNatIdx()})";
+                    if (nativeindex > 0)
+                        result += $"({nativeindex})";
                     result += " ";
                 }
 
@@ -104,82 +109,67 @@ namespace LegendaryExplorerCore.Unreal.Classes
             //childrenReversed.Reverse();
 
             // NEW CODE
-            List<ExportEntry> childrenReversed = new List<ExportEntry>();
-            var childIdx = EndianReader.ToInt32(export.DataReadOnly, 0x14, export.FileRef.Endian);
-            while (export.FileRef.TryGetUExport(childIdx, out var parsingExp))
+            if (!export.IsClass)
             {
-                childrenReversed.Add(parsingExp);
-                childIdx = EndianReader.ToInt32(parsingExp.DataReadOnly, 0x10, export.FileRef.Endian);
-            }
-
-            //Get local children of this function
-            foreach (ExportEntry export in childrenReversed)
-            {
-                //Reading parameters info...
-                if (export.ClassName.EndsWith("Property"))
+                List<ExportEntry> childrenReversed = new List<ExportEntry>();
+                var childIdx = EndianReader.ToInt32(export.DataReadOnly, 0x14, export.FileRef.Endian);
+                while (export.FileRef.TryGetUExport(childIdx, out var parsingExp))
                 {
-                    UnrealFlags.EPropertyFlags ObjectFlagsMask = (UnrealFlags.EPropertyFlags)EndianReader.ToUInt64(export.DataReadOnly, 0x18, export.FileRef.Endian);
-                    if (ObjectFlagsMask.Has(UnrealFlags.EPropertyFlags.Parm) && !ObjectFlagsMask.Has(UnrealFlags.EPropertyFlags.ReturnParm))
-                    {
-                        if (paramCount > 0)
-                        {
-                            result += ", ";
-                        }
+                    childrenReversed.Add(parsingExp);
+                    childIdx = EndianReader.ToInt32(parsingExp.DataReadOnly, 0x10, export.FileRef.Endian);
+                }
 
-                        if (export.ClassName == "ObjectProperty" || export.ClassName == "StructProperty")
+                //Get local children of this function
+                foreach (ExportEntry export in childrenReversed)
+                {
+                    //Reading parameters info...
+                    if (export.ClassName.EndsWith("Property"))
+                    {
+                        UnrealFlags.EPropertyFlags ObjectFlagsMask = (UnrealFlags.EPropertyFlags)EndianReader.ToUInt64(export.DataReadOnly, 0x18, export.FileRef.Endian);
+                        if (ObjectFlagsMask.Has(UnrealFlags.EPropertyFlags.Parm) && !ObjectFlagsMask.Has(UnrealFlags.EPropertyFlags.ReturnParm))
                         {
-                            var uindexOfOuter = EndianReader.ToInt32(export.DataReadOnly, export.DataSize - 4, export.FileRef.Endian);
-                            IEntry entry = export.FileRef.GetEntry(uindexOfOuter);
-                            if (entry != null)
+                            if (paramCount > 0)
                             {
-                                result += entry.ObjectName.Instanced + " ";
+                                result += ", ";
                             }
+
+                            if (export.ClassName is "ObjectProperty" or "StructProperty")
+                            {
+                                var uindexOfOuter = EndianReader.ToInt32(export.DataReadOnly, export.DataSize - 4, export.FileRef.Endian);
+                                IEntry entry = export.FileRef.GetEntry(uindexOfOuter);
+                                if (entry != null)
+                                {
+                                    result += entry.ObjectName.Instanced + " ";
+                                }
+                            }
+                            else
+                            {
+                                result += UnFunction.GetPropertyType(export) + " ";
+                            }
+
+                            result += export.ObjectName.Instanced;
+                            paramCount++;
+
+                            //if (ObjectFlagsMask.Has(UnrealFlags.EPropertyFlags.OptionalParm) && Statements.Count > 0)
+                            //{
+                            //    if (Statements[0].Token is NothingToken)
+                            //        Statements.RemoveRange(0, 1);
+                            //    else if (Statements[0].Token is DefaultParamValueToken)
+                            //    {
+                            //        result += " = ").Append(Statements[0].Token.ToString());
+                            //        Statements.RemoveRange(0, 1);
+                            //    }
+                            //}
                         }
-                        else
+                        if (ObjectFlagsMask.Has(UnrealFlags.EPropertyFlags.ReturnParm))
                         {
-                            result += UnFunction.GetPropertyType(export) + " ";
+                            break; //return param
                         }
-
-                        result += export.ObjectName.Instanced;
-                        paramCount++;
-
-                        //if (ObjectFlagsMask.Has(UnrealFlags.EPropertyFlags.OptionalParm) && Statements.Count > 0)
-                        //{
-                        //    if (Statements[0].Token is NothingToken)
-                        //        Statements.RemoveRange(0, 1);
-                        //    else if (Statements[0].Token is DefaultParamValueToken)
-                        //    {
-                        //        result += " = ").Append(Statements[0].Token.ToString());
-                        //        Statements.RemoveRange(0, 1);
-                        //    }
-                        //}
-                    }
-                    if (ObjectFlagsMask.Has(UnrealFlags.EPropertyFlags.ReturnParm))
-                    {
-                        break; //return param
                     }
                 }
+                result += ")";
             }
-            result += ")";
             return result;
-        }
-
-        public int GetNatIdx()
-        {
-            var nativeBackOffset = export.FileRef.Game < MEGame.ME3 ? 7 : 6;
-            return EndianReader.ToInt16(memory, memsize - nativeBackOffset, export.FileRef.Endian);
-
-        }
-
-        public int GetFlagInt()
-        {
-            if (export.Game is MEGame.LE1 or MEGame.LE2)
-            {
-                // Needs updated for state
-                // -12 cause last 8 are 'friendly name' of the func
-                return EndianReader.ToInt32(memory, export.ClassName == "Function" ? memsize - 12 : memsize - 10, export.FileRef.Endian);
-            }
-            return EndianReader.ToInt32(memory, export.ClassName == "Function" ? memsize - 4 : memsize - 10, export.FileRef.Endian);
         }
 
         public string GetFlags()
@@ -187,40 +177,35 @@ namespace LegendaryExplorerCore.Unreal.Classes
             return $"Flags ({flags.GetFlagsString()})";
         }
 
-        public void Deserialize(int clippingSize = 32)
-        {
-
-            ReadHeader();
-            script = new byte[memsize - clippingSize];
-            for (int i = clippingSize; i < memsize; i++)
-                script[i - clippingSize] = memory[i];
-        }
         internal bool Native => HasFlag("Native");
 
         private string GetReturnType()
         {
             // NEW CODE
-            var childIdx = EndianReader.ToInt32(export.DataReadOnly, 0x14, export.FileRef.Endian);
-
-            while (export.FileRef.TryGetUExport(childIdx, out var parsingExp))
+            if (!export.IsClass)
             {
-                var data = parsingExp.DataReadOnly;
-                if (parsingExp.ObjectName == "ReturnValue")
-                {
-                    if (parsingExp.ClassName == "ObjectProperty" || parsingExp.ClassName == "StructProperty")
-                    {
-                        var uindexOfOuter = EndianReader.ToInt32(data, parsingExp.DataSize - 4,
-                            export.FileRef.Endian);
-                        IEntry entry = parsingExp.FileRef.GetEntry(uindexOfOuter);
-                        if (entry != null)
-                        {
-                            return entry.ObjectName;
-                        }
-                    }
+                var childIdx = EndianReader.ToInt32(export.DataReadOnly, 0x14, export.FileRef.Endian);
 
-                    return parsingExp.ClassName;
+                while (export.FileRef.TryGetUExport(childIdx, out var parsingExp))
+                {
+                    var data = parsingExp.DataReadOnly;
+                    if (parsingExp.ObjectName == "ReturnValue")
+                    {
+                        if (parsingExp.ClassName is "ObjectProperty" or "StructProperty")
+                        {
+                            var uindexOfOuter = EndianReader.ToInt32(data, parsingExp.DataSize - 4,
+                                export.FileRef.Endian);
+                            IEntry entry = parsingExp.FileRef.GetEntry(uindexOfOuter);
+                            if (entry != null)
+                            {
+                                return entry.ObjectName;
+                            }
+                        }
+
+                        return parsingExp.ClassName;
+                    }
+                    childIdx = EndianReader.ToInt32(data, 0x10, export.FileRef.Endian);
                 }
-                childIdx = EndianReader.ToInt32(data, 0x10, export.FileRef.Endian);
             }
 
             return null;
@@ -245,7 +230,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
 
         public void ReadHeader()
         {
-            int pos = 12;
+            int pos = export.IsClass ? 4 : 12;
             FunctionSuperclass = EndianReader.ToInt32(memory, pos, export.FileRef.Endian);
             pos += 4;
             NextItemInLoadingChain = EndianReader.ToInt32(memory, pos, export.FileRef.Endian);
@@ -260,32 +245,13 @@ namespace LegendaryExplorerCore.Unreal.Classes
 
         public void ParseFunction()
         {
-            HeaderText = "";
-            if (export.FileRef.TryGetEntry(FunctionSuperclass, out var _fs))
-            {
-                HeaderText += $"Function Superclass: {_fs.UIndex} {_fs.InstancedFullPath}\n";
-            }
-            if (export.FileRef.TryGetEntry(NextItemInLoadingChain, out var _ni))
-            {
-                HeaderText += $"Next Item in loading chain: {_ni.UIndex} {_ni.InstancedFullPath}\n";
-            }
-            if (export.FileRef.TryGetEntry(ChildProbeStart, out var _cps))
-            {
-                HeaderText += $"Child Probe Start: {_cps.UIndex} {_cps.InstancedFullPath}\n";
-            }
-            HeaderText += $"Script Disk Size: {DiskSize}\n";
-            HeaderText += $"Script Memory Size: {MemorySize}\n";
-            HeaderText += $"Native Index: {nativeindex}\n";
-            HeaderText += GetSignature();
-            HeaderText += "\n";
-
             var parsedData = Bytecode.ParseBytecode(script, export);
             ScriptBlocks = parsedData.Item1;
             SingularTokenList = parsedData.Item2;
 
             // Calculate memory offsets
             List<int> objRefPositions = ScriptBlocks.SelectMany(tok => tok.inPackageReferences)
-                .Where(tup => tup.type == Unreal.Token.INPACKAGEREFTYPE_ENTRY)
+                .Where(tup => tup.type == Token.INPACKAGEREFTYPE_ENTRY)
                 .Select(tup => tup.position).ToList();
             int calculatedLength = DiskSize + 4 * objRefPositions.Count;
 

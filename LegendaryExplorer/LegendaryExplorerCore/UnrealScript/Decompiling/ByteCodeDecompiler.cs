@@ -49,6 +49,8 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
         private bool isInContextExpression; // For super lookups
 
+        public Dictionary<ushort, List<string>> ReplicatedProperties; //for decompiling Class replication blocks
+
         private bool CurrentIs(OpCodes val)
         {
             return PeekByte == (byte)val;
@@ -143,13 +145,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
                 if (current == null)
                 {
-                    //as well as being eye-catching in generated code, this is totally invalid unrealscript and will cause compilation errors!
-                    statements.Clear();
-                    statements.Add(new ExpressionOnlyStatement(new SymbolReference(null, "**************************")));
-                    statements.Add(new ExpressionOnlyStatement(new SymbolReference(null, "*                        *")));
-                    statements.Add(new ExpressionOnlyStatement(new SymbolReference(null, "*  DECOMPILATION ERROR!  *")));
-                    statements.Add(new ExpressionOnlyStatement(new SymbolReference(null, "*                        *")));
-                    statements.Add(new ExpressionOnlyStatement(new SymbolReference(null, "**************************")));
+                    ClearToDecompilationError(statements);
                     return codeBody;
                 }
 
@@ -158,19 +154,35 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             CurrentScope.Pop();
 
             Dictionary<Statement, ushort> LocationStatements = StatementLocations.ToDictionary(kvp => kvp.Value, kvp => kvp.Key);
+
+            if (DataContainer is UClass && ReplicatedProperties is not null)
+            {
+                var newStatements = new List<Statement>();
+                foreach (Statement statement in statements)
+                {
+                    if (statement is not ExpressionOnlyStatement exprStatement)
+                    {
+                        ClearToDecompilationError(statements);
+                        return codeBody;
+                    }
+                    ushort loc = LocationStatements[statement];
+                    if (!ReplicatedProperties.TryGetValue(loc, out List<string> propNames))
+                    {
+                        propNames = new() { "#ERROR_MISSING_PROPERTY#" };
+                    }
+                    List<SymbolReference> replicatedVariables = propNames.Select(s => new SymbolReference(null, s)).ToList();
+                    newStatements.Add(new ReplicationStatement(exprStatement.Value, replicatedVariables));
+                }
+                return new CodeBody(newStatements);
+            }
+
             try
             {
                 DecompileLoopsAndIfs(codeBody, LocationStatements);
             }
             catch (Exception e)
             {
-                //as well as being eye-catching in generated code, this is totally invalid unrealscript and will cause compilation errors!
-                statements.Clear();
-                statements.Add(new ExpressionOnlyStatement(new SymbolReference(null, "**************************")));
-                statements.Add(new ExpressionOnlyStatement(new SymbolReference(null, "*                        *")));
-                statements.Add(new ExpressionOnlyStatement(new SymbolReference(null, "*  DECOMPILATION ERROR!  *")));
-                statements.Add(new ExpressionOnlyStatement(new SymbolReference(null, "*                        *")));
-                statements.Add(new ExpressionOnlyStatement(new SymbolReference(null, "**************************")));
+                ClearToDecompilationError(statements);
                 statements.Add(new ExpressionOnlyStatement(new SymbolReference(null, e.FlattenException())));
                 return codeBody;
             }
@@ -211,6 +223,17 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             }
 
             return codeBody;
+        }
+
+        private static void ClearToDecompilationError(List<Statement> statements)
+        {
+            //as well as being eye-catching in generated code, this is totally invalid unrealscript and will prevent recompilation :)
+            statements.Clear();
+            statements.Add(new ExpressionOnlyStatement(new SymbolReference(null, "**************************")));
+            statements.Add(new ExpressionOnlyStatement(new SymbolReference(null, "*                        *")));
+            statements.Add(new ExpressionOnlyStatement(new SymbolReference(null, "*  DECOMPILATION ERROR!  *")));
+            statements.Add(new ExpressionOnlyStatement(new SymbolReference(null, "*                        *")));
+            statements.Add(new ExpressionOnlyStatement(new SymbolReference(null, "**************************")));
         }
 
         private void InsertLabel(Label label)

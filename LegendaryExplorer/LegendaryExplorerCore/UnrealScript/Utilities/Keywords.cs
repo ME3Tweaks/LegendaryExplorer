@@ -68,5 +68,6 @@
         public const string NEW = "new";     
         public const string ASSERT = "assert";     
         public const string GOTO = "goto";     
+        public const string REPLICATION = "replication";     
 	}
 }
