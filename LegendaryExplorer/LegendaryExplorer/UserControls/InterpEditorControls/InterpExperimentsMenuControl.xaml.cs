@@ -56,5 +56,18 @@ namespace LegendaryExplorer.UserControls.InterpEditorControls
             InterpEditorExperimentsE.AddPresetTrack("Gesture2", GetIEWindow());
         }
         #endregion
+
+        private void OpenFovoLineAudio_Click(object sender, RoutedEventArgs e)
+        {
+            bool isMale = (string) (sender as FrameworkElement)?.Tag == "M";
+            InterpEditorExperimentsH.OpenFovoLineAudio(isMale, GetIEWindow());
+            var IEWindow = GetIEWindow();
+        }
+
+        private void OpenFovoLineFXA_Click(object sender, RoutedEventArgs e)
+        {
+            bool isMale = (string) (sender as FrameworkElement)?.Tag == "M";
+            InterpEditorExperimentsH.OpenFovoLineFXA(isMale, GetIEWindow());
+        }
     }
 }

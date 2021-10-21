@@ -13,7 +13,12 @@
     <MenuItem Header=" &gt;&gt; THIS STUFF CAN BREAK GAMES/TOOLSET FUNCTIONALITY &lt;&lt;" IsEnabled="False"/>
     <MenuItem Header=" &gt;&gt; DO NOT USE IF YOU DON'T KNOW WHAT YOU'RE DOING &gt;&lt;" IsEnabled="False"/>
     <MenuItem Header=" &gt;&gt; Text may not reflect actual functionality &lt;&lt;" IsEnabled="False"/>
-
+    <MenuItem Header="Open Assets for Selected Track">
+        <MenuItem Header="(FOVO) Open Line M Audio" Click="OpenFovoLineAudio_Click" Tag="M" ToolTip="Opens the Male audio asset for selected FOVO line in Soundplorer"/>
+        <MenuItem Header="(FOVO) Open Line F Audio" Click="OpenFovoLineAudio_Click" Tag="F" ToolTip="Opens the Female audio asset for selected FOVO line in Soundplorer"/>
+        <MenuItem Header="(FOVO) Open Line M FXA" Click="OpenFovoLineFXA_Click" Tag="M" ToolTip="Opens the Male FaceFX asset for selected FOVO line in FaceFX Editor"/>
+        <MenuItem Header="(FOVO) Open Line F FXA" Click="OpenFovoLineFXA_Click" Tag="F" ToolTip="Opens the Female FaceFX asset for selected FOVO line in FaceFX Editor"/>
+    </MenuItem>
     <MenuItem Header="Exkywor's buttons for lazy people">
         <MenuItem Header="Add Preset Director InterpGroup" Click="AddPresetDirectorGroup_Click" ToolTip="Add an InterpGroupDirector along with Director and DOF tracks."/>
         <MenuItem Header="Add Preset Camera InterpGroup" Click="AddPresetCameraGroup_Click" ToolTip="Add a Camera InterpGroup with its actor set along with Move and FOV tracks."/>
