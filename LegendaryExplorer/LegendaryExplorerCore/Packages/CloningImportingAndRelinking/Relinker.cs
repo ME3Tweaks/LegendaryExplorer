@@ -406,7 +406,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         IEntry parent = null;
                         if (sourceExport.Parent != null && !crossPCCObjectMappingList.TryGetValue(sourceExport.Parent, out parent))
                         {
-                            parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceExport.ParentFullPath, importingPCC, destinationPcc, true, crossPCCObjectMappingList);
+                            parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceExport.ParentInstancedFullPath, importingPCC, destinationPcc, true, crossPCCObjectMappingList);
                         }
                         ExportEntry importedExport = EntryImporter.ImportExport(destinationPcc, sourceExport, parent?.UIndex ?? 0, true, crossPCCObjectMappingList);
                         uIndex = importedExport.UIndex;
