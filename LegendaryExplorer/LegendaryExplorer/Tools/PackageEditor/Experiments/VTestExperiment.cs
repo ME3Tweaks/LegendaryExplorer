@@ -353,8 +353,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     else
                     {
                         var levelName = Path.GetFileNameWithoutExtension(f);
-                        //if (levelName.CaseInsensitiveEquals("BIOA_PRC2_CCSIM04_DSG"))
-                        PortVTestLevel(vTestLevel, levelName, vTestOptions, levelName == "BIOA_" + vTestLevel, true);
+                        //if (levelName.CaseInsensitiveEquals("BIOA_PRC2_CCLAVA"))
+                            PortVTestLevel(vTestLevel, levelName, vTestOptions, levelName == "BIOA_" + vTestLevel, true);
                     }
                 }
             }
@@ -382,9 +382,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 if (f.RepresentsPackageFilePath())
                 {
                     using var p = MEPackageHandler.OpenMEPackage(f);
+                    VTest_CheckFile(p, vTestOptions);
 
-                    VTestCheckImports(p, vTestOptions);
-                    VTestCheckTextures(p, vTestOptions);
                 }
             }
 
@@ -819,7 +818,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                             var dlProps = GlobalUnrealObjectInfo.getDefaultStructValue(MEGame.LE1, "ExposedLink", true, vTestOptions.cache);
                                             ConvertExposedLink(dl, dlProps, me1File, le1File, vTestOptions);
                                             le1DLProp.Add(new StructProperty("ExposedLink", dlProps, isImmutable: true));
-                                            Debug.WriteLine($"Converted EFL {linkNum} of {asp.Count}");
+                                            //Debug.WriteLine($"Converted EFL {linkNum} of {asp.Count}");
                                             linkNum++;
                                         }
 
@@ -1223,7 +1222,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             // Strip static mesh light maps since they don't work crossgen. Strip them from
             // the source so they don't port
-            foreach (var exp in sourcePackage.Exports)
+            foreach (var exp in sourcePackage.Exports.ToList())
             {
                 PruneUnusedProperties(exp);
                 #region Remove Light and Shadow Maps
@@ -1273,6 +1272,26 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         }
 
                         exp.WriteBinary(mcb);
+                    }
+                }
+                else if (exp.ClassName == "Sequence" && exp.GetProperty<StrProperty>("ObjName")?.Value == "PRC2_KillTriggerVolume")
+                {
+                    // Done before porting to prevent Trash from appearing in target
+                    PreCorrectKillTriggerVolume(exp, vTestOptions);
+                }
+
+                // KNOWN BAD NAMES
+                if (exp.ClassName == "Texture2D")
+                {
+                    if (exp.InstancedFullPath == "BIOA_JUG80_T.JUG80_SAIL")
+                    {
+                        // Rename to match crossgen
+                        exp.ObjectName = "JUG80_SAIL_CROSSGENFIX";
+                    }
+                    else if (exp.InstancedFullPath == "BIOA_ICE60_T.checker")
+                    {
+                        // Rename to match crossgen
+                        exp.ObjectName = "BIOA_ICE60_T.checker_CROSSGENFIX";
                     }
                 }
 
@@ -1347,7 +1366,49 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
                 exp.WriteProperty(textureParams);
             }
+        }
 
+        /// <summary>
+        /// PRECORRECTED as we do not want to have trash exports in target
+        /// </summary>
+        /// <param name="killTriggerSeq"></param>
+        /// <param name="vTestOptions"></param>
+        public static void PreCorrectKillTriggerVolume(ExportEntry killTriggerSeq, VTestOptions vTestOptions)
+        {
+            var sequenceObjects = KismetHelper.GetSequenceObjects(killTriggerSeq).OfType<ExportEntry>().ToList();
+            var cursor = sequenceObjects.FirstOrDefault(x => x.ClassName == "SeqVar_Object");
+
+            var takeDamage = SequenceObjectCreator.CreateSequenceObject(killTriggerSeq.FileRef, "BioSeqAct_CauseDamage", MEGame.ME1, vTestOptions.cache);
+            //var amount = SequenceObjectCreator.CreateSequenceObject(killTriggerSeq.FileRef, "SeqVar_Float", MEGame.ME1, vTestOptions.cache);
+            //takeDamage.WriteProperty(new FloatProperty(1000, "Damage"));
+            //amount.WriteProperty(new FloatProperty(500, "FloatValue"));
+            takeDamage.WriteProperty(new FloatProperty(50, "m_fDamageAmountAsPercentOfMaxHealth"));
+
+            KismetHelper.AddObjectToSequence(takeDamage, killTriggerSeq);
+            //KismetHelper.AddObjectToSequence(amount, killTriggerSeq);
+            KismetHelper.CreateVariableLink(takeDamage, "Target", cursor); // Hook up target to damage
+            //KismetHelper.CreateVariableLink(takeDamage, "Amount", amount); // Hook up damage amount
+
+            var doAction = sequenceObjects.FirstOrDefault(x => x.ClassName == "BioSeqAct_DoActionInVolume");
+            var log = sequenceObjects.FirstOrDefault(x => x.ClassName == "SeqAct_Log");
+            KismetHelper.RemoveOutputLinks(doAction);
+
+
+            KismetHelper.CreateOutputLink(doAction, "Next", takeDamage, 0); // Connect Damage Out to DoAction Continue
+            KismetHelper.CreateOutputLink(takeDamage, "Out", doAction, 1); // Connect DoAction Next to Damage In
+            KismetHelper.CreateOutputLink(doAction, "Next", log, 0); // Connect DoAction Next to Log
+
+            // TRASH AND REMOVE FROM SEQUENCE
+            var destroy = sequenceObjects.FirstOrDefault(x => x.ClassName == "SeqAct_Destroy");
+            KismetHelper.RemoveAllLinks(destroy);
+
+            //remove from sequence
+            var seqObjs = SeqTools.GetParentSequence(destroy).GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+            seqObjs.Remove(new ObjectProperty(destroy));
+            SeqTools.GetParentSequence(destroy).WriteProperty(seqObjs);
+
+            //Trash
+            EntryPruner.TrashEntryAndDescendants(destroy);
 
         }
 
@@ -1938,7 +1999,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 foreach (var pl in le1File.Exports.Where(x => x.IsA("LightComponent")))
                 {
                     var brightness = pl.GetProperty<FloatProperty>("Brightness")?.Value ?? 1;
-                    pl.WriteProperty(new FloatProperty(brightness * .3f, "Brightness"));
+                    pl.WriteProperty(new FloatProperty(brightness * .4f, "Brightness"));
                 }
             }
 
@@ -2154,7 +2215,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             }
                             #endregion
 
-                            #region Issue Rally Command at map start to ensure squadmates don't split up
+                            #region Issue Rally Command at map start to ensure squadmates don't split up, blackscreen off should be fade in not turn off
                             else if (seqName == "TA_V3_Gametype_Handler")
                             {
                                 // Time Trial
@@ -2180,6 +2241,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 KismetHelper.AddObjectToSequence(newObj, exp);
                                 KismetHelper.CreateOutputLink(startObj, "Out", newObj); // RALLY
                             }
+
                             //else if (seqName == "Cap_And_Hold_Point")
                             //{
                             //    // Capture
@@ -2188,6 +2250,20 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             //    KismetHelper.AddObjectToSequence(newObj, exp);
                             //    KismetHelper.CreateOutputLink(startObj, "Out", newObj); // RALLY
                             //}
+
+                            #region Black Screen Fade In instead of just turning off
+                            if (seqName is "Vampire_Mode_Handler" or "Check_Capping_Completion" or "TA_V3_Gametype_Handler")
+                            {
+                                var sequenceObjects = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects").Select(x => x.ResolveToEntry(le1File) as ExportEntry).ToList();
+                                var fadeFromBlacks = sequenceObjects.Where(x => x.ClassName == "BioSeqAct_BlackScreen").ToList(); // We will route one of these to the other
+                                if (fadeFromBlacks.Count != 1)
+                                    Debugger.Break();
+                                foreach (var ffb in fadeFromBlacks)
+                                {
+                                    ffb.WriteProperty(new EnumProperty("BlackScreenAction_FadeFromBlack", "BlackScreenActionSet", MEGame.LE1, "m_eBlackScreenAction"));
+                                }
+                            }
+                            #endregion
 
                             #endregion
                         }
@@ -2827,71 +2903,69 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         #endregion
 
         #region QA Methods
-        public static void VTest_Check()
+        public static void VTest_CheckFile(IMEPackage package, VTestOptions vTestOptions)
         {
-            var vtestFinalFiles = Directory.GetFiles(PAEMPaths.VTest_FinalDestDir);
-            var vtestFinalFilesAvailable = vtestFinalFiles.Select(x => Path.GetFileNameWithoutExtension(x).ToLower()).ToList();
-            foreach (var v in vtestFinalFiles)
+            //#region Check BioTriggerStream files exists
+            //var triggerStraems = package.Exports.Where(x => x.ClassName == "BioTriggerStream").ToList();
+            //foreach (var triggerStream in triggerStraems)
+            //{
+            //    var streamingStates = triggerStream.GetProperty<ArrayProperty<StructProperty>>("StreamingStates");
+            //    if (streamingStates != null)
+            //    {
+            //        foreach (var ss in streamingStates)
+            //        {
+            //            List<NameProperty> namesToCheck = new List<NameProperty>();
+            //            var inChunkName = ss.GetProp<NameProperty>("InChunkName");
+
+            //            if (inChunkName.Value.Name != "None" && !vtestFinalFilesAvailable.Contains(inChunkName.Value.Name.ToLower()))
+            //            {
+            //                Debug.WriteLine($"LEVEL MISSING (ICN): {inChunkName} in {triggerStream.UIndex} {triggerStream.ObjectName.Instanced}");
+            //            }
+
+            //            foreach (var levelNameProperty in ss.GetProp<ArrayProperty<NameProperty>>("VisibleChunkNames"))
+            //            {
+            //                var levelName = levelNameProperty.Value.Name;
+            //                if (levelName != "None" && !vtestFinalFilesAvailable.Contains(levelName.ToLower()))
+            //                {
+            //                    Debug.WriteLine($"LEVEL MISSING (VC): {levelName} in {triggerStream.UIndex} {triggerStream.ObjectName.Instanced}");
+            //                }
+            //            }
+
+            //            foreach (var levelNameProperty in ss.GetProp<ArrayProperty<NameProperty>>("LoadChunkNames"))
+            //            {
+            //                var levelName = levelNameProperty.Value.Name;
+            //                if (levelName != "None" && !vtestFinalFilesAvailable.Contains(levelName.ToLower()))
+            //                {
+            //                    Debug.WriteLine($"LEVEL MISSING (LC): {levelName} in {triggerStream.UIndex} {triggerStream.ObjectName.Instanced}");
+            //                }
+            //            }
+            //        }
+            //    }
+            //    else
+            //    {
+            //        Debug.WriteLine($"{triggerStream.InstancedFullPath} in {v} has NO StreamingStates!!");
+            //    }
+            //}
+            //#endregion
+
+            #region Check Level has at least 2 actors
+
+            var level = package.FindExport("TheWorld.PersistentLevel");
             {
-                using var package = MEPackageHandler.OpenMEPackage(v);
-
-                #region Check BioTriggerStream files exists
-                var triggerStraems = package.Exports.Where(x => x.ClassName == "BioTriggerStream").ToList();
-                foreach (var triggerStream in triggerStraems)
+                if (level != null)
                 {
-                    var streamingStates = triggerStream.GetProperty<ArrayProperty<StructProperty>>("StreamingStates");
-                    if (streamingStates != null)
-                    {
-                        foreach (var ss in streamingStates)
-                        {
-                            List<NameProperty> namesToCheck = new List<NameProperty>();
-                            var inChunkName = ss.GetProp<NameProperty>("InChunkName");
-
-                            if (inChunkName.Value.Name != "None" && !vtestFinalFilesAvailable.Contains(inChunkName.Value.Name.ToLower()))
-                            {
-                                Debug.WriteLine($"LEVEL MISSING (ICN): {inChunkName} in {triggerStream.UIndex} {triggerStream.ObjectName.Instanced}");
-                            }
-
-                            foreach (var levelNameProperty in ss.GetProp<ArrayProperty<NameProperty>>("VisibleChunkNames"))
-                            {
-                                var levelName = levelNameProperty.Value.Name;
-                                if (levelName != "None" && !vtestFinalFilesAvailable.Contains(levelName.ToLower()))
-                                {
-                                    Debug.WriteLine($"LEVEL MISSING (VC): {levelName} in {triggerStream.UIndex} {triggerStream.ObjectName.Instanced}");
-                                }
-                            }
-
-                            foreach (var levelNameProperty in ss.GetProp<ArrayProperty<NameProperty>>("LoadChunkNames"))
-                            {
-                                var levelName = levelNameProperty.Value.Name;
-                                if (levelName != "None" && !vtestFinalFilesAvailable.Contains(levelName.ToLower()))
-                                {
-                                    Debug.WriteLine($"LEVEL MISSING (LC): {levelName} in {triggerStream.UIndex} {triggerStream.ObjectName.Instanced}");
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        Debug.WriteLine($"{triggerStream.InstancedFullPath} in {v} has NO StreamingStates!!");
-                    }
+                    var levelBin = ObjectBinary.From<Level>(level);
+                    if (levelBin.Actors.Count < 2)
+                        Debugger.Break(); // THIS SHOULD NOT OCCUR OR GAME WILL DIE
+                    Debug.WriteLine($"{Path.GetFileName(package.FilePath)} actor list count: {levelBin.Actors.Count}");
                 }
-                #endregion
-
-                #region Check Level has at least 2 actors
-
-                var level = package.FindExport("TheWorld.PersistentLevel");
-                {
-                    if (level != null)
-                    {
-                        var levelBin = ObjectBinary.From<Level>(level);
-                        Debug.WriteLine($"{Path.GetFileName(v)} actor list count: {levelBin.Actors.Count}");
-                    }
-                }
-
-                #endregion
-
             }
+
+            VTestCheckImports(package, vTestOptions);
+            VTestCheckTextures(package, vTestOptions);
+
+            #endregion
+
         }
         #endregion
     }

@@ -2220,7 +2220,28 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void MScanner(PackageEditorWindow pe)
         {
+            var pl = pe.Pcc.FindExport("TheWorld.PersistentLevel");
+            var bin = ObjectBinary.From<Level>(pl);
+            foreach (var ti in bin.TextureToInstancesMap.ToList())
+            {
+                var texEntry = pe.Pcc.GetEntry(ti.Key);
+                ExportEntry tex = texEntry as ExportEntry;
+                if (tex == null)
+                {
+                    tex = EntryImporter.ResolveImport(texEntry as ImportEntry);
+                }
 
+                var texBin = ObjectBinary.From<UTexture2D>(tex);
+                var neverSTream = tex.GetProperty<BoolProperty>("NeverStream");
+                if (texBin.Mips.Count(x => x.StorageType != StorageTypes.empty) <= 6 || neverSTream is {Value: true})
+                {
+                    Debug.WriteLine($@"Removing item {tex.InstancedFullPath}");
+                    bin.TextureToInstancesMap.Remove(ti);
+                    //Debugger.Break();
+                }
+            }
+            pl.WriteBinary(bin);
+            return;
             #region GlobalShaderCache.bin parsing
 
             /*var infile = @"D:\Steam\steamapps\common\Mass Effect Legendary Edition\Game\ME1\BioGame\CookedPCConsole\GlobalShaderCache-PC-D3D-SM5.bin"; ;
