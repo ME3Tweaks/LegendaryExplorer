@@ -85,7 +85,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             "SFXStuntActor", "BioPawn",
             "PointLightToggleable", "PointLightMovable", "SpotLightToggleable", "DirectionalLightToggleable", "SkyLightToggleable",
             "SkeletalMeshActor",  "SkeletalMeshCinematicActor", "SkeletalMeshActorMAT", "SFXSkeletalMeshActor",  "SFXSkeletalMeshCinematicActor", "SFXSkeletalMeshActorMAT",
-            "SFXOperation_ObjectiveSpawnPoint"
+            "SFXOperation_ObjectiveSpawnPoint", "BioMusicVolume"
         };
 
         public static readonly string[] splineNodeClasses = { "SplineActor", "SplineLoftActor" };
