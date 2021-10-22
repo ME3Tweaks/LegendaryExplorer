@@ -288,7 +288,24 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         }
                         else
                         {
-                            newCell = new Bio2DACell(xlCellContents, export.FileRef);
+                            // Check if this is an indexed name by seeing if there is _<number> on the end.
+                            int instanceIndex = 0;
+                            string nameVal = xlCellContents;
+                            if (!string.IsNullOrWhiteSpace(xlCellContents))
+                            {
+                                var lastUnderScorePos = xlCellContents.LastIndexOf("_", StringComparison.InvariantCultureIgnoreCase);
+                                if (lastUnderScorePos > 0)
+                                {
+                                    var trailing = nameVal.Substring(lastUnderScorePos + 1);
+                                    if (int.TryParse(trailing, out var tmpIndex) && tmpIndex > 0)
+                                    {
+                                        nameVal = nameVal.Substring(0, lastUnderScorePos);
+                                        instanceIndex = tmpIndex;
+                                    }
+                                }
+                            }
+
+                            newCell = new Bio2DACell(new NameReference(nameVal, instanceIndex), export.FileRef);
                         }
                         bio2da[rowIndex - 2, columnIndex - 2] = newCell;
                     }
