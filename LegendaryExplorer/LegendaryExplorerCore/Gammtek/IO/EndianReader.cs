@@ -55,7 +55,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
             set
             {
                 _endian = value;
-                NoConvert = _endian == Endian.Native;
+                NoConvert = _endian.IsNative;
                 if (Writer != null)
                 {
                     Writer.Endian = Endian;
@@ -74,8 +74,8 @@ namespace LegendaryExplorerCore.Gammtek.IO
             {
                 Writer = new EndianWriter(input);
             }
-            Endian = BitConverter.IsLittleEndian ? Endian.Little : Endian.Big;
-            NoConvert = Endian == Endian.Native;
+            Endian = Endian.Native;
+            NoConvert = Endian.IsNative;
         }
 
         /// <summary>
@@ -97,13 +97,9 @@ namespace LegendaryExplorerCore.Gammtek.IO
         ///     Initializes a new instance of the <see cref="EndianReader" /> class
         ///     using byte array <paramref name="input" />.
         /// </summary>
-        public EndianReader(byte[] input, Endian endian = null)
+        public EndianReader(byte[] input)
             : this(new MemoryStream(input), Encoding.UTF8)
         {
-            if (endian != null)
-            {
-                Endian = endian;
-            }
         }
 
         /// <summary>

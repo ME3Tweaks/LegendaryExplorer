@@ -153,7 +153,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             if (sc.IsLoading)
             {
-                buffer = sc.ms.ReadToBuffer(size);
+                buffer = sc.ms.ReadBytes(size);
             }
             else
             {

@@ -20,17 +20,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace LegendaryExplorerCore.Unreal
 {
-    public class PropertyCollection : ObservableCollection<Property>
+    public sealed class PropertyCollection : Collection<Property>
     {
 
         public int endOffset;
         public bool IsImmutable;
-
-        private readonly string TypeName;
-        private readonly ClassInfo info;
-        private readonly MEGame game;
-        private readonly string sourceFilePath;
-        private readonly int sourceExportUIndex;
 
         /// <summary>
         /// Gets the UProperty with the specified name and optionally a static array index, returns null if not found. The property name is checked case insensitively. 
@@ -51,55 +45,6 @@ namespace LegendaryExplorerCore.Unreal
             return null;
         }
 
-        /// <summary>
-        /// Gets the UProperty with the specified name and (optionally) static array index. Will get default values for properties that are part of the type but do not appear in the collection.
-        /// The property name is checked case insensitively. 
-        /// Ensure the property name is spelled correctly and that generic type matches the result you want or it will throw an exception.
-        /// </summary>
-        /// <param name="name">Name of property to find</param>
-        /// <param name="staticArrayIdx"></param>
-        /// <returns>specified UProperty</returns>
-        public T GetPropOrDefault<T>(NameReference name, int staticArrayIdx = 0, PackageCache packageCache = null) where T : Property
-        {
-            foreach (var prop in this)
-            {
-                if (prop.Name.Name != null && prop.Name == name && prop.StaticArrayIndex == staticArrayIdx)
-                {
-                    return (T)prop;
-                }
-            }
-
-            if (info.TryGetPropInfo(name, game, out PropertyInfo propInfo))
-            {
-                var defaultProperty = (T)GlobalUnrealObjectInfo.getDefaultProperty(game, name, propInfo, packageCache, true, IsImmutable);
-                defaultProperty.StaticArrayIndex = staticArrayIdx;
-                return defaultProperty;
-            }
-            //dynamic lookup
-            try
-            {
-                using IMEPackage sourcePackage = MEPackageHandler.OpenMEPackage(sourceFilePath);
-                ExportEntry exportToBuildFor = sourcePackage.GetUExport(sourceExportUIndex);
-                if (!exportToBuildFor.IsClass && exportToBuildFor.Class is ExportEntry classExport)
-                {
-                    exportToBuildFor = classExport;
-                }
-                ClassInfo classInfo = GlobalUnrealObjectInfo.generateClassInfo(exportToBuildFor);
-                if (classInfo.TryGetPropInfo(name, game, out propInfo))
-                {
-                    var defaultProperty = (T)GlobalUnrealObjectInfo.getDefaultProperty(game, name, propInfo, packageCache, true, IsImmutable);
-                    defaultProperty.StaticArrayIndex = staticArrayIdx;
-                    return defaultProperty;
-                }
-            }
-            catch
-            {
-                throw new ArgumentException($"Property \"{name.Instanced}\" does not exist on {TypeName}", nameof(name));
-            }
-
-            throw new ArgumentException($"Property \"{name.Instanced}\" does not exist on {TypeName}", nameof(name));
-        }
-
         public bool TryReplaceProp(Property prop)
         {
             for (int i = 0; i < this.Count; i++)
@@ -117,7 +62,7 @@ namespace LegendaryExplorerCore.Unreal
         {
             if (!TryReplaceProp(prop))
             {
-                this.Add(prop);
+                this.Items.Add(prop);
             }
         }
 
@@ -145,20 +90,11 @@ namespace LegendaryExplorerCore.Unreal
 
         public PropertyCollection() { }
 
-        public PropertyCollection(ExportEntry export, string typeName)
-        {
-            sourceExportUIndex = export.UIndex;
-            sourceFilePath = export.FileRef.FilePath;
-            TypeName = typeName;
-            game = export.FileRef.Game;
-            info = GlobalUnrealObjectInfo.GetClassOrStructInfo(export.FileRef.Platform != MEPackage.GamePlatform.PS3 ? game : MEGame.ME3, typeName);
-        }
-
         //public static PropertyCollection ReadProps(ExportEntry export, Stream rawStream, string typeName, bool includeNoneProperty = false, bool requireNoneAtEnd = true, IEntry entry = null)
         public static PropertyCollection ReadProps(ExportEntry export, Stream rawStream, string typeName, bool includeNoneProperty = false, bool requireNoneAtEnd = true, IEntry entry = null, PackageCache packageCache = null)
         {
             var stream = new EndianReader(rawStream) { Endian = export.FileRef.Endian };
-            var props = new PropertyCollection(export, typeName);
+            var props = new PropertyCollection();
             long startPosition = stream.Position;
             IMEPackage pcc = export.FileRef;
             try
@@ -372,7 +308,7 @@ namespace LegendaryExplorerCore.Unreal
             bool stripTransients = parsingEntry is not {ClassName: "Class" or "ScriptStruct"};
 
             MEGame structValueLookupGame = pcc.Game;
-            var props = new PropertyCollection(export, structType);
+            var props = new PropertyCollection();
             switch (pcc.Game)
             {
                 case MEGame.ME1 when parsingEntry != null && parsingEntry.FileRef.Platform == MEPackage.GamePlatform.PS3 && ME3UnrealObjectInfo.Structs.ContainsKey(structType):
@@ -856,11 +792,6 @@ namespace LegendaryExplorerCore.Unreal
         public T GetProp<T>(string name, int staticArrayIndex = 0) where T : Property
         {
             return Properties.GetProp<T>(name, staticArrayIndex);
-        }
-
-        public T GetPropOrDefault<T>(NameReference name, int staticArrayIdx = 0, PackageCache packageCache = null) where T : Property
-        {
-            return Properties.GetPropOrDefault<T>(name, staticArrayIdx, packageCache);
         }
 
         public override void WriteTo(EndianWriter stream, IMEPackage pcc, bool valueOnly = false)

@@ -68,7 +68,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         nextItem = uFunction.Next;
                         break;
                     case UProperty uProperty:
-                        if (uProperty.PropertyFlags.Has(EPropertyFlags.Net))
+                        if (decompileBytecodeAndDefaults && uProperty.PropertyFlags.Has(EPropertyFlags.Net))
                         {
                             replicatedProperties.AddToListAt(uProperty.ReplicationOffset, uProperty.Export.ObjectName.Instanced);
                         }
@@ -123,12 +123,12 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 member.Outer = ast;
 
 
-            var virtFuncLookup = new CaseInsensitiveDictionary<ushort>();
+            var virtFuncLookup = new CaseInsensitiveDictionary<ushort>(uClass.VirtualFunctionTable?.Length ?? 0);
             if (pcc.Game.IsGame3())
             {
                 for (ushort i = 0; i < uClass.VirtualFunctionTable.Length; i++)
                 {
-                    virtFuncLookup.Add(uClass.VirtualFunctionTable[i].GetEntry(pcc)?.ObjectName, i);
+                    virtFuncLookup.Add(uClass.VirtualFunctionTable[i].GetEntry(pcc)?.ObjectName.Instanced, i);
                 }
             }
             ast.VirtualFunctionLookup = virtFuncLookup;

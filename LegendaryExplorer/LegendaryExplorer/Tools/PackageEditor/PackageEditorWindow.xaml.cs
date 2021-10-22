@@ -2526,7 +2526,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             ForwardsIndexes = new Stack<int>();
             StatusBar_LeftMostText.Text =
                 $"Loading {loadingName} ({FileSize.FormatSize(loadingSize)})";
-            Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
+            //Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
         }
 
         private void InitializeTreeViewBackground_Completed(

@@ -6029,7 +6029,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var subnodes = new List<ITreeItem>();
             try
             {
-                var bin = new EndianReader(data, Pcc.Endian);
+                var bin = new EndianReader(data) {Endian = Pcc.Endian};
                 bin.JumpTo(CurrentLoadedExport.propsEnd());
 
                 bool isIndexed = !bin.ReadBoolInt();

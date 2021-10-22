@@ -7,33 +7,28 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling.Errors
     public class MessageLog
     {
         private readonly List<LogMessage> content;
-        public IList<LogMessage> Content => content.AsReadOnly();
+        public IReadOnlyList<LogMessage> Content => content.AsReadOnly();
 
-        public IList<LogMessage> Messages => content.Where(m => m.GetType() == typeof(LogMessage)).ToList();
+        public IReadOnlyList<LogMessage> Messages => content.Where(m => m.GetType() == typeof(LogMessage)).ToList();
 
-        public IList<LogMessage> PositionedMessages => content.Where(m => m.GetType() == typeof(PositionedMessage)).ToList();
+        public IReadOnlyList<LogMessage> PositionedMessages => content.Where(m => m.GetType() == typeof(PositionedMessage)).ToList();
 
-        public IList<LogMessage> Errors => content.Where(m => m is Error).ToList();
+        public IReadOnlyList<LogMessage> Errors => content.Where(m => m is Error).ToList();
 
-        public IList<LogMessage> LineErrors => content.Where(m => m is LineError).ToList();
+        public IReadOnlyList<LogMessage> LineErrors => content.Where(m => m is LineError).ToList();
 
-        public IList<LogMessage> Warnings => content.Where(m => m is Warning).ToList();
+        public IReadOnlyList<LogMessage> Warnings => content.Where(m => m is Warning).ToList();
 
-        public IList<LogMessage> LineWarnings => content.Where(m => m is LineWarning).ToList();
+        public IReadOnlyList<LogMessage> LineWarnings => content.Where(m => m is LineWarning).ToList();
 
-        public IList<LogMessage> AllErrors => content.Where(m => m is Error or LineError).ToList();
-        public IList<LogMessage> AllWarnings => content.Where(m => m is Warning or LineWarning).ToList();
+        public IReadOnlyList<LogMessage> AllErrors => content.Where(m => m is Error or LineError).ToList();
+        public IReadOnlyList<LogMessage> AllWarnings => content.Where(m => m is Warning or LineWarning).ToList();
 
-        public bool HasErrors => content.Any(m => m is Error or LineError);
+        public bool HasErrors { get; private set; }
 
         public MessageLog()
         {
             content = new List<LogMessage>();
-        }
-
-        public void Log(LogMessage msg)
-        {
-            content.Add(msg);
         }
 
         public void LogMessage(string msg, SourcePosition start = null, SourcePosition end = null)
@@ -48,6 +43,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling.Errors
 
         public void LogError(string msg, SourcePosition start = null, SourcePosition end = null)
         {
+            HasErrors = true;
             if (start == null && end == null)
                 content.Add(new Error(msg));
             else if (end == null)
