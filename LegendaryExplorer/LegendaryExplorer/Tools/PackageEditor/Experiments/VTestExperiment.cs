@@ -2170,7 +2170,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             KismetHelper.AddObjectToSequence(newUiSeq as ExportEntry, targetSequence);
         }
 
-        private static void AddWorldReferencedObjects(IMEPackage le1File, IEnumerable<ExportEntry> entriesToReference)
+        private static void AddWorldReferencedObjects(IMEPackage le1File, params ExportEntry[] entriesToReference)
         {
             var world = le1File.FindExport("TheWorld");
             var worldBin = ObjectBinary.From<World>(world);
@@ -2202,7 +2202,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         // Force the pawns that will spawn to have their meshes in memory
                         // They are not referenced directly
 
-                        var assetsToReference = le1File.Exports.Where(x => assetsToEnsureReferencedInSim.Contains(x.InstancedFullPath));
+                        var assetsToReference = le1File.Exports.Where(x => assetsToEnsureReferencedInSim.Contains(x.InstancedFullPath)).ToArray();
                         AddWorldReferencedObjects(le1File, assetsToReference);
 
                         foreach (var exp in le1File.Exports.Where(x => x.ClassName == "Sequence").ToList())
@@ -2431,6 +2431,25 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         var sourceLight = vTestOptions.vTestHelperPackage.FindExport(@"CCSPACE02_DSG.DominantDirectionalLight_1");
                         var destLevel = le1File.FindExport("TheWorld.PersistentLevel");
                         EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceLight, le1File, destLevel, true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out _);
+
+                        // Correct some lighting channels
+                        string[] unlitPSCs = new[]
+                        {
+                            "BIOA_PRC2_S.Prefab.PRC2_Skybox_Vista.PRC2_Skybox_Vista_Arc17.ParticleSystemComponent0",
+                            "BIOA_PRC2_S.Prefab.PRC2_Skybox_Vista.PRC2_Skybox_Vista_Arc18.ParticleSystemComponent0",
+                            "BIOA_PRC2_S.Prefab.PRC2_Skybox_Vista.PRC2_Skybox_Vista_Arc19.ParticleSystemComponent0"
+                        };
+
+                        foreach (var unlitPSC in unlitPSCs)
+                        {
+                            var exp = le1File.FindExport(unlitPSC);
+                            var lightingChannels = exp.GetProperty<StructProperty>("LightingChannels");
+                            lightingChannels.Properties.Clear();
+                            lightingChannels.Properties.Add(new BoolProperty(true, "bInitialized"));
+                            lightingChannels.Properties.Add(new BoolProperty(true, new NameReference("Cinematic", 4)));
+                            exp.WriteProperty(lightingChannels);
+                        }
+
                     }
                     break;
                 case "BIOA_PRC2_CCCRATE":
@@ -2497,26 +2516,38 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             var musicVol = musicVolEntry as ExportEntry;
             var fileName = Path.GetFileNameWithoutExtension(le1File.FilePath).ToUpper();
+            int soundState = 0; // The column in the 2DA to use (for the soundque)
             switch (fileName)
             {
                 case "BIOA_PRC2_CCTHAI_SND":
-                    musicVol.WriteProperty(new NameProperty("JUG20", "MusicID")); // Virmire Ride
+                    musicVol.WriteProperty(new NameProperty("CrossGen_Mus_Thai", "MusicID")); // Virmire Ride
                     PathEdUtils.SetLocation(musicVol, 1040, -28200, -2000);
                     break;
                 case "BIOA_PRC2_CCLAVA_SND":
-                    musicVol.WriteProperty(new NameProperty("Knossos", "MusicID")); // Therum battle
+                    musicVol.WriteProperty(new NameProperty("CrossGen_Mus_Lava", "MusicID")); // Virmire Ride
+                    //musicVol.WriteProperty(new NameProperty("Knossos", "MusicID")); // Therum battle
                     PathEdUtils.SetLocation(musicVol, 28420, -26932, -26858);
                     break;
                 case "BIOA_PRC2_CCCRATE_SND":
-                    musicVol.WriteProperty(new NameProperty("EdenPrime03", "MusicID")); // Eden Prime Combat
+                    musicVol.WriteProperty(new NameProperty("CrossGen_Mus_Crate", "MusicID")); // Virmire Ride
+                    //musicVol.WriteProperty(new NameProperty("EdenPrime03", "MusicID")); // Eden Prime Combat
                     PathEdUtils.SetLocation(musicVol, 15783, -27067, -5491);
+
+                    // This needs PRC1 streaming data as this is not globally loaded.
+                    {
+                        using var unc52 = MEPackageHandler.OpenMEPackage(Path.Combine(LE1Directory.CookedPCPath, "BIOA_UNC52.pcc"), forceLoadFromDisk: true);
+                        EntryExporter.ExportExportToPackage(unc52.FindExport("DVDStreamingAudioData.PC.snd_prc1_music"), le1File, out var newEntry);
+                        AddWorldReferencedObjects(le1File, newEntry as ExportEntry);
+                    }
                     break;
                 case "BIOA_PRC2_CCCAVE_SND":
-                    musicVol.WriteProperty(new NameProperty("PRC1Main", "MusicID")); // BDTS
+                    musicVol.WriteProperty(new NameProperty("CrossGen_Mus_Cave", "MusicID")); // Virmire Ride
+                    //musicVol.WriteProperty(new NameProperty("PRC1Main", "MusicID")); // BDTS
                     PathEdUtils.SetLocation(musicVol, -16480, -28456, -2614);
                     break;
                 case "BIOA_PRC2_CCAHERN_SND":
-                    musicVol.WriteProperty(new NameProperty("EndSpacewalk2", "MusicID")); // End Battle
+                    musicVol.WriteProperty(new NameProperty("CrossGen_Mus_Ahern", "MusicID")); // Virmire Ride
+                    //musicVol.WriteProperty(new NameProperty("EndSpacewalk2", "MusicID")); // End Battle
                     PathEdUtils.SetLocation(musicVol, -41129, -27013, -2679);
                     break;
             }
@@ -2538,20 +2569,32 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             var musOff = SequenceObjectCreator.CreateSequenceObject(le1File, "BioSeqAct_MusicVolumeDisable", MEGame.LE1, vTestOptions.cache);
             var musVolSeqObj = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqVar_Object", MEGame.LE1, vTestOptions.cache);
 
+            var stateBeingSet = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqVar_Int", MEGame.LE1, vTestOptions.cache);
+            var musicStatePlotInt = SequenceObjectCreator.CreateSequenceObject(le1File, "BioSeqVar_StoryManagerInt", MEGame.LE1, vTestOptions.cache);
+            var setInt = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqAct_SetInt", MEGame.LE1, vTestOptions.cache);
+
+
             musVolSeqObj.WriteProperty(new ObjectProperty(musicVol, "ObjValue"));
 
-            KismetHelper.AddObjectToSequence(levelLoaded, sequence);
-            KismetHelper.AddObjectToSequence(plotCheck, sequence);
-            KismetHelper.AddObjectToSequence(musOn, sequence);
-            KismetHelper.AddObjectToSequence(musOff, sequence);
-            KismetHelper.AddObjectToSequence(musVolSeqObj, sequence);
+            // Sequencing
+            KismetHelper.AddObjectsToSequence(sequence, false, levelLoaded, plotCheck, musOn, musOff, musVolSeqObj, stateBeingSet, musicStatePlotInt, setInt);
 
             KismetHelper.CreateOutputLink(levelLoaded, "Loaded and Visible", plotCheck);
-            KismetHelper.CreateOutputLink(plotCheck, "True", musOn);
-            KismetHelper.CreateOutputLink(plotCheck, "False", musOn); // CHANGE TO FALSE IN FINAL BUILD
+            KismetHelper.CreateOutputLink(plotCheck, "True", setInt);
+            KismetHelper.CreateOutputLink(plotCheck, "False", setInt); // CHANGE TO musOff IN FINAL BUILD
+            KismetHelper.CreateOutputLink(setInt, "Out", musOn);
 
             KismetHelper.CreateVariableLink(musOn, "Music Volume", musVolSeqObj);
             KismetHelper.CreateVariableLink(musOff, "Music Volume", musVolSeqObj);
+
+            KismetHelper.CreateVariableLink(setInt, "Target", musicStatePlotInt);
+            KismetHelper.CreateVariableLink(setInt, "Value", stateBeingSet);
+
+            // Setup SetInt values
+            stateBeingSet.WriteProperty(new IntProperty(soundState, "IntValue"));
+            musicStatePlotInt.WriteProperty(new IntProperty(74, "m_nIndex")); // Global Soundstate (2DA columns)
+            musicStatePlotInt.WriteProperty(new StrProperty("CurrentMusicState", "m_sRefName"));
+            musicStatePlotInt.WriteProperty(new EnumProperty("None", "EBioRegionAutoSet", MEGame.LE1, "Region"));
 
             // DEBUG
             if (vTestOptions.debugBuild)

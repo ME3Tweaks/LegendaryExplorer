@@ -321,6 +321,28 @@ namespace LegendaryExplorerCore.Packages
             }
         }
 
+        //Todo put this somewhere more appropriate
+        public static void DebugByteArrayComparison(byte[] arr1, byte[] arr2)
+        {
+            var maxLenToCheck = Math.Min(arr1.Length, arr2.Length);
+            for (int i = 0; i < maxLenToCheck; i++)
+            {
+                if (arr1[i] != arr2[i])
+                {
+                    Debug.WriteLine($"Bytes differ at 0x{i:X8}: First{arr1[i]}, Second: {arr2[i]}");
+                    return;
+                }
+            }
+
+            if (arr1.Length != arr2.Length)
+            {
+                Debug.WriteLine("Arrays are of different lengths");
+                return;
+            }
+
+            Debug.WriteLine("Arrays are identical");
+        }
+
         private void PrePropCheck(ExportEntry exp1, ExportEntry exp2)
         {
             var pp1 = exp1.GetPrePropBinary();
