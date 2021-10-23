@@ -20,6 +20,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         //static string[] stringRefColumns = { "StringRef", "SaveGameStringRef", "Title", "LabelRef", "Name", "ActiveWorld", "Description", "ButtonLabel" };
         public Bio2DACell[,] Cells { get; set; }
         public List<string> RowNames { get; set; }
+        /// <summary>
+        /// Replaces _ with __ to avoid AccessKeys when rendering 
+        /// </summary>
+        public List<string> RowNamesUI { get; private set; }
         public List<string> ColumnNames { get; set; }
 
         public int RowCount => RowNames?.Count ?? 0;
@@ -51,6 +55,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             Export = export;
 
             RowNames = new List<string>();
+            RowNamesUI = new List<string>();
             if (export.ClassName == "Bio2DA")
             {
                 const string rowLabelsVar = "m_sRowLabel";
@@ -59,7 +64,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     foreach (NameProperty n in props)
                     {
-                        RowNames.Add(n.ToString());
+                        RowNames.Add(n.Value.Instanced);
+                        RowNamesUI.Add(n.Value.Instanced.Replace("_", "__"));
                     }
                 }
                 else
@@ -76,6 +82,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     foreach (IntProperty n in props)
                     {
                         RowNames.Add(n.Value.ToString());
+                        RowNamesUI.Add(n.Value.ToString());
                     }
                 }
                 else

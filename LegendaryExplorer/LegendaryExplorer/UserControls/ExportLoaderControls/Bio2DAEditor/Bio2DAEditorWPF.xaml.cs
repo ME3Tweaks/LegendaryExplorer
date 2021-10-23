@@ -120,19 +120,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
-        /// <summary>
-        /// Removes the access key where you can do _ for quick key press to go to a column. will make headers and stuff look proper
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void DataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
-        {
-            string header = e.Column.Header.ToString();
-
-            // Replace all underscores with two underscores, to prevent AccessKey handling
-            e.Column.Header = header.Replace("_", "__");
-        }
-
         private void LoadCommands()
         {
             CommitCommand = new GenericCommand(Commit2DA, CanCommit2DA);
