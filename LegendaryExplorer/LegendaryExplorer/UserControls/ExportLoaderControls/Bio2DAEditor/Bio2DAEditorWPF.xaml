@@ -158,7 +158,7 @@
                   dataGrid2D:Cell.EditingTemplate="{StaticResource Bio2DA_CellTemplate_Edit}"
                   dataGrid2D:Cell.Template="{StaticResource Bio2DA_CellTemplate_Normal}" 
                   dataGrid2D:ItemsSource.ColumnHeadersSource="{Binding Path=Table2DA.ColumnNames}" 
-                  dataGrid2D:ItemsSource.RowHeadersSource="{Binding Path=Table2DA.RowNames}" 
+                  dataGrid2D:ItemsSource.RowHeadersSource="{Binding Path=Table2DA.RowNamesUI}" 
                   SelectedCellsChanged="DataGrid_SelectedCellsChanged" EnableRowVirtualization="True" 
                   EnableColumnVirtualization="True" VirtualizingPanel.VirtualizationMode="Recycling">
             <DataGrid.ColumnHeaderStyle>
