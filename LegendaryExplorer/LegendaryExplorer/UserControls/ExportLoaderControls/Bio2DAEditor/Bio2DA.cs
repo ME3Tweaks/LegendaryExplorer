@@ -307,7 +307,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                     if (int.TryParse(trailing, out var tmpIndex) && tmpIndex > 0)
                                     {
                                         nameVal = nameVal.Substring(0, lastUnderScorePos);
-                                        instanceIndex = tmpIndex;
+                                        instanceIndex = tmpIndex + 1;
                                     }
                                 }
                             }
