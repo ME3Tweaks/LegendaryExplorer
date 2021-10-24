@@ -367,58 +367,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         
         private void LoadCommands()
         {
-            UModelExportCommand = new GenericCommand(EnsureUModel, CanExportViaUModel);
+            UModelExportCommand = new GenericCommand(EnsureUModelAndExport, CanExportViaUModel);
         }
 
         public event EventHandler IsBusyChanged;
 
         private bool CanExportViaUModel() => CurrentLoadedExport != null && (IsStaticMesh || IsSkeletalMesh);
-        private void ExportViaUModel()
-        {
-            BusyText = "Waiting for user input";
-            var dlg = new CommonOpenFileDialog
-            {
-                IsFolderPicker = true,
-                EnsurePathExists = true,
-                Title = "Select output directory"
-            };
-            if (dlg.ShowDialog(Window.GetWindow(this)) == CommonFileDialogResult.Ok)
-            {
-                var bw = new BackgroundWorker();
-                bw.DoWork += (_, _) =>
-                {
-                    string umodel = Path.Combine(AppDirectories.StaticExecutablesDirectory, "umodel", "umodel.exe");
-                    var args = new List<string>
-                    {
-                        "-export",
-                        $"-out=\"{dlg.FileName}\"",
-                        $"\"{CurrentLoadedExport.FileRef.FilePath}\"",
-                        CurrentLoadedExport.ObjectNameString,
-                        CurrentLoadedExport.ClassName
-                    };
-
-                    var arguments = string.Join(" ", args);
-                    Debug.WriteLine("Running process: " + umodel + " " + arguments);
-                    //Log.Information("Running process: " + exe + " " + args);
-
-
-                    var umodelProcess = new ConsoleApp(umodel, arguments);
-                    IsBusy = true;
-                    BusyText = "Exporting via UModel\nThis may take a few minutes";
-                    BusyProgressIndeterminate = true;
-                    umodelProcess.ConsoleOutput += (_, args2) => { Debug.WriteLine(args2.Line); };
-                    umodelProcess.Run();
-                    while (umodelProcess.State == AppState.Running)
-                    {
-                        Thread.Sleep(100); //this is kind of hacky but it works
-                    }
-
-                    Process.Start("explorer", dlg.FileName);
-                };
-                bw.RunWorkerCompleted += (_, _) => { IsBusy = false; };
-                bw.RunWorkerAsync();
-            }
-        }
 
         public static bool CanParseStatic(ExportEntry exportEntry)
         {
@@ -727,7 +681,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// <summary>
         /// Exports via UModel after ensuring
         /// </summary>
-        public void EnsureUModel()
+        public void EnsureUModelAndExport()
         {
             if (CurrentLoadedExport == null) return;
             var savewarning = CurrentLoadedExport.FileRef.IsModified ? MessageBoxResult.None : MessageBoxResult.OK;
@@ -756,7 +710,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                     else if (b.Result == null)
                     {
-                        ExportViaUModel();
+                        UModelHelper.ExportViaUModel(Window.GetWindow(this), CurrentLoadedExport);
                     }
 
                     IsBusy = false;

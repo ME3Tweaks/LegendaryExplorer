@@ -1,9 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using LegendaryExplorerCore.Packages;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using SlavaGu.ConsoleAppLauncher;
 
 namespace LegendaryExplorer.Misc
@@ -53,6 +59,53 @@ namespace LegendaryExplorer.Misc
             }
 
             return version; // not found
+        }
+
+        /// <summary>
+        /// Exports a mesh via UModel
+        /// </summary>
+        /// <param name="window">Exporting window, needed to open file dialogs</param>
+        /// <param name="export">Mesh to export</param>
+        public static void ExportViaUModel(Window window, ExportEntry export)
+        {
+            var dlg = new CommonOpenFileDialog
+            {
+                IsFolderPicker = true,
+                EnsurePathExists = true,
+                Title = "Select output directory"
+            };
+            if (dlg.ShowDialog(window) == CommonFileDialogResult.Ok)
+            {
+                var bw = new BackgroundWorker();
+                bw.DoWork += (_, _) =>
+                {
+                    string umodel = Path.Combine(AppDirectories.StaticExecutablesDirectory, "umodel", "umodel.exe");
+                    var args = new List<string>
+                    {
+                        "-export",
+                        $"-out=\"{dlg.FileName}\"",
+                        $"\"{export.FileRef.FilePath}\"",
+                        export.ObjectNameString,
+                        export.ClassName
+                    };
+
+                    var arguments = string.Join(" ", args);
+                    Debug.WriteLine("Running process: " + umodel + " " + arguments);
+                    //Log.Information("Running process: " + exe + " " + args);
+
+
+                    var umodelProcess = new ConsoleApp(umodel, arguments);
+                    umodelProcess.ConsoleOutput += (_, args2) => { Debug.WriteLine(args2.Line); };
+                    umodelProcess.Run();
+                    while (umodelProcess.State == AppState.Running)
+                    {
+                        Thread.Sleep(100); //this is kind of hacky but it works
+                    }
+
+                    Process.Start("explorer", dlg.FileName);
+                };
+                bw.RunWorkerAsync();
+            }
         }
     }
 }

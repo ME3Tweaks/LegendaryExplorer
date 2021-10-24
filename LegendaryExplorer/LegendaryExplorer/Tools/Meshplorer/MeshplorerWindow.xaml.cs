@@ -164,7 +164,7 @@ namespace LegendaryExplorer.Tools.Meshplorer
             ReplaceFromUDKCommand = new GenericCommand(ReplaceFromUDK, IsMeshSelected);
             ExportToUDKCommand = new GenericCommand(ExportToUDK, IsMeshSelected);
             ReplaceLODFromUDKCommand = new GenericCommand(ImportLODFromUDK, IsSkeletalMeshSelected);
-            ExportToPSKUModelCommand = new GenericCommand(() => Mesh3DViewer.EnsureUModel(), IsMeshSelected);
+            ExportToPSKUModelCommand = new GenericCommand(() => Mesh3DViewer.EnsureUModelAndExport(), IsMeshSelected);
             ExportToPSKCommand = new GenericCommand(ExportToPSK, IsSkeletalMeshSelected);
         }
 

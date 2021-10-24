@@ -126,6 +126,7 @@
         <MenuItem Header="Create test TLK from XML with IDs in string" Click="CreateTestTLKWithStringIDs_Click"/>
         <MenuItem Header="Relink Children Tree and Update Local Functions" ToolTip="Must have UStruct selected (Class, State, Function, Struct, ScriptStruct)" Click="UpdateLocalFunctions_Click"/>
         <MenuItem Header="Dump TOC file" Click="DumpTOC_Click"/>
+        <MenuItem Header="Export BioMorphFace to PSK with UModel" Click="ExportBioMorphFace_Click" ToolTip="Must have BioMorphFace selected and UModel installed"/>
     </MenuItem>
     <MenuItem Header="Other people's box of Legos">
         <MenuItem Header="Export level to T3D" Click="ExportLevelToT3D_Click"/>

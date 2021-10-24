@@ -1221,6 +1221,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsH.DumpTOC();
         }
 
+        private void ExportBioMorphFace_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsH.ExportMorphFace(GetPEWindow());
+        }
+
         #endregion
 
         // EXPERIMENTS: OTHER PEOPLE ------------------------------------------------------------
