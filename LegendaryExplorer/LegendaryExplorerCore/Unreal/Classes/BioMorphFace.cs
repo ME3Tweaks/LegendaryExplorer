@@ -90,8 +90,8 @@ namespace LegendaryExplorerCore.Unreal.Classes
 
         public MorphFeature(StructProperty featureStruct)
         {
-            Name = featureStruct.GetPropOrDefault<NameProperty>("sFeatureName")?.Value ?? "";
-            Offset = featureStruct.GetPropOrDefault<FloatProperty>("Offset")?.Value ?? 0f;
+            Name = featureStruct.GetProp<NameProperty>("sFeatureName")?.Value ?? "";
+            Offset = featureStruct.GetProp<FloatProperty>("Offset")?.Value ?? 0f;
         }
     }
 
@@ -102,8 +102,8 @@ namespace LegendaryExplorerCore.Unreal.Classes
 
         public BoneOffset(StructProperty boneOffsetStruct)
         {
-            Name = boneOffsetStruct.GetPropOrDefault<NameProperty>("nName")?.Value ?? "";
-            var vectorStruct = boneOffsetStruct.GetPropOrDefault<StructProperty>("vPos");
+            Name = boneOffsetStruct.GetProp<NameProperty>("nName")?.Value ?? "";
+            var vectorStruct = boneOffsetStruct.GetProp<StructProperty>("vPos");
             Position = CommonStructs.GetVector3(vectorStruct);
         }
     }
