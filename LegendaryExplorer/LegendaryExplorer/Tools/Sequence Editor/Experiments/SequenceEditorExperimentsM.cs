@@ -21,6 +21,33 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
     /// </summary>
     public static class SequenceEditorExperimentsM
     {
+        public static void CommitSequenceObjectPositions(SequenceEditorWPF seqEd)
+        {
+            if (seqEd.CurrentObjects.Any)
+            {
+                foreach (var seqObj in seqEd.CurrentObjects)
+                {
+                    var x = seqObj.OffsetX;
+                    var y = seqObj.OffsetY;
+                    var knownX = seqObj.Export.GetProperty<IntProperty>("ObjPosX")?.Value;
+                    var knownY = seqObj.Export.GetProperty<IntProperty>("ObjPosY")?.Value;
+                    if (knownX != null && knownY != null)
+                    {
+                        if (knownX.Value == (int)Math.Round(x) && knownY.Value == (int)Math.Round(y))
+                        {
+                            Debug.WriteLine("YAY");
+                        }
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"X: {y} Y: {x} for {seqObj.Export.InstancedFullPath}");
+                        seqObj.Export.WriteProperty(new IntProperty((int)x, "ObjPosX"));
+                        seqObj.Export.WriteProperty(new IntProperty((int)y, "ObjPosY"));
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// Might not be that reliable it seems
         /// </summary>
@@ -148,7 +175,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
                 seqLog.WriteProperties(newProps); // Write it out as ObjectCreator doesn't use propcollection
 
                 // Create our strObject
-                var newStrNode = SequenceObjectCreator.CreateSequenceObject(seqLog.FileRef, "SeqVar_String", seqLog.FileRef.Game, cache);
+                var newStrNode = SequenceObjectCreator.CreateSequenceObject(seqLog.FileRef, "SeqVar_String", cache);
                 newStrNode.WriteProperty(new StrProperty(objComment, "StrValue"));
                 KismetHelper.AddObjectToSequence(newStrNode, owningSequence);
                 KismetHelper.CreateVariableLink(seqLog, "String", newStrNode);

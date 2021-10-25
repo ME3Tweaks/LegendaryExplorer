@@ -276,1411 +276,1372 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             if (classEntry is null)
             {
                 EndBusy();
-        MessageBox.Show(this, $"Could not import {info.ClassName}'s class definition! It may be defined in a DLC you don't have.");
+                MessageBox.Show(this, $"Could not import {info.ClassName}'s class definition! It may be defined in a DLC you don't have.");
                 return;
-        }
+            }
 
-        var newSeqObj = new ExportEntry(Pcc, SelectedSequence, Pcc.GetNextIndexedName(info.ClassName), properties: SequenceObjectCreator.GetSequenceObjectDefaults(Pcc, info))
-        {
-            Class = classEntry,
-        };
-        newSeqObj.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
+            var newSeqObj = new ExportEntry(Pcc, SelectedSequence, Pcc.GetNextIndexedName(info.ClassName), properties: SequenceObjectCreator.GetSequenceObjectDefaults(Pcc, info))
+            {
+                Class = classEntry,
+            };
+            newSeqObj.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
             Pcc.AddExport(newSeqObj);
             addObject(newSeqObj);
-        EndBusy();
-    }
-
-    private bool CanOpenKismetLog(object o)
-    {
-        switch (o)
-        {
-            case true:
-                return Pcc != null && File.Exists(KismetLogParser.KismetLogPath(Pcc.Game));
-            case MEGame game:
-                return File.Exists(KismetLogParser.KismetLogPath(game));
-            case "CurrentSequence":
-                return Pcc != null && File.Exists(KismetLogParser.KismetLogPath(Pcc.Game)) && SelectedSequence != null;
-            default:
-                return false;
+            EndBusy();
         }
-    }
 
-    private void OpenKismetLogParser(object obj)
-    {
-        if (CanOpenKismetLog(obj))
+        private bool CanOpenKismetLog(object o)
         {
-            switch (obj)
+            switch (o)
             {
                 case true:
-                    kismetLogParser.LoadLog(Pcc.Game, Pcc);
-                    break;
+                    return Pcc != null && File.Exists(KismetLogParser.KismetLogPath(Pcc.Game));
                 case MEGame game:
-                    kismetLogParser.LoadLog(game);
-                    break;
+                    return File.Exists(KismetLogParser.KismetLogPath(game));
                 case "CurrentSequence":
-                    kismetLogParser.LoadLog(Pcc.Game, Pcc, SelectedSequence);
-                    break;
+                    return Pcc != null && File.Exists(KismetLogParser.KismetLogPath(Pcc.Game)) && SelectedSequence != null;
                 default:
-                    return;
+                    return false;
             }
-            kismetLogParser.Visibility = Visibility.Visible;
-            kismetLogParserRow.Height = new GridLength(150);
-            kismetLogParser.ExportFound = (filePath, uIndex) =>
+        }
+
+        private void OpenKismetLogParser(object obj)
+        {
+            if (CanOpenKismetLog(obj))
             {
-                if (Pcc == null || Pcc.FilePath != filePath) LoadFile(filePath);
-                GoToExport(Pcc.GetUExport(uIndex), false);
-            };
-        }
-        else
-        {
-            MessageBox.Show(this, "No Kismet Log!");
-        }
-    }
-
-    private void GoTo()
-    {
-        if (EntrySelector.GetEntry<ExportEntry>(this, Pcc) is ExportEntry export)
-        {
-            GoToExport(export);
-        }
-    }
-
-    #region Busy
-
-    public override void SetBusy(string text = null)
-    {
-        Image graphImage = graphEditor.Camera.ToImage((int)graphEditor.Camera.GlobalFullWidth, (int)graphEditor.Camera.GlobalFullHeight, new SolidBrush(GraphEditorBackColor));
-        graphImageSub.Source = graphImage.ToBitmapImage();
-        graphImageSub.Width = graphGrid.ActualWidth;
-        graphImageSub.Height = graphGrid.ActualHeight;
-        if (toolBoxExpander.ActualHeight > 0 && toolBoxExpander.ActualWidth > 0)
-        {
-            // Do not draw if area == 0
-            expanderImageSub.Source = toolBoxExpander.DrawToBitmapSource();
-        }
-
-        expanderImageSub.Width = toolBoxExpander.ActualWidth;
-        expanderImageSub.Height = toolBoxExpander.ActualHeight;
-        expanderImageSub.Visibility = Visibility.Visible;
-        graphImageSub.Visibility = Visibility.Visible;
-        BusyText = text;
-        IsBusy = true;
-    }
-
-    public override void EndBusy()
-    {
-        IsBusy = false;
-        graphImageSub.Visibility = expanderImageSub.Visibility = Visibility.Collapsed;
-    }
-
-    #endregion
-
-    private string _statusText;
-    public string StatusText
-    {
-        get => _statusText;
-        set => SetProperty(ref _statusText, $"{CurrentFile} {value}");
-    }
-
-    private TreeViewEntry _selectedItem;
-
-    public TreeViewEntry SelectedItem
-    {
-        get => _selectedItem;
-        set
-        {
-            if (AutoSaveView_MenuItem.IsChecked)
-            {
-                saveView();
-            }
-
-            if (SetProperty(ref _selectedItem, value) && value != null)
-            {
-                if (value.Entry is ExportEntry exportEntry)
+                switch (obj)
                 {
-                    value.IsSelected = true;
-                    LoadSequence(exportEntry);
+                    case true:
+                        kismetLogParser.LoadLog(Pcc.Game, Pcc);
+                        break;
+                    case MEGame game:
+                        kismetLogParser.LoadLog(game);
+                        break;
+                    case "CurrentSequence":
+                        kismetLogParser.LoadLog(Pcc.Game, Pcc, SelectedSequence);
+                        break;
+                    default:
+                        return;
                 }
-                else
+                kismetLogParser.Visibility = Visibility.Visible;
+                kismetLogParserRow.Height = new GridLength(150);
+                kismetLogParser.ExportFound = (filePath, uIndex) =>
                 {
-                    MessageBox.Show(this, "Can't select an imported sequence");
+                    if (Pcc == null || Pcc.FilePath != filePath) LoadFile(filePath);
+                    GoToExport(Pcc.GetUExport(uIndex), false);
+                };
+            }
+            else
+            {
+                MessageBox.Show(this, "No Kismet Log!");
+            }
+        }
+
+        private void GoTo()
+        {
+            if (EntrySelector.GetEntry<ExportEntry>(this, Pcc) is ExportEntry export)
+            {
+                GoToExport(export);
+            }
+        }
+
+        #region Busy
+
+        public override void SetBusy(string text = null)
+        {
+            Image graphImage = graphEditor.Camera.ToImage((int)graphEditor.Camera.GlobalFullWidth, (int)graphEditor.Camera.GlobalFullHeight, new SolidBrush(GraphEditorBackColor));
+            graphImageSub.Source = graphImage.ToBitmapImage();
+            graphImageSub.Width = graphGrid.ActualWidth;
+            graphImageSub.Height = graphGrid.ActualHeight;
+            if (toolBoxExpander.ActualHeight > 0 && toolBoxExpander.ActualWidth > 0)
+            {
+                // Do not draw if area == 0
+                expanderImageSub.Source = toolBoxExpander.DrawToBitmapSource();
+            }
+
+            expanderImageSub.Width = toolBoxExpander.ActualWidth;
+            expanderImageSub.Height = toolBoxExpander.ActualHeight;
+            expanderImageSub.Visibility = Visibility.Visible;
+            graphImageSub.Visibility = Visibility.Visible;
+            BusyText = text;
+            IsBusy = true;
+        }
+
+        public override void EndBusy()
+        {
+            IsBusy = false;
+            graphImageSub.Visibility = expanderImageSub.Visibility = Visibility.Collapsed;
+        }
+
+        #endregion
+
+        private string _statusText;
+        public string StatusText
+        {
+            get => _statusText;
+            set => SetProperty(ref _statusText, $"{CurrentFile} {value}");
+        }
+
+        private TreeViewEntry _selectedItem;
+
+        public TreeViewEntry SelectedItem
+        {
+            get => _selectedItem;
+            set
+            {
+                if (AutoSaveView_MenuItem.IsChecked)
+                {
+                    saveView();
+                }
+
+                if (SetProperty(ref _selectedItem, value) && value != null)
+                {
+                    if (value.Entry is ExportEntry exportEntry)
+                    {
+                        value.IsSelected = true;
+                        LoadSequence(exportEntry);
+                    }
+                    else
+                    {
+                        MessageBox.Show(this, "Can't select an imported sequence");
+                    }
                 }
             }
         }
-    }
 
-    private async void SavePackageAs()
-    {
-        string extension = Path.GetExtension(Pcc.FilePath);
-        var d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
-        if (d.ShowDialog() == true)
+        private async void SavePackageAs()
         {
-            await Pcc.SaveAsync(d.FileName);
-            MessageBox.Show(this, "Done.");
+            string extension = Path.GetExtension(Pcc.FilePath);
+            var d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
+            if (d.ShowDialog() == true)
+            {
+                await Pcc.SaveAsync(d.FileName);
+                MessageBox.Show(this, "Done.");
+            }
         }
-    }
 
-    private async void SavePackage()
-    {
-        await Pcc.SaveAsync();
-    }
+        private async void SavePackage()
+        {
+            await Pcc.SaveAsync();
+        }
 
-    private void OpenPackage()
-    {
-        var d = new OpenFileDialog { Filter = GameFileFilters.OpenFileFilter };
-        if (d.ShowDialog() == true)
+        private void OpenPackage()
+        {
+            var d = new OpenFileDialog { Filter = GameFileFilters.OpenFileFilter };
+            if (d.ShowDialog() == true)
+            {
+                try
+                {
+                    LoadFile(d.FileName);
+                }
+                catch (Exception ex) when (!App.IsDebug)
+                {
+                    MessageBox.Show(this, "Unable to open file:\n" + ex.Message);
+                }
+            }
+        }
+
+        private bool PackageIsLoaded()
+        {
+            return Pcc != null;
+        }
+
+        private void preloadPackage(string filePath, long packageSize)
         {
             try
             {
-                LoadFile(d.FileName);
-            }
-            catch (Exception ex) when (!App.IsDebug)
-            {
-                MessageBox.Show(this, "Unable to open file:\n" + ex.Message);
-            }
-        }
-    }
-
-    private bool PackageIsLoaded()
-    {
-        return Pcc != null;
-    }
-
-    private void preloadPackage(string filePath, long packageSize)
-    {
-        try
-        {
-            SelectedSequence = null;
-            CurrentObjects.ClearEx();
-            SequenceExports.ClearEx();
-            SelectedObjects.ClearEx();
-        }
-        catch (Exception ex) when (!App.IsDebug)
-        {
-            MessageBox.Show(this, "Package Pre-Load Error:\n" + ex.Message);
-            Title = "Sequence Editor";
-            CurrentFile = null;
-            UnLoadMEPackage();
-        }
-    }
-
-    public void postloadPackage(string filePath)
-    {
-        try
-        {
-            LoadSequences();
-            if (TreeViewRootNodes.IsEmpty())
-            {
-                UnLoadMEPackage();
-                MessageBox.Show(this, "This file does not contain any Sequences!");
-                StatusText = "Select a package file to load";
-                return;
-            }
-
-            graphEditor.nodeLayer.RemoveAllChildren();
-            graphEditor.edgeLayer.RemoveAllChildren();
-
-            Title = $"Sequence Editor - {filePath}";
-            StatusText = null; //no status
-
-            RefreshToolboxItems();
-        }
-        catch (Exception ex) when (!App.IsDebug)
-        {
-            MessageBox.Show(this, "Package Post-Load Error:\n" + ex.Message);
-            Title = "Sequence Editor";
-            CurrentFile = null;
-            UnLoadMEPackage();
-        }
-    }
-
-    /// <summary>
-    /// Reloads the toolbox data
-    /// </summary>
-    public void RefreshToolboxItems()
-    {
-        if (Pcc != null)
-        {
-            commonToolBox.Classes = SequenceObjectCreator.GetCommonObjects(Pcc.Game).OrderBy(info => info.ClassName)
-                .ToList();
-            eventsToolBox.Classes = SequenceObjectCreator.GetSequenceEvents(Pcc.Game).OrderBy(info => info.ClassName)
-                .ToList();
-            actionsToolBox.Classes = SequenceObjectCreator.GetSequenceActions(Pcc.Game).OrderBy(info => info.ClassName)
-                .ToList();
-            conditionsToolBox.Classes = SequenceObjectCreator.GetSequenceConditions(Pcc.Game)
-                .OrderBy(info => info.ClassName).ToList();
-            variablesToolBox.Classes = SequenceObjectCreator.GetSequenceVariables(Pcc.Game)
-                .OrderBy(info => info.ClassName).ToList();
-        }
-    }
-
-    public void LoadFileFromStream(Stream stream, string associatedFilePath, int goToIndex = 0)
-    {
-        try
-        {
-            var currentFile = Path.GetFileName(associatedFilePath);
-            preloadPackage(currentFile, stream.Length);
-            LoadMEPackage(stream, associatedFilePath);
-            CurrentFile = currentFile;
-            postloadPackage(associatedFilePath);
-            if (goToIndex != 0 && Pcc.TryGetUExport(goToIndex, out var exp))
-            {
-                GoToExport(exp);
-            }
-
-        }
-        catch (Exception ex) when (!App.IsDebug)
-        {
-            MessageBox.Show(this, "Package Stream-Load Error:\n" + ex.Message);
-            Title = "Sequence Editor";
-            CurrentFile = null;
-            UnLoadMEPackage();
-        }
-    }
-
-    public void LoadFile(string fileName, int uIndex)
-    {
-        LoadFile(fileName);
-        GoToExport(uIndex);
-    }
-
-    public void LoadFile(string fileName)
-    {
-        try
-        {
-            preloadPackage(fileName, 0); // We don't show the size so don't bother
-            LoadMEPackage(fileName);
-            CurrentFile = Path.GetFileName(fileName);
-
-            // Streams don't work for recents
-            RecentsController.AddRecent(fileName, false, Pcc?.Game);
-            RecentsController.SaveRecentList(true);
-
-            postloadPackage(fileName);
-
-        }
-        catch (Exception ex) when (!App.IsDebug)
-        {
-            MessageBox.Show(this, "Error:\n" + ex.Message);
-            Title = "Sequence Editor";
-            CurrentFile = null;
-            UnLoadMEPackage();
-        }
-    }
-
-    private void LoadSequences()
-    {
-        TreeViewRootNodes.ClearEx();
-        var prefabs = new Dictionary<string, TreeViewEntry>();
-        foreach (var export in Pcc.Exports)
-        {
-            switch (export.ClassName)
-            {
-                case "Sequence" when !(export.HasParent && export.Parent.IsSequence()):
-                    TreeViewRootNodes.Add(FindSequences(export, export.ObjectName != "Main_Sequence"));
-                    SequenceExports.Add(export);
-                    break;
-                case "Prefab":
-                    try
-                    {
-                        prefabs.Add(export.ObjectName.Name, new TreeViewEntry(export, export.InstancedFullPath));
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-
-                    break;
-            }
-        }
-
-        if (prefabs.Count > 0)
-        {
-            foreach (var export in Pcc.Exports)
-            {
-                if (export.ClassName == "PrefabSequence" && export.Parent?.ClassName == "Prefab")
-                {
-                    string parentName = Pcc.getObjectName(export.idxLink);
-                    if (prefabs.ContainsKey(parentName))
-                    {
-                        prefabs[parentName].Sublinks.Add(FindSequences(export));
-                    }
-                }
-            }
-
-            foreach (var item in prefabs.Values)
-            {
-                if (item.Sublinks.Any())
-                {
-                    TreeViewRootNodes.Add(item);
-                }
-            }
-        }
-    }
-
-    private TreeViewEntry FindSequences(ExportEntry rootSeq, bool wantFullName = false)
-    {
-        string seqName = wantFullName ? $"{rootSeq.ParentInstancedFullPath}." : "";
-        if (rootSeq.GetProperty<StrProperty>("ObjName") is StrProperty objName)
-        {
-            seqName += objName;
-        }
-        else
-        {
-            seqName += rootSeq.ObjectName.Instanced;
-        }
-        var root = new TreeViewEntry(rootSeq, $"#{rootSeq.UIndex}: {seqName}")
-        {
-            IsExpanded = true
-        };
-        var pcc = rootSeq.FileRef;
-        var seqObjs = rootSeq.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-        if (seqObjs != null)
-        {
-            foreach (ObjectProperty seqObj in seqObjs)
-            {
-                if (!pcc.IsUExport(seqObj.Value)) continue;
-                ExportEntry exportEntry = pcc.GetUExport(seqObj.Value);
-                if (exportEntry.ClassName == "Sequence" || exportEntry.ClassName.StartsWith("PrefabSequence"))
-                {
-                    TreeViewEntry t = FindSequences(exportEntry);
-                    SequenceExports.Add(exportEntry);
-                    root.Sublinks.Add(t);
-                }
-                else if (exportEntry.ClassName == "SequenceReference")
-                {
-                    var propSequenceReference = exportEntry.GetProperty<ObjectProperty>("oSequenceReference");
-                    if (propSequenceReference != null)
-                    {
-                        TreeViewEntry treeViewEntry = null;
-
-                        if (pcc.TryGetUExport(propSequenceReference.Value, out var exportRef))
-                        {
-                            treeViewEntry = FindSequences(exportRef);
-                            SequenceExports.Add(exportEntry);
-                        }
-                        else if (pcc.TryGetImport(propSequenceReference.Value, out var importRef))
-                        {
-                            treeViewEntry = new TreeViewEntry(importRef, $"#{importRef.UIndex}: {importRef.InstancedFullPath}");
-                        }
-
-                        if (treeViewEntry != null)
-                        {
-                            root.Sublinks.Add(treeViewEntry);
-                        }
-                    }
-                }
-            }
-        }
-
-        return root;
-    }
-
-    private void LoadSequence(ExportEntry seqExport, bool fromFile = true)
-    {
-        if (seqExport == null)
-        {
-            return;
-        }
-
-        graphEditor.Enabled = false;
-        graphEditor.UseWaitCursor = true;
-        SelectedSequence = seqExport;
-        SetupJSON(SelectedSequence);
-        var selectedExports = SelectedObjects.Select(o => o.Export).ToList();
-        Properties_InterpreterWPF.LoadExport(seqExport);
-        if (fromFile)
-        {
-            if (File.Exists(JSONpath))
-            {
-                SavedView = JsonConvert.DeserializeObject<SavedViewData>(File.ReadAllText(JSONpath));
-            }
-            else
-            {
-                SavedView = new(new(), RectangleF.Empty);
-            }
-
-            customSaveData.Clear();
-            selectedExports.Clear();
-        }
-        try
-        {
-            GenerateGraph();
-            if (selectedExports.Count == 1 && CurrentObjects.FirstOrDefault(obj => obj.Export == selectedExports[0]) is SObj selectedObj)
-            {
-                panToSelection = false;
-                CurrentObjects_ListBox.SelectedItem = selectedObj;
-            }
-
-            if (fromFile)
-            {
-                if (SavedView.ViewBounds != RectangleF.Empty)
-                {
-                    graphEditor.Camera.ViewBounds = SavedView.ViewBounds;
-                }
-                else
-                {
-                    RectangleF viewBounds = (CurrentObjects.FirstOrDefault(obj => obj is SEvent) ?? CurrentObjects.FirstOrDefault())?.GlobalFullBounds ?? new RectangleF();
-                    graphEditor.Camera.AnimateViewToCenterBounds(viewBounds, false, 0);
-                }
-            }
-        }
-        catch (Exception e) when (!App.IsDebug)
-        {
-            MessageBox.Show(this, $"Error loading sequences from file:\n{e.Message}");
-        }
-        graphEditor.Enabled = true;
-        graphEditor.UseWaitCursor = false;
-    }
-
-    private void SetupJSON(ExportEntry export)
-    {
-        string objectName = System.Text.RegularExpressions.Regex.Replace(export.ObjectName.Name, @"[<>:""/\\|?*]", "");
-        string viewsPath = Pcc.Game switch
-        {
-            MEGame.LE1 => LE1ViewsPath,
-            MEGame.LE2 => LE2ViewsPath,
-            MEGame.LE3 => LE3ViewsPath,
-            MEGame.ME1 => ME1ViewsPath,
-            MEGame.ME2 => ME2ViewsPath,
-            _ => ME3ViewsPath
-        };
-
-        JSONpath = Path.Combine(viewsPath, $"{CurrentFile}.v2#{export.UIndex - 1}{objectName}.JSON");
-    }
-
-    public void GetObjects(ExportEntry export)
-    {
-        CurrentObjects.ClearEx();
-        var seqObjs = export.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-        if (seqObjs != null)
-        {
-            // Resolve imports
-            //var convertedImports = new List<ExportEntry>();
-            //var imports = seqObjs.Where(x => x.Value < 0).Select(x => x.ResolveToEntry(export.FileRef) as ImportEntry);
-
-            //foreach (var import in imports)
-            //{
-            //    var resolved = EntryImporter.ResolveImport(import);
-            //    if (resolved != null)
-            //    {
-            //        convertedImports.Add(resolved);
-            //    }
-            //}
-
-            var nullCount = seqObjs.Count(x => x.Value == 0);
-
-            CurrentObjects.AddRange(seqObjs.OrderBy(prop => prop.Value)
-                                           .Where(prop => Pcc.IsUExport(prop.Value))
-                                           .Select(prop => Pcc.GetUExport(prop.Value))
-                                           .ToHashSet() //remove duplicate exports
-                                           .Select(LoadObject));
-            //CurrentObjects.AddRange(convertedImports.Select(LoadObject));
-
-            // Subtrack imports. But they should be shown still
-            if (CurrentObjects.Count != (seqObjs.Count - nullCount))
-            {
-                MessageBox.Show(this, "Sequence contains invalid or duplicate exports! Correct this by editing the SequenceObject array in the Properties editor");
-            }
-        }
-    }
-
-    public void GenerateGraph()
-    {
-        graphEditor.nodeLayer.RemoveAllChildren();
-        graphEditor.edgeLayer.RemoveAllChildren();
-        StartPosEvents = 0;
-        StartPosActions = 0;
-        StartPosVars = 0;
-        GetObjects(SelectedSequence);
-        Layout();
-        foreach (SObj o in CurrentObjects)
-        {
-            o.MouseDown += node_MouseDown;
-            o.Click += node_Click;
-        }
-
-        if (SavedView.Positions.IsEmpty() && (Pcc.Game is MEGame.ME2 or MEGame.ME3))
-        {
-            AutoLayout();
-        }
-    }
-
-    public float StartPosEvents;
-    public float StartPosActions;
-    public float StartPosVars;
-
-    public SObj LoadObject(ExportEntry export)
-    {
-        float x = float.NaN, y = float.NaN;
-        foreach (var prop in export.GetProperties())
-        {
-            switch (prop)
-            {
-                case IntProperty intProp when intProp.Name == "ObjPosX":
-                    x = intProp.Value;
-                    break;
-                case IntProperty intProp when intProp.Name == "ObjPosY":
-                    y = intProp.Value;
-                    break;
-            }
-        }
-
-        if (export.IsA("SequenceEvent"))
-        {
-            return new SEvent(export, graphEditor);
-        }
-        else if (export.IsA("SequenceVariable"))
-        {
-            return new SVar(export, graphEditor);
-        }
-        else if (export.ClassName == "SequenceFrame" && (Pcc.Game == MEGame.ME1 || Pcc.Game == MEGame.UDK || Pcc.Game.IsLEGame()))
-        {
-            return new SFrame(export, graphEditor);
-        }
-        else //if (s.StartsWith("BioSeqAct_") || s.StartsWith("SeqAct_") || s.StartsWith("SFXSeqAct_") || s.StartsWith("SeqCond_") || pcc.getExport(index).ClassName == "Sequence" || pcc.getExport(index).ClassName == "SequenceReference")
-        {
-            return new SAction(export, graphEditor);
-        }
-    }
-
-    private static bool warnedOfReload = false;
-
-    /// <summary>
-    /// Forcibly reloads the package from disk. The package loaded in this instance will no longer be shared.
-    /// </summary>
-    private void ForceReloadPackageWithoutSharing()
-    {
-        var fileOnDisk = Pcc.FilePath;
-        if (fileOnDisk != null && File.Exists(fileOnDisk))
-        {
-            if (Pcc.IsModified)
-            {
-                var warningResult = MessageBox.Show(this, "The current package is modified. Reloading the package will cause you to lose all changes to this package.\n\nReload anyways?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                if (warningResult != MessageBoxResult.Yes)
-                    return; // Do not continue!
-            }
-
-            if (!warnedOfReload)
-            {
-                var warningResult = MessageBox.Show(this, "Forcibly reloading a package will drop it out of tool sharing - making changes to this package in other will not be reflected in this window, and changes to this window will not be reflected in other windows. THIS MEANS SAVING WILL OVERWRITE CHANGES FROM OTHER WINDOWS. Only continue if you know what you are doing.\n\nReload anyways?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Error);
-                if (warningResult != MessageBoxResult.Yes)
-                    return; // Do not continue!
-                warnedOfReload = true;
-            }
-
-            var selectedIndex = (CurrentObjects_ListBox.SelectedItem as SObj)?.Export.UIndex ?? 0;
-            using var fStream = File.OpenRead(fileOnDisk);
-            LoadFileFromStream(fStream, fileOnDisk, selectedIndex);
-            Title += " (NOT SHARED WITH OTHER WINDOWS)";
-        }
-    }
-
-    public void Layout()
-    {
-        var objsInNeedOfLayout = new HashSet<SObj>();
-        if (CurrentObjects != null && CurrentObjects.Any())
-        {
-            foreach (SObj obj in CurrentObjects)
-            {
-                graphEditor.addNode(obj);
-            }
-
-            foreach (SObj obj in CurrentObjects)
-            {
-                obj.CreateConnections(CurrentObjects);
-            }
-
-            foreach (SObj obj in CurrentObjects)
-            {
-                if (SavedView.Positions.TryGetValue(obj.UIndex, out PointF savedInfo))
-                {
-                    obj.Layout(savedInfo.X, savedInfo.Y);
-                    continue;
-                }
-                if (Pcc.Game == MEGame.ME1 || Pcc.Game == MEGame.UDK || Pcc.Game.IsLEGame())
-                {
-                    var props = obj.Export.GetProperties();
-                    IntProperty xPos = props.GetProp<IntProperty>("ObjPosX");
-                    IntProperty yPos = props.GetProp<IntProperty>("ObjPosY");
-                    if (xPos is not null || yPos is not null)
-                    {
-                        obj.Layout(xPos?.Value ?? 0, yPos?.Value ?? 0);
-                        continue;
-                    }
-                }
-
-                objsInNeedOfLayout.Add(obj);
-                obj.Layout(0, 0);
-                //switch (obj)
-                //{
-                //    case SEvent:
-                //        obj.Layout(StartPosEvents, 0);
-                //        StartPosEvents += obj.Width + 20;
-                //        break;
-                //    case SAction:
-                //        obj.Layout(StartPosActions, 250);
-                //        StartPosActions += obj.Width + 20;
-                //        break;
-                //    case SVar:
-                //        obj.Layout(StartPosVars, 500);
-                //        StartPosVars += obj.Width + 20;
-                //        break;
-                //}
-            }
-
-            if (objsInNeedOfLayout.Any())
-            {
-                AutoLayout(objsInNeedOfLayout);
-            }
-            else
-            {
-                foreach (SeqEdEdge edge in graphEditor.edgeLayer)
-                {
-                    GraphEditor.UpdateEdge(edge);
-                }
-            }
-        }
-    }
-
-    private void AutoLayout(ICollection<SObj> objsToLayout = null)
-    {
-        var visitedNodes = new HashSet<int>();
-
-        if (objsToLayout is null)
-        {
-            objsToLayout = CurrentObjects;
-        }
-        else
-        {
-            visitedNodes.AddRange(CurrentObjects.Except(objsToLayout).Select(obj => obj.UIndex));
-        }
-
-        foreach (SObj obj in objsToLayout)
-        {
-            obj.SetOffset(0, 0); //remove existing positioning
-        }
-
-        const float HORIZONTAL_SPACING = 40;
-        const float VERTICAL_SPACING = 20;
-        const float VAR_SPACING = 10;
-        var eventNodes = objsToLayout.OfType<SEvent>().ToList();
-        SObj firstNode = eventNodes.FirstOrDefault();
-        var varNodeLookup = objsToLayout.OfType<SVar>().ToDictionary(obj => obj.UIndex);
-        var opNodeLookup = objsToLayout.OfType<SBox>().ToDictionary(obj => obj.UIndex);
-        var rootTree = new List<SObj>();
-        //SEvents are natural root nodes. ALmost everything will proceed from one of these
-        foreach (SEvent eventNode in eventNodes)
-        {
-            LayoutTree(eventNode, 5 * VERTICAL_SPACING);
-        }
-
-        //Find SActions with no inputs. These will not have been reached from an SEvent
-        var orphanRoots = objsToLayout.OfType<SAction>().Where(node => node.InputEdges.IsEmpty());
-        foreach (SAction orphan in orphanRoots)
-        {
-            LayoutTree(orphan, VERTICAL_SPACING);
-        }
-
-        //It's possible that there are groups of otherwise unconnected SActions that form cycles.
-        //Might be possible to make a better heuristic for choosing a root than sequence order, but this situation is so rare it's not worth the effort
-        var cycleNodes = objsToLayout.OfType<SAction>().Where(node => !visitedNodes.Contains(node.UIndex));
-        foreach (SAction cycleNode in cycleNodes)
-        {
-            LayoutTree(cycleNode, VERTICAL_SPACING);
-        }
-
-        //Lonely unconnected variables. Put them in a row below everything else
-        var unusedVars = objsToLayout.OfType<SVar>().Where(obj => !visitedNodes.Contains(obj.UIndex));
-        float varOffset = 0;
-        float vertOffset = rootTree.BoundingRect().Bottom + VERTICAL_SPACING;
-        foreach (SVar unusedVar in unusedVars)
-        {
-            unusedVar.OffsetBy(varOffset, vertOffset);
-            varOffset += unusedVar.GlobalFullWidth + HORIZONTAL_SPACING;
-        }
-
-        if (firstNode != null) objsToLayout.OffsetBy(0, -firstNode.OffsetY);
-
-        foreach (SeqEdEdge edge in graphEditor.edgeLayer)
-            GraphEditor.UpdateEdge(edge);
-
-
-        void LayoutTree(SBox sAction, float verticalSpacing)
-        {
-            firstNode ??= sAction;
-            visitedNodes.Add(sAction.UIndex);
-            var subTree = LayoutSubTree(sAction);
-            float width = subTree.BoundingRect().Width + HORIZONTAL_SPACING;
-            //ignore nodes that are further to the right than this subtree is wide. This allows tighter spacing
-            float dy = rootTree.Where(node => node.GlobalFullBounds.Left < width).BoundingRect().Bottom;
-            if (dy > 0) dy += verticalSpacing;
-            subTree.OffsetBy(0, dy);
-            rootTree.AddRange(subTree);
-        }
-
-        List<SObj> LayoutSubTree(SBox root)
-        {
-            //Task.WaitAll(Task.Delay(1500));
-            var tree = new List<SObj>();
-            var vars = new List<SVar>();
-            foreach (var varLink in root.Varlinks)
-            {
-                float dx = varLink.node.GlobalFullBounds.X - SVar.RADIUS;
-                float dy = root.GlobalFullHeight + VAR_SPACING;
-                foreach (int uIndex in varLink.Links.Where(uIndex => !visitedNodes.Contains(uIndex)))
-                {
-                    visitedNodes.Add(uIndex);
-                    if (varNodeLookup.TryGetValue(uIndex, out SVar sVar))
-                    {
-                        sVar.OffsetBy(dx, dy);
-                        dy += sVar.GlobalFullHeight + VAR_SPACING;
-                        vars.Add(sVar);
-                    }
-                }
-            }
-
-            var childTrees = new List<List<SObj>>();
-            var children = root.Outlinks.SelectMany(link => link.Links).Where(uIndex => !visitedNodes.Contains(uIndex));
-            foreach (int uIndex in children)
-            {
-                visitedNodes.Add(uIndex);
-                if (opNodeLookup.TryGetValue(uIndex, out SBox node))
-                {
-                    List<SObj> subTree = LayoutSubTree(node);
-                    childTrees.Add(subTree);
-                }
-            }
-
-            if (childTrees.Any())
-            {
-                float dx = root.GlobalFullWidth + (HORIZONTAL_SPACING * (1 + childTrees.Count * 0.4f));
-                foreach (List<SObj> subTree in childTrees)
-                {
-                    float subTreeWidth = subTree.BoundingRect().Width + HORIZONTAL_SPACING + dx;
-                    //ignore nodes that are further to the right than this subtree is wide. This allows tighter spacing
-                    float dy = tree.Where(node => node.GlobalFullBounds.Left < subTreeWidth).BoundingRect().Bottom;
-                    if (dy > 0) dy += VERTICAL_SPACING;
-                    subTree.OffsetBy(dx, dy);
-                    //TODO: fix this so it doesn't screw up some sequences. eg: BioD_ProEar_310BigFall.pcc
-                    /*float treeWidth = tree.BoundingRect().Width + HORIZONTAL_SPACING;
-                    //tighten spacing when this subtree is wider than existing tree. 
-                    dy -= subTree.Where(node => node.GlobalFullBounds.Left < treeWidth).BoundingRect().Top;
-                    if (dy < 0) dy += VERTICAL_SPACING;
-                    subTree.OffsetBy(0, dy);*/
-
-                    tree.AddRange(subTree);
-                }
-
-                //center the root on its children
-                float centerOffset = tree.OfType<SBox>().BoundingRect().Height / 2 - root.GlobalFullHeight / 2;
-                root.OffsetBy(0, centerOffset);
-                vars.OffsetBy(0, centerOffset);
-            }
-
-            tree.AddRange(vars);
-            tree.Add(root);
-            return tree;
-        }
-    }
-
-    public void RefreshView()
-    {
-        saveView(false);
-        LoadSequence(SelectedSequence, false);
-    }
-
-    private void backMouseDown_Handler(object sender, PInputEventArgs e)
-    {
-        if (!(e.PickedNode is PCamera) || SelectedSequence == null) return;
-
-        if (e.Button == System.Windows.Forms.MouseButtons.Right)
-        {
-            if (FindResource("backContextMenu") is ContextMenu contextMenu)
-            {
-                contextMenu.IsOpen = true;
-            }
-        }
-        else if (e.Shift)
-        {
-            //graphEditor.StartBoxSelection(e);
-            //e.Handled = true;
-        }
-        else
-        {
-            CurrentObjects_ListBox.SelectedItems.Clear();
-        }
-    }
-
-    private void back_MouseUp(object sender, PInputEventArgs e)
-    {
-        //var nodesToSelect = graphEditor.EndBoxSelection().OfType<SObj>();
-        //foreach (SObj sObj in nodesToSelect)
-        //{
-        //    panToSelection = false;
-        //    CurrentObjects_ListBox.SelectedItems.Add(sObj);
-        //}
-    }
-
-    private void graphEditor_Click(object sender, EventArgs e)
-    {
-        graphEditor.Focus();
-    }
-
-    private void SequenceEditor_DragEnter(object sender, System.Windows.Forms.DragEventArgs e)
-    {
-        if (e.Data.GetDataPresent(System.Windows.Forms.DataFormats.FileDrop))
-            e.Effect = System.Windows.Forms.DragDropEffects.All;
-        else
-            e.Effect = System.Windows.Forms.DragDropEffects.None;
-    }
-
-    private void SequenceEditor_DragDrop(object sender, System.Windows.Forms.DragEventArgs e)
-    {
-        if (e.Data.GetData(System.Windows.Forms.DataFormats.FileDrop) is string[] DroppedFiles)
-        {
-            if (DroppedFiles.Any())
-            {
-                LoadFile(DroppedFiles[0]);
-            }
-        }
-    }
-
-    public override void handleUpdate(List<PackageUpdate> updates)
-    {
-        if (Pcc == null)
-        {
-            return; //nothing is loaded
-        }
-
-        IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.Change.Has(PackageChange.Export));
-        List<int> updatedExports = relevantUpdates.Select(x => x.Index).ToList();
-        if (SelectedSequence != null && updatedExports.Contains(SelectedSequence.UIndex))
-        {
-            //loaded sequence is no longer a sequence
-            if (!SelectedSequence.IsSequence())
-            {
                 SelectedSequence = null;
-                graphEditor.nodeLayer.RemoveAllChildren();
-                graphEditor.edgeLayer.RemoveAllChildren();
                 CurrentObjects.ClearEx();
                 SequenceExports.ClearEx();
                 SelectedObjects.ClearEx();
-                Properties_InterpreterWPF.UnloadExport();
             }
-
-            RefreshView();
-            LoadSequences();
-            return;
+            catch (Exception ex) when (!App.IsDebug)
+            {
+                MessageBox.Show(this, "Package Pre-Load Error:\n" + ex.Message);
+                Title = "Sequence Editor";
+                CurrentFile = null;
+                UnLoadMEPackage();
+            }
         }
 
-        if (updatedExports.Intersect(CurrentObjects.Select(obj => obj.UIndex)).Any())
+        public void postloadPackage(string filePath)
         {
-            RefreshView();
-        }
-
-        foreach (var i in updatedExports)
-        {
-            if (Pcc.IsUExport(i) && Pcc.GetUExport(i).IsSequence())
+            try
             {
                 LoadSequences();
-                break;
-            }
-        }
-    }
-
-    private readonly Dictionary<int, PointF> customSaveData = new();
-    private bool panToSelection = true;
-    private string FileQueuedForLoad;
-    private ExportEntry ExportQueuedForFocusing;
-    private bool AllowWindowRefocus = true;
-    private static readonly Color GraphEditorBackColor = Color.FromArgb(167, 167, 167);
-
-    private void saveView(bool toFile = true)
-    {
-        if (CurrentObjects.Count == 0)
-            return;
-        SavedView = new(new(), graphEditor.Camera.ViewBounds);
-        foreach (SObj obj in CurrentObjects)
-        {
-            if (obj.Pickable)
-            {
-                SavedView.Positions[obj.UIndex] = new PointF(obj.X + obj.Offset.X, obj.Y + obj.Offset.Y);
-            }
-        }
-
-        foreach ((int key, PointF value) in customSaveData)
-        {
-            SavedView.Positions[key] = value;
-        }
-        customSaveData.Clear();
-
-        if (toFile)
-        {
-            string outputFile = JsonConvert.SerializeObject(SavedView);
-            if (!Directory.Exists(Path.GetDirectoryName(JSONpath)))
-                Directory.CreateDirectory(Path.GetDirectoryName(JSONpath));
-            File.WriteAllText(JSONpath, outputFile);
-            SavedView.Positions.Clear();
-        }
-    }
-
-    public void OpenNodeContextMenu(SObj obj)
-    {
-        if (FindResource("nodeContextMenu") is ContextMenu contextMenu)
-        {
-            // BREAK LINKS CODE
-            if (contextMenu.GetChild("breakLinksMenuItem") is MenuItem breakLinksMenuItem)
-            {
-                if (obj is SBox sBox && (sBox.Varlinks.Any() || sBox.Outlinks.Any() || sBox.EventLinks.Any()))
+                if (TreeViewRootNodes.IsEmpty())
                 {
-                    bool hasLinks = false;
-                    if (breakLinksMenuItem.GetChild("outputLinksMenuItem") is MenuItem outputLinksMenuItem)
-                    {
-                        outputLinksMenuItem.Visibility = Visibility.Collapsed;
-                        outputLinksMenuItem.Items.Clear();
-                        for (int i = 0; i < sBox.Outlinks.Count; i++)
+                    UnLoadMEPackage();
+                    MessageBox.Show(this, "This file does not contain any Sequences!");
+                    StatusText = "Select a package file to load";
+                    return;
+                }
+
+                graphEditor.nodeLayer.RemoveAllChildren();
+                graphEditor.edgeLayer.RemoveAllChildren();
+
+                Title = $"Sequence Editor - {filePath}";
+                StatusText = null; //no status
+
+                RefreshToolboxItems();
+            }
+            catch (Exception ex) when (!App.IsDebug)
+            {
+                MessageBox.Show(this, "Package Post-Load Error:\n" + ex.Message);
+                Title = "Sequence Editor";
+                CurrentFile = null;
+                UnLoadMEPackage();
+            }
+        }
+
+        /// <summary>
+        /// Reloads the toolbox data
+        /// </summary>
+        public void RefreshToolboxItems()
+        {
+            if (Pcc != null)
+            {
+                commonToolBox.Classes = SequenceObjectCreator.GetCommonObjects(Pcc.Game).OrderBy(info => info.ClassName)
+                    .ToList();
+                eventsToolBox.Classes = SequenceObjectCreator.GetSequenceEvents(Pcc.Game).OrderBy(info => info.ClassName)
+                    .ToList();
+                actionsToolBox.Classes = SequenceObjectCreator.GetSequenceActions(Pcc.Game).OrderBy(info => info.ClassName)
+                    .ToList();
+                conditionsToolBox.Classes = SequenceObjectCreator.GetSequenceConditions(Pcc.Game)
+                    .OrderBy(info => info.ClassName).ToList();
+                variablesToolBox.Classes = SequenceObjectCreator.GetSequenceVariables(Pcc.Game)
+                    .OrderBy(info => info.ClassName).ToList();
+            }
+        }
+
+        public void LoadFileFromStream(Stream stream, string associatedFilePath, int goToIndex = 0)
+        {
+            try
+            {
+                var currentFile = Path.GetFileName(associatedFilePath);
+                preloadPackage(currentFile, stream.Length);
+                LoadMEPackage(stream, associatedFilePath);
+                CurrentFile = currentFile;
+                postloadPackage(associatedFilePath);
+                if (goToIndex != 0 && Pcc.TryGetUExport(goToIndex, out var exp))
+                {
+                    GoToExport(exp);
+                }
+
+            }
+            catch (Exception ex) when (!App.IsDebug)
+            {
+                MessageBox.Show(this, "Package Stream-Load Error:\n" + ex.Message);
+                Title = "Sequence Editor";
+                CurrentFile = null;
+                UnLoadMEPackage();
+            }
+        }
+
+        public void LoadFile(string fileName, int uIndex)
+        {
+            LoadFile(fileName);
+            GoToExport(uIndex);
+        }
+
+        public void LoadFile(string fileName)
+        {
+            try
+            {
+                preloadPackage(fileName, 0); // We don't show the size so don't bother
+                LoadMEPackage(fileName);
+                CurrentFile = Path.GetFileName(fileName);
+
+                // Streams don't work for recents
+                RecentsController.AddRecent(fileName, false, Pcc?.Game);
+                RecentsController.SaveRecentList(true);
+
+                postloadPackage(fileName);
+
+            }
+            catch (Exception ex) when (!App.IsDebug)
+            {
+                MessageBox.Show(this, "Error:\n" + ex.Message);
+                Title = "Sequence Editor";
+                CurrentFile = null;
+                UnLoadMEPackage();
+            }
+        }
+
+        private void LoadSequences()
+        {
+            TreeViewRootNodes.ClearEx();
+            var prefabs = new Dictionary<string, TreeViewEntry>();
+            foreach (var export in Pcc.Exports)
+            {
+                switch (export.ClassName)
+                {
+                    case "Sequence" when !(export.HasParent && export.Parent.IsSequence()):
+                        TreeViewRootNodes.Add(FindSequences(export, export.ObjectName != "Main_Sequence"));
+                        SequenceExports.Add(export);
+                        break;
+                    case "Prefab":
+                        try
                         {
-                            for (int j = 0; j < sBox.Outlinks[i].Links.Count; j++)
+                            prefabs.Add(export.ObjectName.Name, new TreeViewEntry(export, export.InstancedFullPath));
+                        }
+                        catch
+                        {
+                            // ignored
+                        }
+
+                        break;
+                }
+            }
+
+            if (prefabs.Count > 0)
+            {
+                foreach (var export in Pcc.Exports)
+                {
+                    if (export.ClassName == "PrefabSequence" && export.Parent?.ClassName == "Prefab")
+                    {
+                        string parentName = Pcc.getObjectName(export.idxLink);
+                        if (prefabs.ContainsKey(parentName))
+                        {
+                            prefabs[parentName].Sublinks.Add(FindSequences(export));
+                        }
+                    }
+                }
+
+                foreach (var item in prefabs.Values)
+                {
+                    if (item.Sublinks.Any())
+                    {
+                        TreeViewRootNodes.Add(item);
+                    }
+                }
+            }
+        }
+
+        private TreeViewEntry FindSequences(ExportEntry rootSeq, bool wantFullName = false)
+        {
+            string seqName = wantFullName ? $"{rootSeq.ParentInstancedFullPath}." : "";
+            if (rootSeq.GetProperty<StrProperty>("ObjName") is StrProperty objName)
+            {
+                seqName += objName;
+            }
+            else
+            {
+                seqName += rootSeq.ObjectName.Instanced;
+            }
+            var root = new TreeViewEntry(rootSeq, $"#{rootSeq.UIndex}: {seqName}")
+            {
+                IsExpanded = true
+            };
+            var pcc = rootSeq.FileRef;
+            var seqObjs = rootSeq.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+            if (seqObjs != null)
+            {
+                foreach (ObjectProperty seqObj in seqObjs)
+                {
+                    if (!pcc.IsUExport(seqObj.Value)) continue;
+                    ExportEntry exportEntry = pcc.GetUExport(seqObj.Value);
+                    if (exportEntry.ClassName == "Sequence" || exportEntry.ClassName.StartsWith("PrefabSequence"))
+                    {
+                        TreeViewEntry t = FindSequences(exportEntry);
+                        SequenceExports.Add(exportEntry);
+                        root.Sublinks.Add(t);
+                    }
+                    else if (exportEntry.ClassName == "SequenceReference")
+                    {
+                        var propSequenceReference = exportEntry.GetProperty<ObjectProperty>("oSequenceReference");
+                        if (propSequenceReference != null)
+                        {
+                            TreeViewEntry treeViewEntry = null;
+
+                            if (pcc.TryGetUExport(propSequenceReference.Value, out var exportRef))
                             {
-                                outputLinksMenuItem.Visibility = Visibility.Visible;
-                                hasLinks = true;
-                                string targetStr = null;
-                                if (Pcc.TryGetEntry(sBox.Outlinks[i].Links[j], out var target))
+                                treeViewEntry = FindSequences(exportRef);
+                                SequenceExports.Add(exportEntry);
+                            }
+                            else if (pcc.TryGetImport(propSequenceReference.Value, out var importRef))
+                            {
+                                treeViewEntry = new TreeViewEntry(importRef, $"#{importRef.UIndex}: {importRef.InstancedFullPath}");
+                            }
+
+                            if (treeViewEntry != null)
+                            {
+                                root.Sublinks.Add(treeViewEntry);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return root;
+        }
+
+        private void LoadSequence(ExportEntry seqExport, bool fromFile = true)
+        {
+            if (seqExport == null)
+            {
+                return;
+            }
+
+            graphEditor.Enabled = false;
+            graphEditor.UseWaitCursor = true;
+            SelectedSequence = seqExport;
+            SetupJSON(SelectedSequence);
+            var selectedExports = SelectedObjects.Select(o => o.Export).ToList();
+            Properties_InterpreterWPF.LoadExport(seqExport);
+            if (fromFile)
+            {
+                if (File.Exists(JSONpath))
+                {
+                    SavedView = JsonConvert.DeserializeObject<SavedViewData>(File.ReadAllText(JSONpath));
+                }
+                else
+                {
+                    SavedView = new(new(), RectangleF.Empty);
+                }
+
+                customSaveData.Clear();
+                selectedExports.Clear();
+            }
+            try
+            {
+                GenerateGraph();
+                if (selectedExports.Count == 1 && CurrentObjects.FirstOrDefault(obj => obj.Export == selectedExports[0]) is SObj selectedObj)
+                {
+                    panToSelection = false;
+                    CurrentObjects_ListBox.SelectedItem = selectedObj;
+                }
+
+                if (fromFile)
+                {
+                    if (SavedView.ViewBounds != RectangleF.Empty)
+                    {
+                        graphEditor.Camera.ViewBounds = SavedView.ViewBounds;
+                    }
+                    else
+                    {
+                        RectangleF viewBounds = (CurrentObjects.FirstOrDefault(obj => obj is SEvent) ?? CurrentObjects.FirstOrDefault())?.GlobalFullBounds ?? new RectangleF();
+                        graphEditor.Camera.AnimateViewToCenterBounds(viewBounds, false, 0);
+                    }
+                }
+            }
+            catch (Exception e) when (!App.IsDebug)
+            {
+                MessageBox.Show(this, $"Error loading sequences from file:\n{e.Message}");
+            }
+            graphEditor.Enabled = true;
+            graphEditor.UseWaitCursor = false;
+        }
+
+        private void SetupJSON(ExportEntry export)
+        {
+            string objectName = System.Text.RegularExpressions.Regex.Replace(export.ObjectName.Name, @"[<>:""/\\|?*]", "");
+            string viewsPath = Pcc.Game switch
+            {
+                MEGame.LE1 => LE1ViewsPath,
+                MEGame.LE2 => LE2ViewsPath,
+                MEGame.LE3 => LE3ViewsPath,
+                MEGame.ME1 => ME1ViewsPath,
+                MEGame.ME2 => ME2ViewsPath,
+                _ => ME3ViewsPath
+            };
+
+            JSONpath = Path.Combine(viewsPath, $"{CurrentFile}.v2#{export.UIndex - 1}{objectName}.JSON");
+        }
+
+        public void GetObjects(ExportEntry export)
+        {
+            CurrentObjects.ClearEx();
+            var seqObjs = export.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+            if (seqObjs != null)
+            {
+                // Resolve imports
+                //var convertedImports = new List<ExportEntry>();
+                //var imports = seqObjs.Where(x => x.Value < 0).Select(x => x.ResolveToEntry(export.FileRef) as ImportEntry);
+
+                //foreach (var import in imports)
+                //{
+                //    var resolved = EntryImporter.ResolveImport(import);
+                //    if (resolved != null)
+                //    {
+                //        convertedImports.Add(resolved);
+                //    }
+                //}
+
+                var nullCount = seqObjs.Count(x => x.Value == 0);
+
+                CurrentObjects.AddRange(seqObjs.OrderBy(prop => prop.Value)
+                                               .Where(prop => Pcc.IsUExport(prop.Value))
+                                               .Select(prop => Pcc.GetUExport(prop.Value))
+                                               .ToHashSet() //remove duplicate exports
+                                               .Select(LoadObject));
+                //CurrentObjects.AddRange(convertedImports.Select(LoadObject));
+
+                // Subtrack imports. But they should be shown still
+                if (CurrentObjects.Count != (seqObjs.Count - nullCount))
+                {
+                    MessageBox.Show(this, "Sequence contains invalid or duplicate exports! Correct this by editing the SequenceObject array in the Properties editor");
+                }
+            }
+        }
+
+        public void GenerateGraph()
+        {
+            graphEditor.nodeLayer.RemoveAllChildren();
+            graphEditor.edgeLayer.RemoveAllChildren();
+            StartPosEvents = 0;
+            StartPosActions = 0;
+            StartPosVars = 0;
+            GetObjects(SelectedSequence);
+            Layout();
+            foreach (SObj o in CurrentObjects)
+            {
+                o.MouseDown += node_MouseDown;
+                o.Click += node_Click;
+            }
+
+            if (SavedView.Positions.IsEmpty() && (Pcc.Game is MEGame.ME2 or MEGame.ME3))
+            {
+                AutoLayout();
+            }
+        }
+
+        public float StartPosEvents;
+        public float StartPosActions;
+        public float StartPosVars;
+
+        public SObj LoadObject(ExportEntry export)
+        {
+            float x = float.NaN, y = float.NaN;
+            foreach (var prop in export.GetProperties())
+            {
+                switch (prop)
+                {
+                    case IntProperty intProp when intProp.Name == "ObjPosX":
+                        x = intProp.Value;
+                        break;
+                    case IntProperty intProp when intProp.Name == "ObjPosY":
+                        y = intProp.Value;
+                        break;
+                }
+            }
+
+            if (export.IsA("SequenceEvent"))
+            {
+                return new SEvent(export, graphEditor);
+            }
+            else if (export.IsA("SequenceVariable"))
+            {
+                return new SVar(export, graphEditor);
+            }
+            else if (export.ClassName == "SequenceFrame" && (Pcc.Game == MEGame.ME1 || Pcc.Game == MEGame.UDK || Pcc.Game.IsLEGame()))
+            {
+                return new SFrame(export, graphEditor);
+            }
+            else //if (s.StartsWith("BioSeqAct_") || s.StartsWith("SeqAct_") || s.StartsWith("SFXSeqAct_") || s.StartsWith("SeqCond_") || pcc.getExport(index).ClassName == "Sequence" || pcc.getExport(index).ClassName == "SequenceReference")
+            {
+                return new SAction(export, graphEditor);
+            }
+        }
+
+        private static bool warnedOfReload = false;
+
+        /// <summary>
+        /// Forcibly reloads the package from disk. The package loaded in this instance will no longer be shared.
+        /// </summary>
+        private void ForceReloadPackageWithoutSharing()
+        {
+            var fileOnDisk = Pcc.FilePath;
+            if (fileOnDisk != null && File.Exists(fileOnDisk))
+            {
+                if (Pcc.IsModified)
+                {
+                    var warningResult = MessageBox.Show(this, "The current package is modified. Reloading the package will cause you to lose all changes to this package.\n\nReload anyways?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                    if (warningResult != MessageBoxResult.Yes)
+                        return; // Do not continue!
+                }
+
+                if (!warnedOfReload)
+                {
+                    var warningResult = MessageBox.Show(this, "Forcibly reloading a package will drop it out of tool sharing - making changes to this package in other will not be reflected in this window, and changes to this window will not be reflected in other windows. THIS MEANS SAVING WILL OVERWRITE CHANGES FROM OTHER WINDOWS. Only continue if you know what you are doing.\n\nReload anyways?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Error);
+                    if (warningResult != MessageBoxResult.Yes)
+                        return; // Do not continue!
+                    warnedOfReload = true;
+                }
+
+                var selectedIndex = (CurrentObjects_ListBox.SelectedItem as SObj)?.Export.UIndex ?? 0;
+                using var fStream = File.OpenRead(fileOnDisk);
+                LoadFileFromStream(fStream, fileOnDisk, selectedIndex);
+                Title += " (NOT SHARED WITH OTHER WINDOWS)";
+            }
+        }
+
+        public void Layout()
+        {
+            var objsInNeedOfLayout = new HashSet<SObj>();
+            if (CurrentObjects != null && CurrentObjects.Any())
+            {
+                foreach (SObj obj in CurrentObjects)
+                {
+                    graphEditor.addNode(obj);
+                }
+
+                foreach (SObj obj in CurrentObjects)
+                {
+                    obj.CreateConnections(CurrentObjects);
+                }
+
+                foreach (SObj obj in CurrentObjects)
+                {
+                    if (SavedView.Positions.TryGetValue(obj.UIndex, out PointF savedInfo))
+                    {
+                        obj.Layout(savedInfo.X, savedInfo.Y);
+                        continue;
+                    }
+                    if (Pcc.Game == MEGame.ME1 || Pcc.Game == MEGame.UDK || Pcc.Game.IsLEGame())
+                    {
+                        var props = obj.Export.GetProperties();
+                        IntProperty xPos = props.GetProp<IntProperty>("ObjPosX");
+                        IntProperty yPos = props.GetProp<IntProperty>("ObjPosY");
+                        if (xPos is not null || yPos is not null)
+                        {
+                            obj.Layout(xPos?.Value ?? 0, yPos?.Value ?? 0);
+                            continue;
+                        }
+                    }
+
+                    objsInNeedOfLayout.Add(obj);
+                    obj.Layout(0, 0);
+                    //switch (obj)
+                    //{
+                    //    case SEvent:
+                    //        obj.Layout(StartPosEvents, 0);
+                    //        StartPosEvents += obj.Width + 20;
+                    //        break;
+                    //    case SAction:
+                    //        obj.Layout(StartPosActions, 250);
+                    //        StartPosActions += obj.Width + 20;
+                    //        break;
+                    //    case SVar:
+                    //        obj.Layout(StartPosVars, 500);
+                    //        StartPosVars += obj.Width + 20;
+                    //        break;
+                    //}
+                }
+
+                if (objsInNeedOfLayout.Any())
+                {
+                    AutoLayout(objsInNeedOfLayout);
+                }
+                else
+                {
+                    foreach (SeqEdEdge edge in graphEditor.edgeLayer)
+                    {
+                        GraphEditor.UpdateEdge(edge);
+                    }
+                }
+            }
+        }
+
+        private void AutoLayout(ICollection<SObj> objsToLayout = null)
+        {
+            var visitedNodes = new HashSet<int>();
+
+            if (objsToLayout is null)
+            {
+                objsToLayout = CurrentObjects;
+            }
+            else
+            {
+                visitedNodes.AddRange(CurrentObjects.Except(objsToLayout).Select(obj => obj.UIndex));
+            }
+
+            foreach (SObj obj in objsToLayout)
+            {
+                obj.SetOffset(0, 0); //remove existing positioning
+            }
+
+            const float HORIZONTAL_SPACING = 40;
+            const float VERTICAL_SPACING = 20;
+            const float VAR_SPACING = 10;
+            var eventNodes = objsToLayout.OfType<SEvent>().ToList();
+            SObj firstNode = eventNodes.FirstOrDefault();
+            var varNodeLookup = objsToLayout.OfType<SVar>().ToDictionary(obj => obj.UIndex);
+            var opNodeLookup = objsToLayout.OfType<SBox>().ToDictionary(obj => obj.UIndex);
+            var rootTree = new List<SObj>();
+            //SEvents are natural root nodes. ALmost everything will proceed from one of these
+            foreach (SEvent eventNode in eventNodes)
+            {
+                LayoutTree(eventNode, 5 * VERTICAL_SPACING);
+            }
+
+            //Find SActions with no inputs. These will not have been reached from an SEvent
+            var orphanRoots = objsToLayout.OfType<SAction>().Where(node => node.InputEdges.IsEmpty());
+            foreach (SAction orphan in orphanRoots)
+            {
+                LayoutTree(orphan, VERTICAL_SPACING);
+            }
+
+            //It's possible that there are groups of otherwise unconnected SActions that form cycles.
+            //Might be possible to make a better heuristic for choosing a root than sequence order, but this situation is so rare it's not worth the effort
+            var cycleNodes = objsToLayout.OfType<SAction>().Where(node => !visitedNodes.Contains(node.UIndex));
+            foreach (SAction cycleNode in cycleNodes)
+            {
+                LayoutTree(cycleNode, VERTICAL_SPACING);
+            }
+
+            //Lonely unconnected variables. Put them in a row below everything else
+            var unusedVars = objsToLayout.OfType<SVar>().Where(obj => !visitedNodes.Contains(obj.UIndex));
+            float varOffset = 0;
+            float vertOffset = rootTree.BoundingRect().Bottom + VERTICAL_SPACING;
+            foreach (SVar unusedVar in unusedVars)
+            {
+                unusedVar.OffsetBy(varOffset, vertOffset);
+                varOffset += unusedVar.GlobalFullWidth + HORIZONTAL_SPACING;
+            }
+
+            if (firstNode != null) objsToLayout.OffsetBy(0, -firstNode.OffsetY);
+
+            foreach (SeqEdEdge edge in graphEditor.edgeLayer)
+                GraphEditor.UpdateEdge(edge);
+
+
+            void LayoutTree(SBox sAction, float verticalSpacing)
+            {
+                firstNode ??= sAction;
+                visitedNodes.Add(sAction.UIndex);
+                var subTree = LayoutSubTree(sAction);
+                float width = subTree.BoundingRect().Width + HORIZONTAL_SPACING;
+                //ignore nodes that are further to the right than this subtree is wide. This allows tighter spacing
+                float dy = rootTree.Where(node => node.GlobalFullBounds.Left < width).BoundingRect().Bottom;
+                if (dy > 0) dy += verticalSpacing;
+                subTree.OffsetBy(0, dy);
+                rootTree.AddRange(subTree);
+            }
+
+            List<SObj> LayoutSubTree(SBox root)
+            {
+                //Task.WaitAll(Task.Delay(1500));
+                var tree = new List<SObj>();
+                var vars = new List<SVar>();
+                foreach (var varLink in root.Varlinks)
+                {
+                    float dx = varLink.node.GlobalFullBounds.X - SVar.RADIUS;
+                    float dy = root.GlobalFullHeight + VAR_SPACING;
+                    foreach (int uIndex in varLink.Links.Where(uIndex => !visitedNodes.Contains(uIndex)))
+                    {
+                        visitedNodes.Add(uIndex);
+                        if (varNodeLookup.TryGetValue(uIndex, out SVar sVar))
+                        {
+                            sVar.OffsetBy(dx, dy);
+                            dy += sVar.GlobalFullHeight + VAR_SPACING;
+                            vars.Add(sVar);
+                        }
+                    }
+                }
+
+                var childTrees = new List<List<SObj>>();
+                var children = root.Outlinks.SelectMany(link => link.Links).Where(uIndex => !visitedNodes.Contains(uIndex));
+                foreach (int uIndex in children)
+                {
+                    visitedNodes.Add(uIndex);
+                    if (opNodeLookup.TryGetValue(uIndex, out SBox node))
+                    {
+                        List<SObj> subTree = LayoutSubTree(node);
+                        childTrees.Add(subTree);
+                    }
+                }
+
+                if (childTrees.Any())
+                {
+                    float dx = root.GlobalFullWidth + (HORIZONTAL_SPACING * (1 + childTrees.Count * 0.4f));
+                    foreach (List<SObj> subTree in childTrees)
+                    {
+                        float subTreeWidth = subTree.BoundingRect().Width + HORIZONTAL_SPACING + dx;
+                        //ignore nodes that are further to the right than this subtree is wide. This allows tighter spacing
+                        float dy = tree.Where(node => node.GlobalFullBounds.Left < subTreeWidth).BoundingRect().Bottom;
+                        if (dy > 0) dy += VERTICAL_SPACING;
+                        subTree.OffsetBy(dx, dy);
+                        //TODO: fix this so it doesn't screw up some sequences. eg: BioD_ProEar_310BigFall.pcc
+                        /*float treeWidth = tree.BoundingRect().Width + HORIZONTAL_SPACING;
+                        //tighten spacing when this subtree is wider than existing tree. 
+                        dy -= subTree.Where(node => node.GlobalFullBounds.Left < treeWidth).BoundingRect().Top;
+                        if (dy < 0) dy += VERTICAL_SPACING;
+                        subTree.OffsetBy(0, dy);*/
+
+                        tree.AddRange(subTree);
+                    }
+
+                    //center the root on its children
+                    float centerOffset = tree.OfType<SBox>().BoundingRect().Height / 2 - root.GlobalFullHeight / 2;
+                    root.OffsetBy(0, centerOffset);
+                    vars.OffsetBy(0, centerOffset);
+                }
+
+                tree.AddRange(vars);
+                tree.Add(root);
+                return tree;
+            }
+        }
+
+        public void RefreshView()
+        {
+            saveView(false);
+            LoadSequence(SelectedSequence, false);
+        }
+
+        private void backMouseDown_Handler(object sender, PInputEventArgs e)
+        {
+            if (!(e.PickedNode is PCamera) || SelectedSequence == null) return;
+
+            if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            {
+                if (FindResource("backContextMenu") is ContextMenu contextMenu)
+                {
+                    contextMenu.IsOpen = true;
+                }
+            }
+            else if (e.Shift)
+            {
+                //graphEditor.StartBoxSelection(e);
+                //e.Handled = true;
+            }
+            else
+            {
+                CurrentObjects_ListBox.SelectedItems.Clear();
+            }
+        }
+
+        private void back_MouseUp(object sender, PInputEventArgs e)
+        {
+            //var nodesToSelect = graphEditor.EndBoxSelection().OfType<SObj>();
+            //foreach (SObj sObj in nodesToSelect)
+            //{
+            //    panToSelection = false;
+            //    CurrentObjects_ListBox.SelectedItems.Add(sObj);
+            //}
+        }
+
+        private void graphEditor_Click(object sender, EventArgs e)
+        {
+            graphEditor.Focus();
+        }
+
+        private void SequenceEditor_DragEnter(object sender, System.Windows.Forms.DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(System.Windows.Forms.DataFormats.FileDrop))
+                e.Effect = System.Windows.Forms.DragDropEffects.All;
+            else
+                e.Effect = System.Windows.Forms.DragDropEffects.None;
+        }
+
+        private void SequenceEditor_DragDrop(object sender, System.Windows.Forms.DragEventArgs e)
+        {
+            if (e.Data.GetData(System.Windows.Forms.DataFormats.FileDrop) is string[] DroppedFiles)
+            {
+                if (DroppedFiles.Any())
+                {
+                    LoadFile(DroppedFiles[0]);
+                }
+            }
+        }
+
+        public override void handleUpdate(List<PackageUpdate> updates)
+        {
+            if (Pcc == null)
+            {
+                return; //nothing is loaded
+            }
+
+            IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.Change.Has(PackageChange.Export));
+            List<int> updatedExports = relevantUpdates.Select(x => x.Index).ToList();
+            if (SelectedSequence != null && updatedExports.Contains(SelectedSequence.UIndex))
+            {
+                //loaded sequence is no longer a sequence
+                if (!SelectedSequence.IsSequence())
+                {
+                    SelectedSequence = null;
+                    graphEditor.nodeLayer.RemoveAllChildren();
+                    graphEditor.edgeLayer.RemoveAllChildren();
+                    CurrentObjects.ClearEx();
+                    SequenceExports.ClearEx();
+                    SelectedObjects.ClearEx();
+                    Properties_InterpreterWPF.UnloadExport();
+                }
+
+                RefreshView();
+                LoadSequences();
+                return;
+            }
+
+            if (updatedExports.Intersect(CurrentObjects.Select(obj => obj.UIndex)).Any())
+            {
+                RefreshView();
+            }
+
+            foreach (var i in updatedExports)
+            {
+                if (Pcc.IsUExport(i) && Pcc.GetUExport(i).IsSequence())
+                {
+                    LoadSequences();
+                    break;
+                }
+            }
+        }
+
+        private readonly Dictionary<int, PointF> customSaveData = new();
+        private bool panToSelection = true;
+        private string FileQueuedForLoad;
+        private ExportEntry ExportQueuedForFocusing;
+        private bool AllowWindowRefocus = true;
+        private static readonly Color GraphEditorBackColor = Color.FromArgb(167, 167, 167);
+
+        private void saveView(bool toFile = true)
+        {
+            if (CurrentObjects.Count == 0)
+                return;
+            SavedView = new(new(), graphEditor.Camera.ViewBounds);
+            foreach (SObj obj in CurrentObjects)
+            {
+                if (obj.Pickable)
+                {
+                    SavedView.Positions[obj.UIndex] = new PointF(obj.X + obj.Offset.X, obj.Y + obj.Offset.Y);
+                }
+            }
+
+            foreach ((int key, PointF value) in customSaveData)
+            {
+                SavedView.Positions[key] = value;
+            }
+            customSaveData.Clear();
+
+            if (toFile)
+            {
+                string outputFile = JsonConvert.SerializeObject(SavedView);
+                if (!Directory.Exists(Path.GetDirectoryName(JSONpath)))
+                    Directory.CreateDirectory(Path.GetDirectoryName(JSONpath));
+                File.WriteAllText(JSONpath, outputFile);
+                SavedView.Positions.Clear();
+            }
+        }
+
+        public void OpenNodeContextMenu(SObj obj)
+        {
+            if (FindResource("nodeContextMenu") is ContextMenu contextMenu)
+            {
+                // BREAK LINKS CODE
+                if (contextMenu.GetChild("breakLinksMenuItem") is MenuItem breakLinksMenuItem)
+                {
+                    if (obj is SBox sBox && (sBox.Varlinks.Any() || sBox.Outlinks.Any() || sBox.EventLinks.Any()))
+                    {
+                        bool hasLinks = false;
+                        if (breakLinksMenuItem.GetChild("outputLinksMenuItem") is MenuItem outputLinksMenuItem)
+                        {
+                            outputLinksMenuItem.Visibility = Visibility.Collapsed;
+                            outputLinksMenuItem.Items.Clear();
+                            for (int i = 0; i < sBox.Outlinks.Count; i++)
+                            {
+                                for (int j = 0; j < sBox.Outlinks[i].Links.Count; j++)
                                 {
-                                    targetStr = target.ObjectName.Instanced;
+                                    outputLinksMenuItem.Visibility = Visibility.Visible;
+                                    hasLinks = true;
+                                    string targetStr = null;
+                                    if (Pcc.TryGetEntry(sBox.Outlinks[i].Links[j], out var target))
+                                    {
+                                        targetStr = target.ObjectName.Instanced;
+                                    }
+                                    var temp = new MenuItem
+                                    {
+                                        Header = $"Break link from {sBox.Outlinks[i].Desc} to {sBox.Outlinks[i].Links[j]} {targetStr}"
+                                    };
+                                    int linkConnection = i;
+                                    int linkIndex = j;
+                                    temp.Click += (o, args) => { sBox.RemoveOutlink(linkConnection, linkIndex); };
+                                    outputLinksMenuItem.Items.Add(temp);
                                 }
-                                var temp = new MenuItem
-                                {
-                                    Header = $"Break link from {sBox.Outlinks[i].Desc} to {sBox.Outlinks[i].Links[j]} {targetStr}"
-                                };
-                                int linkConnection = i;
-                                int linkIndex = j;
-                                temp.Click += (o, args) => { sBox.RemoveOutlink(linkConnection, linkIndex); };
+                            }
+
+                            if (outputLinksMenuItem.Items.Count > 0)
+                            {
+                                var temp = new MenuItem { Header = "Break All", Tag = obj.Export };
+                                temp.Click += removeAllOutputLinks;
                                 outputLinksMenuItem.Items.Add(temp);
                             }
                         }
-
-                        if (outputLinksMenuItem.Items.Count > 0)
+                        if (breakLinksMenuItem.GetChild("varLinksMenuItem") is MenuItem varLinksMenuItem)
                         {
-                            var temp = new MenuItem { Header = "Break All", Tag = obj.Export };
-                            temp.Click += removeAllOutputLinks;
-                            outputLinksMenuItem.Items.Add(temp);
-                        }
-                    }
-                    if (breakLinksMenuItem.GetChild("varLinksMenuItem") is MenuItem varLinksMenuItem)
-                    {
-                        varLinksMenuItem.Visibility = Visibility.Collapsed;
-                        varLinksMenuItem.Items.Clear();
-                        for (int i = 0; i < sBox.Varlinks.Count; i++)
-                        {
-                            for (int j = 0; j < sBox.Varlinks[i].Links.Count; j++)
+                            varLinksMenuItem.Visibility = Visibility.Collapsed;
+                            varLinksMenuItem.Items.Clear();
+                            for (int i = 0; i < sBox.Varlinks.Count; i++)
                             {
-                                varLinksMenuItem.Visibility = Visibility.Visible;
-                                hasLinks = true;
-
-                                string targetStr = null;
-                                if (Pcc.TryGetEntry(sBox.Varlinks[i].Links[j], out var target))
+                                for (int j = 0; j < sBox.Varlinks[i].Links.Count; j++)
                                 {
-                                    targetStr = target.ObjectName.Instanced;
+                                    varLinksMenuItem.Visibility = Visibility.Visible;
+                                    hasLinks = true;
+
+                                    string targetStr = null;
+                                    if (Pcc.TryGetEntry(sBox.Varlinks[i].Links[j], out var target))
+                                    {
+                                        targetStr = target.ObjectName.Instanced;
+                                    }
+                                    var temp = new MenuItem
+                                    {
+                                        Header = $"Break link from {sBox.Varlinks[i].Desc} to {sBox.Varlinks[i].Links[j]} {targetStr}"
+                                    };
+
+                                    int linkConnection = i;
+                                    int linkIndex = j;
+                                    temp.Click += (o, args) => { sBox.RemoveVarlink(linkConnection, linkIndex); };
+                                    varLinksMenuItem.Items.Add(temp);
                                 }
-                                var temp = new MenuItem
-                                {
-                                    Header = $"Break link from {sBox.Varlinks[i].Desc} to {sBox.Varlinks[i].Links[j]} {targetStr}"
-                                };
+                            }
 
-                                int linkConnection = i;
-                                int linkIndex = j;
-                                temp.Click += (o, args) => { sBox.RemoveVarlink(linkConnection, linkIndex); };
+                            if (varLinksMenuItem.Items.Count > 0)
+                            {
+                                var temp = new MenuItem { Header = "Break All", Tag = obj.Export };
+                                temp.Click += removeAllVarLinks;
                                 varLinksMenuItem.Items.Add(temp);
                             }
                         }
-
-                        if (varLinksMenuItem.Items.Count > 0)
+                        if (breakLinksMenuItem.GetChild("eventLinksMenuItem") is MenuItem eventLinksMenuItem)
                         {
-                            var temp = new MenuItem { Header = "Break All", Tag = obj.Export };
-                            temp.Click += removeAllVarLinks;
-                            varLinksMenuItem.Items.Add(temp);
-                        }
-                    }
-                    if (breakLinksMenuItem.GetChild("eventLinksMenuItem") is MenuItem eventLinksMenuItem)
-                    {
-                        eventLinksMenuItem.Visibility = Visibility.Collapsed;
-                        eventLinksMenuItem.Items.Clear();
-                        for (int i = 0; i < sBox.EventLinks.Count; i++)
-                        {
-                            for (int j = 0; j < sBox.EventLinks[i].Links.Count; j++)
+                            eventLinksMenuItem.Visibility = Visibility.Collapsed;
+                            eventLinksMenuItem.Items.Clear();
+                            for (int i = 0; i < sBox.EventLinks.Count; i++)
                             {
-                                eventLinksMenuItem.Visibility = Visibility.Visible;
-                                hasLinks = true;
-                                var temp = new MenuItem
+                                for (int j = 0; j < sBox.EventLinks[i].Links.Count; j++)
                                 {
-                                    Header = $"Break link from {sBox.EventLinks[i].Desc} to {sBox.EventLinks[i].Links[j]}"
-                                };
-                                int linkConnection = i;
-                                int linkIndex = j;
-                                temp.Click += (o, args) =>
-                                {
-                                    sBox.RemoveEventlink(linkConnection, linkIndex);
-                                };
+                                    eventLinksMenuItem.Visibility = Visibility.Visible;
+                                    hasLinks = true;
+                                    var temp = new MenuItem
+                                    {
+                                        Header = $"Break link from {sBox.EventLinks[i].Desc} to {sBox.EventLinks[i].Links[j]}"
+                                    };
+                                    int linkConnection = i;
+                                    int linkIndex = j;
+                                    temp.Click += (o, args) =>
+                                    {
+                                        sBox.RemoveEventlink(linkConnection, linkIndex);
+                                    };
+                                    eventLinksMenuItem.Items.Add(temp);
+                                }
+                            }
+
+                            if (eventLinksMenuItem.Items.Count > 0)
+                            {
+                                var temp = new MenuItem { Header = "Break All", Tag = obj.Export };
+                                temp.Click += removeAllEventLinks;
                                 eventLinksMenuItem.Items.Add(temp);
                             }
                         }
-
-                        if (eventLinksMenuItem.Items.Count > 0)
+                        if (breakLinksMenuItem.GetChild("breakAllLinksMenuItem") is MenuItem breakAllLinksMenuItem)
                         {
-                            var temp = new MenuItem { Header = "Break All", Tag = obj.Export };
-                            temp.Click += removeAllEventLinks;
-                            eventLinksMenuItem.Items.Add(temp);
+                            if (hasLinks)
+                            {
+                                breakLinksMenuItem.Visibility = Visibility.Visible;
+                                breakAllLinksMenuItem.Visibility = Visibility.Visible;
+                                breakAllLinksMenuItem.Tag = obj.Export;
+                            }
+                            else
+                            {
+                                breakLinksMenuItem.Visibility = Visibility.Collapsed;
+                                breakAllLinksMenuItem.Visibility = Visibility.Collapsed;
+                            }
                         }
                     }
-                    if (breakLinksMenuItem.GetChild("breakAllLinksMenuItem") is MenuItem breakAllLinksMenuItem)
+                    else
                     {
-                        if (hasLinks)
-                        {
-                            breakLinksMenuItem.Visibility = Visibility.Visible;
-                            breakAllLinksMenuItem.Visibility = Visibility.Visible;
-                            breakAllLinksMenuItem.Tag = obj.Export;
-                        }
-                        else
-                        {
-                            breakLinksMenuItem.Visibility = Visibility.Collapsed;
-                            breakAllLinksMenuItem.Visibility = Visibility.Collapsed;
-                        }
+                        breakLinksMenuItem.Visibility = Visibility.Collapsed;
                     }
                 }
-                else
-                {
-                    breakLinksMenuItem.Visibility = Visibility.Collapsed;
-                }
-            }
 
-            // SKIP SEQ OBJECT CODE
-            if (contextMenu.GetChild("skipObjMenuItem") is MenuItem skipObjMenuItem)
-            {
-                if (obj is SBox sBox && sBox.Outlinks.Any())
+                // SKIP SEQ OBJECT CODE
+                if (contextMenu.GetChild("skipObjMenuItem") is MenuItem skipObjMenuItem)
                 {
-                    // TODO: LIMIT TO SINGLE INPUT CAUSE IT DOESN'T REALLY WORK
-                    // WITH MULTIPLE 
-                    bool hasLinks = false;
-                    skipObjMenuItem.Visibility = Visibility.Collapsed;
-                    skipObjMenuItem.Items.Clear();
-                    for (int i = 0; i < sBox.Outlinks.Count; i++)
+                    if (obj is SBox sBox && sBox.Outlinks.Any())
                     {
-                        skipObjMenuItem.Visibility = Visibility.Visible;
-                        hasLinks = true;
-                        var temp = new MenuItem
+                        // TODO: LIMIT TO SINGLE INPUT CAUSE IT DOESN'T REALLY WORK
+                        // WITH MULTIPLE 
+                        bool hasLinks = false;
+                        skipObjMenuItem.Visibility = Visibility.Collapsed;
+                        skipObjMenuItem.Items.Clear();
+                        for (int i = 0; i < sBox.Outlinks.Count; i++)
                         {
-                            Header = $"Use {sBox.Outlinks[i].Desc} as skipped path"
-                        };
-                        int linkConnection = i;
-                        temp.Click += (o, args) => { SeqTools.SkipSequenceElement(obj.Export, outboundLinkIdx: linkConnection); };
-                        skipObjMenuItem.Items.Add(temp);
-                    }
-                }
-                else
-                {
-                    skipObjMenuItem.Visibility = Visibility.Collapsed;
-                }
-            }
-
-            if (contextMenu.GetChild("interpViewerMenuItem") is MenuItem interpViewerMenuItem)
-            {
-                string className = obj.Export.ClassName;
-                if (className == "InterpData"
-                    || (className == "SeqAct_Interp" && obj is SAction action && action.Varlinks.Any() && action.Varlinks[0].Links.Any()
-                        && Pcc.IsUExport(action.Varlinks[0].Links[0]) && Pcc.GetUExport(action.Varlinks[0].Links[0]).ClassName == "InterpData"))
-                {
-                    interpViewerMenuItem.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    interpViewerMenuItem.Visibility = Visibility.Collapsed;
-                }
-            }
-
-            if (contextMenu.GetChild("cloneInterpDataMenuItem") is MenuItem cloneInterpDataMenuItem)
-            {
-                string className = obj.Export.ClassName;
-                if (className == "InterpData")
-                {
-                    cloneInterpDataMenuItem.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    cloneInterpDataMenuItem.Visibility = Visibility.Collapsed;
-                }
-            }
-
-            if (contextMenu.GetChild("plotEditorMenuItem") is MenuItem plotEditorMenuItem)
-            {
-                if (obj is SAction sAction &&
-                    sAction.Export.ClassName == "BioSeqAct_PMExecuteTransition" &&
-                    sAction.Export.GetProperty<IntProperty>("m_nIndex") != null)
-                {
-                    plotEditorMenuItem.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    plotEditorMenuItem.Visibility = Visibility.Collapsed;
-                }
-            }
-
-            if (contextMenu.GetChild("dialogueEditorMenuItem") is MenuItem dialogueEditorMenuItem)
-            {
-
-                if (obj is SAction sAction &&
-                    (sAction.Export.ClassName.EndsWith("SeqAct_StartConversation") || sAction.Export.ClassName.EndsWith("StartAmbientConv")) &&
-                    sAction.Export.GetProperty<ObjectProperty>("Conv") != null)
-                {
-                    dialogueEditorMenuItem.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    dialogueEditorMenuItem.Visibility = Visibility.Collapsed;
-                }
-            }
-
-            if (contextMenu.GetChild("openRefInPackEdMenuItem") is MenuItem openRefInPackEdMenuItem)
-            {
-
-                if (Pcc.Game.IsGame3() && obj is SVar sVar &&
-                    Pcc.IsEntry(sVar.Export.GetProperty<ObjectProperty>("ObjValue")?.Value ?? 0))
-                {
-                    openRefInPackEdMenuItem.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    openRefInPackEdMenuItem.Visibility = Visibility.Collapsed;
-                }
-            }
-
-            if (contextMenu.GetChild("repointIncomingReferences") is MenuItem repointIncomingReferences)
-            {
-
-                if (obj is SVar sVar)
-                {
-                    repointIncomingReferences.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    repointIncomingReferences.Visibility = Visibility.Collapsed;
-                }
-            }
-
-            if (contextMenu.GetChild("sequenceRefGotoMenuItem") is MenuItem sequenceRefGotoMenuItem)
-            {
-
-                if (obj is SAction sAction && sAction.Export != null && (sAction.Export.ClassName is "SequenceReference" or "Sequence"))
-                {
-                    sequenceRefGotoMenuItem.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    sequenceRefGotoMenuItem.Visibility = Visibility.Collapsed;
-                }
-            }
-
-            if (contextMenu.GetChild("seqLogAddItemMenuItem") is MenuItem seqLogAddItemMenuItem)
-            {
-
-                if (obj is SAction sAction && sAction.Export != null && sAction.Export.ClassName == "SeqAct_Log")
-                {
-                    seqLogAddItemMenuItem.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    seqLogAddItemMenuItem.Visibility = Visibility.Collapsed;
-                }
-            }
-
-            if (contextMenu.GetChild("seqLogLogObjectMenuItem") is MenuItem seqLogLogObjectMenuItem)
-            {
-
-                if (obj is SVar sVar && sVar.Export != null)
-                {
-                    seqLogLogObjectMenuItem.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    seqLogLogObjectMenuItem.Visibility = Visibility.Collapsed;
-                }
-            }
-
-            if (contextMenu.GetChild("seqLogLogOutlinkFiringMenuItem") is MenuItem seqLogLogOutlinkFiringMenuItem)
-            {
-                if (obj is SBox sAction && sAction.Export != null && sAction.Outlinks.Any())
-                {
-                    seqLogLogOutlinkFiringMenuItem.Visibility = Visibility.Visible;
-
-                    seqLogLogOutlinkFiringMenuItem.Items.Clear();
-                    for (int i = 0; i < sAction.Outlinks.Count; i++)
-                    {
-                        int tempIdx = i; // Captured
-                        var temp = new MenuItem
-                        {
-                            Header = $"Log when {sAction.Outlinks[i].Desc} fires"
-                        };
-                        temp.Click += (o, args) =>
-                        {
-                            SeqLogLogOutlink(sAction, sAction.Outlinks[tempIdx].Desc);
-                        };
-                        seqLogLogOutlinkFiringMenuItem.Items.Add(temp);
-                    }
-                }
-                else
-                {
-                    seqLogLogOutlinkFiringMenuItem.Visibility = Visibility.Collapsed;
-                }
-            }
-
-            contextMenu.IsOpen = true;
-            graphEditor.DisableDragging();
-        }
-    }
-
-    private void removeAllLinks(object sender, RoutedEventArgs args)
-    {
-        ExportEntry export = (ExportEntry)((MenuItem)sender).Tag;
-        KismetHelper.RemoveAllLinks(export);
-    }
-
-    private void removeAllOutputLinks(object sender, RoutedEventArgs args)
-    {
-        ExportEntry export = (ExportEntry)((MenuItem)sender).Tag;
-        var outLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
-        if (outLinksProp != null)
-        {
-            foreach (var prop in outLinksProp)
-            {
-                prop.GetProp<ArrayProperty<StructProperty>>("Links").Clear();
-            }
-        }
-        export.WriteProperty(outLinksProp);
-    }
-
-    private void removeAllVarLinks(object sender, RoutedEventArgs args)
-    {
-        ExportEntry export = (ExportEntry)((MenuItem)sender).Tag;
-        var varLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
-        if (varLinksProp != null)
-        {
-            foreach (var prop in varLinksProp)
-            {
-                prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").Clear();
-            }
-        }
-        export.WriteProperty(varLinksProp);
-    }
-
-    private void removeAllEventLinks(object sender, RoutedEventArgs args)
-    {
-        ExportEntry export = (ExportEntry)((MenuItem)sender).Tag;
-        var eventLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("EventLinks");
-        if (eventLinksProp != null)
-        {
-            foreach (var prop in eventLinksProp)
-            {
-                prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedEvents").Clear();
-            }
-        }
-        export.WriteProperty(eventLinksProp);
-    }
-
-    private void TrashAndRemoveFromSequence_Click(object sender, RoutedEventArgs e)
-    {
-        if (CurrentObjects_ListBox.SelectedItem is SObj sObj)
-        {
-            //remove incoming connections
-            switch (sObj)
-            {
-                case SVar sVar:
-                    foreach (VarEdge edge in sVar.connections)
-                    {
-                        edge.originator.RemoveVarlink(edge);
-                    }
-                    break;
-                case SAction sAction:
-                    foreach (SBox.InputLink inLink in sAction.InLinks)
-                    {
-                        foreach (ActionEdge edge in inLink.Edges)
-                        {
-                            edge.originator.RemoveOutlink(edge);
+                            skipObjMenuItem.Visibility = Visibility.Visible;
+                            hasLinks = true;
+                            var temp = new MenuItem
+                            {
+                                Header = $"Use {sBox.Outlinks[i].Desc} as skipped path"
+                            };
+                            int linkConnection = i;
+                            temp.Click += (o, args) => { SeqTools.SkipSequenceElement(obj.Export, outboundLinkIdx: linkConnection); };
+                            skipObjMenuItem.Items.Add(temp);
                         }
                     }
-                    break;
-                case SEvent sEvent:
-                    foreach (EventEdge edge in sEvent.connections)
+                    else
                     {
-                        edge.originator.RemoveEventlink(edge);
+                        skipObjMenuItem.Visibility = Visibility.Collapsed;
                     }
-                    break;
+                }
+
+                if (contextMenu.GetChild("interpViewerMenuItem") is MenuItem interpViewerMenuItem)
+                {
+                    string className = obj.Export.ClassName;
+                    if (className == "InterpData"
+                        || (className == "SeqAct_Interp" && obj is SAction action && action.Varlinks.Any() && action.Varlinks[0].Links.Any()
+                            && Pcc.IsUExport(action.Varlinks[0].Links[0]) && Pcc.GetUExport(action.Varlinks[0].Links[0]).ClassName == "InterpData"))
+                    {
+                        interpViewerMenuItem.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        interpViewerMenuItem.Visibility = Visibility.Collapsed;
+                    }
+                }
+
+                if (contextMenu.GetChild("cloneInterpDataMenuItem") is MenuItem cloneInterpDataMenuItem)
+                {
+                    string className = obj.Export.ClassName;
+                    if (className == "InterpData")
+                    {
+                        cloneInterpDataMenuItem.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        cloneInterpDataMenuItem.Visibility = Visibility.Collapsed;
+                    }
+                }
+
+                if (contextMenu.GetChild("plotEditorMenuItem") is MenuItem plotEditorMenuItem)
+                {
+                    if (obj is SAction sAction &&
+                        sAction.Export.ClassName == "BioSeqAct_PMExecuteTransition" &&
+                        sAction.Export.GetProperty<IntProperty>("m_nIndex") != null)
+                    {
+                        plotEditorMenuItem.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        plotEditorMenuItem.Visibility = Visibility.Collapsed;
+                    }
+                }
+
+                if (contextMenu.GetChild("dialogueEditorMenuItem") is MenuItem dialogueEditorMenuItem)
+                {
+
+                    if (obj is SAction sAction &&
+                        (sAction.Export.ClassName.EndsWith("SeqAct_StartConversation") || sAction.Export.ClassName.EndsWith("StartAmbientConv")) &&
+                        sAction.Export.GetProperty<ObjectProperty>("Conv") != null)
+                    {
+                        dialogueEditorMenuItem.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        dialogueEditorMenuItem.Visibility = Visibility.Collapsed;
+                    }
+                }
+
+                if (contextMenu.GetChild("openRefInPackEdMenuItem") is MenuItem openRefInPackEdMenuItem)
+                {
+
+                    if (Pcc.Game.IsGame3() && obj is SVar sVar &&
+                        Pcc.IsEntry(sVar.Export.GetProperty<ObjectProperty>("ObjValue")?.Value ?? 0))
+                    {
+                        openRefInPackEdMenuItem.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        openRefInPackEdMenuItem.Visibility = Visibility.Collapsed;
+                    }
+                }
+
+                if (contextMenu.GetChild("repointIncomingReferences") is MenuItem repointIncomingReferences)
+                {
+
+                    if (obj is SVar sVar)
+                    {
+                        repointIncomingReferences.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        repointIncomingReferences.Visibility = Visibility.Collapsed;
+                    }
+                }
+
+                if (contextMenu.GetChild("sequenceRefGotoMenuItem") is MenuItem sequenceRefGotoMenuItem)
+                {
+
+                    if (obj is SAction sAction && sAction.Export != null && (sAction.Export.ClassName is "SequenceReference" or "Sequence"))
+                    {
+                        sequenceRefGotoMenuItem.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        sequenceRefGotoMenuItem.Visibility = Visibility.Collapsed;
+                    }
+                }
+
+                if (contextMenu.GetChild("seqLogAddItemMenuItem") is MenuItem seqLogAddItemMenuItem)
+                {
+
+                    if (obj is SAction sAction && sAction.Export != null && sAction.Export.ClassName == "SeqAct_Log")
+                    {
+                        seqLogAddItemMenuItem.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        seqLogAddItemMenuItem.Visibility = Visibility.Collapsed;
+                    }
+                }
+
+                if (contextMenu.GetChild("seqLogLogObjectMenuItem") is MenuItem seqLogLogObjectMenuItem)
+                {
+
+                    if (obj is SVar sVar && sVar.Export != null)
+                    {
+                        seqLogLogObjectMenuItem.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        seqLogLogObjectMenuItem.Visibility = Visibility.Collapsed;
+                    }
+                }
+
+                if (contextMenu.GetChild("seqLogLogOutlinkFiringMenuItem") is MenuItem seqLogLogOutlinkFiringMenuItem)
+                {
+                    if (obj is SBox sAction && sAction.Export != null && sAction.Outlinks.Any())
+                    {
+                        seqLogLogOutlinkFiringMenuItem.Visibility = Visibility.Visible;
+
+                        seqLogLogOutlinkFiringMenuItem.Items.Clear();
+                        for (int i = 0; i < sAction.Outlinks.Count; i++)
+                        {
+                            int tempIdx = i; // Captured
+                            var temp = new MenuItem
+                            {
+                                Header = $"Log when {sAction.Outlinks[i].Desc} fires"
+                            };
+                            temp.Click += (o, args) =>
+                            {
+                                SeqLogLogOutlink(sAction, sAction.Outlinks[tempIdx].Desc);
+                            };
+                            seqLogLogOutlinkFiringMenuItem.Items.Add(temp);
+                        }
+                    }
+                    else
+                    {
+                        seqLogLogOutlinkFiringMenuItem.Visibility = Visibility.Collapsed;
+                    }
+                }
+
+                contextMenu.IsOpen = true;
+                graphEditor.DisableDragging();
             }
-
-            //remove outgoing links
-            KismetHelper.RemoveAllLinks(sObj.Export);
-
-            //remove from sequence
-            var seqObjs = SelectedSequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-            var arrayObj = seqObjs?.FirstOrDefault(x => x.Value == sObj.UIndex);
-            if (arrayObj != null)
-            {
-                seqObjs.Remove(arrayObj);
-                SelectedSequence.WriteProperty(seqObjs);
-            }
-
-            //Trash
-            EntryPruner.TrashEntryAndDescendants(sObj.Export);
-
         }
-    }
 
-    protected void node_MouseDown(object sender, PInputEventArgs e)
-    {
-        if (sender is SObj obj)
+        private void removeAllLinks(object sender, RoutedEventArgs args)
         {
-            obj.posAtDragStart = obj.GlobalFullBounds;
-            if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            ExportEntry export = (ExportEntry)((MenuItem)sender).Tag;
+            KismetHelper.RemoveAllLinks(export);
+        }
+
+        private void removeAllOutputLinks(object sender, RoutedEventArgs args)
+        {
+            ExportEntry export = (ExportEntry)((MenuItem)sender).Tag;
+            var outLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+            if (outLinksProp != null)
             {
-                panToSelection = false;
-                if (SelectedObjects.Count > 1)
+                foreach (var prop in outLinksProp)
                 {
-                    CurrentObjects_ListBox.SelectedItems.Clear();
-                    panToSelection = false;
+                    prop.GetProp<ArrayProperty<StructProperty>>("Links").Clear();
+                }
+            }
+            export.WriteProperty(outLinksProp);
+        }
+
+        private void removeAllVarLinks(object sender, RoutedEventArgs args)
+        {
+            ExportEntry export = (ExportEntry)((MenuItem)sender).Tag;
+            var varLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
+            if (varLinksProp != null)
+            {
+                foreach (var prop in varLinksProp)
+                {
+                    prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").Clear();
+                }
+            }
+            export.WriteProperty(varLinksProp);
+        }
+
+        private void removeAllEventLinks(object sender, RoutedEventArgs args)
+        {
+            ExportEntry export = (ExportEntry)((MenuItem)sender).Tag;
+            var eventLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("EventLinks");
+            if (eventLinksProp != null)
+            {
+                foreach (var prop in eventLinksProp)
+                {
+                    prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedEvents").Clear();
+                }
+            }
+            export.WriteProperty(eventLinksProp);
+        }
+
+        private void TrashAndRemoveFromSequence_Click(object sender, RoutedEventArgs e)
+        {
+            if (CurrentObjects_ListBox.SelectedItem is SObj sObj)
+            {
+                //remove incoming connections
+                switch (sObj)
+                {
+                    case SVar sVar:
+                        foreach (VarEdge edge in sVar.connections)
+                        {
+                            edge.originator.RemoveVarlink(edge);
+                        }
+                        break;
+                    case SAction sAction:
+                        foreach (SBox.InputLink inLink in sAction.InLinks)
+                        {
+                            foreach (ActionEdge edge in inLink.Edges)
+                            {
+                                edge.originator.RemoveOutlink(edge);
+                            }
+                        }
+                        break;
+                    case SEvent sEvent:
+                        foreach (EventEdge edge in sEvent.connections)
+                        {
+                            edge.originator.RemoveEventlink(edge);
+                        }
+                        break;
                 }
 
-                CurrentObjects_ListBox.SelectedItem = obj;
-                OpenNodeContextMenu(obj);
-            }
-            else if (e.Shift || e.Control)
-            {
-                panToSelection = false;
-                if (obj.IsSelected)
+                //remove outgoing links
+                KismetHelper.RemoveAllLinks(sObj.Export);
+
+                //remove from sequence
+                var seqObjs = SelectedSequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+                var arrayObj = seqObjs?.FirstOrDefault(x => x.Value == sObj.UIndex);
+                if (arrayObj != null)
                 {
-                    CurrentObjects_ListBox.SelectedItems.Remove(obj);
+                    seqObjs.Remove(arrayObj);
+                    SelectedSequence.WriteProperty(seqObjs);
                 }
-                else
-                {
-                    CurrentObjects_ListBox.SelectedItems.Add(obj);
-                }
-            }
-            else if (!obj.IsSelected)
-            {
-                panToSelection = false;
-                CurrentObjects_ListBox.SelectedItem = obj;
+
+                //Trash
+                EntryPruner.TrashEntryAndDescendants(sObj.Export);
+
             }
         }
-    }
 
-    private void node_Click(object sender, PInputEventArgs e)
-    {
-        if (sender is SObj obj)
+        protected void node_MouseDown(object sender, PInputEventArgs e)
         {
-            if (e.Button != System.Windows.Forms.MouseButtons.Left && obj.GlobalFullBounds == obj.posAtDragStart)
+            if (sender is SObj obj)
             {
-                if (!e.Shift && !e.Control)
+                obj.posAtDragStart = obj.GlobalFullBounds;
+                if (e.Button == System.Windows.Forms.MouseButtons.Right)
                 {
-                    if (SelectedObjects.Count == 1 && obj.IsSelected) return;
                     panToSelection = false;
                     if (SelectedObjects.Count > 1)
                     {
@@ -1689,529 +1650,587 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     }
 
                     CurrentObjects_ListBox.SelectedItem = obj;
+                    OpenNodeContextMenu(obj);
+                }
+                else if (e.Shift || e.Control)
+                {
+                    panToSelection = false;
+                    if (obj.IsSelected)
+                    {
+                        CurrentObjects_ListBox.SelectedItems.Remove(obj);
+                    }
+                    else
+                    {
+                        CurrentObjects_ListBox.SelectedItems.Add(obj);
+                    }
+                }
+                else if (!obj.IsSelected)
+                {
+                    panToSelection = false;
+                    CurrentObjects_ListBox.SelectedItem = obj;
                 }
             }
         }
-    }
 
-    private void SequenceEditorWPF_Closing(object sender, CancelEventArgs e)
-    {
-        if (e.Cancel)
-            return;
-
-        if (AutoSaveView_MenuItem.IsChecked)
-            saveView();
-
-        Settings.SequenceEditor_AutoSaveViewV2 = AutoSaveView_MenuItem.IsChecked;
-        Settings.SequenceEditor_ShowOutputNumbers = SObj.OutputNumbers;
-
-        //Code here remove these objects from leaking the window memory
-        graphEditor.Camera.MouseDown -= backMouseDown_Handler;
-        graphEditor.Camera.MouseUp -= back_MouseUp;
-        graphEditor.Click -= graphEditor_Click;
-        graphEditor.DragDrop -= SequenceEditor_DragDrop;
-        graphEditor.DragEnter -= SequenceEditor_DragEnter;
-        CurrentObjects.ForEach(x =>
+        private void node_Click(object sender, PInputEventArgs e)
         {
-            x.MouseDown -= node_MouseDown;
-            x.Click -= node_Click;
-            x.Dispose();
-        });
-        CurrentObjects.Clear();
-        graphEditor.Dispose();
-        Properties_InterpreterWPF.Dispose();
-        GraphHost.Child = null; //This seems to be required to clear OnChildGotFocus handler from WinFormsHost
-        GraphHost.Dispose();
-        DataContext = null;
-        DispatcherHelper.EmptyQueue();
-        RecentsController?.Dispose();
-    }
-
-    private void OpenInPackageEditor_Clicked(object sender, RoutedEventArgs e)
-    {
-        if (CurrentObjects_ListBox.SelectedItem is SObj obj)
-        {
-            AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
-            var p = new PackageEditor.PackageEditorWindow();
-            p.Show();
-            p.LoadFile(obj.Export.FileRef.FilePath, obj.UIndex);
-            p.Activate(); //bring to front
-        }
-    }
-
-    private void OpenReferencedObjectInPackageEditor_Clicked(object sender, RoutedEventArgs e)
-    {
-        if (CurrentObjects_ListBox.SelectedItem is SVar sVar && sVar.Export.GetProperty<ObjectProperty>("ObjValue") is ObjectProperty objProp)
-        {
-            AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
-            var p = new PackageEditor.PackageEditorWindow();
-            p.Show();
-            p.LoadFile(sVar.Export.FileRef.FilePath, objProp.Value);
-            p.Activate(); //bring to front
-        }
-    }
-
-    private void CloneInterpData_Clicked(object sender, RoutedEventArgs e)
-    {
-        if (SelectedObjects.HasExactly(1) && SelectedObjects[0] is SVar sVar && sVar.Export.ClassName == "InterpData")
-        {
-            addObject(EntryCloner.CloneTree(sVar.Export));
-        }
-    }
-
-    private void CloneObject_Clicked(object sender, RoutedEventArgs e)
-    {
-        if (CurrentObjects_ListBox.SelectedItem is SObj obj)
-        {
-            ExportEntry clonedExport = cloneObject(obj.Export, SelectedSequence);
-            customSaveData[clonedExport.UIndex] = new PointF(graphEditor.Camera.ViewCenterX, graphEditor.Camera.ViewCenterY);
-        }
-    }
-
-    static ExportEntry cloneObject(ExportEntry old, ExportEntry sequence, bool topLevel = true, bool incrementIndex = true)
-    {
-        //SeqVar_External needs to have the same index to work properly
-        ExportEntry exp = EntryCloner.CloneEntry(old, incrementIndex: incrementIndex && old.ClassName != "SeqVar_External");
-
-        KismetHelper.AddObjectToSequence(exp, sequence, topLevel);
-        cloneSequence(exp);
-        return exp;
-    }
-
-    static void cloneSequence(ExportEntry exp)
-    {
-        IMEPackage pcc = exp.FileRef;
-        if (exp.ClassName == "Sequence")
-        {
-            //sequence names need to be unique I think?
-            exp.ObjectName = pcc.GetNextIndexedName(exp.ObjectName.Name);
-
-            var seqObjs = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-            if (seqObjs == null || seqObjs.Count == 0)
+            if (sender is SObj obj)
             {
+                if (e.Button != System.Windows.Forms.MouseButtons.Left && obj.GlobalFullBounds == obj.posAtDragStart)
+                {
+                    if (!e.Shift && !e.Control)
+                    {
+                        if (SelectedObjects.Count == 1 && obj.IsSelected) return;
+                        panToSelection = false;
+                        if (SelectedObjects.Count > 1)
+                        {
+                            CurrentObjects_ListBox.SelectedItems.Clear();
+                            panToSelection = false;
+                        }
+
+                        CurrentObjects_ListBox.SelectedItem = obj;
+                    }
+                }
+            }
+        }
+
+        private void SequenceEditorWPF_Closing(object sender, CancelEventArgs e)
+        {
+            if (e.Cancel)
                 return;
-            }
 
-            //store original list of sequence objects;
-            List<int> oldObjects = seqObjs.Select(x => x.Value).ToList();
+            if (AutoSaveView_MenuItem.IsChecked)
+                saveView();
 
-            //clear original sequence objects
-            seqObjs.Clear();
-            exp.WriteProperty(seqObjs);
+            Settings.SequenceEditor_AutoSaveViewV2 = AutoSaveView_MenuItem.IsChecked;
+            Settings.SequenceEditor_ShowOutputNumbers = SObj.OutputNumbers;
 
-            //clone all children
-            foreach (var obj in oldObjects)
+            //Code here remove these objects from leaking the window memory
+            graphEditor.Camera.MouseDown -= backMouseDown_Handler;
+            graphEditor.Camera.MouseUp -= back_MouseUp;
+            graphEditor.Click -= graphEditor_Click;
+            graphEditor.DragDrop -= SequenceEditor_DragDrop;
+            graphEditor.DragEnter -= SequenceEditor_DragEnter;
+            CurrentObjects.ForEach(x =>
             {
-                cloneObject(pcc.GetUExport(obj), exp, false, false);
-            }
+                x.MouseDown -= node_MouseDown;
+                x.Click -= node_Click;
+                x.Dispose();
+            });
+            CurrentObjects.Clear();
+            graphEditor.Dispose();
+            Properties_InterpreterWPF.Dispose();
+            GraphHost.Child = null; //This seems to be required to clear OnChildGotFocus handler from WinFormsHost
+            GraphHost.Dispose();
+            DataContext = null;
+            DispatcherHelper.EmptyQueue();
+            RecentsController?.Dispose();
+        }
 
-            //re-point children's links to new objects
-            seqObjs = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-            foreach (var seqObj in seqObjs)
+        private void OpenInPackageEditor_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (CurrentObjects_ListBox.SelectedItem is SObj obj)
             {
-                ExportEntry obj = pcc.GetUExport(seqObj.Value);
-                var props = obj.GetProperties();
+                AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
+                var p = new PackageEditor.PackageEditorWindow();
+                p.Show();
+                p.LoadFile(obj.Export.FileRef.FilePath, obj.UIndex);
+                p.Activate(); //bring to front
+            }
+        }
+
+        private void OpenReferencedObjectInPackageEditor_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (CurrentObjects_ListBox.SelectedItem is SVar sVar && sVar.Export.GetProperty<ObjectProperty>("ObjValue") is ObjectProperty objProp)
+            {
+                AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
+                var p = new PackageEditor.PackageEditorWindow();
+                p.Show();
+                p.LoadFile(sVar.Export.FileRef.FilePath, objProp.Value);
+                p.Activate(); //bring to front
+            }
+        }
+
+        private void CloneInterpData_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (SelectedObjects.HasExactly(1) && SelectedObjects[0] is SVar sVar && sVar.Export.ClassName == "InterpData")
+            {
+                addObject(EntryCloner.CloneTree(sVar.Export));
+            }
+        }
+
+        private void CloneObject_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (CurrentObjects_ListBox.SelectedItem is SObj obj)
+            {
+                ExportEntry clonedExport = cloneObject(obj.Export, SelectedSequence);
+                customSaveData[clonedExport.UIndex] = new PointF(graphEditor.Camera.ViewCenterX, graphEditor.Camera.ViewCenterY);
+            }
+        }
+
+        static ExportEntry cloneObject(ExportEntry old, ExportEntry sequence, bool topLevel = true, bool incrementIndex = true)
+        {
+            //SeqVar_External needs to have the same index to work properly
+            ExportEntry exp = EntryCloner.CloneEntry(old, incrementIndex: incrementIndex && old.ClassName != "SeqVar_External");
+
+            KismetHelper.AddObjectToSequence(exp, sequence, topLevel);
+            cloneSequence(exp);
+            return exp;
+        }
+
+        static void cloneSequence(ExportEntry exp)
+        {
+            IMEPackage pcc = exp.FileRef;
+            if (exp.ClassName == "Sequence")
+            {
+                //sequence names need to be unique I think?
+                exp.ObjectName = pcc.GetNextIndexedName(exp.ObjectName.Name);
+
+                var seqObjs = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+                if (seqObjs == null || seqObjs.Count == 0)
+                {
+                    return;
+                }
+
+                //store original list of sequence objects;
+                List<int> oldObjects = seqObjs.Select(x => x.Value).ToList();
+
+                //clear original sequence objects
+                seqObjs.Clear();
+                exp.WriteProperty(seqObjs);
+
+                //clone all children
+                foreach (var obj in oldObjects)
+                {
+                    cloneObject(pcc.GetUExport(obj), exp, false, false);
+                }
+
+                //re-point children's links to new objects
+                seqObjs = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+                foreach (var seqObj in seqObjs)
+                {
+                    ExportEntry obj = pcc.GetUExport(seqObj.Value);
+                    var props = obj.GetProperties();
+                    var outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
+                    if (outLinksProp != null)
+                    {
+                        foreach (var outLinkStruct in outLinksProp)
+                        {
+                            var links = outLinkStruct.GetProp<ArrayProperty<StructProperty>>("Links");
+                            foreach (var link in links)
+                            {
+                                var linkedOp = link.GetProp<ObjectProperty>("LinkedOp");
+                                linkedOp.Value = seqObjs[oldObjects.IndexOf(linkedOp.Value)].Value;
+                            }
+                        }
+                    }
+
+                    var varLinksProp = props.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
+                    if (varLinksProp != null)
+                    {
+                        foreach (var varLinkStruct in varLinksProp)
+                        {
+                            var links = varLinkStruct.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
+                            foreach (var link in links)
+                            {
+                                link.Value = seqObjs[oldObjects.IndexOf(link.Value)].Value;
+                            }
+                        }
+                    }
+
+                    var eventLinksProp = props.GetProp<ArrayProperty<StructProperty>>("EventLinks");
+                    if (eventLinksProp != null)
+                    {
+                        foreach (var eventLinkStruct in eventLinksProp)
+                        {
+                            var links = eventLinkStruct.GetProp<ArrayProperty<ObjectProperty>>("LinkedEvents");
+                            foreach (var link in links)
+                            {
+                                link.Value = seqObjs[oldObjects.IndexOf(link.Value)].Value;
+                            }
+                        }
+                    }
+
+                    obj.WriteProperties(props);
+                }
+
+                //re-point sequence links to new objects
+                int oldObj;
+                int newObj;
+                var propCollection = exp.GetProperties();
+                var inputLinksProp = propCollection.GetProp<ArrayProperty<StructProperty>>("InputLinks");
+                if (inputLinksProp != null)
+                {
+                    foreach (var inLinkStruct in inputLinksProp)
+                    {
+                        var linkedOp = inLinkStruct.GetProp<ObjectProperty>("LinkedOp");
+                        oldObj = linkedOp.Value;
+                        if (oldObj != 0)
+                        {
+                            newObj = seqObjs[oldObjects.IndexOf(oldObj)].Value;
+                            linkedOp.Value = newObj;
+
+                            NameProperty linkAction = inLinkStruct.GetProp<NameProperty>("LinkAction");
+                            linkAction.Value = new NameReference(linkAction.Value.Name, pcc.GetUExport(newObj).indexValue);
+                        }
+                    }
+                }
+
+                var outputLinksProp = propCollection.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
+                if (outputLinksProp != null)
+                {
+                    foreach (var outLinkStruct in outputLinksProp)
+                    {
+                        var linkedOp = outLinkStruct.GetProp<ObjectProperty>("LinkedOp");
+                        oldObj = linkedOp.Value;
+                        if (oldObj != 0)
+                        {
+                            newObj = seqObjs[oldObjects.IndexOf(oldObj)].Value;
+                            linkedOp.Value = newObj;
+
+                            NameProperty linkAction = outLinkStruct.GetProp<NameProperty>("LinkAction");
+                            linkAction.Value = new NameReference(linkAction.Value.Name, pcc.GetUExport(newObj).indexValue);
+                        }
+                    }
+                }
+
+                exp.WriteProperties(propCollection);
+            }
+            else if (exp.ClassName == "SequenceReference")
+            {
+                //set OSequenceReference to new sequence
+                var oSeqRefProp = exp.GetProperty<ObjectProperty>("oSequenceReference");
+                if (oSeqRefProp == null || oSeqRefProp.Value == 0)
+                {
+                    return;
+                }
+
+                int oldSeqIndex = oSeqRefProp.Value;
+                oSeqRefProp.Value = exp.UIndex + 1;
+                exp.WriteProperty(oSeqRefProp);
+
+                //clone sequence
+                ExportEntry newSequence = cloneObject(pcc.GetUExport(oldSeqIndex), exp, false);
+                //set SequenceReference's linked name indices
+                var inputIndices = new List<int>();
+                var outputIndices = new List<int>();
+
+                var props = newSequence.GetProperties();
+                var inLinksProp = props.GetProp<ArrayProperty<StructProperty>>("InputLinks");
+                if (inLinksProp != null)
+                {
+                    foreach (var inLink in inLinksProp)
+                    {
+                        inputIndices.Add(inLink.GetProp<NameProperty>("LinkAction").Value.Number);
+                    }
+                }
+
                 var outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
                 if (outLinksProp != null)
                 {
-                    foreach (var outLinkStruct in outLinksProp)
+                    foreach (var outLinks in outLinksProp)
                     {
-                        var links = outLinkStruct.GetProp<ArrayProperty<StructProperty>>("Links");
-                        foreach (var link in links)
-                        {
-                            var linkedOp = link.GetProp<ObjectProperty>("LinkedOp");
-                            linkedOp.Value = seqObjs[oldObjects.IndexOf(linkedOp.Value)].Value;
-                        }
+                        outputIndices.Add(outLinks.GetProp<NameProperty>("LinkAction").Value.Number);
                     }
                 }
 
-                var varLinksProp = props.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
-                if (varLinksProp != null)
+                props = exp.GetProperties();
+                inLinksProp = props.GetProp<ArrayProperty<StructProperty>>("InputLinks");
+                if (inLinksProp != null)
                 {
-                    foreach (var varLinkStruct in varLinksProp)
+                    for (int i = 0; i < inLinksProp.Count; i++)
                     {
-                        var links = varLinkStruct.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
-                        foreach (var link in links)
-                        {
-                            link.Value = seqObjs[oldObjects.IndexOf(link.Value)].Value;
-                        }
+                        NameProperty linkAction = inLinksProp[i].GetProp<NameProperty>("LinkAction");
+                        linkAction.Value = new NameReference(linkAction.Value.Name, inputIndices[i]);
                     }
                 }
 
-                var eventLinksProp = props.GetProp<ArrayProperty<StructProperty>>("EventLinks");
-                if (eventLinksProp != null)
+                outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
+                if (outLinksProp != null)
                 {
-                    foreach (var eventLinkStruct in eventLinksProp)
+                    for (int i = 0; i < outLinksProp.Count; i++)
                     {
-                        var links = eventLinkStruct.GetProp<ArrayProperty<ObjectProperty>>("LinkedEvents");
-                        foreach (var link in links)
-                        {
-                            link.Value = seqObjs[oldObjects.IndexOf(link.Value)].Value;
-                        }
+                        NameProperty linkAction = outLinksProp[i].GetProp<NameProperty>("LinkAction");
+                        linkAction.Value = new NameReference(linkAction.Value.Name, outputIndices[i]);
                     }
                 }
 
-                obj.WriteProperties(props);
+                exp.WriteProperties(props);
             }
-
-            //re-point sequence links to new objects
-            int oldObj;
-            int newObj;
-            var propCollection = exp.GetProperties();
-            var inputLinksProp = propCollection.GetProp<ArrayProperty<StructProperty>>("InputLinks");
-            if (inputLinksProp != null)
-            {
-                foreach (var inLinkStruct in inputLinksProp)
-                {
-                    var linkedOp = inLinkStruct.GetProp<ObjectProperty>("LinkedOp");
-                    oldObj = linkedOp.Value;
-                    if (oldObj != 0)
-                    {
-                        newObj = seqObjs[oldObjects.IndexOf(oldObj)].Value;
-                        linkedOp.Value = newObj;
-
-                        NameProperty linkAction = inLinkStruct.GetProp<NameProperty>("LinkAction");
-                        linkAction.Value = new NameReference(linkAction.Value.Name, pcc.GetUExport(newObj).indexValue);
-                    }
-                }
-            }
-
-            var outputLinksProp = propCollection.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
-            if (outputLinksProp != null)
-            {
-                foreach (var outLinkStruct in outputLinksProp)
-                {
-                    var linkedOp = outLinkStruct.GetProp<ObjectProperty>("LinkedOp");
-                    oldObj = linkedOp.Value;
-                    if (oldObj != 0)
-                    {
-                        newObj = seqObjs[oldObjects.IndexOf(oldObj)].Value;
-                        linkedOp.Value = newObj;
-
-                        NameProperty linkAction = outLinkStruct.GetProp<NameProperty>("LinkAction");
-                        linkAction.Value = new NameReference(linkAction.Value.Name, pcc.GetUExport(newObj).indexValue);
-                    }
-                }
-            }
-
-            exp.WriteProperties(propCollection);
         }
-        else if (exp.ClassName == "SequenceReference")
+
+        private void ContextMenu_Closed(object sender, RoutedEventArgs e)
         {
-            //set OSequenceReference to new sequence
-            var oSeqRefProp = exp.GetProperty<ObjectProperty>("oSequenceReference");
-            if (oSeqRefProp == null || oSeqRefProp.Value == 0)
+            graphEditor.AllowDragging();
+            if (AllowWindowRefocus)
             {
+                Focus(); //this will make window bindings work, as context menu is not part of the visual tree, and focus will be on there if the user clicked it.
+            }
+
+            AllowWindowRefocus = true;
+        }
+
+        private void CurrentObjectsList_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.RemovedItems?.Cast<SObj>().ToList() is List<SObj> deselectedEntries)
+            {
+                SelectedObjects.RemoveRange(deselectedEntries);
+                foreach (SObj obj in deselectedEntries)
+                {
+                    obj.IsSelected = false;
+                }
+            }
+
+            if (e.AddedItems?.Cast<SObj>().ToList() is IList<SObj> selectedEntries)
+            {
+                SelectedObjects.AddRange(selectedEntries);
+                foreach (SObj obj in selectedEntries)
+                {
+                    obj.IsSelected = true;
+                }
+            }
+
+            if (SelectedObjects.Count == 1)
+            {
+                Properties_InterpreterWPF.LoadExport(SelectedObjects[0].Export);
+            }
+            else if (!(Properties_InterpreterWPF.CurrentLoadedExport?.IsSequence() ?? false))
+            {
+                Properties_InterpreterWPF.UnloadExport();
+            }
+
+            if (SelectedObjects.Any())
+            {
+                if (panToSelection)
+                {
+                    if (SelectedObjects.Count == 1)
+                    {
+                        graphEditor.Camera.AnimateViewToCenterBounds(SelectedObjects[0].GlobalFullBounds, false, 100);
+                    }
+                    else
+                    {
+                        RectangleF boundingBox = SelectedObjects.Select(obj => obj.GlobalFullBounds).BoundingRect();
+                        graphEditor.Camera.AnimateViewToCenterBounds(boundingBox, true, 200);
+                    }
+                }
+            }
+
+            panToSelection = true;
+            graphEditor.Refresh();
+        }
+
+        private void SaveImage()
+        {
+            if (CurrentObjects.Count == 0)
                 return;
-            }
-
-            int oldSeqIndex = oSeqRefProp.Value;
-            oSeqRefProp.Value = exp.UIndex + 1;
-            exp.WriteProperty(oSeqRefProp);
-
-            //clone sequence
-            ExportEntry newSequence = cloneObject(pcc.GetUExport(oldSeqIndex), exp, false);
-            //set SequenceReference's linked name indices
-            var inputIndices = new List<int>();
-            var outputIndices = new List<int>();
-
-            var props = newSequence.GetProperties();
-            var inLinksProp = props.GetProp<ArrayProperty<StructProperty>>("InputLinks");
-            if (inLinksProp != null)
+            string objectName = System.Text.RegularExpressions.Regex.Replace(SelectedSequence.ObjectName.Name, @"[<>:""/\\|?*]", "");
+            var d = new SaveFileDialog
             {
-                foreach (var inLink in inLinksProp)
+                Filter = "PNG Files (*.png)|*.png",
+                FileName = $"{CurrentFile}.{objectName}"
+            };
+            if (d.ShowDialog() == true)
+            {
+                PNode r = graphEditor.Root;
+                RectangleF rr = r.GlobalFullBounds;
+                PNode p = PPath.CreateRectangle(rr.X, rr.Y, rr.Width, rr.Height);
+                p.Brush = Brushes.White;
+                graphEditor.addBack(p);
+                graphEditor.Camera.Visible = false;
+                Image image = graphEditor.Root.ToImage();
+                graphEditor.Camera.Visible = true;
+                image.Save(d.FileName, ImageFormat.Png);
+                graphEditor.backLayer.RemoveAllChildren();
+                MessageBox.Show(this, "Done.");
+            }
+        }
+
+        private void addObject(ExportEntry exportToAdd, bool removeLinks = true)
+        {
+            customSaveData[exportToAdd.UIndex] = new PointF(graphEditor.Camera.ViewCenterX, graphEditor.Camera.ViewCenterY);
+            KismetHelper.AddObjectToSequence(exportToAdd, SelectedSequence, removeLinks);
+        }
+
+        private void AddObject_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (EntrySelector.GetEntry<ExportEntry>(this, Pcc) is ExportEntry exportToAdd)
+            {
+                if (!exportToAdd.IsA("SequenceObject"))
                 {
-                    inputIndices.Add(inLink.GetProp<NameProperty>("LinkAction").Value.Number);
+                    MessageBox.Show(this, $"#{exportToAdd.UIndex}: {exportToAdd.ObjectName.Instanced} is not a sequence object.");
+                    return;
                 }
-            }
 
-            var outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
-            if (outLinksProp != null)
-            {
-                foreach (var outLinks in outLinksProp)
+                if (CurrentObjects.Any(obj => obj.Export == exportToAdd))
                 {
-                    outputIndices.Add(outLinks.GetProp<NameProperty>("LinkAction").Value.Number);
+                    MessageBox.Show(this, $"#{exportToAdd.UIndex}: {exportToAdd.ObjectName.Instanced} is already in the sequence.");
+                    return;
                 }
+
+                addObject(exportToAdd);
+            }
+        }
+
+        private void showOutputNumbers_Click(object sender, EventArgs e)
+        {
+            SObj.OutputNumbers = ShowOutputNumbers_MenuItem.IsChecked;
+            if (CurrentObjects.Any())
+            {
+                RefreshView();
             }
 
-            props = exp.GetProperties();
-            inLinksProp = props.GetProp<ArrayProperty<StructProperty>>("InputLinks");
-            if (inLinksProp != null)
+        }
+
+        private void OpenInInterpViewer_Clicked(object sender, RoutedEventArgs e)
+        {
+
+            if (CurrentObjects_ListBox.SelectedItem is SObj obj)
             {
-                for (int i = 0; i < inLinksProp.Count; i++)
+                int uIndex;
+                ExportEntry exportEntry = obj.Export;
+                if (exportEntry.IsA("InterpData"))
                 {
-                    NameProperty linkAction = inLinksProp[i].GetProp<NameProperty>("LinkAction");
-                    linkAction.Value = new NameReference(linkAction.Value.Name, inputIndices[i]);
+                    uIndex = exportEntry.UIndex;
                 }
-            }
-
-            outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
-            if (outLinksProp != null)
-            {
-                for (int i = 0; i < outLinksProp.Count; i++)
+                else if (obj is SAction sAction && sAction.Varlinks.Any() && sAction.Varlinks[0].Links.Any())
                 {
-                    NameProperty linkAction = outLinksProp[i].GetProp<NameProperty>("LinkAction");
-                    linkAction.Value = new NameReference(linkAction.Value.Name, outputIndices[i]);
-                }
-            }
-
-            exp.WriteProperties(props);
-        }
-    }
-
-    private void ContextMenu_Closed(object sender, RoutedEventArgs e)
-    {
-        graphEditor.AllowDragging();
-        if (AllowWindowRefocus)
-        {
-            Focus(); //this will make window bindings work, as context menu is not part of the visual tree, and focus will be on there if the user clicked it.
-        }
-
-        AllowWindowRefocus = true;
-    }
-
-    private void CurrentObjectsList_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
-    {
-        if (e.RemovedItems?.Cast<SObj>().ToList() is List<SObj> deselectedEntries)
-        {
-            SelectedObjects.RemoveRange(deselectedEntries);
-            foreach (SObj obj in deselectedEntries)
-            {
-                obj.IsSelected = false;
-            }
-        }
-
-        if (e.AddedItems?.Cast<SObj>().ToList() is IList<SObj> selectedEntries)
-        {
-            SelectedObjects.AddRange(selectedEntries);
-            foreach (SObj obj in selectedEntries)
-            {
-                obj.IsSelected = true;
-            }
-        }
-
-        if (SelectedObjects.Count == 1)
-        {
-            Properties_InterpreterWPF.LoadExport(SelectedObjects[0].Export);
-        }
-        else if (!(Properties_InterpreterWPF.CurrentLoadedExport?.IsSequence() ?? false))
-        {
-            Properties_InterpreterWPF.UnloadExport();
-        }
-
-        if (SelectedObjects.Any())
-        {
-            if (panToSelection)
-            {
-                if (SelectedObjects.Count == 1)
-                {
-                    graphEditor.Camera.AnimateViewToCenterBounds(SelectedObjects[0].GlobalFullBounds, false, 100);
+                    uIndex = sAction.Varlinks[0].Links[0];
                 }
                 else
                 {
-                    RectangleF boundingBox = SelectedObjects.Select(obj => obj.GlobalFullBounds).BoundingRect();
-                    graphEditor.Camera.AnimateViewToCenterBounds(boundingBox, true, 200);
+                    MessageBox.Show(this, "No InterpData to open!", "Sorry!", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
                 }
-            }
-        }
-
-        panToSelection = true;
-        graphEditor.Refresh();
-    }
-
-    private void SaveImage()
-    {
-        if (CurrentObjects.Count == 0)
-            return;
-        string objectName = System.Text.RegularExpressions.Regex.Replace(SelectedSequence.ObjectName.Name, @"[<>:""/\\|?*]", "");
-        var d = new SaveFileDialog
-        {
-            Filter = "PNG Files (*.png)|*.png",
-            FileName = $"{CurrentFile}.{objectName}"
-        };
-        if (d.ShowDialog() == true)
-        {
-            PNode r = graphEditor.Root;
-            RectangleF rr = r.GlobalFullBounds;
-            PNode p = PPath.CreateRectangle(rr.X, rr.Y, rr.Width, rr.Height);
-            p.Brush = Brushes.White;
-            graphEditor.addBack(p);
-            graphEditor.Camera.Visible = false;
-            Image image = graphEditor.Root.ToImage();
-            graphEditor.Camera.Visible = true;
-            image.Save(d.FileName, ImageFormat.Png);
-            graphEditor.backLayer.RemoveAllChildren();
-            MessageBox.Show(this, "Done.");
-        }
-    }
-
-    private void addObject(ExportEntry exportToAdd, bool removeLinks = true)
-    {
-        customSaveData[exportToAdd.UIndex] = new PointF(graphEditor.Camera.ViewCenterX, graphEditor.Camera.ViewCenterY);
-        KismetHelper.AddObjectToSequence(exportToAdd, SelectedSequence, removeLinks);
-    }
-
-    private void AddObject_Clicked(object sender, RoutedEventArgs e)
-    {
-        if (EntrySelector.GetEntry<ExportEntry>(this, Pcc) is ExportEntry exportToAdd)
-        {
-            if (!exportToAdd.IsA("SequenceObject"))
-            {
-                MessageBox.Show(this, $"#{exportToAdd.UIndex}: {exportToAdd.ObjectName.Instanced} is not a sequence object.");
-                return;
-            }
-
-            if (CurrentObjects.Any(obj => obj.Export == exportToAdd))
-            {
-                MessageBox.Show(this, $"#{exportToAdd.UIndex}: {exportToAdd.ObjectName.Instanced} is already in the sequence.");
-                return;
-            }
-
-            addObject(exportToAdd);
-        }
-    }
-
-    private void showOutputNumbers_Click(object sender, EventArgs e)
-    {
-        SObj.OutputNumbers = ShowOutputNumbers_MenuItem.IsChecked;
-        if (CurrentObjects.Any())
-        {
-            RefreshView();
-        }
-
-    }
-
-    private void OpenInInterpViewer_Clicked(object sender, RoutedEventArgs e)
-    {
-
-        if (CurrentObjects_ListBox.SelectedItem is SObj obj)
-        {
-            int uIndex;
-            ExportEntry exportEntry = obj.Export;
-            if (exportEntry.IsA("InterpData"))
-            {
-                uIndex = exportEntry.UIndex;
-            }
-            else if (obj is SAction sAction && sAction.Varlinks.Any() && sAction.Varlinks[0].Links.Any())
-            {
-                uIndex = sAction.Varlinks[0].Links[0];
-            }
-            else
-            {
-                MessageBox.Show(this, "No InterpData to open!", "Sorry!", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-            AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
-
-            var p = new InterpEditor.InterpEditorWindow();
-            p.Show();
-            p.LoadFile(Pcc.FilePath);
-            p.SelectedInterpData = Pcc.GetUExport(uIndex);
-        }
-    }
-
-    private void OpenInDialogueEditor_Clicked(object sender, RoutedEventArgs e)
-    {
-
-        if (CurrentObjects_ListBox.SelectedItem is SObj obj &&
-            (obj.Export.ClassName.EndsWith("SeqAct_StartConversation") || obj.Export.ClassName.EndsWith("StartAmbientConv")) &&
-            obj.Export.GetProperty<ObjectProperty>("Conv") is ObjectProperty conv)
-        {
-            if (Pcc.IsUExport(conv.Value))
-            {
                 AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
-                new DialogueEditor.DialogueEditorWindow(Pcc.GetUExport(conv.Value)).Show();
-                return;
-            }
 
-            if (Pcc.IsImport(conv.Value))
+                var p = new InterpEditor.InterpEditorWindow();
+                p.Show();
+                p.LoadFile(Pcc.FilePath);
+                p.SelectedInterpData = Pcc.GetUExport(uIndex);
+            }
+        }
+
+        private void OpenInDialogueEditor_Clicked(object sender, RoutedEventArgs e)
+        {
+
+            if (CurrentObjects_ListBox.SelectedItem is SObj obj &&
+                (obj.Export.ClassName.EndsWith("SeqAct_StartConversation") || obj.Export.ClassName.EndsWith("StartAmbientConv")) &&
+                obj.Export.GetProperty<ObjectProperty>("Conv") is ObjectProperty conv)
             {
-                ImportEntry convImport = Pcc.GetImport(conv.Value);
-                string extension = Path.GetExtension(Pcc.FilePath);
-                string noExtensionPath = Path.ChangeExtension(Pcc.FilePath, null);
-                string loc_int = Pcc.Game == MEGame.ME1 ? "_LOC_int" : "_LOC_INT";
-                string convFilePath = noExtensionPath + loc_int + extension;
-                if (File.Exists(convFilePath))
+                if (Pcc.IsUExport(conv.Value))
                 {
-                    using var convFile = MEPackageHandler.OpenMEPackage(convFilePath);
-                    var convExport = convFile.Exports.FirstOrDefault(x => x.ObjectName == convImport.ObjectName);
-                    if (convExport != null)
+                    AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
+                    new DialogueEditor.DialogueEditorWindow(Pcc.GetUExport(conv.Value)).Show();
+                    return;
+                }
+
+                if (Pcc.IsImport(conv.Value))
+                {
+                    ImportEntry convImport = Pcc.GetImport(conv.Value);
+                    string extension = Path.GetExtension(Pcc.FilePath);
+                    string noExtensionPath = Path.ChangeExtension(Pcc.FilePath, null);
+                    string loc_int = Pcc.Game == MEGame.ME1 ? "_LOC_int" : "_LOC_INT";
+                    string convFilePath = noExtensionPath + loc_int + extension;
+                    if (File.Exists(convFilePath))
                     {
-                        AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
-                        new DialogueEditor.DialogueEditorWindow(convExport).Show();
-                        return;
+                        using var convFile = MEPackageHandler.OpenMEPackage(convFilePath);
+                        var convExport = convFile.Exports.FirstOrDefault(x => x.ObjectName == convImport.ObjectName);
+                        if (convExport != null)
+                        {
+                            AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
+                            new DialogueEditor.DialogueEditorWindow(convExport).Show();
+                            return;
+                        }
+                    }
+                    else if (EntryImporter.ResolveImport(convImport) is ExportEntry fauxExport)
+                    {
+                        using var convFile = MEPackageHandler.OpenMEPackage(fauxExport.FileRef.FilePath);
+                        var convExport = convFile.GetUExport(fauxExport.UIndex);
+                        if (convExport != null)
+                        {
+                            AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
+                            new DialogueEditor.DialogueEditorWindow(convExport).Show();
+                            return;
+                        }
                     }
                 }
-                else if (EntryImporter.ResolveImport(convImport) is ExportEntry fauxExport)
+            }
+            MessageBox.Show(this, "Cannot find Conversation!", "Sorry!", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
+        private void GlobalSeqRefViewSavesMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (CurrentObjects.Any())
+            {
+                SetupJSON(SelectedSequence);
+            }
+        }
+
+        private void SequenceEditorWPF_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (FileQueuedForLoad != null)
+            {
+                Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
                 {
-                    using var convFile = MEPackageHandler.OpenMEPackage(fauxExport.FileRef.FilePath);
-                    var convExport = convFile.GetUExport(fauxExport.UIndex);
-                    if (convExport != null)
+                //Wait for all children to finish loading
+                LoadFile(FileQueuedForLoad);
+                    FileQueuedForLoad = null;
+
+                    if (ExportQueuedForFocusing != null)
                     {
-                        AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
-                        new DialogueEditor.DialogueEditorWindow(convExport).Show();
-                        return;
+                        GoToExport(ExportQueuedForFocusing);
+                        ExportQueuedForFocusing = null;
                     }
+
+                    Activate();
+                }));
+            }
+        }
+
+        private void GoToExport(int UIndex, bool selectSequences = true)
+        {
+            if (Pcc != null)
+            {
+                ExportEntry exp = Pcc.GetUExport(UIndex);
+                if (exp != null)
+                {
+                    GoToExport(exp, selectSequences);
                 }
             }
         }
-        MessageBox.Show(this, "Cannot find Conversation!", "Sorry!", MessageBoxButton.OK, MessageBoxImage.Error);
-    }
 
-    private void GlobalSeqRefViewSavesMenuItem_OnClick(object sender, RoutedEventArgs e)
-    {
-        if (CurrentObjects.Any())
+        private void GoToExport(ExportEntry export, bool selectSequences = true)
         {
-            SetupJSON(SelectedSequence);
-        }
-    }
-
-    private void SequenceEditorWPF_Loaded(object sender, RoutedEventArgs e)
-    {
-        if (FileQueuedForLoad != null)
-        {
-            Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
+            foreach (ExportEntry exp in SequenceExports)
             {
-                    //Wait for all children to finish loading
-                    LoadFile(FileQueuedForLoad);
-                FileQueuedForLoad = null;
-
-                if (ExportQueuedForFocusing != null)
+                // Are we trying to select a sequence?
+                if (selectSequences && export == exp)
                 {
-                    GoToExport(ExportQueuedForFocusing);
-                    ExportQueuedForFocusing = null;
+                    if (export.ClassName == "SequenceReference")
+                    {
+                        var sequenceprop = exp.GetProperty<ObjectProperty>("oSequenceReference");
+                        if (sequenceprop != null)
+                        {
+                            export = Pcc.GetUExport(sequenceprop.Value);
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+
+                    SelectedItem = TreeViewRootNodes.SelectMany(node => node.FlattenTree()).First(node => node.UIndex == export.UIndex);
+                    break;
                 }
 
-                Activate();
-            }));
-        }
-    }
-
-    private void GoToExport(int UIndex, bool selectSequences = true)
-    {
-        if (Pcc != null)
-        {
-            ExportEntry exp = Pcc.GetUExport(UIndex);
-            if (exp != null)
-            {
-                GoToExport(exp, selectSequences);
-            }
-        }
-    }
-
-    private void GoToExport(ExportEntry export, bool selectSequences = true)
-    {
-        foreach (ExportEntry exp in SequenceExports)
-        {
-            // Are we trying to select a sequence?
-            if (selectSequences && export == exp)
-            {
-                if (export.ClassName == "SequenceReference")
+                // Get the export for the sequence we will look for objects in
+                ExportEntry sequence = exp;
+                if (sequence.ClassName == "SequenceReference")
                 {
-                    var sequenceprop = exp.GetProperty<ObjectProperty>("oSequenceReference");
+                    var sequenceprop = sequence.GetProperty<ObjectProperty>("oSequenceReference");
                     if (sequenceprop != null)
                     {
-                        export = Pcc.GetUExport(sequenceprop.Value);
+                        sequence = Pcc.GetUExport(sequenceprop.Value);
                     }
                     else
                     {
@@ -2219,362 +2238,348 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     }
                 }
 
-                SelectedItem = TreeViewRootNodes.SelectMany(node => node.FlattenTree()).First(node => node.UIndex == export.UIndex);
-                break;
-            }
-
-            // Get the export for the sequence we will look for objects in
-            ExportEntry sequence = exp;
-            if (sequence.ClassName == "SequenceReference")
-            {
-                var sequenceprop = sequence.GetProperty<ObjectProperty>("oSequenceReference");
-                if (sequenceprop != null)
+                // Enumerate the objects in the sequence to see if what we are looking for is in this sequence
+                var seqObjs = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+                if (seqObjs != null && seqObjs.Any(objProp => objProp.Value == export.UIndex))
                 {
-                    sequence = Pcc.GetUExport(sequenceprop.Value);
-                }
-                else
-                {
-                    return;
-                }
-            }
-
-            // Enumerate the objects in the sequence to see if what we are looking for is in this sequence
-            var seqObjs = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-            if (seqObjs != null && seqObjs.Any(objProp => objProp.Value == export.UIndex))
-            {
-                //This is our sequence
-                SelectedItem = TreeViewRootNodes.SelectMany(node => node.FlattenTree()).First(node => node.UIndex == sequence.UIndex);
-                CurrentObjects_ListBox.SelectedItem = CurrentObjects.FirstOrDefault(x => x.Export == export);
-                break;
-            }
-        }
-    }
-
-    private void PlotEditorMenuItem_Click(object sender, RoutedEventArgs e)
-    {
-        if (CurrentObjects_ListBox.SelectedItem is SAction sAction &&
-            sAction.Export.ClassName == "BioSeqAct_PMExecuteTransition" &&
-            sAction.Export.GetProperty<IntProperty>("m_nIndex")?.Value is int m_nIndex)
-        {
-            IEnumerable<string> plotFiles = new List<string>();
-            int stateEventKey = m_nIndex;
-
-            if (Pcc.Game is MEGame.ME3 or MEGame.LE3)
-            {
-                plotFiles = MELoadedFiles.GetEnabledDLCFolders(Pcc.Game).OrderByDescending(dir => MELoadedFiles.GetMountPriority(dir, Pcc.Game))
-                                              .Select(dir => Path.Combine(dir, Pcc.Game.CookedDirName(), $"Startup_{MELoadedFiles.GetDLCNameFromDir(dir)}_INT.pcc"))
-                                              .Append(Path.Combine(MEDirectories.GetCookedPath(Pcc.Game), "SFXGameInfoSP_SF.pcc"))
-                                              .Where(File.Exists);
-            }
-
-            if (Pcc.Game is MEGame.ME2 or MEGame.LE2)
-            {
-                plotFiles = MELoadedFiles.GetEnabledDLCFolders(Pcc.Game).OrderByDescending(dir => MELoadedFiles.GetMountPriority(dir, Pcc.Game))
-                    .Select(dir => Path.Combine(dir, Pcc.Game.CookedDirName(), $"Startup_{MELoadedFiles.GetDLCNameFromDir(dir)}_INT.pcc"))
-                    .Append(Path.Combine(MEDirectories.GetCookedPath(Pcc.Game), "Startup_INT.pcc"))
-                    .Where(File.Exists);
-            }
-
-            if (Pcc.Game is MEGame.LE1)
-            {
-                plotFiles = MELoadedFiles.GetEnabledDLCFolders(Pcc.Game).OrderByDescending(dir => MELoadedFiles.GetMountPriority(dir, Pcc.Game))
-                    //.Select(dir => Path.Combine(dir, "CookedPCConsole", $"Startup_{MELoadedFiles.GetDLCNameFromDir(dir)}_INT.pcc")) // TODO: implement once ME1 DLC folders work
-                    .Append(Path.Combine(MEDirectories.GetCookedPath(Pcc.Game), "BIOC_Materials.pcc"))
-                    .Where(File.Exists);
-            }
-
-            if (Pcc.Game is MEGame.ME1)
-            {
-                plotFiles = MELoadedFiles.GetEnabledDLCFolders(Pcc.Game).OrderByDescending(dir => MELoadedFiles.GetMountPriority(dir, Pcc.Game))
-                    .Select(dir => Path.Combine(dir, Pcc.Game.CookedDirName(), $@"Packages\PlotManagerAuto{MELoadedFiles.GetDLCNameFromDir(dir)}.upk"))
-                    .Append(Path.Combine(MEDirectories.GetCookedPath(Pcc.Game), @"Packages\PlotManagerAuto.upk"))
-                    .Where(File.Exists);
-            }
-
-            if (stateEventKey != 0 && plotFiles.Any())
-            {
-                string filePath = null;
-                foreach (var plotFile in plotFiles)
-                {
-                    using IMEPackage pcc = MEPackageHandler.OpenMEPackage(plotFile);
-                    if (StateEventMapView.TryFindStateEventMap(pcc, out ExportEntry export))
-                    {
-                        var stateEventMap = BinaryBioStateEventMap.Load(export);
-                        if (stateEventMap.StateEvents.ContainsKey(stateEventKey))
-                        {
-                            filePath = plotFile;
-                        }
-                    }
-                }
-
-                if (filePath != null)
-                {
-
-                    var plotEd = new PlotEditorWindow();
-                    plotEd.Show();
-                    plotEd.LoadFile(filePath);
-                    plotEd.GoToStateEvent(stateEventKey);
-                }
-                else
-                {
-                    MessageBox.Show(this, $"Could not find State Event {stateEventKey}");
+                    //This is our sequence
+                    SelectedItem = TreeViewRootNodes.SelectMany(node => node.FlattenTree()).First(node => node.UIndex == sequence.UIndex);
+                    CurrentObjects_ListBox.SelectedItem = CurrentObjects.FirstOrDefault(x => x.Export == export);
+                    break;
                 }
             }
         }
-    }
 
-    private void RepointIncomingReferences_Click(object sender, RoutedEventArgs e)
-    {
-        if (CurrentObjects_ListBox.SelectedItem is SVar sVar)
+        private void PlotEditorMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if (EntrySelector.GetEntry<ExportEntry>(this, Pcc) is ExportEntry export)
+            if (CurrentObjects_ListBox.SelectedItem is SAction sAction &&
+                sAction.Export.ClassName == "BioSeqAct_PMExecuteTransition" &&
+                sAction.Export.GetProperty<IntProperty>("m_nIndex")?.Value is int m_nIndex)
             {
-                if (CurrentObjects.All(x => x.Export != export))
+                IEnumerable<string> plotFiles = new List<string>();
+                int stateEventKey = m_nIndex;
+
+                if (Pcc.Game is MEGame.ME3 or MEGame.LE3)
                 {
-                    MessageBox.Show($"#{export.UIndex} {export.ObjectName.Instanced}  is not part of this sequence, and can't be repointed to.");
-                    return;
+                    plotFiles = MELoadedFiles.GetEnabledDLCFolders(Pcc.Game).OrderByDescending(dir => MELoadedFiles.GetMountPriority(dir, Pcc.Game))
+                                                  .Select(dir => Path.Combine(dir, Pcc.Game.CookedDirName(), $"Startup_{MELoadedFiles.GetDLCNameFromDir(dir)}_INT.pcc"))
+                                                  .Append(Path.Combine(MEDirectories.GetCookedPath(Pcc.Game), "SFXGameInfoSP_SF.pcc"))
+                                                  .Where(File.Exists);
                 }
-                var sequence = sVar.Export.FileRef.GetUExport(sVar.Export.GetProperty<ObjectProperty>("ParentSequence").Value);
-                var sequenceObjects = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-                foreach (var seqObjRef in sequenceObjects)
+
+                if (Pcc.Game is MEGame.ME2 or MEGame.LE2)
                 {
-                    var saveProps = false;
-                    var seqObj = sVar.Export.FileRef.GetUExport(seqObjRef.Value);
-                    var props = seqObj.GetProperties();
-                    var variableLinks = props.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
-                    if (variableLinks != null)
+                    plotFiles = MELoadedFiles.GetEnabledDLCFolders(Pcc.Game).OrderByDescending(dir => MELoadedFiles.GetMountPriority(dir, Pcc.Game))
+                        .Select(dir => Path.Combine(dir, Pcc.Game.CookedDirName(), $"Startup_{MELoadedFiles.GetDLCNameFromDir(dir)}_INT.pcc"))
+                        .Append(Path.Combine(MEDirectories.GetCookedPath(Pcc.Game), "Startup_INT.pcc"))
+                        .Where(File.Exists);
+                }
+
+                if (Pcc.Game is MEGame.LE1)
+                {
+                    plotFiles = MELoadedFiles.GetEnabledDLCFolders(Pcc.Game).OrderByDescending(dir => MELoadedFiles.GetMountPriority(dir, Pcc.Game))
+                        //.Select(dir => Path.Combine(dir, "CookedPCConsole", $"Startup_{MELoadedFiles.GetDLCNameFromDir(dir)}_INT.pcc")) // TODO: implement once ME1 DLC folders work
+                        .Append(Path.Combine(MEDirectories.GetCookedPath(Pcc.Game), "BIOC_Materials.pcc"))
+                        .Where(File.Exists);
+                }
+
+                if (Pcc.Game is MEGame.ME1)
+                {
+                    plotFiles = MELoadedFiles.GetEnabledDLCFolders(Pcc.Game).OrderByDescending(dir => MELoadedFiles.GetMountPriority(dir, Pcc.Game))
+                        .Select(dir => Path.Combine(dir, Pcc.Game.CookedDirName(), $@"Packages\PlotManagerAuto{MELoadedFiles.GetDLCNameFromDir(dir)}.upk"))
+                        .Append(Path.Combine(MEDirectories.GetCookedPath(Pcc.Game), @"Packages\PlotManagerAuto.upk"))
+                        .Where(File.Exists);
+                }
+
+                if (stateEventKey != 0 && plotFiles.Any())
+                {
+                    string filePath = null;
+                    foreach (var plotFile in plotFiles)
                     {
-                        foreach (var variableLink in variableLinks)
+                        using IMEPackage pcc = MEPackageHandler.OpenMEPackage(plotFile);
+                        if (StateEventMapView.TryFindStateEventMap(pcc, out ExportEntry export))
                         {
-                            var linkedVars = variableLink.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
-                            if (linkedVars != null)
+                            var stateEventMap = BinaryBioStateEventMap.Load(export);
+                            if (stateEventMap.StateEvents.ContainsKey(stateEventKey))
                             {
-                                foreach (var linkedVar in linkedVars)
-                                {
-                                    if (linkedVar.Value == sVar.Export.UIndex)
-                                    {
-                                        linkedVar.Value = export.UIndex; //repoint
-                                        saveProps = true;
-                                    }
-                                }
+                                filePath = plotFile;
                             }
                         }
                     }
 
-                    if (saveProps)
+                    if (filePath != null)
                     {
-                        seqObj.WriteProperties(props);
+
+                        var plotEd = new PlotEditorWindow();
+                        plotEd.Show();
+                        plotEd.LoadFile(filePath);
+                        plotEd.GoToStateEvent(stateEventKey);
+                    }
+                    else
+                    {
+                        MessageBox.Show(this, $"Could not find State Event {stateEventKey}");
                     }
                 }
+            }
+        }
+
+        private void RepointIncomingReferences_Click(object sender, RoutedEventArgs e)
+        {
+            if (CurrentObjects_ListBox.SelectedItem is SVar sVar)
+            {
+                if (EntrySelector.GetEntry<ExportEntry>(this, Pcc) is ExportEntry export)
+                {
+                    if (CurrentObjects.All(x => x.Export != export))
+                    {
+                        MessageBox.Show($"#{export.UIndex} {export.ObjectName.Instanced}  is not part of this sequence, and can't be repointed to.");
+                        return;
+                    }
+                    var sequence = sVar.Export.FileRef.GetUExport(sVar.Export.GetProperty<ObjectProperty>("ParentSequence").Value);
+                    var sequenceObjects = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+                    foreach (var seqObjRef in sequenceObjects)
+                    {
+                        var saveProps = false;
+                        var seqObj = sVar.Export.FileRef.GetUExport(seqObjRef.Value);
+                        var props = seqObj.GetProperties();
+                        var variableLinks = props.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
+                        if (variableLinks != null)
+                        {
+                            foreach (var variableLink in variableLinks)
+                            {
+                                var linkedVars = variableLink.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
+                                if (linkedVars != null)
+                                {
+                                    foreach (var linkedVar in linkedVars)
+                                    {
+                                        if (linkedVar.Value == sVar.Export.UIndex)
+                                        {
+                                            linkedVar.Value = export.UIndex; //repoint
+                                            saveProps = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        if (saveProps)
+                        {
+                            seqObj.WriteProperties(props);
+                        }
+                    }
+                    RefreshView();
+                }
+            }
+
+        }
+
+        private void ShowAdditionalInfoInCommentTextMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            Settings.Save();
+        }
+
+        private void IntegerUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (CurrentObjects.Any())
+            {
                 RefreshView();
             }
         }
 
-    }
-
-    private void ShowAdditionalInfoInCommentTextMenuItem_OnClick(object sender, RoutedEventArgs e)
-    {
-        Settings.Save();
-    }
-
-    private void IntegerUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-    {
-        if (CurrentObjects.Any())
+        private void EditComment_Click(object sender, RoutedEventArgs e)
         {
-            RefreshView();
-        }
-    }
-
-    private void EditComment_Click(object sender, RoutedEventArgs e)
-    {
-        if (CurrentObjects_ListBox.SelectedItem is SObj sObj)
-        {
-            var comments = sObj.Export.GetProperty<ArrayProperty<StrProperty>>("m_aObjComment") ?? new ArrayProperty<StrProperty>("m_aObjComment");
-
-            string commentText = string.Join("\n", comments.Select(prop => prop.Value));
-
-            string resultText = PromptDialog.Prompt(this, "", "Edit Comment", commentText, true, inputType: PromptDialog.InputType.Multiline);
-
-            if (resultText == null)
+            if (CurrentObjects_ListBox.SelectedItem is SObj sObj)
             {
-                return;
-            }
+                var comments = sObj.Export.GetProperty<ArrayProperty<StrProperty>>("m_aObjComment") ?? new ArrayProperty<StrProperty>("m_aObjComment");
 
-            comments = new ArrayProperty<StrProperty>(resultText.SplitLines(StringSplitOptions.RemoveEmptyEntries).Select(s => new StrProperty(s)), "m_aObjComment");
+                string commentText = string.Join("\n", comments.Select(prop => prop.Value));
 
-            sObj.Export.WriteProperty(comments);
-        }
-    }
+                string resultText = PromptDialog.Prompt(this, "", "Edit Comment", commentText, true, inputType: PromptDialog.InputType.Multiline);
 
-    public void PropogateRecentsChange(string propogationSource, IEnumerable<RecentsControl.RecentItem> newRecents)
-    {
-        RecentsController.PropogateRecentsChange(false, newRecents);
-    }
+                if (resultText == null)
+                {
+                    return;
+                }
 
-    private void GotoSequenceReference_Clicked(object sender, RoutedEventArgs e)
-    {
-        if (CurrentObjects_ListBox.SelectedItem is SAction sAction && (sAction.Export.ClassName is "SequenceReference" or "Sequence"))
-        {
-            GoToExport(sAction.Export); // GoToExport should probably go to the export, not the data in it
-        }
-    }
+                comments = new ArrayProperty<StrProperty>(resultText.SplitLines(StringSplitOptions.RemoveEmptyEntries).Select(s => new StrProperty(s)), "m_aObjComment");
 
-    private void AddToLogString_Click(object sender, RoutedEventArgs e)
-    {
-        if (CurrentObjects_ListBox.SelectedItem is SAction sAction &&
-            sAction.Export.ClassName == "SeqAct_Log")
-        {
-            var result = PromptDialog.Prompt(this, "Enter the string to log", "Enter string");
-            if (!string.IsNullOrWhiteSpace(result))
-            {
-                var newSeqObj = SequenceObjectCreator.CreateSequenceObject(Pcc, "SeqVar_String", Pcc.Game);
-                newSeqObj.WriteProperty(new StrProperty(result, "StrValue"));
-                KismetHelper.AddObjectToSequence(newSeqObj, SelectedSequence);
-                var varLinks = SeqTools.GetVariableLinksOfNode(sAction.Export);
-                var stringVarLink = varLinks.First(x => x.LinkDesc == "String");
-                stringVarLink.LinkedNodes.Add(newSeqObj);
-                SeqTools.WriteVariableLinksToNode(sAction.Export, varLinks);
+                sObj.Export.WriteProperty(comments);
             }
         }
-    }
 
-    private void CreateSeqLogForObject_Click(object sender, RoutedEventArgs e)
-    {
-        if (CurrentObjects_ListBox.SelectedItem is SVar sVar)
+        public void PropogateRecentsChange(string propogationSource, IEnumerable<RecentsControl.RecentItem> newRecents)
         {
-            var result = PromptDialog.Prompt(this, "Enter the string to log alongside this", "Enter string");
+            RecentsController.PropogateRecentsChange(false, newRecents);
+        }
+
+        private void GotoSequenceReference_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (CurrentObjects_ListBox.SelectedItem is SAction sAction && (sAction.Export.ClassName is "SequenceReference" or "Sequence"))
+            {
+                GoToExport(sAction.Export); // GoToExport should probably go to the export, not the data in it
+            }
+        }
+
+        private void AddToLogString_Click(object sender, RoutedEventArgs e)
+        {
+            if (CurrentObjects_ListBox.SelectedItem is SAction sAction &&
+                sAction.Export.ClassName == "SeqAct_Log")
+            {
+                var result = PromptDialog.Prompt(this, "Enter the string to log", "Enter string");
+                if (!string.IsNullOrWhiteSpace(result))
+                {
+                    var newSeqObj = SequenceObjectCreator.CreateSequenceObject(Pcc, "SeqVar_String");
+                    newSeqObj.WriteProperty(new StrProperty(result, "StrValue"));
+                    KismetHelper.AddObjectToSequence(newSeqObj, SelectedSequence);
+                    var varLinks = SeqTools.GetVariableLinksOfNode(sAction.Export);
+                    var stringVarLink = varLinks.First(x => x.LinkDesc == "String");
+                    stringVarLink.LinkedNodes.Add(newSeqObj);
+                    SeqTools.WriteVariableLinksToNode(sAction.Export, varLinks);
+                }
+            }
+        }
+
+        private void CreateSeqLogForObject_Click(object sender, RoutedEventArgs e)
+        {
+            if (CurrentObjects_ListBox.SelectedItem is SVar sVar)
+            {
+                var result = PromptDialog.Prompt(this, "Enter the string to log alongside this", "Enter string");
+                if (!string.IsNullOrWhiteSpace(result))
+                {
+                    // Create the log object and add it to the sequence
+                    var seqLogObj = SequenceObjectCreator.CreateSequenceObject(Pcc, "SeqAct_Log");
+                    KismetHelper.AddObjectToSequence(seqLogObj, SelectedSequence);
+
+                    // Create user string SeqVar
+                    var newSeqObj = SequenceObjectCreator.CreateSequenceObject(Pcc, "SeqVar_String");
+                    newSeqObj.WriteProperty(new StrProperty(result, "StrValue"));
+                    KismetHelper.AddObjectToSequence(newSeqObj, SelectedSequence);
+
+                    // Attach the user string SeqVar and the selected item to the log.
+
+                    // String
+                    var varLinks = SeqTools.GetVariableLinksOfNode(seqLogObj);
+                    var stringVarLink = varLinks.First(x => x.LinkDesc == "String");
+                    stringVarLink.LinkedNodes.Add(newSeqObj);
+
+
+                    SeqTools.VarLinkInfo linkToAttachTo = null;
+                    if (sVar.Export.IsA("SeqVar_String"))
+                    {
+                        linkToAttachTo = varLinks.First(x => x.LinkDesc == "String");
+                    }
+                    else if (sVar.Export.IsA("SeqVar_Float"))
+                    {
+                        linkToAttachTo = varLinks.First(x => x.LinkDesc == "Float");
+                    }
+                    else if (sVar.Export.IsA("SeqVar_Bool"))
+                    {
+                        linkToAttachTo = varLinks.First(x => x.LinkDesc == "Bool");
+                    }
+                    else if (sVar.Export.IsA("SeqVar_Object"))
+                    {
+                        linkToAttachTo = varLinks.First(x => x.LinkDesc == "Object");
+                    }
+                    else if (sVar.Export.IsA("SeqVar_Int"))
+                    {
+                        linkToAttachTo = varLinks.First(x => x.LinkDesc == "Int");
+                    }
+                    else if (sVar.Export.IsA("SeqVar_Name"))
+                    {
+                        linkToAttachTo = varLinks.First(x => x.LinkDesc == "Name");
+                    }
+                    else if (sVar.Export.IsA("SeqVar_Vector"))
+                    {
+                        linkToAttachTo = varLinks.First(x => x.LinkDesc == "Vector");
+                    }
+                    else if (sVar.Export.IsA("SeqVar_ObjectList"))
+                    {
+                        linkToAttachTo = varLinks.First(x => x.LinkDesc == "Obj List");
+                    }
+                    else if (sVar.Export.IsA("SeqVar_External"))
+                    {
+                        // Just use Object
+                        linkToAttachTo = varLinks.First(x => x.LinkDesc == "Object");
+                    }
+
+
+                    if (linkToAttachTo == null)
+                    {
+                        Debugger.Break();
+                    }
+                    else
+                    {
+                        linkToAttachTo.LinkedNodes.Add(sVar.Export);
+                    }
+
+                    // Write the links
+                    SeqTools.WriteVariableLinksToNode(seqLogObj, varLinks);
+                }
+            }
+        }
+
+        private void SeqLogLogOutlink(SBox sourceAction, string outLinkName)
+        {
+            var result = PromptDialog.Prompt(this, $"Enter the string to log when the outlink '{outLinkName}' is fired.", "Enter string", $"Outlink {outLinkName} fired from {sourceAction.Export.UIndex} {sourceAction.Export.ObjectName.Instanced}", true);
             if (!string.IsNullOrWhiteSpace(result))
             {
                 // Create the log object and add it to the sequence
-                var seqLogObj = SequenceObjectCreator.CreateSequenceObject(Pcc, "SeqAct_Log", Pcc.Game);
+                var seqLogObj = SequenceObjectCreator.CreateSequenceObject(Pcc, "SeqAct_Log");
                 KismetHelper.AddObjectToSequence(seqLogObj, SelectedSequence);
 
                 // Create user string SeqVar
-                var newSeqObj = SequenceObjectCreator.CreateSequenceObject(Pcc, "SeqVar_String", Pcc.Game);
+                var newSeqObj = SequenceObjectCreator.CreateSequenceObject(Pcc, "SeqVar_String");
                 newSeqObj.WriteProperty(new StrProperty(result, "StrValue"));
                 KismetHelper.AddObjectToSequence(newSeqObj, SelectedSequence);
 
                 // Attach the user string SeqVar and the selected item to the log.
+                KismetHelper.CreateVariableLink(seqLogObj, "String", newSeqObj);
 
-                // String
-                var varLinks = SeqTools.GetVariableLinksOfNode(seqLogObj);
-                var stringVarLink = varLinks.First(x => x.LinkDesc == "String");
-                stringVarLink.LinkedNodes.Add(newSeqObj);
+                // Add an outlink to the new object
+                KismetHelper.CreateOutputLink(sourceAction.Export, outLinkName, seqLogObj);
+            }
+        }
 
-
-                SeqTools.VarLinkInfo linkToAttachTo = null;
-                if (sVar.Export.IsA("SeqVar_String"))
+        private void OpenClassDefinitionInPackageEditor_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (CurrentObjects_ListBox.SelectedItem is SObj obj && obj.Export != null)
+            {
+                // Get class of the object
+                var objClass = obj.Export.Class;
+                string className = objClass.ClassName;
+                if (objClass is ImportEntry imp)
                 {
-                    linkToAttachTo = varLinks.First(x => x.LinkDesc == "String");
-                }
-                else if (sVar.Export.IsA("SeqVar_Float"))
-                {
-                    linkToAttachTo = varLinks.First(x => x.LinkDesc == "Float");
-                }
-                else if (sVar.Export.IsA("SeqVar_Bool"))
-                {
-                    linkToAttachTo = varLinks.First(x => x.LinkDesc == "Bool");
-                }
-                else if (sVar.Export.IsA("SeqVar_Object"))
-                {
-                    linkToAttachTo = varLinks.First(x => x.LinkDesc == "Object");
-                }
-                else if (sVar.Export.IsA("SeqVar_Int"))
-                {
-                    linkToAttachTo = varLinks.First(x => x.LinkDesc == "Int");
-                }
-                else if (sVar.Export.IsA("SeqVar_Name"))
-                {
-                    linkToAttachTo = varLinks.First(x => x.LinkDesc == "Name");
-                }
-                else if (sVar.Export.IsA("SeqVar_Vector"))
-                {
-                    linkToAttachTo = varLinks.First(x => x.LinkDesc == "Vector");
-                }
-                else if (sVar.Export.IsA("SeqVar_ObjectList"))
-                {
-                    linkToAttachTo = varLinks.First(x => x.LinkDesc == "Obj List");
-                }
-                else if (sVar.Export.IsA("SeqVar_External"))
-                {
-                    // Just use Object
-                    linkToAttachTo = varLinks.First(x => x.LinkDesc == "Object");
+                    objClass = EntryImporter.ResolveImport(imp);
                 }
 
-
-                if (linkToAttachTo == null)
+                if (objClass != null)
                 {
-                    Debugger.Break();
+                    AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
+                    var p = new PackageEditor.PackageEditorWindow();
+                    p.Show();
+                    p.LoadFile(objClass.FileRef.FilePath, objClass.UIndex);
+                    p.Activate(); //bring to front
                 }
                 else
                 {
-                    linkToAttachTo.LinkedNodes.Add(sVar.Export);
+                    MessageBox.Show($"Could not determine where class '{className}' is defined.", "Cannot locate class");
                 }
-
-                // Write the links
-                SeqTools.WriteVariableLinksToNode(seqLogObj, varLinks);
             }
         }
-    }
 
-    private void SeqLogLogOutlink(SBox sourceAction, string outLinkName)
-    {
-        var result = PromptDialog.Prompt(this, $"Enter the string to log when the outlink '{outLinkName}' is fired.", "Enter string", $"Outlink {outLinkName} fired from {sourceAction.Export.UIndex} {sourceAction.Export.ObjectName.Instanced}", true);
-        if (!string.IsNullOrWhiteSpace(result))
+        private void LoadCustomClasses_Clicked(object sender, RoutedEventArgs e)
         {
-            // Create the log object and add it to the sequence
-            var seqLogObj = SequenceObjectCreator.CreateSequenceObject(Pcc, "SeqAct_Log", Pcc.Game);
-            KismetHelper.AddObjectToSequence(seqLogObj, SelectedSequence);
-
-            // Create user string SeqVar
-            var newSeqObj = SequenceObjectCreator.CreateSequenceObject(Pcc, "SeqVar_String", Pcc.Game);
-            newSeqObj.WriteProperty(new StrProperty(result, "StrValue"));
-            KismetHelper.AddObjectToSequence(newSeqObj, SelectedSequence);
-
-            // Attach the user string SeqVar and the selected item to the log.
-            KismetHelper.CreateVariableLink(seqLogObj, "String", newSeqObj);
-
-            // Add an outlink to the new object
-            KismetHelper.CreateOutputLink(sourceAction.Export, outLinkName, seqLogObj);
+            SequenceEditorExperimentsM.LoadCustomClasses(this);
         }
-    }
 
-    private void OpenClassDefinitionInPackageEditor_Clicked(object sender, RoutedEventArgs e)
-    {
-        if (CurrentObjects_ListBox.SelectedItem is SObj obj && obj.Export != null)
+        private void CommitObjectPositions_Clicked(object sender, RoutedEventArgs e)
         {
-            // Get class of the object
-            var objClass = obj.Export.Class;
-            string className = objClass.ClassName;
-            if (objClass is ImportEntry imp)
-            {
-                objClass = EntryImporter.ResolveImport(imp);
-            }
-
-            if (objClass != null)
-            {
-                AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
-                var p = new PackageEditor.PackageEditorWindow();
-                p.Show();
-                p.LoadFile(objClass.FileRef.FilePath, objClass.UIndex);
-                p.Activate(); //bring to front
-            }
-            else
-            {
-                MessageBox.Show($"Could not determine where class '{className}' is defined.", "Cannot locate class");
-            }
+            SequenceEditorExperimentsM.CommitSequenceObjectPositions(this);
         }
-    }
 
-    private void LoadCustomClasses_Clicked(object sender, RoutedEventArgs e)
+        public string Toolname => "SequenceEditor";
+    }
+    static class SequenceEditorExtensions
     {
-        SequenceEditorExperimentsM.LoadCustomClasses(this);
+        public static bool IsSequence(this IEntry entry) => entry.IsA("Sequence");
     }
-
-    public string Toolname => "SequenceEditor";
-}
-static class SequenceEditorExtensions
-{
-    public static bool IsSequence(this IEntry entry) => entry.IsA("Sequence");
-}
 }
