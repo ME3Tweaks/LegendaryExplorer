@@ -610,6 +610,24 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 ObjInstanceVersion = 1
             };
 
+            //Kinkojiro - New Class - this sets the tlk strings for a GAW category in war assets gui
+            classes["SFXSeqAct_SetGAWCategoryTitles"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 108, //in LE3Resources.pcc
+                properties =
+                {
+                    new KeyValuePair<NameReference, PropertyInfo>("CategoryId", new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("NewTitleRef", new PropertyInfo(PropertyType.StringRefProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("NewDescriptionRef", new PropertyInfo(PropertyType.StringRefProperty))
+                }
+            };
+            sequenceObjects["SFXSeqAct_SetGAWCategoryTitles"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+
             //Kinkojiro - New Class - only used in EGM
             classes["SFXSeqAct_TerminalGUI_EGM"] = new ClassInfo
             {
