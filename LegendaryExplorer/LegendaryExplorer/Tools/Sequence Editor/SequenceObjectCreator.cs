@@ -319,10 +319,10 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             return defaults;
         }
 
-        public static ExportEntry CreateSequenceObject(IMEPackage pcc, string className, MEGame game, PackageCache cache = null)
+        public static ExportEntry CreateSequenceObject(IMEPackage pcc, string className, PackageCache cache = null)
         {
             var rop = new RelinkerOptionsPackage() { Cache = cache ?? new PackageCache() };
-            var seqObj = new ExportEntry(pcc, 0, pcc.GetNextIndexedName(className), properties: GetSequenceObjectDefaults(pcc, className, game, cache))
+            var seqObj = new ExportEntry(pcc, 0, pcc.GetNextIndexedName(className), properties: GetSequenceObjectDefaults(pcc, className, pcc.Game, cache))
             {
                 Class = EntryImporter.EnsureClassIsInFile(pcc, className, rop)
             };

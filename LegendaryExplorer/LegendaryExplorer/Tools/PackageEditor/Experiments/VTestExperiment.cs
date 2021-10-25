@@ -365,7 +365,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     else
                     {
                         var levelName = Path.GetFileNameWithoutExtension(f);
-                        //if (levelName.CaseInsensitiveEquals("BIOA_PRC2_CCCRATE_SND"))
+                        //if (levelName.CaseInsensitiveEquals("BIOA_PRC2_CCTHAI_DSG"))
                         PortVTestLevel(vTestLevel, levelName, vTestOptions, levelName == "BIOA_" + vTestLevel, true);
                     }
                 }
@@ -1390,25 +1390,30 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             var sequenceObjects = KismetHelper.GetSequenceObjects(killTriggerSeq).OfType<ExportEntry>().ToList();
             var cursor = sequenceObjects.FirstOrDefault(x => x.ClassName == "SeqVar_Object");
 
-            var takeDamage = SequenceObjectCreator.CreateSequenceObject(killTriggerSeq.FileRef, "BioSeqAct_CauseDamage", MEGame.LE1, vTestOptions.cache);
-            //var amount = SequenceObjectCreator.CreateSequenceObject(killTriggerSeq.FileRef, "SeqVar_Float", MEGame.ME1, vTestOptions.cache);
-            //takeDamage.WriteProperty(new FloatProperty(1000, "Damage"));
-            //amount.WriteProperty(new FloatProperty(500, "FloatValue"));
+            var compareObject = SequenceObjectCreator.CreateSequenceObject(killTriggerSeq.FileRef, "SeqCond_CompareObject", vTestOptions.cache);
+            var playerObj = SequenceObjectCreator.CreateSequenceObject(killTriggerSeq.FileRef, "SeqVar_Player", vTestOptions.cache);
+
+            KismetHelper.CreateVariableLink(compareObject, "A", cursor);
+            KismetHelper.CreateVariableLink(compareObject, "B", playerObj);
+
+            var takeDamage = SequenceObjectCreator.CreateSequenceObject(killTriggerSeq.FileRef, "BioSeqAct_CauseDamage", vTestOptions.cache);
             takeDamage.WriteProperty(new FloatProperty(50, "m_fDamageAmountAsPercentOfMaxHealth"));
 
-            KismetHelper.AddObjectToSequence(takeDamage, killTriggerSeq);
-            //KismetHelper.AddObjectToSequence(amount, killTriggerSeq);
+            KismetHelper.AddObjectsToSequence(killTriggerSeq, false, takeDamage, compareObject, playerObj);
+
             KismetHelper.CreateVariableLink(takeDamage, "Target", cursor); // Hook up target to damage
-            //KismetHelper.CreateVariableLink(takeDamage, "Amount", amount); // Hook up damage amount
 
             var doAction = sequenceObjects.FirstOrDefault(x => x.ClassName == "BioSeqAct_DoActionInVolume");
             var log = sequenceObjects.FirstOrDefault(x => x.ClassName == "SeqAct_Log");
             KismetHelper.RemoveOutputLinks(doAction);
 
 
-            KismetHelper.CreateOutputLink(doAction, "Next", takeDamage, 0); // Connect Damage Out to DoAction Continue
+            KismetHelper.CreateOutputLink(doAction, "Next", compareObject, 0); // Connect DoAction Next to CompareObject
+            KismetHelper.CreateOutputLink(compareObject, "A == B", doAction, 1); // Connect CompareObj to DoAction (The touching pawn is Player, skip damage)
+            KismetHelper.CreateOutputLink(compareObject, "A != B", takeDamage); // Connect CompareObj to DoAction (The touching pawn is Player, skip damage)
+
             KismetHelper.CreateOutputLink(takeDamage, "Out", doAction, 1); // Connect DoAction Next to Damage In
-            KismetHelper.CreateOutputLink(doAction, "Next", log, 0); // Connect DoAction Next to Log
+            KismetHelper.CreateOutputLink(takeDamage, "Out", log); // Connect takedamage to log
 
             // TRASH AND REMOVE FROM SEQUENCE
             var destroy = sequenceObjects.FirstOrDefault(x => x.ClassName == "SeqAct_Destroy");
@@ -1933,11 +1938,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             else if (fName.CaseInsensitiveEquals("BIOA_PRC2_CCSIM05_DSG"))
             {
                 // Port in the custom sequence used for switching UIs
-                InstallVTestHelperSequenceViaOut(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Central_Scoreboard_Matinee.SeqEvent_RemoteEvent_0", "ScoreboardSequence.UISwitcherLogic", vTestOptions);
+                InstallVTestHelperSequenceViaOut(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Central_Scoreboard_Matinee.SeqEvent_RemoteEvent_0", "ScoreboardSequence.UISwitcherLogic", false, vTestOptions);
 
                 // Port in the keybinding sequences
-                InstallVTestHelperSequenceViaOut(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Central_Scoreboard_Matinee.SeqEvent_RemoteEvent_0", "ScoreboardSequence.KeybindsInstaller", vTestOptions);
-                InstallVTestHelperSequenceViaOut(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Central_Scoreboard_Matinee.SeqAct_Gate_3", "ScoreboardSequence.KeybindsUninstaller", vTestOptions);
+                InstallVTestHelperSequenceViaOut(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Central_Scoreboard_Matinee.SeqEvent_RemoteEvent_0", "ScoreboardSequence.KeybindsInstaller", true, vTestOptions);
+                InstallVTestHelperSequenceViaOut(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Central_Scoreboard_Matinee.SeqAct_Gate_3", "ScoreboardSequence.KeybindsUninstaller", false, vTestOptions);
             }
             else if (fName.CaseInsensitiveEquals("BIOA_PRC2_CCSCOREBOARD_DSG"))
             {
@@ -1945,14 +1950,23 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 // Port in the UI switching and keybinding for PC
                 // Port in the custom sequence used for switching UIs. Should only run if not skipping the scoreboard
-                InstallVTestHelperSequenceViaOut(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Post_Scenario_Scoreboard_Matinee.UIAction_PlaySound_0", "ScoreboardSequence.UISwitcherLogic", vTestOptions);
+                InstallVTestHelperSequenceViaOut(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Post_Scenario_Scoreboard_Matinee.UIAction_PlaySound_0", "ScoreboardSequence.UISwitcherLogic", false, vTestOptions);
 
                 // Port in the keybinding sequences
-                InstallVTestHelperSequenceViaOut(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Post_Scenario_Scoreboard_Matinee.BioSeqAct_MiniGame_1", "ScoreboardSequence.KeybindsInstaller", vTestOptions);
-                InstallVTestHelperSequenceViaOut(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Post_Scenario_Scoreboard_Matinee.UIAction_PlaySound_1", "ScoreboardSequence.KeybindsUninstaller", vTestOptions);
+                InstallVTestHelperSequenceViaOut(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Post_Scenario_Scoreboard_Matinee.BioSeqAct_MiniGame_1", "ScoreboardSequence.KeybindsInstaller", true, vTestOptions);
+                InstallVTestHelperSequenceViaOut(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Post_Scenario_Scoreboard_Matinee.UIAction_PlaySound_1", "ScoreboardSequence.KeybindsUninstaller", false, vTestOptions);
             }
             else if (fName.CaseInsensitiveEquals("BIOA_PRC2"))
             {
+                #region PRC1 BioSoundNodeWaveStreamingData
+                // This is hack to port things over in ModdedSource. The streaming data was refenced by an object that doesn't acttually
+                // use this (game will die if it tries). We remove this reference and setup our own.
+                // This is a total hack but it works for less code.
+
+                le1File.FindExport("TheWorld.PersistentLevel.AmbientSound_20").RemoveProperty("Base");
+                AddWorldReferencedObjects(le1File, le1File.FindExport("BIOG_StreamingAudioData.PC.snd_prc1_music")); // This must stay in memory for the music 2DA to work for PRC1 audio
+                #endregion
+
                 #region Full Blocking Load Fix
                 // Adjust the triggerstreams to pre-stream in some files to prevent a full blocking load from occurring.
                 // They all have the same state name
@@ -1993,7 +2007,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 #endregion
 
                 #region Level Load Blocking Texture Streaming
-                InstallVTestHelperSequenceViaEvent(le1File, "TheWorld.PersistentLevel.Main_Sequence", "HelperSequences.LevelLoadTextureStreaming", vTestOptions);
+                InstallVTestHelperSequenceNoInput(le1File, "TheWorld.PersistentLevel.Main_Sequence", "HelperSequences.LevelLoadTextureStreaming", vTestOptions);
                 // The original logic is removed in the ModdedSource file
                 #endregion
             }
@@ -2006,7 +2020,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             else if (fName.CaseInsensitiveEquals("BIOA_PRC2AA"))
             {
                 // Improved loader
-                InstallVTestHelperSequenceViaEvent(le1File, "TheWorld.PersistentLevel.Main_Sequence", "HelperSequences.LevelLoadTextureStreaming", vTestOptions);
+                InstallVTestHelperSequenceNoInput(le1File, "TheWorld.PersistentLevel.Main_Sequence", "HelperSequences.LevelLoadTextureStreaming", vTestOptions);
             }
 
             // Not an else statement as this is level generic
@@ -2143,7 +2157,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// <param name="sourceSequenceOpIFP"></param>
         /// <param name="vTestSequenceIFP"></param>
         /// <param name="vTestOptions"></param>
-        private static void InstallVTestHelperSequenceViaOut(IMEPackage le1File, string sourceSequenceOpIFP, string vTestSequenceIFP, VTestOptions vTestOptions)
+        private static void InstallVTestHelperSequenceViaOut(IMEPackage le1File, string sourceSequenceOpIFP, string vTestSequenceIFP, bool runOnceOnly, VTestOptions vTestOptions)
         {
             var sourceItemToOutFrom = le1File.FindExport(sourceSequenceOpIFP);
             var parentSequence = SeqTools.GetParentSequence(sourceItemToOutFrom, true);
@@ -2151,23 +2165,52 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, donorSequence, le1File, parentSequence, true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var newUiSeq);
             KismetHelper.AddObjectToSequence(newUiSeq as ExportEntry, parentSequence);
 
-            // link it up
-            KismetHelper.CreateOutputLink(sourceItemToOutFrom, "Out", newUiSeq as ExportEntry);
+            if (runOnceOnly)
+            {
+                var gate = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqAct_Gate", vTestOptions.cache);
+                KismetHelper.AddObjectToSequence(gate, parentSequence);
+                // link it up
+                KismetHelper.CreateOutputLink(sourceItemToOutFrom, "Out", gate);
+                KismetHelper.CreateOutputLink(gate, "Out", gate, 2); // close self
+                KismetHelper.CreateOutputLink(gate, "Out", newUiSeq as ExportEntry);
+            }
+            else
+            {
+                // link it up
+                KismetHelper.CreateOutputLink(sourceItemToOutFrom, "Out", newUiSeq as ExportEntry);
+            }
         }
 
         /// <summary>
         /// Installs a sequence from VTestHelper. The sequence should already contain it's own triggers like LevelLoaded.
         /// </summary>
         /// <param name="le1File"></param>
-        /// <param name="sequenceIFP"></param>
+        /// <param name="eventIFP"></param>
         /// <param name="vTestSequenceIFP"></param>
         /// <param name="vTestOptions"></param>
-        private static void InstallVTestHelperSequenceViaEvent(IMEPackage le1File, string sequenceIFP, string vTestSequenceIFP, VTestOptions vTestOptions)
+        private static void InstallVTestHelperSequenceNoInput(IMEPackage le1File, string sequenceIFP, string vTestSequenceIFP, VTestOptions vTestOptions, string outName = "Out")
         {
-            var targetSequence = le1File.FindExport(sequenceIFP);
+            var sequence = le1File.FindExport(sequenceIFP);
             var donorSequence = vTestOptions.vTestHelperPackage.FindExport(vTestSequenceIFP);
-            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, donorSequence, le1File, targetSequence, true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var newUiSeq);
-            KismetHelper.AddObjectToSequence(newUiSeq as ExportEntry, targetSequence);
+            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, donorSequence, le1File, sequence, true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var newUiSeq);
+            KismetHelper.AddObjectToSequence(newUiSeq as ExportEntry, sequence);
+        }
+
+        /// <summary>
+        /// Installs a sequence from VTestHelper. The sequence should already contain it's own triggers like LevelLoaded.
+        /// </summary>
+        /// <param name="le1File"></param>
+        /// <param name="eventIFP"></param>
+        /// <param name="vTestSequenceIFP"></param>
+        /// <param name="vTestOptions"></param>
+        private static void InstallVTestHelperSequenceViaEvent(IMEPackage le1File, string eventIFP, string vTestSequenceIFP, VTestOptions vTestOptions, string outName = "Out")
+        {
+            var targetEvent = le1File.FindExport(eventIFP);
+            var sequence = SeqTools.GetParentSequence(targetEvent);
+            var donorSequence = vTestOptions.vTestHelperPackage.FindExport(vTestSequenceIFP);
+            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, donorSequence, le1File, sequence, true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var newUiSeq);
+            KismetHelper.AddObjectToSequence(newUiSeq as ExportEntry, sequence);
+            KismetHelper.CreateOutputLink(targetEvent, outName, newUiSeq as ExportEntry);
         }
 
         private static void AddWorldReferencedObjects(IMEPackage le1File, params ExportEntry[] entriesToReference)
@@ -2199,6 +2242,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 case "BIOA_PRC2_CCTHAI_DSG":
                     // Might need Aherns
                     {
+                        SetupMusicIntensity(le1File, upperFName, vTestOptions);
+
+
                         // Force the pawns that will spawn to have their meshes in memory
                         // They are not referenced directly
 
@@ -2209,7 +2255,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         {
                             var seqName = exp.GetProperty<StrProperty>("ObjName")?.Value;
 
-                            #region Skip broken SeqAct_ActorFactory for bit explosion :(
+                            #region Skip broken SeqAct_ActorFactory for bit explosion | Increase Surival Mode Engagement
 
                             if (seqName == "Spawn_Single_Guy")
                             {
@@ -2254,11 +2300,52 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 }
 
                                 exp.WriteProperty(sequenceObjects);
+
+                                // Increase survival mode engagement by forcing the player to engage with enemies that charge the player.
+                                // This prevents them from camping and getting free survival time
+                                if (IsContainedWithinSequenceNamed(exp, "SUR_Respawner") && !IsContainedWithinSequenceNamed(exp, "CAH_Respawner")) // Might force on CAH too since it's not that engaging.
+                                {
+                                    // Sequence objects + add to sequence
+                                    var crustAttach = FindSequenceObjectByClassAndPosition(exp, "BioSeqAct_AttachCrustEffect", 5920, 1672);
+                                    var currentPawn = FindSequenceObjectByClassAndPosition(exp, "SeqVar_Object", 4536, 2016);
+
+                                    var delay = SequenceObjectCreator.CreateSequenceObject(le1File, "BioSeqAct_Delay", vTestOptions.cache);
+                                    var delayDuration = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqVar_RandomFloat", vTestOptions.cache);
+                                    var changeAi = SequenceObjectCreator.CreateSequenceObject(le1File, "BioSeqAct_ChangeAI", vTestOptions.cache);
+                                    var log = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqAct_Log", vTestOptions.cache);
+                                    KismetHelper.AddObjectsToSequence(exp, false, delay, delayDuration, changeAi, log);
+
+                                    // Configure sequence object properties
+                                    delayDuration.WriteProperty(new FloatProperty(9, "Min"));
+                                    delayDuration.WriteProperty(new FloatProperty(20, "Max"));
+                                    var chargeAiClass = EntryImporter.EnsureClassIsInFile(le1File, "BioAI_Assault", new RelinkerOptionsPackage() { Cache = vTestOptions.cache });
+                                    changeAi.WriteProperty(new ObjectProperty(chargeAiClass, "ControllerClass"));
+                                    log.WriteProperty(new ArrayProperty<StrProperty>("m_aObjComment") { new StrProperty("CROSSGEN: Engaging player with BioAI_Charge change for") });
+
+                                    // Connect sequence objects
+                                    KismetHelper.CreateOutputLink(crustAttach, "Done", delay);
+                                    KismetHelper.CreateOutputLink(delay, "Finished", changeAi);
+                                    KismetHelper.CreateOutputLink(changeAi, "Out", log);
+                                    KismetHelper.CreateVariableLink(delay, "Duration", delayDuration);
+                                    KismetHelper.CreateVariableLink(changeAi, "Pawn", currentPawn);
+                                    KismetHelper.CreateVariableLink(log, "Object", currentPawn);
+
+
+                                    // Stop timer on any event in this sequence 
+                                    var events = SeqTools.GetAllSequenceElements(exp).OfType<ExportEntry>().Where(x => x.IsA("SeqEvent")).ToList();
+                                    foreach (var seqEvent in events)
+                                    {
+                                        KismetHelper.CreateOutputLink(seqEvent, "Out", delay, 1); // Cancel the delay as spawn stopped or changed (or restarted)
+                                    }
+
+                                    exp.WriteProperty(new StrProperty("Spawn_Single_Guy_SUR", "ObjName"));
+                                }
                             }
 
                             #endregion
 
                             #region Fix dual-finishing sequence. Someone thought they were being clever, bet they didn't know it'd cause an annurysm 12 years later
+
                             else if (seqName == "Hench_Take_Damage")
                             {
                                 var sequenceObjects = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects").Select(x => x.ResolveToEntry(le1File) as ExportEntry).ToList();
@@ -2277,7 +2364,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             {
                                 // Time Trial
                                 var startObj = FindSequenceObjectByClassAndPosition(exp, "BioSeqAct_SetActionState"/*, 712, 2256*/);
-                                var newObj = SequenceObjectCreator.CreateSequenceObject(le1File, "LEXSeqAct_SquadCommand", MEGame.LE1, vTestOptions.cache);
+                                var newObj = SequenceObjectCreator.CreateSequenceObject(le1File, "LEXSeqAct_SquadCommand", vTestOptions.cache);
                                 KismetHelper.AddObjectToSequence(newObj, exp);
                                 KismetHelper.CreateOutputLink(startObj, "Out", newObj); // RALLY
                                 FixSimMapTextureLoading(FindSequenceObjectByClassAndPosition(exp, "BioSeqAct_Delay", 72, 1736), vTestOptions);
@@ -2288,7 +2375,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 // Survival uses this as game mode?
                                 // Capture...?
                                 var startObj = FindSequenceObjectByClassAndPosition(exp, "BioSeqAct_SetActionState"/*, 584, 2200*/);
-                                var newObj = SequenceObjectCreator.CreateSequenceObject(le1File, "LEXSeqAct_SquadCommand", MEGame.LE1, vTestOptions.cache);
+                                var newObj = SequenceObjectCreator.CreateSequenceObject(le1File, "LEXSeqAct_SquadCommand", vTestOptions.cache);
                                 KismetHelper.AddObjectToSequence(newObj, exp);
                                 KismetHelper.CreateOutputLink(startObj, "Out", newObj); // RALLY
                                 FixSimMapTextureLoading(FindSequenceObjectByClassAndPosition(exp, "BioSeqAct_Delay"/*, -152, 1768*/), vTestOptions);
@@ -2297,11 +2384,20 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             {
                                 // Hunt
                                 var startObj = FindSequenceObjectByClassAndPosition(exp, "BioSeqAct_SetActionState" /*, 1040, 2304*/);
-                                var newObj = SequenceObjectCreator.CreateSequenceObject(le1File, "LEXSeqAct_SquadCommand", MEGame.LE1, vTestOptions.cache);
+                                var newObj = SequenceObjectCreator.CreateSequenceObject(le1File, "LEXSeqAct_SquadCommand", vTestOptions.cache);
                                 KismetHelper.AddObjectToSequence(newObj, exp);
                                 KismetHelper.CreateOutputLink(startObj, "Out", newObj); // RALLY
 
                                 FixSimMapTextureLoading(FindSequenceObjectByClassAndPosition(exp, "BioSeqAct_Delay", 304, 1952), vTestOptions);
+                            }
+                            else if (seqName is "Play_Ahern_Quip_For_TA_Intro" or "Play_Ahern_Quip_For_SUR_Intro" or "Play_Ahern_Quip_For_VAM_Intro" or "Play_Ahern_Quip_For_CAH_Intro")
+                            {
+                                // Install music remote event at the end
+                                var setBool = KismetHelper.GetSequenceObjects(exp).OfType<ExportEntry>().First(x => x.ClassName == "SeqAct_SetBool" && x.GetProperty<ArrayProperty<StructProperty>>("OutputLinks")[0].GetProp<ArrayProperty<StructProperty>>("Links").Count == 0);
+                                var remoteEvent = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqAct_ActivateRemoteEvent", vTestOptions.cache);
+                                KismetHelper.AddObjectToSequence(remoteEvent, exp);
+                                KismetHelper.CreateOutputLink(setBool, "Out", remoteEvent);
+                                remoteEvent.WriteProperty(new NameProperty("StartSimMusic", "EventName"));
                             }
 
                             //else if (seqName == "Cap_And_Hold_Point")
@@ -2327,6 +2423,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             }
                             #endregion
 
+                            #endregion
+
+                            #region Black screen on scoreboard
+                            else if (seqName == "OL_Size")
+                            {
+                                // Fadein is handled by scoreboard DSG
+                                var compareBool = FindSequenceObjectByClassAndPosition(exp, "SeqCond_CompareBool", 8064, 3672);
+                                SeqTools.SkipSequenceElement(compareBool, "True"); // Skip out to true
+                            }
                             #endregion
                         }
                     }
@@ -2354,7 +2459,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             {
                                 // Ahern's mission
                                 var startObj = FindSequenceObjectByClassAndPosition(exp, "SequenceReference", -7152, -1032);
-                                var newObj = SequenceObjectCreator.CreateSequenceObject(le1File, "LEXSeqAct_SquadCommand", MEGame.LE1, vTestOptions.cache);
+                                var newObj = SequenceObjectCreator.CreateSequenceObject(le1File, "LEXSeqAct_SquadCommand", vTestOptions.cache);
                                 KismetHelper.AddObjectToSequence(newObj, exp);
                                 KismetHelper.CreateOutputLink(startObj, "Out", newObj); // RALLY
                             }
@@ -2393,6 +2498,34 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         {
                             var exp = le1File.FindExport(cto);
                             exp.WriteProperty(new EnumProperty("COLLIDE_BlockAll", "ECollisionType", MEGame.LE1, "CollisionType"));
+                        }
+
+                        // Add code to disable reachspecs when turning the doors on so enemies do not try to use these areas
+                        var hutSeq = le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence.Set_Hut_Accessibility");
+                        var cgSource = le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence.Set_Hut_Accessibility.SeqAct_ChangeCollision_4");
+                        var disableReachSpecs = SequenceObjectCreator.CreateSequenceObject(le1File, "LEXSeqAct_ToggleReachSpec", vTestOptions.cache);
+
+                        KismetHelper.AddObjectToSequence(disableReachSpecs, hutSeq);
+                        KismetHelper.CreateOutputLink(cgSource, "Out", disableReachSpecs, 2);
+
+                        string[] reachSpecsToDisable = new[]
+                        {
+                            // NORTH ROOM
+                            "TheWorld.PersistentLevel.ReachSpec_1941", // CoverLink to PathNode
+                            "TheWorld.PersistentLevel.ReachSpec_1937", // CoverLink to CoverLink
+                            "TheWorld.PersistentLevel.ReachSpec_2529", // PathNode to PathNode
+
+                            // SOUTH ROOM
+                            "TheWorld.PersistentLevel.ReachSpec_1856", // CoverLink to PathNode
+                            "TheWorld.PersistentLevel.ReachSpec_1849", // CoverLink to CoverLink
+                        };
+
+                        foreach (var rs in reachSpecsToDisable)
+                        {
+                            var obj = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqVar_Object", vTestOptions.cache);
+                            KismetHelper.AddObjectToSequence(obj, hutSeq);
+                            obj.WriteProperty(new ObjectProperty(le1File.FindExport(rs), "ObjValue"));
+                            KismetHelper.CreateVariableLink(disableReachSpecs, "ReachSpecs", obj);
                         }
                     }
                     break;
@@ -2485,7 +2618,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         // Blocking Volumes for shep to stand on post-mission
                         int[] sourceTriggerStreams = new int[]
                         {
-                            10, 11, 12, 13, 18 // 18 is technically not required but left in event of future changes. These are the scoreboard triggerstreams
+                            10, 11, 12, 13, 18 // 18 is technically not required (ahern) but left in event of future changes. These are the scoreboard triggerstreams
                         };
 
                         var sourceAsset = le1File.FindExport(@"TheWorld.PersistentLevel.BlockingVolume_15");
@@ -2493,18 +2626,80 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                         foreach (var sts in sourceTriggerStreams)
                         {
+                            var newBlockingVolume = EntryCloner.CloneTree(sourceAsset);
+                            //EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneTreeAsChild, sourceAsset, le1File, destLevel, true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var newBlockingVolume);
 
-                            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneTreeAsChild, sourceAsset, le1File, destLevel, true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var newBlockingVolume);
-
-                            sourceAsset.indexValue++;
                             var tsExport = le1File.FindExport(@"TheWorld.PersistentLevel.BioTriggerStream_" + sts);
                             var loc = PathEdUtils.GetLocation(tsExport);
                             PathEdUtils.SetLocation(newBlockingVolume as ExportEntry, loc.X, loc.Y, loc.Z - 256f);
                         }
-
-                        sourceAsset.indexValue = 16; // Reset IFP
                     }
                     break;
+            }
+        }
+
+        /// <summary>
+        /// Checks if the specified sequence object is contained within a named sequence. Can be used to find sequences that are templated embedded within other different sequences.
+        /// </summary>
+        /// <param name="sequenceObject"></param>
+        /// <param name="seqName"></param>
+        /// <param name="fullParentChain"></param>
+        /// <returns></returns>
+        private static bool IsContainedWithinSequenceNamed(ExportEntry sequenceObject, string seqName, bool fullParentChain = true)
+        {
+            var parent = SeqTools.GetParentSequence(sequenceObject);
+            while (parent != null)
+            {
+                var parentName = parent.GetProperty<StrProperty>("ObjName");
+                if (parentName?.Value == seqName)
+                    return true;
+                if (!fullParentChain)
+                    break;
+                parent = SeqTools.GetParentSequence(parent);
+            }
+
+            return false;
+        }
+
+        private static void SetupMusicIntensity(IMEPackage le1File, string upperFName, VTestOptions vTestOptions)
+        {
+            foreach (var sequence in le1File.Exports.Where(x => x.ClassName == "Sequence").ToList())
+            {
+                var seqName = sequence.GetProperty<StrProperty>("ObjName")?.Value;
+                if (seqName == "TA_V3_Gametype_Handler")
+                {
+                    var spawnerDeath = FindSequenceObjectByClassAndPosition(sequence, "SeqEvent_SequenceActivated", -1392, 2824);
+                    if (spawnerDeath != null)
+                    {
+                        InstallVTestHelperSequenceViaEvent(le1File, spawnerDeath.InstancedFullPath, "HelperSequences.MusicIntensityTA", vTestOptions);
+                    }
+                }
+                else if (seqName == "Check_Capping_Completion")
+                {
+                    // Capping and Survival both have same-named sequence (thanks demiurge!)
+
+                    // CAH
+                    var finishedCappingCAH = FindSequenceObjectByClassAndPosition(sequence, "SeqEvent_SequenceActivated", -1024, 2632);
+                    if (finishedCappingCAH != null)
+                    {
+                        InstallVTestHelperSequenceViaEvent(le1File, finishedCappingCAH.InstancedFullPath, "HelperSequences.MusicIntensityCAH", vTestOptions);
+                    }
+
+                    // SUR
+                    var finishedCappingSUR = FindSequenceObjectByClassAndPosition(sequence, "SeqAct_Log", 2456, 2760);
+                    if (finishedCappingSUR != null)
+                    {
+                        InstallVTestHelperSequenceViaEvent(le1File, finishedCappingSUR.InstancedFullPath, "HelperSequences.MusicIntensitySUR", vTestOptions);
+                    }
+                }
+                else if (seqName == "Vampire_Mode_Handler")
+                {
+                    var updateWave = FindSequenceObjectByClassAndPosition(sequence, "SeqEvent_SequenceActivated", -2728, 2976);
+                    if (updateWave != null)
+                    {
+                        InstallVTestHelperSequenceViaEvent(le1File, updateWave.InstancedFullPath, "HelperSequences.MusicIntensityVAM", vTestOptions);
+                    }
+                }
             }
         }
 
@@ -2525,29 +2720,18 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     break;
                 case "BIOA_PRC2_CCLAVA_SND":
                     musicVol.WriteProperty(new NameProperty("CrossGen_Mus_Lava", "MusicID")); // Virmire Ride
-                    //musicVol.WriteProperty(new NameProperty("Knossos", "MusicID")); // Therum battle
                     PathEdUtils.SetLocation(musicVol, 28420, -26932, -26858);
                     break;
                 case "BIOA_PRC2_CCCRATE_SND":
                     musicVol.WriteProperty(new NameProperty("CrossGen_Mus_Crate", "MusicID")); // Virmire Ride
-                    //musicVol.WriteProperty(new NameProperty("EdenPrime03", "MusicID")); // Eden Prime Combat
                     PathEdUtils.SetLocation(musicVol, 15783, -27067, -5491);
-
-                    // This needs PRC1 streaming data as this is not globally loaded.
-                    {
-                        using var unc52 = MEPackageHandler.OpenMEPackage(Path.Combine(LE1Directory.CookedPCPath, "BIOA_UNC52.pcc"), forceLoadFromDisk: true);
-                        EntryExporter.ExportExportToPackage(unc52.FindExport("DVDStreamingAudioData.PC.snd_prc1_music"), le1File, out var newEntry);
-                        AddWorldReferencedObjects(le1File, newEntry as ExportEntry);
-                    }
                     break;
                 case "BIOA_PRC2_CCCAVE_SND":
                     musicVol.WriteProperty(new NameProperty("CrossGen_Mus_Cave", "MusicID")); // Virmire Ride
-                    //musicVol.WriteProperty(new NameProperty("PRC1Main", "MusicID")); // BDTS
                     PathEdUtils.SetLocation(musicVol, -16480, -28456, -2614);
                     break;
                 case "BIOA_PRC2_CCAHERN_SND":
                     musicVol.WriteProperty(new NameProperty("CrossGen_Mus_Ahern", "MusicID")); // Virmire Ride
-                    //musicVol.WriteProperty(new NameProperty("EndSpacewalk2", "MusicID")); // End Battle
                     PathEdUtils.SetLocation(musicVol, -41129, -27013, -2679);
                     break;
             }
@@ -2563,23 +2747,23 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             var sequence = le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence");
 
-            var levelLoaded = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqEvent_LevelLoaded", MEGame.LE1, vTestOptions.cache);
-            var plotCheck = SequenceObjectCreator.CreateSequenceObject(le1File, "BioSeqAct_PMCheckConditional", MEGame.LE1, vTestOptions.cache);
-            var musOn = SequenceObjectCreator.CreateSequenceObject(le1File, "BioSeqAct_MusicVolumeEnable", MEGame.LE1, vTestOptions.cache);
-            var musOff = SequenceObjectCreator.CreateSequenceObject(le1File, "BioSeqAct_MusicVolumeDisable", MEGame.LE1, vTestOptions.cache);
-            var musVolSeqObj = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqVar_Object", MEGame.LE1, vTestOptions.cache);
+            var startMusicEvt = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqEvent_RemoteEvent", vTestOptions.cache);
+            var plotCheck = SequenceObjectCreator.CreateSequenceObject(le1File, "BioSeqAct_PMCheckConditional", vTestOptions.cache);
+            var musOn = SequenceObjectCreator.CreateSequenceObject(le1File, "BioSeqAct_MusicVolumeEnable", vTestOptions.cache);
+            var musOff = SequenceObjectCreator.CreateSequenceObject(le1File, "BioSeqAct_MusicVolumeDisable", vTestOptions.cache);
+            var musVolSeqObj = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqVar_Object", vTestOptions.cache);
 
-            var stateBeingSet = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqVar_Int", MEGame.LE1, vTestOptions.cache);
-            var musicStatePlotInt = SequenceObjectCreator.CreateSequenceObject(le1File, "BioSeqVar_StoryManagerInt", MEGame.LE1, vTestOptions.cache);
-            var setInt = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqAct_SetInt", MEGame.LE1, vTestOptions.cache);
+            var stateBeingSet = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqVar_Int", vTestOptions.cache);
+            var musicStatePlotInt = SequenceObjectCreator.CreateSequenceObject(le1File, "BioSeqVar_StoryManagerInt", vTestOptions.cache);
+            var setInt = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqAct_SetInt", vTestOptions.cache);
 
-
+            startMusicEvt.WriteProperty(new NameProperty("StartSimMusic", "EventName"));
             musVolSeqObj.WriteProperty(new ObjectProperty(musicVol, "ObjValue"));
 
             // Sequencing
-            KismetHelper.AddObjectsToSequence(sequence, false, levelLoaded, plotCheck, musOn, musOff, musVolSeqObj, stateBeingSet, musicStatePlotInt, setInt);
+            KismetHelper.AddObjectsToSequence(sequence, false, startMusicEvt, plotCheck, musOn, musOff, musVolSeqObj, stateBeingSet, musicStatePlotInt, setInt);
 
-            KismetHelper.CreateOutputLink(levelLoaded, "Loaded and Visible", plotCheck);
+            KismetHelper.CreateOutputLink(startMusicEvt, "Out", plotCheck);
             KismetHelper.CreateOutputLink(plotCheck, "True", setInt);
             KismetHelper.CreateOutputLink(plotCheck, "False", setInt); // CHANGE TO musOff IN FINAL BUILD
             KismetHelper.CreateOutputLink(setInt, "Out", musOn);
@@ -2596,25 +2780,49 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             musicStatePlotInt.WriteProperty(new StrProperty("CurrentMusicState", "m_sRefName"));
             musicStatePlotInt.WriteProperty(new EnumProperty("None", "EBioRegionAutoSet", MEGame.LE1, "Region"));
 
+            // Intensities
+            var intensity2 = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqVar_Int", vTestOptions.cache);
+            var intensity3 = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqVar_Int", vTestOptions.cache);
+
+            intensity2.WriteProperty(new IntProperty(1, "IntValue")); // 0 indexed
+            intensity3.WriteProperty(new IntProperty(2, "IntValue")); // 0 indexed
+
+            var evtIntensity2 = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqEvent_RemoteEvent", vTestOptions.cache);
+            var evtIntensity3 = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqEvent_RemoteEvent", vTestOptions.cache);
+            evtIntensity2.WriteProperty(new NameProperty("MusicIntensity2", "EventName"));
+            evtIntensity3.WriteProperty(new NameProperty("MusicIntensity3", "EventName"));
+
+            var setInt2 = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqAct_SetInt", vTestOptions.cache);
+            var setInt3 = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqAct_SetInt", vTestOptions.cache);
+
+            KismetHelper.AddObjectsToSequence(sequence, false, intensity2, intensity3, evtIntensity2, evtIntensity3, setInt2, setInt3);
+            KismetHelper.CreateOutputLink(evtIntensity2, "Out", setInt2);
+            KismetHelper.CreateOutputLink(evtIntensity3, "Out", setInt3);
+
+            KismetHelper.CreateVariableLink(setInt2, "Target", musicStatePlotInt);
+            KismetHelper.CreateVariableLink(setInt3, "Target", musicStatePlotInt);
+
+            KismetHelper.CreateVariableLink(setInt2, "Value", intensity2);
+            KismetHelper.CreateVariableLink(setInt3, "Value", intensity3);
+
             // DEBUG
             if (vTestOptions.debugBuild)
             {
-                var touch = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqEvent_Touch", MEGame.LE1, vTestOptions.cache);
+                var touch = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqEvent_Touch", vTestOptions.cache);
                 KismetHelper.AddObjectToSequence(touch, sequence);
                 touch.WriteProperty(new ObjectProperty(musicVol, "Originator"));
 
-                var touchLog = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqAct_Log", MEGame.LE1, vTestOptions.cache);
+                var touchLog = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqAct_Log", vTestOptions.cache);
                 KismetHelper.AddObjectToSequence(touchLog, sequence);
                 KismetHelper.SetComment(touchLog, "Touched Music Volume");
 
-                var untouchLog = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqAct_Log", MEGame.LE1, vTestOptions.cache);
+                var untouchLog = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqAct_Log", vTestOptions.cache);
                 KismetHelper.AddObjectToSequence(untouchLog, sequence);
                 KismetHelper.SetComment(untouchLog, "UnTouched Music Volume");
 
                 KismetHelper.CreateOutputLink(touch, "Touched", touchLog);
                 KismetHelper.CreateOutputLink(touch, "UnTouched", untouchLog);
             }
-
         }
 
         /// <summary>
@@ -2627,9 +2835,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             var stopLoadingMovie = FindSequenceObjectByClassAndPosition(sequence, "BioSeqAct_StopLoadingMovie");
             KismetHelper.RemoveOutputLinks(startDelay);
 
-            var streamInTextures = SequenceObjectCreator.CreateSequenceObject(startDelay.FileRef, "SeqAct_StreamInTextures", MEGame.LE1, vTestOptions.cache);
-            var streamInDelay = SequenceObjectCreator.CreateSequenceObject(startDelay.FileRef, "SeqAct_Delay", MEGame.LE1, vTestOptions.cache);
-            var remoteEventStreamIn = SequenceObjectCreator.CreateSequenceObject(startDelay.FileRef, "SeqAct_ActivateRemoteEvent", MEGame.LE1, vTestOptions.cache);
+            var streamInTextures = SequenceObjectCreator.CreateSequenceObject(startDelay.FileRef, "SeqAct_StreamInTextures", vTestOptions.cache);
+            var streamInDelay = SequenceObjectCreator.CreateSequenceObject(startDelay.FileRef, "SeqAct_Delay", vTestOptions.cache);
+            var remoteEventStreamIn = SequenceObjectCreator.CreateSequenceObject(startDelay.FileRef, "SeqAct_ActivateRemoteEvent", vTestOptions.cache);
 
             KismetHelper.AddObjectToSequence(remoteEventStreamIn, sequence);
             KismetHelper.AddObjectToSequence(streamInTextures, sequence);
@@ -2656,8 +2864,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         private static void CreateSignaledTextureStreaming(ExportEntry sequence, string[] materialsToStreamIn, VTestOptions vTestOptions)
         {
 
-            var remoteEvent = SequenceObjectCreator.CreateSequenceObject(sequence.FileRef, "SeqEvent_RemoteEvent", MEGame.LE1, vTestOptions.cache);
-            var streamInTextures = SequenceObjectCreator.CreateSequenceObject(sequence.FileRef, "SeqAct_StreamInTextures", MEGame.LE1, vTestOptions.cache);
+            var remoteEvent = SequenceObjectCreator.CreateSequenceObject(sequence.FileRef, "SeqEvent_RemoteEvent", vTestOptions.cache);
+            var streamInTextures = SequenceObjectCreator.CreateSequenceObject(sequence.FileRef, "SeqAct_StreamInTextures", vTestOptions.cache);
 
             KismetHelper.AddObjectToSequence(remoteEvent, sequence);
             KismetHelper.AddObjectToSequence(streamInTextures, sequence);

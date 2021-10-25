@@ -2220,27 +2220,77 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void MScanner(PackageEditorWindow pe)
         {
-            var pl = pe.Pcc.FindExport("TheWorld.PersistentLevel");
-            var bin = ObjectBinary.From<Level>(pl);
-            foreach (var ti in bin.TextureToInstancesMap.ToList())
-            {
-                var texEntry = pe.Pcc.GetEntry(ti.Key);
-                ExportEntry tex = texEntry as ExportEntry;
-                if (tex == null)
-                {
-                    tex = EntryImporter.ResolveImport(texEntry as ImportEntry);
-                }
+            // Pain and suffering
+            var inputCookedISB = @"X:\Downloads\ChocolateLabStuff\VTEST\output\vtest.isb";
+            using var ms = new MemoryStream(File.ReadAllBytes(inputCookedISB));
+            using var outStr = new MemoryStream();
+            //var riff = ms.ReadStringASCII(4);
+            //var isbSize = ms.ReadInt32();
+            //var isbf = ms.ReadStringASCII(4); 
 
-                var texBin = ObjectBinary.From<UTexture2D>(tex);
-                var neverSTream = tex.GetProperty<BoolProperty>("NeverStream");
-                if (texBin.Mips.Count(x => x.StorageType != StorageTypes.empty) <= 6 || neverSTream is {Value: true})
+            ms.CopyToEx(outStr, 12);
+
+            // Strip 'data' chunk
+            long currentListSizeOffset = -1;
+            while (ms.Position + 1 < ms.Length)
+            {
+                var chunk = ms.ReadStringASCII(4);
+                var len = ms.ReadInt32();
+                ms.Position -= 8;
+
+                if (chunk == "data")
                 {
-                    Debug.WriteLine($@"Removing item {tex.InstancedFullPath}");
-                    bin.TextureToInstancesMap.Remove(ti);
-                    //Debugger.Break();
+                    Debug.WriteLine($"Skip data len {len}");
+                    ms.Position += len + 8;
+                    long returnPos = outStr.Position;
+                    if (currentListSizeOffset < 0)
+                    {
+                        throw new Exception("WRONG PARSING!");
+                    }
+
+                    outStr.Position = currentListSizeOffset + 4;
+                    var size = outStr.ReadInt32();
+                    outStr.Position -= 4;
+                    outStr.WriteInt32(size - (len + 8)); // Gut 'data'
+                    outStr.Position = returnPos;
+                }
+                else if (chunk == "LIST")
+                {
+                    currentListSizeOffset = outStr.Position;
+                    // LIST / size / samp
+                    ms.CopyToEx(outStr, 12); // we will update the size later
+                }
+                else
+                {
+                    Debug.WriteLine($"Copy {chunk} {len}");
+                    ms.CopyToEx(outStr, len + 8);
                 }
             }
-            pl.WriteBinary(bin);
+
+            outStr.WriteToFile(@"X:\Downloads\ChocolateLabStuff\VTEST\output\bsnwsd_vtest.isb");
+
+
+            //var pl = pe.Pcc.FindExport("TheWorld.PersistentLevel");
+            //var bin = ObjectBinary.From<Level>(pl);
+            //foreach (var ti in bin.TextureToInstancesMap.ToList())
+            //{
+            //    var texEntry = pe.Pcc.GetEntry(ti.Key);
+            //    ExportEntry tex = texEntry as ExportEntry;
+            //    if (tex == null)
+            //    {
+            //        tex = EntryImporter.ResolveImport(texEntry as ImportEntry);
+            //    }
+
+            //    var texBin = ObjectBinary.From<UTexture2D>(tex);
+            //    var neverSTream = tex.GetProperty<BoolProperty>("NeverStream");
+            //    if (texBin.Mips.Count(x => x.StorageType != StorageTypes.empty) <= 6 || neverSTream is {Value: true})
+            //    {
+            //        Debug.WriteLine($@"Removing item {tex.InstancedFullPath}");
+            //        bin.TextureToInstancesMap.Remove(ti);
+            //        //Debugger.Break();
+            //    }
+            //}
+            //pl.WriteBinary(bin);
             return;
             #region GlobalShaderCache.bin parsing
 

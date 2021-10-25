@@ -914,7 +914,19 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 ObjInstanceVersion = 1
             };
             #endregion
+            #region LEXSeqAct_ToggleReachSpec
+            classes["LEXSeqAct_ToggleReachSpec"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 325, // in LE1Resources.pcc
+            };
 
+            sequenceObjects["LEXSeqAct_ToggleReachSpec"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+            #endregion
 
 
             // OLD KEEP FOR NOW
