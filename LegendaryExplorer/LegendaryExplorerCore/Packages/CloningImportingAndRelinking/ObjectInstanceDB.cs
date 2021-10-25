@@ -72,9 +72,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <summary>
         /// Returns a list of relative package file paths (to the game root) that contain the specified ExportEntry with the same InstancedFullPath. Returns null if the specified IFP is not in the database, indicating an object of that name does not exist in the game.
         /// </summary>
-        /// <param name="ifp"></param>
+        /// <param name="ifp">Instanced full path of the object to find</param>
+        /// <param name="localization">The localization for the InstancedFullPath object. This will force results to have a specific localization. If none is provided, all results are considered valid.</param>
         /// <returns></returns>
-        public List<string> GetFilesContainingObject(string ifp)
+        public List<string> GetFilesContainingObject(string ifp, MELocalization localization = MELocalization.None)
         {
             int nameIdx = -1;
             nametableMap?.TryGetValue(ifp, out nameIdx);
@@ -84,7 +85,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             if (nameIdx >= 0)
             {
                 if (ObjectRecords.TryGetValue(nameIdx, out var result))
-                    return result.Select(x => NameTable[x]).ToList();
+                    return result.Select(x => NameTable[x]).Where(x => localization == MELocalization.None || x.GetFileLocalizationFromFilePath() == localization).ToList();
                 return null; // NOT FOUND IN NOBJECT LIST
             }
 

@@ -408,7 +408,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 if (rop.IsCrossGame && rop.TargetGameDonorDB != null && !EntryImporter.IsSafeToImportFrom($"{importFullName.GetRootName()}.{(relinkingExport.Game == MEGame.ME1 ? "u" : "pcc")}", relinkingExport.Game)) // This doesn't 
                 {
                     // Find an export version instead that we can import
-                    var canddiates = rop.TargetGameDonorDB.GetFilesContainingObject(originalInstancedFullPath);
+                    var canddiates = rop.TargetGameDonorDB.GetFilesContainingObject(originalInstancedFullPath, relinkingExport.FileRef.Localization);
                     if (canddiates == null || !canddiates.Any())
                     {
                         // Ruh Roh

@@ -337,14 +337,14 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 //Debug.WriteLine($@"Porting {ifp}");
                 //if (ifp.Contains("TUR_ARM_HVYa_Des_Diff_Stack"))
                 //    Debugger.Break();
-                var donorFiles = rop.TargetGameDonorDB.GetFilesContainingObject(ifp);
+                var donorFiles = rop.TargetGameDonorDB.GetFilesContainingObject(ifp, sourceExport.FileRef.Localization);
                 if (donorFiles == null || !donorFiles.Any())
                 {
                     // Try without the front part
                     if (ifp.Contains("."))
                     {
                         ifp = ifp.Substring(ifp.IndexOf(".") + 1);
-                        donorFiles = rop.TargetGameDonorDB.GetFilesContainingObject(ifp);
+                        donorFiles = rop.TargetGameDonorDB.GetFilesContainingObject(ifp, sourceExport.FileRef.Localization);
                     }
                 }
                 bool usingDonor = false;
