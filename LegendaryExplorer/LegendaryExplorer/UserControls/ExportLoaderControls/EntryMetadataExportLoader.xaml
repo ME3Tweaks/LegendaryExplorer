@@ -91,15 +91,15 @@
         <TextBlock Name="InfoTab_ObjectNameIndex_TextBlock" VerticalAlignment="Center" Text="{Binding ObjectIndexOffsetText}" Grid.Row="1" Grid.Column="0"/>
         <TextBlock Name="InfoTab_InstancedFullPath" VerticalAlignment="Center" Text="Instanced Full Path:" Grid.Row="2" Grid.Column="0"/>
 
-        <TextBlock VerticalAlignment="Center" Text="0x00 Class:" Grid.Row="3" Grid.Column="0"/>
+        <TextBlock VerticalAlignment="Center" Text="0x00 Class:" Grid.Row="3" Grid.Column="0" Cursor="Hand" Foreground="DodgerBlue" TextDecorations="Underline" PreviewMouseDown="GoToExportClass_Clicked"/>
         <TextBlock VerticalAlignment="Center" Text="0x08 Class:" Grid.Row="4" Grid.Column="0"/>
         <!--Import-->
 
-        <TextBlock VerticalAlignment="Center" Text="0x04 Superclass:" Grid.Row="5" Grid.Column="0"/>
+        <TextBlock VerticalAlignment="Center" Text="0x04 Superclass:" Grid.Row="5" Grid.Column="0" Cursor="Hand" Foreground="DodgerBlue" TextDecorations="Underline" PreviewMouseDown="GoToSuperclass_Clicked"/>
 
         <TextBlock Name="InfoTab_Link_TextBlock" VerticalAlignment="Center" Text="0x08 Link:" Grid.Row="6" Grid.Column="0"/>
         <TextBlock VerticalAlignment="Center" Text="0x00 Package file:" Grid.Row="7" Grid.Column="0"/>
-        <TextBlock VerticalAlignment="Center" Text="0x14 Archetype:" Grid.Row="8" Grid.Column="0"/>
+        <TextBlock VerticalAlignment="Center" Text="0x14 Archetype:" Grid.Row="8" Grid.Column="0" Cursor="Hand" Foreground="DodgerBlue" TextDecorations="Underline" PreviewMouseDown="GoToArchetype_Clicked"/>
         <TextBlock VerticalAlignment="Center" Text="0x18 Object flags:" Grid.Row="9" Grid.Column="0"/>
         <TextBlock VerticalAlignment="Center" Text="Header size:" Grid.Row="11" Grid.Column="0"/>
         <TextBlock VerticalAlignment="Center" Text="0x20 Export data size:" Grid.Row="12" Grid.Column="0"/>

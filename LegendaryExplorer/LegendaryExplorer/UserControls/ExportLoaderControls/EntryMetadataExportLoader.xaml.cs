@@ -9,10 +9,12 @@ using Be.Windows.Forms;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
+using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
 using Xceed.Wpf.Toolkit.Primitives;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
@@ -778,6 +780,70 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             public override string ToString() => "0: Class";
 
             public int UIndex => 0;
+        }
+
+        private byte[] GetHeaderBytes()
+        {
+            MemoryStream m = new MemoryStream();
+            for (int i = 0; i < headerByteProvider.Length; i++)
+                m.WriteByte(headerByteProvider.ReadByte(i));
+            return m.ToArray();
+        }
+
+        private void GoToExportClass_Clicked(object sender, MouseButtonEventArgs e)
+        {
+            var header = GetHeaderBytes();
+            if (header.Length >= HEADER_OFFSET_EXP_IDXCLASS + 4)
+            {
+                var uindex = EndianReader.ToInt32(header, HEADER_OFFSET_EXP_IDXCLASS, CurrentLoadedEntry.FileRef.Endian);
+                GoToEntryUIndex(uindex);
+            }
+        }
+
+        private void GoToSuperclass_Clicked(object sender, MouseButtonEventArgs e)
+        {
+            var header = GetHeaderBytes();
+            if (header.Length >= HEADER_OFFSET_EXP_IDXCLASS + 4)
+            {
+                var uindex = EndianReader.ToInt32(header, HEADER_OFFSET_EXP_IDXSUPERCLASS, CurrentLoadedEntry.FileRef.Endian);
+                GoToEntryUIndex(uindex);
+            }
+        }
+
+        private void GoToArchetype_Clicked(object sender, MouseButtonEventArgs e)
+        {
+            var header = GetHeaderBytes();
+            if (header.Length >= HEADER_OFFSET_EXP_IDXCLASS + 4)
+            {
+                var uindex = EndianReader.ToInt32(header, HEADER_OFFSET_EXP_IDXARCHETYPE, CurrentLoadedEntry.FileRef.Endian);
+                GoToEntryUIndex(uindex);
+            }
+        }
+
+        private void GoToEntryUIndex(int UIndex)
+        {
+            if (CurrentLoadedEntry.FileRef.TryGetEntry(UIndex, out var entry))
+            {
+                if (entry is ExportEntry exp)
+                {
+                    Window w = Window.GetWindow(this);
+                    if (w is PackageEditorWindow pe)
+                    {
+                        pe.GoToNumber(exp.UIndex);
+                    }
+                }
+                else if (entry is ImportEntry imp)
+                {
+                    var resolved = EntryImporter.ResolveImport(imp);
+                    if (resolved != null)
+                    {
+                        var p = new PackageEditorWindow();
+                        p.Show();
+                        p.LoadFile(resolved.FileRef.FilePath, resolved.UIndex);
+                        p.Activate(); //bring to front
+                    }
+                }
+            }
         }
     }
 }
