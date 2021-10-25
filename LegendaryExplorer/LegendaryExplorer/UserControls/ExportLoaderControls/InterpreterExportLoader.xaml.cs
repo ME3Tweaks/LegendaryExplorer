@@ -1311,6 +1311,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         isExpanded = true;
                         parsedValue = sp.StructType;
                     }
+                    else if (sp.StructType == "RvrMultiplexorEntry")
+                    {
+                        parsedValue = $"{sp.GetProp<NameProperty>("m_nmTag").Value}";
+                    }
                     else
                     {
                         parsedValue = sp.StructType;
