@@ -65,6 +65,8 @@
             <Button Name="AddButton" Content="Add Property" Width="90" Height="27" Margin="0,0,5,0" IsDefault="True"
                     DockPanel.Dock="Right" Command="{Binding AddPropertyCommand}"/>
             <Button Name="CancelButton" Content="Cancel"  Width="70" Height="27" IsCancel="True" DockPanel.Dock="Right"/>
+            <CheckBox Content="Show Transient Properties" IsChecked="{Binding ShowTransients}" HorizontalAlignment="Left" VerticalAlignment="Center" DockPanel.Dock="Right" Margin="0,5" />
+
             <xctk:WatermarkTextBox Watermark="Type to filter" 
                                    Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}" 
                                    HorizontalAlignment="Left" 
