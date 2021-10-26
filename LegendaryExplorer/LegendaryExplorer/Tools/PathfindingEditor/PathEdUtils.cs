@@ -188,7 +188,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             SetReachSpecSize(specProperties, radius, height);
             spec.WriteProperties(specProperties); //write it back.
         }
-        
+
         public static IEntry GetEntryOrAddImport(IMEPackage Pcc, string importFullName)
         {
             //foreach (ImportEntry imp in Pcc.Imports)
@@ -540,6 +540,18 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             }
         }
 
+        public static void SetLocation(ExportEntry export, Point3D point)
+        {
+            if (export.ClassName.Contains("Component"))
+            {
+                SetCollectionActorLocation(export, point.X, point.Y, point.Z);
+            }
+            else
+            {
+                export.WriteProperty(CommonStructs.Vector3Prop(point.X, point.Y, point.Z, "location"));
+            }
+        }
+
         public static void SetLocation(StructProperty prop, float x, float y, float z)
         {
             prop.GetProp<FloatProperty>("X").Value = x;
@@ -593,7 +605,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                     var binData = (StaticCollectionActor)ObjectBinary.From(collectionactor);
                     Matrix4x4 m = binData.LocalToWorldTransforms[idx];
                     var dsd = m.UnrealDecompose();
-                    binData.LocalToWorldTransforms[idx] = ActorUtils.ComposeLocalToWorld(dsd.translation, dsd.rotation, new Vector3(x,y,z));
+                    binData.LocalToWorldTransforms[idx] = ActorUtils.ComposeLocalToWorld(dsd.translation, dsd.rotation, new Vector3(x, y, z));
                     collectionactor.WriteBinary(binData);
                 }
             }
