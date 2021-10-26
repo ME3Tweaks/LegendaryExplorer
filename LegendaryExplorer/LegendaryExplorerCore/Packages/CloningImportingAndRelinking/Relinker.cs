@@ -166,8 +166,20 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 {
                     // This code makes a lot of assumptions, like how components are always directly below the current export
                     var nameIndex = relinkingExport.FileRef.FindNameOrAdd(cmk.Key.Name);
+
+                    // We can't call this method with our existing cross package map or it will have infinite recursion
+                    // so we cache our map and merge the results 
+                    var cachedMap = rop.CrossPackageMap;
+                    rop.CrossPackageMap = new ListenableDictionary<IEntry, IEntry>();
                     EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport.FileRef.GetUExport(cmk.Value + 1), relinkingExport.FileRef, relinkingExport, true, rop, out var newComponent);
                     newComponentMap.Add(new KeyValuePair<NameReference, int>(cmk.Key, newComponent.UIndex - 1)); // TODO: Relink the 
+
+                    foreach (var v in rop.CrossPackageMap)
+                    {
+                        cachedMap[v.Key] = v.Value;
+                    }
+
+                    rop.CrossPackageMap = cachedMap;
                 }
                 relinkingExport.ComponentMap = newComponentMap;
             }

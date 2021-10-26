@@ -481,16 +481,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             if (bgsaiBaseIdx >= 0)
                 me1File.replaceName(bgsaiBaseIdx, "SFXStrategicAI");
 
+            CorrectFileForLEXMapFileDefaults(me1File, le1File, vTestOptions);
+            PrePortingCorrections(me1File, vTestOptions);
+
             // Once we are confident in porting we will just take the actor list from PersistentLevel
             // For now just port these
             var itemsToPort = new List<ExportEntry>();
 
             var me1PL = me1File.FindExport(@"TheWorld.PersistentLevel");
             var me1PersistentLevel = ObjectBinary.From<Level>(me1PL);
-
-            CorrectFileForLEXMapFileDefaults(me1File, le1File, vTestOptions);
-
-
 
             itemsToPort.AddRange(me1PersistentLevel.Actors.Where(x => x.value != 0) // Skip blanks
                 .Select(x => me1File.GetUExport(x.value))
@@ -1077,8 +1076,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
             // PRECORRECTION - CORRECTIONS TO THE SOURCE FILE BEFORE PORTING
             var levelName = Path.GetFileNameWithoutExtension(destPackage.FilePath);
-            vTestOptions.packageEditorWindow.BusyText = $"PrePortingCorrections on \n{levelName}";
-            PrePortingCorrections(sourcePackage, vTestOptions);
 
             // PORTING ACTORS
             var le1PL = destPackage.FindExport("TheWorld.PersistentLevel");
@@ -1128,7 +1125,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             PrePortingCorrections(sourcePackage, vTestOptions);
 
             var bcBaseIdx = sourcePackage.findName("BIOC_Base");
-            sourcePackage.replaceName(bcBaseIdx, "SFXGame");
+            if (bcBaseIdx >= 0)
+            {
+                sourcePackage.replaceName(bcBaseIdx, "SFXGame");
+            }
 
             foreach (var e in sourcePackage.Exports.Where(x => x.ClassName == "ObjectReferencer"))
             {
@@ -1427,10 +1427,84 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             //Trash
             EntryPruner.TrashEntryAndDescendants(destroy);
 
+            // BLOCKING VOLUMES WHERE KILL VOLUMES ARE FOR PLAYER AND HENCH
+            var donorBv = vTestOptions.vTestHelperPackage.FindExport("PRC2.BlockingVolume_32000");
+            donorBv.indexValue = FindNextNameIndex(killTriggerSeq.FileRef, "TheWorld.PersistentLevel.BlockingVolume");
+            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, donorBv, killTriggerSeq.FileRef, killTriggerSeq.FileRef.FindExport("TheWorld.PersistentLevel"), true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var newBvEntry);
+            donorBv.indexValue = 32001; // reset
+
+            var newBV = newBvEntry as ExportEntry;
+            newBV.WriteProperty(new NameProperty("CROSSGEN_KillVolumeCollision", "Tag"));
+
+            var affectedActors = new ArrayProperty<NameProperty>("lstAffectedActors");
+            affectedActors.Add(new NameProperty("player"));
+            affectedActors.Add(new NameProperty("hench_humanmale"));
+            affectedActors.Add(new NameProperty("hench_humanmale"));
+            affectedActors.Add(new NameProperty("hench_asari"));
+            affectedActors.Add(new NameProperty("hench_krogan"));
+            affectedActors.Add(new NameProperty("hench_quarian"));
+            affectedActors.Add(new NameProperty("hench_turian"));
+            newBV.WriteProperty(affectedActors);
+            newBV.WriteProperty(new BoolProperty(false, "bInclusionaryList"));
+            newBV.WriteProperty(new BoolProperty(false, "bBlockCamera"));
+
+            var killVolume = (SeqTools.GetVariableLinksOfNode(SeqTools.GetParentSequence(killTriggerSeq))[0].LinkedNodes[0] as ExportEntry).GetProperty<ObjectProperty>("ObjValue").ResolveToEntry(killTriggerSeq.FileRef) as ExportEntry;
+            var tempClone = EntryCloner.CloneTree(killVolume);
+
+            foreach (var exp in killVolume.FileRef.Exports.Where(x => x.idxLink == tempClone.UIndex))
+            {
+                exp.idxLink = newBV.UIndex; // attach to parent
+                if (exp.ClassName == "Model")
+                {
+                    newBV.WriteProperty(new ObjectProperty(exp, "Brush"));
+                }
+                else if (exp.ClassName == "BrushComponent")
+                {
+                    exp.Archetype = killTriggerSeq.FileRef.FindImport("Engine.Default__BlockingVolume.BrushComponent0");
+                    newBV.WriteProperty(new ObjectProperty(exp, "BrushComponent"));
+                    newBV.WriteProperty(new ObjectProperty(exp, "CollisionComponent"));
+                }
+            }
+            EntryPruner.TrashEntryAndDescendants(tempClone); // delete the clone
+
+            PathEdUtils.SetLocation(newBV, PathEdUtils.GetLocation(killVolume));
+            var drawScale3d = killVolume.GetProperty<StructProperty>("DrawScale3D");
+            if (drawScale3d != null)
+            {
+                newBV.WriteProperty(drawScale3d);
+            }
+            //var drawScale = killVolume.GetProperty<FloatProperty>("DrawScale");
+            //if (drawScale != null)
+            //{
+            //    newBV.WriteProperty(drawScale);
+            //}
+            newBV.WriteProperty(new FloatProperty(1.03f, "DrawScale")); // Make just a bit bigger
+
+            //todo: set scale
+
+            // add to level
+            var level = killTriggerSeq.FileRef.FindExport("TheWorld.PersistentLevel");
+            var levelBin = ObjectBinary.From<Level>(level);
+            levelBin.Actors.Add(newBV);
+            level.WriteBinary(levelBin);
+
             // Porting in object added BIOC_Base import
             // BIOC_BASE -> SFXGame
             var bcBaseIdx = killTriggerSeq.FileRef.findName("BIOC_Base");
             killTriggerSeq.FileRef.replaceName(bcBaseIdx, "SFXGame");
+        }
+
+        private static int FindNextNameIndex(IMEPackage package, string ifp)
+        {
+            int i = 1;
+            while (true)
+            {
+                if (package.FindEntry($"{ifp}_{(i - 1)}") == null)
+                {
+                    return i;
+                }
+                i++;
+            }
         }
 
         public static void ConvertME1TerrainComponent(ExportEntry exp)
@@ -2243,7 +2317,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     // Might need Aherns
                     {
                         SetupMusicIntensity(le1File, upperFName, vTestOptions);
-
 
                         // Force the pawns that will spawn to have their meshes in memory
                         // They are not referenced directly
