@@ -929,116 +929,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             #endregion
 
 
-            // OLD KEEP FOR NOW
-            //// HenBagle - New Class - used to fix a bug in LE1 CP
-            //classes["SFXSeqAct_GetGameOption"] = new ClassInfo
-            //{
-            //    baseClass = "SequenceAction",
-            //    pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-            //    exportIndex = 2, //in LE1Resources.pcc
-            //    properties =
-            //    {
-            //        new KeyValuePair<NameReference, PropertyInfo>("OptionType", new PropertyInfo(PropertyType.IntProperty)),
-            //    }
-            //};
-
-            //sequenceObjects["SFXSeqAct_GetGameOption"] = new SequenceObjectInfo
-            //{
-            //    ObjInstanceVersion = 1
-            //};
-
-            //#region MGAMERZ CROSSGEN PROJECT
-            //#region SeqAct_GetPlayerMaxGrenades
-            //classes["SeqAct_GetPlayerMaxGrenades"] = new ClassInfo
-            //{
-            //    baseClass = "SequenceAction",
-            //    pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-            //    exportIndex = 11, //in LE1Resources.pcc
-            //    properties =
-            //    {
-            //        new KeyValuePair<NameReference, PropertyInfo>("NumGrenades", new PropertyInfo(PropertyType.IntProperty)),
-            //    }
-            //};
-
-            //sequenceObjects["SeqAct_GetPlayerMaxGrenades"] = new SequenceObjectInfo
-            //{
-            //    ObjInstanceVersion = 1
-            //};
-            //#endregion
-            //#region SeqAct_GetPlayerMaxMedigel
-            //classes["SeqAct_GetPlayerMaxMedigel"] = new ClassInfo
-            //{
-            //    baseClass = "SequenceAction",
-            //    pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-            //    exportIndex = 18, //in LE1Resources.pcc
-            //    properties =
-            //    {
-            //        new KeyValuePair<NameReference, PropertyInfo>("NumMedigel", new PropertyInfo(PropertyType.FloatProperty)),
-            //    }
-            //};
-
-            //sequenceObjects["SeqAct_GetPlayerMaxMedigel"] = new SequenceObjectInfo
-            //{
-            //    ObjInstanceVersion = 1
-            //};
-            //#endregion
-
-            //#region SeqAct_ActorFactoryWithOwner
-            //classes["SeqAct_ActorFactoryWithOwner"] = new ClassInfo
-            //{
-            //    baseClass = "BioSequenceLatentAction",
-            //    pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-            //    exportIndex = 25, //in LE1Resources.pcc
-            //};
-
-            //sequenceObjects["SeqAct_ActorFactoryWithOwner"] = new SequenceObjectInfo
-            //{
-            //    ObjInstanceVersion = 1
-            //};
-            //#endregion
-
-
-            //#region SeqAct_ModifyListFloat
-            //classes["SeqAct_ModifyFloatList"] = new ClassInfo
-            //{
-            //    baseClass = "SequenceAction",
-            //    pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-            //    exportIndex = 168, //in LE1Resources.pcc
-            //    properties =
-            //    {
-            //        new KeyValuePair<NameReference, PropertyInfo>("OutputListLength", new PropertyInfo(PropertyType.IntProperty)),
-            //        new KeyValuePair<NameReference, PropertyInfo>("InputIndex", new PropertyInfo(PropertyType.IntProperty)),
-            //        new KeyValuePair<NameReference, PropertyInfo>("InputOutputValue", new PropertyInfo(PropertyType.FloatProperty)),
-            //    }
-            //};
-
-            //sequenceObjects["SeqAct_ModifyFloatList"] = new SequenceObjectInfo
-            //{
-            //    ObjInstanceVersion = 1
-            //};
-            //#endregion
-            //#region SeqAct_CopyListFloat
-            //classes["SeqAct_CopyFloatList"] = new ClassInfo
-            //{
-            //    baseClass = "SequenceAction",
-            //    pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-            //    exportIndex = 28, //in LE1Resources.pcc
-            //};
-
-            //sequenceObjects["SeqAct_CopyFloatList"] = new SequenceObjectInfo
-            //{
-            //    ObjInstanceVersion = 1
-            //};
-            //#endregion
-
-
-
-            //#endregion
-
-            // END CUSTOM CLASSES
-
-
-
             ME3UnrealObjectInfo.AddIntrinsicClasses(classes, MEGame.LE1);
 
             // Native classes 
@@ -1048,6 +938,27 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 exportIndex = 0,
                 pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
             };
+
+            Classes["StaticMesh"] = new ClassInfo
+            {
+                baseClass = "Object",
+                exportIndex = 0,
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                properties =
+                {
+                    new KeyValuePair<NameReference, PropertyInfo>("BodySetup", new PropertyInfo(PropertyType.ObjectProperty, "RB_BodySetup")),
+                    new KeyValuePair<NameReference, PropertyInfo>("bUsedForInstancing", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("ForceDoubleSidedShadowVolumes", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("UseFullPrecisionUVs", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("LightMapCoordinateIndex", new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("LightMapResolution", new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("UseSimpleboxCollision", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("UseSimpleLineCollision", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("UseSimpleRigidBodyCollision", new PropertyInfo(PropertyType.BoolProperty)),
+                }
+            };
+            // Native properties
+
         }
 
         public static ClassInfo generateClassInfo(ExportEntry export, bool isStruct = false)
