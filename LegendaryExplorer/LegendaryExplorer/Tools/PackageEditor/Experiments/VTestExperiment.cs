@@ -1428,7 +1428,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             EntryPruner.TrashEntryAndDescendants(destroy);
 
             // BLOCKING VOLUMES WHERE KILL VOLUMES ARE FOR PLAYER AND HENCH
-            var donorBv = vTestOptions.vTestHelperPackage.FindExport("PRC2.BlockingVolume_32000");
+            /*var donorBv = vTestOptions.vTestHelperPackage.FindExport("PRC2.BlockingVolume_32000");
             donorBv.indexValue = FindNextNameIndex(killTriggerSeq.FileRef, "TheWorld.PersistentLevel.BlockingVolume");
             EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, donorBv, killTriggerSeq.FileRef, killTriggerSeq.FileRef.FindExport("TheWorld.PersistentLevel"), true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var newBvEntry);
             donorBv.indexValue = 32001; // reset
@@ -1487,6 +1487,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             var levelBin = ObjectBinary.From<Level>(level);
             levelBin.Actors.Add(newBV);
             level.WriteBinary(levelBin);
+            */
 
             // Porting in object added BIOC_Base import
             // BIOC_BASE -> SFXGame
