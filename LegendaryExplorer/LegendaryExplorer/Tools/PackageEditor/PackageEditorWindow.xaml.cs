@@ -325,6 +325,11 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
 
             var otherVerNameBase = Path.GetFileNameWithoutExtension(Pcc.FilePath);
+            if (Pcc.Game == MEGame.ME1 && openLegendaryVersion && otherVerNameBase == "BIOC_Base")
+                otherVerNameBase = "SFXGame";
+            if (Pcc.Game == MEGame.LE1 && !openLegendaryVersion && otherVerNameBase == "SFXGame")
+                otherVerNameBase = "BIOC_Base";
+
             var otherVerName = $"{otherVerNameBase}.{(Pcc.Game == MEGame.LE1 ? "SFM" : "pcc")}";
             if (files.TryGetValue(otherVerName, out var matchingVersion))
             {
@@ -1561,7 +1566,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                                 var isbOffset = data.ReadInt32();
 
                                 string icbName = null;
-                                
+
                                 // ICB
                                 var dataStartPos = data.Position; // RIFF start
                                 data.Skip(0x4); // get riff length
