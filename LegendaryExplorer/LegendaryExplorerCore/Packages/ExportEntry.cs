@@ -409,6 +409,7 @@ namespace LegendaryExplorerCore.Packages
                 {
                     EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_indexValue), FileRef.Endian);
                     HeaderChanged = true;
+                    //ObjectName = new NameReference(ObjectName, value); // Should indexValue change the ObjectName?
                     FileRef.InvalidateLookupTable();
                 }
             }

@@ -725,7 +725,7 @@ namespace LegendaryExplorerCore.Packages
                 task.ContinueWithOnUIThread(x =>
                 {
                     taskCompletion[x.Id] = true;
-                    if (tasks.TrueForAll(t => taskCompletion[t.Id]))
+                    if (tasks.TrueForAll(t => !taskCompletion.ContainsKey(t.Id) || taskCompletion[t.Id]))
                     {
                         tasks.Clear();
                         taskCompletion.Clear();
