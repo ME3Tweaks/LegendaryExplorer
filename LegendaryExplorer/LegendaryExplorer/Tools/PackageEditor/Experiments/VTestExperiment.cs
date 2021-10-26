@@ -2042,6 +2042,23 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 AddWorldReferencedObjects(le1File, le1File.FindExport("BIOG_StreamingAudioData.PC.snd_prc1_music")); // This must stay in memory for the music 2DA to work for PRC1 audio
                 #endregion
 
+                #region Geth Pulse Gun Crust VFX Fix
+                // This is a new material that adds HoloWipe VFX to the geth pulse gun, that is only referenced from our 2DA
+                // Ordinarily this would be in a startup file (such as BIOC_Materials for basegame) but that doesn't seem to work so we have it in this file instead
+
+                // Clone BIOG_WPN_ tree
+                var gethPulseVfxRoot = vTestOptions.vTestHelperPackage.FindExport("BIOG_WPN_ALL_MASTER_L");
+                var gethPulseVfxIFP = "BIOG_WPN_ALL_MASTER_L.Appearance.Geth.VTEST_WPN_GTH_Appr";
+                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneTreeAsChild, gethPulseVfxRoot, le1File, null,
+                    true, new RelinkerOptionsPackage(), out var _);
+
+                // Effectively clone/relink all references for VTEST_WPN_GTH_Appr
+                var gethPulseVfx = le1File.FindExport(gethPulseVfxIFP);
+                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingularWithRelink, vTestOptions.vTestHelperPackage.FindExport(gethPulseVfxIFP),
+                    le1File, gethPulseVfx, true, new RelinkerOptionsPackage(), out var _);
+                AddWorldReferencedObjects(le1File, gethPulseVfx);
+                #endregion
+
                 #region Full Blocking Load Fix
                 // Adjust the triggerstreams to pre-stream in some files to prevent a full blocking load from occurring.
                 // They all have the same state name
