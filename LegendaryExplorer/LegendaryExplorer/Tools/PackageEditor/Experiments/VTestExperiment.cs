@@ -365,8 +365,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     else
                     {
                         var levelName = Path.GetFileNameWithoutExtension(f);
-                        //if (levelName.CaseInsensitiveEquals("BIOA_PRC2_CCTHAI_DSG"))
-                        PortVTestLevel(vTestLevel, levelName, vTestOptions, levelName == "BIOA_" + vTestLevel, true);
+                        //if (levelName.CaseInsensitiveEquals("BIOA_PRC2_CCAHERN_DSG"))
+                            PortVTestLevel(vTestLevel, levelName, vTestOptions, levelName == "BIOA_" + vTestLevel, true);
                     }
                 }
             }
@@ -2328,6 +2328,35 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             // Semi-global
             switch (upperFName)
             {
+                case "BIOA_PRC2_CCAHERN_DSG":
+                    {
+
+                        foreach (var exp in le1File.Exports.Where(x => x.ClassName == "Sequence").ToList())
+                        {
+                            var seqName = exp.GetProperty<StrProperty>("ObjName")?.Value;
+                            if (seqName == "SUR_Ahern_Handler")
+                            {
+                                // Ahern music start right as message plays
+                                {
+                                    var delay = FindSequenceObjectByClassAndPosition(exp, "SeqAct_Delay", -7232, -1224);
+                                    var remoteEvent = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqAct_ActivateRemoteEvent", vTestOptions.cache);
+                                    KismetHelper.AddObjectToSequence(remoteEvent, exp);
+                                    KismetHelper.CreateOutputLink(delay, "Finished", remoteEvent);
+                                    remoteEvent.WriteProperty(new NameProperty("StartSimMusic", "EventName"));
+                                }
+
+                                // Setup intensity increase 1
+                                {
+                                    var delay = FindSequenceObjectByClassAndPosition(exp, "SeqAct_Gate", -2072, -1152);
+                                    var remoteEvent = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqAct_ActivateRemoteEvent", vTestOptions.cache);
+                                    KismetHelper.AddObjectToSequence(remoteEvent, exp);
+                                    KismetHelper.CreateOutputLink(delay, "Out", remoteEvent);
+                                    remoteEvent.WriteProperty(new NameProperty("MusicIntensity2", "EventName"));
+                                }
+                            }
+                        }
+                    }
+                    break;
                 case "BIOA_PRC2_CCCAVE_DSG":
                 case "BIOA_PRC2_CCLAVA_DSG":
                 case "BIOA_PRC2_CCCRATE_DSG":
@@ -2549,7 +2578,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             if (seqName == "SUR_Ahern_Handler")
                             {
                                 // Ahern's mission
-                                var startObj = FindSequenceObjectByClassAndPosition(exp, "SequenceReference", -7152, -1032);
+                                var startObj = FindSequenceObjectByClassAndPosition(exp, "SeqAct_Teleport", -8784, -1080); // Attach to Teleport since once loading movie is gone we'll hear it
                                 var newObj = SequenceObjectCreator.CreateSequenceObject(le1File, "LEXSeqAct_SquadCommand", vTestOptions.cache);
                                 KismetHelper.AddObjectToSequence(newObj, exp);
                                 KismetHelper.CreateOutputLink(startObj, "Out", newObj); // RALLY
