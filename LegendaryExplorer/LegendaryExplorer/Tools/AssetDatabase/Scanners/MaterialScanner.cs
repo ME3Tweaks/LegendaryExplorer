@@ -152,16 +152,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
                 {
                     var filter = new MaterialBoolSpec(bp);
                     db.GeneratedMaterialSpecifications.TryAdd(bp.Name, filter);
-
-                    if (bp.Name == "TwoSided")
-                    {
-                        filter = new MaterialBoolSpec(bp)
-                        {
-                            Inverted = true,
-                            FilterName = "OneSided"
-                        };
-                        db.GeneratedMaterialSpecifications.TryAdd(filter.FilterName, filter);
-                    }
                 }
             }
         }

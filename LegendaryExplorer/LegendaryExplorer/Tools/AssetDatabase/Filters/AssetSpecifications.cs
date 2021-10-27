@@ -10,6 +10,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
         string FilterName { get; set; }
         string Description { get; set; }
         bool IsSelected { get; set; }
+        bool ShowInUI { get; }
         bool MatchesSpecification(T item);
     }
 
@@ -25,18 +26,10 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
         private bool _isSelected;
         public bool IsSelected { get => _isSelected; set => SetProperty(ref _isSelected, value); }
 
+        public bool ShowInUI { get; } = true;
+
         public AssetSpecification() { }
         public abstract bool MatchesSpecification(T item);
-    }
-
-    public abstract class AnimationSpecification : AssetSpecification<AnimationRecord>
-    {
-        public abstract override bool MatchesSpecification(AnimationRecord item);
-    }
-
-    public abstract class ClassSpecification : AssetSpecification<ClassRecord>
-    {
-        public abstract override bool MatchesSpecification(ClassRecord item);
     }
 
     public abstract class MaterialSpecification : AssetSpecification<MaterialRecord>
@@ -44,19 +37,21 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
         public abstract override bool MatchesSpecification(MaterialRecord item);
     }
 
-    public abstract class MeshSpecification : AssetSpecification<MeshRecord>
+    public class PredicateSpecification<T> : AssetSpecification<T>
     {
-        public abstract override bool MatchesSpecification(MeshRecord item);
-    }
+        private Predicate<T> _predicate;
 
-    public abstract class TextureSpecification : AssetSpecification<TextureRecord>
-    {
-        public abstract override bool MatchesSpecification(TextureRecord item);
-    }
+        public PredicateSpecification(string filterName, Predicate<T> predicate, string description = null)
+        {
+            FilterName = filterName;
+            _predicate = predicate;
+            Description = description;
+        }
 
-    public abstract class ParticleSysSpecification : AssetSpecification<ParticleSysRecord>
-    {
-        public abstract override bool MatchesSpecification(ParticleSysRecord item);
+        public override bool MatchesSpecification(T item)
+        {
+            return _predicate?.Invoke(item) ?? true;
+        }
     }
 
     /// <summary>
@@ -68,6 +63,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
         public string FilterName { get; set; } = "";
         public string Description { get; set; } = "";
         public bool IsSelected { get; set; }
+        public bool ShowInUI { get; } = false;
 
         private IEnumerable<IAssetSpecification<T>> specifications;
 
@@ -99,6 +95,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
         public string FilterName { get; set; } = "separator";
         public string Description { get; set; }
         public bool IsSelected { get => false; set { } }
+        public bool ShowInUI { get; } = true;
 
         public bool MatchesSpecification(T item)
         {

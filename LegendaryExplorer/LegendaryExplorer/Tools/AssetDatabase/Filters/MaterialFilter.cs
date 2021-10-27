@@ -8,19 +8,12 @@ using SharpDX.Direct2D1;
 
 namespace LegendaryExplorer.Tools.AssetDatabase.Filters
 {
-    public interface IAssetFilter<in T>
+    public class MaterialFilter : GenericAssetFilter<MaterialRecord>
     {
-        public bool Filter(T record);
-    }
-
-    public class MaterialFilter : IAssetFilter<MaterialRecord>
-    {
-        public List<IAssetSpecification<MaterialRecord>> FilterOptions { get; set; } = new();
-
         public List<IAssetSpecification<MaterialRecord>> BlendModes { get; set; } = new();
         public ObservableCollection<IAssetSpecification<MaterialRecord>> GeneratedOptions { get; set; } = new();
 
-        public MaterialFilter()
+        public MaterialFilter() : base()
         {
             PopulateFilterOptions();
         }
@@ -37,7 +30,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
             // Add new custom Material Filters here
             ///////////////////////////////////////
 
-            FilterOptions = new ()
+            Filters = new ()
             {
                 new MaterialPredicateSpec("Hide DLC only Materials", mr => !mr.IsDLCOnly),
                 new MaterialPredicateSpec("Only Decal Materials",
@@ -71,7 +64,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
             };
         }
 
-        public bool Filter(MaterialRecord mr)
+        public override bool Filter(MaterialRecord mr)
         {
             var enabledOptions = GetEnabledSpecifications();
             return enabledOptions.All(spec => spec.MatchesSpecification(mr));
@@ -80,12 +73,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
         private IEnumerable<IAssetSpecification<MaterialRecord>> GetEnabledSpecifications()
         {
             var blendModeOr = new OrSpecification<MaterialRecord>(BlendModes); // Matches spec if any of the selected BlendModes are true
-            return FilterOptions.Append(blendModeOr).Concat(GeneratedOptions).Where(spec => spec.IsSelected);
-        }
-
-        public void SetSelected(MaterialSpecification spec)
-        {
-            spec.IsSelected = !spec.IsSelected;
+            return Filters.Append(blendModeOr).Concat(GeneratedOptions).Where(spec => spec.IsSelected);
         }
     }
 }

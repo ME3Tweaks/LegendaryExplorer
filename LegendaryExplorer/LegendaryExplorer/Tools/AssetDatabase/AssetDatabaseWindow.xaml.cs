@@ -81,7 +81,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         private string CurrentDBPath { get; set; }
         public AssetDB CurrentDataBase { get; } = new();
 
-        public MaterialFilter MatFilter { get; } = new();
+        public MaterialFilter MatFilter { get; set; }
         public ObservableCollectionExtended<FileDirPair> FileListExtended { get; } = new();
 
         private ClassRecord _selectedClass;
@@ -201,6 +201,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public ICommand OpenInAnimViewerCommand { get; set; }
         public ICommand ExportToPSACommand { get; set; }
         public ICommand OpenInAnimationImporterCommand { get; set; }
+        public ICommand SetFilterCommand { get; set; }
         public ICommand FilterClassCommand { get; set; }
         public ICommand FilterMatCommand { get; set; }
         public ICommand FilterMeshCommand { get; set; }
@@ -240,6 +241,23 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 return !fdp.FileName.EndsWith(".cnd", StringComparison.OrdinalIgnoreCase);
             }
             return true;
+        }
+
+        private bool CanSetFilter(object obj)
+        {
+            // If we did a better job of MVVM we wouldn't need to do this much reflection, but I just want it to work
+            // IE we could put the command on the AssetFilter or on the AssetSpecification
+            var tabIndex = obj switch
+            {
+                IAssetSpecification<ClassRecord> => 1,
+                IAssetSpecification<MaterialRecord> => 2,
+                IAssetSpecification<MeshRecord> => 3,
+                IAssetSpecification<TextureRecord> => 4,
+                IAssetSpecification<AnimationRecord> => 5,
+                IAssetSpecification<ParticleSysRecord> => 6,
+                _ => -1
+            };
+            return currentView == tabIndex;
         }
         private bool IsViewingClass(object obj)
         {
@@ -284,6 +302,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public AssetDatabaseWindow() : base("Asset Database", true)
         {
             LoadCommands();
+            LoadFilters();
 
             //Get default db / game
             CurrentDBPath = Settings.AssetDBPath;
@@ -297,6 +316,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         {
             GenerateDBCommand = new GenericCommand(GenerateDatabase);
             SaveDBCommand = new GenericCommand(SaveDatabase);
+            SetFilterCommand = new RelayCommand(SetFilters, CanSetFilter);
             FilterClassCommand = new RelayCommand(SetFilters, IsViewingClass);
             FilterMatCommand = new RelayCommand(SetFilters, IsViewingMaterials);
             FilterMeshCommand = new RelayCommand(SetFilters, IsViewingMeshes);
@@ -321,6 +341,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             OpenInPlotDBCommand = new GenericCommand(OpenInPlotDB, IsPlotElementSelected);
             OpenPEDefinitionCommand = new GenericCommand(OpenPEDefinitionInToolset, IsPlotElementSelected);
             ChangeLocalizationCommand = new RelayCommand((e) => { Localization = (MELocalization)e; });
+        }
+
+        private void LoadFilters()
+        {
+            MatFilter = new MaterialFilter();
         }
 
         private void AssetDB_Loaded(object sender, RoutedEventArgs e)
