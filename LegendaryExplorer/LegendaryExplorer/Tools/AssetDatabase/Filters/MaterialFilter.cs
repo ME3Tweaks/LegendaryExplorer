@@ -17,7 +17,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
     {
         public List<IAssetSpecification<MaterialRecord>> FilterOptions { get; set; } = new();
 
-        public List<IAssetSpecification<MaterialRecord>> BlendMode { get; set; } = new();
+        public List<IAssetSpecification<MaterialRecord>> BlendModes { get; set; } = new();
         public ObservableCollection<IAssetSpecification<MaterialRecord>> GeneratedOptions { get; set; } = new();
 
         public MaterialFilter()
@@ -46,7 +46,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
                 new MaterialSettingSpec("Hide SkeletalMesh exclusive Materials", "bUsedWithSkeletalMesh", parm2: "True") {Inverted = true},
                 new MaterialSettingSpec("Only 2 sided Materials", "TwoSided", parm2: "True"),
                 new MaterialSettingSpec("Only Backface culled (1 side)", "TwoSided", parm2: "True") {Inverted = true},
-                new FilterSeparator<MaterialRecord>(),
+                new UISeparator<MaterialRecord>(),
                 new MaterialSettingSpec("Must have color setting", "VectorParameter",
                     setting => setting.Parm1.Contains("color", StringComparison.OrdinalIgnoreCase)),
                 new MaterialPredicateSpec("Must have texture setting",
@@ -55,8 +55,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
                     setting => setting.Parm1.Contains("talk", StringComparison.OrdinalIgnoreCase))
             };
 
-            // TODO: Make BlendMode work as an OR list instead of an AND or just a single option
-            BlendMode = new ()
+            BlendModes = new ()
             {
                 new MaterialSettingSpec("Translucent or Additive (Opaque)", "BlendMode", (s => s.Parm2 == "BLEND_Translucent" || s.Parm2 == "BLEND_Additive"))
                 {
@@ -70,8 +69,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
                 new MaterialSettingSpec("Soft Masked", "BlendMode", parm2: "BLEND_SoftMasked"),
                 new MaterialSettingSpec("Alpha Composite", "BlendMode", parm2: "BLEND_AlphaComposite"),
             };
-
-
         }
 
         public bool Filter(MaterialRecord mr)
@@ -82,16 +79,12 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
 
         private IEnumerable<IAssetSpecification<MaterialRecord>> GetEnabledSpecifications()
         {
-            return FilterOptions.Concat(BlendMode).Concat(GeneratedOptions).Where(spec => spec.IsSelected);
+            var blendModeOr = new OrSpecification<MaterialRecord>(BlendModes); // Matches spec if any of the selected BlendModes are true
+            return FilterOptions.Append(blendModeOr).Concat(GeneratedOptions).Where(spec => spec.IsSelected);
         }
 
         public void SetSelected(MaterialSpecification spec)
         {
-            if (!spec.IsSelected && BlendMode.Contains(spec))
-            {
-                foreach (var blendSpec in BlendMode) blendSpec.IsSelected = false;
-            }
-
             spec.IsSelected = !spec.IsSelected;
         }
     }

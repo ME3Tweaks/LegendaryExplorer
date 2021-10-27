@@ -108,7 +108,7 @@
                             </MenuItem.Icon>
                         </MenuItem>
                     </MenuItem>
-                    <MenuItem Header="Tools" Padding="4">
+                    <MenuItem Header="Filter" Padding="4">
                         <MenuItem.Resources>
                             <Style x:Key="CustomFilterMenuItem" TargetType="{x:Type MenuItem}">
                                 <Setter Property="Header" Value="{Binding FilterName}"/>
@@ -117,13 +117,19 @@
                                 <Setter Property="Command" Value="{Binding FilterMatCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"/>
                                 <Setter Property="CommandParameter" Value="{Binding}"/>
                                 <Setter Property="IsChecked" Value="{Binding IsSelected}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding FilterName}" Value="separator">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type MenuItem}">
+                                                    <Separator />
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
                             </Style>
                         </MenuItem.Resources>
-                        <MenuItem Header="Open Definition" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor."/>
-                        <MenuItem Header="Open Usage" Name="menu_OpenUsage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
-                        <MenuItem Header="Go to SuperClass" Command="{Binding GoToSuperclassCommand}" ToolTip="Go to the superclass for more properties."/>
-                        <MenuItem Header="Re-save Database without empty lines" Name="menu_SaveXEmptyLines" Command="{Binding SaveDBCommand}" ToolTip="This will save the Database without the lines with no TLK reference." IsEnabled="False"/>
-                        <Separator/>
                         <MenuItem Name="menu_fltrCustFiles" Header="Filter by Filelist" Command="{Binding FilterFilesCommand}" CommandParameter="CustFiles" ToolTip="Filter the entire database by the current filelist." StaysOpenOnClick="True" IsCheckable="True" IsChecked="{Binding Path=IsFilteredByFiles, Mode=TwoWay}"/>
                         <MenuItem Header="Filelist Actions">
                             <MenuItem Header="Load" Command="{Binding LoadFileListCommand}" ToolTip="Load an existing filelist."/>
@@ -141,7 +147,7 @@
                         </MenuItem>
                         <MenuItem Header="Filter Materials">
                             <MenuItem Header="Generic Filters" ItemsSource="{Binding MatFilter.FilterOptions}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
-                            <MenuItem Header="Blend Mode" ItemsSource="{Binding MatFilter.BlendMode}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
+                            <MenuItem Header="Blend Mode" ItemsSource="{Binding MatFilter.BlendModes}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
                             <MenuItem Header="BoolProperty Filters" ItemsSource="{Binding MatFilter.GeneratedOptions}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
                         </MenuItem>
                         <MenuItem Header="Filter Meshes">
@@ -192,6 +198,12 @@
                             <MenuItem Name="menu_VFXPartSys" Header="Only Particle Systems" Command="{Binding FilterVFXCommand}" CommandParameter="PS" ToolTip="Show Particle Systems only." StaysOpenOnClick="True"/>
                             <MenuItem Name="menu_VFXRvrEff" Header="Only Client Effects" Command="{Binding FilterVFXCommand}" CommandParameter="RvrEff" ToolTip="Show Receiver Effects only." StaysOpenOnClick="True"/>
                         </MenuItem>
+                    </MenuItem>
+                    <MenuItem Header="Tools" Padding="4">
+                        <MenuItem Header="Open Definition" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor."/>
+                        <MenuItem Header="Open Usage" Name="menu_OpenUsage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
+                        <MenuItem Header="Go to SuperClass" Command="{Binding GoToSuperclassCommand}" ToolTip="Go to the superclass for more properties."/>
+                        <MenuItem Header="Re-save Database without empty lines" Name="menu_SaveXEmptyLines" Command="{Binding SaveDBCommand}" ToolTip="This will save the Database without the lines with no TLK reference." IsEnabled="False"/>
                         <Separator/>
                         <MenuItem Name="menu_checkCRC" Header="Compile Texture CRCs" Command="{Binding SetCRCCommand}" IsChecked="False" ToolTip="Add CRC generation during scan. Will significantly increase scan time."/>
                         <MenuItem Name="menu_checkConv" Header="Compile BioConversations" IsChecked="{Binding ParseConvos, Mode=TwoWay}" IsCheckable="True" StaysOpenOnClick="True" ToolTip="Add conversation and line parsing. Will significantly increase scan time, and database loading."/>

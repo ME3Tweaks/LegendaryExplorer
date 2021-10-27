@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using LegendaryExplorer.Misc;
 
 namespace LegendaryExplorer.Tools.AssetDatabase.Filters
@@ -58,12 +60,44 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
     }
 
     /// <summary>
-    /// Used to represent a Separator MenuItem when bound in the UI, and should have no behavior whatsoever
+    /// Specification that returns true if any of the input specifications are true
     /// </summary>
-    public class FilterSeparator<T> : IAssetSpecification<T>
+    /// <typeparam name="T"></typeparam>
+    public class OrSpecification<T> : IAssetSpecification<T>
     {
         public string FilterName { get; set; } = "";
         public string Description { get; set; } = "";
+        public bool IsSelected { get; set; }
+
+        private IEnumerable<IAssetSpecification<T>> specifications;
+
+        public OrSpecification(params IAssetSpecification<T>[] specs)
+        {
+            specifications = specs;
+            IsSelected = specifications.Any();
+        }
+
+        public OrSpecification(IEnumerable<IAssetSpecification<T>> specs)
+        {
+            specifications = specs;
+            IsSelected = specifications.Any();
+        }
+
+        public bool MatchesSpecification(T item)
+        {
+            var selectedSpecs = specifications.Where(sp => sp.IsSelected).ToList();
+            if (!selectedSpecs.Any() || IsSelected == false) return true; // Fallthrough, accept all items
+            else return selectedSpecs.Any(sp => sp.MatchesSpecification(item));
+        }
+    }
+
+    /// <summary>
+    /// Used to represent a Separator MenuItem when bound in the UI, and should have no behavior whatsoever
+    /// </summary>
+    public class UISeparator<T> : IAssetSpecification<T>
+    {
+        public string FilterName { get; set; } = "separator";
+        public string Description { get; set; }
         public bool IsSelected { get => false; set { } }
 
         public bool MatchesSpecification(T item)
