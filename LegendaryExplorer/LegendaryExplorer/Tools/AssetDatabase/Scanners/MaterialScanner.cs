@@ -4,8 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LegendaryExplorer.Tools.AssetDatabase.Filters;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
 {
@@ -72,6 +74,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
             {
                 foreach (var p in e.Properties)
                 {
+                    TryCreateMatFilter(p, e, db);
                     MatSetting pSet;
                     var matSet_name = p.Name;
                     if (matSet_name == "Expressions")
@@ -141,6 +144,27 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
             return mSets;
         }
 
+        private void TryCreateMatFilter(Property p, ExportScanInfo e, ConcurrentAssetDB db)
+        {
+            if (p is BoolProperty bp)
+            {
+                if (!db.GeneratedMaterialSpecifications.ContainsKey(bp.Name))
+                {
+                    var filter = new MaterialBoolSpec(bp);
+                    db.GeneratedMaterialSpecifications.TryAdd(bp.Name, filter);
+
+                    if (bp.Name == "TwoSided")
+                    {
+                        filter = new MaterialBoolSpec(bp)
+                        {
+                            Inverted = true,
+                            FilterName = "OneSided"
+                        };
+                        db.GeneratedMaterialSpecifications.TryAdd(filter.FilterName, filter);
+                    }
+                }
+            }
+        }
         private static string GetPropertyValue(Property p, bool isDefault, IMEPackage pcc)
         {
             string pValue = null;

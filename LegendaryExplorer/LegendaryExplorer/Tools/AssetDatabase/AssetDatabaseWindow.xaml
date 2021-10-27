@@ -12,6 +12,7 @@
         xmlns:sharedToolControls="clr-namespace:LegendaryExplorer.UserControls.SharedToolControls"
         xmlns:controls="clr-namespace:LegendaryExplorer.SharedUI.Controls"
         xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
+        xmlns:assetDbFilters="clr-namespace:LegendaryExplorer.Tools.AssetDatabase.Filters"
         Loaded="AssetDB_Loaded"
         Closing="AssetDB_Closing"
         AllowDrop="True"
@@ -128,22 +129,17 @@
                             <MenuItem Name="menu_fltrSeq" Header="Only Sequence Classes" Command="{Binding FilterClassCommand}" CommandParameter="Seq" ToolTip="Show sequence classes only." StaysOpenOnClick="True"/>
                             <MenuItem Name="menu_fltrInterp" Header="Only Matinee Classes" Command="{Binding FilterClassCommand}" CommandParameter="Interp" ToolTip="Show matinee classes only." StaysOpenOnClick="True"/>
                         </MenuItem>
-                        <MenuItem Header="Filter Materials">
-                            <MenuItem Name="menu_fltrMatNoDLC" Header="Hide DLC only Materials" Command="{Binding FilterMatCommand}" CommandParameter="NoDLC" ToolTip="Hide materials that require cooked Shadercaches." StaysOpenOnClick="True"/>
-                            <MenuItem Name="menu_fltrMatDecal" Header="Only Decal Materials" Command="{Binding FilterMatCommand}" CommandParameter="Decal" ToolTip="Show materials used in Decals only." StaysOpenOnClick="True"/>
-                            <MenuItem Name="menu_fltrMatUnlit" Header="Only Unlit Materials" Command="{Binding FilterMatCommand}" CommandParameter="Unlit" ToolTip="Show Unlit materials only." StaysOpenOnClick="True"/>
-                            <MenuItem Name="menu_fltrMatSkM" Header="Hide SkelMesh Exclusive Materials" Command="{Binding FilterMatCommand}" CommandParameter="SkM" ToolTip="Hide materials that require Skeleton meshes." StaysOpenOnClick="True"/>
-                            <Separator/>
-                            <MenuItem Name="menu_fltrMatTrans" Header="Only Translucent Materials" Command="{Binding FilterMatCommand}" CommandParameter="Transl" ToolTip="Show translucent materials only." StaysOpenOnClick="True"/>
-                            <MenuItem Name="menu_fltrMatAdd" Header="Only Additive Materials" Command="{Binding FilterMatCommand}" CommandParameter="BAdd" ToolTip="Show additive materials only." StaysOpenOnClick="True"/>
-                            <MenuItem Name="menu_fltrMatOpq" Header="Only Opaque Materials" Command="{Binding FilterMatCommand}" CommandParameter="Opq" ToolTip="Show opaque materials only." StaysOpenOnClick="True"/>
-                            <Separator/>
-                            <MenuItem Name="menu_fltrMat2side" Header="Only 2 sided Materials" Command="{Binding FilterMatCommand}" CommandParameter="Twoside" ToolTip="Show 2 sided materials only." StaysOpenOnClick="True"/>
-                            <MenuItem Name="menu_fltrMat1side" Header="Only Backface culled (1 side)" Command="{Binding FilterMatCommand}" CommandParameter="Oneside" ToolTip="Show 1 sided materials only." StaysOpenOnClick="True"/>
-                            <Separator/>
-                            <MenuItem Name="menu_fltrMatColor" Header="Must have color setting" Command="{Binding FilterMatCommand}" CommandParameter="Vcolor" ToolTip="Show if has color parameter" StaysOpenOnClick="True"/>
-                            <MenuItem Name="menu_fltrMatText" Header="Must have texture setting" Command="{Binding FilterMatCommand}" CommandParameter="TextP" ToolTip="Show only if has texture parameter." StaysOpenOnClick="True"/>
-                            <MenuItem Name="menu_fltrMatTalk" Header="Must have talk scalar setting" Command="{Binding FilterMatCommand}" CommandParameter="TalkS" ToolTip="Show only if has talk scalar." StaysOpenOnClick="True"/>
+                        <MenuItem Header="Filter Materials" ItemsSource="{Binding MatFilter.FilterOptions}">
+                            <MenuItem.ItemContainerStyle>
+                                <Style TargetType="{x:Type MenuItem}">
+                                    <Setter Property="Header" Value="{Binding FilterName}"/>
+                                    <Setter Property="ToolTip" Value="{Binding Description}"/>
+                                    <Setter Property="StaysOpenOnClick" Value="True" />
+                                    <Setter Property="Command" Value="{Binding FilterMatCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"/>
+                                    <Setter Property="CommandParameter" Value="{Binding}"/>
+                                    <Setter Property="IsChecked" Value="{Binding IsSelected}"/>
+                                </Style>
+                            </MenuItem.ItemContainerStyle>
                         </MenuItem>
                         <MenuItem Header="Filter Meshes">
                             <MenuItem Name="menu_fltrSkM" Header="Only Skeleton Meshes" Command="{Binding FilterMeshCommand}" CommandParameter="Skel" ToolTip="Show Skeleton Meshes only." StaysOpenOnClick="True"/>

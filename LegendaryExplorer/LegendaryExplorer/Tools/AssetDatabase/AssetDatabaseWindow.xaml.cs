@@ -32,6 +32,7 @@ using LegendaryExplorerCore.TLK;
 using Microsoft.WindowsAPICodePack.Taskbar;
 using BinaryPack;
 using LegendaryExplorer.SharedUI.Controls;
+using LegendaryExplorer.Tools.AssetDatabase.Filters;
 using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.PlotDatabase;
@@ -44,7 +45,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
     public partial class AssetDatabaseWindow : TrackingNotifyPropertyChangedWindowBase
     {
         #region Declarations
-        public const string dbCurrentBuild = "7.1"; //If changes are made that invalidate old databases edit this.
+        public const string dbCurrentBuild = "7.2"; //If changes are made that invalidate old databases edit this.
         private int previousView { get; set; }
         private int _currentView;
         public int currentView { get => _currentView; set { previousView = _currentView; SetProperty(ref _currentView, value); } }
@@ -79,6 +80,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         private string CurrentDBPath { get; set; }
         public AssetDB CurrentDataBase { get; } = new();
+
+        public MaterialFilter MatFilter { get; } = new();
         public ObservableCollectionExtended<FileDirPair> FileListExtended { get; } = new();
 
         private ClassRecord _selectedClass;
@@ -388,9 +391,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             var build = dbCurrentBuild.Trim(' ', '*', '.');
             //Async load
             AssetDB pdb = await ParseDBAsync(game, currentDbPath, build, cancelloadingToken);
-            database.meGame = pdb.meGame;
+            database.Game = pdb.Game;
             database.GenerationDate = pdb.GenerationDate;
-            database.DataBaseversion = pdb.DataBaseversion;
+            database.DatabaseVersion = pdb.DatabaseVersion;
             database.Localization = pdb.Localization;
             database.FileList.AddRange(pdb.FileList);
             database.ContentDir.AddRange(pdb.ContentDir);
@@ -425,13 +428,13 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     {
                         AssetDB pdb = new();
                         var entry = archive.Entries.FirstOrDefault(z => z.Name.StartsWith("Master"));
-                        pdb.DataBaseversion = "pre 2.0";
+                        pdb.DatabaseVersion = "pre 2.0";
                         if (entry != null)
                         {
                             var split = Path.GetFileNameWithoutExtension(entry.Name).Split('_');
                             if (split.Length == 2)
                             {
-                                pdb.DataBaseversion = split[1];
+                                pdb.DatabaseVersion = split[1];
                             }
                         }
 
@@ -512,7 +515,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public void ClearDataBase()
         {
             CurrentDataBase.Clear();
-            CurrentDataBase.meGame = CurrentGame;
+            CurrentDataBase.Game = CurrentGame;
             CurrentDataBase.Localization = Localization;
 
             FileListExtended.ClearEx();
@@ -712,10 +715,10 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 var start = DateTime.UtcNow;
                 LoadDatabase(CurrentDBPath, CurrentGame, CurrentDataBase, cancelloading.Token).ContinueWithOnUIThread(prevTask =>
                 {
-                    if (CurrentDataBase.DataBaseversion == null || CurrentDataBase.DataBaseversion != dbCurrentBuild)
+                    if (CurrentDataBase.DatabaseVersion == null || CurrentDataBase.DatabaseVersion != dbCurrentBuild)
                     {
 
-                        var warn = MessageBox.Show($"This database is out of date (v {CurrentDataBase.DataBaseversion} versus v {dbCurrentBuild})\nA new version is required. Do you wish to rebuild?", "Warning", MessageBoxButton.OKCancel);
+                        var warn = MessageBox.Show($"This database is out of date (v {CurrentDataBase.DatabaseVersion} versus v {dbCurrentBuild})\nA new version is required. Do you wish to rebuild?", "Warning", MessageBoxButton.OKCancel);
                         if (warn == MessageBoxResult.Cancel)
                         {
                             ClearDataBase();
@@ -739,6 +742,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                         }
 
                         Localization = CurrentDataBase.Localization;
+                        MatFilter.LoadFromDatabase(CurrentDataBase);
                         ParseConvos = !CurrentDataBase.Lines.IsEmpty();
                         ParsePlotUsages = CurrentDataBase.PlotUsages.Any();
                         IsBusy = false;
@@ -1648,84 +1652,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         {
             if (d is MaterialRecord mr)
             {
-                bool showthis = true;
-                if (!string.IsNullOrEmpty(FilterBox.Text))
-                {
-                    showthis = mr.MaterialName.ToLower().Contains(FilterBox.Text.ToLower());
-                    if (!showthis)
-                    {
-                        showthis = mr.ParentPackage.ToLower().Contains(FilterBox.Text.ToLower());
-                    }
-                }
-
-                if (showthis && menu_fltrMatDecal.IsChecked && !mr.MaterialName.Contains("Decal"))
-                {
-                    showthis = false;
-                }
-
-                if (showthis && menu_fltrMatUnlit.IsChecked && !mr.MatSettings.Any(x => x.Name == "LightingModel" && x.Parm2 == "MLM_Unlit"))
-                {
-                    showthis = false;
-                }
-
-                if (showthis && menu_fltrMatSkM.IsChecked && mr.MatSettings.Any(x => x.Name == "bUsedWithSkeletalMesh" && x.Parm2 == "True"))
-                {
-                    showthis = false;
-                }
-
-                if (showthis && menu_fltrMat2side.IsChecked && !mr.MatSettings.Any(x => x.Name == "TwoSided" && x.Parm2 == "True"))
-                {
-                    showthis = false;
-                }
-
-                if (showthis && menu_fltrMat1side.IsChecked && mr.MatSettings.Any(x => x.Name == "TwoSided" && x.Parm2 == "True"))
-                {
-                    showthis = false;
-                }
-
-                if (showthis && menu_fltrMatNoDLC.IsChecked && mr.IsDLCOnly)
-                {
-                    showthis = false;
-                }
-
-                if (showthis && menu_fltrMatTrans.IsChecked && !mr.MatSettings.Any(x => x.Name == "BlendMode" && x.Parm2 == "BLEND_Translucent"))
-                {
-                    showthis = false;
-                }
-
-                if (showthis && menu_fltrMatAdd.IsChecked && !mr.MatSettings.Any(x => x.Name == "BlendMode" && x.Parm2 == "BLEND_Additive"))
-                {
-                    showthis = false;
-                }
-
-                if (showthis && menu_fltrMatOpq.IsChecked && mr.MatSettings.Any(x => x.Name == "BlendMode" && (x.Parm2 == "BLEND_Additive" || x.Parm2 == "BLEND_Translucent")))
-                {
-                    showthis = false;
-                }
-
-                if (showthis && menu_fltrMatColor.IsChecked && !mr.MatSettings.Any(x => x.Name == "VectorParameter" && x.Parm1.ToLower().Contains("color")))
-                {
-                    showthis = false;
-                }
-
-                if (showthis && menu_fltrMatText.IsChecked && mr.MatSettings.All(x => x.Name != "TextureSampleParameter2D"))
-                {
-                    showthis = false;
-                }
-
-                if (showthis && menu_fltrMatTalk.IsChecked && !mr.MatSettings.Any(x => x.Name == "ScalarParameter" && x.Parm1.ToLower().Contains("talk")))
-                {
-                    showthis = false;
-                }
-
-                if (showthis && IsFilteredByFiles && !CustomFileList.IsEmpty() && !mr.Usages.Select(tuple => tuple.FileKey).Intersect(CustomFileList.Keys).Any())
-                {
-                    showthis = false;
-                }
-
-                return showthis;
+                return MatFilter.Filter(mr);
             }
-
             return false;
         }
         bool MeshFilter(object d)
@@ -2151,261 +2079,189 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         }
         private void SetFilters(object obj)
         {
-            var param = obj as string;
-            switch (param)
+            if (obj is MaterialSpecification spec)
             {
-                case "Anim":
-                    if (!menu_fltrAnim.IsChecked)
-                    {
-                        menu_fltrAnim.IsChecked = true;
-                        menu_fltrPerf.IsChecked = false;
-                    }
-                    else
-                    {
-                        menu_fltrAnim.IsChecked = false;
-                    }
-                    break;
-                case "Perf":
-                    if (!menu_fltrPerf.IsChecked)
-                    {
-                        menu_fltrPerf.IsChecked = true;
-                        menu_fltrAnim.IsChecked = false;
-                    }
-                    else
-                    {
-                        menu_fltrPerf.IsChecked = false;
-                    }
-                    break;
-                case "Seq":
-                    menu_fltrSeq.IsChecked = !menu_fltrSeq.IsChecked;
-                    break;
-                case "Interp":
-                    menu_fltrInterp.IsChecked = !menu_fltrInterp.IsChecked;
-                    break;
-                case "Unlit":
-                    menu_fltrMatUnlit.IsChecked = !menu_fltrMatUnlit.IsChecked;
-                    break;
-                case "SkM":
-                    menu_fltrMatSkM.IsChecked = !menu_fltrMatSkM.IsChecked;
-                    break;
-                case "Twoside":
-                    if (!menu_fltrMat2side.IsChecked)
-                    {
-                        menu_fltrMat2side.IsChecked = true;
-                        menu_fltrMat1side.IsChecked = false;
-                    }
-                    else
-                    {
-                        menu_fltrMat2side.IsChecked = false;
-                    }
-                    break;
-                case "Oneside":
-                    if (!menu_fltrMat1side.IsChecked)
-                    {
-                        menu_fltrMat1side.IsChecked = true;
-                        menu_fltrMat2side.IsChecked = false;
-                    }
-                    else
-                    {
-                        menu_fltrMat1side.IsChecked = false;
-                    }
-                    break;
-                case "NoDLC":
-                    menu_fltrMatNoDLC.IsChecked = !menu_fltrMatNoDLC.IsChecked;
-                    break;
-                case "Transl":
-                    if (!menu_fltrMatTrans.IsChecked)
-                    {
-                        menu_fltrMatTrans.IsChecked = true;
-                        menu_fltrMatAdd.IsChecked = false;
-                        menu_fltrMatOpq.IsChecked = false;
-                    }
-                    else
-                    {
-                        menu_fltrMatTrans.IsChecked = false;
-                    }
-                    break;
-                case "BAdd":
-                    if (!menu_fltrMatAdd.IsChecked)
-                    {
-                        menu_fltrMatTrans.IsChecked = false;
-                        menu_fltrMatAdd.IsChecked = true;
-                        menu_fltrMatOpq.IsChecked = false;
-                    }
-                    else
-                    {
-                        menu_fltrMatAdd.IsChecked = false;
-                    }
-                    break;
-                case "Opq":
-                    if (!menu_fltrMatOpq.IsChecked)
-                    {
-                        menu_fltrMatTrans.IsChecked = false;
-                        menu_fltrMatAdd.IsChecked = false;
-                        menu_fltrMatOpq.IsChecked = true;
-                    }
-                    else
-                    {
-                        menu_fltrMatOpq.IsChecked = false;
-                    }
-                    break;
-                case "Vcolor":
-                    menu_fltrMatColor.IsChecked = !menu_fltrMatColor.IsChecked;
-                    break;
-                case "TextP":
-                    menu_fltrMatText.IsChecked = !menu_fltrMatText.IsChecked;
-                    break;
-                case "TalkS":
-                    menu_fltrMatTalk.IsChecked = !menu_fltrMatTalk.IsChecked;
-                    break;
-                case "Decal":
-                    menu_fltrMatDecal.IsChecked = !menu_fltrMatDecal.IsChecked;
-                    break;
-                case "Skel":
-                    if (!menu_fltrSkM.IsChecked)
-                    {
-                        menu_fltrSkM.IsChecked = true;
-                        menu_fltrStM.IsChecked = false;
-                    }
-                    else
-                    {
-                        menu_fltrSkM.IsChecked = false;
-                    }
-                    break;
-                case "Static":
-                    if (!menu_fltrStM.IsChecked)
-                    {
-                        menu_fltrSkM.IsChecked = false;
-                        menu_fltrStM.IsChecked = true;
-                    }
-                    else
-                    {
-                        menu_fltrStM.IsChecked = false;
-                    }
-                    break;
-                case "Cube":
-                    menu_TCube.IsChecked = !menu_TCube.IsChecked;
-                    break;
-                case "Movie":
-                    menu_TMovie.IsChecked = !menu_TMovie.IsChecked;
-                    break;
-                case "1024":
-                    if (!menu_T1024.IsChecked)
-                    {
-                        menu_T4096.IsChecked = false;
-                        menu_T1024.IsChecked = true;
-                    }
-                    else
-                    {
-                        menu_T1024.IsChecked = false;
-                    }
-                    break;
-                case "4096":
-                    if (!menu_T4096.IsChecked)
-                    {
-                        menu_T1024.IsChecked = false;
-                        menu_T4096.IsChecked = true;
-                    }
-                    else
-                    {
-                        menu_T4096.IsChecked = false;
-                    }
-                    break;
-                case "TGShow":
-                    menu_TGPromo.IsChecked = true;
-                    menu_TGChar1024.IsChecked = true;
-                    menu_TGCharDiff.IsChecked = true;
-                    menu_TGCharNorm.IsChecked = true;
-                    menu_TGCharSpec.IsChecked = true;
-                    menu_TGWorld.IsChecked = true;
-                    menu_TGWorldSpec.IsChecked = true;
-                    menu_TGWorldNorm.IsChecked = true;
-                    menu_TGAmblgtMap.IsChecked = true;
-                    menu_TGShadowMap.IsChecked = true;
-                    menu_TGEnviro64.IsChecked = true;
-                    menu_TGEnviro128.IsChecked = true;
-                    menu_TGEnviro256.IsChecked = true;
-                    menu_TGEnviro512.IsChecked = true;
-                    menu_TGEnviro1024.IsChecked = true;
-                    menu_TGVFX64.IsChecked = true;
-                    menu_TGVFX128.IsChecked = true;
-                    menu_TGVFX256.IsChecked = true;
-                    menu_TGVFX512.IsChecked = true;
-                    menu_TGVFX1024.IsChecked = true;
-                    menu_TGAPL64.IsChecked = true;
-                    menu_TGAPL128.IsChecked = true;
-                    menu_TGAPL256.IsChecked = true;
-                    menu_TGAPL512.IsChecked = true;
-                    menu_TGAPL1024.IsChecked = true;
-                    menu_TGUI.IsChecked = true;
-                    menu_TGNone.IsChecked = true;
-                    break;
-                case "TGClear":
-                    menu_TGPromo.IsChecked = false;
-                    menu_TGChar1024.IsChecked = false;
-                    menu_TGCharDiff.IsChecked = false;
-                    menu_TGCharNorm.IsChecked = false;
-                    menu_TGCharSpec.IsChecked = false;
-                    menu_TGWorld.IsChecked = false;
-                    menu_TGWorldSpec.IsChecked = false;
-                    menu_TGWorldNorm.IsChecked = false;
-                    menu_TGAmblgtMap.IsChecked = false;
-                    menu_TGShadowMap.IsChecked = false;
-                    menu_TGEnviro64.IsChecked = false;
-                    menu_TGEnviro128.IsChecked = false;
-                    menu_TGEnviro256.IsChecked = false;
-                    menu_TGEnviro512.IsChecked = false;
-                    menu_TGEnviro1024.IsChecked = false;
-                    menu_TGVFX64.IsChecked = false;
-                    menu_TGVFX128.IsChecked = false;
-                    menu_TGVFX256.IsChecked = false;
-                    menu_TGVFX512.IsChecked = false;
-                    menu_TGVFX1024.IsChecked = false;
-                    menu_TGAPL64.IsChecked = false;
-                    menu_TGAPL128.IsChecked = false;
-                    menu_TGAPL256.IsChecked = false;
-                    menu_TGAPL512.IsChecked = false;
-                    menu_TGAPL1024.IsChecked = false;
-                    menu_TGUI.IsChecked = false;
-                    menu_TGNone.IsChecked = false;
-                    break;
-                case "PS":
-                    if (!menu_VFXPartSys.IsChecked)
-                    {
-                        menu_VFXRvrEff.IsChecked = false;
-                        menu_VFXPartSys.IsChecked = true;
-                    }
-                    else
-                    {
-                        menu_VFXPartSys.IsChecked = false;
-                    }
-                    break;
-                case "RvrEff":
-                    if (!menu_VFXRvrEff.IsChecked)
-                    {
-                        menu_VFXPartSys.IsChecked = false;
-                        menu_VFXRvrEff.IsChecked = true;
-                    }
-                    else
-                    {
-                        menu_VFXRvrEff.IsChecked = false;
-                    }
-                    break;
-                case "CustFiles":
-                    if (IsFilteredByFiles)
-                    {
-                        btn_custFilter.Content = "Filtered";
-                        expander_CustomFiles.IsExpanded = true;
-                    }
-                    else
-                    {
-                        btn_custFilter.Content = "Filter";
-                        if (CustomFileList.IsEmpty())
-                            expander_CustomFiles.IsExpanded = false;
-                    }
-                    break;
-                default:
-                    break;
+                MatFilter.SetSelected(spec);
+            }
+            else
+            {
+                var param = obj as string;
+                switch (param)
+                {
+                    case "Anim":
+                        if (!menu_fltrAnim.IsChecked)
+                        {
+                            menu_fltrAnim.IsChecked = true;
+                            menu_fltrPerf.IsChecked = false;
+                        }
+                        else
+                        {
+                            menu_fltrAnim.IsChecked = false;
+                        }
+                        break;
+                    case "Perf":
+                        if (!menu_fltrPerf.IsChecked)
+                        {
+                            menu_fltrPerf.IsChecked = true;
+                            menu_fltrAnim.IsChecked = false;
+                        }
+                        else
+                        {
+                            menu_fltrPerf.IsChecked = false;
+                        }
+                        break;
+                    case "Seq":
+                        menu_fltrSeq.IsChecked = !menu_fltrSeq.IsChecked;
+                        break;
+                    case "Interp":
+                        menu_fltrInterp.IsChecked = !menu_fltrInterp.IsChecked;
+                        break;
+                    case "Skel":
+                        if (!menu_fltrSkM.IsChecked)
+                        {
+                            menu_fltrSkM.IsChecked = true;
+                            menu_fltrStM.IsChecked = false;
+                        }
+                        else
+                        {
+                            menu_fltrSkM.IsChecked = false;
+                        }
+                        break;
+                    case "Static":
+                        if (!menu_fltrStM.IsChecked)
+                        {
+                            menu_fltrSkM.IsChecked = false;
+                            menu_fltrStM.IsChecked = true;
+                        }
+                        else
+                        {
+                            menu_fltrStM.IsChecked = false;
+                        }
+                        break;
+                    case "Cube":
+                        menu_TCube.IsChecked = !menu_TCube.IsChecked;
+                        break;
+                    case "Movie":
+                        menu_TMovie.IsChecked = !menu_TMovie.IsChecked;
+                        break;
+                    case "1024":
+                        if (!menu_T1024.IsChecked)
+                        {
+                            menu_T4096.IsChecked = false;
+                            menu_T1024.IsChecked = true;
+                        }
+                        else
+                        {
+                            menu_T1024.IsChecked = false;
+                        }
+                        break;
+                    case "4096":
+                        if (!menu_T4096.IsChecked)
+                        {
+                            menu_T1024.IsChecked = false;
+                            menu_T4096.IsChecked = true;
+                        }
+                        else
+                        {
+                            menu_T4096.IsChecked = false;
+                        }
+                        break;
+                    case "TGShow":
+                        menu_TGPromo.IsChecked = true;
+                        menu_TGChar1024.IsChecked = true;
+                        menu_TGCharDiff.IsChecked = true;
+                        menu_TGCharNorm.IsChecked = true;
+                        menu_TGCharSpec.IsChecked = true;
+                        menu_TGWorld.IsChecked = true;
+                        menu_TGWorldSpec.IsChecked = true;
+                        menu_TGWorldNorm.IsChecked = true;
+                        menu_TGAmblgtMap.IsChecked = true;
+                        menu_TGShadowMap.IsChecked = true;
+                        menu_TGEnviro64.IsChecked = true;
+                        menu_TGEnviro128.IsChecked = true;
+                        menu_TGEnviro256.IsChecked = true;
+                        menu_TGEnviro512.IsChecked = true;
+                        menu_TGEnviro1024.IsChecked = true;
+                        menu_TGVFX64.IsChecked = true;
+                        menu_TGVFX128.IsChecked = true;
+                        menu_TGVFX256.IsChecked = true;
+                        menu_TGVFX512.IsChecked = true;
+                        menu_TGVFX1024.IsChecked = true;
+                        menu_TGAPL64.IsChecked = true;
+                        menu_TGAPL128.IsChecked = true;
+                        menu_TGAPL256.IsChecked = true;
+                        menu_TGAPL512.IsChecked = true;
+                        menu_TGAPL1024.IsChecked = true;
+                        menu_TGUI.IsChecked = true;
+                        menu_TGNone.IsChecked = true;
+                        break;
+                    case "TGClear":
+                        menu_TGPromo.IsChecked = false;
+                        menu_TGChar1024.IsChecked = false;
+                        menu_TGCharDiff.IsChecked = false;
+                        menu_TGCharNorm.IsChecked = false;
+                        menu_TGCharSpec.IsChecked = false;
+                        menu_TGWorld.IsChecked = false;
+                        menu_TGWorldSpec.IsChecked = false;
+                        menu_TGWorldNorm.IsChecked = false;
+                        menu_TGAmblgtMap.IsChecked = false;
+                        menu_TGShadowMap.IsChecked = false;
+                        menu_TGEnviro64.IsChecked = false;
+                        menu_TGEnviro128.IsChecked = false;
+                        menu_TGEnviro256.IsChecked = false;
+                        menu_TGEnviro512.IsChecked = false;
+                        menu_TGEnviro1024.IsChecked = false;
+                        menu_TGVFX64.IsChecked = false;
+                        menu_TGVFX128.IsChecked = false;
+                        menu_TGVFX256.IsChecked = false;
+                        menu_TGVFX512.IsChecked = false;
+                        menu_TGVFX1024.IsChecked = false;
+                        menu_TGAPL64.IsChecked = false;
+                        menu_TGAPL128.IsChecked = false;
+                        menu_TGAPL256.IsChecked = false;
+                        menu_TGAPL512.IsChecked = false;
+                        menu_TGAPL1024.IsChecked = false;
+                        menu_TGUI.IsChecked = false;
+                        menu_TGNone.IsChecked = false;
+                        break;
+                    case "PS":
+                        if (!menu_VFXPartSys.IsChecked)
+                        {
+                            menu_VFXRvrEff.IsChecked = false;
+                            menu_VFXPartSys.IsChecked = true;
+                        }
+                        else
+                        {
+                            menu_VFXPartSys.IsChecked = false;
+                        }
+                        break;
+                    case "RvrEff":
+                        if (!menu_VFXRvrEff.IsChecked)
+                        {
+                            menu_VFXPartSys.IsChecked = false;
+                            menu_VFXRvrEff.IsChecked = true;
+                        }
+                        else
+                        {
+                            menu_VFXRvrEff.IsChecked = false;
+                        }
+                        break;
+                    case "CustFiles":
+                        if (IsFilteredByFiles)
+                        {
+                            btn_custFilter.Content = "Filtered";
+                            expander_CustomFiles.IsExpanded = true;
+                        }
+                        else
+                        {
+                            btn_custFilter.Content = "Filter";
+                            if (CustomFileList.IsEmpty())
+                                expander_CustomFiles.IsExpanded = false;
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
             Filter();
         }
@@ -2739,7 +2595,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             //Clear database
             ClearDataBase();
             CurrentDataBase.GenerationDate = beginTime.ToString();
-            CurrentDataBase.DataBaseversion = dbCurrentBuild;
+            CurrentDataBase.DatabaseVersion = dbCurrentBuild;
 
             GeneratedDB.Clear();
 
@@ -2869,6 +2725,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             }
 
             GeneratedDB.Clear();
+            MatFilter.LoadFromDatabase(CurrentDataBase);
             isProcessing = false;
             SaveDatabase();
             TopDock.IsEnabled = true;

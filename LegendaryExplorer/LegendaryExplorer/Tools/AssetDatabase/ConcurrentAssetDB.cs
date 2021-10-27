@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Media3D;
+using LegendaryExplorer.Tools.AssetDatabase.Filters;
 
 namespace LegendaryExplorer.Tools.AssetDatabase
 {
@@ -69,6 +71,10 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         /// </summary>
         public ConcurrentDictionary<int, PlotRecord> GeneratedTransitionRecords = new();
         /// <summary>
+        /// Dictionary that stores generated material filter records
+        /// </summary>
+        public ConcurrentDictionary<string, MaterialBoolSpec> GeneratedMaterialSpecifications = new();
+        /// <summary>
         /// Used to do per-class locking during generation
         /// </summary>
         public ConcurrentDictionary<string, object> ClassLocks = new();
@@ -89,6 +95,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             GeneratedFloatRecords.Clear();
             GeneratedConditionalRecords.Clear();
             GeneratedTransitionRecords.Clear();
+            GeneratedMaterialSpecifications.Clear();
         }
 
         public string GetProgressString()
@@ -170,6 +177,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
             var transitionsSorted = GeneratedTransitionRecords.Values.OrderBy(x => x.ElementID).ToList();
             pdb.PlotUsages.Transitions.AddRange(transitionsSorted);
+
+            var matFiltersSorted = GeneratedMaterialSpecifications.Values.OrderBy(x => x.FilterName).ToList();
+            pdb.MaterialBoolSpecs.AddRange(matFiltersSorted);
 
             return pdb;
         }

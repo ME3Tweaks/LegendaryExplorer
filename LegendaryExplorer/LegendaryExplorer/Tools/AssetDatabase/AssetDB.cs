@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BinaryPack.Attributes;
+using LegendaryExplorer.Tools.AssetDatabase.Filters;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.PlotDatabase;
 
@@ -20,9 +21,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase
     /// </summary>
     public class AssetDB
     {
-        public MEGame meGame { get; set; }
+        public MEGame Game { get; set; }
         public string GenerationDate { get; set; }
-        public string DataBaseversion { get; set; }
+        public string DatabaseVersion { get; set; }
         public MELocalization Localization { get; set; }
 
         public List<FileNameDirKeyPair> FileList { get; set; } = new();
@@ -31,6 +32,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public List<ClassRecord> ClassRecords { get; set; } = new();
 
         public List<MaterialRecord> Materials { get; set; } = new();
+
+        public List<MaterialBoolSpec> MaterialBoolSpecs { get; set; } = new();
 
         public List<AnimationRecord> Animations { get; set; } = new();
 
@@ -48,11 +51,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         public PlotUsageDB PlotUsages { get; set; } = new();
 
-        public AssetDB(MEGame meGame, string GenerationDate, string DataBaseversion, IEnumerable<FileNameDirKeyPair> FileList, IEnumerable<string> ContentDir)
+        public AssetDB(MEGame meGame, string GenerationDate, string databaseVersion, IEnumerable<FileNameDirKeyPair> FileList, IEnumerable<string> ContentDir)
         {
-            this.meGame = meGame;
+            this.Game = meGame;
             this.GenerationDate = GenerationDate;
-            this.DataBaseversion = DataBaseversion;
+            this.DatabaseVersion = databaseVersion;
             this.FileList.AddRange(FileList);
             this.ContentDir.AddRange(ContentDir);
         }
@@ -73,6 +76,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             ClassRecords.Clear();
             Animations.Clear();
             Materials.Clear();
+            MaterialBoolSpecs.Clear();
             Meshes.Clear();
             Particles.Clear();
             Textures.Clear();
@@ -87,6 +91,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             ClassRecords.AddRange(from.ClassRecords);
             Animations.AddRange(from.Animations);
             Materials.AddRange(from.Materials);
+            MaterialBoolSpecs.AddRange(from.MaterialBoolSpecs);
             Meshes.AddRange(from.Meshes);
             Particles.AddRange(from.Particles);
             Textures.AddRange(from.Textures);
