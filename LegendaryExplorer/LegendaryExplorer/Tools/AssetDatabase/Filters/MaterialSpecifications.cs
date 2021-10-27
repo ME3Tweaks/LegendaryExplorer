@@ -48,7 +48,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
     }
 
     /// <summary>
-    /// Specifcation to filter materials based on MatSettings parameters
+    /// Specification to filter materials based on MatSettings parameters
     /// </summary>
     public class MaterialSettingSpec : MaterialSpecification
     {
@@ -68,6 +68,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
 
         public MaterialSettingSpec(string filterName, string settingName, Predicate<MatSetting> predicate)
         {
+            // Custom predicate option has an additional check against settingName.
+            // We could remove this and make code a bit simpler, but we would need to add settingName checks to all predicates
             FilterName = filterName;
             SettingName = settingName;
             _customPredicate = predicate;
@@ -75,13 +77,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
 
         public override bool MatchesSpecification(MaterialRecord mr)
         {
-            if (_customPredicate != null) return mr.MatSettings.Any(PredicateMatches);
-            else
-            {
-                if (Inverted) return mr.MatSettings.All(r => ParametersMatch(r) == false);
-                else return mr.MatSettings.Any(ParametersMatch);
-            }
+            Func<MatSetting, bool> predicate = _customPredicate is not null ? PredicateMatches : ParametersMatch;
+            var specMatches = mr.MatSettings.Any(predicate);
 
+            if (Inverted) return !specMatches;
+            else return specMatches;
         }
 
         private bool PredicateMatches(MatSetting s)
@@ -108,22 +108,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
                 return true;
             }
             return false;
-        }
-    }
-
-    /// <summary>
-    /// Used to represent a Separator MenuItem when bound in the UI, and should have no behavior whatsoever
-    /// </summary>
-    public class MaterialFilterSeparator : MaterialSpecification
-    {
-        public MaterialFilterSeparator()
-        {
-            FilterName = "";
-            IsSelected = false;
-        }
-        public override bool MatchesSpecification(MaterialRecord item)
-        {
-            throw new NotImplementedException("Cannot match specification on Separator");
         }
     }
 }

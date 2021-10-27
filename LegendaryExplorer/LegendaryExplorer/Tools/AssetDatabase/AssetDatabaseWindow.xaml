@@ -109,6 +109,16 @@
                         </MenuItem>
                     </MenuItem>
                     <MenuItem Header="Tools" Padding="4">
+                        <MenuItem.Resources>
+                            <Style x:Key="CustomFilterMenuItem" TargetType="{x:Type MenuItem}">
+                                <Setter Property="Header" Value="{Binding FilterName}"/>
+                                <Setter Property="ToolTip" Value="{Binding Description}"/>
+                                <Setter Property="StaysOpenOnClick" Value="True" />
+                                <Setter Property="Command" Value="{Binding FilterMatCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"/>
+                                <Setter Property="CommandParameter" Value="{Binding}"/>
+                                <Setter Property="IsChecked" Value="{Binding IsSelected}"/>
+                            </Style>
+                        </MenuItem.Resources>
                         <MenuItem Header="Open Definition" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor."/>
                         <MenuItem Header="Open Usage" Name="menu_OpenUsage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
                         <MenuItem Header="Go to SuperClass" Command="{Binding GoToSuperclassCommand}" ToolTip="Go to the superclass for more properties."/>
@@ -129,17 +139,10 @@
                             <MenuItem Name="menu_fltrSeq" Header="Only Sequence Classes" Command="{Binding FilterClassCommand}" CommandParameter="Seq" ToolTip="Show sequence classes only." StaysOpenOnClick="True"/>
                             <MenuItem Name="menu_fltrInterp" Header="Only Matinee Classes" Command="{Binding FilterClassCommand}" CommandParameter="Interp" ToolTip="Show matinee classes only." StaysOpenOnClick="True"/>
                         </MenuItem>
-                        <MenuItem Header="Filter Materials" ItemsSource="{Binding MatFilter.FilterOptions}">
-                            <MenuItem.ItemContainerStyle>
-                                <Style TargetType="{x:Type MenuItem}">
-                                    <Setter Property="Header" Value="{Binding FilterName}"/>
-                                    <Setter Property="ToolTip" Value="{Binding Description}"/>
-                                    <Setter Property="StaysOpenOnClick" Value="True" />
-                                    <Setter Property="Command" Value="{Binding FilterMatCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"/>
-                                    <Setter Property="CommandParameter" Value="{Binding}"/>
-                                    <Setter Property="IsChecked" Value="{Binding IsSelected}"/>
-                                </Style>
-                            </MenuItem.ItemContainerStyle>
+                        <MenuItem Header="Filter Materials">
+                            <MenuItem Header="Generic Filters" ItemsSource="{Binding MatFilter.FilterOptions}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
+                            <MenuItem Header="Blend Mode" ItemsSource="{Binding MatFilter.BlendMode}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
+                            <MenuItem Header="BoolProperty Filters" ItemsSource="{Binding MatFilter.GeneratedOptions}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
                         </MenuItem>
                         <MenuItem Header="Filter Meshes">
                             <MenuItem Name="menu_fltrSkM" Header="Only Skeleton Meshes" Command="{Binding FilterMeshCommand}" CommandParameter="Skel" ToolTip="Show Skeleton Meshes only." StaysOpenOnClick="True"/>

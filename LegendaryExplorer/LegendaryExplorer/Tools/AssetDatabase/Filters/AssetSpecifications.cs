@@ -1,4 +1,5 @@
-﻿using LegendaryExplorer.Misc;
+﻿using System;
+using LegendaryExplorer.Misc;
 
 namespace LegendaryExplorer.Tools.AssetDatabase.Filters
 {
@@ -54,5 +55,20 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
     public abstract class ParticleSysSpecification : AssetSpecification<ParticleSysRecord>
     {
         public abstract override bool MatchesSpecification(ParticleSysRecord item);
+    }
+
+    /// <summary>
+    /// Used to represent a Separator MenuItem when bound in the UI, and should have no behavior whatsoever
+    /// </summary>
+    public class FilterSeparator<T> : IAssetSpecification<T>
+    {
+        public string FilterName { get; set; } = "";
+        public string Description { get; set; } = "";
+        public bool IsSelected { get => false; set { } }
+
+        public bool MatchesSpecification(T item)
+        {
+            throw new NotImplementedException("Cannot match specification on Separator");
+        }
     }
 }
