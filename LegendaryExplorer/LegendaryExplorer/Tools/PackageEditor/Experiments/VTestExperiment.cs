@@ -366,7 +366,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     {
                         var levelName = Path.GetFileNameWithoutExtension(f);
                         //if (levelName.CaseInsensitiveEquals("BIOA_PRC2_CCAHERN_DSG"))
-                            PortVTestLevel(vTestLevel, levelName, vTestOptions, levelName == "BIOA_" + vTestLevel, true);
+                        PortVTestLevel(vTestLevel, levelName, vTestOptions, levelName == "BIOA_" + vTestLevel, true);
                     }
                 }
             }
@@ -2039,7 +2039,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 // This is a total hack but it works for less code.
 
                 le1File.FindExport("TheWorld.PersistentLevel.AmbientSound_20").RemoveProperty("Base");
-                AddWorldReferencedObjects(le1File, le1File.FindExport("BIOG_StreamingAudioData.PC.snd_prc1_music")); // This must stay in memory for the music 2DA to work for PRC1 audio
+                AddWorldReferencedObjects(le1File, le1File.FindExport("DVDStreamingAudioData.PC.snd_prc1_music")); // This must stay in memory for the music 2DA to work for PRC1 audio
                 #endregion
 
                 #region Geth Pulse Gun Crust VFX Fix
@@ -2280,12 +2280,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// <param name="eventIFP"></param>
         /// <param name="vTestSequenceIFP"></param>
         /// <param name="vTestOptions"></param>
-        private static void InstallVTestHelperSequenceNoInput(IMEPackage le1File, string sequenceIFP, string vTestSequenceIFP, VTestOptions vTestOptions, string outName = "Out")
+        private static ExportEntry InstallVTestHelperSequenceNoInput(IMEPackage le1File, string sequenceIFP, string vTestSequenceIFP, VTestOptions vTestOptions, string outName = "Out")
         {
             var sequence = le1File.FindExport(sequenceIFP);
             var donorSequence = vTestOptions.vTestHelperPackage.FindExport(vTestSequenceIFP);
             EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, donorSequence, le1File, sequence, true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var newUiSeq);
             KismetHelper.AddObjectToSequence(newUiSeq as ExportEntry, sequence);
+            return newUiSeq as ExportEntry;
         }
 
         /// <summary>
@@ -2295,7 +2296,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// <param name="eventIFP"></param>
         /// <param name="vTestSequenceIFP"></param>
         /// <param name="vTestOptions"></param>
-        private static void InstallVTestHelperSequenceViaEvent(IMEPackage le1File, string eventIFP, string vTestSequenceIFP, VTestOptions vTestOptions, string outName = "Out")
+        private static ExportEntry InstallVTestHelperSequenceViaEvent(IMEPackage le1File, string eventIFP, string vTestSequenceIFP, VTestOptions vTestOptions, string outName = "Out")
         {
             var targetEvent = le1File.FindExport(eventIFP);
             var sequence = SeqTools.GetParentSequence(targetEvent);
@@ -2303,6 +2304,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, donorSequence, le1File, sequence, true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var newUiSeq);
             KismetHelper.AddObjectToSequence(newUiSeq as ExportEntry, sequence);
             KismetHelper.CreateOutputLink(targetEvent, outName, newUiSeq as ExportEntry);
+            return newUiSeq as ExportEntry;
         }
 
         private static void AddWorldReferencedObjects(IMEPackage le1File, params ExportEntry[] entriesToReference)
@@ -2353,8 +2355,29 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                     KismetHelper.CreateOutputLink(delay, "Out", remoteEvent);
                                     remoteEvent.WriteProperty(new NameProperty("MusicIntensity2", "EventName"));
                                 }
+
+                                // Setup texture loading
+                                var streamInLocNode = le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence.SUR_Ahern_Handler.SeqVar_Object_33");
+                                FixSimMapTextureLoading(FindSequenceObjectByClassAndPosition(exp, "BioSeqAct_Delay", -8501, -1086), vTestOptions, streamInLocNode);
+                            }
+                            else if (seqName == "Spawn_Single_Guy")
+                            {
+                                RemoveBitExplosionEffect(exp);
                             }
                         }
+
+                        // Fix the AI to actually charge. For some reason they don't, maybe AI changed internally when going to LE1
+                        var root = le1File.FindExport("BIOA_PRC2_SIM_C.Mercenary");
+                        var chargeAi = EntryImporter.EnsureClassIsInFile(le1File, "BioAI_Charge", new RelinkerOptionsPackage() { Cache = vTestOptions.cache });
+                        foreach (var exp in le1File.Exports.Where(x => x.idxLink == root.UIndex))
+                        {
+                            if (!exp.ObjectName.Name.Contains("Sniper"))
+                            {
+                                exp.WriteProperty(new ObjectProperty(chargeAi, "AIController"));
+                            }
+                        }
+                        // Make memory unique
+                        root.ObjectName = "Mercenary_Ahern_Crossgen";
                     }
                     break;
                 case "BIOA_PRC2_CCCAVE_DSG":
@@ -2379,47 +2402,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                             if (seqName == "Spawn_Single_Guy")
                             {
-                                // These sequences need the 'bit explosion' effect removed because BioWare changed something in SeqAct_ActorFactory and completely broke it
-                                // We are just going to use the crust effect instead
-                                var sequenceObjects = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-                                foreach (var seqObjProp in sequenceObjects.ToList()) // ToList as we're going to modify it so we need a copy
-                                {
-                                    if (!sequenceObjects.Contains(seqObjProp))
-                                        continue; // it's already been removed
-
-                                    var seqObj = seqObjProp.ResolveToEntry(le1File) as ExportEntry;
-                                    if (seqObj != null)
-                                    {
-                                        if (seqObj.ClassName == "SeqAct_ActorFactory")
-                                        {
-                                            var outLinks = SeqTools.GetOutboundLinksOfNode(seqObj);
-                                            outLinks[0].RemoveAt(0); // Remove the first outlink, which goes to Delay
-                                            SeqTools.WriteOutboundLinksToNode(seqObj, outLinks); // remove the link so we don't try to connect to it when skipping
-                                            SeqTools.SkipSequenceElement(seqObj, "Finished");
-                                            sequenceObjects.Remove(seqObjProp);
-                                        }
-                                        else if (seqObj.ClassName == "BioSeqAct_Delay")
-                                        {
-                                            // We can ID these by the position data since they are built from a template and thus always have the same positions
-                                            // It also references destroying the spawned particle system
-                                            var props = seqObj.GetProperties();
-                                            if (props.GetProp<IntProperty>("ObjPosX")?.Value == 4440 && props.GetProp<IntProperty>("ObjPosY")?.Value == 2672)
-                                            {
-                                                // This needs removed too
-                                                var nextNodes = SeqTools.GetOutboundLinksOfNode(seqObj);
-                                                var nextNode = nextNodes[0][0].LinkedOp as ExportEntry;
-                                                var subNodeOfNext = SeqTools.GetVariableLinksOfNode(nextNode)[0].LinkedNodes[0] as ExportEntry;
-
-                                                // Remove all of them from the sequence
-                                                sequenceObjects.Remove(seqObjProp); // Delay
-                                                sequenceObjects.Remove(new ObjectProperty(subNodeOfNext.UIndex)); // Destroy
-                                                sequenceObjects.Remove(new ObjectProperty(nextNode.UIndex)); // SeqVar_Object
-                                            }
-                                        }
-                                    }
-                                }
-
-                                exp.WriteProperty(sequenceObjects);
+                                RemoveBitExplosionEffect(exp);
 
                                 // Increase survival mode engagement by forcing the player to engage with enemies that charge the player.
                                 // This prevents them from camping and getting free survival time
@@ -2758,6 +2741,51 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
+        private static void RemoveBitExplosionEffect(ExportEntry exp)
+        {
+            // These sequences need the 'bit explosion' effect removed because BioWare changed something in SeqAct_ActorFactory and completely broke it
+            // We are just going to use the crust effect instead
+            var sequenceObjects = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+            foreach (var seqObjProp in sequenceObjects.ToList()) // ToList as we're going to modify it so we need a copy
+            {
+                if (!sequenceObjects.Contains(seqObjProp))
+                    continue; // it's already been removed
+
+                var seqObj = seqObjProp.ResolveToEntry(exp.FileRef) as ExportEntry;
+                if (seqObj != null)
+                {
+                    if (seqObj.ClassName == "SeqAct_ActorFactory")
+                    {
+                        var outLinks = SeqTools.GetOutboundLinksOfNode(seqObj);
+                        outLinks[0].RemoveAt(0); // Remove the first outlink, which goes to Delay
+                        SeqTools.WriteOutboundLinksToNode(seqObj, outLinks); // remove the link so we don't try to connect to it when skipping
+                        SeqTools.SkipSequenceElement(seqObj, "Finished");
+                        sequenceObjects.Remove(seqObjProp);
+                    }
+                    else if (seqObj.ClassName == "BioSeqAct_Delay")
+                    {
+                        // We can ID these by the position data since they are built from a template and thus always have the same positions
+                        // It also references destroying the spawned particle system
+                        var props = seqObj.GetProperties();
+                        if (props.GetProp<IntProperty>("ObjPosX")?.Value == 4440 && props.GetProp<IntProperty>("ObjPosY")?.Value == 2672)
+                        {
+                            // This needs removed too
+                            var nextNodes = SeqTools.GetOutboundLinksOfNode(seqObj);
+                            var nextNode = nextNodes[0][0].LinkedOp as ExportEntry;
+                            var subNodeOfNext = SeqTools.GetVariableLinksOfNode(nextNode)[0].LinkedNodes[0] as ExportEntry;
+
+                            // Remove all of them from the sequence
+                            sequenceObjects.Remove(seqObjProp); // Delay
+                            sequenceObjects.Remove(new ObjectProperty(subNodeOfNext.UIndex)); // Destroy
+                            sequenceObjects.Remove(new ObjectProperty(nextNode.UIndex)); // SeqVar_Object
+                        }
+                    }
+                }
+            }
+
+            exp.WriteProperty(sequenceObjects);
+        }
+
         /// <summary>
         /// Checks if the specified sequence object is contained within a named sequence. Can be used to find sequences that are templated embedded within other different sequences.
         /// </summary>
@@ -2809,7 +2837,23 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     var finishedCappingSUR = FindSequenceObjectByClassAndPosition(sequence, "SeqAct_Log", 2456, 2760);
                     if (finishedCappingSUR != null)
                     {
-                        InstallVTestHelperSequenceViaEvent(le1File, finishedCappingSUR.InstancedFullPath, "HelperSequences.MusicIntensitySUR", vTestOptions);
+                        var musicSUR = InstallVTestHelperSequenceViaEvent(le1File, finishedCappingSUR.InstancedFullPath, "HelperSequences.MusicIntensitySUR", vTestOptions);
+                        var intensifyWaveIdx = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqVar_Int", vTestOptions.cache);
+                        switch (upperFName)
+                        {
+                            // Values here are 1 indexed! So add one to your preferred starting wave
+                            case "BIOA_PRC2_CCCAVE_DSG":
+                                intensifyWaveIdx.WriteProperty(new IntProperty(4, "IntValue"));
+                                break;
+                            case "BIOA_PRC2_CCLAVA_DSG":
+                                intensifyWaveIdx.WriteProperty(new IntProperty(5, "IntValue"));
+                                break;
+                            case "BIOA_PRC2_CCTHAI_DSG":
+                                intensifyWaveIdx.WriteProperty(new IntProperty(5, "IntValue"));
+                                break;
+                        }
+                        KismetHelper.AddObjectToSequence(intensifyWaveIdx, sequence);
+                        KismetHelper.CreateVariableLink(musicSUR, "IntensifyWaveNum", intensifyWaveIdx);
                     }
                 }
                 else if (seqName == "Vampire_Mode_Handler")
@@ -2832,27 +2876,34 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             var musicVol = musicVolEntry as ExportEntry;
             var fileName = Path.GetFileNameWithoutExtension(le1File.FilePath).ToUpper();
             int soundState = 0; // The column in the 2DA to use (for the soundque)
+            bool hasIntensity2 = false;
+            bool hasIntensity3 = false; // Left in case we ever decide to use it. Maybe on ahern?
             switch (fileName)
             {
                 case "BIOA_PRC2_CCTHAI_SND":
                     musicVol.WriteProperty(new NameProperty("CrossGen_Mus_Thai", "MusicID")); // Virmire Ride
                     PathEdUtils.SetLocation(musicVol, 1040, -28200, -2000);
+                    hasIntensity2 = true;
                     break;
                 case "BIOA_PRC2_CCLAVA_SND":
                     musicVol.WriteProperty(new NameProperty("CrossGen_Mus_Lava", "MusicID")); // Virmire Ride
                     PathEdUtils.SetLocation(musicVol, 28420, -26932, -26858);
+                    hasIntensity2 = true;
                     break;
                 case "BIOA_PRC2_CCCRATE_SND":
                     musicVol.WriteProperty(new NameProperty("CrossGen_Mus_Crate", "MusicID")); // Virmire Ride
                     PathEdUtils.SetLocation(musicVol, 15783, -27067, -5491);
+                    // No intensity 2 as this map is < 2 minutes in length
                     break;
                 case "BIOA_PRC2_CCCAVE_SND":
                     musicVol.WriteProperty(new NameProperty("CrossGen_Mus_Cave", "MusicID")); // Virmire Ride
                     PathEdUtils.SetLocation(musicVol, -16480, -28456, -2614);
+                    hasIntensity2 = true;
                     break;
                 case "BIOA_PRC2_CCAHERN_SND":
                     musicVol.WriteProperty(new NameProperty("CrossGen_Mus_Ahern", "MusicID")); // Virmire Ride
                     PathEdUtils.SetLocation(musicVol, -41129, -27013, -2679);
+                    hasIntensity2 = true;
                     break;
             }
 
@@ -2916,8 +2967,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             var setInt3 = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqAct_SetInt", vTestOptions.cache);
 
             KismetHelper.AddObjectsToSequence(sequence, false, intensity2, intensity3, evtIntensity2, evtIntensity3, setInt2, setInt3);
-            KismetHelper.CreateOutputLink(evtIntensity2, "Out", setInt2);
-            KismetHelper.CreateOutputLink(evtIntensity3, "Out", setInt3);
+            if (hasIntensity2)
+            {
+                KismetHelper.CreateOutputLink(evtIntensity2, "Out", setInt2);
+            }
+
+            if (hasIntensity3)
+            {
+                KismetHelper.CreateOutputLink(evtIntensity3, "Out", setInt3);
+            }
 
             KismetHelper.CreateVariableLink(setInt2, "Target", musicStatePlotInt);
             KismetHelper.CreateVariableLink(setInt3, "Target", musicStatePlotInt);
@@ -2949,7 +3007,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// Changes sequencing a bit to install a force-load of mips plus a delay
         /// </summary>
         /// <param name="findSequenceObjectByClassAndPosition"></param>
-        private static void FixSimMapTextureLoading(ExportEntry startDelay, VTestOptions vTestOptions)
+        private static void FixSimMapTextureLoading(ExportEntry startDelay, VTestOptions vTestOptions, ExportEntry streamingLocation = null)
         {
             var sequence = SeqTools.GetParentSequence(startDelay);
             var stopLoadingMovie = FindSequenceObjectByClassAndPosition(sequence, "BioSeqAct_StopLoadingMovie");
@@ -2967,7 +3025,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             streamInTextures.WriteProperty(new FloatProperty(5f, "Seconds")); // Force textures to stream in at full res for a bit over the load screen time
             remoteEventStreamIn.WriteProperty(new NameProperty("CROSSGEN_PrepTextures", "EventName")); // This is used to signal other listeners that they should also stream in textures
 
-            var streamingLocation = KismetHelper.GetSequenceObjects(sequence).OfType<ExportEntry>().First(x => x.ClassName == "SeqVar_External" && x.GetProperty<StrProperty>("VariableLabel")?.Value == "Scenario_Start_Location");
+            streamingLocation ??= KismetHelper.GetSequenceObjects(sequence).OfType<ExportEntry>().First(x => x.ClassName == "SeqVar_External" && x.GetProperty<StrProperty>("VariableLabel")?.Value == "Scenario_Start_Location");
             KismetHelper.CreateVariableLink(streamInTextures, "Location", streamingLocation);
 
             KismetHelper.CreateOutputLink(startDelay, "Finished", remoteEventStreamIn); // Initial 1 frame delay to event signal
