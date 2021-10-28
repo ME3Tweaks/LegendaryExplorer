@@ -11,9 +11,10 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
         public List<IAssetSpecification<MaterialRecord>> BlendModes { get; private set; } = new();
         public ObservableCollection<IAssetSpecification<MaterialRecord>> GeneratedOptions { get; } = new();
 
-        public MaterialFilter()
+        public MaterialFilter(FileListSpecification fileList)
         {
-            PopulateFilterOptions();
+            Search = new SearchSpecification<MaterialRecord>(MaterialSearch);
+            PopulateFilterOptions(fileList);
         }
 
         public void LoadFromDatabase(AssetDB currentDb)
@@ -22,7 +23,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
             GeneratedOptions.AddRange(currentDb.MaterialBoolSpecs);
         }
 
-        private void PopulateFilterOptions()
+        private void PopulateFilterOptions(FileListSpecification fileList)
         {
             ///////////////////////////////////////
             // Add new custom Material Filters here
@@ -30,6 +31,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
 
             Filters = new ()
             {
+                fileList,
                 new PredicateSpecification<MaterialRecord>("Hide DLC only Materials", mr => !mr.IsDLCOnly),
                 new PredicateSpecification<MaterialRecord>("Only Decal Materials",
                     mr => mr.MaterialName.Contains("Decal", StringComparison.OrdinalIgnoreCase)),
@@ -62,16 +64,18 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
             };
         }
 
-        public override bool Filter(MaterialRecord mr)
+        private bool MaterialSearch((string, MaterialRecord) t)
         {
-            var enabledOptions = GetEnabledSpecifications();
-            return enabledOptions.All(spec => spec.MatchesSpecification(mr));
+            var (text, mr) = t;
+            var enabled = mr.MaterialName.ToLower().Contains(text.ToLower());
+            if (!enabled) enabled = mr.ParentPackage.ToLower().Contains(text.ToLower());
+            return enabled;
         }
 
-        private IEnumerable<IAssetSpecification<MaterialRecord>> GetEnabledSpecifications()
+        protected override IEnumerable<IAssetSpecification<MaterialRecord>> GetSpecifications()
         {
             var blendModeOr = new OrSpecification<MaterialRecord>(BlendModes); // Matches spec if any of the selected BlendModes are true
-            return Filters.Append(blendModeOr).Concat(GeneratedOptions).Where(spec => spec.IsSelected);
+            return Filters.Append(blendModeOr).Append(Search).Concat(GeneratedOptions);
         }
     }
 }

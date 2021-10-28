@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using LegendaryExplorer.Misc;
+using LegendaryExplorerCore.Gammtek.Collections.ObjectModel;
+using LegendaryExplorerCore.Helpers;
 
 namespace LegendaryExplorer.Tools.AssetDatabase.Filters
 {
@@ -26,7 +28,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
         private bool _isSelected;
         public bool IsSelected { get => _isSelected; set => SetProperty(ref _isSelected, value); }
 
-        public bool ShowInUI { get; } = true;
+        public bool ShowInUI { get; init; } = true;
 
         public abstract bool MatchesSpecification(T item);
     }
@@ -50,6 +52,28 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
         public override bool MatchesSpecification(T item)
         {
             return _predicate?.Invoke(item) ?? true;
+        }
+    }
+
+    public class SearchSpecification<T> : AssetSpecification<T>
+    {
+        public string SearchText { get; set; }
+        private readonly Predicate<(string, T)> _predicate;
+
+        public SearchSpecification(Predicate<(string, T)> predicate)
+        {
+            _predicate = predicate;
+            ShowInUI = false;
+            IsSelected = true;
+        }
+
+        public override bool MatchesSpecification(T item)
+        {
+            if (!string.IsNullOrEmpty(SearchText))
+            {
+                return _predicate?.Invoke((SearchText, item)) ?? true;
+            }
+            return true;
         }
     }
 
@@ -81,7 +105,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
         public bool MatchesSpecification(T item)
         {
             var selectedSpecs = _specifications.Where(sp => sp.IsSelected).ToList();
-            if (!selectedSpecs.Any() || IsSelected == false) return true; // Fallthrough, accept all items
+            if (!Enumerable.Any(selectedSpecs) || IsSelected == false) return true; // Fallthrough, accept all items
             else return selectedSpecs.Any(sp => sp.MatchesSpecification(item));
         }
     }
@@ -98,6 +122,20 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
 
         public bool MatchesSpecification(T item)
         {
+            return true;
+        }
+    }
+
+    public class FileListSpecification : AssetSpecification<object>
+    {
+        public new bool ShowInUI { get; } = false;
+        public ObservableDictionary<int, string> CustomFileList { get; set; } = new();
+        public override bool MatchesSpecification(object item)
+        {
+            if (item is IAssetRecord record && !CustomFileList.IsEmpty())
+            {
+                return record.AssetUsages.Select(usage => usage.FileKey).Intersect(CustomFileList.Keys).Any();
+            }
             return true;
         }
     }

@@ -1,31 +1,58 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace LegendaryExplorer.Tools.AssetDatabase.Filters
 {
     public interface IAssetFilter<in T>
     {
-        public bool Filter(T record);
+        public bool Filter(object record);
     }
 
     /// <summary>
-    /// A generic class to filter assets based on a number of enabled Specifications
+    /// A class to filter assets based on a number of enabled specifications
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">Record type to filter</typeparam>
     public class GenericAssetFilter<T> : IAssetFilter<T>
     {
         public List<IAssetSpecification<T>> Filters { get; set; } = new();
+        public SearchSpecification<T> Search { get; set; }
 
         protected GenericAssetFilter() { }
 
-        public GenericAssetFilter(IEnumerable<IAssetSpecification<T>> specs)
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="specs">Specifications that should apply to this record type</param>
+        /// <param name="searchPredicate">Lambda for how the searchbox should operate on this record type</param>
+        public GenericAssetFilter(IEnumerable<IAssetSpecification<T>> specs,
+            Predicate<(string, T)> searchPredicate = null)
         {
             Filters = specs.ToList();
+            Search = new SearchSpecification<T>(searchPredicate);
         }
 
-        public virtual bool Filter(T record)
+        /// <summary>
+        /// Returns whether this record matches all enabled filters.
+        /// </summary>
+        /// <param name="obj">Record to filter</param>
+        /// <returns></returns>
+        public virtual bool Filter(object obj)
         {
-            return Filters.Where(s => s.IsSelected).All(spec => spec.MatchesSpecification(record));
+            if (obj is T record)
+            {
+                return GetSpecifications().Where(s => s.IsSelected || !s.ShowInUI).All(spec => spec.MatchesSpecification(record));
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Get the specifications that should be used in the filter. Specifications that are not selected can be safely returned by this method.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual IEnumerable<IAssetSpecification<T>> GetSpecifications()
+        {
+            return Filters.Append(Search);
         }
 
         public virtual void SetSelected(IAssetSpecification<T> spec)
@@ -40,7 +67,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
     /// <typeparam name="T"></typeparam>
     public class SingleOptionFilter<T> : GenericAssetFilter<T>
     {
-        public SingleOptionFilter(IEnumerable<IAssetSpecification<T>> specs) : base(specs) { }
+        public SingleOptionFilter(IEnumerable<IAssetSpecification<T>> specs, Predicate<(string, T)> searchPredicate = null)
+            : base(specs, searchPredicate) { }
 
         public override void SetSelected(IAssetSpecification<T> spec)
         {

@@ -138,30 +138,21 @@
                                 </Style.Triggers>
                             </Style>
                         </MenuItem.Resources>
-                        <MenuItem Name="menu_fltrCustFiles" Header="Filter by Filelist" Command="{Binding FilterFilesCommand}" CommandParameter="CustFiles" ToolTip="Filter the entire database by the current filelist." StaysOpenOnClick="True" IsCheckable="True" IsChecked="{Binding Path=IsFilteredByFiles, Mode=TwoWay}"/>
+                        <MenuItem Name="menu_fltrCustFiles" Header="Filter by Filelist" Command="{Binding FilterFilesCommand}" CommandParameter="CustFiles" ToolTip="Filter the entire database by the current filelist." StaysOpenOnClick="True" IsCheckable="True" IsChecked="{Binding Path=FileListFilter.IsSelected, Mode=TwoWay}"/>
                         <MenuItem Header="Filelist Actions">
                             <MenuItem Header="Load" Command="{Binding LoadFileListCommand}" ToolTip="Load an existing filelist."/>
                             <MenuItem Header="Save" Command="{Binding SaveFileListCommand}" ToolTip="Save the current filelist."/>
                             <MenuItem Header="Clear" Command="{Binding EditFileListCommand}" CommandParameter="Clear" ToolTip="Clear the current filelist."/>
                         </MenuItem>
                         <Separator/>
-                        <MenuItem Header="Filter Animations">
-                            <MenuItem Name="menu_fltrAnim" Header="Only Animations" Command="{Binding FilterAnimsCommand}" CommandParameter="Anim" ToolTip="Show animsequences only." StaysOpenOnClick="True"/>
-                            <MenuItem Name="menu_fltrPerf" Header="Only Performances (ME3)" Command="{Binding FilterAnimsCommand}" CommandParameter="Perf" ToolTip="Show ME3 ambient performances only." StaysOpenOnClick="True"/>
-                        </MenuItem>
-                        <MenuItem Header="Filter Classes">
-                            <MenuItem Name="menu_fltrSeq" Header="Only Sequence Classes" Command="{Binding FilterClassCommand}" CommandParameter="Seq" ToolTip="Show sequence classes only." StaysOpenOnClick="True"/>
-                            <MenuItem Name="menu_fltrInterp" Header="Only Matinee Classes" Command="{Binding FilterClassCommand}" CommandParameter="Interp" ToolTip="Show matinee classes only." StaysOpenOnClick="True"/>
-                        </MenuItem>
+                        <MenuItem Header="Filter Animations" ItemsSource="{Binding AssetFilters.AnimationFilter.Filters}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
+                        <MenuItem Header="Filter Classes" ItemsSource="{Binding AssetFilters.ClassFilter.Filters}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
                         <MenuItem Header="Filter Materials">
-                            <MenuItem Header="Generic Filters" DataContext="{Binding MatFilter}" ItemsSource="{Binding Filters}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
-                            <MenuItem Header="Blend Mode" DataContext="{Binding MatFilter}" ItemsSource="{Binding BlendModes}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
-                            <MenuItem Header="BoolProperty Filters" DataContext="{Binding MatFilter}" ItemsSource="{Binding GeneratedOptions}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
+                            <MenuItem Header="Generic Filters" DataContext="{Binding AssetFilters.MaterialFilter}" ItemsSource="{Binding Filters}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
+                            <MenuItem Header="Blend Mode" DataContext="{Binding AssetFilters.MaterialFilter}" ItemsSource="{Binding BlendModes}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
+                            <MenuItem Header="BoolProperty Filters" DataContext="{Binding AssetFilters.MaterialFilter}" ItemsSource="{Binding GeneratedOptions}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
                         </MenuItem>
-                        <MenuItem Header="Filter Meshes">
-                            <MenuItem Name="menu_fltrSkM" Header="Only Skeleton Meshes" Command="{Binding FilterMeshCommand}" CommandParameter="Skel" ToolTip="Show Skeleton Meshes only." StaysOpenOnClick="True"/>
-                            <MenuItem Name="menu_fltrStM" Header="Only Static Meshes" Command="{Binding FilterMeshCommand}" CommandParameter="Static" ToolTip="Show Static Meshes only." StaysOpenOnClick="True"/>
-                        </MenuItem>
+                        <MenuItem Header="Filter Meshes" ItemsSource="{Binding AssetFilters.MeshFilter.Filters}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
                         <MenuItem Header="Filter Textures">
                             <MenuItem Name="menu_TCube" Header="Only TextureCubes" Command="{Binding FilterTexCommand}" CommandParameter="Cube" ToolTip="Show Texture Cubes only." StaysOpenOnClick="True"/>
                             <MenuItem Name="menu_TMovie" Header="Only TextureMovies" Command="{Binding FilterTexCommand}" CommandParameter="Movie" ToolTip="Show Texture Movies only." StaysOpenOnClick="True"/>
@@ -202,10 +193,7 @@
                                 <MenuItem Name="menu_TGClear" Header="Clear all" Command="{Binding FilterTexCommand}" CommandParameter="TGClear" ToolTip="Hide All TextureGroups." StaysOpenOnClick="True"/>
                             </MenuItem>
                         </MenuItem>
-                        <MenuItem Header="Filter VFX">
-                            <MenuItem Name="menu_VFXPartSys" Header="Only Particle Systems" Command="{Binding FilterVFXCommand}" CommandParameter="PS" ToolTip="Show Particle Systems only." StaysOpenOnClick="True"/>
-                            <MenuItem Name="menu_VFXRvrEff" Header="Only Client Effects" Command="{Binding FilterVFXCommand}" CommandParameter="RvrEff" ToolTip="Show Receiver Effects only." StaysOpenOnClick="True"/>
-                        </MenuItem>
+                        <MenuItem Header="Filter VFX" ItemsSource="{Binding AssetFilters.ParticleFilter.Filters}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
                     </MenuItem>
                     <MenuItem Header="Tools" Padding="4">
                         <MenuItem Header="Open Definition" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor."/>
@@ -280,13 +268,13 @@
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="25"/>
                                                 </Grid.RowDefinitions>
-                                                <ToggleButton x:Name="btn_custFilter" Content="Filter" Command="{Binding FilterFilesCommand}" CommandParameter="CustFiles" ToolTip="Filter the entire database by the current filelist." MinWidth="20" ClickMode="Release" IsChecked="{Binding IsFilteredByFiles}" Grid.Column="0"/>
+                                                <ToggleButton x:Name="btn_custFilter" Content="Filter" Command="{Binding FilterFilesCommand}" CommandParameter="CustFiles" ToolTip="Filter the entire database by the current filelist." MinWidth="20" ClickMode="Release" IsChecked="{Binding FileListFilter.IsSelected}" Grid.Column="0"/>
                                                 <Button Content="Load" MaxHeight="40" Command="{Binding LoadFileListCommand}" ToolTip="Load custom file list" ClickMode="Release" Grid.Column="1"/>
                                                 <Button Content="Save" MaxHeight="40" Command="{Binding SaveFileListCommand}" ToolTip="Save custom file list" ClickMode="Release" Grid.Column="2"/>
                                                 <Button Content="Clear" MaxHeight="40" Command="{Binding EditFileListCommand}" CommandParameter="Clear" ToolTip="Save custom file list" ClickMode="Release" Grid.Column="3"/>
                                             </Grid>
                                         </StackPanel>
-                                        <controls:ListBoxScroll x:Name="lstbx_CustomFiles" ItemsSource="{Binding CustomFileList}" MinWidth="200"
+                                        <controls:ListBoxScroll x:Name="lstbx_CustomFiles" ItemsSource="{Binding FileListFilter.CustomFileList}" MinWidth="200"
                                                                 DockPanel.Dock="Bottom">
                                             <controls:ListBoxScroll.ContextMenu>
                                                 <ContextMenu>
