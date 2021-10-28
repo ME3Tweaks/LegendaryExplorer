@@ -64,18 +64,18 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
             };
         }
 
+        protected override IEnumerable<IAssetSpecification<MaterialRecord>> GetSpecifications()
+        {
+            var blendModeOr = new OrSpecification<MaterialRecord>(BlendModes); // Matches spec if any of the selected BlendModes are true
+            return Filters.Append(blendModeOr).Append(Search).Concat(GeneratedOptions);
+        }
+
         private bool MaterialSearch((string, MaterialRecord) t)
         {
             var (text, mr) = t;
             var enabled = mr.MaterialName.ToLower().Contains(text.ToLower());
             if (!enabled) enabled = mr.ParentPackage.ToLower().Contains(text.ToLower());
             return enabled;
-        }
-
-        protected override IEnumerable<IAssetSpecification<MaterialRecord>> GetSpecifications()
-        {
-            var blendModeOr = new OrSpecification<MaterialRecord>(BlendModes); // Matches spec if any of the selected BlendModes are true
-            return Filters.Append(blendModeOr).Append(Search).Concat(GeneratedOptions);
         }
     }
 }

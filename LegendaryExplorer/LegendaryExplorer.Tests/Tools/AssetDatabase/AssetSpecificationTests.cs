@@ -1,3 +1,5 @@
+using System;
+using LegendaryExplorer.Tools.AssetDatabase;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using LegendaryExplorer.Tools.AssetDatabase.Filters;
 
@@ -17,10 +19,10 @@ namespace LegendaryExplorer.Tests.Tools.AssetDatabase
             Assert.IsTrue(spec1.MatchesSpecification(assertionString));
             Assert.IsFalse(spec1.MatchesSpecification("blah"));
 
-            // Null predicate should always match
-            var spec2 = new PredicateSpecification<string>(null, null);
-            Assert.IsNull(spec2.FilterName);
-            Assert.IsTrue(spec2.MatchesSpecification("anything"));
+            Assert.ThrowsException<ArgumentNullException>(() =>
+            {
+                var spec2 = new PredicateSpecification<string>(null, null);
+            });
         }
 
         [TestMethod]
@@ -49,6 +51,38 @@ namespace LegendaryExplorer.Tests.Tools.AssetDatabase
 
             // This specification should hopefully never be run, but if it does it should always return true.
             Assert.IsTrue(uiSep.MatchesSpecification(12345));
+        }
+
+        [TestMethod]
+        public void TestSearchSpecification()
+        {
+            var searchSpec = new SearchSpecification<string>((t) => t.Item1 == t.Item2);
+            searchSpec.SearchText = "match";
+            Assert.IsTrue(searchSpec.MatchesSpecification("match"));
+            Assert.IsFalse(searchSpec.MatchesSpecification("nomatch"));
+            Assert.IsFalse(searchSpec.MatchesSpecification(null));
+
+            searchSpec.SearchText = "match2";
+            Assert.IsTrue(searchSpec.MatchesSpecification("match2"));
+        }
+
+        [TestMethod]
+        public void TestFileListSpecification()
+        {
+            var fls = new FileListSpecification();
+            var test = new MeshRecord("test", false, false, 4);
+            test.Usages.Add(new MeshUsage(10, 10, false));
+
+            // File list should match on any type when FileList is empty.
+            Assert.IsTrue(fls.MatchesSpecification("anything"));
+            Assert.IsTrue(fls.MatchesSpecification(test));
+
+            fls.CustomFileList.Add(9, "BIOA_STA00.pcc");
+            Assert.IsTrue(fls.MatchesSpecification("Not a record at all"));
+            Assert.IsFalse(fls.MatchesSpecification(test)); // record does not match
+
+            fls.CustomFileList.Add(10, "BIOA_STA00_DSG.pcc");
+            Assert.IsTrue(fls.MatchesSpecification(test));
         }
     }
 }

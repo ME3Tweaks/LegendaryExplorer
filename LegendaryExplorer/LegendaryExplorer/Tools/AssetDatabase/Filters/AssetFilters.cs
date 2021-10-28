@@ -2,6 +2,9 @@
 
 namespace LegendaryExplorer.Tools.AssetDatabase.Filters
 {
+    /// <summary>
+    /// Class to manage and expose filters for all record types
+    /// </summary>
     public class AssetFilters
     {
         public GenericAssetFilter<ClassRecord> ClassFilter { get; set; }
@@ -10,9 +13,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
         public GenericAssetFilter<MeshRecord> MeshFilter { get; }
         public GenericAssetFilter<TextureRecord> TextureFilter { get; }
         public GenericAssetFilter<ParticleSysRecord> ParticleFilter { get; }
-
         public GenericAssetFilter<GUIElement> GUIFilter { get; }
-
         public GenericAssetFilter<PlotRecord> PlotElementFilter { get; }
         public MaterialFilter MaterialFilter { get; }
 

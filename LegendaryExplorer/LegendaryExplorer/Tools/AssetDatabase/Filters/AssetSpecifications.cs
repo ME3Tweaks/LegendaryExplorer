@@ -1,43 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Gammtek.Collections.ObjectModel;
 using LegendaryExplorerCore.Helpers;
 
 namespace LegendaryExplorer.Tools.AssetDatabase.Filters
 {
-    public interface IAssetSpecification<in T>
-    {
-        string FilterName { get; set; }
-        string Description { get; set; }
-        bool IsSelected { get; set; }
-        bool ShowInUI { get; }
-        bool MatchesSpecification(T item);
-    }
-
     /// <summary>
-    /// Base class for all filters, implementing INotifyPropertyChanged
+    /// Matches an asset on an input predicate
     /// </summary>
-    /// <typeparam name="T">The type of asset being filtered</typeparam>
-    public abstract class AssetSpecification<T> : NotifyPropertyChangedBase, IAssetSpecification<T>
-    {
-        private string _filterName;
-        public string FilterName { get => _filterName; set => SetProperty(ref _filterName, value); }
-        public string Description { get; set; }
-        private bool _isSelected;
-        public bool IsSelected { get => _isSelected; set => SetProperty(ref _isSelected, value); }
-
-        public bool ShowInUI { get; init; } = true;
-
-        public abstract bool MatchesSpecification(T item);
-    }
-
-    public abstract class MaterialSpecification : AssetSpecification<MaterialRecord>
-    {
-        public abstract override bool MatchesSpecification(MaterialRecord item);
-    }
-
+    /// <typeparam name="T"></typeparam>
     public class PredicateSpecification<T> : AssetSpecification<T>
     {
         private readonly Predicate<T> _predicate;
@@ -55,6 +27,10 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
         }
     }
 
+    /// <summary>
+    /// Matches an asset based on the current search text via an input predicate
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class SearchSpecification<T> : AssetSpecification<T>
     {
         public string SearchText { get; set; }
@@ -72,6 +48,23 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
             if (!string.IsNullOrEmpty(SearchText))
             {
                 return _predicate?.Invoke((SearchText, item)) ?? true;
+            }
+            return true;
+        }
+    }
+
+    /// <summary>
+    /// Matches an asset based on whether any of it's usages are in the Custom File List
+    /// </summary>
+    public class FileListSpecification : AssetSpecification<object>
+    {
+        public new bool ShowInUI { get; } = false;
+        public ObservableDictionary<int, string> CustomFileList { get; set; } = new();
+        public override bool MatchesSpecification(object item)
+        {
+            if (item is IAssetRecord record && !CustomFileList.IsEmpty())
+            {
+                return record.AssetUsages.Select(usage => usage.FileKey).Intersect(CustomFileList.Keys).Any();
             }
             return true;
         }
@@ -122,20 +115,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
 
         public bool MatchesSpecification(T item)
         {
-            return true;
-        }
-    }
-
-    public class FileListSpecification : AssetSpecification<object>
-    {
-        public new bool ShowInUI { get; } = false;
-        public ObservableDictionary<int, string> CustomFileList { get; set; } = new();
-        public override bool MatchesSpecification(object item)
-        {
-            if (item is IAssetRecord record && !CustomFileList.IsEmpty())
-            {
-                return record.AssetUsages.Select(usage => usage.FileKey).Intersect(CustomFileList.Keys).Any();
-            }
             return true;
         }
     }

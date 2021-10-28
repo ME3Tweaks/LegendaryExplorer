@@ -187,7 +187,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         private bool _isGettingTLKs;
         public bool IsGettingTLKs { get => _isGettingTLKs; set => SetProperty(ref _isGettingTLKs, value); }
         public const string CustomListDesc = "Custom File Lists allow the database to be filtered so only assets that are in certain files or groups of files are shown. Lists can be saved/reloaded.";
-        private bool IsFilteredByFiles => FileListFilter.IsSelected;
         public ICommand GenerateDBCommand { get; set; }
         public ICommand SaveDBCommand { get; set; }
         public ICommand SwitchMECommand { get; set; }
@@ -270,7 +269,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public AssetDatabaseWindow() : base("Asset Database", true)
         {
             LoadCommands();
-            LoadFilters();
+            AssetFilters = new AssetFilters(FileListFilter);
 
             //Get default db / game
             CurrentDBPath = Settings.AssetDBPath;
@@ -304,11 +303,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             OpenInPlotDBCommand = new GenericCommand(OpenInPlotDB, IsPlotElementSelected);
             OpenPEDefinitionCommand = new GenericCommand(OpenPEDefinitionInToolset, IsPlotElementSelected);
             ChangeLocalizationCommand = new RelayCommand((e) => { Localization = (MELocalization)e; });
-        }
-
-        private void LoadFilters()
-        {
-            AssetFilters = new AssetFilters(FileListFilter);
         }
 
         private void AssetDB_Loaded(object sender, RoutedEventArgs e)

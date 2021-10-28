@@ -7,7 +7,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
     /// <summary>
     /// Specification to filter materials based on a BoolProperty
     /// </summary>
-    public class MaterialBoolSpec : MaterialSpecification
+    public class MaterialBoolSpec : AssetSpecification<MaterialRecord>
     {
         /// <summary>
         /// If true, spec instead filters materials that do not have this property, or have false values
@@ -33,7 +33,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
     /// <summary>
     /// Specification to filter materials based on MatSettings parameters
     /// </summary>
-    public class MaterialSettingSpec : MaterialSpecification
+    public class MaterialSettingSpec : AssetSpecification<MaterialRecord>
     {
         public bool Inverted { get; init; }
         private readonly string _settingName;
