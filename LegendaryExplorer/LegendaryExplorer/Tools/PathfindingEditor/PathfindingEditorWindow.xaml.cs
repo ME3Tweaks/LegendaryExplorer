@@ -4910,24 +4910,44 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         private StreamReader pipeReader;
         private StreamWriter pipeWriter;
 
+        private bool gpsActive = false;
         private void ConnectGPS_Clicked(object sender, RoutedEventArgs e)
         {
             Task.Run(() =>
             {
-                if (PlayerGPSObject == null)
+                if (!gpsActive)
                 {
-                    PlayerGPSObject = new PlayerGPSNode(0, 0, graphEditor);
-                    graphEditor.addNode(PlayerGPSObject);
+                    if (PlayerGPSObject == null)
+                    {
+                        PlayerGPSObject = new PlayerGPSNode(0, 0, graphEditor);
+                        graphEditor.addNode(PlayerGPSObject);
+
+                    }
+
+                    client = new NamedPipeClientStream("LEX_LE1_COMM_PIPE");
+                    client.Connect();
+                    pipeReader = new StreamReader(client);
+                    pipeWriter = new StreamWriter(client);
+
+                    pipeWriter.WriteLine("ACTIVATE_PLAYERGPS");
+                    pipeWriter.Flush();
+
+                    client.Dispose();
+                    gpsActive = true;
                 }
-                client = new NamedPipeClientStream("LEX_LE1_COMM_PIPE");
-                client.Connect();
-                pipeReader = new StreamReader(client);
-                pipeWriter = new StreamWriter(client);
+                else
+                {
+                    client = new NamedPipeClientStream("LEX_LE1_COMM_PIPE");
+                    client.Connect();
+                    pipeReader = new StreamReader(client);
+                    pipeWriter = new StreamWriter(client);
 
-                pipeWriter.WriteLine("ACTIVATE_PLAYERGPS");
-                pipeWriter.Flush();
+                    pipeWriter.WriteLine("DEACTIVATE_PLAYERGPS");
+                    pipeWriter.Flush();
 
-                client.Dispose();
+                    client.Dispose();
+                    gpsActive = false;
+                }
                 //pipeReader.Dispose();
                 //pipeWriter.Dispose();
             });
