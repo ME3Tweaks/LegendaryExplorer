@@ -39,7 +39,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
                     return prefixes.Any(pr => cr.Class.ToLower().StartsWith(pr)) || contains.Any(pr => cr.Class.ToLower().Contains(pr));
                 }),
 
-            }, searchPredicate: t => t.Item2.Class.ToLower().Contains(t.Item1.ToLower()));
+            }, searchPredicate: t => t.Record.Class.ToLower().Contains(t.SearchText.ToLower()));
 
             AnimationFilter = new SingleOptionFilter<AnimationRecord>(new IAssetSpecification<AnimationRecord>[]
             {
@@ -47,7 +47,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
                 new PredicateSpecification<AnimationRecord>("Only Animations", ar => !ar.IsAmbPerf, "Show animsequences only"),
                 new PredicateSpecification<AnimationRecord>("Only Performances (ME3)", ar => ar.IsAmbPerf),
 
-            }, searchPredicate: t => t.Item2.AnimSequence.ToLower().Contains(t.Item1.ToLower()));
+            }, searchPredicate: t => t.Record.AnimSequence.ToLower().Contains(t.SearchText.ToLower()));
 
             MeshFilter = new SingleOptionFilter<MeshRecord>(new IAssetSpecification<MeshRecord>[]
             {
@@ -65,13 +65,13 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
                 new PredicateSpecification<ParticleSysRecord>("Only Client Effects",
                     pr => pr.VFXType != ParticleSysRecord.VFXClass.ParticleSystem)
 
-            }, searchPredicate: t => t.Item2.PSName.ToLower().Contains(t.Item1.ToLower()));
+            }, searchPredicate: t => t.Record.PSName.ToLower().Contains(t.SearchText.ToLower()));
 
             GUIFilter = new GenericAssetFilter<GUIElement>(new IAssetSpecification<GUIElement>[] {fileList},
-                searchPredicate: t => t.Item2.GUIName.ToLower().Contains(t.Item1.ToLower()));
+                searchPredicate: t => t.Record.GUIName.ToLower().Contains(t.SearchText.ToLower()));
 
             PlotElementFilter = new GenericAssetFilter<PlotRecord>(new IAssetSpecification<PlotRecord>[] {fileList},
-                searchPredicate: t => t.Item2.DisplayText.ToLower().Contains(t.Item1.ToLower()));
+                searchPredicate: t => t.Record.DisplayText.ToLower().Contains(t.SearchText.ToLower()));
 
         }
 

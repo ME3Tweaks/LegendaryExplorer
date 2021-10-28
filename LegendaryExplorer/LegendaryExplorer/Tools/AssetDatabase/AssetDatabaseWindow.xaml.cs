@@ -684,6 +684,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
             if (CurrentDBPath != null && File.Exists(CurrentDBPath))
             {
+                Settings.AssetDBGame = CurrentGame.ToString();
                 CurrentOverallOperationText = "Loading database";
                 BusyHeader = $"Loading database for {CurrentGame}";
                 BusyText = "Please wait...";
@@ -1139,6 +1140,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             if (currentView != previousView)
             {
                 FilterBox.Clear();
+                AssetFilters.SetSearch(FilterBox.Text);
                 Filter();
                 switch (currentView)
                 {
@@ -2466,6 +2468,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
             GeneratedDB.Clear();
             AssetFilters.MaterialFilter.LoadFromDatabase(CurrentDataBase);
+            Settings.AssetDBGame = CurrentDataBase.Game.ToString();
             isProcessing = false;
             SaveDatabase();
             TopDock.IsEnabled = true;

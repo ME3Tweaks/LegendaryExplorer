@@ -21,7 +21,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
         /// <param name="specs">Specifications that should apply to this record type</param>
         /// <param name="searchPredicate">Lambda for how the searchbox should operate on this record type</param>
         public GenericAssetFilter(IEnumerable<IAssetSpecification<T>> specs,
-            Predicate<(string, T)> searchPredicate = null)
+            Predicate<(string SearchText, T Record)> searchPredicate = null)
         {
             Filters = specs.ToList();
             Search = new SearchSpecification<T>(searchPredicate);
@@ -62,7 +62,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
     /// <typeparam name="T"></typeparam>
     public class SingleOptionFilter<T> : GenericAssetFilter<T>
     {
-        public SingleOptionFilter(IEnumerable<IAssetSpecification<T>> specs, Predicate<(string, T)> searchPredicate = null)
+        public SingleOptionFilter(IEnumerable<IAssetSpecification<T>> specs, Predicate<(string SearchText, T Record)> searchPredicate = null)
             : base(specs, searchPredicate) { }
 
         public override void SetSelected(IAssetSpecification<T> spec)

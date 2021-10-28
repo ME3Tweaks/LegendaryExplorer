@@ -73,12 +73,10 @@ namespace LegendaryExplorer.Tests.Tools.AssetDatabase
             var test = new MeshRecord("test", false, false, 4);
             test.Usages.Add(new MeshUsage(10, 10, false));
 
-            // File list should match on any type when FileList is empty.
-            Assert.IsTrue(fls.MatchesSpecification("anything"));
+            // Empty FileList should match any record
             Assert.IsTrue(fls.MatchesSpecification(test));
 
             fls.CustomFileList.Add(9, "BIOA_STA00.pcc");
-            Assert.IsTrue(fls.MatchesSpecification("Not a record at all"));
             Assert.IsFalse(fls.MatchesSpecification(test)); // record does not match
 
             fls.CustomFileList.Add(10, "BIOA_STA00_DSG.pcc");
