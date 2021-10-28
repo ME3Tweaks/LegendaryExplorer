@@ -60,6 +60,19 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         public string CurrentFile;
         public string JSONpath;
 
+        private bool _useSavedViews = true; // Should probably be a global setting
+        public bool UseSavedViews
+        {
+            get => _useSavedViews;
+            set
+            {
+                if (SetProperty(ref _useSavedViews, value) && SelectedSequence != null)
+                {
+                    LoadSequence(SelectedSequence);
+                }
+            }
+        }
+
         private ExportEntry _selectedSequence;
         public ExportEntry SelectedSequence
         {
@@ -121,6 +134,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         public ICommand SaveImageCommand { get; set; }
         public ICommand SaveViewCommand { get; set; }
         public ICommand AutoLayoutCommand { get; set; }
+        public ICommand UseSavedViewsCommand { get; set; }
         public ICommand ScanFolderForLoopsCommand { get; set; }
         public ICommand CheckSequenceSetsCommand { get; set; }
         public ICommand ConvertSeqActLogCommentCommand { get; set; }
@@ -145,6 +159,12 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             CheckSequenceSetsCommand = new GenericCommand(() => SequenceEditorExperimentsM.CheckSequenceSets(this), () => CurrentObjects.Any);
             ConvertSeqActLogCommentCommand = new GenericCommand(() => SequenceEditorExperimentsM.ConvertSeqAct_Log_objComments(Pcc), () => SequenceExports.Any);
             SearchCommand = new GenericCommand(SearchDialogue, () => CurrentObjects.Any);
+            UseSavedViewsCommand = new GenericCommand(ToggleSavedViews, ()=> Pcc is {Game: MEGame.ME1} || Pcc.Game.IsLEGame());
+        }
+
+        private void ToggleSavedViews()
+        {
+            UseSavedViews = !UseSavedViews;
         }
 
         private bool CanForceReload() => App.IsDebug && PackageIsLoaded();
@@ -691,7 +711,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             Properties_InterpreterWPF.LoadExport(seqExport);
             if (fromFile)
             {
-                if (File.Exists(JSONpath))
+                if (UseSavedViews && File.Exists(JSONpath))
                 {
                     SavedView = JsonConvert.DeserializeObject<SavedViewData>(File.ReadAllText(JSONpath));
                 }
@@ -2172,8 +2192,8 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
                 {
-                //Wait for all children to finish loading
-                LoadFile(FileQueuedForLoad);
+                    //Wait for all children to finish loading
+                    LoadFile(FileQueuedForLoad);
                     FileQueuedForLoad = null;
 
                     if (ExportQueuedForFocusing != null)

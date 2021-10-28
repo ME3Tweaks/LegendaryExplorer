@@ -153,6 +153,8 @@
                     <MenuItem Header="Re-Run Auto Layout" Command="{Binding AutoLayoutCommand}"
                                 InputGestureText="Ctrl+L"
                                 ToolTip="Attempt to layout sequence objects in a comprehensible fashion" />
+                    <MenuItem Header="Use saved views" Command="{Binding UseSavedViewsCommand}"
+                              ToolTip="Use saved user layouts for sequences as it was viewed in Sequence Editor. Turning this off will use the BioWare layout. Only works on ME1 and Legendary Edition games." />
                 </MenuItem>
                 <MenuItem Header="Experiments" Padding="4">
                     <MenuItem Header="Force reload package*" Command="{Binding ForceReloadPackageCommand}" sharedUi:Bindings.VisibilityToEnabled="True" InputGestureText="Ctrl+Shift+R" ToolTip="Forcibly reloads this package file, if it was loaded from disk.&#10;This operation will drop this package out of the package sharing system across tools, be careful as edits will not sync across tools!"/>
