@@ -973,7 +973,7 @@ namespace LegendaryExplorerCore.Packages
         //        }
         //        #endregion
 
-        public class PackageDecompressionStream : Stream
+        public sealed class PackageDecompressionStream : Stream
         {
             private readonly List<Chunk> Chunks;
             private readonly UnrealPackageFile.CompressionType CompressionType;
@@ -990,7 +990,9 @@ namespace LegendaryExplorerCore.Packages
             public override bool CanRead => true;
             public override bool CanSeek => true;
             public override bool CanWrite => false;
-            public override long Length { get; }
+
+            private readonly long _length;
+            public override long Length => _length;
 
             public override long Position
             {
@@ -1004,7 +1006,7 @@ namespace LegendaryExplorerCore.Packages
                 Chunks = chunks.OrderBy(c => c.uncompressedOffset).ToList();
                 segStartPos = firstChunkOffset = Chunks.MinBy(x => x.uncompressedOffset).uncompressedOffset;
                 var fullUncompressedSize = Chunks.Sum(x => x.uncompressedSize);
-                Length = fullUncompressedSize + firstChunkOffset;
+                _length = fullUncompressedSize + firstChunkOffset;
                 Segment = MemoryManager.GetByteArray(maxBlockSize);
                 for (chunkIdx = 0; chunkIdx < Chunks.Count; chunkIdx++)
                 {
@@ -1016,9 +1018,9 @@ namespace LegendaryExplorerCore.Packages
                 }
             }
 
-            public override int Read(byte[] buffer, int offset, int count)
+            public override int Read(Span<byte> buffer)
             {
-                if (_position == Length)
+                if (_position == _length)
                 {
                     //at end
                     return 0;
@@ -1029,28 +1031,33 @@ namespace LegendaryExplorerCore.Packages
                     //go to previous block (hopefully never happens)
                     chunkIdx = 0;
                     blockIdx = -1;
-                    return DecompressNewBlockAndRead(buffer, offset, count);
+                    return DecompressNewBlockAndRead(buffer);
                 }
                 if (_position >= segEndPos)
                 {
                     //go to next block
-                    return DecompressNewBlockAndRead(buffer, offset, count);
+                    return DecompressNewBlockAndRead(buffer);
                 }
+                int count = buffer.Length;
                 if (_position + count > segEndPos)
                 {
                     //multi-segment read
                     int bytesRemainingInBlock = SegmentLength - SegmentPosition;
-                    Buffer.BlockCopy(Segment, SegmentPosition, buffer, offset, bytesRemainingInBlock);
+                    Segment.AsSpan(SegmentPosition, bytesRemainingInBlock).CopyTo(buffer);
                     Seek(bytesRemainingInBlock, SeekOrigin.Current);
-                    return bytesRemainingInBlock + Read(buffer, offset + bytesRemainingInBlock, count - bytesRemainingInBlock);
+                    return bytesRemainingInBlock + Read(buffer[bytesRemainingInBlock..]);
                 }
-
-                Buffer.BlockCopy(Segment, SegmentPosition, buffer, offset, count);
+                Segment.AsSpan(SegmentPosition, count).CopyTo(buffer);
                 Seek(count, SeekOrigin.Current);
                 return count;
             }
 
-            private int DecompressNewBlockAndRead(byte[] buffer, int offset, int count)
+            public override int Read(byte[] buffer, int offset, int count)
+            {
+                return Read(buffer.AsSpan(offset, count));
+            }
+
+            private int DecompressNewBlockAndRead(Span<byte> buffer)
             {
                 for (; chunkIdx < Chunks.Count; chunkIdx++)
                 {
@@ -1063,7 +1070,7 @@ namespace LegendaryExplorerCore.Packages
                             if (block.uncompressedOffset <= _position && block.uncompressedOffset + block.uncompressedsize > _position)
                             {
                                 DecompressBlock();
-                                return Read(buffer, offset, count);
+                                return Read(buffer);
                             }
                         }
                     }
@@ -1116,7 +1123,7 @@ namespace LegendaryExplorerCore.Packages
 
             public override long Seek(long offset, SeekOrigin origin)
             {
-                var len = Length;
+                var len = _length;
                 switch (origin)
                 {
                     case SeekOrigin.Begin:

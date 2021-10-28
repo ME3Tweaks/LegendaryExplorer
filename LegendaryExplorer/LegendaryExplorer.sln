@@ -30,6 +30,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LegendaryExplorer.Tests", "LegendaryExplorer.Tests\LegendaryExplorer.Tests.csproj", "{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -249,6 +251,32 @@ Global
 		{371B9FA9-4C90-4AC6-A123-ACED756D6C77}.WPFDebug|x64.Build.0 = WinDebug|x64
 		{371B9FA9-4C90-4AC6-A123-ACED756D6C77}.WPFRelease|x64.ActiveCfg = WinRelease|x64
 		{371B9FA9-4C90-4AC6-A123-ACED756D6C77}.WPFRelease|x64.Build.0 = WinRelease|x64
+		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.Debug|x64.Build.0 = Debug|Any CPU
+		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.LinuxDebug|x64.ActiveCfg = Debug|Any CPU
+		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.LinuxDebug|x64.Build.0 = Debug|Any CPU
+		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.LinuxRelease|x64.ActiveCfg = Debug|Any CPU
+		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.LinuxRelease|x64.Build.0 = Debug|Any CPU
+		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.MacDebug|x64.ActiveCfg = Debug|Any CPU
+		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.MacDebug|x64.Build.0 = Debug|Any CPU
+		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.MacRelease|x64.ActiveCfg = Debug|Any CPU
+		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.MacRelease|x64.Build.0 = Debug|Any CPU
+		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.Profile|x64.ActiveCfg = Debug|Any CPU
+		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.Profile|x64.Build.0 = Debug|Any CPU
+		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.Release|x64.ActiveCfg = Release|Any CPU
+		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.Release|x64.Build.0 = Release|Any CPU
+		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.WinAzureRelease|x64.ActiveCfg = Debug|Any CPU
+		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.WinAzureRelease|x64.Build.0 = Debug|Any CPU
+		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.WinAzureTest|x64.ActiveCfg = Debug|Any CPU
+		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.WinAzureTest|x64.Build.0 = Debug|Any CPU
+		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.WinDebug|x64.ActiveCfg = Debug|Any CPU
+		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.WinDebug|x64.Build.0 = Debug|Any CPU
+		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.WinRelease|x64.ActiveCfg = Debug|Any CPU
+		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.WinRelease|x64.Build.0 = Debug|Any CPU
+		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.WPFDebug|x64.ActiveCfg = Debug|Any CPU
+		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.WPFDebug|x64.Build.0 = Debug|Any CPU
+		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.WPFRelease|x64.ActiveCfg = Debug|Any CPU
+		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.WPFRelease|x64.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

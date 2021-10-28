@@ -11,11 +11,13 @@ using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.TLK.ME1;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
+using BioMorphFace = LegendaryExplorerCore.Unreal.Classes.BioMorphFace;
 
 namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 {
@@ -233,6 +235,50 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             var toc = new TOCBinFile(inputFile);
             toc.DumpTOCToTxtFile(outputFile);
+        }
+
+        public static void ExportMorphFace(PackageEditorWindow pew)
+        {
+            if (pew.TryGetSelectedExport(out var export) && export.ClassName == "BioMorphFace")
+            {
+                if (UModelHelper.GetLocalUModelVersion() < UModelHelper.SupportedUModelBuildNum)
+                {
+                    MessageBox.Show("UModel not installed or incorrect version!");
+                    return;
+                }
+                pew.IsBusy = true;
+                pew.BusyText = "Applying MorphFace to head mesh...";
+                var morphFace = new BioMorphFace(export);
+                var rop = new RelinkerOptionsPackage();
+
+                // Create a new file containing only the headmesh
+                var tempFilePath = Path.Combine(Path.GetTempPath(), "HeadMeshExport.pcc");
+                if(File.Exists(tempFilePath)) File.Delete(tempFilePath);
+                MEPackageHandler.CreateAndSavePackage(tempFilePath, export.Game);
+                using var tempFile = MEPackageHandler.OpenMEPackage(tempFilePath);
+                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies,
+                    morphFace.m_oBaseHead, tempFile, null, true, rop, out var clonedHeadEntry);
+                var clonedHead = clonedHeadEntry as ExportEntry;
+                var appliedHead = morphFace.Apply();
+
+                // Clone materials
+                for (var i = 0; i < appliedHead.Materials.Length; i++)
+                {
+                    var originalMat = export.FileRef.GetEntry(appliedHead.Materials[i].value);
+                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies,
+                        originalMat, tempFile, null, true, rop, out var clonedMat);
+                    appliedHead.Materials[i] = new UIndex(clonedMat.UIndex);
+                }
+                clonedHead.WriteBinary(appliedHead);
+                clonedHead.ObjectName = new NameReference(export.ObjectNameString);
+                tempFile.Save();
+
+                // Export the cloned headmesh
+                pew.BusyText = "Exporting via UModel...";
+                UModelHelper.ExportViaUModel(pew, clonedHead);
+                //File.Delete(tempFilePath);
+                pew.IsBusy = false;
+            }
         }
     }
 }

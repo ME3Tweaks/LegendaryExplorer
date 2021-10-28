@@ -52,6 +52,11 @@ namespace LegendaryExplorerCore.Helpers
             return memory;
         }
 
+        public static void ReadToSpan(this Stream stream, Span<byte> buffer)
+        {
+            if (stream.Read(buffer) != buffer.Length)
+                throw new Exception("Stream read error!");
+        }
 
         public static byte[] ReadToBuffer(this Stream stream, int count)
         {
@@ -170,7 +175,8 @@ namespace LegendaryExplorerCore.Helpers
 
         public static string ReadStringLatin1(this Stream stream, int count)
         {
-            byte[] buffer = stream.ReadToBuffer(count);
+            Span<byte> buffer = count > 256 ? new byte[count] : stackalloc byte[count];
+            stream.ReadToSpan(buffer);
             return Encoding.Latin1.GetString(buffer);
         }
 
@@ -189,18 +195,19 @@ namespace LegendaryExplorerCore.Helpers
 
         public static string ReadStringLatin1Null(this Stream stream, int count)
         {
-            return stream.ReadStringLatin1(count).Trim('\0');
+            return stream.ReadStringLatin1(count).TrimEnd('\0');
         }
 
         public static string ReadStringUnicode(this Stream stream, int count)
         {
-            var buffer = stream.ReadToBuffer(count);
+            Span<byte> buffer = count > 256 ? new byte[count] : stackalloc byte[count];
+            stream.ReadToSpan(buffer);
             return Encoding.Unicode.GetString(buffer);
         }
 
         public static string ReadStringUnicodeNull(this Stream stream, int count)
         {
-            return stream.ReadStringUnicode(count).Trim('\0');
+            return stream.ReadStringUnicode(count).TrimEnd('\0');
         }
 
         public static string ReadStringUnicodeNull(this Stream stream)
@@ -246,7 +253,8 @@ namespace LegendaryExplorerCore.Helpers
         #region ASCII SUPPORT
         public static string ReadStringASCII(this Stream stream, int count)
         {
-            byte[] buffer = stream.ReadToBuffer(count);
+            Span<byte> buffer = count > 256 ? new byte[count] : stackalloc byte[count];
+            stream.ReadToSpan(buffer);
             return Encoding.ASCII.GetString(buffer);
         }
 
@@ -453,21 +461,8 @@ namespace LegendaryExplorerCore.Helpers
             stream.Write(BitConverter.GetBytes(data), 0, sizeof(double));
         }
 
-        private const int DefaultBufferSize = 8 * 1024;
+        private const int DEFAULT_BUFFER_SIZE = 8 * 1024;
 
-
-        /// <summary>
-        ///     Reads the given stream up to the end, returning the data as a byte
-        ///     array.
-        /// </summary>
-        /// <param name="input">The stream to read from</param>
-        /// <exception cref="ArgumentNullException">input is null</exception>
-        /// <exception cref="IOException">An error occurs while reading from the stream</exception>
-        /// <returns>The data read from the stream</returns>
-        public static byte[] ReadFully(this Stream input)
-        {
-            return ReadFully(input, DefaultBufferSize);
-        }
 
         /// <summary>
         ///     Reads the given stream up to the end, returning the data as a byte
@@ -479,7 +474,7 @@ namespace LegendaryExplorerCore.Helpers
         /// <exception cref="ArgumentOutOfRangeException">bufferSize is less than 1</exception>
         /// <exception cref="IOException">An error occurs while reading from the stream</exception>
         /// <returns>The data read from the stream</returns>
-        public static byte[] ReadFully(this Stream input, int bufferSize)
+        public static byte[] ReadFully(this Stream input, int bufferSize = DEFAULT_BUFFER_SIZE)
         {
             if (bufferSize < 1)
             {

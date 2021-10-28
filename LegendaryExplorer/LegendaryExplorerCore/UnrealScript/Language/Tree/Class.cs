@@ -19,6 +19,8 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public override List<VariableType> TypeDeclarations { get; }
         public List<Function> Functions { get; }
         public List<State> States { get; }
+
+        public CodeBody ReplicationBlock;
         public override DefaultPropertiesBlock DefaultProperties { get; set; }
 
         public Dictionary<string, ushort> VirtualFunctionLookup;
@@ -131,6 +133,10 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
                 foreach (VariableDeclaration variableDeclaration in VariableDeclarations) yield return variableDeclaration;
                 foreach (Function function in Functions) yield return function;
                 foreach (State state in States) yield return state;
+                if (ReplicationBlock is not null)
+                {
+                    yield return ReplicationBlock;
+                }
                 yield return DefaultProperties;
             }
         }

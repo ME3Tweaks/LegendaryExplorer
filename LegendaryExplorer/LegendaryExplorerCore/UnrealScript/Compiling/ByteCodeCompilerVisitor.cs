@@ -514,6 +514,11 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return true;
         }
 
+        public bool VisitNode(ReplicationStatement node)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool VisitNode(ErrorStatement node)
         {
             //an ast with errors should never be passed to the compiler

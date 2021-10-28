@@ -63,8 +63,14 @@ namespace LegendaryExplorerCore.Packages
             ObjectFlags = EObjectFlags.LoadForClient | EObjectFlags.LoadForServer | EObjectFlags.LoadForEdit; //sensible defaults?
 
             var ms = new EndianReader { Endian = file.Endian };
-            prePropBinary ??= new byte[4];
-            ms.Writer.WriteFromBuffer(prePropBinary);
+            if (prePropBinary == null)
+            {
+                ms.Writer.Write(stackalloc byte[4]);
+            }
+            else
+            {
+                ms.Writer.WriteFromBuffer(prePropBinary);
+            }
             if (!isClass)
             {
                 properties ??= new PropertyCollection();

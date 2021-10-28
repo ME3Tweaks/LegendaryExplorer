@@ -532,8 +532,9 @@ namespace LegendaryExplorerCore.Gammtek.Extensions.IO
 
         public static int ReadInt32(this Stream stream, ByteOrder byteOrder = ByteOrder.LittleEndian)
         {
-            var data = stream.ReadToBuffer(4);
-            var value = BitConverter.ToInt32(data, 0);
+            Span<byte> buffer = stackalloc byte[4];
+            stream.ReadToSpan(buffer);
+            var value = BitConverter.ToInt32(buffer);
 
             if (ShouldSwap(byteOrder))
             {
@@ -657,8 +658,9 @@ namespace LegendaryExplorerCore.Gammtek.Extensions.IO
 
         public static ushort ReadUInt16(this Stream stream, ByteOrder byteOrder = ByteOrder.LittleEndian)
         {
-            var data = stream.ReadToBuffer(2);
-            var value = BitConverter.ToUInt16(data, 0);
+            Span<byte> buffer = stackalloc byte[2];
+            stream.ReadToSpan(buffer);
+            var value = BitConverter.ToUInt16(buffer);
 
             if (ShouldSwap(byteOrder))
             {
@@ -670,8 +672,9 @@ namespace LegendaryExplorerCore.Gammtek.Extensions.IO
 
         public static uint ReadUInt32(this Stream stream, ByteOrder byteOrder = ByteOrder.LittleEndian)
         {
-            var data = stream.ReadToBuffer(4);
-            var value = BitConverter.ToUInt32(data, 0);
+            Span<byte> buffer = stackalloc byte[4];
+            stream.ReadToSpan(buffer);
+            var value = BitConverter.ToUInt32(buffer);
 
             if (ShouldSwap(byteOrder))
             {

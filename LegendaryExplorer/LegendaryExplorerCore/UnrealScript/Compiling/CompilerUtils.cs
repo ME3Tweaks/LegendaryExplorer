@@ -10,8 +10,30 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
     {
         public static bool TryGetTrash<T>(this IMEPackage pcc, out T entry) where T : class, IEntry
         {
-            entry = pcc.FindEntry(UnrealPackageFile.TrashPackageName)?.GetChildren<T>().LastOrDefault();
-            return entry is not null;
+            IEntry trashPackage = pcc.FindEntry(UnrealPackageFile.TrashPackageName);
+            if (trashPackage is null)
+            {
+                entry = null;
+                return false;
+            }
+            var trashChildren = trashPackage.GetChildren();
+            bool hasChildren = false;
+            foreach (IEntry trashChild in trashChildren)
+            {
+                if (trashChild is T tChild)
+                {
+                    entry = tChild;
+                    return true;
+                }
+                hasChildren = true;
+            }
+            if (!hasChildren && trashPackage is T tPackage)
+            {
+                entry = tPackage;
+                return true;
+            }
+            entry = null;
+            return false;
         }
 
         public static IEntry ResolveSymbol(ASTNode node, IMEPackage pcc) =>

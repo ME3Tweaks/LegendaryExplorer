@@ -202,9 +202,9 @@ namespace LegendaryExplorer.Tools.InterpEditor
         {
             Keys.ClearEx();
             var floatTrackProp = Export.GetProperty<StructProperty>("FloatTrack");
-            if (floatTrackProp != null)
+            if (floatTrackProp?.GetProp<ArrayProperty<StructProperty>>("Points") is {} pointsArray)
             {
-                foreach (var curvePoint in floatTrackProp.GetPropOrDefault<ArrayProperty<StructProperty>>("Points"))
+                foreach (var curvePoint in pointsArray)
                 {
                     Keys.Add(new Key(curvePoint.GetProp<FloatProperty>("InVal"), curvePoint.GetProp<FloatProperty>("OutVal").Value.ToString()));
                 }
@@ -221,9 +221,9 @@ namespace LegendaryExplorer.Tools.InterpEditor
         {
             Keys.ClearEx();
             var vectorTrackProp = Export.GetProperty<StructProperty>("VectorTrack");
-            if (vectorTrackProp != null)
+            if (vectorTrackProp?.GetProp<ArrayProperty<StructProperty>>("Points") is { } pointsArray)
             {
-                foreach (var curvePoint in vectorTrackProp.GetPropOrDefault<ArrayProperty<StructProperty>>("Points"))
+                foreach (var curvePoint in pointsArray)
                 {
                     (float x, float y, float z) = CommonStructs.GetVector3(curvePoint.GetProp<StructProperty>("OutVal"));
                     Keys.Add(new Key(curvePoint.GetProp<FloatProperty>("InVal"), $"X={x},Y={y},Z={z}"));
@@ -242,10 +242,9 @@ namespace LegendaryExplorer.Tools.InterpEditor
             Keys.ClearEx();
             var vectorTrackProp = Export.GetProperty<StructProperty>("VectorTrack");
             var sounds = Export.GetProperty<ArrayProperty<StructProperty>>("Sounds");
-            if (vectorTrackProp != null)
+            if (vectorTrackProp?.GetProp<ArrayProperty<StructProperty>>("Points") is { } points)
             {
                 int keyindex = 0;
-                var points = vectorTrackProp.GetPropOrDefault<ArrayProperty<StructProperty>>("Points");
                 foreach (var curvePoint in points)
                 {
                     int? soundUIndex = sounds?.Count > keyindex ? sounds?[keyindex].GetProp<ObjectProperty>("Sound")?.Value : null;

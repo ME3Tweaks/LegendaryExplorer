@@ -43,8 +43,8 @@ namespace LegendaryExplorerCore.Gammtek.IO
         /// </summary>
         public EndianWriter(Stream stream, Encoding encoding) : base(stream, encoding)
         {
-            Endian = BitConverter.IsLittleEndian ? Endian.Little : Endian.Big;
-            NoConvert = Endian == Endian.Native;
+            Endian = Endian.Native;
+            NoConvert = Endian.IsNative;
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
             get => _endian;
             set { 
                 _endian = value;
-                NoConvert = _endian == Endian.Native;
+                NoConvert = _endian.IsNative;
             }
         }
 

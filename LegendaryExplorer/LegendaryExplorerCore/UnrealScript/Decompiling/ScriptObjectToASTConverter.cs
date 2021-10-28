@@ -42,8 +42,9 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             var Funcs = new List<Function>();
             var States = new List<State>();
 
-            var nextItem = uClass.Children;
+            var replicatedProperties = new Dictionary<ushort, List<string>>();
 
+            var nextItem = uClass.Children;
             while (pcc.TryGetUExport(nextItem, out ExportEntry nextChild))
             {
                 var objBin = ObjectBinary.From(nextChild, packageCache);
@@ -67,6 +68,10 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         nextItem = uFunction.Next;
                         break;
                     case UProperty uProperty:
+                        if (decompileBytecodeAndDefaults && uProperty.PropertyFlags.Has(EPropertyFlags.Net))
+                        {
+                            replicatedProperties.AddToListAt(uProperty.ReplicationOffset, uProperty.Export.ObjectName.Instanced);
+                        }
                         Vars.Add(ConvertVariable(uProperty, packageCache));
                         nextItem = uProperty.Next;
                         break;
@@ -84,10 +89,18 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 }
             }
             DefaultPropertiesBlock defaultProperties = null;
+            CodeBody replicationBlock = null;
             var propEntry = pcc.GetEntry(uClass.Defaults);
             if (decompileBytecodeAndDefaults && propEntry is ExportEntry propExport)
             {
                 defaultProperties = ConvertDefaultProperties(propExport, lib, packageCache);
+                if (uClass.ScriptBytecodeSize > 0)
+                {
+                    replicationBlock = new ByteCodeDecompiler(uClass, uClass, lib)
+                    {
+                        ReplicatedProperties = replicatedProperties
+                    }.Decompile();
+                }
             }
 
             var ast = new Class(uClassExport.ObjectName.Instanced, parent, outer, uClass.ClassFlags, interfaces, Types, Vars, Funcs, States, defaultProperties)
@@ -96,7 +109,8 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 Package = uClassExport.Parent is null ? Path.GetFileNameWithoutExtension(pcc.FilePath) : uClassExport.ParentInstancedFullPath,
                 IsFullyDefined = nextItem.value == 0 && propEntry is ExportEntry,
                 FilePath = pcc.FilePath,
-                UIndex = uClassExport.UIndex
+                UIndex = uClassExport.UIndex,
+                ReplicationBlock = replicationBlock
             };
             // Ugly quick fix:
             foreach (var member in Types)
@@ -109,12 +123,12 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 member.Outer = ast;
 
 
-            var virtFuncLookup = new CaseInsensitiveDictionary<ushort>();
+            var virtFuncLookup = new CaseInsensitiveDictionary<ushort>(uClass.VirtualFunctionTable?.Length ?? 0);
             if (pcc.Game.IsGame3())
             {
                 for (ushort i = 0; i < uClass.VirtualFunctionTable.Length; i++)
                 {
-                    virtFuncLookup.Add(uClass.VirtualFunctionTable[i].GetEntry(pcc)?.ObjectName, i);
+                    virtFuncLookup.Add(uClass.VirtualFunctionTable[i].GetEntry(pcc)?.ObjectName.Instanced, i);
                 }
             }
             ast.VirtualFunctionLookup = virtFuncLookup;

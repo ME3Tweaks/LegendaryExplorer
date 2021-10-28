@@ -265,7 +265,7 @@ namespace LegendaryExplorerCore.Packages
             GamePlatform platformOverride = GamePlatform.Unknown; //Used to help differentiate beteween PS3 and Xenon ME3
             CompressionType fcCompressionType = CompressionType.None;
 
-            if ((versionLicenseePacked == 0x00020000 || versionLicenseePacked == 0x00010000) && Endian == Endian.Little)
+            if ((versionLicenseePacked is 0x00020000 or 0x00010000) && Endian == Endian.Little)
             {
                 if (versionLicenseePacked == 0x20000)
                 {
@@ -434,7 +434,7 @@ namespace LegendaryExplorerCore.Packages
             packageReader.SkipInt32(); //engineVersion          Like unrealVersion and licenseeVersion, these 2 are determined by what game this is,
             packageReader.SkipInt32(); //cookedContentVersion   so we don't have to read them in
 
-            if ((Game == MEGame.ME2 || Game == MEGame.ME1) && Platform != GamePlatform.PS3) //PS3 on ME3 engine
+            if ((Game is MEGame.ME2 or MEGame.ME1) && Platform != GamePlatform.PS3) //PS3 on ME3 engine
             {
                 packageReader.SkipInt32(); //always 0
                 packageReader.SkipInt32(); //always 47699
@@ -457,7 +457,7 @@ namespace LegendaryExplorerCore.Packages
 
             //COMPRESSION AND COMPRESSION CHUNKS
             var compressionFlagPosition = packageReader.Position;
-            var compressionType = (UnrealPackageFile.CompressionType)packageReader.ReadInt32();
+            var compressionType = (CompressionType)packageReader.ReadInt32();
             if (platformNeedsResolved && compressionType != CompressionType.None)
             {
                 Platform = compressionType == CompressionType.LZX ? GamePlatform.Xenon : GamePlatform.PS3;
@@ -475,7 +475,7 @@ namespace LegendaryExplorerCore.Packages
 
             packageSource = packageReader.ReadUInt32(); //this needs to be read in so it can be properly written back out.
 
-            if ((Game == MEGame.ME2 || Game == MEGame.ME1) && Platform != GamePlatform.PS3)
+            if ((Game is MEGame.ME2 or MEGame.ME1) && Platform != GamePlatform.PS3)
             {
                 packageReader.SkipInt32(); //always 0
             }

@@ -75,6 +75,7 @@ namespace LegendaryExplorer.GameInterop
 
         public static void OpenFileInME3(IMEPackage pcc, bool canHotLoad = false, bool shouldPad = true)
         {
+            var interopTarget = GameController.GetInteropTargetForGame(MEGame.ME3);
             var tempMapName = GameController.TempMapName;
             string tempDir = ME3Directory.CookedPCPath;
             string tempFilePath = Path.Combine(tempDir, $"{tempMapName}.pcc");
@@ -89,13 +90,11 @@ namespace LegendaryExplorer.GameInterop
                 }
             }
 
-            if (canHotLoad)
+            if (interopTarget.TryGetProcess(out var me3Process) && canHotLoad)
             {
-                GameController.GetInteropTargetForGame(MEGame.ME3).ExecuteConsoleCommands($"at {tempMapName}");
+                interopTarget.ExecuteConsoleCommands($"at {tempMapName}");
                 return;
             }
-
-            GameController.GetInteropTargetForGame(MEGame.ME3).TryGetProcess(out var me3Process);
             me3Process?.Kill();
             int resX = 1000;
             int resY = 800;

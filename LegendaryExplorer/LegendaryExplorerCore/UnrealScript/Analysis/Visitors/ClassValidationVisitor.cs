@@ -536,17 +536,20 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public bool VisitNode(Const node)
         {
-            if (!Symbols.TryAddType(node))
+            if (Pass == ValidationPass.TypesAndFunctionNamesAndStateNames)
             {
-                //Consts do not have to be globally unique, but they do have to be unique within a scope
-                if (((ObjectType)node.Outer).TypeDeclarations.Any(decl => decl != node && decl.Name.CaseInsensitiveEquals(node.Name)))
+                if (!Symbols.TryAddType(node))
                 {
-                    return Error($"A type named '{node.Name}' already exists in this {node.Outer.GetType().Name.ToLower()}!", node.StartPos, node.EndPos);
+                    //Consts do not have to be globally unique, but they do have to be unique within a scope
+                    if (((ObjectType)node.Outer).TypeDeclarations.Any(decl => decl != node && decl.Name.CaseInsensitiveEquals(node.Name)))
+                    {
+                        return Error($"A type named '{node.Name}' already exists in this {node.Outer.GetType().Name.ToLower()}!", node.StartPos, node.EndPos);
+                    }
                 }
+
+
+                node.Declaration = node;
             }
-
-
-            node.Declaration = node;
 
             return Success;
         }
@@ -843,6 +846,8 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         { throw new NotImplementedException(); }
 
         public bool VisitNode(ExpressionOnlyStatement node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(ReplicationStatement node)
         { throw new NotImplementedException(); }
         public bool VisitNode(ErrorStatement node)
         { throw new NotImplementedException(); }

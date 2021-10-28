@@ -181,7 +181,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void Commit()
         {
-            if (!CurveGraph.TrackLoading)
+            if (!CurveGraph.TrackLoading && CurrentLoadedExport is not null)
             {
                 var props = CurrentLoadedExport.GetProperties();
                 foreach (InterpCurve item in InterpCurveTracks)
@@ -396,6 +396,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public override void UnloadExport()
         {
+            Commit();
             graph.Clear();
             InterpCurveTracks = null;
             CurrentLoadedExport = null;
