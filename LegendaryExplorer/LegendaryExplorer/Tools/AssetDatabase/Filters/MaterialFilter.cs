@@ -3,17 +3,15 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
-using LegendaryExplorerCore.Unreal.BinaryConverters;
-using SharpDX.Direct2D1;
 
 namespace LegendaryExplorer.Tools.AssetDatabase.Filters
 {
     public class MaterialFilter : GenericAssetFilter<MaterialRecord>
     {
-        public List<IAssetSpecification<MaterialRecord>> BlendModes { get; set; } = new();
-        public ObservableCollection<IAssetSpecification<MaterialRecord>> GeneratedOptions { get; set; } = new();
+        public List<IAssetSpecification<MaterialRecord>> BlendModes { get; private set; } = new();
+        public ObservableCollection<IAssetSpecification<MaterialRecord>> GeneratedOptions { get; } = new();
 
-        public MaterialFilter() : base()
+        public MaterialFilter()
         {
             PopulateFilterOptions();
         }
@@ -32,8 +30,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
 
             Filters = new ()
             {
-                new MaterialPredicateSpec("Hide DLC only Materials", mr => !mr.IsDLCOnly),
-                new MaterialPredicateSpec("Only Decal Materials",
+                new PredicateSpecification<MaterialRecord>("Hide DLC only Materials", mr => !mr.IsDLCOnly),
+                new PredicateSpecification<MaterialRecord>("Only Decal Materials",
                     mr => mr.MaterialName.Contains("Decal", StringComparison.OrdinalIgnoreCase)),
                 new MaterialSettingSpec("Only Unlit Materials", "LightingModel", parm2: "MLM_Unlit"),
                 new MaterialSettingSpec("Hide SkeletalMesh exclusive Materials", "bUsedWithSkeletalMesh", parm2: "True") {Inverted = true},
@@ -42,7 +40,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
                 new UISeparator<MaterialRecord>(),
                 new MaterialSettingSpec("Must have color setting", "VectorParameter",
                     setting => setting.Parm1.Contains("color", StringComparison.OrdinalIgnoreCase)),
-                new MaterialPredicateSpec("Must have texture setting",
+                new PredicateSpecification<MaterialRecord>("Must have texture setting",
                     mr => mr.MatSettings.Any(x => x.Name == "TextureSampleParameter2D")),
                 new MaterialSettingSpec("Must have talk scalar setting", "ScalarParameter",
                     setting => setting.Parm1.Contains("talk", StringComparison.OrdinalIgnoreCase))

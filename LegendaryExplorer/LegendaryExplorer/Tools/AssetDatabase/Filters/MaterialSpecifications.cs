@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using LegendaryExplorerCore.Unreal;
 
@@ -13,11 +12,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
         /// <summary>
         /// If true, spec instead filters materials that do not have this property, or have false values
         /// </summary>
-        public bool Inverted { get; set; } = false;
         public string PropertyName { get; set; }
+        public bool Inverted { get; init; }
 
         public MaterialBoolSpec() { }
-        public MaterialBoolSpec(BoolProperty boolFilter) : base()
+        public MaterialBoolSpec(BoolProperty boolFilter)
         {
             FilterName = boolFilter.Name;
             PropertyName = boolFilter.Name;
@@ -32,36 +31,20 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
     }
 
     /// <summary>
-    /// Specification to filter materials based on any predicate
-    /// </summary>
-    public class MaterialPredicateSpec : MaterialSpecification
-    {
-        private readonly Predicate<MaterialRecord> _predicate;
-
-        public MaterialPredicateSpec(string filterName, Predicate<MaterialRecord> predicate)
-        {
-            FilterName = filterName;
-            _predicate = predicate;
-        }
-
-        public override bool MatchesSpecification(MaterialRecord item) => _predicate(item);
-    }
-
-    /// <summary>
     /// Specification to filter materials based on MatSettings parameters
     /// </summary>
     public class MaterialSettingSpec : MaterialSpecification
     {
-        public string SettingName { get; set; }
-        public bool Inverted { get; set; }
+        public bool Inverted { get; init; }
+        private readonly string _settingName;
         private readonly string _parm1;
         private readonly string _parm2;
-        private readonly Predicate<MatSetting> _customPredicate = null;
+        private readonly Predicate<MatSetting> _customPredicate;
 
-        public MaterialSettingSpec(string filterName, string settingName, string parm1 = "", string parm2 = "") : base()
+        public MaterialSettingSpec(string filterName, string settingName, string parm1 = "", string parm2 = "")
         {
             FilterName = filterName;
-            SettingName = settingName;
+            _settingName = settingName;
             _parm1 = parm1;
             _parm2 = parm2;
         }
@@ -71,8 +54,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
             // Custom predicate option has an additional check against settingName.
             // We could remove this and make code a bit simpler, but we would need to add settingName checks to all predicates
             FilterName = filterName;
-            SettingName = settingName;
-            _customPredicate = predicate;
+            _settingName = settingName;
+            _customPredicate = predicate ?? throw new ArgumentNullException(nameof(predicate));
         }
 
         public override bool MatchesSpecification(MaterialRecord mr)
@@ -86,7 +69,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
 
         private bool PredicateMatches(MatSetting s)
         {
-            if (s.Name == SettingName)
+            if (s.Name == _settingName)
             {
                 return _customPredicate(s);
             }
@@ -95,7 +78,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
 
         private bool ParametersMatch(MatSetting s)
         {
-            if (s.Name == SettingName)
+            if (s.Name == _settingName)
             {
                 if (_parm1 != "" && s.Parm1 != _parm1)
                 {

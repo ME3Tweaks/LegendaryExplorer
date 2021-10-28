@@ -28,7 +28,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
 
         public bool ShowInUI { get; } = true;
 
-        public AssetSpecification() { }
         public abstract bool MatchesSpecification(T item);
     }
 
@@ -39,12 +38,12 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
 
     public class PredicateSpecification<T> : AssetSpecification<T>
     {
-        private Predicate<T> _predicate;
+        private readonly Predicate<T> _predicate;
 
         public PredicateSpecification(string filterName, Predicate<T> predicate, string description = null)
         {
             FilterName = filterName;
-            _predicate = predicate;
+            _predicate = predicate ?? throw new ArgumentNullException(nameof(predicate));
             Description = description;
         }
 
@@ -65,23 +64,23 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
         public bool IsSelected { get; set; }
         public bool ShowInUI { get; } = false;
 
-        private IEnumerable<IAssetSpecification<T>> specifications;
+        private readonly IEnumerable<IAssetSpecification<T>> _specifications;
 
         public OrSpecification(params IAssetSpecification<T>[] specs)
         {
-            specifications = specs;
-            IsSelected = specifications.Any();
+            _specifications = specs;
+            IsSelected = _specifications.Any();
         }
 
         public OrSpecification(IEnumerable<IAssetSpecification<T>> specs)
         {
-            specifications = specs;
-            IsSelected = specifications.Any();
+            _specifications = specs;
+            IsSelected = _specifications.Any();
         }
 
         public bool MatchesSpecification(T item)
         {
-            var selectedSpecs = specifications.Where(sp => sp.IsSelected).ToList();
+            var selectedSpecs = _specifications.Where(sp => sp.IsSelected).ToList();
             if (!selectedSpecs.Any() || IsSelected == false) return true; // Fallthrough, accept all items
             else return selectedSpecs.Any(sp => sp.MatchesSpecification(item));
         }
@@ -99,7 +98,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
 
         public bool MatchesSpecification(T item)
         {
-            throw new NotImplementedException("Cannot match specification on Separator");
+            return true;
         }
     }
 }
