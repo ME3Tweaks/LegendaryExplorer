@@ -16,6 +16,7 @@ using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Kismet;
+using LegendaryExplorerCore.Matinee;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
@@ -2568,6 +2569,106 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             }
                         }
 
+                        InstallAhernAntiCheese(le1File);
+                        break;
+                    }
+                case "BIOA_PRC2_CCMAIN_CONV":
+                    {
+                        // Ahern's post-mission dialogue. This installs the streaming textures event
+                        var sequence = le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin");
+                        var remoteEvent = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqEvent_RemoteEvent", vTestOptions.cache);
+                        var streamInTextures = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqAct_StreamInTextures", vTestOptions.cache);
+                        KismetHelper.AddObjectsToSequence(sequence, false, remoteEvent, streamInTextures);
+
+                        KismetHelper.CreateOutputLink(remoteEvent, "Out", streamInTextures);
+                        KismetHelper.CreateVariableLink(streamInTextures, "Location", le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SeqVar_Object_19")); //Location: Ahern Teleport Point
+
+                        remoteEvent.WriteProperty(new NameProperty("PrimeTexturesAhern", "EventName"));
+                        var materials = new ArrayProperty<ObjectProperty>("ForceMaterials");
+                        materials.Add(new ObjectProperty(le1File.FindExport("TheWorld.PersistentLevel.BioPawn_4.BioMaterialInstanceConstant_103")));
+                        materials.Add(new ObjectProperty(le1File.FindExport("TheWorld.PersistentLevel.BioPawn_4.BioMaterialInstanceConstant_104")));
+                        materials.Add(new ObjectProperty(le1File.FindExport("TheWorld.PersistentLevel.BioPawn_4.BioMaterialInstanceConstant_105")));
+                        materials.Add(new ObjectProperty(le1File.FindExport("TheWorld.PersistentLevel.BioPawn_4.BioMaterialInstanceConstant_106")));
+                        materials.Add(new ObjectProperty(le1File.FindExport("TheWorld.PersistentLevel.BioPawn_4.BioMaterialInstanceConstant_107")));
+                        streamInTextures.WriteProperty(materials);
+                        streamInTextures.WriteProperty(new FloatProperty(12f, "Seconds")); // How long to force stream. We set this to 12 to ensure blackscreen and any delays between fully finish
+
+                        // Ahern always talks
+                        if (vTestOptions.debugBuild)
+                        {
+                            le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SeqVar_Float_6").WriteProperty(new FloatProperty(0, "FloatValue")); // Change of not saying something
+                            le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SeqVar_Float_9").WriteProperty(new FloatProperty(0, "FloatValue")); // Change of not saying something
+                        }
+
+                        // Shift the fade-in to 1 second later on the interps to give the lights a moment to warm up
+                        var interps = new[]
+                        {
+                            "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.InterpData_2", // win
+                            "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.InterpData_6", // loss
+                            "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.InterpData_11", // loss
+                        };
+                        foreach (var interpIFP in interps)
+                        {
+                            float warmupTime = 0.8f; // How long to keep the blackscreen on for lights to warm up. 0.7 is not enough
+
+                            var interp = le1File.FindExport(interpIFP);
+                            interp.WriteProperty(new FloatProperty(interp.GetProperty<FloatProperty>("InterpLength").Value + warmupTime, "InterpLength")); // update the length of hte interp
+                            var groups = interp.GetProperty<ArrayProperty<ObjectProperty>>("InterpGroups").Select(x => x.ResolveToEntry(le1File) as ExportEntry).ToList();
+                            foreach (var group in groups)
+                            {
+                                var tracks = group.GetProperty<ArrayProperty<ObjectProperty>>("InterpTracks").Select(x => x.ResolveToEntry(le1File) as ExportEntry).ToList();
+                                foreach (var track in tracks)
+                                {
+                                    bool isFirst = true;
+                                    switch (track.ClassName)
+                                    {
+                                        case "InterpTrackDirector":
+                                            break; // Do not change
+                                        case "InterpTrackFade":
+                                            var floatTrack = track.GetProperty<StructProperty>("FloatTrack");
+                                            var points = floatTrack.GetProp<ArrayProperty<StructProperty>>("Points");
+                                            foreach (var point in points)
+                                            {
+                                                point.GetProp<FloatProperty>("InVal").Value += warmupTime;
+                                            }
+                                            track.WriteProperty(floatTrack);
+                                            break;
+                                        case "InterpTrackEvent":
+                                            var eventTrack = track.GetProperty<ArrayProperty<StructProperty>>("EventTrack");
+                                            foreach (var etk in eventTrack)
+                                            {
+                                                if (isFirst)
+                                                {
+                                                    isFirst = false;
+                                                    continue;
+                                                }
+
+                                                etk.GetProp<FloatProperty>("Time").Value += warmupTime;
+                                            }
+                                            track.WriteProperty(eventTrack);
+                                            break;
+                                        case "BioEvtSysTrackGesture":
+                                            var m_aTrackKeys = track.GetProperty<ArrayProperty<StructProperty>>("m_aTrackKeys");
+                                            foreach (var btk in m_aTrackKeys)
+                                            {
+                                                if (isFirst)
+                                                {
+                                                    isFirst = false;
+                                                    continue;
+                                                }
+
+                                                btk.GetProp<FloatProperty>("fTime").Value += warmupTime;
+                                            }
+                                            track.WriteProperty(m_aTrackKeys);
+                                            break;
+                                        case "InterpTrackMove":
+                                            break; // Camera doesn't move
+                                    }
+                                }
+                            }
+                           
+                        }
+
                         break;
                     }
                 case "BIOA_PRC2_CCLAVA_DSG":
@@ -2739,6 +2840,27 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     }
                     break;
             }
+        }
+
+        private static void InstallAhernAntiCheese(IMEPackage le1File)
+        {
+            // Clones and adds 2 blocking volumes to prevent you from getting out of the playable area of the map.
+            // One is due to bad collision, the other is due to how cover calcuation changed in LE1 which likely allowed
+            // cover where it should be and you could spin out of cover through a box.
+
+            var sourcebv = le1File.FindExport("TheWorld.PersistentLevel.BlockingVolume_23");
+            var ds3d = CommonStructs.Vector3Prop(0.5f, 0.5f, 0.25f, "DrawScale3D");
+            
+            // Northern cheese point
+            var northBV = EntryCloner.CloneTree(sourcebv);
+            northBV.RemoveProperty("bCollideActors");
+            PathEdUtils.SetLocation(northBV, -38705.57f,-28901.904f,-2350.1252f);
+            northBV.WriteProperty(ds3d);
+
+            // South cheese
+            var southBV = EntryCloner.CloneTree(northBV); // already has scaling and removed collide actors
+            PathEdUtils.SetLocation(southBV, -38702.812f, -24870.682f, -2355.5256f);
+
         }
 
         private static void RemoveBitExplosionEffect(ExportEntry exp)
