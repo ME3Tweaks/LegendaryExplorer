@@ -53,5 +53,27 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         {
             return new VariableDeclaration(VarType, Flags, Name, ArrayLength, Category);
         }
+
+        public bool IsOrHasInstancedObjectProperty()
+        {
+            var varType = VarType;
+            while (true)
+            {
+                switch (varType)
+                {
+                    case StaticArrayType staticArrayType:
+                        varType = staticArrayType.ElementType;
+                        continue;
+                    case DynamicArrayType dynamicArrayType:
+                        varType = dynamicArrayType.ElementType;
+                        continue;
+                    case Struct:
+                    case ObjectType:
+                        return Flags.Has(UnrealFlags.EPropertyFlags.NeedCtorLink);
+                    default:
+                        return false;
+                }
+            }
+        }
     }
 }

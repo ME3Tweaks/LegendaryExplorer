@@ -743,7 +743,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             }
         }
 
-        private void ClearScope(string symbol)
+        public void ClearScope(string symbol)
         {
             PushScope(symbol);
 
@@ -813,11 +813,15 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             return true;
         }
 
-        public void RemoveType(string name)
+        public void RemoveTypeAndChildTypes(VariableType type)
         {
-            if (Types.ContainsKey(name))
+            Types.Remove(type.Name);
+            if (type is ObjectType objectType)
             {
-                Types.Remove(name);
+                foreach (VariableType innerType in objectType.TypeDeclarations)
+                {
+                    RemoveTypeAndChildTypes(innerType);
+                }
             }
         }
 

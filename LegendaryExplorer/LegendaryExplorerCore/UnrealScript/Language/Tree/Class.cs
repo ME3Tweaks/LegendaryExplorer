@@ -23,7 +23,8 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public CodeBody ReplicationBlock;
         public override DefaultPropertiesBlock DefaultProperties { get; set; }
 
-        public Dictionary<string, ushort> VirtualFunctionLookup;
+        public List<string> VirtualFunctionNames;
+        public List<Function> VirtualFunctionTable;
 
         public override ASTNodeType NodeType => ASTNodeType.Class;
 

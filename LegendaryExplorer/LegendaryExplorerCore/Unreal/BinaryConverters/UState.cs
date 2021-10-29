@@ -33,9 +33,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 SuperClass = 0,
                 Next = 0,
                 Children = 0,
-                ScriptBytecodeSize = 2,
-                ScriptStorageSize = 2,
-                ScriptBytes = new byte[] { 0xB, 0x53 },
+                ScriptBytes = Array.Empty<byte>(),
                 IgnoreMask = (EProbeFunctions)ulong.MaxValue,
                 LocalFunctionMap = new OrderedMultiValueDictionary<NameReference, UIndex>()
             };

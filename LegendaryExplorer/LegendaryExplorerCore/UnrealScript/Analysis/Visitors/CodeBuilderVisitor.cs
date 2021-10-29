@@ -136,10 +136,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             {
                 Write("perobjectconfig", EF.Specifier);
             }
-            if (flags.Has(EClassFlags.Localized))
-            {
-                Write("localized", EF.Specifier);
-            }
             if (flags.Has(EClassFlags.Abstract))
             {
                 Write("abstract", EF.Specifier);
@@ -737,9 +733,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             Append("=", EF.Operator);
             Append(node.Class.Name, EF.TypeName);
             Space();
-            Append(NAME, EF.Keyword);
+            Append("Name", EF.Keyword);
             Append("=", EF.Operator);
-            Append(node.Name.Name);
+            Append(node.NameDeclaration.Name);
 
             NestingLevel++;
             foreach (Statement s in node.Statements)

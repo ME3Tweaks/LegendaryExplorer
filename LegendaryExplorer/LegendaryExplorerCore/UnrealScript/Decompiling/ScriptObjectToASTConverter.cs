@@ -64,7 +64,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         nextItem = uEnum.Next;
                         break;
                     case UFunction uFunction:
-                        Funcs.Add(ConvertFunction(uFunction, uClass, decompileBytecodeAndDefaults, lib, packageCache));
+                        //functions are added below by parsing the LocalFunctionMap 
                         nextItem = uFunction.Next;
                         break;
                     case UProperty uProperty:
@@ -86,6 +86,13 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     default:
                         nextItem = 0;
                         break;
+                }
+            }
+            foreach (UIndex uIndex in uClass.LocalFunctionMap.Values())
+            {
+                if (uIndex.GetEntry(pcc) is ExportEntry funcExp && funcExp.GetBinaryData<UFunction>() is UFunction uFunction)
+                {
+                    Funcs.Add(ConvertFunction(uFunction, uClass, decompileBytecodeAndDefaults, lib, packageCache));
                 }
             }
             DefaultPropertiesBlock defaultProperties = null;
@@ -123,15 +130,15 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 member.Outer = ast;
 
 
-            var virtFuncLookup = new CaseInsensitiveDictionary<ushort>(uClass.VirtualFunctionTable?.Length ?? 0);
+            var virtFuncLookup = new List<string>(uClass.VirtualFunctionTable?.Length ?? 0);
             if (pcc.Game.IsGame3())
             {
-                for (ushort i = 0; i < uClass.VirtualFunctionTable.Length; i++)
+                foreach (UIndex uIdx in uClass.VirtualFunctionTable)
                 {
-                    virtFuncLookup.Add(uClass.VirtualFunctionTable[i].GetEntry(pcc)?.ObjectName.Instanced, i);
+                    virtFuncLookup.Add(uIdx.GetEntry(pcc)?.ObjectName.Instanced);
                 }
             }
-            ast.VirtualFunctionLookup = virtFuncLookup;
+            ast.VirtualFunctionNames = virtFuncLookup;
 
             return ast;
         }

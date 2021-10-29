@@ -6,15 +6,15 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
     public class Subobject : CodeBody
     {
-        public VariableDeclaration Name;
+        public VariableDeclaration NameDeclaration;
 
         public Class Class;
 
         public bool IsTemplate;
 
-        public Subobject(VariableDeclaration name, Class @class, List<Statement> contents, bool isTemplate = false, SourcePosition start = null, SourcePosition end = null) : base(contents, start, end)
+        public Subobject(VariableDeclaration nameDeclaration, Class @class, List<Statement> contents, bool isTemplate = false, SourcePosition start = null, SourcePosition end = null) : base(contents, start, end)
         {
-            Name = name;
+            NameDeclaration = nameDeclaration;
             Class = @class;
             IsTemplate = isTemplate;
             Type = ASTNodeType.SubObject;

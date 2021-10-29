@@ -101,7 +101,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 switch (statement)
                 {
                     case Subobject subObj:
-                        var subObjName = NameReference.FromInstancedString(subObj.Name.Name);
+                        var subObjName = NameReference.FromInstancedString(subObj.NameDeclaration.Name);
                         existingSubObjects.TryRemove(exp => exp.ObjectName == subObjName, out ExportEntry existingSubObject);
                         int netIndex = existingSubObject?.NetIndex ?? 0;
                         CreateSubObject(subObj, export, ref existingSubObject);
@@ -132,7 +132,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         private void CreateSubObject(Subobject subObject, ExportEntry parent, ref ExportEntry subExport)
         {
-            var objName = NameReference.FromInstancedString(subObject.Name.Name);
+            var objName = NameReference.FromInstancedString(subObject.NameDeclaration.Name);
             IEntry classEntry = EntryImporter.EnsureClassIsInFile(Pcc, subObject.Class.Name);
             if (subExport is null)
             {
@@ -244,7 +244,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     IEntry entry = literal switch
                     {
                         NoneLiteral => null,
-                        SymbolReference {Node: Subobject subobject} => subObjectDict?[NameReference.FromInstancedString(subobject.Name.Name)],
+                        SymbolReference {Node: Subobject subobject} => subObjectDict?[NameReference.FromInstancedString(subobject.NameDeclaration.Name)],
                         _ => Pcc.FindEntry(((ObjectLiteral)literal).Name.Value)
                     };
 

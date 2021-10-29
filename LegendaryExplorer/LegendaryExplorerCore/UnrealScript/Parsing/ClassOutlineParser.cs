@@ -96,10 +96,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     {
                         flags |= EClassFlags.PerObjectConfig;
                     }
-                    else if (Matches("localized", EF.Specifier))
-                    {
-                        flags |= EClassFlags.Localized;
-                    }
                     else if (Matches("abstract", EF.Specifier))
                     {
                         flags |= EClassFlags.Abstract;
@@ -165,9 +161,19 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     }
                 }
 
-                if (flags.Has(EClassFlags.NoExport) && !flags.Has(EClassFlags.Native))
+                if (flags.Has(EClassFlags.Native))
                 {
-                    throw ParseError("noexport is only valid for native classes!", CurrentPosition);
+                    if (!flags.Has(EClassFlags.NoExport))
+                    {
+                        flags |= EClassFlags.Exported;
+                    }
+                }
+                else
+                {
+                    if (flags.Has(EClassFlags.NoExport))
+                    {
+                        TypeError("noexport is only valid for native classes!", CurrentPosition);
+                    }
                 }
 
                 if (Consume(TokenType.SemiColon) == null) throw ParseError("Expected semi-colon!", CurrentPosition);
@@ -211,6 +217,15 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         case ASTNodeType.State:
                             states.Add((State)declaration);
                             break;
+                    }
+                }
+
+                if (Matches(REPLICATION, EF.Keyword))
+                {
+                    //just skip the replication block for now. Not sure its worth compiling
+                    if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, false, out SourcePosition replicationStart, out SourcePosition replicationEnd))
+                    {
+                        throw ParseError("Malformed replication block!", CurrentPosition);
                     }
                 }
 
@@ -296,7 +311,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 ParseVariableSpecifiers(out EPropertyFlags flags);
                 if ((flags & (EPropertyFlags.CoerceParm | EPropertyFlags.OptionalParm | EPropertyFlags.OutParm | EPropertyFlags.SkipParm)) != 0)
                 {
-                    throw ParseError("Can only use 'out', 'coerce', 'optional', or 'skip' with function parameters!", CurrentPosition);
+                    TypeError("Can only use 'out', 'coerce', 'optional', or 'skip' with function parameters!", CurrentPosition);
                 }
 
                 if (category is not null)
@@ -441,11 +456,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 {
                     if (identifiers.Count >= 254)
                     {
-                        throw ParseError("Enums cannot have more than 254 values!", CurrentPosition);
+                        TypeError("Enums cannot have more than 254 values!", CurrentPosition);
                     }
                     Token<string> ident = Consume(TokenType.Word);
                     if (ident == null) throw ParseError("Expected non-empty enumeration!", CurrentPosition);
-                    if (ident.Value.Length > 63) throw ParseError("Enum value must be 63 characters or less!", CurrentPosition);
+                    if (ident.Value.Length > 63) TypeError("Enum value must be 63 characters or less!", CurrentPosition);
 
                     identifiers.Add(new EnumValue(ident.Value, i, ident.StartPos, ident.EndPos));
                     if (Consume(TokenType.Comma) == null && CurrentTokenType != TokenType.RightBracket) throw ParseError("Malformed enumeration content!", CurrentPosition);
@@ -496,7 +511,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                 if (coerceReturn && returnType == null)
                 {
-                    throw ParseError("Coerce specifier cannot be applied to a void return type!", CurrentPosition);
+                    TypeError("Coerce specifier cannot be applied to a void return type!", CurrentPosition);
                 }
 
                 if (Consume(TokenType.LeftParenth) == null) throw ParseError("Expected '('!", CurrentPosition);
@@ -510,14 +525,14 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     if (param == null) throw ParseError("Malformed parameter!", CurrentPosition);
                     if (hasOptionalParams && !param.IsOptional)
                     {
-                        throw ParseError("Non-optional parameters cannot follow optional parameters!", param.StartPos, param.EndPos);
+                        TypeError("Non-optional parameters cannot follow optional parameters!", param.StartPos, param.EndPos);
                     }
 
                     hasOptionalParams |= param.IsOptional;
                     hasOutParms |= param.IsOut;
                     if (param.Name.CaseInsensitiveEquals("ReturnValue"))
                     {
-                        throw ParseError("Cannot name a parameter 'ReturnValue'! It is a reserved word!", param.StartPos, param.EndPos);
+                        TypeError("Cannot name a parameter 'ReturnValue'! It is a reserved word!", param.StartPos, param.EndPos);
                     }
                     parameters.Add(param);
                     if (Consume(TokenType.Comma) == null && CurrentTokenType != TokenType.RightParenth) throw ParseError("Unexpected parameter content!", CurrentPosition);
@@ -624,7 +639,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         }
                         else
                         {
-                            TypeError("Only probed functions can be ignored! To ignore a non-probe function, simply declare it with a ; instead of a body.", ignore);
+                            TypeError("Only probed functions can be ignored! To ignore a non-probe function, declare it with a ; instead of a body.", ignore);
                         }
                     } while (Consume(TokenType.Comma) != null);
 
@@ -691,7 +706,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 ParseVariableSpecifiers(out EPropertyFlags flags);
                 if ((flags & ~(EPropertyFlags.CoerceParm | EPropertyFlags.OptionalParm | EPropertyFlags.OutParm | EPropertyFlags.SkipParm | EPropertyFlags.Component | EPropertyFlags.Const | EPropertyFlags.AlwaysInit)) != 0)
                 {
-                    throw ParseError("The only valid specifiers for function parameters are 'out', 'coerce', 'optional', 'const', 'init' and 'skip'!", CurrentPosition);
+                    TypeError("The only valid specifiers for function parameters are 'out', 'coerce', 'optional', 'const', 'init' and 'skip'!", CurrentPosition);
                 }
 
                 flags |= EPropertyFlags.Parm;
@@ -708,12 +723,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 {
                     if (!funcParam.IsOptional)
                     {
-                        throw ParseError("Only optional parameters can have default values!", CurrentPosition);
+                        TypeError("Only optional parameters can have default values!", CurrentPosition);
                     }
 
                     if (funcParam.IsOut)
                     {
-                        throw ParseError("optional out parameters cannot have default values!", CurrentPosition);
+                        TypeError("optional out parameters cannot have default values!", CurrentPosition);
                     }
 
                     var defaultValueStart = CurrentPosition;
@@ -1110,7 +1125,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 if (nativeIndex > 0 && !flags.Has(EFunctionFlags.Final))
                 {
                     {
-                        throw ParseError("Function with a native index must be final!", CurrentPosition);
+                        TypeError("Functions with a native index must be final!", CurrentPosition);
                     }
                 }
             }
@@ -1119,13 +1134,13 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 if (flags.Has(EFunctionFlags.Latent))
                 {
                     {
-                        throw ParseError("Only native functions may use 'latent'!", CurrentPosition);
+                        TypeError("Only native functions may use 'latent'!", CurrentPosition);
                     }
                 }
                 if (flags.Has(EFunctionFlags.Iterator))
                 {
                     {
-                        throw ParseError("Only native functions may use 'iterator'!", CurrentPosition);
+                        TypeError("Only native functions may use 'iterator'!", CurrentPosition);
                     }
                 }
             }
@@ -1135,68 +1150,40 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 if (flags.Has(EFunctionFlags.Exec))
                 {
                     {
-                        throw ParseError("Exec functions cannot be replicated!", CurrentPosition);
+                        TypeError("Exec functions cannot be replicated!", CurrentPosition);
                     }
                 }
                 if (flags.Has(EFunctionFlags.Static))
                 {
                     {
-                        throw ParseError("Static functions can't be replicated!", CurrentPosition);
+                        TypeError("Static functions can't be replicated!", CurrentPosition);
                     }
                 }
                 if (!unreliable && !flags.Has(EFunctionFlags.NetReliable))
                 {
                     {
-                        throw ParseError("Replicated functions require 'reliable' or 'unreliable'!", CurrentPosition);
+                        TypeError("Replicated functions require 'reliable' or 'unreliable'!", CurrentPosition);
                     }
                 }
                 if (unreliable && flags.Has(EFunctionFlags.NetReliable))
                 {
                     {
-                        throw ParseError("'reliable' and 'unreliable' are mutually exclusive!", CurrentPosition);
+                        TypeError("'reliable' and 'unreliable' are mutually exclusive!", CurrentPosition);
                     }
                 }
             }
             else if (unreliable)
             {
                 {
-                    throw ParseError("'unreliable' specified without 'client' or 'server'!", CurrentPosition);
+                    TypeError("'unreliable' specified without 'client' or 'server'!", CurrentPosition);
                 }
             }
             else if (flags.Has(EFunctionFlags.NetReliable))
             {
                 {
-                    throw ParseError("'reliable' specified without 'client' or 'server'!", CurrentPosition);
+                    TypeError("'reliable' specified without 'client' or 'server'!", CurrentPosition);
                 }
             }
-        }
-
-        //TODO: unused?
-        private List<Token<string>> ParseScopedTokens(TokenType scopeStart, TokenType scopeEnd)
-        {
-            var scopedTokens = new List<Token<string>>();
-            if (Consume(scopeStart) == null)
-            {
-                Log.LogError($"Expected '{scopeStart}'!", CurrentPosition);
-                return null;
-            }
-
-            int nestedLevel = 1;
-            while (nestedLevel > 0)
-            {
-                if (CurrentTokenType == TokenType.EOF)
-                    return null; // ERROR: Scope ended prematurely, are your scopes unbalanced?
-                if (CurrentTokenType == scopeStart)
-                    nestedLevel++;
-                else if (CurrentTokenType == scopeEnd)
-                    nestedLevel--;
-
-                scopedTokens.Add(Tokens.CurrentItem);
-                Tokens.Advance();
-            }
-            // Remove the ending scope token:
-            scopedTokens.RemoveAt(scopedTokens.Count - 1);
-            return scopedTokens;
         }
 
         private bool ParseScopeSpan(TokenType scopeStart, TokenType scopeEnd,

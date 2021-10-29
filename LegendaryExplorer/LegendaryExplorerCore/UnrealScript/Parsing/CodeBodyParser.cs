@@ -519,7 +519,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             if (var.Name.CaseInsensitiveEquals("ReturnValue"))
             {
-                throw ParseError("Cannot name a parameter 'ReturnValue'! It is a reserved word!", var.StartPos, var.EndPos);
+                TypeError("Cannot name a parameter 'ReturnValue'! It is a reserved word!", var.StartPos, var.EndPos);
             }
 
             if (Symbols.SymbolExistsInCurrentScope(var.Name))

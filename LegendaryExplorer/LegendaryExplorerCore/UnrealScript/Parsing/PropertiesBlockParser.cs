@@ -26,6 +26,21 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         private readonly ObjectType Outer;
         private bool InSubOject;
 
+        public static void ParseStructDefaults(Struct s, IMEPackage pcc, SymbolTable symbols, MessageLog log)
+        {
+            symbols.PushScope(s.Name);
+            foreach (Struct innerStruct in s.TypeDeclarations.OfType<Struct>())
+            {
+                ParseStructDefaults(innerStruct, pcc, symbols, log);
+            }
+            var defaults = s.DefaultProperties;
+            if (defaults.Tokens is not null)
+            {
+                Parse(defaults, pcc, symbols, log);
+            }
+            symbols.PopScope();
+        }
+
         public static void Parse(DefaultPropertiesBlock propsBlock, IMEPackage pcc, SymbolTable symbols, MessageLog log)
         {
             var parser = new PropertiesBlockParser(propsBlock, pcc, symbols, log);
@@ -99,7 +114,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 var subSubObjects = new List<Subobject>();
                 var statements = currentSubObj.Statements;
                 var objectClass = currentSubObj.Class;
-                var objectName = currentSubObj.Name.Name;
+                var objectName = currentSubObj.NameDeclaration.Name;
                 ExpressionScopes.Push(objectClass.GetInheritanceString());
                 SubObjectClasses.Push(objectClass);
                 Symbols.PushScope(objectName);
@@ -509,7 +524,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                             var prevToken = PrevToken;
                             //this handles the case where a property has the same name as the Enumeration, and reparses it as an enumvalue
                             if (Symbols.TryGetType(prevToken.Value, out Enumeration enum2) && enum2 == enumeration 
-                                && Matches(TokenType.Dot) && Consume(TokenType.Word) is Token<string> enumValueToken)
+                                                                                           && Matches(TokenType.Dot) && Consume(TokenType.Word) is Token<string> enumValueToken)
                             {
                                 prevToken.SyntaxType = EF.Enum;
                                 prevToken.AssociatedNode = enum2;
