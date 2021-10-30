@@ -567,7 +567,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             var le1PersistentLevel = ObjectBinary.From<Level>(le1PL);
 
             // Port over ModelComponents
-            if (vTestOptions.portModels)
+            if (/*vTestOptions.portModels && */ShouldPortModel(sourceName.ToUpper()))
             {
                 var me1ModelUIndex = ObjectBinary.From<Level>(me1PL).Model;
                 List<UIndex> modelComponents = new List<UIndex>();
@@ -661,6 +661,17 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
+        private static bool ShouldPortModel(string uppercaseBaseName)
+        {
+            switch (uppercaseBaseName)
+            {
+                case "BIOA_PRC2_CCLOBBY02_LAY":
+                    return true; // Fixes hole in the ceiling
+                default:
+                    return false;
+            }
+        }
+
         /// <summary>
         /// Updates the level's Model, Polys, as they likely have a name collision
         /// </summary>
@@ -695,7 +706,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 le1Polys.indexValue = me1Polys.indexValue;
 
                 // Copy over the Model data.
-                if (vTestOptions.portModels)
+                if (/*vTestOptions.portModels*/ShouldPortModel(Path.GetFileNameWithoutExtension(le1File.FilePath).ToUpper()))
                 {
                     EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingularWithRelink, me1ModelExp, le1File, le1ModelExp, true, rop, out _);
                 }
@@ -2392,6 +2403,21 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         root.ObjectName = "Mercenary_Ahern_Crossgen";
                     }
                     break;
+                case "BIOA_PRC2_CCCAVE_L":
+                    ReduceDirectionalLights(le1File, 0.1f);
+                    break;
+                case "BIOA_PRC2_CCLAVA_L":
+                    ReduceDirectionalLights(le1File, 0.15f);
+                    break;
+                case "BIOA_PRC2_CCCRATE_L":
+                    ReduceDirectionalLights(le1File, 0.25f);
+                    break;
+                case "BIOA_PRC2_CCAHERN_ART":
+                    ReduceDirectionalLights(le1File, 0.1f);
+                    break;
+                case "BIOA_PRC2_CCTHAI_L":
+                    ReduceDirectionalLights(le1File, 0.25f);
+                    break;
                 case "BIOA_PRC2_CCCAVE_DSG":
                 case "BIOA_PRC2_CCLAVA_DSG":
                 case "BIOA_PRC2_CCCRATE_DSG":
@@ -2852,6 +2878,19 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         }
                     }
                     break;
+            }
+        }
+
+        private static void ReduceDirectionalLights(IMEPackage le1File, float multiplier)
+        {
+            foreach (var exp in le1File.Exports.Where(x => x.ClassName == "DirectionalLightComponent").ToList())
+            {
+                var brightness = exp.GetProperty<FloatProperty>("Brightness");
+                if (brightness != null)
+                {
+                    brightness.Value *= multiplier;
+                    exp.WriteProperty(brightness);
+                }
             }
         }
 
