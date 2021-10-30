@@ -134,7 +134,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             FaceFX = null;
             Lines.Clear();
             Animations.Clear();
-            treeView.Nodes.Clear();
+            treeView?.Nodes.Clear();
             graph.Clear();
         }
 
