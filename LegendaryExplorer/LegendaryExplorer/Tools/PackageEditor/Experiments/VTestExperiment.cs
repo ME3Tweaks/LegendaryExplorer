@@ -2360,10 +2360,21 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 // Setup texture loading
                                 var streamInLocNode = le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence.SUR_Ahern_Handler.SeqVar_Object_33");
                                 FixSimMapTextureLoading(FindSequenceObjectByClassAndPosition(exp, "BioSeqAct_Delay", -8501, -1086), vTestOptions, streamInLocNode);
+
+                                // Fix the UNCMineralSurvey to use the LE version instead of the OT version, which doesn't work well
+
+                                var artPlacableUsed = le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence.SUR_Ahern_Handler.BioSeqEvt_ArtPlaceableUsed_3");
+                                KismetHelper.RemoveOutputLinks(artPlacableUsed);
+                                var leMineralSurvey = InstallVTestHelperSequenceViaEvent(le1File, artPlacableUsed.InstancedFullPath, "HelperSequences.REF_UNCMineralSurvey", vTestOptions);
+                                KismetHelper.CreateVariableLink(leMineralSurvey, "nMiniGameID", le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence.SUR_Ahern_Handler.SeqVar_Int_1"));
+
+                                KismetHelper.CreateOutputLink(leMineralSurvey, "Succeeded", le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence.SUR_Ahern_Handler.BioSeqAct_SetRadarDisplay_0"));
+                                KismetHelper.CreateOutputLink(leMineralSurvey, "Succeeded", le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence.SUR_Ahern_Handler.BioSeqAct_ModifyPropertyArtPlaceable_2"));
                             }
                             else if (seqName == "Spawn_Single_Guy")
                             {
                                 RemoveBitExplosionEffect(exp);
+                                FixGethFlashlights(exp, vTestOptions); // This is just for consistency
                             }
                         }
 
@@ -2404,7 +2415,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             if (seqName == "Spawn_Single_Guy")
                             {
                                 RemoveBitExplosionEffect(exp);
-
+                                FixGethFlashlights(exp, vTestOptions);
                                 // Increase survival mode engagement by forcing the player to engage with enemies that charge the player.
                                 // This prevents them from camping and getting free survival time
                                 if (IsContainedWithinSequenceNamed(exp, "SUR_Respawner") && !IsContainedWithinSequenceNamed(exp, "CAH_Respawner")) // Might force on CAH too since it's not that engaging.
@@ -2433,6 +2444,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                     KismetHelper.CreateVariableLink(delay, "Duration", delayDuration);
                                     KismetHelper.CreateVariableLink(changeAi, "Pawn", currentPawn);
                                     KismetHelper.CreateVariableLink(log, "Object", currentPawn);
+
+                                    // Todo maybe: Charge AI after even longer?
 
 
                                     // Stop timer on any event in this sequence 
@@ -2666,7 +2679,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                     }
                                 }
                             }
-                           
+
                         }
 
                         break;
@@ -2842,6 +2855,39 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
+        private static void FixGethFlashlights(ExportEntry sequence, VTestOptions vTestOptions)
+        {
+            // Custom class by Kinkojiro to add and un-add the flashlight VFX
+            var actorFactoryWithOwner = FindSequenceObjectByClassAndPosition(sequence, "SeqAct_ActorFactoryWithOwner");
+            var attachFL = SequenceObjectCreator.CreateSequenceObject(sequence.FileRef, "LEXSeqAct_AttachGethFlashLight", vTestOptions.cache);
+            var deattachFL = SequenceObjectCreator.CreateSequenceObject(sequence.FileRef, "LEXSeqAct_AttachGethFlashLight", vTestOptions.cache);
+            KismetHelper.AddObjectsToSequence(sequence, false, attachFL, deattachFL);
+
+            // ATTACH FLASHLIGHT
+            {
+                var outLinksFactory = SeqTools.GetOutboundLinksOfNode(actorFactoryWithOwner);
+                var originalOutlink = outLinksFactory[0][2].LinkedOp;
+                outLinksFactory[0][2].LinkedOp = attachFL; // repoint to attachFL
+                SeqTools.WriteOutboundLinksToNode(actorFactoryWithOwner, outLinksFactory);
+                KismetHelper.CreateOutputLink(attachFL, "Done", originalOutlink as ExportEntry);
+                var currentPawn = FindSequenceObjectByClassAndPosition(sequence, "SeqVar_Object", 4536, 2016);
+                KismetHelper.CreateVariableLink(attachFL, "Target", currentPawn);
+            }
+            // DETACH FLASHLIGHT
+            {
+                var attachCrustEffect = FindSequenceObjectByClassAndPosition(sequence, "BioSeqAct_AttachCrustEffect", 5752, 2000);
+                var attachOutlinks = SeqTools.GetOutboundLinksOfNode(attachCrustEffect);
+                var originalOutlink = attachOutlinks[0][1].LinkedOp;
+                attachOutlinks[0][1].LinkedOp = deattachFL; // repoint to deattachFL
+                attachOutlinks[0][1].InputLinkIdx = 1; // Detach
+                SeqTools.WriteOutboundLinksToNode(attachCrustEffect, attachOutlinks);
+                KismetHelper.CreateOutputLink(deattachFL, "Done", originalOutlink as ExportEntry);
+
+                var cachedPawn = FindSequenceObjectByClassAndPosition(sequence, "SeqVar_Object", 5640, 2128);
+                KismetHelper.CreateVariableLink(deattachFL, "Target", cachedPawn);
+            }
+        }
+
         private static void InstallAhernAntiCheese(IMEPackage le1File)
         {
             // Clones and adds 2 blocking volumes to prevent you from getting out of the playable area of the map.
@@ -2850,11 +2896,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             var sourcebv = le1File.FindExport("TheWorld.PersistentLevel.BlockingVolume_23");
             var ds3d = CommonStructs.Vector3Prop(0.5f, 0.5f, 0.25f, "DrawScale3D");
-            
+
             // Northern cheese point
             var northBV = EntryCloner.CloneTree(sourcebv);
             northBV.RemoveProperty("bCollideActors");
-            PathEdUtils.SetLocation(northBV, -38705.57f,-28901.904f,-2350.1252f);
+            PathEdUtils.SetLocation(northBV, -38705.57f, -28901.904f, -2350.1252f);
             northBV.WriteProperty(ds3d);
 
             // South cheese

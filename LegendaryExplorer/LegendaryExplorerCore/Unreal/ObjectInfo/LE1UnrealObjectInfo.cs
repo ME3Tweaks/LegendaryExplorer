@@ -927,6 +927,28 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 ObjInstanceVersion = 1
             };
             #endregion
+            #region LEXSeqAct_AttachGethFlashLight
+            classes["LEXSeqAct_AttachGethFlashLight"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 334, // in LE1Resources.pcc
+                properties =
+                {
+                    new KeyValuePair<NameReference, PropertyInfo>("oEffectPrime", new PropertyInfo(PropertyType.ObjectProperty, reference: "BioVFXTemplate")),
+                    new KeyValuePair<NameReference, PropertyInfo>("oEffectDestroyer", new PropertyInfo(PropertyType.ObjectProperty, reference: "BioVFXTemplate")),
+                    new KeyValuePair<NameReference, PropertyInfo>("oEffect", new PropertyInfo(PropertyType.ObjectProperty, reference: "BioVFXTemplate")),
+                    new KeyValuePair<NameReference, PropertyInfo>("Target", new PropertyInfo(PropertyType.ObjectProperty, reference: "BioPawn")),
+                    new KeyValuePair<NameReference, PropertyInfo>("fLifeTime", new PropertyInfo(PropertyType.FloatProperty)),
+                }
+            };
+
+            sequenceObjects["LEXSeqAct_AttachGethFlashLight"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
+            #endregion
+
 
 
             ME3UnrealObjectInfo.AddIntrinsicClasses(classes, MEGame.LE1);
