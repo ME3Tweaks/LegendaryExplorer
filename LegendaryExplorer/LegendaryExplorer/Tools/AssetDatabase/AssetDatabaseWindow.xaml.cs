@@ -198,7 +198,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public ICommand ExportToPSACommand { get; set; }
         public ICommand OpenInAnimationImporterCommand { get; set; }
         public ICommand SetFilterCommand { get; set; }
-        public ICommand FilterTexCommand { get; set; }
         public ICommand SetCRCCommand { get; set; }
         public ICommand FilterFilesCommand { get; set; }
         public ICommand LoadFileListCommand { get; set; }
@@ -250,10 +249,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             };
             return currentView == tabIndex;
         }
-        private bool IsViewingTextures(object obj)
-        {
-            return currentView == 4;
-        }
         private bool CanUseAnimViewer(object obj)
         {
             return currentView == 5 && CurrentGame == MEGame.ME3 && lstbx_Anims.SelectedIndex >= 0 && !((lstbx_Anims.SelectedItem as AnimationRecord)?.IsAmbPerf ?? true);
@@ -284,7 +279,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             GenerateDBCommand = new GenericCommand(GenerateDatabase);
             SaveDBCommand = new GenericCommand(SaveDatabase);
             SetFilterCommand = new RelayCommand(SetFilters, CanSetFilter);
-            FilterTexCommand = new RelayCommand(SetFilters, IsViewingTextures);
             SwitchMECommand = new RelayCommand(SwitchGame);
             CancelDumpCommand = new RelayCommand(CancelDump, CanCancelDump);
             OpenSourcePkgCommand = new RelayCommand(OpenSourcePkg, IsClassSelected);
@@ -1140,7 +1134,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             if (currentView != previousView)
             {
                 FilterBox.Clear();
-                AssetFilters.SetSearch(FilterBox.Text);
                 Filter();
                 switch (currentView)
                 {
@@ -1600,200 +1593,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         #endregion
 
         #region Filters
-        bool TexFilter(object d)
-        {
-            // TODO: Make texture filters use the new system
-            if (d is TextureRecord tr)
-            {
-                bool showthis = true;
-                if (!string.IsNullOrEmpty(FilterBox.Text))
-                {
-                    showthis = tr.TextureName.ToLower().Contains(FilterBox.Text.ToLower());
-                    if (!showthis)
-                    {
-                        showthis = tr.CRC.ToLower().Contains(FilterBox.Text.ToLower());
-                    }
-
-                    if (!showthis)
-                    {
-                        showthis = tr.ParentPackage.ToLower().Contains(FilterBox.Text.ToLower());
-                    }
-
-                    if (!showthis && FilterBox.Text.ToLower().StartsWith("size: ") && FilterBox.Text.ToLower().Contains("x") && FilterBox.Text.Length > 6)
-                    {
-                        var sr = FilterBox.Text.Remove(0, 6).ToLower().Split("x");
-                        if (int.TryParse(sr[0], out int xVal) && int.TryParse(sr[1], out int yVal))
-                        {
-                            showthis = tr.SizeX == xVal && tr.SizeY == yVal;
-                        }
-                    }
-                }
-
-                if (showthis && menu_TCube.IsChecked && tr.CFormat != "TextureCube")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && menu_TMovie.IsChecked && tr.CFormat != "TextureMovie")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && menu_T1024.IsChecked && tr.SizeX < 1024 && tr.SizeY < 1024)
-                {
-                    showthis = false;
-                }
-
-                if (showthis && menu_T4096.IsChecked && tr.SizeX < 4096 && tr.SizeY < 4096)
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGPromo.IsChecked && tr.TexGrp == "Promotional")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGChar1024.IsChecked && tr.TexGrp == "Character1024")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGCharDiff.IsChecked && tr.TexGrp == "CharacterDiff")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGCharNorm.IsChecked && tr.TexGrp == "CharacterNorm")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGCharSpec.IsChecked && tr.TexGrp == "CharacterSpec")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGWorld.IsChecked && tr.TexGrp == "World")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGWorldSpec.IsChecked && tr.TexGrp == "WorldSpecular")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGWorldNorm.IsChecked && tr.TexGrp == "WorldNormalMap")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGAmblgtMap.IsChecked && tr.TexGrp == "AmbientLightMap")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGShadowMap.IsChecked && tr.TexGrp == "Shadowmap")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGEnviro64.IsChecked && tr.TexGrp == "Environment64")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGEnviro128.IsChecked && tr.TexGrp == "Environment128")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGEnviro256.IsChecked && tr.TexGrp == "Environment256")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGEnviro512.IsChecked && tr.TexGrp == "Environment512")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGEnviro1024.IsChecked && tr.TexGrp == "Environment1024")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGVFX64.IsChecked && tr.TexGrp == "VFX64")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGVFX128.IsChecked && tr.TexGrp == "VFX128")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGVFX256.IsChecked && tr.TexGrp == "VFX256")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGVFX512.IsChecked && tr.TexGrp == "VFX512")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGVFX1024.IsChecked && tr.TexGrp == "VFX1024")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGAPL64.IsChecked && tr.TexGrp == "APL64")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGAPL128.IsChecked && tr.TexGrp == "APL128")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGAPL256.IsChecked && tr.TexGrp == "APL256")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGAPL512.IsChecked && tr.TexGrp == "APL512")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGAPL1024.IsChecked && tr.TexGrp == "APL1024")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGUI.IsChecked && tr.TexGrp == "UI")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGNone.IsChecked && tr.TexGrp == "n/a")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && FileListFilter.IsSelected && !FileListFilter.MatchesSpecification(tr))
-                {
-                    showthis = false;
-                }
-
-                return showthis;
-            }
-
-            return false;
-        }
         bool LineFilter(object d)
         {
             if (d is ConvoLine line)
@@ -1839,6 +1638,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         private void Filter()
         {
+            AssetFilters.SetSearch(FilterBox.Text);
             switch (currentView)
             {
                 case 1:  //Classes
@@ -1858,7 +1658,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     break;
                 case 4: //Textures
                     ICollectionView viewT = CollectionViewSource.GetDefaultView(CurrentDataBase.Textures);
-                    viewT.Filter = TexFilter;
+                    viewT.Filter = AssetFilters.TextureFilter.Filter;
                     lstbx_Textures.ItemsSource = viewT;
                     break;
                 case 5: //Animations
@@ -1901,92 +1701,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 var param = obj as string;
                 switch (param)
                 {
-                    case "Cube":
-                        menu_TCube.IsChecked = !menu_TCube.IsChecked;
-                        break;
-                    case "Movie":
-                        menu_TMovie.IsChecked = !menu_TMovie.IsChecked;
-                        break;
-                    case "1024":
-                        if (!menu_T1024.IsChecked)
-                        {
-                            menu_T4096.IsChecked = false;
-                            menu_T1024.IsChecked = true;
-                        }
-                        else
-                        {
-                            menu_T1024.IsChecked = false;
-                        }
-                        break;
-                    case "4096":
-                        if (!menu_T4096.IsChecked)
-                        {
-                            menu_T1024.IsChecked = false;
-                            menu_T4096.IsChecked = true;
-                        }
-                        else
-                        {
-                            menu_T4096.IsChecked = false;
-                        }
-                        break;
-                    case "TGShow":
-                        menu_TGPromo.IsChecked = true;
-                        menu_TGChar1024.IsChecked = true;
-                        menu_TGCharDiff.IsChecked = true;
-                        menu_TGCharNorm.IsChecked = true;
-                        menu_TGCharSpec.IsChecked = true;
-                        menu_TGWorld.IsChecked = true;
-                        menu_TGWorldSpec.IsChecked = true;
-                        menu_TGWorldNorm.IsChecked = true;
-                        menu_TGAmblgtMap.IsChecked = true;
-                        menu_TGShadowMap.IsChecked = true;
-                        menu_TGEnviro64.IsChecked = true;
-                        menu_TGEnviro128.IsChecked = true;
-                        menu_TGEnviro256.IsChecked = true;
-                        menu_TGEnviro512.IsChecked = true;
-                        menu_TGEnviro1024.IsChecked = true;
-                        menu_TGVFX64.IsChecked = true;
-                        menu_TGVFX128.IsChecked = true;
-                        menu_TGVFX256.IsChecked = true;
-                        menu_TGVFX512.IsChecked = true;
-                        menu_TGVFX1024.IsChecked = true;
-                        menu_TGAPL64.IsChecked = true;
-                        menu_TGAPL128.IsChecked = true;
-                        menu_TGAPL256.IsChecked = true;
-                        menu_TGAPL512.IsChecked = true;
-                        menu_TGAPL1024.IsChecked = true;
-                        menu_TGUI.IsChecked = true;
-                        menu_TGNone.IsChecked = true;
-                        break;
-                    case "TGClear":
-                        menu_TGPromo.IsChecked = false;
-                        menu_TGChar1024.IsChecked = false;
-                        menu_TGCharDiff.IsChecked = false;
-                        menu_TGCharNorm.IsChecked = false;
-                        menu_TGCharSpec.IsChecked = false;
-                        menu_TGWorld.IsChecked = false;
-                        menu_TGWorldSpec.IsChecked = false;
-                        menu_TGWorldNorm.IsChecked = false;
-                        menu_TGAmblgtMap.IsChecked = false;
-                        menu_TGShadowMap.IsChecked = false;
-                        menu_TGEnviro64.IsChecked = false;
-                        menu_TGEnviro128.IsChecked = false;
-                        menu_TGEnviro256.IsChecked = false;
-                        menu_TGEnviro512.IsChecked = false;
-                        menu_TGEnviro1024.IsChecked = false;
-                        menu_TGVFX64.IsChecked = false;
-                        menu_TGVFX128.IsChecked = false;
-                        menu_TGVFX256.IsChecked = false;
-                        menu_TGVFX512.IsChecked = false;
-                        menu_TGVFX1024.IsChecked = false;
-                        menu_TGAPL64.IsChecked = false;
-                        menu_TGAPL128.IsChecked = false;
-                        menu_TGAPL256.IsChecked = false;
-                        menu_TGAPL512.IsChecked = false;
-                        menu_TGAPL1024.IsChecked = false;
-                        menu_TGUI.IsChecked = false;
-                        menu_TGNone.IsChecked = false;
-                        break;
                     case "CustFiles":
                         if (FileListFilter.IsSelected)
                         {
@@ -2013,7 +1727,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 MessageBox.Show("Currently parsing TLK line data. Please wait.", "Asset Database", MessageBoxButton.OK);
                 return;
             }
-            AssetFilters.SetSearch(FilterBox.Text);
             Filter();
         }
         private void views_ColumnHeader_Click(object sender, RoutedEventArgs e)

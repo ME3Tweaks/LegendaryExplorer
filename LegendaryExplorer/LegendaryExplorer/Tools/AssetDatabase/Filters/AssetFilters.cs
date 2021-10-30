@@ -11,11 +11,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
 
         public GenericAssetFilter<AnimationRecord> AnimationFilter { get; }
         public GenericAssetFilter<MeshRecord> MeshFilter { get; }
-        public GenericAssetFilter<TextureRecord> TextureFilter { get; }
         public GenericAssetFilter<ParticleSysRecord> ParticleFilter { get; }
         public GenericAssetFilter<GUIElement> GUIFilter { get; }
         public GenericAssetFilter<PlotRecord> PlotElementFilter { get; }
         public MaterialFilter MaterialFilter { get; }
+        public TextureFilter TextureFilter { get;  }
 
         public AssetFilters(FileListSpecification fileList)
         {
@@ -23,6 +23,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
             // Add new filters and specifications here
             ////////////////////////
             MaterialFilter = new MaterialFilter(fileList);
+            TextureFilter = new TextureFilter(fileList);
 
             ClassFilter = new GenericAssetFilter<ClassRecord>(new IAssetSpecification<ClassRecord>[]
             {
@@ -89,6 +90,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
             MaterialFilter.Search.SearchText = filterBoxText;
             GUIFilter.Search.SearchText = filterBoxText;
             PlotElementFilter.Search.SearchText = filterBoxText;
+            TextureFilter.Search.SearchText = filterBoxText;
         }
 
         /// <summary>

@@ -153,46 +153,8 @@
                             <MenuItem Header="BoolProperty Filters" DataContext="{Binding AssetFilters.MaterialFilter}" ItemsSource="{Binding GeneratedOptions}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
                         </MenuItem>
                         <MenuItem Header="Filter Meshes" ItemsSource="{Binding AssetFilters.MeshFilter.Filters}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
-                        <MenuItem Header="Filter Textures">
-                            <MenuItem Name="menu_TCube" Header="Only TextureCubes" Command="{Binding FilterTexCommand}" CommandParameter="Cube" ToolTip="Show Texture Cubes only." StaysOpenOnClick="True"/>
-                            <MenuItem Name="menu_TMovie" Header="Only TextureMovies" Command="{Binding FilterTexCommand}" CommandParameter="Movie" ToolTip="Show Texture Movies only." StaysOpenOnClick="True"/>
-                            <Separator/>
-                            <MenuItem Name="menu_T1024" Header="Only Textures 1024 or larger" Command="{Binding FilterTexCommand}" CommandParameter="1024" ToolTip="Show Textures with size 1024 or greater." StaysOpenOnClick="True"/>
-                            <MenuItem Name="menu_T4096" Header="Only Textures 4096 or larger" Command="{Binding FilterTexCommand}" CommandParameter="4096" ToolTip="Show Textures with size 4096 or greater." StaysOpenOnClick="True"/>
-                            <Separator/>
-                            <MenuItem Header="Filter LODGroups">
-                                <MenuItem Name="menu_TGWorld" Header="World" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup World." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGWorldSpec" Header="WorldSpecular" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup WorldSpecular." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGWorldNorm" Header="WorldNormalMap" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup WorldNormalMap." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGAmblgtMap" Header="AmbientLightMap" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup AmbientLightMap." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGShadowMap" Header="ShadowMap" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup ShadowMap." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGEnviro64" Header="Environment_64" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup Environment_64." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGEnviro128" Header="Environment_128" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup Environment_128." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGEnviro256" Header="Environment_256" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup Environment_256." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGEnviro512" Header="Environment_512" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup Environment_512." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGEnviro1024" Header="Environment_1024" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup Environment_1024." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGVFX64" Header="VFX_64" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup VFX_64." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGVFX128" Header="VFX_128" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup VFX_128." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGVFX256" Header="VFX_256" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup VFX_256." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGVFX512" Header="VFX_512" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup VFX_512." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGVFX1024" Header="VFX_1024" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup VFX_1024." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGAPL64" Header="APL_64" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup APL_64." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGAPL128" Header="APL_128" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup APL_128." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGAPL256" Header="APL_256" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup APL_256." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGAPL512" Header="APL_512" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup APL_512." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGAPL1024" Header="APL_1024" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup APL_1024." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGUI" Header="UI" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup UI." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGPromo" Header="Promotional" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup Promotional." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGChar1024" Header="Character_1024" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup Character_1024." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGCharDiff" Header="CharacterDiff" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup CharacterDiff." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGCharNorm" Header="CharacterNorm" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup CharacterNorm." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGCharSpec" Header="CharacterSpec" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup CharacterSpec." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGNone" Header="None" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with no LODGroup." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <Separator/>
-                                <MenuItem Name="menu_TGShow" Header="Show all" Command="{Binding FilterTexCommand}" CommandParameter="TGShow" ToolTip="Show All TextureGroups." StaysOpenOnClick="True"/>
-                                <MenuItem Name="menu_TGClear" Header="Clear all" Command="{Binding FilterTexCommand}" CommandParameter="TGClear" ToolTip="Hide All TextureGroups." StaysOpenOnClick="True"/>
-                            </MenuItem>
-                        </MenuItem>
+                        <MenuItem Header="Filter Textures" ItemsSource="{Binding AssetFilters.TextureFilter.Filters}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
+                        <MenuItem Header="Filter LOD Groups" ItemsSource="{Binding AssetFilters.TextureFilter.LODGroups}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
                         <MenuItem Header="Filter VFX" ItemsSource="{Binding AssetFilters.ParticleFilter.Filters}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
                     </MenuItem>
                     <MenuItem Header="Tools" Padding="4">

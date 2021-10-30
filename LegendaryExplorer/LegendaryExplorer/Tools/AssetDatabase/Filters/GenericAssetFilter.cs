@@ -71,7 +71,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
             {
                 foreach (var fSpec in Filters) fSpec.IsSelected = false;
             }
-            spec.IsSelected = !spec.IsSelected;
+            base.SetSelected(spec);
         }
     }
 }
