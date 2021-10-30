@@ -74,14 +74,13 @@ namespace LegendaryExplorerCore.UnrealScript
             return astNode;
         }
 
-        public static (ASTNode ast, MessageLog log, TokenStream<string> tokens) CompileOutlineAST(string script, string type, MEGame game, bool isDefaultObject = false)
+        public static (ASTNode ast, TokenStream tokens) CompileOutlineAST(string script, string type, MessageLog log, MEGame game, bool isDefaultObject = false)
         {
-            var log = new MessageLog();
-            var tokens = new TokenStream<string>(new StringLexer(script, log));
+            var tokens = new TokenStream(StringLexer.Lex(script, log));
             var parser = new ClassOutlineParser(tokens, game, log);
             try
             {
-                ASTNode ast = isDefaultObject ? parser.TryParseDefaultProperties() : parser.ParseDocument(type);
+                ASTNode ast = isDefaultObject ? parser.ParseDefaultProperties() : parser.ParseDocument(type);
                 if (ast is null)
                 {
                     log.LogError("Parse failed!");
@@ -90,19 +89,20 @@ namespace LegendaryExplorerCore.UnrealScript
                 {
                     log.LogMessage("Parsed!");
                 }
-                return (ast, log, tokens);
+                return (ast, tokens);
             }
             catch (Exception e)
             {
                 log.LogError($"Parse failed! Exception: {e}");
-                return (null, log, tokens);
+                return (null, tokens);
             }
 
         }
 
         public static (ASTNode astNode, MessageLog log) CompileClass(IMEPackage pcc, ExportEntry export, string scriptText, FileLib lib, PackageCache packageCache = null)
         {
-            (ASTNode astNode, MessageLog log, _) = CompileOutlineAST(scriptText, "Class", export.Game);
+            var log = new MessageLog();
+            (ASTNode astNode, _) = CompileOutlineAST(scriptText, "Class", log, export.Game);
             if (!log.HasErrors)
             {
                 if (astNode is not Class cls)
@@ -154,7 +154,8 @@ namespace LegendaryExplorerCore.UnrealScript
         //Used by M3. Do not change signature without good cause
         public static (ASTNode astNode, MessageLog log) CompileFunction(ExportEntry export, string scriptText, FileLib lib)
         {
-            (ASTNode astNode, MessageLog log, _) = CompileOutlineAST(scriptText, export.ClassName, export.Game);
+            var log = new MessageLog();
+            (ASTNode astNode, _) = CompileOutlineAST(scriptText, export.ClassName, log, export.Game);
             if (astNode != null && !log.HasErrors)
             {
                 if (astNode is Function func && lib.IsInitialized && export.Parent is ExportEntry parent)
@@ -206,7 +207,8 @@ namespace LegendaryExplorerCore.UnrealScript
 
         public static (ASTNode astNode, MessageLog log) CompileState(ExportEntry export, string scriptText, FileLib lib)
         {
-            (ASTNode astNode, MessageLog log, _) = CompileOutlineAST(scriptText, export.ClassName, export.Game);
+            var log = new MessageLog();
+            (ASTNode astNode, _) = CompileOutlineAST(scriptText, export.ClassName, log, export.Game);
             if (!log.HasErrors)
             {
                 if (astNode is not State state)
@@ -262,7 +264,8 @@ namespace LegendaryExplorerCore.UnrealScript
 
         public static (ASTNode astNode, MessageLog log) CompileEnum(ExportEntry export, string scriptText, FileLib lib, PackageCache packageCache = null)
         {
-            (ASTNode astNode, MessageLog log, _) = CompileOutlineAST(scriptText, export.ClassName, export.Game);
+            var log = new MessageLog();
+            (ASTNode astNode, _) = CompileOutlineAST(scriptText, export.ClassName, log, export.Game);
             if (!log.HasErrors)
             {
                 if (astNode is not Enumeration enumeration)
@@ -318,7 +321,8 @@ namespace LegendaryExplorerCore.UnrealScript
 
         public static (ASTNode astNode, MessageLog log) CompileStruct(ExportEntry export, string scriptText, FileLib lib, PackageCache packageCache = null)
         {
-            (ASTNode astNode, MessageLog log, _) = CompileOutlineAST(scriptText, export.ClassName, export.Game);
+            var log = new MessageLog();
+            (ASTNode astNode, _) = CompileOutlineAST(scriptText, export.ClassName, log, export.Game);
             if (!log.HasErrors)
             {
                 if (astNode is not Struct strct)
@@ -374,7 +378,8 @@ namespace LegendaryExplorerCore.UnrealScript
 
         public static (ASTNode astNode, MessageLog log) CompileDefaultProperties(ExportEntry export, string scriptText, FileLib lib, PackageCache packageCache = null)
         {
-            (ASTNode astNode, MessageLog log, _) = CompileOutlineAST(scriptText, export.ClassName, export.Game, true);
+            var log = new MessageLog();
+            (ASTNode astNode, _) = CompileOutlineAST(scriptText, export.ClassName, log, export.Game, true);
             if (!log.HasErrors)
             {
                 if (astNode is not DefaultPropertiesBlock propBlock)

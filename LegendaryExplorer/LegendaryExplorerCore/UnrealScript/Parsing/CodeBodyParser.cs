@@ -19,7 +19,7 @@ using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.UnrealScript.Parsing
 {
-    public class CodeBodyParser : StringParserBase
+    public sealed class CodeBodyParser : StringParserBase
     {
         private const int NOPRECEDENCE = int.MaxValue;
         private readonly string OuterClassScope;
@@ -147,7 +147,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             symbols.PopScope();
         }
 
-        public CodeBodyParser(TokenStream<string> tokens, MEGame game, CodeBody body, SymbolTable symbols, ASTNode containingNode, MessageLog log = null)
+        public CodeBodyParser(TokenStream tokens, MEGame game, CodeBody body, SymbolTable symbols, ASTNode containingNode, MessageLog log = null)
         {
             Game = game;
             Log = log ?? new MessageLog();
@@ -185,7 +185,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             if (Tokens.AtEnd())
                 throw ParseError("Could not find the code body for the current node, please contact the maintainers of this compiler!");
 
-            var body = TryParseBody(false, IsFunction);
+            var body = ParseBlock(false, IsFunction);
             if (body == null)
                 return null;
             Body.Statements = body.Statements;
@@ -220,99 +220,91 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return Body;
         }
 
-        public CodeBody TryParseBody(bool requireBrackets = true, bool functionBody = false)
+        public CodeBody ParseBlock(bool requireBrackets = true, bool functionBody = false)
         {
-            return (CodeBody)Tokens.TryGetTree(CodeParser);
-            ASTNode CodeParser()
+            if (requireBrackets && Consume(TokenType.LeftBracket) == null) throw ParseError("Expected '{'!", CurrentPosition);
+
+            bool pastVarDecls = false;
+            var statements = new List<Statement>();
+            var startPos = CurrentPosition;
+            var current = ParseDeclarationOrStatement();
+            while (current != null)
             {
-                if (requireBrackets && Consume(TokenType.LeftBracket) == null) throw ParseError("Expected '{'!", CurrentPosition);
-
-                bool pastVarDecls = false;
-                var statements = new List<Statement>();
-                var startPos = CurrentPosition;
-                var current = ParseDeclarationOrStatement();
-                while (current != null)
+                if (!SemiColonExceptions.Contains(current.Type) && Consume(TokenType.SemiColon) == null)
                 {
-                    if (!SemiColonExceptions.Contains(current.Type) && Consume(TokenType.SemiColon) == null)
-                    {
-                        ParseError("Expected semi-colon after statement!", CurrentPosition);
-                    }
-
-                    if (!(current is VariableDeclaration))
-                    {
-                        pastVarDecls = true;
-
-                        if (current is Label label)
-                        {
-                            if (Labels.ContainsKey(label.Name))
-                            {
-                                ParseError($"Label '{label.Name}' already exists on line {Labels[label.Name].StartPos.Line}!", label);
-                            }
-                            else
-                            {
-                                Labels.Add(label.Name, label);
-                                LabelNests.Peek().Add(label);
-                            }
-                        }
-                        statements.Add(current);
-                    }
-                    else if (pastVarDecls)
-                    {
-                        ParseError("Variable declarations must come before all other statements", current);
-                    }
-                    else if (!functionBody)
-                    {
-                        ParseError("Can only declare variables at the top of a function!", current);
-                    }
-
-
-                    if (CurrentToken.Type == TokenType.EOF)
-                    {
-                        break;
-                    }
-                    current = ParseDeclarationOrStatement();
+                    ParseError("Expected semi-colon after statement!", CurrentPosition);
                 }
 
-                var endPos = CurrentPosition;
-                if (requireBrackets && Consume(TokenType.RightBracket) == null) throw ParseError("Expected '}'!", CurrentPosition);
+                if (!(current is VariableDeclaration))
+                {
+                    pastVarDecls = true;
 
-                return new CodeBody(statements, startPos, endPos);
+                    if (current is Label label)
+                    {
+                        if (Labels.ContainsKey(label.Name))
+                        {
+                            ParseError($"Label '{label.Name}' already exists on line {Labels[label.Name].StartPos.Line}!", label);
+                        }
+                        else
+                        {
+                            Labels.Add(label.Name, label);
+                            LabelNests.Peek().Add(label);
+                        }
+                    }
+                    statements.Add(current);
+                }
+                else if (pastVarDecls)
+                {
+                    ParseError("Variable declarations must come before all other statements", current);
+                }
+                else if (!functionBody)
+                {
+                    ParseError("Can only declare variables at the top of a function!", current);
+                }
+
+
+                if (CurrentToken.Type == TokenType.EOF)
+                {
+                    break;
+                }
+                current = ParseDeclarationOrStatement();
             }
+
+            var endPos = CurrentPosition;
+            if (requireBrackets && Consume(TokenType.RightBracket) == null) throw ParseError("Expected '}'!", CurrentPosition);
+
+            return new CodeBody(statements, startPos, endPos);
         }
 
         #region Statements
 
-        public CodeBody TryParseBodyOrStatement(bool allowEmpty = false)
+        public CodeBody ParseBlockOrStatement(bool allowEmpty = false)
         {
-            return (CodeBody)Tokens.TryGetTree(BodyParser);
-            ASTNode BodyParser()
+            CodeBody body;
+            var single = ParseStatement();
+            if (single != null)
             {
-                CodeBody body = null;
-                var single = ParseStatement();
-                if (single != null)
+                var content = new List<Statement> { single };
+                body = new CodeBody(content, single.StartPos, single.EndPos);
+            }
+            else
+            {
+                body = ParseBlock();
+            }
+
+            if (body == null)
+            {
+                if (allowEmpty && Consume(TokenType.SemiColon) != null)
                 {
-                    var content = new List<Statement> {single};
-                    body = new CodeBody(content, single.StartPos, single.EndPos);
+                    body = new CodeBody(null, CurrentPosition.GetModifiedPosition(0, -1, -1), CurrentPosition);
                 }
                 else
                 {
-                    body = TryParseBody();
+                    throw ParseError("Expected a code block or single statement!", CurrentPosition);
                 }
-
-                if (body == null)
-                {
-                    if (allowEmpty && Consume(TokenType.SemiColon) != null)
-                    {
-                        body = new CodeBody(null, CurrentPosition.GetModifiedPosition(0, -1, -1), CurrentPosition);
-                    }
-                    else
-                    {
-                        throw ParseError("Expected a code body or single statement!", CurrentPosition);
-                    }
-                }
-
-                return body;
             }
+
+            return body;
         }
 
         public Statement ParseDeclarationOrStatement()
@@ -445,7 +437,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             if (CurrentIs(TokenType.Word) && Tokens.LookAhead(1).Type == TokenType.Colon)
             {
-                Token<string> labelToken = Consume(TokenType.Word);
+                ScriptToken labelToken = Consume(TokenType.Word);
                 labelToken.SyntaxType = EF.Label;
                 return new Label(labelToken.Value, 0, labelToken.StartPos, Consume(TokenType.Colon).EndPos);
             }
@@ -496,7 +488,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             var startPos = CurrentPosition;
             if (!Matches(LOCAL, EF.Keyword)) return null;
 
-            VariableType type = TryParseType();
+            VariableType type = ParseTypeRef();
             if (type == null) throw ParseError($"Expected variable type after '{LOCAL}'!", CurrentPosition);
             type.Outer = Body;
             if (!Symbols.TryResolveType(ref type)) TypeError($"The type '{type.Name}' does not exist in the current scope!", type);
@@ -566,7 +558,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             if (Consume(TokenType.RightParenth) == null) throw ParseError($"Expected ')' after {IF} condition!", CurrentPosition);
 
-            CodeBody thenBody = TryParseBodyOrStatement();
+            CodeBody thenBody = ParseBlockOrStatement();
             if (thenBody == null) throw ParseError("Expected a statement or code block!", CurrentPosition);
 
             CodeBody elseBody = null;
@@ -574,7 +566,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             if (elsetoken != null)
             {
                 elsetoken.SyntaxType = EF.Keyword;
-                elseBody = TryParseBodyOrStatement();
+                elseBody = ParseBlockOrStatement();
                 if (elseBody == null) throw ParseError("Expected a statement or code block!", CurrentPosition);
             }
 
@@ -634,7 +626,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             if (Consume(TokenType.RightParenth) == null) throw ParseError("Expected ')'!", CurrentPosition);
 
             SwitchTypes.Push(expression.ResolveType());
-            CodeBody body = TryParseBodyOrStatement();
+            CodeBody body = ParseBlockOrStatement();
             SwitchTypes.Pop();
             if (body == null) throw ParseError("Expected switch code block!", CurrentPosition);
             if (body.Statements.Any())
@@ -672,7 +664,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             if (Consume(TokenType.RightParenth) == null) throw ParseError("Expected ')'!", CurrentPosition);
 
             _loopCount++;
-            CodeBody body = TryParseBodyOrStatement(allowEmpty: true);
+            CodeBody body = ParseBlockOrStatement(allowEmpty: true);
             _loopCount--;
             if (body == null) return null;
 
@@ -709,7 +701,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             if (Consume(TokenType.RightParenth) == null) throw ParseError("Expected ')'!", CurrentPosition);
 
             _loopCount++;
-            CodeBody body = TryParseBodyOrStatement(allowEmpty: true);
+            CodeBody body = ParseBlockOrStatement(allowEmpty: true);
             _loopCount--;
             if (body == null) return null;
 
@@ -756,7 +748,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             InForEachBody = true;
             _loopCount++;
             LabelNests.Push(new List<Label>());
-            CodeBody body = TryParseBodyOrStatement(allowEmpty: true);
+            CodeBody body = ParseBlockOrStatement(allowEmpty: true);
 
             _loopCount--;
             InForEachBody = alreadyInForEach;
@@ -795,7 +787,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             doToken.SyntaxType = EF.Keyword;
 
             _loopCount++;
-            CodeBody body = TryParseBodyOrStatement();
+            CodeBody body = ParseBlockOrStatement();
             _loopCount--;
             if (body == null) return null;
 
@@ -851,7 +843,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 if (CurrentIs(TokenType.Word) && Tokens.LookAhead(1).Type == TokenType.SemiColon)
                 {
                     //error production
-                    Token<string> label = Consume(TokenType.Word);
+                    ScriptToken label = Consume(TokenType.Word);
                     labelExpr = new ErrorExpression(label.StartPos, label.EndPos, label);
                     ParseError("gotos in State bodies expect an expression that evaluates to a name, not a bare label. Put single quotes around a label name to make it a name literal", label);
                 }
@@ -1059,7 +1051,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     break; //don't handle at this precedence level
                 }
 
-                Token<string> opToken = Consume(CurrentTokenType);
+                ScriptToken opToken = Consume(CurrentTokenType);
                 if (isRightShift)
                 {
                     CurrentToken.SyntaxType = EF.Operator;
@@ -1497,7 +1489,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                             break;
                         }
                         case SymbolReference {Node: EnumValue ev} sr:
-                            lhs = NewSymbolReference(ev, new Token<string>(TokenType.Word, sr.Name, sr.StartPos, sr.EndPos), false);
+                            lhs = NewSymbolReference(ev, new ScriptToken(TokenType.Word, sr.Name, sr.StartPos, sr.EndPos), false);
                             break;
                         default:
                             lhs = new CompositeSymbolRef(lhs, rhs, isClassContext, lhs.StartPos, rhs.EndPos)
@@ -1963,7 +1955,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             //bit hacky. dynamic cast when the typename is also a variable name in this scope
             if (NotInContext && expr.GetType() == typeof(SymbolReference) && Symbols.TryGetType(((SymbolReference)expr).Name, out VariableType destType))
             {
-                return ParsePrimitiveOrDynamicCast(new Token<string>(TokenType.Word, destType.Name, expr.StartPos, expr.EndPos), destType);
+                return ParsePrimitiveOrDynamicCast(new ScriptToken(TokenType.Word, destType.Name, expr.StartPos, expr.EndPos), destType);
             }
 
             if (InNew)
@@ -1976,7 +1968,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             //if there is a collision between a function name and another symbol, this may be required to disambiguate
             if (expr is SymbolReference notFunc && Symbols.TryGetSymbolInScopeStack(notFunc.Name, out Function secondChanceFunc, ExpressionScopes.Peek().scope))
             {
-                return FinishCall(NewSymbolReference(secondChanceFunc, new Token<string>(TokenType.Word, notFunc.Name, expr.StartPos, expr.EndPos), expr is DefaultReference), out succeeded);
+                return FinishCall(NewSymbolReference(secondChanceFunc, new ScriptToken(TokenType.Word, notFunc.Name, expr.StartPos, expr.EndPos), expr is DefaultReference), out succeeded);
             }
 
             throw ParseError("Can only call functions and delegates!", expr);
@@ -2054,7 +2046,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 return literal;
             }
 
-            Token<string> token = CurrentToken;
+            ScriptToken token = CurrentToken;
             if (NotInContext)
             {
                 if (Matches(SELF, EF.Keyword))
@@ -2260,7 +2252,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 throw ParseError($"Expected function name after '{SUPER}'!", CurrentPosition);
             }
 
-            Token<string> functionName = PrevToken;
+            ScriptToken functionName = PrevToken;
             functionName.SyntaxType = EF.Function;
             string specificScope;
             //try to find function in parent states
@@ -2313,7 +2305,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         private Expression ParseNew()
         {
-            Token<string> token = PrevToken;
+            ScriptToken token = PrevToken;
             Expression outerObj = null;
             Expression objName = null;
             Expression flags = null;
@@ -2411,7 +2403,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return new NewOperator(outerObj, objName, flags, objClass, template, token.StartPos, PrevToken.EndPos);
         }
 
-        private Expression ParseBasicRefOrCast(Token<string> token, bool isDefaultRef = false)
+        private Expression ParseBasicRefOrCast(ScriptToken token, bool isDefaultRef = false)
         {
             (string specificScope, bool isStructScope) = ExpressionScopes.Peek();
             if (!Symbols.TryGetSymbolInScopeStack(token.Value, out ASTNode symbol, specificScope))
@@ -2480,9 +2472,9 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
         }
 
-        private Expression ParsePrimitiveOrDynamicCast(Token<string> token, VariableType destType)
+        private Expression ParsePrimitiveOrDynamicCast(ScriptToken token, VariableType destType)
         {
-            Token<string> castToken = token;
+            ScriptToken castToken = token;
 
             Expression expr = ParseExpression();
             if (expr is null)

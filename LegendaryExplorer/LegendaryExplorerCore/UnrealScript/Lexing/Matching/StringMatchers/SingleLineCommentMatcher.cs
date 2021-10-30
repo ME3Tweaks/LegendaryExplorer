@@ -5,21 +5,25 @@ using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
 {
-    public class SingleLineCommentMatcher : TokenMatcherBase<string>
+    public sealed class SingleLineCommentMatcher : TokenMatcherBase
     {
-        protected override Token<string> Match(TokenizableDataStream<string> data, ref SourcePosition streamPos, MessageLog log)
+        public override ScriptToken Match(CharDataStream data, ref SourcePosition streamPos, MessageLog log)
         {
-            var start = new SourcePosition(streamPos);
-            string comment = null;
-            if (data.CurrentItem == "/")
+            return MatchComment(data, ref streamPos);
+        }
+
+        public static ScriptToken MatchComment(CharDataStream data, ref SourcePosition streamPos)
+        {
+            if (data.CurrentItem == '/')
             {
                 data.Advance();
-                if (data.CurrentItem == "/")
+                if (data.CurrentItem == '/')
                 {
+                    string comment = "";
                     data.Advance();
                     while (!data.AtEnd())
                     {
-                        if (data.CurrentItem == "\n")
+                        if (data.CurrentItem == '\n')
                         {
                             break;
                         }
@@ -28,13 +32,10 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
                         data.Advance();
                     }
 
-
-                    comment ??= "";
-
-
+                    var start = new SourcePosition(streamPos);
                     streamPos = streamPos.GetModifiedPosition(0, data.CurrentIndex - start.CharIndex, data.CurrentIndex - start.CharIndex);
                     var end = new SourcePosition(streamPos);
-                    return new Token<string>(TokenType.SingleLineComment, comment, start, end) {SyntaxType = EF.Comment};
+                    return new ScriptToken(TokenType.SingleLineComment, comment, start, end) { SyntaxType = EF.Comment };
                 }
             }
 

@@ -423,7 +423,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                     {
                         try
                         {
-                            (ASTNode astNode, MessageLog log, TokenStream<string> tokens) = UnrealScriptCompiler.CompileOutlineAST(text, CurrentLoadedExport.ClassName, Pcc.Game, ast is DefaultPropertiesBlock);
+                            var log = new MessageLog();
+                            (ASTNode astNode, TokenStream tokens) = UnrealScriptCompiler.CompileOutlineAST(text, CurrentLoadedExport.ClassName, log, Pcc.Game, ast is DefaultPropertiesBlock);
 
                             if (!log.HasErrors)
                             {
@@ -458,7 +459,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                         }
                         catch (Exception e)
                         {
-                            //
+                            _definitionLinkGenerator.Reset();
                         }
                     }
 
@@ -477,9 +478,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
         private void TextChanged(object sender, EventArgs e)
         {
             bool needsTokensReset = true;
-            (ASTNode ast, MessageLog log, TokenStream<string> tokens) = UnrealScriptCompiler.CompileOutlineAST(ScriptText, CurrentLoadedExport.ClassName, Pcc.Game, CurrentLoadedExport.IsDefaultObject);
+            var log = new MessageLog();
             try
             {
+                (ASTNode ast, TokenStream tokens) = UnrealScriptCompiler.CompileOutlineAST(ScriptText, CurrentLoadedExport.ClassName, log, Pcc.Game, CurrentLoadedExport.IsDefaultObject);
 
                 if (ast != null && !log.HasErrors && FullyInitialized)
                 {
@@ -522,7 +524,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
 
                         int currentLine = firstLine;
                         int currentPos = 0;
-                        foreach (Token<string> token in tokens)
+                        foreach (ScriptToken token in tokens)
                         {
                             int tokLine = token.StartPos.Line - 1;
                             if (tokLine > currentLine)
@@ -592,8 +594,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
         {
             if (ScriptText != null)
             {
-                MessageLog log;
-                (RootNode, log, _) = UnrealScriptCompiler.CompileOutlineAST(ScriptText, CurrentLoadedExport.ClassName, Pcc.Game, CurrentLoadedExport.IsDefaultObject);
+                var log = new MessageLog();
+                (RootNode, _) = UnrealScriptCompiler.CompileOutlineAST(ScriptText, CurrentLoadedExport.ClassName, log, Pcc.Game, CurrentLoadedExport.IsDefaultObject);
 
                 if (RootNode != null && !log.HasErrors)
                 {

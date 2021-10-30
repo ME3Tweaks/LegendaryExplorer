@@ -7,9 +7,10 @@ namespace LegendaryExplorerCore.Gammtek.Extensions
 	public static class CharExtensions
 	{
 		public static bool IsDigit(this char c)
-		{
-			return char.IsDigit(c);
-		}
+        {
+			//not using char.IsDigit, since that returns true for all sorts of weird unicode "digits"
+            return c is >= '0' and <= '9';
+        }
 
 		public static bool IsLetter(this char c)
 		{
@@ -23,7 +24,7 @@ namespace LegendaryExplorerCore.Gammtek.Extensions
 
 		public static bool IsWhiteSpace(this char c)
 		{
-			return c > '\0' && c <= ' ';
+			return char.IsWhiteSpace(c);
 		}
 
 		public static bool ToBoolean(this char value)
@@ -90,5 +91,17 @@ namespace LegendaryExplorerCore.Gammtek.Extensions
 		{
 			return Convert.ToUInt64(value);
 		}
-	}
+
+        public static bool CaseInsensitiveEquals(this char a, char b)
+        {
+            if (a == b)
+            {
+                return true;
+            }
+            int lowerCaseA = a | 0x20;
+            return lowerCaseA == (b | 0x20) && lowerCaseA is >= 'a' and <= 'z';
+        }
+
+        public static bool IsNullOrWhiteSpace(this char c) => c is '\0' || char.IsWhiteSpace(c);
+    }
 }

@@ -499,7 +499,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                 scope = new ASTNodeDict();
             }
 
-            if (secondaryScope != null)
+            if (secondaryScope != null && secondaryScope != fullName)
             {
                 scope.SecondaryScope = secondaryScope;
             }

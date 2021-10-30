@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using LegendaryExplorerCore.UnrealScript.Lexing.Matching;
@@ -8,89 +10,159 @@ using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Lexing
 {
-    public class StringLexer : LexerBase<string>
+    public class StringLexer
     {
+        //private readonly List<TokenMatcherBase> TokenMatchers;
+        private readonly CharDataStream Data;
         private SourcePosition StreamPosition;
         private readonly MessageLog Log;
 
-        public StringLexer(string code, MessageLog log = null, List<KeywordMatcher> delimiters = null, List<KeywordMatcher> keywords = null) 
-            : base(new StringTokenizer(code))
+        private StringLexer(string code, MessageLog log = null)
         {
-            delimiters ??= GlobalLists.Delimiters;
+            Data = new CharDataStream(code);
             Log = log ?? new MessageLog();
-
-            TokenMatchers = new List<ITokenMatcher<string>>();
-
-            TokenMatchers.Add(new SingleLineCommentMatcher());
-            TokenMatchers.Add(new StringLiteralMatcher());
-            TokenMatchers.Add(new NameLiteralMatcher());
-            TokenMatchers.Add(new StringRefLiteralMatcher());
-            TokenMatchers.AddRange(delimiters);
-            TokenMatchers.Add(new WhiteSpaceMatcher());
-            TokenMatchers.Add(new NumberMatcher(delimiters));
-            TokenMatchers.Add(new WordMatcher(delimiters));
-
             StreamPosition = new SourcePosition(1, 0, 0);
+
+            //TokenMatchers = new List<TokenMatcherBase>();
+
+            ////Do not reorder! This is the order in which the lexer should try each matcher
+            //TokenMatchers.Add(new SingleLineCommentMatcher());
+            //TokenMatchers.Add(new StringLiteralMatcher());
+            //TokenMatchers.Add(new NameLiteralMatcher());
+            //TokenMatchers.Add(new StringRefLiteralMatcher());
+            //TokenMatchers.AddRange(GlobalLists.DelimitersAndOperators);
+            //TokenMatchers.Add(new WhiteSpaceMatcher());
+            //TokenMatchers.Add(new NumberMatcher());
+            //TokenMatchers.Add(new WordMatcher());
+
         }
 
-        public override Token<string> GetNextToken()
+        public static List<ScriptToken> Lex(string code, MessageLog log = null)
+        {
+            var lexer = new StringLexer(code, log);
+            return lexer.LexData();
+        }
+
+        //private ScriptToken GetNextToken()
+        //{
+        //    if (Data.AtEnd())
+        //    {
+        //        return new ScriptToken(TokenType.EOF, null, StreamPosition, StreamPosition);
+        //    }
+
+        //    ScriptToken result = null;
+        //    foreach (TokenMatcherBase matcher in TokenMatchers)
+        //    {
+        //        Data.PushSnapshot();
+
+        //        result = matcher.Match(Data, ref StreamPosition, Log);
+        //        if (result == null)
+        //        {
+        //            Data.PopSnapshot();
+        //        }
+        //        else
+        //        {
+        //            Data.DiscardSnapshot();
+        //            break;
+        //        }
+        //    }
+
+        //    if (result == null)
+        //    {
+        //        Log.LogError($"Could not lex '{Data.CurrentItem}'",
+        //            StreamPosition, StreamPosition.GetModifiedPosition(0, 1, 1));
+        //        Data.Advance();
+        //        return new ScriptToken(TokenType.INVALID, Data.CurrentItem.ToString(), StreamPosition, StreamPosition.GetModifiedPosition(0, 1, 1)) { SyntaxType = EF.ERROR };
+        //    }
+        //    return result;
+        //}
+
+        private ScriptToken GetNextTokenImproved()
         {
             if (Data.AtEnd())
             {
-                return new Token<string>(TokenType.EOF, null, StreamPosition, StreamPosition);
+                return new ScriptToken(TokenType.EOF, null, StreamPosition, StreamPosition);
             }
 
-            Token<string> result = null;
-            foreach (ITokenMatcher<string> matcher in TokenMatchers)
+            ScriptToken result = null;
+
+            char peek = Data.CurrentItem;
+            if (peek == '/' && Data.LookAhead(1) == '/')
             {
-                Token<string> token = matcher.MatchNext(Data, ref StreamPosition, Log);
-                if (token != null)
+                result = SingleLineCommentMatcher.MatchComment(Data, ref StreamPosition);
+            }
+            else if (peek == '"')
+            {
+                result = StringLiteralMatcher.MatchString(Data, ref StreamPosition, Log);
+            }
+            else if (peek == '\'')
+            {
+                result = NameLiteralMatcher.MatchName(Data, ref StreamPosition, Log);
+            }
+            else if (peek == '$' && (Data.LookAhead(1).IsDigit() || 
+                                     Data.LookAhead(1) == '-' && Data.LookAhead(2).IsDigit()))
+            {
+                result = StringRefLiteralMatcher.MatchStringRef(Data, ref StreamPosition);
+            }
+            else if (GlobalLists.IsDelimiterChar(peek))
+            {
+                //looping over every single one is a terrible way of doing this.
+                foreach (SymbolMatcher matcher in GlobalLists.DelimitersAndOperators)
                 {
-                    result = token;
-                    break;
+                    Data.PushSnapshot();
+
+                    result = matcher.Match(Data, ref StreamPosition, Log);
+                    if (result == null)
+                    {
+                        Data.PopSnapshot();
+                    }
+                    else
+                    {
+                        Data.DiscardSnapshot();
+                        break;
+                    }
                 }
             }
+            else if (char.IsWhiteSpace(peek))
+            {
+                result = WhiteSpaceMatcher.MatchWhiteSpace(Data, ref StreamPosition);
+            }
+            else if (peek.IsDigit())
+            {
+                result = NumberMatcher.MatchNumber(Data, ref StreamPosition);
+            }
+            else
+            {
+                result = WordMatcher.MatchWord(Data, ref StreamPosition);
+            }
+
+            
 
             if (result == null)
             {
-                Log.LogError("Could not lex '" + Data.CurrentItem + "'",
+                Log.LogError($"Could not lex '{Data.CurrentItem}'",
                     StreamPosition, StreamPosition.GetModifiedPosition(0, 1, 1));
                 Data.Advance();
-                return new Token<string>(TokenType.INVALID, Data.CurrentItem, StreamPosition, StreamPosition.GetModifiedPosition(0, 1, 1)) { SyntaxType = EF.ERROR };
+                return new ScriptToken(TokenType.INVALID, Data.CurrentItem.ToString(), StreamPosition, StreamPosition.GetModifiedPosition(0, 1, 1)) { SyntaxType = EF.ERROR };
             }
             return result;
         }
 
-        public override IEnumerable<Token<string>> LexData()
+        private List<ScriptToken> LexData()
         {
+            var tokens = new List<ScriptToken>();
             StreamPosition = new SourcePosition(1, 0, 0);
-            var token = GetNextToken();
+            ScriptToken token = GetNextTokenImproved();
             while (token.Type != TokenType.EOF)
             {
-                if (token.Type != TokenType.WhiteSpace 
-                 && token.Type != TokenType.SingleLineComment 
-                 && token.Type != TokenType.MultiLineComment)
-                    yield return token;
+                if (token.Type is not TokenType.WhiteSpace and not TokenType.SingleLineComment and not TokenType.MultiLineComment)
+                {
+                    tokens.Add(token);
+                }
 
-                token = GetNextToken();
+                token = GetNextTokenImproved();
             }
-        }
-
-        public override IEnumerable<Token<string>> LexSubData(SourcePosition start, SourcePosition end)
-        {
-            StreamPosition = start;
-            Data.Advance(start.CharIndex);
-            var token = GetNextToken();
-            // TODO: this assumes well-formed subdata, fix?
-            while (!token.StartPos.Equals(end))
-            {
-                if (token.Type != TokenType.WhiteSpace
-                 && token.Type != TokenType.SingleLineComment
-                 && token.Type != TokenType.MultiLineComment)
-                    yield return token;
-
-                token = GetNextToken();
-            }
+            return tokens;
         }
     }
 }

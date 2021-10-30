@@ -5,14 +5,18 @@ using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
 {
-    public class NameLiteralMatcher : TokenMatcherBase<string>
+    public sealed class NameLiteralMatcher : TokenMatcherBase
     {
-        private const string Delimiter = "'";
-        protected override Token<string> Match(TokenizableDataStream<string> data, ref SourcePosition streamPos, MessageLog log)
+        private const char DELIMITER = '\'';
+        public override ScriptToken Match(CharDataStream data, ref SourcePosition streamPos, MessageLog log)
         {
-            var start = new SourcePosition(streamPos);
+            return MatchName(data, ref streamPos, log);
+        }
+
+        public static ScriptToken MatchName(CharDataStream data, ref SourcePosition streamPos, MessageLog log)
+        {
             string value = null;
-            if (data.CurrentItem == Delimiter)
+            if (data.CurrentItem == DELIMITER)
             {
                 data.Advance();
                 bool inEscape = false;
@@ -23,8 +27,8 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
                         inEscape = false;
                         switch (data.CurrentItem)
                         {
-                            case "\\":
-                            case Delimiter:
+                            case '\\':
+                            case DELIMITER:
                                 value += data.CurrentItem;
                                 continue;
                             default:
@@ -33,42 +37,43 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
                         }
                     }
 
-                    if (data.CurrentItem == "\\")
+                    if (data.CurrentItem == '\\')
                     {
                         inEscape = true;
                         continue;
                     }
-                    if (data.CurrentItem == Delimiter)
+                    if (data.CurrentItem == DELIMITER)
                     {
                         break;
                     }
-                    if (data.CurrentItem == "\n")
+                    if (data.CurrentItem == '\n')
                     {
-                        streamPos = streamPos.GetModifiedPosition(0, data.CurrentIndex - start.CharIndex, data.CurrentIndex - start.CharIndex);
-                        log.LogError("Name Literals can not contain line breaks!", start, new SourcePosition(streamPos));
+                        streamPos = streamPos.GetModifiedPosition(0, data.CurrentIndex - streamPos.CharIndex, data.CurrentIndex - streamPos.CharIndex);
+                        log.LogError("Name Literals can not contain line breaks!", new SourcePosition(streamPos), new SourcePosition(streamPos));
                         return null;
                     }
                     value += data.CurrentItem;
                 }
 
-                if (data.CurrentItem == Delimiter)
+                if (data.CurrentItem == DELIMITER)
                 {
                     data.Advance();
                     value ??= "None"; //empty name literals should be interpreted as 'None'
                 }
                 else
                 {
-                    streamPos = streamPos.GetModifiedPosition(0, data.CurrentIndex - start.CharIndex, data.CurrentIndex - start.CharIndex);
-                    log.LogError("Name Literal was not terminated properly!", start, new SourcePosition(streamPos));
+                    streamPos = streamPos.GetModifiedPosition(0, data.CurrentIndex - streamPos.CharIndex, data.CurrentIndex - streamPos.CharIndex);
+                    log.LogError("Name Literal was not terminated properly!", new SourcePosition(streamPos), new SourcePosition(streamPos));
                     return null;
                 }
             }
 
             if (value != null)
             {
+                var start = new SourcePosition(streamPos);
                 streamPos = streamPos.GetModifiedPosition(0, data.CurrentIndex - start.CharIndex, data.CurrentIndex - start.CharIndex);
                 var end = new SourcePosition(streamPos);
-                return new Token<string>(TokenType.NameLiteral, value, start, end) {SyntaxType = EF.Name};
+                return new ScriptToken(TokenType.NameLiteral, value, start, end) { SyntaxType = EF.Name };
             }
             return null;
         }

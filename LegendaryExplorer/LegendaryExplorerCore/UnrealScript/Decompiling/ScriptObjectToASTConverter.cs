@@ -55,7 +55,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         {
                             FilePath = pcc.FilePath,
                             UIndex = nextChild.UIndex,
-                            Literal = new ClassOutlineParser(new TokenStream<string>(new StringLexer(uConst.Value)), pcc.Game).ParseConstValue()
+                            game = pcc.Game
                         });
                         nextItem = uConst.Next;
                         break;

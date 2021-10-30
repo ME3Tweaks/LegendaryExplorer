@@ -5,36 +5,40 @@ using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
 {
-    public class StringLiteralMatcher : TokenMatcherBase<string>
+    public sealed class StringLiteralMatcher : TokenMatcherBase
     {
-        private const string Delimiter = "\"";
+        private const char DELIMITER = '"';
 
-        protected override Token<string> Match(TokenizableDataStream<string> data, ref SourcePosition streamPos, MessageLog log)
+        public override ScriptToken Match(CharDataStream data, ref SourcePosition streamPos, MessageLog log)
         {
-            var start = new SourcePosition(streamPos);
+            return MatchString(data, ref streamPos, log);
+        }
+
+        public static ScriptToken MatchString(CharDataStream data, ref SourcePosition streamPos, MessageLog log)
+        {
             string value = null;
-            if (data.CurrentItem == Delimiter)
+            if (data.CurrentItem == DELIMITER)
             {
                 data.Advance();
                 bool inEscape = false;
-                for (;!data.AtEnd(); data.Advance())
+                for (; !data.AtEnd(); data.Advance())
                 {
                     if (inEscape)
                     {
                         inEscape = false;
                         switch (data.CurrentItem)
                         {
-                            case "\\":
-                            case Delimiter:
+                            case '\\':
+                            case DELIMITER:
                                 value += data.CurrentItem;
                                 continue;
-                            case "n":
+                            case 'n':
                                 value += "\n";
                                 continue;
-                            case "r":
+                            case 'r':
                                 value += "\r";
                                 continue;
-                            case "t":
+                            case 't':
                                 value += "\t";
                                 continue;
                             default:
@@ -43,42 +47,43 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
                         }
                     }
 
-                    if (data.CurrentItem == "\\")
+                    if (data.CurrentItem == '\\')
                     {
                         inEscape = true;
                         continue;
                     }
-                    if (data.CurrentItem == Delimiter)
+                    if (data.CurrentItem == DELIMITER)
                     {
                         break;
                     }
-                    if (data.CurrentItem == "\n")
+                    if (data.CurrentItem == '\n')
                     {
-                        streamPos = streamPos.GetModifiedPosition(0, data.CurrentIndex - start.CharIndex, data.CurrentIndex - start.CharIndex);
-                        log.LogError("String Literals can not contain line breaks!", start, new SourcePosition(streamPos));
+                        streamPos = streamPos.GetModifiedPosition(0, data.CurrentIndex - streamPos.CharIndex, data.CurrentIndex - streamPos.CharIndex);
+                        log.LogError("String Literals can not contain line breaks!", new SourcePosition(streamPos), new SourcePosition(streamPos));
                         return null;
                     }
                     value += data.CurrentItem;
                 }
 
-                if (data.CurrentItem == Delimiter)
+                if (data.CurrentItem == DELIMITER)
                 {
                     data.Advance();
                     value ??= "";
                 }
                 else
                 {
-                    streamPos = streamPos.GetModifiedPosition(0, data.CurrentIndex - start.CharIndex, data.CurrentIndex - start.CharIndex);
-                    log.LogError("String Literal was not terminated properly!", start, new SourcePosition(streamPos));
+                    streamPos = streamPos.GetModifiedPosition(0, data.CurrentIndex - streamPos.CharIndex, data.CurrentIndex - streamPos.CharIndex);
+                    log.LogError("String Literal was not terminated properly!", new SourcePosition(streamPos), new SourcePosition(streamPos));
                     return null;
                 }
             }
 
             if (value != null)
             {
+                var start = new SourcePosition(streamPos);
                 streamPos = streamPos.GetModifiedPosition(0, data.CurrentIndex - start.CharIndex, data.CurrentIndex - start.CharIndex);
                 var end = new SourcePosition(streamPos);
-                return new Token<string>(TokenType.StringLiteral, value, start, end) {SyntaxType = EF.String};
+                return new ScriptToken(TokenType.StringLiteral, value, start, end) { SyntaxType = EF.String };
             }
             return null;
         }

@@ -294,7 +294,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     }
                 }
 #endif
-
+                
                 symbols.RevertToObjectStack();
 
                 return true;

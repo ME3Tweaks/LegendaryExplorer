@@ -14,11 +14,11 @@ using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
 
 namespace LegendaryExplorerCore.UnrealScript.Parsing
 {
-    public class ClassOutlineParser : StringParserBase
+    public sealed class ClassOutlineParser : StringParserBase
     {
         private readonly MEGame Game;
 
-        public ClassOutlineParser(TokenStream<string> tokens, MEGame game, MessageLog log = null)
+        public ClassOutlineParser(TokenStream tokens, MEGame game, MessageLog log = null)
         {
             Game = game;
             Log = log ?? new MessageLog();
@@ -31,12 +31,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 "Class" => TryParseClass(),
                 "Function" => TryParseFunction(),
-                "State" => TryParseState(),
-                "ScriptStruct" => TryParseStruct(),
-                "Enum" => TryParseEnum(),
-                "Const" => TryParseConstant(),
-                _ when parseUnit.EndsWith("Property") => TryParseVarDecl(),
-                _ => TryParseDefaultProperties()
+                "State" => ParseState(),
+                "ScriptStruct" => ParseStruct(),
+                "Enum" => ParseEnum(),
+                "Const" => ParseConstant(),
+                _ when parseUnit.EndsWith("Property") => ParseVarDecl(),
+                _ => ParseDefaultProperties()
             };
         }
 
@@ -45,766 +45,760 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         public Class TryParseClass()
         {
-            return (Class)Tokens.TryGetTree(ClassParser);
-            ASTNode ClassParser()
+            var startPos = CurrentPosition;
+            if (!Matches(CLASS)) throw ParseError("Expected class declaration!");
+
+            var name = Consume(TokenType.Word);
+            if (name == null) throw ParseError("Expected class name!");
+            name.SyntaxType = EF.TypeName;
+
+            var parentClass = ParseExtends() ?? new VariableType("Object");
+
+            var outerClass = ParseWithin() ?? new VariableType("Object");
+
+            var interfaces = new List<VariableType>();
+
+            EClassFlags flags = EClassFlags.Compiled | EClassFlags.Parsed;
+            string configName = "None";
+            while (CurrentTokenType == TokenType.Word)
             {
-                if (!Matches(CLASS)) throw ParseError("Expected class declaration!");
-
-                var name = Consume(TokenType.Word);
-                if (name == null) throw ParseError("Expected class name!");
-                name.SyntaxType = EF.TypeName;
-
-                var parentClass = TryParseParent() ?? new VariableType("Object");
-
-                var outerClass = TryParseOuter() ?? new VariableType("Object");
-
-                var interfaces = new List<VariableType>();
-
-                EClassFlags flags = EClassFlags.Compiled | EClassFlags.Parsed;
-                string configName = "None";
-                while (CurrentTokenType == TokenType.Word)
+                if (Matches("native", EF.Specifier))
                 {
-                    if (Matches("native", EF.Specifier))
+                    flags |= EClassFlags.Native;
+                }
+                else if (Matches("nativeonly", EF.Specifier))
+                {
+                    flags |= EClassFlags.NativeOnly;
+                }
+                else if (Matches("noexport", EF.Specifier))
+                {
+                    flags |= EClassFlags.NoExport;
+                }
+                else if (Matches("editinlinenew", EF.Specifier))
+                {
+                    flags |= EClassFlags.EditInlineNew;
+                }
+                else if (Matches("placeable", EF.Specifier))
+                {
+                    flags |= EClassFlags.Placeable;
+                }
+                else if (Matches("hidedropdown", EF.Specifier))
+                {
+                    flags |= EClassFlags.HideDropDown;
+                }
+                else if (Matches("nativereplication", EF.Specifier))
+                {
+                    flags |= EClassFlags.NativeReplication;
+                }
+                else if (Matches("perobjectconfig", EF.Specifier))
+                {
+                    flags |= EClassFlags.PerObjectConfig;
+                }
+                else if (Matches("abstract", EF.Specifier))
+                {
+                    flags |= EClassFlags.Abstract;
+                }
+                else if (Matches("deprecated", EF.Specifier))
+                {
+                    flags |= EClassFlags.Deprecated;
+                }
+                else if (Matches("transient", EF.Specifier))
+                {
+                    flags |= EClassFlags.Transient;
+                }
+                else if (Matches("config", EF.Specifier))
+                {
+                    flags |= EClassFlags.Config;
+                    if (Consume(TokenType.LeftParenth) is null || Consume(TokenType.Word) is null)
                     {
-                        flags |= EClassFlags.Native;
+                        throw ParseError("Config specifier is missing name of config file!", CurrentPosition);
                     }
-                    else if (Matches("nativeonly", EF.Specifier))
-                    {
-                        flags |= EClassFlags.NativeOnly;
-                    }
-                    else if (Matches("noexport", EF.Specifier))
-                    {
-                        flags |= EClassFlags.NoExport;
-                    }
-                    else if (Matches("editinlinenew", EF.Specifier))
-                    {
-                        flags |= EClassFlags.EditInlineNew;
-                    }
-                    else if (Matches("placeable", EF.Specifier))
-                    {
-                        flags |= EClassFlags.Placeable;
-                    }
-                    else if (Matches("hidedropdown", EF.Specifier))
-                    {
-                        flags |= EClassFlags.HideDropDown;
-                    }
-                    else if (Matches("nativereplication", EF.Specifier))
-                    {
-                        flags |= EClassFlags.NativeReplication;
-                    }
-                    else if (Matches("perobjectconfig", EF.Specifier))
-                    {
-                        flags |= EClassFlags.PerObjectConfig;
-                    }
-                    else if (Matches("abstract", EF.Specifier))
-                    {
-                        flags |= EClassFlags.Abstract;
-                    }
-                    else if (Matches("deprecated", EF.Specifier))
-                    {
-                        flags |= EClassFlags.Deprecated;
-                    }
-                    else if (Matches("transient", EF.Specifier))
-                    {
-                        flags |= EClassFlags.Transient;
-                    }
-                    else if (Matches("config", EF.Specifier))
-                    {
-                        flags |= EClassFlags.Config;
-                        if (Consume(TokenType.LeftParenth) is null || Consume(TokenType.Word) is null)
-                        {
-                            throw ParseError("Config specifier is missing name of config file!", CurrentPosition);
-                        }
 
-                        configName = Tokens.Prev().Value;
-                        if (Consume(TokenType.RightParenth) is null)
-                        {
-                            throw ParseError("Expected ')' after config file name!", CurrentPosition);
-                        }
-                    }
-                    else if (Matches("safereplace", EF.Specifier))
+                    configName = Tokens.Prev().Value;
+                    if (Consume(TokenType.RightParenth) is null)
                     {
-                        flags |= EClassFlags.SafeReplace;
-                    }
-                    else if (Matches("hidden", EF.Specifier))
-                    {
-                        flags |= EClassFlags.Hidden;
-                    }
-                    else if (Matches("collapsecategories", EF.Specifier))
-                    {
-                        flags |= EClassFlags.CollapseCategories;
-                    }
-                    else if (Matches("implements", EF.Keyword))
-                    {
-                        if (Consume(TokenType.LeftParenth) is null)
-                        {
-                            throw ParseError("'implements' specifier is missing interface list!", CurrentPosition);
-                        }
-
-                        while (Consume(TokenType.Word) is Token<string> interfaceName)
-                        {
-                            interfaceName.SyntaxType = EF.TypeName;
-                            interfaces.Add(new VariableType(interfaceName.Value, interfaceName.StartPos, interfaceName.EndPos));
-                            if (Consume(TokenType.Comma) is null)
-                            {
-                                break;
-                            }
-                        }
-                        if (Consume(TokenType.RightParenth) is null)
-                        {
-                            throw ParseError("Expected ')' after list of interfaces!", CurrentPosition);
-                        }
-                    }
-                    else
-                    {
-                        throw ParseError($"Invalid class specifier: '{CurrentToken.Value}'!", CurrentPosition);
+                        throw ParseError("Expected ')' after config file name!", CurrentPosition);
                     }
                 }
-
-                if (flags.Has(EClassFlags.Native))
+                else if (Matches("safereplace", EF.Specifier))
                 {
-                    if (!flags.Has(EClassFlags.NoExport))
+                    flags |= EClassFlags.SafeReplace;
+                }
+                else if (Matches("hidden", EF.Specifier))
+                {
+                    flags |= EClassFlags.Hidden;
+                }
+                else if (Matches("collapsecategories", EF.Specifier))
+                {
+                    flags |= EClassFlags.CollapseCategories;
+                }
+                else if (Matches("implements", EF.Keyword))
+                {
+                    if (Consume(TokenType.LeftParenth) is null)
                     {
-                        flags |= EClassFlags.Exported;
+                        throw ParseError("'implements' specifier is missing interface list!", CurrentPosition);
+                    }
+
+                    while (Consume(TokenType.Word) is ScriptToken interfaceName)
+                    {
+                        interfaceName.SyntaxType = EF.TypeName;
+                        interfaces.Add(new VariableType(interfaceName.Value, interfaceName.StartPos, interfaceName.EndPos));
+                        if (Consume(TokenType.Comma) is null)
+                        {
+                            break;
+                        }
+                    }
+                    if (Consume(TokenType.RightParenth) is null)
+                    {
+                        throw ParseError("Expected ')' after list of interfaces!", CurrentPosition);
                     }
                 }
                 else
                 {
-                    if (flags.Has(EClassFlags.NoExport))
-                    {
-                        TypeError("noexport is only valid for native classes!", CurrentPosition);
-                    }
+                    throw ParseError($"Invalid class specifier: '{CurrentToken.Value}'!", CurrentPosition);
                 }
+            }
 
-                if (Consume(TokenType.SemiColon) == null) throw ParseError("Expected semi-colon!", CurrentPosition);
-
-                var variables = new List<VariableDeclaration>();
-                var types = new List<VariableType>();
-                while (CurrentIs(VAR, STRUCT, ENUM, CONST))
+            if (flags.Has(EClassFlags.Native))
+            {
+                if (!flags.Has(EClassFlags.NoExport))
                 {
-                    if (CurrentIs(VAR))
-                    {
-                        var variable = TryParseVarDecl();
-                        if (variable == null) throw ParseError("Malformed instance variable!", CurrentPosition);
-                        variables.Add(variable);
-                    }
-                    else
-                    {
-                        VariableType type = TryParseEnum() ?? TryParseStruct() ?? TryParseConstant() ?? (VariableType)null;
-                        if (type is null) throw ParseError("Malformed type declaration!", CurrentPosition);
-
-                        types.Add(type);
-
-                        if (Consume(TokenType.SemiColon) == null) throw ParseError("Expected semi-colon!", CurrentPosition);
-                    }
+                    flags |= EClassFlags.Exported;
                 }
-
-                var funcs = new List<Function>();
-                var states = new List<State>();
-                while (!Tokens.AtEnd())
+            }
+            else
+            {
+                if (flags.Has(EClassFlags.NoExport))
                 {
-                    ASTNode declaration = TryParseFunction() ?? TryParseState() ?? (ASTNode)null;
-                    if (declaration == null)
-                    {
-                        break;
-                    }
-
-                    switch (declaration.Type)
-                    {
-                        case ASTNodeType.Function:
-                            funcs.Add((Function)declaration);
-                            break;
-                        case ASTNodeType.State:
-                            states.Add((State)declaration);
-                            break;
-                    }
+                    TypeError("noexport is only valid for native classes!", CurrentPosition);
                 }
+            }
 
-                if (Matches(REPLICATION, EF.Keyword))
+            if (Consume(TokenType.SemiColon) == null) throw ParseError("Expected semi-colon!", CurrentPosition);
+
+            var variables = new List<VariableDeclaration>();
+            var types = new List<VariableType>();
+            var funcs = new List<Function>();
+            var states = new List<State>();
+            DefaultPropertiesBlock defaultPropertiesBlock = null;
+            while (!Tokens.AtEnd())
+            {
+                if (CurrentIs(VAR))
+                {
+                    var variable = ParseVarDecl();
+                    if (variable == null) throw ParseError("Malformed instance variable!", CurrentPosition);
+                    variables.Add(variable);
+                }
+                else if (CurrentIs(STRUCT))
+                {
+                    VariableType type = ParseStruct();
+                    if (type is null) throw ParseError($"Malformed {STRUCT} declaration!", CurrentPosition);
+                    types.Add(type);
+                    //optional
+                    Matches(TokenType.SemiColon);
+                }
+                else if (CurrentIs(ENUM))
+                {
+                    VariableType type = ParseEnum();
+                    if (type is null) throw ParseError($"Malformed {ENUM} declaration!", CurrentPosition);
+                    types.Add(type);
+                    //optional
+                    Matches(TokenType.SemiColon);
+                }
+                else if (CurrentIs(CONST))
+                {
+                    VariableType type = ParseConstant();
+                    if (type is null) throw ParseError($"Malformed {CONST} declaration!", CurrentPosition);
+                    types.Add(type);
+                    //optional
+                    Matches(TokenType.SemiColon);
+                }
+                else if (Matches(REPLICATION, EF.Keyword))
                 {
                     //just skip the replication block for now. Not sure its worth compiling
-                    if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, false, out SourcePosition replicationStart, out SourcePosition replicationEnd))
+                    if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, false, out SourcePosition _, out SourcePosition _, out List<ScriptToken> _))
                     {
                         throw ParseError("Malformed replication block!", CurrentPosition);
                     }
                 }
-
-                var defaultPropertiesBlock = TryParseDefaultProperties();
-                if (defaultPropertiesBlock == null)
+                else if (CurrentIs(DEFAULTPROPERTIES))
                 {
-                    throw ParseError("Expected defaultproperties block!", CurrentPosition);
+                    defaultPropertiesBlock = ParseDefaultProperties();
+                    if (defaultPropertiesBlock is null)
+                    {
+                        throw ParseError($"Malformed {DEFAULTPROPERTIES} block!", CurrentPosition);
+                    }
+                }
+                else if (IsStartOfStateDeclaration())
+                {
+                    var state = ParseState();
+                    if (state is null) throw ParseError($"Malformed {STATE} declaration!", CurrentPosition);
+                    states.Add(state);
+                }
+                else if (TryParseFunction() is Function func)
+                {
+                    funcs.Add(func);
+                }
+                else
+                {
+                    throw ParseError($"Unexpected token in {CLASS}: {CurrentToken.Value}", CurrentToken);
+                }
+            }
+            defaultPropertiesBlock ??= new DefaultPropertiesBlock(new List<Statement>(), PrevToken.EndPos, CurrentToken.StartPos)
+            {
+                Tokens = new TokenStream(new List<ScriptToken>())
+            };
+
+            // TODO: should AST-nodes accept null values? should they make sure they dont present any?
+            return new Class(name.Value, parentClass, outerClass, flags, interfaces, types, variables, funcs, states, defaultPropertiesBlock, startPos, CurrentToken.StartPos)
+            {
+                ConfigName = configName
+            };
+            
+        }
+
+        private Const ParseConstant()
+        {
+            var startPos = CurrentPosition;
+            if (!Matches(CONST, EF.Keyword)) return null;
+            if (Consume(TokenType.Word) is ScriptToken constName)
+            {
+                if (!Matches(TokenType.Assign, EF.Operator))
+                {
+                    throw ParseError("Expected '=' after constant name!", CurrentPosition);
                 }
 
-                // TODO: should AST-nodes accept null values? should they make sure they dont present any?
-                return new Class(name.Value, parentClass, outerClass, flags, interfaces, types, variables, funcs, states, defaultPropertiesBlock, start: name.StartPos, end: name.EndPos)
+                Tokens.PushSnapshot();
+                string constValue = null;
+                while (CurrentTokenType != TokenType.SemiColon)
                 {
-                    ConfigName = configName
+                    if (CurrentTokenType == TokenType.NewLine)
+                    {
+                        throw ParseError("Expected ';' after constant value!", CurrentPosition);
+                    }
+
+                    constValue += Tokens.CurrentItem.Value;
+                    Tokens.Advance();
+                }
+                Tokens.PopSnapshot();
+                if (constValue == null)
+                {
+                    throw ParseError($"Expected a value for the constant '{constName.Value}'!");
+                }
+
+                Expression literal = ParseConstValue();
+                return new Const(constName.Value, constValue, startPos, CurrentPosition)
+                {
+                    Literal = literal
                 };
             }
+
+            throw ParseError("Expected name for constant!", CurrentPosition);
         }
 
-        private Const TryParseConstant()
+        public VariableDeclaration ParseVarDecl()
         {
-            return (Const)Tokens.TryGetTree(ConstantParser);
-            ASTNode ConstantParser()
+            var startPos = CurrentPosition;
+            if (!Matches(VAR, EF.Keyword)) return null;
+            string category = null;
+            if (CurrentTokenType == TokenType.LeftParenth)
             {
-                var startPos = CurrentPosition;
-                if (!Matches(CONST, EF.Keyword)) return null;
-                if (Consume(TokenType.Word) is Token<string> constName)
+                Tokens.Advance();
+                if (Consume(TokenType.Word) is ScriptToken categoryToken)
                 {
-                    if (!Matches(TokenType.Assign, EF.Operator))
-                    {
-                        throw ParseError("Expected '=' after constant name!", CurrentPosition);
-                    }
-
-                    Tokens.PushSnapshot();
-                    string constValue = null;
-                    while (CurrentTokenType != TokenType.SemiColon)
-                    {
-                        if (CurrentTokenType == TokenType.NewLine)
-                        {
-                            throw ParseError("Expected ';' after constant value!", CurrentPosition);
-                        }
-
-                        constValue += Tokens.CurrentItem.Value;
-                        Tokens.Advance();
-                    }
-                    Tokens.PopSnapshot();
-                    if (constValue == null)
-                    {
-                        throw ParseError($"Expected a value for the constant '{constName.Value}'!");
-                    }
-
-                    Expression literal = ParseConstValue();
-                    return new Const(constName.Value, constValue, startPos, CurrentPosition)
-                    {
-                        Literal = literal
-                    };
+                    category = categoryToken.Value;
                 }
 
-                throw ParseError("Expected name for constant!", CurrentPosition);
+                if (Consume(TokenType.RightParenth) == null)
+                {
+                    throw ParseError("Expected ')' after category name!", CurrentPosition);
+                }
             }
-        }
 
-        public VariableDeclaration TryParseVarDecl()
-        {
-            return (VariableDeclaration)Tokens.TryGetTree(DeclarationParser);
-            ASTNode DeclarationParser()
+            ParseVariableSpecifiers(out EPropertyFlags flags);
+            if ((flags & (EPropertyFlags.CoerceParm | EPropertyFlags.OptionalParm | EPropertyFlags.OutParm | EPropertyFlags.SkipParm)) != 0)
             {
-                var startPos = CurrentPosition;
-                if (!Matches(VAR, EF.Keyword)) return null;
-                string category = null;
-                if (CurrentTokenType == TokenType.LeftParenth)
-                {
-                    Tokens.Advance();
-                    if (Consume(TokenType.Word) is Token<string> categoryToken)
-                    {
-                        category = categoryToken.Value;
-                    }
-
-                    if (Consume(TokenType.RightParenth) == null)
-                    {
-                        throw ParseError("Expected ')' after category name!", CurrentPosition);
-                    }
-                }
-
-                ParseVariableSpecifiers(out EPropertyFlags flags);
-                if ((flags & (EPropertyFlags.CoerceParm | EPropertyFlags.OptionalParm | EPropertyFlags.OutParm | EPropertyFlags.SkipParm)) != 0)
-                {
-                    TypeError("Can only use 'out', 'coerce', 'optional', or 'skip' with function parameters!", CurrentPosition);
-                }
-
-                if (category is not null)
-                {
-                    flags |= EPropertyFlags.Editable;
-                }
-                var type = TryParseType();
-                if (type == null) throw ParseError("Expected variable type", CurrentPosition);
-
-                var var = ParseVariableName();
-                if (var == null) throw ParseError("Malformed variable name!", CurrentPosition);
-
-                if (CurrentTokenType == TokenType.Comma)
-                {
-                    throw ParseError("All variables must be declared on their own line!", CurrentPosition);
-                }
-
-                var semicolon = Consume(TokenType.SemiColon);
-                if (semicolon == null) throw ParseError("Expected semi-colon!", CurrentPosition);
-
-                return new VariableDeclaration(type, flags, var.Name, var.Size, category, startPos, semicolon.EndPos);
+                TypeError("Can only use 'out', 'coerce', 'optional', or 'skip' with function parameters!", CurrentPosition);
             }
+
+            if (category is not null)
+            {
+                flags |= EPropertyFlags.Editable;
+            }
+            var type = ParseTypeRef();
+            if (type == null) throw ParseError("Expected variable type", CurrentPosition);
+
+            var var = ParseVariableName();
+            if (var == null) throw ParseError("Malformed variable name!", CurrentPosition);
+
+            if (CurrentTokenType == TokenType.Comma)
+            {
+                throw ParseError("All variables must be declared on their own line!", CurrentPosition);
+            }
+
+            var semicolon = Consume(TokenType.SemiColon);
+            if (semicolon == null) throw ParseError("Expected semi-colon!", CurrentPosition);
+
+            return new VariableDeclaration(type, flags, var.Name, var.Size, category, startPos, semicolon.EndPos);
         }
 
-        public Struct TryParseStruct()
+        public Struct ParseStruct()
         {
-            return (Struct)Tokens.TryGetTree(StructParser);
-            ASTNode StructParser()
+            if (!Matches(STRUCT, EF.Keyword)) return null;
+
+            ScriptStructFlags flags = 0;
+            while (CurrentTokenType == TokenType.Word)
             {
-                if (!Matches(STRUCT, EF.Keyword)) return null;
-
-                ScriptStructFlags flags = 0;
-                while (CurrentTokenType == TokenType.Word)
+                if (Matches("native", EF.Specifier))
                 {
-                    if (Matches("native", EF.Specifier))
-                    {
-                        flags |= ScriptStructFlags.Native;
-                    }
-                    else if (Matches("export", EF.Specifier))
-                    {
-                        flags |= ScriptStructFlags.Export;
-                    }
-                    else if (Matches("transient", EF.Specifier))
-                    {
-                        flags |= ScriptStructFlags.Transient;
-                    }
-                    else if (Matches("atomic", EF.Specifier))
-                    {
-                        flags |= ScriptStructFlags.Atomic;
-                    }
-                    else if (Matches("immutable", EF.Specifier))
-                    {
-                        flags |= ScriptStructFlags.Immutable | ScriptStructFlags.Atomic;
-                    }
-                    else if (Matches("immutablewhencooked", EF.Specifier))
-                    {
-                        flags |= ScriptStructFlags.ImmutableWhenCooked | ScriptStructFlags.AtomicWhenCooked;
-                    }
-                    else if (Matches("strictconfig", EF.Specifier))
-                    {
-                        flags |= ScriptStructFlags.StrictConfig;
-                    }
-                    else if (Matches(nameof(ScriptStructFlags.UnkStructFlag), EF.Specifier))
-                    {
-                        flags |= ScriptStructFlags.UnkStructFlag;
-                    }
-                    else
-                    {
-                        break;
-                    }
+                    flags |= ScriptStructFlags.Native;
                 }
-
-                var name = Consume(TokenType.Word);
-                if (name == null) throw ParseError("Expected struct name!", CurrentPosition);
-                name.SyntaxType = EF.TypeName;
-
-                var parent = TryParseParent();
-
-                if (Consume(TokenType.LeftBracket) == null) throw ParseError("Expected '{'!", CurrentPosition);
-
-                var types = new List<VariableType>();
-                while (CurrentTokenType != TokenType.RightBracket && !Tokens.AtEnd())
+                else if (Matches("export", EF.Specifier))
                 {
-                    var variable = TryParseStruct();
-                    if (variable == null) break;
-                    if (Consume(TokenType.SemiColon) == null) throw ParseError("Expected semi-colon after struct declaration!", CurrentPosition);
-                    types.Add(variable);
+                    flags |= ScriptStructFlags.Export;
                 }
-
-                var vars = new List<VariableDeclaration>();
-                while (CurrentTokenType != TokenType.RightBracket && !CurrentIs(STRUCTDEFAULTPROPERTIES) && !Tokens.AtEnd())
+                else if (Matches("transient", EF.Specifier))
                 {
-                    var variable = TryParseVarDecl();
+                    flags |= ScriptStructFlags.Transient;
+                }
+                else if (Matches("atomic", EF.Specifier))
+                {
+                    flags |= ScriptStructFlags.Atomic;
+                }
+                else if (Matches("immutable", EF.Specifier))
+                {
+                    flags |= ScriptStructFlags.Immutable | ScriptStructFlags.Atomic;
+                }
+                else if (Matches("immutablewhencooked", EF.Specifier))
+                {
+                    flags |= ScriptStructFlags.ImmutableWhenCooked | ScriptStructFlags.AtomicWhenCooked;
+                }
+                else if (Matches("strictconfig", EF.Specifier))
+                {
+                    flags |= ScriptStructFlags.StrictConfig;
+                }
+                else if (Matches(nameof(ScriptStructFlags.UnkStructFlag), EF.Specifier))
+                {
+                    flags |= ScriptStructFlags.UnkStructFlag;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            var name = Consume(TokenType.Word);
+            if (name == null) throw ParseError("Expected struct name!", CurrentPosition);
+            name.SyntaxType = EF.TypeName;
+
+            var parent = ParseExtends();
+
+            if (Consume(TokenType.LeftBracket) == null) throw ParseError("Expected '{'!", CurrentPosition);
+
+            var types = new List<VariableType>();
+            var vars = new List<VariableDeclaration>();
+            DefaultPropertiesBlock defaults = null;
+            while (CurrentTokenType != TokenType.RightBracket && !Tokens.AtEnd())
+            {
+                if (CurrentIs(STRUCT))
+                {
+                    var variable = ParseStruct();
                     if (variable == null)
                     {
-                        if (CurrentIs(DEFAULTPROPERTIES))
-                        {
-                            TypeError($"In Structs, use '{STRUCTDEFAULTPROPERTIES}', not '{DEFAULTPROPERTIES}'.", CurrentToken);
-                        }
-                        throw ParseError("Malformed struct content!", CurrentPosition);
+                        throw ParseError("Malformed struct declaration!", CurrentPosition);
                     }
-
+                    if (Consume(TokenType.SemiColon) == null) TypeError("Expected semi-colon after struct declaration!", CurrentPosition);
+                    types.Add(variable);
+                }
+                else if (CurrentIs(VAR))
+                {
+                    var variable = ParseVarDecl();
+                    if (variable is null)
+                    {
+                        throw ParseError("Malformed variable declaration!", CurrentPosition);
+                    }
                     vars.Add(variable);
                 }
-
-                DefaultPropertiesBlock defaults = null;
-                if (Matches(STRUCTDEFAULTPROPERTIES, EF.Keyword))
+                else if (Consume(STRUCTDEFAULTPROPERTIES, DEFAULTPROPERTIES) is { } defaultPropsToken)
                 {
-                    if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, false, out SourcePosition bodyStart, out SourcePosition bodyEnd))
+                    defaultPropsToken.SyntaxType = EF.Keyword;
+                    if (defaultPropsToken.Value.CaseInsensitiveEquals(DEFAULTPROPERTIES))
+                    {
+                        TypeError($"In Structs, use '{STRUCTDEFAULTPROPERTIES}', not '{DEFAULTPROPERTIES}'.", CurrentToken);
+                    }
+                    if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, false, out SourcePosition bodyStart, out SourcePosition bodyEnd, out List<ScriptToken> scopeTokens))
                     {
                         throw ParseError("Malformed defaultproperties body!", CurrentPosition);
                     }
+                    if (defaults is not null)
+                    {
+                        TypeError($"Cannot have two {STRUCTDEFAULTPROPERTIES} declarations in a struct!", defaultPropsToken);
+                    }
                     defaults = new DefaultPropertiesBlock(null, bodyStart, bodyEnd)
                     {
-                        Tokens = new TokenStream<string>(() => Tokens.GetTokensInRange(bodyStart, bodyEnd).ToList())
+                        Tokens = new TokenStream(scopeTokens)
                     };
                 }
-
-                if (Consume(TokenType.RightBracket) == null) throw ParseError("Expected '}'!", CurrentPosition);
-
-                return new Struct(name.Value, parent, flags, vars, types, defaults, null, name.StartPos, name.EndPos);
+                else
+                {
+                    throw ParseError($"Expected an inner {STRUCT}, a var declaration, or '{STRUCTDEFAULTPROPERTIES}'", CurrentPosition);
+                }
             }
+
+            if (Consume(TokenType.RightBracket) == null) throw ParseError("Expected '}'!", CurrentPosition);
+
+            return new Struct(name.Value, parent, flags, vars, types, defaults, null, name.StartPos, name.EndPos);
         }
 
-        public Enumeration TryParseEnum()
+        public Enumeration ParseEnum()
         {
-            return (Enumeration)Tokens.TryGetTree(EnumParser);
-            ASTNode EnumParser()
+            var startPos = CurrentToken.StartPos;
+            if (!Matches(ENUM, EF.Keyword)) return null;
+
+            var name = Consume(TokenType.Word);
+            if (name == null) throw ParseError("Expected enumeration name!", CurrentPosition);
+            name.SyntaxType = EF.Enum;
+
+            if (Consume(TokenType.LeftBracket) == null) throw ParseError("Expected '{'!", CurrentPosition);
+
+            var identifiers = new List<EnumValue>();
+            byte i = 0;
+            do
             {
-                var startPos = CurrentToken.StartPos;
-                if (!Matches(ENUM, EF.Keyword)) return null;
-
-                var name = Consume(TokenType.Word);
-                if (name == null) throw ParseError("Expected enumeration name!", CurrentPosition);
-                name.SyntaxType = EF.Enum;
-
-                if (Consume(TokenType.LeftBracket) == null) throw ParseError("Expected '{'!", CurrentPosition);
-
-                var identifiers = new List<EnumValue>();
-                byte i = 0;
-                do
+                if (identifiers.Count >= 254)
                 {
-                    if (identifiers.Count >= 254)
-                    {
-                        TypeError("Enums cannot have more than 254 values!", CurrentPosition);
-                    }
-                    Token<string> ident = Consume(TokenType.Word);
-                    if (ident == null) throw ParseError("Expected non-empty enumeration!", CurrentPosition);
-                    if (ident.Value.Length > 63) TypeError("Enum value must be 63 characters or less!", CurrentPosition);
-
-                    identifiers.Add(new EnumValue(ident.Value, i, ident.StartPos, ident.EndPos));
-                    if (Consume(TokenType.Comma) == null && CurrentTokenType != TokenType.RightBracket) throw ParseError("Malformed enumeration content!", CurrentPosition);
-                    i++;
-                } while (CurrentTokenType != TokenType.RightBracket);
-
-                if (Consume(TokenType.RightBracket) == null) throw ParseError("Expected '}'!", CurrentPosition);
-                if (identifiers.IsEmpty())
-                {
-                    TypeError("Enums must have at least 1 value!", name);
+                    TypeError("Enums cannot have more than 254 values!", CurrentPosition);
                 }
+                ScriptToken ident = Consume(TokenType.Word);
+                if (ident == null) throw ParseError("Expected non-empty enumeration!", CurrentPosition);
+                if (ident.Value.Length > 63) TypeError("Enum value must be 63 characters or less!", CurrentPosition);
 
-                return new Enumeration(name.Value, identifiers, startPos, PrevToken.EndPos);
+                identifiers.Add(new EnumValue(ident.Value, i, ident.StartPos, ident.EndPos));
+                if (Consume(TokenType.Comma) == null && CurrentTokenType != TokenType.RightBracket) throw ParseError("Malformed enumeration content!", CurrentPosition);
+                i++;
+            } while (CurrentTokenType != TokenType.RightBracket);
+
+            if (Consume(TokenType.RightBracket) == null) throw ParseError("Expected '}'!", CurrentPosition);
+            if (identifiers.IsEmpty())
+            {
+                TypeError("Enums must have at least 1 value!", name);
             }
+
+            return new Enumeration(name.Value, identifiers, startPos, PrevToken.EndPos);
         }
 
         public Function TryParseFunction()
         {
-            return (Function)Tokens.TryGetTree(StubParser);
-            ASTNode StubParser()
-            {
-                var start = CurrentPosition;
-                ParseFunctionSpecifiers(out int nativeIndex, out EFunctionFlags flags);
+            Tokens.PushSnapshot();
+            var start = CurrentPosition;
+            ParseFunctionSpecifiers(out int nativeIndex, out EFunctionFlags flags);
 
-                if (!Matches(FUNCTION, EF.Keyword))
+            if (!Matches(FUNCTION, EF.Keyword))
+            {
+                Tokens.PopSnapshot();
+                return null;
+            }
+            Tokens.DiscardSnapshot();
+
+            bool coerceReturn = Matches("coerce", EF.Keyword);
+            Tokens.PushSnapshot();
+            var returnType = ParseTypeRef();
+            if (returnType == null) throw ParseError("Expected function name or return type!", CurrentPosition);
+
+            ScriptToken name = Consume(TokenType.Word);
+            if (name == null)
+            {
+                Tokens.PopSnapshot();
+                name = Consume(TokenType.Word);
+                returnType = null;
+            }
+            else
+            {
+                Tokens.DiscardSnapshot();
+            }
+
+            name.SyntaxType = EF.Function;
+
+            if (coerceReturn && returnType == null)
+            {
+                TypeError("Coerce specifier cannot be applied to a void return type!", CurrentPosition);
+            }
+
+            if (Consume(TokenType.LeftParenth) == null) throw ParseError("Expected '('!", CurrentPosition);
+
+            var parameters = new List<FunctionParameter>();
+            bool hasOptionalParams = false;
+            bool hasOutParms = false;
+            while (CurrentTokenType != TokenType.RightParenth)
+            {
+                var param = ParseParameter();
+                if (param == null) throw ParseError("Malformed parameter!", CurrentPosition);
+                if (hasOptionalParams && !param.IsOptional)
                 {
-                    return null;
+                    TypeError("Non-optional parameters cannot follow optional parameters!", param.StartPos, param.EndPos);
                 }
 
-                bool coerceReturn = Matches("coerce", EF.Keyword);
-                Tokens.PushSnapshot();
-                var returnType = TryParseType();
-                if (returnType == null) throw ParseError("Expected function name or return type!", CurrentPosition);
-
-                Token<string> name = Consume(TokenType.Word);
-                if (name == null)
+                hasOptionalParams |= param.IsOptional;
+                hasOutParms |= param.IsOut;
+                if (param.Name.CaseInsensitiveEquals("ReturnValue"))
                 {
-                    Tokens.PopSnapshot();
-                    name = Consume(TokenType.Word);
-                    returnType = null;
+                    TypeError("Cannot name a parameter 'ReturnValue'! It is a reserved word!", param.StartPos, param.EndPos);
+                }
+                parameters.Add(param);
+                if (Consume(TokenType.Comma) == null && CurrentTokenType != TokenType.RightParenth) throw ParseError("Unexpected parameter content!", CurrentPosition);
+            }
+
+            if (Game >= MEGame.ME3 && hasOptionalParams)
+            {
+                flags |= EFunctionFlags.HasOptionalParms; //TODO: does this flag exist in LE1/LE2?
+            }
+
+            if (hasOutParms)
+            {
+                flags |= EFunctionFlags.HasOutParms;
+            }
+            if (Consume(TokenType.RightParenth) == null) throw ParseError("Expected ')'!", CurrentPosition);
+
+            var body = new CodeBody(null, CurrentPosition, CurrentPosition);
+            if (Consume(TokenType.SemiColon) is null)
+            {
+                if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, false, out SourcePosition bodyStart, out SourcePosition bodyEnd, out List<ScriptToken> scopeTokens))
+                {
+                    throw ParseError("Malformed function body!", CurrentPosition);
+                }
+
+                body = new CodeBody(null, bodyStart, bodyEnd)
+                {
+                    Tokens = new TokenStream(scopeTokens)
+                };
+                flags |= EFunctionFlags.Defined;
+            }
+
+            VariableDeclaration returnDeclaration = null;
+            if (returnType is not null)
+            {
+                var returnFlags = EPropertyFlags.Parm | EPropertyFlags.OutParm | EPropertyFlags.ReturnParm;
+                if (coerceReturn)
+                {
+                    returnFlags |= EPropertyFlags.CoerceParm;
+                }
+
+                returnDeclaration = new VariableDeclaration(returnType, returnFlags, "ReturnValue");
+            }
+            return new Function(name.Value, flags, returnDeclaration, body, parameters, start, body.EndPos)
+            {
+                NativeIndex = nativeIndex
+            };
+        }
+
+        private bool IsStartOfStateDeclaration()
+        {
+            return CurrentIs(STATE) ||
+                   CurrentIs("auto") ||
+                   CurrentIs("simulated") && (NextIs("auto") || NextIs(STATE));
+        }
+        public State ParseState()
+        {
+            var flags = EStateFlags.None;
+            while (CurrentTokenType == TokenType.Word)
+            {
+                if (Matches("simulated", EF.Specifier))
+                {
+                    flags |= EStateFlags.Simulated;
+                }
+                else if (Matches("auto", EF.Specifier))
+                {
+                    flags |= EStateFlags.Auto;
                 }
                 else
                 {
-                    Tokens.DiscardSnapshot();
+                    break;
                 }
-
-                name.SyntaxType = EF.Function;
-
-                if (coerceReturn && returnType == null)
-                {
-                    TypeError("Coerce specifier cannot be applied to a void return type!", CurrentPosition);
-                }
-
-                if (Consume(TokenType.LeftParenth) == null) throw ParseError("Expected '('!", CurrentPosition);
-
-                var parameters = new List<FunctionParameter>();
-                bool hasOptionalParams = false;
-                bool hasOutParms = false;
-                while (CurrentTokenType != TokenType.RightParenth)
-                {
-                    var param = TryParseParameter();
-                    if (param == null) throw ParseError("Malformed parameter!", CurrentPosition);
-                    if (hasOptionalParams && !param.IsOptional)
-                    {
-                        TypeError("Non-optional parameters cannot follow optional parameters!", param.StartPos, param.EndPos);
-                    }
-
-                    hasOptionalParams |= param.IsOptional;
-                    hasOutParms |= param.IsOut;
-                    if (param.Name.CaseInsensitiveEquals("ReturnValue"))
-                    {
-                        TypeError("Cannot name a parameter 'ReturnValue'! It is a reserved word!", param.StartPos, param.EndPos);
-                    }
-                    parameters.Add(param);
-                    if (Consume(TokenType.Comma) == null && CurrentTokenType != TokenType.RightParenth) throw ParseError("Unexpected parameter content!", CurrentPosition);
-                }
-
-                if (Game >= MEGame.ME3 && hasOptionalParams)
-                {
-                    flags |= EFunctionFlags.HasOptionalParms; //TODO: does this flag exist in LE1/LE2?
-                }
-
-                if (hasOutParms)
-                {
-                    flags |= EFunctionFlags.HasOutParms;
-                }
-                if (Consume(TokenType.RightParenth) == null) throw ParseError("Expected ')'!", CurrentPosition);
-
-                var body = new CodeBody(null, CurrentPosition, CurrentPosition);
-                if (Consume(TokenType.SemiColon) is null)
-                {
-                    if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, false, out SourcePosition bodyStart, out SourcePosition bodyEnd))
-                    {
-                        throw ParseError("Malformed function body!", CurrentPosition);
-                    }
-
-                    body = new CodeBody(null, bodyStart, bodyEnd)
-                    {
-                        Tokens = new TokenStream<string>(() => Tokens.GetTokensInRange(bodyStart, bodyEnd).ToList())
-                    };
-                    flags |= EFunctionFlags.Defined;
-                }
-
-                VariableDeclaration returnDeclaration = null;
-                if (returnType is not null)
-                {
-                    var returnFlags = EPropertyFlags.Parm | EPropertyFlags.OutParm | EPropertyFlags.ReturnParm;
-                    if (coerceReturn)
-                    {
-                        returnFlags |= EPropertyFlags.CoerceParm;
-                    }
-
-                    returnDeclaration = new VariableDeclaration(returnType, returnFlags, "ReturnValue");
-                }
-                return new Function(name.Value, flags, returnDeclaration, body, parameters, start, body.EndPos)
-                {
-                    NativeIndex = nativeIndex
-                };
             }
-        }
 
-        public State TryParseState()
-        {
-            return (State)Tokens.TryGetTree(StateSkeletonParser);
-            ASTNode StateSkeletonParser()
+            if (!Matches(STATE, EF.Keyword)) return null;
+            if (Consume(TokenType.LeftParenth) != null)
             {
-                var flags = EStateFlags.None;
-                while (CurrentTokenType == TokenType.Word)
+                if (Consume(TokenType.RightParenth) is null)
                 {
-                    if (Matches("simulated", EF.Specifier))
+                    throw ParseError("Expected ')' after '(' in state declaration!");
+                }
+
+                flags |= EStateFlags.Editable;
+            }
+
+            var name = Consume(TokenType.Word);
+            if (name == null) throw ParseError("Expected state name!", CurrentPosition);
+            name.SyntaxType = EF.State;
+
+            var parent = ParseExtends(true);
+
+            if (Consume(TokenType.LeftBracket) == null) throw ParseError("Expected '{'!", CurrentPosition);
+
+            var ignoreMask = (EProbeFunctions)ulong.MaxValue;
+            if (Matches(IGNORES, EF.Keyword))
+            {
+                do
+                {
+                    if (Consume(TokenType.Word) is not ScriptToken ignore)
                     {
-                        flags |= EStateFlags.Simulated;
+                        throw ParseError("Malformed ignore statement!", CurrentPosition);
                     }
-                    else if (Matches("auto", EF.Specifier))
+                    ignore.SyntaxType = EF.Function;
+                    if (Enum.TryParse(ignore.Value, out EProbeFunctions ignoreFlag))
                     {
-                        flags |= EStateFlags.Auto;
+                        ignoreMask &= ~ignoreFlag;
                     }
                     else
                     {
-                        break;
+                        TypeError("Only probed functions can be ignored! To ignore a non-probe function, declare it with a ; instead of a body.", ignore);
                     }
-                }
+                } while (Consume(TokenType.Comma) != null);
 
-                if (!Matches(STATE, EF.Keyword)) return null;
-                if (Consume(TokenType.LeftParenth) != null)
-                {
-                    if (Consume(TokenType.RightParenth) is null)
-                    {
-                        throw ParseError("Expected ')' after '(' in state declaration!");
-                    }
-
-                    flags |= EStateFlags.Editable;
-                }
-
-                var name = Consume(TokenType.Word);
-                if (name == null) throw ParseError("Expected state name!", CurrentPosition);
-                name.SyntaxType = EF.State;
-
-                var parent = TryParseParent(true);
-
-                if (Consume(TokenType.LeftBracket) == null) throw ParseError("Expected '{'!", CurrentPosition);
-
-                var ignoreMask = (EProbeFunctions)ulong.MaxValue;
-                if (Matches(IGNORES, EF.Keyword))
-                {
-                    do
-                    {
-                        if (Consume(TokenType.Word) is not Token<string> ignore)
-                        {
-                            throw ParseError("Malformed ignore statement!", CurrentPosition);
-                        }
-                        ignore.SyntaxType = EF.Function;
-                        if (Enum.TryParse(ignore.Value, out EProbeFunctions ignoreFlag))
-                        {
-                            ignoreMask &= ~ignoreFlag;
-                        }
-                        else
-                        {
-                            TypeError("Only probed functions can be ignored! To ignore a non-probe function, declare it with a ; instead of a body.", ignore);
-                        }
-                    } while (Consume(TokenType.Comma) != null);
-
-                    if (Consume(TokenType.SemiColon) == null) throw ParseError("Expected semi-colon!", CurrentPosition);
-                }
-
-                var funcs = new List<Function>();
-                Function func = TryParseFunction();
-                while (func != null)
-                {
-                    funcs.Add(func);
-                    func = TryParseFunction();
-                }
-
-
-                if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, true, out SourcePosition bodyStart, out SourcePosition bodyEnd))
-                {
-                    throw ParseError("Malformed state body!", CurrentPosition);
-                }
-                if (Consume(TokenType.SemiColon) == null) throw ParseError("Expected semi-colon at end of state!", CurrentPosition);
-
-                var body = new CodeBody(new List<Statement>(), bodyStart, bodyEnd)
-                {
-                    Tokens = new TokenStream<string>(() => Tokens.GetTokensInRange(bodyStart, bodyEnd).ToList())
-                };
-
-                var parentState = parent != null ? new State(parent.Name, null, default, null, null, null, parent.StartPos, parent.EndPos) : null;
-                return new State(name.Value, body, flags, parentState, funcs, null, name.StartPos, CurrentPosition)
-                {
-                    IgnoreMask = ignoreMask
-                };
+                if (Consume(TokenType.SemiColon) == null) throw ParseError("Expected semi-colon!", CurrentPosition);
             }
+
+            var funcs = new List<Function>();
+            Function func = TryParseFunction();
+            while (func != null)
+            {
+                funcs.Add(func);
+                func = TryParseFunction();
+            }
+
+
+            if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, true, out SourcePosition bodyStart, out SourcePosition bodyEnd, out List<ScriptToken> scopeTokens))
+            {
+                throw ParseError("Malformed state body!", CurrentPosition);
+            }
+            if (Consume(TokenType.SemiColon) == null) throw ParseError("Expected semi-colon at end of state!", CurrentPosition);
+
+            var body = new CodeBody(new List<Statement>(), bodyStart, bodyEnd)
+            {
+                Tokens = new TokenStream(scopeTokens)
+            };
+
+            var parentState = parent != null ? new State(parent.Name, null, default, null, null, null, parent.StartPos, parent.EndPos) : null;
+            return new State(name.Value, body, flags, parentState, funcs, null, name.StartPos, CurrentPosition)
+            {
+                IgnoreMask = ignoreMask
+            };
         }
 
-        public DefaultPropertiesBlock TryParseDefaultProperties()
+        public DefaultPropertiesBlock ParseDefaultProperties()
         {
-            return (DefaultPropertiesBlock)Tokens.TryGetTree(DefaultPropertiesParser);
-            ASTNode DefaultPropertiesParser()
+            if (!Matches(DEFAULTPROPERTIES, EF.Keyword)) return null;
+
+            if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, false, out SourcePosition bodyStart, out SourcePosition bodyEnd, out List<ScriptToken> scopeTokens))
             {
-
-                if (!Matches(DEFAULTPROPERTIES, EF.Keyword)) return null;
-
-                if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, false, out SourcePosition bodyStart, out SourcePosition bodyEnd))
-                {
-                    throw ParseError("Malformed defaultproperties body!", CurrentPosition);
-                }
-
-                return new DefaultPropertiesBlock(new List<Statement>(), bodyStart, bodyEnd)
-                {
-                    Tokens = new TokenStream<string>(() => Tokens.GetTokensInRange(bodyStart, bodyEnd).ToList())
-                };
+                throw ParseError("Malformed defaultproperties body!", CurrentPosition);
             }
+
+            return new DefaultPropertiesBlock(new List<Statement>(), bodyStart, bodyEnd)
+            {
+                Tokens = new TokenStream(scopeTokens)
+            };
         }
 
         #endregion
 
         #region Misc
 
-        public FunctionParameter TryParseParameter()
+        public FunctionParameter ParseParameter()
         {
-            return (FunctionParameter)Tokens.TryGetTree(ParamParser);
-            ASTNode ParamParser()
+            ParseVariableSpecifiers(out EPropertyFlags flags);
+            if ((flags & ~(EPropertyFlags.CoerceParm | EPropertyFlags.OptionalParm | EPropertyFlags.OutParm | EPropertyFlags.SkipParm | EPropertyFlags.Component | EPropertyFlags.Const | EPropertyFlags.AlwaysInit)) != 0)
             {
-                ParseVariableSpecifiers(out EPropertyFlags flags);
-                if ((flags & ~(EPropertyFlags.CoerceParm | EPropertyFlags.OptionalParm | EPropertyFlags.OutParm | EPropertyFlags.SkipParm | EPropertyFlags.Component | EPropertyFlags.Const | EPropertyFlags.AlwaysInit)) != 0)
+                TypeError("The only valid specifiers for function parameters are 'out', 'coerce', 'optional', 'const', 'init' and 'skip'!", CurrentPosition);
+            }
+
+            flags |= EPropertyFlags.Parm;
+
+            var type = ParseTypeRef();
+            if (type == null) throw ParseError("Expected parameter type!", CurrentPosition);
+
+            var variable = ParseVariableIdentifier();
+            if (variable == null) throw ParseError("Expected parameter name!", CurrentPosition);
+
+            var funcParam = new FunctionParameter(type, flags, variable.Name, variable.Size, variable.StartPos, variable.EndPos);
+
+            if (Matches(TokenType.Assign, EF.Operator))
+            {
+                if (!funcParam.IsOptional)
                 {
-                    TypeError("The only valid specifiers for function parameters are 'out', 'coerce', 'optional', 'const', 'init' and 'skip'!", CurrentPosition);
+                    TypeError("Only optional parameters can have default values!", CurrentPosition);
                 }
 
-                flags |= EPropertyFlags.Parm;
-
-                var type = TryParseType();
-                if (type == null) throw ParseError("Expected parameter type!", CurrentPosition);
-
-                var variable = TryParseVariable();
-                if (variable == null) throw ParseError("Expected parameter name!", CurrentPosition);
-
-                var funcParam = new FunctionParameter(type, flags, variable.Name, variable.Size, variable.StartPos, variable.EndPos);
-
-                if (Matches(TokenType.Assign, EF.Operator))
+                if (funcParam.IsOut)
                 {
-                    if (!funcParam.IsOptional)
+                    TypeError("optional out parameters cannot have default values!", CurrentPosition);
+                }
+
+                var defaultValueStart = CurrentPosition;
+                int parenNest = 0;
+                var defaultParamTokens = new List<ScriptToken>();
+                while (CurrentTokenType != TokenType.EOF)
+                {
+                    if (parenNest == 0 && (CurrentTokenType is TokenType.RightParenth or TokenType.Comma))
                     {
-                        TypeError("Only optional parameters can have default values!", CurrentPosition);
+                        break;
                     }
 
-                    if (funcParam.IsOut)
+                    switch (CurrentTokenType)
                     {
-                        TypeError("optional out parameters cannot have default values!", CurrentPosition);
-                    }
-
-                    var defaultValueStart = CurrentPosition;
-                    int parenNest = 0;
-                    while (CurrentTokenType != TokenType.EOF)
-                    {
-                        if (parenNest == 0 && (CurrentTokenType is TokenType.RightParenth or TokenType.Comma))
-                        {
+                        case TokenType.LeftParenth:
+                            parenNest++;
                             break;
-                        }
-
-                        switch (CurrentTokenType)
-                        {
-                            case TokenType.LeftParenth:
-                                parenNest++;
-                                break;
-                            case TokenType.RightParenth:
-                                parenNest--;
-                                break;
-                        }
-                        Tokens.Advance();
+                        case TokenType.RightParenth:
+                            parenNest--;
+                            break;
                     }
-
-                    if (CurrentPosition.Equals(defaultValueStart))
-                    {
-                        throw ParseError("Expected default parameter value after '='!", CurrentPosition);
-                    }
-
-                    SourcePosition bodyStart = defaultValueStart;
-                    SourcePosition bodyEnd = CurrentPosition;
-                    funcParam.UnparsedDefaultParam = new CodeBody(null, bodyStart, bodyEnd)
-                    {
-                        Tokens = new TokenStream<string>(() => Tokens.GetTokensInRange(bodyStart, bodyEnd).ToList())
-                    };
+                    defaultParamTokens.Add(CurrentToken);
+                    Tokens.Advance();
                 }
 
-                return funcParam;
+                if (CurrentPosition.Equals(defaultValueStart))
+                {
+                    throw ParseError("Expected default parameter value after '='!", CurrentPosition);
+                }
+
+                SourcePosition bodyStart = defaultValueStart;
+                SourcePosition bodyEnd = CurrentPosition;
+                funcParam.UnparsedDefaultParam = new CodeBody(null, bodyStart, bodyEnd)
+                {
+                    Tokens = new TokenStream(defaultParamTokens)
+                };
             }
+
+            return funcParam;
         }
 
-        public VariableType TryParseParent(bool state = false)
+        public VariableType ParseExtends(bool state = false)
         {
-            return (VariableType)Tokens.TryGetTree(ParentParser);
-            ASTNode ParentParser()
+            if (!Matches(EXTENDS, EF.Keyword)) return null;
+            var parentName = Consume(TokenType.Word);
+            if (parentName == null)
             {
-                if (!Matches(EXTENDS, EF.Keyword)) return null;
-                var parentName = Consume(TokenType.Word);
-                if (parentName == null)
-                {
-                    Log.LogError("Expected parent name!", CurrentPosition);
-                    return null;
-                }
-
-                parentName.SyntaxType = state ? EF.State : EF.TypeName;
-
-                return new VariableType(parentName.Value, parentName.StartPos, parentName.EndPos);
+                throw ParseError($"Expected parent name after '{EXTENDS}'!", CurrentPosition);
             }
+
+            parentName.SyntaxType = state ? EF.State : EF.TypeName;
+
+            return new VariableType(parentName.Value, parentName.StartPos, parentName.EndPos);
         }
 
-        public VariableType TryParseOuter()
+        public VariableType ParseWithin()
         {
-            return (VariableType)Tokens.TryGetTree(OuterParser);
-            ASTNode OuterParser()
+            if (!Matches(WITHIN)) return null;
+            var outerName = Consume(TokenType.Word);
+            if (outerName == null)
             {
-                if (!Matches(WITHIN)) return null;
-                var outerName = Consume(TokenType.Word);
-                if (outerName == null)
-                {
-                    Log.LogError("Expected outer class name!", CurrentPosition);
-                    return null;
-                }
-
-                outerName.SyntaxType = EF.TypeName;
-
-                return new VariableType(outerName.Value, outerName.StartPos, outerName.EndPos);
+                throw ParseError($"Expected outer class name after '{WITHIN}'!", CurrentPosition);
             }
+
+            outerName.SyntaxType = EF.TypeName;
+
+            return new VariableType(outerName.Value, outerName.StartPos, outerName.EndPos);
         }
 
         #endregion
@@ -1188,8 +1182,9 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         private bool ParseScopeSpan(TokenType scopeStart, TokenType scopeEnd,
                                     bool isPartialScope,
-                                    out SourcePosition startPos, out SourcePosition endPos)
+                                    out SourcePosition startPos, out SourcePosition endPos, out List<ScriptToken> scopeTokens)
         {
+            scopeTokens = new List<ScriptToken>();
             startPos = null;
             endPos = null;
             if (!isPartialScope && Consume(scopeStart) == null)
@@ -1200,7 +1195,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             startPos = Tokens.CurrentItem.StartPos;
 
             int nestedLevel = 1;
-            while (nestedLevel > 0)
+            while (true)
             {
                 if (CurrentTokenType == TokenType.EOF)
                 {
@@ -1211,10 +1206,13 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     nestedLevel++;
                 else if (CurrentTokenType == scopeEnd)
                     nestedLevel--;
-
-                // If we're at the end token, don't advance so we can check the position properly.
-                if (nestedLevel > 0)
-                    Tokens.Advance();
+                
+                if (nestedLevel <= 0)
+                {
+                    break;
+                }
+                scopeTokens.Add(CurrentToken);
+                Tokens.Advance();
             }
             endPos = Tokens.CurrentItem.StartPos;
             Tokens.Advance();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
@@ -11,78 +12,78 @@ using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
 {
-    public class NumberMatcher : TokenMatcherBase<string>
+    public sealed class NumberMatcher : TokenMatcherBase
     {
-        private readonly List<KeywordMatcher> Delimiters;
-        private static readonly Regex digits = new ("[0-9]", RegexOptions.Compiled);
-        private static readonly Regex hexDigits = new ("[0-9a-fA-F]", RegexOptions.Compiled);
-
-        public NumberMatcher(List<KeywordMatcher> delimiters)
+        public override ScriptToken Match(CharDataStream data, ref SourcePosition streamPos, MessageLog log)
         {
-            Delimiters = delimiters ?? new List<KeywordMatcher>();
+            return MatchNumber(data, ref streamPos);
         }
 
-        protected override Token<string> Match(TokenizableDataStream<string> data, ref SourcePosition streamPos, MessageLog log)
+        public static ScriptToken MatchNumber(CharDataStream data, ref SourcePosition streamPos)
         {
-            var start = new SourcePosition(streamPos);
-            TokenType type;
-            string value;
-
-            string first = SubNumber(data, digits);
+            string first = SubNumberDec(data);
             if (first == null)
                 return null;
-            
-            if (data.CurrentItem == "x")
+
+            TokenType type;
+            string value;
+            char peek = data.CurrentItem;
+            if (peek == 'x')
             {
                 if (first != "0")
                     return null;
 
                 data.Advance();
-                string hex = SubNumber(data, hexDigits);
-                if (hex == null || data.CurrentItem is "." or "x")
+                string hex = SubNumberHex(data);
+                peek = data.CurrentItem;
+                if (hex == null || peek is '.' or 'x')
                     return null;
 
-                hex = Convert.ToInt32(hex, 16).ToString("D", CultureInfo.InvariantCulture);
                 type = TokenType.IntegerNumber;
-                value = hex;
-            } 
-            else if (data.CurrentItem == "." || data.CurrentItem.CaseInsensitiveEquals("e") || data.CurrentItem.CaseInsensitiveEquals("d"))
+                value = Convert.ToInt32(hex, 16).ToString("D", CultureInfo.InvariantCulture);
+            }
+            else if (peek == '.' || peek.CaseInsensitiveEquals('e') || peek.CaseInsensitiveEquals('d'))
             {
                 type = TokenType.FloatingNumber;
                 string second = null;
-                if (data.CurrentItem == ".")
+                if (peek == '.')
                 {
                     data.Advance();
-                    second = SubNumber(data, digits);
+                    second = SubNumberDec(data);
+                    peek = data.CurrentItem;
                 }
-                if (data.CurrentItem.CaseInsensitiveEquals("e") || data.CurrentItem.CaseInsensitiveEquals("d"))
+                if (peek.CaseInsensitiveEquals('e') || peek.CaseInsensitiveEquals('d'))
                 {
                     data.Advance();
-                    string exponent = SubNumber(data, digits);
-                    if (exponent == null || data.CurrentItem is "." or "x")
+                    string exponent = SubNumberDec(data);
+                    peek = data.CurrentItem;
+                    if (exponent == null || peek is '.' or 'x')
                         return null;
                     value = $"{first}.{second ?? "0"}e{exponent}";
                 }
-                else if (second == null && data.CurrentItem == "f")
+                else if (second == null && peek == 'f')
                 {
                     data.Advance();
+                    peek = data.CurrentItem;
                     value = $"{first}.0";
                 }
                 else
                 {
-                    if (second == null && data.CurrentItem == "f")
+                    if (second == null && peek == 'f')
                     {
                         data.Advance();
+                        peek = data.CurrentItem;
                     }
-                    if (second == null || data.CurrentItem is "." or "x")
+                    if (second == null || peek is '.' or 'x')
                         return null;
 
                     value = $"{first}.{second}";
                 }
 
-                if (data.CurrentItem == "f")
+                if (data.CurrentItem == 'f')
                 {
                     data.Advance();
+                    peek = data.CurrentItem;
                 }
             }
             else
@@ -91,23 +92,37 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
                 value = first;
             }
 
-            string peek = data.CurrentItem;
-            bool hasDelimiter = string.IsNullOrWhiteSpace(peek) || Delimiters.Any(c => c.Keyword == peek);
-            if (!hasDelimiter)
+            if (!peek.IsNullOrWhiteSpace() && !GlobalLists.IsDelimiterChar(peek))
             {
                 return null;
             }
+            var start = new SourcePosition(streamPos);
             streamPos = streamPos.GetModifiedPosition(0, data.CurrentIndex - start.CharIndex, data.CurrentIndex - start.CharIndex);
             var end = new SourcePosition(streamPos);
-            return new Token<string>(type, value, start, end) {SyntaxType = EF.Number};
+            return new ScriptToken(type, value, start, end) { SyntaxType = EF.Number };
         }
 
-        private static string SubNumber(TokenizableDataStream<string> data, Regex regex)
+        private static string SubNumberHex(CharDataStream data)
         {
             string number = null;
-            string peek = data.CurrentItem;
+            char peek = data.CurrentItem;
             
-            while (!data.AtEnd() && regex.IsMatch(peek))
+            while (!data.AtEnd() && Uri.IsHexDigit(peek))
+            {
+                number += peek;
+                data.Advance();
+                peek = data.CurrentItem;
+            }
+
+            return number;
+        }
+
+        private static string SubNumberDec(CharDataStream data)
+        {
+            string number = null;
+            char peek = data.CurrentItem;
+
+            while (!data.AtEnd() && peek.IsDigit())
             {
                 number += peek;
                 data.Advance();
