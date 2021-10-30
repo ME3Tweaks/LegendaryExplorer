@@ -8,8 +8,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
 {
     public class TextureFilter : GenericAssetFilter<TextureRecord>
     {
-        private List<PredicateSpecification<TextureRecord>> GeneratedLodFilters { get; set; }
         public ObservableCollection<IAssetSpecification<TextureRecord>> LODGroups { get; } = new();
+        private List<PredicateSpecification<TextureRecord>> GeneratedLodFilters;
         private List<PredicateSpecification<TextureRecord>> SingleSelectionSizes;
 
         private readonly string[] _lodGroups = new[]

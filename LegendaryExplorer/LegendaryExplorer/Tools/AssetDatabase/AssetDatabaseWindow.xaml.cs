@@ -1840,7 +1840,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 TextWriter tw = new StreamWriter(d.FileName);
                 foreach (KeyValuePair<int, string> file in FileListFilter.CustomFileList)
                 {
-                    tw.WriteLine(file.Value);
+                    tw.WriteLine($"{file.Value} {file.Key}");
                 }
                 tw.Close();
                 MessageBox.Show("Done.");
@@ -1877,10 +1877,26 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     string[] parts = n.Split(' ');
                     if (parts.Length >= 2)
                     {
-                        var key = FileListExtended.IndexOf(new(parts[0], parts[1], int.Parse(parts[2])));
-                        if (key >= 0)
+                        FileDirPair fdp = null;
+                        int key = -1;
+                        var (fileName, fileDir) = (parts[0], parts[1]);
+                        if (parts.Length > 2 && int.TryParse(parts[2], out key) && key < FileListExtended.Count)
                         {
-                            FileListFilter.CustomFileList.Add(key, n);
+                            fdp = FileListExtended[key];
+                            if (fdp.FileName != fileName || fdp.Directory != fileDir) fdp = null;
+                        }
+
+                        if (fdp is null)
+                        {
+                            fdp = FileListExtended.FirstOrDefault(t =>
+                                t.FileName == fileName && t.Directory == fileDir);
+                            key = FileListExtended.IndexOf(fdp);
+                        }
+
+
+                        if (fdp is not null)
+                        {
+                            FileListFilter.CustomFileList.Add(key, $"{fdp.FileName} {fdp.Directory}");
                             continue;
                         }
                     }
