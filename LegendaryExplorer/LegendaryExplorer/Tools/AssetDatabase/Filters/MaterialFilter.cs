@@ -42,8 +42,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
                 new UISeparator<MaterialRecord>(),
                 new MaterialSettingSpec("Must have color setting", "VectorParameter",
                     setting => setting.Parm1.Contains("color", StringComparison.OrdinalIgnoreCase)),
-                new PredicateSpecification<MaterialRecord>("Must have texture setting",
-                    mr => mr.MatSettings.Any(x => x.Name == "TextureSampleParameter2D")),
+                new MaterialSettingSpec("Must have texture setting", "TextureSampleParameter2D"),
                 new MaterialSettingSpec("Must have talk scalar setting", "ScalarParameter",
                     setting => setting.Parm1.Contains("talk", StringComparison.OrdinalIgnoreCase))
             };
@@ -73,9 +72,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
         private bool MaterialSearch((string, MaterialRecord) t)
         {
             var (text, mr) = t;
-            var enabled = mr.MaterialName.ToLower().Contains(text.ToLower());
-            if (!enabled) enabled = mr.ParentPackage.ToLower().Contains(text.ToLower());
-            return enabled;
+            return mr.MaterialName.ToLower().Contains(text.ToLower()) || mr.ParentPackage.ToLower().Contains(text.ToLower());
         }
     }
 }

@@ -27,7 +27,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
         private string _description;
         public string Description { get => _description; set => SetProperty(ref _description, value); }
         private bool _isSelected;
-        public bool IsSelected { get => _isSelected; set => SetProperty(ref _isSelected, value); }
+        public virtual bool IsSelected { get => _isSelected; set => SetProperty(ref _isSelected, value); }
 
         /// <summary>
         /// Should this Specification show up in the UI?

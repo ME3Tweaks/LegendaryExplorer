@@ -56,15 +56,15 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
     /// <summary>
     /// Matches an asset based on whether any of it's usages are in the Custom File List
     /// </summary>
-    public class FileListSpecification : AssetSpecification<object>
+    public class FileListSpecification : AssetSpecification<IAssetRecord>
     {
         public new bool ShowInUI { get; } = false;
         public ObservableDictionary<int, string> CustomFileList { get; set; } = new();
-        public override bool MatchesSpecification(object item)
+        public override bool MatchesSpecification(IAssetRecord item)
         {
-            if (item is IAssetRecord record && !CustomFileList.IsEmpty())
+            if (!CustomFileList.IsEmpty())
             {
-                return record.AssetUsages.Select(usage => usage.FileKey).Intersect(CustomFileList.Keys).Any();
+                return item.AssetUsages.Select(usage => usage.FileKey).Intersect(CustomFileList.Keys).Any();
             }
             return true;
         }
