@@ -161,7 +161,7 @@ namespace LegendaryExplorerCore.Packages
         }
 
         /// <summary>
-        /// Releases all packages referenced by this cache and can optionally force a garbage collection to reclaim memory they may have used
+        /// Releases all packages referenced by this cache and can optionally force a garbage collection to reclaim memory they may have used. This also empties resident packages.
         /// </summary>
         public virtual void ReleasePackages(bool gc = false)
         {
@@ -177,14 +177,14 @@ namespace LegendaryExplorerCore.Packages
         }
 
         /// <summary>
-        /// Releases all packages referenced by this cache that match the specified predicate, and can optionally force a garbage collection to reclaim memory they may have used
+        /// Releases all packages referenced by this cache that match the specified predicate, and can optionally force a garbage collection to reclaim memory they may have used. This does not remove resident packages.
         /// </summary>
         public void ReleasePackages(Predicate<string> packagesToDropPredicate, bool gc = false)
         {
             var keys = Cache.Keys.ToList();
             foreach (var key in keys)
             {
-                if (packagesToDropPredicate?.Invoke(key) ?? true)
+                if (!ResidentPackages.Contains(key) && (packagesToDropPredicate?.Invoke(key) ?? true))
                 {
                     Cache[key].Dispose();
                     Cache.Remove(key, out _);

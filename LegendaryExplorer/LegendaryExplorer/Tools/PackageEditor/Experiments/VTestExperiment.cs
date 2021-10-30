@@ -366,7 +366,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     else
                     {
                         var levelName = Path.GetFileNameWithoutExtension(f);
-                        //if (levelName.CaseInsensitiveEquals("BIOA_PRC2_CCAHERN_DSG"))
+                        //if (levelName.CaseInsensitiveEquals("BIOA_PRC2_CCMAIN_CONV"))
                         PortVTestLevel(vTestLevel, levelName, vTestOptions, levelName == "BIOA_" + vTestLevel, true);
                     }
                 }
@@ -484,6 +484,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             CorrectFileForLEXMapFileDefaults(me1File, le1File, vTestOptions);
             PrePortingCorrections(me1File, vTestOptions);
+
+            //if (levelName == "BIOA_PRC2_CCMAIN_CONV")
+            //{
+            //    me1File.Save(@"C:\Users\Mgame\Desktop\conv.sfm");
+            //}
 
             // Once we are confident in porting we will just take the actor list from PersistentLevel
             // For now just port these
@@ -1241,8 +1246,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 sourcePackage.FindExport("TheWorld.PersistentLevel.BioDoor_1.SkeletalMeshComponent_1").RemoveProperty("Materials"); // The materials changed in LE so using the original set is wrong. Remove this property to prevent porting donors for it
             }
-
-
 
             // Strip static mesh light maps since they don't work crossgen. Strip them from
             // the source so they don't port
@@ -2416,7 +2419,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     ReduceDirectionalLights(le1File, 0.1f);
                     break;
                 case "BIOA_PRC2_CCTHAI_L":
-                    ReduceDirectionalLights(le1File, 0.25f);
+                    ReduceDirectionalLights(le1File, 0.4f);
                     break;
                 case "BIOA_PRC2_CCCAVE_DSG":
                 case "BIOA_PRC2_CCLAVA_DSG":
@@ -2611,6 +2614,27 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         InstallAhernAntiCheese(le1File);
                         break;
                     }
+                case "BIOA_PRC2_CCSIM_04_DSG":
+                    {
+                        // Install texture streaming for Ocaren
+                        var sequence = le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence");
+                        var remoteEvent = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqEvent_RemoteEvent", vTestOptions.cache);
+                        var streamInTextures = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqAct_StreamInTextures", vTestOptions.cache);
+                        KismetHelper.AddObjectsToSequence(sequence, false, remoteEvent, streamInTextures);
+                        KismetHelper.CreateOutputLink(remoteEvent, "Out", streamInTextures);
+
+                        remoteEvent.WriteProperty(new NameProperty("PrimeTexturesAhern", "EventName"));
+                        var materials = new ArrayProperty<ObjectProperty>("ForceMaterials");
+
+                        // OCAREN
+                        materials.Add(new ObjectProperty(le1File.FindExport("TheWorld.PersistentLevel.BioPawn_11.BioMaterialInstanceConstant_151")));
+                        materials.Add(new ObjectProperty(le1File.FindExport("TheWorld.PersistentLevel.BioPawn_11.BioMaterialInstanceConstant_152")));
+                        materials.Add(new ObjectProperty(le1File.FindExport("TheWorld.PersistentLevel.BioPawn_11.BioMaterialInstanceConstant_153")));
+
+                        streamInTextures.WriteProperty(materials);
+                        streamInTextures.WriteProperty(new FloatProperty(12f, "Seconds")); // How long to force stream. We set this to 12 to ensure blackscreen and any delays between fully finish
+                    }
+                    break;
                 case "BIOA_PRC2_CCMAIN_CONV":
                     {
                         // Ahern's post-mission dialogue. This installs the streaming textures event
@@ -2624,89 +2648,153 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                         remoteEvent.WriteProperty(new NameProperty("PrimeTexturesAhern", "EventName"));
                         var materials = new ArrayProperty<ObjectProperty>("ForceMaterials");
+
+                        // AHERN
                         materials.Add(new ObjectProperty(le1File.FindExport("TheWorld.PersistentLevel.BioPawn_4.BioMaterialInstanceConstant_103")));
                         materials.Add(new ObjectProperty(le1File.FindExport("TheWorld.PersistentLevel.BioPawn_4.BioMaterialInstanceConstant_104")));
                         materials.Add(new ObjectProperty(le1File.FindExport("TheWorld.PersistentLevel.BioPawn_4.BioMaterialInstanceConstant_105")));
                         materials.Add(new ObjectProperty(le1File.FindExport("TheWorld.PersistentLevel.BioPawn_4.BioMaterialInstanceConstant_106")));
                         materials.Add(new ObjectProperty(le1File.FindExport("TheWorld.PersistentLevel.BioPawn_4.BioMaterialInstanceConstant_107")));
+
+                        // VIDINOS
+                        materials.Add(new ObjectProperty(le1File.FindExport("TheWorld.PersistentLevel.BioPawn_5.BioMaterialInstanceConstant_120"))); //armor
+                        materials.Add(new ObjectProperty(le1File.FindExport("TheWorld.PersistentLevel.BioPawn_5.BioMaterialInstanceConstant_121"))); //head
+                        materials.Add(new ObjectProperty(le1File.FindExport("TheWorld.PersistentLevel.BioPawn_5.BioMaterialInstanceConstant_122"))); // eye
+
+                        // BRYANT
+                        materials.Add(new ObjectProperty(le1File.FindExport("TheWorld.PersistentLevel.BioPawn_8.BioMaterialInstanceConstant_97"))); // armor
+                        materials.Add(new ObjectProperty(le1File.FindExport("TheWorld.PersistentLevel.BioPawn_8.BioMaterialInstanceConstant_101"))); //head
+                        materials.Add(new ObjectProperty(le1File.FindExport("TheWorld.PersistentLevel.BioPawn_8.BioMaterialInstanceConstant_98"))); //hair
+                        materials.Add(new ObjectProperty(le1File.FindExport("TheWorld.PersistentLevel.BioPawn_8.BioMaterialInstanceConstant_102"))); //scalp
+                        materials.Add(new ObjectProperty(le1File.FindExport("TheWorld.PersistentLevel.BioPawn_8.BioMaterialInstanceConstant_100"))); // eye
+                        materials.Add(new ObjectProperty(le1File.FindExport("TheWorld.PersistentLevel.BioPawn_8.BioMaterialInstanceConstant_99"))); //lash
+
                         streamInTextures.WriteProperty(materials);
                         streamInTextures.WriteProperty(new FloatProperty(12f, "Seconds")); // How long to force stream. We set this to 12 to ensure blackscreen and any delays between fully finish
 
-                        // Ahern always talks
+                        // Install classes not in ME1
+                        var bftsItems = new[]
+                        {
+                            ("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.BioSeqAct_Delay_5", "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SeqAct_Interp_2","TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin"),
+                            ("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.BioSeqAct_Delay_6", "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.BioSeqAct_BlackScreen_5","TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin"),
+                            ("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.BioSeqAct_Delay_2", "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SeqAct_Interp_7","TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin"),
+                            ("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.BioSeqAct_Delay_3", "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SeqAct_Interp_11","TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin"),
+                            ("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SequenceReference_0.Sequence_980.BioSeqAct_Delay_4","TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SequenceReference_0.Sequence_980.BioSeqAct_BlackScreen_2", "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SequenceReference_0.Sequence_980"),
+                        };
+
+                        foreach (var bfts in bftsItems)
+                        {
+                            var streaming = SequenceObjectCreator.CreateSequenceObject(le1File, "BioSeqAct_BlockForTextureStreaming", vTestOptions.cache);
+                            KismetHelper.AddObjectToSequence(streaming, le1File.FindExport(bfts.Item3));
+                            KismetHelper.CreateOutputLink(le1File.FindExport(bfts.Item1), "Finished", streaming);
+                            KismetHelper.CreateOutputLink(streaming, "Finished", le1File.FindExport(bfts.Item2));
+                        }
+
                         if (vTestOptions.debugBuild)
                         {
+                            // Ahern always talks
                             le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SeqVar_Float_6").WriteProperty(new FloatProperty(0, "FloatValue")); // Change of not saying something
                             le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SeqVar_Float_9").WriteProperty(new FloatProperty(0, "FloatValue")); // Change of not saying something
+
+                            // Console events to trigger post-cinematics
+
+                            var ahernWinRE = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqEvent_Console", vTestOptions.cache);
+                            var ahernLossRE = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqEvent_Console", vTestOptions.cache);
+                            var ahernLoss2RE = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqEvent_Console", vTestOptions.cache);
+                            var vidinos1RE = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqEvent_Console", vTestOptions.cache);
+                            var vidinos2RE = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqEvent_Console", vTestOptions.cache);
+                            var ocarenRE = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqEvent_Console", vTestOptions.cache);
+                            var ahernSpecialRE = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqEvent_Console", vTestOptions.cache);
+
+                            ahernWinRE.WriteProperty(new NameProperty("AhernWin", "ConsoleEventName"));
+                            ahernLossRE.WriteProperty(new NameProperty("AhernLoss1", "ConsoleEventName"));
+                            ahernLoss2RE.WriteProperty(new NameProperty("AhernLoss2", "ConsoleEventName"));
+                            vidinos1RE.WriteProperty(new NameProperty("Vidinos1", "ConsoleEventName")); // Dickhead to Bryant
+                            vidinos2RE.WriteProperty(new NameProperty("Vidinos2", "ConsoleEventName")); // Vidinos loses his challenge (win 8 missions)
+                            ocarenRE.WriteProperty(new NameProperty("Ocaren", "ConsoleEventName"));
+                            ahernSpecialRE.WriteProperty(new NameProperty("AhernSpecial", "ConsoleEventName"));
+
+
+                            KismetHelper.CreateOutputLink(ahernLossRE, "Out", le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SeqAct_Teleport_19"));
+                            KismetHelper.CreateOutputLink(ahernLoss2RE, "Out", le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SeqAct_Teleport_13"));
+                            KismetHelper.CreateOutputLink(ahernWinRE, "Out", le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SeqAct_Teleport_5"));
+                            KismetHelper.CreateOutputLink(vidinos1RE, "Out", le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SequenceReference_0"));
+                            KismetHelper.CreateOutputLink(vidinos2RE, "Out", le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SequenceReference_1"));
+                            KismetHelper.CreateOutputLink(ocarenRE, "Out", le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SeqAct_Teleport_6"));
+                            KismetHelper.CreateOutputLink(ahernSpecialRE, "Out", le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.BioSeqAct_BlackScreen_4"));
+
+
+                            KismetHelper.AddObjectsToSequence(le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin"), false, ahernWinRE, ahernLossRE, ahernLoss2RE, vidinos1RE, vidinos2RE, ocarenRE, ahernSpecialRE);
                         }
 
                         // Shift the fade-in to 1 second later on the interps to give the lights a moment to warm up
-                        var interps = new[]
-                        {
-                            "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.InterpData_2", // win
-                            "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.InterpData_6", // loss
-                            "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.InterpData_11", // loss
-                        };
-                        foreach (var interpIFP in interps)
-                        {
-                            float warmupTime = 0.8f; // How long to keep the blackscreen on for lights to warm up. 0.7 is not enough
+                        // Disabled as kinkojiro changed sequencing
+                        //var interps = new[]
+                        //{
+                        //    "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.InterpData_2", // win
+                        //    "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.InterpData_6", // loss
+                        //    "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.InterpData_11", // loss
+                        //};
+                        //foreach (var interpIFP in interps)
+                        //{
+                        //    float warmupTime = 0.8f; // How long to keep the blackscreen on for lights to warm up. 0.7 is not enough
 
-                            var interp = le1File.FindExport(interpIFP);
-                            interp.WriteProperty(new FloatProperty(interp.GetProperty<FloatProperty>("InterpLength").Value + warmupTime, "InterpLength")); // update the length of hte interp
-                            var groups = interp.GetProperty<ArrayProperty<ObjectProperty>>("InterpGroups").Select(x => x.ResolveToEntry(le1File) as ExportEntry).ToList();
-                            foreach (var group in groups)
-                            {
-                                var tracks = group.GetProperty<ArrayProperty<ObjectProperty>>("InterpTracks").Select(x => x.ResolveToEntry(le1File) as ExportEntry).ToList();
-                                foreach (var track in tracks)
-                                {
-                                    bool isFirst = true;
-                                    switch (track.ClassName)
-                                    {
-                                        case "InterpTrackDirector":
-                                            break; // Do not change
-                                        case "InterpTrackFade":
-                                            var floatTrack = track.GetProperty<StructProperty>("FloatTrack");
-                                            var points = floatTrack.GetProp<ArrayProperty<StructProperty>>("Points");
-                                            foreach (var point in points)
-                                            {
-                                                point.GetProp<FloatProperty>("InVal").Value += warmupTime;
-                                            }
-                                            track.WriteProperty(floatTrack);
-                                            break;
-                                        case "InterpTrackEvent":
-                                            var eventTrack = track.GetProperty<ArrayProperty<StructProperty>>("EventTrack");
-                                            foreach (var etk in eventTrack)
-                                            {
-                                                if (isFirst)
-                                                {
-                                                    isFirst = false;
-                                                    continue;
-                                                }
+                        //    var interp = le1File.FindExport(interpIFP);
+                        //    interp.WriteProperty(new FloatProperty(interp.GetProperty<FloatProperty>("InterpLength").Value + warmupTime, "InterpLength")); // update the length of hte interp
+                        //    var groups = interp.GetProperty<ArrayProperty<ObjectProperty>>("InterpGroups").Select(x => x.ResolveToEntry(le1File) as ExportEntry).ToList();
+                        //    foreach (var group in groups)
+                        //    {
+                        //        var tracks = group.GetProperty<ArrayProperty<ObjectProperty>>("InterpTracks").Select(x => x.ResolveToEntry(le1File) as ExportEntry).ToList();
+                        //        foreach (var track in tracks)
+                        //        {
+                        //            bool isFirst = true;
+                        //            switch (track.ClassName)
+                        //            {
+                        //                case "InterpTrackDirector":
+                        //                    break; // Do not change
+                        //                case "InterpTrackFade":
+                        //                    var floatTrack = track.GetProperty<StructProperty>("FloatTrack");
+                        //                    var points = floatTrack.GetProp<ArrayProperty<StructProperty>>("Points");
+                        //                    foreach (var point in points)
+                        //                    {
+                        //                        point.GetProp<FloatProperty>("InVal").Value += warmupTime;
+                        //                    }
+                        //                    track.WriteProperty(floatTrack);
+                        //                    break;
+                        //                case "InterpTrackEvent":
+                        //                    var eventTrack = track.GetProperty<ArrayProperty<StructProperty>>("EventTrack");
+                        //                    foreach (var etk in eventTrack)
+                        //                    {
+                        //                        if (isFirst)
+                        //                        {
+                        //                            isFirst = false;
+                        //                            continue;
+                        //                        }
 
-                                                etk.GetProp<FloatProperty>("Time").Value += warmupTime;
-                                            }
-                                            track.WriteProperty(eventTrack);
-                                            break;
-                                        case "BioEvtSysTrackGesture":
-                                            var m_aTrackKeys = track.GetProperty<ArrayProperty<StructProperty>>("m_aTrackKeys");
-                                            foreach (var btk in m_aTrackKeys)
-                                            {
-                                                if (isFirst)
-                                                {
-                                                    isFirst = false;
-                                                    continue;
-                                                }
+                        //                        etk.GetProp<FloatProperty>("Time").Value += warmupTime;
+                        //                    }
+                        //                    track.WriteProperty(eventTrack);
+                        //                    break;
+                        //                case "BioEvtSysTrackGesture":
+                        //                    var m_aTrackKeys = track.GetProperty<ArrayProperty<StructProperty>>("m_aTrackKeys");
+                        //                    foreach (var btk in m_aTrackKeys)
+                        //                    {
+                        //                        if (isFirst)
+                        //                        {
+                        //                            isFirst = false;
+                        //                            continue;
+                        //                        }
 
-                                                btk.GetProp<FloatProperty>("fTime").Value += warmupTime;
-                                            }
-                                            track.WriteProperty(m_aTrackKeys);
-                                            break;
-                                        case "InterpTrackMove":
-                                            break; // Camera doesn't move
-                                    }
-                                }
-                            }
-
-                        }
+                        //                        btk.GetProp<FloatProperty>("fTime").Value += warmupTime;
+                        //                    }
+                        //                    track.WriteProperty(m_aTrackKeys);
+                        //                    break;
+                        //                case "InterpTrackMove":
+                        //                    break; // Camera doesn't move
+                        //            }
+                        //        }
+                        //    }
+                        //}
 
                         break;
                     }
@@ -3126,6 +3214,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             var sequence = le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence");
 
             var startMusicEvt = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqEvent_RemoteEvent", vTestOptions.cache);
+            var stopMusicEvt = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqEvent_RemoteEvent", vTestOptions.cache);
             var plotCheck = SequenceObjectCreator.CreateSequenceObject(le1File, "BioSeqAct_PMCheckConditional", vTestOptions.cache);
             var musOn = SequenceObjectCreator.CreateSequenceObject(le1File, "BioSeqAct_MusicVolumeEnable", vTestOptions.cache);
             var musOff = SequenceObjectCreator.CreateSequenceObject(le1File, "BioSeqAct_MusicVolumeDisable", vTestOptions.cache);
@@ -3136,15 +3225,18 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             var setInt = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqAct_SetInt", vTestOptions.cache);
 
             startMusicEvt.WriteProperty(new NameProperty("StartSimMusic", "EventName"));
+            stopMusicEvt.WriteProperty(new NameProperty("StopSimMusic", "EventName"));
             musVolSeqObj.WriteProperty(new ObjectProperty(musicVol, "ObjValue"));
 
             // Sequencing
-            KismetHelper.AddObjectsToSequence(sequence, false, startMusicEvt, plotCheck, musOn, musOff, musVolSeqObj, stateBeingSet, musicStatePlotInt, setInt);
+            KismetHelper.AddObjectsToSequence(sequence, false, startMusicEvt, stopMusicEvt, plotCheck, musOn, musOff, musVolSeqObj, stateBeingSet, musicStatePlotInt, setInt);
 
             KismetHelper.CreateOutputLink(startMusicEvt, "Out", plotCheck);
             KismetHelper.CreateOutputLink(plotCheck, "True", setInt);
             KismetHelper.CreateOutputLink(plotCheck, "False", setInt); // CHANGE TO musOff IN FINAL BUILD
             KismetHelper.CreateOutputLink(setInt, "Out", musOn);
+            KismetHelper.CreateOutputLink(stopMusicEvt, "Out", musOff);
+
 
             KismetHelper.CreateVariableLink(musOn, "Music Volume", musVolSeqObj);
             KismetHelper.CreateVariableLink(musOff, "Music Volume", musVolSeqObj);
