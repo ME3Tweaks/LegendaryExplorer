@@ -18,6 +18,25 @@ namespace LegendaryExplorer.UserControls.DialogueEditorControls
         }
 
         private void LoadCommands() { }
+        
+        public DialogueEditorWindow GetDEWindow()
+        {
+            if (Window.GetWindow(this) is DialogueEditorWindow dew)
+            {
+                return dew;
+            }
+
+            return null;
+        }
+
+        // EXPERIMENTS: EXKYWOR------------------------------------------------------------
+        #region Exkywor's experiments
+        private void UpdateNativeNodeStringRef_Click(object sender, RoutedEventArgs e)
+        {
+            DialogueEditorExperimentsE.UpdateNativeNodeStringRef(GetDEWindow());
+        }
+
+        #endregion
 
     }
 }
