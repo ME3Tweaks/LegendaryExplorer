@@ -479,9 +479,9 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.FindEmptyMips(GetPEWindow());
         }
 
-        private void CloneCachedTerrainMaterials_Clicked(object sender, RoutedEventArgs e)
+        private void ExportTerrainCollisionDataToUDK_Clicked(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsM.CloneTerrainMaterialsIntoFile(GetPEWindow());
+            PackageEditorExperimentsM.ExpertTerrainDataToUDK(GetPEWindow());
         }
 
         private void DumpLE1TLK_Clicked(object sender, RoutedEventArgs e)

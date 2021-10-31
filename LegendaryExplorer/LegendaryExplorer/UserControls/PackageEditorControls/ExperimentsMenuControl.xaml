@@ -49,7 +49,7 @@
         <MenuItem Header="MScanner" Click="MScanner_Click"/>
         <MenuItem Header="Make LE1 Mako Map from terrain from UDK file" Click="MakeLE1MakoMap_Click"/>
         <MenuItem Header="Import UDK Terrain Collision Data" Click="ImportUDKTerrain_Click"/>
-        <MenuItem Header="Clone another file's cached terrain materials" Click="CloneCachedTerrainMaterials_Clicked" Visibility="{x:Static global:App.IsDebugVisibility}"/>
+        <MenuItem Header="Export Terrain Collision Data to UDK" Click="ExportTerrainCollisionDataToUDK_Clicked" Visibility="{x:Static global:App.IsDebugVisibility}"/>
         <MenuItem Header="Print LE1 Terrains By Size to debug console" Click="PrintTerrainsBySize_Click"/>
         <MenuItem Header="Rebuild selected Material's expressions list" Click="RebuildSelectedMaterialExpressions"/>
         <MenuItem Header="Test CrossGen class porting" Click="TestCrossGenClassPort_Click" Visibility="{x:Static global:App.IsDebugVisibility}"/>

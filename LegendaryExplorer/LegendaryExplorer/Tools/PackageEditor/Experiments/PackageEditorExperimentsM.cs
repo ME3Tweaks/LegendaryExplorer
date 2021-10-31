@@ -2506,13 +2506,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             targetTerrain.WriteProperties(terrainProps);
         }
 
-        public static void CloneTerrainMaterialsIntoFile(PackageEditorWindow pe)
+        public static void ExpertTerrainDataToUDK(PackageEditorWindow pe)
         {
             {
-                var udkDestFile = @"B:\Documents\CCLAVA_TERRAIN.udk";
+                var udkDestFile = @"C:\Users\Mgame\Desktop\ahernterrain.udk";
                 using var udkP = MEPackageHandler.OpenUDKPackage(udkDestFile);
 
-                var sourcePackage = @"B:\SteamLibrary\steamapps\common\Mass Effect Legendary Edition\Game\ME1\BioGame\DLC\DLC_MOD_Vegas\CookedPCConsole\BIOA_PRC2_CCLava.pcc";
+                var sourcePackage = @"X:\Origin GAmes\Mass Effect\DLC\DLC_VEGAS\CookedPC\Maps\PRC2\BIOA_PRC2_CCAHERN.SFM";
                 using var sourceP = MEPackageHandler.OpenMEPackage(sourcePackage);
 
                 var udkT = udkP.FindExport(@"TheWorld.PersistentLevel.Terrain_0");
@@ -2540,7 +2540,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
 
 
-                udkP.Save(@"B:\Documents\CCLAVA_TERRAIN_PORTED.udk");
+                udkP.Save(@"B:\Documents\CCAHERN_TERRAIN_PORTED.udk");
             }
             return;
 
