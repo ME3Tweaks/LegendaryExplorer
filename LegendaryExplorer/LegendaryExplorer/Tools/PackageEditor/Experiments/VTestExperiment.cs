@@ -2025,6 +2025,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 PortInCorrectedTerrain(me1File, le1File, "PRC2AA.Terrain_1", "BIOA_UNC20_00_LAY.pcc", vTestOptions);
                 CorrectTerrainSetup(me1File, le1File, vTestOptions);
             }
+            else if (fName.CaseInsensitiveEquals("BIOA_PRC2_CCAHERN"))
+            {
+                PortInCorrectedTerrain(me1File, le1File, "CCAHERN.Terrain_1", "BIOA_LAV60_00_LAY.pcc", vTestOptions);
+                CorrectTerrainSetup(me1File, le1File, vTestOptions);
+            }
             else if (fName.CaseInsensitiveEquals("BIOA_PRC2_CCSIM05_DSG"))
             {
                 // Port in the custom sequence used for switching UIs
@@ -2170,6 +2175,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             var lTerrain = le1File.Exports.First(x => x.ClassName == "Terrain");
             var le1Terrain = ObjectBinary.From<Terrain>(lTerrain);
 
+            var properties = lTerrain.GetProperties();
+
             var fName = Path.GetFileNameWithoutExtension(le1File.FilePath);
             var alphamaps = new List<AlphaMap>();
 
@@ -2189,9 +2196,29 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 // THERE ARE NO ALPHAMAPS
                 CorrectTerrainMaterialsAndSlopes(mTerrain, lTerrain, true, vTestOptions); // Needs changes to avoid patches
             }
+            else if (fName == "BIOA_PRC2_CCAHERN")
+            {
+                // The only layer used is Rock02. The other terrain layer is not used
+                // We must correct the AlphaMapIndexes
+                alphamaps.Add(me1Terrain.AlphaMaps[0]);
+                var layers = properties.GetProp<ArrayProperty<StructProperty>>("Layers");
+                for (int i = 0; i < layers.Count; i++)
+                {
+                    var layer = layers[i];
+                    if (i == 3)
+                    {
+                        // ROCK02
+                        layer.Properties.AddOrReplaceProp(new IntProperty(0, "AlphaMapIndex"));
+                    }
+                    else
+                    {
+                        layer.Properties.AddOrReplaceProp(new IntProperty(-1,"AlphaMapIndex"));
+                    }
+                }
+            }
 
             le1Terrain.AlphaMaps = alphamaps.ToArray();
-            lTerrain.WriteBinary(le1Terrain);
+            lTerrain.WritePropertiesAndBinary(properties, le1Terrain);
         }
 
         private static void CorrectVFX(IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
@@ -2680,6 +2707,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             ("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.BioSeqAct_Delay_2", "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SeqAct_Interp_7","TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin"),
                             ("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.BioSeqAct_Delay_3", "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SeqAct_Interp_11","TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin"),
                             ("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SequenceReference_0.Sequence_980.BioSeqAct_Delay_4","TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SequenceReference_0.Sequence_980.BioSeqAct_BlackScreen_2", "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SequenceReference_0.Sequence_980"),
+
+                            ("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SequenceReference_2.Sequence_982.BioSeqAct_ModifyPropertyPawn_0","TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SequenceReference_2.Sequence_982.BioSeqAct_BlackScreen_3", "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SequenceReference_2.Sequence_982"),
+                            ("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SequenceReference_1.Sequence_981.SeqAct_Delay_1","TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SequenceReference_1.Sequence_981.BioSeqAct_BlackScreen_4", "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SequenceReference_1.Sequence_981")
+
                         };
 
                         foreach (var bfts in bftsItems)
