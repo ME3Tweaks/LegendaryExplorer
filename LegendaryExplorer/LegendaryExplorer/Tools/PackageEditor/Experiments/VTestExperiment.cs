@@ -2008,6 +2008,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             FixPinkVisorMaterial(le1File);
             vTestOptions.packageEditorWindow.BusyText = $"PPC (Unlock Ahern Mission) on\n{levelName}";
             DebugUnlockAhernMission(le1File, vTestOptions);
+            vTestOptions.packageEditorWindow.BusyText = $"PPC (2DAs) on\n{levelName}";
+            CorrectGethEquipment2DAs(le1File, vTestOptions);
             //CorrectTerrainMaterials(le1File);
 
             vTestOptions.packageEditorWindow.BusyText = $"PPC (LEVEL SPECIFIC) on\n{levelName}";
@@ -3873,6 +3875,34 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 replies[108].Properties.AddOrReplaceProp(new IntProperty(-1, "nConditionalFunc"));
                 Debug.WriteLine($"Unlocking Ahern Mission in Ochren Conversation in file {le1File.FileNameNoExtension}");
                 conversation.WriteProperty(replies);
+            }
+        }
+
+        /// <summary>
+        /// Changes weapon references in Geth 2DAs to use our new weapon entries that include HoloWipe VFX. Needs proper 2DA to work.
+        /// </summary>
+        /// <param name="le1File"></param>
+        /// <param name="vTestOptions"></param>
+        private static void CorrectGethEquipment2DAs(IMEPackage le1File, VTestOptions vTestOptions)
+        {
+            var tables = le1File.Exports.Where(e =>
+                e.ClassName == "Bio2DANumberedRows" && e.ParentName == "Geth" &&
+                e.ObjectName.ToString().Contains("_Equipment"));
+
+            foreach (var t in tables)
+            {
+                var binary = ObjectBinary.From<Bio2DABinary>(t);
+                var initial = binary.Cells[0].IntValue;
+                binary.Cells[0].IntValue = initial switch
+                {
+                    22 => 630,
+                    23 => 631,
+                    423 => 632,
+                    519 => 633,
+                    _ => initial
+                };
+                t.WriteBinary(binary);
+                t.ObjectName = "VTEST_" + t.ObjectName;
             }
         }
 

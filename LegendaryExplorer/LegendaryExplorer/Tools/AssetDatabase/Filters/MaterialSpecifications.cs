@@ -25,8 +25,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
         public override bool MatchesSpecification(MaterialRecord mr)
         {
             var anyTrue = mr.MatSettings.Any(s => s.Name == PropertyName && s.Parm2 == "True");
-            if (Inverted) return !anyTrue;
-            else return anyTrue;
+            return anyTrue ^ Inverted;
         }
     }
 
@@ -62,9 +61,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
         {
             Func<MatSetting, bool> predicate = _customPredicate is not null ? PredicateMatches : ParametersMatch;
             var specMatches = mr.MatSettings.Any(predicate);
-
-            if (Inverted) return !specMatches;
-            else return specMatches;
+            return specMatches ^ Inverted;
         }
 
         private bool PredicateMatches(MatSetting s)
@@ -80,11 +77,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
         {
             if (s.Name == _settingName)
             {
-                if (_parm1 != "" && s.Parm1 != _parm1)
+                if (!string.IsNullOrEmpty(_parm1) && s.Parm1 != _parm1)
                 {
                     return false;
                 }
-                if (_parm2 != "" && s.Parm2 != _parm2)
+                if (!string.IsNullOrEmpty(_parm2) && s.Parm2 != _parm2)
                 {
                     return false;
                 }
