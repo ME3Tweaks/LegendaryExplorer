@@ -52,6 +52,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             public bool useDynamicLighting = true;
 
             /// <summary>
+            /// Strips shadow maps off. If using dynamic lighting, shadow maps are always stripped
+            /// </summary>
+            public bool stripShadowMaps = false;
+
+            /// <summary>
             /// If level models should be ported.
             /// </summary>
             public bool portModels = false;
@@ -685,7 +690,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// <param name="vTestOptions"></param>
         private static void CorrectFileForLEXMapFileDefaults(IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
         {
-            RelinkerOptionsPackage rop = new RelinkerOptionsPackage() { Cache = vTestOptions.cache }; // We do not set game db here as we will not be donating anything.
+            RelinkerOptionsPackage rop = new RelinkerOptionsPackage() { Cache = vTestOptions.cache, TargetGameDonorDB = vTestOptions.objectDB }; // We do not set game db here as we will not be donating anything.
 
             // Port in the level's Model in the main file
             var me1PL = me1File.FindExport("TheWorld.PersistentLevel");
@@ -1255,14 +1260,21 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 #region Remove Light and Shadow Maps
                 if (exp.ClassName == "StaticMeshComponent")
                 {
-                    if (vTestOptions == null || vTestOptions.useDynamicLighting)
+                    if (vTestOptions == null || vTestOptions.useDynamicLighting || vTestOptions.stripShadowMaps)
                     {
                         var b = ObjectBinary.From<StaticMeshComponent>(exp);
                         foreach (var lod in b.LODData)
                         {
                             // Clear light and shadowmaps
-                            lod.ShadowMaps = new UIndex[0];
-                            lod.LightMap = new LightMap() { LightMapType = ELightMapType.LMT_None };
+                            if (vTestOptions == null || vTestOptions.stripShadowMaps || vTestOptions.useDynamicLighting)
+                            {
+                                lod.ShadowMaps = new UIndex[0];
+                            }
+
+                            if (vTestOptions == null || vTestOptions.useDynamicLighting)
+                            {
+                                lod.LightMap = new LightMap() { LightMapType = ELightMapType.LMT_None };
+                            }
                         }
 
                         exp.WriteBinary(b);
@@ -1320,13 +1332,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         // Rename to match crossgen
                         exp.ObjectName = "BIOA_ICE60_T.checker_CROSSGENFIX";
                     }
-                }
-
-                if (exp.IsA("Actor"))
-                {
-                    //exp.RemoveProperty("m_oAreaMap"); // Remove this when stuff is NOT borked up
-                    //exp.RemoveProperty("Base"); // No bases
-                    //exp.RemoveProperty("nextNavigationPoint"); // No bases
                 }
             }
         }
@@ -2214,7 +2219,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     }
                     else
                     {
-                        layer.Properties.AddOrReplaceProp(new IntProperty(-1,"AlphaMapIndex"));
+                        layer.Properties.AddOrReplaceProp(new IntProperty(-1, "AlphaMapIndex"));
                     }
                 }
             }
@@ -2898,9 +2903,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         // The door lighting channels needs fixed up.
                         var door = le1File.FindExport(@"TheWorld.PersistentLevel.BioDoor_1.SkeletalMeshComponent_1");
                         var channels = door.GetProperty<StructProperty>("LightingChannels");
-                        channels.GetProp<BoolProperty>("Static").Value = false;
-                        channels.GetProp<BoolProperty>("Dynamic").Value = false;
-                        channels.GetProp<BoolProperty>("CompositeDynamic").Value = false;
+                        channels.Properties.AddOrReplaceProp(new BoolProperty(false, "Static"));
+                        channels.Properties.AddOrReplaceProp(new BoolProperty(false, "Dynamic"));
+                        channels.Properties.AddOrReplaceProp(new BoolProperty(false, "CompositeDynamic"));
                         door.WriteProperty(channels);
                     }
                     break;
@@ -2965,6 +2970,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         var destLevel = le1File.FindExport("TheWorld.PersistentLevel");
                         EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceAsset, le1File, destLevel, true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var mesh);
                         PathEdUtils.SetLocation(mesh as ExportEntry, -16430, -28799, -2580);
+
+                        // Needs a second one to hide the top too
+                        var fb2 = EntryCloner.CloneTree(mesh) as ExportEntry;
+                        var rotation = fb2.GetProperty<StructProperty>("Rotation");
+                        rotation.Properties.AddOrReplaceProp(new FloatProperty(0f, "Pitch"));
+                        fb2.WriteProperty(rotation);
                     }
                     break;
                 case "BIOA_PRC2_CCSIM": // this this be in CCSIM05_DSG instead?
@@ -3061,11 +3072,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             var northBV = EntryCloner.CloneTree(sourcebv);
             northBV.RemoveProperty("bCollideActors");
             PathEdUtils.SetLocation(northBV, -38705.57f, -28901.904f, -2350.1252f);
+            (northBV.GetProperty<ObjectProperty>("BrushComponent").ResolveToEntry(le1File) as ExportEntry).WriteProperty(new BoolProperty(false, "BlockZeroExtent")); // do not block gunfire
             northBV.WriteProperty(ds3d);
 
             // South cheese
-            var southBV = EntryCloner.CloneTree(northBV); // already has scaling and removed collide actors
+            var southBV = EntryCloner.CloneTree(northBV); // already has scaling and guns fire through it
             PathEdUtils.SetLocation(southBV, -38702.812f, -24870.682f, -2355.5256f);
+
 
         }
 
@@ -3512,7 +3525,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             foreach (var exp in package.Exports.Where(x => x.IsTexture()))
             {
                 var props = exp.GetProperties();
-                var texinfo = ObjectBinary.From<UTexture2D>(exp);
+                var texinfo = ObjectBinary.From(exp) as UTexture2D;
                 var numMips = texinfo.Mips.Count;
                 var ns = props.GetProp<BoolProperty>("NeverStream");
                 int lowMipCount = 0;
@@ -3527,8 +3540,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     if (texinfo.Mips[i].StorageType == StorageTypes.empty && exp.Parent.ClassName != "TextureCube")
                     {
                         // Strip this empty mip
-                        Debug.WriteLine($"Dropping empty mip {i} in {exp.InstancedFullPath}");
-                        texinfo.Mips.RemoveAt(i);
+                        //Debug.WriteLine($"Dropping empty mip {i} in {exp.InstancedFullPath}");
+                        //texinfo.Mips.RemoveAt(i);
                     }
 
                     lowMipCount++;
