@@ -63,10 +63,10 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
             };
         }
 
-        protected override IEnumerable<IAssetSpecification<MaterialRecord>> GetSpecifications()
+        protected override IEnumerable<IAssetSpecification<MaterialRecord>> GetAdditionalSpecifications()
         {
             var blendModeOr = new OrSpecification<MaterialRecord>(BlendModes); // Matches spec if any of the selected BlendModes are true
-            return Filters.Append(blendModeOr).Append(Search).Concat(GeneratedOptions);
+            return GeneratedOptions.Append(blendModeOr);
         }
 
         private bool MaterialSearch((string, MaterialRecord) t)
