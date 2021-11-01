@@ -45,10 +45,17 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
         /// Get the specifications that should be used in the filter. Specifications that are not selected can be safely returned by this method.
         /// </summary>
         /// <returns></returns>
-        protected virtual IEnumerable<IAssetSpecification<T>> GetSpecifications()
+        protected IEnumerable<IAssetSpecification<T>> GetSpecifications()
         {
-            return Filters.Append(Search);
+            return Filters.Append(Search).Concat(GetAdditionalSpecifications());
         }
+
+        /// <summary>
+        /// Method that can be overridden by subclasses to provide more specifications than just the ones in the base class Filter list
+        /// </summary>
+        /// <returns></returns>
+        protected virtual IEnumerable<IAssetSpecification<T>> GetAdditionalSpecifications() => new AssetSpecification<T>[] { };
+
 
         public virtual void SetSelected(IAssetSpecification<T> spec)
         {

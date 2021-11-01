@@ -68,9 +68,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
             base.SetSelected(spec);
         }
 
-        protected override IEnumerable<IAssetSpecification<TextureRecord>> GetSpecifications()
+        protected override IEnumerable<IAssetSpecification<TextureRecord>> GetAdditionalSpecifications()
         {
-            return Filters.Append(new OrSpecification<TextureRecord>(GeneratedLodFilters));
+            return new[] {new OrSpecification<TextureRecord>(GeneratedLodFilters)};
         }
 
         private bool TextureSearch((string search, TextureRecord record) t)
