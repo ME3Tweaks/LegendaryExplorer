@@ -20,6 +20,7 @@ using LegendaryExplorerCore.Matinee;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
+using LegendaryExplorerCore.Textures;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Classes;
@@ -419,11 +420,25 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         private static void VTestCheckTextures(IMEPackage mePackage, VTestOptions vTestOptions)
         {
+            var maxLodInfo = TextureLODInfo.LEMaxLodSizes(mePackage.Game);
             foreach (var exp in mePackage.Exports.Where(x => x.IsTexture()))
             {
                 var texinfo = ObjectBinary.From<UTexture2D>(exp);
                 if (texinfo.Mips.Any(x => x.StorageType == StorageTypes.empty))
-                    Debug.WriteLine($@"FOUND EMPTY MIP: {exp.InstancedFullPath} IN {Path.GetFileNameWithoutExtension(mePackage.FilePath)}");
+                {
+                    // Check LOD bias if this will render in game
+                    // Adjust the internal lod bias.
+                    var props = exp.GetProperties();
+                    var texGroup = props.GetProp<EnumProperty>(@"LODGroup");
+                    if (texGroup != null && maxLodInfo.TryGetValue(texGroup.Value.Instanced, out var maxDimension))
+                    {
+                        // cubemaps will have null texture group. we don't want to update these
+                        if (texinfo.Mips[0].SizeX > maxDimension || texinfo.Mips[0].SizeY > maxDimension)
+                        {
+                            Debug.WriteLine($@"FOUND UNUSABLE EMPTY MIP: {exp.InstancedFullPath} IN {Path.GetFileNameWithoutExtension(mePackage.FilePath)}");
+                        }
+                    }
+                }
             }
         }
 
@@ -3924,51 +3939,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         #region QA Methods
         public static void VTest_CheckFile(IMEPackage package, VTestOptions vTestOptions)
         {
-            //#region Check BioTriggerStream files exists
-            //var triggerStraems = package.Exports.Where(x => x.ClassName == "BioTriggerStream").ToList();
-            //foreach (var triggerStream in triggerStraems)
-            //{
-            //    var streamingStates = triggerStream.GetProperty<ArrayProperty<StructProperty>>("StreamingStates");
-            //    if (streamingStates != null)
-            //    {
-            //        foreach (var ss in streamingStates)
-            //        {
-            //            List<NameProperty> namesToCheck = new List<NameProperty>();
-            //            var inChunkName = ss.GetProp<NameProperty>("InChunkName");
-
-            //            if (inChunkName.Value.Name != "None" && !vtestFinalFilesAvailable.Contains(inChunkName.Value.Name.ToLower()))
-            //            {
-            //                Debug.WriteLine($"LEVEL MISSING (ICN): {inChunkName} in {triggerStream.UIndex} {triggerStream.ObjectName.Instanced}");
-            //            }
-
-            //            foreach (var levelNameProperty in ss.GetProp<ArrayProperty<NameProperty>>("VisibleChunkNames"))
-            //            {
-            //                var levelName = levelNameProperty.Value.Name;
-            //                if (levelName != "None" && !vtestFinalFilesAvailable.Contains(levelName.ToLower()))
-            //                {
-            //                    Debug.WriteLine($"LEVEL MISSING (VC): {levelName} in {triggerStream.UIndex} {triggerStream.ObjectName.Instanced}");
-            //                }
-            //            }
-
-            //            foreach (var levelNameProperty in ss.GetProp<ArrayProperty<NameProperty>>("LoadChunkNames"))
-            //            {
-            //                var levelName = levelNameProperty.Value.Name;
-            //                if (levelName != "None" && !vtestFinalFilesAvailable.Contains(levelName.ToLower()))
-            //                {
-            //                    Debug.WriteLine($"LEVEL MISSING (LC): {levelName} in {triggerStream.UIndex} {triggerStream.ObjectName.Instanced}");
-            //                }
-            //            }
-            //        }
-            //    }
-            //    else
-            //    {
-            //        Debug.WriteLine($"{triggerStream.InstancedFullPath} in {v} has NO StreamingStates!!");
-            //    }
-            //}
-            //#endregion
-
             #region Check Level has at least 2 actors
-
             var level = package.FindExport("TheWorld.PersistentLevel");
             {
                 if (level != null)
@@ -3976,7 +3947,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     var levelBin = ObjectBinary.From<Level>(level);
                     if (levelBin.Actors.Count < 2)
                         Debugger.Break(); // THIS SHOULD NOT OCCUR OR GAME WILL DIE
-                    Debug.WriteLine($"{Path.GetFileName(package.FilePath)} actor list count: {levelBin.Actors.Count}");
+                    //Debug.WriteLine($"{Path.GetFileName(package.FilePath)} actor list count: {levelBin.Actors.Count}");
                 }
             }
 
