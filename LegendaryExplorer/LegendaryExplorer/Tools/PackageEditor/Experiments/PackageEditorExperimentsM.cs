@@ -18,6 +18,7 @@ using LegendaryExplorer.Tools.PathfindingEditor;
 using LegendaryExplorer.Tools.Sequence_Editor;
 using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorerCore;
+using LegendaryExplorerCore.Dialogue;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Gammtek.IO;
@@ -1890,9 +1891,17 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 {
                                     var spvP = expression.GetProperties();
                                     var paramValue = spvP.GetProp<FloatProperty>("DefaultValue");
-                                    paramValue.Name = "ParameterValue";
-                                    spvP.RemoveAt(0);
-                                    spvP.AddOrReplaceProp(paramValue); // This value goes on the end
+                                    if (paramValue == null)
+                                    {
+                                        spvP.Add(new FloatProperty(0, "ParameterValue"));
+
+                                    }
+                                    else
+                                    {
+                                        paramValue.Name = "ParameterValue";
+                                        spvP.RemoveAt(0);
+                                        spvP.AddOrReplaceProp(paramValue); // This value goes on the end
+                                    }
                                     scalarParameters.Add(new StructProperty("ScalarParameterValue", spvP));
                                 }
                                 break;
@@ -1900,8 +1909,16 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 {
                                     var vpvP = expression.GetProperties();
                                     var paramValue = vpvP.GetProp<StructProperty>("DefaultValue");
-                                    paramValue.Name = "ParameterValue";
-                                    vectorParameters.Add(new StructProperty("VectorParameterValue", vpvP));
+                                    if (paramValue == null)
+                                    {
+                                        vectorParameters.Add(CommonStructs.Vector3Prop(0, 0, 0, "DefaultValue"));
+
+                                    }
+                                    else
+                                    {
+                                        paramValue.Name = "ParameterValue";
+                                        vectorParameters.Add(new StructProperty("VectorParameterValue", vpvP));
+                                    }
                                 }
                                 break;
                             case "MaterialExpressionTextureSampleParameter2D":
@@ -1989,6 +2006,35 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 pe.EndBusy();
             });
+        }
+
+        public static void MakeAllConversationsLinear(PackageEditorWindow pe)
+        {
+            var conversations = pe.Pcc.Exports.Where(x => x.ClassName == "BioConversation" && !x.IsDefaultObject).ToList();
+            foreach (var convExp in conversations)
+            {
+                PropertyCollection convProps = convExp.GetProperties();
+
+                // OH BOY
+
+                // ONLY 1 ENTRY POINT
+                var startingList = convProps.GetProp<ArrayProperty<IntProperty>>("m_StartingList");
+                startingList.Clear();
+                startingList.Add(0);
+
+                // REMOVE ALL REPLIES TO ENTRIES
+                var entryList = convProps.GetProp<ArrayProperty<StructProperty>>("m_EntryList");
+                var replyList = convProps.GetProp<ArrayProperty<StructProperty>>("m_ReplyList");
+
+                foreach (var entry in entryList)
+                {
+                    var entryReplyList = entry.GetProp<ArrayProperty<StructProperty>>("ReplyListNew");
+
+                }
+
+
+                convExp.WriteProperties(convProps);
+            }
         }
 
         public static void ShowTextureFormats(PackageEditorWindow pe)

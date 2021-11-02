@@ -373,7 +373,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     {
                         var levelName = Path.GetFileNameWithoutExtension(f);
                         //if (levelName.CaseInsensitiveEquals("BIOA_PRC2_CCMAIN_CONV"))
-                        PortVTestLevel(vTestLevel, levelName, vTestOptions, levelName == "BIOA_" + vTestLevel, true);
+                            PortVTestLevel(vTestLevel, levelName, vTestOptions, levelName == "BIOA_" + vTestLevel, true);
                     }
                 }
             }
@@ -2030,6 +2030,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             DebugUnlockAhernMission(le1File, vTestOptions);
             vTestOptions.packageEditorWindow.BusyText = $"PPC (2DAs) on\n{levelName}";
             CorrectGethEquipment2DAs(le1File, vTestOptions);
+            vTestOptions.packageEditorWindow.BusyText = $"PPC (Audio Lengths) on\n{levelName}";
+            FixAudioLengths(le1File, vTestOptions);
             //CorrectTerrainMaterials(le1File);
 
             vTestOptions.packageEditorWindow.BusyText = $"PPC (LEVEL SPECIFIC) on\n{levelName}";
@@ -2144,12 +2146,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 InstallVTestHelperSequenceNoInput(le1File, "TheWorld.PersistentLevel.Main_Sequence", "HelperSequences.LevelLoadTextureStreaming", vTestOptions);
                 // The original logic is removed in the ModdedSource file
                 #endregion
-            }
-            else if (fName.CaseInsensitiveEquals("BIOA_PRC2_CCMAIN_CONV_LOC_INT"))
-            {
-                // InterpLength needs fixed to be +.5s
-                var interpData = le1File.FindExport("prc2_ahern_N.Node_Data_Sequence.InterpData_7");
-                interpData.WriteProperty(new FloatProperty(9.516706f, "InterpLength"));
             }
             else if (fName.CaseInsensitiveEquals("BIOA_PRC2AA"))
             {
@@ -2304,6 +2300,56 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
 
 
+        }
+
+        private static void FixAudioLengths(IMEPackage le1File, VTestOptions vTestOptions)
+        {
+            var fname = Path.GetFileNameWithoutExtension(le1File.FilePath);
+            foreach (var exp in le1File.Exports.Where(x => x.ClassName == "InterpData"))
+            {
+                switch (le1File.Localization)
+                {
+                    case MELocalization.None: // English also is None it seems (for things like Ocaren)
+                    case MELocalization.INT:
+                        FixINTAudioLengths(exp, vTestOptions);
+                        break;
+                }
+            }
+        }
+
+
+        private static void FixINTAudioLengths(ExportEntry export, VTestOptions vTestOptions)
+        {
+            var ifp = export.InstancedFullPath;
+            switch (ifp)
+            {
+                case "prc2_ahern_N.Node_Data_Sequence.InterpData_7":
+                    export.WriteProperty(new FloatProperty(9.516706f, "InterpLength")); // "I lost a lot of good friends in the first contact war..." +.5s
+                    break;
+                case "prc2_ochren_N.Node_Data_Sequence.InterpData_67":
+                    //export.WriteProperty(new FloatProperty(3.969893f, "InterpLength")); // "So, you must be the famous Commander Shepard" +1.1s
+                    break;
+                case "prc2_ochren_N.Node_Data_Sequence.InterpData_68":
+                    //export.WriteProperty(new FloatProperty(6.019667f, "InterpLength")); // "Do you need something? I'm sure I have a few minutes..." +.5s
+                    break;
+                case "prc2_ochren_N.Node_Data_Sequence.InterpData_12":
+                    // This line is not cut off, but it ends exactly as ocaren stops talking. This doesn't mesh well with the sarcasm and the following sigh
+                    // so we add a bit of a pause for dramatic effect on this excellent delivery he has for this line
+                    export.WriteProperty(new FloatProperty(5.4343516f, "InterpLength")); // "No -- our operatives train in a simulator by killing real people" +.7s
+                    break;
+                case "prc2_ochren_N.Node_Data_Sequence.InterpData_142":
+                    export.WriteProperty(new FloatProperty(4.849069f, "InterpLength")); // "Really? Thank me? Well, I guess I'll redouble my efforts." +.5s
+                    break;
+
+                // Following 3 are "I'll go with Survival Mode". For some reason they all have different lengths. This makes them all line up with the longest of the 4 times this line is said, which seems
+                // the correct length. I include the 4th to ensure they're all set in the event I typed one wrong :)
+                case "prc2_ochren_N.Node_Data_Sequence.InterpData_156":
+                case "prc2_ochren_N.Node_Data_Sequence.InterpData_157":
+                case "prc2_ochren_N.Node_Data_Sequence.InterpData_158":
+                case "prc2_ochren_N.Node_Data_Sequence.InterpData_35":
+                    export.WriteProperty(new FloatProperty(2.3061051f, "InterpLength")); // This is +.5s to 3 of these, give or take a couple milliseconds
+                    break;
+            }
         }
 
         /// <summary>
@@ -2468,7 +2514,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     ReduceDirectionalLights(le1File, 0.1f);
                     break;
                 case "BIOA_PRC2_CCTHAI_L":
-                    ReduceDirectionalLights(le1File, 0.4f);
+                    ReduceDirectionalLights(le1File, 0.6f);
                     break;
                 case "BIOA_PRC2_CCCAVE_DSG":
                 case "BIOA_PRC2_CCLAVA_DSG":
@@ -2638,6 +2684,24 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 case "BIOA_PRC2_CCAHERN_SND":
                     InstallMusicVolume(le1File, vTestOptions);
                     break;
+                case "BIOA_PRC2AA_00_LAY":
+                    // Need to set 'bCanStepUpOn' = false for certain static meshes as the collision is mega jank
+                    {
+                        var meshesToFix = new[]
+                        {
+                            "TheWorld.PersistentLevel.StaticMeshActor_0",
+                            "TheWorld.PersistentLevel.StaticMeshActor_1",
+                            "TheWorld.PersistentLevel.StaticMeshActor_2",
+                            "TheWorld.PersistentLevel.StaticMeshActor_3",
+                        };
+
+                        foreach (var m in meshesToFix)
+                        {
+                            var exp = le1File.FindExport(m);
+                            exp.WriteProperty(new BoolProperty(false, "bCanStepUpOn"));
+                        }
+                    }
+                    break;
             }
 
             // Individual
@@ -2724,23 +2788,26 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         // Install classes not in ME1
                         var bftsItems = new[]
                         {
-                            ("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.BioSeqAct_Delay_5", "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SeqAct_Interp_2","TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin"),
-                            ("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.BioSeqAct_Delay_6", "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.BioSeqAct_BlackScreen_5","TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin"),
-                            ("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.BioSeqAct_Delay_2", "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SeqAct_Interp_7","TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin"),
-                            ("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.BioSeqAct_Delay_3", "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SeqAct_Interp_11","TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin"),
-                            ("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SequenceReference_0.Sequence_980.BioSeqAct_Delay_4","TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SequenceReference_0.Sequence_980.BioSeqAct_BlackScreen_2", "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SequenceReference_0.Sequence_980"),
+                            ("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.BioSeqAct_Delay_5", "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SeqAct_Interp_2","TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin", "Finished"),
+                            ("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.BioSeqAct_Delay_6", "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.BioSeqAct_BlackScreen_5","TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin", "Finished"),
+                            ("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.BioSeqAct_Delay_2", "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SeqAct_Interp_7","TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin", "Finished"),
+                            ("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.BioSeqAct_Delay_3", "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SeqAct_Interp_11","TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin", "Finished"),
+                            ("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SequenceReference_0.Sequence_980.BioSeqAct_Delay_4","TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SequenceReference_0.Sequence_980.BioSeqAct_BlackScreen_2", "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SequenceReference_0.Sequence_980", "Finished"),
 
-                            ("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SequenceReference_2.Sequence_982.BioSeqAct_ModifyPropertyPawn_0","TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SequenceReference_2.Sequence_982.BioSeqAct_BlackScreen_3", "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SequenceReference_2.Sequence_982"),
-                            ("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SequenceReference_1.Sequence_981.SeqAct_Delay_1","TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SequenceReference_1.Sequence_981.BioSeqAct_BlackScreen_4", "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SequenceReference_1.Sequence_981")
+                            ("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SequenceReference_2.Sequence_982.BioSeqAct_ModifyPropertyPawn_0","TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SequenceReference_2.Sequence_982.BioSeqAct_BlackScreen_3", "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SequenceReference_2.Sequence_982","Out"),
+                            ("TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SequenceReference_1.Sequence_981.SeqAct_Delay_1","TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SequenceReference_1.Sequence_981.BioSeqAct_BlackScreen_4", "TheWorld.PersistentLevel.Main_Sequence.Match_End_Cin.SequenceReference_1.Sequence_981", "Finished")
 
                         };
 
                         foreach (var bfts in bftsItems)
                         {
+                            var startNode = le1File.FindExport(bfts.Item1);
+                            var endNode = le1File.FindExport(bfts.Item2);
+                            var bsequence = le1File.FindExport(bfts.Item3);
                             var streaming = SequenceObjectCreator.CreateSequenceObject(le1File, "BioSeqAct_BlockForTextureStreaming", vTestOptions.cache);
-                            KismetHelper.AddObjectToSequence(streaming, le1File.FindExport(bfts.Item3));
-                            KismetHelper.CreateOutputLink(le1File.FindExport(bfts.Item1), "Finished", streaming);
-                            KismetHelper.CreateOutputLink(streaming, "Finished", le1File.FindExport(bfts.Item2));
+                            KismetHelper.AddObjectToSequence(streaming, bsequence);
+                            KismetHelper.CreateOutputLink(startNode, "Finished", streaming);
+                            KismetHelper.CreateOutputLink(streaming, bfts.Item4, endNode);
                         }
 
                         if (vTestOptions.debugBuild)
@@ -3933,8 +4000,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 t.ObjectName = "VTEST_" + t.ObjectName;
             }
         }
-
         #endregion
+
 
         #region QA Methods
         public static void VTest_CheckFile(IMEPackage package, VTestOptions vTestOptions)
@@ -3947,7 +4014,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     var levelBin = ObjectBinary.From<Level>(level);
                     if (levelBin.Actors.Count < 2)
                         Debugger.Break(); // THIS SHOULD NOT OCCUR OR GAME WILL DIE
-                    //Debug.WriteLine($"{Path.GetFileName(package.FilePath)} actor list count: {levelBin.Actors.Count}");
+                                          //Debug.WriteLine($"{Path.GetFileName(package.FilePath)} actor list count: {levelBin.Actors.Count}");
                 }
             }
 
