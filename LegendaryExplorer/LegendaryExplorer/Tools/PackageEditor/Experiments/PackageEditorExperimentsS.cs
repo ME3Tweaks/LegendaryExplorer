@@ -1327,7 +1327,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void CreateDynamicLighting(IMEPackage Pcc, bool silent = false)
         {
-            foreach (ExportEntry exp in Pcc.Exports.Where(exp => exp.IsA("MeshComponent") || exp.IsA("BrushComponent")))
+            foreach (ExportEntry exp in Pcc.Exports.Where(exp => (exp.IsA("MeshComponent") && exp.Parent.IsA("StaticMeshActorBase")) || (exp.IsA("BrushComponent") && !exp.Parent.IsA("Volume"))))
             {
                 PropertyCollection props = exp.GetProperties();
                 if (props.GetProp<ObjectProperty>("StaticMesh")?.Value != 11483 &&
@@ -1340,11 +1340,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 props.AddOrReplaceProp(new BoolProperty(false, "bUsePreComputedShadows"));
                 props.AddOrReplaceProp(new BoolProperty(false, "bBioForcePreComputedShadows"));
-                //props.AddOrReplaceProp(new BoolProperty(true, "bCastDynamicShadow"));
+                props.AddOrReplaceProp(new BoolProperty(false, "bCastDynamicShadow"));
                 //props.AddOrReplaceProp(new BoolProperty(true, "CastShadow"));
                 //props.AddOrReplaceProp(new BoolProperty(true, "bAcceptsDynamicDominantLightShadows"));
                 props.AddOrReplaceProp(new BoolProperty(true, "bAcceptsLights"));
-                //props.AddOrReplaceProp(new BoolProperty(true, "bAcceptsDynamicLights"));
+                props.AddOrReplaceProp(new BoolProperty(false, "bAcceptsDynamicLights"));
 
                 var lightingChannels = props.GetProp<StructProperty>("LightingChannels") ??
                                        new StructProperty("LightingChannelContainer", false,
