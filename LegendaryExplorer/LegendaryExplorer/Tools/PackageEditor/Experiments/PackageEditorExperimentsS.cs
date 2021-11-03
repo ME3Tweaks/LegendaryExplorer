@@ -1344,7 +1344,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 //props.AddOrReplaceProp(new BoolProperty(true, "CastShadow"));
                 //props.AddOrReplaceProp(new BoolProperty(true, "bAcceptsDynamicDominantLightShadows"));
                 props.AddOrReplaceProp(new BoolProperty(true, "bAcceptsLights"));
-                props.AddOrReplaceProp(new BoolProperty(false, "bAcceptsDynamicLights"));
+                //props.AddOrReplaceProp(new BoolProperty(false, "bAcceptsDynamicLights"));
 
                 var lightingChannels = props.GetProp<StructProperty>("LightingChannels") ??
                                        new StructProperty("LightingChannelContainer", false,
@@ -1355,6 +1355,32 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "Static"));
                 lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "Dynamic"));
                 lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "CompositeDynamic"));
+                props.AddOrReplaceProp(lightingChannels);
+
+                exp.WriteProperties(props);
+            }
+            //fix interpactors to be dynamic
+            foreach (ExportEntry exp in Pcc.Exports.Where(exp => exp.IsA("MeshComponent") && exp.Parent.IsA("DynamicSMActor")))
+            {
+                PropertyCollection props = exp.GetProperties();
+                if (props.GetProp<ObjectProperty>("StaticMesh")?.Value != 11483 &&
+                    (props.GetProp<BoolProperty>("bAcceptsLights")?.Value == false ||
+                     props.GetProp<BoolProperty>("CastShadow")?.Value == false))
+                {
+                    // shadows/lighting has been explicitly forbidden, don't mess with it.
+                    continue;
+                }
+
+                props.AddOrReplaceProp(new BoolProperty(false, "bUsePreComputedShadows"));
+                props.AddOrReplaceProp(new BoolProperty(false, "bBioForcePreComputedShadows"));
+
+                var lightingChannels = props.GetProp<StructProperty>("LightingChannels") ??
+                                       new StructProperty("LightingChannelContainer", false,
+                                           new BoolProperty(true, "bIsInitialized"))
+                                       {
+                                           Name = "LightingChannels"
+                                       };
+                lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "Dynamic"));
                 props.AddOrReplaceProp(lightingChannels);
 
                 exp.WriteProperties(props);
