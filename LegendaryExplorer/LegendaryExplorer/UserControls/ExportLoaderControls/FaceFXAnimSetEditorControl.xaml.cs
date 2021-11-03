@@ -60,7 +60,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             InitializeComponent();
             DataContext = this;
-            if (treeView_WinFormsHost is {Child: { }})
+            if (treeView_WinFormsHost is { Child: { } })
             {
                 treeView_WinFormsHost.Child.MouseDoubleClick += treeView_MouseDoubleClick;
             }
@@ -104,15 +104,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public Animation ReferenceAnimation
         {
             get => _referenceAnimation;
-            set {
-                if(_referenceAnimation != null) _referenceAnimation.IsReferenceAnim = false;
+            set
+            {
+                if (_referenceAnimation != null) _referenceAnimation.IsReferenceAnim = false;
                 SetProperty(ref _referenceAnimation, value);
-                if(_referenceAnimation != null) _referenceAnimation.IsReferenceAnim = true;
+                if (_referenceAnimation != null) _referenceAnimation.IsReferenceAnim = true;
                 graph.ComparisonCurve = _referenceAnimation?.ToCurve(SaveChanges);
                 graph.Paint();
             }
         }
-        
+
         public ICommand AddKeyWithZeroWeightCommand { get; set; }
         #region ExportLoaderControl
 
@@ -187,7 +188,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             foreach (var faceFXLine in FaceFX.Lines)
             {
                 var LineEntry = new FaceFXLineEntry(faceFXLine);
-                if (int.TryParse(LineEntry.Line.ID, out int tlkID))
+                var idStr = LineEntry.Line.ID;
+                var voPos = idStr.IndexOf("VO_");
+                if (voPos > 0)
+                {
+                    // Cut off the start of the string
+                    idStr = idStr.Substring(voPos + 3);
+                    idStr = idStr.TrimEnd('M', 'F').TrimEnd('_'); // Hack
+                }
+                if (int.TryParse(idStr, out int tlkID))
                 {
                     LineEntry.TLKString = TLKManagerWPF.GlobalFindStrRefbyID(tlkID, Pcc);
                 }
@@ -199,7 +208,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void animationListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(SelectedAnimation != null)
+            if (SelectedAnimation != null)
             {
                 graph.SelectedCurve = SelectedAnimation.ToCurve(SaveChanges);
                 graph.Paint(true);
@@ -328,7 +337,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 string[] sourceNames = d.sourceNames;
                 FaceFXLineEntry lineEntry = new FaceFXLineEntry(d.line);
                 lineEntry.Line.NameIndex = FaceFX.Names.FindOrAdd(sourceNames[lineEntry.Line.NameIndex]);
-                if(FaceFX.Binary is FaceFXAnimSet animSet) animSet.FixNodeTable();
+                if (FaceFX.Binary is FaceFXAnimSet animSet) animSet.FixNodeTable();
                 lineEntry.Line.AnimationNames = lineEntry.Line.AnimationNames.Select(idx => FaceFX.Names.FindOrAdd(sourceNames[idx])).ToList();
                 FaceFX.Lines.Add(lineEntry.Line);
 
@@ -372,7 +381,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         if (!(e.OriginalSource is ScrollViewer) && SelectedAnimation != null)
                         {
                             Animation a = SelectedAnimation;
-                            var dragDropObject = new FaceFXAnimDragDropObject {
+                            var dragDropObject = new FaceFXAnimDragDropObject
+                            {
                                 anim = a,
                                 group = SelectedLine.NumKeys[animationListBox.SelectedIndex],
                                 fromDlg = SelectedLine.NameAsString,
@@ -402,8 +412,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             Window.GetWindow(this).RestoreAndBringToFront();
             if (e.Data.GetDataPresent("FaceFXAnim") && e.Data.GetData("FaceFXAnim") is FaceFXAnimDragDropObject d)
             {
-                if (CurrentLoadedExport == null || SelectedLine == null 
-                    || (d.fromDlg == SelectedLine.NameAsString 
+                if (CurrentLoadedExport == null || SelectedLine == null
+                    || (d.fromDlg == SelectedLine.NameAsString
                     && d.fromAnimset == CurrentLoadedExport.InstancedFullPath)) return;
 
                 Animations.Add(d.anim);
@@ -443,9 +453,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void ClearLipSyncKeys_Click(object sender, RoutedEventArgs e)
         {
-            foreach(var anim in Animations)
+            foreach (var anim in Animations)
             {
-                if(anim.Name.StartsWith("m_"))
+                if (anim.Name.StartsWith("m_"))
                 {
                     anim.Points = new LinkedList<CurvePoint>();
                 }
@@ -848,7 +858,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
     }
 
-    public class Animation: NotifyPropertyChangedBase
+    public class Animation : NotifyPropertyChangedBase
     {
         private string _name;
         public string Name
@@ -880,8 +890,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
     public class FaceFXLineEntry : NotifyPropertyChangedBase
     {
         private FaceFXLine _line;
-        public FaceFXLine Line 
-        { 
+        public FaceFXLine Line
+        {
             get => _line;
             set => SetProperty(ref _line, value);
         }
@@ -912,7 +922,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             get => Line?.Points;
             set
             {
-                if(Line != null)
+                if (Line != null)
                 {
                     Line.Points = value;
                     OnPropertyChanged(nameof(Line));
@@ -929,7 +939,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public void UpdateLength()
         {
-            if(Line == null || Line.Points.Count == 0)
+            if (Line == null || Line.Points.Count == 0)
             {
                 Length = 0f;
             }
