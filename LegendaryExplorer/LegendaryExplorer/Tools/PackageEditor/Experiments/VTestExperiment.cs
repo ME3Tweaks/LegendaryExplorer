@@ -8,6 +8,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using DocumentFormat.OpenXml.EMMA;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Tools.PathfindingEditor;
 using LegendaryExplorer.Tools.Sequence_Editor;
@@ -28,6 +29,7 @@ using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using Microsoft.Win32;
 using Newtonsoft.Json;
+using Model = LegendaryExplorerCore.Unreal.BinaryConverters.Model;
 
 namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 {
@@ -373,7 +375,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     {
                         var levelName = Path.GetFileNameWithoutExtension(f);
                         //if (levelName.CaseInsensitiveEquals("BIOA_PRC2_CCMAIN_CONV"))
-                            PortVTestLevel(vTestLevel, levelName, vTestOptions, levelName == "BIOA_" + vTestLevel, true);
+                        PortVTestLevel(vTestLevel, levelName, vTestOptions, levelName == "BIOA_" + vTestLevel, true);
                     }
                 }
             }
@@ -690,8 +692,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
             switch (uppercaseBaseName)
             {
-                case "BIOA_PRC2_CCLOBBY02_LAY":
-                    return true; // Fixes hole in the ceiling
+                case "BIOA_PRC2_CCLOBBY02_LAY": // Fixes hole above vidinos
+                case "BIOA_PRC2_CCSIM": // Fixes holes in roof of ccsim room
+                    return true; 
                 default:
                     return false;
             }
@@ -2305,7 +2308,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         private static void FixAudioLengths(IMEPackage le1File, VTestOptions vTestOptions)
         {
             var fname = Path.GetFileNameWithoutExtension(le1File.FilePath);
-            foreach (var exp in le1File.Exports.Where(x => x.ClassName == "InterpData"))
+            foreach (var exp in le1File.Exports.Where(x => x.ClassName == "BioSeqEvt_ConvNode").ToList())
             {
                 switch (le1File.Localization)
                 {
@@ -2323,33 +2326,83 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             var ifp = export.InstancedFullPath;
             switch (ifp)
             {
-                case "prc2_ahern_N.Node_Data_Sequence.InterpData_7":
-                    export.WriteProperty(new FloatProperty(9.516706f, "InterpLength")); // "I lost a lot of good friends in the first contact war..." +.5s
+                case "prc2_ahern_N.Node_Data_Sequence.BioSeqEvt_ConvNode_7":
+                    SetGenderSpecificLength(export, 0, 0.5f, vTestOptions); // "I lost a lot of good friends in the first contact war..." 
                     break;
-                case "prc2_ochren_N.Node_Data_Sequence.InterpData_67":
-                    //export.WriteProperty(new FloatProperty(3.969893f, "InterpLength")); // "So, you must be the famous Commander Shepard" +1.1s
+                case "prc2_ochren_N.Node_Data_Sequence.BioSeqEvt_ConvNode_67":
+                    SetGenderSpecificLength(export, 0, 1.1f, vTestOptions); // So you must be the famous commander shepard
                     break;
-                case "prc2_ochren_N.Node_Data_Sequence.InterpData_68":
-                    //export.WriteProperty(new FloatProperty(6.019667f, "InterpLength")); // "Do you need something? I'm sure I have a few minutes..." +.5s
+                case "prc2_ochren_N.Node_Data_Sequence.BioSeqEvt_ConvNode_68":
+                    SetGenderSpecificLength(export, 0, 0.8f, vTestOptions); // "Do you need something? I'm sure I have a few minutes before someone forgets their password"
                     break;
-                case "prc2_ochren_N.Node_Data_Sequence.InterpData_12":
+                case "prc2_ochren_N.Node_Data_Sequence.BioSeqEvt_ConvNode_12":
                     // This line is not cut off, but it ends exactly as ocaren stops talking. This doesn't mesh well with the sarcasm and the following sigh
                     // so we add a bit of a pause for dramatic effect on this excellent delivery he has for this line
-                    export.WriteProperty(new FloatProperty(5.4343516f, "InterpLength")); // "No -- our operatives train in a simulator by killing real people" +.7s
+                    SetGenderSpecificLength(export, 0, 0.8f, vTestOptions); // "No, our agents train in a simulator killing real, actual people"
                     break;
-                case "prc2_ochren_N.Node_Data_Sequence.InterpData_142":
-                    export.WriteProperty(new FloatProperty(4.849069f, "InterpLength")); // "Really? Thank me? Well, I guess I'll redouble my efforts." +.5s
+                case "prc2_ochren_N.Node_Data_Sequence.BioSeqEvt_ConvNode_142":
+                    SetGenderSpecificLength(export, 0, 0.8f, vTestOptions); //"Really? Thank me? Well, I guess I'll redouble my efforts."
                     break;
 
                 // Following 3 are "I'll go with Survival Mode". For some reason they all have different lengths. This makes them all line up with the longest of the 4 times this line is said, which seems
                 // the correct length. I include the 4th to ensure they're all set in the event I typed one wrong :)
-                case "prc2_ochren_N.Node_Data_Sequence.InterpData_156":
-                case "prc2_ochren_N.Node_Data_Sequence.InterpData_157":
-                case "prc2_ochren_N.Node_Data_Sequence.InterpData_158":
-                case "prc2_ochren_N.Node_Data_Sequence.InterpData_35":
-                    export.WriteProperty(new FloatProperty(2.3061051f, "InterpLength")); // This is +.5s to 3 of these, give or take a couple milliseconds
+                case "prc2_ochren_N.Node_Data_Sequence.BioSeqEvt_ConvNode_156":
+                case "prc2_ochren_N.Node_Data_Sequence.BioSeqEvt_ConvNode_157":
+                case "prc2_ochren_N.Node_Data_Sequence.BioSeqEvt_ConvNode_158":
+                case "prc2_ochren_N.Node_Data_Sequence.BioSeqEvt_ConvNode_35":
+                    // THIS NEEDS TESTED ON FEMALE AND MALE TO SEE WHAT NEEDS CHANGED, BUT IT DEFINITELY DOES FOR FEMALE ON BASE SURVIVAL CHOICE
+                    //export.WriteProperty(new FloatProperty(2.3061051f, "InterpLength")); // This is +.5s to 3 of these, give or take a couple milliseconds
+                    break;
+                case "prc2_ahern_N.Node_Data_Sequence.BioSeqEvt_ConvNode_111":
+                    SetGenderSpecificLength(export, 0, 1, vTestOptions); // The scores are tallied, and the winners appear... . Maleshep cuts off at 'Know'
                     break;
             }
+        }
+
+
+        /// <summary>
+        /// This code is a hack to work around some crazy issue in LE1 where the conversation length for each gender is different.
+        /// This occurs in OT but to a lesser degree but whatever the issue is, it's somewhere we can't see in native.
+        /// This code installs a gender check and directs flow to a different interp for each, which has the length adjusted
+        /// by an offset.
+        /// </summary>
+        /// <param name="export">The conversation start event node that connects to the interp</param>
+        /// <param name="femaleOffset">The interplength duration delta for females.</param>
+        /// <param name="femaleOffset">The interplength duration delta for males.</param>
+        private static void SetGenderSpecificLength(ExportEntry export, float femaleOffset, float maleOffset, VTestOptions vTestOptions)
+        {
+            // Split the nodes
+            var sequence = SeqTools.GetParentSequence(export);
+            var outbound = SeqTools.GetOutboundLinksOfNode(export);
+            var interpFemale = outbound[0][0].LinkedOp as ExportEntry;
+            var interpDataFemale = SeqTools.GetVariableLinksOfNode(interpFemale)[0].LinkedNodes[0] as ExportEntry;
+
+            var interpMale = EntryCloner.CloneTree(interpFemale);
+            var interpDataMale = EntryCloner.CloneTree(interpDataFemale);
+
+            var pmCheckFemale = SequenceObjectCreator.CreateSequenceObject(export.FileRef, "BioSeqAct_PMCheckConditional", vTestOptions.cache);
+            pmCheckFemale.WriteProperty(new IntProperty(144, "m_nIndex")); // PlayerIsFemale
+            pmCheckFemale.RemoveProperty("VariableLinks"); // These are not necessary.
+
+            KismetHelper.AddObjectsToSequence(sequence, false, interpMale, interpDataMale, pmCheckFemale);
+
+            // Link everything up.
+            outbound[0][0].LinkedOp = pmCheckFemale;
+            SeqTools.WriteOutboundLinksToNode(export, outbound); // Start Event to Conditional check
+            KismetHelper.CreateOutputLink(pmCheckFemale, "True", interpFemale); // Player Female -> Female Interp
+            KismetHelper.CreateOutputLink(pmCheckFemale, "False", interpMale); // Player Male -> Male Interp
+            KismetHelper.RemoveVariableLinks(interpMale); // Remove existing interp data
+            KismetHelper.CreateVariableLink(interpMale, "Data", interpDataMale); // Hook up the male interp data instead
+
+
+            // Update the lengths by the specified amounts.
+            var femaleLen = interpDataMale.GetProperty<FloatProperty>("InterpLength");
+            femaleLen.Value += femaleOffset;
+            interpDataFemale.WriteProperty(femaleLen);
+
+            var maleLen = interpDataMale.GetProperty<FloatProperty>("InterpLength");
+            maleLen.Value += maleOffset;
+            interpDataMale.WriteProperty(maleLen);
         }
 
         /// <summary>
@@ -3062,12 +3115,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     break;
                 case "BIOA_PRC2_CCSIM": // this this be in CCSIM05_DSG instead?
                     {
+                        // SCOREBOARD FRAMEBUFFER
+                        // This is handled by porting model from CCSIM03_LAY
                         // needs something to fill framebuffer
-                        var sourceAsset = vTestOptions.vTestHelperPackage.FindExport(@"CROSSGENV.StaticMeshActor_32000");
-                        var destLevel = le1File.FindExport("TheWorld.PersistentLevel");
-                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceAsset, le1File, destLevel, true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var mesh);
-                        PathEdUtils.SetLocation(mesh as ExportEntry, -3750, -1624, -487);
-                        PathEdUtils.SetDrawScale3D(mesh as ExportEntry, 3, 3, 3);
+                        //var sourceAsset = vTestOptions.vTestHelperPackage.FindExport(@"CROSSGENV.StaticMeshActor_32000");
+                        //var destLevel = le1File.FindExport("TheWorld.PersistentLevel");
+                        //EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceAsset, le1File, destLevel, true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var mesh);
+                        //PathEdUtils.SetLocation(mesh as ExportEntry, -3750, -1624, -487);
+                        //PathEdUtils.SetDrawScale3D(mesh as ExportEntry, 3, 3, 3);
                     }
                     break;
                 case "BIOA_PRC2":
