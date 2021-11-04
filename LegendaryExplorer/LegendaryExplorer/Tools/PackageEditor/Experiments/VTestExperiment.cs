@@ -46,7 +46,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 // Comment/uncomment these to select which files to run on
                 "PRC2",
-                "PRC2AA"
+                //"PRC2AA"
             };
 
             /// <summary>
@@ -652,7 +652,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             if (vTestOptions.useDynamicLighting)
             {
                 vTestOptions.packageEditorWindow.BusyText = $"Generating Dynamic Lighting on\n{levelName}";
-                PackageEditorExperimentsS.CreateDynamicLighting(le1File, true);
+                CreateDynamicLighting(le1File, true);
             }
 
             // This must come after dynamic lighting as we correct a few dynamic lightings
@@ -694,7 +694,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 case "BIOA_PRC2_CCLOBBY02_LAY": // Fixes hole above vidinos
                 case "BIOA_PRC2_CCSIM": // Fixes holes in roof of ccsim room
-                    return true; 
+                    return true;
                 default:
                     return false;
             }
@@ -741,49 +741,38 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
-        private static string[] ParticleMeshesToFix = new[]
+        private static void FixPlanters(IMEPackage le1File, VTestOptions vTestOptions)
         {
-            "Space_Debris",
-            "Space_Debris_Lit",
-        };
-
-        private static void ConvertParticleModuleTypeDataMesh(ExportEntry le1Entry, IMEPackage me1File, VTestOptions vTestOptions)
-        {
-            var psName = le1Entry.ParentName;
-            if (!ParticleMeshesToFix.Contains(psName))
+            // Planters need a mesh copied in since they got split into two pieces
+            var fPath = Path.GetFileNameWithoutExtension(le1File.FilePath);
+            switch (fPath)
             {
-                return; // Do not fix
+                case "BIOA_PRC2AA":
+                    {
+                        // PLANTER HIGH
+                        using var planterSource = MEPackageHandler.OpenMEPackage(Path.Combine(MEDirectories.GetCookedPath(MEGame.LE1), "BIOA_ICE20_03_DSG.pcc"), forceLoadFromDisk: true);
+                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, planterSource.FindExport("TheWorld.PersistentLevel.InterpActor_67"), le1File, le1File.FindEntry("TheWorld.PersistentLevel"), true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var leavesSMA);
+                        PathEdUtils.SetLocation(leavesSMA as ExportEntry, -35816.285f, 10777.976f, 6685.6387f + (184f * 0.6f)); // 184f is the offset, 0.6f is the DrawScaleZ
+                    }
+                    break;
+                case "BIOA_PRC2AA_00_LAY":
+                    {
+                        // PLANTER HIGH (DOOR)
+                        using var planterSource = MEPackageHandler.OpenMEPackage(Path.Combine(MEDirectories.GetCookedPath(MEGame.LE1), "BIOA_ICE20_03_DSG.pcc"), forceLoadFromDisk: true);
+                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, planterSource.FindExport("TheWorld.PersistentLevel.InterpActor_67"), le1File, le1File.FindEntry("TheWorld.PersistentLevel"), true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var leavesHighSMA);
+                        PathEdUtils.SetLocation(leavesHighSMA as ExportEntry, -35056.113f, 10664.577f, 6687.592f + (184f * 0.6f)); // 184f is the offset
+
+                        // PLANTER MEDIUM (NEARBED)
+                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, planterSource.FindExport("TheWorld.PersistentLevel.InterpActor_23"), le1File, le1File.FindEntry("TheWorld.PersistentLevel"), true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var leavesMedSMA);
+                        PathEdUtils.SetLocation(leavesMedSMA as ExportEntry, -35470.273f, 11690.752f, 6687.2974f + (112f * 0.6f)); // 112f is the offset
+
+                        // PLANTER MEDIUM (TABLE)
+                        var leavesMed2SMA = EntryCloner.CloneTree(leavesMedSMA);
+                        PathEdUtils.SetLocation(leavesMed2SMA as ExportEntry, -34559.5f, 11378.695f, 6687.457f + (112f * 0.6f)); // 112f is the offset
+
+                    }
+                    break;
             }
-
-
-            var me1PM = me1File.FindExport(le1Entry.InstancedFullPath);
-            var me1Meshes = me1PM.GetProperty<ArrayProperty<ObjectProperty>>("m_Meshes");
-            if (me1Meshes.Count > 1)
-            {
-                Debugger.Break(); // pls no
-            }
-
-            var me1Mesh = me1Meshes[0].ResolveToEntry(me1File);
-            //if (me1Mesh is ImportEntry)
-            //    Debugger.Break(); // sigh...
-
-            Debug.WriteLine($@"Converting TypeDataMesh {le1Entry.InstancedFullPath}");
-            var rop = new RelinkerOptionsPackage()
-            {
-                Cache = vTestOptions.cache,
-                TargetGameDonorDB = vTestOptions.objectDB
-            };
-
-            var le1Props = le1Entry.GetProperties();
-            var targetMesh = le1Entry.FileRef.FindEntry(me1Mesh.InstancedFullPath);
-            if (targetMesh == null)
-            {
-                EntryExporter.PortParents(me1Mesh, le1Entry.FileRef);
-                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, me1Mesh, le1Entry.FileRef, le1Entry.FileRef.FindEntry(me1Mesh.Parent.InstancedFullPath), true, rop, out targetMesh);
-            }
-
-            le1Props.AddOrReplaceProp(new ObjectProperty(targetMesh, "Mesh"));
-            le1Entry.WriteProperties(le1Props);
         }
 
         private static StructProperty ConvertCoverSlot(StructProperty me1CoverSlotProps, IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
@@ -2035,6 +2024,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             CorrectGethEquipment2DAs(le1File, vTestOptions);
             vTestOptions.packageEditorWindow.BusyText = $"PPC (Audio Lengths) on\n{levelName}";
             FixAudioLengths(le1File, vTestOptions);
+            vTestOptions.packageEditorWindow.BusyText = $"PPC (Planters) on\n{levelName}";
+            FixPlanters(le1File, vTestOptions);
             //CorrectTerrainMaterials(le1File);
 
             vTestOptions.packageEditorWindow.BusyText = $"PPC (LEVEL SPECIFIC) on\n{levelName}";
@@ -2327,7 +2318,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             switch (ifp)
             {
                 case "prc2_ahern_N.Node_Data_Sequence.BioSeqEvt_ConvNode_7":
-                    SetGenderSpecificLength(export, 0, 0.5f, vTestOptions); // "I lost a lot of good friends in the first contact war..." 
+                    SetGenderSpecificLength(export, 0.5f, 0.5f, vTestOptions); // "I lost a lot of good friends in the first contact war..."  AFFECTS BOTH
                     break;
                 case "prc2_ochren_N.Node_Data_Sequence.BioSeqEvt_ConvNode_67":
                     SetGenderSpecificLength(export, 0, 1.1f, vTestOptions); // So you must be the famous commander shepard
@@ -2355,6 +2346,21 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     break;
                 case "prc2_ahern_N.Node_Data_Sequence.BioSeqEvt_ConvNode_111":
                     SetGenderSpecificLength(export, 0, 1, vTestOptions); // The scores are tallied, and the winners appear... . Maleshep cuts off at 'Know'
+                    break;
+                case "prc2_ochren_N.Node_Data_Sequence.BioSeqEvt_ConvNode_195":
+                    SetGenderSpecificLength(export, 0, 0.5f, vTestOptions); // What's my objective in capture mode?
+                    break;
+                case "prc2_ochren_N.Node_Data_Sequence.BioSeqEvt_ConvNode_125":
+                    SetGenderSpecificLength(export, 0, 0.6f, vTestOptions); // (2nd) You have your choices between volcanic and tropical courses
+                    break;
+                case "prc2_ochren_N.Node_Data_Sequence.BioSeqEvt_ConvNode_192":
+                    SetGenderSpecificLength(export, 0, 0.7f, vTestOptions); // [NEW] Boot up the Subterranean level (Capture mode)
+                    break;
+                case "prc2_ochren_N.Node_Data_Sequence.BioSeqEvt_ConvNode_206":
+                    SetGenderSpecificLength(export, 0, 1.5f, vTestOptions); // I don't say this very often... but good luck (only when doing ahern's mission the first time) | THIS LINE IS WAY CUT OFFin 
+                    break;
+                case "prc2_ahern_N.Node_Data_Sequence.BioSeqEvt_ConvNode_10":
+                    SetGenderSpecificLength(export, 0,  0.5f, vTestOptions); // I never thought I'd see the day. Good work, Shepard. Really good work
                     break;
             }
         }
@@ -2538,6 +2544,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 RemoveBitExplosionEffect(exp);
                                 FixGethFlashlights(exp, vTestOptions); // This is just for consistency
                             }
+                            else if (seqName == "OL_Size")
+                            {
+                                // Fadein is handled by scoreboard DSG
+                                var compareBool = FindSequenceObjectByClassAndPosition(exp, "SeqCond_CompareBool", 8064, 3672);
+                                SeqTools.SkipSequenceElement(compareBool, "True"); // Skip out to true
+                            }
                         }
 
                         // Fix the AI to actually charge. For some reason they don't, maybe AI changed internally when going to LE1
@@ -2552,6 +2564,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         }
                         // Make memory unique
                         root.ObjectName = "Mercenary_Ahern_Crossgen";
+
+                        // Do not turn off fade to black on map finish
                     }
                     break;
                 case "BIOA_PRC2_CCCAVE_L":
@@ -2859,8 +2873,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             var bsequence = le1File.FindExport(bfts.Item3);
                             var streaming = SequenceObjectCreator.CreateSequenceObject(le1File, "BioSeqAct_BlockForTextureStreaming", vTestOptions.cache);
                             KismetHelper.AddObjectToSequence(streaming, bsequence);
-                            KismetHelper.CreateOutputLink(startNode, "Finished", streaming);
-                            KismetHelper.CreateOutputLink(streaming, bfts.Item4, endNode);
+                            KismetHelper.CreateOutputLink(startNode, bfts.Item4, streaming);
+                            KismetHelper.CreateOutputLink(streaming, "Finished", endNode);
                         }
 
                         if (vTestOptions.debugBuild)
@@ -3262,6 +3276,71 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
 
             exp.WriteProperty(sequenceObjects);
+        }
+
+
+        /// <summary>
+        /// Creates dynamic lighting but tries to increase performance a bit
+        /// </summary>
+        /// <param name="Pcc"></param>
+        /// <param name="silent"></param>
+        public static void CreateDynamicLighting(IMEPackage Pcc, bool silent = false)
+        {
+            foreach (ExportEntry exp in Pcc.Exports.Where(exp => (exp.IsA("MeshComponent") && exp.Parent.IsA("StaticMeshActorBase")) || (exp.IsA("BrushComponent") && !exp.Parent.IsA("Volume"))))
+            {
+                PropertyCollection props = exp.GetProperties();
+                if (props.GetProp<ObjectProperty>("StaticMesh")?.Value != 11483 &&
+                    (props.GetProp<BoolProperty>("bAcceptsLights")?.Value == false ||
+                     props.GetProp<BoolProperty>("CastShadow")?.Value == false))
+                {
+                    // shadows/lighting has been explicitly forbidden, don't mess with it.
+                    continue;
+                }
+
+                props.AddOrReplaceProp(new BoolProperty(false, "bUsePreComputedShadows"));
+                props.AddOrReplaceProp(new BoolProperty(false, "bBioForcePreComputedShadows"));
+                props.AddOrReplaceProp(new BoolProperty(false, "bCastDynamicShadow"));
+                //props.AddOrReplaceProp(new BoolProperty(true, "CastShadow"));
+                //props.AddOrReplaceProp(new BoolProperty(true, "bAcceptsDynamicDominantLightShadows"));
+                props.AddOrReplaceProp(new BoolProperty(true, "bAcceptsLights"));
+                //props.AddOrReplaceProp(new BoolProperty(false, "bAcceptsDynamicLights"));
+
+                var lightingChannels = props.GetProp<StructProperty>("LightingChannels") ??
+                                       new StructProperty("LightingChannelContainer", false,
+                                           new BoolProperty(true, "bIsInitialized"))
+                                       {
+                                           Name = "LightingChannels"
+                                       };
+                lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "Static"));
+                lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "Dynamic"));
+                lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "CompositeDynamic"));
+                props.AddOrReplaceProp(lightingChannels);
+
+                exp.WriteProperties(props);
+            }
+
+            foreach (ExportEntry exp in Pcc.Exports.Where(exp => exp.IsA("LightComponent")))
+            {
+                PropertyCollection props = exp.GetProperties();
+                //props.AddOrReplaceProp(new BoolProperty(true, "bCanAffectDynamicPrimitivesOutsideDynamicChannel"));
+                //props.AddOrReplaceProp(new BoolProperty(true, "bForceDynamicLight"));
+
+                var lightingChannels = props.GetProp<StructProperty>("LightingChannels") ??
+                                       new StructProperty("LightingChannelContainer", false,
+                                           new BoolProperty(true, "bIsInitialized"))
+                                       {
+                                           Name = "LightingChannels"
+                                       };
+                lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "Static"));
+                lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "Dynamic"));
+                lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "CompositeDynamic"));
+                props.AddOrReplaceProp(lightingChannels);
+
+                exp.WriteProperties(props);
+            }
+
+            if (!silent)
+                MessageBox.Show("Done!");
         }
 
         /// <summary>
