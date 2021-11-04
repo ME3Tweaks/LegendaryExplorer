@@ -70,7 +70,7 @@ namespace LegendaryExplorerCore.Packages
                 {
                     if (File.Exists(packagePath))
                     {
-                        Debug.WriteLine($@"PackageCache {guid} load: {packagePath}");
+                        //Debug.WriteLine($@"PackageCache {guid} load: {packagePath}");
                         package = MEPackageHandler.OpenMEPackage(packagePath, forceLoadFromDisk: true);
                         InsertIntoCache(package);
                         return package;
