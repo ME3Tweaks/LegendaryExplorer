@@ -46,7 +46,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 // Comment/uncomment these to select which files to run on
                 "PRC2",
-                //"PRC2AA"
+                "PRC2AA"
             };
 
             /// <summary>
@@ -60,6 +60,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             public bool stripShadowMaps = false;
 
             /// <summary>
+            /// If light and shadowmaps for meshes ported from ME1 (not using LE1 donor) should be ported instead of stripped. This may not look good but may be possible to adjust.
+            /// </summary>
+            public bool allowTryingPortedMeshLightMap = true;
+
+            /// <summary>S
             /// If level models should be ported.
             /// </summary>
             public bool portModels = false;
@@ -652,7 +657,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             if (vTestOptions.useDynamicLighting)
             {
                 vTestOptions.packageEditorWindow.BusyText = $"Generating Dynamic Lighting on\n{levelName}";
-                CreateDynamicLighting(le1File, true);
+                CreateDynamicLighting(le1File, vTestOptions, true);
             }
 
             // This must come after dynamic lighting as we correct a few dynamic lightings
@@ -1256,6 +1261,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             var sourcePackageName = Path.GetFileNameWithoutExtension(sourcePackage.FilePath).ToUpper();
             if (sourcePackageName == "BIOA_PRC2_CCSIM03_LAY")
             {
+                // garage door
                 sourcePackage.FindExport("TheWorld.PersistentLevel.BioDoor_1.SkeletalMeshComponent_1").RemoveProperty("Materials"); // The materials changed in LE so using the original set is wrong. Remove this property to prevent porting donors for it
             }
 
@@ -1269,6 +1275,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     if (vTestOptions == null || vTestOptions.useDynamicLighting || vTestOptions.stripShadowMaps)
                     {
+                        if (vTestOptions != null && vTestOptions.allowTryingPortedMeshLightMap && !sourcePackageName.StartsWith("BIOA_PRC2AA")) // BIOA_PRC2AA doesn't seem to work with lightmaps
+                        {
+                            var sm = exp.GetProperty<ObjectProperty>("StaticMesh"); // name might need changed?
+                            if (sm != null && sourcePackage.TryGetEntry(sm.Value, out var smEntry) && PossibleLightMapUsers.Contains(smEntry.InstancedFullPath))
+                            {
+                                continue; // We will try to use the original lightmaps for this
+                            }
+                        }
+
                         var b = ObjectBinary.From<StaticMeshComponent>(exp);
                         foreach (var lod in b.LODData)
                         {
@@ -1288,11 +1303,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     }
                 }
                 #endregion
-                // These are precomputed and stored in VTestHelper.pcc 
-                else if (exp.ClassName == "Terrain")
-                {
-                    exp.RemoveProperty("TerrainComponents"); // Don't port the components; we will port them ourselves in post
-                }
+                //// These are precomputed and stored in VTestHelper.pcc 
+                //else if (exp.ClassName == "Terrain")
+                //{
+                //    exp.RemoveProperty("TerrainComponents"); // Don't port the components; we will port them ourselves in post
+                //}
                 else if (exp.ClassName == "BioTriggerStream")
                 {
                     PreCorrectBioTriggerStream(exp);
@@ -2360,7 +2375,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     SetGenderSpecificLength(export, 0, 1.5f, vTestOptions); // I don't say this very often... but good luck (only when doing ahern's mission the first time) | THIS LINE IS WAY CUT OFFin 
                     break;
                 case "prc2_ahern_N.Node_Data_Sequence.BioSeqEvt_ConvNode_10":
-                    SetGenderSpecificLength(export, 0,  0.5f, vTestOptions); // I never thought I'd see the day. Good work, Shepard. Really good work
+                    SetGenderSpecificLength(export, 0, 0.5f, vTestOptions); // I never thought I'd see the day. Good work, Shepard. Really good work
                     break;
             }
         }
@@ -3278,23 +3293,199 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             exp.WriteProperty(sequenceObjects);
         }
 
+        private static string[] PossibleLightMapUsers = new[]
+    {
+            "BIOA_Apartment_S.APT_ANgledCeinling_01",
+            "BIOA_Apartment_S.APT_BackWall",
+            "BIOA_Apartment_S.APT_Central_Floor_01",
+            "BIOA_Apartment_S.APT_ExtWall_01",
+            "BIOA_Apartment_S.APT_Floor01",
+            "BIOA_Apartment_S.APT_GlassBrace_01",
+            "BIOA_Apartment_S.APT_HallCeiling_01",
+            "BIOA_Apartment_S.APT_HallWall_01",
+            "BIOA_Apartment_S.APT_HallWallB_01",
+            "BIOA_Apartment_S.APT_KitchenWall_01",
+            "BIOA_Apartment_S.APT_MainCeiling_01",
+            "BIOA_Apartment_S.APT_MainFloor_01",
+            "BIOA_Apartment_S.APT_MainGlass_01",
+            "BIOA_Apartment_S.APT_Pillar_01",
+            "BIOA_Apartment_S.APT_SMPillar_01",
+            "BIOA_Apartment_S.APT_Stairs_01",
+            "BIOA_Apartment_S.Apt_Window_01",
+            "BIOA_Apartment_S.APT_WindowFrame_01",
+            "BIOA_LAV60_S.LAV70_ROCKND01",
+            "BIOA_NOR10_S.NOR10_opeingE01",
+            "BIOA_NOR10_S.NOR10_poleA01",
+            "BIOA_PRC2_MatFX.CCSim_Room_Mesh",
+            "BIOA_PRC2_MatFX.LoadEffect_Mesh_S",
+            "BIOA_PRC2_MatFX.Scoreboard_CCMesh",
+            "BIOA_PRC2_MatFX.StrategicRing_S",
+            "BIOA_PRC2_PlatformUI_T.Square_Plane",
+            "BIOA_PRC2_S.Asteroids.LAV70_GROUNDROCKA_Dup",
+            "BIOA_PRC2_S.Colision.Beach_COLISION01",
+            "BIOA_PRC2_S.Colision.Lobby_COLISION",
+            "BIOA_PRC2_S.Colision.Mid_COLISION01",
+            "BIOA_PRC2_S.Colision.Sim_COLISION",
+            "BIOA_PRC2_S.CommandCenter.CCFloorBeams",
+            "BIOA_PRC2_S.lobby.LobbyRailings",
+            "BIOA_PRC2_S.lobby.LobbyRoom_S",
+            "BIOA_PRC2_S.Mid.SpaceVista_Frame_Btm_S",
+            "BIOA_PRC2_S.Mid.SpaceVista_Frame_S",
+            "BIOA_PRC2_S.Mid.SpaceVista_Window_S",
+            "BIOA_PRC2_S.MidRoom01_New",
+            "BIOA_PRC2_S.PRC2_SimWallFiller",
+            "BIOA_PRC2_S.PRC2_SimWindowFiller",
+            "BIOA_PRC2_S.Railing_Corner_Light",
+            "BIOA_PRC2_S.ScoreBoardBackground",
+            "BIOA_PRC2_S.Ships.Turian_Bomber_01",
+            "BIOA_PRC2_S.Sim.SimFloorLines",
+            "BIOA_PRC2_S.Sim.SimRoom01_S",
+            "BIOA_PRC2_S.Sim.SimRoom01Railings",
+            "BIOA_PRC2_S.Sim.SimRoom02_S",
+            "BIOA_PRC2_S.Sim.SimRoom03_S",
+            "BIOA_PRC2_S.Sim.SimRoom03Railings",
+            "BIOA_PRC2_Scoreboard_T.shepard_plane",
+            "BIOA_PRC2_Scoreboard_T.Square_Plane",
+            "BIOA_PRC2_T.LAVCubemap.LAV60_siloA01_Dup",
+            "BIOA_PRC2_T.LAVCubemap.LAV60_silohouseA06_Dup",
+            "BIOA_PRC2_T.LAVCubemap.LAV60_silohouseC06_Dup",
+            "BIOA_PRC2_T.LAVCubemap.LAV60_silohousewinA01_Dup",
+            "BIOA_PRC2_T.LAVCubemap.LAV70_drvingpannel10_Dup",
+            "BIOA_PRC2_T.LAVCubemap.LAV70_siloB01_Dup",
+            "BIOA_WAR30_S.WAR30_LIGHTSHAFT",
+            "BioBaseResources.HUD_Holograms.Meshes.Player_Pos__old",
+            "BIOG_v_DLC_Vegas.Meshes.UNC_Vegas_Rings",
+
+            // THE FOLLOWING WERE FOUND TO HAVE SAME LOD COUNT AND VERTICE COUNT
+            // Calcaulted in PackageEditorExperimentsM
+            "BIOA_ICE50_S.ice50_ceilingredo01",
+            "BIOA_JUG80_S.jug80_damwall04",
+            "BIOA_PRO10_S.PRO10_BEAMLIFT00",
+            "BIOA_PRO10_S.PRO10_CONCRETEBASE",
+            "BIOA_PRO10_S.PRO10_CONCRETEXCONNECTOR00",
+            "BIOA_PRO10_S.PRO10_RAILINGCOVER",
+            "BIOA_PRO10_S.PRO10_STATIONRAILINGA00",
+            "BIOA_PRO10_S.PRO10_STATIONRAILINGB00",
+            "BIOA_PRO10_S.PRO10_STATIONWALLPLAIN00",
+            "BIOA_PRO10_S.PRO10_STATIONWALLTOPCOVER",
+            "BIOA_PRO10_S.PRO10_WALKWAYBLOCK",
+            "BIOA_PRO10_S.PRO10_WALLNOCROUCHA",
+            "BIOA_STA30_S.sta30_ceilingsim",
+            "BIOA_STA30_S.STA30_WALL10",
+            "BIOA_STA30_S.sta30_wall16",
+            "BIOG__SKIES__.LAV00.lav00_skybox_mld",
+            "BIOA_WAR20_S.WAR20_BRIDGERUBBLEPILE",
+            "BIOA_FRE10_S.CARGO_CONTAINER",
+            "BIOA_FRE10_S.FRE10_CONTAINERCONNECTOR",
+            "BIOA_ICE20_S.ice20_signeye",
+            "BIOA_ICE50_S.ice50_metalpaneltube00",
+            "BIOA_ICE60_S.ICE60_curvejointC00",
+            "BIOA_ICE60_S.ICE60_glasspaneltubeC00",
+            "BIOA_ICE60_S.ICE60_steelframeA02",
+            "BIOA_LAV60_S.LAV60_catwalk_24",
+            "BIOA_LAV70_S.LAV70_CABLE-RAIL01",
+            "BIOA_LAV70_S.LAV70_CABLE01",
+            "BIOA_LAV70_S.LAV70_catwalk_B01",
+            "BIOA_LAV70_S.LAV70_CAVE02",
+            "BIOA_LAV70_S.LAV70_CAVE02b",
+            "BIOA_LAV70_S.LAV70_edgechunkB01",
+            "BIOA_LAV70_S.LAV70_edgechunkB02",
+            "BIOA_LAV70_S.LAV70_edgechunkB61",
+            "BIOA_LAV70_S.LAV70_ELVATOR-METALBAR",
+            "BIOA_LAV70_S.LAV70_ELVATOR-PARTA01",
+            "BIOA_LAV70_S.LAV70_ground01",
+            "BIOA_LAV70_S.LAV70_LIGHT13",
+            "BIOA_LAV70_S.LAV70_SmallRocksLowA01",
+            "BIOA_LAV70_S.LAV70_TUBE-BLACKD01",
+            "BIOA_LAV70_S.PRO10_ROCKCOVERA193",
+            "BIOA_LAV70_S.PRO10_ROCKCOVERB253",
+            "BIOA_LAV70_S.LAV70_lift03",
+            "BIOA_LAV70_S.LAV70_lift_brace02",
+            "BIOA_LAV70_S.LAV70_lift_door04",
+            "BIOA_LAV70_S.LAV70_lift_fin00",
+            "BIOA_LAV70_S.LAV70_mmover01",
+            "BIOA_LAV70_S.LAV70_ROCKSLIDELOPOLYC01",
+            "BIOG_V_Env_Hologram_Z.Mesh.Holomod_04",
+            "BIOG_V_Env_Hologram_Z.Mesh.Screen_01",
+            "BIOA_JUG80_S.jug80_rooftopB",
+            "BIOA_JUG80_S.jug80_wallA_01",
+            "BIOA_WAR30_S.WAR20_STAIRSMIDDLECOLLUM10",
+            "BIOA_LAV60_S.LAV60_catwalk_Short05",
+            "BIOA_LAV60_S.LAV60_downlightA18",
+            "BIOA_LAV60_S.LAV60_drvingpannel100",
+            "BIOA_LAV60_S.LAV60_fan-anime01",
+            "BIOA_LAV60_S.LAV60_pathbarB112",
+            "BIOA_LAV60_S.LAV60_sunroofA01",
+            "BIOA_NOR10_S.NOR10_signnumberD01",
+            "BIOA_NOR10_S.NOR10D_sidewalkpannel01",
+            "BIOA_ICE60_S.ICE60_6x8platA01",
+            "BIOA_NOR10_S.NOR10_CAPTLIGHTA01",
+            "BIOA_NOR10_S.NOR10_commanderroom_newA",
+            "BIOA_NOR10_S.NOR10_SCREENTVA01",
+            "BIOA_ICE50_S.ice50_glasspaneltube00",
+            "BIOA_NOR10_S.NOR10_FIRSTBHANDLEB00",
+            "BIOA_NOR10_S.NOR10_LIFESTAIRS",
+            "BIOA_NOR10_S.NOR10Dseat01",
+            "BIOA_ICE50_S.ice50_midbeam01",
+            "BIOA_ICE60_S.ICE60_sloped00",
+            "BIOA_NOR10_S.NOR10_FIRSTBHANDLE01",
+            "BIOG_V_Env_Hologram_Z.Mesh.Holomod_02",
+            "BIOA_NOR10_S.NOR10_FIRSTC01",
+            "BIOA_NOR10_S.NOR10_pilotlink01",
+            "BIOA_NOR10_S.NOR10D_console01",
+            "BIOG_V_Env_Hologram_Z.Mesh.Holomod_03",
+            "BIOG_V_Env_Hologram_Z.Mesh.Holomod_13_Mesh",
+            "BIOG_V_Env_Hologram_Z.Mesh.Keyboard_01",
+            "BIOA_NOR10_S.NOR10_signnumberB01",
+            "BIOG_APL_INT_Chair_Comf_02_L.Chair_Comfortable_02",
+            "BIOA_NOR10_S.NOR10_TVSET01",
+            "BIOA_NOR10_S.NOR10_table",
+            "BIOG_APL_PHY_Glasses_01_L.Glasses_01",
+            "BIOG_V_Env_Hologram_Z.Mesh.Holomod_05",
+            "BIOG_V_Env_Hologram_Z.Mesh.Holomod_09_Mesh",
+            "BIOG_V_Env_Hologram_Z.Mesh.Holomod_11_Mesh",
+            "BIOA_UNC50_T.Meshes.UNC53planet",
+            "BIOA_JUG40_S.jug40_fenceALONG",
+            "BIOA_JUG40_S.JUG40_Sail02",
+            "BIOA_JUG40_S.Jug40_Sail20",
+            "BIOA_JUG40_S.Jug40_Sail32",
+            "BIOA_JUG40_S.JUG40_treebranchesA",
+            "BIOA_JUG40_S.Jug40_Wires01",
+            "BIOG__SKIES__.Samples.sam02",
+            "BIOG_V_Env_Jug_WaveCrash_Z.Meshes.sprayPlanes",
+            "BIOA_NOR10_S.NOR10_medbedhandleA01",
+            "BIOA_PRO10_S.Pro10_BridgeHindge01",
+            "BIOA_PRO10_S.PRO10_ROCKCOVERSHARDA",
+            "BIOA_UNC20_T.UNC_HORIZONLINE",
+    };
 
         /// <summary>
         /// Creates dynamic lighting but tries to increase performance a bit
         /// </summary>
         /// <param name="Pcc"></param>
         /// <param name="silent"></param>
-        public static void CreateDynamicLighting(IMEPackage Pcc, bool silent = false)
+        public static void CreateDynamicLighting(IMEPackage Pcc, VTestOptions vTestOptions, bool silent = false)
         {
+            var fname = Path.GetFileNameWithoutExtension(Pcc.FilePath);
+            // Need to check if ledge actors compute lighting while hidden. If they do this will significantly harm performance
             foreach (ExportEntry exp in Pcc.Exports.Where(exp => (exp.IsA("MeshComponent") && exp.Parent.IsA("StaticMeshActorBase")) || (exp.IsA("BrushComponent") && !exp.Parent.IsA("Volume"))))
             {
                 PropertyCollection props = exp.GetProperties();
-                if (props.GetProp<ObjectProperty>("StaticMesh")?.Value != 11483 &&
-                    (props.GetProp<BoolProperty>("bAcceptsLights")?.Value == false ||
-                     props.GetProp<BoolProperty>("CastShadow")?.Value == false))
+                if (props.GetProp<BoolProperty>("bAcceptsLights")?.Value == false ||
+                     props.GetProp<BoolProperty>("CastShadow")?.Value == false)
                 {
                     // shadows/lighting has been explicitly forbidden, don't mess with it.
                     continue;
+                }
+
+                if (vTestOptions.allowTryingPortedMeshLightMap && !fname.StartsWith("BIOA_PRC2AA"))
+                {
+                    var sm = exp.GetProperty<ObjectProperty>("StaticMesh"); // name might need changed?
+                    if (sm != null && Pcc.TryGetEntry(sm.Value, out var smEntry) && PossibleLightMapUsers.Contains(smEntry.InstancedFullPath))
+                    {
+                        Debug.WriteLine($"Not using dynamic lighting for mesh {smEntry.InstancedFullPath}");
+                        continue; // We will try to use the original lightmaps for this
+                    }
                 }
 
                 props.AddOrReplaceProp(new BoolProperty(false, "bUsePreComputedShadows"));
@@ -3303,7 +3494,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 //props.AddOrReplaceProp(new BoolProperty(true, "CastShadow"));
                 //props.AddOrReplaceProp(new BoolProperty(true, "bAcceptsDynamicDominantLightShadows"));
                 props.AddOrReplaceProp(new BoolProperty(true, "bAcceptsLights"));
-                //props.AddOrReplaceProp(new BoolProperty(false, "bAcceptsDynamicLights"));
+                props.AddOrReplaceProp(new BoolProperty(false, "bAcceptsDynamicLights"));
 
                 var lightingChannels = props.GetProp<StructProperty>("LightingChannels") ??
                                        new StructProperty("LightingChannelContainer", false,
@@ -3695,14 +3886,63 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             var destTerrain = destTerrainEntry as ExportEntry;
 
             // Port in the precomputed components
+            var me1Terrain = me1File.Exports.First(x => x.ClassName == "Terrain");
             var sourceTerrain = vTestOptions.vTestHelperPackage.FindExport(vTestIFP);
+            var le1DonorTerrainComponents = sourceTerrain.GetProperty<ArrayProperty<ObjectProperty>>("TerrainComponents");
+            var me1TerrainComponents = me1Terrain.GetProperty<ArrayProperty<ObjectProperty>>("TerrainComponents");
             ArrayProperty<ObjectProperty> components = new ArrayProperty<ObjectProperty>("TerrainComponents");
-            foreach (var subComp in sourceTerrain.GetProperty<ArrayProperty<ObjectProperty>>("TerrainComponents"))
+            for (int i = 0; i < me1TerrainComponents.Count; i++)
             {
+                var me1SubComp = me1TerrainComponents[i].ResolveToEntry(me1File) as ExportEntry;
+                var le1SubComp = le1DonorTerrainComponents[i].ResolveToEntry(le1File) as ExportEntry;
                 rop.CrossPackageMap.Clear();
-                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, vTestOptions.vTestHelperPackage.GetUExport(subComp.Value), le1File,
+                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, vTestOptions.vTestHelperPackage.GetUExport(le1SubComp.UIndex), le1File,
                     destTerrain, true, rop, out var newSubComp);
                 components.Add(new ObjectProperty(newSubComp.UIndex));
+                var portedTC = newSubComp as ExportEntry;
+                //if (vTestOptions.allowTryingPortedMeshLightMap)
+                //{
+                //    // Install the original lightmaps
+                //    var me1TC = ObjectBinary.From<TerrainComponent>(me1SubComp);
+                //    var le1TC = ObjectBinary.From<TerrainComponent>(portedTC);
+
+                //    if (me1TC.LightMap is LightMap_2D lm2d)
+                //    {
+                //        le1TC.LightMap = me1TC.LightMap;
+                //        var le1LM = le1TC.LightMap as LightMap_2D; // This is same ref, I suppose...
+                //        // Port textures
+                //        if (lm2d.Texture1 > 0)
+                //        {
+                //            EntryExporter.ExportExportToPackage(me1File.GetUExport(lm2d.Texture1.value), le1File, out var tex1, vTestOptions.cache);
+                //            le1LM.Texture1 = tex1.UIndex;
+                //        }
+                //        if (lm2d.Texture2 > 0)
+                //        {
+                //            EntryExporter.ExportExportToPackage(me1File.GetUExport(lm2d.Texture2.value), le1File, out var tex2, vTestOptions.cache);
+                //            le1LM.Texture2 = tex2.UIndex;
+                //        }
+                //        if (lm2d.Texture3 > 0)
+                //        {
+                //            EntryExporter.ExportExportToPackage(me1File.GetUExport(lm2d.Texture3.value), le1File, out var tex3, vTestOptions.cache);
+                //            le1LM.Texture3 = tex3.UIndex;
+                //        }
+                //        if (lm2d.Texture4 > 0)
+                //        {
+                //            EntryExporter.ExportExportToPackage(me1File.GetUExport(lm2d.Texture4.value), le1File, out var tex4, vTestOptions.cache);
+                //            le1LM.Texture4 = tex4.UIndex;
+                //        }
+                //    }
+
+                //    portedTC.WriteBinary(le1TC);
+                //}
+
+                // Port over component properties
+                var propertiesME1 = me1SubComp.GetProperties();
+                portedTC.WriteProperties(propertiesME1); // The original game has no object refs
+                //foreach (var prop in propertiesME1.Where(x => x is ArrayProperty<StructProperty> or BoolProperty))
+                //{
+                //    portedTC.WriteProperty(prop); // Irrelevant lights, some lighting bools
+                //}
             }
             destTerrain.WriteProperty(components);
 

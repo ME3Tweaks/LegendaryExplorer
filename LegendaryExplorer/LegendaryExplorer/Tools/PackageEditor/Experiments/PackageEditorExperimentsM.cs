@@ -2037,6 +2037,86 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
+        public static void CompareVerticeCountBetweenGames(PackageEditorWindow pe)
+        {
+            var me1Vertices = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<int, uint>>>(File.ReadAllText(@"Y:\ModLibrary\LE1\V Test\Donors\Mappings\ME1VertexMap.json"));
+            var le1Vertices = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<int, uint>>>(File.ReadAllText(@"Y:\ModLibrary\LE1\V Test\Donors\Mappings\LE1VertexMap.json"));
+
+            foreach (var me1Mesh in me1Vertices)
+            {
+                if (le1Vertices.TryGetValue(me1Mesh.Key, out var matchingLE1Models))
+                {
+                    var matchingME1Models = me1Mesh.Value;
+                    if (matchingME1Models.Count == matchingLE1Models.Count)
+                    {
+                        // The number of LODs are identical
+                        bool works = true;
+                        for (int i = 0; i < matchingLE1Models.Count; i++)
+                        {
+                            if (matchingME1Models[i] != matchingLE1Models[i])
+                            {
+                                works = false; //vertex count has changed
+                            }
+                        }
+
+                        if (works)
+                        {
+                            Debug.WriteLine($"MATCHING VERTEX COUNT: {me1Mesh.Key}");
+                        }
+                    }
+                }
+            }
+            return;
+        }
+
+        // GENERATING
+        public static void GenerateVerticeCount(PackageEditorWindow pe)
+        {
+            Dictionary<string, Dictionary<int, uint>> me1VertexMap = new();
+            {
+                var me1Files = Directory.GetFiles(@"Y:\ModLibrary\LE1\V Test\ModdedSource", "*", SearchOption.AllDirectories);
+                foreach (var me1FilePath in me1Files)
+                {
+                    using var me1File = MEPackageHandler.OpenMEPackage(me1FilePath);
+                    foreach (var export in me1File.Exports.Where(x => x.ClassName == "StaticMesh"))
+                    {
+                        if (!me1VertexMap.ContainsKey(export.InstancedFullPath))
+                        {
+                            var sm = ObjectBinary.From<StaticMesh>(export);
+                            Dictionary<int, uint> lodVerticeMap = new();
+                            for (int i = 0; i < sm.LODModels.Length; i++)
+                                lodVerticeMap[i] = sm.LODModels[i].NumVertices;
+                            me1VertexMap[export.InstancedFullPath] = lodVerticeMap;
+                        }
+                    }
+                }
+
+                var outText = JsonConvert.SerializeObject(me1VertexMap);
+                File.WriteAllText(@"Y:\ModLibrary\LE1\V Test\Donors\Mappings\ME1VertexMap.json", outText);
+            }
+
+            // Calculate LE1
+            var le1Files = MELoadedFiles.GetOfficialFiles(MEGame.LE1);
+            Dictionary<string, Dictionary<int, uint>> le1VertexMap = new();
+
+            foreach (var le1FilePath in le1Files)
+            {
+                using var le1File = MEPackageHandler.OpenMEPackage(le1FilePath);
+                foreach (var export in le1File.Exports.Where(x => x.ClassName == "StaticMesh"))
+                {
+                    if (me1VertexMap.ContainsKey(export.InstancedFullPath) && !le1VertexMap.ContainsKey(export.InstancedFullPath))
+                    {
+                        var sm = ObjectBinary.From<StaticMesh>(export);
+                        Dictionary<int, uint> lodVerticeMap = new();
+                        for (int i = 0; i < sm.LODModels.Length; i++)
+                            lodVerticeMap[i] = sm.LODModels[i].NumVertices;
+                        le1VertexMap[export.InstancedFullPath] = lodVerticeMap;
+                    }
+                }
+            }
+            File.WriteAllText(@"Y:\ModLibrary\LE1\V Test\Donors\Mappings\LE1VertexMap.json", JsonConvert.SerializeObject(le1VertexMap));
+        }
+
         public static void ShowTextureFormats(PackageEditorWindow pe)
         {
             List<string> texFormats = new List<string>();
@@ -2266,6 +2346,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void MScanner(PackageEditorWindow pe)
         {
+            CompareVerticeCountBetweenGames(pe);
+            return;
+
             // Pain and suffering
             var inputCookedISB = @"X:\Downloads\ChocolateLabStuff\VTEST\output\vtest.isb";
             using var ms = new MemoryStream(File.ReadAllBytes(inputCookedISB));
