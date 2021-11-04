@@ -3938,6 +3938,22 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 // Port over component properties
                 var propertiesME1 = me1SubComp.GetProperties();
+                var shadowMaps = propertiesME1.GetProp<ArrayProperty<ObjectProperty>>("ShadowMaps");
+                propertiesME1.RemoveNamedProperty("ShadowMaps");
+
+                if (shadowMaps != null && shadowMaps.Any())
+                {
+                    var newShadowMaps = new ArrayProperty<ObjectProperty>("ShadowMaps");
+                    // We need to port in shadowmaps.
+                    foreach (var me1ShadowMap in shadowMaps)
+                    {
+                        EntryExporter.ExportExportToPackage(me1File.GetUExport(me1ShadowMap.Value), le1File, out var portedSMEntry, vTestOptions.cache);
+                        portedSMEntry.idxLink = newSubComp.UIndex; // Move under the component like it does in LE1
+                        newShadowMaps.Add(new ObjectProperty(portedSMEntry));
+                    }
+                    propertiesME1.Add(newShadowMaps);
+                }
+
                 portedTC.WriteProperties(propertiesME1); // The original game has no object refs
                 //foreach (var prop in propertiesME1.Where(x => x is ArrayProperty<StructProperty> or BoolProperty))
                 //{
