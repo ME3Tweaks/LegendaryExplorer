@@ -757,7 +757,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         // PLANTER HIGH
                         using var planterSource = MEPackageHandler.OpenMEPackage(Path.Combine(MEDirectories.GetCookedPath(MEGame.LE1), "BIOA_ICE20_03_DSG.pcc"), forceLoadFromDisk: true);
                         EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, planterSource.FindExport("TheWorld.PersistentLevel.InterpActor_67"), le1File, le1File.FindEntry("TheWorld.PersistentLevel"), true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var leavesSMA);
-                        PathEdUtils.SetLocation(leavesSMA as ExportEntry, -35816.285f, 10777.976f, 6685.6387f + (184f * 0.6f)); // 184f is the offset, 0.6f is the DrawScaleZ
+                        PathEdUtils.SetLocation(leavesSMA as ExportEntry, -35797.312f, 10758.975f, 6777.0386f); 
                     }
                     break;
                 case "BIOA_PRC2AA_00_LAY":
@@ -765,7 +765,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         // PLANTER HIGH (DOOR)
                         using var planterSource = MEPackageHandler.OpenMEPackage(Path.Combine(MEDirectories.GetCookedPath(MEGame.LE1), "BIOA_ICE20_03_DSG.pcc"), forceLoadFromDisk: true);
                         EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, planterSource.FindExport("TheWorld.PersistentLevel.InterpActor_67"), le1File, le1File.FindEntry("TheWorld.PersistentLevel"), true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var leavesHighSMA);
-                        PathEdUtils.SetLocation(leavesHighSMA as ExportEntry, -35056.113f, 10664.577f, 6687.592f + (184f * 0.6f)); // 184f is the offset
+                        PathEdUtils.SetLocation(leavesHighSMA as ExportEntry, -35043.76f, 10664f, 6792.9917f); 
 
                         // PLANTER MEDIUM (NEARBED)
                         EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, planterSource.FindExport("TheWorld.PersistentLevel.InterpActor_23"), le1File, le1File.FindEntry("TheWorld.PersistentLevel"), true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var leavesMedSMA);
