@@ -3516,6 +3516,32 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 exp.WriteProperties(props);
             }
 
+            foreach (ExportEntry exp in Pcc.Exports.Where(exp => exp.IsA("MeshComponent") && exp.Parent.IsA("DynamicSMActor")))
+            {
+                PropertyCollection props = exp.GetProperties();
+                if (props.GetProp<BoolProperty>("bAcceptsLights")?.Value == false ||
+                     props.GetProp<BoolProperty>("CastShadow")?.Value == false)
+                {
+                    // shadows/lighting has been explicitly forbidden, don't mess with it.
+                    continue;
+                }
+
+                props.AddOrReplaceProp(new BoolProperty(false, "bUsePreComputedShadows"));
+                props.AddOrReplaceProp(new BoolProperty(false, "bBioForcePreComputedShadows"));
+
+                var lightingChannels = props.GetProp<StructProperty>("LightingChannels") ??
+                                       new StructProperty("LightingChannelContainer", false,
+                                           new BoolProperty(true, "bIsInitialized"))
+                                       {
+                                           Name = "LightingChannels"
+                                       };
+                lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "Dynamic"));
+                props.AddOrReplaceProp(lightingChannels);
+
+                exp.WriteProperties(props);
+            }
+
+
             foreach (ExportEntry exp in Pcc.Exports.Where(exp => exp.IsA("LightComponent")))
             {
                 PropertyCollection props = exp.GetProperties();
