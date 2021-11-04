@@ -2066,11 +2066,16 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             else if (fName.CaseInsensitiveEquals("BIOA_PRC2_CCSIM05_DSG"))
             {
                 // Port in the custom sequence used for switching UIs
-                InstallVTestHelperSequenceViaOut(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Central_Scoreboard_Matinee.SeqEvent_RemoteEvent_0", "ScoreboardSequence.UISwitcherLogic", false, vTestOptions);
+                InstallVTestHelperSequenceViaOut(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Central_Scoreboard_Matinee.SeqEvent_RemoteEvent_0", "ScoreboardSequence.UISwitcherLogic", false, vTestOptions, out _);
 
                 // Port in the keybinding sequences
-                InstallVTestHelperSequenceViaOut(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Central_Scoreboard_Matinee.SeqEvent_RemoteEvent_0", "ScoreboardSequence.KeybindsInstaller", true, vTestOptions);
-                InstallVTestHelperSequenceViaOut(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Central_Scoreboard_Matinee.SeqAct_Gate_3", "ScoreboardSequence.KeybindsUninstaller", false, vTestOptions);
+                InstallVTestHelperSequenceViaOut(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Central_Scoreboard_Matinee.SeqEvent_RemoteEvent_0", "ScoreboardSequence.KeybindsInstaller", true, vTestOptions, out var gate);
+                InstallVTestHelperSequenceViaOut(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Central_Scoreboard_Matinee.SeqAct_Gate_3", "ScoreboardSequence.KeybindsUninstaller", false, vTestOptions, out _);
+
+                var scoreboardSeq = le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence.Play_Central_Scoreboard_Matinee");
+                var existingScoreboard = FindSequenceObjectByClassAndPosition(scoreboardSeq, "BioSeqAct_BioToggleCinematicMode", 3552, 808);
+                KismetHelper.CreateOutputLink(existingScoreboard, "Out", gate, 1); // Open the gate again.
+
             }
             else if (fName.CaseInsensitiveEquals("BIOA_PRC2_CCSCOREBOARD_DSG"))
             {
@@ -2078,11 +2083,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 // Port in the UI switching and keybinding for PC
                 // Port in the custom sequence used for switching UIs. Should only run if not skipping the scoreboard
-                InstallVTestHelperSequenceViaOut(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Post_Scenario_Scoreboard_Matinee.UIAction_PlaySound_0", "ScoreboardSequence.UISwitcherLogic", false, vTestOptions);
+                InstallVTestHelperSequenceViaOut(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Post_Scenario_Scoreboard_Matinee.UIAction_PlaySound_0", "ScoreboardSequence.UISwitcherLogic", false, vTestOptions, out _);
 
                 // Port in the keybinding sequences
-                InstallVTestHelperSequenceViaOut(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Post_Scenario_Scoreboard_Matinee.BioSeqAct_MiniGame_1", "ScoreboardSequence.KeybindsInstaller", true, vTestOptions);
-                InstallVTestHelperSequenceViaOut(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Post_Scenario_Scoreboard_Matinee.UIAction_PlaySound_1", "ScoreboardSequence.KeybindsUninstaller", false, vTestOptions);
+                InstallVTestHelperSequenceViaOut(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Post_Scenario_Scoreboard_Matinee.BioSeqAct_MiniGame_1", "ScoreboardSequence.KeybindsInstaller", true, vTestOptions, out var gate);
+                InstallVTestHelperSequenceViaOut(le1File, "TheWorld.PersistentLevel.Main_Sequence.Play_Post_Scenario_Scoreboard_Matinee.UIAction_PlaySound_1", "ScoreboardSequence.KeybindsUninstaller", false, vTestOptions, out _);
             }
             else if (fName.CaseInsensitiveEquals("BIOA_PRC2"))
             {
@@ -2433,8 +2438,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// <param name="sourceSequenceOpIFP"></param>
         /// <param name="vTestSequenceIFP"></param>
         /// <param name="vTestOptions"></param>
-        private static void InstallVTestHelperSequenceViaOut(IMEPackage le1File, string sourceSequenceOpIFP, string vTestSequenceIFP, bool runOnceOnly, VTestOptions vTestOptions)
+        private static void InstallVTestHelperSequenceViaOut(IMEPackage le1File, string sourceSequenceOpIFP, string vTestSequenceIFP, bool runOnceOnly, VTestOptions vTestOptions, out ExportEntry gate)
         {
+            gate = null;
             var sourceItemToOutFrom = le1File.FindExport(sourceSequenceOpIFP);
             var parentSequence = SeqTools.GetParentSequence(sourceItemToOutFrom, true);
             var donorSequence = vTestOptions.vTestHelperPackage.FindExport(vTestSequenceIFP);
@@ -2443,7 +2449,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             if (runOnceOnly)
             {
-                var gate = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqAct_Gate", vTestOptions.cache);
+                gate = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqAct_Gate", vTestOptions.cache);
                 KismetHelper.AddObjectToSequence(gate, parentSequence);
                 // link it up
                 KismetHelper.CreateOutputLink(sourceItemToOutFrom, "Out", gate);
