@@ -2043,7 +2043,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             FixPlanters(le1File, vTestOptions);
             vTestOptions.packageEditorWindow.BusyText = $"PPC (Lighting) on\n{levelName}";
             FixLighting(le1File, vTestOptions);
-            //CorrectTerrainMaterials(le1File);
+            vTestOptions.packageEditorWindow.BusyText = $"PPC (Ahern Conversation) on\n{levelName}";
+            FixAhernConversation(le1File, vTestOptions);
 
             vTestOptions.packageEditorWindow.BusyText = $"PPC (LEVEL SPECIFIC) on\n{levelName}";
 
@@ -2397,7 +2398,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 case "prc2_ochren_N.Node_Data_Sequence.BioSeqEvt_ConvNode_35":
                     SetGenderSpecificLength(export, 0.5f, 0f, vTestOptions); // Survival FIRST TIME [NEW] I'll go with Survival Mode
                     break;
-                
+
                 case "prc2_jealous_jerk_N.Node_Data_Sequence.BioSeqEvt_ConvNode_36":
                     SetGenderSpecificLength(export, 0.5f, 0.5f, vTestOptions); // I look forward to the challenge (vidinos, first win)
                     break;
@@ -2505,7 +2506,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// <param name="eventIFP"></param>
         /// <param name="vTestSequenceIFP"></param>
         /// <param name="vTestOptions"></param>
-        private static ExportEntry InstallVTestHelperSequenceNoInput(IMEPackage le1File, string sequenceIFP, string vTestSequenceIFP, VTestOptions vTestOptions, string outName = "Out")
+        private static ExportEntry InstallVTestHelperSequenceNoInput(IMEPackage le1File, string sequenceIFP, string vTestSequenceIFP, VTestOptions vTestOptions)
         {
             var sequence = le1File.FindExport(sequenceIFP);
             var donorSequence = vTestOptions.vTestHelperPackage.FindExport(vTestSequenceIFP);
@@ -2732,17 +2733,29 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 KismetHelper.AddObjectToSequence(newObj, exp);
                                 KismetHelper.CreateOutputLink(startObj, "Out", newObj); // RALLY
                                 FixSimMapTextureLoading(FindSequenceObjectByClassAndPosition(exp, "BioSeqAct_Delay", 72, 1736), vTestOptions);
-
                             }
                             else if (seqName == "Check_Capping_Completion")
                             {
                                 // Survival uses this as game mode?
                                 // Capture...?
+                                // Both use this same named item because why not
                                 var startObj = FindSequenceObjectByClassAndPosition(exp, "BioSeqAct_SetActionState"/*, 584, 2200*/);
                                 var newObj = SequenceObjectCreator.CreateSequenceObject(le1File, "LEXSeqAct_SquadCommand", vTestOptions.cache);
                                 KismetHelper.AddObjectToSequence(newObj, exp);
                                 KismetHelper.CreateOutputLink(startObj, "Out", newObj); // RALLY
                                 FixSimMapTextureLoading(FindSequenceObjectByClassAndPosition(exp, "BioSeqAct_Delay"/*, -152, 1768*/), vTestOptions);
+
+                                var surDecayStart = FindSequenceObjectByClassAndPosition(exp, "BioSeqAct_DUISetTextStringRef", 3544, 2472);
+                                if (surDecayStart != null)
+                                {
+                                    // It's survival
+                                    // Add signal to decay start
+                                    var surDecaySignal = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqAct_ActivateRemoteEvent", vTestOptions.cache);
+                                    KismetHelper.AddObjectToSequence(surDecaySignal, exp);
+                                    surDecaySignal.WriteProperty(new NameProperty("CROSSGEN_START_SUR_HEALTHGATE_DECAY", "EventName"));
+                                    KismetHelper.CreateOutputLink(surDecayStart, "Out", surDecaySignal);
+                                }
+
                             }
                             else if (seqName == "Vampire_Mode_Handler")
                             {
@@ -2795,8 +2808,26 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 // Fadein is handled by scoreboard DSG
                                 var compareBool = FindSequenceObjectByClassAndPosition(exp, "SeqCond_CompareBool", 8064, 3672);
                                 SeqTools.SkipSequenceElement(compareBool, "True"); // Skip out to true
+
+                                // Add signal to stop decay and restore healthgate
+                                if (IsContainedWithinSequenceNamed(exp, "SUR_Lava_Handler", true) ||
+                                    IsContainedWithinSequenceNamed(exp, "SUR_Thai_Handler", true) ||
+                                    IsContainedWithinSequenceNamed(exp, "SUR_Crate_Handler", true) ||
+                                    IsContainedWithinSequenceNamed(exp, "SUR_Cave_Handler", true))
+                                {
+                                    // It's survival, we should signal to restore the healthgate
+                                    var surRestoreHealthgateSignal = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqAct_ActivateRemoteEvent", vTestOptions.cache);
+                                    KismetHelper.AddObjectToSequence(surRestoreHealthgateSignal, exp);
+                                    surRestoreHealthgateSignal.WriteProperty(new NameProperty("CROSSGEN_RESTORE_SUR_HEALTHGATE", "EventName"));
+                                    KismetHelper.CreateOutputLink(FindSequenceObjectByClassAndPosition(exp, "SeqEvent_SequenceActivated"), "Out", surRestoreHealthgateSignal);
+                                }
+
                             }
                             #endregion
+                            else if (seqName == "SUR_Lava_Handler" || seqName == "SUR_Thai_Handler" || seqName == "SUR_Crate_Handler" || seqName == "SUR_Cave_Handler")
+                            {
+                                InstallVTestHelperSequenceNoInput(le1File, exp.InstancedFullPath, "HelperSequences.SurvivalHealthGateCurve", vTestOptions);
+                            }
                         }
                     }
                     break;
@@ -3218,6 +3249,46 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     }
                     break;
             }
+        }
+
+
+
+        private static void FixAhernConversation(IMEPackage le1File, VTestOptions vTestOptions)
+        {
+            // Ahern's conversation switches the position of Ahern and Competitors depending on which conversation branch you choose
+            // I have no idea why Demiurge did this but it's confusing and bad design.
+            // This conversation is in multiple files so we just check for the IFP, if we find it, we make the corrections.
+
+            var ahernConv = le1File.FindExport("prc2_ahern_D.prc2_ahern_dlg");
+            if (ahernConv == null)
+                return; // Not in this file
+
+            var entryIndicesToFix = new[] { 59, 61, 66, 64, 71, 53, 58, 55 };
+
+            var properties = ahernConv.GetProperties();
+
+            var entryList = properties.GetProp<ArrayProperty<StructProperty>>("m_EntryList");
+            foreach (var idx in entryIndicesToFix)
+            {
+                var entry = entryList[idx];
+                var replyList = entry.GetProp<ArrayProperty<StructProperty>>("ReplyListNew");
+
+                // Heuristic to tell if we need to update this.
+                var stringRef = replyList[2].GetProp<StringRefProperty>("srParaphrase");
+                if (stringRef.Value == 182514) // Competitors
+                    continue; // competitors is already in slot 3 (left middle)
+                else if (stringRef.Value == 182517) // Ahern
+                {
+                    Debug.WriteLine($"Fixing ahern conversation for entry node {idx} in {le1File.FileNameNoExtension}");
+                    var temp = replyList[2];
+                    replyList[2] = replyList[3]; // Move competitors to slot 3 (left) from slot 4 (bottom right)
+                    replyList[3] = temp; // Move ahern to bottom right, slot 4
+                }
+            }
+
+
+            ahernConv.WriteProperties(properties);
+
         }
 
         private static void ReduceDirectionalLights(IMEPackage le1File, float multiplier)
