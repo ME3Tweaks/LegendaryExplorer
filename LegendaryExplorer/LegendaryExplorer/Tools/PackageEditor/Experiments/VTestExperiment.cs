@@ -757,7 +757,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         // PLANTER HIGH
                         using var planterSource = MEPackageHandler.OpenMEPackage(Path.Combine(MEDirectories.GetCookedPath(MEGame.LE1), "BIOA_ICE20_03_DSG.pcc"), forceLoadFromDisk: true);
                         EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, planterSource.FindExport("TheWorld.PersistentLevel.InterpActor_67"), le1File, le1File.FindEntry("TheWorld.PersistentLevel"), true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var leavesSMA);
-                        PathEdUtils.SetLocation(leavesSMA as ExportEntry, -35797.312f, 10758.975f, 6777.0386f); 
+                        PathEdUtils.SetLocation(leavesSMA as ExportEntry, -35797.312f, 10758.975f, 6777.0386f);
                     }
                     break;
                 case "BIOA_PRC2AA_00_LAY":
@@ -765,7 +765,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         // PLANTER HIGH (DOOR)
                         using var planterSource = MEPackageHandler.OpenMEPackage(Path.Combine(MEDirectories.GetCookedPath(MEGame.LE1), "BIOA_ICE20_03_DSG.pcc"), forceLoadFromDisk: true);
                         EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, planterSource.FindExport("TheWorld.PersistentLevel.InterpActor_67"), le1File, le1File.FindEntry("TheWorld.PersistentLevel"), true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var leavesHighSMA);
-                        PathEdUtils.SetLocation(leavesHighSMA as ExportEntry, -35043.76f, 10664f, 6792.9917f); 
+                        PathEdUtils.SetLocation(leavesHighSMA as ExportEntry, -35043.76f, 10664f, 6792.9917f);
 
                         // PLANTER MEDIUM (NEARBED)
                         EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, planterSource.FindExport("TheWorld.PersistentLevel.InterpActor_23"), le1File, le1File.FindEntry("TheWorld.PersistentLevel"), true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out var leavesMedSMA);
@@ -2041,6 +2041,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             FixAudioLengths(le1File, vTestOptions);
             vTestOptions.packageEditorWindow.BusyText = $"PPC (Planters) on\n{levelName}";
             FixPlanters(le1File, vTestOptions);
+            vTestOptions.packageEditorWindow.BusyText = $"PPC (Lighting) on\n{levelName}";
+            FixLighting(le1File, vTestOptions);
             //CorrectTerrainMaterials(le1File);
 
             vTestOptions.packageEditorWindow.BusyText = $"PPC (LEVEL SPECIFIC) on\n{levelName}";
@@ -2199,6 +2201,22 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             //CorrectTriggerStreamsMaybe(me1File, le1File);
         }
 
+        private static void FixLighting(IMEPackage le1File, VTestOptions vTestOptions)
+        {
+            if (vTestOptions.useDynamicLighting)
+            {
+                var fname = Path.GetFileNameWithoutExtension(le1File.FilePath);
+                switch (fname)
+                {
+                    case "BIOA_PRC2_CCAHERN":
+                        // Truck shadow
+                        var truckDLE = le1File.FindExport("TheWorld.PersistentLevel.InterpActor_0.DynamicLightEnvironmentComponent_6");
+                        truckDLE.WriteProperty(new EnumProperty("LightShadow_ModulateBetter", "ELightShadowMode", MEGame.LE1, "LightShadowMode"));
+                        break;
+                }
+            }
+        }
+
         private static void CorrectTerrainSetup(IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
         {
             // Correct AlphaMaps to match the original
@@ -2340,6 +2358,16 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 case "prc2_ahern_N.Node_Data_Sequence.BioSeqEvt_ConvNode_7":
                     SetGenderSpecificLength(export, 0.5f, 0.5f, vTestOptions); // "I lost a lot of good friends in the first contact war..."  AFFECTS BOTH
                     break;
+                case "prc2_ahern_N.Node_Data_Sequence.BioSeqEvt_ConvNode_111":
+                    SetGenderSpecificLength(export, 0, 1, vTestOptions); // The scores are tallied, and the winners appear... . Maleshep cuts off at 'Know'
+                    break;
+                case "prc2_ahern_N.Node_Data_Sequence.BioSeqEvt_ConvNode_10":
+                    SetGenderSpecificLength(export, 0.5f, 0.5f, vTestOptions); // I never thought I'd see the day. Good work, Shepard. Really good work
+                    break;
+                case "prc2_ahern_N.Node_Data_Sequence.BioSeqEvt_ConvNode_217":
+                    SetGenderSpecificLength(export, 0.5f, 0f, vTestOptions); // I got a brochure from ExoGeni and they dropped a prefab down on Intai'sae for me, here in teh Argus Rho cluster.
+                    break;
+
                 case "prc2_ochren_N.Node_Data_Sequence.BioSeqEvt_ConvNode_67":
                     SetGenderSpecificLength(export, 0, 1.1f, vTestOptions); // So you must be the famous commander shepard
                     break;
@@ -2354,19 +2382,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 case "prc2_ochren_N.Node_Data_Sequence.BioSeqEvt_ConvNode_142":
                     SetGenderSpecificLength(export, 0, 0.8f, vTestOptions); //"Really? Thank me? Well, I guess I'll redouble my efforts."
                     break;
-
-                // Following 3 are "I'll go with Survival Mode". For some reason they all have different lengths. This makes them all line up with the longest of the 4 times this line is said, which seems
-                // the correct length. I include the 4th to ensure they're all set in the event I typed one wrong :)
-                case "prc2_ochren_N.Node_Data_Sequence.BioSeqEvt_ConvNode_156":
-                case "prc2_ochren_N.Node_Data_Sequence.BioSeqEvt_ConvNode_157":
-                case "prc2_ochren_N.Node_Data_Sequence.BioSeqEvt_ConvNode_158":
-                case "prc2_ochren_N.Node_Data_Sequence.BioSeqEvt_ConvNode_35":
-                    // THIS NEEDS TESTED ON FEMALE AND MALE TO SEE WHAT NEEDS CHANGED, BUT IT DEFINITELY DOES FOR FEMALE ON BASE SURVIVAL CHOICE
-                    //export.WriteProperty(new FloatProperty(2.3061051f, "InterpLength")); // This is +.5s to 3 of these, give or take a couple milliseconds
-                    break;
-                case "prc2_ahern_N.Node_Data_Sequence.BioSeqEvt_ConvNode_111":
-                    SetGenderSpecificLength(export, 0, 1, vTestOptions); // The scores are tallied, and the winners appear... . Maleshep cuts off at 'Know'
-                    break;
                 case "prc2_ochren_N.Node_Data_Sequence.BioSeqEvt_ConvNode_195":
                     SetGenderSpecificLength(export, 0, 0.5f, vTestOptions); // What's my objective in capture mode?
                     break;
@@ -2379,9 +2394,29 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 case "prc2_ochren_N.Node_Data_Sequence.BioSeqEvt_ConvNode_206":
                     SetGenderSpecificLength(export, 0, 1.5f, vTestOptions); // I don't say this very often... but good luck (only when doing ahern's mission the first time) | THIS LINE IS WAY CUT OFFin 
                     break;
-                case "prc2_ahern_N.Node_Data_Sequence.BioSeqEvt_ConvNode_10":
-                    SetGenderSpecificLength(export, 0, 0.5f, vTestOptions); // I never thought I'd see the day. Good work, Shepard. Really good work
+                case "prc2_ochren_N.Node_Data_Sequence.BioSeqEvt_ConvNode_35":
+                    SetGenderSpecificLength(export, 0.5f, 0f, vTestOptions); // Survival FIRST TIME [NEW] I'll go with Survival Mode
                     break;
+                
+                case "prc2_jealous_jerk_N.Node_Data_Sequence.BioSeqEvt_ConvNode_36":
+                    SetGenderSpecificLength(export, 0.5f, 0.5f, vTestOptions); // I look forward to the challenge (vidinos, first win)
+                    break;
+                case "prc2_jealous_jerk_N.Node_Data_Sequence.BioSeqEvt_ConvNode_32":
+                    SetGenderSpecificLength(export, 2f, 0.0f, vTestOptions); // What? Oh yes... the weapon... Let no one say vidinos is not a man of his word | This line is REALLY bad with the startup time. It's like 2 whole seconds
+                    break;
+                case "prc2_jealous_jerk_N.Node_Data_Sequence.BioSeqEvt_ConvNode_30":
+                    SetGenderSpecificLength(export, 0.8f, 0.0f, vTestOptions); // Skill at cheating the system, maybe. I'll get to the bottom of this soon enough
+                    break;
+                case "prc2_jealous_jerk_N.Node_Data_Sequence.BioSeqEvt_ConvNode_31":
+                    SetGenderSpecificLength(export, 0.8f, 0.0f, vTestOptions); // I'll find out how you rigged the simulator. Your "record" won't stand. Heads will roll
+                    break;
+                case "prc2_jealous_jerk_N.Node_Data_Sequence.BioSeqEvt_ConvNode_12":
+                    SetGenderSpecificLength(export, -0.8f, 0.0f, vTestOptions); // That wasn't luck. It was skill. | Femshep's dialogue is too long here
+                    break;
+
+
+
+
             }
         }
 
@@ -3516,7 +3551,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 exp.WriteProperties(props);
             }
 
-            foreach (ExportEntry exp in Pcc.Exports.Where(exp => exp.IsA("MeshComponent") && exp.Parent.IsA("DynamicSMActor")))
+            foreach (ExportEntry exp in Pcc.Exports.Where(exp => exp.IsA("MeshComponent") && exp.Parent.IsA("DynamicSMActor"))) //Make interpactors dynamic
             {
                 PropertyCollection props = exp.GetProperties();
                 if (props.GetProp<BoolProperty>("bAcceptsLights")?.Value == false ||
@@ -3537,7 +3572,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                        };
                 lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "Dynamic"));
                 props.AddOrReplaceProp(lightingChannels);
-
+                props.AddOrReplaceProp(new BoolProperty(true, "bAcceptsDynamicLights")); // Added in crossgen
                 exp.WriteProperties(props);
             }
 
