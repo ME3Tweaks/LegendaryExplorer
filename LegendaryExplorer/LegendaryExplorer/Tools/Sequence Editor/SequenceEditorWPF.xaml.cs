@@ -159,7 +159,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             CheckSequenceSetsCommand = new GenericCommand(() => SequenceEditorExperimentsM.CheckSequenceSets(this), () => CurrentObjects.Any);
             ConvertSeqActLogCommentCommand = new GenericCommand(() => SequenceEditorExperimentsM.ConvertSeqAct_Log_objComments(Pcc), () => SequenceExports.Any);
             SearchCommand = new GenericCommand(SearchDialogue, () => CurrentObjects.Any);
-            UseSavedViewsCommand = new GenericCommand(ToggleSavedViews, ()=> Pcc is {Game: MEGame.ME1} || Pcc.Game.IsLEGame());
+            UseSavedViewsCommand = new GenericCommand(ToggleSavedViews, () => Pcc != null && Pcc is { Game: MEGame.ME1 } || Pcc.Game.IsLEGame());
         }
 
         private void ToggleSavedViews()
@@ -1607,7 +1607,21 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             export.WriteProperty(eventLinksProp);
         }
 
+        private void RemoveFromSequence_Click(object sender, RoutedEventArgs e)
+        {
+            RemoveFromSequence(false);
+        }
+
         private void TrashAndRemoveFromSequence_Click(object sender, RoutedEventArgs e)
+        {
+            RemoveFromSequence(true);
+        }
+
+        /// <summary>
+        /// Removes an object from a sequence.
+        /// </summary>
+        /// <param name="trash">If the object should be trashed. Most times this is desirable, however if an object is being moved to another sequence, this is not desirable.</param>
+        private void RemoveFromSequence(bool trash)
         {
             if (CurrentObjects_ListBox.SelectedItem is SObj sObj)
             {
@@ -1649,9 +1663,11 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     SelectedSequence.WriteProperty(seqObjs);
                 }
 
-                //Trash
-                EntryPruner.TrashEntryAndDescendants(sObj.Export);
-
+                if (trash)
+                {
+                    //Trash
+                    EntryPruner.TrashEntryAndDescendants(sObj.Export);
+                }
             }
         }
 
