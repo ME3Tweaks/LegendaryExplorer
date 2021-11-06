@@ -85,9 +85,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             public bool installForceTextureStreaming = false;
 
             /// <summary>
+            /// The intensity scalar for the CCLava lightmap
+            /// </summary>
+            public float LavaLightmapScalar = 0.15f;
+
+            /// <summary>
             /// If debug features should be enabled in the build
             /// </summary>
-            public bool debugBuild = true;
+            public bool debugBuild = false;
 
             /// <summary>
             /// If static lighting should be converted to non-static lighting. Only works if debugBuild is true
@@ -2087,6 +2092,19 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 PortInCorrectedTerrain(me1File, le1File, "CCLava.Terrain_1", "BIOA_LAV60_00_LAY.pcc", vTestOptions);
                 CorrectTerrainSetup(me1File, le1File, vTestOptions);
+
+                // Correct the DirectionalMaxComponent scalar
+                var terrainComponents = le1File.Exports.Where(x => x.ClassName == "TerrainComponent");
+                foreach (var tc in terrainComponents)
+                {
+                    var tcBin = ObjectBinary.From<TerrainComponent>(tc);
+                    var lm = tcBin.LightMap as LightMap_2D;
+                    lm.ScaleVector2.X *= vTestOptions.LavaLightmapScalar;
+                    lm.ScaleVector2.Y *= vTestOptions.LavaLightmapScalar;
+                    lm.ScaleVector2.Z *= vTestOptions.LavaLightmapScalar;
+                    tc.WriteBinary(tcBin);
+                }
+
                 CreateSignaledTextureStreaming(le1File.FindExport("TheWorld.PersistentLevel.Main_Sequence"), cclavaTextureStreamingMaterials, vTestOptions);
             }
             else if (fName.CaseInsensitiveEquals("BIOA_PRC2AA_00_LAY"))
