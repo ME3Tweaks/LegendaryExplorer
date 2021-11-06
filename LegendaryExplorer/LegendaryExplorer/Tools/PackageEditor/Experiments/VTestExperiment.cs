@@ -64,6 +64,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             /// </summary>
             public bool allowTryingPortedMeshLightMap = true;
 
+            /// <summary>
+            /// If terrains should have their lightmaps ported over (if they exist)
+            /// </summary>
+            public bool portTerrainLightmaps = true;
+
             /// <summary>S
             /// If level models should be ported.
             /// </summary>
@@ -379,7 +384,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     else
                     {
                         var levelName = Path.GetFileNameWithoutExtension(f);
-                        //if (levelName.CaseInsensitiveEquals("BIOA_PRC2_CCMAIN_CONV"))
+                        //if (levelName.CaseInsensitiveEquals("BIOA_PRC2_CCLAVA"))
                         PortVTestLevel(vTestLevel, levelName, vTestOptions, levelName == "BIOA_" + vTestLevel, true);
                     }
                 }
@@ -1278,9 +1283,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         if (vTestOptions != null && vTestOptions.allowTryingPortedMeshLightMap && !sourcePackageName.StartsWith("BIOA_PRC2AA")) // BIOA_PRC2AA doesn't seem to work with lightmaps
                         {
                             var sm = exp.GetProperty<ObjectProperty>("StaticMesh"); // name might need changed?
-                            if (sm != null && sourcePackage.TryGetEntry(sm.Value, out var smEntry) && PossibleLightMapUsers.Contains(smEntry.InstancedFullPath))
+                            if (sm != null)
                             {
-                                continue; // We will try to use the original lightmaps for this
+                                if (sourcePackage.TryGetEntry(sm.Value, out var smEntry))
+                                {
+                                    if (ShouldPortLightmaps(smEntry))
+                                    {
+                                        continue; // Do not port
+                                    }
+                                }
                             }
                         }
 
@@ -1356,6 +1367,26 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     }
                 }
             }
+        }
+
+        private static bool ShouldPortLightmaps(IEntry smEntry)
+        {
+            if (PossibleLightMapUsers.Contains(smEntry.InstancedFullPath))
+            {
+                return true; // We will try to use the original lightmaps for this
+            }
+
+            // Thai specific stuff as this map really needs some help
+            // TEST ONLY
+            // Install lightmap for the cover boxes
+            if (ME1OptimizationAssets.Contains(smEntry.InstancedFullPath))
+            {
+                // Allow this as we will replace with ME1 mesh as it's lightmaps and lower tris
+                Debug.WriteLine($"Not using dynamic lighting for THAI optimization, mesh {smEntry.InstancedFullPath}");
+                return true;
+            }
+
+            return false;
         }
 
         // Terrible performance, but i don't care
@@ -2045,8 +2076,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             FixLighting(le1File, vTestOptions);
             vTestOptions.packageEditorWindow.BusyText = $"PPC (Ahern Conversation) on\n{levelName}";
             FixAhernConversation(le1File, vTestOptions);
-
+            vTestOptions.packageEditorWindow.BusyText = $"PPC (Optimization) on\n{levelName}";
+            PortME1OptimizationAssets(me1File, le1File, vTestOptions);
             vTestOptions.packageEditorWindow.BusyText = $"PPC (LEVEL SPECIFIC) on\n{levelName}";
+
 
             var fName = Path.GetFileNameWithoutExtension(le1File.FilePath);
             // Port in the collision-corrected terrain
@@ -2186,6 +2219,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 // Lights are way overblown for this map. This value is pretty close to the original game
                 foreach (var pl in le1File.Exports.Where(x => x.IsA("LightComponent")))
                 {
+                    if (pl.InstancedFullPath == "TheWorld.PersistentLevel.PointLightToggleable_10.PointLightComponent_1341242")
+                        continue; // Pointlight that fixes ahern conversation. Do not change this
+
                     var brightness = pl.GetProperty<FloatProperty>("Brightness")?.Value ?? 1;
                     pl.WriteProperty(new FloatProperty(brightness * .4f, "Brightness"));
                 }
@@ -2679,9 +2715,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                     KismetHelper.AddObjectsToSequence(exp, false, delay, delayDuration, changeAi, log);
 
                                     // Configure sequence object properties
-                                    delayDuration.WriteProperty(new FloatProperty(9, "Min"));
-                                    delayDuration.WriteProperty(new FloatProperty(20, "Max"));
-                                    var chargeAiClass = EntryImporter.EnsureClassIsInFile(le1File, "BioAI_Assault", new RelinkerOptionsPackage() { Cache = vTestOptions.cache });
+                                    delayDuration.WriteProperty(new FloatProperty(15, "Min"));
+                                    delayDuration.WriteProperty(new FloatProperty(27, "Max"));
+                                    var chargeAiClass = EntryImporter.EnsureClassIsInFile(le1File, "BioAI_Charge", new RelinkerOptionsPackage() { Cache = vTestOptions.cache });
                                     changeAi.WriteProperty(new ObjectProperty(chargeAiClass, "ControllerClass"));
                                     log.WriteProperty(new ArrayProperty<StrProperty>("m_aObjComment") { new StrProperty("CROSSGEN: Engaging player with BioAI_Charge change for") });
 
@@ -3571,6 +3607,29 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             "BIOA_UNC20_T.UNC_HORIZONLINE",
     };
 
+        // These assets will be used from ME1 (not using LE1's version). They must exist with same IFP in LE1 however. 
+        // Objects that match these will use static lighting
+        private static string[] ME1OptimizationAssets = new[]
+        {
+            "BIOA_JUG40_S.JUG40_ROCKCOVERA", // rock cube things
+            "BIOA_JUG40_S.JUG40_ROCKCOVERSHARDA", // thing rock cover
+                //"BIOA_JUG40_S.JUG40_ISLANDA", // Huge rock islands. They have big perf impact  but also have big visual loss if used
+                //"BIOA_JUG40_S.JUG40_ISLANDB", // Huge rock islands. They have big perf impact  but also have big visual loss if used
+        };
+
+        public static void PortME1OptimizationAssets(IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
+        {
+            foreach (var me1oa in ME1OptimizationAssets)
+            {
+                var le1Version = le1File.FindExport(me1oa);
+                if (le1Version != null)
+                {
+                    var me1Version = me1File.FindExport(me1oa);
+                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingularWithRelink, me1Version, le1File, le1Version, true, new RelinkerOptionsPackage() { Cache = vTestOptions.cache }, out _);
+                }
+            }
+        }
+
         /// <summary>
         /// Creates dynamic lighting but tries to increase performance a bit
         /// </summary>
@@ -3593,10 +3652,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 if (vTestOptions.allowTryingPortedMeshLightMap && !fname.StartsWith("BIOA_PRC2AA"))
                 {
                     var sm = exp.GetProperty<ObjectProperty>("StaticMesh"); // name might need changed?
-                    if (sm != null && Pcc.TryGetEntry(sm.Value, out var smEntry) && PossibleLightMapUsers.Contains(smEntry.InstancedFullPath))
+                    if (sm != null)
                     {
-                        Debug.WriteLine($"Not using dynamic lighting for mesh {smEntry.InstancedFullPath}");
-                        continue; // We will try to use the original lightmaps for this
+                        if (Pcc.TryGetEntry(sm.Value, out var smEntry) && ShouldPortLightmaps(smEntry))
+                        {
+                            Debug.WriteLine($"Not using dynamic lighting for mesh {smEntry.InstancedFullPath}");
+                            continue; // We will try to use the original lightmaps for this
+                        }
                     }
                 }
 
@@ -4038,41 +4100,41 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     destTerrain, true, rop, out var newSubComp);
                 components.Add(new ObjectProperty(newSubComp.UIndex));
                 var portedTC = newSubComp as ExportEntry;
-                //if (vTestOptions.allowTryingPortedMeshLightMap)
-                //{
-                //    // Install the original lightmaps
-                //    var me1TC = ObjectBinary.From<TerrainComponent>(me1SubComp);
-                //    var le1TC = ObjectBinary.From<TerrainComponent>(portedTC);
+                if (vTestOptions.portTerrainLightmaps /*&& !le1File.FilePath.Contains("LAVA")*/) // DO NOT PORT LAVA RIGHT NOW AS ITS LIGHTMAP IS BROKEN. ONLY PORT AHERN'S
+                {
+                    // Install the original lightmaps
+                    var me1TC = ObjectBinary.From<TerrainComponent>(me1SubComp);
+                    var le1TC = ObjectBinary.From<TerrainComponent>(portedTC);
 
-                //    if (me1TC.LightMap is LightMap_2D lm2d)
-                //    {
-                //        le1TC.LightMap = me1TC.LightMap;
-                //        var le1LM = le1TC.LightMap as LightMap_2D; // This is same ref, I suppose...
-                //        // Port textures
-                //        if (lm2d.Texture1 > 0)
-                //        {
-                //            EntryExporter.ExportExportToPackage(me1File.GetUExport(lm2d.Texture1.value), le1File, out var tex1, vTestOptions.cache);
-                //            le1LM.Texture1 = tex1.UIndex;
-                //        }
-                //        if (lm2d.Texture2 > 0)
-                //        {
-                //            EntryExporter.ExportExportToPackage(me1File.GetUExport(lm2d.Texture2.value), le1File, out var tex2, vTestOptions.cache);
-                //            le1LM.Texture2 = tex2.UIndex;
-                //        }
-                //        if (lm2d.Texture3 > 0)
-                //        {
-                //            EntryExporter.ExportExportToPackage(me1File.GetUExport(lm2d.Texture3.value), le1File, out var tex3, vTestOptions.cache);
-                //            le1LM.Texture3 = tex3.UIndex;
-                //        }
-                //        if (lm2d.Texture4 > 0)
-                //        {
-                //            EntryExporter.ExportExportToPackage(me1File.GetUExport(lm2d.Texture4.value), le1File, out var tex4, vTestOptions.cache);
-                //            le1LM.Texture4 = tex4.UIndex;
-                //        }
-                //    }
+                    if (me1TC.LightMap is LightMap_2D lm2d)
+                    {
+                        le1TC.LightMap = me1TC.LightMap;
+                        var le1LM = le1TC.LightMap as LightMap_2D; // This is same ref, I suppose...
+                        // Port textures
+                        if (lm2d.Texture1 > 0)
+                        {
+                            EntryExporter.ExportExportToPackage(me1File.GetUExport(lm2d.Texture1.value), le1File, out var tex1, vTestOptions.cache);
+                            le1LM.Texture1 = tex1.UIndex;
+                        }
+                        if (lm2d.Texture2 > 0)
+                        {
+                            EntryExporter.ExportExportToPackage(me1File.GetUExport(lm2d.Texture2.value), le1File, out var tex2, vTestOptions.cache);
+                            le1LM.Texture2 = tex2.UIndex;
+                        }
+                        if (lm2d.Texture3 > 0)
+                        {
+                            EntryExporter.ExportExportToPackage(me1File.GetUExport(lm2d.Texture3.value), le1File, out var tex3, vTestOptions.cache);
+                            le1LM.Texture3 = tex3.UIndex;
+                        }
+                        if (lm2d.Texture4 > 0)
+                        {
+                            EntryExporter.ExportExportToPackage(me1File.GetUExport(lm2d.Texture4.value), le1File, out var tex4, vTestOptions.cache);
+                            le1LM.Texture4 = tex4.UIndex;
+                        }
+                    }
 
-                //    portedTC.WriteBinary(le1TC);
-                //}
+                    portedTC.WriteBinary(le1TC);
+                }
 
                 // Port over component properties
                 var propertiesME1 = me1SubComp.GetProperties();
