@@ -1283,11 +1283,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                     else if (sp.StructType == "FireLink" && parsingExport.Game.IsLEGame())
                     {
-                        var destActor = sp.GetProp<StructProperty>("TargetActor").GetProp<ObjectProperty>("Actor");
-                        var destSlot = sp.GetProp<StructProperty>("TargetActor").GetProp<IntProperty>("SlotIdx");
-                        if (destActor.Value != 0 && parsingExport.FileRef.TryGetEntry(destActor.Value, out var entry))
+                        var destActor = sp.GetProp<StructProperty>("TargetActor")?.GetProp<ObjectProperty>("Actor");
+                        if (destActor != null)
                         {
-                            parsedValue = $"-> {entry.ObjectName.Instanced} Slot {destSlot.Value}";
+                            var destSlot = sp.GetProp<StructProperty>("TargetActor")?.GetProp<IntProperty>("SlotIdx");
+                            if (destSlot != null && destActor.Value != 0 && parsingExport.FileRef.TryGetEntry(destActor.Value, out var entry))
+                            {
+                                parsedValue = $"-> {entry.ObjectName.Instanced} Slot {destSlot.Value}";
+                            }
                         }
                     }
                     else if (sp.StructType == "FireLinkItem" && parsingExport.Game.IsLEGame())
