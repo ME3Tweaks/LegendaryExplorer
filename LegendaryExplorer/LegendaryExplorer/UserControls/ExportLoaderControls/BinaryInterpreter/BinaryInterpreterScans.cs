@@ -1380,8 +1380,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                     MakeEntryNode(bin, "Texture 4"),
                                     MakeVectorNodeEditable(bin, "ScaleVector 4", true),
                                 }),
-                                MakeVector2DNodeEditable(bin, "CoordinateScale"),
-                                MakeVector2DNodeEditable(bin, "CoordinateBias")
+                                MakeVector2DNodeEditable(bin, "CoordinateScale", true),
+                                MakeVector2DNodeEditable(bin, "CoordinateBias", true)
                             }),
                             ListInitHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_3, () => new ITreeItem[]
                             {
