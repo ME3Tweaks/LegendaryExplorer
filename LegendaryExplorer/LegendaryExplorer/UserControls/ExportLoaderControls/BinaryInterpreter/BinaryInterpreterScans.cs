@@ -1370,18 +1370,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             ListInitHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_2D, () => new List<ITreeItem>
                             {
                                 MakeEntryNode(bin, "Texture 1"),
-                                MakeVectorNode(bin, "ScaleVector 1"),
+                                MakeVectorNodeEditable(bin, "ScaleVector 1", true),
                                 MakeEntryNode(bin, "Texture 2"),
-                                MakeVectorNode(bin, "ScaleVector 2"),
+                                MakeVectorNodeEditable(bin, "ScaleVector 2", true),
                                 MakeEntryNode(bin, "Texture 3"),
-                                MakeVectorNode(bin, "ScaleVector 3"),
+                                MakeVectorNodeEditable(bin, "ScaleVector 3", true),
                                 ListInitHelper.ConditionalAdd(Pcc.Game < MEGame.ME3, () => new ITreeItem[]
                                 {
                                     MakeEntryNode(bin, "Texture 4"),
-                                    MakeVectorNode(bin, "ScaleVector 4"),
+                                    MakeVectorNodeEditable(bin, "ScaleVector 4", true),
                                 }),
-                                MakeVector2DNode(bin, "CoordinateScale"),
-                                MakeVector2DNode(bin, "CoordinateBias")
+                                MakeVector2DNodeEditable(bin, "CoordinateScale"),
+                                MakeVector2DNodeEditable(bin, "CoordinateBias")
                             }),
                             ListInitHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_3, () => new ITreeItem[]
                             {
@@ -7070,6 +7070,28 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 Length = 4
             };
+
+        private static BinInterpNode MakeVectorNodeEditable(EndianReader bin, string name, bool expanded = false)
+        {
+            var node = new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()}, Z: {bin.ReadFloat()})") { Length = 12 };
+            bin.Position -= 12;
+            node.Items.Add(MakeFloatNode(bin, "X"));
+            node.Items.Add(MakeFloatNode(bin, "Y"));
+            node.Items.Add(MakeFloatNode(bin, "Z"));
+            node.IsExpanded = expanded;
+            return node;
+        }
+
+        private static BinInterpNode MakeVector2DNodeEditable(EndianReader bin, string name, bool expanded = false)
+        {
+            var node = new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()}") { Length = 8 };
+            bin.Position -= 8;
+            node.Items.Add(MakeFloatNode(bin, "X"));
+            node.Items.Add(MakeFloatNode(bin, "Y"));
+            node.IsExpanded = expanded;
+            return node;
+        }
+
 
         private static BinInterpNode MakeVectorNode(EndianReader bin, string name) =>
             new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()}, Z: {bin.ReadFloat()})") { Length = 12 };
