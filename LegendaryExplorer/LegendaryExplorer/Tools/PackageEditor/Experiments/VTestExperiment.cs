@@ -3648,6 +3648,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             "BIOA_PRO10_S.Pro10_BridgeHindge01",
             "BIOA_PRO10_S.PRO10_ROCKCOVERSHARDA",
             "BIOA_UNC20_T.UNC_HORIZONLINE",
+
+            "BIOA_JUG40_S.CROSSGENFIX_SANDBARB" // This is done via special donor, renamed, but we want the original lightmaps as we use a few less poly version (but def the lightmaps)
     };
 
         // These assets will be used from ME1 (not using LE1's version). They must exist with same IFP in LE1 however. 
@@ -3656,8 +3658,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
             "BIOA_JUG40_S.JUG40_ROCKCOVERA", // rock cube things
             "BIOA_JUG40_S.JUG40_ROCKCOVERSHARDA", // thing rock cover
-                //"BIOA_JUG40_S.JUG40_ISLANDA", // Huge rock islands. They have big perf impact  but also have big visual loss if used
-                //"BIOA_JUG40_S.JUG40_ISLANDB", // Huge rock islands. They have big perf impact  but also have big visual loss if used
+            //"BIOA_JUG40_S.CROSSGENFIX_SANDBARB", // sandbars
         };
 
         public static void PortME1OptimizationAssets(IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
