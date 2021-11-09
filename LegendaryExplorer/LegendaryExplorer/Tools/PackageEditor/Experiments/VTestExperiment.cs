@@ -1283,6 +1283,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 #region Remove Light and Shadow Maps
                 if (exp.ClassName == "StaticMeshComponent")
                 {
+                    //if Non-Collection Static add LE Bool
+                    if (exp.Parent.ClassName == "StaticMeshActor")
+                    {
+                        var props = exp.GetProperties();
+                        props.AddOrReplaceProp(new BoolProperty(true, "bIsOwnerAStaticMeshActor"));
+                        exp.WriteProperties(props);
+                    }
+
                     if (vTestOptions == null || vTestOptions.useDynamicLighting || vTestOptions.stripShadowMaps)
                     {
                         if (vTestOptions != null && vTestOptions.allowTryingPortedMeshLightMap && !sourcePackageName.StartsWith("BIOA_PRC2AA")) // BIOA_PRC2AA doesn't seem to work with lightmaps
