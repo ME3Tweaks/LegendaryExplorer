@@ -2728,27 +2728,52 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                                     var delay = SequenceObjectCreator.CreateSequenceObject(le1File, "BioSeqAct_Delay", vTestOptions.cache);
                                     var delayDuration = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqVar_RandomFloat", vTestOptions.cache);
-                                    var changeAi = SequenceObjectCreator.CreateSequenceObject(le1File, "BioSeqAct_ChangeAI", vTestOptions.cache);
-                                    var log = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqAct_Log", vTestOptions.cache);
-                                    KismetHelper.AddObjectsToSequence(exp, false, delay, delayDuration, changeAi, log);
+                                    var aiChoiceRand = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqVar_RandomFloat", vTestOptions.cache);
+                                    var aiChoiceComp = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqCond_CompareFloat", vTestOptions.cache);
+                                    var aiChoiceAssaultThreshold = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqVar_Float", vTestOptions.cache);
+                                    var changeAiCharge = SequenceObjectCreator.CreateSequenceObject(le1File, "BioSeqAct_ChangeAI", vTestOptions.cache);
+                                    var changeAiAssault = SequenceObjectCreator.CreateSequenceObject(le1File, "BioSeqAct_ChangeAI", vTestOptions.cache);
+                                    var chargeAiLog = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqAct_Log", vTestOptions.cache);
+                                    var assaultAiLog = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqAct_Log", vTestOptions.cache);
+                                    KismetHelper.AddObjectsToSequence(exp, false, delay, delayDuration, aiChoiceRand, aiChoiceComp, aiChoiceAssaultThreshold, changeAiCharge, changeAiAssault, assaultAiLog, chargeAiLog);
 
                                     // Configure sequence object properties
                                     delayDuration.WriteProperty(new FloatProperty(15, "Min"));
                                     delayDuration.WriteProperty(new FloatProperty(27, "Max"));
+
+                                    // CHARGE AI BRANCH
                                     var chargeAiClass = EntryImporter.EnsureClassIsInFile(le1File, "BioAI_Charge", new RelinkerOptionsPackage() { Cache = vTestOptions.cache });
-                                    changeAi.WriteProperty(new ObjectProperty(chargeAiClass, "ControllerClass"));
-                                    log.WriteProperty(new ArrayProperty<StrProperty>("m_aObjComment") { new StrProperty("CROSSGEN: Engaging player with BioAI_Charge change for") });
+                                    changeAiCharge.WriteProperty(new ObjectProperty(chargeAiClass, "ControllerClass"));
+                                    chargeAiLog.WriteProperty(new ArrayProperty<StrProperty>("m_aObjComment") { new StrProperty("CROSSGEN: Engaging player with BioAI_Charge") });
 
-                                    // Connect sequence objects
+                                    // ASSAULT AI BRANCH
+                                    var assaultAiClass = EntryImporter.EnsureClassIsInFile(le1File, "BioAI_Assault", new RelinkerOptionsPackage() { Cache = vTestOptions.cache });
+                                    changeAiAssault.WriteProperty(new ObjectProperty(assaultAiClass, "ControllerClass"));
+                                    assaultAiLog.WriteProperty(new ArrayProperty<StrProperty>("m_aObjComment") { new StrProperty("CROSSGEN: Engaging player with BioAI_Assault") });
+
+                                    // ASSAULT CHANCE - 1 in 3 chance
+                                    aiChoiceRand.WriteProperty(new FloatProperty(0, "Min"));
+                                    aiChoiceRand.WriteProperty(new FloatProperty(3, "Max"));
+                                    aiChoiceAssaultThreshold.WriteProperty(new FloatProperty(2f, "FloatValue")); // The generated random number must be above this to change to assault. 
+
+                                    // Connect sequence objects - Delay and branch pick
                                     KismetHelper.CreateOutputLink(crustAttach, "Done", delay);
-                                    KismetHelper.CreateOutputLink(delay, "Finished", changeAi);
-                                    KismetHelper.CreateOutputLink(changeAi, "Out", log);
                                     KismetHelper.CreateVariableLink(delay, "Duration", delayDuration);
-                                    KismetHelper.CreateVariableLink(changeAi, "Pawn", currentPawn);
-                                    KismetHelper.CreateVariableLink(log, "Object", currentPawn);
+                                    KismetHelper.CreateOutputLink(delay, "Finished", aiChoiceComp);
+                                    KismetHelper.CreateVariableLink(aiChoiceComp, "A", aiChoiceRand);
+                                    KismetHelper.CreateVariableLink(aiChoiceComp, "B", aiChoiceAssaultThreshold);
 
-                                    // Todo maybe: Charge AI after even longer?
+                                    // Connect sequence objects - CHARGE BRANCH
+                                    KismetHelper.CreateOutputLink(aiChoiceComp, "A < B", changeAiCharge);
+                                    KismetHelper.CreateOutputLink(changeAiCharge, "Out", chargeAiLog);
+                                    KismetHelper.CreateVariableLink(changeAiCharge, "Pawn", currentPawn);
+                                    KismetHelper.CreateVariableLink(chargeAiLog, "Object", currentPawn);
 
+                                    // Connect sequence objects - CHARGE BRANCH
+                                    KismetHelper.CreateOutputLink(aiChoiceComp, "A >= B", changeAiAssault);
+                                    KismetHelper.CreateOutputLink(changeAiAssault, "Out", assaultAiLog);
+                                    KismetHelper.CreateVariableLink(changeAiAssault, "Pawn", currentPawn);
+                                    KismetHelper.CreateVariableLink(assaultAiLog, "Object", currentPawn);
 
                                     // Stop timer on any event in this sequence 
                                     var events = SeqTools.GetAllSequenceElements(exp).OfType<ExportEntry>().Where(x => x.IsA("SeqEvent")).ToList();
