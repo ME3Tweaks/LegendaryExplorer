@@ -2346,6 +2346,48 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void MScanner(PackageEditorWindow pe)
         {
+            var inputFilesDir = @"C:\Program Files (x86)\Mass Effect\DLC\DLC_Vegas\CookedPC\Maps\PRC2AA";
+            var destFileDir = @"Y:\ModLibrary\LE1\V Test\ModdedSource\PRC2AA";
+            var outDir = @"Y:\ModLibrary\LE1\V Test\ModdedSource\PRC2-LOCUpdate";
+
+            var langs = new[] { "RA", "RU" };
+            foreach (var inputFile in Directory.GetFiles(inputFilesDir))
+            {
+                var inFileName = Path.GetFileName(inputFile);
+                var matchingVtestFile = Directory.GetFiles(destFileDir, "*", SearchOption.AllDirectories)
+                    .FirstOrDefault(x => Path.GetFileName(x) == inFileName);
+                if (matchingVtestFile == null)
+                    continue;
+                using var rusP = MEPackageHandler.OpenMEPackage(inputFile);
+                using var vtestP = MEPackageHandler.OpenMEPackage(matchingVtestFile);
+
+                foreach (var rusTlkSet in rusP.Exports.Where(x => x.ClassName == "BioTlkFileSet"))
+                {
+                    var vtestTlkSet = vtestP.FindExport(rusTlkSet.InstancedFullPath);
+
+                    var rusBin = ObjectBinary.From<BioTlkFileSet>(rusTlkSet);
+                    var vtestBin = ObjectBinary.From<BioTlkFileSet>(vtestTlkSet);
+
+                    foreach (var lang in langs)
+                    {
+                        var newLangInfo = rusBin.TlkSets[lang];
+                        // Male
+                        var maleExport = rusP.GetUExport(newLangInfo.Male);
+                        EntryExporter.ExportExportToPackage(maleExport, vtestP, out var maleEntry);
+                        // Female
+                        var femaleExport = rusP.GetUExport(newLangInfo.Female);
+                        EntryExporter.ExportExportToPackage(femaleExport, vtestP, out var femaleEntry);
+
+                        vtestBin.TlkSets[lang] = new BioTlkFileSet.BioTlkSet() {Female = femaleEntry.UIndex, Male = maleEntry.UIndex};
+                    }
+                    vtestTlkSet.WriteBinary(vtestBin);
+                }
+
+                var outPath = Path.Combine(outDir, inFileName);
+                vtestP.Save(outPath);
+            }
+            return;
+
             CompareVerticeCountBetweenGames(pe);
             return;
 
