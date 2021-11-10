@@ -1206,6 +1206,12 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsK.AddNewInterpGroups(GetPEWindow());
         }
 
+        private void ParseMapNamesToObjects(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsK.ParseMapNames(GetPEWindow());
+        }
+
+
         #endregion
 
         // EXPERIMENTS: HENBAGLE ------------------------------------------------------------

@@ -17,6 +17,7 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
@@ -979,6 +980,47 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 grpsProp.Add(objProp);
             }
             interp.WriteProperty(grpsProp);
+        }
+
+        public static void ParseMapNames(PackageEditorWindow pewpf)
+        {
+            if (pewpf.SelectedItem.Entry is not ExportEntry gmObj)
+                return;
+
+
+            if (!gmObj.IsA("SFXGalaxyMapObject"))
+            {
+                MessageBox.Show("Not a Galaxy Map Object.", "Warning", MessageBoxButton.OK);
+                return;
+            }
+
+            ChangeMapNames(gmObj);
+
+            void ChangeMapNames(ExportEntry mapObj)
+            {
+                var displayName = mapObj.GetProperty<StringRefProperty>("DisplayName");
+                if(displayName != null)
+                {
+                    int strref = displayName.Value;
+                    string name = TlkManagerNS.TLKManagerWPF.GlobalFindStrRefbyID(strref, pewpf.Pcc);
+                    if (strref > 0 && name != null)
+                    {
+                        mapObj.ObjectNameString = name.Replace(" ", String.Empty).Trim('"', ' ');
+                    }
+                }
+
+                var children = mapObj.GetProperty<ArrayProperty<ObjectProperty>>("Children");
+                if (children != null)
+                {
+                    foreach (var child in children)
+                    {
+                        if (child != null && child.ResolveToEntry(pewpf.Pcc) is ExportEntry gmChild && gmChild.IsA("SFXGalaxyMapObject"))
+                        {
+                            ChangeMapNames(gmChild);
+                        }
+                    }
+                }
+            }
         }
     }
 }
