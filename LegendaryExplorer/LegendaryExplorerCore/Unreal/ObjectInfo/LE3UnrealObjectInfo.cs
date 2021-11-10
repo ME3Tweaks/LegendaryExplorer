@@ -648,6 +648,73 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 ObjInstanceVersion = 1
             };
 
+            //Kinkojiro - New GM Classes - only used in EGM
+            classes["SFXClusterEGM"] = new ClassInfo
+            {
+                baseClass = "SFXCluster",
+                properties =
+                {
+                    new KeyValuePair<NameReference, PropertyInfo>("DisplayGAWCondition", new PropertyInfo(PropertyType.IntProperty))
+                }
+            };
+            classes["SFXSystemEGM"] = new ClassInfo
+            {
+                baseClass = "SFXSystem",
+                properties =
+                {
+                    new KeyValuePair<NameReference, PropertyInfo>("m_bCerberusSystem", new PropertyInfo(PropertyType.BoolProperty))
+                }
+            };
+            classes["SFXPlanet_Invaded"] = new ClassInfo
+            {
+                baseClass = "BioPlanet",
+                properties =
+                {
+                    new KeyValuePair<NameReference, PropertyInfo>("InvasionCondition", new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("PreInvasionDescription", new PropertyInfo(PropertyType.StringRefProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("m_bDestroyedbyReapers", new PropertyInfo(PropertyType.BoolProperty))
+                }
+            };
+            classes["SFXGalaxyMapShipAppearance"] = new ClassInfo
+            {
+                baseClass = "SFXGalaxyMapPlanetAppearance",
+                properties =
+                {
+                    new KeyValuePair<NameReference, PropertyInfo>("AmbientColor", new PropertyInfo(PropertyType.StructProperty, "LinearColor")),
+                    new KeyValuePair<NameReference, PropertyInfo>("m_bNeedsLightEnvironment", new PropertyInfo(PropertyType.BoolProperty))
+                }
+            };
+            classes["SFXGalaxyMapFuelDepotDestroyable"] = new ClassInfo
+            {
+                baseClass = "SFXGalaxyMapDestroyedFuelDepot",
+                properties =
+                {
+                    new KeyValuePair<NameReference, PropertyInfo>("DestructionCondition", new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("EmptyAppearance", new PropertyInfo(PropertyType.ObjectProperty, "SFXGalaxyMapObjectAppearanceBase")),
+                    new KeyValuePair<NameReference, PropertyInfo>("EmptyDisplayName", new PropertyInfo(PropertyType.StringRefProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("EmptyDescription", new PropertyInfo(PropertyType.StringRefProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("EmptyTexture", new PropertyInfo(PropertyType.ObjectProperty, "Texture2D")),
+                    new KeyValuePair<NameReference, PropertyInfo>("m_bEmptyDepot", new PropertyInfo(PropertyType.BoolProperty))
+                }
+            };
+            classes["SFXGalaxyMapReaperEGM"] = new ClassInfo
+            {
+                baseClass = "SFXGalaxyMapDestroyedFuelDepot",
+                properties =
+                {
+                    new KeyValuePair<NameReference, PropertyInfo>("EGMSettingCondition", new PropertyInfo(PropertyType.IntProperty))
+                }
+            };
+            classes["SFXGalaxyMapCerberusShip"] = new ClassInfo
+            {
+                baseClass = "SFXGalaxyMapReaperEGM",
+                properties =
+                {
+                    
+                   new KeyValuePair<NameReference, PropertyInfo>("ArrowMaterialInstance", new PropertyInfo(PropertyType.ObjectProperty, "MaterialInstanceConstant"))
+                }
+            };
+
             ME3UnrealObjectInfo.AddIntrinsicClasses(classes, MEGame.LE3);
 
             classes["LightMapTexture2D"] = new ClassInfo
