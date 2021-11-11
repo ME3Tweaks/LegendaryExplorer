@@ -1003,7 +1003,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     int strref = displayName.Value;
                     string name = TlkManagerNS.TLKManagerWPF.GlobalFindStrRefbyID(strref, pewpf.Pcc);
-                    if (strref > 0 && name != null && name != "\"No Data\"")
+                    if (strref > 0 && name != null && name != "No Data")
                     {
                         mapObj.ObjectNameString = name.Replace(" ", string.Empty).Trim('"', ' ');
                     }
