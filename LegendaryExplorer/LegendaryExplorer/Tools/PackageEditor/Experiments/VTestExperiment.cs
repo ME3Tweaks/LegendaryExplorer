@@ -3667,6 +3667,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             "BIOA_JUG40_S.JUG40_ROCKCOVERA", // rock cube things
             "BIOA_JUG40_S.JUG40_ROCKCOVERSHARDA", // thing rock cover
             //"BIOA_JUG40_S.CROSSGENFIX_SANDBARB", // sandbars
+            "BIOA_JUG40_S.jug40_pillarD_02", // Pillar things under those other things
+            "BIOA_JUG40_S.jug40_fenceALONG", // fence piece
+            "BIOA_JUG40_S.JUG40_BASERAILING00",
+            "BIOA_JUG40_S.JUG40_BASERAILINGRAMP",
+            "BIOA_JUG40_S.JUG20_RAMPSHEET",
+            "BIOA_JUG40_S.jug40_Object01", // Pathway to the 'hole of doom'
+
+
+
         };
 
         public static void PortME1OptimizationAssets(IMEPackage me1File, IMEPackage le1File, VTestOptions vTestOptions)
