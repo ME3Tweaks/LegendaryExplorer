@@ -3942,7 +3942,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             var startMusicEvt = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqEvent_RemoteEvent", vTestOptions.cache);
             var stopMusicEvt = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqEvent_RemoteEvent", vTestOptions.cache);
-            var plotCheck = SequenceObjectCreator.CreateSequenceObject(le1File, "BioSeqAct_PMCheckConditional", vTestOptions.cache);
+            var plotCheck = SequenceObjectCreator.CreateSequenceObject(le1File, "BioSeqAct_PMCheckState", vTestOptions.cache);
             var musOn = SequenceObjectCreator.CreateSequenceObject(le1File, "BioSeqAct_MusicVolumeEnable", vTestOptions.cache);
             var musOff = SequenceObjectCreator.CreateSequenceObject(le1File, "BioSeqAct_MusicVolumeDisable", vTestOptions.cache);
             var musVolSeqObj = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqVar_Object", vTestOptions.cache);
@@ -3959,7 +3959,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             KismetHelper.AddObjectsToSequence(sequence, false, startMusicEvt, stopMusicEvt, plotCheck, musOn, musOff, musVolSeqObj, stateBeingSet, musicStatePlotInt, setInt);
 
             KismetHelper.CreateOutputLink(startMusicEvt, "Out", plotCheck);
-            KismetHelper.CreateOutputLink(plotCheck, "True", setInt);
             KismetHelper.CreateOutputLink(plotCheck, "False", setInt); // CHANGE TO musOff IN FINAL BUILD
             KismetHelper.CreateOutputLink(setInt, "Out", musOn);
             KismetHelper.CreateOutputLink(stopMusicEvt, "Out", musOff);
@@ -3970,6 +3969,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             KismetHelper.CreateVariableLink(setInt, "Target", musicStatePlotInt);
             KismetHelper.CreateVariableLink(setInt, "Value", stateBeingSet);
+
+            // Music bool
+            KismetHelper.SetComment(plotCheck, "Music is disabled?");
+            plotCheck.WriteProperty(new IntProperty(7657, "m_nIndex"));
 
             // Setup SetInt values
             stateBeingSet.WriteProperty(new IntProperty(soundState, "IntValue"));
