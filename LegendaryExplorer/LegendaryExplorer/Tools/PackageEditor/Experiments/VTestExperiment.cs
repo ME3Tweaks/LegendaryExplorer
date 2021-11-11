@@ -443,12 +443,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
             if (levelFileName.Contains("_LOC_", StringComparison.InvariantCultureIgnoreCase))
             {
-                PortLOCFile(levelFileName, vTestOptions);
+                //if (levelFileName.Contains("bioa_prc2_ccsim05_dsg_LOC_FR", StringComparison.InvariantCultureIgnoreCase))
+                    PortLOCFile(levelFileName, vTestOptions);
             }
             else
             {
                 var levelName = Path.GetFileNameWithoutExtension(levelFileName);
-                //if (levelName.CaseInsensitiveEquals("BIOA_PRC2_CCLAVA"))
+                //if (levelFileName.CaseInsensitiveEquals("BIOA_PRC2_CCLAVA"))
                 PortVTestLevel(masterMapName, levelName, vTestOptions, levelName is "BIOA_PRC2" or "BIOA_PRC2AA", true);
             }
         }
@@ -1219,7 +1220,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                         if (removed)
                             continue;
-
                     }
                 }
                 e.WriteProperty(ro);
@@ -1435,9 +1435,17 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         private static Dictionary<Guid, Guid> expressionGuidMap = new()
         {
+            // INT
             { new Guid(StringToByteArray("AD2F8F9FB837D8499EF1FC9799289A3E")), new Guid(StringToByteArray("896318E56A762B4FAEA9AA29B4B968CD")) }, // Alpha_Map -> Texture (Scoreboard)
             { new Guid(StringToByteArray("32144A9CDE189141BC421589B7EF3C0A")), new Guid(StringToByteArray("A1A3A72858C9DC45A10D3E9967BE4EE8")) }, // Character_Color -> ColorSelected (Scoreboard)
             { new Guid(StringToByteArray("E1EC0FC0E38D07439505E7C1EBB17F6D")), new Guid(StringToByteArray("896318E56A762B4FAEA9AA29B4B968CD")) }, // Alpha_Map -> Texture (Scoreboard Pulse)
+
+            // FR
+            { new Guid(StringToByteArray("89A949CF1307894385007C3F7E294B31")), new Guid(StringToByteArray("896318E56A762B4FAEA9AA29B4B968CD")) }, // Alpha_Map -> Texture (Scoreboard)
+            { new Guid(StringToByteArray("37CFE5EE4EBB19448C1145BC9CE552DF")), new Guid(StringToByteArray("A1A3A72858C9DC45A10D3E9967BE4EE8")) }, // Character_Color -> ColorSelected (Scoreboard)
+
+            // what is this used for?
+            //{ new Guid(StringToByteArray("E1EC0FC0E38D07439505E7C1EBB17F6D")), new Guid(StringToByteArray("896318E56A762B4FAEA9AA29B4B968CD")) }, // Alpha_Map -> Texture (Scoreboard Pulse)
 
         };
 
