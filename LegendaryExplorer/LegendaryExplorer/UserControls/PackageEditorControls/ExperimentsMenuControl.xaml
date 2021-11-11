@@ -135,6 +135,7 @@
         <MenuItem Header="Create New Seekfree Package" Click="NewSeekFreeFile"/>
         <MenuItem Header="Add All Assets to Seekfree Referencer" Click="AddAssetsToReferencer"/>
         <MenuItem Header="Add All Groups to InterpData" Click="AddGrpsToInterpData"/>
+        <MenuItem Header="Parse Map Names" Click="ParseMapNamesToObjects"/>
         <MenuItem Header="Destroyer" Click="BlowMeUp"/>
         <MenuItem Header="Trash Compactor" Click="RunTrashCompactor"/>
     </MenuItem>

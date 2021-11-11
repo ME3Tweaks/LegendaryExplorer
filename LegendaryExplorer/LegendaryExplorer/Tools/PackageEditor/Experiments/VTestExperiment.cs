@@ -69,10 +69,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             /// </summary>
             public bool portTerrainLightmaps = true;
 
-            /// <summary>S
+            /// <summary>
             /// If level models should be ported.
             /// </summary>
             public bool portModels = false;
+
+            /// <summary>
+            /// If the audio localizations should be ported
+            /// </summary>
+            public bool portAudioLocalizations = true;
 
             /// <summary>
             /// If a level's list of StreamableTextureInstance's should be copied over.
@@ -376,22 +381,22 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             vTestOptions.packageEditorWindow.BusyText = "Running VTest";
 
-            // VTest Level Loop ---------------------------------------
+            // VTest File Loop ---------------------------------------
             foreach (var vTestLevel in vTestOptions.vTestLevels)
             {
-                var levelFiles = Directory.GetFiles(Path.Combine(PAEMPaths.VTest_SourceDir, vTestLevel));
+                var levelFiles = Directory.GetFiles(Path.Combine(PAEMPaths.VTest_SourceDir, vTestLevel)).ToList();
                 foreach (var f in levelFiles)
                 {
                     if (f.Contains("_LOC_", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        PortLOCFile(f, vTestOptions);
+                        // Check if we should port this in this session.
+                        if (!f.Contains("_LOC_INT", StringComparison.InvariantCultureIgnoreCase) && !vTestOptions.portAudioLocalizations)
+                        {
+                            continue; // Do not port this non-int file.
+                        }
                     }
-                    else
-                    {
-                        var levelName = Path.GetFileNameWithoutExtension(f);
-                        //if (levelName.CaseInsensitiveEquals("BIOA_PRC2_CCLAVA"))
-                        PortVTestLevel(vTestLevel, levelName, vTestOptions, levelName == "BIOA_" + vTestLevel, true);
-                    }
+
+                    PortFile(f, vTestLevel, vTestOptions);
                 }
             }
 
@@ -419,7 +424,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     using var p = MEPackageHandler.OpenMEPackage(f);
                     VTest_CheckFile(p, vTestOptions);
-
                 }
             }
 
@@ -432,6 +436,20 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 EntryPruner.TrashEntries(vTestOptions.assetCachePackage, vTestOptions.assetCachePackage.Exports.Where(x => x.InstancedFullPath.StartsWith("TheWorld")).ToList());
 
                 vTestOptions.assetCachePackage.Save();
+            }
+        }
+
+        private static void PortFile(string levelFileName, string masterMapName, VTestOptions vTestOptions)
+        {
+            if (levelFileName.Contains("_LOC_", StringComparison.InvariantCultureIgnoreCase))
+            {
+                PortLOCFile(levelFileName, vTestOptions);
+            }
+            else
+            {
+                var levelName = Path.GetFileNameWithoutExtension(levelFileName);
+                //if (levelName.CaseInsensitiveEquals("BIOA_PRC2_CCLAVA"))
+                PortVTestLevel(masterMapName, levelName, vTestOptions, levelName is "BIOA_PRC2" or "BIOA_PRC2AA", true);
             }
         }
 
@@ -455,6 +473,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             Debug.WriteLine($@"FOUND UNUSABLE EMPTY MIP: {exp.InstancedFullPath} IN {Path.GetFileNameWithoutExtension(mePackage.FilePath)}");
                         }
                     }
+                }
+
+                if (exp.Parent != null && exp.Parent.ClassName != "TextureCube" && texinfo.Mips.Count(x => x.IsLocallyStored) > 6)
+                {
+                    Debug.WriteLine($"Externally storable texture: {exp.InstancedFullPath}");
                 }
             }
         }
@@ -549,7 +572,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     light.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional | UnrealFlags.EObjectFlags.LoadForClient | UnrealFlags.EObjectFlags.LoadForServer | UnrealFlags.EObjectFlags.LoadForEdit | UnrealFlags.EObjectFlags.HasStack;
                 }
                 itemsToPort.AddRange(lights);
-
             }
 
             // WIP: Find which classes we have yet to port
@@ -3929,7 +3951,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             var startMusicEvt = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqEvent_RemoteEvent", vTestOptions.cache);
             var stopMusicEvt = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqEvent_RemoteEvent", vTestOptions.cache);
-            var plotCheck = SequenceObjectCreator.CreateSequenceObject(le1File, "BioSeqAct_PMCheckConditional", vTestOptions.cache);
+            var plotCheck = SequenceObjectCreator.CreateSequenceObject(le1File, "BioSeqAct_PMCheckState", vTestOptions.cache);
             var musOn = SequenceObjectCreator.CreateSequenceObject(le1File, "BioSeqAct_MusicVolumeEnable", vTestOptions.cache);
             var musOff = SequenceObjectCreator.CreateSequenceObject(le1File, "BioSeqAct_MusicVolumeDisable", vTestOptions.cache);
             var musVolSeqObj = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqVar_Object", vTestOptions.cache);
@@ -3946,7 +3968,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             KismetHelper.AddObjectsToSequence(sequence, false, startMusicEvt, stopMusicEvt, plotCheck, musOn, musOff, musVolSeqObj, stateBeingSet, musicStatePlotInt, setInt);
 
             KismetHelper.CreateOutputLink(startMusicEvt, "Out", plotCheck);
-            KismetHelper.CreateOutputLink(plotCheck, "True", setInt);
             KismetHelper.CreateOutputLink(plotCheck, "False", setInt); // CHANGE TO musOff IN FINAL BUILD
             KismetHelper.CreateOutputLink(setInt, "Out", musOn);
             KismetHelper.CreateOutputLink(stopMusicEvt, "Out", musOff);
@@ -3957,6 +3978,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             KismetHelper.CreateVariableLink(setInt, "Target", musicStatePlotInt);
             KismetHelper.CreateVariableLink(setInt, "Value", stateBeingSet);
+
+            // Music bool
+            KismetHelper.SetComment(plotCheck, "Music is disabled?");
+            plotCheck.WriteProperty(new IntProperty(7657, "m_nIndex"));
 
             // Setup SetInt values
             stateBeingSet.WriteProperty(new IntProperty(soundState, "IntValue"));
@@ -4652,7 +4677,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
         #endregion
-
 
         #region QA Methods
         public static void VTest_CheckFile(IMEPackage package, VTestOptions vTestOptions)
