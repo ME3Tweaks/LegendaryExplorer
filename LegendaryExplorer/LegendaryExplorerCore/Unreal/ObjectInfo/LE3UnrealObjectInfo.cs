@@ -699,7 +699,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             };
             classes["SFXGalaxyMapReaperEGM"] = new ClassInfo
             {
-                baseClass = "SFXGalaxyMapDestroyedFuelDepot",
+                baseClass = "SFXGalaxyMapReaper",
                 properties =
                 {
                     new KeyValuePair<NameReference, PropertyInfo>("EGMSettingCondition", new PropertyInfo(PropertyType.IntProperty))
