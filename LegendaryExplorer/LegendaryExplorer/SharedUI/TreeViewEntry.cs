@@ -410,6 +410,27 @@ namespace LegendaryExplorer.SharedUI
 
                                     break;
                                 }
+                            case "SoundNodeWave":
+                            case "SoundCue":
+                            {
+                                //parse out tlk id?
+                                var splits = Entry.ObjectName.Name.Split('_', ',');
+                                for (int i = splits.Length - 1; i > 0; i--)
+                                {
+                                    //backwards is faster
+                                    if (int.TryParse(splits[i], out var parsed))
+                                    {
+                                        //Lookup TLK
+                                        var data = TLKManagerWPF.GlobalFindStrRefbyID(parsed, Entry.FileRef);
+                                        if (data != "No Data")
+                                        {
+                                            _subtext = data;
+                                        }
+                                    }
+                                }
+
+                                break;
+                            }
                         }
                     }
 

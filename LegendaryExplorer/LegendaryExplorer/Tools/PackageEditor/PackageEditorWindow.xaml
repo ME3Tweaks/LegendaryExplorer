@@ -331,7 +331,7 @@
                             <Border ContextMenu="{StaticResource EntryContextMenu}" Background="Transparent"  Padding="{Binding Path=(SharedUI:TouchComfySettings.TreeViewMargin)}">
                                 <DockPanel>
 
-                                    <TextBlock DockPanel.Dock="Bottom" Text="{Binding SubText}" FontSize="10" Foreground="{Binding Path=ForegroundColor}" TextWrapping="Wrap" VerticalAlignment="Center" Visibility="{Binding SubText, Converter={StaticResource NullVisibilityConverter}}" >
+                                    <TextBlock DockPanel.Dock="Bottom" Text="{Binding SubText}"  FontSize="10" Foreground="{Binding Path=ForegroundColor}" TextWrapping="Wrap" VerticalAlignment="Center" MaxWidth="300" HorizontalAlignment="Left"  Visibility="{Binding SubText, Converter={StaticResource NullVisibilityConverter}}" >
                                         <TextBlock.Style>
                                             <Style TargetType="{x:Type TextBlock}">
                                                 <Style.Triggers>
