@@ -22,6 +22,7 @@ using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Textures;
+using LegendaryExplorerCore.TLK.ME1;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Classes;
@@ -402,6 +403,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             vTestOptions.cache.ReleasePackages(true); // Dump everything out of memory
 
+            // TLKS ARE DONE POST ONLY
+            PostUpdateTLKs(vTestOptions);
+
+
             Debug.WriteLine("Non donated items: ");
             foreach (var nonDonorItems in EntryImporter.NonDonorItems.OrderBy(x => x))
             {
@@ -444,13 +449,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             if (levelFileName.Contains("_LOC_", StringComparison.InvariantCultureIgnoreCase))
             {
                 //if (levelFileName.Contains("bioa_prc2_ccsim05_dsg_LOC_FR", StringComparison.InvariantCultureIgnoreCase))
-                    PortLOCFile(levelFileName, vTestOptions);
+                PortLOCFile(levelFileName, vTestOptions);
             }
             else
             {
                 var levelName = Path.GetFileNameWithoutExtension(levelFileName);
-                //if (levelFileName.CaseInsensitiveEquals("BIOA_PRC2_CCLAVA"))
-                PortVTestLevel(masterMapName, levelName, vTestOptions, levelName is "BIOA_PRC2" or "BIOA_PRC2AA", true);
+                //if (levelName.CaseInsensitiveEquals("BIOA_PRC2_CCMID04_LAY"))
+                    PortVTestLevel(masterMapName, levelName, vTestOptions, levelName is "BIOA_PRC2" or "BIOA_PRC2AA", true);
             }
         }
 
@@ -713,7 +718,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             switch (levelName)
             {
                 case "BIOA_PRC2_CCSIM05_DSG_LOC_FR": // French English VO
-                    le1File.Save(Path.Combine(PAEMPaths.VTest_FinalDestDir,"BIOA_PRC2_CCSIM05_DSG_LOC_FE"));
+                    le1File.Save(Path.Combine(PAEMPaths.VTest_FinalDestDir, "BIOA_PRC2_CCSIM05_DSG_LOC_FE"));
                     break;
                 case "BIOA_PRC2_CCSIM05_DSG_LOC_DE": // German English VO
                     le1File.Save(Path.Combine(PAEMPaths.VTest_FinalDestDir, "BIOA_PRC2_CCSIM05_DSG_LOC_GE"));
@@ -2318,6 +2323,20 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
             }
 
+            // Kill streak voice line sequence
+            switch (fName)
+            {
+                case "BIOA_PRC2_CCAHERN_DSG":
+                case "BIOA_PRC2_CCTHAI_DSG":
+                case "BIOA_PRC2_CCLAVA_DSG":
+                case "BIOA_PRC2_CCCAVE_DSG":
+                case "BIOA_PRC2_CCCRATE_DSG":
+                    {
+                        InstallVTestHelperSequenceNoInput(le1File, "TheWorld.PersistentLevel.Main_Sequence", "HelperSequences.KillStreakVoiceLine", vTestOptions);
+                        break;
+                    }
+            }
+
             LevelSpecificPostCorrections(fName, me1File, le1File, vTestOptions);
 
 
@@ -2774,7 +2793,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     // Might need Aherns
                     {
                         SetupMusicIntensity(le1File, upperFName, vTestOptions);
-
+                        SetupKillStreakVO(le1File, vTestOptions);
                         // Force the pawns that will spawn to have their meshes in memory
                         // They are not referenced directly
 
@@ -3403,6 +3422,47 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
+        private static void SetupKillStreakVO(IMEPackage le1File, VTestOptions vTestOptions)
+        {
+            foreach (var sequence in le1File.Exports.Where(x => x.ClassName == "Sequence").ToList())
+            {
+                var seqName = sequence.GetProperty<StrProperty>("ObjName")?.Value;
+                if (seqName == "TA_V3_Gametype_Handler")
+                {
+                    var spawnerDeath = FindSequenceObjectByClassAndPosition(sequence, "SeqEvent_SequenceActivated", -1392, 2824);
+                    if (spawnerDeath != null)
+                    {
+                        InstallRemoteEventSignal(le1File, spawnerDeath.InstancedFullPath, "EnemyKilled", vTestOptions);
+                    }
+                }
+                else if (seqName == "CAH_Respawner")
+                {
+                    var spawner = FindSequenceObjectByClassAndPosition(sequence, "SequenceReference", 1920, 2512);
+                    if (spawner != null)
+                    {
+                        InstallRemoteEventSignal(le1File, spawner.InstancedFullPath, "EnemyKilled", vTestOptions, "Enemy Killed");
+                    }
+                }
+                else if (seqName == "Check_Capping_Completion")
+                {
+                    // SUR
+                    var spawner = FindSequenceObjectByClassAndPosition(sequence, "SeqEvent_SequenceActivated", -204, 2984);
+                    if (spawner != null)
+                    {
+                        InstallRemoteEventSignal(le1File, spawner.InstancedFullPath, "EnemyKilled", vTestOptions, "Enemy Killed");
+                    }
+                }
+                else if (seqName == "Vampire_Mode_Handler")
+                {
+                    // SUR
+                    var spawner = FindSequenceObjectByClassAndPosition(sequence, "SeqEvent_SequenceActivated", -2728, 2976);
+                    if (spawner != null)
+                    {
+                        InstallRemoteEventSignal(le1File, spawner.InstancedFullPath, "EnemyKilled", vTestOptions, "Enemy Killed");
+                    }
+                }
+            }
+        }
 
 
         private static void FixAhernConversation(IMEPackage le1File, VTestOptions vTestOptions)
@@ -3508,8 +3568,91 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             // South cheese
             var southBV = EntryCloner.CloneTree(northBV); // already has scaling and guns fire through it
             PathEdUtils.SetLocation(southBV, -38702.812f, -24870.682f, -2355.5256f);
+        }
 
 
+        private static void AddVTestSpecificStrings(ExportEntry tlkExport, string lang)
+        {
+            ME1TalkFile talkF = new ME1TalkFile(tlkExport);
+            var stringRefs = talkF.StringRefs.ToList();
+            // LANGUAGE SPECIFIC STRINGS HERE
+            switch (lang)
+            {
+                case "RA":
+                case "RU":
+                    stringRefs.Add(new ME1TalkFile.TLKStringRef(338464, 1, "Загрузка данных"));
+                    stringRefs.Add(new ME1TalkFile.TLKStringRef(338465, 1, "Настройка музыки"));
+                    stringRefs.Add(new ME1TalkFile.TLKStringRef(338466, 1, "Отключить музыку"));
+                    stringRefs.Add(new ME1TalkFile.TLKStringRef(338467, 1, "Включить музыку"));
+                    break;
+                case "ES":
+                    stringRefs.Add(new ME1TalkFile.TLKStringRef(338465, 1, "Configuración de Música"));
+                    stringRefs.Add(new ME1TalkFile.TLKStringRef(338466, 1, "Desactivar Música"));
+                    stringRefs.Add(new ME1TalkFile.TLKStringRef(338467, 1, "Activar Música"));
+                    break;
+                case "IT":
+                    stringRefs.Add(new ME1TalkFile.TLKStringRef(338465, 1, "Music Setting"));
+                    stringRefs.Add(new ME1TalkFile.TLKStringRef(338466, 1, "Disable Music"));
+                    stringRefs.Add(new ME1TalkFile.TLKStringRef(338467, 1, "Enable Music"));
+                    break;
+                case "PL":
+                case "PLPC":
+                    stringRefs.Add(new ME1TalkFile.TLKStringRef(338465, 1, "Music Setting"));
+                    stringRefs.Add(new ME1TalkFile.TLKStringRef(338466, 1, "Disable Music"));
+                    stringRefs.Add(new ME1TalkFile.TLKStringRef(338467, 1, "Enable Music"));
+                    break;
+                case "FR":
+                    stringRefs.Add(new ME1TalkFile.TLKStringRef(338465, 1, "Music Setting"));
+                    stringRefs.Add(new ME1TalkFile.TLKStringRef(338466, 1, "Disable Music"));
+                    stringRefs.Add(new ME1TalkFile.TLKStringRef(338467, 1, "Enable Music"));
+                    break;
+                case "DE":
+                    stringRefs.Add(new ME1TalkFile.TLKStringRef(338465, 1, "Music Setting"));
+                    stringRefs.Add(new ME1TalkFile.TLKStringRef(338466, 1, "Disable Music"));
+                    stringRefs.Add(new ME1TalkFile.TLKStringRef(338467, 1, "Enable Music"));
+                    break;
+                case "JA":
+                    stringRefs.Add(new ME1TalkFile.TLKStringRef(338464, 1, "Downloading Data"));
+                    stringRefs.Add(new ME1TalkFile.TLKStringRef(338465, 1, "Music Setting"));
+                    stringRefs.Add(new ME1TalkFile.TLKStringRef(338466, 1, "Disable Music"));
+                    stringRefs.Add(new ME1TalkFile.TLKStringRef(338467, 1, "Enable Music"));
+                    break;
+            }
+
+
+            var huff = new HuffmanCompression();
+            huff.LoadInputData(stringRefs);
+            huff.serializeTalkfileToExport(tlkExport);
+        }
+
+        private static void PostUpdateTLKs(VTestOptions vTestOptions)
+        {
+            var basePath = Path.Combine(PAEMPaths.VTest_FinalDestDir, "DLC_MOD_Vegas_GlobalTlk_");
+            var langsToUpdate = new[] { "RA", "RU", "DE", "FR", "IT", "ES", "JA", "PL", "PLPC" };
+            foreach (var lang in langsToUpdate)
+            {
+                var tlkPackage = MEPackageHandler.OpenMEPackage(basePath + lang + ".pcc");
+
+                // Add our specific TLK strings.
+                AddVTestSpecificStrings(tlkPackage.FindExport("GlobalTlk_tlk"), lang);
+                AddVTestSpecificStrings(tlkPackage.FindExport("GlobalTlk_tlk_M"), lang);
+
+                tlkPackage.Save();
+
+                // Add English VO TLKs
+                switch (lang)
+                {
+                    case "DE":
+                        tlkPackage.Save(basePath + "GE.pcc"); // English VO
+                        break;
+                    case "FR":
+                        tlkPackage.Save(basePath + "FE.pcc"); // English VO
+                        break;
+                    case "IT":
+                        tlkPackage.Save(basePath + "IE.pcc"); // English VO
+                        break;
+                }
+            }
         }
 
         private static void RemoveBitExplosionEffect(ExportEntry exp)
@@ -3765,16 +3908,17 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
             var fname = Path.GetFileNameWithoutExtension(Pcc.FilePath);
             // Need to check if ledge actors compute lighting while hidden. If they do this will significantly harm performance
-            foreach (ExportEntry exp in Pcc.Exports.Where(exp => (exp.IsA("MeshComponent") && exp.Parent.IsA("StaticMeshActorBase")) || (exp.IsA("BrushComponent") && !exp.Parent.IsA("Volume"))))
+            var dynamicableExports = Pcc.Exports.Where(exp => (exp.IsA("MeshComponent") && exp.Parent.IsA("StaticMeshActorBase")) || (exp.IsA("BrushComponent") && !exp.Parent.IsA("Volume"))).ToList();
+            foreach (ExportEntry exp in dynamicableExports)
             {
                 PropertyCollection props = exp.GetProperties();
-                if (props.GetProp<BoolProperty>("bAcceptsLights")?.Value == false ||
-                     props.GetProp<BoolProperty>("CastShadow")?.Value == false)
+                if (props.GetProp<BoolProperty>("bAcceptsLights")?.Value == false)
+                    //|| props.GetProp<BoolProperty>("CastShadow")?.Value == false) // CROSSGEN- OFF since we don't do dynamic shadows.
                 {
                     // shadows/lighting has been explicitly forbidden, don't mess with it.
                     continue;
                 }
-
+                Debug.WriteLine($"CHECKING {exp.InstancedFullPath}");
                 if (vTestOptions.allowTryingPortedMeshLightMap && !fname.StartsWith("BIOA_PRC2AA"))
                 {
                     var sm = exp.GetProperty<ObjectProperty>("StaticMesh"); // name might need changed?
@@ -3782,7 +3926,18 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     {
                         if (Pcc.TryGetEntry(sm.Value, out var smEntry) && ShouldPortLightmaps(smEntry))
                         {
-                            Debug.WriteLine($"Not using dynamic lighting for mesh {smEntry.InstancedFullPath}");
+                            Debug.WriteLine($"Not using dynamic lighting for mesh {smEntry.InstancedFullPath} on {exp.InstancedFullPath}");
+                            var tcBin = ObjectBinary.From<StaticMeshComponent>(exp);
+                            foreach (var lod in tcBin.LODData)
+                            {
+                                if (lod.LightMap is LightMap_2D lm2d)
+                                {
+                                    lm2d.ScaleVector2.X *= vTestOptions.LavaLightmapScalar;
+                                    lm2d.ScaleVector2.Y *= vTestOptions.LavaLightmapScalar;
+                                    lm2d.ScaleVector2.Z *= vTestOptions.LavaLightmapScalar;
+                                }
+                            }
+                            exp.WriteBinary(tcBin);
                             continue; // We will try to use the original lightmaps for this
                         }
                     }
@@ -3907,6 +4062,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         InstallVTestHelperSequenceViaEvent(le1File, finishedCappingCAH.InstancedFullPath, "HelperSequences.MusicIntensityCAH", vTestOptions);
                     }
 
+
                     // SUR
                     var finishedCappingSUR = FindSequenceObjectByClassAndPosition(sequence, "SeqAct_Log", 2456, 2760);
                     if (finishedCappingSUR != null)
@@ -3939,6 +4095,23 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Adds a ActivateRemoteEvent kismet object as an output of the specified IFP.
+        /// </summary>
+        /// <param name="le1File"></param>
+        /// <param name="spawnerDeathInstancedFullPath"></param>
+        /// <param name="enemykilled"></param>
+        /// <param name="vTestOptions"></param>
+        private static void InstallRemoteEventSignal(IMEPackage le1File, string sourceIFP, string remoteEventName, VTestOptions vTestOptions, string outlinkName = "Out")
+        {
+            var source = le1File.FindExport(sourceIFP);
+            var sequence = SeqTools.GetParentSequence(source);
+            var remoteEvent = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqAct_ActivateRemoteEvent", vTestOptions.cache);
+            KismetHelper.AddObjectToSequence(remoteEvent, sequence);
+            remoteEvent.WriteProperty(new NameProperty(remoteEventName, "EventName"));
+            KismetHelper.CreateOutputLink(source, outlinkName, remoteEvent);
         }
 
         private static void InstallMusicVolume(IMEPackage le1File, VTestOptions vTestOptions)
