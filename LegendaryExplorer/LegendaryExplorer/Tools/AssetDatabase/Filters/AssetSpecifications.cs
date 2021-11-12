@@ -31,7 +31,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
     /// Matches an asset based on the current search text via an input predicate
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class SearchSpecification<T> : AssetSpecification<T>
+    public sealed class SearchSpecification<T> : AssetSpecification<T>
     {
         public string SearchText { get; set; }
         private readonly Predicate<(string, T)> _predicate;

@@ -19,7 +19,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
         /// Creates a filter from a number of specifications
         /// </summary>
         /// <param name="specs">Specifications that should apply to this record type</param>
-        /// <param name="searchPredicate">Lambda for how the searchbox should operate on this record type</param>
+        /// <param name="searchPredicate">Lambda for how the search box should operate on this record type</param>
         public GenericAssetFilter(IEnumerable<IAssetSpecification<T>> specs,
             Predicate<(string SearchText, T Record)> searchPredicate = null)
         {
