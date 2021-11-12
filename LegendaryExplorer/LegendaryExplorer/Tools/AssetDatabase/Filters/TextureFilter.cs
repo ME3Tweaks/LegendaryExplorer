@@ -105,7 +105,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
             set => _onSelection?.Invoke();
         }
 
-        public ActionSpecification(string name, Action actionOnSelection, string description = "")
+        public ActionSpecification(string name, Action actionOnSelection, string description = null)
         {
             FilterName = name;
             Description = description;

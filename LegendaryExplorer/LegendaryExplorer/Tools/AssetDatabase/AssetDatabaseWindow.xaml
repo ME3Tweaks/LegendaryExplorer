@@ -153,8 +153,17 @@
                             <MenuItem Header="BoolProperty Filters" DataContext="{Binding AssetFilters.MaterialFilter}" ItemsSource="{Binding GeneratedOptions}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
                         </MenuItem>
                         <MenuItem Header="Filter Meshes" ItemsSource="{Binding AssetFilters.MeshFilter.Filters}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
-                        <MenuItem Header="Filter Textures" ItemsSource="{Binding AssetFilters.TextureFilter.Filters}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
-                        <MenuItem Header="Filter LOD Groups" ItemsSource="{Binding AssetFilters.TextureFilter.LODGroups}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
+                        <MenuItem Header="Filter Textures" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}">
+                            <MenuItem.Resources>
+                                <CollectionViewSource x:Key="TextureFilters" Source="{Binding AssetFilters.TextureFilter.Filters}"/>
+                            </MenuItem.Resources>
+                            <MenuItem.ItemsSource>
+                                <CompositeCollection>
+                                    <CollectionContainer Collection="{Binding Source={StaticResource TextureFilters}}"/>
+                                    <MenuItem Header="LOD Groups" ItemsSource="{Binding AssetFilters.TextureFilter.LODGroups}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}" CommandParameter=""/>
+                                </CompositeCollection>
+                            </MenuItem.ItemsSource>
+                        </MenuItem>
                         <MenuItem Header="Filter VFX" ItemsSource="{Binding AssetFilters.ParticleFilter.Filters}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
                     </MenuItem>
                     <MenuItem Header="Tools" Padding="4">
