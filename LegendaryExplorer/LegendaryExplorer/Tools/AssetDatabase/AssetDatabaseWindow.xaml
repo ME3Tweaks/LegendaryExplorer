@@ -12,6 +12,7 @@
         xmlns:sharedToolControls="clr-namespace:LegendaryExplorer.UserControls.SharedToolControls"
         xmlns:controls="clr-namespace:LegendaryExplorer.SharedUI.Controls"
         xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
+        xmlns:assetDbFilters="clr-namespace:LegendaryExplorer.Tools.AssetDatabase.Filters"
         Loaded="AssetDB_Loaded"
         Closing="AssetDB_Closing"
         AllowDrop="True"
@@ -107,92 +108,69 @@
                             </MenuItem.Icon>
                         </MenuItem>
                     </MenuItem>
-                    <MenuItem Header="Tools" Padding="4">
-                        <MenuItem Header="Open Definition" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor."/>
-                        <MenuItem Header="Open Usage" Name="menu_OpenUsage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
-                        <MenuItem Header="Go to SuperClass" Command="{Binding GoToSuperclassCommand}" ToolTip="Go to the superclass for more properties."/>
-                        <MenuItem Header="Re-save Database without empty lines" Name="menu_SaveXEmptyLines" Command="{Binding SaveDBCommand}" ToolTip="This will save the Database without the lines with no TLK reference." IsEnabled="False"/>
-                        <Separator/>
-                        <MenuItem Name="menu_fltrCustFiles" Header="Filter by Filelist" Command="{Binding FilterFilesCommand}" CommandParameter="CustFiles" ToolTip="Filter the entire database by the current filelist." StaysOpenOnClick="True" IsCheckable="True" IsChecked="{Binding Path=IsFilteredByFiles, Mode=TwoWay}"/>
+                    <MenuItem Header="Filter" Padding="4">
+                        <MenuItem.Resources>
+                            <Style x:Key="CustomFilterMenuItem" TargetType="{x:Type MenuItem}">
+                                <Setter Property="Header" Value="{Binding FilterName}"/>
+                                <Setter Property="ToolTip" Value="{Binding Description}"/>
+                                <Setter Property="StaysOpenOnClick" Value="True" />
+                                <Setter Property="Command" Value="{Binding SetFilterCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"/>
+                                <Setter Property="CommandParameter" Value="{Binding}"/>
+                                <Setter Property="IsChecked" Value="{Binding IsSelected}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding FilterName}" Value="separator">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type MenuItem}">
+                                                    <Separator />
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ShowInUI, Mode=OneWay}" Value="False">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type MenuItem}">
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </MenuItem.Resources>
+                        <MenuItem Name="menu_fltrCustFiles" Header="Filter by Filelist" Command="{Binding FilterFilesCommand}" CommandParameter="CustFiles" ToolTip="Filter the entire database by the current filelist." StaysOpenOnClick="True" IsCheckable="True" IsChecked="{Binding Path=FileListFilter.IsSelected, Mode=TwoWay}"/>
                         <MenuItem Header="Filelist Actions">
                             <MenuItem Header="Load" Command="{Binding LoadFileListCommand}" ToolTip="Load an existing filelist."/>
                             <MenuItem Header="Save" Command="{Binding SaveFileListCommand}" ToolTip="Save the current filelist."/>
                             <MenuItem Header="Clear" Command="{Binding EditFileListCommand}" CommandParameter="Clear" ToolTip="Clear the current filelist."/>
                         </MenuItem>
                         <Separator/>
-                        <MenuItem Header="Filter Animations">
-                            <MenuItem Name="menu_fltrAnim" Header="Only Animations" Command="{Binding FilterAnimsCommand}" CommandParameter="Anim" ToolTip="Show animsequences only." StaysOpenOnClick="True"/>
-                            <MenuItem Name="menu_fltrPerf" Header="Only Performances (ME3)" Command="{Binding FilterAnimsCommand}" CommandParameter="Perf" ToolTip="Show ME3 ambient performances only." StaysOpenOnClick="True"/>
-                        </MenuItem>
-                        <MenuItem Header="Filter Classes">
-                            <MenuItem Name="menu_fltrSeq" Header="Only Sequence Classes" Command="{Binding FilterClassCommand}" CommandParameter="Seq" ToolTip="Show sequence classes only." StaysOpenOnClick="True"/>
-                            <MenuItem Name="menu_fltrInterp" Header="Only Matinee Classes" Command="{Binding FilterClassCommand}" CommandParameter="Interp" ToolTip="Show matinee classes only." StaysOpenOnClick="True"/>
-                        </MenuItem>
+                        <MenuItem Header="Filter Animations" ItemsSource="{Binding AssetFilters.AnimationFilter.Filters}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
+                        <MenuItem Header="Filter Classes" ItemsSource="{Binding AssetFilters.ClassFilter.Filters}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
                         <MenuItem Header="Filter Materials">
-                            <MenuItem Name="menu_fltrMatNoDLC" Header="Hide DLC only Materials" Command="{Binding FilterMatCommand}" CommandParameter="NoDLC" ToolTip="Hide materials that require cooked Shadercaches." StaysOpenOnClick="True"/>
-                            <MenuItem Name="menu_fltrMatDecal" Header="Only Decal Materials" Command="{Binding FilterMatCommand}" CommandParameter="Decal" ToolTip="Show materials used in Decals only." StaysOpenOnClick="True"/>
-                            <MenuItem Name="menu_fltrMatUnlit" Header="Only Unlit Materials" Command="{Binding FilterMatCommand}" CommandParameter="Unlit" ToolTip="Show Unlit materials only." StaysOpenOnClick="True"/>
-                            <MenuItem Name="menu_fltrMatSkM" Header="Hide SkelMesh Exclusive Materials" Command="{Binding FilterMatCommand}" CommandParameter="SkM" ToolTip="Hide materials that require Skeleton meshes." StaysOpenOnClick="True"/>
-                            <Separator/>
-                            <MenuItem Name="menu_fltrMatTrans" Header="Only Translucent Materials" Command="{Binding FilterMatCommand}" CommandParameter="Transl" ToolTip="Show translucent materials only." StaysOpenOnClick="True"/>
-                            <MenuItem Name="menu_fltrMatAdd" Header="Only Additive Materials" Command="{Binding FilterMatCommand}" CommandParameter="BAdd" ToolTip="Show additive materials only." StaysOpenOnClick="True"/>
-                            <MenuItem Name="menu_fltrMatOpq" Header="Only Opaque Materials" Command="{Binding FilterMatCommand}" CommandParameter="Opq" ToolTip="Show opaque materials only." StaysOpenOnClick="True"/>
-                            <Separator/>
-                            <MenuItem Name="menu_fltrMat2side" Header="Only 2 sided Materials" Command="{Binding FilterMatCommand}" CommandParameter="Twoside" ToolTip="Show 2 sided materials only." StaysOpenOnClick="True"/>
-                            <MenuItem Name="menu_fltrMat1side" Header="Only Backface culled (1 side)" Command="{Binding FilterMatCommand}" CommandParameter="Oneside" ToolTip="Show 1 sided materials only." StaysOpenOnClick="True"/>
-                            <Separator/>
-                            <MenuItem Name="menu_fltrMatColor" Header="Must have color setting" Command="{Binding FilterMatCommand}" CommandParameter="Vcolor" ToolTip="Show if has color parameter" StaysOpenOnClick="True"/>
-                            <MenuItem Name="menu_fltrMatText" Header="Must have texture setting" Command="{Binding FilterMatCommand}" CommandParameter="TextP" ToolTip="Show only if has texture parameter." StaysOpenOnClick="True"/>
-                            <MenuItem Name="menu_fltrMatTalk" Header="Must have talk scalar setting" Command="{Binding FilterMatCommand}" CommandParameter="TalkS" ToolTip="Show only if has talk scalar." StaysOpenOnClick="True"/>
+                            <MenuItem Header="Generic Filters" DataContext="{Binding AssetFilters.MaterialFilter}" ItemsSource="{Binding Filters}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
+                            <MenuItem Header="Blend Mode" DataContext="{Binding AssetFilters.MaterialFilter}" ItemsSource="{Binding BlendModes}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
+                            <MenuItem Header="BoolProperty Filters" DataContext="{Binding AssetFilters.MaterialFilter}" ItemsSource="{Binding GeneratedOptions}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
                         </MenuItem>
-                        <MenuItem Header="Filter Meshes">
-                            <MenuItem Name="menu_fltrSkM" Header="Only Skeleton Meshes" Command="{Binding FilterMeshCommand}" CommandParameter="Skel" ToolTip="Show Skeleton Meshes only." StaysOpenOnClick="True"/>
-                            <MenuItem Name="menu_fltrStM" Header="Only Static Meshes" Command="{Binding FilterMeshCommand}" CommandParameter="Static" ToolTip="Show Static Meshes only." StaysOpenOnClick="True"/>
+                        <MenuItem Header="Filter Meshes" ItemsSource="{Binding AssetFilters.MeshFilter.Filters}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
+                        <MenuItem Header="Filter Textures" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}">
+                            <MenuItem.Resources>
+                                <CollectionViewSource x:Key="TextureFilters" Source="{Binding AssetFilters.TextureFilter.Filters}"/>
+                            </MenuItem.Resources>
+                            <MenuItem.ItemsSource>
+                                <CompositeCollection>
+                                    <CollectionContainer Collection="{Binding Source={StaticResource TextureFilters}}"/>
+                                    <MenuItem Header="LOD Groups" ItemsSource="{Binding AssetFilters.TextureFilter.LODGroups}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}" CommandParameter=""/>
+                                </CompositeCollection>
+                            </MenuItem.ItemsSource>
                         </MenuItem>
-                        <MenuItem Header="Filter Textures">
-                            <MenuItem Name="menu_TCube" Header="Only TextureCubes" Command="{Binding FilterTexCommand}" CommandParameter="Cube" ToolTip="Show Texture Cubes only." StaysOpenOnClick="True"/>
-                            <MenuItem Name="menu_TMovie" Header="Only TextureMovies" Command="{Binding FilterTexCommand}" CommandParameter="Movie" ToolTip="Show Texture Movies only." StaysOpenOnClick="True"/>
-                            <Separator/>
-                            <MenuItem Name="menu_T1024" Header="Only Textures 1024 or larger" Command="{Binding FilterTexCommand}" CommandParameter="1024" ToolTip="Show Textures with size 1024 or greater." StaysOpenOnClick="True"/>
-                            <MenuItem Name="menu_T4096" Header="Only Textures 4096 or larger" Command="{Binding FilterTexCommand}" CommandParameter="4096" ToolTip="Show Textures with size 4096 or greater." StaysOpenOnClick="True"/>
-                            <Separator/>
-                            <MenuItem Header="Filter LODGroups">
-                                <MenuItem Name="menu_TGWorld" Header="World" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup World." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGWorldSpec" Header="WorldSpecular" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup WorldSpecular." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGWorldNorm" Header="WorldNormalMap" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup WorldNormalMap." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGAmblgtMap" Header="AmbientLightMap" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup AmbientLightMap." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGShadowMap" Header="ShadowMap" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup ShadowMap." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGEnviro64" Header="Environment_64" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup Environment_64." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGEnviro128" Header="Environment_128" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup Environment_128." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGEnviro256" Header="Environment_256" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup Environment_256." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGEnviro512" Header="Environment_512" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup Environment_512." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGEnviro1024" Header="Environment_1024" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup Environment_1024." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGVFX64" Header="VFX_64" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup VFX_64." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGVFX128" Header="VFX_128" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup VFX_128." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGVFX256" Header="VFX_256" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup VFX_256." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGVFX512" Header="VFX_512" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup VFX_512." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGVFX1024" Header="VFX_1024" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup VFX_1024." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGAPL64" Header="APL_64" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup APL_64." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGAPL128" Header="APL_128" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup APL_128." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGAPL256" Header="APL_256" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup APL_256." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGAPL512" Header="APL_512" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup APL_512." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGAPL1024" Header="APL_1024" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup APL_1024." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGUI" Header="UI" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup UI." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGPromo" Header="Promotional" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup Promotional." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGChar1024" Header="Character_1024" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup Character_1024." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGCharDiff" Header="CharacterDiff" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup CharacterDiff." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGCharNorm" Header="CharacterNorm" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup CharacterNorm." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGCharSpec" Header="CharacterSpec" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with LODGroup CharacterSpec." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <MenuItem Name="menu_TGNone" Header="None" Command="{Binding FilterTexCommand}" CommandParameter="LODG" ToolTip="Show Textures with no LODGroup." StaysOpenOnClick="True" IsCheckable="True" IsChecked="True"/>
-                                <Separator/>
-                                <MenuItem Name="menu_TGShow" Header="Show all" Command="{Binding FilterTexCommand}" CommandParameter="TGShow" ToolTip="Show All TextureGroups." StaysOpenOnClick="True"/>
-                                <MenuItem Name="menu_TGClear" Header="Clear all" Command="{Binding FilterTexCommand}" CommandParameter="TGClear" ToolTip="Hide All TextureGroups." StaysOpenOnClick="True"/>
-                            </MenuItem>
-                        </MenuItem>
-                        <MenuItem Header="Filter VFX">
-                            <MenuItem Name="menu_VFXPartSys" Header="Only Particle Systems" Command="{Binding FilterVFXCommand}" CommandParameter="PS" ToolTip="Show Particle Systems only." StaysOpenOnClick="True"/>
-                            <MenuItem Name="menu_VFXRvrEff" Header="Only Client Effects" Command="{Binding FilterVFXCommand}" CommandParameter="RvrEff" ToolTip="Show Receiver Effects only." StaysOpenOnClick="True"/>
-                        </MenuItem>
+                        <MenuItem Header="Filter VFX" ItemsSource="{Binding AssetFilters.ParticleFilter.Filters}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
+                    </MenuItem>
+                    <MenuItem Header="Tools" Padding="4">
+                        <MenuItem Header="Open Definition" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor."/>
+                        <MenuItem Header="Open Usage" Name="menu_OpenUsage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
+                        <MenuItem Header="Go to SuperClass" Command="{Binding GoToSuperclassCommand}" ToolTip="Go to the superclass for more properties."/>
+                        <MenuItem Header="Re-save Database without empty lines" Name="menu_SaveXEmptyLines" Command="{Binding SaveDBCommand}" ToolTip="This will save the Database without the lines with no TLK reference." IsEnabled="False"/>
                         <Separator/>
                         <MenuItem Name="menu_checkCRC" Header="Compile Texture CRCs" Command="{Binding SetCRCCommand}" IsChecked="False" ToolTip="Add CRC generation during scan. Will significantly increase scan time."/>
                         <MenuItem Name="menu_checkConv" Header="Compile BioConversations" IsChecked="{Binding ParseConvos, Mode=TwoWay}" IsCheckable="True" StaysOpenOnClick="True" ToolTip="Add conversation and line parsing. Will significantly increase scan time, and database loading."/>
@@ -261,13 +239,13 @@
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="25"/>
                                                 </Grid.RowDefinitions>
-                                                <ToggleButton x:Name="btn_custFilter" Content="Filter" Command="{Binding FilterFilesCommand}" CommandParameter="CustFiles" ToolTip="Filter the entire database by the current filelist." MinWidth="20" ClickMode="Release" IsChecked="{Binding IsFilteredByFiles}" Grid.Column="0"/>
+                                                <ToggleButton x:Name="btn_custFilter" Content="Filter" Command="{Binding FilterFilesCommand}" CommandParameter="CustFiles" ToolTip="Filter the entire database by the current filelist." MinWidth="20" ClickMode="Release" IsChecked="{Binding FileListFilter.IsSelected}" Grid.Column="0"/>
                                                 <Button Content="Load" MaxHeight="40" Command="{Binding LoadFileListCommand}" ToolTip="Load custom file list" ClickMode="Release" Grid.Column="1"/>
                                                 <Button Content="Save" MaxHeight="40" Command="{Binding SaveFileListCommand}" ToolTip="Save custom file list" ClickMode="Release" Grid.Column="2"/>
                                                 <Button Content="Clear" MaxHeight="40" Command="{Binding EditFileListCommand}" CommandParameter="Clear" ToolTip="Save custom file list" ClickMode="Release" Grid.Column="3"/>
                                             </Grid>
                                         </StackPanel>
-                                        <controls:ListBoxScroll x:Name="lstbx_CustomFiles" ItemsSource="{Binding CustomFileList}" MinWidth="200"
+                                        <controls:ListBoxScroll x:Name="lstbx_CustomFiles" ItemsSource="{Binding FileListFilter.CustomFileList}" MinWidth="200"
                                                                 DockPanel.Dock="Bottom">
                                             <controls:ListBoxScroll.ContextMenu>
                                                 <ContextMenu>

@@ -339,7 +339,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             var db = new AssetDB();
             AssetDatabaseWindow.LoadDatabase(dbPath, MEGame.ME3, db, CancellationToken.None).ContinueWithOnUIThread(prevTask =>
             {
-                if (db.DataBaseversion != AssetDatabaseWindow.dbCurrentBuild)
+                if (db.DatabaseVersion != AssetDatabaseWindow.dbCurrentBuild)
                 {
                     MessageBox.Show(this, "ME3 Asset Database is out of date! Please regenerate it in the Asset Database tool. This could take about 10 minutes.");
                     EndBusy();

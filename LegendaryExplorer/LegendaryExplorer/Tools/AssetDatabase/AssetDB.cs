@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BinaryPack.Attributes;
+using LegendaryExplorer.Tools.AssetDatabase.Filters;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.PlotDatabase;
 
@@ -20,9 +21,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase
     /// </summary>
     public class AssetDB
     {
-        public MEGame meGame { get; set; }
+        public MEGame Game { get; set; }
         public string GenerationDate { get; set; }
-        public string DataBaseversion { get; set; }
+        public string DatabaseVersion { get; set; }
         public MELocalization Localization { get; set; }
 
         public List<FileNameDirKeyPair> FileList { get; set; } = new();
@@ -31,6 +32,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public List<ClassRecord> ClassRecords { get; set; } = new();
 
         public List<MaterialRecord> Materials { get; set; } = new();
+
+        public List<MaterialBoolSpec> MaterialBoolSpecs { get; set; } = new();
 
         public List<AnimationRecord> Animations { get; set; } = new();
 
@@ -48,11 +51,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         public PlotUsageDB PlotUsages { get; set; } = new();
 
-        public AssetDB(MEGame meGame, string GenerationDate, string DataBaseversion, IEnumerable<FileNameDirKeyPair> FileList, IEnumerable<string> ContentDir)
+        public AssetDB(MEGame meGame, string GenerationDate, string databaseVersion, IEnumerable<FileNameDirKeyPair> FileList, IEnumerable<string> ContentDir)
         {
-            this.meGame = meGame;
+            this.Game = meGame;
             this.GenerationDate = GenerationDate;
-            this.DataBaseversion = DataBaseversion;
+            this.DatabaseVersion = databaseVersion;
             this.FileList.AddRange(FileList);
             this.ContentDir.AddRange(ContentDir);
         }
@@ -73,6 +76,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             ClassRecords.Clear();
             Animations.Clear();
             Materials.Clear();
+            MaterialBoolSpecs.Clear();
             Meshes.Clear();
             Particles.Clear();
             Textures.Clear();
@@ -87,6 +91,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             ClassRecords.AddRange(from.ClassRecords);
             Animations.AddRange(from.Animations);
             Materials.AddRange(from.Materials);
+            MaterialBoolSpecs.AddRange(from.MaterialBoolSpecs);
             Meshes.AddRange(from.Meshes);
             Particles.AddRange(from.Particles);
             Textures.AddRange(from.Textures);
@@ -97,6 +102,18 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         }
 
     }
+
+    public interface IAssetRecord
+    {
+        public List<IAssetUsage> AssetUsages { get; }
+    }
+
+    public interface IAssetUsage
+    {
+        public int FileKey { get; init; }
+        public int UIndex { get; init; }
+    }
+
     public sealed record FileNameDirKeyPair(string FileName, int DirectoryKey) { public FileNameDirKeyPair() : this(default, default) { } }
 
     public class PlotUsageDB
@@ -143,7 +160,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         }
     }
 
-    public class ClassRecord
+    public class ClassRecord : IAssetRecord
     {
         public string Class { get; set; }
 
@@ -157,6 +174,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         public Dictionary<string, PropertyRecord> PropertyRecords { get; set; } = new();
 
+        [IgnoredMember] public List<IAssetUsage> AssetUsages => new (Usages);
         public List<ClassUsage> Usages { get; set; } = new();
 
         public ClassRecord(string Class, int definitionFile, int Definition_UID, string SuperClass)
@@ -175,12 +193,12 @@ namespace LegendaryExplorer.Tools.AssetDatabase
     public sealed record PropertyRecord(string Property, string Type) { public PropertyRecord() : this(default, default) { } }
 
 
-    public class ClassUsage
+    public class ClassUsage : IAssetUsage
     {
 
-        public int FileKey { get; set; }
+        public int FileKey { get; init; }
 
-        public int UIndex { get; set; }
+        public int UIndex { get; init;  }
 
         public bool IsDefault { get; set; }
 
@@ -197,7 +215,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         { }
     }
 
-    public class MaterialRecord
+    public class MaterialRecord : IAssetRecord
     {
 
         public string MaterialName { get; set; }
@@ -206,6 +224,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         public bool IsDLCOnly { get; set; }
 
+        [IgnoredMember] public List<IAssetUsage> AssetUsages => new (Usages);
         public List<MatUsage> Usages { get; set; } = new();
 
         public List<MatSetting> MatSettings { get; set; } = new();
@@ -222,11 +241,18 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         { }
     }
 
-    public sealed record MatUsage(int FileKey, int UIndex, bool IsInDLC) { public MatUsage() : this(default, default, default) { } }
-    public sealed record MatSetting(string Name, string Parm1, string Parm2) { public MatSetting() : this(default, default, default) { } }
+    public sealed record MatUsage(int FileKey, int UIndex, bool IsInDLC) : IAssetUsage
+    {
+        public MatUsage() : this(default, default, default) { }
+    }
+
+    public sealed record MatSetting(string Name, string Parm1, string Parm2)
+    {
+        public MatSetting() : this(default, default, default) { }
+    }
 
 
-    public class AnimationRecord
+    public class AnimationRecord : IAssetRecord
     {
 
         public string AnimSequence { get; set; }
@@ -247,6 +273,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         public bool IsModOnly { get; set; }
 
+        [IgnoredMember] public List<IAssetUsage> AssetUsages => new (Usages);
+
         public List<AnimUsage> Usages { get; set; } = new();
 
         public AnimationRecord(string AnimSequence, string SeqName, string AnimData, float Length, int Frames, string Compression, string KeyFormat, bool IsAmbPerf, bool IsModOnly)
@@ -266,16 +294,13 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         { }
     }
 
-    public sealed record AnimUsage(int FileKey, int UIndex, bool IsInMod)
+    public sealed record AnimUsage(int FileKey, int UIndex, bool IsInMod) : IAssetUsage
     {
-        public AnimUsage() : this(default, default, default)
-        {
-
-        }
+        public AnimUsage() : this(default, default, default) { }
     }
 
 
-    public class MeshRecord
+    public class MeshRecord : IAssetRecord
     {
 
         public string MeshName { get; set; }
@@ -286,6 +311,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         public bool IsModOnly { get; set; }
 
+        [IgnoredMember] public List<IAssetUsage> AssetUsages => new (Usages);
         public List<MeshUsage> Usages { get; set; } = new();
 
         public MeshRecord(string MeshName, bool IsSkeleton, bool IsModOnly, int BoneCount)
@@ -299,10 +325,14 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public MeshRecord()
         { }
     }
-    public sealed record MeshUsage(int FileKey, int UIndex, bool IsInMod) { public MeshUsage() : this(default, default, default) { } }
+
+    public sealed record MeshUsage(int FileKey, int UIndex, bool IsInMod) : IAssetUsage
+    {
+        public MeshUsage() : this(default, default, default) { }
+    }
 
 
-    public class ParticleSysRecord
+    public class ParticleSysRecord : IAssetRecord
     {
         public enum VFXClass
         {
@@ -324,6 +354,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         public VFXClass VFXType { get; set; }
 
+        [IgnoredMember] public List<IAssetUsage> AssetUsages => new (Usages);
         public List<ParticleSysUsage> Usages { get; set; } = new();
 
         public ParticleSysRecord(string PSName, string ParentPackage, bool IsDLCOnly, bool IsModOnly, int EffectCount, VFXClass VFXType)
@@ -339,10 +370,14 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public ParticleSysRecord()
         { }
     }
-    public sealed record ParticleSysUsage(int FileKey, int UIndex, bool IsInDLC, bool IsInMod) { public ParticleSysUsage() : this(default, default, default, default) { } }
+
+    public sealed record ParticleSysUsage(int FileKey, int UIndex, bool IsInDLC, bool IsInMod) : IAssetUsage
+    {
+        public ParticleSysUsage() : this(default, default, default, default) { }
+    }
 
 
-    public class TextureRecord
+    public class TextureRecord : IAssetRecord
     {
 
         public string TextureName { get; set; }
@@ -363,6 +398,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         public string CRC { get; set; }
 
+        [IgnoredMember] public List<IAssetUsage> AssetUsages => new (Usages);
+
         public List<TextureUsage> Usages { get; set; } = new();
 
         public TextureRecord(string TextureName, string ParentPackage, bool IsDLCOnly, bool IsModOnly, string CFormat, string TexGrp, int SizeX, int SizeY, string CRC)
@@ -381,10 +418,14 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public TextureRecord()
         { }
     }
-    public sealed record TextureUsage(int FileKey, int UIndex, bool IsInDLC, bool IsInMod) { public TextureUsage() : this(default, default, default, default) { } }
+
+    public sealed record TextureUsage(int FileKey, int UIndex, bool IsInDLC, bool IsInMod) : IAssetUsage
+    {
+        public TextureUsage() : this(default, default, default, default) { }
+    }
 
 
-    public class GUIElement
+    public class GUIElement : IAssetRecord
     {
 
         public string GUIName { get; set; }
@@ -392,6 +433,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public int DataSize { get; set; }
 
         public bool IsModOnly { get; set; }
+
+        [IgnoredMember] public List<IAssetUsage> AssetUsages => new (Usages);
 
         public List<GUIUsage> Usages { get; set; } = new(); //File reference then export
 
@@ -405,7 +448,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public GUIElement()
         { }
     }
-    public sealed record GUIUsage(int FileKey, int UIndex, bool IsInMod) { public GUIUsage() : this(default, default, default) { } }
+
+    public sealed record GUIUsage(int FileKey, int UIndex, bool IsInMod) : IAssetUsage
+    {
+        public GUIUsage() : this(default, default, default) { }
+    }
 
 
     public class Conversation
@@ -426,7 +473,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public Conversation()
         { }
     }
-    public sealed record FileKeyExportPair(int File, int ExportUIndex) { public FileKeyExportPair() : this(default, default) { } }
+
+    public sealed record FileKeyExportPair(int FileKey, int UIndex) : IAssetUsage
+    {
+        public FileKeyExportPair() : this(default, default) { }
+    }
 
     public class ConvoLine
     {
@@ -509,11 +560,13 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         };
     }
 
-    public class PlotRecord
+    public class PlotRecord : IAssetRecord
     {
         public PlotRecordType ElementType { get; set; }
 
         public int ElementID { get; set; }
+
+        [IgnoredMember] public List<IAssetUsage> AssetUsages => new (Usages);
 
         public List<PlotUsage> Usages { get; set; } = new();
 
@@ -538,11 +591,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             Path = PlotDatabases.FindPlotPathFromID(ElementID, ElementType.ToPlotElementType(), game);
     }
 
-    public class PlotUsage
+    public class PlotUsage : IAssetUsage
     {
         public int? ContainerID { get; set; }
-        public int FileKey { get; set; }
-        public int UIndex { get; set; }
+        public int FileKey { get; init; }
+        public int UIndex { get; init; }
         public bool IsMod { get; set; }
         public PlotUsageContext Context { get; set; }
         [IgnoredMember] 

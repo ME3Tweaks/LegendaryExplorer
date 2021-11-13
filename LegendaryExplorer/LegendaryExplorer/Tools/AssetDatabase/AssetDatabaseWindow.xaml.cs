@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
@@ -19,7 +18,6 @@ using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorerCore.GameFilesystem;
-using LegendaryExplorerCore.Gammtek.Collections.ObjectModel;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using Microsoft.Win32;
 using AnimSequence = LegendaryExplorerCore.Unreal.BinaryConverters.AnimSequence;
@@ -32,7 +30,7 @@ using LegendaryExplorerCore.TLK;
 using Microsoft.WindowsAPICodePack.Taskbar;
 using BinaryPack;
 using LegendaryExplorer.SharedUI.Controls;
-using LegendaryExplorerCore.Gammtek.Extensions;
+using LegendaryExplorer.Tools.AssetDatabase.Filters;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.PlotDatabase;
 
@@ -44,7 +42,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
     public partial class AssetDatabaseWindow : TrackingNotifyPropertyChangedWindowBase
     {
         #region Declarations
-        public const string dbCurrentBuild = "7.1"; //If changes are made that invalidate old databases edit this.
+        public const string dbCurrentBuild = "7.2"; //If changes are made that invalidate old databases edit this.
         private int previousView { get; set; }
         private int _currentView;
         public int currentView { get => _currentView; set { previousView = _currentView; SetProperty(ref _currentView, value); } }
@@ -79,6 +77,10 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         private string CurrentDBPath { get; set; }
         public AssetDB CurrentDataBase { get; } = new();
+
+        public FileListSpecification FileListFilter { get; } = new();
+        public AssetFilters AssetFilters { get; private set; }
+
         public ObservableCollectionExtended<FileDirPair> FileListExtended { get; } = new();
 
         private ClassRecord _selectedClass;
@@ -184,10 +186,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public ObservableCollectionExtended<string> SpeakerList { get; } = new();
         private bool _isGettingTLKs;
         public bool IsGettingTLKs { get => _isGettingTLKs; set => SetProperty(ref _isGettingTLKs, value); }
-        public ObservableDictionary<int, string> CustomFileList { get; } = new(); //FileKey, filename<space>Dir
         public const string CustomListDesc = "Custom File Lists allow the database to be filtered so only assets that are in certain files or groups of files are shown. Lists can be saved/reloaded.";
-        private bool _isFilteredByFiles;
-        public bool IsFilteredByFiles { get => _isFilteredByFiles; set => SetProperty(ref _isFilteredByFiles, value); }
         public ICommand GenerateDBCommand { get; set; }
         public ICommand SaveDBCommand { get; set; }
         public ICommand SwitchMECommand { get; set; }
@@ -198,12 +197,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public ICommand OpenInAnimViewerCommand { get; set; }
         public ICommand ExportToPSACommand { get; set; }
         public ICommand OpenInAnimationImporterCommand { get; set; }
-        public ICommand FilterClassCommand { get; set; }
-        public ICommand FilterMatCommand { get; set; }
-        public ICommand FilterMeshCommand { get; set; }
-        public ICommand FilterTexCommand { get; set; }
-        public ICommand FilterAnimsCommand { get; set; }
-        public ICommand FilterVFXCommand { get; set; }
+        public ICommand SetFilterCommand { get; set; }
         public ICommand SetCRCCommand { get; set; }
         public ICommand FilterFilesCommand { get; set; }
         public ICommand LoadFileListCommand { get; set; }
@@ -238,33 +232,26 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             }
             return true;
         }
-        private bool IsViewingClass(object obj)
+
+        private bool CanSetFilter(object obj)
         {
-            return currentView == 1;
-        }
-        private bool IsViewingMaterials(object obj)
-        {
-            return currentView == 2;
-        }
-        private bool IsViewingMeshes(object obj)
-        {
-            return currentView == 3;
-        }
-        private bool IsViewingTextures(object obj)
-        {
-            return currentView == 4;
-        }
-        private bool IsViewingAnimations(object obj)
-        {
-            return currentView == 5;
-        }
-        private bool IsViewingVFX(object obj)
-        {
-            return currentView == 6;
-        }
-        private bool IsViewingPlotElements(object obj)
-        {
-            return currentView == 9;
+            if (obj is "") // This makes the LODGroups submenu work.
+            {
+                return true;
+            }
+            // If we did a better job of MVVM we wouldn't need to do this much reflection, but I just want it to work
+            // IE we could put the command on the AssetFilter or on the AssetSpecification
+            var tabIndex = obj switch
+            {
+                IAssetSpecification<ClassRecord> => 1,
+                IAssetSpecification<MaterialRecord> => 2,
+                IAssetSpecification<MeshRecord> => 3,
+                IAssetSpecification<TextureRecord> => 4,
+                IAssetSpecification<AnimationRecord> => 5,
+                IAssetSpecification<ParticleSysRecord> => 6,
+                _ => -1
+            };
+            return currentView == tabIndex;
         }
         private bool CanUseAnimViewer(object obj)
         {
@@ -281,6 +268,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public AssetDatabaseWindow() : base("Asset Database", true)
         {
             LoadCommands();
+            AssetFilters = new AssetFilters(FileListFilter);
 
             //Get default db / game
             CurrentDBPath = Settings.AssetDBPath;
@@ -294,12 +282,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         {
             GenerateDBCommand = new GenericCommand(GenerateDatabase);
             SaveDBCommand = new GenericCommand(SaveDatabase);
-            FilterClassCommand = new RelayCommand(SetFilters, IsViewingClass);
-            FilterMatCommand = new RelayCommand(SetFilters, IsViewingMaterials);
-            FilterMeshCommand = new RelayCommand(SetFilters, IsViewingMeshes);
-            FilterTexCommand = new RelayCommand(SetFilters, IsViewingTextures);
-            FilterAnimsCommand = new RelayCommand(SetFilters, IsViewingAnimations);
-            FilterVFXCommand = new RelayCommand(SetFilters, IsViewingVFX);
+            SetFilterCommand = new RelayCommand(SetFilters, CanSetFilter);
             SwitchMECommand = new RelayCommand(SwitchGame);
             CancelDumpCommand = new RelayCommand(CancelDump, CanCancelDump);
             OpenSourcePkgCommand = new RelayCommand(OpenSourcePkg, IsClassSelected);
@@ -388,9 +371,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             var build = dbCurrentBuild.Trim(' ', '*', '.');
             //Async load
             AssetDB pdb = await ParseDBAsync(game, currentDbPath, build, cancelloadingToken);
-            database.meGame = pdb.meGame;
+            database.Game = pdb.Game;
             database.GenerationDate = pdb.GenerationDate;
-            database.DataBaseversion = pdb.DataBaseversion;
+            database.DatabaseVersion = pdb.DatabaseVersion;
             database.Localization = pdb.Localization;
             database.FileList.AddRange(pdb.FileList);
             database.ContentDir.AddRange(pdb.ContentDir);
@@ -425,13 +408,13 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     {
                         AssetDB pdb = new();
                         var entry = archive.Entries.FirstOrDefault(z => z.Name.StartsWith("Master"));
-                        pdb.DataBaseversion = "pre 2.0";
+                        pdb.DatabaseVersion = "pre 2.0";
                         if (entry != null)
                         {
                             var split = Path.GetFileNameWithoutExtension(entry.Name).Split('_');
                             if (split.Length == 2)
                             {
-                                pdb.DataBaseversion = split[1];
+                                pdb.DatabaseVersion = split[1];
                             }
                         }
 
@@ -512,12 +495,12 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public void ClearDataBase()
         {
             CurrentDataBase.Clear();
-            CurrentDataBase.meGame = CurrentGame;
+            CurrentDataBase.Game = CurrentGame;
             CurrentDataBase.Localization = Localization;
 
             FileListExtended.ClearEx();
-            CustomFileList.Clear();
-            IsFilteredByFiles = false;
+            FileListFilter.CustomFileList.Clear();
+            FileListFilter.IsSelected = false;
             expander_CustomFiles.IsExpanded = false;
             SpeakerList.ClearEx();
             FilterBox.Clear();
@@ -652,7 +635,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             SoundpanelWPF_ADB.FreeAudioResources();
             btn_LinePlaybackToggle.IsChecked = false;
             btn_LinePlaybackToggle.Content = "Toggle Line Playback";
-            menu_fltrPerf.IsEnabled = false;
             btn_LinePlaybackToggle.IsEnabled = true;
             tabCtrl_plotUsage.SelectedIndex = 0;
             SelectedPlotUsages.ClearEx();
@@ -676,7 +658,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 case "ME3":
                     CurrentGame = MEGame.ME3;
                     switchME3_menu.IsChecked = true;
-                    menu_fltrPerf.IsEnabled = true;
                     break;
                 case "LE1":
                     CurrentGame = MEGame.LE1;
@@ -690,7 +671,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 case "LE3":
                     CurrentGame = MEGame.LE3;
                     switchLE3_menu.IsChecked = true;
-                    menu_fltrPerf.IsEnabled = true;
                     break;
             }
 
@@ -702,6 +682,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
             if (CurrentDBPath != null && File.Exists(CurrentDBPath))
             {
+                Settings.AssetDBGame = CurrentGame.ToString();
                 CurrentOverallOperationText = "Loading database";
                 BusyHeader = $"Loading database for {CurrentGame}";
                 BusyText = "Please wait...";
@@ -712,10 +693,10 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 var start = DateTime.UtcNow;
                 LoadDatabase(CurrentDBPath, CurrentGame, CurrentDataBase, cancelloading.Token).ContinueWithOnUIThread(prevTask =>
                 {
-                    if (CurrentDataBase.DataBaseversion == null || CurrentDataBase.DataBaseversion != dbCurrentBuild)
+                    if (CurrentDataBase.DatabaseVersion == null || CurrentDataBase.DatabaseVersion != dbCurrentBuild)
                     {
 
-                        var warn = MessageBox.Show($"This database is out of date (v {CurrentDataBase.DataBaseversion} versus v {dbCurrentBuild})\nA new version is required. Do you wish to rebuild?", "Warning", MessageBoxButton.OKCancel);
+                        var warn = MessageBox.Show($"This database is out of date (v {CurrentDataBase.DatabaseVersion} versus v {dbCurrentBuild})\nA new version is required. Do you wish to rebuild?", "Warning", MessageBoxButton.OKCancel);
                         if (warn == MessageBoxResult.Cancel)
                         {
                             ClearDataBase();
@@ -739,6 +720,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                         }
 
                         Localization = CurrentDataBase.Localization;
+                        AssetFilters.MaterialFilter.LoadFromDatabase(CurrentDataBase);
                         ParseConvos = !CurrentDataBase.Lines.IsEmpty();
                         ParsePlotUsages = CurrentDataBase.PlotUsages.Any();
                         IsBusy = false;
@@ -1224,8 +1206,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 var convo = CurrentDataBase.Conversations.FirstOrDefault(x => x.ConvName == newline.Convo);
                 if (convo != null)
                 {
-                    (string fileName, int directoryKey) = CurrentDataBase.FileList[convo.ConvFile.File];
-                    CurrentConvo = new Tuple<string, string, int, string, bool>(convo.ConvName, fileName, convo.ConvFile.ExportUIndex, CurrentDataBase.ContentDir[directoryKey], convo.IsAmbient);
+                    (string fileName, int directoryKey) = CurrentDataBase.FileList[convo.ConvFile.FileKey];
+                    CurrentConvo = new Tuple<string, string, int, string, bool>(convo.ConvName, fileName, convo.ConvFile.UIndex, CurrentDataBase.ContentDir[directoryKey], convo.IsAmbient);
                     ToggleLinePlayback();
                     return;
                 }
@@ -1615,422 +1597,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         #endregion
 
         #region Filters
-        bool ClassFilter(object d)
-        {
-            if (d is ClassRecord cr)
-            {
-                bool showthis = true;
-                if (!string.IsNullOrEmpty(FilterBox.Text))
-                {
-                    showthis = cr.Class.ToLower().Contains(FilterBox.Text.ToLower());
-                }
-
-                if (showthis && menu_fltrSeq.IsChecked && (!cr.Class.ToLower().StartsWith("seq") && !cr.Class.ToLower().StartsWith("bioseq") && !cr.Class.ToLower().StartsWith("sfxseq") && !cr.Class.ToLower().StartsWith("rvrseq")))
-                {
-                    showthis = false;
-                }
-
-                if (showthis && menu_fltrInterp.IsChecked && (!cr.Class.ToLower().StartsWith("interp") && !cr.Class.ToLower().StartsWith("bioevtsys") && !cr.Class.ToLower().Contains("interptrack") && !cr.Class.ToLower().Contains("sfxscene")))
-                {
-                    showthis = false;
-                }
-
-                if (showthis && IsFilteredByFiles && !CustomFileList.IsEmpty() && !cr.Usages.Select(c => c.FileKey).Intersect(CustomFileList.Keys).Any())
-                {
-                    showthis = false;
-                }
-
-                return showthis;
-            }
-            return false;
-        }
-        bool MaterialFilter(object d)
-        {
-            if (d is MaterialRecord mr)
-            {
-                bool showthis = true;
-                if (!string.IsNullOrEmpty(FilterBox.Text))
-                {
-                    showthis = mr.MaterialName.ToLower().Contains(FilterBox.Text.ToLower());
-                    if (!showthis)
-                    {
-                        showthis = mr.ParentPackage.ToLower().Contains(FilterBox.Text.ToLower());
-                    }
-                }
-
-                if (showthis && menu_fltrMatDecal.IsChecked && !mr.MaterialName.Contains("Decal"))
-                {
-                    showthis = false;
-                }
-
-                if (showthis && menu_fltrMatUnlit.IsChecked && !mr.MatSettings.Any(x => x.Name == "LightingModel" && x.Parm2 == "MLM_Unlit"))
-                {
-                    showthis = false;
-                }
-
-                if (showthis && menu_fltrMatSkM.IsChecked && mr.MatSettings.Any(x => x.Name == "bUsedWithSkeletalMesh" && x.Parm2 == "True"))
-                {
-                    showthis = false;
-                }
-
-                if (showthis && menu_fltrMat2side.IsChecked && !mr.MatSettings.Any(x => x.Name == "TwoSided" && x.Parm2 == "True"))
-                {
-                    showthis = false;
-                }
-
-                if (showthis && menu_fltrMat1side.IsChecked && mr.MatSettings.Any(x => x.Name == "TwoSided" && x.Parm2 == "True"))
-                {
-                    showthis = false;
-                }
-
-                if (showthis && menu_fltrMatNoDLC.IsChecked && mr.IsDLCOnly)
-                {
-                    showthis = false;
-                }
-
-                if (showthis && menu_fltrMatTrans.IsChecked && !mr.MatSettings.Any(x => x.Name == "BlendMode" && x.Parm2 == "BLEND_Translucent"))
-                {
-                    showthis = false;
-                }
-
-                if (showthis && menu_fltrMatAdd.IsChecked && !mr.MatSettings.Any(x => x.Name == "BlendMode" && x.Parm2 == "BLEND_Additive"))
-                {
-                    showthis = false;
-                }
-
-                if (showthis && menu_fltrMatOpq.IsChecked && mr.MatSettings.Any(x => x.Name == "BlendMode" && (x.Parm2 == "BLEND_Additive" || x.Parm2 == "BLEND_Translucent")))
-                {
-                    showthis = false;
-                }
-
-                if (showthis && menu_fltrMatColor.IsChecked && !mr.MatSettings.Any(x => x.Name == "VectorParameter" && x.Parm1.ToLower().Contains("color")))
-                {
-                    showthis = false;
-                }
-
-                if (showthis && menu_fltrMatText.IsChecked && mr.MatSettings.All(x => x.Name != "TextureSampleParameter2D"))
-                {
-                    showthis = false;
-                }
-
-                if (showthis && menu_fltrMatTalk.IsChecked && !mr.MatSettings.Any(x => x.Name == "ScalarParameter" && x.Parm1.ToLower().Contains("talk")))
-                {
-                    showthis = false;
-                }
-
-                if (showthis && IsFilteredByFiles && !CustomFileList.IsEmpty() && !mr.Usages.Select(tuple => tuple.FileKey).Intersect(CustomFileList.Keys).Any())
-                {
-                    showthis = false;
-                }
-
-                return showthis;
-            }
-
-            return false;
-        }
-        bool MeshFilter(object d)
-        {
-            if (d is MeshRecord mr)
-            {
-                bool showthis = true;
-                if (!string.IsNullOrEmpty(FilterBox.Text))
-                {
-                    if (mr.IsSkeleton && FilterBox.Text.ToLower().StartsWith("bones:") && FilterBox.Text.Length > 6 && int.TryParse(FilterBox.Text.Remove(0, 6).ToLower(), out int bonecount))
-                    {
-                        showthis = mr.BoneCount == bonecount;
-                    }
-                    else
-                    {
-                        showthis = mr.MeshName.ToLower().Contains(FilterBox.Text.ToLower());
-                    }
-                }
-
-                if (showthis && menu_fltrSkM.IsChecked && !mr.IsSkeleton)
-                {
-                    showthis = false;
-                }
-
-                if (showthis && menu_fltrStM.IsChecked && mr.IsSkeleton)
-                {
-                    showthis = false;
-                }
-
-                if (showthis && IsFilteredByFiles && !CustomFileList.IsEmpty() && !mr.Usages.Select(usage => usage.FileKey).Intersect(CustomFileList.Keys).Any())
-                {
-                    showthis = false;
-                }
-
-                return showthis;
-            }
-
-            return false;
-        }
-        bool AnimFilter(object d)
-        {
-            if (d is AnimationRecord ar)
-            {
-                bool showthis = true;
-                if (!string.IsNullOrEmpty(FilterBox.Text) && ar != null)
-                {
-                    showthis = ar.AnimSequence.ToLower().Contains(FilterBox.Text.ToLower());
-                }
-
-                if (showthis && menu_fltrAnim.IsChecked && ar.IsAmbPerf)
-                {
-                    showthis = false;
-                }
-
-                if (showthis && menu_fltrPerf.IsChecked && !ar.IsAmbPerf)
-                {
-                    showthis = false;
-                }
-
-                if (showthis && IsFilteredByFiles && !CustomFileList.IsEmpty() && !ar.Usages.Select(usage => usage.FileKey).Intersect(CustomFileList.Keys).Any())
-                {
-                    showthis = false;
-                }
-
-                return showthis;
-            }
-
-            return false;
-        }
-        bool PSFilter(object d)
-        {
-            if (d is ParticleSysRecord ps)
-            {
-                bool showthis = true;
-                if (!string.IsNullOrEmpty(FilterBox.Text))
-                {
-                    showthis = ps.PSName.ToLower().Contains(FilterBox.Text.ToLower());
-                }
-                if (showthis && menu_VFXPartSys.IsChecked && ps.VFXType != ParticleSysRecord.VFXClass.ParticleSystem)
-                {
-                    showthis = false;
-                }
-                if (showthis && menu_VFXRvrEff.IsChecked && ps.VFXType == ParticleSysRecord.VFXClass.ParticleSystem)
-                {
-                    showthis = false;
-                }
-                if (showthis && IsFilteredByFiles && !CustomFileList.IsEmpty() && !ps.Usages.Select(usage => usage.FileKey).Intersect(CustomFileList.Keys).Any())
-                {
-                    showthis = false;
-                }
-                return showthis;
-            }
-
-            return false;
-        }
-        bool TexFilter(object d)
-        {
-            if (d is TextureRecord tr)
-            {
-                bool showthis = true;
-                if (!string.IsNullOrEmpty(FilterBox.Text))
-                {
-                    showthis = tr.TextureName.ToLower().Contains(FilterBox.Text.ToLower());
-                    if (!showthis)
-                    {
-                        showthis = tr.CRC.ToLower().Contains(FilterBox.Text.ToLower());
-                    }
-
-                    if (!showthis)
-                    {
-                        showthis = tr.ParentPackage.ToLower().Contains(FilterBox.Text.ToLower());
-                    }
-
-                    if (!showthis && FilterBox.Text.ToLower().StartsWith("size: ") && FilterBox.Text.ToLower().Contains("x") && FilterBox.Text.Length > 6)
-                    {
-                        var sr = FilterBox.Text.Remove(0, 6).ToLower().Split("x");
-                        if (int.TryParse(sr[0], out int xVal) && int.TryParse(sr[1], out int yVal))
-                        {
-                            showthis = tr.SizeX == xVal && tr.SizeY == yVal;
-                        }
-                    }
-                }
-
-                if (showthis && menu_TCube.IsChecked && tr.CFormat != "TextureCube")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && menu_TMovie.IsChecked && tr.CFormat != "TextureMovie")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && menu_T1024.IsChecked && tr.SizeX < 1024 && tr.SizeY < 1024)
-                {
-                    showthis = false;
-                }
-
-                if (showthis && menu_T4096.IsChecked && tr.SizeX < 4096 && tr.SizeY < 4096)
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGPromo.IsChecked && tr.TexGrp == "Promotional")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGChar1024.IsChecked && tr.TexGrp == "Character1024")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGCharDiff.IsChecked && tr.TexGrp == "CharacterDiff")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGCharNorm.IsChecked && tr.TexGrp == "CharacterNorm")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGCharSpec.IsChecked && tr.TexGrp == "CharacterSpec")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGWorld.IsChecked && tr.TexGrp == "World")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGWorldSpec.IsChecked && tr.TexGrp == "WorldSpecular")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGWorldNorm.IsChecked && tr.TexGrp == "WorldNormalMap")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGAmblgtMap.IsChecked && tr.TexGrp == "AmbientLightMap")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGShadowMap.IsChecked && tr.TexGrp == "Shadowmap")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGEnviro64.IsChecked && tr.TexGrp == "Environment64")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGEnviro128.IsChecked && tr.TexGrp == "Environment128")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGEnviro256.IsChecked && tr.TexGrp == "Environment256")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGEnviro512.IsChecked && tr.TexGrp == "Environment512")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGEnviro1024.IsChecked && tr.TexGrp == "Environment1024")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGVFX64.IsChecked && tr.TexGrp == "VFX64")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGVFX128.IsChecked && tr.TexGrp == "VFX128")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGVFX256.IsChecked && tr.TexGrp == "VFX256")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGVFX512.IsChecked && tr.TexGrp == "VFX512")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGVFX1024.IsChecked && tr.TexGrp == "VFX1024")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGAPL64.IsChecked && tr.TexGrp == "APL64")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGAPL128.IsChecked && tr.TexGrp == "APL128")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGAPL256.IsChecked && tr.TexGrp == "APL256")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGAPL512.IsChecked && tr.TexGrp == "APL512")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGAPL1024.IsChecked && tr.TexGrp == "APL1024")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGUI.IsChecked && tr.TexGrp == "UI")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && !menu_TGNone.IsChecked && tr.TexGrp == "n/a")
-                {
-                    showthis = false;
-                }
-
-                if (showthis && IsFilteredByFiles && !CustomFileList.IsEmpty() && !tr.Usages.Select(usage => usage.FileKey).Intersect(CustomFileList.Keys).Any())
-                {
-                    showthis = false;
-                }
-
-                return showthis;
-            }
-
-            return false;
-        }
-        bool SFFilter(object d)
-        {
-            if (d is GUIElement sf)
-            {
-                bool showthis = true;
-                if (!string.IsNullOrEmpty(FilterBox.Text))
-                {
-                    showthis = sf.GUIName.ToLower().Contains(FilterBox.Text.ToLower());
-                }
-                if (showthis && IsFilteredByFiles && !CustomFileList.IsEmpty() && !sf.Usages.Select(usage => usage.FileKey).Intersect(CustomFileList.Keys).Any())
-                {
-                    showthis = false;
-                }
-                return showthis;
-            }
-            return false;
-        }
         bool LineFilter(object d)
         {
             if (d is ConvoLine line)
@@ -2074,61 +1640,44 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             return showthis;
         }
 
-        private bool PEFilter(object d)
-        {
-            if (d is PlotRecord pr)
-            {
-                bool showthis = true;
-                if (!string.IsNullOrEmpty(FilterBox.Text))
-                {
-                    showthis = pr.DisplayText.ToLower().Contains(FilterBox.Text.ToLower());
-                }
-                if (showthis && IsFilteredByFiles && !CustomFileList.IsEmpty() && !pr.Usages.Select(usage => usage.FileKey).Intersect(CustomFileList.Keys).Any())
-                {
-                    showthis = false;
-                }
-                return showthis;
-            }
-
-            return false;
-        }
         private void Filter()
         {
+            AssetFilters.SetSearch(FilterBox.Text);
             switch (currentView)
             {
                 case 1:  //Classes
                     ICollectionView viewC = CollectionViewSource.GetDefaultView(CurrentDataBase.ClassRecords);
-                    viewC.Filter = ClassFilter;
+                    viewC.Filter = AssetFilters.ClassFilter.Filter;
                     lstbx_Classes.ItemsSource = viewC;
                     break;
                 case 2: //Materials
                     ICollectionView viewM = CollectionViewSource.GetDefaultView(CurrentDataBase.Materials);
-                    viewM.Filter = MaterialFilter;
+                    viewM.Filter = AssetFilters.MaterialFilter.Filter;
                     lstbx_Materials.ItemsSource = viewM;
                     break;
                 case 3: //Meshes
                     ICollectionView viewS = CollectionViewSource.GetDefaultView(CurrentDataBase.Meshes);
-                    viewS.Filter = MeshFilter;
+                    viewS.Filter = AssetFilters.MeshFilter.Filter;
                     lstbx_Meshes.ItemsSource = viewS;
                     break;
                 case 4: //Textures
                     ICollectionView viewT = CollectionViewSource.GetDefaultView(CurrentDataBase.Textures);
-                    viewT.Filter = TexFilter;
+                    viewT.Filter = AssetFilters.TextureFilter.Filter;
                     lstbx_Textures.ItemsSource = viewT;
                     break;
                 case 5: //Animations
                     ICollectionView viewA = CollectionViewSource.GetDefaultView(CurrentDataBase.Animations);
-                    viewA.Filter = AnimFilter;
+                    viewA.Filter = AssetFilters.AnimationFilter.Filter;
                     lstbx_Anims.ItemsSource = viewA;
                     break;
                 case 6: //Particles
                     ICollectionView viewP = CollectionViewSource.GetDefaultView(CurrentDataBase.Particles);
-                    viewP.Filter = PSFilter;
+                    viewP.Filter = AssetFilters.ParticleFilter.Filter;
                     lstbx_Particles.ItemsSource = viewP;
                     break;
                 case 7: //Scaleform
                     ICollectionView viewG = CollectionViewSource.GetDefaultView(CurrentDataBase.GUIElements);
-                    viewG.Filter = SFFilter;
+                    viewG.Filter = AssetFilters.GUIFilter.Filter;
                     lstbx_Scaleform.ItemsSource = viewG;
                     break;
                 case 8: //Lines
@@ -2141,7 +1690,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     var plotSource = GetSelectedPlotSource();
                     if (plotSource is null || lstbx is null) break;
                     ICollectionView viewPE = CollectionViewSource.GetDefaultView(plotSource);
-                    viewPE.Filter = PEFilter;
+                    viewPE.Filter = AssetFilters.PlotElementFilter.Filter;
                     lstbx.ItemsSource = viewPE;
                     break;
                 default: //Files
@@ -2151,261 +1700,27 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         }
         private void SetFilters(object obj)
         {
-            var param = obj as string;
-            switch (param)
+            if(!AssetFilters.ToggleFilter(obj))
             {
-                case "Anim":
-                    if (!menu_fltrAnim.IsChecked)
-                    {
-                        menu_fltrAnim.IsChecked = true;
-                        menu_fltrPerf.IsChecked = false;
-                    }
-                    else
-                    {
-                        menu_fltrAnim.IsChecked = false;
-                    }
-                    break;
-                case "Perf":
-                    if (!menu_fltrPerf.IsChecked)
-                    {
-                        menu_fltrPerf.IsChecked = true;
-                        menu_fltrAnim.IsChecked = false;
-                    }
-                    else
-                    {
-                        menu_fltrPerf.IsChecked = false;
-                    }
-                    break;
-                case "Seq":
-                    menu_fltrSeq.IsChecked = !menu_fltrSeq.IsChecked;
-                    break;
-                case "Interp":
-                    menu_fltrInterp.IsChecked = !menu_fltrInterp.IsChecked;
-                    break;
-                case "Unlit":
-                    menu_fltrMatUnlit.IsChecked = !menu_fltrMatUnlit.IsChecked;
-                    break;
-                case "SkM":
-                    menu_fltrMatSkM.IsChecked = !menu_fltrMatSkM.IsChecked;
-                    break;
-                case "Twoside":
-                    if (!menu_fltrMat2side.IsChecked)
-                    {
-                        menu_fltrMat2side.IsChecked = true;
-                        menu_fltrMat1side.IsChecked = false;
-                    }
-                    else
-                    {
-                        menu_fltrMat2side.IsChecked = false;
-                    }
-                    break;
-                case "Oneside":
-                    if (!menu_fltrMat1side.IsChecked)
-                    {
-                        menu_fltrMat1side.IsChecked = true;
-                        menu_fltrMat2side.IsChecked = false;
-                    }
-                    else
-                    {
-                        menu_fltrMat1side.IsChecked = false;
-                    }
-                    break;
-                case "NoDLC":
-                    menu_fltrMatNoDLC.IsChecked = !menu_fltrMatNoDLC.IsChecked;
-                    break;
-                case "Transl":
-                    if (!menu_fltrMatTrans.IsChecked)
-                    {
-                        menu_fltrMatTrans.IsChecked = true;
-                        menu_fltrMatAdd.IsChecked = false;
-                        menu_fltrMatOpq.IsChecked = false;
-                    }
-                    else
-                    {
-                        menu_fltrMatTrans.IsChecked = false;
-                    }
-                    break;
-                case "BAdd":
-                    if (!menu_fltrMatAdd.IsChecked)
-                    {
-                        menu_fltrMatTrans.IsChecked = false;
-                        menu_fltrMatAdd.IsChecked = true;
-                        menu_fltrMatOpq.IsChecked = false;
-                    }
-                    else
-                    {
-                        menu_fltrMatAdd.IsChecked = false;
-                    }
-                    break;
-                case "Opq":
-                    if (!menu_fltrMatOpq.IsChecked)
-                    {
-                        menu_fltrMatTrans.IsChecked = false;
-                        menu_fltrMatAdd.IsChecked = false;
-                        menu_fltrMatOpq.IsChecked = true;
-                    }
-                    else
-                    {
-                        menu_fltrMatOpq.IsChecked = false;
-                    }
-                    break;
-                case "Vcolor":
-                    menu_fltrMatColor.IsChecked = !menu_fltrMatColor.IsChecked;
-                    break;
-                case "TextP":
-                    menu_fltrMatText.IsChecked = !menu_fltrMatText.IsChecked;
-                    break;
-                case "TalkS":
-                    menu_fltrMatTalk.IsChecked = !menu_fltrMatTalk.IsChecked;
-                    break;
-                case "Decal":
-                    menu_fltrMatDecal.IsChecked = !menu_fltrMatDecal.IsChecked;
-                    break;
-                case "Skel":
-                    if (!menu_fltrSkM.IsChecked)
-                    {
-                        menu_fltrSkM.IsChecked = true;
-                        menu_fltrStM.IsChecked = false;
-                    }
-                    else
-                    {
-                        menu_fltrSkM.IsChecked = false;
-                    }
-                    break;
-                case "Static":
-                    if (!menu_fltrStM.IsChecked)
-                    {
-                        menu_fltrSkM.IsChecked = false;
-                        menu_fltrStM.IsChecked = true;
-                    }
-                    else
-                    {
-                        menu_fltrStM.IsChecked = false;
-                    }
-                    break;
-                case "Cube":
-                    menu_TCube.IsChecked = !menu_TCube.IsChecked;
-                    break;
-                case "Movie":
-                    menu_TMovie.IsChecked = !menu_TMovie.IsChecked;
-                    break;
-                case "1024":
-                    if (!menu_T1024.IsChecked)
-                    {
-                        menu_T4096.IsChecked = false;
-                        menu_T1024.IsChecked = true;
-                    }
-                    else
-                    {
-                        menu_T1024.IsChecked = false;
-                    }
-                    break;
-                case "4096":
-                    if (!menu_T4096.IsChecked)
-                    {
-                        menu_T1024.IsChecked = false;
-                        menu_T4096.IsChecked = true;
-                    }
-                    else
-                    {
-                        menu_T4096.IsChecked = false;
-                    }
-                    break;
-                case "TGShow":
-                    menu_TGPromo.IsChecked = true;
-                    menu_TGChar1024.IsChecked = true;
-                    menu_TGCharDiff.IsChecked = true;
-                    menu_TGCharNorm.IsChecked = true;
-                    menu_TGCharSpec.IsChecked = true;
-                    menu_TGWorld.IsChecked = true;
-                    menu_TGWorldSpec.IsChecked = true;
-                    menu_TGWorldNorm.IsChecked = true;
-                    menu_TGAmblgtMap.IsChecked = true;
-                    menu_TGShadowMap.IsChecked = true;
-                    menu_TGEnviro64.IsChecked = true;
-                    menu_TGEnviro128.IsChecked = true;
-                    menu_TGEnviro256.IsChecked = true;
-                    menu_TGEnviro512.IsChecked = true;
-                    menu_TGEnviro1024.IsChecked = true;
-                    menu_TGVFX64.IsChecked = true;
-                    menu_TGVFX128.IsChecked = true;
-                    menu_TGVFX256.IsChecked = true;
-                    menu_TGVFX512.IsChecked = true;
-                    menu_TGVFX1024.IsChecked = true;
-                    menu_TGAPL64.IsChecked = true;
-                    menu_TGAPL128.IsChecked = true;
-                    menu_TGAPL256.IsChecked = true;
-                    menu_TGAPL512.IsChecked = true;
-                    menu_TGAPL1024.IsChecked = true;
-                    menu_TGUI.IsChecked = true;
-                    menu_TGNone.IsChecked = true;
-                    break;
-                case "TGClear":
-                    menu_TGPromo.IsChecked = false;
-                    menu_TGChar1024.IsChecked = false;
-                    menu_TGCharDiff.IsChecked = false;
-                    menu_TGCharNorm.IsChecked = false;
-                    menu_TGCharSpec.IsChecked = false;
-                    menu_TGWorld.IsChecked = false;
-                    menu_TGWorldSpec.IsChecked = false;
-                    menu_TGWorldNorm.IsChecked = false;
-                    menu_TGAmblgtMap.IsChecked = false;
-                    menu_TGShadowMap.IsChecked = false;
-                    menu_TGEnviro64.IsChecked = false;
-                    menu_TGEnviro128.IsChecked = false;
-                    menu_TGEnviro256.IsChecked = false;
-                    menu_TGEnviro512.IsChecked = false;
-                    menu_TGEnviro1024.IsChecked = false;
-                    menu_TGVFX64.IsChecked = false;
-                    menu_TGVFX128.IsChecked = false;
-                    menu_TGVFX256.IsChecked = false;
-                    menu_TGVFX512.IsChecked = false;
-                    menu_TGVFX1024.IsChecked = false;
-                    menu_TGAPL64.IsChecked = false;
-                    menu_TGAPL128.IsChecked = false;
-                    menu_TGAPL256.IsChecked = false;
-                    menu_TGAPL512.IsChecked = false;
-                    menu_TGAPL1024.IsChecked = false;
-                    menu_TGUI.IsChecked = false;
-                    menu_TGNone.IsChecked = false;
-                    break;
-                case "PS":
-                    if (!menu_VFXPartSys.IsChecked)
-                    {
-                        menu_VFXRvrEff.IsChecked = false;
-                        menu_VFXPartSys.IsChecked = true;
-                    }
-                    else
-                    {
-                        menu_VFXPartSys.IsChecked = false;
-                    }
-                    break;
-                case "RvrEff":
-                    if (!menu_VFXRvrEff.IsChecked)
-                    {
-                        menu_VFXPartSys.IsChecked = false;
-                        menu_VFXRvrEff.IsChecked = true;
-                    }
-                    else
-                    {
-                        menu_VFXRvrEff.IsChecked = false;
-                    }
-                    break;
-                case "CustFiles":
-                    if (IsFilteredByFiles)
-                    {
-                        btn_custFilter.Content = "Filtered";
-                        expander_CustomFiles.IsExpanded = true;
-                    }
-                    else
-                    {
-                        btn_custFilter.Content = "Filter";
-                        if (CustomFileList.IsEmpty())
-                            expander_CustomFiles.IsExpanded = false;
-                    }
-                    break;
-                default:
-                    break;
+                var param = obj as string;
+                switch (param)
+                {
+                    case "CustFiles":
+                        if (FileListFilter.IsSelected)
+                        {
+                            btn_custFilter.Content = "Filtered";
+                            expander_CustomFiles.IsExpanded = true;
+                        }
+                        else
+                        {
+                            btn_custFilter.Content = "Filter";
+                            if (FileListFilter.CustomFileList.IsEmpty())
+                                expander_CustomFiles.IsExpanded = false;
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
             Filter();
         }
@@ -2509,7 +1824,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         }
         private void SaveCustomFileList()
         {
-            if (CustomFileList.IsEmpty())
+            if (FileListFilter.CustomFileList.IsEmpty())
             {
                 MessageBox.Show("You cannot save an empty file list.", "Save File List", MessageBoxButton.OK);
                 return;
@@ -2527,9 +1842,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             if (d.ShowDialog() == true)
             {
                 TextWriter tw = new StreamWriter(d.FileName);
-                foreach (KeyValuePair<int, string> file in CustomFileList)
+                foreach (KeyValuePair<int, string> file in FileListFilter.CustomFileList)
                 {
-                    tw.WriteLine(file.Value);
+                    tw.WriteLine($"{file.Value} {file.Key}");
                 }
                 tw.Close();
                 MessageBox.Show("Done.");
@@ -2559,17 +1874,33 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 var cdlg = MessageBox.Show($"Replace current list with these names:\n{string.Join("\n", nameslist)}", "Asset Database", MessageBoxButton.YesNo);
                 if (cdlg == MessageBoxResult.No)
                     return;
-                CustomFileList.Clear();
+                FileListFilter.CustomFileList.Clear();
                 var errorlist = new List<string>();
                 foreach (var n in nameslist)
                 {
                     string[] parts = n.Split(' ');
                     if (parts.Length >= 2)
                     {
-                        var key = FileListExtended.IndexOf(new(parts[0], parts[1], int.Parse(parts[2])));
-                        if (key >= 0)
+                        FileDirPair fdp = null;
+                        int key = -1;
+                        var (fileName, fileDir) = (parts[0], parts[1]);
+                        if (parts.Length > 2 && int.TryParse(parts[2], out key) && key < FileListExtended.Count)
                         {
-                            CustomFileList.Add(key, n);
+                            fdp = FileListExtended[key];
+                            if (fdp.FileName != fileName || fdp.Directory != fileDir) fdp = null;
+                        }
+
+                        if (fdp is null)
+                        {
+                            fdp = FileListExtended.FirstOrDefault(t =>
+                                t.FileName == fileName && t.Directory == fileDir);
+                            key = FileListExtended.IndexOf(fdp);
+                        }
+
+
+                        if (fdp is not null)
+                        {
+                            FileListFilter.CustomFileList.Add(key, $"{fdp.FileName} {fdp.Directory}");
                             continue;
                         }
                     }
@@ -2641,28 +1972,28 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                         {
                             var fileref = (FileDirPair)fr;
                             FileKey = FileListExtended.IndexOf(fileref);
-                            if (!CustomFileList.ContainsKey(FileKey))
+                            if (!FileListFilter.CustomFileList.ContainsKey(FileKey))
                             {
                                 var file = FileListExtended[FileKey];
-                                CustomFileList.Add(FileKey, $"{file.FileName} {file.Directory}");
+                                FileListFilter.CustomFileList.Add(FileKey, $"{file.FileName} {file.Directory}");
                             }
                         }
                         FileKey = -1;
                     }
                     if (!expander_CustomFiles.IsExpanded)
                         expander_CustomFiles.IsExpanded = true;
-                    if (FileKey >= 0 && !CustomFileList.ContainsKey(FileKey))
+                    if (FileKey >= 0 && !FileListFilter.CustomFileList.ContainsKey(FileKey))
                     {
                         var file = FileListExtended[FileKey];
-                        CustomFileList.Add(FileKey, $"{file.FileName} {file.Directory}");
+                        FileListFilter.CustomFileList.Add(FileKey, $"{file.FileName} {file.Directory}");
                     }
                     SortedDictionary<int, string> orderlist = new SortedDictionary<int, string>();
-                    foreach (KeyValuePair<int, string> file in CustomFileList)
+                    foreach (KeyValuePair<int, string> file in FileListFilter.CustomFileList)
                     {
                         orderlist.Add(file.Key, file.Value);
                     }
-                    CustomFileList.Clear();
-                    CustomFileList.AddRange(orderlist);
+                    FileListFilter.CustomFileList.Clear();
+                    FileListFilter.CustomFileList.AddRange(orderlist);
                     break;
                 case "Remove":
                     if (lstbx_CustomFiles.SelectedIndex >= 0 && currentView == 0)
@@ -2670,16 +2001,16 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                         var cf = (KeyValuePair<int, string>)lstbx_CustomFiles.SelectedItem;
                         FileKey = cf.Key;
                     }
-                    if (FileKey >= 0 && CustomFileList.ContainsKey(FileKey))
-                        CustomFileList.Remove(FileKey);
+                    if (FileKey >= 0 && FileListFilter.CustomFileList.ContainsKey(FileKey))
+                        FileListFilter.CustomFileList.Remove(FileKey);
                     break;
                 case "Clear":
-                    CustomFileList.Clear();
+                    FileListFilter.CustomFileList.Clear();
                     break;
                 default:
                     break;
             }
-
+            Filter();
         }
 
         public void UpdateSelectedClassUsages()
@@ -2739,7 +2070,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             //Clear database
             ClearDataBase();
             CurrentDataBase.GenerationDate = beginTime.ToString();
-            CurrentDataBase.DataBaseversion = dbCurrentBuild;
+            CurrentDataBase.DatabaseVersion = dbCurrentBuild;
 
             GeneratedDB.Clear();
 
@@ -2869,6 +2200,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             }
 
             GeneratedDB.Clear();
+            AssetFilters.MaterialFilter.LoadFromDatabase(CurrentDataBase);
+            Settings.AssetDBGame = CurrentDataBase.Game.ToString();
             isProcessing = false;
             SaveDatabase();
             TopDock.IsEnabled = true;
