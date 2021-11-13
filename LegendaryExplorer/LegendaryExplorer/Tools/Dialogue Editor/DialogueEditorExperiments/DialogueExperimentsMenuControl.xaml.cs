@@ -2,9 +2,8 @@
 using System.Windows.Controls;
 using LegendaryExplorer.DialogueEditor;
 using LegendaryExplorer.DialogueEditor.DialogueEditorExperiments;
-using LegendaryExplorerCore.Packages;
 
-namespace LegendaryExplorer.UserControls.DialogueEditorControls
+namespace LegendaryExplorer.Tools.Dialogue_Editor.DialogueEditorExperiments
 {
     /// <summary>
     /// Class that holds toolset development experiments. Actual experiment code should be in the Experiments classes

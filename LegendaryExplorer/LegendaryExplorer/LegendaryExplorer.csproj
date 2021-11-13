@@ -469,9 +469,6 @@
     <Page Update="Dialogs\SoundReplaceOptionsDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="UserControls\InterpEditorControls\InterpExperimentsMenuControl.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-    </Page>
   </ItemGroup>
 
   <ItemGroup>
