@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
@@ -139,6 +140,25 @@ namespace LegendaryExplorer.SharedUI
             Sublinks = new ObservableCollectionExtended<TreeViewEntry>();
             if (Entry != null)
                 Game = Entry.Game;
+
+            // Events don't work in interface without method to raise changes
+            // so we just attach to each
+            if (Entry is ImportEntry imp)
+            {
+                imp.PropertyChanged += TVEntryPropertyChanged;
+            }
+            else if (Entry is ExportEntry exp)
+            {
+                exp.PropertyChanged += TVEntryPropertyChanged;
+            }
+        }
+
+        private void TVEntryPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (Settings.PackageEditor_ShowTreeEntrySubText)
+            {
+                RefreshSubText();
+            }
         }
 
         public void RefreshDisplayName()
