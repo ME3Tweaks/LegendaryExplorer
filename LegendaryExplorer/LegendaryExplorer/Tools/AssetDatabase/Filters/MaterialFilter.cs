@@ -35,10 +35,10 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
                 new PredicateSpecification<MaterialRecord>("Hide DLC only Materials", mr => !mr.IsDLCOnly),
                 new PredicateSpecification<MaterialRecord>("Only Decal Materials",
                     mr => mr.MaterialName.Contains("Decal", StringComparison.OrdinalIgnoreCase)),
-                new MaterialSettingSpec("Only Unlit Materials", "LightingModel", parm2: "MLM_Unlit"),
-                new MaterialSettingSpec("Hide SkeletalMesh exclusive Materials", "bUsedWithSkeletalMesh", parm2: "True") {Inverted = true},
-                new MaterialSettingSpec("Only 2 sided Materials", "TwoSided", parm2: "True"),
-                new MaterialSettingSpec("Only Backface culled (1 side)", "TwoSided", parm2: "True") {Inverted = true},
+                new MaterialSettingSpec("Only Unlit Materials", "LightingModel", param2: "MLM_Unlit"),
+                new MaterialSettingSpec("Hide SkeletalMesh exclusive Materials", "bUsedWithSkeletalMesh", param2: "True") {Inverted = true},
+                new MaterialSettingSpec("Only 2 sided Materials", "TwoSided", param2: "True"),
+                new MaterialSettingSpec("Only Backface culled (1 side)", "TwoSided", param2: "True") {Inverted = true},
                 new UISeparator<MaterialRecord>(),
                 new MaterialSettingSpec("Must have color setting", "VectorParameter",
                     setting => setting.Parm1.Contains("color", StringComparison.OrdinalIgnoreCase)),
@@ -53,13 +53,13 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
                 {
                     Description = "BLEND_Translucent or BLEND_Additive. The 'opaque' filter in previous AssetDB versions."
                 },
-                new MaterialSettingSpec("Opaque", "BlendMode", parm2: "BLEND_Opaque"),
-                new MaterialSettingSpec("Masked", "BlendMode", parm2: "BLEND_Masked"),
-                new MaterialSettingSpec("Translucent", "BlendMode", parm2: "BLEND_Translucent"),
-                new MaterialSettingSpec("Additive", "BlendMode", parm2: "BLEND_Additive"),
-                new MaterialSettingSpec("Modulate", "BlendMode", parm2: "BLEND_Modulate"),
-                new MaterialSettingSpec("Soft Masked", "BlendMode", parm2: "BLEND_SoftMasked"),
-                new MaterialSettingSpec("Alpha Composite", "BlendMode", parm2: "BLEND_AlphaComposite"),
+                new MaterialSettingSpec("Opaque", "BlendMode", param2: "BLEND_Opaque"),
+                new MaterialSettingSpec("Masked", "BlendMode", param2: "BLEND_Masked"),
+                new MaterialSettingSpec("Translucent", "BlendMode", param2: "BLEND_Translucent"),
+                new MaterialSettingSpec("Additive", "BlendMode", param2: "BLEND_Additive"),
+                new MaterialSettingSpec("Modulate", "BlendMode", param2: "BLEND_Modulate"),
+                new MaterialSettingSpec("Soft Masked", "BlendMode", param2: "BLEND_SoftMasked"),
+                new MaterialSettingSpec("Alpha Composite", "BlendMode", param2: "BLEND_AlphaComposite"),
             };
         }
 
