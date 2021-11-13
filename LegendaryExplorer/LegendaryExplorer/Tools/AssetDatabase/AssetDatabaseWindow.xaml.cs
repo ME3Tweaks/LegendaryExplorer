@@ -235,6 +235,10 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         private bool CanSetFilter(object obj)
         {
+            if (obj is "") // This makes the LODGroups submenu work.
+            {
+                return true;
+            }
             // If we did a better job of MVVM we wouldn't need to do this much reflection, but I just want it to work
             // IE we could put the command on the AssetFilter or on the AssetSpecification
             var tabIndex = obj switch

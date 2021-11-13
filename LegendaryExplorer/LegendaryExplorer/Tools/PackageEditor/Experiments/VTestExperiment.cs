@@ -335,6 +335,17 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         {
                             // Load the VTestHelper, don't index it
                             vTestOptions.vTestHelperPackage = MEPackageHandler.OpenMEPackage(file, forceLoadFromDisk: true); // Do not put into cache
+                            
+                            // Inventory the classes from vtest helper to ensure they can be created without having to be in the 
+                            // code for LEC
+                            foreach (var e in vTestOptions.vTestHelperPackage.Exports.Where(x => x.IsClass && x.InheritsFrom("SequenceObject")))
+                            {
+                                var classInfo = GlobalUnrealObjectInfo.generateClassInfo(e);
+                                var defaults = vTestOptions.vTestHelperPackage.GetUExport(ObjectBinary.From<UClass>(e).Defaults);
+                                Debug.WriteLine($@"Inventorying {e.InstancedFullPath}");
+                                GlobalUnrealObjectInfo.GenerateSequenceObjectInfoForClassDefaults(defaults);
+                                GlobalUnrealObjectInfo.InstallCustomClassInfo(e.ObjectName, classInfo, e.Game);
+                            }
                         }
                         else
                         {
@@ -2818,6 +2829,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                     var crustAttach = FindSequenceObjectByClassAndPosition(exp, "BioSeqAct_AttachCrustEffect", 5920, 1672);
                                     var currentPawn = FindSequenceObjectByClassAndPosition(exp, "SeqVar_Object", 4536, 2016);
 
+                                    // AI change
                                     var delay = SequenceObjectCreator.CreateSequenceObject(le1File, "BioSeqAct_Delay", vTestOptions.cache);
                                     var delayDuration = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqVar_RandomFloat", vTestOptions.cache);
                                     var aiChoiceRand = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqVar_RandomFloat", vTestOptions.cache);
@@ -2827,26 +2839,40 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                     var changeAiAssault = SequenceObjectCreator.CreateSequenceObject(le1File, "BioSeqAct_ChangeAI", vTestOptions.cache);
                                     var chargeAiLog = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqAct_Log", vTestOptions.cache);
                                     var assaultAiLog = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqAct_Log", vTestOptions.cache);
-                                    KismetHelper.AddObjectsToSequence(exp, false, delay, delayDuration, aiChoiceRand, aiChoiceComp, aiChoiceAssaultThreshold, changeAiCharge, changeAiAssault, assaultAiLog, chargeAiLog);
+                                    
+                                    // Toxic and Phasic
+                                    var setWeaponAttributes = SequenceObjectCreator.CreateSequenceObject(le1File, "LEXSeqAct_SetWeaponAttribute", vTestOptions.cache);
+                                    var toxicFactor = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqVar_Float", vTestOptions.cache);
+                                    var phasicFactor = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqVar_Float", vTestOptions.cache);
+                                    //var addToxicFactor = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqVar_Float", vTestOptions.cache);
+                                    //var addPhasicFactor = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqVar_Float", vTestOptions.cache);
+                                    //var respawnCount = SequenceObjectCreator.CreateSequenceObject(le1File, "SeqVar_Float", vTestOptions.cache);
+
+                                    KismetHelper.AddObjectsToSequence(exp, false, delay, delayDuration, aiChoiceRand, aiChoiceComp, aiChoiceAssaultThreshold, changeAiCharge, changeAiAssault, assaultAiLog, chargeAiLog, setWeaponAttributes, toxicFactor, phasicFactor);
 
                                     // Configure sequence object properties
-                                    delayDuration.WriteProperty(new FloatProperty(15, "Min"));
-                                    delayDuration.WriteProperty(new FloatProperty(27, "Max"));
+                                    delayDuration.WriteProperty(new FloatProperty(11, "Min"));
+                                    delayDuration.WriteProperty(new FloatProperty(20, "Max"));
+                                    KismetHelper.SetComment(toxicFactor, "Toxic to counter player regen");
+                                    KismetHelper.SetComment(phasicFactor, "Phasic to counter player powers");
+                                    toxicFactor.WriteProperty(new FloatProperty(1, "FloatValue"));
+                                    phasicFactor.WriteProperty(new FloatProperty(1, "FloatValue"));
+
 
                                     // CHARGE AI BRANCH
                                     var chargeAiClass = EntryImporter.EnsureClassIsInFile(le1File, "BioAI_Charge", new RelinkerOptionsPackage() { Cache = vTestOptions.cache });
                                     changeAiCharge.WriteProperty(new ObjectProperty(chargeAiClass, "ControllerClass"));
-                                    chargeAiLog.WriteProperty(new ArrayProperty<StrProperty>("m_aObjComment") { new StrProperty("CROSSGEN: Engaging player with BioAI_Charge") });
+                                    KismetHelper.SetComment(chargeAiLog, "CROSSGEN: Engaging player with BioAI_Charge");
 
                                     // ASSAULT AI BRANCH
                                     var assaultAiClass = EntryImporter.EnsureClassIsInFile(le1File, "BioAI_Assault", new RelinkerOptionsPackage() { Cache = vTestOptions.cache });
                                     changeAiAssault.WriteProperty(new ObjectProperty(assaultAiClass, "ControllerClass"));
-                                    assaultAiLog.WriteProperty(new ArrayProperty<StrProperty>("m_aObjComment") { new StrProperty("CROSSGEN: Engaging player with BioAI_Assault") });
+                                    KismetHelper.SetComment(chargeAiLog, "CROSSGEN: Engaging player with BioAI_Assault");
 
-                                    // ASSAULT CHANCE - 1 in 3 chance
+                                    // ASSAULT CHANCE - 1 in 4 chance
                                     aiChoiceRand.WriteProperty(new FloatProperty(0, "Min"));
-                                    aiChoiceRand.WriteProperty(new FloatProperty(3, "Max"));
-                                    aiChoiceAssaultThreshold.WriteProperty(new FloatProperty(2f, "FloatValue")); // The generated random number must be above this to change to assault. 
+                                    aiChoiceRand.WriteProperty(new FloatProperty(4, "Max"));
+                                    aiChoiceAssaultThreshold.WriteProperty(new FloatProperty(3f, "FloatValue")); // The generated random number must be above this to change to assault. 
 
                                     // Connect sequence objects - Delay and branch pick
                                     KismetHelper.CreateOutputLink(crustAttach, "Done", delay);
@@ -2873,6 +2899,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                     {
                                         KismetHelper.CreateOutputLink(seqEvent, "Out", delay, 1); // Cancel the delay as spawn stopped or changed (or restarted)
                                     }
+
+                                    // Connect sequence object - toxic / phasic (Needs gated to only activate later!)
+                                    KismetHelper.CreateOutputLink(crustAttach, "Done", setWeaponAttributes);
+                                    KismetHelper.CreateVariableLink(setWeaponAttributes, "Pawn", currentPawn);
+                                    KismetHelper.CreateVariableLink(setWeaponAttributes, "Toxic Factor", toxicFactor);
+                                    KismetHelper.CreateVariableLink(setWeaponAttributes, "Phasic Factor", phasicFactor);
 
                                     exp.WriteProperty(new StrProperty("Spawn_Single_Guy_SUR", "ObjName"));
                                 }

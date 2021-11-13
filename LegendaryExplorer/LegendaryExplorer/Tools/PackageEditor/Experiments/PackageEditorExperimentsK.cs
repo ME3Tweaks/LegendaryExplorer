@@ -1006,6 +1006,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     if (strref > 0 && name != null && name != "No Data")
                     {
                         mapObj.ObjectNameString = name.Replace(" ", string.Empty).Trim('"', ' ');
+                        mapObj.indexValue = 0;
                     }
                 }
 

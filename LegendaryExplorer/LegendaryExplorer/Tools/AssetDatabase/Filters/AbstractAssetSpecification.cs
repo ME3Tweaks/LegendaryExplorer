@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using LegendaryExplorer.Misc;
-using LegendaryExplorerCore.Gammtek.Collections.ObjectModel;
-using LegendaryExplorerCore.Helpers;
+﻿using LegendaryExplorer.Misc;
 
 namespace LegendaryExplorer.Tools.AssetDatabase.Filters
 {
+    /// <summary>
+    /// Represents a specification that an instance of type T can either match or not match
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface IAssetSpecification<in T>
     {
         string FilterName { get; set; }
@@ -17,7 +16,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
     }
 
     /// <summary>
-    /// Base class for all specification, implementing INotifyPropertyChanged
+    /// Base class for all specifications, implementing INotifyPropertyChanged
     /// </summary>
     /// <typeparam name="T">The type of asset being filtered</typeparam>
     public abstract class AssetSpecification<T> : NotifyPropertyChangedBase, IAssetSpecification<T>

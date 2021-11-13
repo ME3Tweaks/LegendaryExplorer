@@ -36,16 +36,16 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
     {
         public bool Inverted { get; init; }
         private readonly string _settingName;
-        private readonly string _parm1;
-        private readonly string _parm2;
+        private readonly string _param1;
+        private readonly string _param2;
         private readonly Predicate<MatSetting> _customPredicate;
 
-        public MaterialSettingSpec(string filterName, string settingName, string parm1 = "", string parm2 = "")
+        public MaterialSettingSpec(string filterName, string settingName, string param1 = "", string param2 = "")
         {
             FilterName = filterName;
             _settingName = settingName;
-            _parm1 = parm1;
-            _parm2 = parm2;
+            _param1 = param1;
+            _param2 = param2;
         }
 
         public MaterialSettingSpec(string filterName, string settingName, Predicate<MatSetting> predicate)
@@ -77,11 +77,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
         {
             if (s.Name == _settingName)
             {
-                if (!string.IsNullOrEmpty(_parm1) && s.Parm1 != _parm1)
+                if (!string.IsNullOrEmpty(_param1) && s.Parm1 != _param1)
                 {
                     return false;
                 }
-                if (!string.IsNullOrEmpty(_parm2) && s.Parm2 != _parm2)
+                if (!string.IsNullOrEmpty(_param2) && s.Parm2 != _param2)
                 {
                     return false;
                 }
