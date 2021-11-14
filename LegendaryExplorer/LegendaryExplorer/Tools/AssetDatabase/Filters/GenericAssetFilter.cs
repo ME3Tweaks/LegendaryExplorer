@@ -13,6 +13,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
         public List<IAssetSpecification<T>> Filters { get; set; } = new();
         public SearchSpecification<T> Search { get; set; }
 
+        private IEnumerable<IAssetSpecification<T>> _filterCache;
+
         protected GenericAssetFilter() { }
 
         /// <summary>
@@ -25,6 +27,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
         {
             Filters = specs.ToList();
             Search = new SearchSpecification<T>(searchPredicate);
+            UpdateFilterCache();
         }
 
         /// <summary>
@@ -36,9 +39,14 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
         {
             if (obj is T record)
             {
-                return GetSpecifications().Where(s => s.IsSelected || !s.ShowInUI).All(spec => spec.MatchesSpecification(record));
+                return _filterCache.All(spec => spec.MatchesSpecification(record));
             }
             return false;
+        }
+
+        protected void UpdateFilterCache()
+        {
+            _filterCache = GetSpecifications().Where(s => s.IsSelected || !s.ShowInUI);
         }
 
         /// <summary>
@@ -60,6 +68,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
         public virtual void SetSelected(IAssetSpecification<T> spec)
         {
             spec.IsSelected = !spec.IsSelected;
+            UpdateFilterCache();
         }
     }
 

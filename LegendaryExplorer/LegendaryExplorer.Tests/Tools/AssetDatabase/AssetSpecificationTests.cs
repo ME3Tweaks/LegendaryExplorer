@@ -21,7 +21,7 @@ namespace LegendaryExplorer.Tests.Tools.AssetDatabase
 
             Assert.ThrowsException<ArgumentNullException>(() =>
             {
-                var spec2 = new PredicateSpecification<string>(null, null);
+                var _ = new PredicateSpecification<string>(null, null);
             });
         }
 
@@ -81,6 +81,26 @@ namespace LegendaryExplorer.Tests.Tools.AssetDatabase
 
             fls.CustomFileList.Add(10, "BIOA_STA00_DSG.pcc");
             Assert.IsTrue(fls.MatchesSpecification(test));
+        }
+
+        [TestMethod]
+        public void TestActionSpecification()
+        {
+            var timesInvoked = 0;
+            var spec = new ActionSpecification<int>("Test", () => timesInvoked++);
+            Assert.IsFalse(spec.IsSelected);
+            Assert.IsTrue(spec.MatchesSpecification(1));
+            Assert.AreEqual(0, timesInvoked);
+
+            // Once IsSelected setter is invoked, all should be the same except action has now been executed
+            spec.IsSelected = true;
+            Assert.IsFalse(spec.IsSelected);
+            Assert.IsTrue(spec.MatchesSpecification(1));
+            Assert.AreEqual(1, timesInvoked);
+
+            spec.IsSelected = true;
+            Assert.AreEqual(2, timesInvoked);
+
         }
     }
 }

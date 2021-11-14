@@ -49,6 +49,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
             {
                 return _predicate?.Invoke((SearchText, item)) ?? true;
             }
+
             return true;
         }
     }
@@ -60,12 +61,14 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
     {
         public new bool ShowInUI { get; } = false;
         public ObservableDictionary<int, string> CustomFileList { get; set; } = new();
+
         public override bool MatchesSpecification(IAssetRecord item)
         {
             if (!CustomFileList.IsEmpty())
             {
                 return item.AssetUsages.Select(usage => usage.FileKey).Intersect(CustomFileList.Keys).Any();
             }
+
             return true;
         }
     }
@@ -110,7 +113,13 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
     {
         public string FilterName { get; set; } = "separator";
         public string Description { get; set; }
-        public bool IsSelected { get => false; set { } }
+
+        public bool IsSelected
+        {
+            get => false;
+            set { }
+        }
+
         public bool ShowInUI { get; } = true;
 
         public bool MatchesSpecification(T item)
@@ -118,4 +127,29 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
             return true;
         }
     }
+
+    /// <summary>
+    /// Specification that always returns true, cannot be selected, and invokes an action when you attempt to select it.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class ActionSpecification<T> : AssetSpecification<T>
+    {
+        // This class feels kinda like an abuse of the filter system, it only implements this interface so it can be bound in the UI without extra work. Meh.
+        private readonly Action _onSelection;
+        public override bool IsSelected
+        {
+            get => false;
+            set => _onSelection?.Invoke();
+        }
+
+        public ActionSpecification(string name, Action actionOnSelection, string description = null)
+        {
+            FilterName = name;
+            Description = description;
+            _onSelection = actionOnSelection;
+        }
+
+        public override bool MatchesSpecification(T item) => true;
+    }
+
 }
