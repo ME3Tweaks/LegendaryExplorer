@@ -287,40 +287,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             return null;
         }
 
-        public static bool InheritsFrom(string className, string baseClass, Dictionary<string, ClassInfo> customClassInfos = null, string knownSuperclass = null)
-        {
-            if (baseClass == @"Object") return true; //Everything inherits from Object
-            if (knownSuperclass != null && baseClass == knownSuperclass) return true; // We already know it's a direct descendant
-            while (true)
-            {
-                if (className == baseClass)
-                {
-                    return true;
-                }
-
-                if (customClassInfos != null && customClassInfos.ContainsKey(className))
-                {
-                    className = customClassInfos[className].baseClass;
-                }
-                else if (Classes.ContainsKey(className))
-                {
-                    className = Classes[className].baseClass;
-                }
-                else if (knownSuperclass != null && Classes.ContainsKey(knownSuperclass))
-                {
-                    // We don't have this class in DB but we have super class (e.g. this is custom class without custom class info generated).
-                    // We will just ignore this class and jump to our known super class
-                    className = Classes[knownSuperclass].baseClass;
-                    knownSuperclass = null; // Don't use it again
-                }
-                else
-                {
-                    break;
-                }
-            }
-            return false;
-        }
-
         private static readonly string[] ImmutableStructs = { "Vector", "Color", "LinearColor", "TwoVectors", "Vector4", "Vector2D", "Rotator", "Guid", "Plane", "Box",
             "Quat", "Matrix", "IntPoint", "ActorReference", "PolyReference", "NavReference", "FontCharacter", "CovPosInfo",
             "CoverReference", "CoverInfo", "CoverSlot", "BioRwBox", "BioMask4Property", "RwVector2", "RwVector3", "RwVector4", "BioRwBox44" };

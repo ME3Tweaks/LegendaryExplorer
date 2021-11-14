@@ -18,6 +18,7 @@ namespace LegendaryExplorerCore.Packages
         string ClassName { get; }
         string FullPath { get; }
         string InstancedFullPath { get; }
+        string ObjectNameString { get; set; }
         NameReference ObjectName { get; set; }
         string ParentFullPath { get; }
         string ParentInstancedFullPath { get; }

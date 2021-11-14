@@ -522,12 +522,13 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
         private void AddKey(float time, float y)
         {
             LinkedListNode<CurvePoint> node;
-            try
+            CurvePoint pointBefore = SelectedCurve.CurvePoints.FirstOrDefault(x => x.InVal > time);
+            if (pointBefore is not null)
             {
-                node = SelectedCurve.CurvePoints.Find(SelectedCurve.CurvePoints.First(x => x.InVal > time));
+                node = SelectedCurve.CurvePoints.Find(pointBefore);
                 SelectedCurve.AddPoint(new CurvePoint(time, y, 0, 0, node.Value.InterpMode), node);
             }
-            catch (Exception)
+            else
             {
                 node = SelectedCurve.CurvePoints.Last;
                 SelectedCurve.AddPoint(new CurvePoint(time, y, 0, 0, node?.Value.InterpMode ?? CurveMode.CIM_CurveUser), node, false);

@@ -351,11 +351,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                     switch (CurrentLoadedExport.ClassName)
                     {
                         //case "Class":
-                        //{
-                        //    (_, MessageLog log) = UnrealScriptCompiler.CompileClass(Pcc, CurrentLoadedExport, ScriptText, CurrentFileLib);
-                        //    outputListBox.ItemsSource = log?.Content;
-                        //    break;
-                        //}
+                        //    {
+                        //        (_, MessageLog log) = UnrealScriptCompiler.CompileClass(Pcc, CurrentLoadedExport, ScriptText, CurrentFileLib);
+                        //        outputListBox.ItemsSource = log?.Content;
+                        //        break;
+                        //    }
                         case "Function":
                         {
                             (_, MessageLog log) = UnrealScriptCompiler.CompileFunction(CurrentLoadedExport, ScriptText, CurrentFileLib);
@@ -488,7 +488,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                     switch (ast)
                     {
                         case Class cls:
-                            ast = UnrealScriptCompiler.CompileNewClassAST(Pcc, cls, log, CurrentFileLib, out _);
+                            ast = UnrealScriptCompiler.CompileNewClassAST(Pcc, cls, log, CurrentFileLib, out bool vfTableChanged);
+                            if (vfTableChanged)
+                            {
+                                log.LogWarning("Compiling will cause Virtual Function Table to change! All classes that depends on this one will need recompilation to work properly!");
+                            }
                             break;
                         case Function func when CurrentLoadedExport.Parent is ExportEntry funcParent:
                             ast = UnrealScriptCompiler.CompileNewFunctionBodyAST(funcParent, func, log, CurrentFileLib);
@@ -629,7 +633,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                         }
                     }
                     var codeBuilder = new CodeBuilderVisitor<SyntaxInfoCodeFormatter, (string, SyntaxInfo)>();
-                    RootNode.AcceptVisitor(codeBuilder);
+                    RootNode?.AcceptVisitor(codeBuilder);
                     (string text, SyntaxInfo syntaxInfo) = codeBuilder.GetOutput();
                     ScriptText = text;
                     textEditor.SyntaxHighlighting = syntaxInfo;

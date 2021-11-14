@@ -137,7 +137,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
                 try
                 {
-                    ScriptObjectCompiler.Compile(astNode, pcc, null, export.GetBinaryData<UScriptStruct>(), packageCache);
+                    ScriptObjectCompiler.Compile(astNode, pcc, null, export.GetBinaryData<UClass>(), packageCache);
                     log.LogMessage("Compiled!");
                     return (astNode, log);
                 }
@@ -439,19 +439,16 @@ namespace LegendaryExplorerCore.UnrealScript
             {
                 throw new Exception("Cannot compile the root Object class!");
             }
-            var symbols = lib.GetSymbolTable();
-            symbols.RevertToObjectStack();
+            vfTableChanged = false;
             //get the old version of this class, if it exists, for the purpose of determining whether the virtual function table has been changed
-            if (symbols.TryGetType(cls.Name, out Class existingClass))
+            lib.ReadonlySymbolTable.TryGetType(cls.Name, out Class existingClass);
+            log.Filter = cls;
+            SymbolTable symbols = lib.CreateSymbolTableWithClass(cls, log);
+            log.Filter = null;
+            if (symbols is null || log.HasErrors)
             {
-                symbols.GoDirectlyToStack(existingClass.Parent.GetScope());
-                symbols.ClearScope(cls.Name);
-                symbols.RemoveTypeAndChildTypes(cls);
-
-                symbols.RevertToObjectStack();
+                return null;
             }
-            symbols.AddType(cls);
-            ClassValidationVisitor.RunAllPasses(cls, log, symbols);
             symbols.RevertToObjectStack();
             symbols.GoDirectlyToStack(cls.GetScope());
             foreach (Struct childStruct in cls.TypeDeclarations.OfType<Struct>())
@@ -469,7 +466,6 @@ namespace LegendaryExplorerCore.UnrealScript
             PropertiesBlockParser.Parse(cls.DefaultProperties, pcc, symbols, log);
 
             //calculate the virtual function table
-            vfTableChanged = false;
             if (pcc.Game.IsGame3())
             {
                 var virtualFuncs = cls.Functions.Where(func => func.IsVirtual).ToList();
@@ -504,7 +500,7 @@ namespace LegendaryExplorerCore.UnrealScript
                                 existingOverrides.Add(funcName);
                             }
                         }
-                        if (overrides.SetEquals(existingOverrides))
+                        if (!overrides.SetEquals(existingOverrides))
                         {
                             vfTableChanged = true;
                         }

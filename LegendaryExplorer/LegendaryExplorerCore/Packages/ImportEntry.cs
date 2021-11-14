@@ -158,7 +158,7 @@ namespace LegendaryExplorerCore.Packages
             set => idxClassName = FileRef.FindNameOrAdd(value);
         }
 
-        private string ObjectNameString
+        public string ObjectNameString
         {
             get => FileRef.Names[idxObjectName];
             set => idxObjectName = FileRef.FindNameOrAdd(value);

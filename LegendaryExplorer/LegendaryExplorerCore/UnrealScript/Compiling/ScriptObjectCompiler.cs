@@ -142,7 +142,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 foreach (Function func in curClass.Functions)
                 {
-                    if (Enum.TryParse(func.Name, true, out EProbeFunctions enumVal))
+                    if (func.IsDefined && Enum.TryParse(func.Name, true, out EProbeFunctions enumVal))
                     {
                         classObj.ProbeMask |= enumVal;
                     }

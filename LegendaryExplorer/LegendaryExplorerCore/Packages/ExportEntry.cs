@@ -289,7 +289,7 @@ namespace LegendaryExplorerCore.Packages
             return _header.ArrayClone();
         }
 
-        public byte[] GenerateHeader(MEGame game, bool clearComponentMap = false) => GenerateHeader(null, null, game == MEGame.ME1 || game == MEGame.ME2, clearComponentMap);
+        public byte[] GenerateHeader(MEGame game, bool clearComponentMap = false) => GenerateHeader(null, null, game is MEGame.ME1 or MEGame.ME2, clearComponentMap);
 
         public void RegenerateHeader(MEGame game, bool clearComponentMap = false) => Header = GenerateHeader(game, clearComponentMap);
 
@@ -554,15 +554,15 @@ namespace LegendaryExplorerCore.Packages
             set => (ObjectNameString, indexValue) = value;
         }
 
-        public string ClassName => Class?.ObjectName.Name ?? "Class";
+        public string ClassName => Class?.ObjectNameString ?? "Class";
 
-        public string SuperClassName => SuperClass?.ObjectName.Name ?? "Class";
+        public string SuperClassName => SuperClass?.ObjectNameString ?? "Class";
 
         public string ParentName => FileRef.GetEntry(idxLink)?.ObjectName ?? "";
 
         public string ParentFullPath => FileRef.GetEntry(idxLink)?.FullPath ?? "";
 
-        public string FullPath => FileRef.IsEntry(idxLink) ? $"{ParentFullPath}.{ObjectName.Name}" : ObjectName.Name;
+        public string FullPath => FileRef.IsEntry(idxLink) ? $"{ParentFullPath}.{ObjectNameString}" : ObjectNameString;
 
         public string ParentInstancedFullPath => FileRef.GetEntry(idxLink)?.InstancedFullPath ?? "";
         public string InstancedFullPath => FileRef.IsEntry(idxLink) ? ObjectName.AddToPath(ParentInstancedFullPath) : ObjectName.Instanced;
@@ -591,7 +591,10 @@ namespace LegendaryExplorerCore.Packages
             set => idxSuperClass = value?.UIndex ?? 0;
         }
 
-        public bool IsClass => idxClass == 0;
+        //cache this, since even though idxClass is cheap to calculate, IsClass can get called thousands of times on the same object during script compilation operations, and it adds up. 
+        //profiling showed that 45% of class compilation time was spent on calculating idxClass!
+        private bool? _isClass;
+        public bool IsClass => _isClass ?? (_isClass = idxClass == 0).Value;
 
         public IEntry Class
         {
@@ -674,6 +677,7 @@ namespace LegendaryExplorerCore.Packages
             {
                 headerChanged = value;
                 EntryHasPendingChanges |= value;
+                _isClass = null;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HeaderChanged)));
             }
         }
