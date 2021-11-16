@@ -107,11 +107,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 hull = new ConvexHull();
             }
-            sc.Serialize(ref hull.VertexData, Serialize);
+            sc.Serialize(ref hull.VertexData);
             sc.Serialize(ref hull.PermutedVertexData, Serialize);
             sc.Serialize(ref hull.FaceTriData, SCExt.Serialize);
-            sc.Serialize(ref hull.EdgeDirections, Serialize);
-            sc.Serialize(ref hull.FaceNormalDirections, Serialize);
+            sc.Serialize(ref hull.EdgeDirections);
+            sc.Serialize(ref hull.FaceNormalDirections);
             sc.Serialize(ref hull.FacePlaneData, Serialize);
             sc.Serialize(ref hull.ElemBox);
         }

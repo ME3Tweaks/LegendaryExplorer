@@ -8,14 +8,14 @@ namespace Be.Windows.Forms
      */
 
     /// <summary>
-    /// Can be used like a <c>DynamicByteProvider</c>, but is optimized for the case where it is never modified
+    /// Can be used like a <see cref="DynamicByteProvider"/>, but is optimized for the case where it is never modified
     /// </summary>
     public class ReadOptimizedByteProvider : IByteProvider
     {
         /// <summary>
         /// Contains information about changes.
         /// </summary>
-        bool _hasChanges;
+        private bool _hasChanges;
 
         private bool IsUsingReadOnlyArray;
 
@@ -25,7 +25,7 @@ namespace Be.Windows.Forms
         public long Length => realLength;
 
         /// <summary>
-        /// <paramref name="bytes"/> will never be modified. All modifications will be made to a copy.
+        /// <paramref name="bytes"/> will never be modified. Any modifications will be made to a copy.
         /// </summary>
         /// <param name="bytes"></param>
         public ReadOptimizedByteProvider(byte[] bytes)
@@ -68,8 +68,8 @@ namespace Be.Windows.Forms
         /// <summary>
         /// Writes bytes into the byte collection.
         /// </summary>
-        /// <param name="index">the index of the byte to write.</param>
-        /// <param name="value">the byte</param>
+        /// <param name="index">the index of the bytes to write.</param>
+        /// <param name="values">the bytes</param>
         public void WriteBytes(long index, byte[] values)
         {
             if (IsUsingReadOnlyArray)

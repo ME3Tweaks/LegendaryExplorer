@@ -502,7 +502,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             int elementsize = 12;
             sc.Serialize(ref elementsize);
-            sc.Serialize(ref buff.VertexData, Serialize);
+            sc.Serialize(ref buff.VertexData);
         }
         public static void Serialize(this SerializingContainer2 sc, ref FragmentRange fRange)
         {
@@ -642,10 +642,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref data.NumVertices);
             int elementSize = 2;
             sc.Serialize(ref elementSize);
-            sc.Serialize(ref data.IndexBuffer, SCExt.Serialize);
+            sc.Serialize(ref data.IndexBuffer);
             elementSize = 2;
             sc.Serialize(ref elementSize);
-            sc.Serialize(ref data.WireframeIndexBuffer, SCExt.Serialize);
+            sc.Serialize(ref data.WireframeIndexBuffer);
             if (sc.Game != MEGame.UDK)
             {
                 elementSize = 16;

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.Packages;
 using System.Numerics;
+using System.Runtime.InteropServices;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -30,7 +31,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public override List<(NameReference, string)> GetNames(MEGame game) => new List<(NameReference, string)>(BoneOffsets.Select((offset, i) => (offset.Bone, $"BoneOffsets[{i}]")));
 
-        public class MorphVertex
+        [StructLayout(LayoutKind.Sequential)]
+        public struct MorphVertex
         {
             public Vector3 PositionDelta;
             public PackedNormal TangentZDelta;
@@ -52,15 +54,32 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
     public static partial class SCExt
     {
-        public static void Serialize(SerializingContainer2 sc, ref MorphTarget.MorphVertex vert)
+        public unsafe static void Serialize(SerializingContainer2 sc, ref MorphTarget.MorphVertex vert)
         {
-            if (sc.IsLoading)
+            if (sc.ms.Endian.IsNative)
             {
-                vert = new MorphTarget.MorphVertex();
+                Span<byte> span = stackalloc byte[sizeof(MorphTarget.MorphVertex)];
+                if (sc.IsLoading)
+                {
+                    sc.ms.Read(span[..18]);
+                    vert = MemoryMarshal.Read<MorphTarget.MorphVertex>(span);
+                }
+                else
+                {
+                    MemoryMarshal.Write(span, ref vert);
+                    sc.ms.Writer.Write(span[..18]);
+                }
             }
-            sc.Serialize(ref vert.PositionDelta);
-            sc.Serialize(ref vert.TangentZDelta);
-            sc.Serialize(ref vert.SourceIdx);
+            else
+            {
+                if (sc.IsLoading)
+                {
+                    vert = new MorphTarget.MorphVertex();
+                }
+                sc.Serialize(ref vert.PositionDelta);
+                sc.Serialize(ref vert.TangentZDelta);
+                sc.Serialize(ref vert.SourceIdx);
+            }
         }
         public static void Serialize(SerializingContainer2 sc, ref MorphTarget.MorphLODModel lod)
         {

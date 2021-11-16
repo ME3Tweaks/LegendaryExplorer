@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-using System.Text;
-using LegendaryExplorerCore.Unreal;
+﻿using LegendaryExplorerCore.Unreal;
 
 namespace LegendaryExplorerCore.Packages
 {
@@ -11,7 +9,12 @@ namespace LegendaryExplorerCore.Packages
         int Index { set; }
         int indexValue { get; set; }
         int UIndex { get; }
+        /// <summary>
+        /// Get generates the header, Set deserializes all the header values from the provided byte array
+        /// </summary>
         byte[] Header { get; set; }
+        byte[] GenerateHeader();
+        void SetHeaderValuesFromByteArray(byte[] value);
         IMEPackage FileRef { get; }
         MEGame Game { get; }
         int idxLink { get; set; }
@@ -23,7 +26,6 @@ namespace LegendaryExplorerCore.Packages
         string ParentFullPath { get; }
         string ParentInstancedFullPath { get; }
         string ParentName { get; }
-        byte[] GetHeader(); //returns clone
         bool HasParent { get; }
         IEntry Parent { get; set; }
         IEntry Clone(bool incrementIndex);

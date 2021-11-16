@@ -125,7 +125,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref poly.Normal);
             sc.Serialize(ref poly.TextureU);
             sc.Serialize(ref poly.TextureV);
-            sc.Serialize(ref poly.Vertices, Serialize);
+            sc.Serialize(ref poly.Vertices);
             sc.Serialize(ref poly.PolyFlags);
             sc.Serialize(ref poly.Actor);
             sc.Serialize(ref poly.ItemName);

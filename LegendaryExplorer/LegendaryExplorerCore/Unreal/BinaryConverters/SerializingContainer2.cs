@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Numerics;
+using System.Runtime.InteropServices;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
@@ -17,13 +19,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public readonly bool IsLoading;
         public readonly IMEPackage Pcc;
         public readonly int startOffset;
+        public readonly MEGame Game;
 
         public bool IsSaving => !IsLoading;
         public int FileOffset => startOffset + (int)ms.Position;
-        public MEGame Game => Pcc.Game;
 
         public SerializingContainer2(Stream stream, IMEPackage pcc, bool isLoading = false, int offset = 0, PackageCache packageCache = null)
         {
+            Game = pcc?.Game ?? MEGame.Unknown;
             ms = new EndianReader(stream) { Endian = pcc?.Endian ?? Endian.Little };
             IsLoading = isLoading;
             Pcc = pcc;
@@ -211,6 +214,50 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             else if (count > 0)
             {
                 sc.ms.Writer.WriteBytes(arr);
+            }
+        }
+
+        public static void Serialize(this SerializingContainer2 sc, ref ushort[] arr)
+        {
+            if (sc.ms.Endian.IsNative)
+            {
+                int count = arr?.Length ?? 0;
+                sc.Serialize(ref count);
+                if (sc.IsLoading)
+                {
+                    arr = new ushort[count];
+                    sc.ms.Read(MemoryMarshal.AsBytes<ushort>(arr));
+                }
+                else if (count > 0)
+                {
+                    sc.ms.Writer.Write(MemoryMarshal.AsBytes<ushort>(arr));
+                }
+            }
+            else
+            {
+                Serialize(sc, ref arr, Serialize);
+            }
+        }
+
+        public static void Serialize(this SerializingContainer2 sc, ref Vector3[] arr)
+        {
+            if (sc.ms.Endian.IsNative)
+            {
+                int count = arr?.Length ?? 0;
+                sc.Serialize(ref count);
+                if (sc.IsLoading)
+                {
+                    arr = new Vector3[count];
+                    sc.ms.Read(MemoryMarshal.AsBytes<Vector3>(arr));
+                }
+                else if (count > 0)
+                {
+                    sc.ms.Writer.Write(MemoryMarshal.AsBytes<Vector3>(arr));
+                }
+            }
+            else
+            {
+                Serialize(sc, ref arr, Serialize);
             }
         }
 

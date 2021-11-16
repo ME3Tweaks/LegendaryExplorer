@@ -30,7 +30,6 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 using SharpDX.D3DCompiler;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
-using Function = LegendaryExplorerCore.UnrealScript.Language.Tree.Function;
 
 namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 {
@@ -670,6 +669,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         }
         public static void ScanStuff(PackageEditorWindow pewpf)
         {
+            //test pcc deserialization time
+            string pccPath = MELoadedFiles.GetFilesLoadedInGame(MEGame.LE3)["SFXGame.pcc"];
+            for (int i = 0; i < 200; i++)
+            {
+                MEPackageHandler.OpenMEPackage(pccPath, forceLoadFromDisk: true);
+            }
+            return;
             //var game = MEGame.LE3;
             //var filePaths = MELoadedFiles.GetOfficialFiles(game);//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME2));//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME1));
             //var filePaths = MELoadedFiles.GetAllFiles(game);

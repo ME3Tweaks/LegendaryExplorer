@@ -72,7 +72,7 @@ namespace LegendaryExplorerCore.Unreal
             {
                 prop.WriteTo(stream, pcc, IsImmutable);
             }
-            if (!IsImmutable && requireNoneAtEnd && (Count == 0 || this.Last() is not NoneProperty))
+            if (!IsImmutable && requireNoneAtEnd && (Count == 0 || Items[^1] is not NoneProperty))
             {
                 stream.WriteNoneProperty(pcc);
             }
@@ -90,7 +90,6 @@ namespace LegendaryExplorerCore.Unreal
 
         public PropertyCollection() { }
 
-        //public static PropertyCollection ReadProps(ExportEntry export, Stream rawStream, string typeName, bool includeNoneProperty = false, bool requireNoneAtEnd = true, IEntry entry = null)
         public static PropertyCollection ReadProps(ExportEntry export, Stream rawStream, string typeName, bool includeNoneProperty = false, bool requireNoneAtEnd = true, IEntry entry = null, PackageCache packageCache = null)
         {
             var stream = new EndianReader(rawStream) { Endian = export.FileRef.Endian };
@@ -126,14 +125,9 @@ namespace LegendaryExplorerCore.Unreal
                         break;
                     }
                     int staticArrayIndex = stream.ReadInt32();
-                    PropertyType type;
                     string namev = pcc.GetNameEntry(typeIdx);
                     //Debug.WriteLine("Reading " + nameRef.Instanced + " (" + namev + ") at 0x" + (stream.Position - 24).ToString("X8"));
-                    if (Enum.IsDefined(typeof(PropertyType), namev))
-                    {
-                        Enum.TryParse(namev, out type);
-                    }
-                    else
+                    if (!Enum.TryParse(namev, out PropertyType type))
                     {
                         type = PropertyType.Unknown;
                     }
@@ -430,7 +424,7 @@ namespace LegendaryExplorerCore.Unreal
             {
                 case ArrayType.Object:
                     {
-                        var props = new List<ObjectProperty>();
+                        var props = new List<ObjectProperty>(count);
                         for (int i = 0; i < count; i++)
                         {
                             int startPos = (int)stream.Position;
@@ -440,7 +434,7 @@ namespace LegendaryExplorerCore.Unreal
                     }
                 case ArrayType.Name:
                     {
-                        var props = new List<NameProperty>();
+                        var props = new List<NameProperty>(count);
                         for (int i = 0; i < count; i++)
                         {
                             int startPos = (int)stream.Position;
@@ -462,7 +456,7 @@ namespace LegendaryExplorerCore.Unreal
                         //Use DB info or attempt lookup
                         var enumType = new NameReference(enumname ?? GlobalUnrealObjectInfo.GetEnumType(pcc.Game, name, enclosingType, classInfo));
 
-                        var props = new List<EnumProperty>();
+                        var props = new List<EnumProperty>(count);
                         for (int i = 0; i < count; i++)
                         {
                             int startPos = (int)stream.Position;
@@ -473,7 +467,7 @@ namespace LegendaryExplorerCore.Unreal
                 case ArrayType.Struct:
                     {
                         int startPos = (int)stream.Position;
-                        var props = new List<StructProperty>();
+                        var props = new List<StructProperty>(count);
                         var propertyInfo = GlobalUnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType, containingExport: parsingEntry as ExportEntry);
                         if (propertyInfo == null && parsingEntry is ExportEntry parsingExport)
                         {
@@ -540,7 +534,7 @@ namespace LegendaryExplorerCore.Unreal
                     }
                 case ArrayType.Bool:
                     {
-                        var props = new List<BoolProperty>();
+                        var props = new List<BoolProperty>(count);
                         for (int i = 0; i < count; i++)
                         {
                             int startPos = (int)stream.Position;
@@ -550,7 +544,7 @@ namespace LegendaryExplorerCore.Unreal
                     }
                 case ArrayType.String:
                     {
-                        var props = new List<StrProperty>();
+                        var props = new List<StrProperty>(count);
                         for (int i = 0; i < count; i++)
                         {
                             int startPos = (int)stream.Position;
@@ -560,7 +554,7 @@ namespace LegendaryExplorerCore.Unreal
                     }
                 case ArrayType.Float:
                     {
-                        var props = new List<FloatProperty>();
+                        var props = new List<FloatProperty>(count);
                         for (int i = 0; i < count; i++)
                         {
                             int startPos = (int)stream.Position;
@@ -572,7 +566,7 @@ namespace LegendaryExplorerCore.Unreal
                     return new ImmutableByteArrayProperty(arrayOffset, count, stream, name) { Reference = "Byte" };
                 case ArrayType.StringRef:
                     {
-                        var props = new List<StringRefProperty>();
+                        var props = new List<StringRefProperty>(count);
                         for (int i = 0; i < count; i++)
                         {
                             int startPos = (int)stream.Position;
@@ -583,7 +577,7 @@ namespace LegendaryExplorerCore.Unreal
                 case ArrayType.Int:
                 default:
                     {
-                        var props = new List<IntProperty>();
+                        var props = new List<IntProperty>(count);
                         for (int i = 0; i < count; i++)
                         {
                             int startPos = (int)stream.Position;

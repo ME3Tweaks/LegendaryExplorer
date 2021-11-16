@@ -274,7 +274,7 @@ namespace LegendaryExplorerCore.Packages
 
             // This is stored as integer by cooker as it is flipped by size word in big endian
             uint versionLicenseePacked = er.ReadUInt32();
-            if ((versionLicenseePacked == 0x00020000 || versionLicenseePacked == 0x00010000) && er.Endian == Endian.Little && filePath != null) //can only load fully compressed packages from disk since we won't know what the .us file has
+            if (versionLicenseePacked is 0x00020000 or 0x00010000 && er.Endian == Endian.Little && filePath != null) //can only load fully compressed packages from disk since we won't know what the .us file has
             {
                 //block size - this is a fully compressed file. we must decompress it
                 //for some reason fully compressed files use a little endian package tag

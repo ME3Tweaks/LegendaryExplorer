@@ -21,7 +21,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref ZoneIndex);
             sc.Serialize(ref Elements, SCExt.Serialize);
             sc.Serialize(ref ComponentIndex);
-            sc.Serialize(ref Nodes, SCExt.Serialize);
+            sc.Serialize(ref Nodes);
         }
 
         public static ModelComponent Create()
@@ -74,7 +74,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref elem.LightMap);
             sc.Serialize(ref elem.Component);
             sc.Serialize(ref elem.Material);
-            sc.Serialize(ref elem.Nodes, SCExt.Serialize);
+            sc.Serialize(ref elem.Nodes);
             sc.Serialize(ref elem.ShadowMaps, Serialize);
             sc.Serialize(ref elem.IrrelevantLights, SCExt.Serialize);
         }

@@ -13,6 +13,6 @@
     <MenuItem Header=" &gt;&gt; DO NOT USE IF YOU DON'T KNOW WHAT YOU'RE DOING &gt;&lt;" IsEnabled="False"/>
     <MenuItem Header=" &gt;&gt; Text may not reflect actual functionality &lt;&lt;" IsEnabled="False"/>
     <MenuItem Header="Exkywor's buttons for lazy people">
-        <MenuItem Header="Change Native Node StringRef" Click="UpdateNativeNodeStringRef_Click" ToolTip="Updates a native node's VOElemens, FXA, and Wwisestream stringrefs."/>
+        <MenuItem Header="Change Native Node StringRef" Click="UpdateNativeNodeStringRef_Click" ToolTip="Updates a native node's VOElements, FXA, and Wwisestream stringrefs."/>
     </MenuItem>
 </MenuItem>

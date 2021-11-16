@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
@@ -19,7 +16,7 @@ namespace LegendaryExplorerCore.Packages
 {
     [DebuggerDisplay("{Game} ExportEntry | {UIndex} {ObjectName.Instanced}({ClassName}) in {System.IO.Path.GetFileName(FileRef.FilePath)}")]
     [DoNotNotify]//disable Fody/PropertyChanged for this class. Do notification manually
-    public class ExportEntry : INotifyPropertyChanged, IEntry
+    public sealed class ExportEntry : INotifyPropertyChanged, IEntry
     {
         public IMEPackage FileRef { get; }
 
@@ -54,30 +51,37 @@ namespace LegendaryExplorerCore.Packages
         public ExportEntry(IMEPackage file, int parentUIndex, NameReference name, byte[] prePropBinary = null, PropertyCollection properties = null, ObjectBinary binary = null, bool isClass = false)
         {
             FileRef = file;
-            OriginalDataSize = 0;
-            _header = new byte[HasComponentMap ? 72 : 68];
-            EndianBitConverter.WriteAsBytes(parentUIndex, _header.AsSpan(OFFSET_idxLink), FileRef.Endian);
-            EndianBitConverter.WriteAsBytes(FileRef.FindNameOrAdd(name.Name), _header.AsSpan(OFFSET_idxObjectName), FileRef.Endian);
-            EndianBitConverter.WriteAsBytes(name.Number, _header.AsSpan(OFFSET_indexValue), FileRef.Endian);
+
+            //these three must be written to the underlying values so as not to invalidate the lookuptable 
+            _idxLink = parentUIndex;
+            _idxObjectName = FileRef.FindNameOrAdd(name.Name);
+            _indexValue = name.Number;
+
             DataOffset = 0;
             ObjectFlags = EObjectFlags.LoadForClient | EObjectFlags.LoadForServer | EObjectFlags.LoadForEdit; //sensible defaults?
 
-            var ms = new EndianReader { Endian = file.Endian };
+            var ms = new EndianWriter { Endian = file.Endian };
             if (prePropBinary == null)
             {
-                ms.Writer.Write(stackalloc byte[4]);
+                ms.Write(stackalloc byte[4]);
             }
             else
             {
-                ms.Writer.WriteFromBuffer(prePropBinary);
+                ms.WriteFromBuffer(prePropBinary);
             }
             if (!isClass)
             {
-                properties ??= new PropertyCollection();
-                properties.WriteTo(ms.Writer, file);
+                if (properties == null)
+                {
+                    ms.WriteNoneProperty(file);
+                }
+                else
+                {
+                    properties.WriteTo(ms, file);
+                }
             }
 
-            binary?.WriteTo(ms.Writer, file);
+            binary?.WriteTo(ms, file);
 
             _data = ms.ToArray();
             DataSize = _data.Length;
@@ -95,20 +99,31 @@ namespace LegendaryExplorerCore.Packages
         public ExportEntry(IMEPackage file, byte[] header, byte[] prePropBinary = null, PropertyCollection properties = null, ObjectBinary binary = null, bool isClass = false)
         {
             FileRef = file;
-            OriginalDataSize = 0;
-            _header = header;
+            DeserializeHeader(new EndianReader(header));
             DataOffset = 0;
 
-            var ms = new EndianReader { Endian = file.Endian };
-            prePropBinary ??= new byte[4];
-            ms.Writer.WriteFromBuffer(prePropBinary);
+            var ms = new EndianWriter { Endian = file.Endian };
+            if (prePropBinary == null)
+            {
+                ms.Write(stackalloc byte[4]);
+            }
+            else
+            {
+                ms.WriteFromBuffer(prePropBinary);
+            }
             if (!isClass)
             {
-                properties ??= new PropertyCollection();
-                properties.WriteTo(ms.Writer, file);
+                if (properties == null)
+                {
+                    ms.WriteNoneProperty(file);
+                }
+                else
+                {
+                    properties.WriteTo(ms, file);
+                }
             }
 
-            binary?.WriteTo(ms.Writer, file);
+            binary?.WriteTo(ms, file);
 
             _data = ms.ToArray();
             DataSize = _data.Length;
@@ -123,69 +138,8 @@ namespace LegendaryExplorerCore.Packages
         public ExportEntry(IMEPackage file, EndianReader stream, bool readData = true)
         {
             FileRef = file;
-            OriginalDataSize = 0;
             HeaderOffset = (int)stream.Position;
-            switch (file.Game)
-            {
-                case MEGame.ME1 when file.Platform == MEPackage.GamePlatform.Xenon:
-                    {
-
-                        long start = stream.Position;
-                        //Debug.WriteLine($"Export header pos {start:X8}");
-                        stream.Seek(0x28, SeekOrigin.Current);
-                        int componentMapCount = stream.ReadInt32();
-                        //Debug.WriteLine("Component count: " + componentMapCount);
-                        stream.Seek(4 + componentMapCount * 12, SeekOrigin.Current);
-                        int generationsNetObjectsCount = stream.ReadInt32();
-                        //Debug.WriteLine("GenObjs count: " + generationsNetObjectsCount);
-
-                        stream.Seek(16, SeekOrigin.Current); // skip guid size
-                        stream.Seek(generationsNetObjectsCount * 4, SeekOrigin.Current);
-                        long end = stream.Position;
-                        stream.Seek(start, SeekOrigin.Begin);
-                        var len = (end - start);
-                        //Debug.WriteLine($"Len: {len:X2}");
-                        //read header
-                        _header = stream.ReadBytes((int)len);
-                        break;
-                    }
-                case MEGame.ME1 when file.Platform == MEPackage.GamePlatform.PC:
-                case MEGame.ME2 when file.Platform != MEPackage.GamePlatform.PS3:
-                    {
-
-                        long start = stream.Position;
-                        stream.Seek(0x28, SeekOrigin.Current);
-                        int componentMapCount = stream.ReadInt32();
-                        stream.Seek(4 + componentMapCount * 12, SeekOrigin.Current);
-                        int generationsNetObjectsCount = stream.ReadInt32();
-                        stream.Seek(16, SeekOrigin.Current);
-                        stream.Seek(4 + generationsNetObjectsCount * 4, SeekOrigin.Current);
-                        long end = stream.Position;
-                        stream.Seek(start, SeekOrigin.Begin);
-                        //read header
-                        _header = stream.ReadBytes((int)(end - start));
-                        break;
-                    }
-                case MEGame.ME1 when file.Platform == MEPackage.GamePlatform.PS3:
-                case MEGame.ME2 when file.Platform == MEPackage.GamePlatform.PS3:
-                case MEGame.ME3:
-                case MEGame.LE1:
-                case MEGame.LE2:
-                case MEGame.LE3:
-                case MEGame.UDK:
-                {
-                        stream.Seek(44, SeekOrigin.Current);
-                        int count = stream.ReadInt32();
-                        stream.Seek(-48, SeekOrigin.Current);
-
-                        int expInfoSize = 68 + (count * 4);
-                        _header = stream.ReadBytes(expInfoSize);
-                        break;
-                    }
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-            OriginalDataSize = DataSize;
+            DeserializeHeader(stream);
             if (readData)
             {
                 long headerEnd = stream.Position;
@@ -196,7 +150,7 @@ namespace LegendaryExplorerCore.Packages
             }
         }
 
-        public bool HasStack => ObjectFlags.Has(EObjectFlags.HasStack);
+        public bool HasStack => _objectFlags.Has(EObjectFlags.HasStack);
 
         public byte[] GetPrePropBinary()
         {
@@ -236,37 +190,61 @@ namespace LegendaryExplorerCore.Packages
                 Data = data;
             }
         }
+        
+        public bool IsDefaultObject => _objectFlags.Has(EObjectFlags.ClassDefaultObject);
 
-        //should only have to check the flag, but custom mod classes might not have set it properly
-        public bool IsDefaultObject => ObjectFlags.Has(EObjectFlags.ClassDefaultObject);
 
-        private byte[] _header;
 
         /// <summary>
-        /// The underlying header is directly returned by this getter. If you want to write a new header back, use the copy provided by getHeader()!
-        /// Otherwise some events may not trigger
+        /// Get generates the header, Set deserializes all the header values from the provided byte array
         /// </summary>
         public byte[] Header
         {
-            get => _header;
-            set
+            get => GenerateHeader();
+            set => SetHeaderValuesFromByteArray(value);
+        }
+
+        public void SetHeaderValuesFromByteArray(byte[] value)
+        {
+            if (value is null)
             {
-                if (_header != null && value != null && _header.AsSpan().SequenceEqual(value))
+                throw new ArgumentNullException(nameof(value), "Cannot set Header to a null value!");
+            }
+            var existingHeader = GenerateHeader();
+            if (existingHeader.AsSpan().SequenceEqual(value))
+            {
+                return; //if the data is the same don't write it and trigger the side effects
+            }
+
+            int dataSize = DataSize;
+            DeserializeHeader(new EndianReader(value));
+            DataSize = dataSize; //should never be altered by Header overwrite
+
+            //new header may have changed link or name
+            FileRef.InvalidateLookupTable();
+
+            EntryHasPendingChanges = true;
+            HeaderChanged = true;
+            // This is a hack cause FileRef is IMEPackage
+            FileRef.IsModified = true;
+        }
+
+        public int HeaderLength
+        {
+            get
+            {
+                int length = OFFSET_DataOffset
+                    + 4 //DataOffset
+                    + 4 //ExportFlags
+                    + 16 //PackageGUID
+                    + 4 //GenerationNetObjectCount count
+                    + 4 //PackageFlags
+                    + _generationNetObjectCounts.Length * 4;
+                if (HasComponentMap)
                 {
-                    return; //if the data is the same don't write it and trigger the side effects
+                    length += 4 + _componentMap.Length;
                 }
-
-                int dataSize = _header != null ? DataSize : (_data?.Length ?? 0);
-                _header = value;
-                DataSize = dataSize; //should never be altered by Header overwrite
-
-                //new header may have changed link or name
-                FileRef.InvalidateLookupTable();
-
-                EntryHasPendingChanges = true;
-                HeaderChanged = true;
-                // This is a hack cause FileRef is IMEPackage
-                FileRef.IsModified = true;
+                return length;
             }
         }
 
@@ -281,31 +259,27 @@ namespace LegendaryExplorerCore.Packages
         public const int OFFSET_DataOffset = 36;
 
         /// <summary>
-        /// Returns a clone of the header for modifying
+        /// Generates the header byte array
         /// </summary>
         /// <returns></returns>
-        public byte[] GetHeader()
+        public byte[] GenerateHeader()
         {
-            return _header.ArrayClone();
+            return GenerateHeader(FileRef);
         }
-
-        public byte[] GenerateHeader(MEGame game, bool clearComponentMap = false) => GenerateHeader(null, null, game is MEGame.ME1 or MEGame.ME2, clearComponentMap);
-
-        public void RegenerateHeader(MEGame game, bool clearComponentMap = false) => Header = GenerateHeader(game, clearComponentMap);
-
-        private byte[] GenerateHeader(OrderedMultiValueDictionary<NameReference, int> componentMap, int[] generationNetObjectCount, bool? hasComponentMap = null, bool clearComponentMap = false)
+        
+        public byte[] GenerateHeader(IMEPackage pcc, bool clearComponentMap = false)
         {
-            using var bin = MemoryManager.GetMemoryStream(36 * 4); // This should hopefully ensure we don't have extra allocations, assuming 5 component items
+            using var bin = new EndianWriter(MemoryManager.GetMemoryStream(HeaderLength)) { Endian = pcc.Endian };
             bin.WriteInt32(idxClass);
             bin.WriteInt32(idxSuperClass);
             bin.WriteInt32(idxLink);
             bin.WriteInt32(idxObjectName);
             bin.WriteInt32(indexValue);
             bin.WriteInt32(idxArchetype);
-            bin.WriteUInt64((ulong)ObjectFlags);
+            bin.WriteUInt64((ulong)_objectFlags);
             bin.WriteInt32(DataSize);
             bin.WriteInt32(DataOffset);
-            if (hasComponentMap ?? HasComponentMap)
+            if (pcc.Game <= MEGame.ME2 && pcc.Platform != MEPackage.GamePlatform.PS3)
             {
                 if (clearComponentMap)
                 {
@@ -313,230 +287,302 @@ namespace LegendaryExplorerCore.Packages
                 }
                 else
                 {
-                    OrderedMultiValueDictionary<NameReference, int> cmpMap = componentMap ?? ComponentMap;
-                    bin.WriteInt32(cmpMap.Count);
-                    foreach ((NameReference name, int uIndex) in cmpMap)
-                    {
-                        bin.WriteInt32(FileRef.FindNameOrAdd(name.Name));
-                        bin.WriteInt32(name.Number);
-                        bin.WriteInt32(uIndex); // 0-based index
-                    }
+                    byte[] componentMap = _componentMap ?? Array.Empty<byte>();
+                    bin.WriteInt32(componentMap.Length / 12);
+                    bin.Write(componentMap);
                 }
             }
             bin.WriteUInt32((uint)ExportFlags);
-            int[] genobjCounts = generationNetObjectCount ?? GenerationNetObjectCount;
+            int[] genobjCounts = GenerationNetObjectCount;
             bin.WriteInt32(genobjCounts.Length);
             foreach (int count in genobjCounts)
             {
                 bin.WriteInt32(count);
             }
             bin.WriteGuid(PackageGUID);
-            bin.WriteUInt32((uint)PackageFlags);
+            if (pcc.Game != MEGame.ME1 || pcc.Platform != MEPackage.GamePlatform.Xenon)
+            {
+                bin.WriteUInt32((uint)PackageFlags);
+            }
             return bin.ToArray();
         }
 
-        private void RegenerateHeader(OrderedMultiValueDictionary<NameReference, int> componentMap, int[] generationNetObjectCount, bool? hasComponentMap = null)
+        private void DeserializeHeader(EndianReader stream)
         {
-            Header = GenerateHeader(componentMap, generationNetObjectCount, hasComponentMap, componentMap is null);
+            _idxClass = stream.ReadInt32();
+            _idxSuperClass = stream.ReadInt32();
+            _idxLink = stream.ReadInt32();
+            _idxObjectName = stream.ReadInt32();
+            _indexValue = stream.ReadInt32();
+            _idxArchetype = stream.ReadInt32();
+            _objectFlags = (EObjectFlags)stream.ReadUInt64();
+            DataSize = stream.ReadInt32();
+            DataOffset = stream.ReadInt32();
+            if (HasComponentMap)
+            {
+                _componentMap = stream.ReadBytes(stream.ReadInt32() * 12);
+            }
+            _exportFlags = (EExportFlags)stream.ReadUInt32();
+            int count = stream.ReadInt32();
+            _generationNetObjectCounts = new int[count];
+            for (int i = 0; i < count; i++)
+            {
+                _generationNetObjectCounts[i] = stream.ReadInt32();
+            }
+            _packageGuid = stream.ReadGuid();
+            if (Game != MEGame.ME1 || FileRef.Platform != MEPackage.GamePlatform.Xenon)
+            {
+                _packageFlags = (EPackageFlags)stream.ReadUInt32();
+            }
+        }
+
+        public void SerializeHeader(Stream bin)
+        {
+            bin.WriteInt32(_idxClass);
+            bin.WriteInt32(_idxSuperClass);
+            bin.WriteInt32(_idxLink);
+            bin.WriteInt32(_idxObjectName);
+            bin.WriteInt32(_indexValue);
+            bin.WriteInt32(_idxArchetype);
+            bin.WriteUInt64((ulong)_objectFlags);
+            bin.WriteInt32(DataSize);
+            bin.WriteInt32(DataOffset);
+            if (HasComponentMap)
+            {
+                bin.WriteInt32(_componentMap.Length / 12);
+                bin.Write(_componentMap);
+            }
+            bin.WriteUInt32((uint)_exportFlags);
+            int[] genobjCounts = _generationNetObjectCounts;
+            bin.WriteInt32(genobjCounts.Length);
+            for (int i = 0; i < genobjCounts.Length; i++)
+            {
+                int count = genobjCounts[i];
+                bin.WriteInt32(count);
+            }
+            bin.WriteGuid(_packageGuid);
+            bin.WriteUInt32((uint)_packageFlags);
         }
 
         public int HeaderOffset { get; set; }
 
+        private int _idxClass;
         public int idxClass
         {
-            get => EndianReader.ToInt32(_header.AsSpan(OFFSET_idxClass), FileRef.Endian);
+            get => _idxClass;
             private set
             {
-                if (value != idxClass)
+                if (value != _idxClass)
                 {
-                    EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_idxClass), FileRef.Endian);
+                    _idxClass = value;
                     HeaderChanged = true;
                 }
             }
         }
 
+        private int _idxSuperClass;
         public int idxSuperClass
         {
-            get => EndianReader.ToInt32(_header.AsSpan(OFFSET_idxSuperClass), FileRef.Endian);
+            get => _idxSuperClass;
             private set
             {
-                if (value != idxSuperClass)
+                if (value != _idxSuperClass)
                 {
                     // 0 check for setup
                     if (UIndex != 0 && value == UIndex)
                     {
                         throw new Exception("Cannot set export superclass to itself, this will cause infinite recursion");
                     }
-                    EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_idxSuperClass), FileRef.Endian);
+                    _idxSuperClass = value;
                     HeaderChanged = true;
                 }
             }
         }
 
+        private int _idxLink;
         public int idxLink
         {
-            get => EndianReader.ToInt32(_header.AsSpan(OFFSET_idxLink), FileRef.Endian);
+            get => _idxLink;
             set
             {
-                if (value != idxLink)
+                if (value != _idxLink)
                 {
                     // HeaderOffset = 0 means this was instantiated and not read in from a stream
                     if (value == UIndex && HeaderOffset != 0)
                     {
                         throw new Exception("Cannot set import link to itself, this will cause infinite recursion");
                     }
-                    EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_idxLink), FileRef.Endian);
+                    _idxLink = value;
                     HeaderChanged = true;
                     FileRef.InvalidateLookupTable();
                 }
             }
         }
 
+        private int _idxObjectName;
         private int idxObjectName
         {
-            get => EndianReader.ToInt32(_header.AsSpan(OFFSET_idxObjectName), FileRef.Endian);
+            get => _idxObjectName;
             set
             {
-                if (value != idxObjectName)
+                if (value != _idxObjectName)
                 {
-                    EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_idxObjectName), FileRef.Endian);
+                    _idxObjectName = value;
                     HeaderChanged = true;
                     FileRef.InvalidateLookupTable();
                 }
             }
         }
 
+        private int _indexValue;
         public int indexValue
         {
-            get => EndianReader.ToInt32(_header.AsSpan(OFFSET_indexValue), FileRef.Endian);
+            get => _indexValue;
             set
             {
-                if (value != indexValue)
+                if (value != _indexValue)
                 {
-                    EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_indexValue), FileRef.Endian);
+                    _indexValue = value;
                     HeaderChanged = true;
                     FileRef.InvalidateLookupTable();
                 }
             }
         }
 
+        private int _idxArchetype;
         public int idxArchetype
         {
-            get => EndianReader.ToInt32(_header.AsSpan(OFFSET_idxArchetype), FileRef.Endian);
+            get => _idxArchetype;
             private set
             {
-                if (value != idxArchetype)
+                if (value != _idxArchetype)
                 {
-                    EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_idxArchetype), FileRef.Endian);
+                    _idxArchetype = value;
                     HeaderChanged = true;
                 }
             }
         }
 
+        private EObjectFlags _objectFlags;
         public EObjectFlags ObjectFlags
         {
-            get => (EObjectFlags)EndianReader.ToUInt64(_header.AsSpan(OFFSET_ObjectFlags), FileRef.Endian);
+            get => _objectFlags;
             set
             {
-                if (value != ObjectFlags)
+                if (value != _objectFlags)
                 {
-                    EndianBitConverter.WriteAsBytes((ulong)value, _header.AsSpan(OFFSET_ObjectFlags), FileRef.Endian);
+                    _objectFlags = value;
                     HeaderChanged = true;
                 }
             }
         }
 
-        public int DataSize
-        {
-            get => EndianReader.ToInt32(_header.AsSpan(OFFSET_DataSize), FileRef.Endian);
-            private set => EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_DataSize), FileRef.Endian);
-        }
+        public int DataSize;
 
-        public int DataOffset
-        {
-            get => EndianReader.ToInt32(_header.AsSpan(OFFSET_DataOffset), FileRef.Endian);
-            set => EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_DataOffset), FileRef.Endian);
-        }
+        public int DataOffset;
 
         public bool HasComponentMap => FileRef.Game <= MEGame.ME2 && FileRef.Platform != MEPackage.GamePlatform.PS3;
 
         //me1 and me2 only
+        private byte[] _componentMap;
         public OrderedMultiValueDictionary<NameReference, int> ComponentMap
         {
             get
             {
                 var componentMap = new OrderedMultiValueDictionary<NameReference, int>();
                 if (!HasComponentMap) return componentMap;
-                int count = EndianReader.ToInt32(_header, 40, FileRef.Endian);
-                for (int i = 0; i < count; i++)
+                for (int i = 0; i < _componentMap.Length; i += 12)
                 {
-                    int pairIndex = 44 + i * 12;
-                    string name = FileRef.GetNameEntry(EndianReader.ToInt32(_header, pairIndex, FileRef.Endian));
-                    componentMap.Add(new NameReference(name, EndianReader.ToInt32(_header, pairIndex + 4, FileRef.Endian)),
-                        EndianReader.ToInt32(_header, pairIndex + 8, FileRef.Endian));
+                    string name = FileRef.GetNameEntry(EndianReader.ToInt32(_componentMap, i, FileRef.Endian));
+                    componentMap.Add(new NameReference(name, EndianReader.ToInt32(_componentMap, i + 4, FileRef.Endian)),
+                        EndianReader.ToInt32(_componentMap, i + 8, FileRef.Endian));
                 }
                 return componentMap;
             }
             set
             {
                 if (!HasComponentMap) return;
-                RegenerateHeader(value, null);
+                if (value is null)
+                {
+                    if (_componentMap.Length == 0)
+                    {
+                        return;
+                    }
+                    _componentMap = Array.Empty<byte>();
+                    HeaderChanged = true;
+                    return;
+                }
+                var bin = new MemoryStream(value.Count * 12);
+                foreach ((NameReference name, int uIndex) in value)
+                {
+                    bin.WriteInt32(FileRef.FindNameOrAdd(name.Name));
+                    bin.WriteInt32(name.Number);
+                    bin.WriteInt32(uIndex); // 0-based index
+                }
+                var newMap = bin.ToArray();
+                if (!newMap.AsSpan().SequenceEqual(_componentMap))
+                {
+                    _componentMap = newMap;
+                    HeaderChanged = true;
+                }
             }
         }
 
-        public int ExportFlagsOffset => HasComponentMap ? 44 + EndianReader.ToInt32(_header, 40, FileRef.Endian) * 12 : 40;
-
+        private EExportFlags _exportFlags;
         public EExportFlags ExportFlags
         {
-            get => (EExportFlags)EndianReader.ToUInt32(_header.AsSpan(ExportFlagsOffset), FileRef.Endian);
+            get => _exportFlags;
             set
             {
-                if (value != ExportFlags)
+                if (value != _exportFlags)
                 {
-                    EndianBitConverter.WriteAsBytes((uint)value, _header.AsSpan(ExportFlagsOffset), FileRef.Endian);
+                    _exportFlags = value;
                     HeaderChanged = true;
                 }
             }
         }
 
+        private int[] _generationNetObjectCounts;
         public int[] GenerationNetObjectCount
         {
-            get
-            {
-                int count = EndianReader.ToInt32(_header.AsSpan(ExportFlagsOffset + 4), FileRef.Endian);
-                var result = new int[count];
-                for (int i = 0; i < count; i++)
-                {
-                    result[i] = EndianReader.ToInt32(_header.AsSpan(ExportFlagsOffset + 8 + i * 4), FileRef.Endian);
-                }
-                return result;
-            }
-            set => RegenerateHeader(null, value);
-        }
-
-        public int PackageGuidOffset => ExportFlagsOffset + 8 + EndianReader.ToInt32(_header.AsSpan(ExportFlagsOffset + 4), FileRef.Endian) * 4;
-
-        public Guid PackageGUID
-        {
-            get => EndianReader.ToGuid(_header.AsSpan(PackageGuidOffset, 16), FileRef.Endian);
+            get => _generationNetObjectCounts;
             set
             {
-                if (value != PackageGUID)
+                if (value is null)
                 {
-                    EndianBitConverter.WriteAsBytes(value, _header.AsSpan(PackageGuidOffset), FileRef.Endian);
+                    throw new ArgumentNullException(nameof(value), $"{nameof(GenerationNetObjectCount)} cannot be null");
+                }
+                if (!value.AsSpan().SequenceEqual(_generationNetObjectCounts))
+                {
+                    _generationNetObjectCounts = value;
                     HeaderChanged = true;
                 }
             }
         }
 
-        public EPackageFlags PackageFlags
+        private Guid _packageGuid;
+        public Guid PackageGUID
         {
-            get => (EPackageFlags)EndianReader.ToUInt32(_header.AsSpan(PackageGuidOffset + 16), FileRef.Endian);
+            get => _packageGuid;
             set
             {
-                if (value != PackageFlags)
+                if (value != _packageGuid)
                 {
-                    EndianBitConverter.WriteAsBytes((uint)value, _header.AsSpan(PackageGuidOffset + 16), FileRef.Endian);
+                    _packageGuid = value;
+                    HeaderChanged = true;
+                }
+            }
+        }
+
+        private EPackageFlags _packageFlags;
+        public EPackageFlags PackageFlags
+        {
+            get => _packageFlags;
+            set
+            {
+                if (value != _packageFlags)
+                {
+                    _packageFlags = value;
                     HeaderChanged = true;
                 }
             }
@@ -544,13 +590,13 @@ namespace LegendaryExplorerCore.Packages
 
         public string ObjectNameString
         {
-            get => FileRef.Names[idxObjectName];
+            get => FileRef.Names[_idxObjectName];
             set => idxObjectName = FileRef.FindNameOrAdd(value);
         }
 
         public NameReference ObjectName
         {
-            get => new NameReference(ObjectNameString, indexValue);
+            get => new NameReference(ObjectNameString, _indexValue);
             set => (ObjectNameString, indexValue) = value;
         }
 
@@ -558,47 +604,44 @@ namespace LegendaryExplorerCore.Packages
 
         public string SuperClassName => SuperClass?.ObjectNameString ?? "Class";
 
-        public string ParentName => FileRef.GetEntry(idxLink)?.ObjectName ?? "";
+        public string ParentName => FileRef.GetEntry(_idxLink)?.ObjectName ?? "";
 
-        public string ParentFullPath => FileRef.GetEntry(idxLink)?.FullPath ?? "";
+        public string ParentFullPath => FileRef.GetEntry(_idxLink)?.FullPath ?? "";
 
-        public string FullPath => FileRef.IsEntry(idxLink) ? $"{ParentFullPath}.{ObjectNameString}" : ObjectNameString;
+        public string FullPath => FileRef.IsEntry(_idxLink) ? $"{ParentFullPath}.{ObjectNameString}" : ObjectNameString;
 
-        public string ParentInstancedFullPath => FileRef.GetEntry(idxLink)?.InstancedFullPath ?? "";
-        public string InstancedFullPath => FileRef.IsEntry(idxLink) ? ObjectName.AddToPath(ParentInstancedFullPath) : ObjectName.Instanced;
+        public string ParentInstancedFullPath => FileRef.GetEntry(_idxLink)?.InstancedFullPath ?? "";
+        public string InstancedFullPath => FileRef.IsEntry(_idxLink) ? ObjectName.AddToPath(ParentInstancedFullPath) : ObjectName.Instanced;
 
-        public bool HasParent => FileRef.IsEntry(idxLink);
+        public bool HasParent => FileRef.IsEntry(_idxLink);
 
         public IEntry Parent
         {
-            get => FileRef.GetEntry(idxLink);
+            get => FileRef.GetEntry(_idxLink);
             set => idxLink = value?.UIndex ?? 0;
         }
 
-        public bool HasArchetype => FileRef.IsEntry(idxArchetype);
+        public bool HasArchetype => FileRef.IsEntry(_idxArchetype);
 
         public IEntry Archetype
         {
-            get => FileRef.GetEntry(idxArchetype);
+            get => FileRef.GetEntry(_idxArchetype);
             set => idxArchetype = value?.UIndex ?? 0;
         }
 
-        public bool HasSuperClass => FileRef.IsEntry(idxSuperClass);
+        public bool HasSuperClass => FileRef.IsEntry(_idxSuperClass);
 
         public IEntry SuperClass
         {
-            get => FileRef.GetEntry(idxSuperClass);
+            get => FileRef.GetEntry(_idxSuperClass);
             set => idxSuperClass = value?.UIndex ?? 0;
         }
-
-        //cache this, since even though idxClass is cheap to calculate, IsClass can get called thousands of times on the same object during script compilation operations, and it adds up. 
-        //profiling showed that 45% of class compilation time was spent on calculating idxClass!
-        private bool? _isClass;
-        public bool IsClass => _isClass ?? (_isClass = idxClass == 0).Value;
+        
+        public bool IsClass => _idxClass == 0;
 
         public IEntry Class
         {
-            get => FileRef.GetEntry(idxClass);
+            get => FileRef.GetEntry(_idxClass);
             set => idxClass = value?.UIndex ?? 0;
         }
 
@@ -638,14 +681,11 @@ namespace LegendaryExplorerCore.Packages
                 _data = value;
                 DataSize = value.Length;
                 DataChanged = true;
-                properties = null;
                 propsEndOffset = null;
                 EntryHasPendingChanges = true;
                 FileRef.IsModified = true; // mark package as modified if the existing header is changing.
             }
         }
-
-        public int OriginalDataSize { get; protected set; }
 
         bool dataChanged;
 
@@ -677,7 +717,6 @@ namespace LegendaryExplorerCore.Packages
             {
                 headerChanged = value;
                 EntryHasPendingChanges |= value;
-                _isClass = null;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HeaderChanged)));
             }
         }
@@ -701,21 +740,14 @@ namespace LegendaryExplorerCore.Packages
 
         public event EventHandler EntryModifiedChanged;
 
-        PropertyCollection properties;
-
         /// <summary>
-        /// Gets properties of an export. You can force it to reload which is useful when debugging the property engine.
+        /// Gets properties of an export.
         /// </summary>
-        /// <param name="forceReload">Forces full property release rather than using the property collection cache</param>
+        /// <param name="forceReload">obsolete, does nothing. Removing it could cause usages to behave differently. Consider this usage: <c>GetProperties(true)</c>. It would still compile if this arg was removed, but would now include none properties</param>
         /// <param name="includeNoneProperties">Include NoneProperties in the resulting property collection</param>
         /// <returns></returns>
         public PropertyCollection GetProperties(bool forceReload = false, bool includeNoneProperties = false, int propStartPos = 0, PackageCache packageCache = null)
         {
-            if (properties != null && !forceReload && !includeNoneProperties)
-            {
-                return properties;
-            }
-
             if (IsClass)
             {
                 return new PropertyCollection { endOffset = 4, IsImmutable = true };
@@ -726,23 +758,12 @@ namespace LegendaryExplorerCore.Packages
             {
                 parsingClass = Class; //class we are defaults of
             }
-
-            //if (!includeNoneProperties)
-            //{
-            //    int start = GetPropertyStart();
-            //    MemoryStream stream = new MemoryStream(_data, false);
-            //    stream.Seek(start, SeekOrigin.Current);
-            //    return properties = PropertyCollection.ReadProps(this, stream, ClassName, false, false, this); //do not set properties as this may interfere with some other code. may change later.
-            //}
-            //else
-            //{
+            
             if (propStartPos == 0)
                 propStartPos = GetPropertyStart();
             var stream = new MemoryStream(_data, false);
             stream.Seek(propStartPos, SeekOrigin.Current);
-            // Do not cache
-            return PropertyCollection.ReadProps(this, stream, ClassName, includeNoneProperties, true, parsingClass, packageCache); //do not set properties as this may interfere with some other code. may change later.
-            //}
+            return PropertyCollection.ReadProps(this, stream, ClassName, includeNoneProperties, true, parsingClass, packageCache);
         }
 
         public void WriteProperties(PropertyCollection props)
@@ -910,24 +931,20 @@ namespace LegendaryExplorerCore.Packages
             Data = m.ToArray();
         }
 
-
-        private ExportEntry(IMEPackage file)
-        {
-            FileRef = file;
-            OriginalDataSize = 0;
-        }
         public ExportEntry Clone(int newIndex = -1)
         {
-            var clone = new ExportEntry(FileRef)
+            var clone = (ExportEntry)MemberwiseClone();
+            clone.Data = _data.ArrayClone();
+            clone._generationNetObjectCounts = _generationNetObjectCounts.ArrayClone();
+            if (HasComponentMap)
             {
-                _header = _header.ArrayClone(),
-                HeaderOffset = 0,
-                Data = this.Data,
-                DataOffset = 0
-            };
+                clone._componentMap = _componentMap.ArrayClone();
+            }
+            clone.HeaderOffset = 0;
+            clone.DataOffset = 0;
             if (newIndex >= 0)
             {
-                EndianBitConverter.WriteAsBytes(newIndex, clone._header.AsSpan(OFFSET_indexValue), FileRef.Endian);
+                clone._indexValue = newIndex;
             }
             return clone;
         }
@@ -966,7 +983,7 @@ namespace LegendaryExplorerCore.Packages
             ExportDatas ed = new ExportDatas();
             if (IsClass)
             {
-                ed.prePropsBinary = new byte[0];
+                ed.prePropsBinary = Array.Empty<byte>();
                 ed.Properties = null;
                 ed.IsClass = true;
             }

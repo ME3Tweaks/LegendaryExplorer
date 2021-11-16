@@ -738,8 +738,8 @@ namespace LegendaryExplorerCore.Packages
                     break;
             }
 
-            int importTableSize = mePackage.imports.Count * ImportEntry.headerSize;
-            int exportTableSize = mePackage.exports.Sum(exp => exp.Header.Length);
+            int importTableSize = mePackage.imports.Count * ImportEntry.HeaderLength;
+            int exportTableSize = mePackage.exports.Sum(exp => exp.HeaderLength);
             int dependencyTableSize = includeDependencyTable ? mePackage.ExportCount * 4 : 4;
             int totalSize = 500 //fake header size. will mean allocating a few hundred extra bytes, but that's not a huge deal.
                           + nameTableSize
@@ -784,18 +784,18 @@ namespace LegendaryExplorerCore.Packages
             //import table
             mePackage.ImportOffset = (int)ms.Position;
             mePackage.ImportCount = mePackage.imports.Count;
-            foreach (ImportEntry e in mePackage.imports)
+            foreach (ImportEntry imp in mePackage.imports)
             {
-                ms.WriteFromBuffer(e.Header);
+                imp.SerializeHeader(ms);
             }
 
             //export table
             mePackage.ExportOffset = (int)ms.Position;
             mePackage.ExportCount = mePackage.Gen0ExportCount = mePackage.exports.Count;
-            foreach (ExportEntry e in mePackage.exports)
+            foreach (ExportEntry exp in mePackage.exports)
             {
-                e.HeaderOffset = (int)ms.Position;
-                ms.WriteFromBuffer(e.Header);
+                exp.HeaderOffset = (int)ms.Position;
+                exp.SerializeHeader(ms);
             }
 
             mePackage.DependencyTableOffset = (int)ms.Position;
@@ -913,8 +913,8 @@ namespace LegendaryExplorerCore.Packages
                 }
 
 
-                int importTableSize = package.imports.Count * ImportEntry.headerSize;
-                int exportTableSize = package.exports.Sum(exp => exp.Header.Length);
+                int importTableSize = package.imports.Count * ImportEntry.HeaderLength;
+                int exportTableSize = package.exports.Sum(exp => exp.HeaderLength);
                 int dependencyTableSize = (includeDependencyTable ? package.ExportCount * 4 : 4);
                 int totalSize = 500 //fake header size.
                               + nameTableSize
@@ -939,7 +939,7 @@ namespace LegendaryExplorerCore.Packages
                 foreach (ExportEntry export in package.exports)
                 {
                     export.HeaderOffset = offset;
-                    offset += export.Header.Length;
+                    offset += export.HeaderLength;
                 }
                 package.DependencyTableOffset = offset;
                 package.FullHeaderSize = package.ImportExportGuidsOffset = offset + dependencyTableSize;
@@ -1033,13 +1033,13 @@ namespace LegendaryExplorerCore.Packages
                     if (ms.Position != nameTableSize)
                         throw new Exception(@"INVALID NAME TABLE SIZE! Check that the serialized size and calculated size make sense (e.g. 0 length strings)");
 #endif
-                    foreach (ImportEntry e in package.imports)
+                    foreach (ImportEntry imp in package.imports)
                     {
-                        ms.WriteFromBuffer(e.Header);
+                        imp.SerializeHeader(ms);
                     }
-                    foreach (ExportEntry e in package.exports)
+                    foreach (ExportEntry exp in package.exports)
                     {
-                        ms.WriteFromBuffer(e.Header);
+                        exp.SerializeHeader(ms);
                     }
                     Array.Clear(uncompressedData, (int)ms.Position, dependencyTableSize);
                     positionInChunkData = (int)ms.Position + dependencyTableSize;
