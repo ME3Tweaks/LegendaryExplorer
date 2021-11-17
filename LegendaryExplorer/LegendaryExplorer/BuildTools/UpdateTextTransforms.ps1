@@ -2,9 +2,16 @@
 # Will need updated for 64-bit visual studio!
 
 $rootDir = "C:\Program Files (x86)\Microsoft Visual Studio"
+$rootDir64 = "C:\Program Files\Microsoft Visual Studio"
 $transformPath = $null
 
-$yearlyEditions = Get-ChildItem $rootDir -Directory
+$yearlyEditions = @();
+if(Test-Path $rootDir){
+    $yearlyEditions = $yearlyEditions + @(Get-ChildItem $rootDir -Directory)
+}
+if(Test-Path $rootDir64){
+    $yearlyEditions = $yearlyEditions + @(Get-ChildItem $rootDir64 -Directory)
+}
 foreach($yedition in $yearlyEditions){
     if ($null -eq $transformPath) {
         [int]$yearver = 0
