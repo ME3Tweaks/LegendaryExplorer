@@ -272,13 +272,6 @@ namespace LegendaryExplorer.Tools.PlotManager
             }
         }
 
-        private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            updateTable = true;
-            var tv = sender as TreeView;
-            SelectedNode = tv.SelectedItem as PlotElement;
-        }
-
         private void LV_Plots_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             updateTable = false;
@@ -325,6 +318,14 @@ namespace LegendaryExplorer.Tools.PlotManager
                 }
                 else SetFocusByPlotElement(GetRootNodes()[0]);
             }
+        }
+
+
+        private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            updateTable = true;
+            var tv = sender as TreeView;
+            SelectedNode = tv.SelectedItem as PlotElement;
         }
 
         public void SelectPlotElement(PlotElement pe, MEGame game)
@@ -564,6 +565,10 @@ namespace LegendaryExplorer.Tools.PlotManager
             bwLink.Visibility = Visibility.Visible;
             NeedsSave = false;
         }
+
+        #endregion
+
+        #region Mod DB Editing
 
         private void AddNewModData()
         {
@@ -865,9 +870,7 @@ namespace LegendaryExplorer.Tools.PlotManager
                         break;
                 }
             }
-
             RevertPanelsToDefault();
-            RefreshTrees();
         }
 
         private bool AddVerifiedPlotState(PlotElementType type, PlotElement parent, int newPlotId, int newElementId, string label, List<PlotElement> newchildren, bool update = false, 
@@ -969,46 +972,45 @@ namespace LegendaryExplorer.Tools.PlotManager
 
         private void DeleteNewModData()
         {
-            if (SelectedNode.ElementId <= 100000)
+            var node = SelectedNode;
+            if (node.ElementId <= 100000)
             {
                 MessageBox.Show("Cannot Delete Bioware plot states.");
                 return;
             }
-            if (!SelectedNode.Children.IsEmpty())
+            if (!node.Children.IsEmpty())
             {
                 MessageBox.Show("This item has subitems.  Delete all the sub-items before deleting this.");
                 return;
             }
-            var dlg = MessageBox.Show($"Are you sure you wish to delete this item?\nType: {SelectedNode.Type}\nPlotId: {SelectedNode.PlotId}\nPath: {SelectedNode.Path}", "Plot Database", MessageBoxButton.OKCancel);
+            var dlg = MessageBox.Show($"Are you sure you wish to delete this item?\nType: {node.Type}\nPlotId: {node.PlotId}\nPath: {node.Path}", "Plot Database", MessageBoxButton.OKCancel);
             if (dlg == MessageBoxResult.Cancel)
                 return;
-            var deleteId = SelectedNode.ElementId;
             var mdb = PlotDatabases.GetModPlotDatabaseForGame(CurrentGame);
-            SelectedNode.RemoveFromParent();
-            switch (SelectedNode.Type)
+            node.RemoveFromParent();
+            switch (node.Type)
             {
                 case PlotElementType.State:
                 case PlotElementType.SubState:
-                    mdb.Bools.Remove(SelectedNode.PlotId);
+                    mdb.Bools.Remove(node.PlotId);
                     break;
                 case PlotElementType.Integer:
-                    mdb.Ints.Remove(SelectedNode.PlotId);
+                    mdb.Ints.Remove(node.PlotId);
                     break;
                 case PlotElementType.Float:
-                    mdb.Floats.Remove(SelectedNode.PlotId);
+                    mdb.Floats.Remove(node.PlotId);
                     break;
                 case PlotElementType.Conditional:
-                    mdb.Conditionals.Remove(SelectedNode.PlotId);
+                    mdb.Conditionals.Remove(node.PlotId);
                     break;
                 case PlotElementType.Transition:
-                    mdb.Transitions.Remove(SelectedNode.PlotId);
+                    mdb.Transitions.Remove(node.PlotId);
                     break;
                 default:
-                    mdb.Organizational.Remove(SelectedNode.ElementId);
+                    mdb.Organizational.Remove(node.ElementId);
                     break;
             }
             NeedsSave = true;
-            RefreshTrees();
         }
 
         private void form_KeyUp(object sender, KeyEventArgs e)
@@ -1081,6 +1083,9 @@ namespace LegendaryExplorer.Tools.PlotManager
             }
         }
 
+        #endregion
+
+        #region Excel Import/Export
         private void ImportModDataFromExcel()
         {
             var w = MessageBox.Show($"Do you want to import mod plot data into {CurrentGame}?\nNote the import must be laid out exactly as in the sample file.", "Plot Database", MessageBoxButton.OKCancel);
