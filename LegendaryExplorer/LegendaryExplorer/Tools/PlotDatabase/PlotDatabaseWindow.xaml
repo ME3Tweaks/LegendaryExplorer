@@ -92,7 +92,7 @@
                             <MenuItem Header="Refresh" Command="{Binding RefreshLocalCommand}"/>
                             <MenuItem Header="Load Database Locally" Command="{Binding LoadLocalCommand}" InputGestureText="Ctrl + L"/>
                             <MenuItem Header="Save Database Locally" Command="{Binding SaveLocalCommand}" InputGestureText="Ctrl + S"/>
-                            <MenuItem Header="Sync Database to ME3Tweaks" IsEnabled="False"/>
+                            <!-- <MenuItem Header="Sync Database to ME3Tweaks" IsEnabled="False"/> -->
                             <Separator/>
                             <MenuItem Header="Add New Mod" Command="{Binding AddNewModCommand}" CommandParameter="NewMod" />
                             <MenuItem Header="Add New Mod Category" Command="{Binding AddModCategoryCommand}" CommandParameter="NewCategory" />
@@ -127,7 +127,8 @@
                         <TreeView x:Name="Tree_BW3"
                               ItemsSource="{Binding Path=RootNodes3}"
                               ItemContainerStyle="{StaticResource LibraryTreeViewItemStyle}"
-                              SelectedItemChanged="Tree_BW3_SelectedItemChanged"
+                              SelectedItemChanged="TreeView_SelectedItemChanged"
+                              Loaded="TreeView_OnLoaded"
                               VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
                             <TreeView.Resources>
                                 <HierarchicalDataTemplate DataType="{x:Type plotDatabase:PlotElement}" ItemsSource="{Binding Children}">
@@ -156,7 +157,8 @@
                         <TreeView x:Name="Tree_BW2"
                               ItemsSource="{Binding Path=RootNodes2}"
                               ItemContainerStyle="{StaticResource LibraryTreeViewItemStyle}"
-                              SelectedItemChanged="Tree_BW2_SelectedItemChanged"
+                              SelectedItemChanged="TreeView_SelectedItemChanged"
+                              Loaded="TreeView_OnLoaded"
                               VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
                             <TreeView.Resources>
                                 <HierarchicalDataTemplate DataType="{x:Type plotDatabase:PlotElement}" ItemsSource="{Binding Children}">
@@ -185,7 +187,8 @@
                         <TreeView x:Name="Tree_BW1"
                               ItemsSource="{Binding Path=RootNodes1}"
                               ItemContainerStyle="{StaticResource LibraryTreeViewItemStyle}"
-                              SelectedItemChanged="Tree_BW1_SelectedItemChanged"
+                              SelectedItemChanged="TreeView_SelectedItemChanged"
+                              Loaded="TreeView_OnLoaded"
                               VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
                             <TreeView.Resources>
                                 <HierarchicalDataTemplate DataType="{x:Type plotDatabase:PlotElement}" ItemsSource="{Binding Children}">
@@ -455,12 +458,15 @@
                         <StatusBarItem>
                             <TextBlock x:Name="StatusBar_RightMostText" Text="{Binding CurrentOverallOperationText}" />
                         </StatusBarItem>
-                        <StatusBarItem DockPanel.Dock="Right">
+                        <StatusBarItem>
                             <TextBlock x:Name="bwLink" Width="Auto"  Visibility="Visible">
                             <Hyperlink NavigateUri="https://github.com/electronicarts/MELE_ModdingSupport" misc:HyperlinkExtensions.IsExternal="True">
                                 github.com/MELE_ModdingSupport
                             </Hyperlink>
                             </TextBlock>
+                        </StatusBarItem>
+                        <StatusBarItem DockPanel.Dock="Right">
+                            <TextBlock>This tool is in Beta.</TextBlock>
                         </StatusBarItem>
                     </DockPanel>
                 </StatusBar>

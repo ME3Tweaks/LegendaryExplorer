@@ -1104,9 +1104,10 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             var record = GetSelectedPlotRecord();
             var plotElement = PlotDatabases.FindPlotElementFromID(record.ElementID, record.ElementType.ToPlotElementType(),
                 CurrentGame);
-            var plotDB = new PlotManager.PlotManagerWindow();
+            var plotDB = new PlotManager.PlotManagerWindow(CurrentGame.ToLEVersion(), plotElement);
             plotDB.Show();
             plotDB.SelectPlotElement(plotElement, CurrentGame.ToLEVersion());
+            //plotDB.NoAutoSelection = false;
         }
 
         private void OpenPEDefinitionInToolset()

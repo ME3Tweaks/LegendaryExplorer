@@ -531,7 +531,6 @@ namespace LegendaryExplorer
                 category = "Core Editors",
                 description = "Plot Editor is used to examine, edit, and search plot maps in all 3 games for quests, state events, and codex entries."
             });
-#if DEBUG
             set.Add(new Tool
             {
                 name = "Plot Database",
@@ -546,7 +545,6 @@ namespace LegendaryExplorer
                 category = "Core Editors",
                 description = "Plot Database is used to view and create databases of plot elements from all three games. This tool is for reference only, and affects nothing in game."
             });
-#endif
             set.Add(new Tool
             {
                 name = "Sequence Editor",

@@ -104,6 +104,7 @@ namespace LegendaryExplorer.Tools.PlotManager
         };
         private bool updateTable = true;
         private bool isEditing;
+        private (MEGame game, PlotElement pe) initialElement;
         public ICommand FilterCommand { get; set; }
         public ICommand CopyToClipboardCommand { get; set; }
         public ICommand RefreshLocalCommand { get; set; }
@@ -132,7 +133,6 @@ namespace LegendaryExplorer.Tools.PlotManager
         #region PDBInitialization
         public PlotManagerWindow() : base("Plot Database", true)
         {
-
             LoadCommands();
             InitializeComponent();
 
@@ -145,6 +145,11 @@ namespace LegendaryExplorer.Tools.PlotManager
             RootNodes1.ClearEx();
             RootNodes1.Add(PlotDatabases.BridgeBasegameAndModDatabases(MEGame.LE1, AppDirectories.AppDataFolder));
             Focus();
+        }
+
+        public PlotManagerWindow(MEGame game, PlotElement elementToOpen) : this()
+        {
+            initialElement = (game, elementToOpen);
         }
 
         private void LoadCommands()
@@ -170,10 +175,14 @@ namespace LegendaryExplorer.Tools.PlotManager
         {
             var plotenum = Enum.GetNames(typeof(PlotElementType)).ToList();
             newItem_subtype.ItemsSource = plotenum;
-            CurrentGame = MEGame.LE3;
-            modDB = PlotDatabases.Le3ModDatabase;
-            SelectedNode = RootNodes3[0];
-            SetFocusByPlotElement(RootNodes3[0]);
+            CurrentGame = initialElement.pe is null ? MEGame.LE3 : initialElement.game;
+            CurrentView = CurrentGame switch
+            {
+                MEGame.LE1 => 2,
+                MEGame.LE2 => 1,
+                _ => 0
+            };
+            modDB = PlotDatabases.GetModPlotDatabaseForGame(CurrentGame);
         }
 
         private void PlotDB_Closing(object sender, CancelEventArgs e)
@@ -208,13 +217,7 @@ namespace LegendaryExplorer.Tools.PlotManager
 
         private void RefreshTrees()
         {
-            var rootNodes = CurrentGame switch
-            {
-                MEGame.LE3 => RootNodes3,
-                MEGame.LE2 => RootNodes2,
-                MEGame.LE1 => RootNodes1,
-                _ => throw new Exception($"Cannot refresh tree for game {CurrentGame}")
-            };
+            var rootNodes = GetRootNodes();
 
             // Create parent object for both basegame and mod
             var rootList = new List<PlotElement>();
@@ -225,6 +228,22 @@ namespace LegendaryExplorer.Tools.PlotManager
             rootNodes.ClearEx();
             rootNodes.Add(plotParent);
         }
+
+        private ObservableCollectionExtended<PlotElement> GetRootNodes() => CurrentGame switch
+        {
+            MEGame.LE3 => RootNodes3,
+            MEGame.LE2 => RootNodes2,
+            MEGame.LE1 => RootNodes1,
+            _ => throw new Exception($"Cannot get root nodes for game {CurrentGame}")
+        };
+
+        private TreeView GetTreeView() => CurrentGame switch
+        {
+            MEGame.LE3 => Tree_BW3,
+            MEGame.LE2 => Tree_BW2,
+            MEGame.LE1 => Tree_BW1,
+            _ => throw new Exception($"Cannot get TreeView for game {CurrentGame}")
+        };
 
         private void AddPlotsToList(PlotElement plotElement, List<PlotElement> elementList, bool addFolders = false)
         {
@@ -253,23 +272,13 @@ namespace LegendaryExplorer.Tools.PlotManager
             }
         }
 
-        private void Tree_BW3_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             updateTable = true;
-            SelectedNode = Tree_BW3.SelectedItem as PlotElement;
+            var tv = sender as TreeView;
+            SelectedNode = tv.SelectedItem as PlotElement;
         }
 
-        private void Tree_BW2_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            updateTable = true;
-            SelectedNode = Tree_BW2.SelectedItem as PlotElement;
-        }
-
-        private void Tree_BW1_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            updateTable = true;
-            SelectedNode = Tree_BW1.SelectedItem as PlotElement;
-        }
         private void LV_Plots_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             updateTable = false;
@@ -279,38 +288,44 @@ namespace LegendaryExplorer.Tools.PlotManager
         {
             if(e.RemovedItems.Count != 0)
             {
-                switch (CurrentView)
+                CurrentGame = CurrentView switch
                 {
-                    case 1:
-                        CurrentGame = MEGame.LE2;
-                        modDB = PlotDatabases.Le2ModDatabase;
-                        if (Tree_BW2.SelectedItem == null)
-                        {
-                            SelectedNode = RootNodes2[0];
-                            //Tree_BW2.SelectItem(RootNodes2[0]);  //Not a treeviewItem
-                            SetFocusByPlotElement(RootNodes2[0]);
-                            //SetFocusByElementId(0); Won't work because scan is from zero element up
-                        }
-                        break;
-                    case 2:
-                        CurrentGame = MEGame.LE1;
-                        modDB = PlotDatabases.Le1ModDatabase;
-                        //if (Tree_BW1.SelectedItem == null)
-                        //SetFocusByPlotElement(RootNodes1[0]);
-                        break;
-                    default:
-                        CurrentGame = MEGame.LE3;
-                        modDB = PlotDatabases.Le3ModDatabase;
-                        //if (Tree_BW3.SelectedItem == null)
-                        //SetFocusByPlotElement(RootNodes3[0]);
-                        break;
+                    2 => MEGame.LE1,
+                    1 => MEGame.LE2,
+                    _ => MEGame.LE3
+                };
+                modDB = PlotDatabases.GetModPlotDatabaseForGame(CurrentGame);
+
+                var tv = GetTreeView();
+                if (tv.SelectedItem is null)
+                {
+                    if (initialElement.pe is not null && CurrentGame == initialElement.game)
+                    {
+                        SetFocusByPlotElement(initialElement.pe);
+                    }
+                    else SetFocusByPlotElement(GetRootNodes()[0]);
                 }
+                SelectedNode = tv.SelectedItem as PlotElement;
             }
         }
+
 
         #endregion
 
         #region TreeView
+        private void TreeView_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            var treeView = sender as TreeView;
+            if (treeView == GetTreeView())
+            {
+                if (initialElement.pe is not null && CurrentGame == initialElement.game)
+                {
+                    SetFocusByPlotElement(initialElement.pe);
+                    initialElement = default;
+                }
+                else SetFocusByPlotElement(GetRootNodes()[0]);
+            }
+        }
 
         public void SelectPlotElement(PlotElement pe, MEGame game)
         {
@@ -333,19 +348,7 @@ namespace LegendaryExplorer.Tools.PlotManager
 
         private void SetFocusByPlotElement(PlotElement pe)
         {
-            var tree = new TreeView();
-            switch (CurrentGame)
-            {
-                case MEGame.LE2:
-                    tree = Tree_BW2;
-                    break;
-                case MEGame.LE1:
-                    tree = Tree_BW1;
-                    break;
-                default:
-                    tree = Tree_BW3;
-                    break;
-            }
+            var tree = GetTreeView();
 
             var tvi = tree.ItemContainerGenerator.ContainerFromItemRecursive(pe); 
 
