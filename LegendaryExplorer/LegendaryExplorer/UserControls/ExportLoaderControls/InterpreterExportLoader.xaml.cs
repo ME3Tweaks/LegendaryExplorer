@@ -41,7 +41,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         //This is useful for end user when they want to view things in a list for example, but all of the items are of the 
         //same type and are not distinguishable without changing to another export, wasting a lot of time.
         //values are the class of object value being parsed
-        public static readonly string[] ExportToStringConverters = { "LevelStreamingKismet", "StaticMeshComponent", "ParticleSystemComponent", "DecalComponent", "LensFlareComponent" };
+        public static readonly string[] ExportToStringConverters = { "LevelStreamingKismet", "StaticMeshComponent", "ParticleSystemComponent", "DecalComponent", "LensFlareComponent", "AnimNodeSequence" };
         public static readonly string[] IntToStringConverters = { "WwiseEvent", "WwiseBank", "BioSeqAct_PMExecuteTransition", "BioSeqAct_PMExecuteConsequence", "BioSeqAct_PMCheckState", "BioSeqAct_PMCheckConditional", "BioSeqVar_StoryManagerInt",
                                                                 "BioSeqVar_StoryManagerFloat", "BioSeqVar_StoryManagerBool", "BioSeqVar_StoryManagerStateId", "SFXSceneShopNodePlotCheck", "BioWorldInfo" };
         public ObservableCollectionExtended<IndexedName> ParentNameList { get; private set; }
@@ -361,7 +361,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 var p = new PackageEditorWindow();
                 p.Show();
                 p.LoadFile(CurrentLoadedExport.FileRef.FilePath, op.Value);
-                p.Activate(); //bring to front        
+                p.Activate(); //bring to front
             }
         }
 
@@ -1477,8 +1477,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             switch (exportEntry.ClassName)
             {
                 case "LevelStreamingKismet":
-                    NameProperty prop = exportEntry.GetProperty<NameProperty>("PackageName");
-                    return $"({prop.Value.Instanced})";
+                    {
+                        NameProperty prop = exportEntry.GetProperty<NameProperty>("PackageName");
+                        return $"({prop.Value.Instanced})";
+                    }
+                    break;
                 case "StaticMeshComponent":
                     {
                         ObjectProperty smprop = exportEntry.GetProperty<ObjectProperty>("StaticMesh");
@@ -1517,6 +1520,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 return $"({smEntry.ObjectName.Instanced})";
                             }
                         }
+                    }
+                    break;
+                case "AnimNodeSequence":
+                    {
+                        NameProperty prop = exportEntry.GetProperty<NameProperty>("AnimSeqName");
+                        return $"({prop?.Value.Instanced ?? "No Name"})";
                     }
                     break;
             }

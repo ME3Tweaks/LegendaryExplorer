@@ -2440,6 +2440,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             ExportLoaders[MaterialViewerTab_MaterialExportLoader] = MaterialViewer_Tab;
             ExportLoaders[ScriptTab_UnrealScriptIDE] = Script_Tab;
             ExportLoaders[RADLauncherTab_BIKLauncher] = RADLaunch_Tab;
+            ExportLoaders[AnimNodeTab_AnimNodeLoader] = AnimNode_Tab;
 
 
             InterpreterTab_Interpreter.SetParentNameList(NamesList); //reference to this control for name editor set
