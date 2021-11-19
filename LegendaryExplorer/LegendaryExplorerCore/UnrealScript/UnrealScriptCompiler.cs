@@ -49,21 +49,21 @@ namespace LegendaryExplorerCore.UnrealScript
                     astNode = ScriptObjectToASTConverter.ConvertClass(export.GetBinaryData<UClass>(packageCache), true, lib, packageCache);
                     break;
                 case "Function":
-                    astNode = ScriptObjectToASTConverter.ConvertFunction(export.GetBinaryData<UFunction>(packageCache), lib: lib, packageCache: packageCache);
+                    astNode = ScriptObjectToASTConverter.ConvertFunction(export.GetBinaryData<UFunction>(packageCache), lib, packageCache: packageCache);
                     break;
                 case "State":
-                    astNode = ScriptObjectToASTConverter.ConvertState(export.GetBinaryData<UState>(packageCache), lib: lib, packageCache: packageCache);
+                    astNode = ScriptObjectToASTConverter.ConvertState(export.GetBinaryData<UState>(packageCache), lib, packageCache: packageCache);
                     break;
                 case "Enum":
                     astNode = ScriptObjectToASTConverter.ConvertEnum(export.GetBinaryData<UEnum>(packageCache));
                     break;
                 case "ScriptStruct":
-                    astNode = ScriptObjectToASTConverter.ConvertStruct(export.GetBinaryData<UScriptStruct>(packageCache), true, packageCache, lib);
+                    astNode = ScriptObjectToASTConverter.ConvertStruct(export.GetBinaryData<UScriptStruct>(packageCache), true, lib, packageCache);
                     break;
                 default:
                     if (export.ClassName.EndsWith("Property") && ObjectBinary.From(export, packageCache) is UProperty uProp)
                     {
-                        astNode = ScriptObjectToASTConverter.ConvertVariable(uProp, packageCache);
+                        astNode = ScriptObjectToASTConverter.ConvertVariable(uProp, lib, packageCache);
                     }
                     else
                     {
@@ -507,6 +507,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     }
                     else
                     {
+                        existingNames.ExceptWith(cls.VirtualFunctionNames);
                         vfTableChanged = true;
                     }
                 }

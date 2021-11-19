@@ -6,7 +6,6 @@ namespace LegendaryExplorerCore.Packages
     {
         bool EntryHasPendingChanges { get; set; } //used to signal that this entry has uncommited changes
         bool HeaderChanged { get; set; }
-        int Index { set; }
         int indexValue { get; set; }
         int UIndex { get; }
         /// <summary>

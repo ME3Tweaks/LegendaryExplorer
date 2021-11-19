@@ -107,6 +107,8 @@ namespace LegendaryExplorerCore.UnrealScript
                     _isInitialized = false;
                     _symbols = null;
                     _baseSymbols = null;
+                    _cacheEnabled = false;
+                    objBinCache.Clear();
                 }
             }
 
@@ -121,6 +123,7 @@ namespace LegendaryExplorerCore.UnrealScript
             {
                 LECLog.Information($@"Game Root Path for FileLib Init: {gameRootPath}. Has package cache: {packageCache != null}");
                 InitializationLog = new MessageLog();
+                _cacheEnabled = false;
                 _baseSymbols = null;
                 var gameFiles = MELoadedFiles.GetFilesLoadedInGame(Pcc.Game, gameRootOverride: gameRootPath);
                 string[] baseFileNames = BaseFileNames(Pcc.Game);
@@ -184,6 +187,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     }
                 }
                 _symbols = _baseSymbols?.Clone();
+                _cacheEnabled = true;
                 return ResolveAllClassesInPackage(Pcc, ref _symbols, InitializationLog, packageCache);
             }
             catch when (!LegendaryExplorerCoreLib.IsDebug)
@@ -196,6 +200,7 @@ namespace LegendaryExplorerCore.UnrealScript
         {
             lock (_initializationLock)
             {
+                objBinCache.Clear();
                 _symbols = _baseSymbols?.Clone();
                 if (ResolveAllClassesInPackage(Pcc, ref _symbols, InitializationLog))
                 {
@@ -207,6 +212,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     HadInitializationError = true;
                     _isInitialized = false;
                     _symbols = null;
+                    objBinCache.Clear();
                 }
             }
             InitializationStatusChange?.Invoke(true);
@@ -295,6 +301,7 @@ namespace LegendaryExplorerCore.UnrealScript
         public void Dispose()
         {
             Pcc?.WeakUsers.Remove(this);
+            objBinCache.Clear();
         }
 
 
@@ -312,7 +319,7 @@ namespace LegendaryExplorerCore.UnrealScript
         [Obsolete("Filelib architecture has changed, and this no longer does anything.")]
         public static void FreeLibs() { }
 
-        private static bool ResolveAllClassesInPackage(IMEPackage pcc, ref SymbolTable symbols, MessageLog log, PackageCache packageCache = null, Class classOverride = null)
+        private bool ResolveAllClassesInPackage(IMEPackage pcc, ref SymbolTable symbols, MessageLog log, PackageCache packageCache = null, Class classOverride = null)
         {
             string fileName = Path.GetFileNameWithoutExtension(pcc.FilePath);
 #if DEBUGSCRIPT
@@ -330,7 +337,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
                 else
                 {
-                    cls = ScriptObjectToASTConverter.ConvertClass(export.GetBinaryData<UClass>(packageCache), false, packageCache: packageCache);
+                    cls = ScriptObjectToASTConverter.ConvertClass(GetCachedObjectBinary<UClass>(export, packageCache), false, this, packageCache);
                 }
                 log.CurrentClass = cls;
                 if (!cls.IsFullyDefined)
@@ -437,6 +444,37 @@ namespace LegendaryExplorerCore.UnrealScript
             symbols.RevertToObjectStack();
 
             return true;
+        }
+
+        private bool _cacheEnabled;
+        private readonly Dictionary<int, ObjectBinary> objBinCache = new();
+
+        public ObjectBinary GetCachedObjectBinary(ExportEntry export, PackageCache packageCache = null)
+        {
+            if (_cacheEnabled)
+            {
+                if (!objBinCache.TryGetValue(export.UIndex, out ObjectBinary bin))
+                {
+                    bin = ObjectBinary.From(export, packageCache);
+                    objBinCache[export.UIndex] = bin;
+                }
+                return bin;
+            }
+            return ObjectBinary.From(export, packageCache);
+        }
+
+        public T GetCachedObjectBinary<T>(ExportEntry export, PackageCache packageCache = null) where T : ObjectBinary, new()
+        {
+            if (_cacheEnabled)
+            {
+                if (!objBinCache.TryGetValue(export.UIndex, out ObjectBinary bin))
+                {
+                    bin = ObjectBinary.From(export, packageCache);
+                    objBinCache[export.UIndex] = bin;
+                }
+                return (T)bin;
+            }
+            return ObjectBinary.From<T>(export, packageCache);
         }
 
 

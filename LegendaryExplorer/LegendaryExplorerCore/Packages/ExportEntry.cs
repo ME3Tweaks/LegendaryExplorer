@@ -14,16 +14,19 @@ using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.Packages
 {
-    [DebuggerDisplay("{Game} ExportEntry | {UIndex} {ObjectName.Instanced}({ClassName}) in {System.IO.Path.GetFileName(FileRef.FilePath)}")]
+    [DebuggerDisplay("{Game} ExportEntry | {UIndex} {ObjectName.Instanced}({ClassName}) in {System.IO.Path.GetFileName(_fileRef.FilePath)}")]
     [DoNotNotify]//disable Fody/PropertyChanged for this class. Do notification manually
     public sealed class ExportEntry : INotifyPropertyChanged, IEntry
     {
-        public IMEPackage FileRef { get; }
+        private readonly IMEPackage _fileRef;
+        public IMEPackage FileRef => _fileRef;
 
-        public MEGame Game => FileRef.Game;
+        public MEGame Game => _fileRef.Game;
 
-        public int Index { private get; set; } = -1;
-        public int UIndex => Index + 1;
+        private int _uIndex;
+        public int Index { set => _uIndex = value + 1; }
+
+        public int UIndex => _uIndex;
 
         /// <summary>
         /// Constructor for generating a new export entry
@@ -42,20 +45,25 @@ namespace LegendaryExplorerCore.Packages
         /// Constructor for generating a new export entry
         /// </summary>
         /// <param name="file"></param>
-        /// <param name="parentUIndex"></param>
+        /// <param name="parent_uIndex"></param>
         /// <param name="name"></param>
         /// <param name="prePropBinary"></param>
         /// <param name="properties"></param>
         /// <param name="binary"></param>
         /// <param name="isClass"></param>
-        public ExportEntry(IMEPackage file, int parentUIndex, NameReference name, byte[] prePropBinary = null, PropertyCollection properties = null, ObjectBinary binary = null, bool isClass = false)
+        public ExportEntry(IMEPackage file, int parent_uIndex, NameReference name, byte[] prePropBinary = null, PropertyCollection properties = null, ObjectBinary binary = null, bool isClass = false)
         {
-            FileRef = file;
+            _fileRef = file;
 
             //these three must be written to the underlying values so as not to invalidate the lookuptable 
-            _idxLink = parentUIndex;
-            _idxObjectName = FileRef.FindNameOrAdd(name.Name);
+            _idxLink = parent_uIndex;
+            _idxObjectName = _fileRef.FindNameOrAdd(name.Name);
             _indexValue = name.Number;
+            _generationNetObjectCounts = Array.Empty<int>();
+            if (HasComponentMap)
+            {
+                _componentMap = Array.Empty<byte>();
+            }
 
             DataOffset = 0;
             ObjectFlags = EObjectFlags.LoadForClient | EObjectFlags.LoadForServer | EObjectFlags.LoadForEdit; //sensible defaults?
@@ -98,7 +106,7 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="isClass"></param>
         public ExportEntry(IMEPackage file, byte[] header, byte[] prePropBinary = null, PropertyCollection properties = null, ObjectBinary binary = null, bool isClass = false)
         {
-            FileRef = file;
+            _fileRef = file;
             DeserializeHeader(new EndianReader(header));
             DataOffset = 0;
 
@@ -137,7 +145,7 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="readData">should export data be read from the stream</param>
         public ExportEntry(IMEPackage file, EndianReader stream, bool readData = true)
         {
-            FileRef = file;
+            _fileRef = file;
             HeaderOffset = (int)stream.Position;
             DeserializeHeader(stream);
             if (readData)
@@ -167,7 +175,7 @@ namespace LegendaryExplorerCore.Packages
                     throw new ArgumentException($"Expected pre-property binary to be at least {minLen} bytes, not {bytes.Length}!", nameof(bytes));
                 }
                 int oldLen = GetPropertyStart();
-                int count = EndianReader.ToInt32(bytes, 0, FileRef.Endian);
+                int count = EndianReader.ToInt32(bytes, 0, _fileRef.Endian);
                 minLen += count * 2;
                 if (bytes.Length < minLen)
                 {
@@ -221,12 +229,12 @@ namespace LegendaryExplorerCore.Packages
             DataSize = dataSize; //should never be altered by Header overwrite
 
             //new header may have changed link or name
-            FileRef.InvalidateLookupTable();
+            _fileRef.InvalidateLookupTable();
 
             EntryHasPendingChanges = true;
             HeaderChanged = true;
-            // This is a hack cause FileRef is IMEPackage
-            FileRef.IsModified = true;
+            // This is a hack cause _fileRef is IMEPackage
+            _fileRef.IsModified = true;
         }
 
         public int HeaderLength
@@ -264,7 +272,7 @@ namespace LegendaryExplorerCore.Packages
         /// <returns></returns>
         public byte[] GenerateHeader()
         {
-            return GenerateHeader(FileRef);
+            return GenerateHeader(_fileRef);
         }
         
         public byte[] GenerateHeader(IMEPackage pcc, bool clearComponentMap = false)
@@ -330,7 +338,7 @@ namespace LegendaryExplorerCore.Packages
                 _generationNetObjectCounts[i] = stream.ReadInt32();
             }
             _packageGuid = stream.ReadGuid();
-            if (Game != MEGame.ME1 || FileRef.Platform != MEPackage.GamePlatform.Xenon)
+            if (Game != MEGame.ME1 || _fileRef.Platform != MEPackage.GamePlatform.Xenon)
             {
                 _packageFlags = (EPackageFlags)stream.ReadUInt32();
             }
@@ -389,7 +397,7 @@ namespace LegendaryExplorerCore.Packages
                 if (value != _idxSuperClass)
                 {
                     // 0 check for setup
-                    if (UIndex != 0 && value == UIndex)
+                    if (_uIndex != 0 && value == _uIndex)
                     {
                         throw new Exception("Cannot set export superclass to itself, this will cause infinite recursion");
                     }
@@ -408,13 +416,13 @@ namespace LegendaryExplorerCore.Packages
                 if (value != _idxLink)
                 {
                     // HeaderOffset = 0 means this was instantiated and not read in from a stream
-                    if (value == UIndex && HeaderOffset != 0)
+                    if (value == _uIndex && HeaderOffset != 0)
                     {
                         throw new Exception("Cannot set import link to itself, this will cause infinite recursion");
                     }
                     _idxLink = value;
                     HeaderChanged = true;
-                    FileRef.InvalidateLookupTable();
+                    _fileRef.InvalidateLookupTable();
                 }
             }
         }
@@ -429,7 +437,7 @@ namespace LegendaryExplorerCore.Packages
                 {
                     _idxObjectName = value;
                     HeaderChanged = true;
-                    FileRef.InvalidateLookupTable();
+                    _fileRef.InvalidateLookupTable();
                 }
             }
         }
@@ -444,7 +452,7 @@ namespace LegendaryExplorerCore.Packages
                 {
                     _indexValue = value;
                     HeaderChanged = true;
-                    FileRef.InvalidateLookupTable();
+                    _fileRef.InvalidateLookupTable();
                 }
             }
         }
@@ -481,7 +489,7 @@ namespace LegendaryExplorerCore.Packages
 
         public int DataOffset;
 
-        public bool HasComponentMap => FileRef.Game <= MEGame.ME2 && FileRef.Platform != MEPackage.GamePlatform.PS3;
+        public bool HasComponentMap => _fileRef.Game <= MEGame.ME2 && _fileRef.Platform != MEPackage.GamePlatform.PS3;
 
         //me1 and me2 only
         private byte[] _componentMap;
@@ -493,9 +501,9 @@ namespace LegendaryExplorerCore.Packages
                 if (!HasComponentMap) return componentMap;
                 for (int i = 0; i < _componentMap.Length; i += 12)
                 {
-                    string name = FileRef.GetNameEntry(EndianReader.ToInt32(_componentMap, i, FileRef.Endian));
-                    componentMap.Add(new NameReference(name, EndianReader.ToInt32(_componentMap, i + 4, FileRef.Endian)),
-                        EndianReader.ToInt32(_componentMap, i + 8, FileRef.Endian));
+                    string name = _fileRef.GetNameEntry(EndianReader.ToInt32(_componentMap, i, _fileRef.Endian));
+                    componentMap.Add(new NameReference(name, EndianReader.ToInt32(_componentMap, i + 4, _fileRef.Endian)),
+                        EndianReader.ToInt32(_componentMap, i + 8, _fileRef.Endian));
                 }
                 return componentMap;
             }
@@ -513,11 +521,11 @@ namespace LegendaryExplorerCore.Packages
                     return;
                 }
                 var bin = new MemoryStream(value.Count * 12);
-                foreach ((NameReference name, int uIndex) in value)
+                foreach ((NameReference name, int _uIndex) in value)
                 {
-                    bin.WriteInt32(FileRef.FindNameOrAdd(name.Name));
+                    bin.WriteInt32(_fileRef.FindNameOrAdd(name.Name));
                     bin.WriteInt32(name.Number);
-                    bin.WriteInt32(uIndex); // 0-based index
+                    bin.WriteInt32(_uIndex); // 0-based index
                 }
                 var newMap = bin.ToArray();
                 if (!newMap.AsSpan().SequenceEqual(_componentMap))
@@ -590,8 +598,8 @@ namespace LegendaryExplorerCore.Packages
 
         public string ObjectNameString
         {
-            get => FileRef.Names[_idxObjectName];
-            set => idxObjectName = FileRef.FindNameOrAdd(value);
+            get => _fileRef.Names[_idxObjectName];
+            set => idxObjectName = _fileRef.FindNameOrAdd(value);
         }
 
         public NameReference ObjectName
@@ -604,36 +612,36 @@ namespace LegendaryExplorerCore.Packages
 
         public string SuperClassName => SuperClass?.ObjectNameString ?? "Class";
 
-        public string ParentName => FileRef.GetEntry(_idxLink)?.ObjectName ?? "";
+        public string ParentName => _fileRef.GetEntry(_idxLink)?.ObjectName ?? "";
 
-        public string ParentFullPath => FileRef.GetEntry(_idxLink)?.FullPath ?? "";
+        public string ParentFullPath => _fileRef.GetEntry(_idxLink)?.FullPath ?? "";
 
-        public string FullPath => FileRef.IsEntry(_idxLink) ? $"{ParentFullPath}.{ObjectNameString}" : ObjectNameString;
+        public string FullPath => _fileRef.IsEntry(_idxLink) ? $"{ParentFullPath}.{ObjectNameString}" : ObjectNameString;
 
-        public string ParentInstancedFullPath => FileRef.GetEntry(_idxLink)?.InstancedFullPath ?? "";
-        public string InstancedFullPath => FileRef.IsEntry(_idxLink) ? ObjectName.AddToPath(ParentInstancedFullPath) : ObjectName.Instanced;
+        public string ParentInstancedFullPath => _fileRef.GetEntry(_idxLink)?.InstancedFullPath ?? "";
+        public string InstancedFullPath => _fileRef.IsEntry(_idxLink) ? ObjectName.AddToPath(ParentInstancedFullPath) : ObjectName.Instanced;
 
-        public bool HasParent => FileRef.IsEntry(_idxLink);
+        public bool HasParent => _fileRef.IsEntry(_idxLink);
 
         public IEntry Parent
         {
-            get => FileRef.GetEntry(_idxLink);
+            get => _fileRef.GetEntry(_idxLink);
             set => idxLink = value?.UIndex ?? 0;
         }
 
-        public bool HasArchetype => FileRef.IsEntry(_idxArchetype);
+        public bool HasArchetype => _fileRef.IsEntry(_idxArchetype);
 
         public IEntry Archetype
         {
-            get => FileRef.GetEntry(_idxArchetype);
+            get => _fileRef.GetEntry(_idxArchetype);
             set => idxArchetype = value?.UIndex ?? 0;
         }
 
-        public bool HasSuperClass => FileRef.IsEntry(_idxSuperClass);
+        public bool HasSuperClass => _fileRef.IsEntry(_idxSuperClass);
 
         public IEntry SuperClass
         {
-            get => FileRef.GetEntry(_idxSuperClass);
+            get => _fileRef.GetEntry(_idxSuperClass);
             set => idxSuperClass = value?.UIndex ?? 0;
         }
         
@@ -641,7 +649,7 @@ namespace LegendaryExplorerCore.Packages
 
         public IEntry Class
         {
-            get => FileRef.GetEntry(_idxClass);
+            get => _fileRef.GetEntry(_idxClass);
             set => idxClass = value?.UIndex ?? 0;
         }
 
@@ -683,7 +691,7 @@ namespace LegendaryExplorerCore.Packages
                 DataChanged = true;
                 propsEndOffset = null;
                 EntryHasPendingChanges = true;
-                FileRef.IsModified = true; // mark package as modified if the existing header is changing.
+                _fileRef.IsModified = true; // mark package as modified if the existing header is changing.
             }
         }
 
@@ -768,9 +776,9 @@ namespace LegendaryExplorerCore.Packages
 
         public void WriteProperties(PropertyCollection props)
         {
-            var m = new EndianReader { Endian = FileRef.Endian };
+            var m = new EndianReader { Endian = _fileRef.Endian };
             m.Writer.Write(_data, 0, GetPropertyStart());
-            props.WriteTo(m.Writer, FileRef);
+            props.WriteTo(m.Writer, _fileRef);
             int binStart = propsEnd();
             m.Writer.Write(_data, binStart, _data.Length - binStart);
             Data = m.ToArray();
@@ -778,9 +786,9 @@ namespace LegendaryExplorerCore.Packages
 
         public void WritePrePropsAndProperties(byte[] prePropBytes, PropertyCollection props, int binStart = -1)
         {
-            var m = new EndianReader { Endian = FileRef.Endian };
+            var m = new EndianReader { Endian = _fileRef.Endian };
             m.Writer.WriteBytes(prePropBytes);
-            props.WriteTo(m.Writer, FileRef);
+            props.WriteTo(m.Writer, _fileRef);
             binStart = binStart == -1 ? propsEnd() : binStart; // this allows us to precompute the starting position, which can avoid issues during relink as props may not have resolved yet
             m.Writer.Write(_data, binStart, _data.Length - binStart);
             Data = m.ToArray();
@@ -801,7 +809,7 @@ namespace LegendaryExplorerCore.Packages
                 if (Game >= MEGame.ME3 && ClassName == "DominantDirectionalLightComponent" || ClassName == "DominantSpotLightComponent")
                 {
                     //DominantLightShadowMap, which goes before everything for some reason
-                    int count = EndianReader.ToInt32(_data, 0, FileRef.Endian);
+                    int count = EndianReader.ToInt32(_data, 0, _fileRef.Endian);
                     start += count * 2 + 4;
                 }
                 start += 4; //TemplateOwnerClass
@@ -825,7 +833,7 @@ namespace LegendaryExplorerCore.Packages
                     if (Game >= MEGame.ME3 && ClassName == "DominantDirectionalLightComponent" || ClassName == "DominantSpotLightComponent")
                     {
                         //DominantLightShadowMap, which goes before everything for some reason
-                        int count = EndianReader.ToInt32(_data, 0, FileRef.Endian);
+                        int count = EndianReader.ToInt32(_data, 0, _fileRef.Endian);
                         return count * 2 + 4;
                     }
                     return 0;
@@ -843,20 +851,20 @@ namespace LegendaryExplorerCore.Packages
                 MEGame.LE1 => 30,
                 MEGame.LE2 => 30, 
                 MEGame.LE3 => 30, 
-                MEGame.ME1 when FileRef.Platform == MEPackage.GamePlatform.PS3 => 30,
-                MEGame.ME2 when FileRef.Platform == MEPackage.GamePlatform.PS3 => 30,
+                MEGame.ME1 when _fileRef.Platform == MEPackage.GamePlatform.PS3 => 30,
+                MEGame.ME2 when _fileRef.Platform == MEPackage.GamePlatform.PS3 => 30,
                 _ => 32
             };
 
         public int NetIndex
         {
-            get => EndianReader.ToInt32(_data, GetPropertyStart() - 4, FileRef.Endian);
+            get => EndianReader.ToInt32(_data, GetPropertyStart() - 4, _fileRef.Endian);
             set
             {
                 if (value != NetIndex)
                 {
                     var data = Data;
-                    data.OverwriteRange(GetPropertyStart() - 4, EndianBitConverter.GetBytes(value, FileRef.Endian));
+                    data.OverwriteRange(GetPropertyStart() - 4, EndianBitConverter.GetBytes(value, _fileRef.Endian));
                     Data = data;
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
                 }
@@ -864,6 +872,7 @@ namespace LegendaryExplorerCore.Packages
         }
 
         private int? propsEndOffset;
+
         /// <summary>
         /// Gets the ending offset of the properties for this export, where binary data begins (if any). This call caches the position, the cached value is invalidated when the .Data attribute of this export is updated.
         /// </summary>
@@ -889,7 +898,7 @@ namespace LegendaryExplorerCore.Packages
 
         public void WriteBinary(byte[] binaryData)
         {
-            var m = new EndianReader { Endian = FileRef.Endian };
+            var m = new EndianReader { Endian = _fileRef.Endian };
             m.Writer.Write(_data, 0, propsEnd());
             m.Writer.WriteBytes(binaryData);
             Data = m.ToArray();
@@ -897,9 +906,9 @@ namespace LegendaryExplorerCore.Packages
 
         public void WriteBinary(ObjectBinary bin)
         {
-            var m = new EndianReader { Endian = FileRef.Endian };
+            var m = new EndianReader { Endian = _fileRef.Endian };
             m.Writer.Write(_data, 0, propsEnd());
-            bin.WriteTo(m.Writer, FileRef, DataOffset);
+            bin.WriteTo(m.Writer, _fileRef, DataOffset);
             Data = m.ToArray();
         }
 
@@ -910,10 +919,10 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="binary"></param>
         public void WritePropertiesAndBinary(PropertyCollection props, ObjectBinary binary)
         {
-            var m = new EndianReader { Endian = FileRef.Endian };
+            var m = new EndianReader { Endian = _fileRef.Endian };
             m.Writer.Write(_data, 0, GetPropertyStart());
-            props?.WriteTo(m.Writer, FileRef); //props could be null if this is a class
-            binary.WriteTo(m.Writer, FileRef, DataOffset);
+            props?.WriteTo(m.Writer, _fileRef); //props could be null if this is a class
+            binary.WriteTo(m.Writer, _fileRef, DataOffset);
             Data = m.ToArray();
         }
 
@@ -924,10 +933,10 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="props"></param>
         public void WritePrePropsAndPropertiesAndBinary(byte[] preProps, PropertyCollection props, ObjectBinary binary)
         {
-            var m = new EndianReader { Endian = FileRef.Endian };
+            var m = new EndianReader { Endian = _fileRef.Endian };
             m.Writer.WriteBytes(preProps);
-            props?.WriteTo(m.Writer, FileRef); //props could be null if this is a class
-            binary.WriteTo(m.Writer, FileRef, DataOffset);
+            props?.WriteTo(m.Writer, _fileRef); //props could be null if this is a class
+            binary.WriteTo(m.Writer, _fileRef, DataOffset);
             Data = m.ToArray();
         }
 
@@ -953,7 +962,7 @@ namespace LegendaryExplorerCore.Packages
         {
             if (incrementIndex)
             {
-                return Clone(FileRef.GetNextIndexForInstancedName(this));
+                return Clone(_fileRef.GetNextIndexForInstancedName(this));
             }
 
             return Clone();
@@ -969,7 +978,7 @@ namespace LegendaryExplorerCore.Packages
         {
             if (HasStack)
             {
-                return (EPropertyFlags)EndianReader.ToUInt64(_data, 0x18, FileRef.Endian);
+                return (EPropertyFlags)EndianReader.ToUInt64(_data, 0x18, _fileRef.Endian);
             }
             return null;
         }
