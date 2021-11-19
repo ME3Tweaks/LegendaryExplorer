@@ -781,8 +781,10 @@ namespace LegendaryExplorer.Tools.PlotManager
                                     }
                                 }
                                 var newST = PlotElementType.None;
-                                if(newItem_subtype.SelectedItem != null)
-                                    newST = (PlotElementType)newItem_subtype.SelectedItem;
+                                if (newItem_subtype.SelectedItem != null &&
+                                    Enum.TryParse<PlotElementType>((string) newItem_subtype.SelectedItem,
+                                        out var elementType))
+                                    newST = elementType;
                                 int newAchID = -1;
                                 if (!newItem_achievementid.Text.IsEmpty())
                                 {
