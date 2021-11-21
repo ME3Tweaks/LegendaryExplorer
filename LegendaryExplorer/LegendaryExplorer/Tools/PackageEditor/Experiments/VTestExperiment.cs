@@ -1564,7 +1564,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             KismetHelper.CreateVariableLink(compareObject, "B", playerObj);
 
             var takeDamage = SequenceObjectCreator.CreateSequenceObject(killTriggerSeq.FileRef, "BioSeqAct_CauseDamage", vTestOptions.cache);
-            takeDamage.WriteProperty(new FloatProperty(50, "m_fDamageAmountAsPercentOfMaxHealth"));
+            takeDamage.WriteProperty(new FloatProperty(0.01f, "m_fDamageAmountAsPercentOfMaxHealth"));
 
             KismetHelper.AddObjectsToSequence(killTriggerSeq, false, takeDamage, compareObject, playerObj);
 
@@ -1576,7 +1576,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
 
             KismetHelper.CreateOutputLink(doAction, "Next", compareObject, 0); // Connect DoAction Next to CompareObject
-            KismetHelper.CreateOutputLink(compareObject, "A == B", doAction, 1); // Connect CompareObj to DoAction (The touching pawn is Player, skip damage)
+            KismetHelper.CreateOutputLink(compareObject, "A == B", takeDamage); // TEST ONLY - TOUCHING PLAYER
+            //KismetHelper.CreateOutputLink(compareObject, "A == B", doAction, 1); // Connect CompareObj to DoAction (The touching pawn is Player, skip damage)
             KismetHelper.CreateOutputLink(compareObject, "A != B", takeDamage); // Connect CompareObj to DoAction (The touching pawn is Player, skip damage)
 
             KismetHelper.CreateOutputLink(takeDamage, "Out", doAction, 1); // Connect DoAction Next to Damage In
