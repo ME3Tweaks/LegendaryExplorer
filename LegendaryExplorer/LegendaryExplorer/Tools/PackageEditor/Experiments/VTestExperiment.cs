@@ -1564,7 +1564,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             KismetHelper.CreateVariableLink(compareObject, "B", playerObj);
 
             var takeDamage = SequenceObjectCreator.CreateSequenceObject(killTriggerSeq.FileRef, "BioSeqAct_CauseDamage", vTestOptions.cache);
-            takeDamage.WriteProperty(new FloatProperty(0.01f, "m_fDamageAmountAsPercentOfMaxHealth"));
+            takeDamage.WriteProperty(new FloatProperty(50, "m_fDamageAmountAsPercentOfMaxHealth"));
 
             KismetHelper.AddObjectsToSequence(killTriggerSeq, false, takeDamage, compareObject, playerObj);
 
