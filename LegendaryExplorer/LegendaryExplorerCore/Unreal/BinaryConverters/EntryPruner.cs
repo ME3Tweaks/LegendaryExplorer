@@ -207,6 +207,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                         case EnumProperty enumProperty:
                             if (GlobalUnrealObjectInfo.GetEnumValues(newGame, enumProperty.EnumType) is List<NameReference> values)
                             {
+                                values.Add(new NameReference("None"));
                                 if (!values.Contains(enumProperty.Value))
                                 {
                                     enumProperty.Value = values.First(); //hope that the first value is a reasonable default
