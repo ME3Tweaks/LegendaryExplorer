@@ -153,9 +153,24 @@ namespace LegendaryExplorerCore.Textures.Studio
         public TextureMapMemoryEntry Parent { get; set; }
 
         /// <summary>
-        /// The object name.
+        /// The object name. (Should be changed to NameReference!)
         /// </summary>
         public string ObjectName { get; set; }
+
+        /// <summary>
+        /// The full instanced path of this entry
+        /// </summary>
+        public string InstancedFullPath
+        {
+            get
+            {
+                if (Parent != null)
+                {
+                    return $"{Parent.InstancedFullPath}.{ObjectName}";
+                }
+                return ObjectName;
+            }
+        }
 
         /// <summary>
         /// The instances of this entry.
@@ -465,7 +480,8 @@ namespace LegendaryExplorerCore.Textures.Studio
                 var filename = Path.GetFileName(p);
                 progressDelegate?.Invoke($@"Scanning {filename}", numDone, packageFiles.Count);
 
-                if (cts.IsCancellationRequested) break;
+                if (cts.IsCancellationRequested) 
+                    break;
                 using var package = MEPackageHandler.OpenMEPackage(p);
 
                 if (game != MEGame.Unknown && game != package.Game)
@@ -540,13 +556,18 @@ namespace LegendaryExplorerCore.Textures.Studio
 
         public static void RegenerateEntries(string selectedFolder, List<TextureMapMemoryEntry> entriesToRefresh,
             Dictionary<string, TextureMapMemoryEntry> textureMapMemoryEntries, Dictionary<string, uint> crcCache,
-            List<string> additionalTFCs, Func<IEntry, TextureMapMemoryEntry> generatorDelegate, Action<TextureMapMemoryEntry> addRootNodeDelegate)
+            List<string> additionalTFCs, Func<IEntry, TextureMapMemoryEntry> generatorDelegate, Action<TextureMapMemoryEntry> addRootNodeDelegate,
+            CancellationToken cancelToken)
         {
             PackageCache pc = new PackageCache();
             foreach (var textureEntry in entriesToRefresh.SelectMany(x => x.GetAllTextureEntries()))
             {
+                if (cancelToken.IsCancellationRequested)
+                    return;
                 foreach (var instance in textureEntry.Instances)
                 {
+                    if (cancelToken.IsCancellationRequested)
+                        return;
                     var fullPath = Path.Combine(selectedFolder, instance.RelativePackagePath);
                     var package = pc.GetCachedPackage(fullPath);
                     TextureMapMemoryEntry.ParseTexture(package.FindExport(instance.ExportPath), selectedFolder, textureMapMemoryEntries, crcCache, additionalTFCs, generatorDelegate, addRootNodeDelegate);

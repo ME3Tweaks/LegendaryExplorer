@@ -106,7 +106,7 @@
                           Grid.Row="1"
                           FontFamily="Consolas"
                           SelectedItemChanged="SelectedTreeNodeChanged"
-                          ItemsSource="{Binding AllTreeViewNodes}" 
+                          ItemsSource="{Binding AllRootTreeViewNodes}" 
                           FocusManager.IsFocusScope="True" 
                           VirtualizingStackPanel.IsVirtualizing="True" 
                           VirtualizingStackPanel.VirtualizationMode="Recycling">
@@ -187,10 +187,10 @@
                 <DockPanel Grid.Column="2" Grid.Row="1">
                         <StatusBar DockPanel.Dock="Bottom">
                             <StatusBarItem>
-                                <Button Content="Change all instances to new texture" Padding="5" Command="{Binding ChangeAllInstancesTextureCommand}"/>
+                                <Button Content="Change all instances to new texture" ToolTip="Changes all instances of the texture to point to a new instance stored in the specified TFC."  Padding="5" Command="{Binding ChangeAllInstancesTextureCommand}"/>
                             </StatusBarItem>
-                            <StatusBarItem>
-                                <TextBox Text="{Binding TFCSuffix}" Padding="5"/>
+                            <StatusBarItem HorizontalAlignment="Stretch">
+                                <xctk:WatermarkTextBox Watermark="TFC: Textures_[Value]  " ToolTip="The TFC name to store textures into. The value provided is the suffix after 'Textures_', and must begin with DLC_MOD_.&#10;Example value: DLC_MOD_Spectre"  MinWidth="168"  HorizontalAlignment="Stretch" Text="{Binding TFCSuffix, UpdateSourceTrigger=PropertyChanged}"  Padding="5,5,0,5"/>
                             </StatusBarItem>
                         </StatusBar>
                     <ListBox ItemsSource="{Binding SelectedItem.Instances}" SelectedItem="{Binding SelectedInstance}">
