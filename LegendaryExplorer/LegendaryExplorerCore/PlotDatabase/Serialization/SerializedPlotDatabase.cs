@@ -30,7 +30,7 @@ namespace LegendaryExplorerCore.PlotDatabase
         {
         }
 
-        public SerializedPlotDatabase(PlotDatabase plotDatabase)
+        public SerializedPlotDatabase(PlotDatabaseBase plotDatabase)
         {
             Bools = plotDatabase.Bools.Values.ToList();
             Ints = plotDatabase.Ints.Values.ToList();
@@ -46,11 +46,7 @@ namespace LegendaryExplorerCore.PlotDatabase
         /// </summary>
         public void BuildTree()
         {
-            Dictionary<int, PlotElement> table =
-                Bools.Concat<PlotElement>(Ints)
-                    .Concat(Floats).Concat(Conditionals)
-                    .Concat(Transitions).Concat(Organizational)
-                    .ToDictionary((e) => e.ElementId);
+            Dictionary<int, PlotElement> table = GetMasterPlotDictionary();
 
             foreach (var element in table)
             {
@@ -61,6 +57,14 @@ namespace LegendaryExplorerCore.PlotDatabase
                     plot.AssignParent(table[parentId]);
                 }
             }
+        }
+
+        protected virtual Dictionary<int, PlotElement> GetMasterPlotDictionary()
+        {
+            return Bools.Concat<PlotElement>(Ints)
+                .Concat(Floats).Concat(Conditionals)
+                .Concat(Transitions).Concat(Organizational)
+                .ToDictionary((e) => e.ElementId);
         }
     }
 }

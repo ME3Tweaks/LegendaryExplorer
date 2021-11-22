@@ -7,56 +7,8 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using Newtonsoft.Json;
 
-namespace LegendaryExplorerCore.PlotDatabase
+namespace LegendaryExplorerCore.PlotDatabase.PlotElements
 {
-    /// <summary>
-    /// The type of a plot element, as found in the BioWare Plot Databases
-    /// </summary>
-    public enum PlotElementType : int
-    {
-        None = -1,
-        Region = 1,
-        Plot = 2,
-        FlagGroup = 3,
-        Flag = 4,
-        State = 5,
-        SubState = 6,
-        Conditional = 7,
-        Consequence = 8,
-        Transition = 9,
-        JournalGoal = 10,
-        JournalTask = 11,
-        JournalItem = 12,
-        Integer = 13,
-        Float = 14,
-        Mod = 15,
-        Category = 16
-    }
-
-    public static class PlotElementTypeExtensions
-    {
-        public static string GetDescription(this PlotElementType plotType) => plotType switch
-        {
-            PlotElementType.None => "No plot element type set",
-            PlotElementType.Region => "A preset region of the game",
-            PlotElementType.Plot => "A plot or sub-plot",
-            PlotElementType.FlagGroup => "A group of flags",
-            PlotElementType.Flag => "A flag",
-            PlotElementType.State => "A linear plot state (true or false)",
-            PlotElementType.SubState => "A sub-flag or sub-state (either first or many trigger a state change)",
-            PlotElementType.Conditional => "A boolean expression used to test a game state or set of states",
-            PlotElementType.Consequence => "A set of actions to take upon state change",
-            PlotElementType.Transition => "A method to call to set the value of various states",
-            PlotElementType.JournalGoal => "The primary goal of an entire quest",
-            PlotElementType.JournalTask => "A single task in a quest",
-            PlotElementType.JournalItem => "A plot item",
-            PlotElementType.Integer => "An integer",
-            PlotElementType.Float => "A floating point number",
-            PlotElementType.Mod => "A category for items for a single mod or modder",
-            PlotElementType.Category => "A category of various states",
-            _ => throw new ArgumentOutOfRangeException($"Unexpected plot type: ${plotType}")
-        };
-    }
 
     [DebuggerDisplay("{Type} {PlotId}: {Path}")]
     public class PlotElement : INotifyPropertyChanged
@@ -176,60 +128,18 @@ namespace LegendaryExplorerCore.PlotDatabase
             return false;
         }
 
+        public void SetElementId(int id)
+        {
+            this.ElementId = id;
+            foreach (var c in Children)
+            {
+                c.ParentElementId = id;
+            }
+        }
+
 #pragma warning disable
         public event PropertyChangedEventHandler PropertyChanged;
 #pragma warning restore
 
-    }
-
-    public class PlotBool : PlotElement
-    {
-        [JsonProperty("subtype")]
-        public PlotElementType? SubType { get; set; }
-
-        [JsonProperty("gamervariable")]
-        public int? GamerVariable { get; set; }
-
-        [JsonProperty("achievementid")]
-        public int? AchievementID { get; set; }
-
-        [JsonProperty("galaxyatwar")]
-        public int? GalaxyAtWar { get; set; }
-
-        PlotBool()
-        {
-
-        }
-
-        public PlotBool(int plotid, int elementid, string label, PlotElementType type, PlotElement parent, List<PlotElement> children = null)
-            : base(plotid, elementid, label, type, parent, children) { }
-    }
-
-    public class PlotConditional : PlotElement
-    {
-        [JsonProperty("code")]
-        public string Code { get; set; }
-
-        PlotConditional()
-        {
-
-        }
-
-        public PlotConditional(int plotid, int elementid, string label, PlotElementType type, PlotElement parent, List<PlotElement> children = null)
-            : base(plotid, elementid, label, type, parent, children) { }
-    }
-
-    public class PlotTransition : PlotElement
-    {
-        [JsonProperty("argument")]
-        public string Argument { get; set; }
-
-        PlotTransition()
-        {
-
-        }
-
-        public PlotTransition(int plotid, int elementid, string label, PlotElementType type, PlotElement parent, List<PlotElement> children = null)
-            : base(plotid, elementid, label, type, parent, children) { }
     }
 }
