@@ -51,8 +51,13 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref unkNameList2, SCExt.Serialize);
                 if (sc.IsLoading)
                 {
-                    // Stuff for cross porting
-                    unkName2 = "None";
+                    // This doesn't compile after merge from Beta -> CrossGen-vtest
+                    // 11/22/2021. Unsure if it matters here. Was it DLLBindName to ensure 
+                    // it was properly populated?
+                    // unkName2 = "None";
+
+                    // 11/22/2021 - Load "None" to make sure when porting cross games this is populated
+                    DLLBindName = "None";
                     unk2 = 0;
                 }
             }
