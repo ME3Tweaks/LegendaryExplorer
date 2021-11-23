@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using LegendaryExplorer.Packages;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
@@ -11,7 +11,7 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using StructProperty = LegendaryExplorerCore.Unreal.StructProperty;
 
-namespace LegendaryExplorer.Tools.Sequence_Editor
+namespace LegendaryExplorerCore.Kismet
 {
     public static class SequenceObjectCreator
     {
@@ -319,16 +319,25 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             return defaults;
         }
 
-        public static ExportEntry CreateSequenceObject(IMEPackage pcc, string className, PackageCache cache = null)
+        /// <summary>
+        /// Creates a sequence object. 
+        /// </summary>
+        /// <param name="pcc"></param>
+        /// <param name="className"></param>
+        /// <param name="cache"></param>
+        /// <param name="handleRelinkResults">Invoked when relinking is complete and the export has been added. You can inspect the object for failed relink operations, for example.</param>
+        /// <returns></returns>
+
+        public static ExportEntry CreateSequenceObject(IMEPackage pcc, string className, PackageCache cache = null, Action<RelinkerOptionsPackage> handleRelinkResults = null)
         {
             var rop = new RelinkerOptionsPackage() { Cache = cache ?? new PackageCache() };
             var seqObj = new ExportEntry(pcc, 0, pcc.GetNextIndexedName(className), properties: GetSequenceObjectDefaults(pcc, className, pcc.Game, cache))
             {
                 Class = EntryImporter.EnsureClassIsInFile(pcc, className, rop)
             };
-            EntryImporterExtended.ShowRelinkResultsIfAny(rop);
             seqObj.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
             pcc.AddExport(seqObj);
+            handleRelinkResults?.Invoke(rop);
             return seqObj;
         }
     }

@@ -2463,7 +2463,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 var result = PromptDialog.Prompt(this, "Enter the string to log", "Enter string");
                 if (!string.IsNullOrWhiteSpace(result))
                 {
-                    var newSeqObj = SequenceObjectCreator.CreateSequenceObject(Pcc, "SeqVar_String");
+                    var newSeqObj = LEXSequenceObjectCreator.CreateSequenceObject(Pcc, "SeqVar_String");
                     newSeqObj.WriteProperty(new StrProperty(result, "StrValue"));
                     KismetHelper.AddObjectToSequence(newSeqObj, SelectedSequence);
                     var varLinks = SeqTools.GetVariableLinksOfNode(sAction.Export);
@@ -2482,11 +2482,11 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 if (!string.IsNullOrWhiteSpace(result))
                 {
                     // Create the log object and add it to the sequence
-                    var seqLogObj = SequenceObjectCreator.CreateSequenceObject(Pcc, "SeqAct_Log");
+                    var seqLogObj = LEXSequenceObjectCreator.CreateSequenceObject(Pcc, "SeqAct_Log");
                     KismetHelper.AddObjectToSequence(seqLogObj, SelectedSequence);
 
                     // Create user string SeqVar
-                    var newSeqObj = SequenceObjectCreator.CreateSequenceObject(Pcc, "SeqVar_String");
+                    var newSeqObj = LEXSequenceObjectCreator.CreateSequenceObject(Pcc, "SeqVar_String");
                     newSeqObj.WriteProperty(new StrProperty(result, "StrValue"));
                     KismetHelper.AddObjectToSequence(newSeqObj, SelectedSequence);
 
@@ -2559,11 +2559,11 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             if (!string.IsNullOrWhiteSpace(result))
             {
                 // Create the log object and add it to the sequence
-                var seqLogObj = SequenceObjectCreator.CreateSequenceObject(Pcc, "SeqAct_Log");
+                var seqLogObj = LEXSequenceObjectCreator.CreateSequenceObject(Pcc, "SeqAct_Log");
                 KismetHelper.AddObjectToSequence(seqLogObj, SelectedSequence);
 
                 // Create user string SeqVar
-                var newSeqObj = SequenceObjectCreator.CreateSequenceObject(Pcc, "SeqVar_String");
+                var newSeqObj = LEXSequenceObjectCreator.CreateSequenceObject(Pcc, "SeqVar_String");
                 newSeqObj.WriteProperty(new StrProperty(result, "StrValue"));
                 KismetHelper.AddObjectToSequence(newSeqObj, SelectedSequence);
 

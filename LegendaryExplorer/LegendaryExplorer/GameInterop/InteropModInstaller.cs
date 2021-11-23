@@ -122,23 +122,23 @@ namespace LegendaryExplorer.GameInterop
 
             #region Sequencing
 
-            var consoleEvent = SequenceObjectCreator.CreateSequenceObject(pcc, "SeqEvent_Console");
+            var consoleEvent = LEXSequenceObjectCreator.CreateSequenceObject(pcc, "SeqEvent_Console");
             consoleEvent.WriteProperty(new NameProperty("LoadLiveEditor", "ConsoleEventName"));
             KismetHelper.AddObjectToSequence(consoleEvent, mainSequence);
-            var setStreamingState = SequenceObjectCreator.CreateSequenceObject(pcc, "BioSeqAct_SetStreamingState");
+            var setStreamingState = LEXSequenceObjectCreator.CreateSequenceObject(pcc, "BioSeqAct_SetStreamingState");
             setStreamingState.WriteProperty(new NameProperty(stateName, "StateName"));
             setStreamingState.WriteProperty(new BoolProperty(true, "NewValue"));
             KismetHelper.AddObjectToSequence(setStreamingState, mainSequence);
             KismetHelper.CreateOutputLink(consoleEvent, "Out", setStreamingState);
 
-            var levelLoaded = SequenceObjectCreator.CreateSequenceObject(pcc, "SeqEvent_LevelLoaded");
+            var levelLoaded = LEXSequenceObjectCreator.CreateSequenceObject(pcc, "SeqEvent_LevelLoaded");
             KismetHelper.AddObjectToSequence(levelLoaded, mainSequence);
 
             var sendMessageClassName = game.IsLEGame() ? "SeqAct_SendMessageToLEX" : "SeqAct_SendMessageToME3Explorer";
-            var sendMessageToME3Exp = SequenceObjectCreator.CreateSequenceObject(pcc, sendMessageClassName);
+            var sendMessageToME3Exp = LEXSequenceObjectCreator.CreateSequenceObject(pcc, sendMessageClassName);
             KismetHelper.AddObjectToSequence(sendMessageToME3Exp, mainSequence);
             KismetHelper.CreateOutputLink(levelLoaded, game is MEGame.ME2 ? "Out" : "Loaded and Visible", sendMessageToME3Exp);
-            var stringVar = SequenceObjectCreator.CreateSequenceObject(pcc, "SeqVar_String");
+            var stringVar = LEXSequenceObjectCreator.CreateSequenceObject(pcc, "SeqVar_String");
             stringVar.WriteProperty(new StrProperty(LiveEditHelper.LoaderLoadedMessage, "StrValue"));
             KismetHelper.AddObjectToSequence(stringVar, mainSequence);
             KismetHelper.CreateVariableLink(sendMessageToME3Exp, "MessageName", stringVar);

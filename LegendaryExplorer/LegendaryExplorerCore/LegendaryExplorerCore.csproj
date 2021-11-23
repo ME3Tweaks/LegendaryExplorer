@@ -167,6 +167,7 @@
   <ItemGroup>
     <Folder Include="Embedded\Packages\EmptyLevels\" />
     <Folder Include="Textures\Studio\PrecomputedMaps\" />
+    <Folder Include="Unreal\Sequences\" />
   </ItemGroup>
 
 </Project>

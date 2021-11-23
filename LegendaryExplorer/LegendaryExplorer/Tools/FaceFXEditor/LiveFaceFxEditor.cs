@@ -188,12 +188,12 @@ namespace LegendaryExplorer.Tools.FaceFXEditor
             }
 
             var mainSeq = LiveFile.GetUExport(9);
-            var interp = SequenceObjectCreator.CreateSequenceObject(LiveFile, "SeqAct_Interp");
+            var interp = LEXSequenceObjectCreator.CreateSequenceObject(LiveFile, "SeqAct_Interp");
             KismetHelper.AddObjectToSequence(interp, mainSeq);
-            var interpData = SequenceObjectCreator.CreateSequenceObject(LiveFile, "InterpData");
+            var interpData = LEXSequenceObjectCreator.CreateSequenceObject(LiveFile, "InterpData");
             KismetHelper.AddObjectToSequence(interpData, mainSeq);
             KismetHelper.CreateVariableLink(interp, "Data", interpData);
-            var playEvent = SequenceObjectCreator.CreateSequenceObject(LiveFile, "SeqEvent_Console");
+            var playEvent = LEXSequenceObjectCreator.CreateSequenceObject(LiveFile, "SeqEvent_Console");
             playEvent.WriteProperty(new NameProperty("playfacefx", "ConsoleEventName"));
             KismetHelper.AddObjectToSequence(playEvent, mainSeq);
             KismetHelper.CreateOutputLink(playEvent, "Out", interp);

@@ -175,7 +175,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
                 seqLog.WriteProperties(newProps); // Write it out as ObjectCreator doesn't use propcollection
 
                 // Create our strObject
-                var newStrNode = SequenceObjectCreator.CreateSequenceObject(seqLog.FileRef, "SeqVar_String", cache);
+                var newStrNode = LEXSequenceObjectCreator.CreateSequenceObject(seqLog.FileRef, "SeqVar_String", cache);
                 newStrNode.WriteProperty(new StrProperty(objComment, "StrValue"));
                 KismetHelper.AddObjectToSequence(newStrNode, owningSequence);
                 KismetHelper.CreateVariableLink(seqLog, "String", newStrNode);
