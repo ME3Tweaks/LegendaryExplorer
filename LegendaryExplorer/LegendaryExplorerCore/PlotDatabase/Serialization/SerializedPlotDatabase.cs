@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using LegendaryExplorerCore.PlotDatabase.Databases;
 using LegendaryExplorerCore.PlotDatabase.PlotElements;
 using Newtonsoft.Json;
 
-namespace LegendaryExplorerCore.PlotDatabase
+namespace LegendaryExplorerCore.PlotDatabase.Serialization
 {
     /// <summary>
     /// A class representing the JSON serialized plot database file
@@ -55,7 +53,14 @@ namespace LegendaryExplorerCore.PlotDatabase
                 var parentId = plot.ParentElementId;
                 if (parentId > 0)
                 {
-                    plot.AssignParent(table[parentId]);
+                    if (table.TryGetValue(parentId, out var parent))
+                    {
+                        plot.AssignParent(parent);
+                    }
+                    else if (element.Value is not PlotModElement)
+                    {
+                        throw new Exception("Cannot assign parent");
+                    }
                 }
             }
         }

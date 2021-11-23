@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using LegendaryExplorerCore.PlotDatabase.Databases;
 using LegendaryExplorerCore.PlotDatabase.PlotElements;
 using Newtonsoft.Json;
 
-namespace LegendaryExplorerCore.PlotDatabase
+namespace LegendaryExplorerCore.PlotDatabase.Serialization
 {
     public class SerializedModPlotDatabase : SerializedPlotDatabase
     {

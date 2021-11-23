@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.PlotDatabase;
+using LegendaryExplorerCore.PlotDatabase.Serialization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 

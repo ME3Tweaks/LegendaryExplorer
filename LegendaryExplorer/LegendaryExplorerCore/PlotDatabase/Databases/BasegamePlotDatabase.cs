@@ -1,8 +1,9 @@
 ﻿using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.PlotDatabase.Serialization;
 using Newtonsoft.Json;
 
-namespace LegendaryExplorerCore.PlotDatabase
+namespace LegendaryExplorerCore.PlotDatabase.Databases
 {
     public class BasegamePlotDatabase : PlotDatabaseBase
     {

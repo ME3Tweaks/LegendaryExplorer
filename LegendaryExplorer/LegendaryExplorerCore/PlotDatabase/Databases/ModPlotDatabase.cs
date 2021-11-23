@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.PlotDatabase.PlotElements;
+using LegendaryExplorerCore.PlotDatabase.Serialization;
 using Newtonsoft.Json;
 
-namespace LegendaryExplorerCore.PlotDatabase
+namespace LegendaryExplorerCore.PlotDatabase.Databases
 {
     public class ModPlotDatabase : PlotDatabaseBase
     {
@@ -20,6 +20,13 @@ namespace LegendaryExplorerCore.PlotDatabase
                     ModRoot = modRoot;
                 }
             }
+        }
+
+        public ModPlotDatabase() { }
+
+        public ModPlotDatabase(string modName, int startingId)
+        {
+            ModRoot = new PlotModElement(-1, startingId, modName, PlotElementType.Mod, null, new List<PlotElement>());
         }
 
         public override bool IsBioware => false;

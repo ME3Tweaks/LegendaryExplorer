@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.PlotDatabase.PlotElements;
+using LegendaryExplorerCore.PlotDatabase.Serialization;
 using Newtonsoft.Json;
 
-namespace LegendaryExplorerCore.PlotDatabase
+namespace LegendaryExplorerCore.PlotDatabase.Databases
 {
     public abstract class PlotDatabaseBase
     {
@@ -179,7 +179,8 @@ namespace LegendaryExplorerCore.PlotDatabase
 
         public int GetNextElementId()
         {
-            var maxElement = GetMasterDictionary().Keys.Max();
+            var keys = GetMasterDictionary().Keys;
+            var maxElement = keys.Count == 0 ? Root.ElementId : keys.Max();
             return maxElement + 1;
         }
     }

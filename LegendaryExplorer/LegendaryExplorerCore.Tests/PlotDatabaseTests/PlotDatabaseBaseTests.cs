@@ -1,5 +1,6 @@
 ﻿using System;
 using LegendaryExplorerCore.PlotDatabase;
+using LegendaryExplorerCore.PlotDatabase.Databases;
 using LegendaryExplorerCore.PlotDatabase.PlotElements;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -74,8 +75,8 @@ namespace LegendaryExplorerCore.Tests
             // Pre-flight checks
             Assert.IsTrue(b.Children.Count > 0);
             Assert.IsTrue(a.Parent == plotDb.Root);
-            Assert.ThrowsException<ArgumentException>(() => plotDb.RemoveElement(plotDb.Root));
-            Assert.ThrowsException<ArgumentException>(() => plotDb.RemoveElement(b)); // If element has children, error is thrown by default
+            Assert.ThrowsException<ArgumentException>(() => plotDb.RemoveElement(plotDb.Root)); // Cannot remove root
+            Assert.ThrowsException<ArgumentException>(() => plotDb.RemoveElement(b, removeAllChildren: false)); // If element has children, error is thrown by default
 
             // Actual testing
             plotDb.RemoveElement(a);
@@ -90,7 +91,5 @@ namespace LegendaryExplorerCore.Tests
             Assert.IsFalse(plotDb.Conditionals.ContainsValue(d));
 
         }
-
-
     }
 }

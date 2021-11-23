@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.PlotDatabase.Databases;
 using LegendaryExplorerCore.PlotDatabase.PlotElements;
 
 namespace LegendaryExplorerCore.PlotDatabase
@@ -21,10 +22,6 @@ namespace LegendaryExplorerCore.PlotDatabase
         public static BasegamePlotDatabase Le3PlotDatabase => LazyLe3PlotDatabase.Value;
         private static readonly Lazy<BasegamePlotDatabase> LazyLe3PlotDatabase = new(() => BasegamePlotDatabase.CreateBasegamePlotDatabase(MEGame.LE3));
 
-        public static ModPlotDatabase Le1ModDatabase;
-        public static ModPlotDatabase Le2ModDatabase;
-        public static ModPlotDatabase Le3ModDatabase;
-
         public static ModPlotContainer Le1ModContainer { get; } = new ModPlotContainer(MEGame.LE1);
         public static ModPlotContainer Le2ModContainer { get; } = new ModPlotContainer(MEGame.LE2);
         public static ModPlotContainer Le3ModContainer { get; } = new ModPlotContainer(MEGame.LE3);
@@ -35,17 +32,6 @@ namespace LegendaryExplorerCore.PlotDatabase
             else if (game.IsGame2()) return Le2PlotDatabase;
             else if (game.IsGame3()) return Le3PlotDatabase;
             throw new ArgumentOutOfRangeException($"Game {game} has no plot database");
-        }
-
-        public static ModPlotDatabase GetModPlotDatabaseForGame(MEGame game)
-        {
-            return game switch
-            {
-                MEGame.LE1 => Le1ModDatabase,
-                MEGame.LE2 => Le2ModDatabase,
-                MEGame.LE3 => Le3ModDatabase,
-                _ => throw new ArgumentOutOfRangeException($"Game {game} has no mod plot database")
-            };
         }
 
         public static ModPlotContainer GetModPlotContainerForGame(MEGame game)

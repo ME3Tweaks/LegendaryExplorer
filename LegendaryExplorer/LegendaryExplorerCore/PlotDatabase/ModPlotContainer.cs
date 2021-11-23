@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.PlotDatabase.Databases;
 using LegendaryExplorerCore.PlotDatabase.PlotElements;
 
 namespace LegendaryExplorerCore.PlotDatabase
@@ -37,10 +38,18 @@ namespace LegendaryExplorerCore.PlotDatabase
             Mods.Remove(mod);
         }
 
+        public int GetNextElementId()
+        {
+            var max = Mods.Select((m) => m.GetNextElementId()).ToList();
+            if (max.Count == 0) return StartingModId + 1;
+            else return max.Max();
+        }
+
         public void LoadModsFromDisk(string appDataFolder)
         {
             var saveFolder = Path.Combine(appDataFolder, LocalModFolderName);
-            var jsonFiles = new DirectoryInfo(saveFolder).EnumerateFiles().Where(f => f.Extension == "json");
+            if (!Directory.Exists(saveFolder)) Directory.CreateDirectory(saveFolder);
+            var jsonFiles = new DirectoryInfo(saveFolder).EnumerateFiles().Where(f => f.Extension == ".json");
             foreach (var file in jsonFiles)
             {
                 try
